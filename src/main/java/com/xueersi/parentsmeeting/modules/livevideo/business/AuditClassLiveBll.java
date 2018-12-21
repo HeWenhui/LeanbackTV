@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
@@ -25,9 +26,11 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.SimpleVPlayerListener;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.HalfBodyLiveStudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.StudentLiveInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -77,6 +80,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
     private AuditIRCMessage mIRCMessage;
     private String courseId;
     private String mLiveId;
+    private String mStuCouId;
     private String mCurrentDutyId;
     public final int mLiveType;
     private LiveGetInfo mGetInfo;
@@ -127,9 +131,12 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
     /** 直播调度 */
     private LiveGetPlayServer liveGetPlayServer;
 
+    private boolean isHalfBodyLive = false;
+
     public AuditClassLiveBll(Context context, String vStuCourseID, String courseId, String vSectionID, int form) {
         super(context);
         this.mLiveId = vSectionID;
+        this.mStuCouId = vStuCourseID;
         this.mLiveType = LIVE_TYPE_LIVE;
         mHttpManager = new LiveHttpManager(mContext);
         mHttpManager.addBodyParam("courseId", courseId);
@@ -197,11 +204,23 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
         return "AC";
     }
 
+    public boolean isHalfBodyLive() {
+        return isHalfBodyLive;
+    }
+    /**
+     * 设置是否是半身直播
+     * @param halfBodyLive
+     */
+    public void setHalfBodyLive(boolean halfBodyLive){
+        this.isHalfBodyLive = halfBodyLive;
+    }
+
     /**
      * 播放器异常日志
      *
      * @param str
      */
+    @Override
     public void getOnloadLogs(String TAG, String str) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String bz = UserBll.getInstance().getMyUserInfoEntity().getUserType() == 1 ? "student" : "teacher";
@@ -257,11 +276,11 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
         @Override
         public void onChannelInfo(String channel, int userCount, String topic) {
             mLogtf.i("onChannelInfo:userCount=" + userCount);
-            onTopic(channel, topic, "", 0, true);
+            onTopic(channel, topic, "", 0, true, channel);
         }
 
         @Override
-        public void onTopic(String channel, String topicstr, String setBy, long date, boolean changed) {
+        public void onTopic(String channel, String topicstr, String setBy, long date, boolean changed, String channelId) {
 //            i
         }
 
@@ -269,7 +288,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
 
         @Override
         public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target,
-                             final String notice) {
+                             final String notice, String channelId) {
 
         }
 
@@ -491,7 +510,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
         }
 
         @Override
-        public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
+        public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason, String channel) {
             logger.d("onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                     + sourceHostname + ",reason=" + reason);
             if (sourceNick.startsWith(TEACHER_PREFIX)) {
@@ -574,6 +593,15 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
             onLiveFailure("服务器异常", null);
             return;
         }
+
+        if(isChineseHalfBodyLive(mGetInfo)){
+            ResponseEntity responseEntity = new ResponseEntity();
+            responseEntity.setErrorMsg("语文半身直播旁听暂不支持，程序员哥哥正在夜以继日的开发哦!");
+            onLiveError(responseEntity);
+            return;
+        }
+
+
         if (mGetInfo.getPattern() == 2) {
             ResponseEntity responseEntity = new ResponseEntity();
             responseEntity.setErrorMsg("家长旁听暂不支持全身直播，程序员哥哥正在夜以继日的开发哦!");
@@ -630,9 +658,31 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
     }
 
     /**
+     * 是否是 语文半身直播
+     * @return
+     */
+    private boolean isChineseHalfBodyLive(LiveGetInfo liveGetInfo){
+        return liveGetInfo != null && liveGetInfo.getPattern()
+                == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY
+                && liveGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE;
+    }
+
+
+    /**
      * 签名
      */
     public synchronized void getStudentLiveInfo() {
+        if(isHalfBodyLive){
+            getHalfBodyLiveStudentLiveInfo();
+        }else{
+            getNorLiveStudentLiveInfo();
+        }
+    }
+
+    /**
+     * 普通直播 获取旁听数据
+     */
+    private void getNorLiveStudentLiveInfo() {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mHttpManager.getStudentLiveInfo(enstuId, mLiveId, new HttpCallBack(false) {
             @Override
@@ -664,6 +714,45 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
             }
         });
     }
+
+    /**
+     * 获取半身直播  旁听数据
+     */
+    public synchronized void getHalfBodyLiveStudentLiveInfo() {
+
+        mHttpManager.getHalfBodyStuLiveInfo(mLiveId,mStuCouId,mGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE,
+                new HttpCallBack(false){
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                String oldMode = mLiveTopic.getMode();
+                HalfBodyLiveStudyInfo stuLiveInfo = mHttpResponseParser.parseStuHalfbodyLiveInfo(responseEntity, oldMode);
+               if (auditClassAction != null) {
+                    auditClassAction.onGetStudyInfo(stuLiveInfo);
+                }
+
+                String mode = stuLiveInfo.getMode();
+                Log.e("parseLiveInfo","getHalfBodyStuLiveInfo=====>oldMode:"+oldMode+":"+mode);
+                if (!oldMode.equals(mode)) {
+                    if (mVideoAction != null) {
+                        mVideoAction.onModeChange(mode, true);
+                        Log.e("parseLiveInfo"," getHalfBodyStuLiveInfo====>mVideoAction.onModeChange"+oldMode+":"+mode);
+                    }
+                    mLiveTopic.setMode(mode);
+                    liveGetPlayServer(true);
+                }
+            }
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                logger.e( "getHalfBodyLiveStudentLiveInfo:onPmFailure:msg=" + msg, error);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                logger.e( "getHalfBodyLiveStudentLiveInfo:onPmError:errorMsg=" + responseEntity.getErrorMsg());
+            }
+        });
+    }
+
 
     /** 第一次调度，不判断老师状态 */
     public void liveGetPlayServerFirst() {
@@ -1476,5 +1565,20 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
         mData.put("eventid", "" + eventId);
         mData.put("clits", "" + System.currentTimeMillis());
         UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData);
+    }
+
+    @Override
+    public void umsAgentDebugSys(String eventId, StableLogHashMap stableLogHashMap) {
+
+    }
+
+    @Override
+    public void umsAgentDebugInter(String eventId, StableLogHashMap stableLogHashMap) {
+
+    }
+
+    @Override
+    public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
+
     }
 }

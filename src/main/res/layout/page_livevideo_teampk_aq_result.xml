@@ -8,7 +8,7 @@
         android:background="@drawable/shape_livevideo_teampk_aq_result_bg"
         android:layout_centerInParent="true"
         android:id="@id/rl_answer_question_award_root"
-        android:visibility="visible">
+        android:visibility="invisible">
 
         <ImageView
             android:layout_width="20dp"
@@ -61,7 +61,7 @@
         android:background="@drawable/shape_livevideo_teampk_aq_result_bg"
         android:layout_centerInParent="true"
         android:id="@id/rl_vote_award_root"
-        android:visibility="visible">
+        android:visibility="invisible">
 
         <RelativeLayout
             android:layout_width="wrap_content"

@@ -76,7 +76,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordItem;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.item.CommonWordChsItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -361,7 +361,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         mSdm = ShareDataManager.getInstance();
         isShowSpeechRecog = mSdm.getBoolean(SpeechEvaluatorUtils.RECOG_RESULT, false, ShareDataManager
                 .SHAREDATA_USER);
-        logger.i("speech : isshow"+isShowSpeechRecog);
+        logger.i("speech : isshow" + isShowSpeechRecog);
         cpuRecogTime = mSdm.getLong(SpeechEvaluatorUtils.RECOG_TIME, 2500l, ShareDataManager.SHAREDATA_NOT_CLEAR);
         speechUtils = SpeechUtils.getInstance(mContext.getApplicationContext());
         logger.i("initData:time1=" + (System.currentTimeMillis() - before));
@@ -402,7 +402,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                                     }
                                     if (result.getStatus() == ResultEntity.SUCCESS) {
                                         isShowSpeechRecog = (mRecogtestEndTime - mRecogtestBeginTime) < 3000l ? true : false;
-                                        if (isShowSpeechRecog){
+                                        if (isShowSpeechRecog) {
                                             mSdm.put(SpeechEvaluatorUtils.RECOG_RESULT, isShowSpeechRecog, ShareDataManager.SHAREDATA_USER);
                                         }
                                     }
@@ -414,7 +414,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                                 }
                             });
                         }
-                    },4000);
+                    }, 4000);
                 }
             }
 
@@ -547,7 +547,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         lvCommonWord.setAdapter(new CommonAdapter<String>(words) {
             @Override
             public AdapterItemInterface<String> getItemView(Object type) {
-                return new CommonWordItem(mContext, this);
+                return new CommonWordChsItem(mContext, this);
             }
         });
         lvCommonWord.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -2129,6 +2129,21 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
     @Override
     public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
+
+    }
+
+    @Override
+    public void umsAgentDebugSys(String eventId, StableLogHashMap stableLogHashMap) {
+
+    }
+
+    @Override
+    public void umsAgentDebugInter(String eventId, StableLogHashMap stableLogHashMap) {
+
+    }
+
+    @Override
+    public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
 
     }
 

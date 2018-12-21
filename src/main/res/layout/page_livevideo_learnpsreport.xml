@@ -281,7 +281,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:background="@drawable/livevideopsreport_submit"
+            android:background="@drawable/selector_livevideo_pslearnreport_submit"
             android:layout_marginBottom="32dp"
             />
 

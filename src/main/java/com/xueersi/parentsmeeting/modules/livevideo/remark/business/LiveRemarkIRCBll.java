@@ -19,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.SampleLiveVPlayerListener;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VPlayerListenerReg;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatStartChange;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTextureView;
 
@@ -34,7 +35,7 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
     private PlayerService vPlayer;
     private LiveRemarkBll liveRemarkBll;
     LiveTextureView liveTextureView;
-    LiveMediaControllerBottom liveMediaControllerBottom;
+    BaseLiveMediaControllerBottom liveMediaControllerBottom;
     VideoView videoView;
 
     public LiveRemarkIRCBll(Activity context, LiveBll2 liveBll) {
@@ -46,7 +47,7 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
         super.onCreate(data);
         vPlayer = (PlayerService) data.get("vPlayer");
         this.videoView = (VideoView) data.get("videoView");
-        LiveMediaControllerBottom controllerBottom = (LiveMediaControllerBottom) data.get("liveMediaControllerBottom");
+        BaseLiveMediaControllerBottom controllerBottom = (BaseLiveMediaControllerBottom) data.get("liveMediaControllerBottom");
         this.liveMediaControllerBottom = controllerBottom;
     }
 
@@ -74,6 +75,13 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
                 @Override
                 public void onOpenSuccess() {
                     LiveRemarkIRCBll.this.onOpenSuccess();
+                }
+
+                @Override
+                public void onPlaybackComplete() {
+                    if (liveRemarkBll != null) {
+                        liveRemarkBll.setVideoReady(false);
+                    }
                 }
             });
         } else {
@@ -138,7 +146,9 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
                     liveRemarkBll.setSysTimeOffset(mLiveBll.getSysTimeOffset());
                     mLogtf.i("setlivebll____onbreak:" + mLiveBll.getLiveTopic().getMainRoomstatus().isOnbreak()
                             + "   stat:" + mGetInfo.getStat() + "   mode:" + mLiveBll.getLiveTopic().getMode());
-                    if (!mLiveBll.getLiveTopic().getMainRoomstatus().isOnbreak() && (LiveTopic.MODE_CLASS.equals(mLiveBll.getLiveTopic().getMode()) || mGetInfo.getIsSeniorOfHighSchool() == 1)) {
+                    //上课状态并且是主讲或者是高三非专属老师课程
+                    if (!mLiveBll.getLiveTopic().getMainRoomstatus().isOnbreak() && (LiveTopic.MODE_CLASS.equals(mLiveBll.getLiveTopic().getMode())
+                            || (mGetInfo.getIsSeniorOfHighSchool() == 1 && mGetInfo.ePlanInfo == null))) {
                         liveRemarkBll.setClassReady(true);
                     } else {
                         liveRemarkBll.setClassReady(false);
@@ -162,8 +172,9 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
                     msg += begin ? "CLASSBEGIN" : "CLASSEND";
                     logger.i("classBegin____onbreak:" + mLiveBll.getLiveTopic().getMainRoomstatus().isOnbreak()
                             + "   mode:" + mLiveBll.getLiveTopic().getMode());
+                    //上课状态并且是主讲或者是高三非专属老师课程
                     if (!mLiveBll.getLiveTopic().getMainRoomstatus().isOnbreak() && (liveRemarkBll != null && LiveTopic
-                            .MODE_CLASS.equals(mLiveBll.getLiveTopic().getMode()) || mGetInfo.getIsSeniorOfHighSchool() == 1)) {
+                            .MODE_CLASS.equals(mLiveBll.getLiveTopic().getMode()) || (mGetInfo.getIsSeniorOfHighSchool() == 1 && mGetInfo.ePlanInfo == null))) {
                         liveRemarkBll.setClassReady(true);
                     }
                     if (liveRemarkBll != null) {
@@ -200,8 +211,9 @@ public class LiveRemarkIRCBll extends LiveBaseBll implements NoticeAction, Topic
             //主讲
             logger.i("ontopic____onbreak:" + mLiveBll.getLiveTopic().getMainRoomstatus().isOnbreak()
                     + "   mode:" + mLiveBll.getLiveTopic().getMode());
+            //上课状态并且是主讲或者是高三非专属老师课程
             if (!liveTopic.getMainRoomstatus().isOnbreak() && (liveTopic.getMode().equals(LiveTopic
-                    .MODE_CLASS) || mGetInfo.getIsSeniorOfHighSchool() == 1)) {
+                    .MODE_CLASS) || (mGetInfo.getIsSeniorOfHighSchool() == 1 && mGetInfo.ePlanInfo == null))) {
                 liveRemarkBll.setClassReady(true);
             } else {
                 liveRemarkBll.setClassReady(false);

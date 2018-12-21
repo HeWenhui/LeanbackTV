@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.CountDownTimer;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -68,7 +67,7 @@ public class BaseEvaluateTeacherPaper extends LiveBasePager {
     protected RelativeLayout llResult;
     protected ImageView ivResult;
     protected TextView tvResultCountDown;
-    protected Button btnReSubmit;
+    protected RelativeLayout rlReSubmit;
 
     protected LinearLayout llMainEvaluate;
     protected LinearLayout llTutorEvaluate;
@@ -145,7 +144,7 @@ public class BaseEvaluateTeacherPaper extends LiveBasePager {
         llResult = mView.findViewById(R.id.rl_livevideo_evaluate_submit_result);
         ivResult = mView.findViewById(R.id.iv_livevideo_evaluate_submit_result);
         tvResultCountDown = mView.findViewById(R.id.tv_livevideo_evaluate_count_down);
-        btnReSubmit = mView.findViewById(R.id.btn_livevideo_evaluate_tryagain);
+        rlReSubmit = mView.findViewById(R.id.rl_livevideo_evaluate_tryagain);
         rlSubmit.setEnabled(false);
         return mView;
     }
@@ -246,10 +245,10 @@ public class BaseEvaluateTeacherPaper extends LiveBasePager {
                 }
             }
         });
-        btnReSubmit.setOnClickListener(new OnUnDoubleClickListener() {
+        rlReSubmit.setOnClickListener(new OnUnDoubleClickListener() {
             @Override
             public void onClick(View view) {
-                btnReSubmit.setEnabled(false);
+                rlReSubmit.setEnabled(false);
                 buttonOnClick.submit(mainEva, tutorEva);
             }
         });
@@ -310,7 +309,7 @@ public class BaseEvaluateTeacherPaper extends LiveBasePager {
         llEvaluate.setVisibility(View.GONE);
         llResult.setVisibility(View.VISIBLE);
         tvResultCountDown.setVisibility(View.VISIBLE);
-        btnReSubmit.setVisibility(View.GONE);
+        rlReSubmit.setVisibility(View.GONE);
         countDownCallback = callback;
         timer.start();
     }
@@ -319,10 +318,10 @@ public class BaseEvaluateTeacherPaper extends LiveBasePager {
         llEvaluate.setVisibility(View.GONE);
         llResult.setVisibility(View.VISIBLE);
         tvResultCountDown.setVisibility(View.GONE);
-        btnReSubmit.setVisibility(View.VISIBLE);
+        rlReSubmit.setVisibility(View.VISIBLE);
     }
     public void setReUpload(){
-        btnReSubmit.setEnabled(true);
+        rlReSubmit.setEnabled(true);
     }
     public interface CountDownCallback {
         void finishVideo();
