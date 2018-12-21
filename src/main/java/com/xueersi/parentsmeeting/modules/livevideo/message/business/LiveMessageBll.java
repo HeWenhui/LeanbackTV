@@ -4,13 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
-import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -270,7 +268,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         }
         if (isAnaswer != -1) {
             //这表示收到过答题变化
-            mLiveMessagePager.onQuestionShow(null,isAnaswer == 1);
+            mLiveMessagePager.onQuestionShow(null, isAnaswer == 1);
         }
         if (mode != null) {
             mLiveMessagePager.onopenchat(openchat, mode, false);
@@ -318,7 +316,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 
         long before = System.currentTimeMillis();
         if (!isSmallEnglish) {
-            if (LiveVideoConfig.isPrimary ) {
+            if (LiveVideoConfig.isPrimary) {
                 LivePsMessagePager liveMessagePager = new LivePsMessagePager(activity, this, null,
                         baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;
@@ -369,6 +367,8 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         bottomContent.addView(rlLiveMessageContent, params);
+//        bottomContent.bringToFront();
+        baseLiveMediaControllerBottom.bringToFront();
         String text = null;
         boolean isRegister = false;
         boolean isHaveFlowers = false;
@@ -600,8 +600,8 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 //            //老师不计算在内
 //            return;
 //        }
-      //  Loger.d("____join:  "+sender+"___peoplecount:  "+peopleCount);
-        if (!users.contains(sender)){
+        //  Loger.d("____join:  "+sender+"___peoplecount:  "+peopleCount);
+        if (!users.contains(sender)) {
             peopleCount.set(peopleCount.get() + 1, new Exception(sender));
             users.add(sender);
             if (mLiveMessagePager != null) {
@@ -616,7 +616,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 //            //老师不计算在内
 //            return;
 //        }
-        if (users.contains(sourceNick)){
+        if (users.contains(sourceNick)) {
             peopleCount.set(peopleCount.get() - 1, new Exception(sourceNick));
             users.remove(sourceNick);
         }
@@ -700,7 +700,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     @Override
     public void onOpenVoiceNotic(boolean openVoice, String type) {
         if (mLiveMessagePager != null) {
-            mLiveMessagePager.onOpenVoiceNotic(openVoice,type);
+            mLiveMessagePager.onOpenVoiceNotic(openVoice, type);
         }
     }
 
@@ -762,18 +762,17 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     }
 
     /**
-     *
      * @param nicker joiner's nick
      * @return 是否已经加入房间
      */
-    private boolean contains(String nicker){
+    private boolean contains(String nicker) {
         StringBuilder sb = new StringBuilder();
-        for (String user : users){
+        for (String user : users) {
             sb.append(user);
         }
-       // Loger.d("___bug 44 : users:  "+sb.toString()+"____nicker:  "+nicker);
-        for (String user : users){
-            if (user.equals(nicker)){
+        // Loger.d("___bug 44 : users:  "+sb.toString()+"____nicker:  "+nicker);
+        for (String user : users) {
+            if (user.equals(nicker)) {
                 return true;
             }
         }
