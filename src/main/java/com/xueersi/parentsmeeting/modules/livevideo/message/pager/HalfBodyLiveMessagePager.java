@@ -228,14 +228,14 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
      * @return
      */
     protected int getHotwordBtnResId() {
-        return R.drawable.bg_livevideo_message_pscommon;
+        return R.drawable.bg_livevideo_message_common;
     }
     /**
      * 获取聊天按钮 资源图片
      * @return
      */
     protected int getMsgBtnResId() {
-        return R.drawable.bg_livevideo_message_psopen;
+        return  R.drawable.bg_livevideo_message_open;
     }
 
     @Override
@@ -409,7 +409,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                         int offX = location[0] - (mCommonWordWindow.getContentView().getMeasuredWidth() - btMsgCommon
                                 .getMeasuredWidth()) / 2;
                         int offY = location[1] - mCommonWordWindow.getContentView().getMeasuredHeight();
-                        mPopWinOffX = (int) (offX - (mCommonWordWindow.getContentView().getMeasuredWidth()) * 13 / 49f);
+                        mPopWinOffX = offX;
                         mPopWinOffY = offY - SizeUtils.Dp2Px(mContext, 5);
                     }
                     mCommonWordWindow.showAtLocation(btMsgCommon, Gravity.NO_GRAVITY, mPopWinOffX, mPopWinOffY);
@@ -625,6 +625,11 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         lvCommonWord.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                if( liveMediaControllerBottom.getController() != null && liveMediaControllerBottom.getController().isShow()){
+                    liveMediaControllerBottom.getController().hide();
+                }
+
                 String msg = words.get(position);
                 if (ircState.openchat()) {
                     if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {

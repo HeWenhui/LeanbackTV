@@ -13,7 +13,7 @@
         android:background="@color/COLOR_000000" />
 
     <ImageView
-        android:id="@+id/tv_livevideo_small_chinese_sign_student_background"
+        android:id="@id/tv_livevideo_small_chinese_sign_student_background"
         android:layout_width="498dp"
         android:layout_height="285dp"
         android:src="@drawable/bg_livevideo_small_chinese_sign_background"
@@ -23,65 +23,66 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-        android:id="@+id/tv_livevideo_small_chinese_sign_student_name"
+        android:id="@id/tv_livevideo_small_chinese_sign_student_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
         android:textColor="@color/COLOR_7B583E"
         android:textSize="20sp"
-        app:layout_constraintLeft_toLeftOf="@+id/tv_livevideo_small_chinese_sign_student_background"
-        app:layout_constraintRight_toRightOf="@+id/tv_livevideo_small_chinese_sign_student_background"
-        app:layout_constraintTop_toTopOf="@+id/tv_livevideo_small_chinese_sign_student_background"
+        app:layout_constraintLeft_toLeftOf="@id/tv_livevideo_small_chinese_sign_student_background"
+        app:layout_constraintRight_toRightOf="@id/tv_livevideo_small_chinese_sign_student_background"
+        app:layout_constraintTop_toTopOf="@id/tv_livevideo_small_chinese_sign_student_background"
         tools:text="风一同学" />
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-        android:id="@+id/tv_livevideo_small_chinese_sign_tip"
+        android:id="@id/tv_livevideo_small_chinese_sign_tip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="现在开始课前点名"
         android:textColor="@color/COLOR_7B583E"
         android:textSize="15sp"
-        app:layout_constraintLeft_toLeftOf="@+id/tv_livevideo_small_chinese_sign_student_background"
-        app:layout_constraintRight_toRightOf="@+id/tv_livevideo_small_chinese_sign_student_background"
-        app:layout_constraintTop_toBottomOf="@+id/tv_livevideo_small_chinese_sign_student_name" />
+        app:layout_constraintLeft_toLeftOf="@id/tv_livevideo_small_chinese_sign_student_background"
+        app:layout_constraintRight_toRightOf="@id/tv_livevideo_small_chinese_sign_student_background"
+        app:layout_constraintTop_toBottomOf="@id/tv_livevideo_small_chinese_sign_student_name" />
 
     <android.support.constraint.Group
-        android:id="@+id/group_livevideo_small_chinese_sign_name"
+        android:id="@id/group_livevideo_small_chinese_sign_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:constraint_referenced_ids="tv_livevideo_small_chinese_sign_student_name,
         tv_livevideo_small_chinese_sign_tip,
-        iv_livevideo_small_chinese_sign_sign" />
+        iv_livevideo_small_chinese_sign_sign"
+        tools:ignore="NotSibling" />
 
     <ImageView
-        android:id="@+id/iv_livevideo_small_chinses_sign_status"
+        android:id="@id/iv_livevideo_small_chinses_sign_status"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:src="@drawable/bg_livevideo_small_chinese_sign_success"
         android:visibility="gone"
-        app:layout_constraintLeft_toLeftOf="@+id/tv_livevideo_small_chinese_sign_student_background"
-        app:layout_constraintRight_toRightOf="@+id/tv_livevideo_small_chinese_sign_student_background"
-        app:layout_constraintTop_toTopOf="@+id/tv_livevideo_small_chinese_sign_student_background" />
+        app:layout_constraintLeft_toLeftOf="@id/tv_livevideo_small_chinese_sign_student_background"
+        app:layout_constraintRight_toRightOf="@id/tv_livevideo_small_chinese_sign_student_background"
+        app:layout_constraintTop_toTopOf="@id/tv_livevideo_small_chinese_sign_student_background" />
 
     <ImageView
-        android:id="@+id/iv_livevideo_small_chinese_sign_sign"
+        android:id="@id/iv_livevideo_small_chinese_sign_sign"
         android:layout_width="130dp"
         android:layout_height="43dp"
         android:layout_marginBottom="105dp"
         android:src="@drawable/selector_livevideo_small_chinese_sign_sign"
-        app:layout_constraintBottom_toBottomOf="@+id/tv_livevideo_small_chinese_sign_student_background"
-        app:layout_constraintLeft_toLeftOf="@+id/tv_livevideo_small_chinese_sign_student_background"
-        app:layout_constraintRight_toRightOf="@+id/tv_livevideo_small_chinese_sign_student_background" />
+        app:layout_constraintBottom_toBottomOf="@id/tv_livevideo_small_chinese_sign_student_background"
+        app:layout_constraintLeft_toLeftOf="@id/tv_livevideo_small_chinese_sign_student_background"
+        app:layout_constraintRight_toRightOf="@id/tv_livevideo_small_chinese_sign_student_background" />
 
     <ImageView
-        android:id="@+id/iv_livevideo_small_chinese_sign_close"
+        android:id="@id/iv_livevideo_small_chinese_sign_close"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginTop="20dp"
         android:layout_marginRight="30dp"
         android:src="@drawable/selector_small_chinese_sign_close"
-        app:layout_constraintRight_toRightOf="@+id/tv_livevideo_small_chinese_sign_student_background"
-        app:layout_constraintTop_toTopOf="@+id/tv_livevideo_small_chinese_sign_student_background" />
+        app:layout_constraintRight_toRightOf="@id/tv_livevideo_small_chinese_sign_student_background"
+        app:layout_constraintTop_toTopOf="@id/tv_livevideo_small_chinese_sign_student_background" />
 
 </android.support.constraint.ConstraintLayout>

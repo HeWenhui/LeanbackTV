@@ -242,9 +242,9 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
                                 logToFile.i("onJoinChannel:joinChannel=" + joinChannel + ",isStart=" + isStart);
                                 //VideoChatLog.sno4(liveBll, nonce, room, joinChannel);
                                 if (!isStart) {
-                                    mWorkerThread.leaveChannel(roomId, new WorkerThread.OnLevelChannel() {
+                                    mWorkerThread.leaveChannel(roomId, new WorkerThread.OnLeaveChannel() {
                                         @Override
-                                        public void onLevelChannel(int leaveChannel) {
+                                        public void onLeaveChannel(int leaveChannel) {
 
                                         }
                                     });
@@ -324,9 +324,9 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
 //            if (mRtcEngine != null) {
 //                mRtcEngine.registerAudioFrameObserver(null);
 //            }
-            mWorkerThread.leaveChannel(roomId, new WorkerThread.OnLevelChannel() {
+            mWorkerThread.leaveChannel(roomId, new WorkerThread.OnLeaveChannel() {
                 @Override
-                public void onLevelChannel(int leaveChannel) {
+                public void onLeaveChannel(int leaveChannel) {
                     umsagentLeave();
                 }
             });

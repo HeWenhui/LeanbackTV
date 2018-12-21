@@ -789,16 +789,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
 
     }
 
-
-    public void onDestroy() {
-        if (mFocusPager != null) {
-            mFocusPager.onDestroy();
-            mFocusPager = null;
-        }
-        isTopicHandled = false;
-        EventBus.getDefault().unregister(this);
-    }
-
     /**
      * activity stop
      */
@@ -832,6 +822,12 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
     public void onDestory() {
         super.onDestory();
         logger.e("======>onDestory");
+        if (mFocusPager != null) {
+            mFocusPager.onDestroy();
+            mFocusPager = null;
+        }
+        isTopicHandled = false;
+        EventBus.getDefault().unregister(this);
     }
 
 

@@ -46,13 +46,21 @@
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
-            <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar
+            <com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothProgressBar
                 android:id="@id/tpb_teampk_pkresult_pbbar_final"
                 android:layout_width="320dp"
-                android:layout_height="20dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/tv_teampk_pkresult_myteam_final_anergy"
-                app:innerProgressBarHeight="7dp"
-                app:sliderHeader="@drawable/livevideo_chpk_energy_img_disable" />
+                android:layout_gravity="center"
+                android:background="@null"
+                android:max="100"
+                android:maxHeight="14dp"
+                android:minHeight="14dp"
+                android:paddingEnd="0dp"
+                android:paddingStart="0dp"
+                android:progressDrawable="@drawable/livevideo_chpk_seek_bg"
+                android:splitTrack="false"
+                android:thumb="@drawable/livevideo_chpk_energy_img_disable" />
         </RelativeLayout>
     </RelativeLayout>
 
@@ -276,18 +284,25 @@
                 android:visibility="gone" />
 
             <!--进度条的实际高度 比 布局文件中写的高 （额外空间 为展示缩放动画）-->
-            <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar
+            <com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothProgressBar
                 android:id="@id/tpb_teampk_pkresult_pbbar"
                 android:layout_width="match_parent"
-                android:layout_height="20dp"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/tv_teampk_myteam_energy"
                 android:layout_centerHorizontal="true"
+                android:layout_gravity="center"
                 android:layout_marginLeft="18dp"
                 android:layout_marginRight="18dp"
-                android:layout_marginTop="-4dp"
-                app:innerProgressBarHeight="7dp"
-                app:sliderHeader="@drawable/livevideo_chpk_energy_img_disable" />
-            <!--   app:sliderHeaderBg="@drawable/livevideo_slider_bg" -->
+                android:background="@null"
+                android:max="100"
+                android:maxHeight="14dp"
+                android:minHeight="14dp"
+                android:paddingEnd="0dp"
+                android:paddingStart="0dp"
+                android:progressDrawable="@drawable/livevideo_chpk_seek_bg"
+                android:splitTrack="false"
+                android:thumb="@drawable/livevideo_chpk_energy_img_disable" />
+
         </RelativeLayout>
 
         <android.support.v7.widget.RecyclerView

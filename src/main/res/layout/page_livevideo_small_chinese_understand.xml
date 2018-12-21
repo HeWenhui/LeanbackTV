@@ -9,7 +9,7 @@
         android:background="@color/COLOR_000000"
         android:alpha="0.6"/>
     <ImageView
-        android:id="@+id/iv_livevideo_small_chinese_understand_background"
+        android:id="@id/iv_livevideo_small_chinese_understand_background"
         android:layout_width="497dp"
         android:layout_height="292dp"
         android:src="@drawable/bg_livevideo_small_chinese_sign_background"
@@ -20,41 +20,41 @@
 
     <ImageView
 
-        android:id="@+id/iv_livevideo_small_chinese_understand_text"
+        android:id="@id/iv_livevideo_small_chinese_understand_text"
         android:layout_width="183dp"
         android:layout_height="38dp"
         android:layout_marginTop="70dp"
         android:src="@drawable/bg_livevideo_small_chinese_understand_text"
-        app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_understand_background"
-        app:layout_constraintRight_toRightOf="@+id/iv_livevideo_small_chinese_understand_background"
-        app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_understand_background" />
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_small_chinese_understand_background"
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_small_chinese_understand_background"
+        app:layout_constraintTop_toTopOf="@id/iv_livevideo_small_chinese_understand_background" />
 
     <ImageView
-        android:id="@+id/iv_livevideo_small_chinese_understand_yes"
+        android:id="@id/iv_livevideo_small_chinese_understand_yes"
         android:layout_width="130dp"
         android:layout_height="49dp"
         android:layout_marginRight="120dp"
         android:layout_marginBottom="110dp"
         android:src="@drawable/selector_livevideo_small_chinese_understand_yes"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_small_chinese_understand_background"
-        app:layout_constraintRight_toRightOf="@+id/iv_livevideo_small_chinese_understand_background" />
+        app:layout_constraintBottom_toBottomOf="@id/iv_livevideo_small_chinese_understand_background"
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_small_chinese_understand_background" />
 
     <ImageView
-        android:id="@+id/iv_livevideo_small_chinese_understand_no"
+        android:id="@id/iv_livevideo_small_chinese_understand_no"
         android:layout_width="130dp"
         android:layout_height="49dp"
         android:layout_marginLeft="110dp"
         android:layout_marginBottom="110dp"
         android:src="@drawable/selector_livevideo_small_chinese_understand_no_click"
-        app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_small_chinese_understand_background"
-        app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_small_chinese_understand_background" />
+        app:layout_constraintBottom_toBottomOf="@id/iv_livevideo_small_chinese_understand_background"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_small_chinese_understand_background" />
 
     <ImageView
-        android:id="@+id/iv_livevideo_small_chinese_understand_close"
+        android:id="@id/iv_livevideo_small_chinese_understand_close"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginTop="10dp"
         android:src="@drawable/selector_small_chinese_sign_close"
-        app:layout_constraintRight_toRightOf="@+id/iv_livevideo_small_chinese_understand_background"
-        app:layout_constraintTop_toTopOf="@+id/iv_livevideo_small_chinese_understand_background" />
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_small_chinese_understand_background"
+        app:layout_constraintTop_toTopOf="@id/iv_livevideo_small_chinese_understand_background" />
 </android.support.constraint.ConstraintLayout>
