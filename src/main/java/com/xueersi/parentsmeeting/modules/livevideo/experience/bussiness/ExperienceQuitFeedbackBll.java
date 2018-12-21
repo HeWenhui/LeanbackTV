@@ -200,19 +200,10 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
         if (mEvaluationView == null) {
             mEvaluationView = new StandExperienceEvaluationPager(activity, this);
         }
-        if (isStand) {
-            ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
-            activityChangeLand.changeLOrP();
-        } else {
-            if (liveVideoActivityBase != null) {
-                liveVideoActivityBase.changeLOrP();
-            }
-        }
 //            liveBackBll.getvPlayer().stop();
         //跳转到定级卷时暂停播放
         liveBackBll.getvPlayer().pause();
         isShowQuitDialog = false;
-        logger.i("旋转屏幕");
         mEvaluationView.showWebView(mVideoEntity.getExamUrl());
         mRootView.addView(mEvaluationView.getRootView(), RelativeLayout.LayoutParams
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
@@ -227,14 +218,6 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
         if (mEvaluationView != null && mEvaluationView.getRootView() != null && mEvaluationView.getRootView()
                 .getParent() == mRootView) {
             mRootView.removeView(mEvaluationView.getRootView());
-            if (isStand) {
-                ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
-                activityChangeLand.changeLOrP();
-            } else {
-                if (liveVideoActivityBase != null) {
-                    liveVideoActivityBase.changeLOrP();
-                }
-            }
             if (liveBackBll != null) {
                 //定级卷关闭回到直播间 重新开始播放
                 liveBackBll.getvPlayer().start();
@@ -265,7 +248,9 @@ public class ExperienceQuitFeedbackBll extends LiveBackBaseBll implements Experi
     @Override
     public void onDestory() {
         super.onDestory();
-        expPager.onDestroy();
+        if (expPager != null) {
+            expPager.onDestroy();
+        }
         if (mEvaluationView instanceof StandExperienceEvaluationPager) {
             ((StandExperienceEvaluationPager) mEvaluationView).onDestroy();
         }

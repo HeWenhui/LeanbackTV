@@ -68,7 +68,7 @@ public class Top3FrameAnim {
     public void start(final FrameAnimation.AnimationListener animationListener, final ArrayList<GoldTeamStatus.Student> students) {
         liveSoundPool = LiveSoundPool.createSoundPool();
         final int size = students.size();
-        logger.d( "start:size=" + size);
+        logger.d("start:size=" + size);
         if (size < 3) {
             for (int i = size; i < 3; i++) {
                 GoldTeamStatus.Student student = new GoldTeamStatus.Student();
@@ -214,8 +214,8 @@ public class Top3FrameAnim {
         try {
             inputStream = FrameAnimation.getInputStream(mContext, file);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            logToFile.d("initTeamRankHeadAndGold:file=" + file + ",bitmap=" + (bitmap == null));
             if (bitmap == null) {
+                logToFile.d("initTeamRankHeadAndGold:file=" + file + ",bitmap=null");
                 return null;
             }
             bitmap.setDensity(FrameAnimation.DEFAULT_DENSITY);
@@ -385,7 +385,7 @@ public class Top3FrameAnim {
                         textLeft = left + scalHeadWidth[i] / 2 - measuredWidth / 2;
                     }
                     canvas.translate(textLeft, top);
-                    logger.d( "initTeamRankHeadAndGold:measuredWidth=" + measuredWidth + ",measuredHeight=" + measuredHeight);
+                    logger.d("initTeamRankHeadAndGold:measuredWidth=" + measuredWidth + ",measuredHeight=" + measuredHeight);
                     layout_live_stand_red_mine1.draw(canvas);
                     canvas.restore();
                 }

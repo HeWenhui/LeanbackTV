@@ -14,6 +14,7 @@ import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.utils.Log;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
@@ -23,6 +24,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RegMediaPlayerControl;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
+import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RegMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
@@ -160,6 +168,9 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             if (getInfo.getPattern() == 2 && LiveTopic.MODE_CLASS.equals(getInfo.getMode())) {
                 mRoomAction.initViewLiveStand(mRootView);
+            } else if(getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY
+                    && LiveTopic.MODE_CLASS.equals(getInfo.getMode())){
+                mRoomAction.initHalfBodyLive(mRootView);
             } else {
                 mRoomAction.initViewLive(mRootView);
             }
@@ -191,6 +202,27 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     if (view != null) {
                         view.setVisibility(View.VISIBLE);
                     }
+                }else if(mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY){
+                    //延迟 2.5 秒 走相关逻辑(适配转场动画 节奏)
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            View view = mRoomAction.getView();
+                            if (view != null) {
+                                view.setVisibility(View.INVISIBLE);
+                            }
+
+                            if (LiveTopic.MODE_CLASS.equals(mode)) {
+                                mRoomAction.initHalfBodyLive(mRootView);
+                            } else {
+                                mRoomAction.initViewLive(mRootView);
+                            }
+
+                            if (view != null) {
+                                view.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    },2500);
                 }
             }
         });
@@ -265,6 +297,10 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     @Override
     public void onUserList(String channel, User[] users) {
         String s = "onUserList:channel=" + channel + ",users=" + users.length;
+    /*    Loger.d("___onuserlist:  channel:  "+channel  + "user[]:  "+users.length+"   "+users.toString());
+        for (User user : users){
+            Loger.d("___onuserlist:  users:  "+user.getNick());
+        }*/
         boolean haveMainTeacher = false;//主讲老师
         boolean haveCounteacher = false;//辅导老师
         ArrayList<User> arrayList = new ArrayList<>();

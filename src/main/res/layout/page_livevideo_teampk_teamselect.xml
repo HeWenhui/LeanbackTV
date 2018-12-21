@@ -7,7 +7,7 @@
         android:id="@id/iv_teampk_team_select_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitXY"
+        android:scaleType="centerCrop"
         android:src="@drawable/livevideo_zhandui_beijing_img_disable" />
 
     <ImageView

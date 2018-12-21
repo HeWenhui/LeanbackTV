@@ -17,6 +17,7 @@ import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.common.logerhelper.LogerTag;
+import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgent;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
@@ -34,6 +35,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.AllLiveBasePagerIml;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveUidRx;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
@@ -50,6 +52,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -349,6 +352,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             if (getInfoStr != null) {
                 JSONObject liveInfo = new JSONObject(getInfoStr);
                 liveGetInfo.setSmallEnglish("1".equals(liveInfo.optString("useSkin")));
+                liveGetInfo.setPrimaryChinese("2".equals(liveInfo.optString("useSkin")));
                 //解析学科id
                 if (liveInfo.has("subject_ids")) {
                     String strSubjIds = liveInfo.getString("subject_ids");
@@ -741,11 +745,66 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         UmsAgentManager.umsAgentOtherBusiness(activity, appID, UmsConstants.uploadShow, mData);
     }
 
+    @Override
+    public void umsAgentDebugSys(String eventId, StableLogHashMap stableLogHashMap) {
+        Map<String, String> mData = stableLogHashMap.getData();
+        Map<String, String> analysis = stableLogHashMap.getAnalysis();
+        mData.put("eventid", "" + eventId);
+        setAnalysis(analysis);
+        UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
+    }
+
+    @Override
+    public void umsAgentDebugInter(String eventId, StableLogHashMap stableLogHashMap) {
+        Map<String, String> mData = stableLogHashMap.getData();
+        Map<String, String> analysis = stableLogHashMap.getAnalysis();
+        mData.put("eventid", "" + eventId);
+        setAnalysis(analysis);
+        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadBehavior, mData, analysis);
+    }
+
+    @Override
+    public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
+        Map<String, String> mData = stableLogHashMap.getData();
+        Map<String, String> analysis = stableLogHashMap.getAnalysis();
+        mData.put("eventid", "" + eventId);
+        setAnalysis(analysis);
+        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData, analysis);
+    }
+
+    /**
+     * 上传log 添加 公共参数
+     *
+     * @param analysis
+     */
+    private void setAnalysis(Map<String, String> analysis) {
+        if (!analysis.containsKey("success")) {
+            analysis.put("success", "true");
+        }
+        if (!analysis.containsKey("errorcode")) {
+            analysis.put("errorcode", "0");
+        }
+        if (!analysis.containsKey("duration")) {
+            analysis.put("duration", "0");
+        }
+        if (!analysis.containsKey("modulekey")) {
+            analysis.put("modulekey", "");
+        }
+        if (!analysis.containsKey("moduleid")) {
+            analysis.put("moduleid", "");
+        }
+        analysis.put("timestamp", "" + System.currentTimeMillis());
+        analysis.put("userid", mGetInfo.getStuId());
+        analysis.put("planid", mVideoEntity.getLiveId());
+        analysis.put("clientip", IpAddressUtil.USER_IP);
+        analysis.put("traceid", "" + UUID.randomUUID());
+        analysis.put("platform", "android");
+    }
+
     public boolean onUserBackPressed() {
         boolean onUserBackPressed = allLiveBasePagerIml.onUserBackPressed();
         return onUserBackPressed;
     }
-
 
     public boolean isShowQuestion() {
         return mIsShowQuestion;

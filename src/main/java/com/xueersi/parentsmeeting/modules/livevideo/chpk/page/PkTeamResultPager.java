@@ -45,7 +45,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ContributionLayoutManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothProgressBar;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountDowTextView;
 
@@ -62,7 +62,7 @@ import java.util.List;
 public class PkTeamResultPager extends BasePager {
     private static final String TAG = "TeamPkResultPager";
     private LottieAnimationView lottieAnimationView;
-    private static final String LOTTIE_RES_ASSETS_ROOTDIR = "team_pk/pkresult/";
+
     private final ChinesePkBll mTeamPkBll;
     /**
      * 老师点赞动画
@@ -93,7 +93,7 @@ public class PkTeamResultPager extends BasePager {
     private SmoothAddNumTextView tvMyTeamEnergy;
     private SmoothAddNumTextView tvOtherTeamEnergy;
     private TextView tvAddEnergy;
-    private TeamPkProgressBar tpbEnergyBar;
+    private SmoothProgressBar tpbEnergyBar;
     private RecyclerView rclContributionRank;
 
     /**
@@ -119,6 +119,17 @@ public class PkTeamResultPager extends BasePager {
     private ContributionLayoutManager mLayoutManager;
     private SoundPoolHelper soundPoolHelper;
 
+
+    /**
+     * 底部贡献之星 右边距
+     */
+    private static final float CONTRIBUTION_VIEW_RIGHTMARGIN = 0.046f;
+
+    /**
+     * 半身直播 贡献之星 右边距
+     */
+    private static final float CONTRIBUTION_VIEW_RIGHTMARGIN_HALFBODY =0.15f;
+
     /**
      * pk 结果页 所用到的 音效资源id
      */
@@ -129,7 +140,7 @@ public class PkTeamResultPager extends BasePager {
             R.raw.win
     };
     private RelativeLayout rlLottieRootView;
-    private TeamPkProgressBar tpbFinalProgress;
+    private SmoothProgressBar tpbFinalProgress;
     private RelativeLayout rlFinalPbBarContainer;
 
 
@@ -144,7 +155,6 @@ public class PkTeamResultPager extends BasePager {
         rlLottieRootView = view.findViewById(R.id.rl_teampk_pk_result_lottie_root);
         lottieAnimationView = view.findViewById(R.id.lav_teampk_pkresult);
         tpbFinalProgress = view.findViewById(R.id.tpb_teampk_pkresult_pbbar_final);
-        tpbFinalProgress.setMaxProgress(100);
         rlFinalPbBarContainer = view.findViewById(R.id.rl_teampk_pkresult_final_pbbar_container);
 
 
@@ -168,7 +178,6 @@ public class PkTeamResultPager extends BasePager {
         tvAddEnergy = view.findViewById(R.id.tv_teampk_myteam_add_energy);
 
         tpbEnergyBar = view.findViewById(R.id.tpb_teampk_pkresult_pbbar);
-        tpbEnergyBar.setMaxProgress(100);
         timeCountDowTextView = view.findViewById(R.id.tv_teampk_pkresult_time_countdow);
 
         rclContributionRank = view.findViewById(R.id.rcl_teampk_pkresult_contribution_rank);
@@ -188,6 +197,14 @@ public class PkTeamResultPager extends BasePager {
         mContributions = new ArrayList<TeamEnergyAndContributionStarEntity.ContributionStar>();
         //一行显示item 个数
         int spanCount = 5;
+        // 多屏幕 适配
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rclContributionRank.getLayoutParams();
+        if(mTeamPkBll != null && mTeamPkBll.isHalfBodyLiveRoom()){
+            params.rightMargin = (int) (mView.getMeasuredWidth() * CONTRIBUTION_VIEW_RIGHTMARGIN_HALFBODY);
+        }else{
+            params.rightMargin = (int) (mView.getMeasuredWidth() * CONTRIBUTION_VIEW_RIGHTMARGIN);
+        }
+        rclContributionRank.setLayoutParams(params);
         mLayoutManager = new ContributionLayoutManager(spanCount);
         int itemWidth = rclContributionRank.getMeasuredWidth() / spanCount;
         mLayoutManager.setItemWidth(itemWidth);
@@ -230,7 +247,7 @@ public class PkTeamResultPager extends BasePager {
         } else {
             ratio = 0.5f;
         }
-        tpbFinalProgress.setProgress((int) (ratio * tpbFinalProgress.getMaxProgress()));
+        tpbFinalProgress.setProgress((int) (ratio * tpbFinalProgress.getMax()));
         SmoothAddNumTextView tvMyTeamFinalEngergy = rlLottieRootView.findViewById(R.id.tv_teampk_pkresult_myteam_final_anergy);
         tvMyTeamFinalEngergy.setText(myTeamEnergy + "");
         SmoothAddNumTextView tvOtherTeamFinalEngergy = rlLottieRootView.findViewById(R.id.tv_teampk_pkresult_otherteam_final_anergy);
@@ -368,7 +385,7 @@ public class PkTeamResultPager extends BasePager {
         } else {
             ratio = 0.5f;
         }
-        int progress = (int) (ratio * tpbEnergyBar.getMaxProgress() + 0.5);
+        int progress = (int) (ratio * tpbEnergyBar.getMax() + 0.5);
         tpbEnergyBar.setProgress(progress);
         tvMyTeamEnergy.setText(myTeamOldEnergy + "");
         tvOtherTeamEnergy.setText(otherTeamOldEnergy + "");
@@ -390,13 +407,9 @@ public class PkTeamResultPager extends BasePager {
         } else {
             newRatio = 0.5f;
         }
-        int currentProgress = (int) (newRatio * tpbEnergyBar.getMaxProgress() + 0.5);
-        int addProgress = currentProgress - tpbEnergyBar.getProgress();
-        if (addProgress > 0) {
-            tpbEnergyBar.smoothAddProgress(addProgress);
-        } else {
-            tpbEnergyBar.setProgress(currentProgress);
-        }
+        int currentProgress = (int) (newRatio * tpbEnergyBar.getMax() + 0.5);
+        tpbEnergyBar.animateToProgress(currentProgress);
+
         tvMyTeamEnergy.setText(myTeamOldEnergy + "");
         tvOtherTeamEnergy.setText(otherTeamEnergy + "");
         int addEnergy = (int) data.getMyTeamEngerInfo().getAddEnergy();
@@ -573,8 +586,8 @@ public class PkTeamResultPager extends BasePager {
         // 播放背景音乐
         playMusic(R.raw.war_bg, SOUND_VOLUME_BG, true);
 
-        final String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "vsteam/images";
-        String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "vsteam/data.json";
+        final String lottieResPath = "chinesePk/vsteam/images";
+        String lottieJsonPath = "chinesePk/vsteam/data.json";
         String[] targetFileNames = {"img_2.png", "img_8.png", "img_1.png", "img_7.png", "img_0.png", "img_12.png", "img_3.png", "img_9.png"};
         final TeamPkResultLottieEffectInfo lottieEffectInfo = new TeamPkResultLottieEffectInfo(lottieResPath, lottieJsonPath);
         lottieEffectInfo.setTargetFileFilter(targetFileNames);

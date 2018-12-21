@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.MimeTypeMap;
 import com.tencent.smtt.sdk.WebSettings;
@@ -28,6 +29,7 @@ import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.common.util.FontCache;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -69,7 +71,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private boolean isFinish = false;
     private String jsSubmitData = "javascript:submitData()";
     private String jsforceSubmit = "javascript:forceSubmit()";
-    /** 文科新课件平台 强制提交js */
+    /**
+     * 文科新课件平台 强制提交js
+     */
     private String jsArtsForceSubmit = "javascript:examSubmitAll()";
     private EnglishH5CoursewareBll.OnH5ResultClose onClose;
     private String id;
@@ -84,7 +88,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private int mGoldNum;
     private int mEnergyNum;
     private final File mMorecacheout;
-    /** 公共资源 */
+    /**
+     * 公共资源
+     */
     private File mPublicCacheout;
     private EnglishH5Entity englishH5Entity;
     private String mLoadUrls;
@@ -184,16 +190,21 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             return;
         }
         isFinish = true;
+        String commit;
         if (isNewArtsCourseware && !"17".equals(detailInfo.type)) {
             wvSubjectWeb.loadUrl(jsArtsForceSubmit);
+            commit = jsArtsForceSubmit;
             Log.e("Duncan", "js:");
         } else {
             String command = englishH5Entity.getNewEnglishH5() ? jsforceSubmit : jsSubmitData;
+            commit = command;
             Log.e("Duncan", "command:" + command);
             wvSubjectWeb.loadUrl(command);
         }
+        mLogtf.d("submitData:isNewArtsCourseware=" + isNewArtsCourseware + ",commit=" + commit);
         StableLogHashMap logHashMap = new StableLogHashMap("coursewareEnd");
         logHashMap.put("coursewareid", id);
+        logHashMap.put("commit", commit);
         logHashMap.put("coursewaretype", courseware_type);
         umsAgentDebugInter(eventId, logHashMap.getData());
     }
@@ -367,17 +378,28 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                         logger.d("shouldInterceptRequest:file2=" + file.getName() + ",name=" + name + ",file=" + file.exists());
                     }
                     if (file.exists()) {
-                        FileInputStream inputStream = null;
                         try {
-                            inputStream = new FileInputStream(file);
-                            String extension = MimeTypeMap.getFileExtensionFromUrl(s.toLowerCase());
-                            String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-                            WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", inputStream);
-                            webResourceResponse.setResponseHeaders(header);
-                            Log.e("Duncan", "artsload");
-                            return webResourceResponse;
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
+                            HashMap<String, String> hashMap = new HashMap<>();
+                            hashMap.put("url", s);
+                            hashMap.put("filepath", file.getPath());
+                            hashMap.put("filelength", "" + file.length());
+                            UmsAgentManager.umsAgentDebug(mContext, TAG + "_cache", hashMap);
+                        } catch (Exception e) {
+                            CrashReport.postCatchedException(e);
+                        }
+                        if (file.length() > 0) {
+                            FileInputStream inputStream = null;
+                            try {
+                                inputStream = new FileInputStream(file);
+                                String extension = MimeTypeMap.getFileExtensionFromUrl(s.toLowerCase());
+                                String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+                                WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", inputStream);
+                                webResourceResponse.setResponseHeaders(header);
+                                Log.e("Duncan", "artsload");
+                                return webResourceResponse;
+                            } catch (FileNotFoundException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                     return super.shouldInterceptRequest(view, s);
@@ -437,8 +459,14 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    String defaulturl = isArts == 2 ? "https://live.chs.xueersi.com/LiveExam/getCourseWareTestHtml" : "https://live.xueersi.com/science/LiveExam/getCourseWareTestHtml";
-                    String dynamicurl = TextUtils.isEmpty(LiveVideoConfig.LIVEMULH5URL) ? defaulturl : LiveVideoConfig.LIVEMULH5URL;
+                    String dynamicurl;
+                    if (isArts == 2) {
+                        String defaulturl = "https://live.chs.xueersi.com/LiveExam/getCourseWareTestHtml";
+                        dynamicurl = TextUtils.isEmpty(LiveVideoConfig.LIVEMULH5URLCHS) ? defaulturl : LiveVideoConfig.LIVEMULH5URLCHS;
+                    } else {
+                        String defaulturl = "https://live.xueersi.com/science/LiveExam/getCourseWareTestHtml";
+                        dynamicurl = TextUtils.isEmpty(LiveVideoConfig.LIVEMULH5URL) ? defaulturl : LiveVideoConfig.LIVEMULH5URL;
+                    }
                     mLoadUrls = dynamicurl + "?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId + "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId + "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos=" + releasedPageInfos + "&classTestId=" + classTestId + "&educationStage=" + LiveVideoConfig.educationstage + "&isPlayBack=0" + "&nonce=" + "" + UUID.randomUUID();
                     // 上传接收到教师端指令的日志
                     StableLogHashMap logHashMap = new StableLogHashMap("receivePlatformtest");

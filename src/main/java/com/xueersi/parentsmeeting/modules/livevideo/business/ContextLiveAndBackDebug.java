@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.content.Context;
 
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.Map;
@@ -45,6 +46,36 @@ public class ContextLiveAndBackDebug implements LiveAndBackDebug {
         }
         if (liveAndBackDebug != null) {
             liveAndBackDebug.umsAgentDebugPv(eventId, mData);
+        }
+    }
+
+    @Override
+    public void umsAgentDebugSys(String eventId, StableLogHashMap stableLogHashMap) {
+        if (liveAndBackDebug == null) {
+            liveAndBackDebug = ProxUtil.getProxUtil().get(contextWeakHashMap.get("context"), LiveAndBackDebug.class);
+        }
+        if (liveAndBackDebug != null) {
+            liveAndBackDebug.umsAgentDebugSys(eventId, stableLogHashMap);
+        }
+    }
+
+    @Override
+    public void umsAgentDebugInter(String eventId, StableLogHashMap stableLogHashMap) {
+        if (liveAndBackDebug == null) {
+            liveAndBackDebug = ProxUtil.getProxUtil().get(contextWeakHashMap.get("context"), LiveAndBackDebug.class);
+        }
+        if (liveAndBackDebug != null) {
+            liveAndBackDebug.umsAgentDebugInter(eventId, stableLogHashMap);
+        }
+    }
+
+    @Override
+    public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
+        if (liveAndBackDebug == null) {
+            liveAndBackDebug = ProxUtil.getProxUtil().get(contextWeakHashMap.get("context"), LiveAndBackDebug.class);
+        }
+        if (liveAndBackDebug != null) {
+            liveAndBackDebug.umsAgentDebugPv(eventId, stableLogHashMap);
         }
     }
 }

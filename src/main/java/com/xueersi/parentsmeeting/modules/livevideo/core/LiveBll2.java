@@ -17,6 +17,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgent;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
@@ -24,6 +25,7 @@ import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
@@ -42,6 +44,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveLogCallback;
@@ -57,6 +60,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -379,6 +383,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         }
     }
 
+    /** 获取getInfo成功 */
     private void onGetInfoSuccess(LiveGetInfo getInfo) {
         logger.e("=======>onGetInfoSuccess");
         this.mGetInfo = getInfo;
@@ -431,6 +436,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         businessBllTemps.clear();
         logger.d("=======>onGetInfoSuccess 333333333");
         String channel = "";
+        String eChannel = "";
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_TUTORIAL) {
             channel = "1" + ROOM_MIDDLE + mGetInfo.getId();
         } else if (mLiveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
@@ -448,12 +454,23 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                 mHttpManager.addBodyParam("courseId", mCourseId);
             }
             channel = mGetInfo.getId() + "-" + studentLiveInfo.getClassId();
+            if (mGetInfo.ePlanInfo != null){
+                eChannel = mGetInfo.ePlanInfo.ePlanId + "-" + mGetInfo.ePlanInfo.eClassId;
+            }
         }
         logger.e("=======>onGetInfoSuccess 444444444");
         s += ",liveType=" + mLiveType + ",channel=" + channel;
         String nickname = "s_" + mGetInfo.getLiveType() + "_"
                 + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
-        mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, channel, mGetInfo.getStuName(), nickname);
+        if (TextUtils.isEmpty(eChannel) || LiveTopic.MODE_CLASS.equals(getMode())){
+            mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, channel);
+        }else {
+            mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, channel,eChannel);
+        }
+        //mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, (TextUtils.isEmpty(eChannel)|| LiveTopic.MODE_CLASS.equals(getMode()))?channel:channel,eChannel);
+        if (mGetInfo!=null && mGetInfo.ePlanInfo!=null){
+            mIRCMessage.modeChange(mGetInfo.getMode());
+        }
         IRCTalkConf ircTalkConf = new IRCTalkConf(mContext, getInfo, mLiveType, mHttpManager, getInfo.getNewTalkConfHosts());
         mIRCMessage.setIrcTalkConf(ircTalkConf);
         mIRCMessage.setCallback(mIRCcallback);
@@ -581,12 +598,12 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
 
         @Override
         public void onChannelInfo(String channel, int userCount, String topic) {
-            onTopic(channel, topic, "", 0, true);
+            onTopic(channel, topic, "", 0, true, channel);
         }
 
         @Override
         public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String
-                notice) {
+                notice, String channelId) {
             try {
                 JSONObject object = new JSONObject(notice);
                 int mtype = object.getInt("type");
@@ -595,6 +612,9 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                 switch (mtype) {
                     case XESCODE.MODECHANGE:
                         String mode = object.getString("mode");
+                        if (mode!=null && mIRCMessage!=null && mGetInfo!=null && mGetInfo.ePlanInfo!=null){
+                            mIRCMessage.modeChange(mode);
+                        }
                         if (!(mLiveTopic.getMode().equals(mode))) {
                             String oldMode = mLiveTopic.getMode();
                             mLiveTopic.setMode(mode);
@@ -632,7 +652,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         }
 
         @Override
-        public void onTopic(String channel, String topicstr, String setBy, long date, boolean changed) {
+        public void onTopic(String channel, String topicstr, String setBy, long date, boolean changed, String channelId) {
             if (lastTopicstr.equals(topicstr)) {
                 mLogtf.i("onTopic(equals):topicstr=" + topicstr);
                 return;
@@ -652,11 +672,16 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                     if (!(mLiveTopic.getMode().equals(liveTopic.getMode()))) {
                         String oldMode = mLiveTopic.getMode();
                         mLiveTopic.setMode(liveTopic.getMode());
+                       // Loger.d("___channel: "+channel+"  mode: "+liveTopic.getMode()+"  topic:  "+topicstr);
                         mGetInfo.setMode(liveTopic.getMode());
                         boolean isPresent = isPresent(mLiveTopic.getMode());
                         if (mVideoAction != null) {
                             mVideoAction.onModeChange(mLiveTopic.getMode(), isPresent);
                         }
+                        if (mIRCMessage!=null){
+                            mIRCMessage.modeChange(mLiveTopic.getMode());
+                        }
+                        liveVideoBll.onModeChange(mLiveTopic.getMode(), isPresent);
                         for (int i = 0; i < businessBlls.size(); i++) {
                             businessBlls.get(i).onModeChange(oldMode, mLiveTopic.getMode(), isPresent);
                         }
@@ -671,7 +696,10 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
                 }
                 //////////////
                 if (teacherModeChanged) {
+
                     mLiveTopic.setMode(liveTopic.getMode());
+                    Loger.setDebug(true);
+                  //  Loger.d("___channel: "+channel+"  mode: "+liveTopic.getMode()+"  topic:  "+topicstr);
                     mGetInfo.setMode(liveTopic.getMode());
                 }
                 if (mTopicActions != null && mTopicActions.size() > 0) {
@@ -710,7 +738,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         }
 
         @Override
-        public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
+        public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason, String channel) {
             logger.d("onQuit:sourceNick=" + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname="
                     + sourceHostname + ",reason=" + reason);
             if (mMessageActions != null && mMessageActions.size() > 0) {
@@ -876,6 +904,12 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadBehavior, mData);
     }
 
+    @Override
+    public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
+        setLogParam(eventId, mData);
+        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData);
+    }
+
     /**
      * 上传log 添加 公共参数
      *
@@ -901,9 +935,62 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
     }
 
     @Override
-    public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
-        setLogParam(eventId, mData);
-        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData);
+    public void umsAgentDebugSys(String eventId, StableLogHashMap stableLogHashMap) {
+        Map<String, String> mData = stableLogHashMap.getData();
+        Map<String, String> analysis = stableLogHashMap.getAnalysis();
+        mData.put("eventid", "" + eventId);
+        mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
+        setAnalysis(analysis);
+        UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
+    }
+
+    @Override
+    public void umsAgentDebugInter(String eventId, StableLogHashMap stableLogHashMap) {
+        Map<String, String> mData = stableLogHashMap.getData();
+        Map<String, String> analysis = stableLogHashMap.getAnalysis();
+        mData.put("eventid", "" + eventId);
+        mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
+        setAnalysis(analysis);
+        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadBehavior, mData, analysis);
+    }
+
+    @Override
+    public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
+        Map<String, String> mData = stableLogHashMap.getData();
+        Map<String, String> analysis = stableLogHashMap.getAnalysis();
+        mData.put("eventid", "" + eventId);
+        mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
+        setAnalysis(analysis);
+        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData, analysis);
+    }
+
+    /**
+     * 上传log 添加 公共参数
+     *
+     * @param analysis
+     */
+    private void setAnalysis(Map<String, String> analysis) {
+        if (!analysis.containsKey("success")) {
+            analysis.put("success", "true");
+        }
+        if (!analysis.containsKey("errorcode")) {
+            analysis.put("errorcode", "0");
+        }
+        if (!analysis.containsKey("duration")) {
+            analysis.put("duration", "0");
+        }
+        if (!analysis.containsKey("modulekey")) {
+            analysis.put("modulekey", "");
+        }
+        if (!analysis.containsKey("moduleid")) {
+            analysis.put("moduleid", "");
+        }
+        analysis.put("timestamp", "" + System.currentTimeMillis());
+        analysis.put("userid", mGetInfo.getStuId());
+        analysis.put("planid", mLiveId);
+        analysis.put("clientip", IpAddressUtil.USER_IP);
+        analysis.put("traceid", "" + UUID.randomUUID());
+        analysis.put("platform", "android");
     }
 
     @Override

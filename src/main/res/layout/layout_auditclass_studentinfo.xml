@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@id/rl_livevideo_student_video"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:background="@color/COLOR_000000">
+
+        <com.xueersi.parentsmeeting.module.videoplayer.media.XESVideoView
+            android:id="@id/xv_livevideo_student_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+    </RelativeLayout>
+
+    <!--学生视频加载状态-->
+    <RelativeLayout
+        android:id="@id/rl_livevideo_student_load"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignLeft="@id/rl_livevideo_student_video"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@id/rl_livevideo_student_video"
+        android:background="#535353">
+
+        <ImageView
+            android:id="@id/iv_livevideo_student_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/bg_livevideo_student_camera"
+            android:visibility="invisible" />
+
+        <TextView
+            android:id="@id/tv_livevideo_student_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/iv_livevideo_student_camera"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"
+            android:paddingTop="7dp"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            android:visibility="invisible" />
+
+        <ProgressBar
+            android:id="@id/pb_livevideo_student_load"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:indeterminateDrawable="@drawable/animlst_video_loading" />
+
+        <TextView
+            android:id="@id/tv_livevideo_student_load_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/pb_livevideo_student_load"
+            android:layout_centerHorizontal="true"
+            android:paddingTop="7dp"
+            android:text="加载学生视频"
+            android:textColor="@android:color/white"
+            android:textSize="12sp" />
+    </RelativeLayout>
+
+    <!--旁听状态显示 UI-->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignLeft="@id/rl_livevideo_student_video"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@id/rl_livevideo_student_video"
+        android:background="@color/COLOR_333333">
+
+        <RelativeLayout
+            android:id="@id/rl_livevideo_student_liveinfo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="8dp"
+                android:src="@drawable/bg_livevideo_student_liveinfo" />
+
+            <LinearLayout
+                android:id="@id/ll_livevideo_student_liveinfo_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical">
+
+                <TextView
+                    style="@style/text_font11_ffffff_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="签到时间：" />
+
+                <TextView
+                    style="@style/text_font11_ffffff_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="在线时长：" />
+
+                <TextView
+                    style="@style/text_font11_ffffff_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="正  确  率：" />
+
+                <TextView
+                    style="@style/text_font11_ffffff_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="组内排名：" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@id/ll_livevideo_student_liveinfo_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_toRightOf="@id/ll_livevideo_student_liveinfo_left"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@id/tv_livevideo_student_check_time"
+                    style="@style/text_font11_ffffff_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="" />
+
+                <TextView
+                    android:id="@id/tv_livevideo_student_online"
+                    style="@style/text_font11_ffffff_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="" />
+
+                <TextView
+                    android:id="@id/tv_livevideo_student_radio"
+                    style="@style/text_font11_ffffff_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="" />
+
+                <TextView
+                    android:id="@id/tv_livevideo_student_team"
+                    style="@style/text_font11_ffffff_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="" />
+
+            </LinearLayout>
+        </RelativeLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

@@ -11,6 +11,9 @@ import com.xueersi.common.entity.EnglishH5Entity;
  * Created by Administrator on 2017/3/31.
  */
 public class LiveVideoConfig {
+
+    // private static final String TEST_HOST="https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example";
+
     public static String HTTP_HOST = "https://laoshi.xueersi.com";
     public static String HTTP_PRIMARY_CHINESE_HOST = "https://app.chs.xueersi.com";
     /** 直播辅导用户在线心跳 */
@@ -88,6 +91,8 @@ public class LiveVideoConfig {
 
     /** 播放器数据初始化 */
     public final static String URL_LIVE_GET_INFO = LiveVideoConfig.HTTP_HOST + "/LiveCourse/getInfo";
+    // public final static String URL_LIVE_GET_INFO = TEST_HOST + "/LiveCourse/getInfo";
+
     /** 直播辅导播放器数据初始化 */
     public final static String URL_LIVE_TUTORIAL_GET_INFO = LiveVideoConfig.HTTP_HOST + "/LiveTutorial/initInfo";
     /** 公开直播播放器数据初始化 */
@@ -187,6 +192,8 @@ public class LiveVideoConfig {
     public static String SP_LIVEVIDEO_CLIENT_LOG = "sp_livevideo_clientLog";
     /** 直播网页加载失败 */
     public static String LIVE_WEBVIEW_ERROR = "live_webview_error";
+    /** 直播网页弹窗 */
+    public static String LIVE_WEBVIEW_JS_ALERT = "live_webview_js_alert";
     /** 直播语音弹幕 */
     public static String LIVE_SPEECH_BULLETSCREEN = "voice_barrage";
     /** 直播-错误码 */
@@ -249,7 +256,7 @@ public class LiveVideoConfig {
     /**
      * 提交体验课退出反馈
      */
-    public static String URL_AUTO_LIVE_QUIT_FEED_BACK = AppConfig.HTTP_HOST_TEAMPK+"/science/AutoLive/submitClassQuitFeedback";
+    public static String URL_AUTO_LIVE_QUIT_FEED_BACK = AppConfig.HTTP_HOST_TEAMPK + "/science/AutoLive/submitClassQuitFeedback";
     /** 视频播放失败的eventId */
     public final static String STAND_EXPERIENCE_LIVE_PLAY_ERROR = "stand_experience_live_play_error";
 
@@ -269,11 +276,11 @@ public class LiveVideoConfig {
 
     public static String URL_CND_LOG_IP = "http://42.62.96.154:80/log";
 
-    /** 920日志IP 地址*/
+    /** 920日志IP 地址 */
     public static String SP_URL_LIVE_CND_LOG_920_TYPE = "sp_url_live_cnd_log_920_type";
-    /** 920类型 IP*/
+    /** 920类型 IP */
     public static String LIVE_LOG_920_IP = "ip";
-    /** 920类型 HOST*/
+    /** 920类型 HOST */
     public static String LIVE_LOG_920_HOST = "host";
 
 
@@ -319,9 +326,12 @@ public class LiveVideoConfig {
     public static String LIVEPLAYBACKSTAGE;
     // 直播回放的type
     public static String LIVEPLAYBACKTYPE;
-    /** 一发多题的两个动态接口 */
+    /** 一发多题的两个动态接口-理科 */
     public static String LIVEMULPRELOAD;
     public static String LIVEMULH5URL;
+    /** 一发多题的两个动态接口-语文 */
+    public static String LIVEMULPRELOADCHS;
+    public static String LIVEMULH5URLCHS;
     /** 战队PK改版 */
     public static String tests;
     public static String ctId;
@@ -388,4 +398,10 @@ public class LiveVideoConfig {
 
     public static int IRC_TYPE_NOTICE = 0;
     public static int IRC_TYPE_TOPIC = 1;
+
+    /** 文理半身直播  理科家长旁听数据接口 */
+    public static final String URL_HALFBODY_LIVE_STULIVEINFO = "https://laoshi.xueersi.com/science/LiveCourse/getStuDateOfVisitedParentPage";
+    /** 文理半身直播  文科科家长旁听数据接口 */
+    public static final String URL_HALFBODY_LIVE_STULIVEINFO_ARTS = "https://app.chs.xueersi.com/LiveCourse/getStuDateOfVisitedParentPage";
+
 }

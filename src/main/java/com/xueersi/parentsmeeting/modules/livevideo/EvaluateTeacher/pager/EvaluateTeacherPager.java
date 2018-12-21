@@ -54,11 +54,11 @@ public class EvaluateTeacherPager extends BaseEvaluateTeacherPaper {
 
             }
         });
-        btnReSubmit.setOnClickListener(new OnUnDoubleClickListener() {
+        rlReSubmit.setOnClickListener(new OnUnDoubleClickListener() {
             @Override
             public void onClick(View view) {
-                btnReSubmit.setEnabled(false);
-                btnReSubmit.setAlpha(0.6f);
+                rlReSubmit.setEnabled(false);
+                rlReSubmit.setAlpha(0.6f);
                 buttonOnClick.submit(mainEva, tutorEva);
             }
         });
@@ -82,7 +82,7 @@ public class EvaluateTeacherPager extends BaseEvaluateTeacherPaper {
 
     @Override
     public void setReUpload() {
-        btnReSubmit.setAlpha(1.0f);
+        rlReSubmit.setAlpha(1.0f);
         super.setReUpload();
     }
 }

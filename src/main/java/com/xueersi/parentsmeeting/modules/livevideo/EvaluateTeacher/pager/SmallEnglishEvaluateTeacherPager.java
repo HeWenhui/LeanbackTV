@@ -2,9 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager;
 
 import android.content.Context;
 import android.graphics.Typeface;
-import android.provider.ContactsContract;
 import android.view.View;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 
 import com.xueersi.lib.framework.utils.listener.OnUnDoubleClickListener;
@@ -44,11 +42,11 @@ public class SmallEnglishEvaluateTeacherPager extends BaseEvaluateTeacherPaper {
                 buttonOnClick.submit(mainEva, tutorEva);
             }
         });
-        btnReSubmit.setOnClickListener(new OnUnDoubleClickListener() {
+        rlReSubmit.setOnClickListener(new OnUnDoubleClickListener() {
             @Override
             public void onClick(View view) {
                 ivTryagaingLoading.setVisibility(View.VISIBLE);
-                btnReSubmit.setEnabled(false);
+                rlReSubmit.setEnabled(false);
                 buttonOnClick.submit(mainEva, tutorEva);
             }
         });
@@ -101,7 +99,7 @@ public class SmallEnglishEvaluateTeacherPager extends BaseEvaluateTeacherPaper {
     @Override
     public void setReUpload() {
         ivTryagaingLoading.setVisibility(View.GONE);
-        btnReSubmit.setEnabled(true);
+        rlReSubmit.setEnabled(true);
         super.setReUpload();
     }
 }
