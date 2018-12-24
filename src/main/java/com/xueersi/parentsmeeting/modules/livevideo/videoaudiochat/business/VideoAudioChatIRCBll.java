@@ -278,26 +278,25 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                     msg += ",STUDY_ONMIC:from=" + from + ",mode=" + mLiveBll.getMode();
                     ArrayList<ClassmateEntity> onmicClassmateEntities = new ArrayList<>();
                     ArrayList<ClassmateEntity> offmicClassmateEntities = new ArrayList<>();
+                    JSONArray offStudents = object.getJSONArray("offmic");
+                    for (int i = 0; i < offStudents.length(); i++) {
+                        ClassmateEntity classmateEntity = new ClassmateEntity();
+                        JSONObject jsonObject = offStudents.getJSONObject(i);
+                        classmateEntity.setId(jsonObject.optString("id"));
+                        classmateEntity.setName(jsonObject.optString("name"));
+                        classmateEntity.setImg(jsonObject.optString("img"));
+                        offmicClassmateEntities.add(classmateEntity);
+                    }
                     if ("on".equals(status)) {
-                        JSONArray students = object.getJSONArray("onmic");
-                        for (int i = 0; i < students.length(); i++) {
+                        JSONArray onStudents = object.getJSONArray("onmic");
+                        for (int i = 0; i < onStudents.length(); i++) {
                             ClassmateEntity classmateEntity = new ClassmateEntity();
-                            JSONObject jsonObject = students.getJSONObject(i);
+                            JSONObject jsonObject = onStudents.getJSONObject(i);
                             classmateEntity.setId(jsonObject.optString("id"));
                             classmateEntity.setName(jsonObject.optString("name"));
                             classmateEntity.setImg(jsonObject.optString("img"));
                             classmateEntity.setPlace(jsonObject.optInt("place"));
                             onmicClassmateEntities.add(classmateEntity);
-                        }
-                    } else {
-                        JSONArray students = object.getJSONArray("offmic");
-                        for (int i = 0; i < students.length(); i++) {
-                            ClassmateEntity classmateEntity = new ClassmateEntity();
-                            JSONObject jsonObject = students.getJSONObject(i);
-                            classmateEntity.setId(jsonObject.optString("id"));
-                            classmateEntity.setName(jsonObject.optString("name"));
-                            classmateEntity.setImg(jsonObject.optString("img"));
-                            offmicClassmateEntities.add(classmateEntity);
                         }
                     }
                     if (videoChatAction != null) {
