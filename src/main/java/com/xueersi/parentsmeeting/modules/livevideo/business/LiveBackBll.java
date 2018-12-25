@@ -751,7 +751,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         Map<String, String> analysis = stableLogHashMap.getAnalysis();
         mData.put("eventid", "" + eventId);
         setAnalysis(analysis);
-        UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
+        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadSystem, mData, analysis);
     }
 
     @Override
