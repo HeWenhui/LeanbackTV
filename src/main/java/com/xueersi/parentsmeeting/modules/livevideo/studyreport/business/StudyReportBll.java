@@ -34,6 +34,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.agora.rtc.plugin.rawdata.MediaDataAudioObserver;
 import io.agora.rtc.plugin.rawdata.MediaDataObserverPlugin;
@@ -70,22 +71,22 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
     }
 
     private void initData() {
-        String str = mShareDataManager.getString(LiveVideoConfig.LIVE_STUDY_REPORT_IMG, "{}", ShareDataManager.SHAREDATA_USER);
-        try {
-            mLogtf.d("initData:jsonObject=" + str);
-            JSONObject jsonObject = new JSONObject(str);
-            if (jsonObject.has("liveId")) {
-                String liveid = jsonObject.getString("liveId");
-                if (mLiveId.equals(liveid)) {
-                    JSONArray jsonArray = jsonObject.getJSONArray("types");
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        types.add(jsonArray.getString(i));
-                    }
-                }
-            }
-        } catch (Exception e) {
-            mLogtf.e("initData", e);
-        }
+//        String str = mShareDataManager.getString(LiveVideoConfig.LIVE_STUDY_REPORT_IMG, "{}", ShareDataManager.SHAREDATA_USER);
+//        try {
+//            mLogtf.d("initData:jsonObject=" + str);
+//            JSONObject jsonObject = new JSONObject(str);
+//            if (jsonObject.has("liveId")) {
+//                String liveid = jsonObject.getString("liveId");
+//                if (mLiveId.equals(liveid)) {
+//                    JSONArray jsonArray = jsonObject.getJSONArray("types");
+//                    for (int i = 0; i < jsonArray.length(); i++) {
+//                        types.add(jsonArray.getString(i));
+//                    }
+//                }
+//            }
+//        } catch (Exception e) {
+//            mLogtf.e("initData", e);
+//        }
     }
 
     public void onFirstRemoteVideoDecoded(final int uid) {
@@ -159,9 +160,13 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
             @Override
             public void run() {
                 try {
-                    view.setDrawingCacheEnabled(true);
-                    view.buildDrawingCache();
-                    Bitmap bmpScreen = view.getDrawingCache();
+                    StringBuilder stringBuilder = new StringBuilder();
+                    AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+                    Bitmap bmpScreen = LiveCutImage.getViewBitmap(view, stringBuilder, atomicBoolean);
+                    if (bmpScreen == null) {
+                        mLogtf.d("cutImage:type=" + type + ",bmpScreen=null");
+                        return;
+                    }
                     if (cut) {
                         bmpScreen = LiveCutImage.cutBitmap(bmpScreen);
                     }
@@ -172,9 +177,9 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                     File saveFile = new File(savedir, System.currentTimeMillis() + ".jpg");
                     LiveCutImage.saveImage(bmpScreen, saveFile.getPath());
                     view.destroyDrawingCache();
-                    mLogtf.d("cutImage:type=" + type + ",path=" + saveFile.getPath());
+                    mLogtf.d("cutImage:type=" + type + ",path=" + saveFile.getPath() + ",creat=" + atomicBoolean.get() + ",sb=" + stringBuilder);
                     uploadWonderMoment(type, saveFile.getPath());
-                    if (cut) {
+                    if (cut || atomicBoolean.get()) {
                         bmpScreen.recycle();
                     }
                 } catch (Exception e) {
@@ -207,9 +212,13 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
             @Override
             public void run() {
                 try {
-                    view.setDrawingCacheEnabled(true);
-                    view.buildDrawingCache();
-                    Bitmap bmpScreen = view.getDrawingCache();
+                    StringBuilder stringBuilder = new StringBuilder();
+                    AtomicBoolean atomicBoolean = new AtomicBoolean(false);
+                    Bitmap bmpScreen = LiveCutImage.getViewBitmap(view, stringBuilder, atomicBoolean);
+                    if (bmpScreen == null) {
+                        mLogtf.d("cutImageAndVideo:type=" + type + ",bmpScreen=null");
+                        return;
+                    }
                     if (cut) {
                         bmpScreen = LiveCutImage.cutBitmap(bmpScreen);
                     }
@@ -220,7 +229,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                     final File saveFile = new File(savedir, System.currentTimeMillis() + ".jpg");
                     LiveCutImage.saveImage(bmpScreen, saveFile.getPath());
                     view.destroyDrawingCache();
-                    mLogtf.d("cutImageAndVideo:type=" + type + ",path=" + saveFile.getPath());
+                    mLogtf.d("cutImageAndVideo:type=" + type + ",path=" + saveFile.getPath() + ",creat=" + atomicBoolean.get() + ",sb=" + stringBuilder);
                     {
                         PlayerService vPlayer = (PlayerService) mLiveBll.getBusinessShareParam("vPlayer");
                         new PlayerView().getBitmap(vPlayer, activity, new PlayerView.OnGetBitmap() {
@@ -258,7 +267,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                             }
                         });
                     }
-                    if (cut) {
+                    if (cut || atomicBoolean.get()) {
                         bmpScreen.recycle();
                     }
                 } catch (Exception e) {
