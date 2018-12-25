@@ -941,7 +941,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         mData.put("eventid", "" + eventId);
         mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
         setAnalysis(analysis);
-        UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
+        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadSystem, mData, analysis);
     }
 
     @Override
