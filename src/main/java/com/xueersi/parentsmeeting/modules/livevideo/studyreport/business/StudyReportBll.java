@@ -71,22 +71,22 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
     }
 
     private void initData() {
-//        String str = mShareDataManager.getString(LiveVideoConfig.LIVE_STUDY_REPORT_IMG, "{}", ShareDataManager.SHAREDATA_USER);
-//        try {
-//            mLogtf.d("initData:jsonObject=" + str);
-//            JSONObject jsonObject = new JSONObject(str);
-//            if (jsonObject.has("liveId")) {
-//                String liveid = jsonObject.getString("liveId");
-//                if (mLiveId.equals(liveid)) {
-//                    JSONArray jsonArray = jsonObject.getJSONArray("types");
-//                    for (int i = 0; i < jsonArray.length(); i++) {
-//                        types.add(jsonArray.getString(i));
-//                    }
-//                }
-//            }
-//        } catch (Exception e) {
-//            mLogtf.e("initData", e);
-//        }
+        String str = mShareDataManager.getString(LiveVideoConfig.LIVE_STUDY_REPORT_IMG, "{}", ShareDataManager.SHAREDATA_USER);
+        try {
+            mLogtf.d("initData:jsonObject=" + str);
+            JSONObject jsonObject = new JSONObject(str);
+            if (jsonObject.has("liveId")) {
+                String liveid = jsonObject.getString("liveId");
+                if (mLiveId.equals(liveid)) {
+                    JSONArray jsonArray = jsonObject.getJSONArray("types");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        types.add(jsonArray.getString(i));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            mLogtf.e("initData", e);
+        }
     }
 
     public void onFirstRemoteVideoDecoded(final int uid) {
