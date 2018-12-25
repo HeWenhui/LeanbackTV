@@ -40,8 +40,8 @@ public class StandExperienceEvaluationBll extends
 //                        "&teacherId=" + mVideoEntity.getTeacherId() + "&orderId=" + mVideoEntity.getChapterId() +
 //                        "&userId=" + UserBll.getInstance().getMyUserInfoEntity().getStuId();
 
-            ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
-            activityChangeLand.changeLOrP();
+//            ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
+//            activityChangeLand.changeLOrP();
             logger.i("旋转屏幕");
             mView.showWebView(mVideoEntity.getExamUrl());
             mRootView.addView(mView.getRootView(), RelativeLayout.LayoutParams
@@ -74,8 +74,8 @@ public class StandExperienceEvaluationBll extends
     @Override
     public void showNextWindow() {
         logger.i("旋转屏幕");
-        ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
-        activityChangeLand.changeLOrP();
+//        ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
+//        activityChangeLand.changeLOrP();
         for (LiveBackBaseBll liveBackBaseBll : liveBackBll.getLiveBackBaseBlls()) {
             if (liveBackBaseBll instanceof StandExperienceLearnFeedbackBll) {
 //                ().showWindow();

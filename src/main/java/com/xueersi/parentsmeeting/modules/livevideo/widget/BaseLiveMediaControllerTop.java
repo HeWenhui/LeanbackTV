@@ -18,6 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.ControllerTopInter;
@@ -156,6 +157,9 @@ public class BaseLiveMediaControllerTop extends FrameLayout implements Controlle
         @Override
         public void onClick(View v) {
             mPlayer.stop(); // 回退操作
+            UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string
+                    .livevideo_quit_1712001));
+
         }
     };
 

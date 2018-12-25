@@ -45,7 +45,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ContributionLayoutManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothProgressBar;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountDowTextView;
 
@@ -93,7 +93,7 @@ public class PkTeamResultPager extends BasePager {
     private SmoothAddNumTextView tvMyTeamEnergy;
     private SmoothAddNumTextView tvOtherTeamEnergy;
     private TextView tvAddEnergy;
-    private TeamPkProgressBar tpbEnergyBar;
+    private SmoothProgressBar tpbEnergyBar;
     private RecyclerView rclContributionRank;
 
     /**
@@ -140,7 +140,7 @@ public class PkTeamResultPager extends BasePager {
             R.raw.win
     };
     private RelativeLayout rlLottieRootView;
-    private TeamPkProgressBar tpbFinalProgress;
+    private SmoothProgressBar tpbFinalProgress;
     private RelativeLayout rlFinalPbBarContainer;
 
 
@@ -155,7 +155,6 @@ public class PkTeamResultPager extends BasePager {
         rlLottieRootView = view.findViewById(R.id.rl_teampk_pk_result_lottie_root);
         lottieAnimationView = view.findViewById(R.id.lav_teampk_pkresult);
         tpbFinalProgress = view.findViewById(R.id.tpb_teampk_pkresult_pbbar_final);
-        tpbFinalProgress.setMaxProgress(100);
         rlFinalPbBarContainer = view.findViewById(R.id.rl_teampk_pkresult_final_pbbar_container);
 
 
@@ -179,7 +178,6 @@ public class PkTeamResultPager extends BasePager {
         tvAddEnergy = view.findViewById(R.id.tv_teampk_myteam_add_energy);
 
         tpbEnergyBar = view.findViewById(R.id.tpb_teampk_pkresult_pbbar);
-        tpbEnergyBar.setMaxProgress(100);
         timeCountDowTextView = view.findViewById(R.id.tv_teampk_pkresult_time_countdow);
 
         rclContributionRank = view.findViewById(R.id.rcl_teampk_pkresult_contribution_rank);
@@ -249,7 +247,7 @@ public class PkTeamResultPager extends BasePager {
         } else {
             ratio = 0.5f;
         }
-        tpbFinalProgress.setProgress((int) (ratio * tpbFinalProgress.getMaxProgress()));
+        tpbFinalProgress.setProgress((int) (ratio * tpbFinalProgress.getMax()));
         SmoothAddNumTextView tvMyTeamFinalEngergy = rlLottieRootView.findViewById(R.id.tv_teampk_pkresult_myteam_final_anergy);
         tvMyTeamFinalEngergy.setText(myTeamEnergy + "");
         SmoothAddNumTextView tvOtherTeamFinalEngergy = rlLottieRootView.findViewById(R.id.tv_teampk_pkresult_otherteam_final_anergy);
@@ -387,7 +385,7 @@ public class PkTeamResultPager extends BasePager {
         } else {
             ratio = 0.5f;
         }
-        int progress = (int) (ratio * tpbEnergyBar.getMaxProgress() + 0.5);
+        int progress = (int) (ratio * tpbEnergyBar.getMax() + 0.5);
         tpbEnergyBar.setProgress(progress);
         tvMyTeamEnergy.setText(myTeamOldEnergy + "");
         tvOtherTeamEnergy.setText(otherTeamOldEnergy + "");
@@ -409,13 +407,9 @@ public class PkTeamResultPager extends BasePager {
         } else {
             newRatio = 0.5f;
         }
-        int currentProgress = (int) (newRatio * tpbEnergyBar.getMaxProgress() + 0.5);
-        int addProgress = currentProgress - tpbEnergyBar.getProgress();
-        if (addProgress > 0) {
-            tpbEnergyBar.smoothAddProgress(addProgress);
-        } else {
-            tpbEnergyBar.setProgress(currentProgress);
-        }
+        int currentProgress = (int) (newRatio * tpbEnergyBar.getMax() + 0.5);
+        tpbEnergyBar.animateToProgress(currentProgress);
+
         tvMyTeamEnergy.setText(myTeamOldEnergy + "");
         tvOtherTeamEnergy.setText(otherTeamEnergy + "");
         int addEnergy = (int) data.getMyTeamEngerInfo().getAddEnergy();

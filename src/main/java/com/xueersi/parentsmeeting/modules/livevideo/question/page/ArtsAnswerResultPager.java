@@ -380,7 +380,7 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
         mView.post(new Runnable() {
             @Override
             public void run() {
-                if(mView.getParent()!=null){
+                if(mView.getParent() != null){
                     ((ViewGroup) mView.getParent()).removeView(mView);
                 }
             }

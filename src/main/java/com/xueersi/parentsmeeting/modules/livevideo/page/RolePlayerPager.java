@@ -29,13 +29,10 @@ import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
-import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.speech.SpeechConfig;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
-import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -1067,9 +1064,9 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
     public void leaveChannel() {
         try {
             if (mWorkerThread != null) {
-                mWorkerThread.leaveChannel(mWorkerThread.getEngineConfig().mChannel, new WorkerThread.OnLevelChannel() {
+                mWorkerThread.leaveChannel(mWorkerThread.getEngineConfig().mChannel, new WorkerThread.OnLeaveChannel() {
                     @Override
-                    public void onLevelChannel(int leaveChannel) {
+                    public void onLeaveChannel(int leaveChannel) {
                         StableLogHashMap logHashMap = new StableLogHashMap("getLeaveChannel");
                         logHashMap.put("status", (leaveChannel == 0 ? "1" : "0"));
                         if (leaveChannel != 0) {

@@ -46,12 +46,11 @@
     <color name="COLOR_FFF6DC">#FFF6DC</color>
 
     <color name="COLOR_FFDB5C">#FFDB5C</color>
-
+    <color name="COLOR_6C0E00">#6C0E00</color>
     <!--半身直播 语文颜色资源-->
     <color name="COLOR_EEF7C4">#EEF7C4</color>
     <color name="COLOR_40621F">#40621F</color>
     <color name="COLOR_CCFFFFFF">#CCFFFFFF</color>
-
 
 
     <color name="COLOR_D5AF68">#D5AF68</color>
@@ -66,17 +65,34 @@
     <color name="COLOR_00867F">#00867F</color>
     <color name="COLOR_005B56">#005B56</color>
     <color name="COLOR_005952">#005952</color>
+    <color name="COLOR_FF6326">#FF6326</color>
     <color name="COLOR_172C06">#172C06</color>
     <color name="COLOR_FEFFFF">#FEFFFF</color>
     <color name="COLOR_405D27">#405D27</color>
     <color name="COLOR_F0A61B">#F0A61B</color>
     <color name="COLOR_008B97">#008B97</color>
     <color name="COLOR_FFD93D">#FFD93D</color>
+    <color name="COLOR_C3DAFF">#C3DAFF</color>
+    <color name="COLOR_FFB400">#FFB400</color>
+    <color name="COLOR_3C000000">#3C000000</color>
+    <color name="COLOR_66000000">#66000000</color>
+    <color name="COLOR_47827E">#47827E</color>
+    <color name="COLOR_179EAA">#179EAA</color>
+    <color name="COLOR_4DFFFFFF">#4DFFFFFF</color>
+    <color name="COLOR_E63A2924">#E63A2924</color>
+    <color name="COLOR_33FFFFFF">#33FFFFFF</color>
+    <color name="COLOR_F13232">#F13232</color>
+    <color name="COLOR_9BC1FF">#9BC1FF</color>
+    <color name="COLOR_E62B1D1A">#E62B1D1A</color>
+    <color name="COLOR_0096EF">#0096EF</color>
+    <color name="COLOR_5A3A13">#5A3A13</color>
+    <color name="COLOR_7D553F">#7D553F</color>
+    <color name="COLOR_61B2F1">#61B2F1</color>
+    <color name="COLOR_87FFFFFF">#87FFFFFF</color>
+    <color name="COLOR_99FFFFFF">#99FFFFFF</color>
 
     <color name="COLOR_9A6440">#9A6440</color>
     <color name="COLOR_039ECE">#039ECE</color>
-
-    <color name="COLOR_47827E">#47827E</color>
     <color name="COLOR_B2000000">#B2000000</color>
     <color name="COLOR_FF8C8080">#FF8C8080</color>
     <color name="COLOR_FFFFFEFE">#FFFFFEFE</color>
@@ -85,7 +101,12 @@
     <color name="COLOR_FF8F4D26">#FF8F4D26</color>
     <color name="COLOR_FFBC7D57">#FFBC7D57</color>
     <color name="COLOR_FF8EBAA2">#FF8EBAA2</color>
+    <color name="COLOR_FF755942">#FF755942</color>
+    <color name="COLOR_FF9D7F66">#FF9D7F66</color>
+
     <color name="COLOR_FFFFFEFF">#FFFFFEFF</color>
     <color name="COLOR_14FFFFFF">#14FFFFFF</color>
     <color name="COLOR_28FFFFFF">#28FFFFFF</color>
+    <color name="COLOR_19FFFFFF">#19FFFFFF</color>
+    <color name="COLOR_202020">#202020</color>
 </resources>

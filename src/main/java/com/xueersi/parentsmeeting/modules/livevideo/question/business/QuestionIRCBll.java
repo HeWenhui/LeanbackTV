@@ -17,6 +17,7 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.lib.framework.utils.string.Base64;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
@@ -47,6 +48,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsPSEAnswerR
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechResultPager;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -78,6 +80,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
 
     private List<String> questiongtype;
+
+    private boolean change = false;
 
     public QuestionIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -251,14 +255,19 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
         /**新版文科课件平台 Topic**/
+        Loger.e(Tag, "=======>onTopic:" + jsonObject);
         if (isNewArtsH5Courseware(jsonObject)) {
             try {
+                if(change){
+                    LiveVideoConfig.isNewArts = false;
+                }
                 String onlineTechStatus = "";
                 JSONObject onlineJobj = jsonObject.optJSONObject("coursewareOnlineTech");
                 if (onlineJobj != null && "on".equals(onlineJobj.optString("status"))) {
                     JSONObject onlineTechObj = jsonObject.getJSONObject("coursewareOnlineTech");
                     if (!"{}".equals(onlineTechObj.toString())) {
                         VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                        LiveVideoConfig.isNewArts = true;
                         videoQuestionLiveEntity.setNewArtsCourseware(true);
                         String status = onlineTechObj.optString("status");
                         if ("on".equals(status)) {
@@ -448,7 +457,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
             }
         }
-
+        Loger.e(Tag, "=======>onTopic:" + "isNewArts:" + LiveVideoConfig.isNewArts);
     }
 
     private void enterLiveRplayAfterTeacherRead(VideoQuestionLiveEntity videoQuestionLiveEntity) {
@@ -476,7 +485,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
      * @return
      */
     private boolean isNewArtsH5Courseware(JSONObject jsonObject) {
-        return jsonObject.has("coursewareH5") || jsonObject.has("coursewareOnlineTech");
+        return (jsonObject.has("coursewareH5") || jsonObject.has("coursewareOnlineTech"));
     }
 
 
@@ -486,6 +495,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         switch (type) {
             case XESCODE.SENDQUESTION: {
                 logger.i("onNotice SENDQUESTION ");
+                change = true;
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                 videoQuestionLiveEntity.type = object.optString("ptype");
                 videoQuestionLiveEntity.id = object.optString("id");
@@ -542,6 +552,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             break;
             case XESCODE.ARTS_SEND_QUESTION: {
                 logger.i("onNotice ARTS_SEND_QUESTION");
+                change = false;
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                 videoQuestionLiveEntity.gold = object.optDouble("gold");
                 videoQuestionLiveEntity.id = getIdStr(object.optJSONArray("id"));
@@ -617,6 +628,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 logger.i("onNotice ARTS_STOP_QUESTION");
                 mGetInfo.getLiveTopic().setVideoQuestionLiveEntity(null);
                 String ptype = object.optString("ptype");
+
                 String package_socurce = object.optString("package_socurce");
                 if (mQuestionAction != null) {
                     try {
@@ -712,6 +724,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 .append("&testIds=").append(testIds).append("&isPlayBack=").append(isPlayback)
                 .append("&stuCouId=").append(mLiveBll.getStuCouId()).append("&stuId=").append(mGetInfo
                 .getStuId())
+                .append("&xesrfh=").append(AppBll.getInstance().getUserRfh())
                 .append("&cookie=").append(AppBll.getInstance().getUserToken())
                 .append("&stuClientPath=").append(falseStr)
                 .append("&fontDir=").append(falseStr);
@@ -735,6 +748,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 .append("&testId=").append(id).append("&isPlayBack=").append(isPlayback)
                 .append("&stuCouId=").append(mLiveBll.getStuCouId()).append("&stuId=").append(mGetInfo
                 .getStuId())
+                .append("&xesrfh=").append(AppBll.getInstance().getUserRfh())
                 .append("&cookie=").append(AppBll.getInstance().getUserToken());
         return sb.toString();
     }

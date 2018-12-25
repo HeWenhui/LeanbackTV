@@ -516,6 +516,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         if (voiceAnswerPager != null) {
             if (voiceAnswerPager.getBaseVideoQuestionEntity().getvQuestionID().equals(videoQuestionLiveEntity
                     .getvQuestionID())) {
+                logToFile.d("showVoiceAnswer:id=" + videoQuestionLiveEntity.id);
                 return;
             } else {
                 voiceAnswerPager.setEnd();
@@ -559,6 +560,8 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 voiceAnswerPager.setAudioRequest();
             }
         }
+        bottomContent.requestLayout();
+        bottomContent.invalidate();
     }
 
     private void stopVoiceAnswerPager() {
@@ -630,7 +633,9 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     /**
      * 创建互动题作答，抢红包结果提示PopupWindow
      */
-    public void initQuestionAnswerReslut(View popupWindow_view, boolean autodisMiss) {
+    public void initQuestionAnswerReslut(final View popupWindow_view, boolean autodisMiss) {
+        bottomContent.removeView(rlQuestionResContent);
+        bottomContent.addView(rlQuestionResContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         rlQuestionResContent.addView(popupWindow_view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         popupWindow_view.setOnClickListener(new View.OnClickListener() {
@@ -723,6 +728,21 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     @Override
     public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
         liveAndBackDebug.umsAgentDebugPv(eventId, mData);
+    }
+
+    @Override
+    public void umsAgentDebugSys(String eventId, StableLogHashMap stableLogHashMap) {
+
+    }
+
+    @Override
+    public void umsAgentDebugInter(String eventId, StableLogHashMap stableLogHashMap) {
+
+    }
+
+    @Override
+    public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
+
     }
 
     @Override
@@ -1185,7 +1205,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
      * 试题隐藏显示
      *
      * @param videoQuestionLiveEntity
-     * @param isShow                  true显示
+     * @param isShow true显示
      * @param method
      */
     private void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isShow, String method) {

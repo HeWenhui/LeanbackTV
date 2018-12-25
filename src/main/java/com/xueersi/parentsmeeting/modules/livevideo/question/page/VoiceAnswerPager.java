@@ -91,18 +91,18 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                             String type, QuestionSwitch questionSwitch) {
         super(context);
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
-        this.mDetail = (VideoQuestionLiveEntity)baseVideoQuestionEntity;
+        this.mDetail = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
         this.questionSwitch = questionSwitch;
         this.type = type;
         this.assess_ref = assess_ref;
-        if(LiveVideoConfig.isNewArts){
+        if (LiveVideoConfig.isNewArts) {
             if (LocalCourseConfig.QUESTION_TYPE_SELECT_VOICE.equals(mDetail.getVoiceType()) || LocalCourseConfig.QUESTION_TYPE_SELECT_H5VOICE.equals(mDetail.getVoiceType())) {
                 try {
                     answer = assess_ref.getJSONArray("answer").getString(0);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            } else if(LocalCourseConfig.QUESTION_TYPE_SELECT_VOICE.equals(type) || LocalCourseConfig.QUESTION_TYPE_SELECT_H5VOICE.equals(type)){
+            } else if (LocalCourseConfig.QUESTION_TYPE_SELECT_VOICE.equals(type) || LocalCourseConfig.QUESTION_TYPE_SELECT_H5VOICE.equals(type)) {
                 try {
                     answer = assess_ref.getJSONArray("answer").getString(0);
                 } catch (JSONException e) {
@@ -116,7 +116,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                     e.printStackTrace();
                 }
             }
-        }else{
+        } else {
             if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
                 try {
                     answer = assess_ref.getJSONArray("answer").getString(0);
@@ -132,7 +132,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                 }
             }
         }
-
+        mLogtf.d("VoiceAnswerPager:answer=" + answer);
         initListener();
         initData();
     }
@@ -149,7 +149,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
 
     @Override
     public void setAudioRequest() {
-        logger.d("setAudioRequest:mIse=" + (mIse == null));
+        mLogtf.d("setAudioRequest:mIse=" + (mIse == null));
         mView.post(new Runnable() {
             @Override
             public void run() {
@@ -184,6 +184,19 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
         vwvSpeectevalWave.setBackColor(Color.TRANSPARENT);
         tvVoiceansSwitch = (TextView) view.findViewById(R.id.tv_livevideo_voiceans_switch);
 //        tvSpeectevalTip.setText("语音输入有点小问题，\n先手动答题哦（1131)");
+        view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            long before;
+
+            @Override
+            public void onViewAttachedToWindow(View view) {
+                before = System.currentTimeMillis();
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View view) {
+                mLogtf.d("onViewDetachedFromWindow:time=" + (System.currentTimeMillis() - before));
+            }
+        });
         return view;
     }
 

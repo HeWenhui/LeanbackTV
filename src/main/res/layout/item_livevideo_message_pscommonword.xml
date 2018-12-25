@@ -15,7 +15,7 @@
         android:textSize="13sp"/>
 
     <ImageView
-        android:id="@+id/iv_divider"
+        android:id="@id/iv_divider"
         android:layout_marginLeft="6dp"
         android:layout_marginRight="6dp"
         android:layout_alignParentBottom="true"
