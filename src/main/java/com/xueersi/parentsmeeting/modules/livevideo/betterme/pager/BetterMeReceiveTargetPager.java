@@ -12,6 +12,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnPagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
 
 /**
@@ -22,7 +23,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEn
  */
 public class BetterMeReceiveTargetPager extends BasePager {
     StuSegmentEntity mStuSegmentEntity;
-    AimRealTimeValEntity mAimRealTimeValEntity;
+    BetterMeEntity mBetterMeEntity;
     /**
      * 目标的类型
      */
@@ -69,10 +70,10 @@ public class BetterMeReceiveTargetPager extends BasePager {
      */
     private LinearLayout llReveivetarNextLevel;
 
-    public BetterMeReceiveTargetPager(StuSegmentEntity stuSegmentEntity, AimRealTimeValEntity aimRealTimeValEntity, Context context, OnPagerClose onPagerClose) {
+    public BetterMeReceiveTargetPager(StuSegmentEntity stuSegmentEntity, BetterMeEntity betterMeEntity, Context context, OnPagerClose onPagerClose) {
         super(context);
         this.mStuSegmentEntity = stuSegmentEntity;
-        this.mAimRealTimeValEntity = aimRealTimeValEntity;
+        this.mBetterMeEntity = mBetterMeEntity;
         this.mOnpagerClose = onPagerClose;
         initData();
         initListener();
@@ -101,14 +102,14 @@ public class BetterMeReceiveTargetPager extends BasePager {
         if (mCountDownTimer != null) {
             mCountDownTimer.start();
         }
-        if (BetterMeConfig.TYPE_CORRECTRATE.equals(mAimRealTimeValEntity.getType())) {
+        if (BetterMeConfig.TYPE_CORRECTRATE.equals(mBetterMeEntity.getAimType())) {
             tvReceiveTarType.setText(BetterMeConfig.CORRECTRATE);
-        } else if (BetterMeConfig.TYPE_PARTICIPATERATE.equals(mAimRealTimeValEntity.getType())) {
+        } else if (BetterMeConfig.TYPE_PARTICIPATERATE.equals(mBetterMeEntity.getAimType())) {
             tvReceiveTarType.setText(BetterMeConfig.PARTICIPATERATE);
-        } else if (BetterMeConfig.TYPE_TALKTIME.equals(mAimRealTimeValEntity.getType())) {
+        } else if (BetterMeConfig.TYPE_TALKTIME.equals(mBetterMeEntity.getAimType())) {
             tvReceiveTarType.setText(BetterMeConfig.TALKTIME);
         }
-        tvReceiveTarValue.setText(mAimRealTimeValEntity.getRealTimeVal());
+        tvReceiveTarValue.setText(mBetterMeEntity.getAimValue());
 
         tvReceiveTarCurrentLevel.setText(mStuSegmentEntity.getSegment() + mStuSegmentEntity.getStar() + "星");
         tvReceiveTarUpdateTips.setText("还需完成" + mStuSegmentEntity.getAimNumber() + "场目标可升级");

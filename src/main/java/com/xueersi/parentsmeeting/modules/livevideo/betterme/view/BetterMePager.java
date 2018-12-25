@@ -14,6 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeContract;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.OnPagerClose;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuAimResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.pager.BetterMeCompleteTargetPager;
@@ -143,7 +144,7 @@ public class BetterMePager implements BetterMeContract.BetterMeView, OnPagerClos
      * 收到本场小目标
      */
     @Override
-    public void showReceiveTargetPager(StuSegmentEntity stuSegmentEntity, AimRealTimeValEntity aimRealTimeValEntity) {
+    public void showReceiveTargetPager(StuSegmentEntity stuSegmentEntity, BetterMeEntity betterMeEntity) {
         if (rlBetterMeContent == null) {
             rlBetterMeContent = new RelativeLayout(mContext);
             if (mRootView != null) {
@@ -151,7 +152,7 @@ public class BetterMePager implements BetterMeContract.BetterMeView, OnPagerClos
                         ViewGroup.LayoutParams.MATCH_PARENT));
             }
         }
-        rlBetterMeContent.addView(new BetterMeReceiveTargetPager(stuSegmentEntity, aimRealTimeValEntity, mContext, this).getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
+        rlBetterMeContent.addView(new BetterMeReceiveTargetPager(stuSegmentEntity, betterMeEntity, mContext, this).getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     }
 

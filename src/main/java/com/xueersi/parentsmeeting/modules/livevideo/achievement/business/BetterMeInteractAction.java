@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.achievement.business;
 
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 
 /**
  * 英语小目标 互动
@@ -10,5 +11,5 @@ import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeV
  */
 public interface BetterMeInteractAction {
     void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity);
-    void onReceiveBetterMe(AimRealTimeValEntity aimRealTimeValEntity);
+    void onReceiveBetterMe(BetterMeEntity betterMeEntity);
 }

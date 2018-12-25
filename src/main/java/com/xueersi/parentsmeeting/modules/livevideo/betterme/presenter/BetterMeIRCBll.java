@@ -6,6 +6,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeContract;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuAimResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMePager;
@@ -27,7 +28,7 @@ import org.json.JSONObject;
 public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAction, BetterMeContract.BetterMePresenter {
     BetterMeContract.BetterMeView mBetterMeView;
     StuSegmentEntity mStuSegmentEntity;
-    AimRealTimeValEntity mAimRealTimeValEntity;
+    BetterMeEntity mBetterMeEntity;
     StuAimResultEntity mStuAimResultEntity;
 
     public BetterMeIRCBll(Activity context, LiveBll2 liveBll) {
@@ -67,10 +68,10 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.i("getStuSegment:onPmSuccess():json=" + responseEntity.getJsonObject());
                 mStuSegmentEntity = getHttpResponseParser().parseStuSegmentInfo(responseEntity);
-                if (mStuSegmentEntity != null && mAimRealTimeValEntity != null) {
-                    mBetterMeView.showReceiveTargetPager(mStuSegmentEntity, mAimRealTimeValEntity);
+                if (mStuSegmentEntity != null && mBetterMeEntity != null) {
+                    mBetterMeView.showReceiveTargetPager(mStuSegmentEntity, mBetterMeEntity);
                     mStuSegmentEntity = null;
-                    mAimRealTimeValEntity = null;
+                    mBetterMeEntity = null;
                 }
             }
         });
@@ -87,18 +88,18 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.i("getBetterMe:onPmSuccess():json=" + responseEntity.getJsonObject());
-                mAimRealTimeValEntity = getHttpResponseParser().parseBetterMeInfo(responseEntity);
-                if (mStuSegmentEntity != null && mAimRealTimeValEntity != null) {
-                    mBetterMeView.showReceiveTargetPager(mStuSegmentEntity, mAimRealTimeValEntity);
+                mBetterMeEntity = getHttpResponseParser().parseBetterMeInfo(responseEntity);
+                if (mStuSegmentEntity != null && mBetterMeEntity != null) {
+                    mBetterMeView.showReceiveTargetPager(mStuSegmentEntity, mBetterMeEntity);
                     mStuSegmentEntity = null;
-                    mAimRealTimeValEntity = null;
+                    mBetterMeEntity = null;
                 }
             }
         });
     }
 
     /**
-     * 实时获取学生目标完成度
+     * 获取小目标结果
      */
     @Override
     public void getStuAimResult() {

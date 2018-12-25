@@ -11,6 +11,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.page.EnAchievePager;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
@@ -166,14 +167,16 @@ public class LiveAchievementEngBll implements StarInteractAction,BetterMeInterac
     }
 
     @Override
-    public void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity) {
+    public void onReceiveBetterMe(BetterMeEntity betterMeEntity) {
         if (enAchievePager != null) {
-            enAchievePager.onBetterMeUpdate(aimRealTimeValEntity);
+            enAchievePager.onReceiveBetterMe(betterMeEntity);
         }
     }
 
     @Override
-    public void onReceiveBetterMe(AimRealTimeValEntity aimRealTimeValEntity) {
-
+    public void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity) {
+        if (enAchievePager != null) {
+            enAchievePager.onBetterMeUpdate(aimRealTimeValEntity);
+        }
     }
 }

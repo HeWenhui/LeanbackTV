@@ -11,6 +11,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuAimResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
@@ -2033,13 +2034,13 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @param responseEntity
      * @return
      */
-    public AimRealTimeValEntity parseBetterMeInfo(ResponseEntity responseEntity) {
+    public BetterMeEntity parseBetterMeInfo(ResponseEntity responseEntity) {
         try {
-            AimRealTimeValEntity aimRealTimeValEntity = new AimRealTimeValEntity();
+            BetterMeEntity betterMeEntity = new BetterMeEntity();
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-            aimRealTimeValEntity.setType(jsonObject.getString("aimType"));
-            aimRealTimeValEntity.setRealTimeVal(jsonObject.getString("aimValue"));
-            return  aimRealTimeValEntity;
+            betterMeEntity.setAimType(jsonObject.getString("aimType"));
+            betterMeEntity.setAimValue(jsonObject.getString("aimValue"));
+            return  betterMeEntity;
         } catch (Exception e) {
             e.printStackTrace();
             MobAgent.httpResponseParserError(TAG, "parseBetterMeInfo", e.getMessage());

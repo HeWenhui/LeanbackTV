@@ -6,7 +6,14 @@
     android:clickable="true"
     android:focusable="true">
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/animation_view"
+        android:layout_width="564dp"
+        android:layout_height="375dp"
+        android:layout_gravity="center" />
+
     <LinearLayout
+        android:id="@+id/ll_livevideo_betterme_introduction_content"
         android:layout_width="564dp"
         android:layout_height="375dp"
         android:layout_gravity="center"
@@ -14,7 +21,8 @@
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:paddingLeft="10dp"
-        android:paddingTop="45dp">
+        android:paddingTop="45dp"
+        android:visibility="gone">
 
         <ImageView
             android:layout_width="162dp"
@@ -61,5 +69,4 @@
             tools:text="知道啦" />
 
     </LinearLayout>
-
 </FrameLayout>

@@ -21,6 +21,7 @@ import com.xueersi.common.util.LoadSoCallBack;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -785,9 +786,9 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.i("getBetterMe:onPmSuccess():json=" + responseEntity.getJsonObject());
-                AimRealTimeValEntity aimRealTimeValEntity = getHttpResponseParser().parseAimRealTimeValInfo(responseEntity);
-                if (aimRealTimeValEntity != null) {
-                    betterMeInteractAction.onReceiveBetterMe(aimRealTimeValEntity);
+                BetterMeEntity betterMeEntity = getHttpResponseParser().parseBetterMeInfo(responseEntity);
+                if (betterMeEntity != null) {
+                    betterMeInteractAction.onReceiveBetterMe(betterMeEntity);
                 }
             }
         });

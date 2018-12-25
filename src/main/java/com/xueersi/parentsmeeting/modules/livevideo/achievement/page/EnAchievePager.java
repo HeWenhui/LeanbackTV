@@ -28,6 +28,7 @@ import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.config.BetterMeConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
@@ -69,6 +70,8 @@ public class EnAchievePager extends LiveBasePager {
     private TextView tvAchiveAimValue;
     private ProgressBar pgAchiveAim;
     private TextView tvAchiveAimTips;
+
+    private BetterMeEntity mBetterMeEntity;
 
     public EnAchievePager(Context context, RelativeLayout relativeLayout, LiveGetInfo mLiveGetInfo) {
         super(context, false);
@@ -167,30 +170,6 @@ public class EnAchievePager extends LiveBasePager {
         tv_livevideo_en_achive_pk_energy_my.setText("" + enpkEnergy.myTeam);
         tv_livevideo_en_achive_pk_energy_other = pkView.findViewById(R.id.tv_livevideo_en_achive_pk_energy_other);
         tv_livevideo_en_achive_pk_energy_other.setText("" + enpkEnergy.opTeam);
-    }
-
-    /**
-     * 小目标更新
-     *
-     * @author zhangyuansun
-     */
-    public void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity) {
-        //隐藏没有小目标时的默认视图
-        if (tvAchiveAimEmpty != null) {
-            tvAchiveAimEmpty.setVisibility(View.GONE);
-        }
-        //显示小目标的内容
-        if (rlAchiveAimContent != null) {
-            rlAchiveAimContent.setVisibility(View.VISIBLE);
-        }
-        if (BetterMeConfig.TYPE_CORRECTRATE.equals(aimRealTimeValEntity.getType())) {
-            tvAchiveAimType.setText(BetterMeConfig.CORRECTRATE);
-        } else if (BetterMeConfig.TYPE_PARTICIPATERATE.equals(aimRealTimeValEntity.getType())) {
-            tvAchiveAimType.setText(BetterMeConfig.PARTICIPATERATE);
-        } else if (BetterMeConfig.TYPE_TALKTIME.equals(aimRealTimeValEntity.getType())) {
-            tvAchiveAimType.setText(BetterMeConfig.TALKTIME);
-        }
-        tvAchiveAimValue.setText(aimRealTimeValEntity.getRealTimeVal());
     }
 
     @Override
@@ -370,6 +349,45 @@ public class EnAchievePager extends LiveBasePager {
         tvAchiveNumStar.setText("" + starCount);
     }
 
+    /**
+     * 本场小目标
+     *
+     * @author zhangyuansun
+     */
+    public void onReceiveBetterMe(BetterMeEntity betterMeEntity) {
+        this.mBetterMeEntity = betterMeEntity;
+    }
+
+    /**
+     * 小目标更新
+     *
+     * @author zhangyuansun
+     */
+    public void onBetterMeUpdate(AimRealTimeValEntity aimRealTimeValEntity) {
+        if (mBetterMeEntity == null) {
+            return;
+        }
+        //隐藏没有小目标时的默认视图
+        if (tvAchiveAimEmpty != null) {
+            tvAchiveAimEmpty.setVisibility(View.GONE);
+        }
+        //显示小目标的内容
+        if (rlAchiveAimContent != null) {
+            rlAchiveAimContent.setVisibility(View.VISIBLE);
+        }
+        if (BetterMeConfig.TYPE_CORRECTRATE.equals(aimRealTimeValEntity.getType())) {
+            tvAchiveAimType.setText(BetterMeConfig.CORRECTRATE);
+        } else if (BetterMeConfig.TYPE_PARTICIPATERATE.equals(aimRealTimeValEntity.getType())) {
+            tvAchiveAimType.setText(BetterMeConfig.PARTICIPATERATE);
+        } else if (BetterMeConfig.TYPE_TALKTIME.equals(aimRealTimeValEntity.getType())) {
+            tvAchiveAimType.setText(BetterMeConfig.TALKTIME);
+        }
+        tvAchiveAimValue.setText("目标" + mBetterMeEntity.getAimValue());
+        float realTimeVal = Float.parseFloat(aimRealTimeValEntity.getRealTimeVal());
+        float aimVal = Float.parseFloat(mBetterMeEntity.getAimValue());
+        int progress = (int) (realTimeVal / aimVal * 100);
+        setEngAimPro(progress);
+    }
 
     /**
      * 设置小目标进度
@@ -394,7 +412,7 @@ public class EnAchievePager extends LiveBasePager {
     }
 
     /**
-     * 设置提示框和进度条对齐
+     * 小提示和进度条对齐
      *
      * @author zhangyuansun
      */
