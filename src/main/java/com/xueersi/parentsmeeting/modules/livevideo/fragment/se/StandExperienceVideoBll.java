@@ -172,9 +172,10 @@ public class StandExperienceVideoBll {
 
     public void onNetWorkChange(int netWorkType) {
         if (netWorkType == NetWorkHelper.NO_NETWORK) {
+            boolean isInitialized = vPlayer.isInitialized();
             vPlayer.stop();
             liveBackPlayVideoFragment.resultFailed(0, 0);
-            if (livePlayLog != null) {
+            if (isInitialized && livePlayLog != null) {
                 livePlayLog.onOpenFailed(0, AvformatOpenInputError.ENETDOWN.getNum());
             }
         }
@@ -188,7 +189,6 @@ public class StandExperienceVideoBll {
         @Override
         public void onOpenFailed(int arg1, int arg2) {
             logger.d("onOpenFailed:index=" + index + ",arg2=" + arg2);
-            super.onOpenFailed(arg1, arg2);
             if (livePlayLog != null) {
                 livePlayLog.onOpenFailed(arg1, arg2);
             }

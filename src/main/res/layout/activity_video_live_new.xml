@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@id/rl_course_video_contentview"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -38,6 +40,7 @@
                 android:padding="3dp" />
 
             <LinearLayout
+                android:id="@id/layout_livevideo_switch_flow_logo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -87,6 +90,7 @@
                     android:visibility="gone" />
 
             </LinearLayout>
+
         </RelativeLayout>
 
         <!-- 老师不再直播间 -->
@@ -108,6 +112,37 @@
             android:id="@id/rl_course_video_live_controller_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"></RelativeLayout>
+        <!--切流是刷新失败，重试-->
+        <android.support.constraint.ConstraintLayout
+            android:id="@id/layout_livevideot_triple_screen_fail_retry"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/COLOR_66000000"
+            android:visibility="gone">
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@id/fzcy_livevideo_switch_flow_retry_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:textColor="@color/COLOR_FFFFFF"
+                android:textSize="17sp"
+                app:layout_constraintBottom_toTopOf="@id/btn_livevideo_switch_flow_retry_btn"
+                app:layout_constraintLeft_toLeftOf="@id/btn_livevideo_switch_flow_retry_btn"
+                app:layout_constraintRight_toRightOf="@id/btn_livevideo_switch_flow_retry_btn"
+                tools:text="fafa" />
+
+            <Button
+                android:id="@id/btn_livevideo_switch_flow_retry_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:background="@drawable/selector_livevideo_switch_flow_retry"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
 
         <Button
             android:id="@id/bt_course_video_livetimeout"
@@ -123,8 +158,8 @@
             android:id="@id/rl_course_video_live_praiselist_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"></RelativeLayout>
         <!-- 聊天下层 -->
         <RelativeLayout

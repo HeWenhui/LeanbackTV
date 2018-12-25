@@ -168,6 +168,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                         String openNewMic = newLinkMic.optString("openNewMic", "off");
                         String room = newLinkMic.getString("room");
                         int micType = newLinkMic.optInt("type", 0);
+                        String linkmicid = newLinkMic.optString("linkmicid");
                         ArrayList<ClassmateEntity> classmateEntities = new ArrayList<>();
                         if ("on".equals(openNewMic)) {
                             JSONArray students = newLinkMic.getJSONArray("students");
@@ -179,8 +180,9 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                                 classmateEntities.add(classmateEntity);
                             }
                         }
+                        startLinkmicid = linkmicid;
                         voiceChatStatus = openNewMic;
-                        videoChatAction.onJoin(openNewMic, room, true, classmateEntities, "t", micType);
+                        videoChatAction.onJoin(openNewMic, room, true, classmateEntities, "t", micType, linkmicid);
                     }
                 } else {
                     JSONObject room_2 = jsonObject.getJSONObject("room_2");
@@ -190,6 +192,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                         String openNewMic = newLinkMic.optString("openNewMic", "off");
                         String room = newLinkMic.getString("room");
                         int micType = newLinkMic.optInt("type", 0);
+                        String linkmicid = newLinkMic.optString("linkmicid");
                         ArrayList<ClassmateEntity> classmateEntities = new ArrayList<>();
                         if ("on".equals(openNewMic)) {
                             JSONArray students = newLinkMic.getJSONArray("students");
@@ -201,8 +204,9 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                                 classmateEntities.add(classmateEntity);
                             }
                         }
+                        startLinkmicid = linkmicid;
                         voiceChatStatus = openNewMic;
-                        videoChatAction.onJoin(openNewMic, room, true, classmateEntities, "f", micType);
+                        videoChatAction.onJoin(openNewMic, room, true, classmateEntities, "f", micType, linkmicid);
                     }
                 }
                 if (!oldVoiceChatStatus.equals(voiceChatStatus)) {
@@ -217,6 +221,9 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
         }
     }
 
+    private String linkMicNonce = "";
+    private String startLinkmicid = "";
+
     @Override
     public void onNotice(String sourceNick, String target, JSONObject object, int type) {
         String msg = "onNotice";
@@ -230,15 +237,23 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                         LiveTopic.MODE_TRANING.equals(mLiveBll.getMode())) {
                     String status = object.optString("status", "off");
                     voiceChatStatus = status;
+                    String linkmicid = object.optString("linkmicid");
                     if (videoChatAction != null) {
                         msg += "RAISE_HAND:status=" + status;
-                        videoChatAction.raisehand(status, room, from, object.optString("nonce"), micType, 1);
+                        videoChatAction.raisehand(status, room, from, object.optString("nonce"), micType, linkmicid, 1);
                     }
                     for (int i = 0; i < chatStatusChanges.size(); i++) {
                         chatStatusChanges.get(i).onVideoChatStatusChange(status);
                     }
+                    if ("on".equals(status)) {
+                        linkMicNonce = object.optString("nonce");
+                        startLinkmicid = linkmicid;
+                        VideoAudioChatLog.getRaiseHandMsgSno2(mLiveBll, micType == 0 ? "audio" : "video", linkmicid, linkMicNonce);
+                    } else {
+                        String nonce = object.optString("nonce");
+                        VideoAudioChatLog.getCloseMsgSno12(mLiveBll, startLinkmicid, micType == 0 ? "audio" : "video", nonce);
+                    }
                 }
-                VideoAudioChatLog.getRaiseHandMsgSno2(mLiveBll, micType == 0 ? "audio" : "video", object.optString("nonce"));
             }
             break;
             case XESCODE.AgoraChat.RAISE_HAND_COUNT: {
@@ -258,34 +273,34 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                     String from = object.optString("from", "t");
                     String status = object.getString("status");
                     String room = object.optString("room");
+                    String nonce = object.optString("nonce");
                     int micType = object.optInt("type", 0);
                     msg += ",STUDY_ONMIC:from=" + from + ",mode=" + mLiveBll.getMode();
                     ArrayList<ClassmateEntity> onmicClassmateEntities = new ArrayList<>();
                     ArrayList<ClassmateEntity> offmicClassmateEntities = new ArrayList<>();
+                    JSONArray offStudents = object.getJSONArray("offmic");
+                    for (int i = 0; i < offStudents.length(); i++) {
+                        ClassmateEntity classmateEntity = new ClassmateEntity();
+                        JSONObject jsonObject = offStudents.getJSONObject(i);
+                        classmateEntity.setId(jsonObject.optString("id"));
+                        classmateEntity.setName(jsonObject.optString("name"));
+                        classmateEntity.setImg(jsonObject.optString("img"));
+                        offmicClassmateEntities.add(classmateEntity);
+                    }
                     if ("on".equals(status)) {
-                        JSONArray students = object.getJSONArray("onmic");
-                        for (int i = 0; i < students.length(); i++) {
+                        JSONArray onStudents = object.getJSONArray("onmic");
+                        for (int i = 0; i < onStudents.length(); i++) {
                             ClassmateEntity classmateEntity = new ClassmateEntity();
-                            JSONObject jsonObject = students.getJSONObject(i);
+                            JSONObject jsonObject = onStudents.getJSONObject(i);
                             classmateEntity.setId(jsonObject.optString("id"));
                             classmateEntity.setName(jsonObject.optString("name"));
                             classmateEntity.setImg(jsonObject.optString("img"));
                             classmateEntity.setPlace(jsonObject.optInt("place"));
                             onmicClassmateEntities.add(classmateEntity);
                         }
-                    } else {
-                        JSONArray students = object.getJSONArray("offmic");
-                        for (int i = 0; i < students.length(); i++) {
-                            ClassmateEntity classmateEntity = new ClassmateEntity();
-                            JSONObject jsonObject = students.getJSONObject(i);
-                            classmateEntity.setId(jsonObject.optString("id"));
-                            classmateEntity.setName(jsonObject.optString("name"));
-                            classmateEntity.setImg(jsonObject.optString("img"));
-                            offmicClassmateEntities.add(classmateEntity);
-                        }
                     }
                     if (videoChatAction != null) {
-                        videoChatAction.onStuMic(status, room, onmicClassmateEntities, offmicClassmateEntities, from, 1);
+                        videoChatAction.onStuMic(status, room, onmicClassmateEntities, offmicClassmateEntities, from, 1, nonce);
                     }
                 } catch (Exception e) {
 

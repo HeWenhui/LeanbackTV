@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@id/iv_livevideo_triple_screen_switch_route_success"
+        android:layout_width="430dp"
+        android:layout_height="180dp"
+        android:src="@drawable/bg_livevideo_small_english_raise_hand"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@id/fzcytv_livevideo_triple_screen_switch_route_success_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/COLOR_0096EF"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_livevideo_triple_screen_switch_route_success"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_livevideo_triple_screen_switch_route_success"
+        app:layout_constraintRight_toRightOf="@+id/iv_livevideo_triple_screen_switch_route_success"
+        app:layout_constraintTop_toTopOf="@+id/iv_livevideo_triple_screen_switch_route_success" />
+</android.support.constraint.ConstraintLayout>

@@ -168,7 +168,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="5dp"
                     android:gravity="center"
                     android:visibility="gone">
 
@@ -194,7 +194,6 @@
                         android:id="@id/cb_livevideo_evaluate_main_option_2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
                         android:background="@drawable/selector_livevideo_smallenglish_evaluate_option_item"
                         android:button="@null"
                         android:gravity="center"
@@ -213,7 +212,6 @@
                         android:id="@id/cb_livevideo_evaluate_main_option_3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
                         android:background="@drawable/selector_livevideo_smallenglish_evaluate_option_item"
                         android:button="@null"
                         android:gravity="center"
@@ -233,7 +231,6 @@
                         android:id="@id/cb_livevideo_evaluate_main_option_4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
                         android:layout_marginRight="20dp"
                         android:background="@drawable/selector_livevideo_smallenglish_evaluate_option_item"
                         android:button="@null"
@@ -373,7 +370,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="5dp"
                     android:gravity="center"
                     android:visibility="gone">
 
@@ -399,7 +396,6 @@
                         android:id="@id/cb_livevideo_evaluate_tutor_option_2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
                         android:background="@drawable/selector_livevideo_smallenglish_evaluate_option_item"
                         android:button="@null"
                         android:gravity="center"
@@ -417,7 +413,6 @@
                         android:id="@id/cb_livevideo_evaluate_tutor_option_3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
                         android:background="@drawable/selector_livevideo_smallenglish_evaluate_option_item"
                         android:button="@null"
                         android:gravity="center"
@@ -435,7 +430,6 @@
                         android:id="@id/cb_livevideo_evaluate_tutor_option_4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="8dp"
                         android:layout_marginRight="20dp"
                         android:background="@drawable/selector_livevideo_smallenglish_evaluate_option_item"
                         android:button="@null"
@@ -452,11 +446,10 @@
         <RelativeLayout
             android:id="@id/rl_livevideo_evaluate_submit"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_height="44dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="19dp"
-            android:layout_weight="2"
+            android:layout_marginBottom="18dp"
             android:background="@drawable/selector_livevideo_smallenglish_evaluate_teacher_upload">
 
             <ImageView
@@ -500,8 +493,8 @@
                 android:layout_centerHorizontal="true"
                 android:src="@drawable/livevideo_evaluateteacher_ganxie_img_nor" />
 
-            <Button
-                android:id="@id/btn_livevideo_evaluate_tryagain"
+            <RelativeLayout
+                android:id="@id/rl_livevideo_evaluate_tryagain"
                 style="@style/text_font16_ffffff_style"
                 android:layout_below="@id/iv_livevideo_evaluate_submit_result"
                 android:layout_width="wrap_content"
@@ -513,8 +506,8 @@
                 android:id="@+id/iv_livevideo_evaluate_tryagain_loading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignLeft="@id/btn_livevideo_evaluate_tryagain"
-                android:layout_alignBottom="@id/btn_livevideo_evaluate_tryagain"
+                android:layout_alignLeft="@id/rl_livevideo_evaluate_tryagain"
+                android:layout_alignBottom="@id/rl_livevideo_evaluate_tryagain"
                 android:layout_marginLeft="12dp"
                 android:layout_marginBottom="13dp"
                 android:visibility="gone"

@@ -197,7 +197,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
             }
         }
         mNetWorkType = NetWorkHelper.getNetWorkState(mContext);
-        mIRCMessage = new IRCMessage(mContext, mNetWorkType, channel, liveGetInfo.getStuName(), chatRoomUid);
+        mIRCMessage = new IRCMessage(mContext, mNetWorkType, liveGetInfo.getStuName(), chatRoomUid, channel);
         IRCTalkConf ircTalkConf = new IRCTalkConf(mContext, liveGetInfo, LiveVideoConfig.LIVE_TYPE_STAND_EXPERIENCE, mHttpManager,
                 talkConfHosts);
         ircTalkConf.setChatServiceError(new IRCTalkConf.ChatServiceError() {
@@ -345,12 +345,12 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
 
         @Override
         public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String
-                notice) {
+                notice, String channelId) {
             logger.i("=====>onNotice");
         }
 
         @Override
-        public void onTopic(String channel, String topic, String setBy, long date, boolean changed) {
+        public void onTopic(String channel, String topic, String setBy, long date, boolean changed, String channelId) {
             logger.i("=====>onTopic");
 
         }
@@ -378,7 +378,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
         }
 
         @Override
-        public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
+        public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason, String channel) {
 //            Loger.e("ExperiencLvieAvtiv", "=====>onQuit start:" + peopleCount);
 //            peopleCount.set(peopleCount.get() - 1, new Exception(sourceNick));
             if (mLiveMessagePager != null) {

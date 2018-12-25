@@ -169,13 +169,13 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         this.assess_ref = assess_ref;
         this.headUrl = headUrl;
         this.userName = StandLiveTextView.getShortName(userName);
-        if(LiveVideoConfig.isNewArts){
+        if (LiveVideoConfig.isNewArts) {
             try {
                 answer = assess_ref.getJSONArray("answer").getString(0);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }else{
+        } else {
             if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type)) {
                 try {
                     answer = assess_ref.getJSONArray("answer").getString(0);
@@ -191,6 +191,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                 }
             }
         }
+        mLogtf.d("VoiceAnswerPager:answer=" + answer);
         initListener();
         initData();
     }
@@ -202,7 +203,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 
     @Override
     public void setAudioRequest() {
-        logger.d("setAudioRequest:mIse=" + (mIse == null));
+        mLogtf.d("setAudioRequest:mIse=" + (mIse == null));
         mView.post(new Runnable() {
             @Override
             public void run() {
@@ -438,9 +439,11 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
         ivVoiceansSwitch = view.findViewById(R.id.iv_livevideo_voiceans_switch);
 //        tvSpeectevalTip.setText("语音输入有点小问题，\n先手动答题哦（1131)");
         view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            long before;
             @Override
             public void onViewAttachedToWindow(View view) {
                 logger.d("onViewAttachedToWindow");
+                before = System.currentTimeMillis();
             }
 
             @Override
@@ -454,6 +457,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                 if (liveSoundPool != null) {
                     liveSoundPool.release();
                 }
+                mLogtf.d("onViewDetachedFromWindow:time=" + (System.currentTimeMillis() - before));
             }
         });
         return view;

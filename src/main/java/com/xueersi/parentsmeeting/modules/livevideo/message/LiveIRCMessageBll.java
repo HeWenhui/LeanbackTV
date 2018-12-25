@@ -297,6 +297,10 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     @Override
     public void onUserList(String channel, User[] users) {
         String s = "onUserList:channel=" + channel + ",users=" + users.length;
+    /*    Loger.d("___onuserlist:  channel:  "+channel  + "user[]:  "+users.length+"   "+users.toString());
+        for (User user : users){
+            Loger.d("___onuserlist:  users:  "+user.getNick());
+        }*/
         boolean haveMainTeacher = false;//主讲老师
         boolean haveCounteacher = false;//辅导老师
         ArrayList<User> arrayList = new ArrayList<>();

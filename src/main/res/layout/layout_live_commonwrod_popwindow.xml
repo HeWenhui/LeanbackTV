@@ -19,7 +19,7 @@
       android:layout_width="10dp"
       android:layout_height="5dp"
       android:layout_alignRight="@id/lv_livevideo_halfbody_common_word"
-      android:layout_marginRight="18dp"
+      android:layout_marginRight="44dp"
       android:src="@drawable/icon_live_halfbody_arrow_down" />
 
 </RelativeLayout>
