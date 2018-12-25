@@ -1169,7 +1169,6 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 
     @Override
     public void onOpenFailed(int arg1, final int arg2) {
-        super.onOpenFailed(arg1, arg2);
         handler.removeMessages(1);
         final long heartTime;
         if (lastHeartTime == 0) {
@@ -1206,11 +1205,8 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         if (!StringUtils.isEmpty(tid)) {
             finalTid = tid;
         } else {
-            finalTid = temTid;
-            HashMap<String, Object> defaultKey = new HashMap<>();
-            addDefault(defaultKey);
-            defaultKey.put("uri", channelname);
-            CrashReport.postCatchedException(new Exception("" + defaultKey));
+            CrashReport.postCatchedException(new Exception());
+            return;
         }
         liveThreadPoolExecutor.execute(new Runnable() {
             @Override

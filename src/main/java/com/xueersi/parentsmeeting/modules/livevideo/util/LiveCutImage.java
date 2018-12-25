@@ -2,12 +2,15 @@ package com.xueersi.parentsmeeting.modules.livevideo.util;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.view.View;
 
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * 三分屏裁剪
@@ -49,5 +52,24 @@ public class LiveCutImage {
                 }
             }
         }
+    }
+
+    public static Bitmap getViewBitmap(View view, StringBuilder stringBuilder, AtomicBoolean creatBitmap) {
+        view.setDrawingCacheEnabled(true);
+        view.buildDrawingCache();
+        Bitmap bmpScreen = view.getDrawingCache();
+        if (bmpScreen == null) {
+            int width = view.getWidth();
+            int height = view.getHeight();
+            stringBuilder.append(",width=" + width + ",height=" + height);
+            if (width > 0 && height > 0) {
+                Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                Canvas canvas = new Canvas(bitmap);
+                view.draw(canvas);
+                bmpScreen = bitmap;
+                creatBitmap.set(true);
+            }
+        }
+        return bmpScreen;
     }
 }
