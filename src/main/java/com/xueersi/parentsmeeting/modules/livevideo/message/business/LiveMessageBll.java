@@ -368,7 +368,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                 .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         bottomContent.addView(rlLiveMessageContent, params);
 //        bottomContent.bringToFront();
-        baseLiveMediaControllerBottom.bringToFront();
+//        baseLiveMediaControllerBottom.bringToFront();
         String text = null;
         boolean isRegister = false;
         boolean isHaveFlowers = false;
