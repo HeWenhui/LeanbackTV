@@ -1226,6 +1226,6 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
 
     /** 测试notice */
     public void testNotice(String notice) {
-        mIRCcallback.onNotice("", "", "", "", notice);
+        mIRCcallback.onNotice("", "", "", "", notice,"");
     }
 }

@@ -796,7 +796,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 }
             }
         } else if (resultEntity.getErrorNo() == ResultCode.SPEECH_CANCLE) {
-            spStarResult.postDelayed(new Runnable() {
+            handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     if (!isEnd) {

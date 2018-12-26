@@ -83,7 +83,7 @@ public class VideoAudioChatLog {
         logHashMap.put("linkmicid", linkmicid);
         logHashMap.put("mictype", mictype);
         logHashMap.addNonce(nonce).addExY();
-        logHashMap.addSno("6").addStable("1");
+        logHashMap.addSno("9").addStable("1");
         liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap);
     }
 
