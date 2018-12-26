@@ -39,16 +39,6 @@ public class HalfBodyArtsLiveMsgPager extends HalfBodyLiveMessagePager {
     }
 
     @Override
-    protected int getHotwordBtnResId() {
-        return R.drawable.bg_livevideo_message_common;
-    }
-
-    @Override
-    protected int getMsgBtnResId() {
-        return R.drawable.bg_livevideo_message_open;
-    }
-
-    @Override
     protected int getHotWordPopwindLayout(){
         return R.layout.layout_live_commonwrod_popwindow_arts;
     }

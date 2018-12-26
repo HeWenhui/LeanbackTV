@@ -160,15 +160,15 @@ public class TeamPkProgressBar extends View {
                 DEFUALT_INNERBAR_HEIGHT);
         slidHearResId = typedArray.getResourceId(R.styleable.TeamPkProgressBar_sliderHeader, -1);
         sliderBgResId = typedArray.getResourceId(R.styleable.TeamPkProgressBar_sliderHeaderBg, -1);
-        mBorderColor = typedArray.getResourceId(R.styleable.TeamPkProgressBar_border_line_color, Color.BLACK);
-        mProgressColor_start = typedArray.getResourceId(R.styleable.TeamPkProgressBar_progress_color_start, Color
+        mBorderColor = typedArray.getColor(R.styleable.TeamPkProgressBar_border_line_color, Color.BLACK);
+        mProgressColor_start = typedArray.getColor(R.styleable.TeamPkProgressBar_progress_color_start, Color
                 .parseColor(PROGRESS_STARTCOLOR_DEF));
-        mProgressColor_end = typedArray.getResourceId(R.styleable.TeamPkProgressBar_progress_color_end, Color
+        mProgressColor_end = typedArray.getColor(R.styleable.TeamPkProgressBar_progress_color_end, Color
                 .parseColor(PROGRESS_ENDCOLOR_DEF));
 
-        mBgColor_start = typedArray.getResourceId(R.styleable.TeamPkProgressBar_bg_color_start, Color.parseColor
+        mBgColor_start = typedArray.getColor(R.styleable.TeamPkProgressBar_bg_color_start, Color.parseColor
                 (BG_STARTCOLOR_DEF));
-        mBgColor_end = typedArray.getResourceId(R.styleable.TeamPkProgressBar_bg_color_end, Color.parseColor
+        mBgColor_end = typedArray.getColor(R.styleable.TeamPkProgressBar_bg_color_end, Color.parseColor
                 (BG_ENDCOLOR_DEF));
         typedArray.recycle();
         initSlidHeader();

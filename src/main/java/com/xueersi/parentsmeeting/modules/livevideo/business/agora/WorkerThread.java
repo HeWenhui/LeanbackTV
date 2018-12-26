@@ -81,7 +81,7 @@ public class WorkerThread extends Thread {
                 break;
                 case ACTION_WORKER_LEAVE_CHANNEL:
                     Object[] data = (Object[]) msg.obj;
-                    mWorkerThread.leaveChannel((String) data[0], (OnLevelChannel) data[1]);
+                    mWorkerThread.leaveChannel((String) data[0], (OnLeaveChannel) data[1]);
                     break;
                 case ACTION_WORKER_CONFIG_ENGINE:
                     Object[] configData = (Object[]) msg.obj;
@@ -154,8 +154,8 @@ public class WorkerThread extends Thread {
         void onJoinChannel(int joinChannel);
     }
 
-    public interface OnLevelChannel {
-        void onLevelChannel(int leaveChannel);
+    public interface OnLeaveChannel {
+        void onLeaveChannel(int leaveChannel);
     }
 
     /**
@@ -197,19 +197,19 @@ public class WorkerThread extends Thread {
         logger.d("joinChannel " + channel + " " + uid);
     }
 
-    public final void leaveChannel(String channel, OnLevelChannel onLevelChannel) {
+    public final void leaveChannel(String channel, OnLeaveChannel onLeaveChannel) {
         if (Thread.currentThread() != this && mWorkerHandler != null) {
             logger.w("leaveChannel() - worker thread asynchronously " + channel);
             Message envelop = new Message();
             envelop.what = ACTION_WORKER_LEAVE_CHANNEL;
-            envelop.obj = new Object[]{channel, onLevelChannel};
+            envelop.obj = new Object[]{channel, onLeaveChannel};
             mWorkerHandler.sendMessage(envelop);
             return;
         }
 
         if (mRtcEngine != null) {
             int leaveChannel = mRtcEngine.leaveChannel();
-            onLevelChannel.onLevelChannel(leaveChannel);
+            onLeaveChannel.onLeaveChannel(leaveChannel);
         }
 
         disablePreProcessor();

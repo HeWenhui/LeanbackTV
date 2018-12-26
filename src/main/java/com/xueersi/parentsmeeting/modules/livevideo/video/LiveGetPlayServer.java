@@ -14,6 +14,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
@@ -106,6 +107,14 @@ public class LiveGetPlayServer {
 
     private long lastGetPlayServer;
 
+    /**
+     * 1. {@link LiveBll2#onGetInfoSuccess(LiveGetInfo)}
+     * 2. 回调失败走onError之后，{@link #liveGetPlayServer(boolean)}
+     * 3. {@link LiveVideoBll#onModeChange(String, boolean)}
+     *
+     * @param mode
+     * @param modechange
+     */
     public void liveGetPlayServer(final String mode, final boolean modechange) {
         mHandler.removeCallbacks(timeLiveGetPlay);
         if (timeLiveGetPlay.modechange != modechange) {
@@ -130,8 +139,13 @@ public class LiveGetPlayServer {
             }
             mGetInfo.setChannelname(channelname);
         } else {
-            mGetInfo.setChannelname(CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" + mGetInfo.getId() + "_"
-                    + mGetInfo.getTeacherId());
+            if (mGetInfo.ePlanInfo == null){
+                mGetInfo.setChannelname(CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" + mGetInfo.getId() + "_"
+                        + mGetInfo.getTeacherId());
+            }else {
+                mGetInfo.setChannelname(CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" +  mGetInfo.ePlanInfo.ePlanId + "_"
+                        + mGetInfo.ePlanInfo.eTeacherId);
+            }
         }
         if (livePlayLog != null) {
             livePlayLog.setChannelname(mGetInfo.getChannelname());
@@ -176,22 +190,21 @@ public class LiveGetPlayServer {
                 }
                 long now = System.currentTimeMillis();
                 if (now - lastGetPlayServer < 5000) {
-                    postDelayedIfNotFinish(new Runnable() {
-                        @Override
-                        public void run() {
-                            mLogtf.d("liveGetPlayServer:onError retry1");
-                            liveGetPlayServer(modechange);
-                        }
-                    }, 1000);
+                    onLiveFailureRunnable.setModeChange(modechange);
+                    onLiveFailureRunnable.setLogInfo("liveGetPlayServer:onError retry1");
+                    postDelayedIfNotFinish(onLiveFailureRunnable, 1000);
                 } else {
                     lastGetPlayServer = now;
-                    onLiveFailure("直播调度失败", new Runnable() {
-                        @Override
-                        public void run() {
-                            mLogtf.d("liveGetPlayServer:onError retry2");
-                            liveGetPlayServer(modechange);
-                        }
-                    });
+                    onLiveFailureRunnable.setModeChange(modechange);
+                    onLiveFailureRunnable.setLogInfo("liveGetPlayServer:onError retry2");
+                    postDelayedIfNotFinish(onLiveFailureRunnable, 0);
+//                    onLiveFailure("直播调度失败", new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            mLogtf.d("liveGetPlayServer:onError retry2");
+//                            liveGetPlayServer(modechange);
+//                        }
+//                    });
                 }
             }
 
@@ -225,13 +238,15 @@ public class LiveGetPlayServer {
                         }
                     } else {
                         s += ",server=null,result=" + result;
-                        onLiveFailure("直播调度失败", new Runnable() {
-
-                            @Override
-                            public void run() {
-                                liveGetPlayServer(modechange);
-                            }
-                        });
+                        onLiveFailureRunnable.setModeChange(modechange);
+                        postDelayedIfNotFinish(onLiveFailureRunnable, 0);
+//                        onLiveFailure("直播调度失败", new Runnable() {
+//
+//                            @Override
+//                            public void run() {
+//                                liveGetPlayServer(modechange);
+//                            }
+//                        });
                     }
                     mLogtf.d(s);
                 } catch (JSONException e) {
@@ -254,6 +269,50 @@ public class LiveGetPlayServer {
             }
 
         });
+    }
+
+    private OnLiveFailureRunnable onLiveFailureRunnable = new OnLiveFailureRunnable();
+
+    private class OnLiveFailureRunnable implements Runnable {
+
+        private boolean modechange;
+        private String strLogInfo;
+
+        public void setModeChange(boolean modechange) {
+            this.modechange = modechange;
+        }
+
+        private void setLogInfo(String logInfo) {
+            this.strLogInfo = logInfo;
+        }
+
+        @Override
+        public void run() {
+//           (new Runnable() {
+//                @Override
+//                public void run() {
+            mLogtf.d(strLogInfo);
+            liveGetPlayServer(modechange);
+
+        }
+//            }, 1000);
+//        }
+    }
+
+    ;
+    private Runnable postDelayedIfNotFinishRunnable = new Runnable() {
+        @Override
+        public void run() {
+
+        }
+    };
+
+    private class PostDelayedIfNotFinishRunnable implements Runnable {
+
+        @Override
+        public void run() {
+
+        }
     }
 
     private long liveGetPlayTime = 0;
@@ -319,6 +378,7 @@ public class LiveGetPlayServer {
         if (context.isFinishing()) {
             return;
         }
+        mHandler.removeCallbacks(r);
         mHandler.postDelayed(r, delayMillis);
     }
 

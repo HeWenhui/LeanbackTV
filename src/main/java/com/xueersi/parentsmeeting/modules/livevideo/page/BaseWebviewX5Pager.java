@@ -20,6 +20,8 @@ import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
@@ -147,6 +149,16 @@ public abstract class BaseWebviewX5Pager extends LiveBasePager {
         }
 
         @Override
+        public boolean onJsAlert(WebView webView, String url, String message, JsResult jsResult) {
+            StableLogHashMap logHashMap = new StableLogHashMap("onJsAlert");
+            logHashMap.put("tag", TAG);
+            logHashMap.put("url", url);
+            logHashMap.put("message", message);
+            UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), LiveVideoConfig.LIVE_WEBVIEW_JS_ALERT, logHashMap.getData());
+            return super.onJsAlert(webView, url, message, jsResult);
+        }
+
+        @Override
         public boolean onJsConfirm(WebView view, String url, String message,
                                    final JsResult result) {
             VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(mContext, (BaseApplication)
@@ -166,6 +178,11 @@ public abstract class BaseWebviewX5Pager extends LiveBasePager {
             });
             cancelDialog.setCancelShowText("取消").setVerifyShowText("确定").initInfo(message,
                     VerifyCancelAlertDialog.CANCEL_SELECTED).showDialog();
+            StableLogHashMap logHashMap = new StableLogHashMap("onJsConfirm");
+            logHashMap.put("tag", TAG);
+            logHashMap.put("url", url);
+            logHashMap.put("message", message);
+            UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), LiveVideoConfig.LIVE_WEBVIEW_JS_ALERT, logHashMap.getData());
             return true;
         }
 
