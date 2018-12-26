@@ -24,6 +24,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentCoinAndTotalEnergyEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentPkResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
@@ -727,8 +728,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
     private int getRightMargin() {
         int returnValue = 0;
         if (!isFullScreenMode()) {
-            int screenWidth = ScreenUtils.getScreenWidth();
-            returnValue = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
+            returnValue = LiveVideoPoint.getInstance().getRightMargin();
         }
         return returnValue;
     }
@@ -740,7 +740,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      */
     public boolean isFullScreenMode() {
         boolean result = isHalfBodyLiveRoom() && mTeacherMode != null && mTeacherMode.equals(LiveTopic.MODE_CLASS);
-        //Log.e("TeamPk","======>isFullScreenMode:"+result+":"+mTeacherMode);
         return result;
     }
 
@@ -760,34 +759,20 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
             public void onGlobalLayout() {
 
                 if (!isFullScreenMode()) {
-                    ViewGroup viewGroup = (ViewGroup) mActivity.getWindow().getDecorView();
-                    View videoView = viewGroup.findViewById(R.id.vv_course_video_video);
-                    ViewGroup.LayoutParams lp = videoView.getLayoutParams();
-                    setVideoLayout(lp.width, lp.height);
+                    if (mFocusPager != null) {
+                        int rightMargin = LiveVideoPoint.getInstance().getRightMargin();
+                        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mFocusPager.getRootView()
+                                .getLayoutParams();
+                        if (rightMargin != params.rightMargin) {
+                            params.rightMargin = rightMargin;
+                            LayoutParamsUtil.setViewLayoutParams(mFocusPager.getRootView(), params);
+                        }
+                    }
                 }
             }
         });
     }
 
-
-    public void setVideoLayout(int width, int height) {
-        final View contentView = mActivity.findViewById(android.R.id.content);
-        final View actionBarOverlayLayout = (View) contentView.getParent();
-        Rect r = new Rect();
-        actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
-        int screenWidth = (r.right - r.left);
-        if (width > 0 && mFocusPager != null) {
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mFocusPager.getRootView()
-                    .getLayoutParams();
-            int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * width / LiveVideoConfig.VIDEO_WIDTH);
-            wradio += (screenWidth - width) / 2;
-            if (wradio != params.rightMargin) {
-                params.rightMargin = wradio;
-                LayoutParamsUtil.setViewLayoutParams(mFocusPager.getRootView(), params);
-            }
-        }
-
-    }
 
     /**
      * activity stop
