@@ -4,15 +4,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/rl_experience_guide_home_pager"
-        layout="@layout/item_experience_guide_home_pager"
-        android:visibility="gone"></include>
-
     <RelativeLayout
         android:id="@+id/rl_experience_guide_bg"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        >
 
         <ImageView
             android:id="@+id/iv_experience_guide_teacher"
@@ -20,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
-            android:src="@drawable/experience_guide_teacher_bg"
+            android:background="@drawable/experience_guide_teacher_bg"
            />
 
         <ImageView
@@ -109,8 +105,15 @@
                     android:text="老师" />
 
             </RelativeLayout>
-
+            <ImageView
+                android:id="@+id/iv_experience_guide_info_bg"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/COLOR_CC000000"
+                android:visibility="gone"/>
         </RelativeLayout>
+
+
 
         <LinearLayout
             android:id="@+id/ll_experience_guide_courseware_introduce"
@@ -161,7 +164,7 @@
         </LinearLayout>
 
         <RelativeLayout
-            android:id="@+id/ll_experience_guide_other_introduce"
+            android:id="@+id/rl_experience_guide_other_introduce"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignRight="@id/iv_experience_guide_courseware"
@@ -253,6 +256,7 @@
                 android:background="@drawable/shape_corners_5dp_ffffff">
 
                 <TextView
+                    android:id="@+id/tv_experience_guide_question_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="30dp"
@@ -262,6 +266,7 @@
                     android:textSize="17sp" />
 
                 <TextView
+                    android:id="@+id/tv_experience_guide_question_content"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
@@ -321,7 +326,7 @@
             android:background="@color/COLOR_FFFFFEFF">
 
             <CheckBox
-                android:id="@+id/bt_experience_guide_optiona"
+                android:id="@+id/cb_experience_guide_optiona"
                 android:layout_width="60dp"
                 android:layout_height="38dp"
                 android:layout_alignParentLeft="true"
@@ -342,17 +347,17 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="74dp"
                 android:layout_marginTop="10dp"
-                android:layout_toRightOf="@id/bt_experience_guide_optiona"
+                android:layout_toRightOf="@id/cb_experience_guide_optiona"
                 android:src="@drawable/experience_guide_lead_hand_img_nor" />
 
             <CheckBox
-                android:id="@+id/bt_experience_guide_optionb"
+                android:id="@+id/cb_experience_guide_optionb"
                 android:layout_width="60dp"
                 android:layout_height="38dp"
                 android:layout_marginLeft="40dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:layout_toRightOf="@id/bt_experience_guide_optiona"
+                android:layout_toRightOf="@id/cb_experience_guide_optiona"
                 android:background="@drawable/selector_experience_button_option"
                 android:button="@null"
                 android:enabled="false"
@@ -362,13 +367,13 @@
                 android:textSize="22sp" />
 
             <CheckBox
-                android:id="@+id/bt_experience_guide_optionc"
+                android:id="@+id/cb_experience_guide_optionc"
                 android:layout_width="60dp"
                 android:layout_height="38dp"
                 android:layout_marginLeft="40dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:layout_toRightOf="@id/bt_experience_guide_optionb"
+                android:layout_toRightOf="@id/cb_experience_guide_optionb"
                 android:background="@drawable/selector_experience_button_option"
                 android:button="@null"
                 android:enabled="false"
@@ -378,13 +383,13 @@
                 android:textSize="22sp" />
 
             <CheckBox
-                android:id="@+id/bt_experience_guide_optiond"
+                android:id="@+id/cb_experience_guide_optiond"
                 android:layout_width="60dp"
                 android:layout_height="38dp"
                 android:layout_marginLeft="40dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
-                android:layout_toRightOf="@id/bt_experience_guide_optionc"
+                android:layout_toRightOf="@id/cb_experience_guide_optionc"
                 android:background="@drawable/selector_experience_button_option"
                 android:button="@null"
                 android:enabled="false"
@@ -394,6 +399,7 @@
                 android:textSize="22sp" />
 
             <Button
+                android:id="@+id/bt_experience_guide_option_submit"
                 android:layout_width="120dp"
                 android:layout_height="38dp"
                 android:layout_alignParentRight="true"
@@ -426,6 +432,8 @@
         android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="0dp"
         android:visibility="gone">
 
         <RelativeLayout
@@ -513,6 +521,7 @@
                     android:layout_weight="1" />
 
                 <TextView
+                    android:id="@+id/tv_experience_guide_speech_follow"
                     style="@style/text_font14_333333_style"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -586,6 +595,7 @@
                     android:textSize="14sp" />
 
                 <ImageView
+                    android:id="@+id/iv_experience_guide_voice_hand"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignTop="@id/iv_experience_guide_voicetest_record"
@@ -704,6 +714,21 @@
         android:drawablePadding="5dp"
         android:text="退出"
         android:textColor="@color/COLOR_FFFFFF" />
+    <include
+        android:id="@+id/rl_experience_guide_home_pager"
+        layout="@layout/item_experience_guide_home_pager"
+        android:visibility="gone"></include>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="10dp"
+        android:drawableLeft="@drawable/experience_guide_count_down_icon"
+        android:drawablePadding="2dp"
+        style="@style/text_font17_ffffff_style"
+        android:text="15S后将开启体验课"
+        android:visibility="gone"/>
 
 
 </RelativeLayout>

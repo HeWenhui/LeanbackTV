@@ -80,6 +80,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
+import com.xueersi.parentsmeeting.modules.livevideo.experience.bussiness.ExperienceGuideBll;
 import com.xueersi.parentsmeeting.modules.livevideo.experience.bussiness.ExperienceQuitFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.experience.pager.ExperienceQuitFeedbackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
@@ -944,6 +945,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         experienceQuitFeedbackBll = new ExperienceQuitFeedbackBll(activity,liveBackBll,false);
         experienceQuitFeedbackBll.setLiveVideo(this);
         liveBackBll.addBusinessBll(experienceQuitFeedbackBll);
+        liveBackBll.addBusinessBll(new ExperienceGuideBll(this,liveBackBll));
         liveBackBll.onCreate();
     }
 
