@@ -632,7 +632,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         @Override
         public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target,
                                      String message) {
-            Loger.e("ExperiencLvieAvtiv", "=====>onPrivateMessage:isSelf=" + isSelf);
+            Loger.e("AIExperiencLvieAvtiv", "=====>onPrivateMessage:isSelf=" + isSelf);
             if (isSelf && "T".equals(message)) {
                 mHandler.post(new Runnable() {
                     @Override
@@ -781,7 +781,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         questionBll = new QuestionBll(this, mVideoEntity.getStuCourseId());
         mLiveBll = new LiveBll(this, mVideoEntity.getSectionId(), mVideoEntity.getChapterId(), EXP_LIVE_TYPE, 0);
 
-        mLiveBll.setSendMsgListener(new AIExperienceLiveVideoActivity.MsgSendListener());
+        mLiveBll.setSendMsgListener(new MsgSendListener());
         mHttpManager = new LiveHttpManager(mContext);
         mHttpManager.addBodyParam("liveId", mVideoEntity.getSectionId());
 
