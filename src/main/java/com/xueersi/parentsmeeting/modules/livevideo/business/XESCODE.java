@@ -232,6 +232,7 @@ public interface XESCODE {
         int XCR_ROOM_TEAMPK_OPEN = 1050;//  ("1004")  //通知战队pk分组
         int XCR_ROOM_TEAMPK_RESULT = 1051;//     ("1005")  //发布战队PK结果
         int XCR_ROOM_TEAMPK_GO = 1020;//     ("1005")  //发布战队PK结果
+        int XCR_ROOM_TEAMPK_STULIKE = 1021;//     ("1021")  //学生点赞上报
     }
 
 }

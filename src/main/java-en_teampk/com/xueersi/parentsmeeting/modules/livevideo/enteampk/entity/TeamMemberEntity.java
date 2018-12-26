@@ -9,4 +9,5 @@ public class TeamMemberEntity {
     public int resId;
     public int energy;
     public int praiseCount;
+    public String nickName = "";
 }

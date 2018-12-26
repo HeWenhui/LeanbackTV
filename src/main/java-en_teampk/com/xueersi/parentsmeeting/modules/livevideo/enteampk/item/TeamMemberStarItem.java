@@ -41,10 +41,15 @@ public class TeamMemberStarItem implements AdapterItemInterface<TeamMemberEntity
     private HashMap<TeamMemberEntity, LottieAnimationView> map;
     private int width;
     private int height;
+    private OnItemClick onItemClick;
 
     public TeamMemberStarItem(Context context, HashMap<TeamMemberEntity, LottieAnimationView> map) {
         this.context = context;
         this.map = map;
+    }
+
+    public void setOnItemClick(OnItemClick onItemClick) {
+        this.onItemClick = onItemClick;
     }
 
     @Override
@@ -170,6 +175,9 @@ public class TeamMemberStarItem implements AdapterItemInterface<TeamMemberEntity
             }
             handler.removeCallbacks(countRunnable);
             handler.postDelayed(countRunnable, 1000);
+            if (onItemClick != null) {
+                onItemClick.onItemClick(entity);
+            }
         }
     }
 
@@ -193,5 +201,9 @@ public class TeamMemberStarItem implements AdapterItemInterface<TeamMemberEntity
             logger.e("createBitmap", e);
         }
         return null;
+    }
+
+    public interface OnItemClick {
+        void onItemClick(TeamMemberEntity entity);
     }
 }

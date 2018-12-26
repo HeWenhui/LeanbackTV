@@ -19,4 +19,6 @@ public class LiveVideoHttpEnConfig {
     public static String URL_LIVE_UPDATA_GROUP = TEAKMPK_HTTP_HOST + "/LiveCourses/updataEnglishPkGroup";
     public static String URL_LIVE_UPDATA_PK_RANK = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourse/updataEnglishPkByTestId";
     public static String URL_LIVE_PK_TOTAL_RANK = LiveVideoConfig.APP_ARTS_HTTP_HOST + "/LiveCourse/getEnglishPkTotalRank";
+    /** 学生点赞上报 go https://wiki.xesv5.com/pages/viewpage.action?pageId=14039396 */
+    public static String URL_LIVE_REPORT_STULIKE = LiveVideoConfig.APP_ARTS_WXEN_HTTP_HOST + "/team-pk/reportStuLike";
 }

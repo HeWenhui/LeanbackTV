@@ -12,18 +12,20 @@ import android.widget.TextView;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.base.BasePager;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.config.EnTeamPkConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkLeadPager;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkRankPager;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkRankResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+
+import java.util.ArrayList;
 
 public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpdata {
     private Handler handler = new Handler(Looper.getMainLooper());
@@ -291,7 +293,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
     }
 
     @Override
-    public void onRankLead(final EnTeamPkRankEntity enTeamPkRankEntity, final int type) {
+    public void onRankLead(final EnTeamPkRankEntity enTeamPkRankEntity, final String testId, final int type) {
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -299,6 +301,17 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                     @Override
                     public void close(BasePager basePager) {
                         rootView.removeView(basePager.getRootView());
+                    }
+                });
+                teamPkLeadPager.setOnStudyClick(new TeamPkLeadPager.OnStudyClick() {
+                    @Override
+                    public void onStudyClick(ArrayList<TeamMemberEntity> myTeamEntitys) {
+                        enTeamPkHttp.reportStuLike(testId, myTeamEntitys, new AbstractBusinessDataCallBack() {
+                            @Override
+                            public void onDataSucess(Object... objData) {
+
+                            }
+                        });
                     }
                 });
                 RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);

@@ -55,6 +55,7 @@ public class TeamPkLeadPager extends LiveBasePager {
     private int pattern;
     private Handler handler = new Handler(Looper.getMainLooper());
     private OnClose onClose;
+    private OnStudyClick onStudyClick;
 
     public TeamPkLeadPager(Context context, EnTeamPkRankEntity enTeamPkRankEntity, int type, int pattern, OnClose onClose) {
         super(context, false);
@@ -65,6 +66,10 @@ public class TeamPkLeadPager extends LiveBasePager {
         this.enTeamPkRankEntity = enTeamPkRankEntity;
         initData();
         initListener();
+    }
+
+    public void setOnStudyClick(OnStudyClick onStudyClick) {
+        this.onStudyClick = onStudyClick;
     }
 
     @Override
@@ -237,7 +242,7 @@ public class TeamPkLeadPager extends LiveBasePager {
         View layout_livevideo_en_team_lead_star = LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_en_team_lead_star, rlTeampkLeadBottom, false);
         rlTeampkLeadBottom.addView(layout_livevideo_en_team_lead_star);
         GridView gv_livevideo_en_teampk_lead_star = layout_livevideo_en_team_lead_star.findViewById(R.id.gv_livevideo_en_teampk_lead_star);
-        ArrayList<TeamMemberEntity> myTeamEntitys = enTeamPkRankEntity.getMemberEntities();
+        final ArrayList<TeamMemberEntity> myTeamEntitys = enTeamPkRankEntity.getMemberEntities();
         int oldSize = myTeamEntitys.size();
         for (int i = 4; i < myTeamEntitys.size(); i++) {
             myTeamEntitys.remove(i);
@@ -250,7 +255,16 @@ public class TeamPkLeadPager extends LiveBasePager {
 
             @Override
             public AdapterItemInterface<TeamMemberEntity> getItemView(Object type) {
-                return new TeamMemberStarItem(mContext, map);
+                TeamMemberStarItem teamMemberStarItem = new TeamMemberStarItem(mContext, map);
+                teamMemberStarItem.setOnItemClick(new TeamMemberStarItem.OnItemClick() {
+                    @Override
+                    public void onItemClick(TeamMemberEntity entity) {
+                        if (onStudyClick != null) {
+                            onStudyClick.onStudyClick(myTeamEntitys);
+                        }
+                    }
+                });
+                return teamMemberStarItem;
             }
         };
         gv_livevideo_en_teampk_lead_star.setAdapter(myTeamAdapter);
@@ -278,5 +292,9 @@ public class TeamPkLeadPager extends LiveBasePager {
 
     public interface OnClose {
         void close(BasePager basePager);
+    }
+
+    public interface OnStudyClick {
+        void onStudyClick(ArrayList<TeamMemberEntity> entities);
     }
 }

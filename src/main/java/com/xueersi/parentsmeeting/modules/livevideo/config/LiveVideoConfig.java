@@ -18,6 +18,8 @@ public class LiveVideoConfig {
     public static String HTTP_PRIMARY_CHINESE_HOST = "https://app.chs.xueersi.com";
     /** 文科的接口域名 */
     public static String APP_ARTS_HTTP_HOST = "https://app.arts.xueersi.com";
+    /** 文科的接口域名 */
+    public static String APP_ARTS_WXEN_HTTP_HOST = "https://wxen.arts.xueersi.com";
     /** 直播辅导用户在线心跳 */
     public final static String URL_LIVE_TUTORIAL_USER_ONLINE = LiveVideoConfig.HTTP_HOST + "/LiveTutorial/userOnline";
     /** 公开直播用户在线心跳 */

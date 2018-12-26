@@ -29,12 +29,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishSho
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -152,6 +153,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     class EnTeamPkHttpImp implements EnTeamPkHttp {
         int getSelfTeamInfoTimes = 1;
         int getEnglishPkGroupTimes = 1;
+        int reportStuLike = 1;
 
         @Override
         public void getSelfTeamInfo(final AbstractBusinessDataCallBack abstractBusinessDataCallBack) {
@@ -324,6 +326,69 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
             });
         }
+
+        @Override
+        public void reportStuLike(final String testId, ArrayList<TeamMemberEntity> myTeamEntitys, final AbstractBusinessDataCallBack abstractBusinessDataCallBack) {
+            JSONArray jsonArray = new JSONArray();
+            for (int i = 0; i < myTeamEntitys.size(); i++) {
+                TeamMemberEntity teamMemberEntity = myTeamEntitys.get(i);
+                JSONObject jsonObject = new JSONObject();
+                try {
+                    jsonObject.put("stu_id", "" + teamMemberEntity.id);
+                    jsonObject.put("like_num", "" + teamMemberEntity.praiseCount);
+                    String oldNickName = teamMemberEntity.nickName;
+                    if (StringUtils.isEmpty(oldNickName)) {
+                        for (int j = 0; j < uservector.size(); j++) {
+                            TeamMemberEntity user = uservector.get(j);
+                            if (user.nickName.contains("_" + teamMemberEntity.id + "_")) {
+                                teamMemberEntity.nickName = user.nickName;
+                                break;
+                            }
+                        }
+                    }
+                    jsonObject.put("nick_name", "" + teamMemberEntity.nickName);
+                    jsonArray.put(jsonObject);
+                    logger.d("reportStuLike:praiseCount=" + teamMemberEntity.praiseCount + ",old=" + oldNickName + ",new=" + teamMemberEntity.nickName);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            final String like_info = jsonArray.toString();
+            String connectNickname = mLiveBll.getConnectNickname();
+            final String nick_name;
+            if (!StringUtils.isEmpty(connectNickname)) {
+                nick_name = connectNickname;
+            } else {
+                nick_name = "s_3_" + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
+            }
+            getHttpManager().reportStuLike(unique_id, mGetInfo.getStuId(), nick_name, "" + pkTeamEntity.getPkTeamId(), testId, like_info, new HttpCallBack() {
+                HttpCallBack callBack = this;
+
+                @Override
+                public void onPmSuccess(ResponseEntity responseEntity) {
+                    logger.d("reportStuLike:onPmSuccess=" + responseEntity.getJsonObject());
+                }
+
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    logger.d("reportStuLike:onPmError=" + responseEntity.getErrorMsg());
+                }
+
+                @Override
+                public void onPmFailure(Throwable error, String msg) {
+                    logger.d("reportStuLike:onPmFailure:msg=" + msg + ",reportStuLike=" + reportStuLike, error);
+                    if (reportStuLike > 3) {
+                        return;
+                    }
+                    postDelayedIfNotFinish(new Runnable() {
+                        @Override
+                        public void run() {
+                            getHttpManager().reportStuLike(unique_id, mGetInfo.getStuId(), nick_name, "" + pkTeamEntity.getPkTeamId(), testId, like_info, callBack);
+                        }
+                    }, (reportStuLike++) * 1000);
+                }
+            });
+        }
     }
 
     private PkTeamEntity parsegetSelfTeamInfo(ResponseEntity responseEntity) {
@@ -363,7 +428,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             if (pkTeamEntity != null && enTeamPkRankEntity != null) {
                                 enTeamPkRankEntity.setMyTeam(pkTeamEntity.getMyTeam());
                                 if (enTeamPkAction != null) {
-                                    enTeamPkAction.onRankLead(enTeamPkRankEntity, TeamPkLeadPager.TEAM_TYPE_2);
+                                    enTeamPkAction.onRankLead(enTeamPkRankEntity, "", TeamPkLeadPager.TEAM_TYPE_2);
                                 }
                             }
                         }
@@ -414,6 +479,9 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 onQuestionEnd();
             }
             break;
+            case XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_STULIKE:
+                logger.d("XCR_ROOM_TEAMPK_STULIKE:data=" + data);
+                break;
             default:
                 break;
         }
@@ -447,7 +515,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             }
                             enTeamPkRankEntity.setMyTeam(pkTeamEntity.getMyTeam());
                             if (enTeamPkAction != null) {
-                                enTeamPkAction.onRankLead(enTeamPkRankEntity, TeamPkLeadPager.TEAM_TYPE_1);
+                                enTeamPkAction.onRankLead(enTeamPkRankEntity, testId, TeamPkLeadPager.TEAM_TYPE_1);
                             }
                         }
                     }
@@ -485,13 +553,14 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     private void onQuestionEnd() {
-        VideoQuestionLiveEntity old = videoQuestionLiveEntity;
+        final VideoQuestionLiveEntity old = videoQuestionLiveEntity;
         mLogtf.d("onQuestionEnd:isShow:old=null?" + (old == null) + ",pkTeamEntity=null?" + (pkTeamEntity == null));
         if (old != null) {
             videoQuestionLiveEntity = null;
             if (pkTeamEntity != null) {
                 String teamId = "" + pkTeamEntity.getPkTeamId();
-                getHttpManager().updataEnglishPkByTestId(teamId, old.id, new HttpCallBack(false) {
+                final String testId = old.id;
+                getHttpManager().updataEnglishPkByTestId(teamId, testId, new HttpCallBack(false) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) {
                         logger.d("onQuestionEnd:onPmSuccess" + responseEntity.getJsonObject());
@@ -499,7 +568,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         if (pkTeamEntity != null && enTeamPkRankEntity != null) {
                             enTeamPkRankEntity.setMyTeam(pkTeamEntity.getMyTeam());
                             if (enTeamPkAction != null) {
-                                enTeamPkAction.onRankLead(enTeamPkRankEntity, TeamPkLeadPager.TEAM_TYPE_1);
+                                enTeamPkAction.onRankLead(enTeamPkRankEntity, testId, TeamPkLeadPager.TEAM_TYPE_1);
                             }
                         }
                     }
@@ -522,7 +591,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     @Override
     public int[] getNoticeFilter() {
-        return new int[]{XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_OPEN, XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_RESULT, XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_GO, XESCODE.STOPQUESTION, XESCODE.ARTS_STOP_QUESTION};
+        return new int[]{XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_OPEN, XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_RESULT, XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_GO, XESCODE.STOPQUESTION, XESCODE.ARTS_STOP_QUESTION, XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_STULIKE};
     }
 
     @Override
@@ -606,19 +675,65 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     }
 
+    private Vector<TeamMemberEntity> uservector = new Vector<>();
+
     @Override
     public void onUserList(String channel, User[] users) {
+        int old = users.length;
+        for (int i = 0; i < users.length; i++) {
+            User user = users[i];
+            if (isMyTeam(user.getNick())) {
+                for (int j = 0; j < uservector.size(); j++) {
+                    TeamMemberEntity olduser = uservector.get(j);
+                    if (olduser.nickName.equals(user.getNick())) {
+                        break;
+                    }
+                }
+                TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
+                teamMemberEntity.nickName = user.getNick();
+                uservector.addElement(teamMemberEntity);
+            }
+        }
+        logger.d("onUserList:old=" + old + ",new=" + uservector.size());
+    }
 
+    private boolean isMyTeam(String sender) {
+        if (pkTeamEntity != null) {
+            ArrayList<TeamMemberEntity> myTeamEntitys = pkTeamEntity.getaTeamMemberEntity();
+            boolean isMy = false;
+            for (int i = 0; i < myTeamEntitys.size(); i++) {
+                TeamMemberEntity teamMemberEntity = myTeamEntitys.get(i);
+                if (sender.contains("_" + teamMemberEntity.id + "_")) {
+                    isMy = true;
+                    teamMemberEntity.nickName = sender;
+                    break;
+                }
+            }
+            return isMy;
+        }
+        return true;
     }
 
     @Override
     public void onJoin(String target, String sender, String login, String hostname) {
-
+        if (isMyTeam(sender)) {
+            TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
+            teamMemberEntity.nickName = sender;
+            uservector.addElement(teamMemberEntity);
+        }
     }
 
     @Override
     public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-
+        if (isMyTeam(sourceNick)) {
+            for (int j = 0; j < uservector.size(); j++) {
+                TeamMemberEntity user = uservector.get(j);
+                if (user.nickName.equals("" + user.nickName)) {
+                    uservector.remove(j);
+                    break;
+                }
+            }
+        }
     }
 
     @Override

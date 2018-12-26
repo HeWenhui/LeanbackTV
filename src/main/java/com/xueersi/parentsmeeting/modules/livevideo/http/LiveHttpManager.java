@@ -1909,4 +1909,21 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("testId", "" + testId);
         sendPost(LiveVideoHttpEnConfig.URL_LIVE_PK_TOTAL_RANK, params, requestCallBack);
     }
+
+
+    /**
+     * go-战队pk-更新用户分组
+     *
+     * @param requestCallBack
+     */
+    public void reportStuLike(String unique_id, String stu_id, String nick_name, String teamId, String testId, String like_info, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        params.addBodyParam("stu_id", "" + stu_id);
+        params.addBodyParam("nick_name", "" + nick_name);
+        params.addBodyParam("team_id", "" + teamId);
+        params.addBodyParam("test_id", "" + testId);
+        params.addBodyParam("like_info", "" + like_info);
+        sendPost(LiveVideoHttpEnConfig.URL_LIVE_REPORT_STULIKE + "?unique_id=" + unique_id, params, requestCallBack);
+    }
 }

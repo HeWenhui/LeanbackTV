@@ -13,7 +13,7 @@ public interface EnTeamPkAction {
 
     void onRankResult();
 
-    void onRankLead(EnTeamPkRankEntity enTeamPkRankEntity, int type);
+    void onRankLead(EnTeamPkRankEntity enTeamPkRankEntity, String testId, int type);
 
     void onModeChange(String mode);
 
