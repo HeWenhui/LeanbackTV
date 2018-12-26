@@ -91,6 +91,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
 
     private static final String OPEN_STATE_CLOSE = "0";
 
+
     /**
      * pk对手
      */
