@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
@@ -319,6 +320,8 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         if ((pattern == 1) && !LiveVideoConfig.isSmallChinese) {
             liveVideoAction.onPlaySuccess();
             if (switchFlowStatus == LiveVideoAction.SWITCH_FLOW_ROUTE_SWITCH) {
+                UmsAgentManager.umsAgentCustomerBusiness(getActivity(), getActivity().getResources().getString(R.string
+                        .livevideo_switch_flow_170711));
                 if (LiveVideoConfig.isPrimary || isSmallEnglish) {
                     SwitchRouteSuccessDialog switchRouteSuccessDialog = new SwitchRouteSuccessDialog(activity);
                     switchRouteSuccessDialog.updateView(nowRoutePos);
@@ -327,6 +330,9 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                     XESToastUtils.showToast(activity, "线路" + nowRoutePos + "切换成功");
                 }
                 mLogtf.i("route " + nowRoutePos + "(add 1) switch success");
+            } else if (switchFlowStatus == LiveVideoAction.SWITCH_FLOW_RELOAD) {
+                UmsAgentManager.umsAgentCustomerBusiness(getActivity(), getActivity().getResources().getString(R.string
+                        .livevideo_switch_flow_17079));
             }
         }
         resetStatus();
