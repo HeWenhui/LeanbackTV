@@ -10,4 +10,9 @@ public class TeamMemberEntity {
     public int energy;
     public int praiseCount;
     public String nickName = "";
+
+    @Override
+    public String toString() {
+        return "id=" + id + ",nickName=" + nickName;
+    }
 }

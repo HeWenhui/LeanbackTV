@@ -428,7 +428,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             if (pkTeamEntity != null && enTeamPkRankEntity != null) {
                                 enTeamPkRankEntity.setMyTeam(pkTeamEntity.getMyTeam());
                                 if (enTeamPkAction != null) {
-                                    enTeamPkAction.onRankLead(enTeamPkRankEntity, "", TeamPkLeadPager.TEAM_TYPE_2);
+                                    enTeamPkAction.onRankLead(enTeamPkRankEntity, "-1-end", TeamPkLeadPager.TEAM_TYPE_2);
                                 }
                             }
                         }
@@ -680,13 +680,15 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void onUserList(String channel, User[] users) {
         int old = users.length;
+        int old2 = uservector.size();
+        a:
         for (int i = 0; i < users.length; i++) {
             User user = users[i];
             if (isMyTeam(user.getNick())) {
                 for (int j = 0; j < uservector.size(); j++) {
                     TeamMemberEntity olduser = uservector.get(j);
                     if (olduser.nickName.equals(user.getNick())) {
-                        break;
+                        continue a;
                     }
                 }
                 TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
@@ -694,7 +696,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 uservector.addElement(teamMemberEntity);
             }
         }
-        logger.d("onUserList:old=" + old + ",new=" + uservector.size());
+        logger.d("onUserList:old=" + old + ",old2=" + old2 + ",new=" + uservector.size());
     }
 
     private boolean isMyTeam(String sender) {
@@ -725,13 +727,11 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     @Override
     public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-        if (isMyTeam(sourceNick)) {
-            for (int j = 0; j < uservector.size(); j++) {
-                TeamMemberEntity user = uservector.get(j);
-                if (user.nickName.equals("" + user.nickName)) {
-                    uservector.remove(j);
-                    break;
-                }
+        for (int j = 0; j < uservector.size(); j++) {
+            TeamMemberEntity user = uservector.get(j);
+            if (("" + sourceNick).equals(user.nickName)) {
+                uservector.remove(j);
+                break;
             }
         }
     }
