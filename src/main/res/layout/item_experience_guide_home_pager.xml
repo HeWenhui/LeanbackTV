@@ -2,7 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:background="@color/white"
-    android:clickable="true">
+    xmlns:library="http://schemas.android.com/apk/res-auto"
+    >
     <RelativeLayout
         android:id="@+id/rl_experience_guide_home_title"
         android:layout_width="match_parent"
@@ -16,6 +17,7 @@
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="20dp"
             android:src="@drawable/cy_bars_bock_icon_normal"
+            android:clickable="true"
             />
         <TextView
             android:layout_width="wrap_content"
@@ -34,17 +36,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            >
             <View
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_weight="2"/>
+                android:layout_weight="2.2"/>
             <TextView
                 android:id="@+id/tv_experience_guide_tip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="55dp"
-                android:text="请选择你对网络直播课的了解程度："/>
+                android:text="请选择你对网络直播课的了解程度："
+                style="@style/text_font17_333333_style"
+                />
             <View
                 android:layout_width="0dp"
                 android:layout_height="0dp"
@@ -53,94 +58,41 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
-                <LinearLayout
+
+                <com.xueersi.parentsmeeting.modules.livevideo.widget.ExperienceGuideOptionButton
                     android:id="@+id/ll_experience_guide_option_unknown"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="54dp"
-                    android:orientation="vertical">
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:src="@drawable/experience_guide_lead_choice_monkey_img_1"
-                        />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="8dp"
-                        style="@style/text_font17_333333_style"
-                        android:text="完全不了解"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="11dp"
-                        android:layout_gravity="center_horizontal"
-                        style="@style/text_font16_666666_style"
-                        android:text="第一次接触直播课"/>
-                </LinearLayout>
+                    library:imageSrc ="@drawable/experience_guide_lead_choice_monkey_img_1"
+                    library:titleText ="完全不了解"
+                    library:contentText="第一次接触直播课"
+                    ></com.xueersi.parentsmeeting.modules.livevideo.widget.ExperienceGuideOptionButton>
                 <View
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_weight="1"/>
-                <LinearLayout
+                <com.xueersi.parentsmeeting.modules.livevideo.widget.ExperienceGuideOptionButton
                     android:id="@+id/ll_experience_guide_option_known"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:src="@drawable/experience_guide_lead_choice_monkey_img_2"
-                        />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="8dp"
-                        style="@style/text_font17_333333_style"
-                        android:text="简单的了解"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="11dp"
-                        android:layout_gravity="center_horizontal"
-                        style="@style/text_font16_666666_style"
-                        android:text="之前试听过直播课"/>
-                </LinearLayout>
+                    library:imageSrc ="@drawable/experience_guide_lead_choice_monkey_img_2"
+                    library:titleText ="简单的了解"
+                    library:contentText="之前试听过直播课"
+                    ></com.xueersi.parentsmeeting.modules.livevideo.widget.ExperienceGuideOptionButton>
                 <View
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:layout_weight="1"/>
-                <LinearLayout
+                <com.xueersi.parentsmeeting.modules.livevideo.widget.ExperienceGuideOptionButton
                     android:id="@+id/ll_experience_guide_option_knownwell"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginRight="54dp"
-                    android:orientation="vertical">
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:src="@drawable/experience_guide_lead_choice_monkey_img_3"
-                        />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="8dp"
-                        style="@style/text_font17_333333_style"
-                        android:text="非常了解"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="11dp"
-                        android:layout_gravity="center_horizontal"
-                        style="@style/text_font16_666666_style"
-                        android:text="跳过引导，直接上课"/>
-                </LinearLayout>
+                    library:imageSrc ="@drawable/experience_guide_lead_choice_monkey_img_3"
+                    library:titleText ="非常了解"
+                    library:contentText="跳过引导，直接上课"
+                    ></com.xueersi.parentsmeeting.modules.livevideo.widget.ExperienceGuideOptionButton>
             </LinearLayout>
             <View
                 android:layout_width="0dp"

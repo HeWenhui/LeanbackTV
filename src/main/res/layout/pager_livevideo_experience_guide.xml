@@ -2,13 +2,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:clickable="true">
 
     <RelativeLayout
         android:id="@+id/rl_experience_guide_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        >
+        android:background="@color/COLOR_000000">
 
         <ImageView
             android:id="@+id/iv_experience_guide_teacher"
@@ -16,8 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
-            android:background="@drawable/experience_guide_teacher_bg"
-           />
+            android:background="@drawable/experience_guide_teacher_bg" />
 
         <ImageView
             android:id="@+id/iv_experience_guide_courseware"
@@ -27,8 +27,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true"
             android:layout_toLeftOf="@id/iv_experience_guide_teacher"
-            android:background="@drawable/experience_guide_courseware_bg"
-        />
+            android:background="@drawable/experience_guide_courseware_bg" />
 
         <RelativeLayout
             android:id="@+id/rl_experience_guide_info"
@@ -38,12 +37,15 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
             android:layout_toRightOf="@id/iv_experience_guide_courseware"
-           >
+            android:background="@color/COLOR_333333">
 
             <TextView
                 android:id="@id/tv_livevideo_message_count"
                 android:layout_width="match_parent"
-                android:layout_height="25dp"
+                android:layout_height="23dp"
+                android:layout_marginLeft="2dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginRight="2dp"
                 android:background="@color/COLOR_333333"
                 android:gravity="center_vertical"
                 android:paddingLeft="5dp"
@@ -55,13 +57,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="1px"
                 android:layout_below="@id/tv_livevideo_message_count"
-                android:background="#5C5C5C" />
+                android:background="@color/COLOR_000000" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@id/v_livevideo_message_gap"
-                android:background="@color/COLOR_333333">
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_marginBottom="2dp"
+                android:background="@color/COLOR_FF333333">
 
                 <TextView
                     android:id="@+id/tv_livevideo_experience_message_systip"
@@ -91,8 +96,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv_livevideo_experience_message_systip"
                     android:layout_marginLeft="7dp"
-                    android:layout_marginTop="7dp"
-                    android:text="我" />
+                    android:layout_marginTop="7dp" />
 
                 <TextView
                     android:id="@+id/tv_experience_guide_message_teacher"
@@ -101,18 +105,16 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv_experience_guide_message_me"
                     android:layout_marginLeft="7dp"
-                    android:layout_marginTop="7dp"
-                    android:text="老师" />
+                    android:layout_marginTop="7dp" />
 
             </RelativeLayout>
+
             <ImageView
                 android:id="@+id/iv_experience_guide_info_bg"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/COLOR_CC000000"
-                android:visibility="gone"/>
+                android:visibility="visible" />
         </RelativeLayout>
-
 
 
         <LinearLayout
@@ -168,7 +170,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignRight="@id/iv_experience_guide_courseware"
-            android:layout_centerVertical="true"
+            android:layout_marginTop="90dp"
             android:orientation="vertical"
             android:visibility="gone">
 
@@ -176,32 +178,34 @@
                 android:id="@+id/iv_experience_guide_message_arrows"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:layout_alignParentRight="true"
+                android:layout_marginTop="10dp"
                 android:src="@drawable/experience_guide_introduce_message_arrows"
-                android:visibility="gone"
-                />
+                android:visibility="gone" />
+
             <ImageView
                 android:id="@+id/iv_experience_guide_teacher_arrows"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:src="@drawable/experience_guide_introduce_teacher_arrows"
-                android:visibility="gone"/>
+                android:visibility="visible" />
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="62dp"
-                android:layout_centerVertical="true"
                 android:layout_below="@+id/iv_experience_guide_teacher_arrows"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="62dp"
                 android:orientation="vertical">
+
                 <TextView
                     android:id="@+id/tv_experience_guide_introduce_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="聊天区"
                     android:layout_gravity="center_horizontal"
+                    android:text="老师区"
                     android:textColor="@color/COLOR_FFFFFF"
                     android:textSize="22sp"
                     android:textStyle="bold" />
@@ -213,7 +217,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="18dp"
-                    android:text="这里是同学们畅所欲言的地方"
+                    android:text="老师会在这里和同学们见面哦"
                     android:textStyle="bold" />
 
                 <Button
@@ -236,22 +240,22 @@
             android:layout_alignRight="@id/iv_experience_guide_courseware"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="100dp"
+            android:layout_marginBottom="108dp"
             android:visibility="gone">
 
             <View
                 android:id="@+id/v_experience_guide_view_question"
                 android:layout_width="344dp"
-                android:layout_height="170dp"
+                android:layout_height="190dp"
                 android:layout_centerInParent="true"
                 android:background="@drawable/shape_corners_5dp_ffffff"></View>
 
             <RelativeLayout
                 android:layout_width="344dp"
-                android:layout_height="170dp"
+                android:layout_height="190dp"
                 android:layout_alignTop="@id/v_experience_guide_view_question"
                 android:layout_alignRight="@id/v_experience_guide_view_question"
-                android:layout_marginTop="5dp"
+                android:layout_marginTop="6dp"
                 android:layout_marginRight="5dp"
                 android:background="@drawable/shape_corners_5dp_ffffff">
 
@@ -260,8 +264,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="30dp"
-                    android:layout_marginTop="25dp"
-                    android:text="1. what is the setting of the story ?"
+                    android:layout_marginTop="20dp"
+                    android:text="空气中能供给呼吸的气体是（ ）"
                     android:textColor="@color/COLOR_000000"
                     android:textSize="17sp" />
 
@@ -272,10 +276,10 @@
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
                     android:layout_marginStart="30dp"
-                    android:layout_marginTop="60dp"
+                    android:layout_marginTop="55dp"
                     android:lineSpacingMultiplier="2"
                     android:singleLine="false"
-                    android:text="A. a bedroom at night\nB. a bam at night\nC. a dinner at noon "
+                    android:text="A：氮气\nB：氧气\nC：二氧化碳\nD：氮气 "
                     android:textColor="@color/COLOR_000000"
                     android:textSize="14sp" />
             </RelativeLayout>
@@ -341,15 +345,6 @@
                 android:textColor="@color/COLOR_FFFF6E1A"
                 android:textSize="22sp" />
 
-            <ImageView
-                android:id="@+id/iv_experience_guide_option_hand"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="74dp"
-                android:layout_marginTop="10dp"
-                android:layout_toRightOf="@id/cb_experience_guide_optiona"
-                android:src="@drawable/experience_guide_lead_hand_img_nor" />
-
             <CheckBox
                 android:id="@+id/cb_experience_guide_optionb"
                 android:layout_width="60dp"
@@ -360,11 +355,20 @@
                 android:layout_toRightOf="@id/cb_experience_guide_optiona"
                 android:background="@drawable/selector_experience_button_option"
                 android:button="@null"
-                android:enabled="false"
+                android:enabled="true"
                 android:paddingLeft="22dp"
                 android:text="B"
                 android:textColor="@color/COLOR_FFFF6E1A"
                 android:textSize="22sp" />
+
+            <ImageView
+                android:id="@+id/iv_experience_guide_option_hand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="74dp"
+                android:layout_marginTop="10dp"
+                android:layout_toRightOf="@id/cb_experience_guide_optiona"
+                android:src="@drawable/experience_guide_lead_hand_img_nor" />
 
             <CheckBox
                 android:id="@+id/cb_experience_guide_optionc"
@@ -411,6 +415,16 @@
                 android:textColor="@color/COLOR_666666"
                 android:textSize="16sp" />
 
+            <ImageView
+                android:id="@+id/iv_experience_guide_option_submit_hand"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignRight="@id/bt_experience_guide_option_submit"
+                android:layout_marginTop="10dp"
+                android:layout_marginRight="-6dp"
+                android:src="@drawable/experience_guide_lead_hand_img_nor"
+                android:visibility="gone" />
+
 
         </RelativeLayout>
 
@@ -445,6 +459,7 @@
             android:visibility="gone">
 
             <TextView
+                android:id="@+id/tv_experience_guide_voice_tip"
                 style="@style/text_font14_ffffff_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -463,15 +478,17 @@
                 android:layout_marginBottom="11dp" />
 
             <ImageView
+                android:id="@+id/iv_experience_guide_speech_hand"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@id/vwv_experience_guide_wave"
                 android:layout_alignBottom="@id/vwv_experience_guide_wave"
+                android:layout_marginRight="4dp"
                 android:src="@drawable/experience_guide_voicechate_arrows" />
         </RelativeLayout>
 
         <LinearLayout
-            android:id="@+id/rl_experience_guide_voice_evaluate"
+            android:id="@+id/ll_experience_guide_voice_evaluate"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/white"
@@ -549,6 +566,36 @@
                 android:layout_marginBottom="10dp">
 
                 <ImageView
+                    android:id="@+id/iv_experience_guide_voicetest_record"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginLeft="55dp"
+                    android:src="@drawable/experience_guide_voicetest_recording_icon_normal" />
+
+                <TextView
+                    android:id="@+id/tv_experience_guide_speech_start"
+                    style="@style/text_font11_666666_style"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/iv_experience_guide_voicetest_record"
+                    android:layout_alignLeft="@id/iv_experience_guide_voicetest_record"
+                    android:layout_marginLeft="18dp"
+                    android:layout_marginTop="10dp"
+                    android:text="开始录音" />
+
+                <TextView
+                    android:id="@+id/tv_experience_guide_speech_tip"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="32dp"
+                    android:layout_toRightOf="@id/iv_experience_guide_voicetest_record"
+                    android:text="点击开始录音"
+                    android:textColor="@color/COLOR_000000"
+                    android:textSize="14sp" />
+
+                <ImageView
                     android:id="@+id/iv_experience_guide_voicetest_play"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -567,35 +614,7 @@
                     android:text="播放" />
 
                 <ImageView
-                    android:id="@+id/iv_experience_guide_voicetest_record"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginLeft="55dp"
-                    android:src="@drawable/experience_guide_voicetest_recording_icon_normal" />
-
-                <TextView
-                    style="@style/text_font11_666666_style"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/iv_experience_guide_voicetest_record"
-                    android:layout_alignLeft="@id/iv_experience_guide_voicetest_record"
-                    android:layout_marginLeft="18dp"
-                    android:layout_marginTop="10dp"
-                    android:text="开始录音" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="32dp"
-                    android:layout_toRightOf="@id/iv_experience_guide_voicetest_record"
-                    android:text="点击开始录音"
-                    android:textColor="@color/COLOR_000000"
-                    android:textSize="14sp" />
-
-                <ImageView
-                    android:id="@+id/iv_experience_guide_voice_hand"
+                    android:id="@+id/iv_experience_guide_speech_hand"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignTop="@id/iv_experience_guide_voicetest_record"
@@ -628,14 +647,13 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginLeft="29dp"
-            android:layout_toRightOf="@id/bt_livevideo_message_open"
+            android:layout_toRightOf="@id/btn_experience_guide_message_open"
             android:background="@drawable/bg_livevideo_message_common" />
 
         <ImageView
             android:id="@+id/iv_experience_guide_chick"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:layout_marginLeft="52dp"
             android:layout_marginBottom="5dp"
             android:src="@drawable/experience_guide_lead_hand_img_nor" />
@@ -644,28 +662,29 @@
     <RelativeLayout
         android:id="@+id/rl_experience_guide_message"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:visibility="gone">
 
-        <RelativeLayout
-            android:id="@+id/rl_livevideo_experience_guide_message_panelcontent"
+        <LinearLayout
+            android:id="@+id/ll_livevideo_experience_guide_message_panelcontent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true">
+            android:layout_alignParentBottom="true"
+            >
 
             <cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout
                 android:id="@+id/ll_livevideo_experience_guide_message_panelroot"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/panel_height"
-                android:layout_alignParentBottom="true"
-                android:visibility="gone"></cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout>
-        </RelativeLayout>
+                android:layout_height="wrap_content"
+                android:visibility="visible"></cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout>
+        </LinearLayout>
 
         <RelativeLayout
             android:id="@+id/rl_experience_guide_message_input"
             android:layout_width="match_parent"
             android:layout_height="68dp"
-            android:layout_above="@+id/rl_livevideo_experience_guide_message_panelcontent"
+            android:layout_above="@id/ll_livevideo_experience_guide_message_panelcontent"
+            android:layout_marginBottom="0dp"
             android:background="#b2000000"
             android:visibility="visible">
 
@@ -697,8 +716,18 @@
                 android:layout_marginRight="16dp"
                 android:background="@drawable/selector_livevideo_small_english_chat_send"
                 android:clickable="true" />
-        </RelativeLayout>
 
+        </RelativeLayout>
+        <ImageView
+            android:id="@+id/iv_experience_guide_message_submit_hand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@id/rl_experience_guide_message_input"
+            android:layout_alignTop="@id/rl_experience_guide_message_input"
+            android:layout_marginTop="34dp"
+            android:layout_marginRight="13dp"
+            android:src="@drawable/experience_guide_lead_hand_img_nor"
+            android:visibility="gone"/>
     </RelativeLayout>
 
     <TextView
@@ -708,27 +737,31 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="15dp"
-        android:layout_marginTop="15dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:clickable="true"
         android:drawableLeft="@drawable/experience_guide_back_icon_white"
         android:drawablePadding="5dp"
+        android:padding="5dp"
         android:text="退出"
         android:textColor="@color/COLOR_FFFFFF" />
+
     <include
         android:id="@+id/rl_experience_guide_home_pager"
         layout="@layout/item_experience_guide_home_pager"
-        android:visibility="gone"></include>
+        android:visibility="visible"></include>
+
     <TextView
+        style="@style/text_font17_ffffff_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:drawableLeft="@drawable/experience_guide_count_down_icon"
         android:drawablePadding="2dp"
-        style="@style/text_font17_ffffff_style"
         android:text="15S后将开启体验课"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 
 </RelativeLayout>

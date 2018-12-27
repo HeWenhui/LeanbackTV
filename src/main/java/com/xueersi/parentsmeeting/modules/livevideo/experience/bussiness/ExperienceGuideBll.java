@@ -26,11 +26,18 @@ public class ExperienceGuideBll extends LiveBackBaseBll implements IPagerControl
     @Override
     public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object> businessShareParamMap) {
         super.onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
+
+
+    }
+
+    @Override
+    public void initView() {
         if (mRootView != null){
             mGuidePager = new ExperienceGuidePager(mContext,this);
             showPager();
-        }
 
+//            liveBackBll.getvPlayer().pause();
+        }
     }
 
     @Override

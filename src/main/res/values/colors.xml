@@ -112,4 +112,6 @@
 
     <color name="COLOR_FFFF8036">#FFFF8036</color>
     <color name="COLOR_FFFF6E1A">#FFFF6E1A</color>
+
+    <color name="COLOR_00000000">#00000000</color>
 </resources>
