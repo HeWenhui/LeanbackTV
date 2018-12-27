@@ -1912,6 +1912,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         ArtsExtLiveInfo info = new ArtsExtLiveInfo();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         info.setNewCourseWarePlatform(data.optString("newCourseWarePlatform"));
+        String isArriveLate = data.optString("isArriveLate");
+        if ("1".equals(isArriveLate)) {
+            info.setArriveLate(true);
+        } else if ("2".equals(isArriveLate)) {
+            info.setArriveLate(false);
+        }
         return info;
     }
 

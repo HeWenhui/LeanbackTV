@@ -69,12 +69,17 @@ public class EnglishSpeekEnBll extends BaseEnglishStandSpeekBll implements Engli
     int lastSecond;
     int MAX_SECOND = 15;
     StringBuilder totalEn_seg_len = new StringBuilder();
+    /**
+     * 其他业务开口时长 eg. 语音评测、语音答题
+     */
+    private int otherDuration = 0;
 
     public EnglishSpeekEnBll(Activity activity, LiveGetInfo liveGetInfo) {
         this.activity = activity;
         this.liveGetInfo = liveGetInfo;
         liveAndBackDebug = ProxUtil.getProxUtil().get(activity, LiveAndBackDebug.class);
         setTotalOpeningLength(liveGetInfo.getTotalOpeningLength());
+        ProxUtil.getProxUtil().put(activity, EnglishSpeekAction.class, this);
     }
 
     public boolean initView(RelativeLayout bottomContent, String mode, TalLanguage talLanguage, final AtomicBoolean audioRequest, RelativeLayout mContentView) {
@@ -120,7 +125,7 @@ public class EnglishSpeekEnBll extends BaseEnglishStandSpeekBll implements Engli
             }
             final String en_seg_len = jsonObject.optString("duration");
             lastduration = duration;
-            double time = Double.parseDouble(duration);
+            double time = Double.parseDouble(duration) + otherDuration;
             final int totalSecond = (int) time;
             if (dbStart) {
                 dbDuration = totalSecond - dbSecond;
@@ -179,7 +184,7 @@ public class EnglishSpeekEnBll extends BaseEnglishStandSpeekBll implements Engli
                     }
                     if (second15 >= 15) {
                         second15 = second15 % MAX_SECOND;
-                        double douduration = Double.parseDouble(duration);
+                        double douduration = Double.parseDouble(duration) + otherDuration;
 //                        int location[] = new int[2];
 //                        tv_livevideo_english_prog.getLocationInWindow(location);
                         String speakingLen = totalEn_seg_len.toString();
@@ -385,6 +390,22 @@ public class EnglishSpeekEnBll extends BaseEnglishStandSpeekBll implements Engli
     public void destory() {
         if (speakerRecognitioner != null) {
             speakerRecognitioner.stop();
+        }
+    }
+
+    @Override
+    public void onAddTotalOpeningLength(double speechDuration) {
+        this.otherDuration += speechDuration;
+        JSONObject jsonObject = new JSONObject();
+        try {
+            double douLastduration = Double.parseDouble(lastduration);
+            jsonObject.put("time", "" + speechDuration + douLastduration);
+            jsonObject.put("duration", "" + speechDuration);
+            onPredict(jsonObject.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
         }
     }
 }

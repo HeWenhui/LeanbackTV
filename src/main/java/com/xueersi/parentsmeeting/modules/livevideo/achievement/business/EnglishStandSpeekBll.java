@@ -355,6 +355,11 @@ public class EnglishStandSpeekBll extends BaseEnglishStandSpeekBll implements En
         stop(null);
     }
 
+    @Override
+    public void onAddTotalOpeningLength(double speechDuration) {
+
+    }
+
     String lastduration;
     int oldProgress;
 
