@@ -332,6 +332,8 @@ public class LiveVideoConfig {
     /** 一发多题的两个动态接口-语文 */
     public static String LIVEMULPRELOADCHS;
     public static String LIVEMULH5URLCHS;
+    /** AI体验课互动题答题结果*/
+    public static Boolean isAITrue = false;
     /** 战队PK改版 */
     public static String tests;
     public static String ctId;
