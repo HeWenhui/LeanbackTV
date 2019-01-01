@@ -4,6 +4,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.os.Build;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 
@@ -252,6 +253,7 @@ public class HardWareUtil {
 
     /**
      * 手机总内存,单位kb
+     * 可能返回0
      *
      * @return
      */
@@ -268,7 +270,11 @@ public class HardWareUtil {
             e.printStackTrace();
         }
         if (firstLine != null) {
-            totalRam = (int) Math.ceil((new Float(Float.valueOf(firstLine)).doubleValue()));
+            try {
+                totalRam = (int) Math.ceil((Float.valueOf(firstLine).doubleValue()));
+            } catch (Exception e) {
+                CrashReport.postCatchedException(e);
+            }
         }
         return totalRam;
     }
