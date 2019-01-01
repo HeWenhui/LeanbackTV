@@ -58,7 +58,14 @@ public class LiveService extends Service {
         public void run() {
             ActivityManager mActivityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
             boolean isAlive = false;
-            List<ActivityManager.RunningAppProcessInfo> runningAppProcessInfos = mActivityManager.getRunningAppProcesses();
+            List<ActivityManager.RunningAppProcessInfo> runningAppProcessInfos;
+            try {
+                //bugly 2555
+                runningAppProcessInfos = mActivityManager.getRunningAppProcesses();
+            } catch (Exception e) {
+                return;
+            }
+            //bugly 2053
             if (runningAppProcessInfos != null) {
                 for (ActivityManager.RunningAppProcessInfo appProcess : mActivityManager.getRunningAppProcesses()) {
                     if (appProcess.pid == livepid) {

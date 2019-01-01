@@ -160,6 +160,9 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
     @Override
     protected void onUserBackPressed() {
+        if (mLiveBll == null) {
+            super.onUserBackPressed();
+        }
         boolean userBackPressed = mLiveBll.onUserBackPressed();
         if (!userBackPressed) {
             super.onUserBackPressed();
