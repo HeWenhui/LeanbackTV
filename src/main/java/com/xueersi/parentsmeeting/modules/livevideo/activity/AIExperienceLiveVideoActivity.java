@@ -1230,6 +1230,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         // 扫描互动题
         scanQuestion(currentPosition);
         Log.e("Duncan", "currentPosition:" + currentPosition + ": threadId =" + Thread.currentThread().getId());
+        Log.e("Duncan", "isAITrue:" + LiveVideoConfig.isAITrue);
         if (HISTROY_MSG_DISPLAY) {
             displayHistoryMsg();
         }
@@ -1252,16 +1253,27 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                                 seekTo(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getPublish().getBeginTime() * 1000);
                                 logger.e("seekTo2=====>"+ mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getPublish().getBeginTime());
                             }
+                            // 答对的情况下，需要过滤掉容易题的视频片段
+                            if(playPosition == mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getInterpret().getEndTime()){
+                                seekTo(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getInterpret().getEndTime() * 1000);
+                                logger.e("seekTo3=====>"+ mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getInterpret().getEndTime());
+                            }
                         }
                     }else{
                         if(mVideoEntity.getSciAiEvent().getExercises().get(i).getKnowledgePoints().getEndTime() != 0 && playPosition == mVideoEntity.getSciAiEvent().getExercises().get(i).getKnowledgePoints().getEndTime() ){
                             if(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getIntroduce().getBeginTime() != 0){
                                 seekTo(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getIntroduce().getBeginTime() * 1000);
-                                logger.e("seekTo3=====>"+ mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getIntroduce().getBeginTime());
+                                logger.e("seekTo4=====>"+ mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getIntroduce().getBeginTime());
                             }else{
                                 seekTo(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getPublish().getBeginTime() * 1000);
-                                logger.e("seekTo4=====>"+ mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getPublish().getBeginTime());
+                                logger.e("seekTo5=====>"+ mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getPublish().getBeginTime());
                             }
+                        }else if(mVideoEntity.getSciAiEvent().getExercises().get(i).getKnowledgePoints().getEndTime() == 0){
+                           if(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getIntroduce().getBeginTime() != 0){
+                               mVideoEntity.getSciAiEvent().getExercises().get(i).getKnowledgePoints().setEndTime(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getIntroduce().getBeginTime()-10);
+                           }else{
+                               mVideoEntity.getSciAiEvent().getExercises().get(i).getKnowledgePoints().setEndTime(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getPublish().getBeginTime()-10);
+                           }
                         }
                     }
                 }
