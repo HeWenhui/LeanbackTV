@@ -251,6 +251,9 @@ public class HardWareUtil {
         return mi.availMem;// 将获取的内存大小规格化
     }
 
+    /** 手机总内存,单位kb */
+    private static int TOTAL_RAM = 0;
+
     /**
      * 手机总内存,单位kb
      * 可能返回0
@@ -258,6 +261,9 @@ public class HardWareUtil {
      * @return
      */
     public static int getTotalRam() {//GB
+        if (TOTAL_RAM != 0) {
+            return TOTAL_RAM;
+        }
         String path = "/proc/meminfo";
         String firstLine = null;
         int totalRam = 0;
@@ -276,6 +282,7 @@ public class HardWareUtil {
                 CrashReport.postCatchedException(e);
             }
         }
+        TOTAL_RAM = totalRam;
         return totalRam;
     }
 }
