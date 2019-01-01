@@ -10,6 +10,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
  */
 public class StandLiveMethod {
     public static LiveSoundPool.SoundPlayTask onClickVoice(LiveSoundPool soundPool) {
+        if (StandLiveConfig.voicePath == null) {
+            StandLiveConfig.createVoice(BaseApplication.getContext());
+        }
         String path = StandLiveConfig.voicePath.VOICE_CLICK_BUTTON;
         LiveSoundPool.SoundPlayTask task = new LiveSoundPool.SoundPlayTask(path, StandLiveConfig.MUSIC_VOLUME_RATIO_FRONT, false);
         int soundId = LiveSoundPool.play(null, soundPool, task);

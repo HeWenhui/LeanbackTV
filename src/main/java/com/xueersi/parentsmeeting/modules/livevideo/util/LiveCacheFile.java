@@ -16,7 +16,12 @@ public class LiveCacheFile {
         if (cacheDir != null) {
             alldir = new File(cacheDir, cache);
         } else {
-            alldir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/" + cache);
+            String status = Environment.getExternalStorageState();
+            if (status.equals(Environment.MEDIA_MOUNTED)) {
+                alldir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/" + cache);
+            } else {
+                alldir = new File(context.getCacheDir(), cache);
+            }
         }
         if (!alldir.exists()) {
             alldir.mkdirs();
