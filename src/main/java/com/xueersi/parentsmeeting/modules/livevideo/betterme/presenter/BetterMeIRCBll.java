@@ -5,12 +5,12 @@ import android.app.Activity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.contract.BetterMeContract;
-import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.AimRealTimeValEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.BetterMeEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuAimResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.entity.StuSegmentEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.betterme.view.BetterMePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
@@ -39,12 +39,28 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
+        switch (type) {
+            case XESCODE.XCR_ROOM_BETTERME_OPEN: {
+                getBetterMe();
+                break;
+            }
 
+            case XESCODE.XCR_ROOM_BETTERME_RESULT: {
+                getStuAimResult();
+                break;
+            }
+            default: {
+                break;
+            }
+        }
     }
 
     @Override
     public int[] getNoticeFilter() {
-        return new int[0];
+        return new int[]{
+                XESCODE.XCR_ROOM_BETTERME_OPEN,
+                XESCODE.XCR_ROOM_BETTERME_RESULT
+        };
     }
 
     @Override
@@ -59,25 +75,6 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     /**
-     * 获取学生段位信息
-     */
-    @Override
-    public void getStuSegment() {
-        getHttpManager().getStuSegment(new HttpCallBack(false) {
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) {
-                logger.i("getStuSegment:onPmSuccess():json=" + responseEntity.getJsonObject());
-                mStuSegmentEntity = getHttpResponseParser().parseStuSegmentInfo(responseEntity);
-                if (mStuSegmentEntity != null && mBetterMeEntity != null) {
-                    mBetterMeView.showReceiveTargetPager(mStuSegmentEntity, mBetterMeEntity);
-                    mStuSegmentEntity = null;
-                    mBetterMeEntity = null;
-                }
-            }
-        });
-    }
-
-    /**
      * 获取学生这节课小目标
      */
     @Override
@@ -89,10 +86,25 @@ public class BetterMeIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.i("getBetterMe:onPmSuccess():json=" + responseEntity.getJsonObject());
                 mBetterMeEntity = getHttpResponseParser().parseBetterMeInfo(responseEntity);
-                if (mStuSegmentEntity != null && mBetterMeEntity != null) {
+                if (mBetterMeEntity != null) {
+                    getStuSegment();
+                }
+            }
+        });
+    }
+
+    /**
+     * 获取学生段位信息
+     */
+    @Override
+    public void getStuSegment() {
+        getHttpManager().getStuSegment(new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                logger.i("getStuSegment:onPmSuccess():json=" + responseEntity.getJsonObject());
+                mStuSegmentEntity = getHttpResponseParser().parseStuSegmentInfo(responseEntity);
+                if (mStuSegmentEntity != null) {
                     mBetterMeView.showReceiveTargetPager(mStuSegmentEntity, mBetterMeEntity);
-                    mStuSegmentEntity = null;
-                    mBetterMeEntity = null;
                 }
             }
         });

@@ -73,7 +73,7 @@ public class BetterMeReceiveTargetPager extends BasePager {
     public BetterMeReceiveTargetPager(StuSegmentEntity stuSegmentEntity, BetterMeEntity betterMeEntity, Context context, OnPagerClose onPagerClose) {
         super(context);
         this.mStuSegmentEntity = stuSegmentEntity;
-        this.mBetterMeEntity = mBetterMeEntity;
+        this.mBetterMeEntity = betterMeEntity;
         this.mOnpagerClose = onPagerClose;
         initData();
         initListener();

@@ -234,4 +234,8 @@ public interface XESCODE {
         int XCR_ROOM_TEAMPK_GO = 1020;//     ("1005")  //发布战队PK结果
     }
 
+    /** 开启小目标 */
+    int XCR_ROOM_BETTERME_OPEN = 1055;
+    /** 小目标结果页 */
+    int XCR_ROOM_BETTERME_RESULT = 1056;
 }

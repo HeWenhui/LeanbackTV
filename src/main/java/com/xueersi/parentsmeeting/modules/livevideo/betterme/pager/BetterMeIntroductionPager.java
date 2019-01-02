@@ -61,7 +61,7 @@ public class BetterMeIntroductionPager extends BasePager {
     @Override
     public void initData() {
         final String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "images";
-        String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "data.json";
+        final String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "data.json";
         mLottieAnimationView.setAnimation(lottieJsonPath);
         mLottieAnimationView.setImageAssetsFolder(lottieResPath);
         mLottieAnimationView.useHardwareAcceleration(true); //使用硬件加速

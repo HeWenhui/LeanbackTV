@@ -90,7 +90,6 @@ public class BetterMePager implements BetterMeContract.BetterMeView, OnPagerClos
             @Override
             public void onClick(View v) {
                 mBetterMePresenter.getBetterMe();
-                mBetterMePresenter.getStuSegment();
             }
         });
         btnTest4.setOnClickListener(new View.OnClickListener() {
