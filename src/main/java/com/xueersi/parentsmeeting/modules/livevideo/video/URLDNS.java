@@ -10,4 +10,8 @@ public class URLDNS {
     public String ip;
     public long time = 0;
 
+    @Override
+    public String toString() {
+        return "ip:" + ip + ",time=" + time;
+    }
 }

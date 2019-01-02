@@ -55,6 +55,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
     LecLiveVideoAction lecLiveVideoAction;
     /** onPause状态不暂停视频 */
     PauseNotStopVideoIml pauseNotStopVideoIml;
+    boolean firstInitView = false;
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -308,6 +309,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
                 for (LiveBaseBll businessBll : businessBlls) {
                     businessBll.initViewF(null, bottomContent, mIsLand, mContentView);
                 }
+                firstInitView = true;
                 logger.d("changeLandAndPort:time2=" + (System.currentTimeMillis() - before));
 //                liveMessageBll.initView(questionContent, mIsLand);
 //                //点名
@@ -359,6 +361,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
                 for (LiveBaseBll businessBll : businessBlls) {
                     businessBll.initViewF(null, bottomContent, mIsLand, mContentView);
                 }
+                firstInitView = true;
                 logger.d("changeLandAndPort:time4=" + (System.currentTimeMillis() - before));
 //                liveMessageBll.initView(questionContent, mIsLand);
 //                //点名
@@ -381,6 +384,15 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
                         mPopupWindows.dismiss();
                     }
                 });
+            }
+        }
+        //在后台被回收，再启动。会没有初始化view
+        if (!firstInitView) {
+            logger.d("changeLandAndPort:firstInitView=false");
+            firstInitView = true;
+            List<LiveBaseBll> businessBlls = mLiveBll.getBusinessBlls();
+            for (LiveBaseBll businessBll : businessBlls) {
+                businessBll.initViewF(null, bottomContent, mIsLand, mContentView);
             }
         }
     }

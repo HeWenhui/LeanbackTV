@@ -160,6 +160,9 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
     @Override
     protected void onUserBackPressed() {
+        if (mLiveBll == null) {
+            super.onUserBackPressed();
+        }
         boolean userBackPressed = mLiveBll.onUserBackPressed();
         if (!userBackPressed) {
             super.onUserBackPressed();
@@ -482,7 +485,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
     /**
      * 播放失败，或者完成时调用
      */
-    private void onFail(int arg1, final int arg2) {
+    protected void onFail(int arg1, final int arg2) {
         if (liveVideoAction != null) {
             liveVideoAction.onFail(arg1, arg2);
         }
