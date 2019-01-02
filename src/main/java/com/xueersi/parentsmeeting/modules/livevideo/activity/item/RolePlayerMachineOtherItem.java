@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.AudioPlayerManager;
 import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.PlayerCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -235,15 +237,21 @@ public class RolePlayerMachineOtherItem extends RolePlayerItem {
      */
     private void recoverMsgUiStatus() {
         //如果是子线程的回调，会报出异常Only the original thread that created a view hierarchy can touch its views.
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                logger.i( "currentThread:"+Thread.currentThread());
-                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
-                vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
-                tvMessageContent.setTextColor(Color.parseColor("#333333"));
-            }
-        });
+        if (Looper.myLooper() != Looper.getMainLooper()) {
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
+                    vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
+                    tvMessageContent.setTextColor(Color.parseColor("#333333"));
+                }
+            });
+        }else {
+            ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
+            vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
+            tvMessageContent.setTextColor(Color.parseColor("#333333"));
+        }
+
 
     }
 
