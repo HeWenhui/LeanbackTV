@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.experience.pager;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -15,10 +14,12 @@ import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
-import android.util.Size;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -34,7 +35,6 @@ import com.xueersi.lib.framework.utils.listener.OnUnDoubleClickListener;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.ImageHintDialog;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.experience.bussiness.IPagerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
@@ -109,7 +109,7 @@ public class ExperienceGuidePager extends LiveBasePager {
     private RelativeLayout rlVoiceAnswer;
     private VolumeWaveView vwvVoiceAnswer;
     private TextView tvVoiceTip;
-    private ImageView ivVoiceHand;
+    private ImageView ivVoiceArrows;
     private LinearLayout llSpeechFollow;
     private ImageView ivStartSpeech;
     private TextView tvSpeechFollow;
@@ -122,7 +122,7 @@ public class ExperienceGuidePager extends LiveBasePager {
     private RelativeLayout rlStepFour;
     private Button btnMessageOpen;
     private Button btnMessageCommon;
-    private ImageView ivOpenChick;
+    private ImageView ivOpenChickHand;
     private RelativeLayout rlMessage;
     private KPSwitchFSPanelLinearLayout switchFSPanelLinearLayout;
     private RelativeLayout rlMessageInput;
@@ -135,8 +135,9 @@ public class ExperienceGuidePager extends LiveBasePager {
     private int introduceStep = 1;
     private SpannableStringBuilder spannableStringBuilder;
     private ForegroundColorSpan colorOrange;
-    //理科0，英语1，语文2
-    private int subject = 0;
+    //理科2，英语3，语文1
+    private String subject;
+    private long visitTime;
     private ImageHintDialog imageDialog;
     private boolean isSpeechRecog;
     private CountDownTimer speechCountDownTimer;
@@ -144,20 +145,32 @@ public class ExperienceGuidePager extends LiveBasePager {
     private KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener;
     private View view;
     private ImageView ivMessageHand;
-
+    private AlphaAnimation alphaAnimation;
+    private Runnable indexNextRunable;
+    private Animation scalAnimation;
+    private CountDownTimer countDownTimer;
+    private CountDownTimer quitCountDownTimer;
+    private TextView tvCountDown;
+    private VerifyCancelAlertDialog quitDialog;
 
     public ExperienceGuidePager(Context context) {
         super(context);
     }
 
-    public ExperienceGuidePager(Context context, IPagerControl iPagerControl) {
+    public ExperienceGuidePager(Context context, IPagerControl iPagerControl, long visitTime, String subject) {
         super(context);
+        this.subject = subject;
+        this.visitTime = visitTime;
         pagerControl = iPagerControl;
+
+        initTimer();
     }
 
     @Override
     public View initView() {
         view = LayoutInflater.from(mContext).inflate(R.layout.pager_livevideo_experience_guide, null);
+        //倒计时
+        tvCountDown = view.findViewById(R.id.tv_experience_guide_count_down);
         //新手引导首页
         rlGuideHomePager = view.findViewById(R.id.rl_experience_guide_home_pager);
         ivHomeQuit = view.findViewById(R.id.iv_experience_guide_home_back);
@@ -204,7 +217,7 @@ public class ExperienceGuidePager extends LiveBasePager {
         rlVoiceAnswer = view.findViewById(R.id.rl_experience_guide_voice_answer);
         vwvVoiceAnswer = view.findViewById(R.id.vwv_experience_guide_wave);
         tvVoiceTip = view.findViewById(R.id.tv_experience_guide_voice_tip);
-        ivVoiceHand = view.findViewById(R.id.iv_experience_guide_speech_hand);
+        ivVoiceArrows = view.findViewById(R.id.iv_experience_guide_voice_arrows);
         //语文跟读
         llSpeechFollow = view.findViewById(R.id.ll_experience_guide_voice_evaluate);
         ivStartSpeech = view.findViewById(R.id.iv_experience_guide_voicetest_record);
@@ -216,15 +229,21 @@ public class ExperienceGuidePager extends LiveBasePager {
         rlStepFour = view.findViewById(R.id.rl_experience_guide_step4);
         btnMessageOpen = view.findViewById(R.id.btn_experience_guide_message_open);
         btnMessageCommon = view.findViewById(R.id.btn_experience_guide_message_common);
-        ivOpenChick = view.findViewById(R.id.iv_experience_guide_chick);
+        ivOpenChickHand = view.findViewById(R.id.iv_experience_guide_chick);
         rlMessage = view.findViewById(R.id.rl_experience_guide_message);
         switchFSPanelLinearLayout = view.findViewById(R.id.ll_livevideo_experience_guide_message_panelroot);
         rlMessageInput = view.findViewById(R.id.rl_experience_guide_message_input);
         etMessageInput = view.findViewById(R.id.et_experience_guide_message_content);
         btnMessageSend = view.findViewById(R.id.bt_experience_guide_message_send);
         ivMessageHand = view.findViewById(R.id.iv_experience_guide_message_submit_hand);
+        initAnimation();
         initListener();
+        initRunable();
         return view;
+    }
+
+    private void initRunable() {
+        indexNextRunable = new ViewClickRunnable(btnIndexNext);
     }
 
     @Override
@@ -239,7 +258,11 @@ public class ExperienceGuidePager extends LiveBasePager {
         btnIndexNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                btnIndexNext.clearAnimation();
+                btnIndexNext.setAlpha(1.0f);
+                if (indexNextRunable != null) {
+                    view.removeCallbacks(indexNextRunable);
+                }
                 switch (step) {
                     case 1:
                         setAreaBackground(false, true, true);
@@ -259,10 +282,12 @@ public class ExperienceGuidePager extends LiveBasePager {
                         tvQuestionTitle.setText("1. what is the setting of the story ?");
                         tvQuestionContent.setText("A. a bedroom at night\nB. a bam at night\nC. a dinner at noon ");
                         rlStepThree.setVisibility(View.VISIBLE);
-                        if (subject == 1) {
+                        if ("3".equals(subject)) {
                             rlVoiceAnswer.setVisibility(View.VISIBLE);
                             setVoiceAnswer();
-                        } else if (subject == 2) {
+                        } else if ("1".equals(subject)) {
+                            tvQuit.setCompoundDrawablesWithIntrinsicBounds(R.drawable.experience_guide_back_icon_gray, 0, 0, 0);
+                            tvQuit.setTextColor(0xFF666666);
                             llSpeechFollow.setVisibility(View.VISIBLE);
                         }
                         break;
@@ -309,12 +334,14 @@ public class ExperienceGuidePager extends LiveBasePager {
                 if (isChecked) {
                     btnOptionSubmit.setEnabled(true);
                     btnOptionSubmit.setTextColor(0xFFFF6E1A);
+                    ivOptionHand.clearAnimation();
                     ivOptionHand.setVisibility(View.GONE);
                     ivOptionSubmitHand.setVisibility(View.VISIBLE);
                 } else {
                     btnOptionSubmit.setEnabled(false);
                     btnOptionSubmit.setTextColor(0xFF666666);
                     ivOptionHand.setVisibility(View.VISIBLE);
+                    ivOptionSubmitHand.clearAnimation();
                     ivOptionSubmitHand.setVisibility(View.GONE);
                 }
             }
@@ -322,6 +349,8 @@ public class ExperienceGuidePager extends LiveBasePager {
         btnOptionSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ivOptionSubmitHand.clearAnimation();
+                ivOptionSubmitHand.setVisibility(View.GONE);
                 rlQuestion.setVisibility(View.GONE);
                 rlStepTwo.setVisibility(View.GONE);
                 showResultDialog("哦耶，答对了！");
@@ -338,7 +367,8 @@ public class ExperienceGuidePager extends LiveBasePager {
         btnMessageOpen.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ivOpenChick.setVisibility(View.GONE);
+                ivOpenChickHand.clearAnimation();
+                ivOpenChickHand.setVisibility(View.GONE);
                 rlMessage.setVisibility(View.VISIBLE);
                 switchFSPanelLinearLayout.setVisibility(View.VISIBLE);
                 KPSwitchConflictUtil.showKeyboard(switchFSPanelLinearLayout, etMessageInput);
@@ -352,8 +382,9 @@ public class ExperienceGuidePager extends LiveBasePager {
                 mInputMethodManager.hideSoftInputFromWindow(etMessageInput.getWindowToken(), 0);
                 rlStepFour.setVisibility(View.GONE);
                 switchFSPanelLinearLayout.setVisibility(View.GONE);
+                ivMessageHand.clearAnimation();
+                ivMessageHand.setVisibility(View.GONE);
                 rlMessage.setVisibility(View.GONE);
-                ivOpenChick.setVisibility(View.GONE);
                 SpannableStringBuilder meSpan = new SpannableStringBuilder("我：" + etMessageInput.getText().toString());
                 meSpan.setSpan(new ForegroundColorSpan(0xFFFF8036), 0, 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                 tvMessageMe.setText(meSpan);
@@ -370,11 +401,12 @@ public class ExperienceGuidePager extends LiveBasePager {
                     public void run() {
                         showCompleteDialog();
                     }
-                },4000);
+                }, 2000);
 
 
             }
         });
+
         etMessageInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -386,6 +418,7 @@ public class ExperienceGuidePager extends LiveBasePager {
                 if (StringUtils.isEmpty(charSequence)) {
                     btnMessageSend.setEnabled(false);
                     btnMessageSend.setBackgroundResource(R.drawable.play_chat_sent_btn_disabled);
+                    ivMessageHand.clearAnimation();
                     ivMessageHand.setVisibility(View.GONE);
                 } else {
                     btnMessageSend.setEnabled(true);
@@ -407,11 +440,106 @@ public class ExperienceGuidePager extends LiveBasePager {
                 logger.i("onKeyboardShowing:isShowing=" + isShowing);
             }
         });
+
+        vwvVoiceAnswer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                vwvVoiceAnswer.setLinearGradient(new LinearGradient(0, 0, vwvVoiceAnswer.getMeasuredWidth(), 0,
+                        new int[]{0xFFEA9CF9, 0xFF9DBBFA, 0xFF80F9FD}, new float[]{0, 0.5f, 1.0f}, Shader.TileMode
+                        .CLAMP));
+            }
+        });
+        vwvVoiceAnswer.setBackColor(Color.TRANSPARENT);
+        vwvVoiceAnswer.start();
+        ivOptionHand.getViewTreeObserver().addOnGlobalLayoutListener(new HandOnDrawListener(ivOptionHand));
+        ivOptionSubmitHand.getViewTreeObserver().addOnGlobalLayoutListener(new HandOnDrawListener(ivOptionSubmitHand));
+        ivSpeechHand.getViewTreeObserver().addOnGlobalLayoutListener(new HandOnDrawListener(ivSpeechHand));
+        ivMessageHand.getViewTreeObserver().addOnGlobalLayoutListener(new HandOnDrawListener(ivMessageHand));
+        ivOpenChickHand.getViewTreeObserver().addOnGlobalLayoutListener(new HandOnDrawListener(ivOpenChickHand));
         super.initListener();
     }
 
+    private void initTimer() {
+        if ("3".equals(subject)) {
+            final Random random = new Random(100);
+            countDownTimer = new CountDownTimer(8000, 100) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    if (millisUntilFinished < 5000 && millisUntilFinished > 1500) {
+                        tvVoiceTip.setVisibility(View.GONE);
+                        ivVoiceArrows.setVisibility(View.GONE);
+                        vwvVoiceAnswer.setVolume(random.nextFloat() * 60);
+                    } else {
+                        vwvVoiceAnswer.setVolume(0);
+                    }
+                }
+
+                @Override
+                public void onFinish() {
+                    vwvVoiceAnswer.stop();
+                    vwvVoiceAnswer.setVisibility(View.GONE);
+                    rlStepThree.setVisibility(View.GONE);
+                    rlQuestion.setVisibility(View.GONE);
+                    showResultDialog("恭喜你，完成测试！");
+                }
+            };
+        }
+        visitTime = 50000;
+        if (visitTime > 16000) {
+            quitCountDownTimer = new CountDownTimer(visitTime, 500) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    if (millisUntilFinished < 16000) {
+                        tvCountDown.setVisibility(View.VISIBLE);
+                        tvCountDown.setText(millisUntilFinished / 1000 + "S后将开启体验课");
+                    }
+                }
+
+                @Override
+                public void onFinish() {
+                    InputMethodManager mInputMethodManager = (InputMethodManager) mContext.getSystemService(Context
+                            .INPUT_METHOD_SERVICE);
+                    mInputMethodManager.hideSoftInputFromWindow(etMessageInput.getWindowToken(), 0);
+                    ivHomeQuit.performClick();
+                }
+            };
+            quitCountDownTimer.start();
+        }
+
+    }
+
+    class HandOnDrawListener implements ViewTreeObserver.OnGlobalLayoutListener {
+        View view;
+
+        HandOnDrawListener(View view) {
+            this.view = view;
+        }
+
+        @Override
+        public void onGlobalLayout() {
+            if (view.getVisibility() == View.VISIBLE) {
+                view.startAnimation(scalAnimation);
+            } else {
+                view.clearAnimation();
+            }
+        }
+    }
+
+    /**
+     * 引导页index
+     *
+     * @param isShow
+     */
     private void setIndexView(boolean isShow) {
         if (isShow) {
+            view.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startIndexNextAnim();
+                    btnIndexNext.setEnabled(true);
+                }
+            }, 1000);
+            view.postDelayed(indexNextRunable, 5000);
             llGuideIndex.setVisibility(View.VISIBLE);
             setAreaBackground(true, true, true);
             if (spannableStringBuilder == null) {
@@ -431,7 +559,7 @@ public class ExperienceGuidePager extends LiveBasePager {
                     tvIndexTitle.setText(spannableStringBuilder);
                     break;
                 case 2:
-                    if (subject != 0) {
+                    if ("3".equals(subject) || "1".equals(subject)) {
                         spannableStringBuilder.clear();
                         spannableStringBuilder.append("3.如何做语音题？");
                         spannableStringBuilder.setSpan(colorOrange, 5, 8, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -451,66 +579,51 @@ public class ExperienceGuidePager extends LiveBasePager {
             step++;
         } else {
             llGuideIndex.setVisibility(View.GONE);
+            btnIndexNext.setEnabled(false);
+            btnIndexNext.setVisibility(View.INVISIBLE);
         }
 
     }
 
+    /**
+     * 英语语音答题显示
+     */
     private void setVoiceAnswer() {
-        final Random random = new Random(100);
-        vwvVoiceAnswer.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        view.postDelayed(new Runnable() {
             @Override
-            public void onGlobalLayout() {
-                vwvVoiceAnswer.setLinearGradient(new LinearGradient(0, 0, vwvVoiceAnswer.getMeasuredWidth(), 0,
-                        new int[]{0xFFEA9CF9, 0xFF9DBBFA, 0xFF80F9FD}, new float[]{0, 0.5f, 1.0f}, Shader.TileMode
-                        .CLAMP));
+            public void run() {
+                vwvVoiceAnswer.setVisibility(View.VISIBLE);
+                ivVoiceArrows.setVisibility(View.VISIBLE);
+                countDownTimer.start();
             }
-        });
-        vwvVoiceAnswer.setBackColor(Color.TRANSPARENT);
-        vwvVoiceAnswer.start();
-        CountDownTimer countDownTimer = new CountDownTimer(8000, 100) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                if (millisUntilFinished < 5000 && millisUntilFinished > 1000) {
-                    tvVoiceTip.setVisibility(View.GONE);
-                    ivVoiceHand.setVisibility(View.GONE);
-                    vwvVoiceAnswer.setVolume(random.nextFloat() * 70);
-                } else {
-                    vwvVoiceAnswer.setVolume(0);
-                }
-            }
+        }, 5);
 
-            @Override
-            public void onFinish() {
-                vwvVoiceAnswer.stop();
-                vwvVoiceAnswer.setVisibility(View.GONE);
-                rlStepThree.setVisibility(View.GONE);
-                rlQuestion.setVisibility(View.GONE);
-                showResultDialog("恭喜你，完成测试！");
-            }
-        };
-        countDownTimer.start();
     }
 
+    /**
+     * 语文跟读显示
+     */
     private void setSpeechAnswer() {
         if (!isSpeechRecog) {
             tvSpeechStart.setText("点击结束");
             tvSpeechTip.setVisibility(View.GONE);
             ivStartSpeech.setEnabled(false);
+            ivSpeechHand.clearAnimation();
             ivSpeechHand.setVisibility(View.GONE);
             isSpeechRecog = true;
             speechSpan = new SpannableStringBuilder();
-            speechCountDownTimer = new CountDownTimer(6000, 500) {
+            speechCountDownTimer = new CountDownTimer(5000, 1000) {
                 @Override
                 public void onTick(long millisUntilFinished) {
-                    if (millisUntilFinished > 5000 && millisUntilFinished < 5500) {
+                    if (millisUntilFinished > 4000 && millisUntilFinished < 5000) {
                         speechSpan.append("清明 唐 杜牧\n");
                         tvSpeechFollow.setText(speechSpan);
-                    } else if (millisUntilFinished > 3000 && millisUntilFinished < 5000) {
+                    } else if (millisUntilFinished > 2000 && millisUntilFinished < 4000) {
                         speechSpan.clear();
                         speechSpan.append("清明 唐 杜牧\n清明时节雨纷纷，路上行人欲断魂。\n");
                         speechSpan.setSpan(new ForegroundColorSpan(0xFFFF0000), 11, 18, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                         tvSpeechFollow.setText(speechSpan);
-                    } else if (millisUntilFinished > 1000 && millisUntilFinished < 3000) {
+                    } else if (millisUntilFinished > 0 && millisUntilFinished < 2000) {
                         speechSpan.clear();
                         speechSpan.append("清明 唐 杜牧\n清明时节雨纷纷，路上行人欲断魂。\n借问酒家何处有，牧童遥指杏花村。");
                         speechSpan.setSpan(new ForegroundColorSpan(0xFFFF0000), 11, 18, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -528,14 +641,22 @@ public class ExperienceGuidePager extends LiveBasePager {
             };
             speechCountDownTimer.start();
         } else {
+            ivSpeechHand.clearAnimation();
             ivSpeechHand.setVisibility(View.GONE);
             tvSpeechTip.setVisibility(View.GONE);
             rlQuestion.setVisibility(View.GONE);
             rlStepThree.setVisibility(View.GONE);
+            tvQuit.setCompoundDrawablesWithIntrinsicBounds(R.drawable.experience_guide_back_icon_white, 0, 0, 0);
+            tvQuit.setTextColor(0xFFFFFFFF);
             showResultDialog("恭喜你，完成测试！");
         }
     }
 
+    /**
+     * 显示答题结果弹窗
+     *
+     * @param showtext 提示文字
+     */
     private void showResultDialog(String showtext) {
         if (imageDialog == null) {
             imageDialog = new ImageHintDialog(mContext, (Application) mContext.getApplicationContext(), false);
@@ -558,23 +679,26 @@ public class ExperienceGuidePager extends LiveBasePager {
         }, 3000);
     }
 
+    /**
+     * 完成引导弹窗
+     */
     private void showCompleteDialog() {
         VerifyCancelAlertDialog completeDialog = new VerifyCancelAlertDialog(mContext, (Application) mContext.getApplicationContext(), false, VerifyCancelAlertDialog.TITLE_MESSAGE_VERIFY_TYPE);
         SpannableStringBuilder completeTitleSpan = new SpannableStringBuilder("新手引导完成！");
-        completeTitleSpan.setSpan(new ForegroundColorSpan(0xFF333333), 0, completeTitleSpan.length()-1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        completeTitleSpan.setSpan(new AbsoluteSizeSpan(SizeUtils.Sp2Px(mContext, 17)), 0, completeTitleSpan.length()-1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        completeTitleSpan.setSpan(new ForegroundColorSpan(0xFF333333), 0, completeTitleSpan.length() - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        completeTitleSpan.setSpan(new AbsoluteSizeSpan(SizeUtils.Sp2Px(mContext, 17)), 0, completeTitleSpan.length() - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         SpannableStringBuilder completeMessageSpan = new SpannableStringBuilder("你一定迫不及待的想去上课了吧！");
         completeMessageSpan.setSpan(new ForegroundColorSpan(0xFF666666), 0, completeMessageSpan.length() - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         completeMessageSpan.setSpan(new AbsoluteSizeSpan(SizeUtils.Sp2Px(mContext, 13)), 0, completeMessageSpan.length() - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         completeDialog.setVerifyBtnListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               ivHomeQuit.performClick();
+                ivHomeQuit.performClick();
             }
         });
 
         completeDialog.setVerifyShowText("去上课").initInfo
-                (completeTitleSpan,completeMessageSpan, VerifyCancelAlertDialog.VERIFY_SELECTED).showDialog();
+                (completeTitleSpan, completeMessageSpan, VerifyCancelAlertDialog.VERIFY_SELECTED).showDialog();
 
     }
 
@@ -591,28 +715,57 @@ public class ExperienceGuidePager extends LiveBasePager {
         @Override
         public void onClick(View v) {
             if (!isDialog) {
+                if (countDownTimer != null) {
+                    countDownTimer.cancel();
+                }
+                if (quitCountDownTimer != null){
+                    quitCountDownTimer.cancel();
+                }
+                if (quitDialog != null){
+                    quitDialog.cancelDialog();
+                }
+                if (imageDialog != null){
+                    imageDialog.cancelDialog();
+                }
+                if (vwvVoiceAnswer != null){
+                    vwvVoiceAnswer.stop();
+                    vwvVoiceAnswer.setVisibility(View.GONE);
+                }
                 pagerControl.removePager();
             } else {
-                final VerifyCancelAlertDialog dialog = new VerifyCancelAlertDialog(mContext, (Application) mContext.getApplicationContext(), false, VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
-                dialog.setVerifyBtnListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.cancelDialog();
-                        if (speechCountDownTimer != null) {
-                            speechCountDownTimer.cancel();
-                            speechCountDownTimer = null;
+                if (quitDialog ==  null){
+                    quitDialog = new VerifyCancelAlertDialog(mContext, (Application) mContext.getApplicationContext(), false, VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
+                    quitDialog.setVerifyBtnListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            quitDialog.cancelDialog();
+                            if (speechCountDownTimer != null) {
+                                speechCountDownTimer.cancel();
+                                speechCountDownTimer = null;
+                            }
+                            if (countDownTimer != null) {
+                                countDownTimer.cancel();
+                            }
+                            if (quitCountDownTimer != null){
+                                quitCountDownTimer.cancel();
+                            }
+                            if (vwvVoiceAnswer != null){
+                                vwvVoiceAnswer.stop();
+                                vwvVoiceAnswer.setVisibility(View.GONE);
+                            }
+                            pagerControl.removePager();
                         }
-                        pagerControl.removePager();
-                    }
-                });
-                dialog.setCancelBtnListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.cancelDialog();
-                    }
-                });
-                dialog.setCancelShowText("取消").setVerifyShowText("确定").initInfo
-                        ("确定退出新手指导？", VerifyCancelAlertDialog.VERIFY_SELECTED).showDialog();
+                    });
+                    quitDialog.setCancelBtnListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            quitDialog.cancelDialog();
+                        }
+                    });
+                    quitDialog.setCancelShowText("取消").setVerifyShowText("确定").initInfo
+                            ("确定退出新手指导？", VerifyCancelAlertDialog.VERIFY_SELECTED);
+                }
+                quitDialog.showDialog();
             }
         }
     }
@@ -624,10 +777,25 @@ public class ExperienceGuidePager extends LiveBasePager {
 
         @Override
         public void onClick(View v) {
-
             rlGuideHomePager.setVisibility(View.GONE);
             setAreaBackground(true, true, true);
+//            btnIndexNext.setAlpha(0.0f);
+            btnIndexNext.setVisibility(View.INVISIBLE);
             setIndexView(true);
+        }
+    }
+
+    class ViewClickRunnable implements Runnable {
+
+        View view;
+
+        ViewClickRunnable(View view) {
+            this.view = view;
+        }
+
+        @Override
+        public void run() {
+            view.performClick();
         }
     }
 
@@ -656,6 +824,24 @@ public class ExperienceGuidePager extends LiveBasePager {
             ivInforBg.setImageResource(R.color.COLOR_00000000);
         }
 
-
     }
+
+    /**
+     * 开始index继续按钮动画
+     */
+    private void startIndexNextAnim() {
+        btnIndexNext.startAnimation(alphaAnimation);
+        btnIndexNext.setVisibility(View.VISIBLE);
+    }
+
+    private void initAnimation() {
+        alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(mContext, R.anim.anim_experience_guide_alpha);
+        scalAnimation = AnimationUtils.loadAnimation(mContext, R.anim.anim_experience_guide_hand);
+    }
+
+    public void setSubjeceId(String subjeceId) {
+        this.subject = subjeceId;
+    }
+
+
 }

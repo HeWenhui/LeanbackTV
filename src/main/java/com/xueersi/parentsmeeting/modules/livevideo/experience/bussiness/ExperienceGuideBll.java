@@ -5,12 +5,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.xueersi.common.business.UserBll;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.experience.pager.ExperienceGuidePager;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 
 import java.util.HashMap;
 
@@ -19,6 +23,9 @@ public class ExperienceGuideBll extends LiveBackBaseBll implements IPagerControl
     ExperienceGuidePager mGuidePager;
     RelativeLayout rlViewContent;
     boolean iShowGuidePager = false;
+    VideoLivePlayBackEntity mVideoEntity;
+    LivePlayBackHttpManager livePlayBackHttpManager;
+
     public ExperienceGuideBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
     }
@@ -26,18 +33,22 @@ public class ExperienceGuideBll extends LiveBackBaseBll implements IPagerControl
     @Override
     public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object> businessShareParamMap) {
         super.onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
-
-
+        this.mVideoEntity = mVideoEntity;
+        mGuidePager = new ExperienceGuidePager(mContext, this,Long.valueOf(mVideoEntity.getVisitTimeKey()),mVideoEntity.getSubjectId());
+        mGuidePager.setSubjeceId(mVideoEntity.getSubjectId());
     }
 
     @Override
     public void initView() {
-        if (mRootView != null){
-            mGuidePager = new ExperienceGuidePager(mContext,this);
+//        if (mRootView != null && Long.valueOf(mVideoEntity.getVisitTimeKey()) > 15000) {
+            if(mRootView != null && mGuidePager != null){
+                livePlayBackHttpManager = new LivePlayBackHttpManager(mContext);
             showPager();
-
+            submitNovicGuide();
 //            liveBackBll.getvPlayer().pause();
-        }
+        }else {
+                liveBackBll.removeBusinessBll(this);
+            }
     }
 
     @Override
@@ -64,5 +75,15 @@ public class ExperienceGuideBll extends LiveBackBaseBll implements IPagerControl
             rlViewContent.removeAllViews();
         }
         return false;
+    }
+
+    private void submitNovicGuide(){
+        livePlayBackHttpManager.sumbitExperienceNoviceGuide(UserBll.getInstance().getMyUserInfoEntity()
+                .getStuId(), mVideoEntity.getChapterId(), mVideoEntity.getSubjectId(), new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                logger.i("submitNovicGuide");
+            }
+        });
     }
 }

@@ -475,16 +475,18 @@
                 android:layout_marginLeft="117dp"
                 android:layout_marginTop="43dp"
                 android:layout_marginRight="117dp"
-                android:layout_marginBottom="11dp" />
+                android:layout_marginBottom="11dp"
+                android:visibility="gone"/>
 
             <ImageView
-                android:id="@+id/iv_experience_guide_speech_hand"
+                android:id="@+id/iv_experience_guide_voice_arrows"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@id/vwv_experience_guide_wave"
                 android:layout_alignBottom="@id/vwv_experience_guide_wave"
                 android:layout_marginRight="4dp"
-                android:src="@drawable/experience_guide_voicechate_arrows" />
+                android:src="@drawable/experience_guide_voicechate_arrows"
+                android:visibility="gone"/>
         </RelativeLayout>
 
         <LinearLayout
@@ -749,17 +751,27 @@
     <include
         android:id="@+id/rl_experience_guide_home_pager"
         layout="@layout/item_experience_guide_home_pager"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:visibility="visible"></include>
 
     <TextView
+        android:id="@+id/tv_experience_guide_count_down"
         style="@style/text_font17_ffffff_style"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textSize="12sp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:drawableLeft="@drawable/experience_guide_count_down_icon"
-        android:drawablePadding="2dp"
+        android:drawablePadding="4dp"
+        android:paddingBottom="6dp"
+        android:paddingTop="6dp"
+        android:paddingRight="12dp"
+        android:paddingLeft="12dp"
+        android:background="@drawable/shape_experience_guide_countdown_bg"
         android:text="15S后将开启体验课"
         android:visibility="gone" />
 

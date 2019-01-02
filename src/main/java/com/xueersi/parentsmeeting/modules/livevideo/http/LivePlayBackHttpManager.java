@@ -640,4 +640,12 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         sendPost(LiveVideoConfig.URL_AUTO_LIVE_QUIT_FEED_BACK, params, requestCallBack);
     }
 
+    public void sumbitExperienceNoviceGuide(String stuId,String termId,String subjectId,HttpCallBack requestCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("termId", termId);
+        params.addBodyParam("subjectId", subjectId);
+        sendPost(LiveVideoConfig.URL_AUTO_LIVE_NOVIC_GUIDE, params, requestCallBack);
+    }
+
 }
