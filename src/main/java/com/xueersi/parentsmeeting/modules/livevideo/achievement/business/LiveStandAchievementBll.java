@@ -41,8 +41,9 @@ public class LiveStandAchievementBll implements StarInteractAction {
     private Activity activity;
     private View flyStat;
     private View flyLight;
-    StandLiveLottieAnimationView lottieAnimationView;
-    LottieComposition composition;
+    private StandLiveLottieAnimationView lottieAnimationView;
+    @Deprecated
+    private LottieComposition composition;
     private ViewGroup myView;
     private Point startPoint;
     /**
@@ -114,7 +115,7 @@ public class LiveStandAchievementBll implements StarInteractAction {
     /**
      * 星星lottie动画是否显示
      */
-    private boolean isStarLottieVisible = false;
+    private final boolean isStarLottieVisible = false;
     /**
      * 星星数量
      */
@@ -226,15 +227,17 @@ public class LiveStandAchievementBll implements StarInteractAction {
         LottieComposition.Factory.fromAssetFileName(activity, fileName, new OnCompositionLoadedListener() {
             @Override
             public void onCompositionLoaded(@Nullable LottieComposition composition) {
-                logger.d("onCompositionLoaded:composition=" + composition);
+                logger.d("onCompositionLoaded:composition=" + composition + ",view=" + (lottieAnimationView == null));
                 if (composition == null) {
 //                    Toast.makeText(activity, "加载失败", Toast.LENGTH_SHORT).show();
                     return;
                 }
 //                Toast.makeText(activity, "加载成功", Toast.LENGTH_SHORT).show();
                 LiveStandAchievementBll.this.composition = composition;
-                lottieAnimationView.setImageAssetsFolder(assetFolders.get(fileName));
-                lottieAnimationView.setComposition(composition);
+                if (isStarLottieVisible) {
+                    lottieAnimationView.setImageAssetsFolder(assetFolders.get(fileName));
+                    lottieAnimationView.setComposition(composition);
+                }
                 setGoldCount();
             }
         });
