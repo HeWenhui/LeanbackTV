@@ -350,7 +350,7 @@ public class EnAchievePager extends LiveBasePager {
     }
 
     /**
-     * 本场小目标
+     * 接收本场小目标
      *
      * @author zhangyuansun
      */
@@ -359,7 +359,7 @@ public class EnAchievePager extends LiveBasePager {
     }
 
     /**
-     * 小目标更新
+     * 小目标实时更新
      *
      * @author zhangyuansun
      */

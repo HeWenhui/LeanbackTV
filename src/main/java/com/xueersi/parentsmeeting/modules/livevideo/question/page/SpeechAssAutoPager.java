@@ -37,6 +37,7 @@ import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.EnglishSpeekAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
@@ -45,6 +46,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEv
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -688,6 +690,10 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     }
 
     private void onSpeechEvalSuccess(ResultEntity resultEntity, int gold, int energy) {
+        double speechDuration = resultEntity.getSpeechDuration();
+        EnglishSpeekAction englishSpeekAction = ProxUtil.getProxUtil().get(mContext,EnglishSpeekAction.class);
+        englishSpeekAction.onAddTotalOpeningLength(speechDuration);
+
         isSpeechSuccess = true;
         rlSpeectevalBg.setVisibility(View.GONE);
         rlSpeectevalBg.removeAllViews();
