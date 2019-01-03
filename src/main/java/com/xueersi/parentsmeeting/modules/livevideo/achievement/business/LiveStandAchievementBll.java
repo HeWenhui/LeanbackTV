@@ -41,8 +41,9 @@ public class LiveStandAchievementBll implements StarInteractAction {
     private Activity activity;
     private View flyStat;
     private View flyLight;
-    StandLiveLottieAnimationView lottieAnimationView;
-    LottieComposition composition;
+    private StandLiveLottieAnimationView lottieAnimationView;
+    @Deprecated
+    private LottieComposition composition;
     private ViewGroup myView;
     private Point startPoint;
     /**
