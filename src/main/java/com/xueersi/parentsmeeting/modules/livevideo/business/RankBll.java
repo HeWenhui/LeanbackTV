@@ -138,6 +138,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                 //bugly 7801.在getinfo之前点击会崩
                 if (relativeLayout == null) {
                     logger.d("rl_livevideo_common_rank.onClick:relativeLayout=null");
+                    XESToastUtils.showToast(activity, "请稍等");
                     return;
                 }
                 if (relativeLayout.getVisibility() == View.VISIBLE) {

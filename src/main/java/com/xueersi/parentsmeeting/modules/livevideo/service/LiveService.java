@@ -9,6 +9,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.log.FileLogger;
@@ -63,6 +64,8 @@ public class LiveService extends Service {
                 //bugly 2555
                 runningAppProcessInfos = mActivityManager.getRunningAppProcesses();
             } catch (Exception e) {
+                CrashReport.postCatchedException(e);
+                stopSelf();
                 return;
             }
             //bugly 2053
