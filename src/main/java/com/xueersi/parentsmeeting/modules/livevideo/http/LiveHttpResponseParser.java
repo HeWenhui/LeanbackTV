@@ -99,18 +99,19 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         LiveVideoConfig.LIVEMULH5URL = data.optString("getCourseWareHtml");
         getInfo.setStuPutUpHandsNum(data.optInt("stuPutUpHandsNum"));
         getInfo.setAllowLinkMicNew(data.optInt("allowLinkMicNew"));
+        getInfo.setGetCourseWareHtmlNew(data.optString("getCourseWareHtmlNew"));
+        getInfo.setGetCourseWareHtmlZhongXueUrl(data.optString("getCourseWareHtmlZhongXueUrl"));
         if (getInfo.getAllowLinkMicNew() == 1) {
             getInfo.setAllowLinkMic(false);
         }
-        if (data.has("ePlanInfo")){
+        if (data.has("ePlanInfo")) {
             try {
                 JSONObject ePlanInfo = data.getJSONObject("ePlanInfo");
                 getInfo.ePlanInfo = new LiveGetInfo.EPlanInfoBean();
                 getInfo.ePlanInfo.ePlanId = ePlanInfo.optString("ePlanId");
                 getInfo.ePlanInfo.eTeacherId = ePlanInfo.optString("eTeacherId");
                 getInfo.ePlanInfo.eClassId = ePlanInfo.optString("eClassId");
-            }
-            catch (JSONException e) {
+            } catch (JSONException e) {
                 MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo.ePlanInfo", e.getMessage());
             }
         }

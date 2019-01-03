@@ -253,6 +253,8 @@ public class LiveGetInfo {
     /** 一发多题的动态接口 */
     private String mulpreload;
     private String mulh5url;
+    private String getCourseWareHtmlNew;
+    private String getCourseWareHtmlZhongXueUrl;
 
     /**
      * 是否是高三理科
@@ -278,10 +280,10 @@ public class LiveGetInfo {
     private ArrayList<Double> praiseGiftRate = new ArrayList();
 
     //连续点赞多长时间弹出礼物
-    private int praiseAutoCutTime=5;
+    private int praiseAutoCutTime = 5;
 
     //暂停点赞多长时间弹出礼物
-    private int praiseAutoBarrageTime=1;
+    private int praiseAutoBarrageTime = 1;
 
 
     // add by William on 2018/12/5  专属老师用
@@ -1230,7 +1232,8 @@ public class LiveGetInfo {
     }
 
     EvaluateTeacherEntity evaluateTeacherEntity;
-    public static class EvaluateTeacherEntity{
+
+    public static class EvaluateTeacherEntity {
         boolean evaluateIsOpen = false;
         long evaluateTime;
 
@@ -1251,7 +1254,7 @@ public class LiveGetInfo {
         }
     }
 
-    public void setEvaluateTeacherEntity(EvaluateTeacherEntity evaluateTeacherEntity){
+    public void setEvaluateTeacherEntity(EvaluateTeacherEntity evaluateTeacherEntity) {
         this.evaluateTeacherEntity = evaluateTeacherEntity;
     }
 
@@ -1273,6 +1276,22 @@ public class LiveGetInfo {
 
     public void setMulh5url(String mulh5url) {
         this.mulh5url = mulh5url;
+    }
+
+    public String getGetCourseWareHtmlNew() {
+        return getCourseWareHtmlNew;
+    }
+
+    public void setGetCourseWareHtmlNew(String getCourseWareHtmlNew) {
+        this.getCourseWareHtmlNew = getCourseWareHtmlNew;
+    }
+
+    public String getGetCourseWareHtmlZhongXueUrl() {
+        return getCourseWareHtmlZhongXueUrl;
+    }
+
+    public void setGetCourseWareHtmlZhongXueUrl(String getCourseWareHtmlZhongXueUrl) {
+        this.getCourseWareHtmlZhongXueUrl = getCourseWareHtmlZhongXueUrl;
     }
 
     /** 直播间额外参数信息 */

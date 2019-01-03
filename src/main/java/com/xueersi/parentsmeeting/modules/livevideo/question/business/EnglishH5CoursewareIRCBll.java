@@ -95,6 +95,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                     LiveQuestionSwitchImpl(), englishH5CoursewareBll));
         }
         LiveBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new LiveBaseEnglishH5CoursewareCreat();
+        liveBaseEnglishH5CoursewareCreat.setLiveGetInfo(getInfo);
         int isArts = (int) mLiveBll.getBusinessShareParam("isArts");
         liveBaseEnglishH5CoursewareCreat.setArts(isArts);
         if (isArts == 0) {

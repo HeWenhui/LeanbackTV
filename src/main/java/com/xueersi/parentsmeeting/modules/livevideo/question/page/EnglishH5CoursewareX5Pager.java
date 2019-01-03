@@ -123,13 +123,13 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         this.nonce = nonce;
         this.isShowRanks = isShowRanks;
         this.isArts = isArts;
-        if (isArts == 0) {
-            this.educationstage = LiveVideoConfig.educationstage;
-        }
         this.allowTeamPk = allowTeamPk;
         this.isNewArtsCourseware = englishH5Entity.isArtsNewH5Courseware();
         LiveVideoConfig.englishH5Entity = englishH5Entity;
         this.detailInfo = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
+        if (isArts == 0) {
+            this.educationstage = detailInfo.getEducationstage();
+        }
         initWebView();
         setErrorTip("H5课件加载失败，请重试");
         setLoadTip("H5课件正在加载，请稍候");
@@ -471,12 +471,8 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     String defaulturl;
                     boolean useMine = false;
                     if (isArts == 0) {
-                        if (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage)) {
-                            useMine = true;
-                            defaulturl = "https://live.xueersi.com/science/LiveExam/getCourseWareTestHtmlAPP";
-                        } else {
-                            defaulturl = "https://live.xueersi.com/science/LiveExam/getCourseWareTestHtml";
-                        }
+                        useMine = true;
+                        defaulturl = englishH5Entity.getDynamicurl();
                     } else {
                         defaulturl = "https://live.chs.xueersi.com/LiveExam/getCourseWareTestHtml";
                     }

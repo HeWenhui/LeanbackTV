@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.EnglishH5CoursewareX5Pager;
@@ -15,7 +16,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.EnglishH5Cours
 public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5CoursewareCreat {
     private WrapOnH5ResultClose wrapOnH5ResultClose;
     LivePagerBack livePagerBack;
+    private LiveGetInfo liveGetInfo;
     private int isArts;
+
+    public void setLiveGetInfo(LiveGetInfo liveGetInfo) {
+        this.liveGetInfo = liveGetInfo;
+    }
 
     public void setArts(int arts) {
         this.isArts = arts;
