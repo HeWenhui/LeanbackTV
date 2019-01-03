@@ -106,10 +106,17 @@
             android:launchMode="singleTask"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+
         <service
             android:name="com.xueersi.parentsmeeting.modules.livevideo.service.LiveService"
             android:process=":livedaemon" />
-
+        <receiver
+            android:name="com.xueersi.parentsmeeting.modules.livevideo.broadcast.LiveShutdownReceiver"
+            android:process=":livedaemon">
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_SHUTDOWN" />
+            </intent-filter>
+        </receiver>
         <service
             android:name="ren.yale.android.cachewebviewlib.CachePreLoadService"
             android:process=":livevideo" />

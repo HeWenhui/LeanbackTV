@@ -142,12 +142,17 @@ public class HardWareUtil {
         return appCpuTime;
     }
 
+    private static boolean CPU_FAIL = false;
+
     /**
      * 获得cpu使用率-总的
      *
      * @return
      */
     public static double getCPURateDesc() {
+        if (CPU_FAIL) {
+            return 0;
+        }
         String path = "/proc/stat";// 系统CPU信息文件
         long totalJiffies[] = new long[2];
         long totalIdle[] = new long[2];
@@ -193,7 +198,9 @@ public class HardWareUtil {
                         }
                     }
                 }
+                CPU_FAIL = false;
             } catch (IOException e) {
+                CPU_FAIL = true;
                 // TODO Auto-generated catch block
                 logger.d("getCPURateDesc", e);
             } finally {

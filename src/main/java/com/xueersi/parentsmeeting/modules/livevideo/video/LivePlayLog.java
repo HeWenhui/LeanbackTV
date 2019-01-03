@@ -1658,7 +1658,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             }
         });
         getTraceRouteLog(url);
-        Loger.d("livelog_920", jsonObject.toString());
+       // Loger.d("livelog_920", jsonObject.toString());
     }
 
 
@@ -1791,7 +1791,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                             traceArray.put(traceObj);
                         }
                         deFaultJson.put("trace", traceArray);
-                        Loger.d("livelog_920", deFaultJson.toString());
+                      //  Loger.d("livelog_920", deFaultJson.toString());
                         HttpRequestParams httpRequestParams = new HttpRequestParams();
                         httpRequestParams.setJson(String.valueOf(deFaultJson));
                         baseHttpBusiness.baseSendPostNoBusinessJson(LiveVideoConfig.URL_CND_LOG_IP,

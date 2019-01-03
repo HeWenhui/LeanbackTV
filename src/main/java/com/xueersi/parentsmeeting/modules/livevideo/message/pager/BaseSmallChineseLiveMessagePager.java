@@ -228,7 +228,6 @@ public abstract class BaseSmallChineseLiveMessagePager extends BaseLiveMessagePa
         danmaku.text = spannable;
 
         danmaku.isGuest = isSelf;//是不是自己，false代表不是自己，true代表是自己。
-//        danmaku.isGuest = aBoolean;
 
         danmaku.padding = DANMU_PADDING;
         danmaku.priority = 1;  // 一定会显示, 一般用于本机发送的弹幕
@@ -292,17 +291,22 @@ public abstract class BaseSmallChineseLiveMessagePager extends BaseLiveMessagePa
 
         @Override
         public void drawBackground(BaseDanmaku danmaku, Canvas canvas, float left, float top) {
-            backgroundDrawable = mContext.getResources().getDrawable(danmaku.isGuest ?
-                    R.drawable //采用.9的方式来显示
-//                .bg_livevideo_small_chinese_gift_danmu_my_background
-                            .bg_livevideo_small_chinese_gift_danmu_my_background_mid
-                    : R.drawable //采用.9的方式来显示
-                    .bg_livevideo_small_chinese_gift_danmu_other_backgroud_mid);
+//            backgroundDrawable = mContext.getResources().getDrawable(danmaku.isGuest ?
+//                    R.drawable //采用.9的方式来显示
+////                .bg_livevideo_small_chinese_gift_danmu_my_background
+//                            .bg_livevideo_small_chinese_gift_danmu_my_background_mid
+//                    : R.drawable //采用.9的方式来显示
+//                    .bg_livevideo_small_chinese_gift_danmu_other_backgroud_mid);
+
+            backgroundDrawable = mContext.getResources().getDrawable(R.drawable.bg_livevideo_small_chinese_live_messagen_back_ground);
+
             float height = backgroundDrawable.getIntrinsicHeight();
 //            float offsetRight = (BITMAP_HEIGHT_ME - CIRCEL_HEIGHT) / 2;
             logger.i("height = " + height + ",padding = " + danmaku.padding + ", left = " + left + ", bitmap_height = " + BITMAP_HEIGHT_ME);
             //左边的偏移量
-            int offsetLeft = (danmaku.isGuest ? 0 : SizeUtils.Dp2Px(mContext, 2));
+
+//            int offsetLeft = (danmaku.isGuest ? 0 : SizeUtils.Dp2Px(mContext, 2));
+            int offsetLeft = 0;
             //上面的偏移量，这里必须加上offsetTop，否则文字无法居中
             float offsetTop = (BITMAP_HEIGHT_ME > height ? BITMAP_HEIGHT_ME - height : height - BITMAP_HEIGHT_ME) / 2;
             backgroundDrawable.setBounds(

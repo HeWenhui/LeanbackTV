@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.activity;
 import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Rect;
@@ -81,7 +80,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
 import com.xueersi.parentsmeeting.modules.livevideo.experience.bussiness.ExperienceQuitFeedbackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.experience.pager.ExperienceQuitFeedbackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
@@ -541,7 +539,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             }
         }
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
-        mIRCMessage = new IRCMessage(this, mNetWorkType, channel, mGetInfo.getStuName(), chatRoomUid);
+        mIRCMessage = new IRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, channel);
         IRCTalkConf ircTalkConf = new IRCTalkConf(this, mGetInfo, mGetInfo.getLiveType(), mHttpManager, talkConfHosts);
         //聊天连接调度失败日志
         ircTalkConf.setChatServiceError(new IRCTalkConf.ChatServiceError() {
@@ -660,12 +658,12 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
         @Override
         public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String
-                notice) {
+                notice, String channelId) {
             logger.e("=====>onNotice");
         }
 
         @Override
-        public void onTopic(String channel, String topic, String setBy, long date, boolean changed) {
+        public void onTopic(String channel, String topic, String setBy, long date, boolean changed, String channelId) {
             logger.e("=====>onTopic");
 
         }
@@ -693,7 +691,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         }
 
         @Override
-        public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
+        public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason, String channel) {
             logger.e("=====>onQuit start:" + peopleCount);
             peopleCount.set(peopleCount.get() - 1, new Exception(sourceNick));
             if (mLiveMessagePager != null) {
@@ -867,8 +865,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
                         LiveVideoPoint.initLiveVideoPoint((Activity) mContext, LiveVideoPoint.getInstance(), lp);
                         setFirstParam(lp);
-                        mLiveMessagePager.setVideoLayout(LiveVideoPoint.getInstance());
-
+                        if(mLiveMessagePager != null){
+                            mLiveMessagePager.setVideoLayout(LiveVideoPoint.getInstance());
+                        }
 //                        mLiveMessagePager.setVideoWidthAndHeight(lp.width, lp.height);
                     }
                 });

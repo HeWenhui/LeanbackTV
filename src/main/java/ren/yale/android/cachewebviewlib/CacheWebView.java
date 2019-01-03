@@ -90,7 +90,7 @@ public class CacheWebView extends WebView {
         return mWebViewCache;
     }
 
-    public void setWebViewClient(WebViewClient client){
+    public void setWebViewClient(WebViewClient client) {
         mCacheWebViewClient.setCustomWebViewClient(client);
     }
 
@@ -132,9 +132,10 @@ public class CacheWebView extends WebView {
     public void setEnableCache(boolean enableCache){
         mCacheWebViewClient.setEnableCache(enableCache);
     }
-    public void loadUrl(String url){
+
+    public void loadUrl(String url) {
         XesWebViewCookieUtils.syncWebLogin(url);
-        if (url.startsWith("http")){
+        if (url.startsWith("http")) {
             mCacheWebViewClient.addVisitUrl(url);
         }
         super.loadUrl(url);

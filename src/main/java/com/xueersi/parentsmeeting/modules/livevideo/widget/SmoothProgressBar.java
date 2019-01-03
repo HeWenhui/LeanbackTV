@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.animation.AnimationUtils;
-import android.widget.ProgressBar;
 import android.widget.SeekBar;
 
 /**
@@ -100,7 +99,7 @@ public class SmoothProgressBar extends SeekBar {
             animateHelper = new AnimateHelper();
         }
 
-        animateHelper.startAnimate(getProgress(), stopProgress, 200);
+        animateHelper.startAnimate(getProgress(), stopProgress, 1000);
         invalidate();
     }
 
