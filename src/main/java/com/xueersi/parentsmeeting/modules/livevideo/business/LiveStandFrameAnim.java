@@ -30,6 +30,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.StandLoadLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ZipExtractorTask;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
@@ -89,7 +90,12 @@ public class LiveStandFrameAnim {
         StandLiveConfig.createVoice(activity);
         File alldir = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/live_stand");
         if (alldir == null) {
-            alldir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/live_stand");
+            String status = Environment.getExternalStorageState();
+            if (Environment.MEDIA_MOUNTED.equals(status)) {
+                alldir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/live_stand");
+            } else {
+                alldir = new File(activity.getFilesDir(), "live_stand");
+            }
         }
         File[] allcache = alldir.listFiles();
         if (allcache != null) {
@@ -112,6 +118,7 @@ public class LiveStandFrameAnim {
         final File saveFile = new File(externalFilesDir, "frame_anim");
         final File saveFileTemp = new File(externalFilesDir, "frame_anim.temp");
         this.callBack = callBack;
+        StandLoadLog.downFile(saveFile, saveFileZip);
 //        callBack.onDataSucess("");
         if (saveFileZip.exists()) {
             if (saveFile.exists()) {
@@ -231,7 +238,7 @@ public class LiveStandFrameAnim {
                     bps = String.format("%.2f", dspeed / 1024.0d) + " KB/s";
                 }
                 mLogtf.d("onDownloadSuccess:bps=" + bps + ",downTime=" + downTime);
-                StableLogHashMap logHashMap = new StableLogHashMap();
+                StableLogHashMap logHashMap = new StableLogHashMap("ondownloadsuccess");
                 logHashMap.put("bps", bps);
                 logHashMap.put("downTime", "" + downTime);
                 logHashMap.put("times", "" + times.get());
@@ -340,6 +347,7 @@ public class LiveStandFrameAnim {
         ImageView ivLiveStandUpdateProgLight;
         TextView tvLiveStandUpdateProg;
         boolean cancle = false;
+        long startTime;
         int max;
 
         public LiveZip(View view, AbstractBusinessDataCallBack callBack, File saveFile, File saveFileTemp) {
@@ -353,6 +361,7 @@ public class LiveStandFrameAnim {
             //解压开始，要删除以前旧的
             FileUtils.deleteDir(saveFile);
             FileUtils.deleteDir(saveFileTemp);
+            startTime = System.currentTimeMillis();
         }
 
         @Override
@@ -419,6 +428,7 @@ public class LiveStandFrameAnim {
                         callBack.onDataSucess("");
                     }
                 });
+                StandLoadLog.zipFileFailSuc(startTime, saveFile);
             } else {
                 mLogtf.e("onPostExecute:cancle=" + cancle, exception);
                 if (!cancle) {
@@ -442,6 +452,7 @@ public class LiveStandFrameAnim {
                         }
                     });
                 }
+                StandLoadLog.zipFileFailErr(startTime, exception);
             }
         }
     }

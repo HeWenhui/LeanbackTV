@@ -495,7 +495,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
             if (audioRequest != null) {
                 audioRequest.release();
             }
-            //这里不再请求金币
+             //这里不再请求金币
 //            UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class);
 //            if (updateAchievement != null) {
 //                updateAchievement.getStuGoldCount();
