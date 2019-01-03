@@ -34,8 +34,8 @@ dependencies {
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.audio)
     //日志
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.logger)
-        implementation project(':ijkplayer')
-//    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.ijkplayer)
+//        implementation project(':ijkplayer')
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.ijkplayer)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.player)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.cloud)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.share)
