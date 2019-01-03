@@ -70,86 +70,102 @@ public class PraiseListPager extends LiveBasePager {
 
     public static final String TAG = "PraiseListPager";
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "praise_list/";
-
     private static final int ANIMATOR_TYPE_MAIN = 1;
-
     private static final int ANIMATOR_TYPE_THANKS = ANIMATOR_TYPE_MAIN + 1;
-
     private static final int ANIMATOR_TYPE_TEACHER = ANIMATOR_TYPE_THANKS + 1;
-
     private HonorListEntity honorListEntity;
     private ThumbsUpListEntity thumbsUpListEntity;
     private ProgressListEntity progressListEntity;
     private PraiseListIRCBll liveBll;
     private PraiseListBll mPraiseListBll;
-    private WeakHandler weakHandler;
-
+    private WeakHandler mWeakHandler;
     //主背景动画
     private LottieAnimationView lottieAnimationBGView;
     //主背景闪光循环动画
     private LottieAnimationView lottieAnimationLoopBGView;
-
     //感谢点赞
     private LottieAnimationView lottieAnimationThanksView;
     private View lottieAnimationThanksGroup;
-
     //老师表扬学生
     private LottieAnimationView lottieAnimationTeacherView;
     private View lottieAnimationTeacherGroup;
     private TextView teacherTipsView;
-
     private View contentGroup;
-
-    /** 表扬榜单 */
+    /**
+     * 表扬榜单
+     */
     private RecyclerView rvPraiseListView;
-    /** 备注 */
+    /**
+     * 备注
+     */
     private TextView tvTipsView;
-    /** 点赞弹幕 */
+    /**
+     * 点赞弹幕
+     */
     private AutoVerticalScrollTextView tvDanmakuView;
-    /** 点赞按钮 */
+    /**
+     * 点赞按钮
+     */
     private Button btnThumbsUpView;
-
     private TextView noteView;
-
-
-    /** 当前表扬榜类型 */
+    /**
+     * 当前表扬榜类型
+     */
     private int mPraiseListType;
     public final static int PRAISE_LIST_TYPE_HONOR = 1;//优秀榜
     public final static int PRAISE_LIST_TYPE_THUMBS_UP = 3;//点赞榜
     public final static int PRAISE_LIST_TYPE_PROGRESS = 2;//进步榜
-
-    /** 我的姓名 */
+    /**
+     * 我的姓名
+     */
     private String stuName;
-    /** 我在榜上的位置索引 */
+    /**
+     * 我在榜上的位置索引
+     */
     private int onListIndex = 0;
-    /** 给我点赞同学姓名 */
+    /**
+     * 给我点赞同学姓名
+     */
     private ArrayList<String> stuNames = new ArrayList<>();
-    /** 给我点赞数量 */
+    /**
+     * 给我点赞数量
+     */
     private ArrayList<Integer> thumbsUpNums = new ArrayList<>();
-    /** 点赞文案 */
+    /**
+     * 点赞文案
+     */
     public String[] thumbsUpCopywriting;
     private ArrayList<Integer> thumbsUpCopywritingIndex = new ArrayList<>();
-
-    /** 点赞弹幕定时器 */
+    /**
+     * 点赞弹幕定时器
+     */
     private Timer mTimer = null;
-    /** 点赞弹幕计数 */
+    /**
+     * 点赞弹幕计数
+     */
     private int number = 0;
-    /** 点赞弹幕线程是否停止 */
+    /**
+     * 点赞弹幕线程是否停止
+     */
     private boolean isStop = true;
-
-    /** 声音池 */
+    /**
+     * 声音池
+     */
     private SoundPool soundPool;
-    /** 榜单弹出声音 */
+    /**
+     * 榜单弹出声音
+     */
     private int soundPraiselistIn = 0;
-    /** 点赞声音 */
+    /**
+     * 点赞声音
+     */
     private int soundThumbsUp = 0;
-
     //是否在榜上
     private boolean isOnList = false;
     private LruCache<String, Bitmap> mBitmapCache;
 
     public PraiseListPager(Context context, HonorListEntity honorListEntity, PraiseListIRCBll liveBll, PraiseListBll
-            mPraiseListBll, WeakHandler mVPlayVideoControlHandler) {
+            praiseListBll, WeakHandler weakHandler) {
         super(context);
         mPraiseListType = PRAISE_LIST_TYPE_HONOR;
         this.honorListEntity = honorListEntity;
@@ -157,13 +173,13 @@ public class PraiseListPager extends LiveBasePager {
             isOnList = true;
         }
         this.liveBll = liveBll;
-        this.mPraiseListBll = mPraiseListBll;
-        this.weakHandler = mVPlayVideoControlHandler;
+        this.mPraiseListBll = praiseListBll;
+        this.mWeakHandler = weakHandler;
         initData();
     }
 
     public PraiseListPager(Context context, ThumbsUpListEntity thumbsUpListEntity, PraiseListIRCBll liveBll, PraiseListBll
-            mPraiseListBll, WeakHandler mVPlayVideoControlHandler) {
+            praiseListBll, WeakHandler weakHandler) {
         super(context);
         mPraiseListType = PRAISE_LIST_TYPE_THUMBS_UP;
         this.thumbsUpListEntity = thumbsUpListEntity;
@@ -171,13 +187,13 @@ public class PraiseListPager extends LiveBasePager {
             isOnList = true;
         }
         this.liveBll = liveBll;
-        this.mPraiseListBll = mPraiseListBll;
-        this.weakHandler = mVPlayVideoControlHandler;
+        this.mPraiseListBll = praiseListBll;
+        this.mWeakHandler = weakHandler;
         initData();
     }
 
     public PraiseListPager(Context context, ProgressListEntity progressListEntity, PraiseListIRCBll liveBll, PraiseListBll
-            mPraiseListBll, WeakHandler mVPlayVideoControlHandler) {
+            praiseListBll, WeakHandler weakHandler) {
         super(context);
         mPraiseListType = PRAISE_LIST_TYPE_PROGRESS;
         this.progressListEntity = progressListEntity;
@@ -185,8 +201,8 @@ public class PraiseListPager extends LiveBasePager {
             isOnList = true;
         }
         this.liveBll = liveBll;
-        this.mPraiseListBll = mPraiseListBll;
-        this.weakHandler = mVPlayVideoControlHandler;
+        this.mPraiseListBll = praiseListBll;
+        this.mWeakHandler = weakHandler;
         initData();
     }
 
@@ -316,8 +332,6 @@ public class PraiseListPager extends LiveBasePager {
                 }
             }
         }
-
-
     }
 
     /**
@@ -342,7 +356,6 @@ public class PraiseListPager extends LiveBasePager {
         return (rate * measuredWidth) / SizeUtils.Dp2Px(mContext, 500);
     }
 
-
     @Override
     public void initData() {
         //名字
@@ -365,13 +378,12 @@ public class PraiseListPager extends LiveBasePager {
                 " 为你点赞，运气爆棚，额外获得<font color='#F13232'>2</font>颗赞哦!"};
 
 
-        weakHandler.postDelayed(new Runnable() {
+        mWeakHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 startBGAnimation();
             }
         }, 300);
-
 
         //播放声音
         if (soundPool == null)
@@ -471,7 +483,6 @@ public class PraiseListPager extends LiveBasePager {
 
     }
 
-
     public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
 
         private int space;
@@ -493,7 +504,9 @@ public class PraiseListPager extends LiveBasePager {
 
     }
 
-    /** 计算点赞数量的规则 */
+    /**
+     * 计算点赞数量的规则
+     */
     public int calculateThumbsUpNum() {
         int thumbsUpNum = 1;
         int probability = mPraiseListBll.getThumbsUpProbability();
@@ -527,7 +540,9 @@ public class PraiseListPager extends LiveBasePager {
         return thumbsUpNum;
     }
 
-    /** 开始整个背景动画 */
+    /**
+     * 开始整个背景动画
+     */
     public void startBGAnimation() {
         logger.d("startBGAnimation");
 
@@ -558,7 +573,7 @@ public class PraiseListPager extends LiveBasePager {
         goodToAdvanceRes.put("img_8.png", "img_12.png");
         goodToAdvanceRes.put("img_10.png", "img_15.png");
 
-        lottieAnimationBGView.setAnimationFromJson(advanceEffectInfo.getJsonStrFromAssets(mContext),"praise_bg");
+        lottieAnimationBGView.setAnimationFromJson(advanceEffectInfo.getJsonStrFromAssets(mContext), "praise_bg");
         lottieAnimationBGView.useHardwareAcceleration(true);
         ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
             @Override
@@ -607,7 +622,7 @@ public class PraiseListPager extends LiveBasePager {
         String loopResPath = LOTTIE_RES_ASSETS_ROOTDIR + "list_bg/images_advance";
         String loopJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "list_bg/data_loop.json";
         final LottieEffectInfo loopEffectInfo = new LottieEffectInfo(loopResPath, loopJsonPath);
-        lottieAnimationLoopBGView.setAnimationFromJson(loopEffectInfo.getJsonStrFromAssets(mContext),"praise_loop_bg");
+        lottieAnimationLoopBGView.setAnimationFromJson(loopEffectInfo.getJsonStrFromAssets(mContext), "praise_loop_bg");
         lottieAnimationLoopBGView.useHardwareAcceleration(true);
         lottieAnimationLoopBGView.setRepeatCount(-1);
         lottieAnimationLoopBGView.setImageAssetDelegate(imageAssetDelegate);
@@ -670,7 +685,6 @@ public class PraiseListPager extends LiveBasePager {
         lottieAnimationThanksView.playAnimation();
     }
 
-
     /**
      * 显示老师表扬横幅
      *
@@ -724,7 +738,6 @@ public class PraiseListPager extends LiveBasePager {
 
     }
 
-
     /**
      * 动画监听不准确，屏幕上已经没有动画但是end方法过一段时间才能收到
      */
@@ -770,13 +783,13 @@ public class PraiseListPager extends LiveBasePager {
 
     }
 
-
     public void setThumbsUpBtnEnabled(boolean enabled) {
         btnThumbsUpView.setEnabled(enabled);
     }
 
-
-    /** 收到给我点赞的消息 */
+    /**
+     * 收到给我点赞的消息
+     */
     public void receiveThumbsUpNotice(ArrayList<String> stuNames) {
         int stuNamesSize = this.stuNames.size();
         int random;
@@ -820,7 +833,7 @@ public class PraiseListPager extends LiveBasePager {
             if (isStop)
                 stopTimer();
             else {
-                weakHandler.post(new Runnable() {
+                mWeakHandler.post(new Runnable() {
                     @Override
                     public void run() {
                         tvDanmakuView.next();
@@ -855,7 +868,6 @@ public class PraiseListPager extends LiveBasePager {
             mTimer = null;
         }
     }
-
 
     public void showThumbsUpToast() {
         btnThumbsUpView.setVisibility(View.INVISIBLE);

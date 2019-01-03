@@ -93,8 +93,7 @@ public interface PraiseListAction {
     /**
      * 播放器区域变化时更新视图
      *
-     * @param width
-     * @param height
+     * @param liveVideoPoint
      */
     void setVideoLayout(LiveVideoPoint liveVideoPoint);
 

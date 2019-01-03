@@ -29,12 +29,17 @@ import java.util.Map;
  * Created by Zhang Yuansun on 2018/1/2.
  */
 
-public class PraiseListBll implements PraiseListAction, Handler.Callback {
+public class PraiseListBll implements PraiseListAction {
 
     public static final String TAG = "PraiseListBll";
 
     private LiveAndBackDebug liveAndBackDebug;
-    private WeakHandler mVPlayVideoControlHandler = new WeakHandler(Looper.getMainLooper(), this);
+    private WeakHandler mWeakHandler = new WeakHandler(Looper.getMainLooper(), new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message message) {
+            return false;
+        }
+    });
     private LogToFile mLogtf;
     private Activity activity;
     private PraiseListIRCBll mLiveBll;
@@ -45,18 +50,30 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
         return displayHeight;
     }
 
-    /** 直播底部布局 */
+    /**
+     * 直播底部布局
+     */
     private RelativeLayout rBottomContent;
-    /** 表扬榜根布局 */
+    /**
+     * 表扬榜根布局
+     */
     private RelativeLayout rPraiseListContent;
-    /** 表扬榜页面 */
+    /**
+     * 表扬榜页面
+     */
     private PraiseListPager mPraiseList;
-    /** 点赞概率标识 */
+    /**
+     * 点赞概率标识
+     */
     private int thumbsUpProbability = 0;
     private String nonce = "";
-    /** 表扬榜是否正在展示 */
+    /**
+     * 表扬榜是否正在展示
+     */
     private boolean isShowing = false;
-    /** 当前榜单类型 */
+    /**
+     * 当前榜单类型
+     */
     private int mPraiseListType = 0;
 
     public PraiseListBll(Activity activity) {
@@ -67,35 +84,28 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
         setVideoLayout(liveVideoPoint);
     }
 
-    @Override
-    public boolean handleMessage(Message message) {
-        return false;
-    }
-
     public void setLiveBll(PraiseListIRCBll mLiveBll) {
         this.mLiveBll = mLiveBll;
     }
 
     public void initView(final RelativeLayout bottomContent) {
 
-        mVPlayVideoControlHandler.post(new Runnable() {
+        mWeakHandler.post(new Runnable() {
             @Override
             public void run() {
                 rBottomContent = bottomContent;
                 //表扬榜
                 if (rPraiseListContent != null) {
                     //设置主视图参数
-                    RelativeLayout.LayoutParams mainParam=new RelativeLayout.LayoutParams(videoWidth, displayHeight);
+                    RelativeLayout.LayoutParams mainParam = new RelativeLayout.LayoutParams(videoWidth, displayHeight);
                     mainParam.addRule(RelativeLayout.CENTER_VERTICAL);
                     rPraiseListContent.setLayoutParams(mainParam);
                     bottomContent.addView(rPraiseListContent);
-                }
-
-                else{
+                } else {
                     rPraiseListContent = new RelativeLayout(activity);
                     rPraiseListContent.setId(R.id.rl_livevideo_content_praiselist);
                     //设置主视图参数
-                    RelativeLayout.LayoutParams mainParam=new RelativeLayout.LayoutParams(videoWidth, displayHeight);
+                    RelativeLayout.LayoutParams mainParam = new RelativeLayout.LayoutParams(videoWidth, displayHeight);
                     mainParam.addRule(RelativeLayout.CENTER_VERTICAL);
                     rPraiseListContent.setLayoutParams(mainParam);
                     bottomContent.addView(rPraiseListContent);
@@ -133,11 +143,11 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
         mLogtf.d("onHonerList");
         //closePraiseList();
         isShowing = true;
-        mVPlayVideoControlHandler.post(new Runnable() {
+        mWeakHandler.post(new Runnable() {
             @Override
             public void run() {
                 //rBottomContent.setClickable(true);
-                mPraiseList = new PraiseListPager(activity, honorListEntity, mLiveBll, PraiseListBll.this, mVPlayVideoControlHandler);
+                mPraiseList = new PraiseListPager(activity, honorListEntity, mLiveBll, PraiseListBll.this, mWeakHandler);
                 rPraiseListContent.removeAllViews();
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 rPraiseListContent.addView(mPraiseList.getRootView(), params);
@@ -165,11 +175,11 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
         mLogtf.d("onThumbsUpList");
         //closePraiseList();
         isShowing = true;
-        mVPlayVideoControlHandler.post(new Runnable() {
+        mWeakHandler.post(new Runnable() {
             @Override
             public void run() {
                 //rBottomContent.setClickable(true);
-                mPraiseList = new PraiseListPager(activity, thumbsUpListEntity, mLiveBll, PraiseListBll.this, mVPlayVideoControlHandler);
+                mPraiseList = new PraiseListPager(activity, thumbsUpListEntity, mLiveBll, PraiseListBll.this, mWeakHandler);
                 rPraiseListContent.removeAllViews();
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 rPraiseListContent.addView(mPraiseList.getRootView(), params);
@@ -197,11 +207,11 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
         mLogtf.d("onProgressList");
         //closePraiseList();
         isShowing = true;
-        mVPlayVideoControlHandler.post(new Runnable() {
+        mWeakHandler.post(new Runnable() {
             @Override
             public void run() {
                 //rBottomContent.setClickable(true);
-                mPraiseList = new PraiseListPager(activity, progressListEntity, mLiveBll, PraiseListBll.this, mVPlayVideoControlHandler);
+                mPraiseList = new PraiseListPager(activity, progressListEntity, mLiveBll, PraiseListBll.this, mWeakHandler);
                 rPraiseListContent.removeAllViews();
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 rPraiseListContent.addView(mPraiseList.getRootView(), params);
@@ -229,7 +239,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     public void showPraiseScroll(final String stuName, final String tecName) {
         mLogtf.d("showPraiseScroll");
         if (mPraiseList != null)
-            mVPlayVideoControlHandler.post(new Runnable() {
+            mWeakHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     mPraiseList.startScrollAnimation(stuName, tecName);
@@ -246,7 +256,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     public void receiveThumbsUpNotice(final ArrayList<String> stuNames) {
         mLogtf.d("receiveThumbsUpNotice");
         if (mPraiseList != null)
-            mVPlayVideoControlHandler.post(new Runnable() {
+            mWeakHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     mPraiseList.receiveThumbsUpNotice(stuNames);
@@ -261,7 +271,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     public void showThumbsUpToast() {
         mLogtf.d("showThumbsUpToast");
         if (mPraiseList != null)
-            mVPlayVideoControlHandler.post(new Runnable() {
+            mWeakHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     mPraiseList.showThumbsUpToast();
@@ -283,7 +293,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
         if (mPraiseList != null)
             mPraiseList.releaseSoundPool();
         //rBottomContent.setClickable(false);
-        mVPlayVideoControlHandler.post(new Runnable() {
+        mWeakHandler.post(new Runnable() {
             @Override
             public void run() {
                 if (rPraiseListContent != null)
@@ -321,7 +331,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
     public void setThumbsUpBtnEnabled(final boolean enabled) {
         mLogtf.d("setThumbsUpBtnEnabled");
         if (mPraiseList != null)
-            mVPlayVideoControlHandler.post(new Runnable() {
+            mWeakHandler.post(new Runnable() {
                 @Override
                 public void run() {
                     mPraiseList.setThumbsUpBtnEnabled(enabled);
@@ -334,7 +344,7 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
      */
     @Override
     public void setVideoLayout(final LiveVideoPoint liveVideoPoint) {
-        mVPlayVideoControlHandler.post(new Runnable() {
+        mWeakHandler.post(new Runnable() {
             @Override
             public void run() {
                 int screenWidth = getScreenParam();
@@ -347,10 +357,10 @@ public class PraiseListBll implements PraiseListAction, Handler.Callback {
                 } else {
                     videoWidth = displayWidth - wradio;
                 }
-                if (rPraiseListContent != null){
+                if (rPraiseListContent != null) {
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rPraiseListContent.getLayoutParams();
-                    params.height= displayHeight;
-                    params.width=videoWidth;
+                    params.height = displayHeight;
+                    params.width = videoWidth;
                     rPraiseListContent.setLayoutParams(params);
                 }
             }

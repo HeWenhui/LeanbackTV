@@ -32,8 +32,10 @@ import java.util.ArrayList;
  * Created by Zhang Yuansun on 2018/7/27.
  */
 
-public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction,TopicAction{
-    /** 表扬榜事件 */
+public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, TopicAction {
+    /**
+     * 表扬榜事件
+     */
     private PraiseListAction mPraiseListAction;
 
     public PraiseListIRCBll(Activity context, LiveBll2 liveBll) {
@@ -46,8 +48,6 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction,TopicA
         if (mPraiseListAction != null && mode.equals(LiveTopic.MODE_CLASS))
             mPraiseListAction.closePraiseList();
     }
-
-
 
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
@@ -108,8 +108,8 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction,TopicA
                     if (agreeForms == null) {
                         return;
                     }
-                    logger.i( "agreeForms=" + agreeForms.toString());
-                    logger.i( "isTeacher=" + isTeacher);
+                    logger.i("agreeForms=" + agreeForms.toString());
+                    logger.i("isTeacher=" + isTeacher);
                     if (isTeacher) {
                         if (mPraiseListAction != null && agreeForms.length() != 0) {
                             try {
@@ -127,7 +127,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction,TopicA
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-                            logger.i( "stuName=" + stuName);
+                            logger.i("stuName=" + stuName);
                             list.add(stuName);
                         }
                         if (mPraiseListAction != null && list.size() != 0) {
@@ -418,7 +418,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction,TopicA
      * 学生计算赞数后私发老师
      */
     public void sendThumbsUpNum(int agreeNum) {
-        mLogtf.i("sendThumbsUpNum:agreeNum=" + agreeNum + ",mCounTeacherStr=" +  mLiveBll.getCounTeacherStr());
+        mLogtf.i("sendThumbsUpNum:agreeNum=" + agreeNum + ",mCounTeacherStr=" + mLiveBll.getCounTeacherStr());
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("type", "" + XESCODE.XCR_ROOM_AGREE_NUM_S);
