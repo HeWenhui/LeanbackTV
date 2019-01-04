@@ -33,6 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsMoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreCache;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ScienceStaticConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.json.JSONArray;
@@ -295,6 +296,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         // 一次多发的接口调用
         if (LiveVideoConfig.isScience) {
             ScienceMulPreDownLoad(todayLiveCacheDir);
+            scienceStatic();
         } else if (mGetInfo != null && mGetInfo.getIsArts() == 2) {
             //语文一题多发
             chineseMulPreDownLoad(todayLiveCacheDir);
@@ -533,6 +535,84 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         @Override
         public void setMax(int max) {
 
+        }
+    }
+
+    public void scienceStatic() {
+        ScienceStaticConfig scienceStaticConfig = mGetInfo.getScienceStaticConfig();
+        if (scienceStaticConfig != null) {
+            final ScienceStaticConfig.Version version = scienceStaticConfig.stringVersionHashMap.get(ScienceStaticConfig.THIS_VERSION);
+            if (version != null) {
+                File dir = new File(mPublicCacheout, "sciencestatic/" + ScienceStaticConfig.THIS_VERSION);
+                if (!dir.exists()) {
+                    dir.mkdirs();
+                }
+                int index = version.tarballURL.lastIndexOf("/");
+                String fileName = version.tarballURL.substring(index + 1);
+                int indexdot = fileName.indexOf(".");
+                if (indexdot != -1) {
+                    fileName = fileName.substring(0, indexdot);
+                }
+                final File filesave = new File(dir, fileName + "_save");
+                if (filesave.exists()) {
+                    version.localfile = filesave + "/xiaoxuekejian/local.html";
+                } else {
+                    final File filesaveTmp = new File(dir, fileName + "_savetmp");
+                    final File zipsave = new File(dir, fileName + ".zip");
+                    if (zipsave.exists()) {
+                        try {
+                            String md5Str = MD5.md5(zipsave);
+                            logger.d("scienceStatic:md5Str=" + md5Str + ",assetsHash=" + version.assetsHash);
+                            if (md5Str.equalsIgnoreCase(version.assetsHash)) {
+                                new ZipExtractorTask(zipsave, filesaveTmp, true, new Progresses() {
+                                    @Override
+                                    public void onPostExecute(Exception exception) {
+                                        if (exception == null) {
+                                            boolean renameTo = filesaveTmp.renameTo(filesave);
+                                            if (new File(filesave, "/xiaoxuekejian/local.html").exists()) {
+                                                version.localfile = filesave + "/xiaoxuekejian/local.html";
+                                            }
+                                            logger.d("scienceStatic:onPostExecute:localfile=" + version.localfile + ",renameTo=" + renameTo);
+                                        }
+                                    }
+                                }).execute();
+                                return;
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    final File zipsavetmp = new File(dir, fileName + ".ziptmp");
+                    mHttpManager.download(version.tarballURL, zipsavetmp.getPath(), new DownloadCallBack() {
+                        @Override
+                        protected void onDownloadSuccess() {
+                            zipsavetmp.renameTo(zipsave);
+                            new ZipExtractorTask(zipsave, filesaveTmp, true, new Progresses() {
+                                @Override
+                                public void onPostExecute(Exception exception) {
+                                    if (exception == null) {
+                                        boolean renameTo = filesaveTmp.renameTo(filesave);
+                                        if (new File(filesave, "/xiaoxuekejian/local.html").exists()) {
+                                            version.localfile = filesave + "/xiaoxuekejian/local.html";
+                                        }
+                                        logger.d("scienceStatic:onPostExecute:localfile=" + version.localfile + ",renameTo=" + renameTo);
+                                    }
+                                }
+                            }).execute();
+                        }
+
+                        @Override
+                        protected void onDownloadFailed() {
+
+                        }
+
+                        @Override
+                        protected void onDownloadFailed(Exception e) {
+                            logger.d("scienceStatic:download", e);
+                        }
+                    });
+                }
+            }
         }
     }
 

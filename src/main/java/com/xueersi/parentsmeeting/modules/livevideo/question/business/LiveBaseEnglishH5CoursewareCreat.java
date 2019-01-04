@@ -7,6 +7,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ScienceStaticConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.EnglishH5CoursewareX5Pager;
 
@@ -56,7 +57,20 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
                 if (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage)) {
                     englishH5Entity.setDynamicurl(liveGetInfo.getGetCourseWareHtmlZhongXueUrl());
                 } else {
-                    englishH5Entity.setDynamicurl(liveGetInfo.getGetCourseWareHtmlNew() + "/v2/index.html");
+                    ScienceStaticConfig scienceStaticConfig = liveGetInfo.getScienceStaticConfig();
+                    String localfile = null;
+                    if (scienceStaticConfig != null) {
+                        ScienceStaticConfig.Version version = scienceStaticConfig.stringVersionHashMap.get(ScienceStaticConfig.THIS_VERSION);
+                        if (version != null) {
+                            localfile = version.localfile;
+                        }
+                    }
+                    if (localfile != null) {
+                        localfile = "file://" + localfile;
+                        englishH5Entity.setDynamicurl(localfile);
+                    } else {
+                        englishH5Entity.setDynamicurl(liveGetInfo.getGetCourseWareHtmlNew() + ScienceStaticConfig.THIS_VERSION_HTML + "/index.html");
+                    }
                 }
             }
         }

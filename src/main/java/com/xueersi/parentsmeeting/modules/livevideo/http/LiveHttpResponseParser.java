@@ -1,16 +1,13 @@
 package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
-import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.parentsmeeting.module.videoplayer.entity.LiveExperienceEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AddPersonAndTeamEnergyEntity;
@@ -49,6 +46,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpProbabilityEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ScienceStaticConfig;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,10 +54,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class LiveHttpResponseParser extends HttpResponseParser {
-    String TAG = "LiveHttpResponseParser";
+    static String TAG = "LiveHttpResponseParser";
     Context mContext;
 
     public LiveHttpResponseParser(Context mContext) {
@@ -101,6 +100,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         getInfo.setAllowLinkMicNew(data.optInt("allowLinkMicNew"));
         getInfo.setGetCourseWareHtmlNew(data.optString("getCourseWareHtmlNew"));
         getInfo.setGetCourseWareHtmlZhongXueUrl(data.optString("getCourseWareHtmlZhongXueUrl"));
+        getInfo.setScienceStaticConfig(parseScienceStaticConfig(data));
         if (getInfo.getAllowLinkMicNew() == 1) {
             getInfo.setAllowLinkMic(false);
         }
@@ -115,6 +115,36 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo.ePlanInfo", e.getMessage());
             }
         }
+    }
+
+    public static ScienceStaticConfig parseScienceStaticConfig(JSONObject data) {
+        ScienceStaticConfig scienceStaticConfig = null;
+        if (data.has("science_static_config")) {
+            scienceStaticConfig = new ScienceStaticConfig();
+            HashMap<String, ScienceStaticConfig.Version> stringVersionHashMap = scienceStaticConfig.stringVersionHashMap;
+            JSONObject science_static_config = data.optJSONObject("science_static_config");
+            Iterator<String> keys = science_static_config.keys();
+            if (keys.hasNext()) {
+                String key = keys.next();
+                ScienceStaticConfig.Version version = new ScienceStaticConfig.Version();
+                version.version = key;
+                try {
+                    JSONObject versionObj = science_static_config.getJSONObject(key);
+                    int canUseLocal = versionObj.getInt("canUseLocal");
+                    if (canUseLocal == 1) {
+                        version.url = versionObj.getString("url");
+                        version.templateURL = versionObj.getString("templateURL");
+                        version.tarballURL = versionObj.getString("tarballURL");
+                        version.assetsHash = versionObj.getString("assetsHash");
+                        version.templateForLocalURL = versionObj.getString("templateForLocalURL");
+                        stringVersionHashMap.put(key, version);
+                    }
+                } catch (JSONException e) {
+                    MobAgent.httpResponseParserError(TAG, "parseScienceStaticConfig", e.getMessage());
+                }
+            }
+        }
+        return scienceStaticConfig;
     }
 
     /**

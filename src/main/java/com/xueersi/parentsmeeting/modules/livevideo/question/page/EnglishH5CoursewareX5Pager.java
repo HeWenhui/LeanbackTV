@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseWebviewX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareSecHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 
 import org.greenrobot.eventbus.EventBus;
@@ -82,6 +83,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private File cacheFile;
     private String liveId;
     private EnglishH5CoursewareBll mEnglishH5CoursewareBll;
+    private EnglishH5CoursewareSecHttp englishH5CoursewareSecHttp;
     private String isShowRanks;
     private RelativeLayout rlLivevideoSubjectWeb;
     private int isArts;
@@ -348,7 +350,6 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         webSetting.setBuiltInZoomControls(true);
         webSetting.setJavaScriptEnabled(true);
         wvSubjectWeb.addJavascriptInterface(this, "wx_xesapp");
-
         if (englishH5Entity.getNewEnglishH5() || LiveVideoConfig.isMulLiveBack || isNewArtsCourseware) {
             wvSubjectWeb.setWebViewClient(new MyWebViewClient() {
                 @Override
@@ -655,6 +656,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         Loger.e(TAG, "======> newArtsH5CourseWare refresh:");
         addJavascriptInterface();
         wvSubjectWeb.addJavascriptInterface(this, "wx_xesapp");
+        if (isArts == 0) {
+            wvSubjectWeb.addJavascriptInterface(new ScienceStaticWeb(this, wvSubjectWeb, englishH5CoursewareSecHttp), "xesApp");
+        }
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setBuiltInZoomControls(true);
         wvSubjectWeb.setWebChromeClient(new MyWebChromeClient());
@@ -674,5 +678,11 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         return englishH5Entity;
     }
 
-
+    @Override
+    public void setEnglishH5CoursewareSecHttp(EnglishH5CoursewareSecHttp englishH5CoursewareSecHttp) {
+        this.englishH5CoursewareSecHttp = englishH5CoursewareSecHttp;
+        if (isArts == 0) {
+            wvSubjectWeb.addJavascriptInterface(new ScienceStaticWeb(this, wvSubjectWeb, englishH5CoursewareSecHttp), "xesApp");
+        }
+    }
 }
