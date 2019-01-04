@@ -12,7 +12,6 @@ import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -21,6 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.VoiceAnswerResultEvent
 import com.xueersi.parentsmeeting.modules.livevideo.http.RolePlayerHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.RolePlayerHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayMachinePager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayStandMachinePager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -61,6 +61,8 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
     RelativeLayout mBottomContent;
 
     RolePlayMachinePager mRolePlayMachinePager;
+
+    RolePlayStandMachinePager mRolePlayStandMachinePager;
 
     /**
      * 是否开始了人机
@@ -285,10 +287,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
         return mRolePlayerEntity;
     }
 
-    public void setRolePlayMachinePager(RolePlayMachinePager rolePlayMachinePager) {
-        this.mRolePlayMachinePager = rolePlayMachinePager;
 
-    }
 
     @Override
     public synchronized void requestResult() {
@@ -310,23 +309,21 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
             //TODO:
             int i = 1;
             for (RolePlayerEntity.RolePlayerMessage message : mRolePlayerEntity.getLstRolePlayerMessage()) {
-                JSONObject objAn = new JSONObject();
-                objAn.put("sentenceNum", i);
-                objAn.put("entranceTime", message.getMaxReadTime());
-                objAn.put("score", message.getSpeechScore());
 
-                if (message.getRolePlayer().isSelfRole() && message.getRolePlayer().getSpeechScore() > 1) {
+                if (message.getRolePlayer().isSelfRole()) {
+                    JSONObject objAn = new JSONObject();
                     JSONObject objData = new JSONObject();
+                    objAn.put("sentenceNum", i);
+                    objAn.put("entranceTime", message.getMaxReadTime());
+                    objAn.put("score", message.getSpeechScore());
                     objData.put("cont_score", message.getFluency());
                     objData.put("pron_score", message.getAccuracy());
                     objData.put("total_score", message.getSpeechScore());
                     objData.put("level", message.getLevel());
                     objAn.put("alldata", objData);
-                } else {
-                    objAn.put("alldata", "");
-
+                    arrAnswer.put(objAn);
                 }
-                arrAnswer.put(objAn);
+
                 i++;
             }
             obj.put("answers", arrAnswer);
@@ -389,22 +386,22 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
             //TODO:
             int i = 1;
             for (RolePlayerEntity.RolePlayerMessage message : mRolePlayerEntity.getLstRolePlayerMessage()) {
-                JSONObject objAn = new JSONObject();
-                objAn.put("sentenceNum", i);
-                objAn.put("entranceTime", message.getMaxReadTime());
-                objAn.put("score", message.getSpeechScore());
 
-                if (message.getRolePlayer().isSelfRole() && message.getRolePlayer().getSpeechScore() > 1) {
+
+                if (message.getRolePlayer().isSelfRole()) {
+                    JSONObject objAn = new JSONObject();
+                    objAn.put("sentenceNum", i);
+                    objAn.put("entranceTime", message.getMaxReadTime());
+                    objAn.put("score", message.getSpeechScore());
                     JSONObject objData = new JSONObject();
                     objData.put("cont_score", message.getFluency());
                     objData.put("pron_score", message.getAccuracy());
                     objData.put("total_score", message.getSpeechScore());
                     objData.put("level", message.getLevel());
                     objAn.put("alldata", objData);
-                } else {
-                    objAn.put("alldata", "");
+                    arrAnswer.put(objAn);
                 }
-                arrAnswer.put(objAn);
+
                 i++;
             }
             obj.put("answers", arrAnswer);
@@ -441,6 +438,9 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                     if (mRolePlayMachinePager != null) {
                         mRolePlayMachinePager.recoverListScrollAndCancelDZ();
                     }
+                    if (mRolePlayStandMachinePager != null) {
+                        mRolePlayStandMachinePager.recoverListScrollAndCancelDZ();
+                    }
 
                 }
             });
@@ -450,25 +450,6 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
 
     }
 
-    @Override
-    public synchronized void cancelDZ() {
-        //super.cancelDZ();
-        RolePlayerEntity tempRolePlayerEntity = mRolePlayerEntity;
-        if (tempRolePlayerEntity == null || mRolePlayMachinePager == null) {
-            logger.i(" roleplay界面已经销毁，数据为空，不再向下执行 ");
-            return;
-        }
-        List<RolePlayerEntity.RolePlayerMessage> rolePlayerMessages = tempRolePlayerEntity.getLstRolePlayerMessage();
-        for (int i = 0; i < rolePlayerMessages.size(); i++) {
-            RolePlayerEntity.RolePlayerHead head = mRolePlayerEntity.getLstRolePlayerMessage().get(i).getRolePlayer();
-            //if (!head.isSelfRole()) {
-            mRolePlayerEntity.getLstRolePlayerMessage().get(i).setMsgStatus(RolePlayerEntity
-                    .RolePlayerMessageStatus.CANCEL_DZ);
-            mRolePlayMachinePager.updateRolePlayList(rolePlayerMessages.get(i));
-            // }
-
-        }
-    }
 
     @Override
     public void onStopQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity, String nonce) {
@@ -501,8 +482,26 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
 //                updateAchievement.getStuGoldCount();
 //            }
         }
+        if (mBottomContent != null && mRolePlayStandMachinePager != null) {
+            logger.i("onStopQuestion 关闭当前页面 ");
+            //让pager自己移除
+//            mBottomContent.removeView(mRolePlayMachinePager.getRootView());
+            mRolePlayStandMachinePager.relaseCurrentPage();
+            mRolePlayStandMachinePager.onDestroy();
+            mRolePlayStandMachinePager = null;
+            AudioRequest audioRequest = ProxUtil.getProxUtil().get(mContext, AudioRequest.class);
+            if (audioRequest != null) {
+                audioRequest.release();
+            }
+            //这里不再请求金币
+//            UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class);
+//            if (updateAchievement != null) {
+//                updateAchievement.getStuGoldCount();
+//            }
+        }
         mBottomContent = null;
         mRolePlayMachinePager = null;
+        mRolePlayStandMachinePager = null;
     }
 
     @Override
@@ -515,5 +514,56 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
 
     public void setBottomView(RelativeLayout bottomView) {
         this.mBottomContent = bottomView;
+    }
+
+    /**
+     * 设置人机的pager
+     * @param rolePlayMachinePager
+     */
+    public void setRolePlayMachinePager(RolePlayMachinePager rolePlayMachinePager) {
+        this.mRolePlayMachinePager = rolePlayMachinePager;
+
+    }
+    /**
+     * 站立式直播的人机pager
+     * @param rolePlayStandMachinePager
+     */
+    public void setRolePlayStandMachinePager(RolePlayStandMachinePager rolePlayStandMachinePager) {
+        this.mRolePlayStandMachinePager = rolePlayStandMachinePager;
+    }
+
+    @Override
+    public synchronized void cancelDZ() {
+        //super.cancelDZ();
+        RolePlayerEntity tempRolePlayerEntity = mRolePlayerEntity;
+        if (tempRolePlayerEntity == null || mRolePlayMachinePager == null) {
+            logger.i(" roleplay界面已经销毁，数据为空，不再向下执行 ");
+            return;
+        }
+        List<RolePlayerEntity.RolePlayerMessage> rolePlayerMessages = tempRolePlayerEntity.getLstRolePlayerMessage();
+        for (int i = 0; i < rolePlayerMessages.size(); i++) {
+            RolePlayerEntity.RolePlayerHead head = mRolePlayerEntity.getLstRolePlayerMessage().get(i).getRolePlayer();
+            //if (!head.isSelfRole()) {
+            mRolePlayerEntity.getLstRolePlayerMessage().get(i).setMsgStatus(RolePlayerEntity
+                    .RolePlayerMessageStatus.CANCEL_DZ);
+            mRolePlayMachinePager.updateRolePlayList(rolePlayerMessages.get(i));
+            // }
+        }
+    }
+    public void cancelStandLiveDZ() {
+        RolePlayerEntity tempRolePlayerEntity = mRolePlayerEntity;
+        if (tempRolePlayerEntity == null || mRolePlayStandMachinePager == null) {
+            logger.i(" roleplay界面已经销毁，数据为空，不再向下执行 ");
+            return;
+        }
+        List<RolePlayerEntity.RolePlayerMessage> rolePlayerMessages = tempRolePlayerEntity.getLstRolePlayerMessage();
+        for (int i = 0; i < rolePlayerMessages.size(); i++) {
+            RolePlayerEntity.RolePlayerHead head = mRolePlayerEntity.getLstRolePlayerMessage().get(i).getRolePlayer();
+            //if (!head.isSelfRole()) {
+            mRolePlayerEntity.getLstRolePlayerMessage().get(i).setMsgStatus(RolePlayerEntity
+                    .RolePlayerMessageStatus.CANCEL_DZ);
+            mRolePlayStandMachinePager.updateRolePlayList(rolePlayerMessages.get(i));
+            // }
+        }
     }
 }

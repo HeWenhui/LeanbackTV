@@ -710,22 +710,21 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             //TODO:
             int i = 1;
             for (RolePlayerEntity.RolePlayerMessage message : mRolePlayerEntity.getLstRolePlayerMessage()) {
-                JSONObject objAn = new JSONObject();
-                objAn.put("sentenceNum", i);
-                objAn.put("entranceTime", message.getMaxReadTime());
-                objAn.put("score", message.getSpeechScore());
 
-                if (message.getRolePlayer().isSelfRole() && message.getRolePlayer().getSpeechScore() > 1) {
+                if (message.getRolePlayer().isSelfRole()) {
+                    JSONObject objAn = new JSONObject();
+                    objAn.put("sentenceNum", i);
+                    objAn.put("entranceTime", message.getMaxReadTime());
+                    objAn.put("score", message.getSpeechScore());
                     JSONObject objData = new JSONObject();
                     objData.put("cont_score", message.getFluency());
                     objData.put("pron_score", message.getAccuracy());
                     objData.put("total_score", message.getSpeechScore());
                     objData.put("level", message.getLevel());
                     objAn.put("alldata", objData);
-                } else {
-                    objAn.put("alldata", "");
+                    arrAnswer.put(objAn);
                 }
-                arrAnswer.put(objAn);
+
                 i++;
             }
             obj.put("answers", arrAnswer);
@@ -790,22 +789,22 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             //TODO:
             int i = 1;
             for (RolePlayerEntity.RolePlayerMessage message : mRolePlayerEntity.getLstRolePlayerMessage()) {
-                JSONObject objAn = new JSONObject();
-                objAn.put("sentenceNum", i);
-                objAn.put("entranceTime", message.getMaxReadTime());
-                objAn.put("score", message.getSpeechScore());
 
-                if (message.getRolePlayer().isSelfRole() && message.getRolePlayer().getSpeechScore() > 1) {
+
+                if (message.getRolePlayer().isSelfRole()) {
+                    JSONObject objAn = new JSONObject();
+                    objAn.put("sentenceNum", i);
+                    objAn.put("entranceTime", message.getMaxReadTime());
+                    objAn.put("score", message.getSpeechScore());
                     JSONObject objData = new JSONObject();
                     objData.put("cont_score", message.getFluency());
                     objData.put("pron_score", message.getAccuracy());
                     objData.put("total_score", message.getSpeechScore());
                     objData.put("level", message.getLevel());
                     objAn.put("alldata", objData);
-                } else {
-                    objAn.put("alldata", "");
+                    arrAnswer.put(objAn);
                 }
-                arrAnswer.put(objAn);
+
                 i++;
             }
             obj.put("answers", arrAnswer);

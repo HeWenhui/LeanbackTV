@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/roleplay_bg_pic_nor_stand_live">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/rl_live_roleplayer_read_main"
+        >
+        <!--倒计时布局-->
+        <LinearLayout
+            android:id="@id/ll_live_roleplayer_countdown_main"
+            android:layout_width="81dp"
+            android:layout_height="29dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="24dp"
+            android:background="@drawable/roleplay_time_pic_nor_standlive"
+            android:orientation="horizontal">
+
+            <!--倒计时时间更新区-->
+            <TextView
+                android:id="@id/tv_live_roleplayer_countdown"
+                style="@style/text_font16_999999_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="6dp"
+                android:text="3分0秒"
+                android:textColor="@color/white"
+                android:textSize="11sp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_close_role_play"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="22dp"
+            android:layout_marginTop="14dp"
+            android:background="@drawable/bg_roleplay_close_bt"
+            android:visibility="gone" />
+
+        <!--提示区-->
+        <TextView
+            android:id="@id/tv_live_roleplayer_countdown_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_live_roleplayer_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="35dp"
+            android:layout_marginTop="60dp"
+            android:gravity="center"
+            android:hint="ready go"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:textColor="#FF9600"
+            android:textSize="18sp"
+            />
+
+
+        <!--多人朗读区-->
+        <!--对话区-->
+        <com.xueersi.parentsmeeting.modules.livevideo.view.CustomUnScorllListView
+            android:id="@id/lv_live_roleplayer_read_list"
+            style="@style/listview_common_style"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/tv_live_roleplayer_countdown_tip"
+            android:layout_marginTop="60dp"
+            android:layout_marginBottom="23dp"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            android:footerDividersEnabled="true"
+            android:headerDividersEnabled="true"
+            android:transcriptMode="normal"
+            />
+
+        <!--收获点赞区-->
+        <RelativeLayout
+            android:id="@+id/rl_live_roleplayer_dz_message_bubble_main"
+            android:layout_width="200dp"
+            android:layout_height="100dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true" />
+
+
+        <!--测评音量条区-->
+        <RelativeLayout
+            android:id="@id/rl_live_roleplayer_speech_volumewave_main"
+            android:layout_width="324dp"
+            android:layout_height="48dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="6dp"
+            android:background="@drawable/shape_livevideo_roleplayer_speech_volumewave_bg"
+            android:visibility="invisible">
+
+            <com.xueersi.parentsmeeting.widget.VolumeWaveView
+                android:id="@id/vwv_livevideo_roleplayer_speech_volumewave"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerInParent="true" />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+
+
+
+    </RelativeLayout>
+
+
