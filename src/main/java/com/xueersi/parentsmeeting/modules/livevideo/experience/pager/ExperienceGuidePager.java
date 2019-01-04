@@ -153,6 +153,7 @@ public class ExperienceGuidePager extends LiveBasePager {
     private TextView tvCountDown;
     private VerifyCancelAlertDialog quitDialog;
 
+
     public ExperienceGuidePager(Context context) {
         super(context);
     }
@@ -278,11 +279,11 @@ public class ExperienceGuidePager extends LiveBasePager {
                     case 3:
                         setAreaBackground(false, false, false);
                         setIndexView(false);
-                        rlQuestion.setVisibility(View.VISIBLE);
-                        tvQuestionTitle.setText("1. what is the setting of the story ?");
-                        tvQuestionContent.setText("A. a bedroom at night\nB. a bam at night\nC. a dinner at noon ");
                         rlStepThree.setVisibility(View.VISIBLE);
                         if ("3".equals(subject)) {
+                            rlQuestion.setVisibility(View.VISIBLE);
+                            tvQuestionTitle.setText("1. what is the setting of the story ?");
+                            tvQuestionContent.setText("A. a bedroom at night\nB. a bam at night\nC. a dinner at noon ");
                             rlVoiceAnswer.setVisibility(View.VISIBLE);
                             setVoiceAnswer();
                         } else if ("1".equals(subject)) {
@@ -484,27 +485,25 @@ public class ExperienceGuidePager extends LiveBasePager {
                 }
             };
         }
-        visitTime = 50000;
-        if (visitTime > 16000) {
-            quitCountDownTimer = new CountDownTimer(visitTime, 500) {
-                @Override
-                public void onTick(long millisUntilFinished) {
-                    if (millisUntilFinished < 16000) {
-                        tvCountDown.setVisibility(View.VISIBLE);
-                        tvCountDown.setText(millisUntilFinished / 1000 + "S后将开启体验课");
-                    }
+        quitCountDownTimer = new CountDownTimer(visitTime * 1000, 500) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                if (millisUntilFinished < 16000) {
+                    tvCountDown.setVisibility(View.VISIBLE);
+                    tvCountDown.setText(millisUntilFinished / 1000 + "S后将开启体验课");
                 }
+            }
 
-                @Override
-                public void onFinish() {
-                    InputMethodManager mInputMethodManager = (InputMethodManager) mContext.getSystemService(Context
-                            .INPUT_METHOD_SERVICE);
-                    mInputMethodManager.hideSoftInputFromWindow(etMessageInput.getWindowToken(), 0);
-                    ivHomeQuit.performClick();
-                }
-            };
-            quitCountDownTimer.start();
-        }
+            @Override
+            public void onFinish() {
+                InputMethodManager mInputMethodManager = (InputMethodManager) mContext.getSystemService(Context
+                        .INPUT_METHOD_SERVICE);
+                mInputMethodManager.hideSoftInputFromWindow(etMessageInput.getWindowToken(), 0);
+                ivHomeQuit.performClick();
+            }
+        };
+        quitCountDownTimer.start();
+
 
     }
 
@@ -634,7 +633,7 @@ public class ExperienceGuidePager extends LiveBasePager {
                 @Override
                 public void onFinish() {
                     tvSpeechTip.setVisibility(View.VISIBLE);
-                    tvSpeechTip.setText("再次点击结束录音");
+                    tvSpeechTip.setText("再次点击则结束录音");
                     ivStartSpeech.setEnabled(true);
                     ivSpeechHand.setVisibility(View.VISIBLE);
                 }
@@ -718,22 +717,22 @@ public class ExperienceGuidePager extends LiveBasePager {
                 if (countDownTimer != null) {
                     countDownTimer.cancel();
                 }
-                if (quitCountDownTimer != null){
+                if (quitCountDownTimer != null) {
                     quitCountDownTimer.cancel();
                 }
-                if (quitDialog != null){
+                if (quitDialog != null) {
                     quitDialog.cancelDialog();
                 }
-                if (imageDialog != null){
+                if (imageDialog != null) {
                     imageDialog.cancelDialog();
                 }
-                if (vwvVoiceAnswer != null){
+                if (vwvVoiceAnswer != null) {
                     vwvVoiceAnswer.stop();
                     vwvVoiceAnswer.setVisibility(View.GONE);
                 }
                 pagerControl.removePager();
             } else {
-                if (quitDialog ==  null){
+                if (quitDialog == null) {
                     quitDialog = new VerifyCancelAlertDialog(mContext, (Application) mContext.getApplicationContext(), false, VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
                     quitDialog.setVerifyBtnListener(new View.OnClickListener() {
                         @Override
@@ -746,10 +745,10 @@ public class ExperienceGuidePager extends LiveBasePager {
                             if (countDownTimer != null) {
                                 countDownTimer.cancel();
                             }
-                            if (quitCountDownTimer != null){
+                            if (quitCountDownTimer != null) {
                                 quitCountDownTimer.cancel();
                             }
-                            if (vwvVoiceAnswer != null){
+                            if (vwvVoiceAnswer != null) {
                                 vwvVoiceAnswer.stop();
                                 vwvVoiceAnswer.setVisibility(View.GONE);
                             }

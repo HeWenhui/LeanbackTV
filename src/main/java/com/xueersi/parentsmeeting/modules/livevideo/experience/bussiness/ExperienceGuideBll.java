@@ -9,6 +9,7 @@ import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
@@ -18,13 +19,26 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager
 
 import java.util.HashMap;
 
-public class ExperienceGuideBll extends LiveBackBaseBll implements IPagerControl {
+public class ExperienceGuideBll extends LiveBackBaseBll implements IPagerControl,IPlayStatus {
 
     ExperienceGuidePager mGuidePager;
     RelativeLayout rlViewContent;
     boolean iShowGuidePager = false;
     VideoLivePlayBackEntity mVideoEntity;
     LivePlayBackHttpManager livePlayBackHttpManager;
+    private final long COUNTDOWNTIME = 900;
+    private boolean isExperienceGuideShow = false;
+    private long startTime;
+    private PlayerService mPlayer;
+
+    Runnable mPauseRunnable =  new Runnable() {
+        @Override
+        public void run() {
+            if (mPlayer != null){
+                mPlayer.pause();
+            }
+        }
+    };
 
     public ExperienceGuideBll(Activity activity, LiveBackBll liveBackBll) {
         super(activity, liveBackBll);
@@ -34,25 +48,28 @@ public class ExperienceGuideBll extends LiveBackBaseBll implements IPagerControl
     public void onCreate(VideoLivePlayBackEntity mVideoEntity, LiveGetInfo liveGetInfo, HashMap<String, Object> businessShareParamMap) {
         super.onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
         this.mVideoEntity = mVideoEntity;
-        mGuidePager = new ExperienceGuidePager(mContext, this,Long.valueOf(mVideoEntity.getVisitTimeKey()),mVideoEntity.getSubjectId());
-        mGuidePager.setSubjeceId(mVideoEntity.getSubjectId());
+        //根据接口返回字段判断是否可以弹出新手引导
+        if (mVideoEntity.isNoviceGuide()) {
+            mGuidePager = new ExperienceGuidePager(mContext, this, COUNTDOWNTIME - Long.valueOf(mVideoEntity.getVisitTimeKey()), mVideoEntity.getSubjectId());
+            mGuidePager.setSubjeceId(mVideoEntity.getSubjectId());
+            startTime = System.currentTimeMillis();
+        }
     }
 
     @Override
     public void initView() {
-//        if (mRootView != null && Long.valueOf(mVideoEntity.getVisitTimeKey()) > 15000) {
-            if(mRootView != null && mGuidePager != null){
-                livePlayBackHttpManager = new LivePlayBackHttpManager(mContext);
+        //正式课前60s以上才可以进入新手引导
+        if (mRootView != null && mGuidePager != null && COUNTDOWNTIME - Long.valueOf(mVideoEntity.getVisitTimeKey()) > 60) {
             showPager();
             submitNovicGuide();
-//            liveBackBll.getvPlayer().pause();
-        }else {
-                liveBackBll.removeBusinessBll(this);
-            }
+        } else {
+            liveBackBll.removeBusinessBll(this);
+        }
     }
 
     @Override
     public boolean showPager() {
+        isExperienceGuideShow = true;
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams
                 .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         if (rlViewContent == null) {
@@ -73,11 +90,19 @@ public class ExperienceGuideBll extends LiveBackBaseBll implements IPagerControl
     public boolean removePager() {
         if (rlViewContent != null) {
             rlViewContent.removeAllViews();
+            mRootView.removeCallbacks(mPauseRunnable);
+            isExperienceGuideShow = false;
+            if (mPlayer != null){
+                mPlayer.start();
+                mPlayer.seekTo(Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System
+                        .currentTimeMillis() - startTime));
+            }
         }
         return false;
     }
 
-    private void submitNovicGuide(){
+    private void submitNovicGuide() {
+        livePlayBackHttpManager = new LivePlayBackHttpManager(mContext);
         livePlayBackHttpManager.sumbitExperienceNoviceGuide(UserBll.getInstance().getMyUserInfoEntity()
                 .getStuId(), mVideoEntity.getChapterId(), mVideoEntity.getSubjectId(), new HttpCallBack(false) {
             @Override
@@ -85,5 +110,30 @@ public class ExperienceGuideBll extends LiveBackBaseBll implements IPagerControl
                 logger.i("submitNovicGuide");
             }
         });
+    }
+
+
+    @Override
+    public void onPlayOpenStart() {
+
+    }
+
+    @Override
+    public void onPlaySuccess(PlayerService vPlayer) {
+        //暂停播放的视频
+        mPlayer = vPlayer;
+        if (vPlayer != null && isExperienceGuideShow) {
+            mRootView.post(mPauseRunnable);
+        }
+    }
+
+    @Override
+    public void onPlayingPosition(long currentPosition, long duration) {
+
+    }
+
+    @Override
+    public void onPlayComplete() {
+
     }
 }
