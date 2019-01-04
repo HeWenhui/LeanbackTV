@@ -334,6 +334,9 @@ public class LiveVideoConfig {
     public static String LIVEMULH5URLCHS;
     /** AI体验课互动题答题结果*/
     public static Boolean isAITrue = false;
+    /** AI体验课退出时，记录当前的进度*/
+    public static Long liveKey = 0L;
+    public static Long curentTime = 0L;
     /** 战队PK改版 */
     public static String tests;
     public static String ctId;

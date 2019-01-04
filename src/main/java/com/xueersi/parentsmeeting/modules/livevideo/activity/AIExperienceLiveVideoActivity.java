@@ -1043,7 +1043,16 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
             if(mVideoEntity.getSciAiEvent().getLeadingStage().getBeginTime() > Integer.parseInt(mVideoEntity.getVisitTimeKey())){
                 seekTo(mVideoEntity.getSciAiEvent().getLeadingStage().getBeginTime() * 1000);  // AI体验课的这个方法需要重写
             }else{
-                seekTo(keyTime);  // AI体验课的这个方法需要重写
+                if(LiveVideoConfig.liveKey != 0L){
+                    seekTo(LiveVideoConfig.liveKey + (System.currentTimeMillis() - LiveVideoConfig.curentTime));
+                    Log.e("Duncan", "LiveVideoConfig.liveKey != 0L:" + LiveVideoConfig.liveKey);
+                    Log.e("Duncan", "LiveVideoConfig.liveKey != 0Ls:" + LiveVideoConfig.curentTime);
+                    Log.e("Duncan", "LiveVideoConfig.liveKey != 0L1:" + LiveVideoConfig.liveKey + (System.currentTimeMillis() - LiveVideoConfig.curentTime) + (System.currentTimeMillis() -
+                            startTime));
+                }else{
+                    seekTo(keyTime);  // AI体验课的这个方法需要重写
+                    Log.e("Duncan", "LiveVideoConfig.liveKey != 0L2:" + LiveVideoConfig.liveKey);
+                }
             }
 
             // TODO 这里需要重新判断当前应该快进到的位置：根据上一题的答题结果来跳到对应时间区间
@@ -1231,6 +1240,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         scanQuestion(currentPosition);
         Log.e("Duncan", "currentPosition:" + currentPosition + ": threadId =" + Thread.currentThread().getId());
         Log.e("Duncan", "isAITrue:" + LiveVideoConfig.isAITrue);
+        Log.e("Duncan", "isFirst:" + firstTime);
         if (HISTROY_MSG_DISPLAY) {
             displayHistoryMsg();
         }
@@ -1253,11 +1263,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                                 seekTo(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getPublish().getBeginTime() * 1000);
                                 logger.e("seekTo2=====>"+ mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getPublish().getBeginTime());
                             }
-                            // 答对的情况下，需要过滤掉容易题的视频片段
-                            if(playPosition == mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getInterpret().getEndTime()){
-                                seekTo(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getInterpret().getEndTime() * 1000);
-                                logger.e("seekTo3=====>"+ mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getInterpret().getEndTime());
-                            }
+
                         }
                     }else{
                         if(mVideoEntity.getSciAiEvent().getExercises().get(i).getKnowledgePoints().getEndTime() != 0 && playPosition == mVideoEntity.getSciAiEvent().getExercises().get(i).getKnowledgePoints().getEndTime() ){
@@ -1275,6 +1281,11 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                                mVideoEntity.getSciAiEvent().getExercises().get(i).getKnowledgePoints().setEndTime(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getPublish().getBeginTime()-10);
                            }
                         }
+                    }
+                    // 答对的情况下，需要过滤掉容易题的视频片段
+                    if(playPosition == mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getInterpret().getEndTime()){
+                        seekTo(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getInterpret().getEndTime() * 1000);
+                        logger.e("seekTo6=====>"+ mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getInterpret().getEndTime());
                     }
                 }
         }
@@ -1419,6 +1430,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
             experienceQuitFeedbackBll.playComplete();
         }
         mHandler.removeCallbacks(mPlayDuration);
+        LiveVideoConfig.liveKey = 0L;
 
     }
 
@@ -1442,7 +1454,6 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         if (scanRunnable != null) {
             scanRunnable.exit();
         }
-
         // 03.22 统计用户离开体验播放器的时间
         StableLogHashMap logHashMap = new StableLogHashMap("LiveFreePlayExit");
         logHashMap.put("liveid", mVideoEntity.getLiveId());
@@ -1463,6 +1474,9 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                 }
             }.start();
         }
+        // 01.03 记录当前的播放进度
+        LiveVideoConfig.liveKey = currentMsg;
+        LiveVideoConfig.curentTime = System.currentTimeMillis();
     }
 
 
