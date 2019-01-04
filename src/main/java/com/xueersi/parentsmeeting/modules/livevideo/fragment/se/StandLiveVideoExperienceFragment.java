@@ -507,7 +507,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 //        liveBackBll.addBusinessBll(new ExperienceBuyCourseExperiencePresenter(activity, liveBackBll));
         //播放完成后的反馈弹窗
         liveBackBll.addBusinessBll(new StandExperienceLearnFeedbackBll(activity, liveBackBll));
-        experienceQuitFeedbackBll = new ExperienceQuitFeedbackBll(activity,liveBackBll,true);
+        experienceQuitFeedbackBll = new ExperienceQuitFeedbackBll(activity, liveBackBll, true);
         liveBackBll.addBusinessBll(experienceQuitFeedbackBll);
     }
 
@@ -1100,7 +1100,6 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         if (!userBackPressed) {
 
 
-
             super.onUserBackPressed();
         }
     }
@@ -1115,7 +1114,9 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     @Override
     public void onStop() {
         super.onStop();
-        liveBackBll.onStop();
+        if (liveBackBll != null) {
+            liveBackBll.onStop();
+        }
     }
 
 
@@ -1144,7 +1145,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 //        lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(), mVideoEntity.getLiveId(),
 //                getDataCallBack);
         liveBackBll.resultAllComplete();
-        if(experienceQuitFeedbackBll != null){
+        if (experienceQuitFeedbackBll != null) {
             experienceQuitFeedbackBll.playComplete();
         }
 //        onUserBackPressed();

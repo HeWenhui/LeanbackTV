@@ -190,7 +190,9 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
                             .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
                     //在中间位置显示
                 }
-                rlQuestionContent.getHandler().removeCallbacks(closeRedPackage);
+                if (rlQuestionContent.getHandler() != null) {
+                    rlQuestionContent.getHandler().removeCallbacks(closeRedPackage);
+                }
                 rlQuestionContent.addView(understandView, params);
                 if (LiveVideoConfig.isPrimary) {
 //                    rlQuestionContent.postDelayed(closeRedPackage, 100000);//十秒之后关闭
