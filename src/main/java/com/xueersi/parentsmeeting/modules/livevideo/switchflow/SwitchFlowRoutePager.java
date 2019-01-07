@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -215,6 +216,8 @@ public class SwitchFlowRoutePager extends BasePager {
 //                        nowPos = listRoute.indexOf(nowTvRoute.getText().toString());
 //                        logger.i("nowPos" + nowPos);
                         nowPos = position;
+                        UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string
+                                .livevideo_switch_flow_1707013));
                         itemClickListener.itemClick(position);
                         routeAdapter.notifyDataSetChanged();
                     }

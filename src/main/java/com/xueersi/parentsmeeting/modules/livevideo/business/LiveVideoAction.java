@@ -17,6 +17,7 @@ import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.FooterIconEntity;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
@@ -322,6 +323,8 @@ public class LiveVideoAction implements VideoAction {
                 //如果是三分屏
                 if (isSmallEnglish || LiveVideoConfig.isPrimary) {
                     if (videoSwitchFlowStatus == SWITCH_FLOW_ROUTE_SWITCH) {
+                        UmsAgentManager.umsAgentCustomerBusiness(activity, activity.getResources().getString(R.string
+                                .livevideo_switch_flow_170712));
                         if (!mLiveBll.isPresent()) {
                             if (mContentView.findViewById(R.id.iv_course_video_teacher_notpresent) != null) {
                                 mContentView.findViewById(R.id.iv_course_video_teacher_notpresent).setVisibility(View.VISIBLE);
@@ -341,6 +344,8 @@ public class LiveVideoAction implements VideoAction {
                         }
                         tvSwitchFlowRetry.setText("线路" + strRoute + "切换失败");
                     } else if (videoSwitchFlowStatus == SWITCH_FLOW_RELOAD) {
+                        UmsAgentManager.umsAgentCustomerBusiness(activity, activity.getResources().getString(R.string
+                                .livevideo_switch_flow_170710));
                         if (!mLiveBll.isPresent()) {
                             if (mContentView.findViewById(R.id.iv_course_video_teacher_notpresent) != null) {
                                 mContentView.findViewById(R.id.iv_course_video_teacher_notpresent).setVisibility(View.VISIBLE);

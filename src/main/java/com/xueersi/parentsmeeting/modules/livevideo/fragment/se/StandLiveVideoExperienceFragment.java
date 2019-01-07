@@ -1117,7 +1117,9 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     @Override
     public void onStop() {
         super.onStop();
-        liveBackBll.onStop();
+        if (liveBackBll != null) {
+            liveBackBll.onStop();
+        }
     }
 
 
