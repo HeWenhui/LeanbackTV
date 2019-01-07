@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.praiselist.business;
+package com.xueersi.parentsmeeting.modules.livevideo.praiselist.presenter;
 
 import android.app.Activity;
 import android.view.View;
@@ -19,7 +19,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ProgressListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpProbabilityEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.contract.PraiseListPresenter;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.contract.PraiseListView;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.page.PraiseListPager;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.view.PraiseListBll;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.json.JSONArray;
@@ -32,44 +35,48 @@ import java.util.ArrayList;
  * Created by Zhang Yuansun on 2018/7/27.
  */
 
-public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, TopicAction {
+public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, TopicAction, PraiseListPresenter {
     /**
-     * 表扬榜事件
+     * 表扬榜View层接口
      */
-    private PraiseListAction mPraiseListAction;
+    private PraiseListView mView;
+    ThumbsUpProbabilityEntity mThumbsUpProbabilityEntity;
+    int mListType = 0;
 
     public PraiseListIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
+        mView = new PraiseListBll(activity);
+        mView.setPresenter(PraiseListIRCBll.this);
     }
 
     @Override
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
         //模式切换为主讲，关闭表扬榜
-        if (mPraiseListAction != null && mode.equals(LiveTopic.MODE_CLASS))
-            mPraiseListAction.closePraiseList();
+        if (mView != null && mode.equals(LiveTopic.MODE_CLASS))
+            mView.closePraiseList();
     }
 
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
+        mView.initView(mRootView);
     }
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
         switch (type) {
             case XESCODE.XCR_ROOM_AGREE_OPEN: {
-                if (mPraiseListAction == null) {
-                    PraiseListBll praiseListBll = new PraiseListBll(activity);
-                    praiseListBll.initView(mRootView);
-                    praiseListBll.setLiveBll(PraiseListIRCBll.this);
-                    mPraiseListAction = praiseListBll;
+                if (mView == null) {
+                    mView = new PraiseListBll(activity);
+                    mView.setPresenter(PraiseListIRCBll.this);
+                    mView.initView(mRootView);
                 }
-                if (mPraiseListAction != null) {
+                if (mView != null) {
                     String open = data.optString("open");
                     int zanType = data.optInt("zanType");
                     String nonce = data.optString("nonce");
                     if ("on".equals(open)) {
-                        mPraiseListAction.onReceivePraiseList(zanType, nonce);
+                        mView.onReceivePraiseList(zanType, nonce);
                         switch (zanType) {
                             case PraiseListPager.PRAISE_LIST_TYPE_HONOR:
                                 getHonorList(0);
@@ -84,54 +91,51 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
                                 break;
                         }
                     } else if ("off".equals(open)) {
-                        if (mPraiseListAction != null) {
-                            mPraiseListAction.closePraiseList();
+                        if (mView != null) {
+                            mView.closePraiseList();
                         }
                     }
                 }
 
             }
             case XESCODE.XCR_ROOM_AGREE_SEND_T: {
-                if (mPraiseListAction == null) {
-                    PraiseListBll praiseListBll = new PraiseListBll(activity);
-                    praiseListBll.initView(mRootView);
-                    praiseListBll.setLiveBll(PraiseListIRCBll.this);
-                    mPraiseListAction = praiseListBll;
+                if (mView == null) {
+                    mView = new PraiseListBll(activity);
+                    mView.setPresenter(PraiseListIRCBll.this);
+                    mView.initView(mRootView);
                 }
-                if (mPraiseListAction != null) {
-                    if (mPraiseListAction.getThumbsUpProbability() == 0) {
-                        getThumbsUpProbability();
-                    }
-                    JSONArray agreeForms = data.optJSONArray("agreeFroms");
-                    boolean isTeacher = data.optBoolean("isTeacher");
-                    mLogtf.d("agreeFroms is null，data = " + data);
-                    if (agreeForms == null) {
-                        return;
-                    }
-                    logger.i("agreeForms=" + agreeForms.toString());
-                    logger.i("isTeacher=" + isTeacher);
-                    if (isTeacher) {
-                        if (mPraiseListAction != null && agreeForms.length() != 0) {
-                            try {
-                                mPraiseListAction.showPraiseScroll(mGetInfo.getStuName(), agreeForms.getString(0));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                JSONArray agreeForms = data.optJSONArray("agreeFroms");
+                boolean isTeacher = data.optBoolean("isTeacher");
+                mLogtf.d("agreeFroms is null，data = " + data);
+                if (agreeForms == null) {
+                    return;
+                }
+                logger.i("agreeForms=" + agreeForms.toString() + ", isTeacher=" + isTeacher);
+                if (isTeacher) {
+                    if (mView != null && agreeForms.length() != 0) {
+                        try {
+                            mView.showPraiseScroll(mGetInfo.getStuName(), agreeForms.getString(0));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    } else {
-                        ArrayList<String> list = new ArrayList<>();
-                        for (int i = 0; i < agreeForms.length(); i++) {
-                            String stuName = null;
-                            try {
-                                stuName = agreeForms.getString(i);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                            logger.i("stuName=" + stuName);
-                            list.add(stuName);
+                    }
+                } else {
+                    ArrayList<String> list = new ArrayList<>();
+                    for (int i = 0; i < agreeForms.length(); i++) {
+                        String stuName = null;
+                        try {
+                            stuName = agreeForms.getString(i);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                        if (mPraiseListAction != null && list.size() != 0) {
-                            mPraiseListAction.receiveThumbsUpNotice(list);
+                        logger.i("stuName=" + stuName);
+                        list.add(stuName);
+                    }
+                    if (mView != null && list.size() != 0) {
+                        if (mThumbsUpProbabilityEntity == null) {
+                            mView.receiveThumbsUpNotice(list, mThumbsUpProbabilityEntity);
+                        } else {
+                            getThumbsUpProbability(list);
                         }
                     }
                 }
@@ -154,13 +158,12 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             LiveTopic.RoomStatusEntity coachRoomstatus = liveTopic.getCoachRoomstatus();
             if (coachRoomstatus.getListStatus() != 0 && LiveTopic.MODE_TRANING.equals(mLiveBll.getMode())) {
-                if (mPraiseListAction == null) {
-                    PraiseListBll praiseListBll = new PraiseListBll(activity);
-                    praiseListBll.initView(mRootView);
-                    praiseListBll.setLiveBll(PraiseListIRCBll.this);
-                    mPraiseListAction = praiseListBll;
+                if (mView == null) {
+                    mView = new PraiseListBll(activity);
+                    mView.setPresenter(PraiseListIRCBll.this);
+                    mView.initView(mRootView);
                 }
-                if (mPraiseListAction != null) {
+                if (mView != null) {
                     if (coachRoomstatus.getListStatus() == PraiseListPager.PRAISE_LIST_TYPE_HONOR) {
                         getHonorList(0);
                     } else if (coachRoomstatus.getListStatus() == PraiseListPager.PRAISE_LIST_TYPE_PROGRESS) {
@@ -176,14 +179,18 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
     /**
      * 获取光荣榜
      */
+    @Override
     public synchronized void getHonorList(final int status) {
-        if (mPraiseListAction != null && status == 0 && mPraiseListAction.getCurrentListType() == PraiseListPager
-                .PRAISE_LIST_TYPE_HONOR)
-            //如果当前榜单类型和新开启榜单类型相同，则退出。
-            return;
-        if (mPraiseListAction != null && status == 0)
-            //设置当前榜单类型
-            mPraiseListAction.setCurrentListType(PraiseListPager.PRAISE_LIST_TYPE_HONOR);
+        if (status == 0) {
+            if (mListType == PraiseListPager.PRAISE_LIST_TYPE_HONOR) {
+                //如果当前榜单类型和新开启榜单类型相同，则退出。
+                return;
+            } else {
+                //设置当前榜单类型
+                mListType = PraiseListPager.PRAISE_LIST_TYPE_HONOR;
+            }
+        }
+
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String classId = "";
         mLogtf.d("getHonorList:enstuId=" + enstuId + ",liveId=" + mLiveId);
@@ -195,15 +202,14 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 HonorListEntity honorListEntity = getHttpResponseParser().parseHonorList(responseEntity);
-                if (mPraiseListAction != null && honorListEntity != null) {
+                if (mView != null && honorListEntity != null) {
                     if (status == 0) {
-
-                        mPraiseListAction.onHonerList(honorListEntity);
+                        mView.onHonerList(honorListEntity);
                     } else if (status == 1) {
                         if (honorListEntity.getPraiseStatus() == 1)
-                            mPraiseListAction.showThumbsUpToast();
+                            mView.showThumbsUpToast();
                         else
-                            mPraiseListAction.setThumbsUpBtnEnabled(true);
+                            mView.setThumbsUpBtnEnabled(true);
                     }
 
                 }
@@ -224,10 +230,10 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
                             getHonorList(0);
                         }
                     });
-                    if (mPraiseListAction != null)
-                        mPraiseListAction.setCurrentListType(0);
-                } else if (status == 1 && mPraiseListAction != null) {
-                    mPraiseListAction.setThumbsUpBtnEnabled(true);
+                    if (mView != null)
+                        mListType = 0;
+                } else if (status == 1 && mView != null) {
+                    mView.setThumbsUpBtnEnabled(true);
                 }
                 mLogtf.d("getHonorList:onPmFailure=" + error + ",msg=" + msg);
             }
@@ -243,14 +249,16 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
     /**
      * 获取点赞榜
      */
+    @Override
     public synchronized void getThumbsUpList() {
-        if (mPraiseListAction != null && mPraiseListAction.getCurrentListType() == PraiseListPager
-                .PRAISE_LIST_TYPE_THUMBS_UP)
+        if (mListType == PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP) {
             //如果当前榜单类型和新开启榜单类型相同，则退出。
             return;
-        if (mPraiseListAction != null)
+        } else {
             //设置当前榜单类型
-            mPraiseListAction.setCurrentListType(PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP);
+            mListType = PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP;
+        }
+
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String classId = "";
         mLogtf.d("getThumbsUpList:enstuId=" + enstuId + ",liveId=" + mLiveId);
@@ -262,8 +270,8 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 ThumbsUpListEntity thumbsUpListEntity = getHttpResponseParser().parseThumbsUpList(responseEntity);
-                if (mPraiseListAction != null && thumbsUpListEntity != null) {
-                    mPraiseListAction.onThumbsUpList(thumbsUpListEntity);
+                if (mView != null && thumbsUpListEntity != null) {
+                    mView.onThumbsUpList(thumbsUpListEntity);
                 }
                 mLogtf.d("getThumbsUpList:onPmSuccess:thumbsUpListEntity=" + (thumbsUpListEntity == null) + "," +
                         "JsonObject=" + responseEntity.getJsonObject());
@@ -282,8 +290,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
                         getThumbsUpList();
                     }
                 });
-                if (mPraiseListAction != null)
-                    mPraiseListAction.setCurrentListType(0);
+                mListType = 0;
             }
 
             @Override
@@ -297,14 +304,18 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
     /**
      * 获取进步榜
      */
+    @Override
     public synchronized void getProgressList(final int status) {
-        if (mPraiseListAction != null && status == 0 && mPraiseListAction.getCurrentListType() == PraiseListPager
-                .PRAISE_LIST_TYPE_PROGRESS)
-            //如果当前榜单类型和新开启榜单类型相同，则退出
-            return;
-        if (mPraiseListAction != null)
-            //设置当前榜单类型
-            mPraiseListAction.setCurrentListType(PraiseListPager.PRAISE_LIST_TYPE_PROGRESS);
+        if (status == 0) {
+            if (mListType == PraiseListPager.PRAISE_LIST_TYPE_PROGRESS) {
+                //如果当前榜单类型和新开启榜单类型相同，则退出。
+                return;
+            } else {
+                //设置当前榜单类型
+                mListType = PraiseListPager.PRAISE_LIST_TYPE_PROGRESS;
+            }
+        }
+
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String classId = "";
         mLogtf.d("getProgressList:enstuId=" + enstuId + ",liveId=" + mLiveId);
@@ -316,15 +327,15 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 ProgressListEntity progressListEntity = getHttpResponseParser().parseProgressList(responseEntity);
-                if (mPraiseListAction != null && progressListEntity != null) {
+                if (mView != null && progressListEntity != null) {
                     if (status == 0) {
 
-                        mPraiseListAction.onProgressList(progressListEntity);
+                        mView.onProgressList(progressListEntity);
                     } else if (status == 1) {
                         if (progressListEntity.getPraiseStatus() == 1)
-                            mPraiseListAction.showThumbsUpToast();
+                            mView.showThumbsUpToast();
                         else
-                            mPraiseListAction.setThumbsUpBtnEnabled(true);
+                            mView.setThumbsUpBtnEnabled(true);
                     }
 
                 }
@@ -345,10 +356,9 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
                             getProgressList(0);
                         }
                     });
-                    if (mPraiseListAction != null)
-                        mPraiseListAction.setCurrentListType(0);
-                } else if (status == 1 && mPraiseListAction != null) {
-                    mPraiseListAction.setThumbsUpBtnEnabled(true);
+                    mListType = 0;
+                } else if (status == 1 && mView != null) {
+                    mView.setThumbsUpBtnEnabled(true);
                 }
                 mLogtf.d("getProgressList:onPmFailure=" + error + ",msg=" + msg);
             }
@@ -365,7 +375,8 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
     /**
      * 获取点赞概率标识
      */
-    public synchronized void getThumbsUpProbability() {
+    @Override
+    public synchronized void getThumbsUpProbability(final ArrayList<String> list) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mLogtf.d("getThumbsUpProbability:enstuId=" + enstuId + ",liveId=" + mLiveId);
         String classId = "";
@@ -378,8 +389,11 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
             public void onPmSuccess(ResponseEntity responseEntity) {
                 ThumbsUpProbabilityEntity thumbsUpProbabilityEntity = getHttpResponseParser().parseThumbsUpProbability
                         (responseEntity);
-                if (mPraiseListAction != null && thumbsUpProbabilityEntity != null) {
-                    mPraiseListAction.setThumbsUpProbability(thumbsUpProbabilityEntity);
+                if (mThumbsUpProbabilityEntity != null) {
+                    mThumbsUpProbabilityEntity = thumbsUpProbabilityEntity;
+                    if (mView != null) {
+                        mView.receiveThumbsUpNotice(list, thumbsUpProbabilityEntity);
+                    }
                 }
                 mLogtf.d("getThumbsUpProbability:onPmSuccess:thumbsUpProbabilityEntity=" + (thumbsUpProbabilityEntity
                         == null) + "," +
@@ -402,6 +416,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
     /**
      * 学生私聊老师点赞
      */
+    @Override
     public void sendThumbsUp() {
         mLogtf.i("sendThumbsUp");
         try {
@@ -417,6 +432,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
     /**
      * 学生计算赞数后私发老师
      */
+    @Override
     public void sendThumbsUpNum(int agreeNum) {
         mLogtf.i("sendThumbsUpNum:agreeNum=" + agreeNum + ",mCounTeacherStr=" + mLiveBll.getCounTeacherStr());
         try {
@@ -429,14 +445,15 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
         }
     }
 
+    @Override
     public String getStuName() {
         return mLiveBll.getStuName();
     }
 
     @Override
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
-        if (mPraiseListAction != null) {
-            mPraiseListAction.setVideoLayout(liveVideoPoint);
+        if (mView != null) {
+            mView.setVideoLayout(liveVideoPoint);
         }
     }
 }

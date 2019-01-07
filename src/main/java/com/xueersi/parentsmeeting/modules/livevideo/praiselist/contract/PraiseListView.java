@@ -1,4 +1,6 @@
-package com.xueersi.parentsmeeting.modules.livevideo.praiselist.business;
+package com.xueersi.parentsmeeting.modules.livevideo.praiselist.contract;
+
+import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -10,10 +12,14 @@ import java.util.ArrayList;
 
 /**
  * Created by Zhang Yuansun on 2018/1/2.
- * 表扬榜事件
+ * 表扬榜View层
  */
 
-public interface PraiseListAction {
+public interface PraiseListView {
+
+    void initView(RelativeLayout relativeLayout);
+
+    void setPresenter(PraiseListPresenter presenter);
 
     /**
      * 收到显示榜单的消息
@@ -56,8 +62,9 @@ public interface PraiseListAction {
      * 收到给我点赞的消息
      *
      * @param stuNames
+     * @param thumbsUpProbabilityEntity
      */
-    void receiveThumbsUpNotice(ArrayList<String> stuNames);
+    void receiveThumbsUpNotice(ArrayList<String> stuNames, ThumbsUpProbabilityEntity thumbsUpProbabilityEntity);
 
     /**
      * 显示感谢点赞的提示
@@ -69,18 +76,6 @@ public interface PraiseListAction {
      * 关闭榜单
      */
     void closePraiseList();
-
-    /**
-     * 设置点赞概率标识
-     *
-     * @param thumbsUpProbabilityEntity
-     */
-    void setThumbsUpProbability(ThumbsUpProbabilityEntity thumbsUpProbabilityEntity);
-
-    /**
-     * 获取点赞概率标识
-     */
-    int getThumbsUpProbability();
 
     /**
      * 设置点赞按钮是否可点击
@@ -97,28 +92,4 @@ public interface PraiseListAction {
      */
     void setVideoLayout(LiveVideoPoint liveVideoPoint);
 
-    /**
-     * Activity退出
-     *
-     */
-    void destory();
-
-    /**
-     * 判断榜单是否正在显示
-     *
-     */
-    boolean isShowing();
-
-    /**
-     * 设置当前榜单类型
-     *
-     * @param listType
-     */
-    void setCurrentListType(int listType);
-
-    /**
-     * 获取当前榜单类型
-     *
-     */
-    int getCurrentListType();
 }
