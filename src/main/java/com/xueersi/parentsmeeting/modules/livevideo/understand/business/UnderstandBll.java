@@ -195,7 +195,7 @@ public class UnderstandBll implements UnderstandAction, Handler.Callback {
                 if (LiveVideoConfig.isPrimary) {
 //                    rlQuestionContent.postDelayed(closeRedPackage, 100000);//十秒之后关闭
                 } else {
-                    rlQuestionContent.postDelayed(closeRedPackage, 10000);//十秒之后关闭
+                    mVPlayVideoControlHandler.postDelayed(closeRedPackage, 10000);//十秒之后关闭
                 }
                 activity.getWindow().getDecorView().requestLayout();
                 activity.getWindow().getDecorView().invalidate();
