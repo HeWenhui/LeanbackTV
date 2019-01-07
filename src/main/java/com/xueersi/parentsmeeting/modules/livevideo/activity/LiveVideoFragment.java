@@ -317,7 +317,9 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         super.onPlayOpenSuccess();
         //如果之前是正在切流的状态
         if ((pattern == 1) && !LiveVideoConfig.isSmallChinese) {
-            liveVideoAction.onPlaySuccess();
+            if (liveVideoAction != null) {//处于后台时这里容易null,所以加上非空判断
+                liveVideoAction.onPlaySuccess();
+            }
             if (switchFlowStatus == LiveVideoAction.SWITCH_FLOW_ROUTE_SWITCH) {
                 if (LiveVideoConfig.isPrimary || isSmallEnglish) {
                     SwitchRouteSuccessDialog switchRouteSuccessDialog = new SwitchRouteSuccessDialog(activity);
@@ -335,7 +337,9 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     /** 重置标志位 */
     private void resetStatus() {
         switchFlowStatus = LiveVideoAction.SWITCH_FLOW_NORMAL;
-        liveVideoAction.setVideoSwitchFlowStatus(switchFlowStatus, 0);
+        if (liveVideoAction != null) {
+            liveVideoAction.setVideoSwitchFlowStatus(switchFlowStatus, 0);
+        }
     }
 
 //    private int switchFlowPos = 1;
