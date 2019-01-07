@@ -56,7 +56,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.leclearnreport.business.LecL
 import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
-import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseListAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionAction;
@@ -96,8 +95,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     private RollCallAction mRollCallAction;
     /** 视频事件 */
     private VideoAction mVideoAction;
-    /** 表扬榜事件 */
-    private PraiseListAction mPraiseListAction;
 
     private LiveHttpManager mHttpManager;
     private LiveHttpResponseParser mHttpResponseParser;
@@ -790,10 +787,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         this.mVideoAction = videoAction;
     }
 
-    public void setPraiseListAction(PraiseListAction mPraiseListAction) {
-        this.mPraiseListAction = mPraiseListAction;
-    }
-
     /**
      * 是否是 高三 理科直播 （展示不同聊天 内容：高三理科 以 班级为单位展示,）
      *
@@ -1044,10 +1037,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         if (mIRCMessage != null) {
             mIRCMessage.setCallback(null);
             mIRCMessage.destory();
-        }
-        if (mPraiseListAction != null) {
-            mPraiseListAction.destory();
-            mPraiseListAction = null;
         }
         isAllowTeamPk = false;
     }
