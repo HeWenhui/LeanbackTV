@@ -469,7 +469,7 @@ public class ExperienceGuidePager extends LiveBasePager {
                     if (millisUntilFinished < 5000 && millisUntilFinished > 1500) {
                         tvVoiceTip.setVisibility(View.GONE);
                         ivVoiceArrows.setVisibility(View.GONE);
-                        vwvVoiceAnswer.setVolume(random.nextFloat() * 60);
+                        vwvVoiceAnswer.setVolume(random.nextFloat() * 55);
                     } else {
                         vwvVoiceAnswer.setVolume(0);
                     }
