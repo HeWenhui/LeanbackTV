@@ -122,8 +122,6 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     /** 从哪个页面跳转 */
     String where;
     int isArts;
-    /** 区分文理appid */
-    String appID = UmsConstants.LIVE_APP_ID_BACK;
     private LiveVideoSAConfig liveVideoSAConfig;
     boolean IS_SCIENCE;
     /** 本地视频 */
@@ -351,15 +349,12 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         liveBackVideoBll.setvPlayer(vPlayer);
         liveBackVideoBll.setSectionName(mSectionName);
         if (isArts == 1) {
-            appID = UmsConstants.ARTS_APP_ID_BACK;
             IS_SCIENCE = false;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
         } else if (isArts == 2) {
-            appID = UmsConstants.ARTS_APP_ID_BACK;
             IS_SCIENCE = false;
             liveVideoSAConfig = new LiveVideoSAConfig(LiveVideoConfig.HTTP_PRIMARY_CHINESE_HOST);
         } else {
-            appID = UmsConstants.LIVE_APP_ID_BACK;
             IS_SCIENCE = true;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
         }
