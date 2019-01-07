@@ -265,6 +265,9 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
      * 竖屏时填充视频列表布局
      */
     protected void initData() {
+        if (mVideoEntity == null) {//buglyID:56061 理论上不会为空，如果空了，后面的流程不应该继续进行。
+            return;
+        }
         stuCourId = mVideoEntity.getStuCourseId();
         lectureLivePlayBackBll = new LectureLivePlayBackBll(activity, stuCourId);
         mVideoType = MobEnumUtil.VIDEO_LIVEPLAYBACK;
@@ -507,7 +510,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 //        liveBackBll.addBusinessBll(new ExperienceBuyCourseExperiencePresenter(activity, liveBackBll));
         //播放完成后的反馈弹窗
         liveBackBll.addBusinessBll(new StandExperienceLearnFeedbackBll(activity, liveBackBll));
-        experienceQuitFeedbackBll = new ExperienceQuitFeedbackBll(activity,liveBackBll,true);
+        experienceQuitFeedbackBll = new ExperienceQuitFeedbackBll(activity, liveBackBll, true);
         liveBackBll.addBusinessBll(experienceQuitFeedbackBll);
     }
 
@@ -1100,7 +1103,6 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         if (!userBackPressed) {
 
 
-
             super.onUserBackPressed();
         }
     }
@@ -1144,7 +1146,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 //        lectureLivePlayBackBll.getExperienceResult(mVideoEntity.getChapterId(), mVideoEntity.getLiveId(),
 //                getDataCallBack);
         liveBackBll.resultAllComplete();
-        if(experienceQuitFeedbackBll != null){
+        if (experienceQuitFeedbackBll != null) {
             experienceQuitFeedbackBll.playComplete();
         }
 //        onUserBackPressed();
