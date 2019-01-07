@@ -94,6 +94,10 @@
             android:theme="@style/style_permission_compat" />
 
         <activity
+            android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.DeviceDetectionActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.RolePlayerActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:process=":livevideo"

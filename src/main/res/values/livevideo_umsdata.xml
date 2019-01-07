@@ -30,4 +30,22 @@
     <string name="evaluate_teacher_1708002">{"levelone":\"17\","leveltwo":\"08\","levelthree":\"002\","businessinfo$json":{}}</string>
     <!-->说明: 直播-用户返回</!-->
     <string name="livevideo_quit_1712001">{"levelone":\"17\","leveltwo":\"12\","levelthree":\"001\","businessinfo$json":{}}</string>
+    <!-->说明: 直播-线路切换-线路切换icon按钮点击数</!-->
+
+    <!-->说明: 直播-线路切换-卡顿次数</!-->
+    <string name="livevideo_1771">{"levelone":\"17\","leveltwo":\"7\","levelthree":\"1\","businessinfo$json":{}}</string>
+    <!-->说明: 直播-线路切换-切换线路按钮文字点击.Over</!-->
+    <string name="livevideo_1773">{"levelone":\"17\","leveltwo":\"7\","levelthree":\"3\","businessinfo$json":{}}</string>
+    <!-->说明: 直播-线路切换-线路切换icon按钮点击数,Over</!-->
+    <string name="livevideo_switch_flow_17078">{"levelone":\"17\","leveltwo":\"07\","levelthree":\"8\","businessinfo$json":{}}</string>
+    <!-->说明: 直播-线路切换-重新加载成功数,Over</!-->
+    <string name="livevideo_switch_flow_17079">{"levelone":\"17\","leveltwo":\"07\","levelthree":\"9\","businessinfo$json":{}}</string>
+    <!-->说明: 直播-线路切换-重新加载失败数,Over</!-->
+    <string name="livevideo_switch_flow_170710">{"levelone":\"17\","leveltwo":\"07\","levelthree":\"10\","businessinfo$json":{}}</string>
+    <!-->说明: 直播-线路切换-线路切换成功数,Over</!-->
+    <string name="livevideo_switch_flow_170711">{"levelone":\"17\","leveltwo":\"07\","levelthree":\"11\","businessinfo$json":{}}</string>
+    <!-->说明: 直播-线路切换-线路切换失败数,Over</!-->
+    <string name="livevideo_switch_flow_170712">{"levelone":\"17\","leveltwo":\"07\","levelthree":\"12\","businessinfo$json":{}}</string>
+    <!-->说明: 直播-线路切换-具体线路切换点击数,Over</!-->
+    <string name="livevideo_switch_flow_1707013">{"levelone":\"17\","leveltwo":\"07\","levelthree":\"013\","businessinfo$json":{}}</string>
 </resources>

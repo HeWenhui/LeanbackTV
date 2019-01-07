@@ -1488,7 +1488,10 @@ public class VideoChatBll implements VideoChatAction {
 
                     @Override
                     public void onGuarantee(String permission, int position) {
-                        unList.remove(0);
+                        // bugly 16271 TODO 正常情况这地方不会空的
+                        if (unList.size() > 0) {
+                            unList.remove(0);
+                        }
                         if (unList.isEmpty()) {
                             isHasPermission = true;
                             onPermissionFinish.onFinish();
