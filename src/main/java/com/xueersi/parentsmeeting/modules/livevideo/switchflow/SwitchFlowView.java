@@ -99,7 +99,7 @@ public class SwitchFlowView extends FrameLayout {
     private void initView() {
         isSmallEnglish = ((Activity) getContext()).getIntent().getBooleanExtra("isSmallEnglish", false);
         pattern = ((Activity) getContext()).getIntent().getIntExtra("pattern", 2);
-        if (isSmallEnglish || LiveVideoConfig.isPrimary) {
+        if (isSmallEnglish || LiveVideoConfig.isPrimary || LiveVideoConfig.isSmallChinese) {
             View view = View.inflate(getContext(), R.layout.page_livevideo_triple_screen_switch_flow, this);
             btnSwitchFlow = view.findViewById(R.id.bt_switch_flow);
             layoutSwitchFlow = view.findViewById(R.id.layout_livevideo_switch_flow_pop_window);

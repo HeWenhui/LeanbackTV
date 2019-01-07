@@ -18,7 +18,6 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.ControllerBottomInter
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.switchflow.SwitchFlowView;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -130,7 +129,7 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
                 }
             });
         }
-        if (pattern == 1 && !LiveVideoConfig.isSmallChinese && !isExperience) {
+        if (pattern == 1 && !isExperience) {
             switchFlowView = findViewById(R.id.layout_livevideo_triple_screen_switch_flow);
         }
     }

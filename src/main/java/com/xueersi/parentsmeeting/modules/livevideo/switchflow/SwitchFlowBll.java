@@ -222,6 +222,7 @@ public class SwitchFlowBll extends LiveBaseBll implements BaseLiveMediaControlle
                 RelativeLayout.LayoutParams.MATCH_PARENT);
         lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         lp.width = liveVideoPoint.x4 - liveVideoPoint.x3;
+        lp.rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
 //        lp.rightMargin = liveVideoPoint.getRightMargin();
         mRootView.addView(mPager.getRootView(), lp);
 //        setViewLayout();
