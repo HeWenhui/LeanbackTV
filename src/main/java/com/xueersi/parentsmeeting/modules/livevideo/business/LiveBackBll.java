@@ -166,7 +166,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                 IS_SCIENCE = false;
                 liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
             } else if (isArts == 2) {
-                appID = UmsConstants.ARTS_APP_ID_BACK;
+                appID = UmsConstants.LIVE_BACK_CN_ID;
                 IS_SCIENCE = false;
                 liveVideoSAConfig = new LiveVideoSAConfig(LiveVideoConfig.HTTP_PRIMARY_CHINESE_HOST);
                 try {
