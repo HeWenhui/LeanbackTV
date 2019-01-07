@@ -91,6 +91,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
@@ -999,47 +1000,60 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
     @Override
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
-//        {
-//            setMessageLayout(liveVideoPoint, false);
+        {
+            setMessageLayout(liveVideoPoint, false);
 //
-//            int wradio = liveVideoPoint.x4 - liveVideoPoint.x3;
-//            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
-//            if (wradio != params.width || params.rightMargin != liveVideoPoint.screenWidth - liveVideoPoint.x4) {
-//                //logger.e( "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
-//                // + ",wradio=" + wradio + "," + params.width);
-//                params.width = wradio;
-//                params.rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
-////                rlInfo.setLayoutParams(params);
-//                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
-//            }
-//            if (cbMessageClock != null) {
-//                int rightMargin = liveVideoPoint.getRightMargin();
-//                params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
-//                if (params.rightMargin != rightMargin) {
-//                    params.rightMargin = rightMargin;
-////                cbMessageClock.setLayoutParams(params);
-//                    LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
-//                }
-//            }
-//        }
-//        {
-//            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlInfo.getLayoutParams();
-//            int topMargin = liveVideoPoint.y3;
-//            if (topMargin != params.topMargin) {
-//                params.topMargin = topMargin;
-////                rlInfo.setLayoutParams(params);
-//                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
-//                logger.i("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
-//            }
-//            int bottomMargin = liveVideoPoint.y2;
-//            params = (ViewGroup.MarginLayoutParams) lvMessage.getLayoutParams();
-//            if (params.bottomMargin != bottomMargin) {
-//                params.bottomMargin = bottomMargin;
-////                lvMessage.setLayoutParams(params);
-//                LayoutParamsUtil.setViewLayoutParams(lvMessage, params);
-//                //logger.e( "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
-//            }
-//        }
+//            RelativeLayout.LayoutParams sendLayoutParams = (RelativeLayout.LayoutParams) btMessageSend
+// .getLayoutParams();
+//            sendLayoutParams.setMargins(0, 0, margin, 0);
+//            btMessageSend.setLayoutParams(sendLayoutParams);
+//            RelativeLayout.LayoutParams etLayoutParams = (RelativeLayout.LayoutParams) etMessageContent
+// .getLayoutParams();
+//            etLayoutParams.setMargins(SizeUtils.Dp2Px(mContext,10), 0, margin, 0);
+//            etMessageContent.setLayoutParams(etLayoutParams);
+//            RelativeLayout.LayoutParams msvLayoutParams = (RelativeLayout.LayoutParams) btnMessageStartVoice
+// .getLayoutParams();
+//            msvLayoutParams.setMargins(SizeUtils.Dp2Px(mContext,10), 0, margin, 0);
+//            btnMessageStartVoice.setLayoutParams(etLayoutParams);
+
+            int wradio = liveVideoPoint.x4 - liveVideoPoint.x3;
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
+            if (wradio != params.width || params.rightMargin != liveVideoPoint.screenWidth - liveVideoPoint.x4) {
+                //logger.e( "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
+                // + ",wradio=" + wradio + "," + params.width);
+                params.width = wradio;
+                params.rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
+//                rlInfo.setLayoutParams(params);
+                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
+            }
+            if (cbMessageClock != null) {
+                int rightMargin = liveVideoPoint.getRightMargin();
+                params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
+                if (params.rightMargin != rightMargin) {
+                    params.rightMargin = rightMargin;
+//                cbMessageClock.setLayoutParams(params);
+                    LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
+                }
+            }
+        }
+        {
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlInfo.getLayoutParams();
+            int topMargin = liveVideoPoint.y3;
+            if (topMargin != params.topMargin) {
+                params.topMargin = topMargin;
+//                rlInfo.setLayoutParams(params);
+                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
+                logger.i("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
+            }
+            int bottomMargin = liveVideoPoint.y2;
+            params = (ViewGroup.MarginLayoutParams) lvMessage.getLayoutParams();
+            if (params.bottomMargin != bottomMargin) {
+                params.bottomMargin = bottomMargin;
+//                lvMessage.setLayoutParams(params);
+                LayoutParamsUtil.setViewLayoutParams(lvMessage, params);
+                //logger.e( "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
+            }
+        }
     }
 
     /** 聊天开始连接 */
