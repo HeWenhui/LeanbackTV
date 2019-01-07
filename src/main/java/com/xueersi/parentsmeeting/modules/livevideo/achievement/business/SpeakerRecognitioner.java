@@ -168,8 +168,12 @@ public class SpeakerRecognitioner {
         logToFile.d("stop:isStart=" + isStart);
         isStart = false;
         if (mAudioRecord != null) {
-            mAudioRecord.stop();
-            mAudioRecord.release();
+            try {
+                mAudioRecord.stop();
+                mAudioRecord.release();
+            } catch (Exception e) {
+
+            }
             mAudioRecord = null;
         }
     }

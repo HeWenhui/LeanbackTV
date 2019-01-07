@@ -104,6 +104,10 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction,TopicA
                     }
                     JSONArray agreeForms = data.optJSONArray("agreeFroms");
                     boolean isTeacher = data.optBoolean("isTeacher");
+                    mLogtf.d("agreeFroms is null，data = " + data);
+                    if (agreeForms == null) {
+                        return;
+                    }
                     logger.i( "agreeForms=" + agreeForms.toString());
                     logger.i( "isTeacher=" + isTeacher);
                     if (isTeacher) {

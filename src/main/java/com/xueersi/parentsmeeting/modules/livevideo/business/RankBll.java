@@ -112,6 +112,10 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
         setLiveMediaController(mMediaController, controllerBottom);
     }
 
+    /**
+     * TODO
+     * 以后放到onLiveInited方法里
+     */
     public void setLiveMediaController(final LiveMediaController mMediaController, BaseLiveMediaControllerBottom
             liveMediaControllerBottom) {
         this.mMediaController = mMediaController;
@@ -131,6 +135,12 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
             public void onClick(View v) {
                 initAnimation();
                 mMediaController.show();
+                //bugly 7801.在getinfo之前点击会崩
+                if (relativeLayout == null) {
+                    logger.d("rl_livevideo_common_rank.onClick:relativeLayout=null");
+                    XESToastUtils.showToast(activity, "请稍等");
+                    return;
+                }
                 if (relativeLayout.getVisibility() == View.VISIBLE) {
                     relativeLayout.startAnimation(mAnimSlideOut);
                 } else {

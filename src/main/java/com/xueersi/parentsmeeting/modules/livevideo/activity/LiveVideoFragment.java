@@ -15,6 +15,7 @@ import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
@@ -126,6 +127,8 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
 //    private ConstraintLayout layoutVideoFailRetry;
     /** 切流加载中的按钮o */
     private Button btnVideoFailRetry;
+    /** 是否上传切流埋点日志 */
+    private boolean isSwitchUpload = false;
 
     /** {@link #onActivityCreated(Bundle)} */
     @Override
@@ -347,6 +350,10 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         if ((pattern == 1) && !LiveVideoConfig.isSmallChinese) {
             liveVideoAction.onPlaySuccess();
             if (switchFlowStatus == LiveVideoAction.SWITCH_FLOW_ROUTE_SWITCH) {
+                if (isSwitchUpload) {
+                    UmsAgentManager.umsAgentCustomerBusiness(getActivity(), getActivity().getResources().getString(R.string
+                            .livevideo_switch_flow_170711));
+                }
                 if (LiveVideoConfig.isPrimary || isSmallEnglish) {
                     SwitchRouteSuccessDialog switchRouteSuccessDialog = new SwitchRouteSuccessDialog(activity);
                     switchRouteSuccessDialog.updateView(nowRoutePos);
@@ -355,12 +362,17 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                     XESToastUtils.showToast(activity, "线路" + nowRoutePos + "切换成功");
                 }
                 mLogtf.i("route " + nowRoutePos + "(add 1) switch success");
+            } else if (switchFlowStatus == LiveVideoAction.SWITCH_FLOW_RELOAD) {
+                if (isSwitchUpload) {
+                    UmsAgentManager.umsAgentCustomerBusiness(getActivity(), getActivity().getResources().getString(R.string
+                            .livevideo_switch_flow_17079));
+                }
             }
         }
         resetStatus();
     }
 
-    /** 重置标志位 */
+    /** 重置切换线路的标志位 */
     private void resetStatus() {
         switchFlowStatus = LiveVideoAction.SWITCH_FLOW_NORMAL;
         liveVideoAction.setVideoSwitchFlowStatus(switchFlowStatus, 0);
@@ -387,6 +399,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                             }
                         }
                         switchFlowStatus = LiveVideoAction.SWITCH_FLOW_RELOAD;
+                        isSwitchUpload = true;
                         //1.重新加载,显示加载中
                         rePlay(false);
                         //2. 自动切流
@@ -401,6 +414,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                     public void itemClick(int pos) {
                         mLogtf.i("switchFlowView click switch,click pos=" + pos);
                         switchFlowStatus = LiveVideoAction.SWITCH_FLOW_ROUTE_SWITCH;
+                        isSwitchUpload = true;
                         if (!mLiveBll.isPresent()) {
                             if (mContentView.findViewById(R.id.iv_course_video_teacher_notpresent) != null) {
                                 mContentView.findViewById(R.id.iv_course_video_teacher_notpresent).setVisibility(View.GONE);
@@ -494,9 +508,9 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     }
 
     @Override
-    protected void resultFailed(int arg1, int arg2) {
-        super.resultFailed(arg1, arg2);
-
+    protected void onFail(int arg1, int arg2) {
+        super.onFail(arg1, arg2);
+        isSwitchUpload = false;
     }
 
     /** 更新调度的list，{@link com.xueersi.parentsmeeting.modules.livevideo.video.LiveGetPlayServer#liveGetPlayServer(String, boolean),}无论成功时报都会走 */

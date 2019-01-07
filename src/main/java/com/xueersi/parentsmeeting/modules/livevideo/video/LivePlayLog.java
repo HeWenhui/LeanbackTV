@@ -734,6 +734,9 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
 
     private double getMemRate() {
         int totalRam = HardWareUtil.getTotalRam();
+        if (totalRam == 0) {
+            return 0;
+        }
         long availMemory = HardWareUtil.getAvailMemory(activity) / 1024;
         double memRate = (double) ((totalRam - availMemory) * 100) / (double) totalRam;
         boolean error = false;
@@ -1654,7 +1657,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             }
         });
         getTraceRouteLog(url);
-       // Loger.d("livelog_920", jsonObject.toString());
+        // Loger.d("livelog_920", jsonObject.toString());
     }
 
 
@@ -1787,7 +1790,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
                             traceArray.put(traceObj);
                         }
                         deFaultJson.put("trace", traceArray);
-                      //  Loger.d("livelog_920", deFaultJson.toString());
+                        //  Loger.d("livelog_920", deFaultJson.toString());
                         HttpRequestParams httpRequestParams = new HttpRequestParams();
                         httpRequestParams.setJson(String.valueOf(deFaultJson));
                         baseHttpBusiness.baseSendPostNoBusinessJson(LiveVideoConfig.URL_CND_LOG_IP,

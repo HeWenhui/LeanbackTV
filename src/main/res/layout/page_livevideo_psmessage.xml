@@ -55,7 +55,6 @@
                 android:layout_height="14dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="24dp"
-                android:layout_marginRight="67dp"
                 android:textSize="12sp"
                 android:textColor="@color/COLOR_PSONLINECOUNT" />
 
