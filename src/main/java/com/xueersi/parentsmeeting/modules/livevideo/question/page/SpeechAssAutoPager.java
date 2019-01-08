@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.VoiceAnswerResultEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
@@ -119,6 +120,8 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     private boolean isSpeechSuccess = false;
     /** 是不是直播 */
     private boolean isLive;
+    /** 是不是小英 */
+    private int smallEnglish = 0;
     /** 评测内容 */
     private String content;
     /** 评测内容-换行后 */
@@ -211,6 +214,10 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
     public String getId() {
         return id;
+    }
+
+    public void setSmallEnglish(int smallEnglish) {
+        this.smallEnglish = smallEnglish;
     }
 
     @Override
@@ -710,22 +717,38 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         } else {
             progress = 5;
         }
+        final ViewGroup group = (ViewGroup) mView;
         SpeechResultEntity speechResultEntity = new SpeechResultEntity();
         speechResultEntity.gold = gold;
         speechResultEntity.score = score;
         speechResultEntity.enery = energy;
         speechResultEntity.fluency = resultEntity.getContScore();
         speechResultEntity.accuracy = resultEntity.getPronScore();
-        final ViewGroup group = (ViewGroup) mView;
-        final SpeechResultPager speechResultPager = new SpeechResultPager(mContext, group, speechResultEntity);
-        group.addView(speechResultPager.getRootView());
-        speechResultPager.setOnAutoClose(new SpeechResultPager.OnClose() {
-            @Override
-            public void onClose(BasePager basePager) {
-                group.removeView(speechResultPager.getRootView());
-            }
-        });
-
+        if (smallEnglish == 1) {
+            SpeechResultPager speechResultPager = new SpeechResultPager(mContext, group, speechResultEntity);
+            group.addView(speechResultPager.getRootView());
+            speechResultPager.setOnPagerClose(new OnPagerClose() {
+                @Override
+                public void onClose(LiveBasePager basePager) {
+                    group.removeView(basePager.getRootView());
+                }
+            });
+        } else {
+            speechResultEntity.content = content;
+            speechResultEntity.isAnswered = haveAnswer;
+            speechResultEntity.progress = progress;
+            final SpeechResultJuniorPager speechResultJuniorPager = new SpeechResultJuniorPager(mContext, group, speechResultEntity);
+            group.addView(speechResultJuniorPager.getRootView());
+            speechResultJuniorPager.setOnPagerClose(new OnPagerClose() {
+                @Override
+                public void onClose(LiveBasePager basePager) {
+                    group.removeView(basePager.getRootView());
+                    if (isEnd) {
+                        speechEvalAction.stopSpeech(SpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
+                    }
+                }
+            });
+        }
         speechEvalAction.onSpeechSuccess(id);
         Map<String, String> mData = new HashMap<>();
         mData.put("logtype", "voiceTestResult");

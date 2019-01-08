@@ -45,7 +45,6 @@ public class SpeechResultPager extends LiveBasePager {
     private TextView tv_live_speech_result_mygold;
     private TextView tv_live_speech_result_myenergy;
     private TextView tv_live_speech_result_mypraise;
-    private OnClose onAutoClose;
     private SpeechResultEntity speechResultEntity;
     private static int[] titleres = {R.drawable.app_livevideo_enteampk_shellwindow_nicework3_img_nor1, R.drawable.app_livevideo_enteampk_shellwindow_tryharder2_img_nor,
             R.drawable.app_livevideo_enteampk_shellwindow_nicework3_img_nor, R.drawable.app_livevideo_enteampk_shellwindow_goodjob4_img_nor,
@@ -58,10 +57,6 @@ public class SpeechResultPager extends LiveBasePager {
         mView = initView();
         initData();
         initListener();
-    }
-
-    public void setOnAutoClose(OnClose onAutoClose) {
-        this.onAutoClose = onAutoClose;
     }
 
     @Override
@@ -138,8 +133,8 @@ public class SpeechResultPager extends LiveBasePager {
                 int count = integer.decrementAndGet();
                 ViewGroup group = (ViewGroup) mView.getParent();
                 if (count == 0) {
-                    if (onAutoClose != null) {
-                        onAutoClose.onClose(SpeechResultPager.this);
+                    if (onPagerClose != null) {
+                        onPagerClose.onClose(SpeechResultPager.this);
                     } else {
                         if (group != null) {
                             group.removeView(mView);
@@ -161,8 +156,8 @@ public class SpeechResultPager extends LiveBasePager {
         iv_live_speech_result_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (onAutoClose != null) {
-                    onAutoClose.onClose(SpeechResultPager.this);
+                if (onPagerClose != null) {
+                    onPagerClose.onClose(SpeechResultPager.this);
                 } else {
                     if (group != null) {
                         group.removeView(mView);
@@ -178,7 +173,4 @@ public class SpeechResultPager extends LiveBasePager {
         textView.setText(integer + "s后关闭");
     }
 
-    public interface OnClose {
-        void onClose(BasePager basePager);
-    }
 }

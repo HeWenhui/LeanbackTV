@@ -43,6 +43,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEve
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.VoiceAnswerResultEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsPSEAnswerResultPager;
@@ -970,9 +971,9 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                             speechResultEntity.enery = enery;
                             SpeechResultPager speechResultPager = new SpeechResultPager(mContext, mRootView, speechResultEntity);
                             mRootView.addView(speechResultPager.getRootView());
-                            speechResultPager.setOnAutoClose(new SpeechResultPager.OnClose() {
+                            speechResultPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
                                 @Override
-                                public void onClose(BasePager basePager) {
+                                public void onClose(LiveBasePager basePager) {
                                     mRootView.removeView(basePager.getRootView());
                                 }
                             });

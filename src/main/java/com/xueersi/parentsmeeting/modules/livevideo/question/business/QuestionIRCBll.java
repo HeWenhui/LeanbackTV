@@ -196,7 +196,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             mQuestionAction.setSpeechEndAction(standSpeechTop3Bll);
         } else {
             mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new LiveQuestionSwitchImpl(), mQuestionAction));
-            mQuestionAction.setBaseSpeechCreat(new LiveSpeechCreat(mQuestionAction));
+            mQuestionAction.setBaseSpeechCreat(new LiveSpeechCreat(mQuestionAction, data));
         }
         if (1 == data.getIsEnglish()) {
             mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
@@ -258,7 +258,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         Loger.e(Tag, "=======>onTopic:" + jsonObject);
         if (isNewArtsH5Courseware(jsonObject)) {
             try {
-                if(change){
+                if (change) {
                     LiveVideoConfig.isNewArts = false;
                 }
                 String onlineTechStatus = "";
@@ -599,7 +599,6 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.srcType);
                     }
                 }
-
 
 
                 break;
