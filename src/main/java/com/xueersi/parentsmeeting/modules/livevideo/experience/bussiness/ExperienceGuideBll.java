@@ -26,7 +26,8 @@ public class ExperienceGuideBll extends LiveBackBaseBll implements IPagerControl
     boolean iShowGuidePager = false;
     VideoLivePlayBackEntity mVideoEntity;
     LivePlayBackHttpManager livePlayBackHttpManager;
-    private final long COUNTDOWNTIME = 900;
+    private static final long COUNTDOWN_TIME = 900;
+    private static final int MIN_TIME = 60;
     private boolean isExperienceGuideShow = false;
     private long startTime;
     private PlayerService mPlayer;
@@ -50,7 +51,7 @@ public class ExperienceGuideBll extends LiveBackBaseBll implements IPagerControl
         this.mVideoEntity = mVideoEntity;
         //根据接口返回字段判断是否可以弹出新手引导
         if (mVideoEntity.isNoviceGuide()) {
-            mGuidePager = new ExperienceGuidePager(mContext, this, COUNTDOWNTIME - Long.valueOf(mVideoEntity.getVisitTimeKey()), mVideoEntity.getSubjectId());
+            mGuidePager = new ExperienceGuidePager(mContext, this, COUNTDOWN_TIME - Long.valueOf(mVideoEntity.getVisitTimeKey()), mVideoEntity.getSubjectId());
             mGuidePager.setSubjeceId(mVideoEntity.getSubjectId());
             startTime = System.currentTimeMillis();
         }
@@ -59,7 +60,7 @@ public class ExperienceGuideBll extends LiveBackBaseBll implements IPagerControl
     @Override
     public void initView() {
         //正式课前60s以上才可以进入新手引导
-        if (mRootView != null && mGuidePager != null && COUNTDOWNTIME - Long.valueOf(mVideoEntity.getVisitTimeKey()) > 60) {
+        if (mRootView != null && mGuidePager != null && COUNTDOWN_TIME - Long.valueOf(mVideoEntity.getVisitTimeKey()) > MIN_TIME) {
             showPager();
             submitNovicGuide();
         } else {
