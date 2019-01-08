@@ -12,6 +12,7 @@ import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,6 +51,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEval
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.view.CustomUnScorllListView;
+import com.xueersi.parentsmeeting.modules.livevideo.view.WaveView;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
@@ -65,7 +67,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
     /**
      * 匹配页默认停留时间
      */
-    private final int MATCH_WAIT_SECOND = 4000;
+    private final int MATCH_WAIT_SECOND = 10000;
     /**
      * 角色确认页停留时间
      */
@@ -107,7 +109,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
     /**
      * 测评音量波形
      */
-    private VolumeWaveView vwvSpeechVolume;
+    private WaveView vwvSpeechVolume;
 
 
     /**
@@ -386,7 +388,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
                     if (msg.obj != null) {
                         position = (int) msg.obj;
                     }
-                    vwvSpeechVolume.stop();
+                    vwvSpeechVolume.speechPaused();
                     if (position == 0) {
                         RolePlayerEntity.RolePlayerMessage upMessage = mEntity.getLstRolePlayerMessage().get
                                 (mCurrentReadIndex - 1);
@@ -564,6 +566,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
                     @Override
                     public void onBeginOfSpeech() {
                         logger.i("开始测评 mCurrentReadIndex = "+mCurrentReadIndex);
+
                         vwvSpeechVolume.start();
                     }
 

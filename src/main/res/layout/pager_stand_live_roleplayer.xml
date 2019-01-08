@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/roleplay_bg_pic_nor_stand_live">
 
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/rl_live_roleplayer_read_main"
-        >
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
         <!--倒计时布局-->
         <LinearLayout
             android:id="@id/ll_live_roleplayer_countdown_main"
@@ -18,6 +15,7 @@
             android:layout_height="29dp"
             android:layout_alignParentRight="true"
             android:layout_marginRight="24dp"
+            android:layout_marginTop="12dp"
             android:background="@drawable/roleplay_time_pic_nor_standlive"
             android:orientation="horizontal">
 
@@ -27,8 +25,8 @@
                 style="@style/text_font16_999999_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="6dp"
+                android:layout_marginLeft="25dp"
+                android:layout_marginTop="8dp"
                 android:text="3分0秒"
                 android:textColor="@color/white"
                 android:textSize="11sp" />
@@ -59,8 +57,7 @@
             android:paddingBottom="10dp"
             android:paddingTop="10dp"
             android:textColor="#FF9600"
-            android:textSize="18sp"
-            />
+            android:textSize="18sp" />
 
 
         <!--多人朗读区-->
@@ -71,14 +68,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/tv_live_roleplayer_countdown_tip"
-            android:layout_marginTop="60dp"
             android:layout_marginBottom="23dp"
+            android:layout_marginTop="80dp"
             android:divider="@null"
             android:dividerHeight="0dp"
             android:footerDividersEnabled="true"
             android:headerDividersEnabled="true"
-            android:transcriptMode="normal"
-            />
+            android:transcriptMode="normal" />
 
         <!--收获点赞区-->
         <RelativeLayout
@@ -100,20 +96,61 @@
             android:background="@drawable/shape_livevideo_roleplayer_speech_volumewave_bg"
             android:visibility="invisible">
 
-            <com.xueersi.parentsmeeting.widget.VolumeWaveView
+            <!--   <com.xueersi.parentsmeeting.widget.VolumeWaveView
+                   android:id="@id/vwv_livevideo_roleplayer_speech_volumewave"
+                   android:layout_width="250dp"
+                   android:layout_height="wrap_content"
+                   android:layout_centerHorizontal="true"
+                   android:layout_centerInParent="true" />-->
+
+            <com.xueersi.parentsmeeting.modules.livevideo.view.WaveView
                 android:id="@id/vwv_livevideo_roleplayer_speech_volumewave"
-                android:layout_width="250dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerInParent="true" />
+
+                />
 
         </RelativeLayout>
 
     </RelativeLayout>
 
+    <!-- 结果弹窗 -->
 
+    <RelativeLayout
+        android:id="@+id/rl_roleplay_stand_result_lay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        >
 
+        <ImageView
+            android:layout_width="414dp"
+            android:layout_height="375dp"
+            android:src="@drawable/roleplay_feichuan_pic_click"
+            android:layout_centerHorizontal="true"
+            />
+
+        <TextView
+            android:id="@+id/tv_rolepaly_stand_result_score"
+            android:layout_width="109dp"
+            android:layout_height="42dp"
+            android:layout_marginTop="30dp"
+            style="@style/text_font11_333333_style"
+            android:background="@drawable/roleplay_fenshu_bg_nor"
+            android:layout_centerHorizontal="true"
+            />
+
+        <TextView
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:background="@drawable/selector_close_roleplay_stand_bg"
+            android:layout_marginTop="20dp"
+            android:layout_alignParentRight="true"
+            />
 
     </RelativeLayout>
+
+</RelativeLayout>
 
 

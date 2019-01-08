@@ -1,8 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.activity.item;
 
-import android.animation.Animator;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
@@ -12,7 +9,6 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.lib.framework.are.ContextManager;
@@ -57,15 +53,6 @@ public class RolePlayerStandMachineOtherItem extends RolePlayerItem {
     private TextView tvMessageContent;
 
     /**
-     * 点赞布局
-     */
-    private RelativeLayout rlMessageDZ;
-    /**
-     * 点赞默认图
-     */
-    private ImageView ivMessageDZ;
-
-    /**
      * 音频播放管理类
      */
     private AudioPlayerManager mAudioPlayerManager;
@@ -84,7 +71,7 @@ public class RolePlayerStandMachineOtherItem extends RolePlayerItem {
 
     @Override
     public int getLayoutResId() {
-        return R.layout.item_live_roleplayer_other_voice;
+        return R.layout.item_live_roleplayer_stand_other_voice;
     }
 
     @Override
@@ -94,9 +81,6 @@ public class RolePlayerStandMachineOtherItem extends RolePlayerItem {
         ivVoiceAnimtor = root.findViewById(R.id.iv_live_roleplayer_message_voice_main);
         vVoiceMain = root.findViewById(R.id.rl_live_roleplayer_message_voice_main);
         tvMessageContent = root.findViewById(R.id.tv_live_roleplayer_message_voice_content);
-        rlMessageDZ = root.findViewById(R.id.rl_live_roleplayer_message_dz);
-        ivMessageDZ = root.findViewById(R.id.iv_live_roleplayer_message_dz);
-        //lavMessageDZ = root.findViewById(R.id.lav_live_roleplayer_message_dz);
         initStartView(root);
     }
 
@@ -276,8 +260,6 @@ public class RolePlayerStandMachineOtherItem extends RolePlayerItem {
         tvMessageContent.setText(entity.getReadMsg());
         tvUserNickName.setText(entity.getRolePlayer().getNickName());
         tvMessageContent.setTextColor(Color.parseColor("#333333"));
-        rlMessageDZ.setVisibility(View.GONE);
-        setDZbtClick(entity);
         switch (entity.getMsgStatus()) {
             case RolePlayerEntity.RolePlayerMessageStatus.WAIT_NORMAL:
                 //  logger.i("RolePlayerDemoTest", "等待朗读");
@@ -289,9 +271,6 @@ public class RolePlayerStandMachineOtherItem extends RolePlayerItem {
             case RolePlayerEntity.RolePlayerMessageStatus.BEGIN_ROLEPLAY:
                 // logger.i("RolePlayerDemoTest", "开始朗读");
                 mIsPlaying = true;
-                rlMessageDZ.setVisibility(View.VISIBLE);
-                ivMessageDZ.setVisibility(View.VISIBLE);
-                ivMessageDZ.setImageResource(R.drawable.livevideo_roleplay_result_ic_normal);
                 vVoiceMain.setBackgroundResource(R.drawable.livevideo_roleplay_bubble_other_reading);
                 tvMessageContent.setTextColor(Color.WHITE);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_livevideo_roleplayer_other_voice_white_anim);
@@ -303,15 +282,7 @@ public class RolePlayerStandMachineOtherItem extends RolePlayerItem {
                 // logger.i("RolePlayerDemoTest", "结束朗读");
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_other_item_bubble);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
-                rlMessageDZ.setVisibility(View.VISIBLE);
-                ivMessageDZ.setVisibility(View.VISIBLE);
-                if (!entity.isDZ()) {
-                    ivMessageDZ.setImageResource(R.drawable.livevideo_roleplay_result_ic_normal);
 
-                } else {
-                    ivMessageDZ.setImageResource(R.drawable.livevideo_roleplay_result_ic_focsed);
-                    ivMessageDZ.setOnClickListener(null);
-                }
                 showSpeechStar();
                 if(mAudioPlayerManager != null){
                     mAudioPlayerManager.stop();
@@ -325,9 +296,6 @@ public class RolePlayerStandMachineOtherItem extends RolePlayerItem {
             case RolePlayerEntity.RolePlayerMessageStatus.CANCEL_DZ:
                 mIsPlaying = false;
                 // logger.i("RolePlayerDemoTest", "取消点赞按钮");
-                ivMessageDZ.setImageResource(R.drawable.livevideo_roleplay_result_ic_normal);
-                rlMessageDZ.setVisibility(View.GONE);
-                ivMessageDZ.setVisibility(View.GONE);
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_other_item_bubble);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
                 tvMessageContent.setTextColor(Color.parseColor("#333333"));
@@ -337,67 +305,6 @@ public class RolePlayerStandMachineOtherItem extends RolePlayerItem {
             default:
                 break;
         }
-    }
-
-    public void setDZbtClick(RolePlayerEntity.RolePlayerMessage DZbtClick) {
-        ivMessageDZ.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-
-                if (mEntity.isDZ()) {
-                    logger.i("已经点过赞了。。。");
-                    return;
-                }
-                logger.i( "给他人点赞");
-
-                bllRolePlayerBll.toOtherDZ(mEntity.getRolePlayer().getRoleId(), mEntity.getPosition());
-                mEntity.setDZ(true);
-
-                //x轴缩放动画
-                ObjectAnimator startYScale = ObjectAnimator.ofFloat(ivMessageDZ, ImageView.SCALE_Y, 1.0f, 1.5f, 1.0f);
-                startYScale.setDuration(500);
-                startYScale.start();
-                //y轴缩放动画
-                ObjectAnimator startXScale = ObjectAnimator.ofFloat(ivMessageDZ, ImageView.SCALE_X, 1.0f, 1.5f, 1.0f);
-                startXScale.setDuration(500);
-                startXScale.start();
-                //旋转动画
-                ObjectAnimator rotate = ObjectAnimator.ofFloat(ivMessageDZ, "rotation", 0, 10, 0, -10, 0, 5, 10, 0);
-                rotate.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animation) {
-
-                    }
-
-                });
-                rotate.addListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        ivMessageDZ.setImageResource(R.drawable.livevideo_roleplay_result_ic_focsed);
-
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-                        ivMessageDZ.setImageResource(R.drawable.livevideo_roleplay_result_ic_focsed);
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-
-                    }
-                });
-                rotate.setDuration(500);
-                rotate.start();
-
-            }
-        });
     }
 
     /**

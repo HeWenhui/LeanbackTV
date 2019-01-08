@@ -87,7 +87,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
 
     @Override
     public int getLayoutResId() {
-        return R.layout.item_live_roleplayer_self_voice;
+        return R.layout.item_live_roleplayer_stand_self_voice;
     }
 
     @Override
@@ -240,7 +240,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
 
 
                 civUserHead.setFinishBorderColor(Color.parseColor("#C8E7D4"));
-                civUserHead.setUnFinishBorderColor(Color.parseColor("#36BC9B"));
+                civUserHead.setUnFinishBorderColor(Color.parseColor("#F2658D"));
                 civUserHead.startCountDown(entity.getMaxReadTime() * 1000, entity.getEndReadTime() * 1000, new
                         CountDownHeadImageView.countDownTimeImpl() {
                             @Override
