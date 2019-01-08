@@ -44,8 +44,10 @@ public class StandExperienceEvaluationBll extends
 //            activityChangeLand.changeLOrP();
             logger.i("旋转屏幕");
             mView.showWebView(mVideoEntity.getExamUrl());
-            mRootView.addView(mView.getRootView(), RelativeLayout.LayoutParams
-                    .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+            if(mView.getRootView().getParent()==null) {
+                mRootView.addView(mView.getRootView(), RelativeLayout.LayoutParams
+                        .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+            }
 //            }
         }
     }
