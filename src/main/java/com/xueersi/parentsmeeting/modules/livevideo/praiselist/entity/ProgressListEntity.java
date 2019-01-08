@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.entity;
+package com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity;
 
 import java.util.ArrayList;
 

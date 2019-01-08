@@ -16,15 +16,14 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ProgressListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpProbabilityEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.contract.PraiseListPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.contract.PraiseListView;
-import com.xueersi.parentsmeeting.modules.livevideo.praiselist.presenter.PraiseListIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.ExcellentListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeProbabilityEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.ProgressListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.page.PraiseListPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -64,6 +63,50 @@ public class PraiseListBll implements PraiseListView {
     private PraiseListPager mPraiseList;
     private String nonce = "";
 
+    /**
+     * 测试代码，提测删除
+     */
+    private void test() {
+        LinearLayout llTest = new LinearLayout(activity);
+        rlPraiseListContent.addView(llTest);
+        Button btnTest1 = new Button(activity);
+        btnTest1.setText("表扬榜");
+        Button btnTest2 = new Button(activity);
+        btnTest2.setText("优秀榜");
+        Button btnTest3 = new Button(activity);
+        btnTest3.setText("点赞榜");
+        Button btnTest4 = new Button(activity);
+        btnTest4.setText("关闭榜单");
+        llTest.addView(btnTest1);
+        llTest.addView(btnTest2);
+        llTest.addView(btnTest3);
+        llTest.addView(btnTest4);
+        btnTest1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.getExcellentList(0);
+            }
+        });
+        btnTest2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.getProgressList(0);
+            }
+        });
+        btnTest3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mPresenter.getLikeList();
+            }
+        });
+        btnTest4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closePraiseList();
+            }
+        });
+    }
+
     public PraiseListBll(Activity activity) {
         mLogtf = new LogToFile(activity, TAG);
         mLogtf.clear();
@@ -94,9 +137,9 @@ public class PraiseListBll implements PraiseListView {
                     rlPraiseListContent.setLayoutParams(mainParam);
                     bottomContent.addView(rlPraiseListContent);
                 }
+                test();
             }
         });
-
     }
 
     @Override
@@ -126,17 +169,17 @@ public class PraiseListBll implements PraiseListView {
     /**
      * 显示优秀榜
      *
-     * @param honorListEntity
+     * @param excellentListEntity
      */
     @Override
-    public void onHonerList(final HonorListEntity honorListEntity) {
-        mLogtf.d("onHonerList");
+    public void onExcellentList(final ExcellentListEntity excellentListEntity) {
+        mLogtf.d("onExcellentList");
         //closePraiseList();
         mWeakHandler.post(new Runnable() {
             @Override
             public void run() {
                 //rBottomContent.setClickable(true);
-                mPraiseList = new PraiseListPager(activity, honorListEntity, mPresenter);
+                mPraiseList = new PraiseListPager(activity, excellentListEntity, mPresenter);
                 rlPraiseListContent.removeAllViews();
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 rlPraiseListContent.addView(mPraiseList.getRootView(), params);
@@ -146,7 +189,7 @@ public class PraiseListBll implements PraiseListView {
         });
 
         StableLogHashMap logHashMap = new StableLogHashMap("showPraiseList");
-        logHashMap.put("listtype", PraiseListPager.PRAISE_LIST_TYPE_HONOR + "");
+        logHashMap.put("listtype", PraiseListPager.PRAISE_LIST_TYPE_EXECELLENT + "");
         logHashMap.put("sno", "4");
         logHashMap.put("stable", "1");
         logHashMap.put("nonce", nonce);
@@ -157,17 +200,17 @@ public class PraiseListBll implements PraiseListView {
     /**
      * 显示点赞榜
      *
-     * @param thumbsUpListEntity
+     * @param likeListEntity
      */
     @Override
-    public void onThumbsUpList(final ThumbsUpListEntity thumbsUpListEntity) {
-        mLogtf.d("onThumbsUpList");
+    public void onLikeList(final LikeListEntity likeListEntity) {
+        mLogtf.d("onLikeList");
         //closePraiseList();
         mWeakHandler.post(new Runnable() {
             @Override
             public void run() {
                 //rBottomContent.setClickable(true);
-                mPraiseList = new PraiseListPager(activity, thumbsUpListEntity, mPresenter);
+                mPraiseList = new PraiseListPager(activity, likeListEntity, mPresenter);
                 rlPraiseListContent.removeAllViews();
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 rlPraiseListContent.addView(mPraiseList.getRootView(), params);
@@ -177,7 +220,7 @@ public class PraiseListBll implements PraiseListView {
         });
 
         StableLogHashMap logHashMap = new StableLogHashMap("showPraiseList");
-        logHashMap.put("listtype", PraiseListPager.PRAISE_LIST_TYPE_THUMBS_UP + "");
+        logHashMap.put("listtype", PraiseListPager.PRAISE_LIST_TYPE_Like + "");
         logHashMap.put("sno", "4");
         logHashMap.put("stable", "1");
         logHashMap.put("nonce", nonce);
@@ -238,16 +281,16 @@ public class PraiseListBll implements PraiseListView {
      * 收到给我点赞的消息
      *
      * @param stuNames
-     * @param thumbsUpProbabilityEntity
+     * @param likeProbabilityEntity
      */
     @Override
-    public void receiveThumbsUpNotice(final ArrayList<String> stuNames, final ThumbsUpProbabilityEntity thumbsUpProbabilityEntity) {
-        mLogtf.d("receiveThumbsUpNotice");
+    public void receiveLikeNotice(final ArrayList<String> stuNames, final LikeProbabilityEntity likeProbabilityEntity) {
+        mLogtf.d("receiveLikeNotice");
         if (mPraiseList != null)
             mWeakHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    mPraiseList.receiveThumbsUpNotice(stuNames, thumbsUpProbabilityEntity);
+                    mPraiseList.receiveLikeNotice(stuNames, likeProbabilityEntity);
                 }
             });
     }
@@ -256,13 +299,13 @@ public class PraiseListBll implements PraiseListView {
      * 显示感谢点赞的Toast
      */
     @Override
-    public void showThumbsUpToast() {
-        mLogtf.d("showThumbsUpToast");
+    public void showLikeToast() {
+        mLogtf.d("showLikeToast");
         if (mPraiseList != null)
             mWeakHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    mPraiseList.showThumbsUpToast();
+                    mPraiseList.showLikeToast();
                 }
             });
     }
@@ -292,13 +335,13 @@ public class PraiseListBll implements PraiseListView {
      * @param enabled
      */
     @Override
-    public void setThumbsUpBtnEnabled(final boolean enabled) {
-        mLogtf.d("setThumbsUpBtnEnabled");
+    public void setLikeBtnEnabled(final boolean enabled) {
+        mLogtf.d("setLikeBtnEnabled");
         if (mPraiseList != null)
             mWeakHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    mPraiseList.setThumbsUpBtnEnabled(enabled);
+                    mPraiseList.setLikeBtnEnabled(enabled);
                 }
             });
     }

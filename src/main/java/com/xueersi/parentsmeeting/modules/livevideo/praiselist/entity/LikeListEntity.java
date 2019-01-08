@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.entity;
+package com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity;
 
 import java.util.ArrayList;
 
@@ -7,19 +7,20 @@ import java.util.ArrayList;
  * 点赞榜
  */
 
-public class ThumbsUpListEntity {
+public class LikeListEntity {
 
-    ArrayList<ThumbsUpEntity> thumbsUpEntities = new ArrayList<>();
+    ArrayList<StudentEntity> studentList = new ArrayList<>();
     /** 1代表我在榜上，0表示我不在榜上 */
     private int isMy;
 
-    public ArrayList<ThumbsUpEntity> getThumbsUpEntities() {
-        return thumbsUpEntities;
+    public ArrayList<StudentEntity> getStudentList() {
+        return studentList;
     }
 
-    public void setThumbsUpEntities(ArrayList<ThumbsUpEntity> thumbsUpEntities) {
-        this.thumbsUpEntities = thumbsUpEntities;
+    public void setStudentList(ArrayList<StudentEntity> studentList) {
+        this.studentList = studentList;
     }
+
     public int getIsMy() {
         return isMy;
     }
@@ -28,7 +29,7 @@ public class ThumbsUpListEntity {
         this.isMy = isMy;
     }
 
-    public class ThumbsUpEntity{
+    public class StudentEntity{
 
         /** 用户按照获赞值从大到小的姓名排行 */
         private String stuName;

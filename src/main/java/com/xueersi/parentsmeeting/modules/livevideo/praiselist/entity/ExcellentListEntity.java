@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.entity;
+package com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity;
 
 import java.util.ArrayList;
 
@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * 光荣榜
  */
 
-public class HonorListEntity {
+public class ExcellentListEntity {
 
     /** 是否点赞标志位 */
     private int praiseStatus;
@@ -16,17 +16,17 @@ public class HonorListEntity {
     private int isMy;
 
 
-    ArrayList<HonorEntity> honorEntities = new ArrayList<>();
+    ArrayList<StudentEntity> studentList = new ArrayList<>();
 
-    public ArrayList<HonorEntity> getHonorEntities() {
-        return honorEntities;
+    public ArrayList<StudentEntity> getStudentList() {
+        return studentList;
     }
 
-    public void setHonorEntities(ArrayList<HonorEntity> honorEntities) {
-        this.honorEntities = honorEntities;
+    public void setStudentList(ArrayList<StudentEntity> studentList) {
+        this.studentList = studentList;
     }
 
-    public class HonorEntity {
+    public class StudentEntity {
         /** 学生总共上过优秀榜的次数 */
         private String excellentNum;
         /** 用户姓名 */

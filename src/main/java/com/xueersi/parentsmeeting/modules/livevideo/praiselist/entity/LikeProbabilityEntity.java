@@ -1,10 +1,10 @@
-package com.xueersi.parentsmeeting.modules.livevideo.entity;
+package com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity;
 
 /**
  * Created by Zhang Yuansun on 2018/1/9.
  */
 
-public class ThumbsUpProbabilityEntity {
+public class LikeProbabilityEntity {
     /** stuId */
     private String stuId;
     /** 1：表示概率不加倍；2：表示概率加倍 */

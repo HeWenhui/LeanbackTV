@@ -21,7 +21,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.DeviceDetectionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HalfBodyLiveStudyInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.FollowTypeEntity;
@@ -34,7 +33,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MyRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity.PlayserverEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ProgressListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
@@ -46,9 +44,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAdversaryEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpProbabilityEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.ExcellentListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeProbabilityEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.MinimarketListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.ProgressListEntity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -1294,52 +1295,35 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     }
 
     /**
-     * 解析光荣榜
+     * 解析表扬榜
      *
      * @param responseEntity
      * @return
      */
-    public HonorListEntity parseHonorList(ResponseEntity responseEntity) {
-
-//        HonorListEntity honorListEntity = new HonorListEntity();
-//        honorListEntity.setPraiseStatus(1);
-//        honorListEntity.setIsMy(1);
-//
-//        for (int i = 0; i < 10; i++) {
-//            HonorListEntity.HonorEntity honorEntity = honorListEntity.new HonorEntity();
-//            honorEntity.setExcellentNum(String.valueOf(i + 1));
-//            honorEntity.setStuName("学生" + i);
-//            if (honorEntity.getIsMy() == 1) {
-//                honorListEntity.setIsMy(1);
-//            } else {
-//                honorListEntity.getHonorEntities().add(honorEntity);
-//            }
-//        }
-
-        logger.i("parseHonorList: " + responseEntity.getJsonObject());
-        HonorListEntity honorListEntity = new HonorListEntity();
+    public ExcellentListEntity parseExcellentList(ResponseEntity responseEntity) {
+        ExcellentListEntity excellentListEntity = new ExcellentListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
-            honorListEntity.setPraiseStatus(data.getInt("praiseStatus"));
+            excellentListEntity.setPraiseStatus(data.getInt("praiseStatus"));
             JSONArray array = data.getJSONArray("list");
 
             for (int i = 0; i < array.length(); i++) {
                 JSONObject jsonObject = array.getJSONObject(i);
-                HonorListEntity.HonorEntity honorEntity = honorListEntity.new HonorEntity();
-                honorEntity.setIsMy(jsonObject.getInt("isMy"));
-                honorEntity.setExcellentNum(jsonObject.getString("excellent_num"));
-                honorEntity.setStuName(jsonObject.getString("stu_name"));
-                if (honorEntity.getIsMy() == 1) {
-                    honorListEntity.setIsMy(1);
+                ExcellentListEntity.StudentEntity studentEntity = excellentListEntity.new StudentEntity();
+                studentEntity.setIsMy(jsonObject.getInt("isMy"));
+                studentEntity.setExcellentNum(jsonObject.getString("excellent_num"));
+                studentEntity.setStuName(jsonObject.getString("stu_name"));
+                if (studentEntity.getIsMy() == 1) {
+                    excellentListEntity.setIsMy(1);
                 }
-                honorListEntity.getHonorEntities().add(honorEntity);
+                excellentListEntity.getStudentList().add(studentEntity);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            MobAgent.httpResponseParserError(TAG, "parseHonorList", e.getMessage());
+            MobAgent.httpResponseParserError(TAG, "parseExcellentList", e.getMessage());
         }
-        return honorListEntity;
+        return excellentListEntity;
     }
 
     /**
@@ -1348,47 +1332,29 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @param responseEntity
      * @return
      */
-    public ThumbsUpListEntity parseThumbsUpList(ResponseEntity responseEntity) {
-
-//        ThumbsUpListEntity thumbsUpListEntity = new ThumbsUpListEntity();
-//        for (int i = 0; i < 40; i++) {
-//            ThumbsUpListEntity.ThumbsUpEntity likeEntity = thumbsUpListEntity.new ThumbsUpEntity();
-//            likeEntity.setStuPraiseNum(i + 10);
-//            if (i % 2 == 0) {
-//                likeEntity.setStuName("学生" + i);
-//            } else {
-//                likeEntity.setStuName("学生地方撒" + i);
-//            }
-//            likeEntity.setIsMy(1);
-//            if (likeEntity.getIsMy() == 1) {
-//                thumbsUpListEntity.setIsMy(1);
-//            }
-//            thumbsUpListEntity.getThumbsUpEntities().add(likeEntity);
-//        }
-
-        logger.i("parseThumbsUpList: " + responseEntity.getJsonObject());
-        ThumbsUpListEntity thumbsUpListEntity = new ThumbsUpListEntity();
+    public LikeListEntity parseLikeList(ResponseEntity responseEntity) {
+        LikeListEntity likeListEntity = new LikeListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
             JSONArray array = data.getJSONArray("list");
 
             for (int i = 0; i < array.length(); i++) {
                 JSONObject jsonObject = array.getJSONObject(i);
-                ThumbsUpListEntity.ThumbsUpEntity likeEntity = thumbsUpListEntity.new ThumbsUpEntity();
-                likeEntity.setIsMy(jsonObject.getInt("isMy"));
-                likeEntity.setStuPraiseNum(jsonObject.getInt("stu_praise_num"));
-                likeEntity.setStuName(jsonObject.getString("stu_name"));
-                if (likeEntity.getIsMy() == 1) {
-                    thumbsUpListEntity.setIsMy(1);
+                LikeListEntity.StudentEntity studentEntity = likeListEntity.new StudentEntity();
+                studentEntity.setIsMy(jsonObject.getInt("isMy"));
+                studentEntity.setStuPraiseNum(jsonObject.getInt("stu_praise_num"));
+                studentEntity.setStuName(jsonObject.getString("stu_name"));
+                if (studentEntity.getIsMy() == 1) {
+                    likeListEntity.setIsMy(1);
                 }
-                thumbsUpListEntity.getThumbsUpEntities().add(likeEntity);
+                likeListEntity.getStudentList().add(studentEntity);
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            MobAgent.httpResponseParserError(TAG, "parseThumbsUpList", e.getMessage());
+            MobAgent.httpResponseParserError(TAG, "parseLikeList", e.getMessage());
         }
-        return thumbsUpListEntity;
+        return likeListEntity;
     }
 
     /**
@@ -1398,24 +1364,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @return
      */
     public ProgressListEntity parseProgressList(ResponseEntity responseEntity) {
-//        ProgressListEntity progressListEntity = new ProgressListEntity();
-//        for (int i = 0; i < 10; i++) {
-//            ProgressListEntity.ProgressEntity progressEntity = progressListEntity.new ProgressEntity();
-//            progressEntity.setStuId("11" + i);
-//            if (i % 2 == 0) {
-//                progressEntity.setStuName("学生大是大非" + i);
-//            } else {
-//                progressEntity.setStuName("学" + i);
-//            }
-//
-//            progressEntity.setIsMy(1);
-//            progressEntity.setProgressScore(String.valueOf(91 + i));
-//            if (progressEntity.getIsMy() == 1) {
-//                progressListEntity.setIsMy(1);
-//            }
-//            progressListEntity.getProgressEntities().add(progressEntity);
-//        }
-        logger.i("parseProgressList: " + responseEntity.getJsonObject());
         ProgressListEntity progressListEntity = new ProgressListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
@@ -1448,22 +1396,55 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @param responseEntity
      * @return
      */
-    public ThumbsUpProbabilityEntity parseThumbsUpProbability(ResponseEntity responseEntity) {
-        logger.i("parseThumbsUpProbability: " + responseEntity.getJsonObject());
-        ThumbsUpProbabilityEntity thumbsUpProbabilityEntity = new ThumbsUpProbabilityEntity();
+    public LikeProbabilityEntity parseLikeProbability(ResponseEntity responseEntity) {
+        LikeProbabilityEntity likeProbabilityEntity = new LikeProbabilityEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         try {
-            thumbsUpProbabilityEntity.setStuId(data.getString("stuId"));
-            thumbsUpProbabilityEntity.setProbability(data.getInt("probability"));
+            likeProbabilityEntity.setStuId(data.getString("stuId"));
+            likeProbabilityEntity.setProbability(data.getInt("probability"));
 
         } catch (Exception e) {
             e.printStackTrace();
-            MobAgent.httpResponseParserError(TAG, "parseThumbsUpProbability", e.getMessage());
+            MobAgent.httpResponseParserError(TAG, "parseLikeProbability", e.getMessage());
         }
-        return thumbsUpProbabilityEntity;
+        return likeProbabilityEntity;
     }
 
-
+    /**
+     * 解析小超市榜单
+     */
+    public MinimarketListEntity parseMinimarketList(ResponseEntity responseEntity) throws Exception {
+        JSONObject data = (JSONObject) responseEntity.getJsonObject();
+        MinimarketListEntity entity = new MinimarketListEntity();
+        entity.setIsRelease(data.optInt("isRelease"));
+        entity.setTitle(data.optString("title"));
+        entity.setTitleId(data.optString("titleId"));
+        entity.setTeamNum(data.optInt("teamNum"));
+        JSONArray list = data.getJSONArray("list");
+        if (list != null && list.length() > 0) {
+            for (int i = 0; i < list.length(); i++) {
+                JSONObject teamObject = list.getJSONObject(i);
+                MinimarketListEntity.TeamEntity teamEntity = entity.new TeamEntity();
+                teamEntity.setOnListNums(teamObject.optInt("onListNums"));
+                teamEntity.setTeamMemberNums(teamObject.optInt("teamMemberNums"));
+                teamEntity.setPkTeamId(teamObject.optString("pkTeamId"));
+                teamEntity.setTeamRanking(teamObject.optInt("teamRanking"));
+                teamEntity.setIsMy(teamObject.optInt("isMy", -1));
+                JSONArray stuList = teamObject.getJSONArray("stuList");
+                if (stuList != null && stuList.length() > 0) {
+                    JSONObject studentObject = stuList.getJSONObject(i);
+                    MinimarketListEntity.StudentEntity studentEntity = entity.new StudentEntity();
+                    studentEntity.setStuId(studentObject.optString("stuId"));
+                    studentEntity.setStuName(studentObject.optString("stuName"));
+                    studentEntity.setStuPunchNum(studentObject.optInt("stuPunchNum"));
+                    studentEntity.setIsMy(studentObject.optInt("isMy"));
+                    teamEntity.getStudentList().add(studentEntity);
+                }
+                entity.getTeamList().add(teamEntity);
+            }
+        }
+        return entity;
+    }
     /**
      * 解析分队仪式信息
      */
@@ -1521,7 +1502,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 
         return teamInfoEntity;
     }
-
 
     /**
      * 解析pk 对手信息

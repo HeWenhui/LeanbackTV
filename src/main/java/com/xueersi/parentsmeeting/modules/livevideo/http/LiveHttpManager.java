@@ -992,7 +992,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
     }
 
     /**
-     * 获取光荣榜
+     * 获取优秀榜
      *
      * @param classId         班级Id
      * @param enstuId         学生Id加密串
@@ -1000,7 +1000,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param status          是否点赞标志位
      * @param requestCallBack
      */
-    public void getHonorList(String classId, String enstuId, String liveId, String status, HttpCallBack
+    public void getExcellentList(String classId, String enstuId, String liveId, String status, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
@@ -1018,7 +1018,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param stuId           学生Id加密串
      * @param requestCallBack
      */
-    public void getThumbsUpList(String classId, String stuId, HttpCallBack
+    public void getLikeList(String classId, String stuId, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
@@ -1054,7 +1054,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param enstuId         学生Id加密串
      * @param requestCallBack
      */
-    public void getThumbsUpProbability(String classId, String enstuId, HttpCallBack
+    public void getLikeProbability(String classId, String enstuId, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);

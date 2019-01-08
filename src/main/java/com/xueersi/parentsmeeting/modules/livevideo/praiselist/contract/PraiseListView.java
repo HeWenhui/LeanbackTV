@@ -2,11 +2,11 @@ package com.xueersi.parentsmeeting.modules.livevideo.praiselist.contract;
 
 import android.widget.RelativeLayout;
 
-import com.xueersi.parentsmeeting.modules.livevideo.entity.HonorListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.ExcellentListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ProgressListEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpProbabilityEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeProbabilityEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.ProgressListEntity;
 
 import java.util.ArrayList;
 
@@ -32,16 +32,16 @@ public interface PraiseListView {
     /**
      * 显示优秀榜
      *
-     * @param honorListEntity
+     * @param excellentListEntity
      */
-    void onHonerList(HonorListEntity honorListEntity);
+    void onExcellentList(ExcellentListEntity excellentListEntity);
 
     /**
      * 显示点赞榜
      *
-     * @param thumbsUpListEntity
+     * @param likeListEntity
      */
-    void onThumbsUpList(ThumbsUpListEntity thumbsUpListEntity);
+    void onLikeList(LikeListEntity likeListEntity);
 
     /**
      * 显示进步榜
@@ -62,15 +62,15 @@ public interface PraiseListView {
      * 收到给我点赞的消息
      *
      * @param stuNames
-     * @param thumbsUpProbabilityEntity
+     * @param likeProbabilityEntity
      */
-    void receiveThumbsUpNotice(ArrayList<String> stuNames, ThumbsUpProbabilityEntity thumbsUpProbabilityEntity);
+    void receiveLikeNotice(ArrayList<String> stuNames, LikeProbabilityEntity likeProbabilityEntity);
 
     /**
      * 显示感谢点赞的提示
      *
      */
-    void showThumbsUpToast();
+    void showLikeToast();
 
     /**
      * 关闭榜单
@@ -82,7 +82,7 @@ public interface PraiseListView {
      *
      * @param enabled
      */
-    void setThumbsUpBtnEnabled(boolean enabled);
+    void setLikeBtnEnabled(boolean enabled);
 
 
     /**

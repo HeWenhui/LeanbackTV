@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lav_livevideo_praise_pager_bg"
         android:scaleType="centerCrop"
@@ -67,7 +66,6 @@
 
     </RelativeLayout>
 
-
     <FrameLayout
         android:id="@+id/fl_livevideo_praise_thanks_group"
         android:layout_width="match_parent"
@@ -81,7 +79,6 @@
             android:layout_height="match_parent" />
 
     </FrameLayout>
-
 
     <RelativeLayout
         android:id="@+id/fl_livevideo_praise_teacher_group"
