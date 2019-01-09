@@ -88,7 +88,7 @@ public class SmallChineseRankPager extends BasePager<RankEntity> {
         double mag = ivWid * 1.0 / topIconWid;
         int ivRealHeight = (int) (mag * topIconHeight);
         //整个布局宽度都是ivWid;
-        ViewGroup.LayoutParams rootParams = view.getLayoutParams();
+        ViewGroup.LayoutParams rootParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         rootParams.width = ivWid;
         view.setLayoutParams(rootParams);
 
