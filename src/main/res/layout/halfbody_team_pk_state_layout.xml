@@ -84,8 +84,9 @@
         android:layout_toRightOf="@id/rl_teampk_pkstate_container_2">
 
         <ImageView
-            android:layout_width="match_parent"
+            android:layout_width="75dp"
             android:layout_height="25dp"
+            android:layout_marginLeft="1dp"
             android:layout_gravity="center_vertical"
             android:src="@drawable/bg_live_halfbody_coin" />
 
