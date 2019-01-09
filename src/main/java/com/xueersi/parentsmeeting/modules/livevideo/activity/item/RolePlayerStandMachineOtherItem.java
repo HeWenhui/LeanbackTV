@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.AudioPlayerManager;
 import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.PlayerCallback;
@@ -205,7 +206,7 @@ public class RolePlayerStandMachineOtherItem extends RolePlayerItem {
      * 开始播放机器音频，改变对话样式
      */
     private void startPlayMachineAudio() {
-        vVoiceMain.setBackgroundResource(R.drawable.livevideo_roleplay_bubble_other_reading);
+        vVoiceMain.setBackgroundResource(R.drawable.livevideo_roleplay_stand_bubble_other_reading);
         ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_livevideo_roleplayer_other_voice_white_anim);
         AnimationDrawable animationDrawable = null;
         animationDrawable = (AnimationDrawable) ivVoiceAnimtor.getBackground();
@@ -225,14 +226,14 @@ public class RolePlayerStandMachineOtherItem extends RolePlayerItem {
                 @Override
                 public void run() {
                     ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
-                    vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
-                    tvMessageContent.setTextColor(Color.parseColor("#333333"));
+                    vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_other_item_bubble);
+                    tvMessageContent.setTextColor(Color.parseColor("#4E5BC1"));
                 }
             });
         }else {
             ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
-            vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
-            tvMessageContent.setTextColor(Color.parseColor("#333333"));
+            vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_other_item_bubble);
+            tvMessageContent.setTextColor(Color.parseColor("#4E5BC1"));
         }
 
 
@@ -254,12 +255,13 @@ public class RolePlayerStandMachineOtherItem extends RolePlayerItem {
         mEntity = entity;
 
         updateUserHeadImage(civUserHead, entity.getRolePlayer().getHeadImg()); // 绑定用户头像
-
+        civUserHead.setBorderWidth(SizeUtils.Dp2Px(mContext, 0));
+        civUserHead.setBorderColor(Color.WHITE);
         // 播放语音
         ivVoiceAnimtor.setBackgroundResource(R.drawable.bg_chat_voice_from_playing_img_blue);
         tvMessageContent.setText(entity.getReadMsg());
         tvUserNickName.setText(entity.getRolePlayer().getNickName());
-        tvMessageContent.setTextColor(Color.parseColor("#333333"));
+        tvMessageContent.setTextColor(Color.parseColor("#4E5BC1"));
         switch (entity.getMsgStatus()) {
             case RolePlayerEntity.RolePlayerMessageStatus.WAIT_NORMAL:
                 //  logger.i("RolePlayerDemoTest", "等待朗读");
@@ -271,7 +273,7 @@ public class RolePlayerStandMachineOtherItem extends RolePlayerItem {
             case RolePlayerEntity.RolePlayerMessageStatus.BEGIN_ROLEPLAY:
                 // logger.i("RolePlayerDemoTest", "开始朗读");
                 mIsPlaying = true;
-                vVoiceMain.setBackgroundResource(R.drawable.livevideo_roleplay_bubble_other_reading);
+                vVoiceMain.setBackgroundResource(R.drawable.livevideo_roleplay_stand_bubble_other_reading);
                 tvMessageContent.setTextColor(Color.WHITE);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_livevideo_roleplayer_other_voice_white_anim);
                 //正在roleplay中
@@ -298,7 +300,7 @@ public class RolePlayerStandMachineOtherItem extends RolePlayerItem {
                 // logger.i("RolePlayerDemoTest", "取消点赞按钮");
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_other_item_bubble);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3);
-                tvMessageContent.setTextColor(Color.parseColor("#333333"));
+                tvMessageContent.setTextColor(Color.parseColor("#4E5BC1"));
                 showSpeechStar();
                 logger.i("CANCEL_DZ:显示星星");
                 break;

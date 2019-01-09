@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.AudioPlayerManager;
 import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.PlayerCallback;
@@ -144,10 +145,10 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
     private void voiceClick() {
         //点击语音的时候记录日志
         logger.i( " 点击播放音频，记录日志 ");
-        speechPhoneScoreWhenClick();//点击对评测之后的文本变色
+        //speechPhoneScoreWhenClick();//点击对评测之后的文本变色
         RolePlayLog.sno8(liveAndBackDebug, mEntity, mContext);
         ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_livevideo_roleplayer_self_voice_white_anim);
-        vVoiceMain.setBackgroundResource(R.drawable.livevideo_roleplay_bubble_me_reading);
+        vVoiceMain.setBackgroundResource(R.drawable.livevideo_roleplay_stand_bubble_me_reading);
         AnimationDrawable selfVoiceAnimationDrawable = null;
         selfVoiceAnimationDrawable = (AnimationDrawable) ivVoiceAnimtor.getBackground();
         if (selfVoiceAnimationDrawable != null && !selfVoiceAnimationDrawable.isRunning()) {
@@ -162,7 +163,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
                 mIsPlaying = false;
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
-                speechPhoneScore();
+                //speechPhoneScore();
             }
 
             @Override
@@ -176,7 +177,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
                         //如果是子线程的回调，会报出异常Only the original thread that created a view hierarchy can touch its views.
                         ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
                         vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
-                        speechPhoneScore();
+                        //speechPhoneScore();
                     }
                 });
             }
@@ -194,7 +195,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
                 mIsPlaying = false;
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
-                speechPhoneScore();
+                //speechPhoneScore();
             }
 
         });
@@ -207,9 +208,11 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
         super.updateViews(entity, position, objTag);
         updateUserHeadImage(civUserHead, UserBll.getInstance().getMyUserInfoEntity()
                 .getHeadImg());
+        civUserHead.setBorderWidth(SizeUtils.Dp2Px(mContext, 0));
+        civUserHead.setBorderColor(Color.WHITE);
         rlMain.setVisibility(View.VISIBLE);
         tvMessageContent.setText(entity.getReadMsg());
-        tvMessageContent.setTextColor(Color.parseColor("#333333"));
+        tvMessageContent.setTextColor(Color.parseColor("#4E5BC1"));
         tvUserNickName.setText(entity.getRolePlayer().getNickName());
         civUserHead.setBeginCountdownTime(false);
         // tvSpeechTip.setVisibility(View.INVISIBLE);
@@ -223,12 +226,12 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
                 tvCountTime.setVisibility(View.INVISIBLE);
                 civUserHead.invalidate();
-                tvMessageContent.setTextColor(mContext.getResources().getColor(R.color.COLOR_333333));
+                tvMessageContent.setTextColor(Color.parseColor("#4E5BC1"));
 
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.BEGIN_ROLEPLAY:
                 mIsPlaying = true;
-                vVoiceMain.setBackgroundResource(R.drawable.livevideo_roleplay_bubble_me_reading);
+                vVoiceMain.setBackgroundResource(R.drawable.livevideo_roleplay_stand_bubble_me_reading);
                 tvMessageContent.setTextColor(Color.WHITE);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_livevideo_roleplayer_self_voice_white_anim);
                 AnimationDrawable selfVoiceAnimationDrawable = null;
@@ -238,7 +241,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
                 }
                 tvCountTime.setText(entity.getMaxReadTime() + "");
 
-
+                civUserHead.setBorderWidth(SizeUtils.Dp2Px(mContext, 3));
                 civUserHead.setFinishBorderColor(Color.parseColor("#C8E7D4"));
                 civUserHead.setUnFinishBorderColor(Color.parseColor("#F2658D"));
                 civUserHead.startCountDown(entity.getMaxReadTime() * 1000, entity.getEndReadTime() * 1000, new
@@ -267,7 +270,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
                 tvCountTime.setText("");
                 tvCountTime.setVisibility(View.INVISIBLE);
                 showSpeechStar();
-                speechPhoneScore();
+                //speechPhoneScore();
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH:
                 logger.i( "测评有得分刚结束");
@@ -281,7 +284,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
                 showSpeechStar();
                 //测试完毕后状态改成END_ROLEPLAY
                 entity.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY);
-                speechPhoneScore();
+                //speechPhoneScore();
 
 
                 break;
@@ -303,7 +306,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
                 tvCountTime.setText("");
                 tvCountTime.setVisibility(View.INVISIBLE);
                 showSpeechStar();
-                speechPhoneScore();
+                //speechPhoneScore();
                 break;
             default:
                 break;
@@ -316,7 +319,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
      * 对音素分变色
      */
 
-    private void speechPhoneScore() {
+   /* private void speechPhoneScore() {
         tvMessageContent.setTextColor(mContext.getResources().getColor(R.color
                 .COLOR_333333));
         if (mEntity.getLstPhoneScore().isEmpty()) {
@@ -361,7 +364,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
 
             tvMessageContent.setText(spannable);
         }
-    }
+    }*/
 
     /**
      * 对音素分变色

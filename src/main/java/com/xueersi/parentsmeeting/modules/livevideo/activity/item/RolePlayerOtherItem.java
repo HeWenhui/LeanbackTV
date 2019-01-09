@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
@@ -158,7 +159,7 @@ public class RolePlayerOtherItem extends RolePlayerItem {
             public void onCompletion(Object o, AudioPlayerManager audioPlayerManager) {
                 logger.i( "完成播放");
                 mIsPlaying = false;
-                new Handler().post(new Runnable() {
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
                         logger.i( "currentThread:"+Thread.currentThread());
@@ -175,7 +176,7 @@ public class RolePlayerOtherItem extends RolePlayerItem {
                 super.onStop(dataSource, manager);
                 logger.i( "停止播放");
                 mIsPlaying = false;
-                new Handler().post(new Runnable() {
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
                         logger.i( "currentThread:"+Thread.currentThread());
@@ -199,7 +200,7 @@ public class RolePlayerOtherItem extends RolePlayerItem {
             public void onError(String msg, Object dataSource, AudioPlayerManager manager) {
                 super.onError(msg, dataSource, manager);
                 mIsPlaying = false;
-                new Handler().post(new Runnable() {
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
                         logger.i( "currentThread:"+Thread.currentThread());

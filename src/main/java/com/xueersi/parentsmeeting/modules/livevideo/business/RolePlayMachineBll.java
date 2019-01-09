@@ -339,6 +339,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                     JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                     int gold = jsonObject.optInt("gold");
                     mRolePlayerEntity.setGoldCount(gold);
+                    mRolePlayerEntity.setJson(jsonObject);
                     logger.i("onPmSuccess: gold  =" + gold);
                 }
 
@@ -379,6 +380,9 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
             String roleName = null;
             if (rolePlayerHead != null) {
                 roleName = rolePlayerHead.getRoleName();
+                logger.i("提交结果:"+roleName+":"+rolePlayerHead.getNickName()+
+                        ":"+rolePlayerHead.getRoleName()+":"+rolePlayerHead.getSpeechScore()
+                );
             }
             obj.put("type", 1);
             obj.put("roler", roleName);
@@ -418,6 +422,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                     int gold = jsonObject.optInt("gold");
                     int scores = jsonObject.optInt("scores");
                     mRolePlayerEntity.setGoldCount(gold);
+                    mRolePlayerEntity.setJson(jsonObject);
                     // 发送已答过的状态
                     EventBus.getDefault().post(new ArtsAnswerResultEvent(mRolePlayerEntity.getTestId(), ArtsAnswerResultEvent.TYPE_NATIVE_ANSWERRESULT));
                     EventBus.getDefault().post(new VoiceAnswerResultEvent(mRolePlayerEntity.getTestId(), scores));
