@@ -4,6 +4,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.os.Build;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 
@@ -250,12 +251,19 @@ public class HardWareUtil {
         return mi.availMem;// 将获取的内存大小规格化
     }
 
+    /** 手机总内存,单位kb */
+    private static int TOTAL_RAM = 0;
+
     /**
      * 手机总内存,单位kb
+     * 可能返回0
      *
      * @return
      */
     public static int getTotalRam() {//GB
+        if (TOTAL_RAM != 0) {
+            return TOTAL_RAM;
+        }
         String path = "/proc/meminfo";
         String firstLine = null;
         int totalRam = 0;
@@ -268,8 +276,13 @@ public class HardWareUtil {
             e.printStackTrace();
         }
         if (firstLine != null) {
-            totalRam = (int) Math.ceil((new Float(Float.valueOf(firstLine)).doubleValue()));
+            try {
+                totalRam = (int) Math.ceil((Float.valueOf(firstLine).doubleValue()));
+            } catch (Exception e) {
+                CrashReport.postCatchedException(e);
+            }
         }
+        TOTAL_RAM = totalRam;
         return totalRam;
     }
 }

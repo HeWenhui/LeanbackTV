@@ -215,6 +215,8 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
         this.isHalfBodyLive = halfBodyLive;
     }
 
+    String mFileName = null;
+
     /**
      * 播放器异常日志
      *
@@ -224,25 +226,28 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
     public void getOnloadLogs(String TAG, String str) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String bz = UserBll.getInstance().getMyUserInfoEntity().getUserType() == 1 ? "student" : "teacher";
-        PackageManager packageManager = mContext.getPackageManager();
-        PackageInfo packInfo = null;
-        String filenam = "f";
-        try {
-            packInfo = packageManager.getPackageInfo(mContext.getPackageName(), 0);
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
+        if (mFileName == null) {
+            PackageManager packageManager = mContext.getPackageManager();
+            PackageInfo packInfo = null;
+            String filename = "f";
+            try {
+                packInfo = packageManager.getPackageInfo(mContext.getPackageName(), 0);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
+            if (packInfo != null) {//else不会发生
+                filename = packInfo.versionCode + "";
+            }
+            filename = Build.VERSION.SDK_INT + "&" + filename;
+            mFileName = filename;
         }
-        if (packInfo != null) {//else不会发生
-            filenam = packInfo.versionCode + "";
-        }
-        filenam = Build.VERSION.SDK_INT + "&" + filenam;
         if (mGetInfo == null) {
             UmsAgent.onEvent(mContext, LogerTag.DEBUG_VIDEO_LIVEMSG, LogerTag.DEBUG_VIDEO_LIVEMSG, 0, str);
             return;
         }
         LiveLogCallback liveLogCallback = new LiveLogCallback();
         RequestParams params = mHttpManager.liveOnloadLogs(mGetInfo.getClientLog(), "a" + mLiveType, mLiveId, mGetInfo.getUname(), enstuId,
-                mGetInfo.getStuId(), mGetInfo.getTeacherId(), filenam, str, bz, liveLogCallback);
+                mGetInfo.getStuId(), mGetInfo.getTeacherId(), mFileName, str, bz, liveLogCallback);
         liveLogCallback.setParams(params);
     }
 
@@ -612,7 +617,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
             appID = UmsConstants.ARTS_APP_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
         } else if (mGetInfo.getIsArts() == 2) {
-            appID = UmsConstants.ARTS_APP_ID;
+            appID = UmsConstants.LIVE_CN_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(LiveVideoConfig.HTTP_PRIMARY_CHINESE_HOST);
         } else {
             appID = UmsConstants.LIVE_APP_ID;
