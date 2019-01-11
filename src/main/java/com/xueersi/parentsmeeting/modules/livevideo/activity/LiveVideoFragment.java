@@ -154,8 +154,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         liveVideoPlayFragment = (LivePlayerFragment) getChildFragmentManager().findFragmentByTag("LivePlayerFragment");
         if (LiveVideoConfig.isSmallChinese) {
             liveVideoPlayFragment.setLoadingAnimation(TripleScreenBasePlayerFragment.TRIPLE_SCREEN_PRIMARY_CHINESE_LOADING);
-        }
-        if (LiveVideoConfig.isPrimary) {
+        } else if (LiveVideoConfig.isPrimary) {
             mLogtf.i("primary_science_loading");
             liveVideoPlayFragment.setLoadingAnimation(TripleScreenBasePlayerFragment.TRIPLE_SCREEN_PRIMARY_SCIENCE_LOADING);
         } else if (isSmallEnglish) {
@@ -328,7 +327,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                     UmsAgentManager.umsAgentCustomerBusiness(getActivity(), getActivity().getResources().getString(R.string
                             .livevideo_switch_flow_170711));
                 }
-                if (LiveVideoConfig.isPrimary || isSmallEnglish) {
+                if (LiveVideoConfig.isPrimary || isSmallEnglish || LiveVideoConfig.isSmallChinese) {
                     SwitchRouteSuccessDialog switchRouteSuccessDialog = new SwitchRouteSuccessDialog(activity);
                     switchRouteSuccessDialog.updateView(nowRoutePos);
                     switchRouteSuccessDialog.showDialogAutoClose(2000);

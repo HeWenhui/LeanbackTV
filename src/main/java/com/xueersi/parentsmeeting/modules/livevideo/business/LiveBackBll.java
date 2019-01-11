@@ -253,6 +253,20 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             mHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
         }
         mHttpManager.addBodyParam("liveId", mVideoEntity.getLiveId());
+        if (mVideoEntity.getvLivePlayBackType() == LocalCourseConfig.LIVETYPE_RECORDED) {
+            try {
+                HashMap<String, String> hashMap = new HashMap();
+                hashMap.put("logtype", "recorded");
+                hashMap.put("livetype", "" + mLiveType);
+                hashMap.put("where", "" + where);
+                hashMap.put("contextname", "" + intent.getStringExtra("contextname"));
+                hashMap.put("bundle", "" + intent.getExtras());
+                hashMap.put("liveid", "" + mVideoEntity.getLiveId());
+                UmsAgentManager.umsAgentDebug(activity, TAG, hashMap);
+            } catch (Exception e) {
+                CrashReport.postCatchedException(e);
+            }
+        }
     }
 
     public Boolean getExperience() {

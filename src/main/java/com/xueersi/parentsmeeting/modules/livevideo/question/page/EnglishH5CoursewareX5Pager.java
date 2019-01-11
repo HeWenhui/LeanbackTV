@@ -339,7 +339,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         webSetting.setBuiltInZoomControls(true);
         webSetting.setJavaScriptEnabled(true);
         wvSubjectWeb.addJavascriptInterface(this, "wx_xesapp");
-
+        wvSubjectWeb.setInitialScale(1);
         if (englishH5Entity.getNewEnglishH5() || LiveVideoConfig.isMulLiveBack || isNewArtsCourseware) {
             wvSubjectWeb.setWebViewClient(new MyWebViewClient() {
                 @Override
@@ -393,7 +393,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                                 inputStream = new FileInputStream(file);
                                 String extension = MimeTypeMap.getFileExtensionFromUrl(s.toLowerCase());
                                 String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-                                WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", inputStream);
+                                WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "", inputStream);
                                 webResourceResponse.setResponseHeaders(header);
                                 Log.e("Duncan", "artsload");
                                 return webResourceResponse;
@@ -642,6 +642,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         wvSubjectWeb.addJavascriptInterface(this, "wx_xesapp");
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setBuiltInZoomControls(true);
+        wvSubjectWeb.setInitialScale(1);
         wvSubjectWeb.setWebChromeClient(new MyWebChromeClient());
         wvSubjectWeb.setWebViewClient(new MyWebViewClient() {
             @Override
