@@ -18,6 +18,7 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
@@ -155,6 +156,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         mVideoEntity = (VideoLivePlayBackEntity) intent.getExtras().getSerializable("videoliveplayback");
         islocal = intent.getBooleanExtra("islocal", false);
         mHandler = new Handler();
+        if (mVideoEntity == null) {
+            CrashReport.postCatchedException(new Exception("" + intent.getExtras()));
+        }
         // 请求相应数据
         initData();
         initBll();
@@ -358,9 +362,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             IS_SCIENCE = true;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
         }
-        if(mVideoEntity.isMul()){
+        if (mVideoEntity.isMul()) {
             AppConfig.isMulLiveBack = true;
-        }else{
+        } else {
             AppConfig.isMulLiveBack = false;
         }
         lectureLivePlayBackBll.setLiveVideoSAConfig(liveVideoSAConfig);
