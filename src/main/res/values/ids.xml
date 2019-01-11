@@ -633,6 +633,7 @@
     <item name="iv_teampk_open_box_bg_mask" type="id" />
 
     <item name="iv_teampk_open_box_close" type="id" />
+    <item name="rl_teampk_lucy_header_container" type="id" />
 
     <item name="iv_teampk_open_box_winner_head" type="id" />
     <item name="tv_teampk_open_box_winner_name" type="id" />

@@ -83,7 +83,7 @@ public class TeamPkAwardPager extends BasePager {
     private CoinAwardDisplayer cadTeamPatch;
 
     private LottieAnimationView lottieAnimationView;
-    private TeamPkRecyclerView recyclerView;
+    private RecyclerView recyclerView;
     /**
      * lottie 可点击区域
      */
@@ -362,7 +362,7 @@ public class TeamPkAwardPager extends BasePager {
         if (data == null) {
             return;
         }
-
+        ivClose.setVisibility(View.VISIBLE);
         rlLuckyStartRoot.setVisibility(View.VISIBLE);
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) rlLuckyStartRoot.getLayoutParams();
         Point point = new Point();
@@ -431,7 +431,7 @@ public class TeamPkAwardPager extends BasePager {
                 if (studyReportAction != null) {
                     studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_PK_GOLD, mView, false, false);
                 }
-                closeAwardPager();
+                //closeAwardPager();
             }
         }, TIME_DELAY_AUTO_FINISH);
     }
