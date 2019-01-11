@@ -1,15 +1,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-   >
+    android:layout_height="match_parent">
 
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/live_video_teampk_pkresult_bg"
-        />
+        android:src="@drawable/live_video_teampk_pkresult_bg" />
 
     <RelativeLayout
         android:id="@id/rl_teampk_pk_result_lottie_root"
@@ -89,8 +87,8 @@
                 <RelativeLayout
                     android:layout_width="160dp"
                     android:layout_height="214dp"
-                    android:background="@drawable/livevideo_list_yellow_img_disable"
-                    android:layout_marginTop="-10dp">
+                    android:layout_marginTop="-10dp"
+                    android:background="@drawable/livevideo_list_yellow_img_disable">
 
                     <ImageView
                         android:id="@id/iv_teampk_pkresult_myteam_logo"
@@ -313,17 +311,34 @@
 
     </RelativeLayout>
 
-
-    <com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountDowTextView
-        android:id="@id/tv_teampk_pkresult_time_countdow"
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
-        android:textColor="@color/white"
-        android:textSize="14sp"
-        android:textStyle="bold"
-        android:visibility="gone" />
+        android:layout_height="37dp"
+        android:layout_marginRight="13dp"
+        android:layout_marginTop="11dp"
+        android:id="@+id/rl_teampk_close_btn_container"
+        android:visibility="gone"
+        >
+
+        <ImageView
+            android:id="@id/iv_teampk_close_btn"
+            android:layout_width="37dp"
+            android:layout_height="37dp"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/selector_live_teampk_close" />
+
+
+        <com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountDowTextView
+            android:id="@id/tv_teampk_pkresult_time_countdow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="11dp"
+            android:layout_toLeftOf="@id/iv_teampk_close_btn"
+            android:textColor="#80ffffff"
+            android:textSize="14dp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
 
 </RelativeLayout>

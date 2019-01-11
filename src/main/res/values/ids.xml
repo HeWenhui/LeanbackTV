@@ -524,6 +524,8 @@
     <item name="itv_teampk_team_info" type="id" />
     <item name="tv_teampk_rule_title" type="id" />
     <item name="iv_teampk_team_logo" type="id" />
+    <item name="iv_teampk_close_btn" type="id" />
+    <item name="rl_teampk_close_btn_container" type="id" />
 
     <item name="rl_teampk_rule_1" type="id" />
     <item name="tv_teampk_rule_1" type="id" />

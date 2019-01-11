@@ -107,7 +107,7 @@ public class TeamPkResultPager extends BasePager {
     /**
      * pk 对手 展示时间
      */
-    private static final int TIME_DELAY_AUTO_CLOSE = 8;
+    private static final int TIME_DELAY_AUTO_CLOSE = 10;
     /**
      * 每题pk 结果页显示时长
      */
@@ -140,6 +140,8 @@ public class TeamPkResultPager extends BasePager {
      * 半身直播 贡献之星 右边距
      */
     private static final float CONTRIBUTION_VIEW_RIGHTMARGIN_HALFBODY =0.15f;
+    private RelativeLayout rlCloseBtnCotainer;
+    private ImageView ivCloseBtn;
 
 
     public TeamPkResultPager(Context context, TeamPkBll pkBll) {
@@ -178,8 +180,16 @@ public class TeamPkResultPager extends BasePager {
 
         tpbEnergyBar = view.findViewById(R.id.tpb_teampk_pkresult_pbbar);
         tpbEnergyBar.setMaxProgress(100);
-        timeCountDowTextView = view.findViewById(R.id.tv_teampk_pkresult_time_countdow);
 
+        rlCloseBtnCotainer = view.findViewById(R.id.rl_teampk_close_btn_container);
+        ivCloseBtn = view.findViewById(R.id.iv_teampk_close_btn);
+        ivCloseBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closePkResultPager();
+            }
+        });
+        timeCountDowTextView = view.findViewById(R.id.tv_teampk_pkresult_time_countdow);
         rclContributionRank = view.findViewById(R.id.rcl_teampk_pkresult_contribution_rank);
         return view;
     }
@@ -372,7 +382,7 @@ public class TeamPkResultPager extends BasePager {
             tvMyTeamSlogan.setText(data.getMyTeamEngerInfo().getSlogon());
             tvOtherTeamSlogan.setText(data.getCompetitorEngerInfo().getSlogon());
             startTimeCountDow(CURRENT_PK_RESULT_AUTO_CLOSE_DRUATION);
-            timeCountDowTextView.setVisibility(View.INVISIBLE);
+            //timeCountDowTextView.setVisibility(View.INVISIBLE);
 
             // 更新左侧pk 状态栏
             if (mTeamPkBll != null) {
@@ -842,6 +852,7 @@ public class TeamPkResultPager extends BasePager {
 
 
     private void startTimeCountDow(int duration) {
+        rlCloseBtnCotainer.setVisibility(View.VISIBLE);
         timeCountDowTextView.setTimeDuration(duration);
         timeCountDowTextView.setTimeSuffix("秒后关闭");
         timeCountDowTextView.startCountDow();
