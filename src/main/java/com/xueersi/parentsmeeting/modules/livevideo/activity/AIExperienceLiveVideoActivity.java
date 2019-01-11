@@ -459,7 +459,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
 //            }
 //        }
         loadData();
-        Toast.makeText(this,"AIAI",Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this,"AIAI",Toast.LENGTH_SHORT).show();
         logger.e("=====>"+ mVideoEntity.getSciAiEvent().getExercises().get(2).getExample().get(0).getExampleId());
         return true;
     }
@@ -1024,7 +1024,16 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                 startTime = System.currentTimeMillis();
                 firstTime = false;
             }
-            if (mTotaltime < Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000) {
+            if(LiveVideoConfig.livefinish.get(mVideoEntity.getChapterId()) == null){
+                LiveVideoConfig.livefinish.put(mVideoEntity.getChapterId(),false);
+            }
+            if(LiveVideoConfig.liveKey.get(mVideoEntity.getChapterId()) == null){
+                LiveVideoConfig.liveKey.put(mVideoEntity.getChapterId(),0L);
+            }
+            if(LiveVideoConfig.curentTime.get(mVideoEntity.getChapterId()) == null){
+                LiveVideoConfig.curentTime.put(mVideoEntity.getChapterId(),0L);
+            }
+            if (mTotaltime < Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 || LiveVideoConfig.livefinish.get(mVideoEntity.getChapterId())) {
                 // 03.21 提示直播已结束
                 ivTeacherNotpresent.setVisibility(View.VISIBLE);
                 ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
@@ -1043,20 +1052,17 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
             if(mVideoEntity.getSciAiEvent().getLeadingStage().getBeginTime() > Integer.parseInt(mVideoEntity.getVisitTimeKey())){
                 seekTo(mVideoEntity.getSciAiEvent().getLeadingStage().getBeginTime() * 1000);  // AI体验课的这个方法需要重写
             }else{
-                if(LiveVideoConfig.liveKey != 0L){
-                    seekTo(LiveVideoConfig.liveKey + (System.currentTimeMillis() - LiveVideoConfig.curentTime));
-                    Log.e("Duncan", "LiveVideoConfig.liveKey != 0L:" + LiveVideoConfig.liveKey);
-                    Log.e("Duncan", "LiveVideoConfig.liveKey != 0Ls:" + LiveVideoConfig.curentTime);
-                    Log.e("Duncan", "LiveVideoConfig.liveKey != 0L1:" + LiveVideoConfig.liveKey + (System.currentTimeMillis() - LiveVideoConfig.curentTime) + (System.currentTimeMillis() -
-                            startTime));
+                if(LiveVideoConfig.liveKey.get(mVideoEntity.getChapterId()) != 0L){
+                    seekTo(LiveVideoConfig.liveKey.get(mVideoEntity.getChapterId()) + (System.currentTimeMillis() - LiveVideoConfig.curentTime.get(mVideoEntity.getChapterId())));
+                    Log.e("Duncan", "liveKey:" + LiveVideoConfig.liveKey.get(mVideoEntity.getChapterId()));
+                    Log.e("Duncan", "termId:" + mVideoEntity.getChapterId());
                 }else{
                     seekTo(keyTime);  // AI体验课的这个方法需要重写
-                    Log.e("Duncan", "LiveVideoConfig.liveKey != 0L2:" + LiveVideoConfig.liveKey);
+                    Log.e("Duncan", "NoliveKey:" + LiveVideoConfig.liveKey.get(mVideoEntity.getChapterId()));
+                    Log.e("Duncan", "termId:" + mVideoEntity.getChapterId());
                 }
             }
-
             // TODO 这里需要重新判断当前应该快进到的位置：根据上一题的答题结果来跳到对应时间区间
-
         }
         // 心跳时间的统计
         mHandler.removeCallbacks(mPlayDuration);
@@ -1430,8 +1436,8 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
             experienceQuitFeedbackBll.playComplete();
         }
         mHandler.removeCallbacks(mPlayDuration);
-        LiveVideoConfig.liveKey = 0L;
-
+        LiveVideoConfig.livefinish.put(mVideoEntity.getChapterId(),true);
+        LiveVideoConfig.liveKey.put(mVideoEntity.getChapterId(),0L);
     }
 
     @Override
@@ -1475,8 +1481,8 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
             }.start();
         }
         // 01.03 记录当前的播放进度
-        LiveVideoConfig.liveKey = currentMsg;
-        LiveVideoConfig.curentTime = System.currentTimeMillis();
+        LiveVideoConfig.liveKey.put(mVideoEntity.getChapterId(),currentMsg);
+        LiveVideoConfig.curentTime.put(mVideoEntity.getChapterId(),System.currentTimeMillis());
     }
 
 
