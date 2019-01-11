@@ -16,6 +16,7 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.umeng.analytics.MobclickAgent;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.http.HttpCallBack;
@@ -209,7 +210,7 @@ public class VideoChatBll implements VideoChatAction {
             } else {
                 builder.append(Build.CPU_ABI + "," + Build.CPU_ABI2 + ",");
             }
-            MobclickAgent.reportError(activity, new Error(Build.MANUFACTURER + "$" + Build.MODEL + "$" + builder +
+            CrashReport.postCatchedException(new Error(Build.MANUFACTURER + "$" + Build.MODEL + "$" + builder +
                     "-" + -1, t));
             XesMobAgent.webrtcInit(false);
             nativeLibLoaded = 0;
