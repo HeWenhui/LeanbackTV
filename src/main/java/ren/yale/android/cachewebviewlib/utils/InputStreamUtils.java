@@ -27,6 +27,8 @@ public class InputStreamUtils {
             mEncodeBuffer = bufferSize;
         }
     }
+
+    @Deprecated
     public String getEncoding(){
         return mEncoding;
     }
@@ -78,10 +80,10 @@ public class InputStreamUtils {
         boolean read =false;
         try {
             while ((len = mInputStream.read(buffer)) > -1 ) {
-                if (!read){
-                    read = true;
-                    mEncoding = detect.detectEncodingStr(buffer,len);
-                }
+//                if (!read){
+//                    read = true;
+//                    mEncoding = detect.detectEncodingStr(buffer,len);
+//                }
                 baos.write(buffer, 0, len);
             }
             baos.flush();
