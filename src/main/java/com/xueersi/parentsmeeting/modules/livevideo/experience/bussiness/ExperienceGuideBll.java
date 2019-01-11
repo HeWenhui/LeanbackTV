@@ -50,7 +50,7 @@ public class ExperienceGuideBll extends LiveBackBaseBll implements IPagerControl
         super.onCreate(mVideoEntity, liveGetInfo, businessShareParamMap);
         this.mVideoEntity = mVideoEntity;
         //根据接口返回字段判断是否可以弹出新手引导
-        if (mVideoEntity.isNoviceGuide()) {
+        if (!mVideoEntity.isNoviceGuide()) {
             mGuidePager = new ExperienceGuidePager(mContext, this, COUNTDOWN_TIME - Long.valueOf(mVideoEntity.getVisitTimeKey()), mVideoEntity.getSubjectId());
             mGuidePager.setSubjeceId(mVideoEntity.getSubjectId());
             startTime = System.currentTimeMillis();
