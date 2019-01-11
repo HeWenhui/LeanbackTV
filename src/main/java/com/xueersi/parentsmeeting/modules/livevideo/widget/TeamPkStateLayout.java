@@ -111,7 +111,12 @@ public class TeamPkStateLayout extends FrameLayout {
                 //logger.e( "===========>:onGlobalLayout"+TeamPkStateLayout.this.getMeasuredWidth());
                 if (TeamPkStateLayout.this.getMeasuredWidth() > 0) {
                     try {
-                        addPkStatBar();
+                        //语文沿用之前老样式
+                        if(LiveVideoConfig.isSmallChinese){
+                            addPkStatBar();
+                        }else{
+                            addNewPkStatBar();
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -123,6 +128,30 @@ public class TeamPkStateLayout extends FrameLayout {
                 }
             }
         });
+    }
+
+    /**
+     * 理科pk二期新状态栏
+     */
+    private void addNewPkStatBar() {
+        tvState = findViewById(R.id.tv_answer_question_state);
+        tvState.setVisibility(GONE);
+        statBarRootView = View.inflate(getContext(), R.layout.team_pk_newstate_bar_layout, null);
+        ViewGroup viewGroup = (ViewGroup) ((Activity) getContext()).getWindow().getDecorView();
+        ViewGroup rootView = viewGroup.findViewById(R.id.rl_livevideo_message_root);
+        if (rootView != null) {
+            int stateBarHeight = SizeUtils.Dp2Px(getContext(), 19);
+            int gapAbovePkStateLayout = SizeUtils.Dp2Px(getContext(), 5);
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(this.getMeasuredWidth(), stateBarHeight);
+            int[] location = new int[2];
+            this.getLocationInWindow(location);
+            lp.topMargin = location[1] - (gapAbovePkStateLayout + stateBarHeight);
+            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            rootView.addView(statBarRootView, lp);
+            tvEnergyMyContribution = statBarRootView.findViewById(R.id.tv_teampk_pkstate_energy_mycontribution);
+            tvEnergyMyContribution.setVisibility(GONE);
+        }
+
     }
 
 
@@ -275,15 +304,27 @@ public class TeamPkStateLayout extends FrameLayout {
     protected void updatePkState(float ratio) {
         if (this.showPopWindow) {
             this.showPopWindow = false;
-            if (ratio > HALF_PROGRESS) {
-                tvState.setText("暂时领先");
-                tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_lead_bg);
-            } else if (ratio < HALF_PROGRESS) {
-                tvState.setText("全力追赶");
-                tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_follow_bg);
-            } else if (ratio == HALF_PROGRESS) {
-                tvState.setText("打成平手");
-                tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_lead_bg);
+            //语文pk还用老样式
+            if(LiveVideoConfig.isSmallChinese){
+                if (ratio > HALF_PROGRESS) {
+                    tvState.setText("暂时领先");
+                    tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_lead_bg);
+                } else if (ratio < HALF_PROGRESS) {
+                    tvState.setText("全力追赶");
+                    tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_follow_bg);
+                } else if (ratio == HALF_PROGRESS) {
+                    tvState.setText("打成平手");
+                    tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_lead_bg);
+                }
+            }else{
+                // 理科pk 新样式
+                if (ratio > HALF_PROGRESS) {
+                    tvState.setText("领先");
+                } else if (ratio < HALF_PROGRESS) {
+                    tvState.setText("追赶");
+                } else if (ratio == HALF_PROGRESS) {
+                    tvState.setText("平手");
+                }
             }
             showPkSateBar();
         }
@@ -295,8 +336,14 @@ public class TeamPkStateLayout extends FrameLayout {
      * 显示 准备战斗提示
      */
     public void showPkReady() {
-        tvState.setText("准备战斗");
-        tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_ready_bg);
+        //语文沿用一期pk样式
+        if(LiveVideoConfig.isSmallChinese){
+            tvState.setText("准备战斗");
+            tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_ready_bg);
+        }else{
+            // 理科pk二期新样式
+            tvState.setText("准备");
+        }
         showPkSateBar();
     }
 
