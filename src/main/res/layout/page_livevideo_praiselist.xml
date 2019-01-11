@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lav_livevideo_praise_pager_bg"
@@ -10,90 +9,112 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lav_livevideo_praise_loop_pager_bg"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        android:visibility="gone" />
-
     <RelativeLayout
         android:id="@+id/rl_livevideo_praiselist_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
         android:visibility="gone">
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-            android:id="@+id/tv_livevideo_praiselist_tips"
+            android:id="@+id/tv_livevideo_praiselist_congratulations"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:gravity="center"
-            android:textColor="#5E2718"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:visibility="gone" />
+            android:background="@drawable/bg_livevideo_praiselist_congratulations_success"
+            android:textColor="#ffffeec4"
+            android:textSize="9dp" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_livevideo_praiselist_team"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:overScrollMode="never"
+            android:scrollbars="none">
+
+        </android.support.v7.widget.RecyclerView>
 
         <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkRecyclerView
-            android:id="@+id/gv_livevideo_praiselist"
+            android:id="@+id/rv_livevideo_praiselist_student"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
+            android:layout_centerHorizontal="true"
             android:overScrollMode="never"
+            android:background="@drawable/bg_livevideo_praiselist_tabs0"
+            android:paddingTop="6dp"
+            android:paddingBottom="2dp"
             android:scrollbars="none" />
 
-        <com.xueersi.parentsmeeting.modules.livevideo.widget.AutoVerticalScrollTextView
-            android:id="@+id/tv_livevideo_praiselist_danmaku"
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tv_livevideo_notes"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical" />
+            android:layout_alignParentBottom="true"
+            android:textColor="#ffb33d03"
+            android:textSize="9dp" />
 
         <Button
-            android:id="@+id/btn_livevideo_praise"
+            android:id="@+id/btn_livevideo_praiselist_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/selector_livevideo_praise_button" />
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/selector_livevideo_praiselist_close"
+            android:visibility="gone" />
 
-
-        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-            android:id="@+id/tv_livevideo_note"
+        <Button
+            android:id="@+id/btn_livevideo_praiselist_like"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableLeft="@drawable/livevideo_list_tips_icon_normal"
-            android:drawablePadding="5dp"
-            android:textColor="#5E2718"
-            android:textSize="10sp" />
-
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/selector_livevideo_praiselist_like"
+            android:visibility="gone" />
     </RelativeLayout>
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lav_livevideo_praiselist_star"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
+
+    <com.xueersi.parentsmeeting.modules.livevideo.widget.AutoVerticalScrollTextView
+        android:id="@+id/tv_livevideo_praiselist_danmaku"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone" />
+
     <FrameLayout
-        android:id="@+id/fl_livevideo_praise_thanks_group"
+        android:id="@+id/fl_livevideo_praiselist_thanks_group"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#B3000000"
         android:visibility="gone">
 
         <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/lav_livevideo_praise_thanks"
+            android:id="@+id/lav_livevideo_praiselist_thanks"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
     </FrameLayout>
 
     <RelativeLayout
-        android:id="@+id/fl_livevideo_praise_teacher_group"
+        android:id="@+id/fl_livevideo_praiselist_teacher_group"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#B3000000"
         android:visibility="gone">
 
         <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/lav_livevideo_praise_teacher"
+            android:id="@+id/lav_livevideo_praiselist_teacher"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-            android:id="@+id/tv_livevideo_praise_teacher_tips"
+            android:id="@+id/tv_livevideo_praiselist_teacher_tips"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"

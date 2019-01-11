@@ -179,7 +179,7 @@ public class PraiseListBll implements PraiseListView {
             @Override
             public void run() {
                 //rBottomContent.setClickable(true);
-                mPraiseList = new PraiseListPager(activity, excellentListEntity, mPresenter);
+                mPraiseList = new PraiseListPager(activity, excellentListEntity, mPresenter ,PraiseListBll.this);
                 rlPraiseListContent.removeAllViews();
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 rlPraiseListContent.addView(mPraiseList.getRootView(), params);
@@ -210,7 +210,7 @@ public class PraiseListBll implements PraiseListView {
             @Override
             public void run() {
                 //rBottomContent.setClickable(true);
-                mPraiseList = new PraiseListPager(activity, likeListEntity, mPresenter);
+                mPraiseList = new PraiseListPager(activity, likeListEntity, mPresenter, PraiseListBll.this);
                 rlPraiseListContent.removeAllViews();
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 rlPraiseListContent.addView(mPraiseList.getRootView(), params);
@@ -241,7 +241,7 @@ public class PraiseListBll implements PraiseListView {
             @Override
             public void run() {
                 //rBottomContent.setClickable(true);
-                mPraiseList = new PraiseListPager(activity, progressListEntity, mPresenter);
+                mPraiseList = new PraiseListPager(activity, progressListEntity, mPresenter, PraiseListBll.this);
                 rlPraiseListContent.removeAllViews();
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 rlPraiseListContent.addView(mPraiseList.getRootView(), params);

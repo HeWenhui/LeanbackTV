@@ -6,17 +6,19 @@
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@+id/tv_livevideo_praiselist_excellent_name"
+        android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:singleLine="true"
-        android:textColor="#5e2718"
-        android:textSize="12sp"
+        android:textColor="#7d553f"
+        android:textSize="12dp"
+        android:gravity="left"
         tools:text="张远荪"/>
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@+id/tv_livevideo_praiselist_excellent_counts"
-        android:layout_width="55dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
@@ -27,6 +29,7 @@
         android:maxLines="1"
         android:textColor="#5e2718"
         android:textSize="12sp"
-        tools:text="10"/>
+        android:visibility="gone"
+        tools:text="10" />
 
 </RelativeLayout>

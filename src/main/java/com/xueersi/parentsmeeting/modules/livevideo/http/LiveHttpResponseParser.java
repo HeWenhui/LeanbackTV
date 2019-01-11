@@ -1301,29 +1301,47 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @return
      */
     public ExcellentListEntity parseExcellentList(ResponseEntity responseEntity) {
-        ExcellentListEntity excellentListEntity = new ExcellentListEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
+        ExcellentListEntity entity = new ExcellentListEntity();
         try {
-            excellentListEntity.setPraiseStatus(data.getInt("praiseStatus"));
-            JSONArray array = data.getJSONArray("list");
-
-            for (int i = 0; i < array.length(); i++) {
-                JSONObject jsonObject = array.getJSONObject(i);
-                ExcellentListEntity.StudentEntity studentEntity = excellentListEntity.new StudentEntity();
-                studentEntity.setIsMy(jsonObject.getInt("isMy"));
-                studentEntity.setExcellentNum(jsonObject.getString("excellent_num"));
-                studentEntity.setStuName(jsonObject.getString("stu_name"));
-                if (studentEntity.getIsMy() == 1) {
-                    excellentListEntity.setIsMy(1);
+            JSONArray list = data.getJSONArray("list");
+            if (list != null && list.length() > 0) {
+                for (int i = 0; i < list.length(); i++) {
+                    JSONObject teamObject = list.getJSONObject(i);
+                    ExcellentListEntity.TeamEntity teamEntity = entity.new TeamEntity();
+                    teamEntity.setOnListNums(teamObject.getInt("onListNums"));
+                    teamEntity.setTeamMemberNums(teamObject.getInt("teamMemberNums"));
+                    teamEntity.setPkTeamId(teamObject.getString("pkTeamId"));
+                    teamEntity.setIsMy(teamObject.optInt("isMy", -1));
+                    JSONArray stuList = teamObject.getJSONArray("stuList");
+                    for (int j = 0; j < stuList.length(); j++) {
+                        JSONObject studentObject = stuList.getJSONObject(j);
+                        ExcellentListEntity.StudentEntity studentEntity = entity.new StudentEntity();
+                        studentEntity.setExcellentNum(studentObject.getInt("excellentNum"));
+                        studentEntity.setStuName(studentObject.getString("stuName"));
+                        studentEntity.setIsMy(studentObject.getInt("isMy"));
+                        teamEntity.getStudentList().add(studentEntity);
+                        if (studentEntity.getIsMy() == 1) {
+                            entity.setIsMy(1);
+                        }
+                    }
+                    JSONObject pkTeamInfo = teamObject.getJSONObject("pkTeamInfo");
+                    teamEntity.setHoverImg(pkTeamInfo.getString("hoverImg"));
+                    teamEntity.setHoverSmallImg(pkTeamInfo.getString("hoverSmallImg"));
+                    teamEntity.setNormalImg(pkTeamInfo.getString("normalImg"));
+                    teamEntity.setNormalSmallImg(pkTeamInfo.getString("normalSmallImg"));
+                    teamEntity.setPressImg(pkTeamInfo.getString("pressImg"));
+                    teamEntity.setPressSmallImg(pkTeamInfo.getString("pressSmallImg"));
+                    teamEntity.setTeamName(pkTeamInfo.getString("teamName"));
+                    entity.getTeamList().add(teamEntity);
                 }
-                excellentListEntity.getStudentList().add(studentEntity);
             }
-
-        } catch (Exception e) {
+        } catch (JSONException e) {
             e.printStackTrace();
             MobAgent.httpResponseParserError(TAG, "parseExcellentList", e.getMessage());
+            return null;
         }
-        return excellentListEntity;
+        return entity;
     }
 
     /**
@@ -1416,35 +1434,50 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     public MinimarketListEntity parseMinimarketList(ResponseEntity responseEntity) throws Exception {
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         MinimarketListEntity entity = new MinimarketListEntity();
-        entity.setIsRelease(data.optInt("isRelease"));
-        entity.setTitle(data.optString("title"));
-        entity.setTitleId(data.optString("titleId"));
-        entity.setTeamNum(data.optInt("teamNum"));
-        JSONArray list = data.getJSONArray("list");
-        if (list != null && list.length() > 0) {
-            for (int i = 0; i < list.length(); i++) {
-                JSONObject teamObject = list.getJSONObject(i);
-                MinimarketListEntity.TeamEntity teamEntity = entity.new TeamEntity();
-                teamEntity.setOnListNums(teamObject.optInt("onListNums"));
-                teamEntity.setTeamMemberNums(teamObject.optInt("teamMemberNums"));
-                teamEntity.setPkTeamId(teamObject.optString("pkTeamId"));
-                teamEntity.setTeamRanking(teamObject.optInt("teamRanking"));
-                teamEntity.setIsMy(teamObject.optInt("isMy", -1));
-                JSONArray stuList = teamObject.getJSONArray("stuList");
-                if (stuList != null && stuList.length() > 0) {
-                    JSONObject studentObject = stuList.getJSONObject(i);
-                    MinimarketListEntity.StudentEntity studentEntity = entity.new StudentEntity();
-                    studentEntity.setStuId(studentObject.optString("stuId"));
-                    studentEntity.setStuName(studentObject.optString("stuName"));
-                    studentEntity.setStuPunchNum(studentObject.optInt("stuPunchNum"));
-                    studentEntity.setIsMy(studentObject.optInt("isMy"));
-                    teamEntity.getStudentList().add(studentEntity);
+        try {
+            entity.setIsRelease(data.getInt("isRelease"));
+            entity.setTitle(data.getString("title"));
+            entity.setTitleId(data.getString("titleId"));
+            entity.setTeamNum(data.getInt("teamNum"));
+            JSONArray list = data.getJSONArray("list");
+            if (list != null && list.length() > 0) {
+                for (int i = 0; i < list.length(); i++) {
+                    JSONObject teamObject = list.optJSONObject(i);
+                    MinimarketListEntity.TeamEntity teamEntity = entity.new TeamEntity();
+                    teamEntity.setOnListNums(teamObject.getInt("onListNums"));
+                    teamEntity.setTeamMemberNums(teamObject.getInt("teamMemberNums"));
+                    teamEntity.setPkTeamId(teamObject.getString("pkTeamId"));
+                    teamEntity.setTeamRanking(teamObject.getInt("teamRanking"));
+                    teamEntity.setIsMy(teamObject.optInt("isMy", -1));
+                    JSONArray stuList = teamObject.getJSONArray("stuList");
+                    for (int j = 0; j < stuList.length(); j++) {
+                        JSONObject studentObject = stuList.getJSONObject(i);
+                        MinimarketListEntity.StudentEntity studentEntity = entity.new StudentEntity();
+                        studentEntity.setStuId(studentObject.getString("stuId"));
+                        studentEntity.setStuName(studentObject.getString("stuName"));
+                        studentEntity.setStuPunchNum(studentObject.getInt("stuPunchNum"));
+                        studentEntity.setIsMy(studentObject.getInt("isMy"));
+                        teamEntity.getStudentList().add(studentEntity);
+                    }
+                    JSONObject pkTeamInfo = teamObject.getJSONObject("pkTeamInfo");
+                    teamEntity.setHoverImg(pkTeamInfo.getString("hoverImg"));
+                    teamEntity.setHoverSmallImg(pkTeamInfo.getString("hoverSmallImg"));
+                    teamEntity.setNormalImg(pkTeamInfo.getString("normalImg"));
+                    teamEntity.setNormalSmallImg(pkTeamInfo.getString("normalSmallImg"));
+                    teamEntity.setPressImg(pkTeamInfo.getString("pressImg"));
+                    teamEntity.setPressSmallImg(pkTeamInfo.getString("pressSmallImg"));
+                    teamEntity.setTeamName(pkTeamInfo.getString("teamName"));
+                    entity.getTeamList().add(teamEntity);
                 }
-                entity.getTeamList().add(teamEntity);
             }
+        } catch (JSONException e) {
+            e.printStackTrace();
+            MobAgent.httpResponseParserError(TAG, "parseMinimarketList", e.getMessage());
+            return null;
         }
         return entity;
     }
+
     /**
      * 解析分队仪式信息
      */

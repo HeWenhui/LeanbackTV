@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.praiselist.presenter;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.view.View;
 
 import com.xueersi.common.business.UserBll;
@@ -177,7 +178,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
     }
 
     /**
-     * 获取光荣榜
+     * 获取优秀榜
      */
     @Override
     public synchronized void getExcellentList(final int status) {
@@ -218,7 +219,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
             public void onPmFailure(Throwable error, String msg) {
                 mLogtf.d("getExcellentList => onPmFailure: error = " + error + ", msg=" + msg);
                 if (status == 0) {
-                    VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, true,
+                    VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false,
                             VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
                     vcDialog.initInfo("当前网络不佳，请刷新获取榜单！");
                     vcDialog.showDialog();
@@ -340,7 +341,6 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
                     VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false,
                             VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
                     vcDialog.initInfo("当前网络不佳，请刷新获取榜单！").showDialog();
-                    ;
                     vcDialog.setVerifyBtnListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -396,6 +396,8 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
                 showToast("" + responseEntity.getErrorMsg());
             }
         });
+
+        Bitmap src = null;
     }
 
     /**

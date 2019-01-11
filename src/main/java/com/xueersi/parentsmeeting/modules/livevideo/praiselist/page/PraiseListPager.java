@@ -15,12 +15,14 @@ import android.os.Looper;
 import android.os.Message;
 import android.support.v4.util.LruCache;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
+import android.util.Size;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -37,13 +39,16 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
+import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.dialog.CloseConfirmDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.contract.PraiseListPresenter;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.contract.PraiseListView;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.ExcellentListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeProbabilityEntity;
@@ -73,6 +78,7 @@ import java.util.TimerTask;
 
 public class PraiseListPager extends LiveBasePager {
     private PraiseListPresenter mPresenter;
+    private PraiseListView mPraiseListView;
     private ExcellentListEntity excellentListEntity;
     private LikeListEntity likeListEntity;
     private ProgressListEntity progressListEntity;
@@ -81,14 +87,6 @@ public class PraiseListPager extends LiveBasePager {
     private static final int ANIMATOR_TYPE_MAIN = 1;
     private static final int ANIMATOR_TYPE_THANKS = ANIMATOR_TYPE_MAIN + 1;
     private static final int ANIMATOR_TYPE_TEACHER = ANIMATOR_TYPE_THANKS + 1;
-
-    private WeakHandler mWeakHandler = new WeakHandler(Looper.getMainLooper(), new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message message) {
-            return false;
-        }
-    });
-
     /**
      * 当前表扬榜类型
      */
@@ -96,11 +94,8 @@ public class PraiseListPager extends LiveBasePager {
     public final static int PRAISE_LIST_TYPE_EXECELLENT = 1;//优秀榜
     public final static int PRAISE_LIST_TYPE_PROGRESS = 2;//进步榜
     public final static int PRAISE_LIST_TYPE_Like = 3;//点赞榜
-
     //主背景动画
     private LottieAnimationView lottieAnimationBGView;
-    //主背景闪光循环动画
-    private LottieAnimationView lottieAnimationLoopBGView;
     //感谢点赞
     private LottieAnimationView lottieAnimationThanksView;
     private View lottieAnimationThanksGroup;
@@ -109,18 +104,29 @@ public class PraiseListPager extends LiveBasePager {
     private View lottieAnimationTeacherGroup;
     private TextView teacherTipsView;
     private View contentGroup;
+
+    //点赞星星动画
+    private LottieAnimationView lottieAnimationStarView;
     /**
      * 金榜题名
      */
-    private TextView tvOnList;
+    private TextView tvCongratulations;
     /**
      * 表扬榜单
      */
-    private RecyclerView rvPraiselist;
+    private RecyclerView rvStudentlist;
+    /**
+     * 战队列表
+     */
+    private RecyclerView rvTeamList;
     /**
      * 点赞弹幕
      */
     private AutoVerticalScrollTextView tvDanmaku;
+    /**
+     * 关闭按钮
+     */
+    private Button btnClose;
     /**
      * 点赞按钮
      */
@@ -181,196 +187,159 @@ public class PraiseListPager extends LiveBasePager {
      * 点赞声音
      */
     private int soundLike = 0;
+    private RCommonAdapter studentAdapter;
+    private GridLayoutManager studentLayoutManager;
     private LruCache<String, Bitmap> mBitmapCache;
+    private WeakHandler mWeakHandler = new WeakHandler(Looper.getMainLooper(), new Handler.Callback() {
+        @Override
+        public boolean handleMessage(Message message) {
+            return false;
+        }
+    });
 
-    public PraiseListPager(Context context, ExcellentListEntity excellentListEntity, PraiseListPresenter presenter) {
+    public PraiseListPager(Context context, ExcellentListEntity excellentListEntity, PraiseListPresenter presenter, PraiseListView praiseListView) {
         super(context);
         listType = PRAISE_LIST_TYPE_EXECELLENT;
         this.excellentListEntity = excellentListEntity;
-        if (excellentListEntity != null && excellentListEntity.getIsMy() == 1) {
-            isOnList = true;
-        }
         this.mPresenter = presenter;
+        this.mPraiseListView = praiseListView;
         initData();
+        initListener();
     }
 
-    public PraiseListPager(Context context, LikeListEntity likeListEntity, PraiseListPresenter presenter) {
+    public PraiseListPager(Context context, LikeListEntity likeListEntity, PraiseListPresenter presenter, PraiseListView praiseListView) {
         super(context);
         listType = PRAISE_LIST_TYPE_Like;
         this.likeListEntity = likeListEntity;
-        if (likeListEntity != null && likeListEntity.getIsMy() == 1) {
-            isOnList = true;
-        }
         this.mPresenter = presenter;
+        this.mPraiseListView = praiseListView;
         initData();
+        initListener();
     }
 
-    public PraiseListPager(Context context, ProgressListEntity progressListEntity, PraiseListPresenter presenter) {
+    public PraiseListPager(Context context, ProgressListEntity progressListEntity, PraiseListPresenter presenter, PraiseListView praiseListView) {
         super(context);
         listType = PRAISE_LIST_TYPE_PROGRESS;
         this.progressListEntity = progressListEntity;
-        if (progressListEntity != null && progressListEntity.getIsMy() == 1) {
-            isOnList = true;
-        }
         this.mPresenter = presenter;
+        this.mPraiseListView = praiseListView;
         initData();
+        initListener();
     }
 
     @Override
     public View initView() {
         mView = View.inflate(mContext, R.layout.page_livevideo_praiselist, null);
-
         lottieAnimationBGView = mView.findViewById(R.id.lav_livevideo_praise_pager_bg);
-        lottieAnimationLoopBGView = mView.findViewById(R.id.lav_livevideo_praise_loop_pager_bg);
-        lottieAnimationThanksView = mView.findViewById(R.id.lav_livevideo_praise_thanks);
-        lottieAnimationThanksGroup = mView.findViewById(R.id.fl_livevideo_praise_thanks_group);
-        lottieAnimationTeacherView = mView.findViewById(R.id.lav_livevideo_praise_teacher);
-        lottieAnimationTeacherGroup = mView.findViewById(R.id.fl_livevideo_praise_teacher_group);
-        teacherTipsView = mView.findViewById(R.id.tv_livevideo_praise_teacher_tips);
+        lottieAnimationThanksView = mView.findViewById(R.id.lav_livevideo_praiselist_thanks);
+        lottieAnimationThanksGroup = mView.findViewById(R.id.fl_livevideo_praiselist_thanks_group);
+        lottieAnimationTeacherView = mView.findViewById(R.id.lav_livevideo_praiselist_teacher);
+        lottieAnimationTeacherGroup = mView.findViewById(R.id.fl_livevideo_praiselist_teacher_group);
+        teacherTipsView = mView.findViewById(R.id.tv_livevideo_praiselist_teacher_tips);
         contentGroup = mView.findViewById(R.id.rl_livevideo_praiselist_content);
-
-        tvOnList = mView.findViewById(R.id.tv_livevideo_praiselist_tips);
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) tvOnList.getLayoutParams();
-        params.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 138));
-        tvOnList.setLayoutParams(params);
-
-        rvPraiselist = mView.findViewById(R.id.gv_livevideo_praiselist);
-        rvPraiselist.addItemDecoration(new SpaceItemDecoration(SizeUtils.Dp2Px(mContext, 5)));
-        rvPraiselist.setHasFixedSize(true);
-        GridLayoutAnimationController animationController = (GridLayoutAnimationController)
-                AnimationUtils.loadLayoutAnimation(mContext, R.anim.anim_livevido_praise_student_list);
-        rvPraiselist.setLayoutAnimation(animationController);
-        rvPraiselist.scheduleLayoutAnimation();
-
-        tvDanmaku =  mView.findViewById(R.id.tv_livevideo_praiselist_danmaku);
-        btnLike =mView.findViewById(R.id.btn_livevideo_praise);
-        tvNotes =  mView.findViewById(R.id.tv_livevideo_note);
-
-        lottieAnimationBGView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
-                .OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                logger.i("lottieAnimationBGView: getMeasuredWidth() = " + lottieAnimationBGView.getMeasuredWidth());
-                //计算列表的位置
-                RelativeLayout.LayoutParams listParams = (RelativeLayout.LayoutParams) rvPraiselist
-                        .getLayoutParams();
-                if (isOnList) {
-                    listParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 179));
-                } else {
-                    listParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 179 - 39));
-                }
-                if (listType == PRAISE_LIST_TYPE_Like) {
-                    listParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 64));
-                } else {
-                    listParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 144));
-                }
-                listParams.leftMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 97));
-                listParams.rightMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 88));
-                rvPraiselist.setLayoutParams(listParams);
-
-                //计算点赞区域的位置
-                RelativeLayout.LayoutParams danmakuLayoutParams = (RelativeLayout.LayoutParams) tvDanmaku
-                        .getLayoutParams();
-                danmakuLayoutParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 271));
-                danmakuLayoutParams.leftMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 83));
-                danmakuLayoutParams.rightMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 168));
-                tvDanmaku.setLayoutParams(danmakuLayoutParams);
-
-                RelativeLayout.LayoutParams likeLayoutParams = (RelativeLayout.LayoutParams) btnLike
-                        .getLayoutParams();
-                likeLayoutParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 252));
-                likeLayoutParams.leftMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 345));
-                likeLayoutParams.rightMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 69));
-                btnLike.setLayoutParams(likeLayoutParams);
-
-                //计算备注的位置
-                RelativeLayout.LayoutParams noteParams = (RelativeLayout.LayoutParams) tvNotes.getLayoutParams();
-                noteParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 313));
-                noteParams.leftMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 76));
-
-                //计算老师点赞学生文字位置
-                RelativeLayout.LayoutParams teacherTipsParams = (RelativeLayout.LayoutParams) teacherTipsView
-                        .getLayoutParams();
-                teacherTipsParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 236));
-                teacherTipsParams.leftMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 109));
-                teacherTipsParams.rightMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 105));
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    lottieAnimationBGView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                } else {
-                    lottieAnimationBGView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                }
-            }
-        });
-//        preloadBitmap();
+        lottieAnimationStarView = mView.findViewById(R.id.lav_livevideo_praiselist_star);
+        tvCongratulations = mView.findViewById(R.id.tv_livevideo_praiselist_congratulations);
+        tvDanmaku = mView.findViewById(R.id.tv_livevideo_praiselist_danmaku);
+        btnClose = mView.findViewById(R.id.btn_livevideo_praiselist_close);
+        btnLike = mView.findViewById(R.id.btn_livevideo_praiselist_like);
+        tvNotes = mView.findViewById(R.id.tv_livevideo_notes);
+        rvStudentlist = mView.findViewById(R.id.rv_livevideo_praiselist_student);
+        rvTeamList = mView.findViewById(R.id.rv_livevideo_praiselist_team);
         return mView;
     }
 
     /**
-     * 预加载一部分图片，避免动画太卡
+     * 动态校准布局
      */
-    private void preloadBitmap() {
-        mBitmapCache = new LruCache<String, Bitmap>(10 * 1024 * 1024) {
+    private void alignLayout() {
+        lottieAnimationBGView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
+                .OnGlobalLayoutListener() {
             @Override
-            protected int sizeOf(String key, Bitmap value) {
-                return value.getByteCount();
-            }
-        };
-        InputStream in = null;
-        try {
-            AssetManager assets = mContext.getAssets();
-            String dir = LOTTIE_RES_ASSETS_ROOTDIR + "list_bg/images_advance";
-            String[] list = assets.list(dir);
-            for (int i = 0; i < list.length; i++) {
-                in = mContext.getAssets().open(dir + File.separator + list[i]);
-                Bitmap bitmap = BitmapFactory.decodeStream(in);
-                mBitmapCache.put(list[i], bitmap);
-                in.close();
-            }
+            public void onGlobalLayout() {
+                logger.d("lottieAnimationBGView: getMeasuredHeight() = " + lottieAnimationBGView.getMeasuredHeight());
+                logger.d("lottieAnimationBGView: getMeasuredWidth() = " + lottieAnimationBGView.getMeasuredWidth());
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            if (in != null) {
-                try {
-                    in.close();
-                } catch (IOException exception) {
-                    exception.printStackTrace();
+                int measuredHeight = lottieAnimationBGView.getMeasuredHeight();
+                int measudredWidth = lottieAnimationBGView.getMeasuredWidth();
+
+                int originHeight = measudredWidth * 3 / 4;
+                int differenceHeight = (originHeight - measuredHeight) / 2;
+
+                //校准内容区域的位置
+                RelativeLayout.LayoutParams contentParams = (RelativeLayout.LayoutParams) contentGroup.getLayoutParams();
+                if (measudredWidth * 3 <= measuredHeight * 4) {
+                    //水平方向上截断
+                    contentParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 65));
+                    contentParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 45));
+                } else {
+                    contentParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 65) - differenceHeight);
+                    contentParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 70) - differenceHeight);
                 }
+                contentParams.width = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 415));
+                contentGroup.setLayoutParams(contentParams);
+
+                //校准点赞按钮的位置
+                RelativeLayout.LayoutParams likeParams = (RelativeLayout.LayoutParams) btnLike.getLayoutParams();
+                likeParams.rightMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 25));
+                btnLike.setLayoutParams(likeParams);
+
+                //校准金榜题名的位置
+                RelativeLayout.LayoutParams titleparams = (RelativeLayout.LayoutParams) tvCongratulations.getLayoutParams();
+                titleparams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 37));
+                tvCongratulations.setLayoutParams(titleparams);
+
+                //计算战队列表的位置
+                RelativeLayout.LayoutParams teamListParams = (RelativeLayout.LayoutParams) rvTeamList.getLayoutParams();
+                teamListParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 55));
+                teamListParams.leftMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 40));
+                teamListParams.rightMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 35));
+                teamListParams.height = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 58));
+                rvTeamList.setLayoutParams(teamListParams);
+
+                //校准榜单的位置
+                RelativeLayout.LayoutParams studentListParams = (RelativeLayout.LayoutParams) rvStudentlist.getLayoutParams();
+                studentListParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 115));
+                studentListParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 45));
+                studentListParams.leftMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 50));
+                studentListParams.rightMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 40));
+                rvStudentlist.setLayoutParams(studentListParams);
+
+                //校准备注的位置
+                RelativeLayout.LayoutParams noteParams = (RelativeLayout.LayoutParams) tvNotes.getLayoutParams();
+                noteParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 30));
+                noteParams.leftMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 50));
+                tvNotes.setLayoutParams(noteParams);
+
+                //校准星星动画的位置
+                RelativeLayout.LayoutParams lottieStarParams = (RelativeLayout.LayoutParams) lottieAnimationStarView.getLayoutParams();
+                lottieStarParams.rightMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 45));
+                lottieStarParams.bottomMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 25));
+                lottieAnimationStarView.setLayoutParams(lottieStarParams);
+
+                //校准老师点赞学生文字位置
+                RelativeLayout.LayoutParams teacherTipsParams = (RelativeLayout.LayoutParams) teacherTipsView.getLayoutParams();
+                teacherTipsParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 236));
+                teacherTipsParams.leftMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 109));
+                teacherTipsParams.rightMargin = caculateHorizontalMargin(SizeUtils.Dp2Px(mContext, 105));
+
+
+
+                lottieAnimationBGView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
-        }
+        });
     }
 
-    /**
-     * 根据效果图比例动态计算控件垂直方向边距
-     *
-     * @param rate
-     * @return
-     */
-    private int caculateVerticalMargin(int rate) {
-        int screenHeight = ScreenUtils.getScreenHeight();
-        return (rate * screenHeight) / SizeUtils.Dp2Px(mContext, 375);
-    }
-
-    /**
-     * 根据效果图比例动态计算控件水平方向边距
-     *
-     * @param rate
-     * @return
-     */
-    private int caculateHorizontalMargin(int rate) {
-        int measuredWidth = lottieAnimationBGView.getMeasuredWidth();
-        return (rate * measuredWidth) / SizeUtils.Dp2Px(mContext, 500);
-    }
+    private int selectedTeamIndex = 0;
 
     @Override
     public void initData() {
-        //名字
-        mName = mPresenter.getStuName();
-        tvOnList.setText("恭喜 " + mName + " 同学金榜题名!");
+        alignLayout();
+        startBackgtoundAnimation();
+        tvCongratulations.setText("恭喜 " + mPresenter.getStuName() + "同学 金榜题名，努力总有收获");
         //名字缩写
-        String abbName = mName;
-        if (mName != null && mName.length() > 4) {
-            abbName = mName.substring(0, 3) + "...";
+        String abbName = mPresenter.getStuName();
+        if (abbName != null && abbName.length() > 4) {
+            abbName = abbName.substring(0, 3) + "...";
         }
         likeCopywriting = new String[]{
                 " 为你点赞，" + abbName + "学神~下次榜单再相见！",
@@ -383,13 +352,6 @@ public class PraiseListPager extends LiveBasePager {
                 " 为你点赞，运气不错，额外获得<font color='#F13232'>1</font>颗赞哦~",
                 " 为你点赞，运气爆棚，额外获得<font color='#F13232'>2</font>颗赞哦!"};
 
-        mWeakHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                startBGAnimation();
-            }
-        }, 300);
-
         //播放声音
         if (mSoundPool == null)
             mSoundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 0);
@@ -397,7 +359,6 @@ public class PraiseListPager extends LiveBasePager {
             soundPraiselistIn = mSoundPool.load(mContext, R.raw.praise_list, 1);
             mSoundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
                 public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                    // TODO Auto-generated method stub
                     soundPool.play(soundPraiselistIn, 1, 1, 0, 0, 1);
                 }
             });
@@ -405,64 +366,87 @@ public class PraiseListPager extends LiveBasePager {
             mSoundPool.play(soundPraiselistIn, 1, 1, 0, 0, 1);
         }
 
-        RCommonAdapter adapter = null;
-        GridLayoutManager layoutManager = null;
+        rvStudentlist.addItemDecoration(new SpaceItemDecoration(SizeUtils.Dp2Px(mContext, 20)));
+        rvStudentlist.setHasFixedSize(true);
+//        GridLayoutAnimationController animationController = (GridLayoutAnimationController) AnimationUtils.loadLayoutAnimation(mContext, R.anim.anim_livevido_praise_student_list);
+//        rvPraiselist.setLayoutAnimation(animationController);
+//        rvPraiselist.scheduleLayoutAnimation();
+
         switch (listType) {
             case PRAISE_LIST_TYPE_EXECELLENT:
-                tvNotes.setText("备注:全对或者订正到全对的同学可以上榜哦~");
-                adapter = new RCommonAdapter(mContext, excellentListEntity.getStudentList());
-                adapter.addItemViewDelegate(new ExcellentItem());
-                layoutManager = new GridLayoutManager(mContext, 4);
-                rvPraiselist.setLayoutManager(layoutManager);
-                rvPraiselist.setAdapter(adapter);
-                if (excellentListEntity.getPraiseStatus() != 0)
+                tvNotes.setText("注:全对或者订正到全对的同学可以上榜哦~");
+                studentAdapter = new RCommonAdapter(mContext, excellentListEntity.getTeamList().get(selectedTeamIndex).getStudentList());
+                studentAdapter.addItemViewDelegate(new ExcellentItem());
+                studentLayoutManager = new GridLayoutManager(mContext, MAX_STUDENT_COLUMN_NEMBER);
+                rvStudentlist.setLayoutManager(studentLayoutManager);
+                rvStudentlist.setAdapter(studentAdapter);
+                if (excellentListEntity.getPraiseStatus() != 0) {
                     btnLike.setVisibility(View.INVISIBLE);
-
-                if (excellentListEntity != null && excellentListEntity.getIsMy() == 1) {
-                    tvOnList.setVisibility(View.VISIBLE);
+                }
+                if (excellentListEntity.getIsMy() == 1) {
+                    tvCongratulations.setVisibility(View.VISIBLE);
                 } else {
-                    tvOnList.setVisibility(View.GONE);
+                    tvCongratulations.setVisibility(View.GONE);
                 }
                 break;
             case PRAISE_LIST_TYPE_Like:
-                adapter = new RCommonAdapter(mContext, likeListEntity.getStudentList());
-                adapter.addItemViewDelegate(new LikeItem());
-                layoutManager = new GridLayoutManager(mContext, 3);
-                rvPraiselist.setLayoutManager(layoutManager);
-                rvPraiselist.setAdapter(adapter);
+                studentAdapter = new RCommonAdapter(mContext, likeListEntity.getStudentList());
+                studentAdapter.addItemViewDelegate(new LikeItem());
+                studentLayoutManager = new GridLayoutManager(mContext, MAX_STUDENT_COLUMN_NEMBER);
+                rvStudentlist.setLayoutManager(studentLayoutManager);
+                rvStudentlist.setAdapter(studentAdapter);
                 if (likeListEntity != null && likeListEntity.getIsMy() == 1) {
-                    tvOnList.setVisibility(View.VISIBLE);
+                    tvCongratulations.setVisibility(View.VISIBLE);
                 } else {
-                    tvOnList.setVisibility(View.GONE);
+                    tvCongratulations.setVisibility(View.GONE);
                 }
                 tvDanmaku.setVisibility(View.GONE);
                 btnLike.setVisibility(View.GONE);
                 tvNotes.setVisibility(View.GONE);
-                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rvPraiselist.getLayoutParams();
-                lp.setMargins(SizeUtils.Dp2Px(mContext, 20),
-                        SizeUtils.Dp2Px(mContext, 53),
-                        SizeUtils.Dp2Px(mContext, 20),
-                        SizeUtils.Dp2Px(mContext, 24));
                 break;
             case PRAISE_LIST_TYPE_PROGRESS:
                 tvNotes.setText("备注:连续两次作业分数(百分制)有进步可以上榜哦~");
-                adapter = new RCommonAdapter(mContext, progressListEntity.getProgressEntities());
-                adapter.addItemViewDelegate(new ProgressItem());
-                layoutManager = new GridLayoutManager(mContext, 3);
-                rvPraiselist.setLayoutManager(layoutManager);
-                rvPraiselist.setAdapter(adapter);
-                if (progressListEntity.getPraiseStatus() != 0)
+                studentAdapter = new RCommonAdapter(mContext, progressListEntity.getProgressEntities());
+                studentAdapter.addItemViewDelegate(new ProgressItem());
+                studentLayoutManager = new GridLayoutManager(mContext, MAX_STUDENT_COLUMN_NEMBER);
+                rvStudentlist.setLayoutManager(studentLayoutManager);
+                rvStudentlist.setAdapter(studentAdapter);
+                if (progressListEntity.getPraiseStatus() != 0) {
                     btnLike.setVisibility(View.INVISIBLE);
-
-                if (progressListEntity != null && progressListEntity.getIsMy() == 1) {
-                    tvOnList.setVisibility(View.VISIBLE);
+                }
+                if (progressListEntity.getIsMy() == 1) {
+                    tvCongratulations.setVisibility(View.VISIBLE);
                 } else {
-                    tvOnList.setVisibility(View.GONE);
+                    tvCongratulations.setVisibility(View.GONE);
                 }
                 break;
             default:
                 break;
         }
+
+        teamAdapter = new RCommonAdapter(mContext, excellentListEntity.getTeamList());
+        teamLayoutManager = new LinearLayoutManager(mContext);
+        teamLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        teamLayoutManager.setInitialPrefetchItemCount(6);
+        teamAdapter.addItemViewDelegate(new TeamItem());
+        rvTeamList.setLayoutManager(teamLayoutManager);
+        rvTeamList.setAdapter(teamAdapter);
+    }
+
+    private RCommonAdapter teamAdapter;
+    private LinearLayoutManager teamLayoutManager;
+
+    private static final int[] tabsBackgroundRes = new int[]{
+            R.drawable.bg_livevideo_praiselist_tabs0,
+            R.drawable.bg_livevideo_praiselist_tabs1,
+            R.drawable.bg_livevideo_praiselist_tabs2,
+            R.drawable.bg_livevideo_praiselist_tabs3,
+            R.drawable.bg_livevideo_praiselist_tabs4,
+            R.drawable.bg_livevideo_praiselist_tabs5,
+    };
+
+    @Override
+    public void initListener() {
         //监听点赞按钮点击事件
         btnLike.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -471,7 +455,6 @@ public class PraiseListPager extends LiveBasePager {
                     soundLike = mSoundPool.load(mContext, R.raw.thumbs_up, 1);
                     mSoundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
                         public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                            // TODO Auto-generated method stub
                             soundPool.play(soundLike, 1, 1, 0, 0, 1);
                         }
                     });
@@ -483,8 +466,92 @@ public class PraiseListPager extends LiveBasePager {
                 if (listType == PRAISE_LIST_TYPE_PROGRESS)
                     mPresenter.getProgressList(1);
                 btnLike.setEnabled(false);
+                startStarAnimation();
             }
         });
+
+        btnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final CloseConfirmDialog closeConfirmDialog = new CloseConfirmDialog(mContext);
+                closeConfirmDialog.setTitle("关闭后将无法再开启表扬榜哦，确定关闭吗？");
+                closeConfirmDialog.setTitleGravaty(Gravity.LEFT);
+                closeConfirmDialog.hideContent();
+                closeConfirmDialog.setOnClickCancelListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        closeConfirmDialog.cancelDialog();
+                    }
+                });
+                closeConfirmDialog.setOnClickConfirmlListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        closeConfirmDialog.cancelDialog();
+                        mPraiseListView.closePraiseList();
+                    }
+                });
+                closeConfirmDialog.showDialog();
+            }
+        });
+
+        teamAdapter.setOnItemClickListener(new RCommonAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, RecyclerView.ViewHolder holder, int position) {
+                selectedTeamIndex = position;
+                rvStudentlist.setBackgroundResource(tabsBackgroundRes[position]);
+                teamAdapter.notifyDataSetChanged();
+                switch (listType) {
+                    case PRAISE_LIST_TYPE_EXECELLENT:
+                        studentAdapter.updateData(excellentListEntity.getTeamList().get(selectedTeamIndex).getStudentList());
+                        break;
+                    case PRAISE_LIST_TYPE_Like:
+
+                        break;
+                    case PRAISE_LIST_TYPE_PROGRESS:
+
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            @Override
+            public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
+                return false;
+            }
+        });
+    }
+
+    /**
+     * 根据效果图比例动态计算控件垂直方向边距
+     *
+     * @param rate
+     * @return
+     */
+    private int caculateVerticalMargin(int rate) {
+
+        int measuredHeight = lottieAnimationBGView.getMeasuredHeight();
+        int measudredWidth = lottieAnimationBGView.getMeasuredWidth();
+        if (measudredWidth * 3 <= measuredHeight * 4) {
+            //水平方向上截断
+            return (rate * measuredHeight) / SizeUtils.Dp2Px(mContext, 375);
+        } else {
+            //数值方向上截断
+            return (rate * measudredWidth) / SizeUtils.Dp2Px(mContext, 500);
+        }
+    }
+
+    private static final int MAX_STUDENT_COLUMN_NEMBER = 5;
+
+    /**
+     * 根据效果图比例动态计算控件水平方向边距
+     *
+     * @param rate
+     * @return
+     */
+    private int caculateHorizontalMargin(int rate) {
+        int measuredWidth = lottieAnimationBGView.getMeasuredWidth();
+        return (rate * measuredWidth) / SizeUtils.Dp2Px(mContext, 500);
     }
 
     public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
@@ -496,12 +563,9 @@ public class PraiseListPager extends LiveBasePager {
 
         @Override
         public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            //不是第一个的格子都设一个左边和底部的间距
-//            outRect.left = space;
             outRect.bottom = space;
-            //由于每行都只有3个，所以第一个都是3的倍数，把左边距设为0
-            if (parent.getChildLayoutPosition(view) % 4 == 0) {
-                outRect.left = 0;
+            if (parent.getChildLayoutPosition(view) < MAX_STUDENT_COLUMN_NEMBER) {
+                outRect.top = space / 2;
             }
         }
     }
@@ -543,12 +607,47 @@ public class PraiseListPager extends LiveBasePager {
     }
 
     /**
-     * 开始整个背景动画
+     * 表扬榜背景 动画
      */
-    public void startBGAnimation() {
-        logger.d("startBGAnimation");
+    public void startBackgtoundAnimation() {
+        logger.d("startBackgtoundAnimation");
 
-        String advanceResPath = LOTTIE_RES_ASSETS_ROOTDIR + "list_bg/images_advance";
+        String advanceResPath = LOTTIE_RES_ASSETS_ROOTDIR + "background/images";
+        String advanceJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "background/data.json";
+        final LottieEffectInfo backgroundEffectInfo = new LottieEffectInfo(advanceResPath, advanceJsonPath);
+        lottieAnimationBGView.setAnimationFromJson(backgroundEffectInfo.getJsonStrFromAssets(mContext), "background");
+        lottieAnimationBGView.useHardwareAcceleration(true);
+        ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
+            @Override
+            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                return backgroundEffectInfo.fetchBitmapFromAssets(
+                        lottieAnimationBGView,
+                        lottieImageAsset.getFileName(),
+                        lottieImageAsset.getId(),
+                        lottieImageAsset.getWidth(),
+                        lottieImageAsset.getHeight(),
+                        mContext);
+            }
+        };
+        lottieAnimationBGView.setImageAssetDelegate(imageAssetDelegate);
+        lottieAnimationBGView.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float animatedFraction = animation.getAnimatedFraction();
+                if (animatedFraction > 0.1) {
+                    contentGroup.setVisibility(View.VISIBLE);
+                    btnLike.setVisibility(View.VISIBLE);
+                    btnClose.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        lottieAnimationBGView.playAnimation();
+
+
+
+
+
+       /* String advanceResPath = LOTTIE_RES_ASSETS_ROOTDIR + "list_bg/images_advance";
         String advanceJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "list_bg/data.json";
         final LottieEffectInfo advanceEffectInfo = new LottieEffectInfo(advanceResPath, advanceJsonPath);
 
@@ -623,6 +722,8 @@ public class PraiseListPager extends LiveBasePager {
         lottieAnimationLoopBGView.useHardwareAcceleration(true);
         lottieAnimationLoopBGView.setRepeatCount(-1);
         lottieAnimationLoopBGView.setImageAssetDelegate(imageAssetDelegate);
+
+
         //截屏
         StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext, StudyReportAction.class);
         if (studyReportAction != null) {
@@ -658,13 +759,36 @@ public class PraiseListPager extends LiveBasePager {
                     }
                 }
             });
-        }
+        }*/
     }
 
     /**
-     * 谢谢点赞
+     * 点赞星星 动画
      */
-    private void startThanksBGAnimation() {
+    private void startStarAnimation() {
+        String resPath = LOTTIE_RES_ASSETS_ROOTDIR + "star/images";
+        String jsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "star/data.json";
+        final LottieEffectInfo lottieEffectInfo = new LottieEffectInfo(resPath, jsonPath);
+        lottieAnimationStarView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext));
+        lottieAnimationStarView.useHardwareAcceleration(true);
+        lottieAnimationStarView.setImageAssetDelegate(new ImageAssetDelegate() {
+            @Override
+            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                return lottieEffectInfo.fetchBitmapFromAssets(
+                        lottieAnimationStarView,
+                        lottieImageAsset.getFileName(),
+                        lottieImageAsset.getId(),
+                        lottieImageAsset.getWidth(),
+                        lottieImageAsset.getHeight(), mContext);
+            }
+        });
+        lottieAnimationStarView.playAnimation();
+    }
+
+    /**
+     * 谢谢你的点赞 动画
+     */
+    private void startThanksAnimation() {
         String resPath = LOTTIE_RES_ASSETS_ROOTDIR + "thanks/images";
         String jsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "thanks/data.json";
         final LottieEffectInfo lottieEffectInfo = new LottieEffectInfo(resPath, jsonPath);
@@ -673,8 +797,12 @@ public class PraiseListPager extends LiveBasePager {
         lottieAnimationThanksView.setImageAssetDelegate(new ImageAssetDelegate() {
             @Override
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
-                return lottieEffectInfo.fetchBitmapFromAssets(lottieAnimationThanksView, lottieImageAsset.getFileName(),
-                        lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(), mContext);
+                return lottieEffectInfo.fetchBitmapFromAssets(
+                        lottieAnimationThanksView,
+                        lottieImageAsset.getFileName(),
+                        lottieImageAsset.getId(),
+                        lottieImageAsset.getWidth(),
+                        lottieImageAsset.getHeight(), mContext);
             }
         });
 
@@ -683,7 +811,7 @@ public class PraiseListPager extends LiveBasePager {
     }
 
     /**
-     * 显示老师表扬横幅
+     * 老师表扬横幅 动画
      *
      * @param stuName
      * @param tecName
@@ -705,16 +833,20 @@ public class PraiseListPager extends LiveBasePager {
                 , Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         teacherTipsView.setText(spanText);
 
-        String resPath = LOTTIE_RES_ASSETS_ROOTDIR + "praise_teacher/images";
-        String jsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "praise_teacher/data.json";
+        String resPath = LOTTIE_RES_ASSETS_ROOTDIR + "teacher_praise/images";
+        String jsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "teacher_praise/data.json";
         final LottieEffectInfo lottieEffectInfo = new LottieEffectInfo(resPath, jsonPath);
         lottieAnimationTeacherView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext));
         lottieAnimationTeacherView.setImageAssetDelegate(new ImageAssetDelegate() {
             @Override
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
-                return lottieEffectInfo.fetchBitmapFromAssets(lottieAnimationTeacherView, lottieImageAsset
-                                .getFileName(),
-                        lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(), mContext);
+                return lottieEffectInfo.fetchBitmapFromAssets(
+                        lottieAnimationTeacherView,
+                        lottieImageAsset.getFileName(),
+                        lottieImageAsset.getId(),
+                        lottieImageAsset.getWidth(),
+                        lottieImageAsset.getHeight(),
+                        mContext);
             }
         });
         lottieAnimationTeacherView.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
@@ -756,12 +888,6 @@ public class PraiseListPager extends LiveBasePager {
                 lottieAnimationThanksGroup.setVisibility(View.GONE);
             } else if (mType == ANIMATOR_TYPE_TEACHER) {
                 lottieAnimationTeacherGroup.setVisibility(View.GONE);
-            } else if (mType == ANIMATOR_TYPE_MAIN) {
-                contentGroup.setVisibility(View.VISIBLE);
-                lottieAnimationBGView.setVisibility(View.GONE);
-                lottieAnimationLoopBGView.setVisibility(View.VISIBLE);
-                //开启循环动画
-                lottieAnimationLoopBGView.playAnimation();
             }
         }
 
@@ -865,7 +991,7 @@ public class PraiseListPager extends LiveBasePager {
     public void showLikeToast() {
         btnLike.setVisibility(View.INVISIBLE);
         lottieAnimationThanksGroup.setVisibility(View.VISIBLE);
-        startThanksBGAnimation();
+        startThanksAnimation();
         mPresenter.sendLike();
 
         StableLogHashMap logHashMap = new StableLogHashMap("praisePraiseList");
@@ -883,6 +1009,7 @@ public class PraiseListPager extends LiveBasePager {
     private class ExcellentItem implements RItemViewInterface<ExcellentListEntity.StudentEntity> {
         TextView tvName;
         TextView tvCounts;
+        int tvNameWidth;
 
         @Override
         public int getItemLayoutId() {
@@ -893,7 +1020,8 @@ public class PraiseListPager extends LiveBasePager {
         public void initView(ViewHolder viewHolder, int i) {
             tvName = viewHolder.getView(R.id.tv_livevideo_praiselist_excellent_name);
             tvCounts = viewHolder.getView(R.id.tv_livevideo_praiselist_excellent_counts);
-            tvCounts.setVisibility(View.GONE);
+
+            tvNameWidth = (int) Math.ceil(tvName.getPaint().measureText("一二三... "));
         }
 
         @Override
@@ -906,11 +1034,12 @@ public class PraiseListPager extends LiveBasePager {
             if (studentEntity != null) {
                 String stuName = studentEntity.getStuName();
                 if (!TextUtils.isEmpty(stuName)) {
-                    if (stuName.length() >= 5) {
+                    if (stuName.length() > 4) {
                         stuName = stuName.substring(0, 3) + "...";
                     }
                 }
                 tvName.setText(stuName);
+                tvName.setWidth(tvNameWidth);
             }
         }
     }
@@ -943,9 +1072,9 @@ public class PraiseListPager extends LiveBasePager {
             tvCounts = (TextView) viewHolder.getView(R.id.tv_livevideo_praiselist_progress_counts);
             ivArrow = (ImageView) viewHolder.getView(R.id.iv_livevideo_praiselist_progress_arrow);
             ivArrow.setImageResource(R.drawable.ic_livevideo_praiselist_praise);
+
+            tvNameWidth = (int) Math.ceil(tvName.getPaint().measureText("一二三..."));
             tvCountWidth = (int) Math.ceil(tvCounts.getPaint().measureText("999"));
-            float nameWidth = tvName.getPaint().measureText("一二三...");
-            tvNameWidth = (int) Math.ceil(nameWidth);
         }
 
         @Override
@@ -997,13 +1126,14 @@ public class PraiseListPager extends LiveBasePager {
 
         @Override
         public void initView(ViewHolder viewHolder, int i) {
-            rootview = (LinearLayout) viewHolder.getView(R.id.rl_livevideo_praiselist_progress_root);
-            tvName = (TextView) viewHolder.getView(R.id.tv_livevideo_praiselist_progress_name);
-            tvCounts = (TextView) viewHolder.getView(R.id.tv_livevideo_praiselist_progress_counts);
-            ivArrow = (ImageView) viewHolder.getView(R.id.iv_livevideo_praiselist_progress_arrow);
+            rootview = viewHolder.getView(R.id.rl_livevideo_praiselist_progress_root);
+            tvName = viewHolder.getView(R.id.tv_livevideo_praiselist_progress_name);
+            tvCounts = viewHolder.getView(R.id.tv_livevideo_praiselist_progress_counts);
+            ivArrow = viewHolder.getView(R.id.iv_livevideo_praiselist_progress_arrow);
+
+            tvNameWidth = (int) Math.ceil(tvName.getPaint().measureText("一二三..."));
             tvCountWidth = (int) Math.ceil(tvCounts.getPaint().measureText("100分"));
-            float nameWidth = tvName.getPaint().measureText("一二三...");
-            tvNameWidth = (int) Math.ceil(nameWidth);
+
         }
 
         @Override
@@ -1033,11 +1163,60 @@ public class PraiseListPager extends LiveBasePager {
         }
     }
 
-    public void stopDanmaku() {
+    /**
+     * 最多显示6个战队
+     */
+    private static final int MAX_TEAM_NUMBER = 6;
+
+    /**
+     * 战队列表item
+     */
+    class TeamItem implements RItemViewInterface<ExcellentListEntity.TeamEntity> {
+        ImageView ivHead;
+        TextView tvCounts;
+
+        @Override
+        public int getItemLayoutId() {
+            return R.layout.item_livevideo_praiselist_team;
+        }
+
+        @Override
+        public boolean isShowView(ExcellentListEntity.TeamEntity item, int position) {
+            return true;
+        }
+
+        @Override
+        public void initView(ViewHolder holder, int position) {
+            ivHead = holder.getView(R.id.iv_livevideo_praiselist_team_head);
+            tvCounts = holder.getView(R.id.tv_livevideo_praiselist_team_counts);
+
+            RecyclerView.LayoutParams holderParams = (RecyclerView.LayoutParams) holder.getConvertView().getLayoutParams();
+            holderParams.width = rvTeamList.getMeasuredWidth() / MAX_TEAM_NUMBER;
+
+            LinearLayout.LayoutParams headParams = (LinearLayout.LayoutParams) ivHead.getLayoutParams();
+            if (selectedTeamIndex == position) {
+                headParams.height = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 49));
+            } else {
+                headParams.height = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 40));
+            }
+        }
+
+        @Override
+        public void convert(ViewHolder holder, ExcellentListEntity.TeamEntity teamEntity, int position) {
+            if (selectedTeamIndex == position) {
+                ImageLoader.with(mContext).load(teamEntity.getNormalImg()).placeHolder(R.drawable.lieyanshenlong_press).into(ivHead);
+            } else {
+                ImageLoader.with(mContext).load(teamEntity.getNormalImg()).placeHolder(R.drawable.lieyanshenlong_normal).into(ivHead);
+            }
+            tvCounts.setText(teamEntity.getOnListNums() + "/" + teamEntity.getTeamMemberNums());
+        }
+    }
+
+    private void stopDanmaku() {
         this.isStop = true;
     }
 
-    public void releaseSoundPool() {
+    private void releaseSoundPool() {
         if (mSoundPool != null)
             mSoundPool.release();
     }

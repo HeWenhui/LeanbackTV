@@ -91,7 +91,7 @@ public class MinimarketListEntity {
          */
         private int teamRanking;
         /**
-         * 只有学生所在战队会有此字段 为0时，代表学生未在榜上 为1时，代表学生在榜上(与stuList里的isMy不同)
+         * 只有学生所在战队会有此字段(1:在榜上  0:不在榜上  -1：不在此战队)
          */
         private int isMy;
 
@@ -101,6 +101,7 @@ public class MinimarketListEntity {
         private String normalSmallImg;
         private String pressImg;
         private String pressSmallImg;
+        private String teamName;
 
         public List<StudentEntity> getStudentList() {
             return studentList;
@@ -196,6 +197,14 @@ public class MinimarketListEntity {
 
         public void setPressSmallImg(String pressSmallImg) {
             this.pressSmallImg = pressSmallImg;
+        }
+
+        public String getTeamName() {
+            return teamName;
+        }
+
+        public void setTeamName(String teamName) {
+            this.teamName = teamName;
         }
     }
 
