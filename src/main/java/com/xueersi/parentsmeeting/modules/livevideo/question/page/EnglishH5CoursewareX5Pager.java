@@ -339,7 +339,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         webSetting.setBuiltInZoomControls(true);
         webSetting.setJavaScriptEnabled(true);
         wvSubjectWeb.addJavascriptInterface(this, "wx_xesapp");
-        wvSubjectWeb.setInitialScale(1);
+        wvSubjectWeb.setInitialScale(100);
         if (englishH5Entity.getNewEnglishH5() || LiveVideoConfig.isMulLiveBack || isNewArtsCourseware) {
             wvSubjectWeb.setWebViewClient(new MyWebViewClient() {
                 @Override
@@ -642,7 +642,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         wvSubjectWeb.addJavascriptInterface(this, "wx_xesapp");
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setBuiltInZoomControls(true);
-        wvSubjectWeb.setInitialScale(1);
+        wvSubjectWeb.setInitialScale(100);
         wvSubjectWeb.setWebChromeClient(new MyWebChromeClient());
         wvSubjectWeb.setWebViewClient(new MyWebViewClient() {
             @Override
