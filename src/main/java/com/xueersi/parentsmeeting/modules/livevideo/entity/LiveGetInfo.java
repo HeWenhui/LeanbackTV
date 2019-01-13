@@ -1290,5 +1290,6 @@ public class LiveGetInfo {
         public String ePlanId;
         public String eTeacherId;
         public String eClassId;
+        public String fakePlanId;
     }
 }
