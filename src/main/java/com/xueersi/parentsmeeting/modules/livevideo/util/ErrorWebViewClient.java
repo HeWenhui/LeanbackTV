@@ -66,7 +66,8 @@ public class ErrorWebViewClient extends WebViewClient {
                     }
                     StableLogHashMap logHashMap = new StableLogHashMap();
                     logHashMap.put("tag", TAG);
-                    logHashMap.put("url", url);
+                    logHashMap.put("request", url);
+                    logHashMap.put("weburl", "" + webView.getUrl());
                     logHashMap.put("errorcode", "" + webResourceError.getErrorCode());
                     logHashMap.put("description", "" + webResourceError.getDescription());
                     logHashMap.put("remoteip", "" + remoteip);
