@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.switchflow;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
@@ -192,6 +193,54 @@ public class SwitchFlowBll extends LiveBaseBll implements BaseLiveMediaControlle
         LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
         animationIn = ObjectAnimator.ofFloat(mPager.getRootView(), "translationX", liveVideoPoint.x4 - liveVideoPoint.x3, 0);
         animationOut = ObjectAnimator.ofFloat(mPager.getRootView(), "translationX", 0, liveVideoPoint.x4 - liveVideoPoint.x3);
+        animationIn.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                if (mPager.getRootView().getVisibility() != View.VISIBLE) {
+                    mPager.getRootView().setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        animationOut.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                if (mPager.getRootView().getVisibility() != View.GONE) {
+                    mPager.getRootView().setVisibility(View.GONE);
+                }
+
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+
         initListener();
     }
 
