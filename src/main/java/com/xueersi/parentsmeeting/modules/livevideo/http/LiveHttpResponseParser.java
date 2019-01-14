@@ -120,27 +120,29 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     public static ScienceStaticConfig parseScienceStaticConfig(JSONObject data) {
         ScienceStaticConfig scienceStaticConfig = null;
         if (data.has("science_static_config")) {
-            scienceStaticConfig = new ScienceStaticConfig();
-            HashMap<String, ScienceStaticConfig.Version> stringVersionHashMap = scienceStaticConfig.stringVersionHashMap;
             JSONObject science_static_config = data.optJSONObject("science_static_config");
-            Iterator<String> keys = science_static_config.keys();
-            if (keys.hasNext()) {
-                String key = keys.next();
-                ScienceStaticConfig.Version version = new ScienceStaticConfig.Version();
-                version.version = key;
-                try {
-                    JSONObject versionObj = science_static_config.getJSONObject(key);
-                    int canUseLocal = versionObj.getInt("canUseLocal");
-                    if (canUseLocal == 1) {
-                        version.url = versionObj.getString("url");
-                        version.templateURL = versionObj.getString("templateURL");
-                        version.tarballURL = versionObj.getString("tarballURL");
-                        version.assetsHash = versionObj.getString("assetsHash");
-                        version.templateForLocalURL = versionObj.getString("templateForLocalURL");
-                        stringVersionHashMap.put(key, version);
+            if (science_static_config != null) {
+                scienceStaticConfig = new ScienceStaticConfig();
+                HashMap<String, ScienceStaticConfig.Version> stringVersionHashMap = scienceStaticConfig.stringVersionHashMap;
+                Iterator<String> keys = science_static_config.keys();
+                if (keys.hasNext()) {
+                    String key = keys.next();
+                    ScienceStaticConfig.Version version = new ScienceStaticConfig.Version();
+                    version.version = key;
+                    try {
+                        JSONObject versionObj = science_static_config.getJSONObject(key);
+                        int canUseLocal = versionObj.getInt("canUseLocal");
+                        if (canUseLocal == 1) {
+                            version.url = versionObj.getString("url");
+                            version.templateURL = versionObj.getString("templateURL");
+                            version.tarballURL = versionObj.getString("tarballURL");
+                            version.assetsHash = versionObj.getString("assetsHash");
+                            version.templateForLocalURL = versionObj.getString("templateForLocalURL");
+                            stringVersionHashMap.put(key, version);
+                        }
+                    } catch (JSONException e) {
+                        MobAgent.httpResponseParserError(TAG, "parseScienceStaticConfig", e.getMessage());
                     }
-                } catch (JSONException e) {
-                    MobAgent.httpResponseParserError(TAG, "parseScienceStaticConfig", e.getMessage());
                 }
             }
         }
