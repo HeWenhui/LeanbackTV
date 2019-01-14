@@ -189,7 +189,8 @@ public class LiveVideoSAConfig {
         public String URL_TEMPK_TEAMENERGYNUMANDCONTRIBUTIONSTAR = HTTP_HOST + "/LiveCourse/teamEnergyNumAndContributionStar";
         /**战队PK 明星榜**/
         public String URL_TEMPK_GETSTARSTUDENTS = HTTP_HOST + "/LiveCourse/getStarStudents";
-
+        /**获取战队pk  进步榜*/
+        public String URL_TEMPK_GETPROGRESSSTU = HTTP_HOST + "/LiveCourse/getProgressStudents";
 
 
         /** 文科表扬榜 */

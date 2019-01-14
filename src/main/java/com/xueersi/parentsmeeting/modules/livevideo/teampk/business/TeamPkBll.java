@@ -30,6 +30,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentPkResultEntity
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAdversaryEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkStar;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkStuProgress;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.NativeVoteRusltulCloseEvent;
@@ -1188,5 +1189,47 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
             ((TeamPkStarsPager) mFocusPager).close();
         }
     }
+
+    /**
+     * 获取进步榜
+     */
+    private void getProgressStudent(){
+        mHttpManager.getTeamPkProgressStudent(mLiveBll.getLiveId(),
+                roomInitInfo.getStudentLiveInfo().getClassId(), new HttpCallBack() {
+
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                List<TeamPkStuProgress> data = mHttpResponseParser.parseTeamPkProgressStu(responseEntity);
+                if(data != null && data.size() > 0){
+                    showStuProgressList(data);
+                }
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                String errorMsg = responseEntity.getErrorMsg();
+                XESToastUtils.showToast(mActivity,TextUtils.isEmpty(errorMsg)?"明星榜数据获取失败":errorMsg);
+            }
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+                super.onFailure(call, e);
+                XESToastUtils.showToast(mActivity,"明星榜数据获取失败");
+            }
+        });
+    }
+
+    /**
+     * 显示进步榜
+     * @param data
+     */
+    private void showStuProgressList(List<TeamPkStuProgress> data) {
+        if (mFocusPager == null || !(mFocusPager instanceof TeamPkStarsPager)) {
+            TeamPkImprovePager startsPager = new TeamPkImprovePager(mActivity, data,TeamPkBll.this);
+            addPager(startsPager);
+        }
+    }
+
 
 }

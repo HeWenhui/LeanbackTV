@@ -1,23 +1,40 @@
 package com.xueersi.parentsmeeting.modules.livevideo.teampk.page;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
+import android.os.Build;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.AnimationUtils;
 import android.view.animation.GridLayoutAnimationController;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
+import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.framework.utils.SizeUtils;
+import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkStuProgress;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
+import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamMemberGridlayoutManager;
+
+import java.util.List;
 
 /**
  * 战队pk 二期 进步榜
@@ -33,11 +50,13 @@ public class TeamPkImprovePager extends BasePager {
     private RecyclerView recyclerView;
     private ImageView ivClostBtn;
     private int spanCount;
-    private StarsAdapter mAdapter;
+    private RankAdapter mAdapter;
+    private final List<TeamPkStuProgress> mData;
 
-    public TeamPkImprovePager(Context context, TeamPkBll teamPkBll) {
+    public TeamPkImprovePager(Context context, List<TeamPkStuProgress> data, TeamPkBll teamPkBll) {
         super(context);
         mPkBll = teamPkBll;
+        mData = data;
     }
 
 
@@ -54,20 +73,31 @@ public class TeamPkImprovePager extends BasePager {
                 close();
             }
         });
-
-        initRecycleView();
-
+        view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (mView.getMeasuredWidth() > 0) {
+                    showStuProgressList();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        mView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    } else {
+                        mView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
+                }
+            }
+        });
         return view;
     }
 
-    private void initRecycleView() {
+    private void showStuProgressList() {
         spanCount = 2;
+        bgMask.setVisibility(View.VISIBLE);
         recyclerView.setLayoutManager(new TeamMemberGridlayoutManager(mContext, 2,
                 LinearLayoutManager.VERTICAL, false));
         GridLayoutAnimationController animationController = (GridLayoutAnimationController)
                 AnimationUtils.loadLayoutAnimation(mContext, R.anim.anim_livevido_teampk_teammember_list);
         recyclerView.setLayoutAnimation(animationController);
-        mAdapter = new StarsAdapter();
+        mAdapter = new RankAdapter(mData);
         recyclerView.setAdapter(mAdapter);
         recyclerView.scheduleLayoutAnimation();
         recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
@@ -90,22 +120,57 @@ public class TeamPkImprovePager extends BasePager {
     static class StarItemHolder extends RecyclerView.ViewHolder {
         ImageView ivHead;
         ImageView ivStarIcon;
-        TextView  tvName;
-        TextView  tvEnergy;
-        TextView  tvTeamName;
+        TextView tvName;
+        TextView tvProgressScope;
+        TextView tvTeamName;
 
         public StarItemHolder(View itemView) {
             super(itemView);
             ivHead = itemView.findViewById(R.id.iv_teampk_stars_head);
             ivStarIcon = itemView.findViewById(R.id.iv_teampk_stars_super_star);
             tvName = itemView.findViewById(R.id.tv_teampk_stars_name);
-            tvEnergy = itemView.findViewById(R.id.tv_teampk_stars_energy);
+            tvProgressScope = itemView.findViewById(R.id.tv_teampk_stars_energy);
             tvTeamName = itemView.findViewById(R.id.tv_teampk_stars_teamname);
         }
+
+        public void bindData(TeamPkStuProgress data, int postion) {
+            ivStarIcon.setVisibility(postion <= 4 ? View.VISIBLE : View.INVISIBLE);
+            tvName.setText(data.getName());
+            tvTeamName.setText(data.getTeamName());
+            tvProgressScope.setText("排名+" + data.getProgressScope());
+            ImageLoader.with(BaseApplication.getContext()).load(data.getAvatarPath())
+                    .asBitmap(new SingleConfig.BitmapListener() {
+                        @Override
+                        public void onSuccess(Drawable drawable) {
+                            Bitmap resultBitmap = null;
+                            if (drawable instanceof BitmapDrawable) {
+                                resultBitmap = ((BitmapDrawable) drawable).getBitmap();
+                            } else if (drawable instanceof GifDrawable) {
+                                resultBitmap = ((GifDrawable) drawable).getFirstFrame();
+                            }
+                            if (resultBitmap != null) {
+                                Bitmap circleBitmap = scaleBitmap(resultBitmap, Math.min(resultBitmap.getWidth(),
+                                        resultBitmap.getHeight()) / 2);
+                                ivHead.setImageBitmap(circleBitmap);
+                            }
+                        }
+
+                        @Override
+                        public void onFail() {
+                        }
+                    });
+        }
+
     }
 
 
-    static class StarsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    static class RankAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+        private List<TeamPkStuProgress> mData;
+
+        RankAdapter(List<TeamPkStuProgress> data) {
+            mData = data;
+        }
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -120,7 +185,7 @@ public class TeamPkImprovePager extends BasePager {
 
         @Override
         public int getItemCount() {
-            return 100;
+            return mData == null ? 0 : mData.size();
         }
     }
 
@@ -130,12 +195,86 @@ public class TeamPkImprovePager extends BasePager {
 
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        pauseMusic();
+    }
+    int[] soundResArray = {
+            R.raw.war_bg
+    };
+    private SoundPoolHelper soundPoolHelper;
+    /**
+     * 暂停音效
+     * 注 此处的暂停  只是将音量设置为0  （因为 动画和音效是 同步的）
+     */
+    private void pauseMusic() {
+        if (soundPoolHelper != null) {
+            for (int i = 0; i < soundResArray.length; i++) {
+                soundPoolHelper.setVolume(soundResArray[i], 0);
+            }
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        resumeMusic();
+    }
+
+    /**
+     * 默认背景音效大小
+     */
+    private static final float DEFAULT_BG_VOLUME = 0.4f;
+    /**
+     * 默认前景音效大小
+     */
+    private static final float DEFAULT_FRONT_VOLUME = 0.6f;
+    /**
+     * 恢复音乐播放
+     * 注释  将音量恢复为暂停之前的状态
+     */
+    private void resumeMusic() {
+        if (soundPoolHelper != null) {
+            for (int i = 0; i < soundResArray.length; i++) {
+                if (soundResArray[i] == R.raw.war_bg) {
+                    soundPoolHelper.setVolume(soundResArray[i], DEFAULT_BG_VOLUME);
+                } else {
+                    soundPoolHelper.setVolume(soundResArray[i], DEFAULT_FRONT_VOLUME);
+                }
+            }
+        }
+    }
+
+    /**
+     * @param resId
+     * @param volume
+     * @param loop
+     */
+    private void playMusic(int resId, final float volume, final boolean loop) {
+        if (soundPoolHelper == null) {
+            soundPoolHelper = new SoundPoolHelper(mContext, 2, AudioManager.STREAM_MUSIC);
+        }
+        soundPoolHelper.playMusic(resId, volume, loop);
+    }
+
+    private void releaseRes() {
+        if (soundPoolHelper != null) {
+            soundPoolHelper.release();
+        }
+    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        releaseRes();
+    }
+
     public void close() {
         try {
             mView.post(new Runnable() {
                 @Override
                 public void run() {
-                    releaseSoundRes();
+                    releaseRes();
                     mPkBll.closeCurrentPager();
                 }
             });
@@ -144,9 +283,19 @@ public class TeamPkImprovePager extends BasePager {
         }
     }
 
-    private void releaseSoundRes() {
-        // TODO: 2019/1/14  释放音乐资源
 
+    public static Bitmap scaleBitmap(Bitmap input, int radius) {
+        Bitmap result = Bitmap.createBitmap(radius * 2, radius * 2, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(result);
+        Rect src = new Rect(0, 0, input.getWidth(), input.getHeight());
+        Rect dst = new Rect(0, 0, radius * 2, radius * 2);
+        Path path = new Path();
+        path.addCircle(radius, radius, radius, Path.Direction.CCW);
+        canvas.clipPath(path);
+        Paint paint = new Paint();
+        paint.setFlags(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+        canvas.drawBitmap(input, src, dst, paint);
+        return result;
     }
 
 }

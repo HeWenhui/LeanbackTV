@@ -1841,5 +1841,19 @@ public class LiveHttpManager extends BaseHttpBusiness {
     }
 
 
+    /**
+     * 小理战队PK 二期 获取明星榜
+     * @param liveId
+     * @param classId
+     * @param requestCallBack
+     */
+    public void getTeamPkProgressStudent(String liveId,String classId, HttpCallBack requestCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("liveId", liveId);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_TEMPK_GETPROGRESSSTU, params, requestCallBack);
+    }
+
 }
 
