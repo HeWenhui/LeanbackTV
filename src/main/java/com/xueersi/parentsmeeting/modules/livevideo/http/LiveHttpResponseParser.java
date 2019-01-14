@@ -396,12 +396,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             if (data.has("skeyPlayT")) {
                 getInfo.setSkeyPlayT(data.getString("skeyPlayT"));
             } else {
-                MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo", "skeyPlayT=null");
+//                MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo", "skeyPlayT=null");
             }
             if (data.has("skeyPlayF")) {
                 getInfo.setSkeyPlayF(data.getString("skeyPlayF"));
             } else {
-                MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo", "skeyPlayF=null");
+//                MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo", "skeyPlayF=null");
             }
             getInfo.setSpeechEvalUrl(data.optString("speechEvalUrl", "https://live.xueersi.com/Live/speechEval/"));
             getInfo.setUrlClick(data.optInt("urlClick", 0));
