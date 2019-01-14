@@ -1824,5 +1824,22 @@ public class LiveHttpManager extends BaseHttpBusiness {
         HttpRequestParams params = new HttpRequestParams();
         sendPost(liveVideoSAConfigInner.URL_LIVE_SCIENCE_GET_EVALUATE_OPTION, params, requestCallBack);
     }
+
+
+    /**
+     * 小理战队PK 二期 获取明星榜
+     * @param liveId
+     * @param classId
+     * @param requestCallBack
+     */
+    public void getTeamPkStarStudents(String liveId,String classId, HttpCallBack requestCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("liveId", liveId);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_TEMPK_GETSTARSTUDENTS, params, requestCallBack);
+    }
+
+
 }
 

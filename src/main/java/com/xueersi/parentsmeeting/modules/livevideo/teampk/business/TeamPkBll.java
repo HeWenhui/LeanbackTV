@@ -1,9 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.teampk.business;
 
 import android.app.Activity;
-import android.graphics.Rect;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -12,7 +12,7 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -29,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentCoinAndTotalEn
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentPkResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAdversaryEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkStar;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.NativeVoteRusltulCloseEvent;
@@ -38,7 +39,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.redpackage.entity.RedPackage
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkAqResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkAwardPager;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkImprovePager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkResultPager;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkStarsPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkTeamSelectPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkTeamSelectingPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
@@ -984,7 +987,8 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
             XESCODE.TEAM_PK_PUBLIC_PK_RESULT,
             XESCODE.TEAM_PK_PUBLIC_CONTRIBUTION_STAR,
             XESCODE.TEAM_PK_EXIT_PK_RESULT,
-            XESCODE.MULTIPLE_H5_COURSEWARE
+            XESCODE.MULTIPLE_H5_COURSEWARE,
+            130
     };
 
 
@@ -1051,10 +1055,20 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
 
                     closeCurrentPkResult();
                     break;
-
+                case 130:
+                    String strCmd = data.optString("msg");
+                    if ("1".equals(strCmd)) {
+                        //startSelectAdversary();
+                        //showClassChest();
+                        Log.e("TeamPkBll","=====>showStarts:0000");
+                        getStusStars();
+                    } else if ("0".equals(strCmd)) {
+                        // stopSelectAdversary();
+                        closeStarts();
+                    }
+                    break;
                 default:
                     break;
-
             }
         }
     }
@@ -1127,4 +1141,52 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
     public boolean isAIPartner() {
         return isAIPartner;
     }
+
+
+    /**
+     * 展示明星榜
+     */
+    private void getStusStars() {
+        mHttpManager.getTeamPkStarStudents(mLiveBll.getLiveId(), roomInitInfo.getStudentLiveInfo().getClassId(), new HttpCallBack() {
+
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+               List<TeamPkStar> data = mHttpResponseParser.parseTeamPkStar(responseEntity);
+               if(data != null && data.size() > 0){
+                   showStars(data);
+               }
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                String errorMsg = responseEntity.getErrorMsg();
+                XESToastUtils.showToast(mActivity,TextUtils.isEmpty(errorMsg)?"明星榜数据获取失败":errorMsg);
+            }
+
+            @Override
+            public void onFailure(Call call, IOException e) {
+                super.onFailure(call, e);
+                XESToastUtils.showToast(mActivity,"明星榜数据获取失败");
+            }
+        });
+
+    }
+
+    private void showStars(List<TeamPkStar> data) {
+        if (mFocusPager == null || !(mFocusPager instanceof TeamPkStarsPager)) {
+             TeamPkStarsPager startsPager = new TeamPkStarsPager(mActivity, data,TeamPkBll.this);
+            addPager(startsPager);
+        }
+    }
+
+    /**
+     * 关闭明星榜
+     */
+    private void closeStarts() {
+        if (mFocusPager != null && mFocusPager instanceof TeamPkStarsPager) {
+            ((TeamPkStarsPager) mFocusPager).close();
+        }
+    }
+
 }

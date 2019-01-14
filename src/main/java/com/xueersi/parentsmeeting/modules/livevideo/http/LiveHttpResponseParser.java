@@ -45,6 +45,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAdversaryEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkStar;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpProbabilityEntity;
@@ -102,15 +103,14 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         if (getInfo.getAllowLinkMicNew() == 1) {
             getInfo.setAllowLinkMic(false);
         }
-        if (data.has("ePlanInfo")){
+        if (data.has("ePlanInfo")) {
             try {
                 JSONObject ePlanInfo = data.getJSONObject("ePlanInfo");
                 getInfo.ePlanInfo = new LiveGetInfo.EPlanInfoBean();
                 getInfo.ePlanInfo.ePlanId = ePlanInfo.optString("ePlanId");
                 getInfo.ePlanInfo.eTeacherId = ePlanInfo.optString("eTeacherId");
                 getInfo.ePlanInfo.eClassId = ePlanInfo.optString("eClassId");
-            }
-            catch (JSONException e) {
+            } catch (JSONException e) {
                 MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo.ePlanInfo", e.getMessage());
             }
         }
@@ -1909,5 +1909,39 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
         }
         return classmateEntities;
+    }
+
+    /**
+     * 解析战队pk 明星榜
+     *
+     * @param responseEntity
+     * @return
+     */
+    public List<TeamPkStar> parseTeamPkStar(ResponseEntity responseEntity) {
+        List<TeamPkStar> resultList = null;
+        try {
+            JSONObject data = (JSONObject) responseEntity.getJsonObject();
+            if (data.has("starStudent")) {
+                resultList = new ArrayList<TeamPkStar>();
+                JSONArray jsonArray = data.optJSONArray("starStudent");
+                if (jsonArray != null && jsonArray.length() > 0) {
+                    JSONObject jsonObject = null;
+                    TeamPkStar star = null;
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        jsonObject = (JSONObject) jsonArray.get(i);
+                        star = new TeamPkStar();
+                        star.setAvatarPath(jsonObject.optString("avatarPath"));
+                        star.setEnergy(jsonObject.optString("energy"));
+                        star.setName(jsonObject.optString("name"));
+                        star.setTeamName(jsonObject.optString("teamName"));
+                        star.setStuId(jsonObject.optString("stuId"));
+                        resultList.add(star);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resultList;
     }
 }
