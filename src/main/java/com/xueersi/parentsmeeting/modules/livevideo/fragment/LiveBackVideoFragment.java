@@ -431,10 +431,12 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         pauseNotStopVideoIml = new PauseNotStopVideoIml(activity, onPauseNotStopVideo);
         addBusiness(activity);
         liveBackBll.onCreate();
+        long before = System.currentTimeMillis();
         List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
         for (LiveBackBaseBll businessBll : businessBlls) {
             businessBll.initViewF(rlQuestionContentBottom, rlQuestionContent, mIsLand);
         }
+        logger.d("initBusiness:initViewF:time=" + (System.currentTimeMillis() - before));
     }
 
     protected void initLiveRemarkBll() {
