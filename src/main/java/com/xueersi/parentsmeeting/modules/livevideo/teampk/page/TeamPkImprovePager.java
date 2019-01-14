@@ -43,7 +43,7 @@ public class TeamPkImprovePager extends BasePager {
 
     @Override
     public View initView() {
-        View view = View.inflate(mContext, R.layout.page_livevideo_teampk_stars, null);
+        View view = View.inflate(mContext, R.layout.page_livevideo_teampk_improve, null);
         bgMask = view.findViewById(R.id.iv_teampk_bg_mask);
         animationView = view.findViewById(R.id.lav_teampk_starts);
         recyclerView = view.findViewById(R.id.rcl_teampk_starts_list);
