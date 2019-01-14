@@ -988,18 +988,14 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
             XESCODE.TEAM_PK_PUBLIC_PK_RESULT,
             XESCODE.TEAM_PK_PUBLIC_CONTRIBUTION_STAR,
             XESCODE.TEAM_PK_EXIT_PK_RESULT,
-            XESCODE.MULTIPLE_H5_COURSEWARE,
-            130
+            XESCODE.MULTIPLE_H5_COURSEWARE
     };
 
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
-
-        logger.e("=======>onNotice :" + type);
-
+        logger.e("=======>onNotice :" + type+":"+data);
         if (isAvailable) {
-
             String nonce = "";
             String open = "";
             switch (type) {
@@ -1056,18 +1052,18 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
 
                     closeCurrentPkResult();
                     break;
-                case 130:
+             /*   case 130:
                     String strCmd = data.optString("msg");
                     if ("1".equals(strCmd)) {
                         //startSelectAdversary();
                         //showClassChest();
-                        Log.e("TeamPkBll","=====>showStarts:0000");
+                        Log.e("TeamPkBll", "=====>showStarts:0000");
                         getStusStars();
                     } else if ("0".equals(strCmd)) {
                         // stopSelectAdversary();
                         closeStarts();
                     }
-                    break;
+                    break;*/
                 default:
                     break;
             }
@@ -1148,27 +1144,28 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      * 展示明星榜
      */
     private void getStusStars() {
-        mHttpManager.getTeamPkStarStudents(mLiveBll.getLiveId(), roomInitInfo.getStudentLiveInfo().getClassId(), new HttpCallBack() {
+        mHttpManager.getTeamPkStarStudents(mLiveBll.getLiveId(), roomInitInfo.getStudentLiveInfo().getClassId(), new
+                HttpCallBack() {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-               List<TeamPkStar> data = mHttpResponseParser.parseTeamPkStar(responseEntity);
-               if(data != null && data.size() > 0){
-                   showStars(data);
-               }
+                List<TeamPkStar> data = mHttpResponseParser.parseTeamPkStar(responseEntity);
+                if (data != null && data.size() > 0) {
+                    showStars(data);
+                }
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
                 String errorMsg = responseEntity.getErrorMsg();
-                XESToastUtils.showToast(mActivity,TextUtils.isEmpty(errorMsg)?"明星榜数据获取失败":errorMsg);
+                XESToastUtils.showToast(mActivity, TextUtils.isEmpty(errorMsg) ? "明星榜数据获取失败" : errorMsg);
             }
 
             @Override
             public void onFailure(Call call, IOException e) {
                 super.onFailure(call, e);
-                XESToastUtils.showToast(mActivity,"明星榜数据获取失败");
+                XESToastUtils.showToast(mActivity, "明星榜数据获取失败");
             }
         });
 
@@ -1176,7 +1173,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
 
     private void showStars(List<TeamPkStar> data) {
         if (mFocusPager == null || !(mFocusPager instanceof TeamPkStarsPager)) {
-             TeamPkStarsPager startsPager = new TeamPkStarsPager(mActivity, data,TeamPkBll.this);
+            TeamPkStarsPager startsPager = new TeamPkStarsPager(mActivity, data, TeamPkBll.this);
             addPager(startsPager);
         }
     }
@@ -1193,43 +1190,54 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
     /**
      * 获取进步榜
      */
-    private void getProgressStudent(){
+    private void getProgressStudent() {
         mHttpManager.getTeamPkProgressStudent(mLiveBll.getLiveId(),
                 roomInitInfo.getStudentLiveInfo().getClassId(), new HttpCallBack() {
 
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                List<TeamPkStuProgress> data = mHttpResponseParser.parseTeamPkProgressStu(responseEntity);
-                if(data != null && data.size() > 0){
-                    showStuProgressList(data);
-                }
-            }
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                        List<TeamPkStuProgress> data = mHttpResponseParser.parseTeamPkProgressStu(responseEntity);
+                        if (data != null && data.size() > 0) {
+                            showStuProgressList(data);
+                        }
+                    }
 
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                super.onPmError(responseEntity);
-                String errorMsg = responseEntity.getErrorMsg();
-                XESToastUtils.showToast(mActivity,TextUtils.isEmpty(errorMsg)?"明星榜数据获取失败":errorMsg);
-            }
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        super.onPmError(responseEntity);
+                        String errorMsg = responseEntity.getErrorMsg();
+                        XESToastUtils.showToast(mActivity, TextUtils.isEmpty(errorMsg) ? "进步榜数据获取失败" : errorMsg);
+                    }
 
-            @Override
-            public void onFailure(Call call, IOException e) {
-                super.onFailure(call, e);
-                XESToastUtils.showToast(mActivity,"明星榜数据获取失败");
-            }
-        });
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        super.onPmFailure(error, msg);
+                        XESToastUtils.showToast(mActivity, TextUtils.isEmpty(msg) ? "进步榜数据获取失败" : msg);
+                    }
+
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        super.onFailure(call, e);
+                        XESToastUtils.showToast(mActivity, "进步榜数据获取失败");
+                    }
+                });
     }
 
     /**
      * 显示进步榜
+     *
      * @param data
      */
     private void showStuProgressList(List<TeamPkStuProgress> data) {
-        if (mFocusPager == null || !(mFocusPager instanceof TeamPkStarsPager)) {
-            TeamPkImprovePager startsPager = new TeamPkImprovePager(mActivity, data,TeamPkBll.this);
+        if (mFocusPager == null || !(mFocusPager instanceof TeamPkImprovePager)) {
+            TeamPkImprovePager startsPager = new TeamPkImprovePager(mActivity, data, TeamPkBll.this);
             addPager(startsPager);
         }
     }
 
-
+    private void closeStuProgressList() {
+        if (mFocusPager != null && mFocusPager instanceof TeamPkImprovePager) {
+            ((TeamPkImprovePager) mFocusPager).close();
+        }
+    }
 }
