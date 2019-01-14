@@ -4,6 +4,9 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
@@ -12,8 +15,9 @@ import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 
-public class SmallEnglishRedPackagePager extends BasePager {
+public class SmallEnglishRedPackagePager extends BasePager implements Handler.Callback {
     //待领取红包的布局
     private RelativeLayout rlArtsUnopenRed;
     //已经领取的红包的布局
@@ -37,6 +41,10 @@ public class SmallEnglishRedPackagePager extends BasePager {
     //控制登录使用动画
     //rl_livevideo_small_english_redpackage_open_animotion
     private RelativeLayout openRedPackageAnimotion;
+
+//    private Handler mHandler = new Handler(Looper.getMainLooper());
+
+    private WeakHandler mVPlayVideoControlHandler = new WeakHandler(Looper.getMainLooper(), this);
 
     public SmallEnglishRedPackagePager(Context context) {
         super(context);
@@ -123,8 +131,8 @@ public class SmallEnglishRedPackagePager extends BasePager {
         rlArtsOpenRed.setVisibility(View.VISIBLE);
         tvArtsOpenRedMoney.setText("+" + goldNum);
         if (mView != null) {
-            mView.getHandler().removeCallbacks(closeRunnable);
-            mView.getHandler().postDelayed(closeRunnable, 3000);
+            mVPlayVideoControlHandler.removeCallbacks(closeRunnable);
+            mVPlayVideoControlHandler.postDelayed(closeRunnable, 3000);
         }
         isRepeat = true;
         rlArtsOpenRed.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -137,7 +145,6 @@ public class SmallEnglishRedPackagePager extends BasePager {
                 }
             }
         });
-
     }
 
     Runnable closeRunnable = new Runnable() {
@@ -163,6 +170,11 @@ public class SmallEnglishRedPackagePager extends BasePager {
             animatorSet.setDuration(500);
             animatorSet.start();
         }
+    }
+
+    @Override
+    public boolean handleMessage(Message msg) {
+        return false;
     }
 
     public interface RedPackageOpenListenr {
