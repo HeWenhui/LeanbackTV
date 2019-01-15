@@ -124,7 +124,6 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_toRightOf="@id/iv_experience_guide_courseware"
-            android:gravity="center_vertical"
             android:orientation="vertical"
             android:visibility="gone">
 
@@ -132,6 +131,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="6dp"
+                android:layout_marginTop="65dp"
                 android:src="@drawable/experience_guide_courseware_arrows" />
 
             <TextView
@@ -180,6 +180,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_marginTop="10dp"
+                android:layout_marginRight="8dp"
                 android:src="@drawable/experience_guide_introduce_message_arrows"
                 android:visibility="gone" />
 
@@ -188,6 +189,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
+                android:layout_marginRight="8dp"
                 android:src="@drawable/experience_guide_introduce_teacher_arrows"
                 android:visibility="visible" />
 
@@ -197,7 +199,7 @@
                 android:layout_below="@+id/iv_experience_guide_teacher_arrows"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="62dp"
+                android:layout_marginRight="70dp"
                 android:orientation="vertical">
 
                 <TextView
@@ -248,7 +250,7 @@
                 android:layout_width="344dp"
                 android:layout_height="190dp"
                 android:layout_centerInParent="true"
-                android:background="@drawable/shape_corners_5dp_ffffff"></View>
+                android:background="@drawable/shape_corners_5dp_8ea6eb"></View>
 
             <RelativeLayout
                 android:layout_width="344dp"
@@ -257,7 +259,7 @@
                 android:layout_alignRight="@id/v_experience_guide_view_question"
                 android:layout_marginTop="6dp"
                 android:layout_marginRight="5dp"
-                android:background="@drawable/shape_corners_5dp_ffffff">
+                android:background="@drawable/shape_corners_5dp_8ea6eb">
 
                 <TextView
                     android:id="@+id/tv_experience_guide_question_title"
@@ -484,7 +486,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignLeft="@id/vwv_experience_guide_wave"
                 android:layout_alignBottom="@id/vwv_experience_guide_wave"
-                android:layout_marginRight="4dp"
+                android:layout_marginLeft="-5dp"
                 android:src="@drawable/experience_guide_voicechate_arrows"
                 android:visibility="gone"/>
         </RelativeLayout>
@@ -528,7 +530,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="14"
-                    android:background="@drawable/shape_corners_5dp_ffffff"
+                    android:background="@drawable/shape_corners_5dp_8ea6eb"
                     android:gravity="center"
                     android:lineSpacingMultiplier="2"
                     android:singleLine="false"
@@ -545,7 +547,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="14"
-                    android:background="@drawable/shape_corners_5dp_ffffff"
+                    android:background="@drawable/shape_corners_5dp_8ea6eb"
                     android:gravity="center"
                     android:lineSpacingMultiplier="2"
                     android:singleLine="false" />
@@ -632,7 +634,7 @@
     <RelativeLayout
         android:id="@+id/rl_experience_guide_step4"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:layout_alignParentBottom="true"
         android:visibility="gone">
 
@@ -640,15 +642,20 @@
             android:id="@+id/btn_experience_guide_message_open"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
             android:layout_marginLeft="38dp"
             android:layout_marginBottom="39dp"
+            android:paddingTop="10dp"
             android:background="@drawable/bg_livevideo_message_open" />
 
         <Button
             android:id="@+id/btn_experience_guide_message_common"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="39dp"
             android:layout_marginLeft="29dp"
+            android:paddingTop="10dp"
             android:layout_toRightOf="@id/btn_experience_guide_message_open"
             android:background="@drawable/bg_livevideo_message_common" />
 
@@ -656,6 +663,7 @@
             android:id="@+id/iv_experience_guide_chick"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:layout_marginLeft="52dp"
             android:layout_marginBottom="5dp"
             android:src="@drawable/experience_guide_lead_hand_img_nor" />

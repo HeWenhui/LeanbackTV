@@ -160,7 +160,7 @@ public class ExperienceGuidePager extends LiveBasePager {
     private final static int VOLUME_WAVE_COUNTDOWN_TIME = 8000;
     private final static int VOLUME_WAVE_COUNTDOWN_INTERVAL = 100;
     private final static int VOLUME_WAVE_COUNTDOWN_UNTILFINISHED_UP = 5000;
-    private final static int VOLUME_WAVE_COUNTDOWN_UNTILFINISHED_DOWN = 5000;
+    private final static int VOLUME_WAVE_COUNTDOWN_UNTILFINISHED_DOWN = 1000;
 
     private final static int QUIT_COUNTDOWN_MILLISECOND = 1000;
     private final static int QUIT_COUNTDOWN_INTERVAL = 500;
@@ -853,10 +853,4 @@ public class ExperienceGuidePager extends LiveBasePager {
         alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(mContext, R.anim.anim_experience_guide_alpha);
         scalAnimation = AnimationUtils.loadAnimation(mContext, R.anim.anim_experience_guide_hand);
     }
-
-    public void setSubjeceId(String subjeceId) {
-        this.subject = subjeceId;
-    }
-
-
 }
