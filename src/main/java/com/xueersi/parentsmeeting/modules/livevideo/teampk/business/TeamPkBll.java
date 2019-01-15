@@ -988,7 +988,8 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
             XESCODE.TEAM_PK_PUBLIC_PK_RESULT,
             XESCODE.TEAM_PK_PUBLIC_CONTRIBUTION_STAR,
             XESCODE.TEAM_PK_EXIT_PK_RESULT,
-            XESCODE.MULTIPLE_H5_COURSEWARE
+            XESCODE.MULTIPLE_H5_COURSEWARE,
+            130
     };
 
 
@@ -1052,16 +1053,17 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
 
                     closeCurrentPkResult();
                     break;
-             /*   case 130:
+               /* case 130:
                     String strCmd = data.optString("msg");
                     if ("1".equals(strCmd)) {
                         //startSelectAdversary();
                         //showClassChest();
-                        Log.e("TeamPkBll", "=====>showStarts:0000");
-                        getStusStars();
+                        //getStusStars();
+                        getProgressStudent();
                     } else if ("0".equals(strCmd)) {
-                        // stopSelectAdversary();
-                        closeStarts();
+                        //stopSelectAdversary();
+                        //closeStarts();
+                        closeStuProgressList();
                     }
                     break;*/
                 default:
@@ -1206,13 +1208,13 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                     public void onPmError(ResponseEntity responseEntity) {
                         super.onPmError(responseEntity);
                         String errorMsg = responseEntity.getErrorMsg();
-                        XESToastUtils.showToast(mActivity, TextUtils.isEmpty(errorMsg) ? "进步榜数据获取失败" : errorMsg);
+                        XESToastUtils.showToast(mActivity, TextUtils.isEmpty(errorMsg) ? "黑马榜数据获取失败" : errorMsg);
                     }
 
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
                         super.onPmFailure(error, msg);
-                        XESToastUtils.showToast(mActivity, TextUtils.isEmpty(msg) ? "进步榜数据获取失败" : msg);
+                        XESToastUtils.showToast(mActivity, TextUtils.isEmpty(msg) ? "黑马榜数据获取失败" : msg);
                     }
 
                     @Override

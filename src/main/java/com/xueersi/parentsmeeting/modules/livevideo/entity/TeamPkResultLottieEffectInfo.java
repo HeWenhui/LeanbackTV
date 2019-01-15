@@ -252,8 +252,6 @@ public class TeamPkResultLottieEffectInfo extends LottieEffectInfo {
             stringList.add(line_2);
         }
         int size = height / stringList.size();
-        //paint.setTextSize(size);
-      //  Log.e(TAG, "====>setTextSize:" + size + ":" + stringList.size() + ":" + height);
         resultBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Rect drawRect = null;
         Canvas canvas = new Canvas(resultBitmap);
