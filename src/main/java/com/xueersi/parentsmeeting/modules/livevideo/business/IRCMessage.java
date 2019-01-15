@@ -249,6 +249,12 @@ public class IRCMessage {
                 if (mIRCCallback != null) {
                     mIRCCallback.onStartConnect();
                 }
+            } else if (PMDefs.ResultCode.Result_AccessServerError == netStatusResp.netStatus){
+                mDisconnectCount++;
+                mLogtf.d("onDisconnect:count=" + mDisconnectCount + ",isQuitting=" + false);
+                if (mIRCCallback != null) {
+                    mIRCCallback.onDisconnect(null, false);
+                }
             }
         }
     };
