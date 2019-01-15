@@ -53,11 +53,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.view.CustomUnScorllListView;
-import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 import com.xueersi.ui.widget.CircleImageView;
-
+import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
@@ -411,8 +410,8 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
 
         rlDZBubbleMessage = view.findViewById(R.id.rl_live_roleplayer_dz_message_bubble_main);
         int colors[] = {0x1936BC9B, 0x3236BC9B, 0x6436BC9B, 0x9636BC9B, 0xFF36BC9B};
-        vwvSpeechVolume.setColors(colors);
-        vwvSpeechVolume.setBackColor(Color.TRANSPARENT);
+        //vwvSpeechVolume.setColors(colors);
+        //vwvSpeechVolume.setBackColor(Color.TRANSPARENT);
         rlResult = view.findViewById(R.id.rl_live_roleplayer_result_main);
 
         iv_live_roleplayer_title = view.findViewById(R.id.iv_live_roleplayer_title);

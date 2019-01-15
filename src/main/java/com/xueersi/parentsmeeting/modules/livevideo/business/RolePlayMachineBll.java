@@ -253,11 +253,15 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                             mRolePlayerEntity = mRolePlayerHttpResponseParser.parserNewRolePlayGroupAndTestInfos(responseEntity);
                             if (responseEntity != null && responseEntity.getJsonObject() != null) {
                                 logger.i("新课件平台人机分组和试题 服务器试题信息返回 " + responseEntity.getJsonObject().toString());
-                                logger.i("服务器试题信息返回以后，解析到的角色对话长度 mRolePlayerEntity" +
-                                        ".getLstRolePlayerMessage()" +
-                                        ".size() = " + mRolePlayerEntity.getLstRolePlayerMessage().size() + "/ " +
-                                        mRolePlayerEntity.toString());
+                               if(mRolePlayerEntity != null){
+                                   logger.i("服务器试题信息返回以后，解析到的角色对话长度 mRolePlayerEntity" +
+                                           ".getLstRolePlayerMessage()" +
+                                           ".size() = " + mRolePlayerEntity.getLstRolePlayerMessage().size() + "/ " +
+                                           mRolePlayerEntity.toString());
+                               }
+
                             }
+                            logger.i("onPmSuccess" + mRolePlayerEntity+":"+responseEntity);
                         }
 
                         @Override
