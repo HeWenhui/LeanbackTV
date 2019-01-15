@@ -633,7 +633,6 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     /**
      * 创建互动题作答，抢红包结果提示PopupWindow
      */
-    @Override
     public void initQuestionAnswerReslut(final View popupWindow_view, boolean autodisMiss) {
         logger.d("initQuestionAnswerReslut");
         popupWindow_view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
