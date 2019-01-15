@@ -768,9 +768,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         logger.i("onEvent:netWorkType=" + event.netWorkType);
         mNetWorkType = event.netWorkType;
 
-        if (mIRCMessage != null) {
-            mIRCMessage.onNetWorkChange(mNetWorkType);
-        }
+//        if (mIRCMessage != null) {
+//            mIRCMessage.onNetWorkChange(mNetWorkType);
+//        }
     }
 
 
