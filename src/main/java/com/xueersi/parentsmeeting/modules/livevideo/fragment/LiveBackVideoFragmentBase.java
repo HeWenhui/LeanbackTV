@@ -75,7 +75,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
     protected int mLayoutBackgroundRefresh = R.layout.layout_video_resfresh;
     protected LiveBackPlayerFragment liveBackPlayVideoFragment;
     /** 所在的Activity是否已经onCreated */
-    private boolean mCreated = false;
+    protected boolean mCreated = false;
     /** 视频的名称，用于显示在播放器上面的信息栏 */
     protected String mDisplayName;
     /** 是否从头开始播放 */

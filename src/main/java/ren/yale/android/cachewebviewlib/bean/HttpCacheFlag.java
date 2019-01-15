@@ -23,6 +23,7 @@ public class HttpCacheFlag {
 
     private String encode="UTF-8";
 
+    @Deprecated
     public String getEncode() {
         return encode;
     }

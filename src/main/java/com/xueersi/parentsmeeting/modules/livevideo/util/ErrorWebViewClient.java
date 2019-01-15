@@ -34,49 +34,49 @@ public class ErrorWebViewClient extends WebViewClient {
 
     @Override
     public void onReceivedError(final WebView webView, final WebResourceRequest webResourceRequest, final WebResourceError webResourceError) {
-        if (!webResourceRequest.isForMainFrame()) {
-            liveThreadPoolExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    String url = webResourceRequest.getUrl().toString();
-                    int index = url.indexOf("?");
-                    if (index != -1) {
-                        url = url.substring(0, index);
-                    }
-                    String remoteip = "";
-                    try {
-                        synchronized (urlAndIp) {
-                            remoteip = urlAndIp.get(url);
-                        }
-                        if (StringUtils.isEmpty(remoteip)) {
-                            URL url2 = new URL(url);
-                            InetAddress inetAddress = InetAddress.getByName(url2.getHost());
-                            remoteip = inetAddress.getHostAddress();
-                            synchronized (urlAndIp) {
-                                urlAndIp.put(url, remoteip);
-                            }
-                            logger.d("onReceivedError:host=" + url2 + ",ip=" + remoteip);
-                        }
-                    } catch (UnknownHostException e) {
-                        remoteip = "unknown";
-                        e.printStackTrace();
-                    } catch (Exception e) {
-                        remoteip = "" + e;
-                        e.printStackTrace();
-                    }
-                    StableLogHashMap logHashMap = new StableLogHashMap();
-                    logHashMap.put("tag", TAG);
-                    logHashMap.put("url", url);
-                    logHashMap.put("errorcode", "" + webResourceError.getErrorCode());
-                    logHashMap.put("description", "" + webResourceError.getDescription());
-                    logHashMap.put("remoteip", "" + remoteip);
-                    logHashMap.put("userip", "" + IpAddressUtil.USER_IP);
-                    logHashMap.put("operator", "" + IpAddressUtil.USER_OPERATE);
-//                    Loger.d(webView.getContext(), LiveVideoConfig.LIVE_WEBVIEW_ERROR, logHashMap.getData(), true);
-                    UmsAgentManager.umsAgentDebug(webView.getContext(), LiveVideoConfig.LIVE_WEBVIEW_ERROR, logHashMap.getData());
+        liveThreadPoolExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                String url = webResourceRequest.getUrl().toString();
+                int index = url.indexOf("?");
+                if (index != -1) {
+                    url = url.substring(0, index);
                 }
-            });
-        }
+                String remoteip = "";
+                try {
+                    synchronized (urlAndIp) {
+                        remoteip = urlAndIp.get(url);
+                    }
+                    if (StringUtils.isEmpty(remoteip)) {
+                        URL url2 = new URL(url);
+                        InetAddress inetAddress = InetAddress.getByName(url2.getHost());
+                        remoteip = inetAddress.getHostAddress();
+                        synchronized (urlAndIp) {
+                            urlAndIp.put(url, remoteip);
+                        }
+                        logger.d("onReceivedError:host=" + url2 + ",ip=" + remoteip);
+                    }
+                } catch (UnknownHostException e) {
+                    remoteip = "unknown";
+                    e.printStackTrace();
+                } catch (Exception e) {
+                    remoteip = "" + e;
+                    e.printStackTrace();
+                }
+                StableLogHashMap logHashMap = new StableLogHashMap();
+                logHashMap.put("tag", TAG);
+                logHashMap.put("isformain", "" + webResourceRequest.isForMainFrame());
+                logHashMap.put("request", url);
+                logHashMap.put("weburl", "" + webView.getUrl());
+                logHashMap.put("errorcode", "" + webResourceError.getErrorCode());
+                logHashMap.put("description", "" + webResourceError.getDescription());
+                logHashMap.put("remoteip", "" + remoteip);
+                logHashMap.put("userip", "" + IpAddressUtil.USER_IP);
+                logHashMap.put("operator", "" + IpAddressUtil.USER_OPERATE);
+//                    Loger.d(webView.getContext(), LiveVideoConfig.LIVE_WEBVIEW_ERROR, logHashMap.getData(), true);
+                UmsAgentManager.umsAgentDebug(webView.getContext(), LiveVideoConfig.LIVE_WEBVIEW_ERROR, logHashMap.getData());
+            }
+        });
         super.onReceivedError(webView, webResourceRequest, webResourceError);
     }
 }

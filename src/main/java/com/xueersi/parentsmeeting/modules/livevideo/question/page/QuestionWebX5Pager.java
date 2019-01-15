@@ -418,7 +418,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                         inputStream = new FileInputStream(file);
                         String extension = MimeTypeMap.getFileExtensionFromUrl(s.toLowerCase());
                         String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-                        WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", inputStream);
+                        WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "", inputStream);
                         webResourceResponse.setResponseHeaders(header);
                         logger.e("读取本地资源了old");
                         return webResourceResponse;
@@ -462,7 +462,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                         inputStream = new FileInputStream(file);
                         String extension = MimeTypeMap.getFileExtensionFromUrl(request.getUrl().toString().toLowerCase());
                         String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-                        WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", inputStream);
+                        WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "", inputStream);
                         HashMap map = new HashMap();
                         map.put("Access-Control-Allow-Origin", "*");
                         webResourceResponse.setResponseHeaders(map);
@@ -503,11 +503,11 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             this.failingUrl = null;
-            if (!url.equals(examUrl)) {
-                mLogtf.i("onPageStarted:setInitialScale");
-                int scale = ScreenUtils.getScreenWidth() * 100 / 878;
-                wvSubjectWeb.setInitialScale(scale);
-            }
+//            if (!url.equals(examUrl)) {
+//                mLogtf.i("onPageStarted:setInitialScale");
+//                int scale = ScreenUtils.getScreenWidth() * 100 / 878;
+//                wvSubjectWeb.setInitialScale(scale);
+//            }
             super.onPageStarted(view, url, favicon);
         }
 

@@ -19,6 +19,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LecLiveVideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
@@ -45,7 +46,7 @@ import java.util.List;
  * Created by linyuqiang on 2018/7/18.
  * 讲座布局
  */
-public class LectureLiveVideoFrame extends LiveFragmentBase {
+public class LectureLiveVideoFrame extends LiveFragmentBase implements ActivityChangeLand {
     private String TAG = "LectureLiveVideoFrameLog";
     protected LiveIRCMessageBll liveIRCMessageBll;
     BaseLiveMediaControllerTop baseLiveMediaControllerTop;
@@ -75,6 +76,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
 
     private void initAllBll() {
         logger.d("====>initAllBll:" + bottomContent);
+        ProxUtil.getProxUtil().put(activity, ActivityChangeLand.class, this);
         mMediaController.setControllerBottom(liveMediaControllerBottom, false);
         mMediaController.setControllerTop(baseLiveMediaControllerTop);
         setMediaControllerBottomParam();
@@ -244,6 +246,14 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
         long before = System.currentTimeMillis();
         mMediaController.setFileName(getInfo.getName());
         logger.d("onLiveInit:time3=" + (System.currentTimeMillis() - before));
+    }
+
+    @Override
+    public void setAutoOrientation(boolean isAutoOrientation) {
+        super.setAutoOrientation(isAutoOrientation);
+        if (videoFragment != null) {
+            videoFragment.setIsAutoOrientation(isAutoOrientation);
+        }
     }
 
     @Override
@@ -440,5 +450,12 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
 
     private void setFirstParamPort() {
         lecLiveVideoAction.setFirstParamPort();
+    }
+
+    @Override
+    public void changeLOrP() {
+        if (videoFragment != null) {
+            videoFragment.changeLOrP();
+        }
     }
 }

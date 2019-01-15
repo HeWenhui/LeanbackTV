@@ -674,6 +674,11 @@ public class LiveAchievementBll implements StarInteractAction {
         if (starCount == 0) {
             return null;
         }
+        if (startPoint == null) {
+            logToFile.d("onReceiveStat:startPoint=null");
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) flyStat.getLayoutParams();
+            startPoint = new Point(params.leftMargin, params.topMargin);
+        }
         final View flyStat = LayoutInflater.from(activity).inflate(R.layout.item_livevideo_stat_fly, bottomContent,
                 false);
         TextView tv_livevideo_statinteract_count = (TextView) flyStat.findViewById(R.id

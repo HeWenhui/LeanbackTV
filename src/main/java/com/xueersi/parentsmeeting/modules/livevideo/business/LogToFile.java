@@ -103,10 +103,8 @@ public class LogToFile {
     }
 
     public void i(String message) {
-        String getPrefix = "";
         if (liveOnLineLogs != null) {
-            getPrefix = liveOnLineLogs.getPrefix();
-            liveOnLineLogs.getOnloadLogs(TAG, getPrefix + ":" + TAG + "**" + message);
+            liveOnLineLogs.getOnloadLogs(TAG, message);
         }
         logger.i(message);
         if (AppConfig.DEBUG) {
@@ -116,10 +114,8 @@ public class LogToFile {
     }
 
     public void d(String message) {
-        String getPrefix = "";
         if (liveOnLineLogs != null) {
-            getPrefix = liveOnLineLogs.getPrefix();
-            liveOnLineLogs.getOnloadLogs(TAG, getPrefix + ":" + TAG + "**" + message);
+            liveOnLineLogs.getOnloadLogs(TAG, message);
         }
         logger.d(message);
         if (AppConfig.DEBUG) {
@@ -137,10 +133,8 @@ public class LogToFile {
     }
 
     public void e(String message, Throwable e) {
-        String getPrefix = "";
         if (liveOnLineLogs != null) {
-            getPrefix = liveOnLineLogs.getPrefix();
-            liveOnLineLogs.getOnloadLogs(TAG, getPrefix + ":" + TAG + "**" + message + "**" + e);
+            liveOnLineLogs.getOnloadLogs(TAG, message + "**" + e);
         }
         logger.e(message, e);
         if (AppConfig.DEBUG) {
