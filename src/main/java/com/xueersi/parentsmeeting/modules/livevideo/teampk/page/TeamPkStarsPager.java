@@ -1,5 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.teampk.page;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -21,7 +24,9 @@ import android.view.animation.GridLayoutAnimationController;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieImageAsset;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BasePager;
@@ -29,8 +34,12 @@ import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkStar;
+import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportAction;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamMemberGridlayoutManager;
 
@@ -52,6 +61,7 @@ public class TeamPkStarsPager extends BasePager {
     private int spanCount;
     private StarsAdapter mAdapter;
     private List<TeamPkStar> mData;
+    private static final String LOTTIE_RES_ASSETS_ROOTDIR = "team_pk/student_stars/";
 
     /**
      * 默认背景音效大小
@@ -88,7 +98,8 @@ public class TeamPkStarsPager extends BasePager {
             @Override
             public void onGlobalLayout() {
                 if (mView.getMeasuredWidth() > 0) {
-                    showStars();
+                    //showStars();
+                    showAnim();
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                         mView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     } else {
@@ -101,9 +112,41 @@ public class TeamPkStarsPager extends BasePager {
         return view;
     }
 
-    private void showStars() {
-        playMusic(R.raw.war_bg, DEFAULT_BG_VOLUME, true);
+    private final float ANIM_DISPATCH_FRACTION = 0.20f;
+    private void showAnim() {
         bgMask.setVisibility(View.VISIBLE);
+        playMusic(R.raw.war_bg, DEFAULT_BG_VOLUME, true);
+        animationView.useHardwareAcceleration(true);
+        final String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "images";
+        String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "data.json";
+
+        final LottieEffectInfo effectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
+        animationView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext));
+        animationView.setImageAssetDelegate(new ImageAssetDelegate() {
+            @Override
+            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                return effectInfo.fetchBitmapFromAssets(animationView, lottieImageAsset.getFileName(),
+                        lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(),
+                        mContext);
+            }
+        });
+        animationView.playAnimation();
+
+        animationView.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+            boolean animDispatched = false;
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                if(animation.getAnimatedFraction() >ANIM_DISPATCH_FRACTION  && !animDispatched){
+                    animDispatched = true;
+                    showStars();
+                    ivClostBtn.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+    }
+
+    private void showStars() {
         spanCount = 2;
         recyclerView.setLayoutManager(new TeamMemberGridlayoutManager(mContext, 2,
                 LinearLayoutManager.VERTICAL, false));

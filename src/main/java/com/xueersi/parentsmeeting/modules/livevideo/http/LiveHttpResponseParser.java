@@ -1921,7 +1921,27 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     public List<TeamPkStar> parseTeamPkStar(ResponseEntity responseEntity) {
         List<TeamPkStar> resultList = null;
         try {
-            JSONObject data = (JSONObject) responseEntity.getJsonObject();
+            //JSONObject data = (JSONObject) responseEntity.getJsonObject();
+            String  testStr = "{\n" +
+                    "            \"students\": [\n" +
+                    "                {\n" +
+                    "                    \"stuId\": 2383486,\n" +
+                    "                    \"name\": \"廖佳妮\",\n" +
+                    "                    \"avatarPath\": \"https://xesfile.xesimg.com/user/h/def10001.png\",\n" +
+                    "                    \"teamName\": \"森林狮王队\",\n" +
+                    "                    \"energy\": 60\n" +
+                    "                },\n" +
+                    "                {\n" +
+                    "                    \"stuId\": 2383485,\n" +
+                    "                    \"name\": \"廖嘉欣\",\n" +
+                    "                    \"avatarPath\": \"https://xesfile.xesimg.com/user/h/def10001.png\",\n" +
+                    "                    \"teamName\": \"森林狮王队\",\n" +
+                    "                    \"energy\": 15\n" +
+                    "                }\n" +
+                    "            ]\n" +
+                    "        }";
+
+            JSONObject data = new JSONObject(testStr);
             if (data.has("students")) {
                 resultList = new ArrayList<TeamPkStar>();
                 JSONArray jsonArray = data.optJSONArray("students");
@@ -1956,7 +1976,26 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     public List<TeamPkStuProgress> parseTeamPkProgressStu(ResponseEntity responseEntity) {
         List<TeamPkStuProgress> resultList = null;
         try {
-            JSONObject data = (JSONObject) responseEntity.getJsonObject();
+            //JSONObject data = (JSONObject) responseEntity.getJsonObject();
+            String testStr = " {\n" +
+                    "            \"students\": [\n" +
+                    "                {\n" +
+                    "                    \"stuId\": 2383486,\n" +
+                    "                    \"name\": \"廖佳妮\",\n" +
+                    "                    \"avatarPath\": \"https://xesfile.xesimg.com/user/h/def10001.png\",\n" +
+                    "                    \"teamName\": \"森林狮王队\",\n" +
+                    "                    \"progressScope\": 15   // 进步幅度\n" +
+                    "                },\n" +
+                    "                {\n" +
+                    "                    \"stuId\": 2383485,\n" +
+                    "                    \"name\": \"廖嘉欣\",\n" +
+                    "                    \"avatarPath\": \"https://xesfile.xesimg.com/user/h/def10001.png\",\n" +
+                    "                    \"teamName\": \"森林狮王队\",\n" +
+                    "                    \"progressScope\": 10\n" +
+                    "                }\n" +
+                    "            ]\n" +
+                    "        }";
+            JSONObject data = new JSONObject(testStr);
             if (data.has("students")) {
                 resultList = new ArrayList<TeamPkStuProgress>();
                 JSONArray jsonArray = data.optJSONArray("students");

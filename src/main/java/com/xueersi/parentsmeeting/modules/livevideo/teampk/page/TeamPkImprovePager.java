@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.teampk.page;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -21,7 +22,9 @@ import android.view.animation.GridLayoutAnimationController;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieImageAsset;
 import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BasePager;
@@ -29,6 +32,7 @@ import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkStuProgress;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
@@ -52,6 +56,8 @@ public class TeamPkImprovePager extends BasePager {
     private int spanCount;
     private RankAdapter mAdapter;
     private final List<TeamPkStuProgress> mData;
+    private static final String LOTTIE_RES_ASSETS_ROOTDIR = "team_pk/student_improver/";
+    private final float ANIM_DISPATCH_FRACTION = 0.20f;
 
     public TeamPkImprovePager(Context context, List<TeamPkStuProgress> data, TeamPkBll teamPkBll) {
         super(context);
@@ -77,7 +83,7 @@ public class TeamPkImprovePager extends BasePager {
             @Override
             public void onGlobalLayout() {
                 if (mView.getMeasuredWidth() > 0) {
-                    showStuProgressList();
+                    showAnim();
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                         mView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     } else {
@@ -89,9 +95,43 @@ public class TeamPkImprovePager extends BasePager {
         return view;
     }
 
+
+    private void showAnim() {
+        bgMask.setVisibility(View.VISIBLE);
+        playMusic(R.raw.war_bg, DEFAULT_BG_VOLUME, true);
+        animationView.useHardwareAcceleration(true);
+        final String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "images";
+        String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "data.json";
+
+        final LottieEffectInfo effectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
+        animationView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext));
+        animationView.setImageAssetDelegate(new ImageAssetDelegate() {
+            @Override
+            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                return effectInfo.fetchBitmapFromAssets(animationView, lottieImageAsset.getFileName(),
+                        lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(),
+                        mContext);
+            }
+        });
+        animationView.playAnimation();
+        animationView.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+
+            boolean animDispatched = false;
+
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                if (animation.getAnimatedFraction() > ANIM_DISPATCH_FRACTION && !animDispatched) {
+                    animDispatched = true;
+                    showStuProgressList();
+                    ivClostBtn.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+    }
+
+
     private void showStuProgressList() {
         spanCount = 2;
-        bgMask.setVisibility(View.VISIBLE);
         recyclerView.setLayoutManager(new TeamMemberGridlayoutManager(mContext, 2,
                 LinearLayoutManager.VERTICAL, false));
         GridLayoutAnimationController animationController = (GridLayoutAnimationController)
@@ -180,7 +220,7 @@ public class TeamPkImprovePager extends BasePager {
 
         @Override
         public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
+            ((StarItemHolder)holder).bindData(mData.get(position),position);
         }
 
         @Override
@@ -200,10 +240,12 @@ public class TeamPkImprovePager extends BasePager {
         super.onStop();
         pauseMusic();
     }
+
     int[] soundResArray = {
             R.raw.war_bg
     };
     private SoundPoolHelper soundPoolHelper;
+
     /**
      * 暂停音效
      * 注 此处的暂停  只是将音量设置为0  （因为 动画和音效是 同步的）
@@ -230,6 +272,7 @@ public class TeamPkImprovePager extends BasePager {
      * 默认前景音效大小
      */
     private static final float DEFAULT_FRONT_VOLUME = 0.6f;
+
     /**
      * 恢复音乐播放
      * 注释  将音量恢复为暂停之前的状态
@@ -263,6 +306,7 @@ public class TeamPkImprovePager extends BasePager {
             soundPoolHelper.release();
         }
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
