@@ -161,7 +161,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
             public void onCompletion(Object o, AudioPlayerManager audioPlayerManager) {
                 logger.i( "完成播放");
                 mIsPlaying = false;
-                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
+                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3_lan);
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
                 //speechPhoneScore();
             }
@@ -175,7 +175,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
                     @Override
                     public void run() {
                         //如果是子线程的回调，会报出异常Only the original thread that created a view hierarchy can touch its views.
-                        ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
+                        ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3_lan);
                         vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
                         //speechPhoneScore();
                     }
@@ -193,7 +193,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
             public void onError(String msg, Object dataSource, AudioPlayerManager manager) {
                 super.onError(msg, dataSource, manager);
                 mIsPlaying = false;
-                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
+                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3_lan);
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
                 //speechPhoneScore();
             }
@@ -223,7 +223,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
                 mIsPlaying = true;
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
 
-                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
+                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3_lan);
                 tvCountTime.setVisibility(View.INVISIBLE);
                 civUserHead.invalidate();
                 tvMessageContent.setTextColor(Color.parseColor("#4E5BC1"));
@@ -264,7 +264,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
             case RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY:
                 logger.i( "结束roleplay");
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
-                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
+                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3_lan);
                 //重置头像
                 civUserHead.restore();
                 tvCountTime.setText("");
@@ -276,7 +276,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
                 logger.i( "测评有得分刚结束");
                 //测评有得分刚结束
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
-                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
+                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3_lan);
                 //重置头像
                 civUserHead.restore();
                 tvCountTime.setText("");
@@ -300,7 +300,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
                 logger.i( "取消点赞");
                 mIsPlaying = false;
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
-                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3);
+                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3_lan);
                 //重置头像
                 civUserHead.restore();
                 tvCountTime.setText("");

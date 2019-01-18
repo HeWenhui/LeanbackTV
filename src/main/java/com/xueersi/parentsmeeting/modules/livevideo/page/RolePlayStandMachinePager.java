@@ -858,15 +858,15 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
         //显示结果的时候记录日志
         // RolePlayLog.sno7(liveAndBackDebug, mEntity, mContext);
         //结果弹窗5秒后消失
-        resultUiParent.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //TODO:暂时注释掉
-                //recoverListScrollAndCancelDZ();
-
-                //isShowResult = false;
-            }
-        }, 5000);
+//        resultUiParent.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                //TODO:暂时注释掉
+//                //recoverListScrollAndCancelDZ();
+//
+//                //isShowResult = false;
+//            }
+//        }, 5000);
 
 
         if (mEntity == null) {
@@ -997,7 +997,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
              mRolePlayBll.cancelStandLiveDZ();//取消点赞
         }
         //TODO:通知弹出top3
-        XESToastUtils.showToast(mContext,"test");
+        //XESToastUtils.showToast(mContext,"test");
         if(resultUiParent != null){
             resultUiParent.setVisibility(View.GONE);
         }
