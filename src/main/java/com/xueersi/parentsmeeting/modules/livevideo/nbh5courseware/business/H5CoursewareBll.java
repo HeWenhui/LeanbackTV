@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.os.Handler;
@@ -84,7 +85,9 @@ public class H5CoursewareBll implements H5CoursewareAction {
                     bottomContent.addView(h5CoursewarePager.getRootView(), lp);
                     if (activityChangeLand != null) {
                         activityChangeLand.setAutoOrientation(false);
-                        activityChangeLand.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                        Activity activity = (Activity) context;
+                        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+//                        activityChangeLand.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                     }
                 } else {
                     if (h5CoursewarePager != null) {

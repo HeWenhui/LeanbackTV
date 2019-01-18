@@ -323,7 +323,8 @@ public class AgoraChatPager extends BasePager implements AgoraVideoChatInter {
     };
 
     @Override
-    public void updateUser(boolean classmateChange, ArrayList<ClassmateEntity> classmateEntities) {
+    public void updateUser(boolean classmateChange, ArrayList<ClassmateEntity> entitys) {
+        ArrayList<ClassmateEntity> classmateEntities = new ArrayList<>(entitys);
         Collections.sort(classmateEntities, c);
         final RelativeLayout rl_livevideo_chat_head1 = mView.findViewById(R.id.rl_livevideo_chat_head1);
         final RelativeLayout rl_livevideo_chat_head2 = mView.findViewById(R.id.rl_livevideo_chat_head2);

@@ -297,6 +297,7 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
                 int index = allClassmateEntities.indexOf(classmateEntity);
                 if (index != -1) {
                     allClassmateEntities.remove(index);
+                    peopleChange = true;
                     if ((classmateEntity.getId() + "").equals(getInfo.getStuId())) {
                         contain = false;
                     }
@@ -306,6 +307,16 @@ public class VideoAudioChatBll implements VideoAudioChatAction {
 //            contain = false;
 //            ArrayList<ClassmateEntity> oldclassmateEntities = new ArrayList<>(allClassmateEntities);
 //            allClassmateEntities.clear();
+            for (ClassmateEntity classmateEntity : offmicClassmateEntities) {
+                int index = allClassmateEntities.indexOf(classmateEntity);
+                if (index != -1) {
+                    allClassmateEntities.remove(index);
+                    peopleChange = true;
+                    if ((classmateEntity.getId() + "").equals(getInfo.getStuId())) {
+                        contain = false;
+                    }
+                }
+            }
             for (ClassmateEntity classmateEntity : onmicClassmateEntities) {
                 int index = allClassmateEntities.indexOf(classmateEntity);
                 if (index != -1) {
