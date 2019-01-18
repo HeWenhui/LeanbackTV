@@ -40,6 +40,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.redpackage.entity.RedPackage
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkAqResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkAwardPager;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkEndPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkImprovePager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkStarsPager;
@@ -743,7 +744,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      *
      * @return
      */
-    public boolean isFullScreenMode() {
+    private boolean isFullScreenMode() {
         boolean result = isHalfBodyLiveRoom() && mTeacherMode != null && mTeacherMode.equals(LiveTopic.MODE_CLASS);
         return result;
     }
@@ -758,13 +759,25 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
         mFocusPager = aqAwardPager;
     }
 
+    /**
+     * 添加全屏模式 页面
+     * @param pager
+     */
+    private void addFullScreenPager(BasePager pager){
+        rlTeamPkContent.removeAllViews();
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        rlTeamPkContent.addView(pager.getRootView(), params);
+        mFocusPager = pager;
+    }
+
     private void registLayotListener() {
         rlTeamPkContent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
 
                 if (!isFullScreenMode()) {
-                    if (mFocusPager != null) {
+                    if (mFocusPager != null && !(mFocusPager instanceof  TeamPkEndPager)) {
                         int rightMargin = LiveVideoPoint.getInstance().getRightMargin();
                         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mFocusPager.getRootView()
                                 .getLayoutParams();
@@ -1053,24 +1066,26 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
 
                     closeCurrentPkResult();
                     break;
-               /* case 130:
+                case 130:
                     String strCmd = data.optString("msg");
                     if ("1".equals(strCmd)) {
                         //startSelectAdversary();
-                        //showClassChest();
+                       // showClassChest();
                         //getStusStars();
-                        getProgressStudent();
+                        //getProgressStudent();
+                        showPkEndToast();
                     } else if ("0".equals(strCmd)) {
                         //stopSelectAdversary();
                         //closeStarts();
-                        closeStuProgressList();
+                        //closeStuProgressList();
                     }
-                    break;*/
+                    break;
                 default:
                     break;
             }
         }
     }
+
 
     @Override
     public int[] getNoticeFilter() {
@@ -1241,5 +1256,20 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
         if (mFocusPager != null && mFocusPager instanceof TeamPkImprovePager) {
             ((TeamPkImprovePager) mFocusPager).close();
         }
+    }
+
+    /**
+     * 显示 pk 结束
+     */
+    private void showPkEndToast() {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mFocusPager == null || !(mFocusPager instanceof TeamPkEndPager)) {
+                    TeamPkEndPager startsPager = new TeamPkEndPager(mActivity,TeamPkBll.this);
+                    addFullScreenPager(startsPager);
+                }
+            }
+        });
     }
 }
