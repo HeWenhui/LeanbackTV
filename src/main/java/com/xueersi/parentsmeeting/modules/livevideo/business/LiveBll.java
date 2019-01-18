@@ -25,8 +25,6 @@ import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.EnglishSpeekHttp;
-import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
@@ -88,7 +86,7 @@ import okhttp3.Call;
  *
  * @author linyuqiang
  */
-public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, QuestionHttp, LiveAchievementHttp, EnglishSpeekHttp, EnglishH5CoursewareHttp, SpeechFeedBackHttp, LearnReportHttp, LecAdvertHttp, LiveOnLineLogs {
+public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, QuestionHttp, EnglishH5CoursewareHttp, SpeechFeedBackHttp, LearnReportHttp, LecAdvertHttp, LiveOnLineLogs {
     private String TAG = "LiveBllLog";
     /** 互动题 */
     private QuestionAction mQuestionAction;
@@ -1185,38 +1183,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         });
     }
 
-    @Override
-    public void setStuStarCount(final long reTryTime, final String starId, final AbstractBusinessDataCallBack
-            callBack) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mHttpManager.setStuStarCount(mLiveType, enstuId, mLiveId, starId, new HttpCallBack() {
-
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) {
-                callBack.onDataSucess();
-                mLogtf.d("setStuStarCount:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
-            }
-
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                callBack.onDataFail(1, msg);
-                mLogtf.d("setStuStarCount:onPmFailure:msg=" + msg);
-                postDelayedIfNotFinish(new Runnable() {
-                    @Override
-                    public void run() {
-                        setStuStarCount(reTryTime + 1000, starId, callBack);
-                    }
-                }, reTryTime);
-            }
-
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                callBack.onDataFail(2, responseEntity.getErrorMsg());
-                mLogtf.d("setStuStarCount:onPmFailure:responseEntity=" + responseEntity.getErrorMsg());
-            }
-        });
-    }
-
     /**
      * 点名成功，状态设置为2.发notice信息
      */
@@ -1708,39 +1674,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                 });
             }
         }, 500);
-    }
-
-    @Override
-    public void setTotalOpeningLength(final long reTryTime, final String duration, final String speakingNum, final
-    String speakingLen, final float x, final float y) {
-        String liveid = mGetInfo.getId();
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        String classId = mGetInfo.getStudentLiveInfo().getClassId();
-        mHttpManager.setTotalOpeningLength(enstuId, courseId, liveid, classId, duration, speakingNum, speakingLen,
-                new HttpCallBack(false) {
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        logger.d("setTotalOpeningLength:onPmSuccess" + responseEntity.getJsonObject());
-                    }
-
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-                        logger.d("setTotalOpeningLength:onFailure");
-                        super.onFailure(call, e);
-                        postDelayedIfNotFinish(new Runnable() {
-                            @Override
-                            public void run() {
-                                setTotalOpeningLength(reTryTime + 1000, duration, speakingNum, speakingLen, x, y);
-                            }
-                        }, reTryTime);
-                    }
-
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-                        logger.d("setTotalOpeningLength:onPmError" + responseEntity.getErrorMsg());
-                        super.onPmError(responseEntity);
-                    }
-                });
     }
 
     public void setNotOpeningNum() {

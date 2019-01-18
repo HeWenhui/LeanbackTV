@@ -15,7 +15,6 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
-import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCMessage;
@@ -34,6 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceE
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.SendMessageReg;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.ExperLiveMessageStandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
@@ -90,7 +90,6 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
 
     protected LiveMediaController mMediaController;
 
-    private LiveAchievementIRCBll starAction;
     /**
      * 打印日志
      */
@@ -125,7 +124,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
         super.initView();
 
 
-        starAction = getInstance(LiveAchievementIRCBll.class);
+//        starAction = getInstance(LiveAchievementIRCBll.class);
         videoFragment = new LivePlayerFragment();
         mMediaController = new LiveMediaController(activity, videoFragment);
         baseLiveMediaControllerBottom = new LiveStandMediaControllerBottom(activity, mMediaController, videoFragment);
@@ -445,9 +444,6 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
                             .getChapterId(), 1);
                     mIRCMessage.sendMessage(jsonObject.toString());
                     sendMessage = true;
-                    if (starAction != null) {
-                        starAction.onSendMsg(msg);
-                    }
                 } catch (Exception e) {
                     // logger.e( "understand", e);
                     UmsAgentManager.umsAgentException(BaseApplication.getContext(), "livevideo_livebll_sendMessage", e);

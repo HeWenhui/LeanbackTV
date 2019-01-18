@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.UserBll;
@@ -21,7 +22,7 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.SampleMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
-import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
+//import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RegMediaPlayerControl;
@@ -49,6 +50,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.SendMessageReg;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
@@ -99,7 +101,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     private LiveAutoNoticeIRCBll mLiveAutoNoticeBll;
     private LiveMessageBll mRoomAction;
     /** 星星互动 */
-    private LiveAchievementIRCBll starAction;
+//    private LiveAchievementIRCBll starAction;
+    private ArrayList<SendMessageReg.OnSendMsg> onSendMsgs = new ArrayList<>();
     private LiveHttpManager mHttpManager;
     private String mLiveId;
     private LiveHttpResponseParser mHttpResponseParser;
@@ -110,6 +113,17 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         mLiveId = liveBll.getLiveId();
         mLogtf = new LogToFile(context, TAG);
         mRoomAction = new LiveMessageBll(context, mLiveType);
+        putInstance(SendMessageReg.class, new SendMessageReg() {
+            @Override
+            public void addOnSendMsg(OnSendMsg onSendMsg) {
+                onSendMsgs.add(onSendMsg);
+            }
+
+            @Override
+            public void removeOnSendMsg(OnSendMsg onSendMsg) {
+                onSendMsgs.remove(onSendMsg);
+            }
+        });
     }
 
     @Override
@@ -120,7 +134,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         mVideoAction = getInstance(VideoAction.class);
         mHttpResponseParser = mLiveBll.getHttpResponseParser();
         mHttpManager = mLiveBll.getHttpManager();
-        starAction = getInstance(LiveAchievementIRCBll.class);
+//        starAction = getInstance(LiveAchievementIRCBll.class);
 //        mRoomAction.setQuestionBll(getInstance(QuestionBll.class));
         VideoChatStatusChange videoChatStatusChange = getInstance(VideoChatStatusChange.class);
         if (videoChatStatusChange != null) {
@@ -168,8 +182,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             if (getInfo.getPattern() == 2 && LiveTopic.MODE_CLASS.equals(getInfo.getMode())) {
                 mRoomAction.initViewLiveStand(mRootView);
-            } else if(getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY
-                    && LiveTopic.MODE_CLASS.equals(getInfo.getMode())){
+            } else if (getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY
+                    && LiveTopic.MODE_CLASS.equals(getInfo.getMode())) {
                 mRoomAction.initHalfBodyLive(mRootView);
             } else {
                 mRoomAction.initViewLive(mRootView);
@@ -202,7 +216,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     if (view != null) {
                         view.setVisibility(View.VISIBLE);
                     }
-                }else if(mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY){
+                } else if (mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY) {
                     //延迟 2.5 秒 走相关逻辑(适配转场动画 节奏)
                     mHandler.postDelayed(new Runnable() {
                         @Override
@@ -222,7 +236,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                                 view.setVisibility(View.VISIBLE);
                             }
                         }
-                    },2500);
+                    }, 2500);
                 }
             }
         });
@@ -672,21 +686,24 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             case XESCODE.SENDQUESTION: {
                 mRoomAction.onOpenVoiceNotic(true, "SENDQUESTION");
                 break;
-            }case XESCODE.STOPQUESTION: {
+            }
+            case XESCODE.STOPQUESTION: {
                 mRoomAction.onOpenVoiceNotic(false, "STOPQUESTION");
                 break;
             }
             case XESCODE.ARTS_SEND_QUESTION: {
                 mRoomAction.onOpenVoiceNotic(true, "ARTS_SEND_QUESTION");
                 break;
-            } case XESCODE.ARTS_STOP_QUESTION: {
+            }
+            case XESCODE.ARTS_STOP_QUESTION: {
                 mRoomAction.onOpenVoiceNotic(false, "ARTS_STOP_QUESTION");
                 break;
             }
             case XESCODE.EXAM_START: {
                 mRoomAction.onOpenVoiceNotic(true, "EXAM_START");
                 break;
-            } case XESCODE.EXAM_STOP: {
+            }
+            case XESCODE.EXAM_STOP: {
                 mRoomAction.onOpenVoiceNotic(false, "EXAM_STOP");
                 break;
             }
@@ -702,7 +719,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 XESCODE.OPENBARRAGE, XESCODE.GAG, XESCODE.OPENCHAT, XESCODE.TEACHER_MESSAGE, XESCODE.START_MICRO,
                 XESCODE.ARTS_WORD_DICTATION, XESCODE.RAISE_HAND, XESCODE.XCR_ROOM_OPEN_VOICEBARRAGE, XESCODE
                 .RAISE_HAND_SELF, XESCODE.ENGLISH_H5_COURSEWARE, XESCODE.ARTS_H5_COURSEWARE, XESCODE.SENDQUESTION,
-                XESCODE.ARTS_SEND_QUESTION, XESCODE.EXAM_START,XESCODE.STOPQUESTION,XESCODE.EXAM_STOP, XESCODE.ARTS_STOP_QUESTION
+                XESCODE.ARTS_SEND_QUESTION, XESCODE.EXAM_START, XESCODE.STOPQUESTION, XESCODE.EXAM_STOP, XESCODE.ARTS_STOP_QUESTION
         };
     }
 
@@ -882,8 +899,12 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         jsonObject.put("to", teamId);
                     }
                     sendMessage = mLiveBll.sendMessage(jsonObject);
-                    if (starAction != null) {
-                        starAction.onSendMsg(msg);
+                    for (int i = 0; i < onSendMsgs.size(); i++) {
+                        try {
+                            onSendMsgs.get(i).onSendMsg(msg);
+                        } catch (Exception e) {
+                            CrashReport.postCatchedException(e);
+                        }
                     }
                 } catch (Exception e) {
                     // logger.e( "understand", e);
