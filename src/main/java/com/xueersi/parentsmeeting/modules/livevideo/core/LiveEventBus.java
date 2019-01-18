@@ -12,11 +12,11 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.SubscriberExceptionEvent;
 import org.greenrobot.eventbus.ThreadMode;
 
-public class LiveErrorEventBus {
-    protected Logger logger = LoggerFactory.getLogger("LiveErrorEventBus");
+public class LiveEventBus {
+    protected Logger logger = LoggerFactory.getLogger("LiveEventBus");
     private Context context;
 
-    public LiveErrorEventBus(Context context) {
+    public LiveEventBus(Context context) {
         this.context = context;
         EventBus eventBus = getDefault(context);
         eventBus.register(this);
