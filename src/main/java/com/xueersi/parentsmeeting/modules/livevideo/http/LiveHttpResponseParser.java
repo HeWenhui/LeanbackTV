@@ -104,14 +104,18 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         if (getInfo.getAllowLinkMicNew() == 1) {
             getInfo.setAllowLinkMic(false);
         }
-        if (data.has("ePlanInfo")) {
+        if (data.has("ePlanInfo")){
             try {
                 JSONObject ePlanInfo = data.getJSONObject("ePlanInfo");
                 getInfo.ePlanInfo = new LiveGetInfo.EPlanInfoBean();
                 getInfo.ePlanInfo.ePlanId = ePlanInfo.optString("ePlanId");
                 getInfo.ePlanInfo.eTeacherId = ePlanInfo.optString("eTeacherId");
                 getInfo.ePlanInfo.eClassId = ePlanInfo.optString("eClassId");
-            } catch (JSONException e) {
+                if (ePlanInfo.has("fakePlanId")){
+                    getInfo.ePlanInfo.fakePlanId = ePlanInfo.optString("fakePlanId");
+                }
+            }
+            catch (JSONException e) {
                 MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo.ePlanInfo", e.getMessage());
             }
         }
@@ -394,12 +398,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             if (data.has("skeyPlayT")) {
                 getInfo.setSkeyPlayT(data.getString("skeyPlayT"));
             } else {
-                MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo", "skeyPlayT=null");
+//                MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo", "skeyPlayT=null");
             }
             if (data.has("skeyPlayF")) {
                 getInfo.setSkeyPlayF(data.getString("skeyPlayF"));
             } else {
-                MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo", "skeyPlayF=null");
+//                MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo", "skeyPlayF=null");
             }
             getInfo.setSpeechEvalUrl(data.optString("speechEvalUrl", "https://live.xueersi.com/Live/speechEval/"));
             getInfo.setUrlClick(data.optInt("urlClick", 0));

@@ -2,9 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -16,10 +13,8 @@ import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.MyUserInfoEntity;
-import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.lib.analytics.umsagent.UmsAgent;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.TimeUtils;
@@ -32,6 +27,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.AllLiveBasePagerIml;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveLog;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveUidRx;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -39,14 +35,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerAction;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveLogCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 
 import org.json.JSONObject;
-import org.xutils.xutils.http.RequestParams;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -127,6 +121,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
     protected ShowQuestion showQuestion;
     private LiveUidRx liveUidRx;
     LogToFile logToFile;
+    private LiveLog liveLog;
     /**
      * 是否是体验课
      */
@@ -252,7 +247,22 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         if (liveVideoSAConfig != null) {
             mHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
         }
+        liveLog = new LiveLog(activity, mLiveType, mVideoEntity.getLiveId(), getPrefix());
         mHttpManager.addBodyParam("liveId", mVideoEntity.getLiveId());
+        if (mVideoEntity.getvLivePlayBackType() == LocalCourseConfig.LIVETYPE_RECORDED) {
+            try {
+                HashMap<String, String> hashMap = new HashMap();
+                hashMap.put("logtype", "recorded");
+                hashMap.put("livetype", "" + mLiveType);
+                hashMap.put("where", "" + where);
+                hashMap.put("contextname", "" + intent.getStringExtra("contextname"));
+                hashMap.put("bundle", "" + intent.getExtras());
+                hashMap.put("liveid", "" + mVideoEntity.getLiveId());
+                UmsAgentManager.umsAgentDebug(activity, TAG, hashMap);
+            } catch (Exception e) {
+                CrashReport.postCatchedException(e);
+            }
+        }
     }
 
     public Boolean getExperience() {
@@ -363,6 +373,9 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             }
         } catch (Exception e) {
             logger.e("onCreate", e);
+        }
+        if (liveLog != null) {
+            liveLog.setGetInfo(liveGetInfo);
         }
         String clientLog = mShareDataManager.getString(LiveVideoConfig.SP_LIVEVIDEO_CLIENT_LOG, LiveVideoConfig
                 .URL_LIVE_ON_LOAD_LOGS, ShareDataManager.SHAREDATA_NOT_CLEAR);
@@ -872,31 +885,9 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
      */
     @Override
     public void getOnloadLogs(String TAG, String str) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        String bz = UserBll.getInstance().getMyUserInfoEntity().getUserType() == 1 ? "student" : "teacher";
-        if (mFileName == null) {
-            PackageManager packageManager = activity.getPackageManager();
-            PackageInfo packInfo = null;
-            String filename = "f";
-            try {
-                packInfo = packageManager.getPackageInfo(mContext.getPackageName(), 0);
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            }
-            if (packInfo != null) {//else不会发生
-                filename = packInfo.versionCode + "";
-            }
-            filename = Build.VERSION.SDK_INT + "&" + filename;
-            mFileName = filename;
+        //不能出现空
+        if (liveLog != null) {
+            liveLog.getOnloadLogs(TAG, str);
         }
-        if (mGetInfo == null) {
-            UmsAgent.onEvent(activity, LogerTag.DEBUG_VIDEO_LIVEMSG, LogerTag.DEBUG_VIDEO_LIVEMSG, 0, str);
-            return;
-        }
-        LiveLogCallback liveLogCallback = new LiveLogCallback();
-        RequestParams params = mHttpManager.liveOnloadLogs(mGetInfo.getClientLog(), "a" + mLiveType, mGetInfo.getId()
-                , mGetInfo.getUname(), enstuId,
-                mGetInfo.getStuId(), mGetInfo.getTeacherId(), mFileName, str, bz, liveLogCallback);
-        liveLogCallback.setParams(params);
     }
 }

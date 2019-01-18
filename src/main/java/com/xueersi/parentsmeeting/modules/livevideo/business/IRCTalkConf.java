@@ -52,6 +52,8 @@ public class IRCTalkConf {
      */
     private int mSelectTalk = 0;
     private String liveId;
+    /** 专属场次id */
+    private String fakePlanId;
     private LiveGetInfo liveGetInfo;
     private String classid;
     private int mLiveType;
@@ -96,6 +98,11 @@ public class IRCTalkConf {
 //        }
 
         this.liveId = liveGetInfo.getId();
+        if (liveGetInfo.ePlanInfo != null && liveGetInfo.ePlanInfo.fakePlanId!=null){
+            this.fakePlanId = liveGetInfo.ePlanInfo.fakePlanId;
+        }else {
+            this.fakePlanId = null;
+        }
         this.mLiveType = mLiveType;
         this.baseHttpBusiness = baseHttpBusiness;
         this.hosts = hosts;
@@ -138,7 +145,7 @@ public class IRCTalkConf {
             return;
         }
         final HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("liveid", liveId);
+        params.addBodyParam("liveid", fakePlanId == null ? liveId : fakePlanId);
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             params.addBodyParam("appid", "1");
             params.addBodyParam("classid", classid);

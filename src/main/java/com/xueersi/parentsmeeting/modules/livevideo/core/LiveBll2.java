@@ -1,9 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.core;
 
 import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
@@ -15,11 +12,9 @@ import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.lib.analytics.umsagent.UmsAgent;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
@@ -47,13 +42,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveLogCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll;
 
 import org.json.JSONObject;
-import org.xutils.xutils.http.RequestParams;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -107,6 +100,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
     private AtomicBoolean mIsLand;
     private static String Tag = "LiveBll2";
     private LiveUidRx liveUidRx;
+    private LiveLog liveLog;
 
     /**
      * 直播的
@@ -143,6 +137,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         }
         ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, this);
         ProxUtil.getProxUtil().put(context, LiveOnLineLogs.class, this);
+        liveLog = new LiveLog(mContext, mLiveType, mLiveId, getPrefix());
         allLiveBasePagerIml = new AllLiveBasePagerIml(context);
     }
 
@@ -174,6 +169,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, this);
         ProxUtil.getProxUtil().put(context, LiveOnLineLogs.class, this);
+        liveLog = new LiveLog(mContext, mLiveType, mLiveId, getPrefix());
         allLiveBasePagerIml = new AllLiveBasePagerIml(context);
     }
 
@@ -186,6 +182,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
      * @param type
      * @param form          来源
      */
+    @Deprecated
     public LiveBll2(Context context, String vSectionID, String currentDutyId, int type, int form) {
         super(context);
 
@@ -205,6 +202,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         }
         ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, this);
         ProxUtil.getProxUtil().put(context, LiveOnLineLogs.class, this);
+        liveLog = new LiveLog(mContext, mLiveType, mLiveId, getPrefix());
         allLiveBasePagerIml = new AllLiveBasePagerIml(context);
     }
 
@@ -390,6 +388,9 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         if (this.mGetInfo == null) {
             onLiveFailure("服务器异常", null);
             return;
+        }
+        if (liveLog != null) {
+            liveLog.setGetInfo(mGetInfo);
         }
         liveUidRx.setLiveGetInfo(getInfo);
         getInfo.setStuCouId(mStuCouId);
@@ -998,39 +999,16 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         return "NL";
     }
 
-    String mFileName = null;
-
     /**
      * 播放器异常日志
      *
      * @param str
      */
     public void getOnloadLogs(String TAG, String str) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        String bz = UserBll.getInstance().getMyUserInfoEntity().getUserType() == 1 ? "student" : "teacher";
-        if (mFileName == null) {
-            PackageManager packageManager = mContext.getPackageManager();
-            PackageInfo packInfo = null;
-            String filename = "f";
-            try {
-                packInfo = packageManager.getPackageInfo(mContext.getPackageName(), 0);
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            }
-            if (packInfo != null) {//else不会发生
-                filename = packInfo.versionCode + "";
-            }
-            filename = Build.VERSION.SDK_INT + "&" + filename;
-            mFileName = filename;
+        //不能出现空
+        if (liveLog != null) {
+            liveLog.getOnloadLogs(TAG, str);
         }
-        if (mGetInfo == null) {
-            UmsAgent.onEvent(mContext, LogerTag.DEBUG_VIDEO_LIVEMSG, LogerTag.DEBUG_VIDEO_LIVEMSG, 0, str);
-            return;
-        }
-        LiveLogCallback liveLogCallback = new LiveLogCallback();
-        RequestParams params = mHttpManager.liveOnloadLogs(mGetInfo.getClientLog(), "a" + mLiveType, mLiveId, mGetInfo.getUname(), enstuId,
-                mGetInfo.getStuId(), mGetInfo.getTeacherId(), mFileName, str, bz, liveLogCallback);
-        liveLogCallback.setParams(params);
     }
 
     /**
