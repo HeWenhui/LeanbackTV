@@ -542,6 +542,8 @@
     <item name="iv_teampk_finish_team_select" type="id" />
     <item name="tv_teampk_team_select_timecoutdown" type="id" />
     <item name="rl_teampk_head_container" type="id" />
+    <item name="tv_teampk_pk_end" type="id"/>
+
 
     <!--分队进行中-->
     <item name="iv_teampk_enter_teamselect" type="id" />
