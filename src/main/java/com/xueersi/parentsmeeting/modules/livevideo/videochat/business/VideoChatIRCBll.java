@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.videochat.business;
 import android.app.Activity;
 
 import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -124,7 +125,11 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
 
     @Override
     public void rePlay(boolean b) {
-        liveFragmentBase.rePlay(b);
+        if (!MediaPlayer.isPSIJK) {
+            liveFragmentBase.rePlay(b);
+        } else {
+            liveFragmentBase.psRePlay(b);
+        }
     }
 
     @Override

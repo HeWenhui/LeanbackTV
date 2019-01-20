@@ -91,6 +91,21 @@ public class SwitchFlowBll extends LiveBaseBll implements BaseLiveMediaControlle
 
     private List<PlayServerEntity.PlayserverEntity> listRoute;
 
+    public void setListRoute(int total) {
+
+        if (total != 0) {
+            this.route = total < 4 ? total : 4;
+        } else if (total == 0 && mGetInfo != null) {
+            this.route = mGetInfo.getRtmpUrls().length;
+            mLogtf.i("switchFlowBll ,list.size()=" + mGetInfo.getRtmpUrls().length);
+        } else {
+            route = 0;
+        }
+        if (mPager != null) {
+            mPager.setRouteSum(route);
+        }
+    }
+
     public void setListRoute(List<PlayServerEntity.PlayserverEntity> listRoute) {
         this.listRoute = listRoute;
 

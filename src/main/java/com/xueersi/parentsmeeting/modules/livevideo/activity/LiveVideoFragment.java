@@ -19,6 +19,7 @@ import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.bussiness.EvaluateTeacherBll;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenIRCBll;
@@ -164,7 +165,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLogtf.i("other loading");
             liveVideoPlayFragment.setLoadingAnimation(TripleScreenBasePlayerFragment.TRIPLE_SCREEN_MIDDLE_LOADING);
         }
-        liveVideoPlayFragment.overrideCallBack();
+        liveVideoPlayFragment.overrideHandlerCallBack();
     }
 
     @Override
@@ -377,7 +378,11 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                         switchFlowStatus = LiveVideoAction.SWITCH_FLOW_RELOAD;
                         isSwitchUpload = true;
                         //1.重新加载,显示加载中
-                        rePlay(false);
+                        if (!MediaPlayer.isPSIJK) {
+                            rePlay(false);
+                        } else {
+                            psRePlay(false);
+                        }
                         //2. 自动切流
                         liveVideoAction.setVideoSwitchFlowStatus(switchFlowStatus, nowRoutePos);
                         if (mGetInfo != null && mGetInfo.getLiveTopic() != null) {
@@ -425,17 +430,29 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                 if (switchFlowStatus == LiveVideoAction.SWITCH_FLOW_RELOAD) {
                     mLogtf.i("click again btn,SWITCH_FLOW_RELOAD");
                     //1.重新加载,显示加载中
-                    rePlay(false);
+                    if (!MediaPlayer.isPSIJK) {
+                        rePlay(false);
+                    } else {
+                        psRePlay(false);
+                    }
                     //2. 自动切流
                     if (mGetInfo != null && mGetInfo.getLiveTopic() != null) {
                         mLiveVideoBll.liveGetPlayServer(mGetInfo.getLiveTopic().getMode(), false);
                     }
                 } else if (switchFlowStatus == LiveVideoAction.SWITCH_FLOW_ROUTE_SWITCH) {
                     mLogtf.i("click again btn,SWITCH_FLOW_ROUTE_SWITCH");
-                    rePlay(false);
+                    if (!MediaPlayer.isPSIJK) {
+                        rePlay(false);
+                    } else {
+                        psRePlay(false);
+                    }
                 } else {
                     mLogtf.i("click again btn,other");
-                    rePlay(false);
+                    if (!MediaPlayer.isPSIJK) {
+                        rePlay(false);
+                    } else {
+                        psRePlay(false);
+                    }
                 }
                 if (!mLiveBll.isPresent()) {
                     mContentView.findViewById(R.id.iv_course_video_teacher_notpresent).setVisibility(View.GONE);
@@ -502,6 +519,45 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                 logger.i("null");
             }
         }
+    }
+
+    /**
+     * 更新线路数目,由
+     * {@link
+     * com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll
+     * #mPlayListener
+     * #getPSServerList(int, int, boolean)}
+     * 调用
+     */
+    @Override
+    public void getPSServerList(int cur, int total, boolean modeChange) {
+        super.getPSServerList(cur, total, modeChange);
+        if ((pattern == 1) && switchFlowBll != null) {
+//            if (total != 0) {
+            switchFlowBll.setListRoute(total);
+//                logger.i(total);
+//            } else {
+//                switchFlowBll.setListRoute(0);
+            logger.i("total = 0");
+//            }
+        }
+    }
+
+    /**
+     * 获取调度接口失败
+     */
+    @Override
+    public void getPServerListFail() {
+        if ((pattern == 1) && switchFlowBll != null) {
+//            if (server != null) {
+            switchFlowBll.setListRoute(0);
+            logger.i("0");
+//        } else {
+//            switchFlowBll.setListRoute(null);
+//            logger.i("null");
+//        }
+        }
+
     }
 
     protected void createMediaControllerBottom() {
@@ -599,7 +655,11 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                             mHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    rePlay(false);
+                                    if (!MediaPlayer.isPSIJK) {
+                                        rePlay(false);
+                                    } else {
+                                        psRePlay(false);
+                                    }
                                 }
                             });
                         }
@@ -710,6 +770,21 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         }
         liveVideoAction.rePlay(modechange);
         mLiveVideoBll.rePlay(modechange);
+    }
+
+    /** PSIJK使用的rePlay */
+    @Override
+    public void psRePlay(boolean modeChange) {
+        mLogtf.d("rePlay:mHaveStop=" + mHaveStop);
+        if (mGetInfo == null || liveVideoAction == null) {//上次初始化尚未完成
+            return;
+        }
+        VideoChatEvent videoChatEvent = ProxUtil.getProxUtil().get(activity, VideoChatEvent.class);
+        if (videoChatEvent != null && videoChatEvent.getStartRemote().get()) {
+            return;
+        }
+        liveVideoAction.rePlay(modeChange);
+        mLiveVideoBll.psRePlay(modeChange);
     }
 
     @Override

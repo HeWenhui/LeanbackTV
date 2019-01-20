@@ -52,6 +52,7 @@ import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
 import com.xueersi.parentsmeeting.module.browser.event.BrowserEvent;
+import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
@@ -108,11 +109,9 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import tv.danmaku.ijk.media.player.AvformatOpenInputError;
-
 /**
  * Created by David on 2018/3/6.
- * 体验课播放器
+ * 三分屏体验课播放器
  */
 public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implements BaseLiveMediaControllerBottom
         .MediaChildViewClick {
@@ -865,7 +864,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
                         LiveVideoPoint.initLiveVideoPoint((Activity) mContext, LiveVideoPoint.getInstance(), lp);
                         setFirstParam(lp);
-                        if(mLiveMessagePager != null){
+                        if (mLiveMessagePager != null) {
                             mLiveMessagePager.setVideoLayout(LiveVideoPoint.getInstance());
                         }
 //                        mLiveMessagePager.setVideoWidthAndHeight(lp.width, lp.height);
@@ -955,7 +954,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         liveBackBll.addBusinessBll(new RedPackageExperienceBll(activity, liveBackBll, mVideoEntity.getChapterId()));
         liveBackBll.addBusinessBll(new EnglishH5ExperienceBll(activity, liveBackBll));
         liveBackBll.addBusinessBll(new NBH5ExperienceBll(activity, liveBackBll));
-        experienceQuitFeedbackBll = new ExperienceQuitFeedbackBll(activity,liveBackBll,false);
+        experienceQuitFeedbackBll = new ExperienceQuitFeedbackBll(activity, liveBackBll, false);
         experienceQuitFeedbackBll.setLiveVideo(this);
         liveBackBll.addBusinessBll(experienceQuitFeedbackBll);
         liveBackBll.onCreate();
@@ -1040,7 +1039,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
                 vPlayer.releaseSurface();
                 vPlayer.stop();
-                if (experienceQuitFeedbackBll != null){
+                if (experienceQuitFeedbackBll != null) {
                     experienceQuitFeedbackBll.playComplete();
                 }
                 // 测试体验课播放器的结果页面
@@ -1381,7 +1380,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         if (scanRunnable != null) {
             scanRunnable.exit();
         }
-        if (experienceQuitFeedbackBll != null){
+        if (experienceQuitFeedbackBll != null) {
             experienceQuitFeedbackBll.playComplete();
         }
         mHandler.removeCallbacks(mPlayDuration);

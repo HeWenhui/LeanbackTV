@@ -30,6 +30,8 @@ import android.widget.Toast;
 
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.XesActivity;
+import com.xueersi.common.business.AppBll;
+import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.FooterIconEntity;
 import com.xueersi.common.event.AppEvent;
@@ -43,12 +45,14 @@ import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.log.FileLogger;
 import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
+import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
-import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.VPlayerListener;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack.VPlayerListener;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
+import com.xueersi.parentsmeeting.module.videoplayer.ps.PSIJK;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
@@ -58,12 +62,15 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import tv.danmaku.ijk.media.player.AvformatOpenInputError;
+//import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
 
 
 /***
+ *
+ * 旁听三分屏体验课Activity
  * 视频播放主界面
  *
  * @author 林玉强
@@ -305,15 +312,42 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
                     // 准备开始播放指定视频
                     synchronized (mOpenLock) {
                         if (!mOpened.get() && vPlayer != null) {
-                            mOpened.set(true);
-                            vPlayer.setVPlayerListener(vPlayerServiceListener);
-                            if (vPlayer.isInitialized())
-                                mUri = vPlayer.getUri();
-
-                            if (videoView != null)
-                                vPlayer.setDisplay(videoView.getHolder());
-                            if (mUri != null)
-                                vPlayer.initialize(mUri, video, 0, vPlayerServiceListener, mIsHWCodec);
+                            if (!MediaPlayer.isPSIJK) {
+                                mOpened.set(true);
+                                vPlayer.setVPlayerListener(vPlayerServiceListener);
+                                if (vPlayer.isInitialized()) {
+                                    mUri = vPlayer.getUri();
+                                }
+                                if (videoView != null) {
+                                    vPlayer.setDisplay(videoView.getHolder());
+                                }
+                                if (mUri != null) {
+                                    vPlayer.initialize(mUri, video, 0, vPlayerServiceListener, mIsHWCodec);
+                                }
+                            } else {
+                                mOpened.set(true);
+                                vPlayer.setVPlayerListener(vPlayerServiceListener);
+                                if (videoView != null) {
+                                    vPlayer.setDisplay(videoView.getHolder());
+                                }
+                                vPlayer.psInit(MediaPlayer.VIDEO_PLAYER_NAME, 0, vPlayerServiceListener, mIsHWCodec);
+//                                if (isChangeLine) {
+//                                    vPlayer.changeLine(changeLinePos, protocol);
+//                                    isChangeLine = false;
+//                                } else {
+                                try {
+                                    if (vPlayer.getPlayer() instanceof PSIJK) {
+                                        vPlayer.getPlayer().setUserInfo(AppBll.getInstance().getAppInfoEntity().getChildName(), UserBll.getInstance().getMyUserInfoEntity().getStuId());
+                                    }
+                                    vPlayer.playPSVideo(videoPath, protocol);
+                                } catch (IOException e) {
+                                    vPlayerHandler.sendEmptyMessage(OPEN_FAILED);
+                                    e.printStackTrace();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+//                                }
+                            }
                         }
                     }
                     break;
@@ -407,6 +441,36 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
             }
         }
     };
+
+    private String videoPath;
+    private int protocol;
+
+    protected void playPSVideo(String videoPath, int protocol) {
+        this.videoPath = videoPath;
+        this.protocol = protocol;
+
+
+        if (vPlayer != null) {
+            vPlayer.release();
+            vPlayer.psStop();
+        }
+
+        mDisplayName = "";
+        mIsHWCodec = false;
+        mFromStart = false;
+        mStartPos = 0;
+        mIsEnd = false;
+//        mUri = uri;
+//        mDisplayName = displayName;
+        if (viewRoot != null) {
+            viewRoot.invalidate();
+        }
+        if (mOpened != null) {
+            mOpened.set(false);
+        }
+
+        vPlayerHandler.sendEmptyMessage(OPEN_FILE);
+    }
 
     // endregion
 
@@ -1080,6 +1144,16 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
 
     /** 播放器核心服务监听 */
     protected VPlayerListener vPlayerServiceListener = new VPlayerListener() {
+
+        @Override
+        public void getPSServerList(int cur, int total, boolean modeChange) {
+
+        }
+
+        @Override
+        public void getPServerListFail() {
+
+        }
 
         /** 硬解码失败 */
         @Override

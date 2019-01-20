@@ -20,23 +20,30 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.xueersi.common.base.BaseActivity;
+import com.xueersi.common.business.AppBll;
+import com.xueersi.common.business.UserBll;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.AppUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
+import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
+import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
+import com.xueersi.parentsmeeting.module.videoplayer.ps.PSIJK;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import tv.danmaku.ijk.media.player.AvformatOpenInputError;
+//import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
 
 /**
  * Created by linyuqiang on 2018/8/3.
@@ -145,7 +152,14 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     protected View videoBackgroundRefresh;
     /** 加载中动画Loading */
     private View videoLoadingLayout;
-
+    /** 直播类型 */
+    public int liveType = 0;
+    /** 直播，使用{@link PSIJK#playLive(String, int)} */
+    public final static int PLAY_LIVE = 0;
+    /** 回放，使用{@link PSIJK#playVod(String, int)} */
+    public final static int PLAY_BACK = 1;
+    /** 录播，使用{@link PSIJK#playFile(String, int)} */
+    public final static int PLAY_TUTORIAL = 2;
 
     public void playNewVideo() {
         if (mUri != null && mDisplayName != null) {
@@ -323,17 +337,47 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                     // 准备开始播放指定视频
                     synchronized (mOpenLock) {
                         if (!mOpened.get() && vPlayer != null) {
-                            mOpened.set(true);
-                            vPlayer.setVPlayerListener(vPlayerServiceListener);
-                            if (vPlayer.isInitialized()) {
-                                mUri = vPlayer.getUri();
-                            }
 
-                            if (videoView != null) {
-                                vPlayer.setDisplay(videoView.getHolder());
-                            }
-                            if (mUri != null) {
-                                vPlayer.initialize(mUri, video, getStartPosition(), vPlayerServiceListener, mIsHWCodec);
+                            if (!MediaPlayer.isPSIJK) {
+                                mOpened.set(true);
+                                vPlayer.setVPlayerListener(vPlayerServiceListener);
+                                if (vPlayer.isInitialized()) {
+                                    mUri = vPlayer.getUri();
+                                }
+
+                                if (videoView != null) {
+                                    vPlayer.setDisplay(videoView.getHolder());
+                                }
+                                if (mUri != null) {
+                                    vPlayer.initialize(mUri, video, getStartPosition(), vPlayerServiceListener, mIsHWCodec);
+                                }
+                            } else {
+                                mOpened.set(true);
+                                vPlayer.setVPlayerListener(vPlayerServiceListener);
+                                if (videoView != null) {
+                                    vPlayer.setDisplay(videoView.getHolder());
+                                }
+                                vPlayer.psInit(MediaPlayer.VIDEO_PLAYER_NAME, getStartPosition(), vPlayerServiceListener, mIsHWCodec);
+                                if (isChangeLine) {
+                                    vPlayer.changeLine(changeLinePos, protocol);
+                                    isChangeLine = false;
+                                } else {
+                                    try {
+                                        if (vPlayer.getPlayer() instanceof PSIJK) {
+                                            vPlayer.getPlayer().setUserInfo(AppBll.getInstance().getAppInfoEntity().getChildName(), UserBll.getInstance().getMyUserInfoEntity().getStuId());
+                                        }
+                                        if (liveType == PLAY_LIVE || liveType == PLAY_BACK) {
+                                            vPlayer.playPSVideo(streamId, protocol);
+                                        } else if (liveType == PLAY_TUTORIAL) {
+                                            vPlayer.playFile(url, (int) mStartPos);
+                                        }
+                                    } catch (IOException e) {
+                                        vPlayerHandler.sendEmptyMessage(OPEN_FAILED);
+                                        e.printStackTrace();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
                             }
                         }
                     }
@@ -460,7 +504,152 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         return 0L;
     }
 
-    protected PlayerService.VPlayerListener vPlayerServiceListener = new PlayerService.VPlayerListener() {
+    /** 切换线路使用位置 */
+    protected int changeLinePos;
+    /** 当前使用的协议 */
+    protected int protocol;
+    /**
+     * 使用切换线路，
+     * true代表切换线路，走
+     * {@link com.xueersi.parentsmeeting.module.videoplayer.ps.PSIJK#changePlayLine(int)}
+     * 和{@link PSIJK#tryPlayLive()}
+     * false代表不切换线路,直接走{@link com.xueersi.parentsmeeting.module.videoplayer.ps.PSIJK#playLive(String, int)}
+     */
+    protected boolean isChangeLine = false;
+    /**
+     * @param streamId 直播的话为channel_name
+     * @param protocol 回放的话为videoPath
+     */
+    protected String streamId;
+    /**
+     * 回放时使用的url
+     */
+    protected String url;
+
+
+    /**
+     * url
+     *
+     * @param url      文件路径
+     * @param startPos 启播时间，暂不支持； V1.2会支持该功能
+     */
+    protected void playPSFile(String url, int startPos) {
+        this.url = url;
+        mStartPos = startPos;
+        liveType = PLAY_TUTORIAL;
+        if (vPlayer != null) {
+            vPlayer.release();
+            vPlayer.psStop();
+        }
+
+        mDisplayName = "";
+        mIsHWCodec = false;
+        mFromStart = false;
+        mStartPos = 0;
+        mIsEnd = false;
+//        mUri = uri;
+//        mDisplayName = displayName;
+        if (viewRoot != null) {
+            viewRoot.invalidate();
+        }
+        if (mOpened != null) {
+            mOpened.set(false);
+        }
+
+        vPlayerHandler.sendEmptyMessage(OPEN_FILE);
+    }
+
+    /**
+     * PSIJK切换线路使用
+     *
+     * @param pos
+     * @param protocol
+     */
+    public void changPlayLive(int pos, int protocol) {
+        isChangeLine = true;
+        this.changeLinePos = pos;
+        this.protocol = protocol;
+        this.liveType = PLAY_LIVE;
+//        if (isInitialized()) {
+        if (vPlayer != null) {
+            vPlayer.release();
+            vPlayer.psStop();
+        }
+//        }
+        //初始化
+
+        mDisplayName = "";
+        mIsHWCodec = false;
+        mFromStart = false;
+        mStartPos = 0;
+        mIsEnd = false;
+//        mUri = uri;
+//        mDisplayName = displayName;
+
+        if (viewRoot != null) {
+            viewRoot.invalidate();
+        }
+        if (mOpened != null) {
+            mOpened.set(false);
+        }
+        vPlayerHandler.sendEmptyMessage(OPEN_FILE);
+
+    }
+
+    /**
+     * PSIJK专用，
+     *
+     * @param streamId 直播的话为channel_name
+     * @param protocol 回放的话为videoPath
+     */
+    public void playPSVideo(String streamId, int protocol) {
+        isChangeLine = false;
+        this.streamId = streamId;
+        this.protocol = protocol;
+        liveType = PLAY_LIVE;
+//        if (isInitialized()) {
+        if (vPlayer != null) {
+            vPlayer.release();
+            vPlayer.psStop();
+        }
+//        }
+
+        mDisplayName = "";
+        mIsHWCodec = false;
+        mFromStart = false;
+        mStartPos = 0;
+        mIsEnd = false;
+//        mUri = uri;
+//        mDisplayName = displayName;
+
+        if (viewRoot != null) {
+            viewRoot.invalidate();
+        }
+        if (mOpened != null) {
+            mOpened.set(false);
+        }
+        vPlayerHandler.sendEmptyMessage(OPEN_FILE);
+    }
+
+    protected VPlayerCallBack.VPlayerListener vPlayerServiceListener = new VPlayerCallBack.VPlayerListener() {
+
+        @Override
+        public void getPSServerList(int cur, int total, boolean modeChange) {
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
+            if (wrapListener != null) {
+                wrapListener.getPSServerList(cur, total, modeChange);
+//                BasePlayerFragment.this.getPSServerList(cur, total);
+            }
+        }
+
+        @Override
+        public void getPServerListFail() {
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
+            if (wrapListener != null) {
+                wrapListener.getPServerListFail();
+//                BasePlayerFragment.this.getPSServerList(cur, total);
+            }
+        }
 
         /** 硬解码失败 */
         @Override
@@ -469,7 +658,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                 vPlayerHandler.sendEmptyMessage(HW_FAILED);
                 vPlayerHandler.sendEmptyMessageDelayed(HW_FAILED, 200); // 确保使用软解码初始化成功？？？
             }
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onHWRenderFailed();
             }
@@ -479,7 +668,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         @Override
         public void onOpenStart() {
             vPlayerHandler.sendEmptyMessage(OPEN_START);
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onOpenStart();
             }
@@ -494,7 +683,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             } else {
                 release();
             }
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onOpenSuccess();
             }
@@ -507,7 +696,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         @Override
         public void onOpenFailed(int arg1, int arg2) {
             vPlayerHandler.sendMessage(vPlayerHandler.obtainMessage(OPEN_FAILED, arg1, arg2));
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onOpenFailed(arg1, arg2);
             }
@@ -521,7 +710,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             if (vPlayer != null) {
                 vPlayer.stopListenPlaying();
             }
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onBufferStart();
             }
@@ -537,7 +726,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             if (vPlayer != null) {
                 vPlayer.startListenPlaying();
             }
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onBufferComplete();
             }
@@ -546,7 +735,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         @Override
         public void onSeekComplete() {
             vPlayerHandler.sendEmptyMessage(SEEK_COMPLETE);
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onSeekComplete();
             }
@@ -556,7 +745,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         @Override
         public void onPlaybackComplete() {
             playComplete();
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onPlaybackComplete();
             }
@@ -566,7 +755,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         @Override
         public void onCloseStart() {
             vPlayerHandler.sendEmptyMessage(CLOSE_START);
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onCloseStart();
             }
@@ -576,7 +765,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         @Override
         public void onCloseComplete() {
             vPlayerHandler.sendEmptyMessage(CLOSE_COMPLETE);
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onCloseComplete();
             }
@@ -588,7 +777,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             if (videoView != null) {
                 setVideoLayout();
             }
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onVideoSizeChanged(width, height);
             }
@@ -597,7 +786,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         /** 下载进度 */
         @Override
         public void onDownloadRateChanged(int kbPerSec) {
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onDownloadRateChanged(kbPerSec);
             }
@@ -611,7 +800,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             msg.obj = arrLong;
             msg.what = ON_PLAYING_POSITION;
             vPlayerHandler.sendMessage(msg);
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onPlaying(currentPosition, duration);
             }
@@ -621,7 +810,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         @Override
         public void onPlayError() {
             BasePlayerFragment.this.onPlayError();
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onPlayError();
             }
@@ -874,7 +1063,11 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         }
     }
 
-    protected PlayerService.VPlayerListener getWrapListener() {
+//    public void changLine() {
+//
+//    }
+
+    protected VPlayerCallBack.VPlayerListener getWrapListener() {
         return null;
     }
 
@@ -974,5 +1167,21 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                 mDirection = DIRECTION_DOWN;
             }
         }
+    }
+
+    public MediaErrorInfo getMediaErrorInfo() {
+//        if (mPlayer instanceof PSIJK) {
+        return vPlayer != null ? vPlayer.getMediaErrorInfo() : null;
+//        }
+//        return null;
+    }
+
+    /** 网络发生变化 */
+    public void onNetWorkChange(int netWorkType) {
+
+        vPlayer.onNetWorkChange(netWorkType);
+//        if (liveGetPlayServer != null) {
+//            liveGetPlayServer.onNetWorkChange(netWorkType);
+//        }
     }
 }

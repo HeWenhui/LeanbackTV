@@ -693,6 +693,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
     }
 
     /** seek完成 */
+    @Override
     protected void onSeekComplete() {
         long lastCurrentMsg = currentMsg;
         long currentPosition = vPlayer.getCurrentPosition();
@@ -1584,6 +1585,7 @@ public class LectureLivePlayBackVideoActivity extends VideoActivity implements L
         }
     };
 
+    @Override
     protected void onRefresh() {
         if (AppBll.getInstance(this).isNetWorkAlert()) {
             loadView(mLayoutVideo);

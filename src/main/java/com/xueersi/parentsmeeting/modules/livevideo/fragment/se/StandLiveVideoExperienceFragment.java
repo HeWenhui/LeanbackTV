@@ -34,10 +34,12 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
+import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
-import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
@@ -72,7 +74,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import tv.danmaku.ijk.media.player.AvformatOpenInputError;
+//import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
 
 /**
  * 全身直播体验课，仿照直播回放
@@ -172,7 +174,6 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
      * 预加载
      */
     private LiveStandFrameAnim liveStandFrameAnim;
-
     //处理视频小窗口使用
 //    private VideoPopView videoPopView;
 
@@ -582,9 +583,21 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
                 mIsLand.get());
     }
 
+    private void playNewVideo(Uri uri, String mSectionName) {
+        liveBackVideoBll.playNewVideo(uri, mSectionName);
+    }
+
     @Override
     protected void playNewVideo() {
         liveBackVideoBll.playNewVideo();
+    }
+
+    /**
+     * PSIJK改变线路播放
+     */
+    protected void changeLine() {
+        liveBackVideoBll.changePlayLine();
+//        liveBackPlayVideoFragment.changeLine(pos);
     }
 
     @Override
@@ -715,7 +728,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
      */
     @Override
     protected void resultFailed(int arg1, int arg2) {
-        //循环更换视频地址
+        //循环更换视频地址，播放失败后，尝试MAX_REPLAY_COUNT次。
         PlayErrorCodeLog.standExperienceLivePlayError(liveBackBll, mWebPath, "playError");
         List<String> mVideoPaths = mVideoEntity.getVideoPaths();
         if (mVideoPaths != null && !mVideoPaths.isEmpty()) {
@@ -728,11 +741,17 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         } else {
             mWebPath = mVideoEntity.getVideoPath();
         }
+        //播放失败后，禅师MAX_REPLAY_COUNT次
         if (rePlayCount < MAX_REPLAY_COUNT) {
             rePlayCount++;
-            playNewVideo(Uri.parse(mWebPath), mSectionName);
+            if (!MediaPlayer.isPSIJK) {
+                liveBackVideoBll.playNewVideo(Uri.parse(mWebPath), mSectionName);
+            } else {
+                changeLine();
+            }
 
         } else {
+            //尝试完之后，走之前的逻辑
             super.resultFailed(arg1, arg2);
         }
         isPlay = false;
@@ -926,7 +945,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
 //    }
 
     @Override
-    protected PlayerService.VPlayerListener getWrapListener() {
+    protected VPlayerCallBack.VPlayerListener getWrapListener() {
         return liveBackVideoBll.getPlayListener();
     }
 

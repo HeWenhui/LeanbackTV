@@ -43,7 +43,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import tv.danmaku.ijk.media.player.AvformatOpenInputError;
+import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
 
 /***
  * 视频播放主界面

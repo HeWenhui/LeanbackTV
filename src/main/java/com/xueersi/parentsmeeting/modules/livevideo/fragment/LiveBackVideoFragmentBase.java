@@ -42,9 +42,11 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
+import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -57,8 +59,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
 /***
  * 视频播放主界面
@@ -524,7 +524,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
         }
 
         @Override
-        protected PlayerService.VPlayerListener getWrapListener() {
+        protected VPlayerCallBack.VPlayerListener getWrapListener() {
             return liveBackVideoFragment.getWrapListener();
         }
 
@@ -655,11 +655,6 @@ public class LiveBackVideoFragmentBase extends Fragment {
         liveBackPlayVideoFragment.playNewVideo();
     }
 
-    public void playNewVideo(Uri uri, String displayName) {
-        mUri = uri;
-        mDisplayName = displayName;
-        liveBackPlayVideoFragment.playNewVideo(uri, displayName);
-    }
 
     /** 播放下一个视频 */
     protected void startPlayNextVideo() {
@@ -851,7 +846,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
         }
     };
 
-    protected PlayerService.VPlayerListener getWrapListener() {
+    protected VPlayerCallBack.VPlayerListener getWrapListener() {
         return null;
     }
 
@@ -1049,5 +1044,6 @@ public class LiveBackVideoFragmentBase extends Fragment {
 //        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources()
 //                .getDisplayMetrics());
 //    }
+
 
 }

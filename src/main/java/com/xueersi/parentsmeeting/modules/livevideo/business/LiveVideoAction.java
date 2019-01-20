@@ -23,6 +23,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -313,6 +314,13 @@ public class LiveVideoAction implements VideoAction {
         });
     }
 
+    /** PSIJK专用，更具MediaErrorInfo来采取不同措施 */
+    public void onFail(MediaErrorInfo mediaErrorInfo) {
+        switch (mediaErrorInfo.mPlayerErrorCode) {
+
+        }
+
+    }
 
     public void onFail(final int arg1, final int arg2) {
         mHandler.post(new Runnable() {
@@ -455,6 +463,41 @@ public class LiveVideoAction implements VideoAction {
                 }
             }
         });
+    }
+
+    @Override
+    public void getPSServerList(int cur, int total, boolean modeChange) {
+        final AtomicBoolean change = new AtomicBoolean(modeChange);// 直播状态是不是变化
+        mHandler.post(new Runnable() {
+
+            @Override
+            public void run() {
+                if (change.get()) {
+                    setFirstBackgroundVisible(View.VISIBLE);
+                }
+                if (tvLoadingHint != null) {
+                    if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo
+                            .getLiveTopic().getMode())) {
+                        tvLoadingHint.setText(mainTeacherLoad);
+                    } else {
+                        tvLoadingHint.setText(coachTeacherLoad);
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * PSIJK调度失败
+     */
+    @Override
+    public void getPServerListFail() {
+
+        mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
+//        final String msg = "" + responseEntity.getErrorMsg();
+        if (tvLoadingHint != null) {
+//            tvLoadingHint.setText(msg);
+        }
     }
 
     @Override
@@ -601,4 +644,6 @@ public class LiveVideoAction implements VideoAction {
     public void onDestory() {
         dwTeacherNotpresen = null;
     }
+
+
 }

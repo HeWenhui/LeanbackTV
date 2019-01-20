@@ -105,7 +105,7 @@
 //import java.util.List;
 //import java.util.concurrent.atomic.AtomicBoolean;
 //
-//import tv.danmaku.ijk.media.player.AvformatOpenInputError;
+//import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
 //
 ///**
 // * 小英站立直播

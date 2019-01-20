@@ -30,17 +30,17 @@ import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
-import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
+import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
-import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.bussiness.EvaluateTeacherPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -75,8 +75,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
 /**
  * Created by linyuqiang on 2018/7/23.
@@ -426,6 +424,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         liveBackVideoBll.playNewVideo();
     }
 
+
+
     protected void initBusiness() {
         liveBackBll.addBusinessShareParam("videoView", videoView);
         pauseNotStopVideoIml = new PauseNotStopVideoIml(activity, onPauseNotStopVideo);
@@ -593,7 +593,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     }
 
     @Override
-    protected PlayerService.VPlayerListener getWrapListener() {
+    protected VPlayerCallBack.VPlayerListener getWrapListener() {
         return liveBackVideoBll.getPlayListener();
     }
 

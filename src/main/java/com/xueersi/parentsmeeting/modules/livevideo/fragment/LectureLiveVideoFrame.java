@@ -15,6 +15,7 @@ import com.xueersi.common.business.UserBll;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -152,6 +153,15 @@ public class LectureLiveVideoFrame extends LiveFragmentBase implements ActivityC
         mLiveVideoBll.rePlay(modechange);
     }
 
+    @Override
+    public void psRePlay(boolean modeChange) {
+        if (mGetInfo == null || liveVideoAction == null) {//上次初始化尚未完成
+            return;
+        }
+        liveVideoAction.rePlay(modeChange);
+        mLiveVideoBll.psRePlay(modeChange);
+    }
+
     protected void addBusiness(Activity activity) {
         liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
         liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
@@ -198,7 +208,11 @@ public class LectureLiveVideoFrame extends LiveFragmentBase implements ActivityC
                             mHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    rePlay(false);
+                                    if (!MediaPlayer.isPSIJK) {
+                                        rePlay(false);
+                                    } else {
+                                        psRePlay(false);
+                                    }
                                 }
                             });
                         }
@@ -457,5 +471,10 @@ public class LectureLiveVideoFrame extends LiveFragmentBase implements ActivityC
         if (videoFragment != null) {
             videoFragment.changeLOrP();
         }
+    }
+
+    @Override
+    public void getPServerListFail() {
+
     }
 }

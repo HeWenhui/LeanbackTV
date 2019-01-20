@@ -3,6 +3,9 @@ package com.xueersi.parentsmeeting.modules.livevideo.video;
 /**
  * Created by linyuqiang on 2018/8/6.
  * 黑屏错误码
+ * <p>
+ * 新版本PSIJK1.1版本已经不再使用这些状态码
+ *
  */
 public enum PlayErrorCode {
     PLAY_SERVER_CODE_101(101, "获取视频资源失败[101]"),

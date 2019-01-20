@@ -15,9 +15,11 @@ import android.widget.Toast;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
-import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
+import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVideoAction;
@@ -153,6 +155,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
     }
 
+    @Override
     public void stopPlayer() {
         super.stopPlayer();
         mLiveVideoBll.stopPlay();
@@ -264,6 +267,11 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
             this.liveFragmentBase = liveFragmentBase;
         }
 
+//        @Override
+//        protected void getPSServerList(int cur, int total) {
+//            super.getPSServerList(cur, total);
+//        }
+
         @Override
         protected void onPlayOpenStart() {
             liveFragmentBase.setFirstBackgroundVisible(View.VISIBLE);
@@ -363,7 +371,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         }
 
         @Override
-        protected PlayerService.VPlayerListener getWrapListener() {
+        protected VPlayerCallBack.VPlayerListener getWrapListener() {
             return liveFragmentBase.mLiveVideoBll.getPlayListener();
         }
 
@@ -378,6 +386,8 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
     protected abstract boolean initData();
 
     public abstract void rePlay(boolean modechange);
+
+    public abstract void psRePlay(boolean modeChange);
 
     @Override
     public void onTeacherNotPresent(final boolean isBefore) {
@@ -414,16 +424,41 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         }
     }
 
+    /**
+     * 仿照 {@link #onLiveStart(PlayServerEntity, LiveTopic, boolean)}
+     * 都是调度成功之后的回调。
+     *
+     * @param cur   当前播放线路索引
+     * @param total 所有播放线路总数
+     */
     @Override
-    public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
+    public void getPSServerList(int cur, int total, boolean modeChange) {
         if (liveVideoAction == null) {
             return;
         }
         mLogtf.d("onLiveStart:mHaveStop=" + mHaveStop);
-        liveVideoAction.onLiveStart(server, cacheData, modechange);
-        mLiveVideoBll.onLiveStart(server, cacheData, modechange);
-        AtomicBoolean change = new AtomicBoolean(modechange);// 直播状态是不是变化
-        rePlay(change.get());
+        liveVideoAction.getPSServerList(cur, total, modeChange);
+//        mLiveVideoBll.(cur, total);
+        // TODO: 2019/1/20 怎么判断直播状态是否发生变化 
+//        AtomicBoolean change = new AtomicBoolean(modeChange);// 直播状态是不是变化
+//        rePlay(change.get());
+    }
+
+    @Override
+    public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
+        if (!MediaPlayer.isPSIJK) {
+            if (liveVideoAction == null) {
+                return;
+            }
+            mLogtf.d("onLiveStart:mHaveStop=" + mHaveStop);
+
+            liveVideoAction.onLiveStart(server, cacheData, modechange);
+            mLiveVideoBll.onLiveStart(server, cacheData, modechange);
+            AtomicBoolean change = new AtomicBoolean(modechange);// 直播状态是不是变化
+            rePlay(change.get());
+        } else {
+            mLiveVideoBll.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+        }
     }
 
     @Override
@@ -487,7 +522,12 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
      */
     protected void onFail(int arg1, final int arg2) {
         if (liveVideoAction != null) {
-            liveVideoAction.onFail(arg1, arg2);
+            if (!MediaPlayer.isPSIJK) {
+                liveVideoAction.onFail(arg1, arg2);
+            } else {
+                MediaErrorInfo mediaErrorInfo = videoFragment.getMediaErrorInfo();
+                liveVideoAction.onFail(mediaErrorInfo);
+            }
         }
     }
 

@@ -1118,11 +1118,11 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         this.liveVideoBll = liveVideoBll;
     }
 
-    public void liveGetPlayServer() {
-        if (liveVideoBll != null) {
-            liveVideoBll.liveGetPlayServer();
-        }
-    }
+//    public void liveGetPlayServer() {
+//        if (liveVideoBll != null) {
+//            liveVideoBll.liveGetPlayServer();
+//        }
+//    }
 
     /**
      * 当前状态

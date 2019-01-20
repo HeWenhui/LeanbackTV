@@ -7,20 +7,24 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
 
 import org.json.JSONArray;
 
 import java.util.ArrayList;
 
-import tv.danmaku.ijk.media.player.AvformatOpenInputError;
-
 /**
  * Created by linyuqiang on 2018/8/3.
  * 回放的视频播放
+ * <p>
+ * 直播回放的Bll，主要负责管理回放的视频播放
+ * 类似的还有{@link com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceVideoBll}
  */
 public class LiveBackVideoBll {
     Logger logger;
@@ -115,13 +119,28 @@ public class LiveBackVideoBll {
         liveBackPlayVideoFragment.setLivePlayLog(livePlayLog);
     }
 
+    /**
+     * PSIJK使用，改变线路播放
+     */
+    public void changeLine(int pos) {
+        liveBackPlayVideoFragment.changPlayLive(pos, MediaPlayer.VIDEO_PROTOCOL_MP4);
+    }
+
+    /**
+     * 播放新的视频
+     */
     public void playNewVideo() {
-        if (index < 0) {
-            index = 0;
+        if (!MediaPlayer.isPSIJK) {
+            if (index < 0) {
+                index = 0;
+            }
+            String url = mWebPaths.get(index++ % mWebPaths.size());
+            logger.d("playNewVideo:url=" + url);
+            liveBackPlayVideoFragment.playNewVideo(Uri.parse(url), mSectionName);
+        } else {
+            //使用PSIJK播放新视屏
+            liveBackPlayVideoFragment.playPSVideo(mVideoEntity.getVideoPath(), MediaPlayer.VIDEO_PROTOCOL_MP4);
         }
-        String url = mWebPaths.get(index++ % mWebPaths.size());
-        logger.d("playNewVideo:url=" + url);
-        liveBackPlayVideoFragment.playNewVideo(Uri.parse(url), mSectionName);
     }
 
     public void savePosition(long fromStart) {
@@ -159,11 +178,12 @@ public class LiveBackVideoBll {
         }
     }
 
-    public PlayerService.VPlayerListener getPlayListener() {
+    public VPlayerCallBack.VPlayerListener getPlayListener() {
         return mPlayListener;
     }
 
-    private PlayerService.VPlayerListener mPlayListener = new PlayerService.SimpleVPlayerListener() {
+    private VPlayerCallBack.VPlayerListener mPlayListener = new VPlayerCallBack.SimpleVPlayerListener() {
+
         @Override
         public void onOpenFailed(int arg1, int arg2) {
             logger.d("onOpenFailed:index=" + index + ",arg2=" + arg2);

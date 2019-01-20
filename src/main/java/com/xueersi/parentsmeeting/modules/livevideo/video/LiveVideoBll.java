@@ -9,7 +9,9 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
@@ -82,12 +84,15 @@ public class LiveVideoBll implements VPlayerListenerReg {
     /** 播放时长定时任务 */
     private final long mPlayDurTime = 420000;
     /** 直播缓存打开统计 */
-    private ArrayList<PlayerService.VPlayerListener> mPlayStatistics = new ArrayList<>();
+    private ArrayList<VPlayerCallBack.VPlayerListener> mPlayStatistics = new ArrayList<>();
     /** 播放时长 */
     private long playTime = 0;
     /** live_report_play_duration 开始时间 */
     protected long reportPlayStarTime;
     private LiveVideoReportBll liveVideoReportBll;
+    /**
+     * 可能是LiveFragmentBase或者
+     */
     private VideoAction mVideoAction;
     private int mLiveType;
     protected LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
@@ -120,12 +125,12 @@ public class LiveVideoBll implements VPlayerListenerReg {
     }
 
     @Override
-    public void addVPlayerListener(PlayerService.VPlayerListener vPlayerListener) {
+    public void addVPlayerListener(VPlayerCallBack.VPlayerListener vPlayerListener) {
         mPlayStatistics.add(vPlayerListener);
     }
 
     @Override
-    public void removeVPlayerListener(PlayerService.VPlayerListener vPlayerListener) {
+    public void removeVPlayerListener(VPlayerCallBack.VPlayerListener vPlayerListener) {
         mPlayStatistics.remove(vPlayerListener);
     }
 
@@ -133,9 +138,12 @@ public class LiveVideoBll implements VPlayerListenerReg {
         this.mVideoAction = mVideoAction;
     }
 
+    private LiveTopic mLiveTopic;
+
     /** 在{@link LiveBll2}获取getInfo成功而之后,{@link LiveBll2#onGetInfoSuccess(LiveGetInfo)} */
     public void onLiveInit(LiveGetInfo getInfo, LiveTopic liveTopic) {
         this.mGetInfo = getInfo;
+        this.mLiveTopic = liveTopic;
         liveGetPlayServer = new LiveGetPlayServer(activity, new TeacherIsPresent() {
 
             @Override
@@ -179,12 +187,25 @@ public class LiveVideoBll implements VPlayerListenerReg {
         liveVideoReportBll.setServer(server);
     }
 
+    public void getPSServerList(int cur, int total) {
+
+    }
+
+    public void psRePlay(boolean modeChange) {
+        videoFragment.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+    }
+
+    public void playPSVideo(String streamId, int protocol) {
+        videoFragment.playPSVideo(streamId, protocol);
+    }
+
     /**
      * 第一次播放，或者播放失败，重新播放
      *
      * @param modechange
      */
     public void rePlay(boolean modechange) {
+//        if (!MediaPlayer.isPSIJK) {
         if (livePlayLog != null) {
             livePlayLog.onReplay();
         }
@@ -359,14 +380,22 @@ public class LiveVideoBll implements VPlayerListenerReg {
         msg += ",url=" + stringBuilder;
         mLogtf.d(msg);
         videoFragment.playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
+//        } else {
+//            videoFragment.playPSVideo();
+
+//        }
     }
 
-    /** 直接指定为只去播放 */
+    /** 直接指定为具体线路只去播放 */
     public void playNewVideo(int pos) {
-        String url = constructUrl(pos);
-        logger.i("加载的url = " + url);
-        if (url != null) {
-            videoFragment.playNewVideo(Uri.parse(url), mGetInfo.getName());
+        if (!MediaPlayer.isPSIJK) {
+            String url = constructUrl(pos);
+            logger.i("加载的url = " + url);
+            if (url != null) {
+                videoFragment.playNewVideo(Uri.parse(url), mGetInfo.getName());
+            }
+        } else {
+            videoFragment.changPlayLive(pos, MediaPlayer.VIDEO_PROTOCOL_RTMP);
         }
     }
 
@@ -477,11 +506,33 @@ public class LiveVideoBll implements VPlayerListenerReg {
         return msg;
     }
 
-    public PlayerService.VPlayerListener getPlayListener() {
+    public VPlayerCallBack.VPlayerListener getPlayListener() {
         return mPlayListener;
     }
 
-    private PlayerService.VPlayerListener mPlayListener = new PlayerService.SimpleVPlayerListener() {
+    private VPlayerCallBack.VPlayerListener mPlayListener = new VPlayerCallBack.SimpleVPlayerListener() {
+
+        /**
+         * 获取调度接口失败
+         */
+        @Override
+        public void getPServerListFail() {
+            for (VPlayerCallBack.VPlayerListener vPlayerListener : mPlayStatistics) {
+                vPlayerListener.getPServerListFail();
+            }
+            mVideoAction.getPServerListFail();
+        }
+
+        @Override
+        public void getPSServerList(int cur, int total, boolean modeChange) {
+//            liveGetPlayServer.mVideoAction.onLiveStart();
+            for (VPlayerCallBack.VPlayerListener vPlayerListener : mPlayStatistics) {
+                vPlayerListener.getPSServerList(cur, total, modeChange);
+            }
+
+            mVideoAction.getPSServerList(cur, total, modeChange);
+
+        }
 
         @Override
         public void onPlaying(long currentPosition, long duration) {
@@ -497,7 +548,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
             mHandler.removeCallbacks(mOpenTimeOutRun);
             mHandler.removeCallbacks(mBufferTimeOutRun);
             mHandler.removeCallbacks(mPlayDuration);
-            for (PlayerService.VPlayerListener vPlayerListener : mPlayStatistics) {
+            for (VPlayerCallBack.VPlayerListener vPlayerListener : mPlayStatistics) {
                 vPlayerListener.onPlaybackComplete();
             }
             mLogtf.d("onPlaybackComplete");
@@ -516,7 +567,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
             mHandler.removeCallbacks(mOpenTimeOutRun);
             mHandler.removeCallbacks(mBufferTimeOutRun);
             mHandler.removeCallbacks(mPlayDuration);
-            for (PlayerService.VPlayerListener vPlayerListener : mPlayStatistics) {
+            for (VPlayerCallBack.VPlayerListener vPlayerListener : mPlayStatistics) {
                 vPlayerListener.onPlayError();
             }
             if (openSuccess) {
@@ -538,7 +589,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
             reportPlayStarTime = System.currentTimeMillis();
             openSuccess = true;
             mHandler.removeCallbacks(mOpenTimeOutRun);
-            for (PlayerService.VPlayerListener vPlayerListener : mPlayStatistics) {
+            for (VPlayerCallBack.VPlayerListener vPlayerListener : mPlayStatistics) {
                 vPlayerListener.onOpenSuccess();
             }
             mHandler.removeCallbacks(mPlayDuration);
@@ -555,7 +606,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
             openSuccess = false;
             mHandler.removeCallbacks(mOpenTimeOutRun);
             postDelayedIfNotFinish(mOpenTimeOutRun, mOpenTimeOut);
-            for (PlayerService.VPlayerListener vPlayerListener : mPlayStatistics) {
+            for (VPlayerCallBack.VPlayerListener vPlayerListener : mPlayStatistics) {
                 vPlayerListener.onOpenStart();
             }
         }
@@ -571,7 +622,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
             mHandler.removeCallbacks(mBufferTimeOutRun);
             mHandler.removeCallbacks(mPlayDuration);
             onFail(arg1, arg2);
-            for (PlayerService.VPlayerListener vPlayerListener : mPlayStatistics) {
+            for (VPlayerCallBack.VPlayerListener vPlayerListener : mPlayStatistics) {
                 vPlayerListener.onOpenFailed(arg1, arg2);
             }
             mLogtf.d("onOpenFailed:arg2=" + arg2);
@@ -585,7 +636,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
         public void onBufferStart() {
             mHandler.removeCallbacks(mBufferTimeOutRun);
             postDelayedIfNotFinish(mBufferTimeOutRun, mBufferTimeout);
-            for (PlayerService.VPlayerListener vPlayerListener : mPlayStatistics) {
+            for (VPlayerCallBack.VPlayerListener vPlayerListener : mPlayStatistics) {
                 vPlayerListener.onBufferStart();
             }
             mLogtf.d("onBufferStart");
@@ -594,7 +645,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
         @Override
         public void onBufferComplete() {
             mHandler.removeCallbacks(mBufferTimeOutRun);
-            for (PlayerService.VPlayerListener vPlayerListener : mPlayStatistics) {
+            for (VPlayerCallBack.VPlayerListener vPlayerListener : mPlayStatistics) {
                 vPlayerListener.onBufferComplete();
             }
             mLogtf.d("onBufferComplete");
@@ -659,7 +710,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
                 liveVideoReportBll.live_report_play_duration(mGetInfo.getChannelname(), System.currentTimeMillis() - reportPlayStarTime, lastPlayserverEntity, "buffer empty reconnect");
                 reportPlayStarTime = System.currentTimeMillis();
             }
-            for (PlayerService.VPlayerListener vPlayerListener : mPlayStatistics) {
+            for (VPlayerCallBack.VPlayerListener vPlayerListener : mPlayStatistics) {
                 if (vPlayerListener instanceof LiveVPlayerListener) {
                     LiveVPlayerListener vPlayerListener1 = (LiveVPlayerListener) vPlayerListener;
                     vPlayerListener1.onBufferTimeOutRun();
@@ -878,7 +929,9 @@ public class LiveVideoBll implements VPlayerListenerReg {
         mHandler.postDelayed(r, delayMillis);
     }
 
+    /** 网络发生变化 */
     public void onNetWorkChange(int netWorkType) {
+        videoFragment.onNetWorkChange(netWorkType);
         if (liveGetPlayServer != null) {
             liveGetPlayServer.onNetWorkChange(netWorkType);
         }
