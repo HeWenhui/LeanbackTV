@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.enteampk.business;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -297,7 +298,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
         handler.post(new Runnable() {
             @Override
             public void run() {
-                teamPkLeadPager = new TeamPkLeadPager(mContext, enTeamPkRankEntity, type, pattern, new TeamPkLeadPager.OnClose() {
+                teamPkLeadPager = new TeamPkLeadPager(mContext, enTeamPkRankEntity, testId, type, pattern, new TeamPkLeadPager.OnClose() {
                     @Override
                     public void close(BasePager basePager) {
                         rootView.removeView(basePager.getRootView());
@@ -331,6 +332,22 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
 
             }
         });
+    }
+
+    @Override
+    public void onStuLike(String testId, final ArrayList<TeamMemberEntity> teamMemberEntities) {
+        if (teamPkLeadPager != null) {
+            if (TextUtils.equals(testId, teamPkLeadPager.getTestId())) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (teamPkLeadPager != null) {
+                            teamPkLeadPager.onStuLike(teamMemberEntities);
+                        }
+                    }
+                });
+            }
+        }
     }
 
     @Override

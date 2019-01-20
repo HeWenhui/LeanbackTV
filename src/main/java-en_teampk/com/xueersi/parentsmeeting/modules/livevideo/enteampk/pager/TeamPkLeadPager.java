@@ -52,13 +52,16 @@ public class TeamPkLeadPager extends LiveBasePager {
     private TextView tvTeampkLeadScoreLeft;
     private TextView ivTeampkLeadFireAddRight;
     private TextView tvTeampkLeadScoreRight;
+    private CommonAdapter<TeamMemberEntity> myTeamAdapter;
     private int pattern;
     private Handler handler = new Handler(Looper.getMainLooper());
     private OnClose onClose;
     private OnStudyClick onStudyClick;
+    private String testId;
 
-    public TeamPkLeadPager(Context context, EnTeamPkRankEntity enTeamPkRankEntity, int type, int pattern, OnClose onClose) {
+    public TeamPkLeadPager(Context context, EnTeamPkRankEntity enTeamPkRankEntity, String testId, int type, int pattern, OnClose onClose) {
         super(context, false);
+        this.testId = testId;
         this.type = type;
         this.pattern = pattern;
         this.onClose = onClose;
@@ -66,6 +69,10 @@ public class TeamPkLeadPager extends LiveBasePager {
         this.enTeamPkRankEntity = enTeamPkRankEntity;
         initData();
         initListener();
+    }
+
+    public String getTestId() {
+        return testId;
     }
 
     public void setOnStudyClick(OnStudyClick onStudyClick) {
@@ -238,6 +245,21 @@ public class TeamPkLeadPager extends LiveBasePager {
         }, delay);
     }
 
+    public void onStuLike(ArrayList<TeamMemberEntity> teamMemberEntities) {
+        ArrayList<TeamMemberEntity> myTeamEntitys = enTeamPkRankEntity.getMemberEntities();
+        for (int i = 0; i < myTeamEntitys.size(); i++) {
+            TeamMemberEntity oldTeamMemberEntity = myTeamEntitys.get(i);
+            for (int j = 0; j < teamMemberEntities.size(); j++) {
+                TeamMemberEntity newTeamMemberEntity = teamMemberEntities.get(j);
+                if (oldTeamMemberEntity.id == newTeamMemberEntity.id) {
+                    oldTeamMemberEntity.praiseCount = newTeamMemberEntity.praiseCount;
+                    break;
+                }
+            }
+        }
+        myTeamAdapter.notifyDataSetChanged();
+    }
+
     private void showRank() {
         View layout_livevideo_en_team_lead_star = LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_en_team_lead_star, rlTeampkLeadBottom, false);
         rlTeampkLeadBottom.addView(layout_livevideo_en_team_lead_star);
@@ -250,7 +272,7 @@ public class TeamPkLeadPager extends LiveBasePager {
         }
         int newSize = myTeamEntitys.size();
         logger.d("showRank:oldSize=" + oldSize + ",newSize=" + newSize);
-        CommonAdapter<TeamMemberEntity> myTeamAdapter = new CommonAdapter<TeamMemberEntity>(myTeamEntitys) {
+        myTeamAdapter = new CommonAdapter<TeamMemberEntity>(myTeamEntitys) {
             HashMap<TeamMemberEntity, LottieAnimationView> map = new HashMap<>();
 
             @Override

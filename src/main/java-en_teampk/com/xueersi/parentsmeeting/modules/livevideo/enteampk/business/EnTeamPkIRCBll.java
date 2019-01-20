@@ -335,7 +335,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 JSONObject jsonObject = new JSONObject();
                 try {
                     jsonObject.put("stu_id", "" + teamMemberEntity.id);
-                    jsonObject.put("like_num", "" + teamMemberEntity.praiseCount);
+                    jsonObject.put("like_num",  teamMemberEntity.praiseCount);
                     String oldNickName = teamMemberEntity.nickName;
                     if (StringUtils.isEmpty(oldNickName)) {
                         for (int j = 0; j < uservector.size(); j++) {
@@ -481,6 +481,23 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             break;
             case XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_STULIKE:
                 logger.d("XCR_ROOM_TEAMPK_STULIKE:data=" + data);
+                if (enTeamPkAction != null) {
+                    try {
+                        JSONObject likeInfoObj = data.getJSONObject("like_info");
+                        String testId = likeInfoObj.getString("test_id");
+                        ArrayList<TeamMemberEntity> teamMemberEntities = new ArrayList<>();
+                        JSONArray stuLikeInfoArray = likeInfoObj.getJSONArray("stu_like_info");
+                        for (int i = 0; i < stuLikeInfoArray.length(); i++) {
+                            JSONObject stuLikeInfoobj = stuLikeInfoArray.getJSONObject(i);
+                            TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
+                            teamMemberEntity.id = stuLikeInfoobj.getInt("stu_id");
+                            teamMemberEntity.praiseCount = stuLikeInfoobj.getInt("like_num");
+                        }
+                        enTeamPkAction.onStuLike(testId, teamMemberEntities);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
                 break;
             default:
                 break;
