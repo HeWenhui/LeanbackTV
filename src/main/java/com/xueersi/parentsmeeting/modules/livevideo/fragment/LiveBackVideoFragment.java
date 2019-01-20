@@ -65,6 +65,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.PlayErrorCodeLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveBackVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
@@ -397,6 +398,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         ProxUtil.getProxUtil().put(activity, MediaControllerAction.class, this);
         ProxUtil.getProxUtil().put(activity, MediaPlayerControl.class, liveBackPlayVideoFragment);
         ProxUtil.getProxUtil().put(activity, ActivityChangeLand.class, this);
+        ProxUtil.getProxUtil().put(activity, BasePlayerFragment.class, liveBackPlayVideoFragment);
         initBusiness();
         if (islocal) {
             // 互动题播放地址

@@ -122,6 +122,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
                 mediaPlayerControls.remove(mediaPlayerControl);
             }
         });
+        ProxUtil.getProxUtil().put(activity, BasePlayerFragment.class, videoFragment);
         return true;
     }
 
