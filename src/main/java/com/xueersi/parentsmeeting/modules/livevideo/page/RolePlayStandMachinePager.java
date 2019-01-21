@@ -93,7 +93,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
     /**
      * 匹配页默认停留时间
      */
-    private final int MATCH_WAIT_SECOND = 10000;
+    private final int MATCH_WAIT_SECOND = 4000;
     /**
      * 角色确认页停留时间
      */
@@ -388,16 +388,15 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
 
 
     private void ifShowCloseBt() {
-//        if (mIsLive) {
-//            //只在直播的时候显示倒计时布局
-//            ll_live_roleplayer_countdown_main.setVisibility(View.VISIBLE);
-//            tv_close_role_play.setVisibility(View.GONE);
-//        } else {
+        if (mIsLive) {
+            //只在直播的时候显示倒计时布局
+            ll_live_roleplayer_countdown_main.setVisibility(View.VISIBLE);
+        } else {
             //只在回放的时候显示关闭按钮的布局
             ll_live_roleplayer_countdown_main.setVisibility(View.GONE);
             tv_close_role_play.setVisibility(View.VISIBLE);
 
-//        }
+        }
     }
 
     @Override
@@ -631,7 +630,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
                         DisplayMetrics dm = new DisplayMetrics();
                         Activity activity = (Activity) mContext;
                         activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
-                        vwvSpeechVolume.initialize(dm);
+                        vwvSpeechVolume.initialize(dm,0.4f);
                         vwvSpeechVolume.speechStarted();
                     }
 
@@ -1203,7 +1202,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
             public void run() {
                 if(rgivLivevideoStandReadygo != null){
                     //此刻要占位
-                    rgivLivevideoStandReadygo.setVisibility(View.GONE);
+                    rgivLivevideoStandReadygo.setVisibility(View.INVISIBLE);
                     //rgivLivevideoStandReadygo.destory();
                 }
 

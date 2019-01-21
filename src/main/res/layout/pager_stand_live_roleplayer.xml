@@ -35,9 +35,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="25dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="9dp"
                 android:text="3分0秒"
-                android:textColor="@color/white"
+                android:textColor="#7a86e7"
                 android:textSize="11sp" />
 
         </LinearLayout>
@@ -45,8 +45,8 @@
         <!--ready go-->
         <com.xueersi.parentsmeeting.modules.livevideo.widget.ReadyGoImageView
             android:id="@+id/rgiv_livevideo_stand_readygo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="88dp"
+            android:layout_height="95dp"
             android:layout_below="@+id/iv_live_roleplayer_title"
             android:layout_centerHorizontal="true" />
 
@@ -57,9 +57,8 @@
             style="@style/listview_common_style"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/iv_live_roleplayer_title"
+            android:layout_below="@id/rgiv_livevideo_stand_readygo"
             android:layout_marginBottom="23dp"
-            android:layout_marginTop="40dp"
             android:divider="@null"
             android:dividerHeight="0dp"
             android:footerDividersEnabled="true"
@@ -79,20 +78,22 @@
         <!--测评音量条区-->
         <RelativeLayout
             android:id="@id/rl_live_roleplayer_speech_volumewave_main"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="360dp"
+            android:layout_height="50dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="6dp"
+
             android:background="@drawable/shape_livevideo_roleplayer_speech_volumewave_bg"
             android:gravity="center"
             android:visibility="invisible">
 
             <com.dnkilic.waveform.WaveView
-                android:id="@id/vwv_livevideo_roleplayer_speech_volumewave"
+                android:id="@+id/vwv_livevideo_roleplayer_speech_volumewave"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true" />
+                android:layout_marginLeft="4dp"
+                />
 
         </RelativeLayout>
 
@@ -129,7 +130,8 @@
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_alignParentRight="true"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="9dp"
+            android:layout_marginRight="9dp"
             android:background="@drawable/selector_close_roleplay_stand_bg" />
 
 
