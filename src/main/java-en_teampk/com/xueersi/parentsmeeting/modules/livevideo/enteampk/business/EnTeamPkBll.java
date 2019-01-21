@@ -293,6 +293,26 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
 
     }
 
+    long before = 0;
+    PraiseRunnable praiseRunnable = new PraiseRunnable();
+
+    class PraiseRunnable implements Runnable {
+        String testId;
+        ArrayList<TeamMemberEntity> myTeamEntitys;
+
+        @Override
+        public void run() {
+            logger.d("praiseRunnable");
+            before = 0;
+            enTeamPkHttp.reportStuLike(testId, myTeamEntitys, new AbstractBusinessDataCallBack() {
+                @Override
+                public void onDataSucess(Object... objData) {
+
+                }
+            });
+        }
+    }
+
     @Override
     public void onRankLead(final EnTeamPkRankEntity enTeamPkRankEntity, final String testId, final int type) {
         handler.post(new Runnable() {
@@ -307,12 +327,10 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                 teamPkLeadPager.setOnStudyClick(new TeamPkLeadPager.OnStudyClick() {
                     @Override
                     public void onStudyClick(ArrayList<TeamMemberEntity> myTeamEntitys) {
-                        enTeamPkHttp.reportStuLike(testId, myTeamEntitys, new AbstractBusinessDataCallBack() {
-                            @Override
-                            public void onDataSucess(Object... objData) {
-
-                            }
-                        });
+                        praiseRunnable.testId = testId;
+                        praiseRunnable.myTeamEntitys = myTeamEntitys;
+                        handler.removeCallbacks(praiseRunnable);
+                        handler.postDelayed(praiseRunnable, 1000);
                     }
                 });
                 RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);

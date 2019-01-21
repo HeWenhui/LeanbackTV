@@ -52,11 +52,11 @@ public class TeamPkLeadPager extends LiveBasePager {
     private TextView tvTeampkLeadScoreLeft;
     private TextView ivTeampkLeadFireAddRight;
     private TextView tvTeampkLeadScoreRight;
-    private CommonAdapter<TeamMemberEntity> myTeamAdapter;
     private int pattern;
     private Handler handler = new Handler(Looper.getMainLooper());
     private OnClose onClose;
     private OnStudyClick onStudyClick;
+    private ArrayList<TeamMemberStarItem> teamMemberStarItems = new ArrayList<>();
     private String testId;
 
     public TeamPkLeadPager(Context context, EnTeamPkRankEntity enTeamPkRankEntity, String testId, int type, int pattern, OnClose onClose) {
@@ -246,18 +246,21 @@ public class TeamPkLeadPager extends LiveBasePager {
     }
 
     public void onStuLike(ArrayList<TeamMemberEntity> teamMemberEntities) {
-        ArrayList<TeamMemberEntity> myTeamEntitys = enTeamPkRankEntity.getMemberEntities();
-        for (int i = 0; i < myTeamEntitys.size(); i++) {
-            TeamMemberEntity oldTeamMemberEntity = myTeamEntitys.get(i);
-            for (int j = 0; j < teamMemberEntities.size(); j++) {
-                TeamMemberEntity newTeamMemberEntity = teamMemberEntities.get(j);
-                if (oldTeamMemberEntity.id == newTeamMemberEntity.id) {
-                    oldTeamMemberEntity.praiseCount = newTeamMemberEntity.praiseCount;
+        for (int i = 0; i < teamMemberEntities.size(); i++) {
+            TeamMemberEntity teamMemberEntity = teamMemberEntities.get(i);
+            for (int j = 0; j < teamMemberStarItems.size(); j++) {
+                TeamMemberStarItem teamMemberStarItem = teamMemberStarItems.get(j);
+                TeamMemberEntity entity = teamMemberStarItem.getEntity();
+                if (teamMemberEntity.id == entity.id) {
+                    int oldPraiseCount = entity.praiseCount;
+                    if (oldPraiseCount != teamMemberEntity.praiseCount) {
+                        entity.praiseCount = teamMemberEntity.praiseCount;
+                        teamMemberStarItem.updatePraise();
+                    }
                     break;
                 }
             }
         }
-        myTeamAdapter.notifyDataSetChanged();
     }
 
     private void showRank() {
@@ -272,12 +275,13 @@ public class TeamPkLeadPager extends LiveBasePager {
         }
         int newSize = myTeamEntitys.size();
         logger.d("showRank:oldSize=" + oldSize + ",newSize=" + newSize);
-        myTeamAdapter = new CommonAdapter<TeamMemberEntity>(myTeamEntitys) {
+        CommonAdapter<TeamMemberEntity> myTeamAdapter = new CommonAdapter<TeamMemberEntity>(myTeamEntitys) {
             HashMap<TeamMemberEntity, LottieAnimationView> map = new HashMap<>();
 
             @Override
             public AdapterItemInterface<TeamMemberEntity> getItemView(Object type) {
                 TeamMemberStarItem teamMemberStarItem = new TeamMemberStarItem(mContext, map);
+                teamMemberStarItems.add(teamMemberStarItem);
                 teamMemberStarItem.setOnItemClick(new TeamMemberStarItem.OnItemClick() {
                     @Override
                     public void onItemClick(TeamMemberEntity entity) {

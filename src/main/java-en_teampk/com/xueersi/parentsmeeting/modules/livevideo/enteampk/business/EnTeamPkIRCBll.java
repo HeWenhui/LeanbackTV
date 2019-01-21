@@ -335,7 +335,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 JSONObject jsonObject = new JSONObject();
                 try {
                     jsonObject.put("stu_id", "" + teamMemberEntity.id);
-                    jsonObject.put("like_num",  teamMemberEntity.praiseCount);
+                    jsonObject.put("like_num", teamMemberEntity.praiseCount);
                     String oldNickName = teamMemberEntity.nickName;
                     if (StringUtils.isEmpty(oldNickName)) {
                         for (int j = 0; j < uservector.size(); j++) {
@@ -492,6 +492,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
                             teamMemberEntity.id = stuLikeInfoobj.getInt("stu_id");
                             teamMemberEntity.praiseCount = stuLikeInfoobj.getInt("like_num");
+                            teamMemberEntities.add(teamMemberEntity);
                         }
                         enTeamPkAction.onStuLike(testId, teamMemberEntities);
                     } catch (JSONException e) {
