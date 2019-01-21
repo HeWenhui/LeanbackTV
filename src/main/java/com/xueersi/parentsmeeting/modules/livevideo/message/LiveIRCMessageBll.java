@@ -1081,6 +1081,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     public void onDestory() {
         super.onDestory();
         mRoomAction.onDestroy();
+        onSendMsgs.clear();
         EventBus.getDefault().unregister(this);
     }
 }

@@ -32,6 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.business.EnPkTeam;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.SendMessageReg;
 import com.xueersi.parentsmeeting.speakerrecognition.SpeakerRecognitionerInterface;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
@@ -40,6 +41,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.Call;
@@ -63,6 +65,20 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         super(context, liveBll);
         putInstance(LiveAchievementIRCBll.class, this);
         smallEnglish = activity.getIntent().getIntExtra("smallEnglish", 0);
+    }
+
+    @Override
+    public void onCreate(HashMap<String, Object> data) {
+        super.onCreate(data);
+        SendMessageReg sendMessageReg = getInstance(SendMessageReg.class);
+        if (sendMessageReg != null) {
+            sendMessageReg.addOnSendMsg(new SendMessageReg.OnSendMsg() {
+                @Override
+                public void onSendMsg(String msg) {
+                    LiveAchievementIRCBll.this.onSendMsg(msg);
+                }
+            });
+        }
     }
 
     @Override
@@ -353,7 +369,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     /**
      * 半身直播
      */
-    private class EnglishSpeekModHalfBody implements EnglishSpeekMode{
+    private class EnglishSpeekModHalfBody implements EnglishSpeekMode {
 
         @Override
         public void initAchievement(String mode) {
@@ -367,8 +383,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
             EnglishSpeekAction englishSpeekAction = null;
             if (LiveTopic.MODE_CLASS.equals(mode)) {
                 // 本场成就 ：金币 + 星星
-               LiveHalfBodyAchievementBll starBll = new LiveHalfBodyAchievementBll(activity,mLiveType,mGetInfo
-                       .getStarCount(), mGetInfo.getGoldCount(), true);
+                LiveHalfBodyAchievementBll starBll = new LiveHalfBodyAchievementBll(activity, mLiveType, mGetInfo
+                        .getStarCount(), mGetInfo.getGoldCount(), true);
                 starBll.setLiveBll(LiveAchievementIRCBll.this);
                 starBll.setLiveAndBackDebug(mLiveBll);
                 starBll.initView(mRootView, mContentView);
@@ -377,7 +393,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 englishSpeekAction = null;
 
             } else {
-                LiveAchievementBll starBll = new LiveAchievementBll(activity, mLiveType, mGetInfo,true);
+                LiveAchievementBll starBll = new LiveAchievementBll(activity, mLiveType, mGetInfo, true);
                 starBll.setLiveBll(LiveAchievementIRCBll.this);
                 starBll.setLiveAndBackDebug(mLiveBll);
                 starBll.initView(mRootView, mContentView);
@@ -401,7 +417,6 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     }
 
 
-
     private void startAchievement() {
         if (isDestory) {
             mLogtf.d("startAchievement:isDestory=true");
@@ -409,7 +424,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         }
         if (mGetInfo.getPattern() == 2) {
             englishSpeekMode = new EnglishSpeekModeStand();
-        }else if(mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY){
+        } else if (mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY) {
             englishSpeekMode = new EnglishSpeekModHalfBody();
         } else {
             englishSpeekMode = new EnglishSpeekModeNomal();
@@ -740,9 +755,9 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == 1) {
-                if(englishSpeekAction != null){
+                if (englishSpeekAction != null) {
                     englishSpeekAction.start();
-                    logger.d( "start:englishSpeekBll.start");
+                    logger.d("start:englishSpeekBll.start");
                 }
             }
         }
