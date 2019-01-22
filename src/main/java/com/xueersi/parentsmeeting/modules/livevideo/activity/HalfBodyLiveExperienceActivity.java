@@ -127,6 +127,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
     LiveBackBll liveBackBll;
     private RelativeLayout rlLiveMessageContent;
     LiveMessageBll liveMessageBll;
+    private LiveVideoSAConfig liveVideoSAConfig;
 
     /**
      * 横屏聊天信息
@@ -422,11 +423,11 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         Intent intent = getIntent();
         mVideoEntity = (VideoLivePlayBackEntity) intent.getExtras().getSerializable("videoliveplayback");
         islocal = intent.getBooleanExtra("islocal", false);
-        initAllBll();
         rlFirstBackgroundView = (RelativeLayout) findViewById(R.id.rl_course_video_first_backgroud);
         ivTeacherNotpresent = (ImageView) findViewById(R.id.iv_course_video_teacher_notpresent);
         // 加载横屏时互动题的列表布局
         rlQuestionContent = (RelativeLayout) findViewById(R.id.rl_course_video_live_question_contents);
+        initAllBll();
         loadData();
         return true;
     }
@@ -466,6 +467,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         getInfo.setStuName(stuName);
         getInfo.setNickname(UserBll.getInstance().getMyUserInfoEntity().getNickName());
         getInfo.setHeadImgPath(UserBll.getInstance().getMyUserInfoEntity().getHeadImg());
+        getInfo.setIsArts(isArts);
         return getInfo;
     }
 
@@ -735,7 +737,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         }
     }
 
-    private LiveVideoSAConfig liveVideoSAConfig;
 
     private void initAllBll() {
         liveBackBll = new LiveBackBll(this, mVideoEntity);
@@ -743,7 +744,14 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         mLiveBll = new LiveBll(this, mVideoEntity.getLiveId(), mVideoEntity.getChapterId(), EXP_LIVE_TYPE, 0);
         mLiveBll.setSendMsgListener(new MsgSendListener());
         mHttpManager = new LiveHttpManager(mContext);
-        liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
+        isArts = getIntent().getIntExtra("isArts", 0);
+        if (isArts == 1) {
+            IS_SCIENCE = false;
+            liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
+        } else {
+            IS_SCIENCE = true;
+            liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
+        }
         mHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
         String id = mVideoEntity.getLiveId();
         mHttpManager.addBodyParam("liveId", id);
@@ -819,7 +827,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         liveBackBll.setvPlayer(vPlayer);
         mVideoType = MobEnumUtil.VIDEO_LIVEPLAYBACK;
         where = getIntent().getStringExtra("where");
-        isArts = getIntent().getIntExtra("isArts", 0);
         // 如果加载不出来
         if (tvLoadingContent != null) {
             tvLoadingContent.setText("正在获取视频资源，请稍候");
@@ -905,7 +912,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
                 connectChatServer();
                 initHalfBodyLiveUi();
                 initHalfBodyLiveMsgPager(bottomContent);
-                //preLaodCourseWare();
+                //preLoadCourseWare();
             }
             if (firstTime) {
                 startTime = System.currentTimeMillis();
@@ -937,7 +944,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
     /**
      * 预加载课件
      */
-    private void preLaodCourseWare() {
+    private void preLoadCourseWare() {
         englishH5Cache = new EnglishH5Cache(this, mGetInfo);
         englishH5Cache.setHttpManager(mHttpManager);
         englishH5Cache.getCourseWareUrl();
