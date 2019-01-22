@@ -146,7 +146,7 @@ public class EnglishH5HalfBodyExperienceBll extends LiveBackBaseBll {
         videoQuestionLiveEntity.setLiveType(LiveVideoConfig.ExperiencLiveType.HALF_BODY);
         // 目前体验课 理科都是新课件
         videoQuestionLiveEntity.englishH5Entity.setNewEnglishH5(true);
-        String url = buildCourseUrl(videoQuestionLiveEntity, questionEntity.getCourseExtInfo());
+        String url = buildCourseUrl(videoQuestionLiveEntity, questionEntity);
         Log.e("HalfBodyExp", "=========>showQuestion: called 22222:" + url);
         videoQuestionLiveEntity.englishH5Entity.setUrl(url);
         return videoQuestionLiveEntity;
@@ -155,17 +155,20 @@ public class EnglishH5HalfBodyExperienceBll extends LiveBackBaseBll {
     /**
      * 构建体验课 新课件平台 试题加载地址
      **/
-    private String buildCourseUrl(VideoQuestionLiveEntity videoQuestionLiveEntity, String courseExtInfo) {
+    private String buildCourseUrl(VideoQuestionLiveEntity videoQuestionLiveEntity, VideoQuestionEntity questionEntity) {
+        if(questionEntity == null){
+            return "";
+        }
         StringBuilder stringBuilder = new StringBuilder();
         String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
         String classTestId = "";
         String packageId = "";
         String packageSource = "";
         String packageAttr = "";
-        Log.e("HalfBodyExp","Bll buildCourseUrl:"+courseExtInfo);
-        if (!TextUtils.isEmpty(courseExtInfo)) {
+        String releasedPageInfos = "";
+        if (!TextUtils.isEmpty(questionEntity.getCourseExtInfo())) {
             try {
-                JSONObject jsonObject = new JSONObject(courseExtInfo);
+                JSONObject jsonObject = new JSONObject(questionEntity.getCourseExtInfo());
                 classTestId = jsonObject.optString("ctId");
                 packageAttr = jsonObject.optString("pAttr");
                 packageId = jsonObject.optString("pId");
@@ -179,7 +182,8 @@ public class EnglishH5HalfBodyExperienceBll extends LiveBackBaseBll {
                 .append("&liveId=").append(mVideoEntity.getLiveId())
                 .append("&packageSource=").append(packageSource)
                 .append("&packageId=").append(packageId)
-                .append("&termId=").append(mTermid);
+                .append("&termId=").append(mTermid)
+                .append("&releasedPageInfos=").append(questionEntity.getReleasedPageInfos());
         return stringBuilder.toString();
     }
 
