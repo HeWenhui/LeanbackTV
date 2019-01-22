@@ -33,7 +33,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.dnkilic.waveform.WaveView;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.xueersi.common.base.BaseApplication;
@@ -76,7 +75,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.ReadyGoImageView;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 import com.xueersi.ui.widget.CircleImageView;
-import com.xueersi.parentsmeeting.widget.VolumeWaveView;
+import com.xueersi.ui.widget.WaveView;
+
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
 
@@ -429,7 +429,6 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
         }
     }
 
-
     /**
      * 用来自动朗读
      */
@@ -448,7 +447,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
                     if (msg.obj != null) {
                         position = (int) msg.obj;
                     }
-                    vwvSpeechVolume.speechPaused();
+                    vwvSpeechVolume.pause();
                     if (position == 0) {
                         RolePlayerEntity.RolePlayerMessage upMessage = mEntity.getLstRolePlayerMessage().get
                                 (mCurrentReadIndex - 1);
@@ -627,11 +626,8 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
                     public void onBeginOfSpeech() {
                         logger.i("开始测评 mCurrentReadIndex = "+mCurrentReadIndex);
                         isSpeechError = false;
-                        DisplayMetrics dm = new DisplayMetrics();
-                        Activity activity = (Activity) mContext;
-                        activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
-                        vwvSpeechVolume.initialize(dm,0.4f);
-                        vwvSpeechVolume.speechStarted();
+                        vwvSpeechVolume.initialize();
+                        vwvSpeechVolume.start();
                     }
 
             @Override

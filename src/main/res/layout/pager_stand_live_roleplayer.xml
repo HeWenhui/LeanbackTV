@@ -78,21 +78,19 @@
         <!--测评音量条区-->
         <RelativeLayout
             android:id="@id/rl_live_roleplayer_speech_volumewave_main"
-            android:layout_width="360dp"
-            android:layout_height="50dp"
+            android:layout_width="296dp"
+            android:layout_height="46dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="6dp"
-
             android:background="@drawable/shape_livevideo_roleplayer_speech_volumewave_bg"
             android:gravity="center"
             android:visibility="invisible">
 
-            <com.dnkilic.waveform.WaveView
+            <com.xueersi.ui.widget.WaveView
                 android:id="@+id/vwv_livevideo_roleplayer_speech_volumewave"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="4dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 />
 
         </RelativeLayout>
