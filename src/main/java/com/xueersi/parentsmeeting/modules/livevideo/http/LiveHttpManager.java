@@ -270,6 +270,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
     /**
      * filename暂时用做版本号
      */
+    @Deprecated
     public RequestParams liveOnloadLogs(String url, String type, String groupid, String uname, String uid, String stuid,
                                         String tpid, String filename, String str, String bz, Callback.CommonCallback
                                                 requestCallBack) {
