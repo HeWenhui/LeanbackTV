@@ -905,7 +905,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
                 connectChatServer();
                 initHalfBodyLiveUi();
                 initHalfBodyLiveMsgPager(bottomContent);
-                preLaodCourseWare();
+                //preLaodCourseWare();
             }
             if (firstTime) {
                 startTime = System.currentTimeMillis();
