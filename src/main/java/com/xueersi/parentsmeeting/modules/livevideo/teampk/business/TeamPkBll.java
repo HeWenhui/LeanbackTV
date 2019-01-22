@@ -1156,13 +1156,13 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                     return;
                 }
 
-                if (LiveVideoConfig.TEAM_PK.TOPIC_PKSTATE_BLACK_RANK_LIST == pkStateCode && !isTopicHandled()) {
+                if (LiveVideoConfig.TEAM_PK.TOPIC_PKSTEP_BLACK_RANK_LIST == pkStateCode && !isTopicHandled()) {
                     setTopicHandled(true);
                     getProgressStudent();
-                } else if (LiveVideoConfig.TEAM_PK.TOPIC_PKSTATE_STAR_RANK_LIST == pkStateCode && !isTopicHandled()) {
+                } else if (LiveVideoConfig.TEAM_PK.TOPIC_PKSTEP_STAR_RANK_LIST == pkStateCode && !isTopicHandled()) {
                     setTopicHandled(true);
                     getStusStars();
-                } else if (LiveVideoConfig.TEAM_PK.TOPIC_PKSTATE_PK_END == pkStateCode && !isTopicHandled()) {
+                } else if (LiveVideoConfig.TEAM_PK.TOPIC_PKSTEP_PK_END == pkStateCode && !isTopicHandled()) {
                     setTopicHandled(true);
                     showPkEndToast();
                 }

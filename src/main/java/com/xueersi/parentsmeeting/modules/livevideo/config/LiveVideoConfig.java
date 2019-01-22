@@ -406,10 +406,9 @@ public class LiveVideoConfig {
 
     /**战队PK 常量配置**/
     public interface TEAM_PK{
-        int TOPIC_PKSTATE_STAR_RANK_LIST = 3;
-        int TOPIC_PKSTATE_BLACK_RANK_LIST = 4;
-        int TOPIC_PKSTATE_PK_END = 5;
+        int TOPIC_PKSTEP_STAR_RANK_LIST = 3;
+        int TOPIC_PKSTEP_BLACK_RANK_LIST = 4;
+        int TOPIC_PKSTEP_PK_END = 5;
     }
-
 
 }
