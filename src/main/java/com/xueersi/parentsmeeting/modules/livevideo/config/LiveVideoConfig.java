@@ -404,4 +404,12 @@ public class LiveVideoConfig {
     /** 文理半身直播  文科科家长旁听数据接口 */
     public static final String URL_HALFBODY_LIVE_STULIVEINFO_ARTS = "https://app.chs.xueersi.com/LiveCourse/getStuDateOfVisitedParentPage";
 
+    /**战队PK 常量配置**/
+    public interface TEAM_PK{
+        int TOPIC_PKSTATE_STAR_RANK_LIST = 3;
+        int TOPIC_PKSTATE_BLACK_RANK_LIST = 4;
+        int TOPIC_PKSTATE_PK_END = 5;
+    }
+
+
 }

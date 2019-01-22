@@ -527,6 +527,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             roomInfo2.setAlloteam(status.optInt("alloteam"));
             roomInfo2.setOpenbox(status.optInt("openbox"));
             roomInfo2.setAllotpkman(status.optInt("allotpkman"));
+            roomInfo2.setPKStep(status.optInt("PKStep"));
             teamPkEntity.setRoomInfo2(roomInfo2);
 
             if (status.has("link_mic")) {

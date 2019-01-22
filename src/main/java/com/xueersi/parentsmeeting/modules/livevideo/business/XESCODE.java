@@ -153,6 +153,13 @@ public interface XESCODE {
 
     /** 退出每题pk 结果 */
     int TEAM_PK_EXIT_PK_RESULT = 235;
+    /** 公布明星榜**/
+    int TEAM_PK_STAR_RANK_LIST = 301;
+    /** 公布黑马榜 **/
+    int TEAM_PK_BLACK_RANK_LIST = 302;
+    /** 教师端结束pk 统计**/
+    int TEAM_PK_PK_END = 303;
+
 
     /** 一题多发 TODO */
     int MULTIPLE_H5_COURSEWARE = 251;

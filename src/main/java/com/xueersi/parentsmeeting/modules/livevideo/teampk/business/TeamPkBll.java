@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.teampk.business;
 import android.app.Activity;
 import android.os.Build;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -761,9 +760,10 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
 
     /**
      * 添加全屏模式 页面
+     *
      * @param pager
      */
-    private void addFullScreenPager(BasePager pager){
+    private void addFullScreenPager(BasePager pager) {
         rlTeamPkContent.removeAllViews();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
@@ -777,7 +777,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
             public void onGlobalLayout() {
 
                 if (!isFullScreenMode()) {
-                    if (mFocusPager != null && !(mFocusPager instanceof  TeamPkEndPager)) {
+                    if (mFocusPager != null && !(mFocusPager instanceof TeamPkEndPager)) {
                         int rightMargin = LiveVideoPoint.getInstance().getRightMargin();
                         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mFocusPager.getRootView()
                                 .getLayoutParams();
@@ -1002,13 +1002,15 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
             XESCODE.TEAM_PK_PUBLIC_CONTRIBUTION_STAR,
             XESCODE.TEAM_PK_EXIT_PK_RESULT,
             XESCODE.MULTIPLE_H5_COURSEWARE,
-            130
+            XESCODE.TEAM_PK_BLACK_RANK_LIST,
+            XESCODE.TEAM_PK_STAR_RANK_LIST,
+            XESCODE.TEAM_PK_PK_END
     };
 
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
-        logger.e("=======>onNotice :" + type+":"+data);
+        logger.e("=======>onNotice :" + type + ":" + data);
         if (isAvailable) {
             String nonce = "";
             String open = "";
@@ -1059,14 +1061,24 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                     nonce = data.optString("nonce", "");
                     TeamPkLog.receiveClassBoxInfo(mLiveBll, nonce, true);
                     showClassChest();
-
                     break;
 
                 case XESCODE.TEAM_PK_EXIT_PK_RESULT:
 
                     closeCurrentPkResult();
                     break;
-                case 130:
+                case XESCODE.TEAM_PK_BLACK_RANK_LIST:
+                    getProgressStudent();
+                    break;
+
+                case XESCODE.TEAM_PK_STAR_RANK_LIST:
+                    getStusStars();
+                    break;
+
+                case XESCODE.TEAM_PK_PK_END:
+                    showPkEndToast();
+                    break;
+               /* case 130:
                     String strCmd = data.optString("msg");
                     if ("1".equals(strCmd)) {
                         //startSelectAdversary();
@@ -1079,7 +1091,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                         //closeStarts();
                         //closeStuProgressList();
                     }
-                    break;
+                    break;*/
                 default:
                     break;
             }
@@ -1105,6 +1117,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                 int openBoxStateCode = 0;
                 int alloteamStateCode = 0;
                 int allotpkmanStateCode = 0;
+                int pkStateCode = 0;
 
                 if (LiveTopic.MODE_CLASS.equals(mLiveBll.getMode()) && teamPkEntity.getRoomInfo1() != null) {
                     openBoxStateCode = teamPkEntity.getRoomInfo1().getOpenbox();
@@ -1117,8 +1130,9 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                         openBoxStateCode = teamPkEntity.getRoomInfo2().getOpenbox();
                         alloteamStateCode = teamPkEntity.getRoomInfo2().getAlloteam();
                         allotpkmanStateCode = teamPkEntity.getRoomInfo2().getAllotpkman();
+                        pkStateCode = teamPkEntity.getRoomInfo2().getPKStep();
                         logger.e("====>onTopic teampk assist_teacher_info:" + openBoxStateCode + ":" +
-                                alloteamStateCode + ":" + allotpkmanStateCode);
+                                alloteamStateCode + ":" + allotpkmanStateCode + ":" + pkStateCode);
                     }
                 }
 
@@ -1140,6 +1154,17 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                     showPkResult();
                     logger.e("====>onTopic showPkResult:");
                     return;
+                }
+
+                if (LiveVideoConfig.TEAM_PK.TOPIC_PKSTATE_BLACK_RANK_LIST == pkStateCode && !isTopicHandled()) {
+                    setTopicHandled(true);
+                    getProgressStudent();
+                } else if (LiveVideoConfig.TEAM_PK.TOPIC_PKSTATE_STAR_RANK_LIST == pkStateCode && !isTopicHandled()) {
+                    setTopicHandled(true);
+                    getStusStars();
+                } else if (LiveVideoConfig.TEAM_PK.TOPIC_PKSTATE_PK_END == pkStateCode && !isTopicHandled()) {
+                    setTopicHandled(true);
+                    showPkEndToast();
                 }
                 setTopicHandled(true);
             }
@@ -1164,27 +1189,27 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
         mHttpManager.getTeamPkStarStudents(mLiveBll.getLiveId(), roomInitInfo.getStudentLiveInfo().getClassId(), new
                 HttpCallBack() {
 
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                List<TeamPkStar> data = mHttpResponseParser.parseTeamPkStar(responseEntity);
-                if (data != null && data.size() > 0) {
-                    showStars(data);
-                }
-            }
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                        List<TeamPkStar> data = mHttpResponseParser.parseTeamPkStar(responseEntity);
+                        if (data != null && data.size() > 0) {
+                            showStars(data);
+                        }
+                    }
 
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                super.onPmError(responseEntity);
-                String errorMsg = responseEntity.getErrorMsg();
-                XESToastUtils.showToast(mActivity, TextUtils.isEmpty(errorMsg) ? "明星榜数据获取失败" : errorMsg);
-            }
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        super.onPmError(responseEntity);
+                        String errorMsg = responseEntity.getErrorMsg();
+                        XESToastUtils.showToast(mActivity, TextUtils.isEmpty(errorMsg) ? "明星榜数据获取失败" : errorMsg);
+                    }
 
-            @Override
-            public void onFailure(Call call, IOException e) {
-                super.onFailure(call, e);
-                XESToastUtils.showToast(mActivity, "明星榜数据获取失败");
-            }
-        });
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        super.onFailure(call, e);
+                        XESToastUtils.showToast(mActivity, "明星榜数据获取失败");
+                    }
+                });
 
     }
 
@@ -1266,7 +1291,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
             @Override
             public void run() {
                 if (mFocusPager == null || !(mFocusPager instanceof TeamPkEndPager)) {
-                    TeamPkEndPager startsPager = new TeamPkEndPager(mActivity,TeamPkBll.this);
+                    TeamPkEndPager startsPager = new TeamPkEndPager(mActivity, TeamPkBll.this);
                     addFullScreenPager(startsPager);
                 }
             }
