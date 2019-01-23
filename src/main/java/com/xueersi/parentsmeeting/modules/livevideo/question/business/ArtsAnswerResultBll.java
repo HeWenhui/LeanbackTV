@@ -47,7 +47,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsPSEAnswerResultPager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.StandLiveH5ResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -969,7 +968,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                             speechResultEntity.score = score;
                             speechResultEntity.gold = gold;
                             speechResultEntity.enery = enery;
-                            SpeechResultPager speechResultPager = new SpeechResultPager(mContext, mRootView, speechResultEntity);
+                            SpeechResultPager speechResultPager = new SpeechResultPager(mContext, mRootView, speechResultEntity, mGetInfo);
                             mRootView.addView(speechResultPager.getRootView());
                             speechResultPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
                                 @Override

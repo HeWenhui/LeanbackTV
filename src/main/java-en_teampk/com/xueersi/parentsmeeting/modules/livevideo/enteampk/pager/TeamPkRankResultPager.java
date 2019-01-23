@@ -138,9 +138,12 @@ public class TeamPkRankResultPager extends LiveBasePager {
             lp.leftMargin = (int) ((i % 3) * (73 * ScreenUtils.getScreenDensity()));
             rlRankOther.addView(view, lp);
         }
+        String[] lables = {"答对互动题", "参与互动题", "完成语音题"};
         String[] tips = {"+10", "+5", "按比例增加"};
         for (int i = 0; i < tips.length; i++) {
             View tipView = LayoutInflater.from(mContext).inflate(R.layout.item_livevideo_en_tip, llScoreTip, false);
+            TextView tv_livevideo_en_teampk_rank_score_tip_lable = tipView.findViewById(R.id.tv_livevideo_en_teampk_rank_score_tip_lable);
+            tv_livevideo_en_teampk_rank_score_tip_lable.setText(lables[i]);
             TextView tv_livevideo_en_teampk_rank_score_tip = tipView.findViewById(R.id.tv_livevideo_en_teampk_rank_score_tip);
             tv_livevideo_en_teampk_rank_score_tip.setText(tips[i]);
             llScoreTip.addView(tipView);
@@ -171,7 +174,7 @@ public class TeamPkRankResultPager extends LiveBasePager {
                         onStartClick.onClick();
                     } else {
                         ViewGroup group = (ViewGroup) mView.getParent();
-                        if(group!=null){
+                        if (group != null) {
                             group.removeView(mView);
                         }
                     }

@@ -1,24 +1,18 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.xueersi.common.base.BasePager;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultMember;
@@ -49,11 +43,13 @@ public class SpeechResultPager extends LiveBasePager {
     private static int[] titleres = {R.drawable.app_livevideo_enteampk_shellwindow_nicework3_img_nor1, R.drawable.app_livevideo_enteampk_shellwindow_tryharder2_img_nor,
             R.drawable.app_livevideo_enteampk_shellwindow_nicework3_img_nor, R.drawable.app_livevideo_enteampk_shellwindow_goodjob4_img_nor,
             R.drawable.app_livevideo_enteampk_shellwindow_fantastic5_img_nor};
+    private LiveGetInfo liveGetInfo;
 
-    public SpeechResultPager(Context context, ViewGroup group, SpeechResultEntity speechResultEntity) {
+    public SpeechResultPager(Context context, ViewGroup group, SpeechResultEntity speechResultEntity, LiveGetInfo liveGetInfo) {
         super(context, false);
         this.group = group;
         this.speechResultEntity = speechResultEntity;
+        this.liveGetInfo = liveGetInfo;
         mView = initView();
         initData();
         initListener();
@@ -65,10 +61,26 @@ public class SpeechResultPager extends LiveBasePager {
         iv_live_speech_result_title = view.findViewById(R.id.iv_live_speech_result_title);
         if (speechResultEntity.praise == -1) {
             ViewStub vs_live_speech_result_myenergy = view.findViewById(R.id.vs_live_speech_result_myenergy);
-            vs_live_speech_result_myenergy.inflate();
+            View view1 = vs_live_speech_result_myenergy.inflate();
+            if (!liveGetInfo.getSmallEnglish()) {
+                view1.findViewById(R.id.iv_live_speech_result_myenergy).setVisibility(View.GONE);
+                view1.findViewById(R.id.tv_live_speech_result_myenergy).setVisibility(View.GONE);
+                View iv_live_speech_result_mygold = view1.findViewById(R.id.iv_live_speech_result_mygold);
+                ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) iv_live_speech_result_mygold.getLayoutParams();
+                layoutParams.leftMargin = 0;
+                iv_live_speech_result_mygold.setLayoutParams(layoutParams);
+            }
         } else {
             ViewStub vs_live_speech_result_roleplay_myenergy = view.findViewById(R.id.vs_live_speech_result_roleplay_myenergy);
-            vs_live_speech_result_roleplay_myenergy.inflate();
+            View view1 = vs_live_speech_result_roleplay_myenergy.inflate();
+            if (!liveGetInfo.getSmallEnglish()) {
+                view1.findViewById(R.id.iv_live_speech_result_myenergy).setVisibility(View.GONE);
+                view1.findViewById(R.id.tv_live_speech_result_myenergy).setVisibility(View.GONE);
+                View iv_live_speech_result_mygold = view1.findViewById(R.id.iv_live_speech_result_mygold);
+                ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) iv_live_speech_result_mygold.getLayoutParams();
+                layoutParams.leftMargin = 0;
+                iv_live_speech_result_mygold.setLayoutParams(layoutParams);
+            }
             tv_live_speech_result_mypraise = view.findViewById(R.id.tv_live_speech_result_mypraise);
         }
         iv_live_speech_result_close = view.findViewById(R.id.iv_live_speech_result_close);

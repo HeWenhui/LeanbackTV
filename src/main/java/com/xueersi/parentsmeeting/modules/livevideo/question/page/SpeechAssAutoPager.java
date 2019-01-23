@@ -29,8 +29,6 @@ import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.speechrecognizer.TalSpeech;
 import com.tencent.bugly.crashreport.CrashReport;
-import com.umeng.analytics.MobclickAgent;
-import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.speech.SpeechConfig;
@@ -40,6 +38,7 @@ import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.VoiceAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
@@ -147,17 +146,18 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     /** 已经作答 */
     boolean haveAnswer;
     String learning_stage;
-
+    private LiveGetInfo liveGetInfo;
     private SpeechParamEntity mParam;
 
     public SpeechAssAutoPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, String liveid, String
-            testId,
+            testId, LiveGetInfo liveGetInfo,
                               String nonce, String content, int time, boolean haveAnswer, String learning_stage,
                               SpeechEvalAction speechEvalAction, LivePagerBack livePagerBack) {
         super(context);
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.isLive = true;
         this.id = testId;
+        this.liveGetInfo = liveGetInfo;
         this.nonce = nonce;
         this.speechEvalAction = speechEvalAction;
         mLogtf.i("SpeechAssessmentPager:id=" + id);
@@ -183,13 +183,14 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     }
 
     public SpeechAssAutoPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, String liveid, String
-            testId,
+            testId, LiveGetInfo liveGetInfo,
                               String nonce, String content, int time, int examSubmit, String learning_stage,
                               SpeechEvalAction speechEvalAction, LivePagerBack livePagerBack) {
         super(context);
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.isLive = false;
         this.id = testId;
+        this.liveGetInfo = liveGetInfo;
         this.nonce = nonce;
         this.speechEvalAction = speechEvalAction;
         mLogtf.i("SpeechAssessmentPager:id=" + id);
@@ -726,7 +727,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         speechResultEntity.fluency = resultEntity.getContScore();
         speechResultEntity.accuracy = resultEntity.getPronScore();
         if (smallEnglish == 1) {
-            SpeechResultPager speechResultPager = new SpeechResultPager(mContext, group, speechResultEntity);
+            SpeechResultPager speechResultPager = new SpeechResultPager(mContext, group, speechResultEntity, liveGetInfo);
             group.addView(speechResultPager.getRootView());
             speechResultPager.setOnPagerClose(new OnPagerClose() {
                 @Override
