@@ -16,6 +16,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -98,13 +99,13 @@ public class SwitchFlowView extends FrameLayout {
     private void initView() {
         isSmallEnglish = ((Activity) getContext()).getIntent().getBooleanExtra("isSmallEnglish", false);
         pattern = ((Activity) getContext()).getIntent().getIntExtra("pattern", 2);
-        if (isSmallEnglish || LiveVideoConfig.isPrimary) {
+        if (isSmallEnglish || LiveVideoConfig.isPrimary || LiveVideoConfig.isSmallChinese) {
             View view = View.inflate(getContext(), R.layout.page_livevideo_triple_screen_switch_flow, this);
             btnSwitchFlow = view.findViewById(R.id.bt_switch_flow);
             layoutSwitchFlow = view.findViewById(R.id.layout_livevideo_switch_flow_pop_window);
             ivSwitchFlowArrow = view.findViewById(R.id.iv_livevideo_common_switch_flow_arrow);
-            fzcySwitch = view.findViewById(R.id.fzcytv_livevideo_switch_flow_switch);
-            fzcyReload = view.findViewById(R.id.fzcytv_livevideo_switch_flow_reload);
+            tvSwitch = view.findViewById(R.id.fzcytv_livevideo_switch_flow_switch);
+            tvReload = view.findViewById(R.id.fzcytv_livevideo_switch_flow_reload);
         } else {
             View view = View.inflate(getContext(), R.layout.page_livevideo_triple_screen_normal_switch_flow, this);
             btnSwitchFlow = view.findViewById(R.id.bt_switch_flow);
@@ -128,6 +129,8 @@ public class SwitchFlowView extends FrameLayout {
                     XESToastUtils.showToast(getContext(), "当前正在举麦，请稍后重试");
                     return;
                 }
+                UmsAgentManager.umsAgentCustomerBusiness(getContext(), getContext().getResources().getString(R.string
+                        .livevideo_switch_flow_17078));
                 if (isPopWindowShow == 0) {
                     setSwitchFlowPopWindowVisible(true);
 
@@ -141,27 +144,29 @@ public class SwitchFlowView extends FrameLayout {
             }
         });
 
-        if (fzcySwitch != null) {
-            fzcySwitch.setOnTouchListener(new OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        fzcySwitch.setTextColor(clickColor);
-                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        fzcySwitch.setTextColor(normalColor);
-                    }
-                    return false;
-                }
-            });
-            fzcySwitch.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (iSwitchFlow != null) {
-                        iSwitchFlow.switchRoute();
-                    }
-                }
-            });
-        }
+//        if (fzcySwitch != null) {
+//            fzcySwitch.setOnTouchListener(new OnTouchListener() {
+//                @Override
+//                public boolean onTouch(View v, MotionEvent event) {
+//                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+//                        fzcySwitch.setTextColor(clickColor);
+//                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+//                        fzcySwitch.setTextColor(normalColor);
+//                    }
+//                    return false;
+//                }
+//            });
+//            fzcySwitch.setOnClickListener(new OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    if (iSwitchFlow != null) {
+//                        UmsAgentManager.umsAgentCustomerBusiness(getContext(), getContext().getResources().getString(R.string
+//                                .livevideo_switch_flow_17078));
+//                        iSwitchFlow.switchRoute();
+//                    }
+//                }
+//            });
+//        }
         if (tvSwitch != null) {
             tvSwitch.setOnTouchListener(new OnTouchListener() {
                 @Override
@@ -178,33 +183,35 @@ public class SwitchFlowView extends FrameLayout {
                 @Override
                 public void onClick(View v) {
                     if (iSwitchFlow != null) {
+                        UmsAgentManager.umsAgentCustomerBusiness(getContext(), getContext().getResources().getString(R.string
+                                .livevideo_1773));
                         iSwitchFlow.switchRoute();
                     }
                 }
             });
         }
-        if (fzcyReload != null) {
-            fzcyReload.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (iSwitchFlow != null) {
-                        setSwitchFlowPopWindowVisible(false);
-                        iSwitchFlow.reLoad();
-                    }
-                }
-            });
-            fzcyReload.setOnTouchListener(new OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        fzcyReload.setTextColor(clickColor);
-                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
-                        fzcyReload.setTextColor(normalColor);
-                    }
-                    return false;
-                }
-            });
-        }
+//        if (fzcyReload != null) {
+//            fzcyReload.setOnClickListener(new OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    if (iSwitchFlow != null) {
+//                        setSwitchFlowPopWindowVisible(false);
+//                        iSwitchFlow.reLoad();
+//                    }
+//                }
+//            });
+//            fzcyReload.setOnTouchListener(new OnTouchListener() {
+//                @Override
+//                public boolean onTouch(View v, MotionEvent event) {
+//                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+//                        fzcyReload.setTextColor(clickColor);
+//                    } else if (event.getAction() == MotionEvent.ACTION_UP) {
+//                        fzcyReload.setTextColor(normalColor);
+//                    }
+//                    return false;
+//                }
+//            });
+//        }
         if (tvReload != null) {
             tvReload.setOnClickListener(new OnClickListener() {
                 @Override

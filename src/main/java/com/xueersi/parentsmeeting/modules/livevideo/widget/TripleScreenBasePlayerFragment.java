@@ -59,9 +59,9 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
             case TRIPLE_SCREEN_MIDDLE_LOADING:
 //                loadingDrawable = getActivity().getResources().getDrawable(R.drawable.anim_livevideo_triple_screen_loading);
                 break;
-//            case TRIPLE_SCREEN_PRIMARY_CHINESE_LOADING:
-//                loadingDrawable = getActivity().getResources().getDrawable(R.drawable.anim_livevideo_triple_screen_primary_chinese_loading);
-//                break;
+            case TRIPLE_SCREEN_PRIMARY_CHINESE_LOADING:
+                loadingDrawable = getActivity().getResources().getDrawable(R.drawable.anim_livevideo_triple_screen_primary_chinese_loading);
+                break;
             case TRIPLE_SCREEN_PRIMARY_ENGLISH_LOADING:
                 loadingDrawable = getActivity().getResources().getDrawable(R.drawable.anim_livevideo_triple_screen_primary_english_loading);
                 break;
@@ -178,30 +178,33 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                     if (!isFirstShow) {
                         setVideoLoadingLayoutVisibility(View.VISIBLE);
                     } else {
-                        rootView = getActivity().findViewById(R.id.rl_course_video_live_question_content);
-                        if (isSmallEnglish || LiveVideoConfig.isPrimary) {
-                            loadingLayout = (ViewGroup) View.inflate(getActivity(), R.layout.layout_livevideo_triple_screen_load_player, null);
-                            layoutLoading = loadingLayout.findViewById(R.id.layout_livevideo_triple_screen_loading);
-                            ivLoading = loadingLayout.findViewById(R.id.iv_livevideo_triple_screen_loading);
-                            setDrawable();
-                        } else {
-                            loadingLayout = (ViewGroup) View.inflate(getActivity(), R.layout.layout_livevideo_triple_screen_middle_school_load_playerload, null);
-                        }
-                        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-                        rootView.addView(loadingLayout, layoutParams);
-                        if (isSmallEnglish || LiveVideoConfig.isPrimary) {
-                            setLayoutLoadingVisible(true);
-                        }
-                        isFirstShow = false;
-                        vPlayerHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-//                                removeLoadingView();
-                                removeLoadingView();
-//                                setLayoutLoadingVisible(false);
+                        if (getActivity() != null) {
+                            rootView = getActivity().findViewById(R.id.rl_course_video_live_question_content);
+                            if (isSmallEnglish || LiveVideoConfig.isPrimary || LiveVideoConfig.isSmallChinese) {
+                                loadingLayout = (ViewGroup) View.inflate(getActivity(), R.layout.layout_livevideo_triple_screen_load_player, null);
+                                layoutLoading = loadingLayout.findViewById(R.id.layout_livevideo_triple_screen_loading);
+                                ivLoading = loadingLayout.findViewById(R.id.iv_livevideo_triple_screen_loading);
+                                setDrawable();
+                            } else {
+                                loadingLayout = (ViewGroup) View.inflate(getActivity(), R.layout.layout_livevideo_triple_screen_middle_school_load_playerload, null);
                             }
-                        }, 2000);
+                            RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                            layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+                            rootView.addView(loadingLayout, layoutParams);
+
+                            if (isSmallEnglish || LiveVideoConfig.isPrimary || LiveVideoConfig.isSmallChinese) {
+                                setLayoutLoadingVisible(true);
+                            }
+                            isFirstShow = false;
+                            vPlayerHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+//                                removeLoadingView();
+                                    removeLoadingView();
+//                                setLayoutLoadingVisible(false);
+                                }
+                            }, 2000);
+                        }
                     }
                     vPlayerHandler.sendEmptyMessageDelayed(BUFFER_PROGRESS, 1000);
                     break;

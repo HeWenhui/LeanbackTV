@@ -150,9 +150,10 @@ public class LiveBackVideoBll {
 
     public void onNetWorkChange(int netWorkType) {
         if (netWorkType == NetWorkHelper.NO_NETWORK) {
+            boolean isInitialized = vPlayer.isInitialized();
             vPlayer.stop();
             liveBackPlayVideoFragment.resultFailed(0, 0);
-            if (livePlayLog != null) {
+            if (isInitialized && livePlayLog != null) {
                 livePlayLog.onOpenFailed(0, AvformatOpenInputError.ENETDOWN.getNum());
             }
         }

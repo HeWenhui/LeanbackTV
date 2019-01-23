@@ -309,11 +309,12 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             this.failingUrl = null;
-            if (!url.equals(examUrl)) {
-                mLogtf.i("onPageStarted:setInitialScale");
-                int scale = ScreenUtils.getScreenWidth() * 100 / 878;
-                wvSubjectWeb.setInitialScale(scale);
-            }
+            //没用了
+//            if (!url.equals(examUrl)) {
+//                mLogtf.i("onPageStarted:setInitialScale");
+//                int scale = ScreenUtils.getScreenWidth() * 100 / 878;
+//                wvSubjectWeb.setInitialScale(scale);
+//            }
             super.onPageStarted(view, url, favicon);
         }
 

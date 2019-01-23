@@ -14,6 +14,7 @@ import android.widget.Toast;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
@@ -118,6 +119,8 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
 //    private ConstraintLayout layoutVideoFailRetry;
     /** 切流加载中的按钮o */
     private Button btnVideoFailRetry;
+    /** 是否上传切流埋点日志 */
+    private boolean isSwitchUpload = false;
 
     /** {@link #onActivityCreated(Bundle)} */
     @Override
@@ -140,7 +143,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             before = System.currentTimeMillis();
             addBusiness(activity);
             logger.d("onVideoCreate:time3=" + (System.currentTimeMillis() - before));
-            if ((pattern == 1) && !LiveVideoConfig.isSmallChinese) {
+            if ((pattern == 1)) {
                 //根据不同直播显示不同加载中动画
                 setLoadingView();
             }
@@ -151,10 +154,9 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     /** 设置显示的加载动画 */
     protected void setLoadingView() {
         liveVideoPlayFragment = (LivePlayerFragment) getChildFragmentManager().findFragmentByTag("LivePlayerFragment");
-//        if (LiveVideoConfig.isSmallChinese) {
-//            liveVideoPlayFragment.setLoadingAnimation(TripleScreenBasePlayerFragment.TRIPLE_SCREEN_PRIMARY_CHINESE_LOADING);
-//        }
-        if (LiveVideoConfig.isPrimary) {
+        if (LiveVideoConfig.isSmallChinese) {
+            liveVideoPlayFragment.setLoadingAnimation(TripleScreenBasePlayerFragment.TRIPLE_SCREEN_PRIMARY_CHINESE_LOADING);
+        } else if (LiveVideoConfig.isPrimary) {
             mLogtf.i("primary_science_loading");
             liveVideoPlayFragment.setLoadingAnimation(TripleScreenBasePlayerFragment.TRIPLE_SCREEN_PRIMARY_SCIENCE_LOADING);
         } else if (isSmallEnglish) {
@@ -299,7 +301,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         evaluateTeacherBll.setLiveFragment(this);
         mLiveBll.addBusinessBll(evaluateTeacherBll);
 
-        if ((pattern == 1) && !LiveVideoConfig.isSmallChinese) {
+        if ((pattern == 1)) {
             addSwitchFlowBll();
             initSwitchFlowListener();
         }
@@ -318,10 +320,16 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     protected void onPlayOpenSuccess() {
         super.onPlayOpenSuccess();
         //如果之前是正在切流的状态
-        if ((pattern == 1) && !LiveVideoConfig.isSmallChinese) {
-            liveVideoAction.onPlaySuccess();
+        if ((pattern == 1)) {
+            if (liveVideoAction != null) {//处于后台时这里容易null,所以加上非空判断
+                liveVideoAction.onPlaySuccess();
+            }
             if (switchFlowStatus == LiveVideoAction.SWITCH_FLOW_ROUTE_SWITCH) {
-                if (LiveVideoConfig.isPrimary || isSmallEnglish) {
+                if (isSwitchUpload) {
+                    UmsAgentManager.umsAgentCustomerBusiness(getActivity(), getActivity().getResources().getString(R.string
+                            .livevideo_switch_flow_170711));
+                }
+                if (LiveVideoConfig.isPrimary || isSmallEnglish || LiveVideoConfig.isSmallChinese) {
                     SwitchRouteSuccessDialog switchRouteSuccessDialog = new SwitchRouteSuccessDialog(activity);
                     switchRouteSuccessDialog.updateView(nowRoutePos);
                     switchRouteSuccessDialog.showDialogAutoClose(2000);
@@ -329,15 +337,22 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                     XESToastUtils.showToast(activity, "线路" + nowRoutePos + "切换成功");
                 }
                 mLogtf.i("route " + nowRoutePos + "(add 1) switch success");
+            } else if (switchFlowStatus == LiveVideoAction.SWITCH_FLOW_RELOAD) {
+                if (isSwitchUpload) {
+                    UmsAgentManager.umsAgentCustomerBusiness(getActivity(), getActivity().getResources().getString(R.string
+                            .livevideo_switch_flow_17079));
+                }
             }
         }
         resetStatus();
     }
 
-    /** 重置标志位 */
+    /** 重置切换线路的标志位 */
     private void resetStatus() {
         switchFlowStatus = LiveVideoAction.SWITCH_FLOW_NORMAL;
-        liveVideoAction.setVideoSwitchFlowStatus(switchFlowStatus, 0);
+        if (liveVideoAction != null) {
+            liveVideoAction.setVideoSwitchFlowStatus(switchFlowStatus, 0);
+        }
     }
 
 //    private int switchFlowPos = 1;
@@ -350,7 +365,8 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         }
         switchFlowBll = new SwitchFlowBll(activity, mLiveBll);
         mLiveBll.addBusinessBll(switchFlowBll);
-        switchFlowBll.setmView(getSwitchFlowView(), liveMediaControllerBottom, new SwitchFlowView.IReLoad() {
+        switchFlowBll.setmView(getSwitchFlowView(), liveMediaControllerBottom,
+                new SwitchFlowView.IReLoad() {
                     @Override
                     public void reLoad() {
 //                        isSwitchReloadShow = true;
@@ -361,6 +377,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                             }
                         }
                         switchFlowStatus = LiveVideoAction.SWITCH_FLOW_RELOAD;
+                        isSwitchUpload = true;
                         //1.重新加载,显示加载中
                         rePlay(false);
                         //2. 自动切流
@@ -375,6 +392,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                     public void itemClick(int pos) {
                         mLogtf.i("switchFlowView click switch,click pos=" + pos);
                         switchFlowStatus = LiveVideoAction.SWITCH_FLOW_ROUTE_SWITCH;
+                        isSwitchUpload = true;
                         if (!mLiveBll.isPresent()) {
                             if (mContentView.findViewById(R.id.iv_course_video_teacher_notpresent) != null) {
                                 mContentView.findViewById(R.id.iv_course_video_teacher_notpresent).setVisibility(View.GONE);
@@ -465,23 +483,23 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                 + liveMediaControllerBottom.getClass().getSimpleName());
 
         pattern = activity.getIntent().getIntExtra("pattern", 2);
-        if ((pattern == 1) && !LiveVideoConfig.isSmallChinese) {
+        if ((pattern == 1)) {
             btnVideoFailRetry = mContentView.findViewById(R.id.btn_livevideo_switch_flow_retry_btn);
         }
         //如果是三分屏，则需要添加加载中的监听器
     }
 
     @Override
-    protected void resultFailed(int arg1, int arg2) {
-        super.resultFailed(arg1, arg2);
-
+    protected void onFail(int arg1, int arg2) {
+        super.onFail(arg1, arg2);
+        isSwitchUpload = false;
     }
 
     /** 更新调度的list，{@link com.xueersi.parentsmeeting.modules.livevideo.video.LiveGetPlayServer#liveGetPlayServer(String, boolean),}无论成功时报都会走 */
     @Override
     public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
         super.onLiveStart(server, cacheData, modechange);
-        if ((pattern == 1) && !LiveVideoConfig.isSmallChinese && switchFlowBll != null) {
+        if ((pattern == 1) && switchFlowBll != null) {
             if (server != null) {
                 switchFlowBll.setListRoute(server.getPlayserver());
                 logger.i(server.getPlayserver().size());

@@ -17,6 +17,7 @@ import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.FooterIconEntity;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
@@ -114,7 +115,7 @@ public class LiveVideoAction implements VideoAction {
         pattern = activity.getIntent().getIntExtra("pattern", 2);
         isExperience = activity.getIntent().getBooleanExtra("isExperience", false);
         isSmallEnglish = activity.getIntent().getBooleanExtra("isSmallEnglish", false);
-        if (pattern == 1 && !LiveVideoConfig.isSmallChinese && !isExperience) {
+        if (pattern == 1 && !isExperience) {
             layoutSwitchFlow = mContentView.findViewById(R.id.layout_livevideot_triple_screen_fail_retry);
             tvSwitchFlowRetry = mContentView.findViewById(R.id.fzcy_livevideo_switch_flow_retry_text);
             setVideoLayout();
@@ -124,11 +125,10 @@ public class LiveVideoAction implements VideoAction {
     }
 
     private void switchFlowViewChangeBtn() {
-//        if (LiveVideoConfig.isSmallChinese) {
-//
-//        }
         Drawable drawable = activity.getResources().getDrawable(R.drawable.selector_livevideo_primary_science_retry_btn);
-        if (LiveVideoConfig.isPrimary) {
+        if (LiveVideoConfig.isSmallChinese) {
+            drawable = activity.getResources().getDrawable(R.drawable.selector_livevideo_primary_chs_retry_btn);
+        } else if (LiveVideoConfig.isPrimary) {
             drawable = activity.getResources().getDrawable(R.drawable.selector_livevideo_primary_science_retry_btn);
         } else if (isSmallEnglish) {
             drawable = activity.getResources().getDrawable(R.drawable.selector_livevideo_small_english_retry_btn);
@@ -204,7 +204,7 @@ public class LiveVideoAction implements VideoAction {
                                         + ",lastPlayErrorCode=" + lastPlayErrorCode);
                                 lastPlayErrorCode = null;
                                 if (!modechange) {
-                                    if (pattern == 1 && !LiveVideoConfig.isSmallChinese && !isExperience) {
+                                    if (pattern == 1 && !isExperience) {
 //                                        linearLayout.setVisibility(View.VISIBLE);
 //                                        layoutSwitchFlow.setVisibility(View.GONE);
                                         logger.i("显示linearLayout,layoutSwitchFlow隐藏");
@@ -248,7 +248,7 @@ public class LiveVideoAction implements VideoAction {
                         @Override
                         public void run() {
                             if (tvLoadingHint != null && !modechange) {
-                                if (pattern == 1 && !LiveVideoConfig.isSmallChinese && !isExperience) {
+                                if (pattern == 1 && !isExperience) {
                                     logger.i("显示linearLayout,layoutSwitchFlow隐藏");
 //                                        logger.i();
                                     if (videoSwitchFlowStatus == SWITCH_FLOW_RELOAD) {
@@ -320,8 +320,10 @@ public class LiveVideoAction implements VideoAction {
             @Override
             public void run() {
                 //如果是三分屏
-                if (isSmallEnglish || LiveVideoConfig.isPrimary) {
+                if (isSmallEnglish || LiveVideoConfig.isPrimary || LiveVideoConfig.isSmallChinese) {
                     if (videoSwitchFlowStatus == SWITCH_FLOW_ROUTE_SWITCH) {
+                        UmsAgentManager.umsAgentCustomerBusiness(activity, activity.getResources().getString(R.string
+                                .livevideo_switch_flow_170712));
                         if (!mLiveBll.isPresent()) {
                             if (mContentView.findViewById(R.id.iv_course_video_teacher_notpresent) != null) {
                                 mContentView.findViewById(R.id.iv_course_video_teacher_notpresent).setVisibility(View.VISIBLE);
@@ -341,6 +343,8 @@ public class LiveVideoAction implements VideoAction {
                         }
                         tvSwitchFlowRetry.setText("线路" + strRoute + "切换失败");
                     } else if (videoSwitchFlowStatus == SWITCH_FLOW_RELOAD) {
+                        UmsAgentManager.umsAgentCustomerBusiness(activity, activity.getResources().getString(R.string
+                                .livevideo_switch_flow_170710));
                         if (!mLiveBll.isPresent()) {
                             if (mContentView.findViewById(R.id.iv_course_video_teacher_notpresent) != null) {
                                 mContentView.findViewById(R.id.iv_course_video_teacher_notpresent).setVisibility(View.VISIBLE);
