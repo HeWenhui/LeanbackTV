@@ -335,7 +335,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 JSONObject jsonObject = new JSONObject();
                 try {
                     jsonObject.put("stu_id", "" + teamMemberEntity.id);
-                    jsonObject.put("like_num", teamMemberEntity.praiseCount);
+                    jsonObject.put("like_num", teamMemberEntity.thisPraiseCount);
                     String oldNickName = teamMemberEntity.nickName;
                     if (StringUtils.isEmpty(oldNickName)) {
                         for (int j = 0; j < uservector.size(); j++) {
@@ -348,7 +348,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     }
                     jsonObject.put("nick_name", "" + teamMemberEntity.nickName);
                     jsonArray.put(jsonObject);
-                    logger.d("reportStuLike:praiseCount=" + teamMemberEntity.praiseCount + ",old=" + oldNickName + ",new=" + teamMemberEntity.nickName);
+                    logger.d("reportStuLike:praiseCount=" + teamMemberEntity.thisPraiseCount + ",old=" + oldNickName + ",new=" + teamMemberEntity.nickName);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -372,12 +372,14 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 @Override
                 public void onPmError(ResponseEntity responseEntity) {
                     logger.d("reportStuLike:onPmError=" + responseEntity.getErrorMsg());
+                    abstractBusinessDataCallBack.onDataFail(1, "" + responseEntity.getErrorMsg());
                 }
 
                 @Override
                 public void onPmFailure(Throwable error, String msg) {
                     logger.d("reportStuLike:onPmFailure:msg=" + msg + ",reportStuLike=" + reportStuLike, error);
                     if (reportStuLike > 3) {
+                        abstractBusinessDataCallBack.onDataFail(0, "" + msg);
                         return;
                     }
                     postDelayedIfNotFinish(new Runnable() {

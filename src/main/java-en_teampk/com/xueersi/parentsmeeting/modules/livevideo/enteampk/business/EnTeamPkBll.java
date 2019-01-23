@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.config.EnTeamPkConfig;
@@ -304,10 +305,28 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
         public void run() {
             logger.d("praiseRunnable");
             before = 0;
-            enTeamPkHttp.reportStuLike(testId, myTeamEntitys, new AbstractBusinessDataCallBack() {
+            final ArrayList<TeamMemberEntity> reportTeamEntitys = new ArrayList<>();
+            for (int i = 0; i < myTeamEntitys.size(); i++) {
+                TeamMemberEntity reportTeamMemberEntity = new TeamMemberEntity();
+                TeamMemberEntity teamMemberEntity = myTeamEntitys.get(i);
+                reportTeamMemberEntity.copy(teamMemberEntity);
+                teamMemberEntity.thisPraiseCount = 0;
+                reportTeamEntitys.add(reportTeamMemberEntity);
+            }
+            enTeamPkHttp.reportStuLike(testId, reportTeamEntitys, new AbstractBusinessDataCallBack() {
                 @Override
                 public void onDataSucess(Object... objData) {
 
+                }
+
+                @Override
+                public void onDataFail(int errStatus, String failMsg) {
+                    super.onDataFail(errStatus, failMsg);
+                    for (int i = 0; i < myTeamEntitys.size(); i++) {
+                        TeamMemberEntity reportTeamMemberEntity = reportTeamEntitys.get(i);
+                        TeamMemberEntity teamMemberEntity = myTeamEntitys.get(i);
+                        teamMemberEntity.thisPraiseCount += reportTeamMemberEntity.thisPraiseCount;
+                    }
                 }
             });
         }
@@ -315,31 +334,43 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
 
     @Override
     public void onRankLead(final EnTeamPkRankEntity enTeamPkRankEntity, final String testId, final int type) {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                teamPkLeadPager = new TeamPkLeadPager(mContext, enTeamPkRankEntity, testId, type, pattern, new TeamPkLeadPager.OnClose() {
-                    @Override
-                    public void close(BasePager basePager) {
-                        rootView.removeView(basePager.getRootView());
-                    }
-                });
-                teamPkLeadPager.setOnStudyClick(new TeamPkLeadPager.OnStudyClick() {
-                    @Override
-                    public void onStudyClick(ArrayList<TeamMemberEntity> myTeamEntitys) {
-                        praiseRunnable.testId = testId;
-                        praiseRunnable.myTeamEntitys = myTeamEntitys;
-                        handler.removeCallbacks(praiseRunnable);
-                        handler.postDelayed(praiseRunnable, 1000);
-                    }
-                });
-                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-                if (pattern != 2) {
-                    layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x3;
+        if (enTeamPkRankEntity.getNoShow() == 1) {
+            int win = enTeamPkRankEntity.getMyTeamTotal() - enTeamPkRankEntity.getOpTeamTotal();
+            if (win > 0) {
+                int lastM = enTeamPkRankEntity.getMyTeamTotal() - enTeamPkRankEntity.getMyTeamCurrent();
+                int lastO = enTeamPkRankEntity.getOpTeamTotal() - enTeamPkRankEntity.getOpTeamCurrent();
+                int lastWin = lastM - lastO;
+                if (lastWin > 0) {
+                    XESToastUtils.showToast(mContext, "恭喜反超对手");
                 }
-                rootView.addView(teamPkLeadPager.getRootView(), layoutParams);
             }
-        });
+        } else {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    teamPkLeadPager = new TeamPkLeadPager(mContext, enTeamPkRankEntity, testId, type, pattern, new TeamPkLeadPager.OnClose() {
+                        @Override
+                        public void close(BasePager basePager) {
+                            rootView.removeView(basePager.getRootView());
+                        }
+                    });
+                    teamPkLeadPager.setOnStudyClick(new TeamPkLeadPager.OnStudyClick() {
+                        @Override
+                        public void onStudyClick(ArrayList<TeamMemberEntity> myTeamEntitys) {
+                            praiseRunnable.testId = testId;
+                            praiseRunnable.myTeamEntitys = myTeamEntitys;
+                            handler.removeCallbacks(praiseRunnable);
+                            handler.postDelayed(praiseRunnable, 1000);
+                        }
+                    });
+                    RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+                    if (pattern != 2) {
+                        layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x3;
+                    }
+                    rootView.addView(teamPkLeadPager.getRootView(), layoutParams);
+                }
+            });
+        }
     }
 
     @Override

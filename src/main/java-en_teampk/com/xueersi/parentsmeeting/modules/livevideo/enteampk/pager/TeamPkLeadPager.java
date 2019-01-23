@@ -182,7 +182,7 @@ public class TeamPkLeadPager extends LiveBasePager {
                         s = "2";
                         iv_livevideo_en_teampk_lead_left.setImageResource(R.drawable.bg_livevideo_en_teampk_lead_exceed);
                         iv_livevideo_en_teampk_lead_right.setImageResource(R.drawable.bg_livevideo_en_teampk_lead_wait);
-                        XESToastUtils.showToast(mContext, "恭喜反超对手");
+//                        XESToastUtils.showToast(mContext, "恭喜反超对手");
                     }
                 } else {
                     if (lastWin < 0) {

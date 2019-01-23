@@ -17,6 +17,7 @@ import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.util.FontCache;
+import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -87,7 +88,8 @@ public class TeamMemberStarItem implements AdapterItemInterface<TeamMemberEntity
             rlTeampkZan.removeAllViews();
             lav_livevideo_en_teampk_zan = new LottieAnimationView(context);
             map.put(entity, lav_livevideo_en_teampk_zan);
-            rlTeampkZan.addView(lav_livevideo_en_teampk_zan);
+            float zoom = ScreenUtils.getScreenDensity() / 2;
+            rlTeampkZan.addView(lav_livevideo_en_teampk_zan, (int) (162 * zoom), (int) (119 * zoom));
             String bubbleResPath = LOTTIE_RES_ASSETS_ROOTDIR + "/images";
             String bubbleJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "/data.json";
             LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo(bubbleResPath, bubbleJsonPath, "img_0.png") {
@@ -168,6 +170,7 @@ public class TeamMemberStarItem implements AdapterItemInterface<TeamMemberEntity
 //            if (!pressLottileView.isAnimating()) {
             lav_livevideo_en_teampk_zan.playAnimation();
             entity.praiseCount++;
+            entity.thisPraiseCount++;
             lav_livevideo_en_teampk_zan.updateBitmap("image_0", createBitmap(entity.praiseCount, width, height));
             logger.d("onClick:classmateEntity=" + entity.id + ",v1=" + lav_livevideo_en_teampk_zan.hashCode() + ",v2=" + v.hashCode());
 //            }

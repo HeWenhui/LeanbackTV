@@ -11,6 +11,7 @@ public class EnTeamPkRankEntity {
     private int opTeamCurrent;//":50,// b队本轮能量增加值
     private int bpkTeamId;//:5,       // b队头像id
     private int isWin = 0;
+    private int noShow = 0;
     ArrayList<TeamMemberEntity> memberEntities = new ArrayList<>();
 
     public int getMyTeam() {
@@ -83,5 +84,13 @@ public class EnTeamPkRankEntity {
 
     public void setIsWin(int isWin) {
         this.isWin = isWin;
+    }
+
+    public int getNoShow() {
+        return noShow;
+    }
+
+    public void setNoShow(int noShow) {
+        this.noShow = noShow;
     }
 }

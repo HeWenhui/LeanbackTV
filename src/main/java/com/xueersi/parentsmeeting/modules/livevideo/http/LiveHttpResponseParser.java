@@ -106,18 +106,17 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         if (getInfo.getAllowLinkMicNew() == 1) {
             getInfo.setAllowLinkMic(false);
         }
-        if (data.has("ePlanInfo")){
+        if (data.has("ePlanInfo")) {
             try {
                 JSONObject ePlanInfo = data.getJSONObject("ePlanInfo");
                 getInfo.ePlanInfo = new LiveGetInfo.EPlanInfoBean();
                 getInfo.ePlanInfo.ePlanId = ePlanInfo.optString("ePlanId");
                 getInfo.ePlanInfo.eTeacherId = ePlanInfo.optString("eTeacherId");
                 getInfo.ePlanInfo.eClassId = ePlanInfo.optString("eClassId");
-                if (ePlanInfo.has("fakePlanId")){
+                if (ePlanInfo.has("fakePlanId")) {
                     getInfo.ePlanInfo.fakePlanId = ePlanInfo.optString("fakePlanId");
                 }
-            }
-            catch (JSONException e) {
+            } catch (JSONException e) {
                 MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo.ePlanInfo", e.getMessage());
             }
         }
@@ -1994,6 +1993,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         try {
             EnTeamPkRankEntity enTeamPkRankEntity = new EnTeamPkRankEntity();
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+            enTeamPkRankEntity.setNoShow(jsonObject.optInt("noShow"));
             enTeamPkRankEntity.setMyTeamTotal(jsonObject.optInt("myTeamTotal"));
             enTeamPkRankEntity.setMyTeamCurrent(jsonObject.optInt("myTeamCurrent"));
             enTeamPkRankEntity.setApkTeamId(jsonObject.optInt("myPkHeadTeamId"));

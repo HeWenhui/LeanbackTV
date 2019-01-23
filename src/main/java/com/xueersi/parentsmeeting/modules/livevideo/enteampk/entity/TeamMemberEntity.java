@@ -9,7 +9,20 @@ public class TeamMemberEntity {
     public int resId;
     public int energy;
     public int praiseCount;
+    public int thisPraiseCount;
     public String nickName = "";
+
+    public void copy(TeamMemberEntity other) {
+        id = other.id;
+        isMy = other.isMy;
+        name = other.name;
+        headurl = other.headurl;
+        resId = other.resId;
+        energy = other.energy;
+        praiseCount = other.praiseCount;
+        thisPraiseCount = other.thisPraiseCount;
+        nickName = other.nickName;
+    }
 
     @Override
     public String toString() {
