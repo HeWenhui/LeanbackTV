@@ -14,7 +14,6 @@ import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
-import com.xueersi.lib.framework.utils.Log;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
@@ -24,18 +23,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.RegMediaPlayerControl;
-import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
-import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RegMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
@@ -168,11 +161,11 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             if (getInfo.getPattern() == 2 && LiveTopic.MODE_CLASS.equals(getInfo.getMode())) {
                 mRoomAction.initViewLiveStand(mRootView);
-            } else if(getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY
-                    && LiveTopic.MODE_CLASS.equals(getInfo.getMode())){
+            } else if (getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY
+                    && LiveTopic.MODE_CLASS.equals(getInfo.getMode())) {
                 mRoomAction.initHalfBodyLive(mRootView);
             } else {
-                mRoomAction.initViewLive(mRootView);
+                mRoomAction.initViewLive(rlMessageBottom);
             }
         }
     }
@@ -197,12 +190,12 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     if (LiveTopic.MODE_CLASS.equals(mode)) {
                         mRoomAction.initViewLiveStand(mRootView);
                     } else {
-                        mRoomAction.initViewLive(mRootView);
+                        mRoomAction.initViewLive(rlMessageBottom);
                     }
                     if (view != null) {
                         view.setVisibility(View.VISIBLE);
                     }
-                }else if(mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY){
+                } else if (mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY) {
                     //延迟 2.5 秒 走相关逻辑(适配转场动画 节奏)
                     mHandler.postDelayed(new Runnable() {
                         @Override
@@ -215,14 +208,14 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                             if (LiveTopic.MODE_CLASS.equals(mode)) {
                                 mRoomAction.initHalfBodyLive(mRootView);
                             } else {
-                                mRoomAction.initViewLive(mRootView);
+                                mRoomAction.initViewLive(rlMessageBottom);
                             }
 
                             if (view != null) {
                                 view.setVisibility(View.VISIBLE);
                             }
                         }
-                    },2500);
+                    }, 2500);
                 }
             }
         });
@@ -672,21 +665,24 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             case XESCODE.SENDQUESTION: {
                 mRoomAction.onOpenVoiceNotic(true, "SENDQUESTION");
                 break;
-            }case XESCODE.STOPQUESTION: {
+            }
+            case XESCODE.STOPQUESTION: {
                 mRoomAction.onOpenVoiceNotic(false, "STOPQUESTION");
                 break;
             }
             case XESCODE.ARTS_SEND_QUESTION: {
                 mRoomAction.onOpenVoiceNotic(true, "ARTS_SEND_QUESTION");
                 break;
-            } case XESCODE.ARTS_STOP_QUESTION: {
+            }
+            case XESCODE.ARTS_STOP_QUESTION: {
                 mRoomAction.onOpenVoiceNotic(false, "ARTS_STOP_QUESTION");
                 break;
             }
             case XESCODE.EXAM_START: {
                 mRoomAction.onOpenVoiceNotic(true, "EXAM_START");
                 break;
-            } case XESCODE.EXAM_STOP: {
+            }
+            case XESCODE.EXAM_STOP: {
                 mRoomAction.onOpenVoiceNotic(false, "EXAM_STOP");
                 break;
             }
@@ -702,7 +698,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 XESCODE.OPENBARRAGE, XESCODE.GAG, XESCODE.OPENCHAT, XESCODE.TEACHER_MESSAGE, XESCODE.START_MICRO,
                 XESCODE.ARTS_WORD_DICTATION, XESCODE.RAISE_HAND, XESCODE.XCR_ROOM_OPEN_VOICEBARRAGE, XESCODE
                 .RAISE_HAND_SELF, XESCODE.ENGLISH_H5_COURSEWARE, XESCODE.ARTS_H5_COURSEWARE, XESCODE.SENDQUESTION,
-                XESCODE.ARTS_SEND_QUESTION, XESCODE.EXAM_START,XESCODE.STOPQUESTION,XESCODE.EXAM_STOP, XESCODE.ARTS_STOP_QUESTION
+                XESCODE.ARTS_SEND_QUESTION, XESCODE.EXAM_START, XESCODE.STOPQUESTION, XESCODE.EXAM_STOP, XESCODE.ARTS_STOP_QUESTION
         };
     }
 
@@ -797,7 +793,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
-        mRoomAction.initView(bottomContent, mIsLand.get());
+        mRoomAction.initView(rlMessageBottom, mIsLand.get());
     }
 
     //发送聊天消息所需要的IRCState
