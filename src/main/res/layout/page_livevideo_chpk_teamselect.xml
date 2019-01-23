@@ -62,6 +62,8 @@
 
             <com.xueersi.parentsmeeting.modules.livevideo.widget.InputEffectTextView
                 android:id="@id/itv_teampk_team_info"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/tv_teampk_team_name"
