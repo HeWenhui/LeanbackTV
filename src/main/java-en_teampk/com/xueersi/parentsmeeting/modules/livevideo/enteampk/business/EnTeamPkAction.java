@@ -16,7 +16,7 @@ public interface EnTeamPkAction {
 
     void onRankResult();
 
-    void onStuLike( String testId ,ArrayList<TeamMemberEntity> teamMemberEntities);
+    void onStuLike(String testId, ArrayList<TeamMemberEntity> teamMemberEntities);
 
     void onRankLead(EnTeamPkRankEntity enTeamPkRankEntity, String testId, int type);
 

@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -28,6 +29,7 @@ import com.xueersi.ui.adapter.CommonAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 贡献之星
@@ -41,6 +43,7 @@ public class TeamPkLeadPager extends LiveBasePager {
      * 贡献之星，课后
      */
     public static int TEAM_TYPE_2 = 2;
+    private int WIN_VIEW_SHOW = 3000;
     private int type;
     private EnTeamPkRankEntity enTeamPkRankEntity;
     private RelativeLayout rlTeampkLeadBottom;
@@ -209,9 +212,15 @@ public class TeamPkLeadPager extends LiveBasePager {
             fprog = (float) (enTeamPkRankEntity.getMyTeamTotal()) / (float) (total);
             progress = (int) ((float) (enTeamPkRankEntity.getMyTeamTotal() * 100) / (float) (total));
         }
-        int delay = type == TeamPkLeadPager.TEAM_TYPE_2 ? 10000 : 5000;
+        int closeDelay = type == TeamPkLeadPager.TEAM_TYPE_2 ? 10000 : 5000;
+        if (AppConfig.DEBUG) {
+            closeDelay = type == TeamPkLeadPager.TEAM_TYPE_2 ? 60000 : 60000;
+        }
+        final AtomicInteger integer = new AtomicInteger(closeDelay / 1000);
+        int countDelay = 1000;
         if (type == TEAM_TYPE_2 && win >= 0) {
-            delay += 3000;
+            closeDelay += WIN_VIEW_SHOW;
+            countDelay += WIN_VIEW_SHOW;
             final ViewGroup group = (ViewGroup) mView;
             final View view = LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_en_team_lead_win, group, false);
             group.addView(view);
@@ -220,7 +229,7 @@ public class TeamPkLeadPager extends LiveBasePager {
                 public void run() {
                     group.removeView(view);
                 }
-            }, 3000);
+            }, WIN_VIEW_SHOW);
         }
         showRank();
         pgTeampkLead.setProgress(progress);
@@ -237,12 +246,48 @@ public class TeamPkLeadPager extends LiveBasePager {
                 return false;
             }
         });
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                onClose.close(TeamPkLeadPager.this);
+//            }
+//        }, closeDelay);
+        final TextView tv_livevideo_en_teampk_rank_start_close = rlTeampkLeadBottom.findViewById(R.id.tv_livevideo_en_teampk_rank_start_close);
+        if (type == TEAM_TYPE_2 && win >= 0) {
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    tv_livevideo_en_teampk_rank_start_close.setText((integer.get() * 1000) + "s后关闭");
+                }
+            }, WIN_VIEW_SHOW);
+        } else {
+            tv_livevideo_en_teampk_rank_start_close.setText((integer.get() * 1000) + "s后关闭");
+        }
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                onClose.close(TeamPkLeadPager.this);
+                int count = integer.decrementAndGet();
+                if (count == 0) {
+                    if (onClose != null) {
+                        onClose.close(TeamPkLeadPager.this);
+                    } else {
+                        ViewGroup group = (ViewGroup) mView.getParent();
+                        if (group != null) {
+                            group.removeView(mView);
+                        }
+                    }
+                } else {
+                    setCloseText(tv_livevideo_en_teampk_rank_start_close, integer);
+                    tv_livevideo_en_teampk_rank_start_close.postDelayed(this, 1000);
+                }
             }
-        }, delay);
+        }, countDelay);
+    }
+
+    private void setCloseText(TextView textView, AtomicInteger integer) {
+//        SpannableStringBuilder spannable = new SpannableStringBuilder(integer + "s后关闭");
+//        spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#FFFF7A1D")), 0, 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        textView.setText(integer + "s后关闭");
     }
 
     public void onStuLike(ArrayList<TeamMemberEntity> teamMemberEntities) {
