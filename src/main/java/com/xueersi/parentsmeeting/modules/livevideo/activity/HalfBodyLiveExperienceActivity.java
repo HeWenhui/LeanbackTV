@@ -83,6 +83,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
 import com.xueersi.parentsmeeting.modules.livevideo.experience.bussiness.ExperienceQuitFeedbackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.learnfeedback.StandExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.HalfBodyLiveMessagePager;
@@ -90,6 +91,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePag
 import com.xueersi.parentsmeeting.modules.livevideo.page.ExperienceLearnFeedbackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5ExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5HalfBodyExperienceBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.HalfBodyExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.NBH5ExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionExperienceBll;
@@ -409,6 +411,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
 
     private boolean isFirstGetResult = true;
     private EnglishH5Cache englishH5Cache;
+    private HalfBodyExperienceLearnFeedbackBll learnFeedbackBll;
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -871,10 +874,13 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
 
     private void addBusiness(Activity activity) {
         liveBackBll.addBusinessBll(new QuestionExperienceBll(activity, liveBackBll));
+        learnFeedbackBll = new HalfBodyExperienceLearnFeedbackBll(activity,liveBackBll);
+        liveBackBll.addBusinessBll(learnFeedbackBll);
         liveBackBll.addBusinessBll(new RedPackageExperienceBll(activity, liveBackBll, mVideoEntity.getChapterId()));
         EnglishH5HalfBodyExperienceBll englishH5ExperienceBll = new EnglishH5HalfBodyExperienceBll(activity, liveBackBll,mVideoEntity.getChapterId());
         liveBackBll.addBusinessBll(englishH5ExperienceBll);
         liveBackBll.addBusinessBll(new NBH5ExperienceBll(activity, liveBackBll));
+
         experienceQuitFeedbackBll = new ExperienceQuitFeedbackBll(activity, liveBackBll, false);
         experienceQuitFeedbackBll.setLiveVideo(this);
         liveBackBll.addBusinessBll(experienceQuitFeedbackBll);
@@ -1030,7 +1036,9 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
     }
 
     private void showPopupwinFeedback() {
-        final ExperienceLearnFeedbackPager expFeedbackPager = new ExperienceLearnFeedbackPager(this, mVideoEntity,
+        learnFeedbackBll.showWindow();
+
+       /* final ExperienceLearnFeedbackPager expFeedbackPager = new ExperienceLearnFeedbackPager(this, mVideoEntity,
                 getWindow(), lectureLivePlayBackBll);
         mFeedbackWindow = new PopupWindow(expFeedbackPager.getRootView(), RelativeLayout.LayoutParams.MATCH_PARENT,
                 RelativeLayout
@@ -1062,7 +1070,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
                 mFeedbackWindow.dismiss();
                 mFeedbackWindow = null;
             }
-        });
+        });*/
     }
 
     @Override
