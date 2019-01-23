@@ -95,6 +95,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.HalfBodyEx
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.NBH5ExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionExperienceBll;
+import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.HalfBodyRedPackageExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -876,7 +877,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         liveBackBll.addBusinessBll(new QuestionExperienceBll(activity, liveBackBll));
         learnFeedbackBll = new HalfBodyExperienceLearnFeedbackBll(activity,liveBackBll);
         liveBackBll.addBusinessBll(learnFeedbackBll);
-        liveBackBll.addBusinessBll(new RedPackageExperienceBll(activity, liveBackBll, mVideoEntity.getChapterId()));
+        liveBackBll.addBusinessBll(new HalfBodyRedPackageExperienceBll(activity, liveBackBll, mVideoEntity.getChapterId()));
         EnglishH5HalfBodyExperienceBll englishH5ExperienceBll = new EnglishH5HalfBodyExperienceBll(activity, liveBackBll,mVideoEntity.getChapterId());
         liveBackBll.addBusinessBll(englishH5ExperienceBll);
         liveBackBll.addBusinessBll(new NBH5ExperienceBll(activity, liveBackBll));
