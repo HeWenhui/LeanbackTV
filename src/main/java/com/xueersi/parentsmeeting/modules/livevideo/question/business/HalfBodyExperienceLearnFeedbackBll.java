@@ -1,6 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
+import android.graphics.Color;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.http.HttpCallBack;
@@ -39,8 +41,9 @@ public class HalfBodyExperienceLearnFeedbackBll extends LiveBackBaseBll implemen
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
                     .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
             layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
-            logger.i("添加学习反馈窗口");
             if (mPager.getRootView().getParent() == null) {
+                mRootView.setVisibility(View.VISIBLE);
+                mRootView.setBackgroundColor(Color.parseColor("#80000000"));
                 mRootView.addView(mPager.getRootView(), layoutParams);
             }
         }

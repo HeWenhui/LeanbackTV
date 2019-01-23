@@ -1037,8 +1037,9 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
     }
 
     private void showPopupwinFeedback() {
+        mFeedbackWindow = null;
+        setBackgroundAlpha(1.0f);
         learnFeedbackBll.showWindow();
-
        /* final ExperienceLearnFeedbackPager expFeedbackPager = new ExperienceLearnFeedbackPager(this, mVideoEntity,
                 getWindow(), lectureLivePlayBackBll);
         mFeedbackWindow = new PopupWindow(expFeedbackPager.getRootView(), RelativeLayout.LayoutParams.MATCH_PARENT,
