@@ -447,7 +447,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
                     if (msg.obj != null) {
                         position = (int) msg.obj;
                     }
-                    vwvSpeechVolume.pause();
+                    //vwvSpeechVolume.stop();
                     if (position == 0) {
                         RolePlayerEntity.RolePlayerMessage upMessage = mEntity.getLstRolePlayerMessage().get
                                 (mCurrentReadIndex - 1);
@@ -613,7 +613,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
             default:
                 //走英语离线测评
                 logger.i(TAG + "走英语离线测评");
-               mIse = new SpeechEvaluatorUtils(true);
+                mIse = new SpeechEvaluatorUtils(true);
 //                mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
                 break;
         }
@@ -627,7 +627,6 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
                         logger.i("开始测评 mCurrentReadIndex = "+mCurrentReadIndex);
                         isSpeechError = false;
                         vwvSpeechVolume.initialize();
-                        vwvSpeechVolume.start();
                     }
 
             @Override
@@ -668,7 +667,11 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
             @Override
             public void onVolumeUpdate(int volume) {
                 //vwvSpeechVolume.setVolume(volume * 3);
-                //logger.i("volume = " + volume);
+
+                float fVolume = (float) volume*3/90;
+                logger.i("volume = " + volume+":"+fVolume);
+                fVolume = fVolume < 0.5f?0.5f:fVolume;
+                vwvSpeechVolume.setWaveAmplitude(fVolume);
             }
 
             @Override
@@ -789,7 +792,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
 
         vwvSpeechVolume.stop();
         rlSpeechVolumnMain.setVisibility(View.INVISIBLE);
-        vwvSpeechVolume.setVisibility(View.GONE);
+        vwvSpeechVolume.setVisibility(View.INVISIBLE);
 
         try{
             final FrameAnimation frameAnimation = FrameAnimation.createFromAees(mContext, lottieAnimationView, file3, 50,
