@@ -1107,7 +1107,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
 
     @Override
     public void onTopic(LiveTopic data, JSONObject jsonObject, boolean modeChange) {
-
         logger.e("====>onTopic");
         if (isAvailable) {
             // 战队pk  topic 逻辑
