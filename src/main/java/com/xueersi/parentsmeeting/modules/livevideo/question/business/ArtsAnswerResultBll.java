@@ -930,7 +930,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     private void upDateGold() {
         UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class);
         if (updateAchievement != null) {
-            updateAchievement.getStuGoldCount();
+            updateAchievement.getStuGoldCount(UpdateAchievement.GET_TYPE_QUE);
         }
     }
 

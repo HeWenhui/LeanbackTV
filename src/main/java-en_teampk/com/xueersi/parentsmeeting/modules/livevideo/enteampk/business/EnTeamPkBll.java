@@ -16,6 +16,7 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.dialog.SmallEnglishMicTipDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.config.EnTeamPkConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
@@ -336,14 +337,26 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
     public void onRankLead(final EnTeamPkRankEntity enTeamPkRankEntity, final String testId, final int type) {
         if (enTeamPkRankEntity.getNoShow() == 1) {
             int win = enTeamPkRankEntity.getMyTeamTotal() - enTeamPkRankEntity.getOpTeamTotal();
+            String s = "";
             if (win > 0) {
+                s = "1";
                 int lastM = enTeamPkRankEntity.getMyTeamTotal() - enTeamPkRankEntity.getMyTeamCurrent();
                 int lastO = enTeamPkRankEntity.getOpTeamTotal() - enTeamPkRankEntity.getOpTeamCurrent();
                 int lastWin = lastM - lastO;
-                if (lastWin > 0) {
-                    XESToastUtils.showToast(mContext, "恭喜反超对手");
+                if (lastWin < 0) {
+                    s = "2";
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            SmallEnglishMicTipDialog smallEnglishMicTipDialog = new SmallEnglishMicTipDialog(mContext);
+                            smallEnglishMicTipDialog.setText("恭喜反超对手");
+                            smallEnglishMicTipDialog.showDialogAutoClose(2000);
+                        }
+                    });
+//                    XESToastUtils.showToast(mContext, "恭喜反超对手");
                 }
             }
+            mLogtf.d("onRankLead:s=" + s);
         } else {
             handler.post(new Runnable() {
                 @Override

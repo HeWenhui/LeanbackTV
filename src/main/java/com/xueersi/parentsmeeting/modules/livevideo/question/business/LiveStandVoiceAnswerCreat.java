@@ -199,7 +199,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
             isSuccess = true;
             UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(context, UpdateAchievement.class);
             if (updateAchievement != null) {
-                updateAchievement.getStuGoldCount();
+                updateAchievement.getStuGoldCount(UpdateAchievement.GET_TYPE_QUE);
             }
             // 回答错误提示
         } else if ((LiveVideoConfig.isNewArts && entity.getResultType() == 0) || (!LiveVideoConfig.isNewArts && entity.getResultType() == QUE_RES_TYPE2)) {

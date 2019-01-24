@@ -292,7 +292,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             }
             UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext,UpdateAchievement.class);
             if (updateAchievement != null) {
-                updateAchievement.getStuGoldCount();
+                updateAchievement.getStuGoldCount(UpdateAchievement.GET_TYPE_QUE);
             }
         }
         //bottomContent = null;

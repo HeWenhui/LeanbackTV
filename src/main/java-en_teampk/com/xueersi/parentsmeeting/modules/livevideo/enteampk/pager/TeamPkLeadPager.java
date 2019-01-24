@@ -215,6 +215,14 @@ public class TeamPkLeadPager extends LiveBasePager {
         int closeDelay = type == TeamPkLeadPager.TEAM_TYPE_2 ? 10000 : 5000;
         if (AppConfig.DEBUG) {
             closeDelay = type == TeamPkLeadPager.TEAM_TYPE_2 ? 60000 : 60000;
+            ivTeampkMine.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (onClose != null) {
+                        onClose.close(TeamPkLeadPager.this);
+                    }
+                }
+            });
         }
         final AtomicInteger integer = new AtomicInteger(closeDelay / 1000);
         int countDelay = 1000;
@@ -314,7 +322,7 @@ public class TeamPkLeadPager extends LiveBasePager {
         GridView gv_livevideo_en_teampk_lead_star = layout_livevideo_en_team_lead_star.findViewById(R.id.gv_livevideo_en_teampk_lead_star);
         final ArrayList<TeamMemberEntity> myTeamEntitys = enTeamPkRankEntity.getMemberEntities();
         int oldSize = myTeamEntitys.size();
-        for (int i = 4; i < myTeamEntitys.size(); i++) {
+        for (int i = 6; i < myTeamEntitys.size(); i++) {
             myTeamEntitys.remove(i);
             i--;
         }

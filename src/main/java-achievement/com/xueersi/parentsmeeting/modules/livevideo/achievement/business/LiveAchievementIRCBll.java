@@ -88,33 +88,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         if (1 == getInfo.getIsAllowStar()) {
             initRecognizeDialog();
             putInstance(AudioRequest.class, this);
-            LiveGetInfo.EnglishPk englishPk = getInfo.getEnglishPk();
-            if (0 == englishPk.canUsePK) {
-                putInstance(UpdateAchievement.class, new UpdateAchievement() {
-                    @Override
-                    public void getStuGoldCount() {
-                        postDelayedIfNotFinish(new Runnable() {
-                            @Override
-                            public void run() {
-                                String liveid = mGetInfo.getId();
-                                String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-                                getHttpManager().getStuGoldCount(enstuId, liveid, new HttpCallBack() {
-                                    @Override
-                                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                                        StarAndGoldEntity starAndGoldEntity = getHttpResponseParser().parseStuGoldCount
-                                                (responseEntity);
-                                        mGetInfo.setGoldCount(starAndGoldEntity.getGoldCount());
-                                        mGetInfo.setStarCount(starAndGoldEntity.getStarCount());
-                                        if (starAction != null) {
-                                            starAction.onGetStar(starAndGoldEntity);
-                                        }
-                                    }
-                                });
-                            }
-                        }, 500);
-                    }
-                });
-            } else {
+            final LiveGetInfo.EnglishPk englishPk = getInfo.getEnglishPk();
+            if (1 == englishPk.canUsePK) {
                 mLiveBll.registEvent(EnPkTeam.class, new LiveEvent() {
                     @Override
                     public void onEvent(Object object) {
@@ -129,6 +104,35 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     }
                 });
             }
+            putInstance(UpdateAchievement.class, new UpdateAchievement() {
+                @Override
+                public void getStuGoldCount(int type) {
+                    if (1 == englishPk.canUsePK) {
+                        if (type != UpdateAchievement.GET_TYPE_RED) {
+                            return;
+                        }
+                    }
+                    postDelayedIfNotFinish(new Runnable() {
+                        @Override
+                        public void run() {
+                            String liveid = mGetInfo.getId();
+                            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+                            getHttpManager().getStuGoldCount(enstuId, liveid, new HttpCallBack() {
+                                @Override
+                                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                                    StarAndGoldEntity starAndGoldEntity = getHttpResponseParser().parseStuGoldCount
+                                            (responseEntity);
+                                    mGetInfo.setGoldCount(starAndGoldEntity.getGoldCount());
+                                    mGetInfo.setStarCount(starAndGoldEntity.getStarCount());
+                                    if (starAction != null) {
+                                        starAction.onGetStar(starAndGoldEntity);
+                                    }
+                                }
+                            });
+                        }
+                    }, 500);
+                }
+            });
             AppInfoEntity appInfoEntity = AppBll.getInstance().getAppInfoEntity();
             boolean voiceRecognSwitchOn = mShareDataManager.getBoolean(ShareBusinessConfig.SP_VOICE_RECOGNI_SWITCH,
                     true,
@@ -688,6 +692,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     }
                     break;
                 }
+                case XESCODE.ARTS_H5_COURSEWARE:
                 case XESCODE.ARTS_STOP_QUESTION: {
                     final long before = System.currentTimeMillis();
                     postDelayedIfNotFinish(new Runnable() {
@@ -741,7 +746,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     public int[] getNoticeFilter() {
         return new int[]{XESCODE.ROOM_STAR_OPEN, XESCODE.ROOM_STAR_SEND_T,
                 XESCODE.ROOM_STAR_CLOSE, XESCODE.XCR_ROOM_DB_START, XESCODE.XCR_ROOM_DB_CLOSE,
-                XESCODE.XCR_ROOM_DB_PRAISE, XESCODE.XCR_ROOM_DB_REMIND, XESCODE.ARTS_STOP_QUESTION};
+                XESCODE.XCR_ROOM_DB_PRAISE, XESCODE.XCR_ROOM_DB_REMIND, XESCODE.ARTS_STOP_QUESTION, XESCODE.ARTS_H5_COURSEWARE};
     }
 
     public void onSendMsg(String msg) {

@@ -5,5 +5,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.achievement.business;
  * 更新本场成就金币
  */
 public interface UpdateAchievement {
-    void getStuGoldCount();
+    int GET_TYPE_RED = 1;
+    int GET_TYPE_QUE = 2;
+
+    void getStuGoldCount(int type);
 }
