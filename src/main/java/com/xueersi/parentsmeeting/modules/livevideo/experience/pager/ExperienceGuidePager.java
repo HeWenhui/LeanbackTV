@@ -48,6 +48,7 @@ import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
 
 public class ExperienceGuidePager extends LiveBasePager {
 
+    private View view;
     /**
      * 新手引导首页
      */
@@ -128,6 +129,12 @@ public class ExperienceGuidePager extends LiveBasePager {
     private RelativeLayout rlMessageInput;
     private EditText etMessageInput;
     private Button btnMessageSend;
+    private ImageView ivMessageHand;
+    private KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener;
+    /**
+     * 进入直播视频倒计时显示
+     */
+    private TextView tvCountDown;
 
 
     private IPagerControl pagerControl;
@@ -142,17 +149,27 @@ public class ExperienceGuidePager extends LiveBasePager {
     private boolean isSpeechRecog;
     private CountDownTimer speechCountDownTimer;
     private SpannableStringBuilder speechSpan;
-    private KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener;
-    private View view;
-    private ImageView ivMessageHand;
     private AlphaAnimation alphaAnimation;
     private Runnable indexNextRunable;
     private Animation scalAnimation;
-    private CountDownTimer countDownTimer;
+    private CountDownTimer vwvCountDownTimer;
     private CountDownTimer quitCountDownTimer;
-    private TextView tvCountDown;
     private VerifyCancelAlertDialog quitDialog;
 
+    private final static int VOLUME_WAVE_AMPLITUDE = 55;
+    private final static int VOLUME_WAVE_COUNTDOWN_TIME = 8000;
+    private final static int VOLUME_WAVE_COUNTDOWN_INTERVAL = 100;
+    private final static int VOLUME_WAVE_COUNTDOWN_UNTILFINISHED_UP = 5000;
+    private final static int VOLUME_WAVE_COUNTDOWN_UNTILFINISHED_DOWN = 1000;
+
+    private final static int QUIT_COUNTDOWN_MILLISECOND = 1000;
+    private final static int QUIT_COUNTDOWN_INTERVAL = 500;
+    private final static int QUIT_COUNTDOWN_UNTILFINISHED_UP = 16000;
+
+    private final static int SPEECH_COUNTDOWN_TIME = 5000;
+    private final static int SPEECH_COUNTDOWN_INTERVAL = 1000;
+    private final static int SPEECH_COUNTDOWN_UNTILFINISHED_UP = 4000;
+    private final static int SPEECH_COUNTDOWN_UNTILFINISHED_DOWN = 2000;
 
     public ExperienceGuidePager(Context context) {
         super(context);
@@ -163,7 +180,6 @@ public class ExperienceGuidePager extends LiveBasePager {
         this.subject = subject;
         this.visitTime = visitTime;
         pagerControl = iPagerControl;
-
         initTimer();
     }
 
@@ -463,13 +479,13 @@ public class ExperienceGuidePager extends LiveBasePager {
     private void initTimer() {
         if ("3".equals(subject)) {
             final Random random = new Random(100);
-            countDownTimer = new CountDownTimer(8000, 100) {
+            vwvCountDownTimer = new CountDownTimer(VOLUME_WAVE_COUNTDOWN_TIME, VOLUME_WAVE_COUNTDOWN_INTERVAL) {
                 @Override
                 public void onTick(long millisUntilFinished) {
-                    if (millisUntilFinished < 5000 && millisUntilFinished > 1500) {
+                    if (millisUntilFinished < VOLUME_WAVE_COUNTDOWN_UNTILFINISHED_UP && millisUntilFinished > VOLUME_WAVE_COUNTDOWN_UNTILFINISHED_DOWN) {
                         tvVoiceTip.setVisibility(View.GONE);
                         ivVoiceArrows.setVisibility(View.GONE);
-                        vwvVoiceAnswer.setVolume(random.nextFloat() * 55);
+                        vwvVoiceAnswer.setVolume(random.nextFloat() * VOLUME_WAVE_AMPLITUDE);
                     } else {
                         vwvVoiceAnswer.setVolume(0);
                     }
@@ -485,12 +501,12 @@ public class ExperienceGuidePager extends LiveBasePager {
                 }
             };
         }
-        quitCountDownTimer = new CountDownTimer(visitTime * 1000, 500) {
+        quitCountDownTimer = new CountDownTimer(visitTime * QUIT_COUNTDOWN_MILLISECOND, QUIT_COUNTDOWN_INTERVAL) {
             @Override
             public void onTick(long millisUntilFinished) {
-                if (millisUntilFinished < 16000) {
+                if (millisUntilFinished < QUIT_COUNTDOWN_UNTILFINISHED_UP) {
                     tvCountDown.setVisibility(View.VISIBLE);
-                    tvCountDown.setText(millisUntilFinished / 1000 + "S后将开启体验课");
+                    tvCountDown.setText(millisUntilFinished / QUIT_COUNTDOWN_MILLISECOND + "S后将开启体验课");
                 }
             }
 
@@ -593,7 +609,7 @@ public class ExperienceGuidePager extends LiveBasePager {
             public void run() {
                 vwvVoiceAnswer.setVisibility(View.VISIBLE);
                 ivVoiceArrows.setVisibility(View.VISIBLE);
-                countDownTimer.start();
+                vwvCountDownTimer.start();
             }
         }, 5);
 
@@ -611,18 +627,18 @@ public class ExperienceGuidePager extends LiveBasePager {
             ivSpeechHand.setVisibility(View.GONE);
             isSpeechRecog = true;
             speechSpan = new SpannableStringBuilder();
-            speechCountDownTimer = new CountDownTimer(5000, 1000) {
+            speechCountDownTimer = new CountDownTimer(SPEECH_COUNTDOWN_TIME, SPEECH_COUNTDOWN_INTERVAL) {
                 @Override
                 public void onTick(long millisUntilFinished) {
-                    if (millisUntilFinished > 4000 && millisUntilFinished < 5000) {
+                    if (millisUntilFinished > SPEECH_COUNTDOWN_UNTILFINISHED_UP && millisUntilFinished < SPEECH_COUNTDOWN_TIME) {
                         speechSpan.append("清明 唐 杜牧\n");
                         tvSpeechFollow.setText(speechSpan);
-                    } else if (millisUntilFinished > 2000 && millisUntilFinished < 4000) {
+                    } else if (millisUntilFinished > SPEECH_COUNTDOWN_UNTILFINISHED_DOWN && millisUntilFinished < SPEECH_COUNTDOWN_UNTILFINISHED_UP) {
                         speechSpan.clear();
                         speechSpan.append("清明 唐 杜牧\n清明时节雨纷纷，路上行人欲断魂。\n");
                         speechSpan.setSpan(new ForegroundColorSpan(0xFFFF0000), 11, 18, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                         tvSpeechFollow.setText(speechSpan);
-                    } else if (millisUntilFinished > 0 && millisUntilFinished < 2000) {
+                    } else if (millisUntilFinished < SPEECH_COUNTDOWN_UNTILFINISHED_DOWN) {
                         speechSpan.clear();
                         speechSpan.append("清明 唐 杜牧\n清明时节雨纷纷，路上行人欲断魂。\n借问酒家何处有，牧童遥指杏花村。");
                         speechSpan.setSpan(new ForegroundColorSpan(0xFFFF0000), 11, 18, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -714,8 +730,8 @@ public class ExperienceGuidePager extends LiveBasePager {
         @Override
         public void onClick(View v) {
             if (!isDialog) {
-                if (countDownTimer != null) {
-                    countDownTimer.cancel();
+                if (vwvCountDownTimer != null) {
+                    vwvCountDownTimer.cancel();
                 }
                 if (quitCountDownTimer != null) {
                     quitCountDownTimer.cancel();
@@ -742,8 +758,8 @@ public class ExperienceGuidePager extends LiveBasePager {
                                 speechCountDownTimer.cancel();
                                 speechCountDownTimer = null;
                             }
-                            if (countDownTimer != null) {
-                                countDownTimer.cancel();
+                            if (vwvCountDownTimer != null) {
+                                vwvCountDownTimer.cancel();
                             }
                             if (quitCountDownTimer != null) {
                                 quitCountDownTimer.cancel();
@@ -837,10 +853,4 @@ public class ExperienceGuidePager extends LiveBasePager {
         alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(mContext, R.anim.anim_experience_guide_alpha);
         scalAnimation = AnimationUtils.loadAnimation(mContext, R.anim.anim_experience_guide_hand);
     }
-
-    public void setSubjeceId(String subjeceId) {
-        this.subject = subjeceId;
-    }
-
-
 }
