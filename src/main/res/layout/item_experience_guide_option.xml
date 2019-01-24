@@ -20,7 +20,7 @@
 
         <TextView
             android:id="@+id/tv_experience_guide_home_title"
-            style="@style/text_font17_333333_style"
+            style="@style/text_font15_333333_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -29,7 +29,7 @@
 
         <TextView
             android:id="@+id/tv_experience_guide_home_content"
-            style="@style/text_font16_666666_style"
+            style="@style/text_font11_666666_style"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
