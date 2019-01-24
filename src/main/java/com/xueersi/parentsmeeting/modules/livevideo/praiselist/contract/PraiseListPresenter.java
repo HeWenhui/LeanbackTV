@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.praiselist.contract;
 
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListDanmakuEntity;
+
 import java.util.ArrayList;
 
 /**
@@ -7,11 +9,10 @@ import java.util.ArrayList;
  * 表扬榜Presenter层
  */
 public interface PraiseListPresenter {
-    void getExcellentList(final int status);
+    void getExcellentList();
     void getLikeList();
-    void getProgressList(final int status);
-    void getLikeProbability(final ArrayList<String> list);
-    void sendLike();
-    void sendLikeNum(int agreeNum);
+    void getMiniMarketList();
+    void getLikeProbability(final ArrayList<PraiseListDanmakuEntity> list);
+    void sendLikeNum(int agreeNum, int barrageType);
     String getStuName();
 }

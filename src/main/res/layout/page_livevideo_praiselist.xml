@@ -44,7 +44,9 @@
             android:background="@drawable/bg_livevideo_praiselist_tabs0"
             android:paddingTop="6dp"
             android:paddingBottom="2dp"
-            android:scrollbars="none" />
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:scrollbars="vertical" />
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@+id/tv_livevideo_notes"
@@ -60,8 +62,17 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
-            android:background="@drawable/selector_livevideo_praiselist_close"
-            android:visibility="gone" />
+            android:background="@drawable/selector_livevideo_praiselist_close" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tv_livevideo_praiselist_like_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:textColor="#FF4747"
+            android:textSize="18dp"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/btn_livevideo_praiselist_like"
@@ -69,9 +80,21 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:background="@drawable/selector_livevideo_praiselist_like"
-            android:visibility="gone" />
+            android:background="@drawable/selector_livevideo_praiselist_like" />
     </RelativeLayout>
+
+    <com.xueersi.parentsmeeting.modules.livevideo.praiselist.widget.DanmakuRecycleView
+        android:layout_width="wrap_content"
+        android:id="@+id/rv_livevideo_praiselist_danmaku"
+        android:layout_height="150dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="20dp"
+        android:overScrollMode="never"
+        android:paddingLeft="4dp"
+        android:layout_alignParentLeft="true"
+        android:paddingRight="4dp"
+        android:layout_alignParentBottom="true"
+        android:scrollbars="none" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lav_livevideo_praiselist_star"
@@ -79,27 +102,17 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop" />
 
-    <com.xueersi.parentsmeeting.modules.livevideo.widget.AutoVerticalScrollTextView
-        android:id="@+id/tv_livevideo_praiselist_danmaku"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentBottom="true"
-        android:visibility="gone" />
-
-    <FrameLayout
-        android:id="@+id/fl_livevideo_praiselist_thanks_group"
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lav_livevideo_praiselist_double_card"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#B3000000"
-        android:visibility="gone">
+        android:scaleType="centerCrop" />
 
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/lav_livevideo_praiselist_thanks"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </FrameLayout>
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/lav_livevideo_praiselist_click_like"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
 
     <RelativeLayout
         android:id="@+id/fl_livevideo_praiselist_teacher_group"
@@ -110,6 +123,7 @@
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lav_livevideo_praiselist_teacher"
+            android:scaleType="centerCrop"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
@@ -117,11 +131,40 @@
             android:id="@+id/tv_livevideo_praiselist_teacher_tips"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
             android:gravity="center"
             android:textColor="#5E2718"
-            android:textSize="15sp"
-            android:visibility="invisible" />
+            android:textSize="15dp"
+            android:lineSpacingExtra="8dp"
+            android:visibility="gone" />
 
     </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        >
+
+        <Button
+            android:id="@+id/btn_livevideo_praiselist_test1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btn_livevideo_praiselist_test2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btn_livevideo_praiselist_test3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/btn_livevideo_praiselist_test4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 
 </RelativeLayout>

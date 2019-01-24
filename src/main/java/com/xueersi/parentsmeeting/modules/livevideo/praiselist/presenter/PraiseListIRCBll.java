@@ -18,6 +18,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeProbabilityEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.MinimarketListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListDanmakuEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.ProgressListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.contract.PraiseListPresenter;
@@ -40,104 +42,127 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
     /**
      * 表扬榜View层接口
      */
-    private PraiseListView mView;
-    LikeProbabilityEntity mLikeProbabilityEntity;
-    int mListType = 0;
+    private PraiseListView mPraiseListView;
+    private LikeProbabilityEntity mLikeProbabilityEntity;
+    private int listType;
 
     public PraiseListIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
-        mView = new PraiseListBll(activity);
-        mView.setPresenter(PraiseListIRCBll.this);
+        mPraiseListView = new PraiseListBll(activity);
+        mPraiseListView.setPresenter(PraiseListIRCBll.this);
     }
 
     @Override
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
         //模式切换为主讲，关闭表扬榜
-        if (mView != null && mode.equals(LiveTopic.MODE_CLASS))
-            mView.closePraiseList();
+        if (mPraiseListView != null && mode.equals(LiveTopic.MODE_CLASS))
+            mPraiseListView.closePraiseList();
     }
 
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-        mView.initView(mRootView);
+        mPraiseListView.initView(mRootView);
     }
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
         switch (type) {
-            case XESCODE.XCR_ROOM_AGREE_OPEN: {
-                if (mView == null) {
-                    mView = new PraiseListBll(activity);
-                    mView.setPresenter(PraiseListIRCBll.this);
-                    mView.initView(mRootView);
-                }
-                if (mView != null) {
-                    String open = data.optString("open");
-                    int zanType = data.optInt("zanType");
-                    String nonce = data.optString("nonce");
-                    if ("on".equals(open)) {
-                        mView.onReceivePraiseList(zanType, nonce);
-                        switch (zanType) {
-                            case PraiseListPager.PRAISE_LIST_TYPE_EXECELLENT:
-                                getExcellentList(0);
-                                break;
-                            case PraiseListPager.PRAISE_LIST_TYPE_PROGRESS:
-                                getProgressList(0);
-                                break;
-                            case PraiseListPager.PRAISE_LIST_TYPE_Like:
-                                getLikeList();
-                                break;
-                            default:
-                                break;
-                        }
-                    } else if ("off".equals(open)) {
-                        if (mView != null) {
-                            mView.closePraiseList();
-                        }
+            //开启和发布榜单
+            case XESCODE.XCR_ROOM_PRAISELIST_OPEN: {
+                String open = data.optString("open");
+                int zanType = data.optInt("zanType");
+                String nonce = data.optString("nonce");
+                if ("on".equals(open)) {
+                    mPraiseListView.onReceivePraiseList(zanType, nonce);
+                    switch (zanType) {
+                        case PraiseListPager.PRAISE_LIST_TYPE_EXECELLENT:
+                            getExcellentList();
+                            break;
+                        case PraiseListPager.PRAISE_LIST_TYPE_MINI_MARKET:
+                            getMiniMarketList();
+                            break;
+                        case PraiseListPager.PRAISE_LIST_TYPE_LIKE:
+                            getLikeList();
+                            break;
+                        default:
+                            break;
                     }
+                } else if ("off".equals(open)) {
+                    mPraiseListView.closePraiseList();
                 }
 
             }
-            case XESCODE.XCR_ROOM_AGREE_SEND_T: {
-                if (mView == null) {
-                    mView = new PraiseListBll(activity);
-                    mView.setPresenter(PraiseListIRCBll.this);
-                    mView.initView(mRootView);
-                }
-                JSONArray agreeForms = data.optJSONArray("agreeFroms");
+            //老师广播赞数，包含一键表扬 和 某某学生点了多少赞
+            case XESCODE.XCR_ROOM_PRAISELIST_LIKE_STUTENT: {
+                mLogtf.d("onNotice: like from student, data = " + data);
                 boolean isTeacher = data.optBoolean("isTeacher");
-                mLogtf.d("agreeFroms is null，data = " + data);
-                if (agreeForms == null) {
-                    return;
-                }
-                logger.i("agreeForms=" + agreeForms.toString() + ", isTeacher=" + isTeacher);
                 if (isTeacher) {
-                    if (mView != null && agreeForms.length() != 0) {
+                    // 只有 (isTeacher == 1) 时才有这个字段
+                    String teacherName = data.optString("teacherName");
+                    if (teacherName != null) {
+                        mPraiseListView.showPraiseScroll(mGetInfo.getStuName(), teacherName);
+                    }
+                } else {
+                    ArrayList<PraiseListDanmakuEntity> danmakuList = new ArrayList<>();
+                    //学生名字列表，(isTeacher == 0) 时再解析这个字段
+                    JSONArray agreeForms = data.optJSONArray("agreeFroms");
+                    //学生点赞个数列表，(isTeacher == 0) 时再解析这个字段
+                    JSONArray nums = data.optJSONArray("nums");
+                    if (agreeForms != null && nums != null) {
+                        int minLength = Math.min(agreeForms.length(), nums.length());
+                        for (int i = 0; i < minLength; i++) {
+                            try {
+                                PraiseListDanmakuEntity danmakuEntity = new PraiseListDanmakuEntity();
+                                danmakuEntity.setBarrageType(1);
+                                danmakuEntity.setName(agreeForms.getString(i));
+                                danmakuEntity.setNumber(nums.getInt(i));
+                                danmakuList.add(danmakuEntity);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    } else {
+                        mLogtf.d("Parse data error: agreeFroms or nums is null, data = " + data);
+                    }
+
+                    if (danmakuList.size() != 0) {
+                        if (mLikeProbabilityEntity != null) {
+                            mPraiseListView.receiveLikeNotice(danmakuList, mLikeProbabilityEntity);
+                        } else {
+                            getLikeProbability(danmakuList);
+                        }
+                    }
+
+                }
+            }
+            //老师广播赞数，告诉学生 当前各个战队有多少赞
+            case XESCODE.XCR_ROOM_PRAISELIST_LIKE_TEAM: {
+                mLogtf.d("onNotice: like from team, data = " + data);
+                ArrayList<PraiseListDanmakuEntity> danmakuList = new ArrayList<>();
+                JSONArray teamList = data.optJSONArray("teamList");
+                if (teamList != null) {
+                    for (int i = 0; i < teamList.length(); i++) {
                         try {
-                            mView.showPraiseScroll(mGetInfo.getStuName(), agreeForms.getString(0));
+                            PraiseListDanmakuEntity danmakuEntity = new PraiseListDanmakuEntity();
+                            JSONObject team = teamList.getJSONObject(i);
+                            danmakuEntity.setBarrageType(1);
+                            danmakuEntity.setName(team.getString("teamName"));
+                            danmakuEntity.setNumber(team.getInt("teamNum"));
+                            danmakuList.add(danmakuEntity);
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
                 } else {
-                    ArrayList<String> list = new ArrayList<>();
-                    for (int i = 0; i < agreeForms.length(); i++) {
-                        String stuName = null;
-                        try {
-                            stuName = agreeForms.getString(i);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        logger.i("stuName=" + stuName);
-                        list.add(stuName);
-                    }
-                    if (mView != null && list.size() != 0) {
-                        if (mLikeProbabilityEntity == null) {
-                            mView.receiveLikeNotice(list, mLikeProbabilityEntity);
-                        } else {
-                            getLikeProbability(list);
-                        }
+                    mLogtf.d("Parse data error: teamList is null, data = " + data);
+                }
+
+                if (danmakuList.size() != 0) {
+                    if (mLikeProbabilityEntity != null) {
+                        mPraiseListView.receiveLikeNotice(danmakuList, mLikeProbabilityEntity);
+                    } else {
+                        getLikeProbability(danmakuList);
                     }
                 }
             }
@@ -149,8 +174,9 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
     @Override
     public int[] getNoticeFilter() {
         return new int[]{
-                XESCODE.XCR_ROOM_AGREE_SEND_T,
-                XESCODE.XCR_ROOM_AGREE_OPEN
+                XESCODE.XCR_ROOM_PRAISELIST_OPEN,
+                XESCODE.XCR_ROOM_PRAISELIST_LIKE_STUTENT,
+                XESCODE.XCR_ROOM_PRAISELIST_LIKE_TEAM
         };
     }
 
@@ -159,17 +185,17 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             LiveTopic.RoomStatusEntity coachRoomstatus = liveTopic.getCoachRoomstatus();
             if (coachRoomstatus.getListStatus() != 0 && LiveTopic.MODE_TRANING.equals(mLiveBll.getMode())) {
-                if (mView == null) {
-                    mView = new PraiseListBll(activity);
-                    mView.setPresenter(PraiseListIRCBll.this);
-                    mView.initView(mRootView);
+                if (mPraiseListView == null) {
+                    mPraiseListView = new PraiseListBll(activity);
+                    mPraiseListView.setPresenter(PraiseListIRCBll.this);
+                    mPraiseListView.initView(mRootView);
                 }
-                if (mView != null) {
+                if (mPraiseListView != null) {
                     if (coachRoomstatus.getListStatus() == PraiseListPager.PRAISE_LIST_TYPE_EXECELLENT) {
-                        getExcellentList(0);
-                    } else if (coachRoomstatus.getListStatus() == PraiseListPager.PRAISE_LIST_TYPE_PROGRESS) {
-                        getProgressList(0);
-                    } else if (coachRoomstatus.getListStatus() == PraiseListPager.PRAISE_LIST_TYPE_Like) {
+                        getExcellentList();
+                    } else if (coachRoomstatus.getListStatus() == PraiseListPager.PRAISE_LIST_TYPE_MINI_MARKET) {
+                        getMiniMarketList();
+                    } else if (coachRoomstatus.getListStatus() == PraiseListPager.PRAISE_LIST_TYPE_LIKE) {
                         getLikeList();
                     }
                 }
@@ -181,65 +207,97 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
      * 获取优秀榜
      */
     @Override
-    public synchronized void getExcellentList(final int status) {
-        if (status == 0) {
-            if (mListType == PraiseListPager.PRAISE_LIST_TYPE_EXECELLENT) {
-                //如果当前榜单类型和新开启榜单类型相同，则退出。
-                return;
-            } else {
-                //设置当前榜单类型
-                mListType = PraiseListPager.PRAISE_LIST_TYPE_EXECELLENT;
-            }
+    public synchronized void getExcellentList() {
+        if (listType == PraiseListPager.PRAISE_LIST_TYPE_EXECELLENT) {
+            return;
         }
-
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        String classId = "";
-        if (mGetInfo.getStudentLiveInfo() != null) {
-            classId = mGetInfo.getStudentLiveInfo().getClassId();
-        }
-        getHttpManager().getExcellentList(classId, enstuId, mLiveId, status + "", new HttpCallBack(false) {
+        listType = PraiseListPager.PRAISE_LIST_TYPE_EXECELLENT;
+        String stuId = mGetInfo.getStuId();
+        String classId = mGetInfo.getStudentLiveInfo().getClassId();
+        String stuCouId = mGetInfo.getStuCouId();
+        String couseId = mGetInfo.getStudentLiveInfo().getCourseId();
+        String teamId = mGetInfo.getStudentLiveInfo().getTeamId();
+        getHttpManager().getExcellentList(stuId, mLiveId, classId, stuCouId, couseId, teamId, new HttpCallBack(false) {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 mLogtf.d("getExcellentList => onPmSuccess:  + jsonObject = " + responseEntity.getJsonObject());
                 ExcellentListEntity excellentListEntity = getHttpResponseParser().parseExcellentList(responseEntity);
-                if (mView != null && excellentListEntity != null) {
-                    if (status == 0) {
-                        mView.onExcellentList(excellentListEntity);
-                    } else if (status == 1) {
-                        if (excellentListEntity.getPraiseStatus() == 1)
-                            mView.showLikeToast();
-                        else
-                            mView.setLikeBtnEnabled(true);
-                    }
+                if (excellentListEntity != null) {
+                    mPraiseListView.onExcellentList(excellentListEntity);
                 }
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 mLogtf.d("getExcellentList => onPmFailure: error = " + error + ", msg=" + msg);
-                if (status == 0) {
-                    VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false,
-                            VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
-                    vcDialog.initInfo("当前网络不佳，请刷新获取榜单！");
-                    vcDialog.showDialog();
-                    vcDialog.setVerifyBtnListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            getExcellentList(0);
-                        }
-                    });
-                    if (mView != null)
-                        mListType = 0;
-                } else if (status == 1 && mView != null) {
-                    mView.setLikeBtnEnabled(true);
-                }
+                VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false,
+                        VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
+                vcDialog.initInfo("当前网络不佳，请刷新获取榜单！");
+                vcDialog.showDialog();
+                vcDialog.setVerifyBtnListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        getExcellentList();
+                    }
+                });
+                listType = 0;
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 mLogtf.d("getExcellentList => onPmError: errorMsg = " + responseEntity.getErrorMsg());
                 showToast("" + responseEntity.getErrorMsg());
+                listType = 0;
+            }
+        });
+    }
+
+    /**
+     * 获取计算小超市榜
+     */
+    @Override
+    public synchronized void getMiniMarketList() {
+        if (listType == PraiseListPager.PRAISE_LIST_TYPE_MINI_MARKET) {
+            return;
+        }
+        listType = PraiseListPager.PRAISE_LIST_TYPE_MINI_MARKET;
+        String stuId = mGetInfo.getStuId();
+        String classId = mGetInfo.getStudentLiveInfo().getClassId();
+        String stuCouId = mGetInfo.getStuCouId();
+        String couseId = mGetInfo.getStudentLiveInfo().getCourseId();
+        String teamId = mGetInfo.getStudentLiveInfo().getTeamId();
+        getHttpManager().getMiniMarketList(stuId, mLiveId, classId, stuCouId, couseId, teamId, new HttpCallBack(false) {
+
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                mLogtf.d("getMiniMarketList => onPmSuccess:  + jsonObject = " + responseEntity.getJsonObject());
+                MinimarketListEntity minimarketListEntity = getHttpResponseParser().parseMiniMarketList(responseEntity);
+                if (minimarketListEntity != null) {
+                    mPraiseListView.onMiniMarketList(minimarketListEntity);
+                }
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                mLogtf.d("getMiniMarketList => onPmFailure: error = " + error + ", msg=" + msg);
+                VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false,
+                        VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
+                vcDialog.initInfo("当前网络不佳，请刷新获取榜单！").showDialog();
+                vcDialog.setVerifyBtnListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        getMiniMarketList();
+                    }
+                });
+                listType = 0;
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                mLogtf.d("getMiniMarketList => onPmError: errorMsg = " + responseEntity.getErrorMsg());
+                showToast("" + responseEntity.getErrorMsg());
+                listType = 0;
             }
         });
     }
@@ -247,29 +305,26 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
     /**
      * 获取点赞榜
      */
+
     @Override
     public synchronized void getLikeList() {
-        if (mListType == PraiseListPager.PRAISE_LIST_TYPE_Like) {
-            //如果当前榜单类型和新开启榜单类型相同，则退出。
+        if (listType == PraiseListPager.PRAISE_LIST_TYPE_LIKE) {
             return;
-        } else {
-            //设置当前榜单类型
-            mListType = PraiseListPager.PRAISE_LIST_TYPE_Like;
         }
-
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        String classId = "";
-        if (mGetInfo.getStudentLiveInfo() != null) {
-            classId = mGetInfo.getStudentLiveInfo().getClassId();
-        }
-        getHttpManager().getLikeList(classId, enstuId, new HttpCallBack(false) {
+        listType = PraiseListPager.PRAISE_LIST_TYPE_LIKE;
+        String stuId = mGetInfo.getStuId();
+        String classId = mGetInfo.getStudentLiveInfo().getClassId();
+        String stuCouId = mGetInfo.getStuCouId();
+        String couseId = mGetInfo.getStudentLiveInfo().getCourseId();
+        String teamId = mGetInfo.getStudentLiveInfo().getTeamId();
+        getHttpManager().getLikeList(stuId, mLiveId, classId, teamId, new HttpCallBack(false) {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 mLogtf.d("getLikeList => onPmSuccess:  + jsonObject = " + responseEntity.getJsonObject());
                 LikeListEntity likeListEntity = getHttpResponseParser().parseLikeList(responseEntity);
-                if (mView != null && likeListEntity != null) {
-                    mView.onLikeList(likeListEntity);
+                if (likeListEntity != null) {
+                    mPraiseListView.onLikeList(likeListEntity);
                 }
             }
 
@@ -285,78 +340,14 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
                         getLikeList();
                     }
                 });
-                mListType = 0;
+                listType = 0;
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 mLogtf.d("getLikeList => onPmError: errorMsg = " + responseEntity.getErrorMsg());
                 showToast("" + responseEntity.getErrorMsg());
-            }
-        });
-    }
-
-    /**
-     * 获取进步榜
-     */
-    @Override
-    public synchronized void getProgressList(final int status) {
-        if (status == 0) {
-            if (mListType == PraiseListPager.PRAISE_LIST_TYPE_PROGRESS) {
-                //如果当前榜单类型和新开启榜单类型相同，则退出。
-                return;
-            } else {
-                //设置当前榜单类型
-                mListType = PraiseListPager.PRAISE_LIST_TYPE_PROGRESS;
-            }
-        }
-
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        String classId = "";
-        if (mGetInfo.getStudentLiveInfo() != null) {
-            classId = mGetInfo.getStudentLiveInfo().getClassId();
-        }
-        getHttpManager().getProgressList(classId, enstuId, mLiveId, status + "", new HttpCallBack(false) {
-
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) {
-                mLogtf.d("getProgressList => onPmSuccess:  + jsonObject = " + responseEntity.getJsonObject());
-                ProgressListEntity progressListEntity = getHttpResponseParser().parseProgressList(responseEntity);
-                if (mView != null && progressListEntity != null) {
-                    if (status == 0) {
-                        mView.onProgressList(progressListEntity);
-                    } else if (status == 1) {
-                        if (progressListEntity.getPraiseStatus() == 1)
-                            mView.showLikeToast();
-                        else
-                            mView.setLikeBtnEnabled(true);
-                    }
-                }
-            }
-
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                mLogtf.d("getProgressList => onPmFailure: error = " + error + ", msg=" + msg);
-                if (status == 0) {
-                    VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false,
-                            VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
-                    vcDialog.initInfo("当前网络不佳，请刷新获取榜单！").showDialog();
-                    vcDialog.setVerifyBtnListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            getProgressList(0);
-                        }
-                    });
-                    mListType = 0;
-                } else if (status == 1 && mView != null) {
-                    mView.setLikeBtnEnabled(true);
-                }
-            }
-
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                mLogtf.d("getProgressList => onPmError: errorMsg = " + responseEntity.getErrorMsg());
-                showToast("" + responseEntity.getErrorMsg());
+                listType = 0;
             }
         });
     }
@@ -365,7 +356,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
      * 获取点赞概率标识
      */
     @Override
-    public synchronized void getLikeProbability(final ArrayList<String> list) {
+    public synchronized void getLikeProbability(final ArrayList<PraiseListDanmakuEntity> danmakuList) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String classId = "";
         if (mGetInfo.getStudentLiveInfo() != null) {
@@ -379,9 +370,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
                 LikeProbabilityEntity likeProbabilityEntity = getHttpResponseParser().parseLikeProbability(responseEntity);
                 if (mLikeProbabilityEntity != null) {
                     mLikeProbabilityEntity = likeProbabilityEntity;
-                    if (mView != null) {
-                        mView.receiveLikeNotice(list, likeProbabilityEntity);
-                    }
+                    mPraiseListView.receiveLikeNotice(danmakuList, likeProbabilityEntity);
                 }
             }
 
@@ -396,36 +385,22 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
                 showToast("" + responseEntity.getErrorMsg());
             }
         });
-
-        Bitmap src = null;
     }
 
     /**
-     * 学生私聊老师点赞
+     * 学生告诉教师点赞个数
      */
     @Override
-    public void sendLike() {
-        mLogtf.d("sendLike");
+    public void sendLikeNum(int likes, int barrageType) {
+        mLogtf.d("sendLikeNum: likes = " + likes + ", mCounTeacherStr = " + mLiveBll.getCounTeacherStr());
         try {
             JSONObject jsonObject = new JSONObject();
-            jsonObject.put("type", "" + XESCODE.XCR_ROOM_AGREE_SEND_S);
-            jsonObject.put("agreeFrom", "" + mGetInfo.getStuName());
-            sendNotice(jsonObject, mLiveBll.getCounTeacherStr());
-        } catch (Exception e) {
-            mLogtf.e("sendLike", e);
-        }
-    }
-
-    /**
-     * 学生计算赞数后私发老师
-     */
-    @Override
-    public void sendLikeNum(int agreeNum) {
-        mLogtf.d("sendLikeNum: agreeNum = " + agreeNum + ", mCounTeacherStr = " + mLiveBll.getCounTeacherStr());
-        try {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("type", "" + XESCODE.XCR_ROOM_AGREE_NUM_S);
-            jsonObject.put("agreeNum", agreeNum);
+            jsonObject.put("type", "" + XESCODE.XCR_ROOM_PRAISELIST_SEND_LIKE);
+            jsonObject.put("likes", likes);
+            jsonObject.put("teamId", mGetInfo.getStudentLiveInfo().getTeamId());
+            jsonObject.put("barrageType", "" + barrageType);
+            jsonObject.put("stuId", mGetInfo.getStuId());
+            jsonObject.put("stuName", mGetInfo.getStuName());
             sendNotice(jsonObject, mLiveBll.getCounTeacherStr());
         } catch (Exception e) {
             mLogtf.e("sendLikeNum", e);
@@ -439,8 +414,8 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
 
     @Override
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
-        if (mView != null) {
-            mView.setVideoLayout(liveVideoPoint);
+        if (mPraiseListView != null) {
+            mPraiseListView.setVideoLayout(liveVideoPoint);
         }
     }
 }

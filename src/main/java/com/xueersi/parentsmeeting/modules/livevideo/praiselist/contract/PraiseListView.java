@@ -6,6 +6,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.ExcellentL
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeProbabilityEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.MinimarketListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListDanmakuEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.ProgressListEntity;
 
 import java.util.ArrayList;
@@ -44,11 +46,11 @@ public interface PraiseListView {
     void onLikeList(LikeListEntity likeListEntity);
 
     /**
-     * 显示进步榜
+     * 显示计算小超市榜
      *
-     * @param progressListEntity
+     * @param minimarketListEntity
      */
-    void onProgressList(ProgressListEntity progressListEntity);
+    void onMiniMarketList(MinimarketListEntity minimarketListEntity);
 
     /**
      * 显示老师表扬横幅
@@ -59,12 +61,12 @@ public interface PraiseListView {
     void showPraiseScroll(String stuName, String tecName);
 
     /**
-     * 收到给我点赞的消息
+     * 收到老师广播赞数的消息
      *
-     * @param stuNames
+     * @param danmakuList
      * @param likeProbabilityEntity
      */
-    void receiveLikeNotice(ArrayList<String> stuNames, LikeProbabilityEntity likeProbabilityEntity);
+    void receiveLikeNotice(ArrayList<PraiseListDanmakuEntity> danmakuList, LikeProbabilityEntity likeProbabilityEntity);
 
     /**
      * 显示感谢点赞的提示
@@ -76,14 +78,6 @@ public interface PraiseListView {
      * 关闭榜单
      */
     void closePraiseList();
-
-    /**
-     * 设置点赞按钮是否可点击
-     *
-     * @param enabled
-     */
-    void setLikeBtnEnabled(boolean enabled);
-
 
     /**
      * 播放器区域变化时更新视图

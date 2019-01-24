@@ -6,30 +6,45 @@
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@+id/tv_livevideo_praiselist_excellent_name"
-        android:layout_centerInParent="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
         android:ellipsize="end"
+        android:gravity="left"
         android:singleLine="true"
         android:textColor="#7d553f"
         android:textSize="12dp"
-        android:gravity="left"
-        tools:text="张远荪"/>
+        tools:text="张远荪" />
 
-    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-        android:id="@+id/tv_livevideo_praiselist_excellent_counts"
+    <RelativeLayout
+        android:id="@+id/rl_livevideo_praiselist_excellent_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:gravity="right"
-        android:drawablePadding="5dp"
-        android:paddingLeft="15dp"
-        android:drawableRight="@drawable/ic_livevideo_praiselist_praise"
-        android:maxLines="1"
-        android:textColor="#5e2718"
-        android:textSize="12sp"
-        android:visibility="gone"
-        tools:text="10" />
+        android:layout_below="@+id/tv_livevideo_praiselist_excellent_name"
+        android:layout_alignLeft="@+id/tv_livevideo_praiselist_excellent_name"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="12dp"
+        android:visibility="invisible">
+
+        <ImageView
+            android:id="@+id/iv_livevideo_praiselist_excellent_like"
+            android:layout_width="6dp"
+            android:layout_height="7dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_livevideo_praiselist_praise"
+            android:layout_marginRight="2dp"/>
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tv_livevideo_praiselist_excellent_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/iv_livevideo_praiselist_excellent_like"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textColor="#5e2718"
+            android:textSize="8dp"
+            tools:text="10" />
+    </RelativeLayout>
 
 </RelativeLayout>

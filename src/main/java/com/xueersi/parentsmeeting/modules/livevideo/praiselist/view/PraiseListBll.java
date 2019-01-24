@@ -23,7 +23,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.praiselist.contract.PraiseLi
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.ExcellentListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeProbabilityEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.ProgressListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.MinimarketListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListDanmakuEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.page.PraiseListPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -38,16 +39,16 @@ public class PraiseListBll implements PraiseListView {
     public static final String TAG = "PraiseListBll";
     private Activity activity;
     private PraiseListPresenter mPresenter;
+    private int displayWidth, displayHeight, videoWidth, wradio = 0;
     private LiveAndBackDebug liveAndBackDebug;
     private LogToFile mLogtf;
-    private int displayWidth, displayHeight, videoWidth;
-    private int wradio = 0;
     private WeakHandler mWeakHandler = new WeakHandler(Looper.getMainLooper(), new Handler.Callback() {
         @Override
         public boolean handleMessage(Message message) {
             return false;
         }
     });
+    private int mListType = 0;
 
     /**
      * 直播底部布局
@@ -60,7 +61,7 @@ public class PraiseListBll implements PraiseListView {
     /**
      * 表扬榜页面
      */
-    private PraiseListPager mPraiseList;
+    private PraiseListPager mPraiseListPager;
     private String nonce = "";
 
     /**
@@ -70,9 +71,9 @@ public class PraiseListBll implements PraiseListView {
         LinearLayout llTest = new LinearLayout(activity);
         rlPraiseListContent.addView(llTest);
         Button btnTest1 = new Button(activity);
-        btnTest1.setText("表扬榜");
+        btnTest1.setText("优秀榜");
         Button btnTest2 = new Button(activity);
-        btnTest2.setText("优秀榜");
+        btnTest2.setText("计算小超市榜");
         Button btnTest3 = new Button(activity);
         btnTest3.setText("点赞榜");
         Button btnTest4 = new Button(activity);
@@ -84,13 +85,13 @@ public class PraiseListBll implements PraiseListView {
         btnTest1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.getExcellentList(0);
+                mPresenter.getExcellentList();
             }
         });
         btnTest2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPresenter.getProgressList(0);
+                mPresenter.getMiniMarketList();
             }
         });
         btnTest3.setOnClickListener(new View.OnClickListener() {
@@ -113,6 +114,9 @@ public class PraiseListBll implements PraiseListView {
         this.activity = activity;
         LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
         setVideoLayout(liveVideoPoint);
+        if (mPraiseListPager != null) {
+            mPraiseListPager.alignLayout();
+        }
     }
 
     @Override
@@ -137,7 +141,7 @@ public class PraiseListBll implements PraiseListView {
                     rlPraiseListContent.setLayoutParams(mainParam);
                     bottomContent.addView(rlPraiseListContent);
                 }
-                test();
+//                test();
             }
         });
     }
@@ -174,15 +178,19 @@ public class PraiseListBll implements PraiseListView {
     @Override
     public void onExcellentList(final ExcellentListEntity excellentListEntity) {
         mLogtf.d("onExcellentList");
-        //closePraiseList();
+        if (mListType == PraiseListPager.PRAISE_LIST_TYPE_EXECELLENT) {
+            //如果当前榜单类型和新开启榜单类型相同，则退出。
+            return;
+        }
+        mListType = PraiseListPager.PRAISE_LIST_TYPE_EXECELLENT;
         mWeakHandler.post(new Runnable() {
             @Override
             public void run() {
                 //rBottomContent.setClickable(true);
-                mPraiseList = new PraiseListPager(activity, excellentListEntity, mPresenter ,PraiseListBll.this);
+                mPraiseListPager = new PraiseListPager(activity, excellentListEntity, mPresenter, PraiseListBll.this);
                 rlPraiseListContent.removeAllViews();
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                rlPraiseListContent.addView(mPraiseList.getRootView(), params);
+                rlPraiseListContent.addView(mPraiseListPager.getRootView(), params);
                 activity.getWindow().getDecorView().requestLayout();
                 activity.getWindow().getDecorView().invalidate();
             }
@@ -198,29 +206,33 @@ public class PraiseListBll implements PraiseListView {
     }
 
     /**
-     * 显示点赞榜
+     * 显示计算小超市榜
      *
-     * @param likeListEntity
+     * @param minimarketListEntity
      */
     @Override
-    public void onLikeList(final LikeListEntity likeListEntity) {
-        mLogtf.d("onLikeList");
-        //closePraiseList();
+    public void onMiniMarketList(final MinimarketListEntity minimarketListEntity) {
+        mLogtf.d("onProgressList");
+        if (mListType == PraiseListPager.PRAISE_LIST_TYPE_MINI_MARKET) {
+            //如果当前榜单类型和新开启榜单类型相同，则退出。
+            return;
+        }
+        mListType = PraiseListPager.PRAISE_LIST_TYPE_MINI_MARKET;
         mWeakHandler.post(new Runnable() {
             @Override
             public void run() {
                 //rBottomContent.setClickable(true);
-                mPraiseList = new PraiseListPager(activity, likeListEntity, mPresenter, PraiseListBll.this);
+                mPraiseListPager = new PraiseListPager(activity, minimarketListEntity, mPresenter, PraiseListBll.this);
                 rlPraiseListContent.removeAllViews();
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                rlPraiseListContent.addView(mPraiseList.getRootView(), params);
+                rlPraiseListContent.addView(mPraiseListPager.getRootView(), params);
                 activity.getWindow().getDecorView().requestLayout();
                 activity.getWindow().getDecorView().invalidate();
             }
         });
 
         StableLogHashMap logHashMap = new StableLogHashMap("showPraiseList");
-        logHashMap.put("listtype", PraiseListPager.PRAISE_LIST_TYPE_Like + "");
+        logHashMap.put("listtype", PraiseListPager.PRAISE_LIST_TYPE_MINI_MARKET + "");
         logHashMap.put("sno", "4");
         logHashMap.put("stable", "1");
         logHashMap.put("nonce", nonce);
@@ -229,29 +241,33 @@ public class PraiseListBll implements PraiseListView {
     }
 
     /**
-     * 显示进步榜
+     * 显示点赞榜
      *
-     * @param progressListEntity
+     * @param likeListEntity
      */
     @Override
-    public void onProgressList(final ProgressListEntity progressListEntity) {
-        mLogtf.d("onProgressList");
-        //closePraiseList();
+    public void onLikeList(final LikeListEntity likeListEntity) {
+        mLogtf.d("onLikeList");
+        if (mListType == PraiseListPager.PRAISE_LIST_TYPE_LIKE) {
+            //如果当前榜单类型和新开启榜单类型相同，则退出。
+            return;
+        }
+        mListType = PraiseListPager.PRAISE_LIST_TYPE_LIKE;
         mWeakHandler.post(new Runnable() {
             @Override
             public void run() {
                 //rBottomContent.setClickable(true);
-                mPraiseList = new PraiseListPager(activity, progressListEntity, mPresenter, PraiseListBll.this);
+                mPraiseListPager = new PraiseListPager(activity, likeListEntity, mPresenter, PraiseListBll.this);
                 rlPraiseListContent.removeAllViews();
                 ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                rlPraiseListContent.addView(mPraiseList.getRootView(), params);
+                rlPraiseListContent.addView(mPraiseListPager.getRootView(), params);
                 activity.getWindow().getDecorView().requestLayout();
                 activity.getWindow().getDecorView().invalidate();
             }
         });
 
         StableLogHashMap logHashMap = new StableLogHashMap("showPraiseList");
-        logHashMap.put("listtype", PraiseListPager.PRAISE_LIST_TYPE_PROGRESS + "");
+        logHashMap.put("listtype", PraiseListPager.PRAISE_LIST_TYPE_LIKE + "");
         logHashMap.put("sno", "4");
         logHashMap.put("stable", "1");
         logHashMap.put("nonce", nonce);
@@ -268,29 +284,29 @@ public class PraiseListBll implements PraiseListView {
     @Override
     public void showPraiseScroll(final String stuName, final String tecName) {
         mLogtf.d("showPraiseScroll");
-        if (mPraiseList != null)
+        if (mPraiseListPager != null)
             mWeakHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    mPraiseList.startScrollAnimation(stuName, tecName);
+                    mPraiseListPager.startScrollAnimation(stuName, tecName);
                 }
             });
     }
 
     /**
-     * 收到给我点赞的消息
+     * 收到老师广播赞数的消息
      *
-     * @param stuNames
+     * @param danmakuList
      * @param likeProbabilityEntity
      */
     @Override
-    public void receiveLikeNotice(final ArrayList<String> stuNames, final LikeProbabilityEntity likeProbabilityEntity) {
+    public void receiveLikeNotice(final ArrayList<PraiseListDanmakuEntity> danmakuList, final LikeProbabilityEntity likeProbabilityEntity) {
         mLogtf.d("receiveLikeNotice");
-        if (mPraiseList != null)
+        if (mPraiseListPager != null)
             mWeakHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    mPraiseList.receiveLikeNotice(stuNames, likeProbabilityEntity);
+                    mPraiseListPager.receiveLikeNotice(danmakuList);
                 }
             });
     }
@@ -301,11 +317,11 @@ public class PraiseListBll implements PraiseListView {
     @Override
     public void showLikeToast() {
         mLogtf.d("showLikeToast");
-        if (mPraiseList != null)
+        if (mPraiseListPager != null)
             mWeakHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    mPraiseList.showLikeToast();
+                    mPraiseListPager.showLikeToast();
                 }
             });
     }
@@ -317,8 +333,8 @@ public class PraiseListBll implements PraiseListView {
     public void closePraiseList() {
         mLogtf.d("closePraiseList");
         //停止点赞弹幕线程
-        if (mPraiseList != null)
-            mPraiseList.onDestroy();
+        if (mPraiseListPager != null)
+            mPraiseListPager.onDestroy();
         //rBottomContent.setClickable(false);
         mWeakHandler.post(new Runnable() {
             @Override
@@ -327,23 +343,6 @@ public class PraiseListBll implements PraiseListView {
                     rlPraiseListContent.removeAllViews();
             }
         });
-    }
-
-    /**
-     * 设置点赞按钮是否可点击
-     *
-     * @param enabled
-     */
-    @Override
-    public void setLikeBtnEnabled(final boolean enabled) {
-        mLogtf.d("setLikeBtnEnabled");
-        if (mPraiseList != null)
-            mWeakHandler.post(new Runnable() {
-                @Override
-                public void run() {
-                    mPraiseList.setLikeBtnEnabled(enabled);
-                }
-            });
     }
 
     /**

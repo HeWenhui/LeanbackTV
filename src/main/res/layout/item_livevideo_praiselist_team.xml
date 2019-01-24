@@ -4,25 +4,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:layout_centerInParent="true">
+
         <ImageView
             android:id="@+id/iv_livevideo_praiselist_team_head"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            />
-        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-            android:id="@+id/tv_livevideo_praiselist_team_counts"
+            android:layout_centerHorizontal="true" />
+
+        <ImageView
+            android:id="@+id/iv_livevideo_praiselist_team_medal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tv_livevideo_praiselist_team_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_livevideo_praiselist_team_head"
+            android:layout_centerHorizontal="true"
             android:ellipsize="end"
             android:singleLine="true"
             android:textColor="#ffc44928"
-            android:textSize="8dp"
-            tools:text="19/22" />
-    </LinearLayout>
+            android:textSize="8dp" />
+    </RelativeLayout>
 </RelativeLayout>
