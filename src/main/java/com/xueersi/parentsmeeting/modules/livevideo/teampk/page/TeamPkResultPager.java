@@ -383,8 +383,9 @@ public class TeamPkResultPager extends BasePager {
             tvMyTeamSlogan.setText(data.getMyTeamEngerInfo().getSlogon());
             tvOtherTeamSlogan.setText(data.getCompetitorEngerInfo().getSlogon());
             startTimeCountDow(CURRENT_PK_RESULT_AUTO_CLOSE_DRUATION);
+            //todo 根据二期效果图调整 UI
             timeCountDowTextView.setVisibility(View.INVISIBLE);
-
+            ivCloseBtn.setVisibility(View.INVISIBLE);
             // 更新左侧pk 状态栏
             if (mTeamPkBll != null) {
                 mTeamPkBll.updatePkStateLayout(true);
