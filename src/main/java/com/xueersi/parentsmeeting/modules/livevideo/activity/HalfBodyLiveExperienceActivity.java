@@ -975,7 +975,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
 
     private void showPopupwinResult() {
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View result = inflater.inflate(R.layout.pop_experience_livevideo_result, null);
+        View result = inflater.inflate(R.layout.pop_halfbody_experience_learnback, null);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
         mWindow = new PopupWindow(result, RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams
                 .MATCH_PARENT, false);
@@ -1040,39 +1040,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         mFeedbackWindow = null;
         setBackgroundAlpha(1.0f);
         learnFeedbackBll.showWindow();
-       /* final ExperienceLearnFeedbackPager expFeedbackPager = new ExperienceLearnFeedbackPager(this, mVideoEntity,
-                getWindow(), lectureLivePlayBackBll);
-        mFeedbackWindow = new PopupWindow(expFeedbackPager.getRootView(), RelativeLayout.LayoutParams.MATCH_PARENT,
-                RelativeLayout
-                        .LayoutParams.MATCH_PARENT, false);
-        mFeedbackWindow.setBackgroundDrawable(getResources().getDrawable(R.color.transparent));
-        mFeedbackWindow.setOutsideTouchable(false);
-        mFeedbackWindow.setFocusable(true);
-        mFeedbackWindow.setSoftInputMode(PopupWindow.INPUT_METHOD_NEEDED);
-        mFeedbackWindow.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        mFeedbackWindow.showAtLocation(expFeedbackPager.getRootView(), Gravity.CENTER, 0, 0);
-        StableLogHashMap logHashMap = new StableLogHashMap("afterClassFeedbackOpen");
-        logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
-        ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE, logHashMap.getData());
-        mFeedbackWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                mFeedbackWindow = null;
-                setBackgroundAlpha(1.0f);
-            }
-        });
-        expFeedbackPager.setCloseAction(new ExperienceLearnFeedbackPager.CloseAction() {
-            @Override
-            public void onClose(String type) {
-                StableLogHashMap logHashMap = new StableLogHashMap("afterClassFeedbackClose");
-                logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
-                logHashMap.put("closetype", type);
-                ums.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE, logHashMap.getData());
-                bottomContent.removeView(expFeedbackPager.getRootView());
-                mFeedbackWindow.dismiss();
-                mFeedbackWindow = null;
-            }
-        });*/
     }
 
     @Override

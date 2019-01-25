@@ -16,8 +16,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.learnfeedback.St
 import org.json.JSONArray;
 
 /**
- * 学习反馈窗口的Presenter层
- */
+*半身直播体验课 学习反馈
+ *
+*@author chekun
+*created  at 2019/1/24 16:03
+*/
 public class HalfBodyExperienceLearnFeedbackBll extends LiveBackBaseBll implements IStandExperienceLearnFeedbackContract.IExperienceSendHttp {
 
     StandExperienceLearnFeedBackPager mPager;
