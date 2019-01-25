@@ -679,6 +679,15 @@ public class AuditIRCMessage {
      */
     public void destory() {
         mIsDestory = true;
+        if (mChatClient != null) {
+            logger.i("ircsdk ondestory");
+            mChatClient.logout("relogin");
+            mChatClient.getRoomManager().leaveChatRooms(roomid);
+            mChatClient.unInit();
+            mChatClient.getPeerManager().removeListener(mPeerListener);
+            mChatClient.getRoomManager().removeListener(mRoomListener);
+            mChatClient.removeListener(mClientListener);
+        }
         mHandler.removeCallbacks(startVideoRun);
         mHandler.removeCallbacks(mStudyTimeoutRunnable);
         JSONObject jsonObject = new JSONObject();

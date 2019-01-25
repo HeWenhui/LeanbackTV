@@ -228,61 +228,91 @@ public class IRCMessage {
             //	String		content;		//消息内容
             boolean isSelf = false;
             String sender = peerChatMessage.fromUserId.nickname;
-            String target = "PRIVMSG";
+            String target = "";
             String message = peerChatMessage.content;
-            logger.i("onPrivateMessage:sender=" + sender + ",target=" + target + ",message=" + message);
+            int priority = peerChatMessage.msgPriority;
+            String channel = "";
             String login = "";
             String hostname = "";
-            if (sender.startsWith("p") || sender.startsWith("pt")) {
-                String subStr = mNickname.substring(1);
-                if (sender.endsWith(subStr)) {
-                    try {
-                        JSONObject studentObj = new JSONObject(message);
-                        int type = studentObj.getInt("type");
-                        if (type == XESCODE.REQUEST_STUDENT_PUSH) {
-                            JSONObject jsonObject = new JSONObject();
-                            try {
-                                jsonObject.put("type", "" + XESCODE.STUDENT_REPLAY);
-                                jsonObject.put("playUrl", "");
-                                jsonObject.put("status", "unsupported");
-                                PMDefs.PsIdEntity psIdEntity = new PMDefs.PsIdEntity(sender,peerChatMessage.fromUserId.psid);
-                                List<PMDefs.PsIdEntity> psIdEntityList = new ArrayList<>();
-                                psIdEntityList.add(psIdEntity);
-                                mChatClient.getPeerManager().sendPeerMessage(psIdEntityList,jsonObject.toString(),99);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+            JSONObject msgJosn = null;
+            try {
+                msgJosn = new JSONObject(message);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            logger.i("onPrivateMessage:sender=" + sender + ",target=" + target + ",message=" + message);
+
+            if (PMDefs.MessagePriority.MSG_PRIORITY_PRI == priority) {
+                target = "PRIVMSG";
+                //旁听
+                if (sender.startsWith("p") || sender.startsWith("pt")) {
+                    String subStr = mNickname.substring(1);
+                    if (sender.endsWith(subStr)) {
+                        try {
+                            JSONObject studentObj = new JSONObject(message);
+                            int type = studentObj.getInt("type");
+                            if (type == XESCODE.REQUEST_STUDENT_PUSH) {
+                                JSONObject jsonObject = new JSONObject();
+                                try {
+                                    jsonObject.put("type", "" + XESCODE.STUDENT_REPLAY);
+                                    jsonObject.put("playUrl", "");
+                                    jsonObject.put("status", "unsupported");
+                                    PMDefs.PsIdEntity psIdEntity = new PMDefs.PsIdEntity(sender, peerChatMessage.fromUserId.psid);
+                                    List<PMDefs.PsIdEntity> psIdEntityList = new ArrayList<>();
+                                    psIdEntityList.add(psIdEntity);
+                                    mChatClient.getPeerManager().sendPeerMessage(psIdEntityList, jsonObject.toString(), 99);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                             }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                        return;
                     }
-                    return;
-                }
-            } else {
-                if (mNickname.startsWith("ws")) {
-                    if (mNickname.endsWith(sender)) {
-                        isSelf = true;
-                    }
-                } else if (mNickname.startsWith("s")) {
-                    if (sender.endsWith(mNickname)) {
-                        isSelf = true;
+                } else {//判断是否是踢人消息
+                    if (mNickname.startsWith("ws")) {
+                        if (mNickname.endsWith(sender)) {
+                            isSelf = true;
+                        }
+                    } else if (mNickname.startsWith("s")) {
+                        if (sender.endsWith(mNickname)) {
+                            isSelf = true;
+                        }
                     }
                 }
-            }
-            if (mIRCCallback != null) {
-                if (mChannels.length > 1) {
-                    if (LiveTopic.MODE_CLASS.equals(currentMode)) {
+                if (mIRCCallback != null) {
+                    //专属老师
+                    if (mChannels.length > 1) {
+                        if (LiveTopic.MODE_CLASS.equals(currentMode)) {
+                            mIRCCallback.onPrivateMessage(isSelf, sender, login, hostname, target, message);
+                        }
+
+                        if (LiveTopic.MODE_TRANING.equals(currentMode)) {
+                            mIRCCallback.onPrivateMessage(isSelf, sender, login, hostname, target, message);
+                        }
+                    } else {
                         mIRCCallback.onPrivateMessage(isSelf, sender, login, hostname, target, message);
                     }
-
-                    if (LiveTopic.MODE_TRANING.equals(currentMode)) {
-                        mIRCCallback.onPrivateMessage(isSelf, sender, login, hostname, target, message);
+                }
+            } else if (PMDefs.MessagePriority.MSG_PRIORITY_NOTICE == priority){//一对一notic消息
+                target = "NOTICE";
+                boolean send = true;
+                try {
+                    int mtype = msgJosn.getInt("type");
+                    if (mtype == XESCODE.SPEECH_RESULT) {
+                        send = false;
                     }
-                } else {
-                    mIRCCallback.onPrivateMessage(isSelf, sender, login, hostname, target, message);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                if (send) {
+                    mLogtf.d("onNotice:target=" + target + ",notice=" + message);
+                }
+                if (mIRCCallback != null) {
+                    mIRCCallback.onNotice(sender, "", "", target, message, channel);
                 }
             }
-
         }
 
         /**
@@ -317,6 +347,7 @@ public class IRCMessage {
             logger.i("ircsdk join room info " + joinRoomResp.info);
             if (PMDefs.ResultCode.Result_Success == joinRoomResp.code) {
                 isConnected = true;
+                //进入聊天室发送踢人消息
                 if (mIRCCallback != null) {
                     mIRCCallback.onRegister();
                     mIRCCallback.onConnect(null);
@@ -349,19 +380,6 @@ public class IRCMessage {
             String target = joinRoomNotice.roomId;
             String login = "";
             String hostname = "";
-            //如果相同nickname加入 被踢
-//            boolean isSelf = false;
-//            if (mNickname.startsWith("ws")) {
-//                if (mNickname.endsWith(joinRoomNotice.userInfo.nickname)) {
-//                    isSelf = true;
-//                    mIRCCallback.onPrivateMessage(isSelf, joinRoomNotice.userInfo.nickname, joinRoomNotice.roomId, "", "PRIVMSG", "T");
-//                }
-//            } else if (mNickname.startsWith("s")) {
-//                if (joinRoomNotice.userInfo.nickname.endsWith(mNickname)) {
-//                    isSelf = true;
-//                    mIRCCallback.onPrivateMessage(isSelf, joinRoomNotice.userInfo.nickname, joinRoomNotice.roomId, "", "PRIVMSG", "T");
-//                }
-//            }
             if (joinRoomNotice.userInfo.nickname.startsWith("s_") || joinRoomNotice.userInfo.nickname.startsWith("ws_")) {
                 logger.i("onJoin:target=" + target + ",sender=" + sender + ",login=" + "" + ",hostname=" + "");
             } else {
@@ -382,10 +400,6 @@ public class IRCMessage {
                 }
 
             }
-
-
-//            mHandler.postDelayed(mPingRunnable, mPingDelay);
-
         }
 
         /**
@@ -401,11 +415,11 @@ public class IRCMessage {
                 String channel = roomMetaData.roomId;
                 String topic = "";
                 long date = 0;
-                if (roomMetaData.content.containsKey("topic")){
+                if (roomMetaData.content.containsKey("topic")) {
                     topic = roomMetaData.content.get("topic");
                 }
                 if (mIRCCallback != null) {
-                    if (roomMetaData.content.containsKey("number")){
+                    if (roomMetaData.content.containsKey("number")) {
                         mIRCCallback.onChannelInfo(channel, Integer.parseInt(roomMetaData.content.get("number")), JsonUtil.toJson(roomMetaData.content.get("topic")));
                     }
                     onTopic(channel, topic, date);
@@ -631,7 +645,7 @@ public class IRCMessage {
         String appid = myUserInfoEntity.getPsAppId();
         //irc sdk初始化  code: 0 成功 ，1 参数错误 ， 19 已初始化
         int initcode = mChatClient.init(mContext.getApplicationContext(), myUserInfoEntity.getPsAppId(), myUserInfoEntity.getPsAppClientKey(), workSpaceDir.getAbsolutePath());
-        logger.i("irc sdk initcode: "+ initcode);
+        logger.i("irc sdk initcode: " + initcode);
         //设置直播信息
         liveInfo = new PMDefs.LiveInfo();
         liveInfo.nickname = mNickname;
@@ -644,7 +658,7 @@ public class IRCMessage {
         mChatClient.setLiveInfo(liveInfo);
         //登陆 code: 0 成功， 1 参数错误，11 未初始化，17 已登录，18 正在登陆
         int logincode = mChatClient.login(myUserInfoEntity.getPsimId(), myUserInfoEntity.getPsimPwd());
-        logger.i("irc sdk logincode:"+ logincode);
+        logger.i("irc sdk logincode:" + logincode);
     }
 
     private void onTopic(String channel, String topic, long date) {
@@ -669,9 +683,6 @@ public class IRCMessage {
      * @return
      */
     public String getConnectNickname() {
-//        if (mConnection.isConnected()) {
-//            return mConnection.getName();
-//        }
         return mNickname;
     }
 
