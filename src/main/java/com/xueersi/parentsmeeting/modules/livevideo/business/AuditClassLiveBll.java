@@ -1249,9 +1249,9 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
 //                liveGetPlayServer(mLiveTopic.getMode(), false);
 //            }
         }
-        if (mIRCMessage != null) {
-            mIRCMessage.onNetWorkChange(netWorkType);
-        }
+//        if (mIRCMessage != null) {
+//            mIRCMessage.onNetWorkChange(netWorkType);
+//        }
     }
 
     /**
