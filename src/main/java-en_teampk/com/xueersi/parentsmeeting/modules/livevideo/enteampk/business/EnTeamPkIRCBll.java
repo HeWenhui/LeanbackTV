@@ -135,6 +135,8 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             if (isShow) {
                 logger.d("onQuestionShow:isShow");
                 videoQuestionLiveEntity = questionLiveEntity;
+            } else {
+                logger.d("onQuestionShow:notShow");
             }
         }
     }
@@ -487,6 +489,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 if ("off".equals(status)) {
                     onQuestionEnd();
                 }
+                break;
             case XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_STULIKE:
                 logger.d("XCR_ROOM_TEAMPK_STULIKE:data=" + data);
                 if (enTeamPkAction != null) {
@@ -611,7 +614,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
                         super.onPmError(responseEntity);
-                        logger.e("onQuestionEnd:onPmError" + responseEntity.getErrorMsg());
+                        mLogtf.d("onQuestionEnd:onPmError:testId=" + testId + "," + responseEntity.getErrorMsg());
                     }
 
                     @Override
