@@ -265,6 +265,12 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
      * 竖屏时填充视频列表布局
      */
     protected void initData() {
+        if (mVideoEntity == null) {//buglyID:56061 理论上不会为空，如果空了，后面的流程不应该继续进行。
+            XESToastUtils.showToast(activity, "当前视频出现问题，请重试");
+            mCreated = false;
+            activity.finish();
+            return;
+        }
         stuCourId = mVideoEntity.getStuCourseId();
         lectureLivePlayBackBll = new LectureLivePlayBackBll(activity, stuCourId);
         mVideoType = MobEnumUtil.VIDEO_LIVEPLAYBACK;

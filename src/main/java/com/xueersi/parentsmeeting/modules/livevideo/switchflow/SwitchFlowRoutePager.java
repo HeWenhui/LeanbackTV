@@ -84,7 +84,6 @@ public class SwitchFlowRoutePager extends BasePager {
             ivBackGroundTopIcon = mView.findViewById(R.id.iv_livevideo_small_chinese_live_message_background_top);
             lvRoute = mView.findViewById(R.id.lv_livevideo_triple_screen_switch_route);
             dynamicChangeTopIcon();
-
         } else if (isSmallEnglish) {
             mView = View.inflate(mContext, R.layout.page_livevideo_triple_screen_switch_small_enlgish_route, null);
             lvRoute = mView.findViewById(R.id.lv_livevideo_triple_screen_switch_route);
@@ -262,7 +261,7 @@ public class SwitchFlowRoutePager extends BasePager {
             if (convertView == null) {
                 mHolder = new ViewHolder();
                 LayoutInflater layoutInflater = LayoutInflater.from(mContext);
-                if (isSmallEnglish || LiveVideoConfig.isPrimary) {
+                if (isSmallEnglish || LiveVideoConfig.isPrimary || LiveVideoConfig.isSmallChinese) {
                     convertView = layoutInflater.inflate(R.layout.item_livevideo_triple_screen_switch_flow_route, null);
                     mHolder.tvRoute = convertView.findViewById(R.id.fzcy_livevideo_switch_flow_route_item);
                 } else if (pattern == 1) {

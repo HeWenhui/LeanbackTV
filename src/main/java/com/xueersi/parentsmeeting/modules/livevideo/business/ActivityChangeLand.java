@@ -7,6 +7,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 public interface ActivityChangeLand {
     void setAutoOrientation(boolean isAutoOrientation);
 
+    @Deprecated
     void setRequestedOrientation(int requestedOrientation);
 
     void changeLOrP();
