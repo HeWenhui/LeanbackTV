@@ -692,45 +692,14 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     }
                     break;
                 }
+                case XESCODE.ARTS_H5_COURSEWARE:
+                    String status = object.optString("status", "off");
+                    if ("off".equals(status)) {
+                        updateAchievement();
+                    }
+                    break;
                 case XESCODE.ARTS_STOP_QUESTION: {
-                    final long before = System.currentTimeMillis();
-                    postDelayedIfNotFinish(new Runnable() {
-                        @Override
-                        public void run() {
-                            String liveid = mGetInfo.getId();
-                            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-                            getHttpManager().getStuGoldCount(enstuId, liveid, new HttpCallBack() {
-                                @Override
-                                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                                    final StarAndGoldEntity starAndGoldEntity = getHttpResponseParser().parseStuGoldCount
-                                            (responseEntity);
-                                    mGetInfo.setGoldCount(starAndGoldEntity.getGoldCount());
-                                    mGetInfo.setStarCount(starAndGoldEntity.getStarCount());
-                                    StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
-                                    LiveGetInfo.EnPkEnergy enpkEnergy = mGetInfo.getEnpkEnergy();
-                                    enpkEnergy.me = pkEnergy.me;
-                                    enpkEnergy.myTeam = pkEnergy.myTeam;
-                                    enpkEnergy.opTeam = pkEnergy.opTeam;
-                                    long time = System.currentTimeMillis() - before;
-                                    mLogtf.d("getStuGoldCount:onPmSuccess:time=" + time);
-                                    if (time < 5000) {
-                                        postDelayedIfNotFinish(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                if (starAction != null) {
-                                                    starAction.onGetStar(starAndGoldEntity);
-                                                }
-                                            }
-                                        }, 5000 - time);
-                                    } else {
-                                        if (starAction != null) {
-                                            starAction.onGetStar(starAndGoldEntity);
-                                        }
-                                    }
-                                }
-                            });
-                        }
-                    }, 500);
+                    updateAchievement();
                     break;
                 }
                 default:
@@ -739,6 +708,47 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         } catch (Exception e) {
 
         }
+    }
+
+    private void updateAchievement() {
+        final long before = System.currentTimeMillis();
+        postDelayedIfNotFinish(new Runnable() {
+            @Override
+            public void run() {
+                String liveid = mGetInfo.getId();
+                String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+                getHttpManager().getStuGoldCount(enstuId, liveid, new HttpCallBack() {
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                        final StarAndGoldEntity starAndGoldEntity = getHttpResponseParser().parseStuGoldCount
+                                (responseEntity);
+                        mGetInfo.setGoldCount(starAndGoldEntity.getGoldCount());
+                        mGetInfo.setStarCount(starAndGoldEntity.getStarCount());
+                        StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
+                        LiveGetInfo.EnPkEnergy enpkEnergy = mGetInfo.getEnpkEnergy();
+                        enpkEnergy.me = pkEnergy.me;
+                        enpkEnergy.myTeam = pkEnergy.myTeam;
+                        enpkEnergy.opTeam = pkEnergy.opTeam;
+                        long time = System.currentTimeMillis() - before;
+                        mLogtf.d("getStuGoldCount:onPmSuccess:time=" + time);
+                        if (time < 5000) {
+                            postDelayedIfNotFinish(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (starAction != null) {
+                                        starAction.onGetStar(starAndGoldEntity);
+                                    }
+                                }
+                            }, 5000 - time);
+                        } else {
+                            if (starAction != null) {
+                                starAction.onGetStar(starAndGoldEntity);
+                            }
+                        }
+                    }
+                });
+            }
+        }, 500);
     }
 
     @Override
@@ -759,9 +769,9 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == 1) {
-                if (englishSpeekAction != null) {
+                mLogtf.d("start:englishSpeekBll=null?" + (englishSpeekAction == null) + ",isDestory=" + isDestory);
+                if (!isDestory && englishSpeekAction != null) {
                     englishSpeekAction.start();
-                    logger.d("start:englishSpeekBll.start");
                 }
             }
         }

@@ -482,6 +482,11 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 onQuestionEnd();
             }
             break;
+            case XESCODE.ARTS_H5_COURSEWARE:
+                String status = data.optString("status", "off");
+                if ("off".equals(status)) {
+                    onQuestionEnd();
+                }
             case XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_STULIKE:
                 logger.d("XCR_ROOM_TEAMPK_STULIKE:data=" + data);
                 if (enTeamPkAction != null) {
@@ -587,6 +592,15 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         logger.d("onQuestionEnd:onPmSuccess" + responseEntity.getJsonObject());
                         EnTeamPkRankEntity enTeamPkRankEntity = getHttpResponseParser().parseUpdataEnglishPkByTestId(responseEntity);
                         if (pkTeamEntity != null && enTeamPkRankEntity != null) {
+                            ArrayList<TeamMemberEntity> myTeamEntitys = enTeamPkRankEntity.getMemberEntities();
+                            for (int i = 0; i < myTeamEntitys.size(); i++) {
+                                TeamMemberEntity teamMemberEntity = myTeamEntitys.get(i);
+                                if (mGetInfo.getStuId().equals("" + teamMemberEntity.id)) {
+                                    myTeamEntitys.remove(i);
+                                    myTeamEntitys.add(0, teamMemberEntity);
+                                    break;
+                                }
+                            }
                             enTeamPkRankEntity.setMyTeam(pkTeamEntity.getMyTeam());
                             if (enTeamPkAction != null) {
                                 enTeamPkAction.onRankLead(enTeamPkRankEntity, testId, TeamPkLeadPager.TEAM_TYPE_1);

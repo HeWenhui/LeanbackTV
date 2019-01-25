@@ -102,6 +102,14 @@ public class TeamPkRankResultPager extends LiveBasePager {
             myTeamEntitys = pkTeamEntity.getbTeamMemberEntity();
             otherTeamEntitys = pkTeamEntity.getaTeamMemberEntity();
         }
+        for (int i = 0; i < myTeamEntitys.size(); i++) {
+            TeamMemberEntity teamMemberEntity = myTeamEntitys.get(i);
+            if (teamMemberEntity.isMy) {
+                myTeamEntitys.remove(i);
+                myTeamEntitys.add(0, teamMemberEntity);
+                break;
+            }
+        }
         myTeamAdapter = new CommonAdapter<TeamMemberEntity>(myTeamEntitys) {
             @Override
             public AdapterItemInterface<TeamMemberEntity> getItemView(Object type) {
