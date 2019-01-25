@@ -88,8 +88,7 @@ public class TeamMemberStarItem implements AdapterItemInterface<TeamMemberEntity
             rlTeampkZan.removeAllViews();
             lav_livevideo_en_teampk_zan = new LottieAnimationView(context);
             map.put(entity, lav_livevideo_en_teampk_zan);
-            float zoom = ScreenUtils.getScreenDensity() / 2;
-            rlTeampkZan.addView(lav_livevideo_en_teampk_zan, (int) (162 * zoom), (int) (119 * zoom));
+            rlTeampkZan.addView(lav_livevideo_en_teampk_zan);
             String bubbleResPath = LOTTIE_RES_ASSETS_ROOTDIR + "/images";
             String bubbleJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "/data.json";
             LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo(bubbleResPath, bubbleJsonPath, "img_0.png") {

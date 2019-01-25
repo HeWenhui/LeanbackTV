@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -306,7 +307,6 @@ public class TeamPkLeadPager extends LiveBasePager {
     private void showRank() {
         View layout_livevideo_en_team_lead_star = LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_en_team_lead_star, rlTeampkLeadBottom, false);
         rlTeampkLeadBottom.addView(layout_livevideo_en_team_lead_star);
-        GridView gv_livevideo_en_teampk_lead_star = layout_livevideo_en_team_lead_star.findViewById(R.id.gv_livevideo_en_teampk_lead_star);
         final ArrayList<TeamMemberEntity> myTeamEntitys = enTeamPkRankEntity.getMemberEntities();
         int oldSize = myTeamEntitys.size();
         for (int i = 6; i < myTeamEntitys.size(); i++) {
@@ -315,30 +315,34 @@ public class TeamPkLeadPager extends LiveBasePager {
         }
         int newSize = myTeamEntitys.size();
         logger.d("showRank:oldSize=" + oldSize + ",newSize=" + newSize);
-        CommonAdapter<TeamMemberEntity> myTeamAdapter = new CommonAdapter<TeamMemberEntity>(myTeamEntitys) {
-            HashMap<TeamMemberEntity, LottieAnimationView> map = new HashMap<>();
+        addTeam();
+    }
 
-            @Override
-            public AdapterItemInterface<TeamMemberEntity> getItemView(Object type) {
-                TeamMemberStarItem teamMemberStarItem = new TeamMemberStarItem(mContext, map);
-                teamMemberStarItems.add(teamMemberStarItem);
-                teamMemberStarItem.setOnItemClick(new TeamMemberStarItem.OnItemClick() {
-                    @Override
-                    public void onItemClick(TeamMemberEntity entity) {
-                        if (onStudyClick != null) {
-                            onStudyClick.onStudyClick(myTeamEntitys);
-                        }
+    private void addTeam() {
+        LinearLayout llTeampkLeadStar = rlTeampkLeadBottom.findViewById(R.id.ll_livevideo_en_teampk_lead_star);
+        HashMap<TeamMemberEntity, LottieAnimationView> map = new HashMap<>();
+        final ArrayList<TeamMemberEntity> myTeamEntitys = enTeamPkRankEntity.getMemberEntities();
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        for (int i = 0; i < myTeamEntitys.size(); i++) {
+            TeamMemberStarItem teamMemberStarItem = new TeamMemberStarItem(mContext, map);
+            teamMemberStarItems.add(teamMemberStarItem);
+            teamMemberStarItem.setOnItemClick(new TeamMemberStarItem.OnItemClick() {
+                @Override
+                public void onItemClick(TeamMemberEntity entity) {
+                    if (onStudyClick != null) {
+                        onStudyClick.onStudyClick(myTeamEntitys);
                     }
-                });
-                return teamMemberStarItem;
+                }
+            });
+            View convertView = inflater.inflate(teamMemberStarItem.getLayoutResId(), llTeampkLeadStar, false);
+            teamMemberStarItem.initViews(convertView);
+            teamMemberStarItem.updateViews(myTeamEntitys.get(i), i, null);
+            LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) convertView.getLayoutParams();
+            if (i != 0) {
+                layoutParams.leftMargin = (int) (20 * ScreenUtils.getScreenDensity());
             }
-        };
-        int num = Math.min(6, newSize);
-        gv_livevideo_en_teampk_lead_star.setNumColumns(num);
-        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) gv_livevideo_en_teampk_lead_star.getLayoutParams();
-        lp.width = (int) ((78 * num + (num - 1) * 20) * ScreenUtils.getScreenDensity());
-        gv_livevideo_en_teampk_lead_star.setLayoutParams(lp);
-        gv_livevideo_en_teampk_lead_star.setAdapter(myTeamAdapter);
+            llTeampkLeadStar.addView(convertView, layoutParams);
+        }
     }
 
     private void setBg(final ImageView ivTeampkMine, final ImageView back) {

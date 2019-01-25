@@ -9,16 +9,13 @@
         android:layout_centerHorizontal="true"
         android:src="@drawable/livevideo_enpk_gongxianzhixing_pic" />
 
-    <GridView
-        android:id="@id/gv_livevideo_en_teampk_lead_star"
+    <LinearLayout
+        android:id="@id/ll_livevideo_en_teampk_lead_star"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:clickable="false"
-        android:gravity="center_horizontal"
-        android:horizontalSpacing="20dp"
-        android:listSelector="@color/transparent"
-        android:numColumns="6" />
+        android:orientation="horizontal">
+    </LinearLayout>
 
     <TextView
         android:id="@id/tv_livevideo_en_teampk_rank_start_close"
