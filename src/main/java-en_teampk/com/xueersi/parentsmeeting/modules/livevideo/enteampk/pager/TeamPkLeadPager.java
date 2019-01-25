@@ -205,9 +205,9 @@ public class TeamPkLeadPager extends LiveBasePager {
         float fprog = 0.0f;
         int total = enTeamPkRankEntity.getMyTeamTotal() + enTeamPkRankEntity.getOpTeamTotal();
         ivTeampkOther.setImageResource(res[enTeamPkRankEntity.getBpkTeamId()]);
-        tvTeampkLeadFireAddLeft.setText("" + enTeamPkRankEntity.getMyTeamCurrent());
+        tvTeampkLeadFireAddLeft.setText("+" + enTeamPkRankEntity.getMyTeamCurrent());
         tvTeampkLeadScoreLeft.setText("" + enTeamPkRankEntity.getMyTeamTotal());
-        ivTeampkLeadFireAddRight.setText("" + enTeamPkRankEntity.getOpTeamCurrent());
+        ivTeampkLeadFireAddRight.setText("+" + enTeamPkRankEntity.getOpTeamCurrent());
         tvTeampkLeadScoreRight.setText("" + enTeamPkRankEntity.getOpTeamTotal());
         if (total != 0) {
             fprog = (float) (enTeamPkRankEntity.getMyTeamTotal()) / (float) (total);
