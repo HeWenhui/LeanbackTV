@@ -118,14 +118,14 @@ public class SpeakerRecognitioner {
         pingPool.execute(new Runnable() {
             @Override
             public void run() {
+                logToFile.d("start:audioRequest=" + audioRequest.get() + ",destory=" + destory);
+                if (audioRequest.get() || destory) {
+                    return;
+                }
                 speakerRecognitionerInterface = SpeakerRecognitionerInterface
                         .getInstance();
                 MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
                 String stuId = userInfoEntity.getStuId();
-                logToFile.d("start:audioRequest=" + audioRequest.get());
-                if (audioRequest.get()) {
-                    return;
-                }
                 if (mAudioRecord == null) {
                     try {
                         initAudioRecorder();
