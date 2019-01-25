@@ -225,10 +225,11 @@ public class TeamPkLeadPager extends LiveBasePager {
                 }
             });
         }
+        showRank();
+        final TextView tv_livevideo_en_teampk_rank_start_close = rlTeampkLeadBottom.findViewById(R.id.tv_livevideo_en_teampk_rank_start_close);
         final AtomicInteger integer = new AtomicInteger(closeDelay / 1000);
         int countDelay = 1000;
         if (type == TEAM_TYPE_2 && win >= 0) {
-            closeDelay += WIN_VIEW_SHOW;
             countDelay += WIN_VIEW_SHOW;
             final ViewGroup group = (ViewGroup) mView;
             final View view = LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_en_team_lead_win, group, false);
@@ -237,10 +238,12 @@ public class TeamPkLeadPager extends LiveBasePager {
                 @Override
                 public void run() {
                     group.removeView(view);
+                    tv_livevideo_en_teampk_rank_start_close.setText(integer.get() + "s后关闭");
                 }
             }, WIN_VIEW_SHOW);
+        } else {
+            tv_livevideo_en_teampk_rank_start_close.setText(integer.get() + "s后关闭");
         }
-        showRank();
         pgTeampkLead.setProgress(progress);
         final float finalFprog = fprog;
         mLogtf.d("initData:type=" + type + ",fprog=" + fprog);
@@ -255,23 +258,6 @@ public class TeamPkLeadPager extends LiveBasePager {
                 return false;
             }
         });
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                onClose.close(TeamPkLeadPager.this);
-//            }
-//        }, closeDelay);
-        final TextView tv_livevideo_en_teampk_rank_start_close = rlTeampkLeadBottom.findViewById(R.id.tv_livevideo_en_teampk_rank_start_close);
-        if (type == TEAM_TYPE_2 && win >= 0) {
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    tv_livevideo_en_teampk_rank_start_close.setText((integer.get() * 1000) + "s后关闭");
-                }
-            }, WIN_VIEW_SHOW);
-        } else {
-            tv_livevideo_en_teampk_rank_start_close.setText((integer.get() * 1000) + "s后关闭");
-        }
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
