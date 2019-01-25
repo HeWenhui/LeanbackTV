@@ -723,7 +723,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         SpeechResultEntity speechResultEntity = new SpeechResultEntity();
         speechResultEntity.gold = gold;
         speechResultEntity.score = score;
-        speechResultEntity.enery = energy;
+        speechResultEntity.energy = energy;
         speechResultEntity.fluency = resultEntity.getContScore();
         speechResultEntity.accuracy = resultEntity.getPronScore();
         if (smallEnglish == 1) {

@@ -957,7 +957,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                         int type = totalObject.optInt("type");
                         int score = totalObject.optInt("score");
                         int gold = totalObject.optInt("gold");
-                        int enery = totalObject.optInt("enery");
+                        int energy = totalObject.optInt("enery");
                         VoiceAnswerResultEvent voiceAnswerResultEvent = new VoiceAnswerResultEvent(testId, score);
                         voiceAnswerResultEvent.setType(type);
                        // logger.e("========>onRolePlayAnswerResult:" + voiceAnswerResultEvent
@@ -967,7 +967,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                         if (mGetInfo.getPattern() != 2) {
                             speechResultEntity.score = score;
                             speechResultEntity.gold = gold;
-                            speechResultEntity.enery = enery;
+                            speechResultEntity.energy = energy;
                             SpeechResultPager speechResultPager = new SpeechResultPager(mContext, mRootView, speechResultEntity, mGetInfo);
                             mRootView.addView(speechResultPager.getRootView());
                             speechResultPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {

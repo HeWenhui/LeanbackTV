@@ -954,6 +954,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
             SpeechResultEntity speechResultEntity = new SpeechResultEntity();
             speechResultEntity.score = head.getSpeechScore();
             speechResultEntity.gold = mEntity.getGoldCount();
+            speechResultEntity.energy = mEntity.getEnergy();
             speechResultEntity.fluency = head.getFluency();
             speechResultEntity.accuracy = head.getAccuracy();
             speechResultEntity.headUrl = mLiveGetInfo.getHeadImgPath();

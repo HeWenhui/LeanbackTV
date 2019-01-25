@@ -102,7 +102,7 @@ public class SpeechResultPager extends LiveBasePager {
         tv_live_speech_result_accuracy_text.setText("" + speechResultEntity.accuracy);
         tv_live_speech_result_fluency_text.setText("" + speechResultEntity.fluency);
         tv_live_speech_result_mygold.setText("+" + speechResultEntity.gold);
-        tv_live_speech_result_myenergy.setText("+" + speechResultEntity.enery);
+        tv_live_speech_result_myenergy.setText("+" + speechResultEntity.energy);
         if (tv_live_speech_result_mypraise != null) {
             tv_live_speech_result_mypraise.setText("" + speechResultEntity.praise);
         }

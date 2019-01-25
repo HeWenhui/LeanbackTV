@@ -740,8 +740,10 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
                     JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                     int gold = jsonObject.optInt("gold");
+                    int energy = jsonObject.optInt("energy");
                     mRolePlayerEntity.setGoldCount(gold);
-                    logger.i( "onPmSuccess: gold  =" + gold);
+                    mRolePlayerEntity.setEnergy(energy);
+                    logger.i( "onPmSuccess: gold  =" + gold+",energy="+energy);
                 }
 
                 @Override
@@ -821,7 +823,9 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                     JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                     int gold = jsonObject.optInt("gold");
                     int scores = jsonObject.optInt("scores");
+                    int energy = jsonObject.optInt("energy");
                     mRolePlayerEntity.setGoldCount(gold);
+                    mRolePlayerEntity.setEnergy(energy);
                     // 发送已答过的状态
                     EventBus.getDefault().post(new ArtsAnswerResultEvent(mRolePlayerEntity.getTestId(),ArtsAnswerResultEvent.TYPE_NATIVE_ANSWERRESULT));
                     EventBus.getDefault().post(new VoiceAnswerResultEvent(mRolePlayerEntity.getTestId(),scores));
