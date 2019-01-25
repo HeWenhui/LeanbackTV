@@ -43,6 +43,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Created by linyuqiang on 2018/7/18.
  * 普通三分屏的加载页
+ * <p>
+ * 主要用来展示界面
+ * <p>
+ * 播放视频相关逻辑处理在{@link com.xueersi.parentsmeeting.modules.livevideo.video.LiveVideoBll}中
  */
 public class LiveVideoAction implements VideoAction {
     private final String TAG = getClass().getSimpleName();
@@ -315,10 +319,104 @@ public class LiveVideoAction implements VideoAction {
     }
 
     /** PSIJK专用，更具MediaErrorInfo来采取不同措施 */
-    public void onFail(MediaErrorInfo mediaErrorInfo) {
-        switch (mediaErrorInfo.mPlayerErrorCode) {
+    public void onFail(final MediaErrorInfo mediaErrorInfo) {
 
-        }
+        mHandler.post(new Runnable() {
+
+            @Override
+            public void run() {
+                //如果是三分屏
+                if (isSmallEnglish || LiveVideoConfig.isPrimary || LiveVideoConfig.isSmallChinese) {
+                    if (videoSwitchFlowStatus == SWITCH_FLOW_ROUTE_SWITCH) {
+                        UmsAgentManager.umsAgentCustomerBusiness(activity, activity.getResources().getString(R.string
+                                .livevideo_switch_flow_170712));
+                        if (!mLiveBll.isPresent()) {
+                            if (mContentView.findViewById(R.id.iv_course_video_teacher_notpresent) != null) {
+                                mContentView.findViewById(R.id.iv_course_video_teacher_notpresent).setVisibility(View.VISIBLE);
+                            }
+                        }
+                        linearLayout.setVisibility(View.GONE);
+                        layoutSwitchFlow.setVisibility(View.VISIBLE);
+                        String strRoute = "一";
+                        if (route.get() == 1) {
+                            strRoute = "一";
+                        } else if (route.get() == 2) {
+                            strRoute = "二";
+                        } else if (route.get() == 3) {
+                            strRoute = "三";
+                        } else if (route.get() == 4) {
+                            strRoute = "四";
+                        }
+                        tvSwitchFlowRetry.setText("线路" + strRoute + "切换失败");
+                    } else if (videoSwitchFlowStatus == SWITCH_FLOW_RELOAD) {
+                        UmsAgentManager.umsAgentCustomerBusiness(activity, activity.getResources().getString(R.string
+                                .livevideo_switch_flow_170710));
+                        if (!mLiveBll.isPresent()) {
+                            if (mContentView.findViewById(R.id.iv_course_video_teacher_notpresent) != null) {
+                                mContentView.findViewById(R.id.iv_course_video_teacher_notpresent).setVisibility(View.VISIBLE);
+                            }
+                        }
+                        linearLayout.setVisibility(View.GONE);
+                        layoutSwitchFlow.setVisibility(View.VISIBLE);
+                        tvSwitchFlowRetry.setText("加载失败");
+                    }
+                }
+                if (tvLoadingHint != null) {
+                    switch (mediaErrorInfo.mErrorCode) {
+                        case MediaErrorInfo.PSPlayerError: {
+                            PlayErrorCode playErrorCode = PlayErrorCode.getError(mediaErrorInfo.mPlayerErrorCode);
+                            lastPlayErrorCode = playErrorCode;
+                            if (tvLoadingHint != null) {
+                                tvLoadingHint.setVisibility(View.VISIBLE);
+                                int netWorkState = NetWorkHelper.getNetWorkState(activity);
+                                if (netWorkState == NetWorkHelper.NO_NETWORK) {
+                                    playErrorCode = PlayErrorCode.PLAY_NO_WIFI;
+                                    tvLoadingHint.setText(PlayErrorCode.PLAY_NO_WIFI.getTip());
+                                } else {
+                                    tvLoadingHint.setText("视频播放失败[" + mediaErrorInfo.mPlayerErrorCode + " " + "]");
+                                }
+                            }
+                            LiveTopic.RoomStatusEntity status = mGetInfo.getLiveTopic().getMainRoomstatus();
+                            if (status != null) {
+                                mLogtf.d("onFail:classbegin=" + status.isClassbegin());
+                            }
+                            //统计日志
+                            PlayErrorCodeLog.livePlayError(mLiveBll, playErrorCode);
+                            break;
+                        }
+                        case MediaErrorInfo.PSDispatchFailed: {
+                            logger.i("调度失败");
+                            tvLoadingHint.setText("视频播放失败[" + MediaErrorInfo.PSDispatchFailed + "],正在重试...");
+                            break;
+                        }
+                        case MediaErrorInfo.PSChannelNotExist: {
+                            logger.i("PSChannelNotExist");
+                            tvLoadingHint.setText("视频播放失败[" + MediaErrorInfo.PSChannelNotExist + "],请耐心等待");
+                            break;
+                        }
+                        case MediaErrorInfo.PSServer403: {
+                            tvLoadingHint.setText("鉴权失败" + MediaErrorInfo.PSServer403 + "，正在重试...");
+                            break;
+                        }
+                        default: {
+
+                            break;
+                        }
+
+
+                    }
+//                    if (mLiveBll.isPresent()) {
+//                        if (liveType != LiveVideoConfig.LIVE_TYPE_LIVE || LiveTopic.MODE_CLASS.endsWith(mGetInfo
+// .getLiveTopic().getMode())) {
+//                            tvLoadingHint.setText(mainTeacherLoad);
+//                        } else {
+//                            tvLoadingHint.setText(coachTeacherLoad);
+//                        }
+//                    }
+                }
+            }
+        });
+
 
     }
 

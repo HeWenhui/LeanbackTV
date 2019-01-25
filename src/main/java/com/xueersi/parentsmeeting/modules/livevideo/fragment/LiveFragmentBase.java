@@ -457,6 +457,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
             AtomicBoolean change = new AtomicBoolean(modechange);// 直播状态是不是变化
             rePlay(change.get());
         } else {
+//            videoFragment.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
             mLiveVideoBll.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
         }
     }
@@ -527,6 +528,33 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
             } else {
                 MediaErrorInfo mediaErrorInfo = videoFragment.getMediaErrorInfo();
                 liveVideoAction.onFail(mediaErrorInfo);
+                switch (arg2) {
+                    case MediaErrorInfo.PSPlayerError: {
+                        //播放器错误
+                        break;
+                    }
+                    case MediaErrorInfo.PSDispatchFailed: {
+//                        if (mediaListener != null) {
+//                            mediaListener.getPServerListFail(getMediaErrorInfo());
+//                        }
+                        //调度失败，建议重新访问playLive或者playVod频道不存在
+                        mLiveVideoBll.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+                    }
+                    break;
+
+                    case MediaErrorInfo.PSChannelNotExist: {
+                        //提示用户等待,交给上层来处理
+
+                        break;
+                    }
+                    case MediaErrorInfo.PSServer403: {
+                        //防盗链鉴权失败，需要重新访问playLive或者playVod
+                        mLiveVideoBll.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+                    }
+                    break;
+                    default:
+                        break;
+                }
             }
         }
     }

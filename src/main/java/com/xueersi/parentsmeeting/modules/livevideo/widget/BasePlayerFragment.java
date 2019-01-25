@@ -355,6 +355,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                 mOpened.set(true);
                                 vPlayer.setVPlayerListener(vPlayerServiceListener);
                                 if (videoView != null) {
+                                    logger.i("setDisplay  ");
                                     vPlayer.setDisplay(videoView.getHolder());
                                 }
                                 vPlayer.psInit(MediaPlayer.VIDEO_PLAYER_NAME, getStartPosition(), vPlayerServiceListener, mIsHWCodec);
@@ -537,7 +538,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         this.url = url;
         mStartPos = startPos;
         liveType = PLAY_TUTORIAL;
-        if (vPlayer != null) {
+        if (mCreated && vPlayer != null) {
             vPlayer.release();
             vPlayer.psStop();
         }
@@ -569,9 +570,13 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         isChangeLine = true;
         this.changeLinePos = pos;
         this.protocol = protocol;
-        this.liveType = PLAY_LIVE;
-//        if (isInitialized()) {
-        if (vPlayer != null) {
+        if (protocol == MediaPlayer.VIDEO_PROTOCOL_RTMP || protocol == MediaPlayer.VIDEO_PROTOCOL_FLV || protocol == MediaPlayer.VIDEO_PROTOCOL_HLS) {
+            this.liveType = PLAY_LIVE;
+        } else if (protocol == MediaPlayer.VIDEO_PROTOCOL_MP4 || protocol == MediaPlayer.VIDEO_PROTOCOL_M3U8) {
+            this.liveType = PLAY_BACK;
+        }
+        if (mCreated && vPlayer != null) {
+//        if (vPlayer != null) {
             vPlayer.release();
             vPlayer.psStop();
         }
@@ -606,9 +611,13 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         isChangeLine = false;
         this.streamId = streamId;
         this.protocol = protocol;
-        liveType = PLAY_LIVE;
-//        if (isInitialized()) {
-        if (vPlayer != null) {
+        if (protocol == MediaPlayer.VIDEO_PROTOCOL_RTMP || protocol == MediaPlayer.VIDEO_PROTOCOL_FLV || protocol == MediaPlayer.VIDEO_PROTOCOL_HLS) {
+            this.liveType = PLAY_LIVE;
+        } else if (protocol == MediaPlayer.VIDEO_PROTOCOL_MP4 || protocol == MediaPlayer.VIDEO_PROTOCOL_M3U8) {
+            this.liveType = PLAY_BACK;
+        }
+        if (mCreated && vPlayer != null) {
+//        if (vPlayer != null) {
             vPlayer.release();
             vPlayer.psStop();
         }

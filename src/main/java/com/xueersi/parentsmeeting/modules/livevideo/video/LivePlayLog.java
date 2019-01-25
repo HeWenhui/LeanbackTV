@@ -15,7 +15,6 @@ import android.text.TextUtils;
 import com.netease.LDNetDiagnoClient.LDNetTraceClient;
 import com.netease.LDNetDiagnoService.JavaTraceResult;
 import com.netease.LDNetDiagnoService.LDNetTraceRoute;
-import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.business.AppBll;
@@ -531,7 +530,9 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
         lastHeartTime = 0;
         openStart = System.currentTimeMillis();
         mUri = vPlayer.getUri();
-        mUriHost = DNSUtil.getHost(mUri.toString());
+        if (mUri != null) {
+            mUriHost = DNSUtil.getHost(mUri.toString());
+        }
 //        if (vPlayer.getPlayer() instanceof IjkMediaPlayer) {
 //            IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
 //            ijkMediaPlayer.setOnNativeInvokeListener(new IjkMediaPlayer.OnNativeInvokeListener() {

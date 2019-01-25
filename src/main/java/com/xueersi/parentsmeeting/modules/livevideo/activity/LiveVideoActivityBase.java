@@ -448,13 +448,10 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     protected void playPSVideo(String videoPath, int protocol) {
         this.videoPath = videoPath;
         this.protocol = protocol;
-
-
-        if (vPlayer != null) {
+        if (mCreated && vPlayer != null) {
             vPlayer.release();
             vPlayer.psStop();
         }
-
         mDisplayName = "";
         mIsHWCodec = false;
         mFromStart = false;
@@ -918,26 +915,53 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     /** 播放一个新的视频 */
     protected void playNewVideo(Uri uri, String displayName) {
 
-        if (isInitialized()) {
-            vPlayer.release();
-            vPlayer.releaseContext();
+        if (!MediaPlayer.isPSIJK) {
+            if (isInitialized()) {
+                vPlayer.release();
+                vPlayer.releaseContext();
+            }
+
+            mDisplayName = "";
+            mIsHWCodec = false;
+            mFromStart = false;
+            mStartPos = 0;
+            mIsEnd = false;
+
+            mUri = uri;
+            mDisplayName = displayName;
+
+            if (viewRoot != null) {
+                viewRoot.invalidate();
+            }
+            if (mOpened != null) {
+                mOpened.set(false);
+            }
+
+            vPlayerHandler.sendEmptyMessage(OPEN_FILE);
+        } else {
+            if (isInitialized()) {
+                vPlayer.release();
+                vPlayer.releaseContext();
+            }
+
+            mDisplayName = "";
+            mIsHWCodec = false;
+            mFromStart = false;
+            mStartPos = 0;
+            mIsEnd = false;
+
+            mUri = uri;
+            mDisplayName = displayName;
+
+            if (viewRoot != null) {
+                viewRoot.invalidate();
+            }
+            if (mOpened != null) {
+                mOpened.set(false);
+            }
+
+            vPlayerHandler.sendEmptyMessage(OPEN_FILE);
         }
-
-        mDisplayName = "";
-        mIsHWCodec = false;
-        mFromStart = false;
-        mStartPos = 0;
-        mIsEnd = false;
-
-        mUri = uri;
-        mDisplayName = displayName;
-
-        if (viewRoot != null)
-            viewRoot.invalidate();
-        if (mOpened != null)
-            mOpened.set(false);
-
-        vPlayerHandler.sendEmptyMessage(OPEN_FILE);
     }
 
     public void setVolume(float left, float right) {
