@@ -7,7 +7,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="13dp"
         android:src="@drawable/livevideo_enpk_gongxianzhixing_pic" />
 
     <GridView
@@ -16,6 +15,7 @@
         android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
         android:clickable="false"
+        android:gravity="center_horizontal"
         android:horizontalSpacing="20dp"
         android:listSelector="@color/transparent"
         android:numColumns="6" />

@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.config.AppConfig;
+import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -167,11 +168,11 @@ public class TeamPkLeadPager extends LiveBasePager {
             int lastWin = lastM - lastO;
             ImageView iv_livevideo_en_teampk_lead_left = mView.findViewById(R.id.iv_livevideo_en_teampk_lead_left);
             ImageView iv_livevideo_en_teampk_lead_right = mView.findViewById(R.id.iv_livevideo_en_teampk_lead_right);
+            ImageView iv_livevideo_en_teampk_lead_mid = mView.findViewById(R.id.iv_livevideo_en_teampk_lead_mid);
             String s;
             if (win == 0) {
                 s = "0";
-                iv_livevideo_en_teampk_lead_left.setImageResource(R.drawable.bg_livevideo_en_teampk_lead_mid);
-                iv_livevideo_en_teampk_lead_right.setImageResource(R.drawable.bg_livevideo_en_teampk_lead_mid);
+                iv_livevideo_en_teampk_lead_mid.setImageResource(R.drawable.bg_livevideo_en_teampk_lead_mid);
             } else {
                 if (win > 0) {
                     if (lastWin > 0) {
@@ -346,6 +347,11 @@ public class TeamPkLeadPager extends LiveBasePager {
                 return teamMemberStarItem;
             }
         };
+        int num = Math.min(6, newSize);
+        gv_livevideo_en_teampk_lead_star.setNumColumns(num);
+        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) gv_livevideo_en_teampk_lead_star.getLayoutParams();
+        lp.width = (int) ((78 * num + (num - 1) * 20) * ScreenUtils.getScreenDensity());
+        gv_livevideo_en_teampk_lead_star.setLayoutParams(lp);
         gv_livevideo_en_teampk_lead_star.setAdapter(myTeamAdapter);
     }
 

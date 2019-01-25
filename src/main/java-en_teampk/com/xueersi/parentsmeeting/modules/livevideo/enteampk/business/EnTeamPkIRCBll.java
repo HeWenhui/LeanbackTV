@@ -35,6 +35,7 @@ import org.json.JSONObject;
 
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -106,10 +107,8 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //            Random random = new Random();
 //            EnTeamPkRankEntity enTeamPkRankEntity = new EnTeamPkRankEntity();
 //            enTeamPkRankEntity.setApkTeamId(2);
-//            enTeamPkRankEntity.setMyTeamCurrent(3);
-//            enTeamPkRankEntity.setMyTeamTotal(54);
 //            ArrayList<TeamMemberEntity> memberEntities = enTeamPkRankEntity.getMemberEntities();
-//            for (int i = 0; i < 4; i++) {
+//            for (int i = 0; i < 7; i++) {
 //                TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
 //                teamMemberEntity.id = 100 + i;
 //                if (i == 2) {
@@ -117,13 +116,15 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //                }
 //                teamMemberEntity.headurl = "https://xesfile.xesimg.com/user/h/57375.jpg";
 //                teamMemberEntity.name = "测试测试测试测试测试" + i;
-//                teamMemberEntity.energy = 10 + i;
+//                teamMemberEntity.energy = 110 + i;
 //                memberEntities.add(teamMemberEntity);
 //            }
 //            enTeamPkRankEntity.setBpkTeamId(3);
+//            enTeamPkRankEntity.setMyTeamCurrent(3);
+//            enTeamPkRankEntity.setMyTeamTotal(154);
 //            enTeamPkRankEntity.setOpTeamCurrent(3);
-//            enTeamPkRankEntity.setOpTeamTotal(53);
-//            enTeamPkAction.onRankLead(enTeamPkRankEntity, TeamPkLeadPager.TEAM_TYPE_1);
+//            enTeamPkRankEntity.setOpTeamTotal(154);
+//            enTeamPkAction.onRankLead(enTeamPkRankEntity, "1", TeamPkLeadPager.TEAM_TYPE_1);
 //        }
     }
 
@@ -479,10 +480,6 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 break;
             case XESCODE.STOPQUESTION: {
                 onQuestionEnd();
-            }
-            break;
-            case XESCODE.ARTS_H5_COURSEWARE: {
-                onCourseEnd();
             }
             break;
             case XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_STULIKE:

@@ -692,7 +692,6 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     }
                     break;
                 }
-                case XESCODE.ARTS_H5_COURSEWARE:
                 case XESCODE.ARTS_STOP_QUESTION: {
                     final long before = System.currentTimeMillis();
                     postDelayedIfNotFinish(new Runnable() {

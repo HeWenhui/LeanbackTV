@@ -26,6 +26,7 @@
             android:id="@id/tv_livevideo_en_teampk_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/iv_livevideo_en_teampk_fire"
             android:maxWidth="55dp"
             android:singleLine="true"
             android:textColor="@color/white"
@@ -35,15 +36,15 @@
             android:id="@id/iv_livevideo_en_teampk_fire"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_toRightOf="@id/tv_livevideo_en_teampk_name"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/tv_livevideo_en_teampk_fire"
             android:src="@drawable/livevideo_enteampk_benchangchengjiu_fire_img_nor1" />
 
         <TextView
             android:id="@id/tv_livevideo_en_teampk_fire"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/iv_livevideo_en_teampk_fire"
+            android:layout_alignParentRight="true"
             android:textColor="#F9DF95"
             android:textSize="11sp" />
     </RelativeLayout>
