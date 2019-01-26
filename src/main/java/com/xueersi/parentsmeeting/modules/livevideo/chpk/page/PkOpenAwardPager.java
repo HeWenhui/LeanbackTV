@@ -340,25 +340,9 @@ public class PkOpenAwardPager extends BasePager {
             }
         });
 
-        final Runnable action = new Runnable() {
-            @Override
-            public void run() {
-                if (pkBll != null) {
-                    logUUID = StableLogHashMap.creatNonce();
-                }
-
-                //防止快速 连续点击
-                lottieAnimationView.setClickable(false);
-                getStuChestInfo();
-            }
-        };
-
-        lottieAnimationView.postDelayed(action, 5 * 1000);
-
         lottieAnimationView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                lottieAnimationView.removeCallbacks(action);
 
                 if (pkBll != null) {
                     logUUID = StableLogHashMap.creatNonce();
@@ -501,6 +485,14 @@ public class PkOpenAwardPager extends BasePager {
                 lottieAnimationView.playAnimation();
             }
         });
+
+        //不再自动关闭
+       lottieAnimationView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                closeAwardPager(); //自动关闭
+            }
+        }, TIME_DELAY_SHOW_WINNER);
 
     }
 
