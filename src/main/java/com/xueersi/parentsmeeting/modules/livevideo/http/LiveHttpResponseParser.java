@@ -915,6 +915,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             entity.setTestId(jsonObject.optString("testId"));
             entity.setResultType(jsonObject.optInt("tip"));
             entity.setGoldNum(jsonObject.optInt("gold"));
+            entity.setEnergy(jsonObject.optInt("energy"));
             entity.setMsg(jsonObject.optString("msg"));
             entity.setRightNum(jsonObject.optInt("rightnum"));
 //            entity.setIsAnswer(jsonObject.optInt("isAnswer", 0));
