@@ -1116,6 +1116,7 @@
     <!--<item name="" type="id" />-->
     <!--英语本场成就-->
     <item name="rl_livevideo_en_achive_back" type="id" />
+    <item name="rl_livevideo_en_achive_title" type="id" />
     <item name="iv_livevideo_en_achive_title" type="id" />
     <item name="cb_livevideo_en_achive_title" type="id" />
     <item name="rl_livevideo_en_achive_content" type="id" />
