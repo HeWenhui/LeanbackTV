@@ -295,9 +295,12 @@ public class TeamPkStateLayout extends FrameLayout {
      * 显示 准备战斗提示
      */
     public void showPkReady() {
-        tvState.setText("准备战斗");
-        tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_ready_bg);
-        showPkSateBar();
+        if (tvState!=null){
+            tvState.setText("准备战斗");
+            tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_ready_bg);
+            showPkSateBar();
+        }
+
     }
 
 

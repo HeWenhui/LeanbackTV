@@ -244,6 +244,13 @@ public class LiveGetInfo {
      * 1 :是pk 直播间  0 :非pk直播间
      */
     private String isAllowTeamPk;
+
+    /**
+     * 是否是 teampk 直播间
+     * 1 是 0 不是
+     */
+    private String isAllowTeamPkNew;
+
     /** 是否是AI 伴侣直播间 */
     private int isAIPartner;
     private String[] subjectIds;//所有学科id
@@ -366,6 +373,14 @@ public class LiveGetInfo {
 
     public void setIsAllowTeamPk(String isAllowTeamPk) {
         this.isAllowTeamPk = isAllowTeamPk;
+    }
+
+    public String getIsAllowTeamPkNew() {
+        return isAllowTeamPkNew;
+    }
+
+    public void setIsAllowTeamPkNew(String isAllowTeamPkNew) {
+        this.isAllowTeamPkNew = isAllowTeamPkNew;
     }
 
     public String getIsAllowTeamPk() {

@@ -182,7 +182,7 @@
                     android:layout_width="160dp"
                     android:layout_height="214dp"
                     android:layout_marginTop="-10dp"
-                    android:background="@drawable/livevideo_list_blue_img_disable">
+                    android:background="@drawable/livevideo_list_yellow_img_disable">
 
                     <ImageView
                         android:id="@id/iv_teampk_pkresult_otherteam_logo"
@@ -207,7 +207,7 @@
                         android:layout_below="@id/iv_teampk_pkresult_otherteam_logo"
                         android:layout_marginLeft="40dp"
                         android:layout_marginTop="10dp"
-                        android:src="@drawable/live_video_teampk_blue_headmask" />
+                        android:src="@drawable/live_video_teampk_yellow_headmask" />
 
                     <TextView
                         android:id="@id/tv_teampk_pkresult_otherteacher_name"

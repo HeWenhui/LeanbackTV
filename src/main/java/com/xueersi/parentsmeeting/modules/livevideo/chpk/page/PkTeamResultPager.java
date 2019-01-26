@@ -45,7 +45,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ContributionLayoutManager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothProgressBar;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountDowTextView;
 
@@ -93,7 +93,7 @@ public class PkTeamResultPager extends BasePager {
     private SmoothAddNumTextView tvMyTeamEnergy;
     private SmoothAddNumTextView tvOtherTeamEnergy;
     private TextView tvAddEnergy;
-    private TeamPkProgressBar tpbEnergyBar;
+    private SmoothProgressBar tpbEnergyBar;
     private RecyclerView rclContributionRank;
 
     /**
@@ -140,7 +140,7 @@ public class PkTeamResultPager extends BasePager {
             R.raw.win
     };
     private RelativeLayout rlLottieRootView;
-    private TeamPkProgressBar tpbFinalProgress;
+    private SmoothProgressBar tpbFinalProgress;
     private RelativeLayout rlFinalPbBarContainer;
 
 
@@ -155,7 +155,6 @@ public class PkTeamResultPager extends BasePager {
         rlLottieRootView = view.findViewById(R.id.rl_teampk_pk_result_lottie_root);
         lottieAnimationView = view.findViewById(R.id.lav_teampk_pkresult);
         tpbFinalProgress = view.findViewById(R.id.tpb_teampk_pkresult_pbbar_final);
-        tpbFinalProgress.setMaxProgress(100);
         rlFinalPbBarContainer = view.findViewById(R.id.rl_teampk_pkresult_final_pbbar_container);
 
 
@@ -179,7 +178,6 @@ public class PkTeamResultPager extends BasePager {
         tvAddEnergy = view.findViewById(R.id.tv_teampk_myteam_add_energy);
 
         tpbEnergyBar = view.findViewById(R.id.tpb_teampk_pkresult_pbbar);
-        tpbEnergyBar.setMaxProgress(100);
         timeCountDowTextView = view.findViewById(R.id.tv_teampk_pkresult_time_countdow);
 
         rclContributionRank = view.findViewById(R.id.rcl_teampk_pkresult_contribution_rank);
@@ -249,7 +247,7 @@ public class PkTeamResultPager extends BasePager {
         } else {
             ratio = 0.5f;
         }
-        tpbFinalProgress.setProgress((int) (ratio * tpbFinalProgress.getMaxProgress()));
+        tpbFinalProgress.setProgress((int) (ratio * tpbFinalProgress.getMax()));
         SmoothAddNumTextView tvMyTeamFinalEngergy = rlLottieRootView.findViewById(R.id.tv_teampk_pkresult_myteam_final_anergy);
         tvMyTeamFinalEngergy.setText(myTeamEnergy + "");
         SmoothAddNumTextView tvOtherTeamFinalEngergy = rlLottieRootView.findViewById(R.id.tv_teampk_pkresult_otherteam_final_anergy);
@@ -275,102 +273,90 @@ public class PkTeamResultPager extends BasePager {
      * @param data
      */
     public void showCurrentResult(final TeamEnergyAndContributionStarEntity data) {
+        rlResultRootView.setVisibility(View.VISIBLE);
+        rlLottieRootView.setVisibility(View.GONE);
+        //显示贡献之星
+        if (data.getContributionStarList() != null) {
+            initRecycleView();
+            mContributions.clear();
+            mContributions.addAll(data.getContributionStarList());
+            pkResultAdapter.notifyDataSetChanged();
+            StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext, StudyReportAction.class);
 
-        if (data != null) {
-            rlResultRootView.setVisibility(View.VISIBLE);
-            rlLottieRootView.setVisibility(View.GONE);
-            //显示贡献之星
-            if (data.getContributionStarList() != null) {
-                mView.postDelayed(new Runnable() {
+            if (studyReportAction != null && data.isMe()) {
+                studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT, mView, false, false);
+            }
+        }
+        //进度条动画
+        try {
+            mView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    updateProgressBar(data);
+                }
+            }, 200);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // 初始战队信息
+        long myTeamTotalEnergy = data.getMyTeamEngerInfo().getTotalEnergy();
+        long otherTeamTotalEnergy = data.getCompetitorEngerInfo().getTotalEnergy();
+        ivMyteamState.setVisibility(View.VISIBLE);
+        ivOtherTeamState.setVisibility(View.VISIBLE);
+        if (myTeamTotalEnergy > otherTeamTotalEnergy) {
+            ivMyteamState.setImageResource(R.drawable.livevideo_list_lead_img_disable);
+            ivOtherTeamState.setImageResource(R.drawable.livevideo_list_catchup_img_disable);
+        } else if (otherTeamTotalEnergy > myTeamTotalEnergy) {
+            ivOtherTeamState.setImageResource(R.drawable.livevideo_list_lead_img_disable);
+            ivMyteamState.setImageResource(R.drawable.livevideo_list_catchup_img_disable);
+        } else if (myTeamTotalEnergy == otherTeamTotalEnergy) {
+            ivOtherTeamState.setImageResource(R.drawable.livevideo_alertview_pingshou_img_disable);
+            ivMyteamState.setImageResource(R.drawable.livevideo_alertview_pingshou_img_disable);
+        }
+        ImageLoader.with(BaseApplication.getContext()).load(data.getMyTeamEngerInfo().getTeacherImg()).asBitmap
+                (new SingleConfig.BitmapListener() {
                     @Override
-                    public void run() {
-                        initRecycleView();
-                        mContributions.clear();
-                        mContributions.addAll(data.getContributionStarList());
-                        pkResultAdapter.notifyDataSetChanged();
-                        mView.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext, StudyReportAction.class);
-                                if (studyReportAction != null && data.isMe()) {
-                                    studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT, mView, false, false);
-                                }
-                            }
-                        }, 200);
+                    public void onSuccess(Drawable drawable) {
+                        Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                        Bitmap resultBitmap = scaleBitmap(headBitmap, Math.min(headBitmap.getWidth(), headBitmap
+                                .getHeight()) / 2);
+                        ivMyTeacherHead.setImageBitmap(resultBitmap);
                     }
-                }, 200);
-            }
-            //进度条动画
-            try {
-                mView.postDelayed(new Runnable() {
+
                     @Override
-                    public void run() {
-                        updateProgressBar(data);
+                    public void onFail() {
+
                     }
-                }, 200);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            // 初始战队信息
-            long myTeamTotalEnergy = data.getMyTeamEngerInfo().getTotalEnergy();
-            long otherTeamTotalEnergy = data.getCompetitorEngerInfo().getTotalEnergy();
-            ivMyteamState.setVisibility(View.VISIBLE);
-            ivOtherTeamState.setVisibility(View.VISIBLE);
-            if (myTeamTotalEnergy > otherTeamTotalEnergy) {
-                ivMyteamState.setImageResource(R.drawable.livevideo_list_lead_img_disable);
-                ivOtherTeamState.setImageResource(R.drawable.livevideo_list_catchup_img_disable);
-            } else if (otherTeamTotalEnergy > myTeamTotalEnergy) {
-                ivOtherTeamState.setImageResource(R.drawable.livevideo_list_lead_img_disable);
-                ivMyteamState.setImageResource(R.drawable.livevideo_list_catchup_img_disable);
-            } else if (myTeamTotalEnergy == otherTeamTotalEnergy) {
-                ivOtherTeamState.setImageResource(R.drawable.livevideo_alertview_pingshou_img_disable);
-                ivMyteamState.setImageResource(R.drawable.livevideo_alertview_pingshou_img_disable);
-            }
-            ImageLoader.with(BaseApplication.getContext()).load(data.getMyTeamEngerInfo().getTeacherImg()).asBitmap
-                    (new SingleConfig.BitmapListener() {
-                        @Override
-                        public void onSuccess(Drawable drawable) {
-                            Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
-                            Bitmap resultBitmap = scaleBitmap(headBitmap, Math.min(headBitmap.getWidth(), headBitmap
-                                    .getHeight()) / 2);
-                            ivMyTeacherHead.setImageBitmap(resultBitmap);
-                        }
+                });
 
-                        @Override
-                        public void onFail() {
+        ImageLoader.with(BaseApplication.getContext()).load(data.getCompetitorEngerInfo().getTeacherImg())
+                .asBitmap(new SingleConfig.BitmapListener() {
+                    @Override
+                    public void onSuccess(Drawable drawable) {
+                        Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
+                        Bitmap resultBitmap = scaleBitmap(headBitmap, Math.min(headBitmap.getWidth(), headBitmap
+                                .getHeight()) / 2);
+                        ivOtherTeacherHead.setImageBitmap(resultBitmap);
+                    }
 
-                        }
-                    });
+                    @Override
+                    public void onFail() {
 
-            ImageLoader.with(BaseApplication.getContext()).load(data.getCompetitorEngerInfo().getTeacherImg())
-                    .asBitmap(new SingleConfig.BitmapListener() {
-                        @Override
-                        public void onSuccess(Drawable drawable) {
-                            Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
-                            Bitmap resultBitmap = scaleBitmap(headBitmap, Math.min(headBitmap.getWidth(), headBitmap
-                                    .getHeight()) / 2);
-                            ivOtherTeacherHead.setImageBitmap(resultBitmap);
-                        }
+                    }
+                });
+        ImageLoader.with(BaseApplication.getContext()).load(data.getMyTeamEngerInfo().getImg()).into(ivMyTeamLogo);
+        ImageLoader.with(BaseApplication.getContext()).load(data.getCompetitorEngerInfo().getImg()).into
+                (ivOtherTeamLogo);
+        tvMyTeacherName.setText(data.getMyTeamEngerInfo().getTeacherName());
+        tvOtherTeacherName.setText(data.getCompetitorEngerInfo().getTeacherName());
+        tvMyTeamSlogan.setText(data.getMyTeamEngerInfo().getSlogon());
+        tvOtherTeamSlogan.setText(data.getCompetitorEngerInfo().getSlogon());
+        startTimeCountDow(CURRENT_PK_RESULT_AUTO_CLOSE_DRUATION);
+        timeCountDowTextView.setVisibility(View.INVISIBLE);
 
-                        @Override
-                        public void onFail() {
-
-                        }
-                    });
-            ImageLoader.with(BaseApplication.getContext()).load(data.getMyTeamEngerInfo().getImg()).into(ivMyTeamLogo);
-            ImageLoader.with(BaseApplication.getContext()).load(data.getCompetitorEngerInfo().getImg()).into
-                    (ivOtherTeamLogo);
-            tvMyTeacherName.setText(data.getMyTeamEngerInfo().getTeacherName());
-            tvOtherTeacherName.setText(data.getCompetitorEngerInfo().getTeacherName());
-            tvMyTeamSlogan.setText(data.getMyTeamEngerInfo().getSlogon());
-            tvOtherTeamSlogan.setText(data.getCompetitorEngerInfo().getSlogon());
-            startTimeCountDow(CURRENT_PK_RESULT_AUTO_CLOSE_DRUATION);
-            timeCountDowTextView.setVisibility(View.INVISIBLE);
-
-            // 更新左侧pk 状态栏
-            if (mTeamPkBll != null) {
-                mTeamPkBll.updatePkStateLayout(true);
-            }
+        // 更新左侧pk 状态栏
+        if (mTeamPkBll != null) {
+            mTeamPkBll.updatePkStateLayout(true);
         }
     }
 
@@ -387,7 +373,7 @@ public class PkTeamResultPager extends BasePager {
         } else {
             ratio = 0.5f;
         }
-        int progress = (int) (ratio * tpbEnergyBar.getMaxProgress() + 0.5);
+        int progress = (int) (ratio * tpbEnergyBar.getMax() + 0.5);
         tpbEnergyBar.setProgress(progress);
         tvMyTeamEnergy.setText(myTeamOldEnergy + "");
         tvOtherTeamEnergy.setText(otherTeamOldEnergy + "");
@@ -409,13 +395,9 @@ public class PkTeamResultPager extends BasePager {
         } else {
             newRatio = 0.5f;
         }
-        int currentProgress = (int) (newRatio * tpbEnergyBar.getMaxProgress() + 0.5);
-        int addProgress = currentProgress - tpbEnergyBar.getProgress();
-        if (addProgress > 0) {
-            tpbEnergyBar.smoothAddProgress(addProgress);
-        } else {
-            tpbEnergyBar.setProgress(currentProgress);
-        }
+        int currentProgress = (int) (newRatio * tpbEnergyBar.getMax() + 0.5);
+        tpbEnergyBar.animateToProgress(currentProgress);
+
         tvMyTeamEnergy.setText(myTeamOldEnergy + "");
         tvOtherTeamEnergy.setText(otherTeamEnergy + "");
         int addEnergy = (int) data.getMyTeamEngerInfo().getAddEnergy();

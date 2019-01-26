@@ -221,6 +221,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             if (data.has("isAllowTeamPk")) {
                 getInfo.setIsAllowTeamPk(data.getString("isAllowTeamPk"));
             }
+
+            if (data.has("isAllowTeamPkNew")){
+                getInfo.setIsAllowTeamPkNew(data.getString("isAllowTeamPkNew"));
+            }
             getInfo.setIsShowMarkPoint(data.optString("isAllowMarkpoint"));
             getInfo.setIsAIPartner(data.optInt("isAIPartner"));
 
