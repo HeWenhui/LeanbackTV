@@ -13,7 +13,6 @@ import android.widget.TextView;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.base.BasePager;
-import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.SmallEnglishMicTipDialog;
@@ -165,8 +164,12 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
 
     @Override
     public void onRankStart() {
-        mLogtf.d("onRankStart:can=" + englishPk.canUsePK + ",has=" + englishPk.hasGroup + ",mode=" + mode);
-        if (englishPk.canUsePK == 1 && englishPk.hasGroup == 0 && pkTeamEntity == null) {
+        if (pkTeamEntity == null) {
+            mLogtf.d("onRankStart:can=" + englishPk.canUsePK + ",has=" + englishPk.hasGroup + ",mode=" + mode);
+        } else {
+            mLogtf.d("onRankStart:can=" + englishPk.canUsePK + ",has=" + englishPk.hasGroup + ",mode=" + mode + ",where=" + pkTeamEntity.getCreateWhere());
+        }
+        if (englishPk.canUsePK == 1 && (pkTeamEntity == null || pkTeamEntity.getCreateWhere() != PkTeamEntity.CREATE_TYPE_LOCAL)) {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -286,6 +289,16 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
             teamEnd = true;
             if (teamPkRankPager != null) {
                 rootView.removeView(teamPkRankPager.getRootView());
+            }
+            if (pkTeamEntity == null) {
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (pkTeamEntity == null) {
+                            reportStuInfo();
+                        }
+                    }
+                }, 2000);
             }
         }
     }

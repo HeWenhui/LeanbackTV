@@ -3,12 +3,30 @@ package com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity;
 import java.util.ArrayList;
 
 public class PkTeamEntity {
+    /** 创建的位置-本地缓存 */
+    public static final int CREATE_TYPE_LOCAL = 1;
+    /** 创建的位置-go 发的irc消息 */
+    public static final int CREATE_TYPE_IRC = 2;
+    /** 创建的位置 */
+    private int createWhere = 0;
     private int myTeam = 0;
     private int pkTeamId;
     private int aId;
     private ArrayList<TeamMemberEntity> aTeamMemberEntity = new ArrayList<>();
     private int bId;
     private ArrayList<TeamMemberEntity> bTeamMemberEntity = new ArrayList<>();
+
+    public PkTeamEntity() {
+
+    }
+
+    public int getCreateWhere() {
+        return createWhere;
+    }
+
+    public void setCreateWhere(int createWhere) {
+        this.createWhere = createWhere;
+    }
 
     public int getPkTeamId() {
         return pkTeamId;

@@ -176,9 +176,10 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
 
         } else {
             String imgDir = "arts_answer_result/result_state_error/images";
-            lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_error/data.json";
+            lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_error/come.json";
             ArtsAnswerStateNoEnergyLottieEffectInfo effectInfo = new ArtsAnswerStateNoEnergyLottieEffectInfo(imgDir,
-                    lottieJsonPath, "img_14.png");
+                    lottieJsonPath, "img_15.png", "img_16.png");
+            effectInfo.setmCoinStr("+" + mData.getGold());
             effectInfo.setEnergyStr("+" + mData.getEnergy());
             lottieEffectInfo = effectInfo;
         }
