@@ -50,6 +50,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoti
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayMachinePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.CreateAnswerReslutEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseLiveQuestionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseQuestionWebInter;
@@ -762,6 +763,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     rlQuestionContent.addView(speechAssessmentPager.getRootView(), lp);
                 } else if (LocalCourseConfig.QUESTION_TYPE_SUBJECT.equals(videoQuestionLiveEntity.type)) {
                     showSubjectiveQuestion(videoQuestionLiveEntity);
+                } else {
+                    isAnaswer = false;
+                    logger.d("doNewArtsAnswerQuetion:othertype=" + videoQuestionLiveEntity.type);
                 }
             }
         });
@@ -974,8 +978,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     XESToastUtils.showToast(activity, "您已经答过此题");
                 } else {
                     if (isVoice) {
-                        isSuccess = baseVoiceAnswerCreat.onAnswerReslut(activity, this, voiceAnswerPager,
-                                baseVideoQuestionEntity, entity);
+                        CreateAnswerReslutEntity createAnswerReslutEntity =
+                                baseVoiceAnswerCreat.onAnswerReslut(activity, this, voiceAnswerPager,
+                                        baseVideoQuestionEntity, entity);
+                        isSuccess = createAnswerReslutEntity.isSuccess;
                         StableLogHashMap logHashMap = new StableLogHashMap("showResultDialog");
                         logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
                         logHashMap.put("sourcetype", "h5test").addNonce(baseVideoQuestionEntity.nonce);
@@ -2380,6 +2386,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         if (questionWebPager instanceof BaseQuestionWebInter) {
                             setHaveWebQuestion(false);
                         }
+                        onQuestionShow(null, false, "forceClose");
                     }
                 }
             });

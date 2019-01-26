@@ -9,6 +9,7 @@ import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.CreateAnswerReslutEntity;
 
 import org.json.JSONObject;
 
@@ -49,7 +50,7 @@ public interface BaseVoiceAnswerCreat {
      * @param baseVideoQuestionEntity
      * @param entity                  @return
      */
-    boolean onAnswerReslut(Context context, AnswerRightResultVoice answerRightResultVoice, BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity);
+    CreateAnswerReslutEntity onAnswerReslut(Context context, AnswerRightResultVoice answerRightResultVoice, BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity);
 
     interface NewArtsAnswerRightResultVoice extends AnswerRightResultVoice {
         /**
@@ -57,7 +58,7 @@ public interface BaseVoiceAnswerCreat {
          *
          * @param entity
          */
-        void initArtsAnswerRightResultVoice(AnswerResultEntity entity);
+        View initArtsAnswerRightResultVoice(AnswerResultEntity entity);
 
     }
 

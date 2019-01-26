@@ -34,6 +34,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.CreateAnswerReslutEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.VoiceAnswerStandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
@@ -112,7 +113,8 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     }
 
     @Override
-    public boolean onAnswerReslut(final Context context, final AnswerRightResultVoice questionBll, final BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity baseVideoQuestionEntity, final VideoResultEntity entity) {
+    public CreateAnswerReslutEntity onAnswerReslut(final Context context, final AnswerRightResultVoice questionBll, final BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity baseVideoQuestionEntity, final VideoResultEntity entity) {
+        CreateAnswerReslutEntity createAnswerReslutEntity = new CreateAnswerReslutEntity();
         boolean isSuccess = false;
         final String type;
         if (baseVideoQuestionEntity instanceof VideoQuestionLiveEntity) {
@@ -135,6 +137,8 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
 //                questionBll.initFillinAnswerRightResultVoice(entity);
                 path = "live_stand_voice_my_right.json";
             }
+            final RelativeLayout rlResult = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.layout_livevideo_stand_voice_result, null);
+            createAnswerReslutEntity.resultView = rlResult;
             LottieComposition.Factory.fromAssetFileName(context, path, new OnCompositionLoadedListener() {
                 @Override
                 public void onCompositionLoaded(@Nullable LottieComposition lottieComposition) {
@@ -146,7 +150,6 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                         }
                         return;
                     }
-                    final RelativeLayout rlResult = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.layout_livevideo_stand_voice_result, null);
                     LottieAnimationView lottieAnimationView = new LottieAnimationView(context);
                     lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/my_right");
                     lottieAnimationView.setComposition(lottieComposition);
@@ -211,6 +214,8 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
 //                questionBll.initFillAnswerWrongResultVoice(entity);
                 path = "live_stand_voice_my_wrong.json";
             }
+            final RelativeLayout rlResult = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.layout_livevideo_stand_voice_result_wrong, null);
+            createAnswerReslutEntity.resultView = rlResult;
             LottieComposition.Factory.fromAssetFileName(context, path, new OnCompositionLoadedListener() {
                 @Override
                 public void onCompositionLoaded(@Nullable LottieComposition lottieComposition) {
@@ -222,7 +227,6 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
                         }
                         return;
                     }
-                    final RelativeLayout rlResult = (RelativeLayout) LayoutInflater.from(context).inflate(R.layout.layout_livevideo_stand_voice_result_wrong, null);
                     LottieAnimationView lottieAnimationView = new LottieAnimationView(context);
                     lottieAnimationView.setImageAssetsFolder("live_stand/lottie/voice_answer/my_wrong");
                     lottieAnimationView.setComposition(lottieComposition);
@@ -274,7 +278,8 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
             });
             // 填空题部分正确提示
         }
-        return isSuccess;
+        createAnswerReslutEntity.isSuccess = isSuccess;
+        return createAnswerReslutEntity;
     }
 
     public static void setRightGold(Context context, LottieAnimationView lottieAnimationView, int goldCount, int energy) {
