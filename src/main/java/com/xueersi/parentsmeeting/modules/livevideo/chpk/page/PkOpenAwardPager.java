@@ -348,13 +348,28 @@ public class PkOpenAwardPager extends BasePager {
             }
         });
 
+        final Runnable action = new Runnable() {
+            @Override
+            public void run() {
+                if (pkBll != null) {
+                    logUUID = StableLogHashMap.creatNonce();
+                }
+
+                //防止快速 连续点击
+                lottieAnimationView.setClickable(false);
+                getStuChestInfo();
+            }
+        };
+
+        lottieAnimationView.postDelayed(action, 5 * 1000);
+
         lottieAnimationView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                lottieAnimationView.removeCallbacks(action);
 
                 if (pkBll != null) {
                     logUUID = StableLogHashMap.creatNonce();
-//                    TeamPkLog.clickTreasureBox(pkBll.getLiveBll(), mIsWin, logUUID);
                 }
 
                 //防止快速 连续点击
