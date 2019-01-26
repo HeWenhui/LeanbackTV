@@ -11,6 +11,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.page.EnAchievePager;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.page.EnStandAchievePager;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
@@ -43,9 +44,12 @@ public class LiveAchievementEngStandBll implements StarInteractAction {
         relativeLayout.setLayoutParams(layoutParams);
         relativeLayout.setBackgroundColor(Color.TRANSPARENT);
         enAchievePager = new EnStandAchievePager(activity, relativeLayout, mLiveGetInfo);
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) enAchievePager.getRootView().getLayoutParams();
+        LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
+        lp.rightMargin += (videoPoint.screenWidth - videoPoint.x4);
+        logger.d("initView:rightMargin=" + lp.rightMargin);
 //        lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        relativeLayout.addView(enAchievePager.getRootView());
+        relativeLayout.addView(enAchievePager.getRootView(), lp);
     }
 
     @Override
