@@ -985,6 +985,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         VideoResultEntity entity = new VideoResultEntity();
         JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
         entity.setGoldNum(Integer.parseInt(jsonObject.optString("gold")));
+        entity.setEnergy(jsonObject.optInt("energy"));
         entity.setTestId(jsonObject.optString("testId"));
 
         return entity;
