@@ -44,14 +44,6 @@
         android:max="100"
         android:progress="30" />
 
-    <ImageView
-        android:id="@id/iv_livevideo_en_teampk_lead_prog"
-        android:layout_width="102dp"
-        android:layout_height="102dp"
-        android:layout_marginTop="130dp"
-        android:src="@drawable/zhanduipk_jindutiao_huomiao_pic"
-        android:visibility="invisible" />
-
     <RelativeLayout
         android:id="@id/rl_livevideo_en_teampk_lead_left"
         android:layout_width="wrap_content"
@@ -119,6 +111,14 @@
             android:textColor="#ffffffff"
             android:textSize="21sp" />
     </RelativeLayout>
+
+    <ImageView
+        android:id="@id/iv_livevideo_en_teampk_lead_prog"
+        android:layout_width="102dp"
+        android:layout_height="102dp"
+        android:layout_marginTop="130dp"
+        android:src="@drawable/zhanduipk_jindutiao_huomiao_pic"
+        android:visibility="invisible" />
 
     <RelativeLayout
         android:id="@id/rl_livevideo_en_teampk_lead_bottom"
