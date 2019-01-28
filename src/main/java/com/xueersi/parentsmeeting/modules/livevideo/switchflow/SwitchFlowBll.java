@@ -7,6 +7,7 @@ import android.content.Context;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RegMediaPlayerControl;
@@ -192,17 +193,19 @@ public class SwitchFlowBll extends LiveBaseBll implements BaseLiveMediaControlle
         initView();
         addView();
 
-        if (listRoute == null) {
-            logger.i("listRoute为null");
-        } else {
-            logger.i("listRoute数量为" + listRoute.size());
-        }
-        if (listRoute != null && listRoute.size() != 0) {
-            route = listRoute.size() < 4 ? listRoute.size() : 4;
-        } else if (mGetInfo != null) {
-            route = mGetInfo.getRtmpUrls().length;
-        } else {
-            route = 0;
+        if (!MediaPlayer.isPSIJK) {
+            if (listRoute == null) {
+                logger.i("listRoute为null");
+            } else {
+                logger.i("listRoute数量为" + listRoute.size());
+            }
+            if (listRoute != null && listRoute.size() != 0) {
+                route = listRoute.size() < 4 ? listRoute.size() : 4;
+            } else if (mGetInfo != null) {
+                route = mGetInfo.getRtmpUrls().length;
+            } else {
+                route = 0;
+            }
         }
         mPager.setRouteSum(route);
         LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
