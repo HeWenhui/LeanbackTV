@@ -23,8 +23,13 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RankItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RankPage.SmallChineseRankPager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.ItemMiddleScienceEvenPager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.ItemMiddleSciencePager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.ItemMiddleScienceRankPager;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -35,6 +40,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControll
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerBottom;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
+import com.xueersi.ui.adapter.RCommonAdapter;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +53,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by lyqai on 2017/9/20.
  */
 
-public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBottom.MediaChildViewClick {
+public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBottom.MediaChildViewClick, NoticeAction {
     Logger logger = LoggerFactory.getLogger("RankBll");
     LiveMediaController mMediaController;
     BaseLiveMediaControllerBottom liveMediaControllerBottom;
@@ -74,6 +82,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
 
     private void initAnimation() {
         if (mAnimSlideIn == null) {
+            //补间动画，结束后消失
             mAnimSlideIn = AnimationUtils.loadAnimation(activity, R.anim.anim_livevideo_rank_in);
             mAnimSlideOut = AnimationUtils.loadAnimation(activity, R.anim.anim_livevideo_rank_out);
             mAnimSlideOut.setAnimationListener(new Animation.AnimationListener() {
@@ -164,6 +173,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                                 if (index == 1) {
                                     rankEntities = allRankEntity.getMyRankEntityMyTeam().getRankEntities();
                                 } else if (index == 2) {
+                                    //是否支持连对激励
                                     rankEntities = allRankEntity.getMyRankEntityTeams().getRankEntities();
                                 } else {
                                     rankEntities = allRankEntity.getMyRankEntityClass().getRankEntities();
@@ -181,11 +191,105 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                             }
                         }
                     });
+                    if (mGetInfo.getIsOpenNewCourseWare() == 1) {
+                        getEvenLikeData();
+                    }
                     relativeLayout.setVisibility(View.VISIBLE);
                     relativeLayout.startAnimation(mAnimSlideIn);
                 }
             }
         });
+    }
+
+    private ItemMiddleScienceEvenPager itemMiddleScienceEvenPager;
+
+    private RCommonAdapter<EvenDriveEntity.OtherEntity> evenDriveEntityCommon;//= new RCommonAdapter<EvenDriveEntity.OtherEntity>()
+
+    /** 获取连对排名 */
+    private void getEvenLikeData() {
+        getHttpManager().getEvenLikeData(
+                mGetInfo.getGetEvenPairListUrl(),
+                mGetInfo.getStudentLiveInfo().getClassId(),
+                mGetInfo.getId(),
+                mGetInfo.getStudentLiveInfo().getTeamId(),
+                new HttpCallBack() {
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                        EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
+                        if (itemMiddleScienceEvenPager == null) {
+                            itemMiddleScienceEvenPager = new ItemMiddleScienceEvenPager(mContext);
+                        }
+//                        evenDriveEntityCommon = new RCommonAdapter<EvenDriveEntity.OtherEntity>(mContext, evenDriveEntity.getOtherEntities());
+//                        evenDriveEntityCommon.addItemViewDelegate(new RItemViewInterface<EvenDriveEntity.OtherEntity>() {
+//                            protected TextView rankLeft;//tv_livevideo_rank_item_left;
+//
+//                            protected TextView rankMiddleLeft;//tv_livevideo_rank_item_mid_left
+//
+//                            protected TextView rankMiddleRight;//tv_livevideo_rank_item_mid_right
+//
+//                            protected TextView rankRight;//tv_livevideo_rank_item_right
+//
+//                            protected ImageView ivRedHeard;
+//
+//                            @Override
+//                            public int getItemLayoutId() {
+//                                return R.layout.item_livevideo_middle_science_even_drive_listview_item;
+//                            }
+//
+//                            @Override
+//                            public boolean isShowView(EvenDriveEntity.OtherEntity item, int position) {
+//                                return true;
+//                            }
+//
+//                            @Override
+//                            public void initView(ViewHolder holder, int position) {
+//                                rankLeft = holder.getView(R.id.tv_livevideo_rank_item_left);
+//                                rankMiddleLeft = holder.getView(R.id.tv_livevideo_rank_item_mid_left);
+//                                rankMiddleRight = holder.getView(R.id.tv_livevideo_rank_item_mid_right);
+//                                rankRight = holder.getView(R.id.tv_livevideo_rank_item_right);
+//                                ivRedHeard = holder.getView(R.id.iv_livevideo_rank_item_right_leftimg);
+//
+//                            }
+//
+//                            @Override
+//                            public void convert(ViewHolder holder, EvenDriveEntity.OtherEntity otherEntity, int position) {
+//
+//                            }
+//                        });
+
+
+                        CommonAdapter<EvenDriveEntity.OtherEntity> evenDriveEntityCommonAdapter =
+                                new CommonAdapter<EvenDriveEntity.OtherEntity>(evenDriveEntity.getOtherEntities()) {
+                                    @Override
+                                    public AdapterItemInterface<EvenDriveEntity.OtherEntity> getItemView(Object type) {
+                                        ItemMiddleScienceEvenPager itemMiddleScienceEvenPager = new ItemMiddleScienceEvenPager(mContext);
+                                        itemMiddleScienceEvenPager.setiNotice(new ItemMiddleSciencePager.INotice() {
+                                            @Override
+                                            public void sendNotice(JSONObject jsonObject) {
+
+                                                RankBll.this.sendNotice(jsonObject, mGetInfo.getNickname());
+                                            }
+                                        });
+                                        return itemMiddleScienceEvenPager;
+                                    }
+                                };
+//                        itemMiddleScienceEvenPager(evenDriveEntity);
+
+                        CommonAdapter<RankEntity> rankEntityAdapter = new CommonAdapter<RankEntity>(allRankEntity.getMyRankEntityTeams().getRankEntities()) {
+                            @Override
+                            public AdapterItemInterface<RankEntity> getItemView(Object type) {
+                                ItemMiddleScienceRankPager itemMiddleScienceRankPager = new ItemMiddleScienceRankPager(mContext);
+                                itemMiddleScienceRankPager.setiNotice(new ItemMiddleSciencePager.INotice() {
+                                    @Override
+                                    public void sendNotice(JSONObject jsonObject) {
+                                        RankBll.this.sendNotice(jsonObject, mGetInfo.getNickname());
+                                    }
+                                });
+                                return null;
+                            }
+                        };
+                    }
+                });
     }
 
     private LiveStandMediaControllerBottom.OnViewChange onViewChange = new LiveStandMediaControllerBottom
@@ -560,5 +664,22 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
     @Override
     public void onMediaViewClick(View child) {
         onTitleShow(true);
+    }
+
+    @Override
+    public void onNotice(String sourceNick, String target, JSONObject data, int type) {
+        switch (type) {
+            case XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT:
+
+                break;
+            default:
+                break;
+        }
+    }
+
+    @Override
+    public int[] getNoticeFilter() {
+        //学生点赞
+        return new int[]{XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT};
     }
 }

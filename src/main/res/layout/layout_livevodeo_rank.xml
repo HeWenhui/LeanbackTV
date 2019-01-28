@@ -4,7 +4,7 @@
     android:background="#cc000000"
     android:clickable="true"
     android:orientation="vertical"
-    android:visibility="gone">
+    >
 
     <RelativeLayout
         android:layout_width="match_parent"

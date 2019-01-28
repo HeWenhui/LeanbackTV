@@ -14,7 +14,6 @@ import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
-import com.xueersi.lib.framework.utils.Log;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
@@ -24,27 +23,26 @@ import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.business.RegMediaPlayerControl;
-import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
-import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RegMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MyRankEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
@@ -168,8 +166,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             if (getInfo.getPattern() == 2 && LiveTopic.MODE_CLASS.equals(getInfo.getMode())) {
                 mRoomAction.initViewLiveStand(mRootView);
-            } else if(getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY
-                    && LiveTopic.MODE_CLASS.equals(getInfo.getMode())){
+            } else if (getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY
+                    && LiveTopic.MODE_CLASS.equals(getInfo.getMode())) {
                 mRoomAction.initHalfBodyLive(mRootView);
             } else {
                 mRoomAction.initViewLive(mRootView);
@@ -202,7 +200,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     if (view != null) {
                         view.setVisibility(View.VISIBLE);
                     }
-                }else if(mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY){
+                } else if (mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY) {
                     //延迟 2.5 秒 走相关逻辑(适配转场动画 节奏)
                     mHandler.postDelayed(new Runnable() {
                         @Override
@@ -222,7 +220,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                                 view.setVisibility(View.VISIBLE);
                             }
                         }
-                    },2500);
+                    }, 2500);
                 }
             }
         });
@@ -672,22 +670,89 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             case XESCODE.SENDQUESTION: {
                 mRoomAction.onOpenVoiceNotic(true, "SENDQUESTION");
                 break;
-            }case XESCODE.STOPQUESTION: {
+            }
+            case XESCODE.STOPQUESTION: {
                 mRoomAction.onOpenVoiceNotic(false, "STOPQUESTION");
                 break;
             }
             case XESCODE.ARTS_SEND_QUESTION: {
                 mRoomAction.onOpenVoiceNotic(true, "ARTS_SEND_QUESTION");
                 break;
-            } case XESCODE.ARTS_STOP_QUESTION: {
+            }
+            case XESCODE.ARTS_STOP_QUESTION: {
                 mRoomAction.onOpenVoiceNotic(false, "ARTS_STOP_QUESTION");
                 break;
             }
             case XESCODE.EXAM_START: {
                 mRoomAction.onOpenVoiceNotic(true, "EXAM_START");
                 break;
-            } case XESCODE.EXAM_STOP: {
+            }
+            case XESCODE.EXAM_STOP: {
                 mRoomAction.onOpenVoiceNotic(false, "EXAM_STOP");
+                break;
+            }
+            case XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT: {
+
+                break;
+            }
+            case XESCODE.EvenDrive.BROADCAST_STUDY_REPORT: {
+                getHttpManager().getNewArtsAllRank(mGetInfo.getId(), mGetInfo.getStuCouId(), new HttpCallBack() {
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                        AllRankEntity allRankEntity = getHttpResponseParser().parseAllRank(responseEntity);
+                        MyRankEntity rankEntity = allRankEntity.getMyRankEntityTeams();
+                        List<String> list = new ArrayList<>();
+                        //找到我的排名
+                        String myRite = "";
+                        String myRank = "";
+                        for (int item = 0; item < rankEntity.getRankEntities().size() && item < 3; item++) {
+                            RankEntity myEntity = rankEntity.getRankEntities().get(item);
+                            if (!myEntity.isMe()) {
+                                list.add(myEntity.getName());
+                            } else {
+                                myRite = myEntity.getRate();
+                                myRank = myEntity.getRank();
+                                break;
+                            }
+                        }
+                        StringBuilder sb = new StringBuilder("学报").append("你的正确率").append(myRite);//.append().append();
+                        int len = list.size();
+                        for (int item = 0; item < len - 1; item++) {
+                            sb.append(list.get(item)).append("、");
+                        }
+                        int last = len - 1;
+                        if (last > 0) {
+                            sb.append(list.get(last));
+                        }
+                        mRoomAction.addMessage("提示", LiveMessageEntity.MESSAGE_TIP, sb.toString());
+//                        callBack.onDataSucess(allRankEntity);
+                    }
+
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        super.onPmError(responseEntity);
+                        logger.e("getAllRanking:onPmError" + responseEntity.getErrorMsg());
+                    }
+
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        super.onPmFailure(error, msg);
+                        logger.e("getAllRanking:onPmFailure" + msg);
+                    }
+                });
+
+                //中学连对激励系统，教师广播发送学报消息
+                getHttpManager().getEvenLikeData(
+                        mGetInfo.getGetEvenPairListUrl(),
+                        mGetInfo.getStudentLiveInfo().getClassId(),
+                        mGetInfo.getId(),
+                        mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
+                            @Override
+                            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                                EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
+
+                            }
+                        });
                 break;
             }
             default:
@@ -702,7 +767,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 XESCODE.OPENBARRAGE, XESCODE.GAG, XESCODE.OPENCHAT, XESCODE.TEACHER_MESSAGE, XESCODE.START_MICRO,
                 XESCODE.ARTS_WORD_DICTATION, XESCODE.RAISE_HAND, XESCODE.XCR_ROOM_OPEN_VOICEBARRAGE, XESCODE
                 .RAISE_HAND_SELF, XESCODE.ENGLISH_H5_COURSEWARE, XESCODE.ARTS_H5_COURSEWARE, XESCODE.SENDQUESTION,
-                XESCODE.ARTS_SEND_QUESTION, XESCODE.EXAM_START,XESCODE.STOPQUESTION,XESCODE.EXAM_STOP, XESCODE.ARTS_STOP_QUESTION
+                XESCODE.ARTS_SEND_QUESTION, XESCODE.EXAM_START, XESCODE.STOPQUESTION, XESCODE.EXAM_STOP, XESCODE.ARTS_STOP_QUESTION,
+                XESCODE.EvenDrive.BROADCAST_STUDY_REPORT
         };
     }
 

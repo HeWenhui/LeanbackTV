@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="MissingConstraints">
+
+    <TextView
+        android:id="@id/tv_livevideo_rank_item_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginBottom="10dp"
+        android:textSize="11dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="fadfads" />
+
+    <TextView
+        android:id="@id/tv_livevideo_rank_item_mid_left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="7dp"
+        android:textSize="11dp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_livevideo_rank_item_left"
+        app:layout_constraintLeft_toRightOf="@id/tv_livevideo_rank_item_left"
+        app:layout_constraintTop_toTopOf="@id/tv_livevideo_rank_item_left"
+        tools:text="fadfads" />
+
+    <TextView
+        android:id="@id/tv_livevideo_rank_item_mid_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="7dp"
+        android:textSize="11dp"
+        app:layout_constraintRight_toLeftOf="@id/iv_livevideo_rank_item_right_leftimg"
+        app:layout_constraintTop_toTopOf="@id/tv_livevideo_rank_item_left"
+        tools:text="fadfads" />
+
+    <ImageView
+        android:id="@id/iv_livevideo_rank_item_right_leftimg"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_marginRight="21dp"
+        android:src="@drawable/livevideo_list_heart_icon_normal"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_livevideo_rank_item_left" />
+
+    <TextView
+        android:id="@id/tv_livevideo_rank_item_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="13dp"
+        android:textSize="11dp"
+        app:layout_constraintLeft_toRightOf="@id/iv_livevideo_rank_item_right_leftimg"
+        app:layout_constraintTop_toTopOf="@id/tv_livevideo_rank_item_left"
+        tools:text="fadfads" />
+</android.support.constraint.ConstraintLayout>

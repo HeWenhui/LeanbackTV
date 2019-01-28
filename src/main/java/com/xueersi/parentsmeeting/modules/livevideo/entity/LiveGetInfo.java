@@ -279,14 +279,44 @@ public class LiveGetInfo {
     private ArrayList<Double> praiseGiftRate = new ArrayList();
 
     //连续点赞多长时间弹出礼物
-    private int praiseAutoCutTime=5;
+    private int praiseAutoCutTime = 5;
 
     //暂停点赞多长时间弹出礼物
-    private int praiseAutoBarrageTime=1;
+    private int praiseAutoBarrageTime = 1;
 
 
     // add by William on 2018/12/5  专属老师用
     public EPlanInfoBean ePlanInfo;
+    /** 是否支持连对激励 0：关闭 1：打开 */
+    private int isOpenNewCourseWare;
+    /** 连对榜接口地址 */
+    private String getEvenPairListUrl;
+    /** 点赞接口地址 */
+    private String getThumbsUpUrl;
+
+    public int getIsOpenNewCourseWare() {
+        return isOpenNewCourseWare;
+    }
+
+    public void setIsOpenNewCourseWare(int isOpenNewCourseWare) {
+        this.isOpenNewCourseWare = isOpenNewCourseWare;
+    }
+
+    public String getGetEvenPairListUrl() {
+        return getEvenPairListUrl;
+    }
+
+    public void setGetEvenPairListUrl(String getEvenPairListUrl) {
+        this.getEvenPairListUrl = getEvenPairListUrl;
+    }
+
+    public String getGetThumbsUpUrl() {
+        return getThumbsUpUrl;
+    }
+
+    public void setGetThumbsUpUrl(String getThumbsUpUrl) {
+        this.getThumbsUpUrl = getThumbsUpUrl;
+    }
 
     public int getPraiseAutoCutTime() {
         return praiseAutoCutTime;
@@ -1232,7 +1262,8 @@ public class LiveGetInfo {
     }
 
     EvaluateTeacherEntity evaluateTeacherEntity;
-    public static class EvaluateTeacherEntity{
+
+    public static class EvaluateTeacherEntity {
         boolean evaluateIsOpen = false;
         long evaluateTime;
 
@@ -1253,7 +1284,7 @@ public class LiveGetInfo {
         }
     }
 
-    public void setEvaluateTeacherEntity(EvaluateTeacherEntity evaluateTeacherEntity){
+    public void setEvaluateTeacherEntity(EvaluateTeacherEntity evaluateTeacherEntity) {
         this.evaluateTeacherEntity = evaluateTeacherEntity;
     }
 

@@ -206,7 +206,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         btMsgCommon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                if(!commonWordInited){
+                if (!commonWordInited) {
                     initCommonWord();
                 }
                 liveMediaControllerBottom.onChildViewClick(v);
@@ -467,7 +467,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         logger.i("initData:time3=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         //initCommonWord();
-        logger.i( "initData:time4=" + (System.currentTimeMillis() - before));
+        logger.i("initData:time4=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
     }
 
@@ -485,7 +485,6 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             });
         }
     }
-
 
 
     private boolean commonWordInited = false;
@@ -646,8 +645,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         before = System.currentTimeMillis();
         final TextView flowerSend = flowerContentView.findViewById(R.id.bt_livevideo_message_flowersend);
         flowerSend.setText(commonAction.getFlowerSendText());
-        flowerSend.setOnClickListener(new View
-                .OnClickListener() {
+        flowerSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 long curTime = System.currentTimeMillis();
@@ -1091,12 +1089,12 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             public void run() {
                 if (ircState.isSeniorOfHighSchool()) {
                     String mode = ircState.getMode();
-                   // Loger.d("___ircState:  "+ircState.getMode());
+                    // Loger.d("___ircState:  "+ircState.getMode());
                     StringBuilder sb = new StringBuilder();
-                    for (User user : users){
+                    for (User user : users) {
                         sb.append(user.getNick());
                     }
-                  //  Loger.d("___bug6:  users:  "+sb.toString());
+                    //  Loger.d("___bug6:  users:  "+sb.toString());
                     tvMessageCount.setText("班内" + peopleCount + "人");
                 } else {
                     if (ircState.isHaveTeam()) {
@@ -1144,7 +1142,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                         addDanmaKuFlowers(jsonObject.getInt("ftype"), jsonObject.getString("name"));
                     }
                 } catch (JSONException e) {
-                  //  Loger.d("____bug20  private message sender:  "+sender);
+                    //  Loger.d("____bug20  private message sender:  "+sender);
                     addMessage(sender, LiveMessageEntity.MESSAGE_CLASS, message, "");
                 }
             }
@@ -1157,9 +1155,9 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             @Override
             public void run() {
                 if (ircState.isSeniorOfHighSchool()) {
-                  //  Loger.d("___ircState:  "+ircState.getMode()+"  sender:  "+sender);
-                   // for (User user : )
-                   // Loger.d("___bug34 :  "+peopleCount);
+                    //  Loger.d("___ircState:  "+ircState.getMode()+"  sender:  "+sender);
+                    // for (User user : )
+                    // Loger.d("___bug34 :  "+peopleCount);
                     tvMessageCount.setText("班内" + peopleCount + "人");
                 } else {
                     if (ircState.isHaveTeam()) {
@@ -1178,8 +1176,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             @Override
             public void run() {
                 if (ircState.isSeniorOfHighSchool()) {
-                   // Loger.d("___ircState:  "+ircState.getMode()+"  sourceLogin:  "+sourceLogin);
-                //    Loger.d("___bug35 :  "+peopleCount);
+                    // Loger.d("___ircState:  "+ircState.getMode()+"  sourceLogin:  "+sourceLogin);
+                    //    Loger.d("___bug35 :  "+peopleCount);
                     tvMessageCount.setText("班内" + peopleCount + "人");
                 } else {
                     if (ircState.isHaveTeam()) {
