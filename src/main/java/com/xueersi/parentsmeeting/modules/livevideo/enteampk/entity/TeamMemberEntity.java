@@ -7,6 +7,7 @@ public class TeamMemberEntity {
     public String name;
     public String headurl = "";
     public int resId;
+    public int gold;
     public int energy;
     public int praiseCount;
     public int thisPraiseCount;
@@ -18,6 +19,7 @@ public class TeamMemberEntity {
         name = other.name;
         headurl = other.headurl;
         resId = other.resId;
+        gold = other.gold;
         energy = other.energy;
         praiseCount = other.praiseCount;
         thisPraiseCount = other.thisPraiseCount;

@@ -324,7 +324,7 @@ public class TeamPkLeadPager extends LiveBasePager {
         final ArrayList<TeamMemberEntity> myTeamEntitys = enTeamPkRankEntity.getMemberEntities();
         LayoutInflater inflater = LayoutInflater.from(mContext);
         for (int i = 0; i < myTeamEntitys.size(); i++) {
-            TeamMemberStarItem teamMemberStarItem = new TeamMemberStarItem(mContext, map);
+            TeamMemberStarItem teamMemberStarItem = new TeamMemberStarItem(mContext, type, map);
             teamMemberStarItems.add(teamMemberStarItem);
             teamMemberStarItem.setOnItemClick(new TeamMemberStarItem.OnItemClick() {
                 @Override

@@ -1990,7 +1990,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         return null;
     }
 
-    public EnTeamPkRankEntity parseUpdataEnglishPkByTestId(ResponseEntity responseEntity) {
+    public EnTeamPkRankEntity parseUpdataEnglishPkByTestId(ResponseEntity responseEntity, String stu_id) {
         try {
             EnTeamPkRankEntity enTeamPkRankEntity = new EnTeamPkRankEntity();
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
@@ -2010,8 +2010,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     JSONObject top3Obj = jsonArray.getJSONObject(i);
                     TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
                     teamMemberEntity.id = top3Obj.optInt("stuId");
+                    if (stu_id.equals("" + teamMemberEntity.id)) {
+                        teamMemberEntity.isMy = true;
+                    }
                     teamMemberEntity.name = top3Obj.optString("name");
                     teamMemberEntity.headurl = top3Obj.optString("head");
+                    teamMemberEntity.gold = top3Obj.optInt("gold");
                     teamMemberEntity.energy = top3Obj.optInt("energy");
                     memberEntities.add(teamMemberEntity);
                 }

@@ -82,10 +82,12 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
 //            });
 //        }
         //主讲的时候，没有分队，显示上部栏
-        mLogtf.d("setPkTeamEntity:getInfo=null?" + (getInfo == null) + ",onRankStart=" + onRankStart + ",mode=" + mode);
-        if (pkTeamEntity != null && getInfo != null && !onRankStart && LiveTopic.MODE_CLASS.equals(mode)) {
-            if (pkTeamEntity.getCreateWhere() != PkTeamEntity.CREATE_TYPE_LOCAL) {
-                addTop();
+        if (pkTeamEntity != null) {
+            mLogtf.d("setPkTeamEntity:getInfo=null?" + (getInfo == null) + ",onRankStart=" + onRankStart + ",mode=" + mode + ",where=" + pkTeamEntity.getCreateWhere());
+            if (getInfo != null && !onRankStart && LiveTopic.MODE_CLASS.equals(mode)) {
+                if (pkTeamEntity.getCreateWhere() != PkTeamEntity.CREATE_TYPE_LOCAL) {
+                    addTop();
+                }
             }
         }
     }

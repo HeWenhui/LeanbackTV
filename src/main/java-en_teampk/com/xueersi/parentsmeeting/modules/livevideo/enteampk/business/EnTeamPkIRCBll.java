@@ -438,8 +438,17 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) {
                             logger.d("getEnglishPkTotalRank:onPmSuccess=" + responseEntity.getJsonObject());
-                            EnTeamPkRankEntity enTeamPkRankEntity = getHttpResponseParser().parseUpdataEnglishPkByTestId(responseEntity);
+                            EnTeamPkRankEntity enTeamPkRankEntity = getHttpResponseParser().parseUpdataEnglishPkByTestId(responseEntity, mGetInfo.getStuId());
                             if (pkTeamEntity != null && enTeamPkRankEntity != null) {
+                                ArrayList<TeamMemberEntity> myTeamEntitys = enTeamPkRankEntity.getMemberEntities();
+                                for (int i = 0; i < myTeamEntitys.size(); i++) {
+                                    TeamMemberEntity teamMemberEntity = myTeamEntitys.get(i);
+                                    if (teamMemberEntity.isMy) {
+                                        myTeamEntitys.remove(i);
+                                        myTeamEntitys.add(0, teamMemberEntity);
+                                        break;
+                                    }
+                                }
                                 enTeamPkRankEntity.setMyTeam(pkTeamEntity.getMyTeam());
                                 if (enTeamPkAction != null) {
                                     enTeamPkAction.onRankLead(enTeamPkRankEntity, "-1-end", TeamPkLeadPager.TEAM_TYPE_2);
@@ -544,12 +553,12 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             @Override
                             public void onPmSuccess(ResponseEntity responseEntity) {
                                 logger.d("onCourseEnd:onPmSuccess=" + responseEntity.getJsonObject());
-                                EnTeamPkRankEntity enTeamPkRankEntity = getHttpResponseParser().parseUpdataEnglishPkByTestId(responseEntity);
+                                EnTeamPkRankEntity enTeamPkRankEntity = getHttpResponseParser().parseUpdataEnglishPkByTestId(responseEntity, mGetInfo.getStuId());
                                 if (pkTeamEntity != null && enTeamPkRankEntity != null) {
                                     ArrayList<TeamMemberEntity> myTeamEntitys = enTeamPkRankEntity.getMemberEntities();
                                     for (int i = 0; i < myTeamEntitys.size(); i++) {
                                         TeamMemberEntity teamMemberEntity = myTeamEntitys.get(i);
-                                        if (mGetInfo.getStuId().equals("" + teamMemberEntity.id)) {
+                                        if (teamMemberEntity.isMy) {
                                             myTeamEntitys.remove(i);
                                             myTeamEntitys.add(0, teamMemberEntity);
                                             break;
@@ -617,12 +626,12 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             @Override
                             public void onPmSuccess(ResponseEntity responseEntity) {
                                 logger.d("onQuestionEnd:onPmSuccess" + responseEntity.getJsonObject());
-                                EnTeamPkRankEntity enTeamPkRankEntity = getHttpResponseParser().parseUpdataEnglishPkByTestId(responseEntity);
+                                EnTeamPkRankEntity enTeamPkRankEntity = getHttpResponseParser().parseUpdataEnglishPkByTestId(responseEntity, mGetInfo.getStuId());
                                 if (pkTeamEntity != null && enTeamPkRankEntity != null) {
                                     ArrayList<TeamMemberEntity> myTeamEntitys = enTeamPkRankEntity.getMemberEntities();
                                     for (int i = 0; i < myTeamEntitys.size(); i++) {
                                         TeamMemberEntity teamMemberEntity = myTeamEntitys.get(i);
-                                        if (mGetInfo.getStuId().equals("" + teamMemberEntity.id)) {
+                                        if (teamMemberEntity.isMy) {
                                             myTeamEntitys.remove(i);
                                             myTeamEntitys.add(0, teamMemberEntity);
                                             break;
