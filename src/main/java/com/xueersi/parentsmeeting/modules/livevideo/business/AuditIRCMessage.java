@@ -567,7 +567,11 @@ public class AuditIRCMessage {
         liveInfo.realname = myUserInfoEntity.getRealName();
         liveInfo.liveId = mLiveInfo.getId();
         liveInfo.username = mLiveInfo.getStuName();
-        liveInfo.classId = mLiveInfo.getStudentLiveInfo().getClassId();
+        if(mLiveInfo.getStudentLiveInfo() != null && mLiveInfo.getStudentLiveInfo().getClassId() != null){
+            liveInfo.classId = mLiveInfo.getStudentLiveInfo().getClassId();
+        }else {
+            liveInfo.classId = "";
+        }
         liveInfo.businessId = "1";
         liveInfo.location = myUserInfoEntity.getAreaCode();
         mChatClient.setLiveInfo(liveInfo);
