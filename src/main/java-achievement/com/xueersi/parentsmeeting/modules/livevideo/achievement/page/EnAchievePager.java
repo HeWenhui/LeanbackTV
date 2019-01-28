@@ -7,6 +7,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import android.view.ViewStub;
 import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -45,7 +48,9 @@ public class EnAchievePager extends LiveBasePager {
     private RelativeLayout pkView;
     private ViewGroup pkEmptyView;
     private ProgressBar pgAchivePk;
-    private ImageView progressImageView;
+    private FrameLayout flProgress;
+    private int progressWidth;
+    //    private ImageView progressImageView;
     private Activity activity;
     private TextView tvAchiveNumStar;
     private TextView tvAchiveNumGold;
@@ -327,11 +332,21 @@ public class EnAchievePager extends LiveBasePager {
         pgAchivePk.setProgress(progress);
         final ViewGroup rl_livevideo_info = activity.findViewById(R.id.rl_livevideo_info);
         if (rl_livevideo_info != null) {
-            if (progressImageView == null) {
-                progressImageView = new ImageView(activity);
-                progressImageView.setImageResource(R.drawable.app_livevideo_enteampk_pkbar_fire_pic_prog);
-                progressImageView.setVisibility(View.INVISIBLE);
-                rl_livevideo_info.addView(progressImageView);
+            if (flProgress == null) {
+                flProgress = new FrameLayout(activity);
+                flProgress.setVisibility(View.INVISIBLE);
+                ImageView progressImageView = new ImageView(activity);
+                BitmapDrawable bitmapDrawable = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.app_livevideo_enteampk_pkbar_fire_pic_prog);
+                progressImageView.setImageDrawable(bitmapDrawable);
+//                flProgress.setVisibility(View.INVISIBLE);
+                progressWidth = (int) (bitmapDrawable.getIntrinsicWidth() * ScreenUtils.getScreenDensity() / 3);
+                logger.d("setEngPro:getIntrinsicWidth=" + bitmapDrawable.getIntrinsicWidth() + ",width=" + progressWidth);
+                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(progressWidth, progressWidth);
+                layoutParams.gravity = Gravity.CENTER;
+                flProgress.addView(progressImageView, layoutParams);
+//                flProgress.addView(progressImageView);
+//                rl_livevideo_info.addView(flProgress, width, width);
+                rl_livevideo_info.addView(flProgress);
                 pgAchivePk.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                     @Override
                     public boolean onPreDraw() {
@@ -349,12 +364,12 @@ public class EnAchievePager extends LiveBasePager {
     private void setLayout() {
         ViewGroup rl_livevideo_info = activity.findViewById(R.id.rl_livevideo_info);
         int[] loc = ViewUtil.getLoc(pgAchivePk, rl_livevideo_info);
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) progressImageView.getLayoutParams();
-        lp.leftMargin = loc[0] - progressImageView.getWidth() / 2 + pgAchivePk.getWidth() * pgAchivePk.getProgress() / pgAchivePk.getMax();
-        lp.topMargin = loc[1] - (progressImageView.getHeight() - pgAchivePk.getHeight()) / 2 - 10;
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) flProgress.getLayoutParams();
+        lp.leftMargin = loc[0] - flProgress.getWidth() / 2 + pgAchivePk.getWidth() * pgAchivePk.getProgress() / pgAchivePk.getMax();
+        lp.topMargin = loc[1] - (flProgress.getHeight() - pgAchivePk.getHeight()) / 2 - 10;
         logger.d("initListener:left=" + loc[0] + ",top=" + loc[1]);
-        progressImageView.setLayoutParams(lp);
-        progressImageView.setVisibility(View.VISIBLE);
+        flProgress.setLayoutParams(lp);
+        flProgress.setVisibility(View.VISIBLE);
     }
 
     private Bitmap createBitmap(int energyCount, int width, int height) {
