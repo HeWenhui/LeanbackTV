@@ -1079,4 +1079,7 @@
     <!--<item name="" type="id" />-->
     <!--<item name="" type="id" />-->
     <!--<item name="" type="id" />-->
+    <item name="iv_livevideo_chpk_teamLogo" type="id" />
+    <item name="iv_livevideo_chpk_teamView" type="id" />
+    <item name="fr_livevideo_chpk_teamView" type="id" />
 </resources>
