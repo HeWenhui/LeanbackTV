@@ -985,6 +985,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         TextView recommand = (TextView) result.findViewById(R.id.tv_detail_result);
         TextView beat = (TextView) result.findViewById(R.id.tv_result);
         TextView totalscore = (TextView) result.findViewById(R.id.tv_total_score);
+
         beat.setText("恭喜，你打败了" + mData.getBeat() + "%的学生");
         if (TextUtils.isEmpty(mData.getRecommend())) {
             recommand.setVisibility(View.VISIBLE);
