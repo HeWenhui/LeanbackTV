@@ -828,7 +828,6 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     @Override
     public void onNotice(final String sourceNick, final String target, final JSONObject data, final int type) {
         logger.e("=======>onNotice :" + type);
-
         if(!isAvailable){
             return;
         }
