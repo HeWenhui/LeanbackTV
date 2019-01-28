@@ -44,6 +44,8 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
     private boolean destory = false;
     private String mode;
     private LiveGetInfo.EnglishPk englishPk;
+    /** 分队仪式开始 */
+    private boolean onRankStart = false;
     private PkTeamEntity pkTeamEntity;
     private int reportTimes = 1;
     private LogToFile mLogtf;
@@ -79,6 +81,13 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
 //                }
 //            });
 //        }
+        //主讲的时候，没有分队，显示上部栏
+        mLogtf.d("setPkTeamEntity:getInfo=null?" + (getInfo == null) + ",onRankStart=" + onRankStart + ",mode=" + mode);
+        if (pkTeamEntity != null && getInfo != null && !onRankStart && LiveTopic.MODE_CLASS.equals(mode)) {
+            if (pkTeamEntity.getCreateWhere() != PkTeamEntity.CREATE_TYPE_LOCAL) {
+                addTop();
+            }
+        }
     }
 
     @Override
@@ -120,6 +129,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
             @Override
             public void onDataSucess(Object... objects) {
                 pkTeamEntity = (PkTeamEntity) objects[0];
+                setPkTeamEntity(pkTeamEntity);
             }
 
             @Override
@@ -164,6 +174,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
 
     @Override
     public void onRankStart() {
+        onRankStart = true;
         if (pkTeamEntity == null) {
             mLogtf.d("onRankStart:can=" + englishPk.canUsePK + ",has=" + englishPk.hasGroup + ",mode=" + mode);
         } else {
