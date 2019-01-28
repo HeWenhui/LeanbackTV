@@ -999,15 +999,13 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param classId         班级Id
      * @param requestCallBack
      */
-    public void getExcellentList(String stuId, String liveId, String classId, String stuCouId,String courseId, String teamId,HttpCallBack
+    public void getExcellentList(String status, String stuId, String liveId, String classId, String teamId,HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("status", "0");
+        params.addBodyParam("status", status);
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("classId", classId);
-        params.addBodyParam("stuCouId", stuCouId);
-        params.addBodyParam("courseId", courseId);
         params.addBodyParam("teamId", teamId);
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_LIVE_GET_HONOR_LIST, params, requestCallBack);

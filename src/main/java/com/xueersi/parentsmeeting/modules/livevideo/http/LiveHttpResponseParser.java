@@ -1357,7 +1357,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         try {
             entity.setIsRelease(data.getInt("isRelease"));
             entity.setTitle(data.getString("title"));
-            entity.setTitleId(data.getString("titleId"));
+            entity.setTitleId(data.getInt("titleId"));
             entity.setTeamNum(data.getInt("teamNum"));
 
             JSONArray list = data.getJSONArray("list");

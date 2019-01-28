@@ -64,9 +64,8 @@ public interface PraiseListView {
      * 收到老师广播赞数的消息
      *
      * @param danmakuList
-     * @param likeProbabilityEntity
      */
-    void receiveLikeNotice(ArrayList<PraiseListDanmakuEntity> danmakuList, LikeProbabilityEntity likeProbabilityEntity);
+    void receiveLikeNotice(ArrayList<PraiseListDanmakuEntity> danmakuList);
 
     /**
      * 显示感谢点赞的提示

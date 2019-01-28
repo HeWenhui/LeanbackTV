@@ -31,7 +31,7 @@
             android:layout_width="6dp"
             android:layout_height="7dp"
             android:layout_centerVertical="true"
-            android:src="@drawable/ic_livevideo_praiselist_praise"
+            android:src="@drawable/icon_livevideo_praiselist_praise"
             android:layout_marginRight="2dp"/>
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
@@ -42,7 +42,7 @@
             android:layout_toRightOf="@+id/iv_livevideo_praiselist_excellent_like"
             android:gravity="center"
             android:singleLine="true"
-            android:textColor="#5e2718"
+            android:textColor="#ce755a"
             android:textSize="8dp"
             tools:text="10" />
     </RelativeLayout>

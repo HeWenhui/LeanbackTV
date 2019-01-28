@@ -70,6 +70,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
+            android:gravity="center"
             android:textColor="#FF4747"
             android:textSize="18dp"
             android:visibility="gone"/>
@@ -108,10 +109,13 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop" />
 
+
     <com.airbnb.lottie.LottieAnimationView
         android:id="@+id/lav_livevideo_praiselist_click_like"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
         android:scaleType="centerCrop" />
 
     <RelativeLayout
@@ -124,8 +128,9 @@
         <com.airbnb.lottie.LottieAnimationView
             android:id="@+id/lav_livevideo_praiselist_teacher"
             android:scaleType="centerCrop"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@+id/tv_livevideo_praiselist_teacher_tips"
@@ -143,8 +148,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        >
+        android:visibility="gone">
 
         <Button
             android:id="@+id/btn_livevideo_praiselist_test1"

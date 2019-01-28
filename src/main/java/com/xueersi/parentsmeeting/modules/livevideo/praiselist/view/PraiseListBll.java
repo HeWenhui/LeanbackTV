@@ -22,7 +22,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.praiselist.contract.PraiseLi
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.contract.PraiseListView;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.ExcellentListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeListEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeProbabilityEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.MinimarketListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListDanmakuEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.page.PraiseListPager;
@@ -141,7 +140,7 @@ public class PraiseListBll implements PraiseListView {
                     rlPraiseListContent.setLayoutParams(mainParam);
                     bottomContent.addView(rlPraiseListContent);
                 }
-//                test();
+                test();
             }
         });
     }
@@ -297,10 +296,9 @@ public class PraiseListBll implements PraiseListView {
      * 收到老师广播赞数的消息
      *
      * @param danmakuList
-     * @param likeProbabilityEntity
      */
     @Override
-    public void receiveLikeNotice(final ArrayList<PraiseListDanmakuEntity> danmakuList, final LikeProbabilityEntity likeProbabilityEntity) {
+    public void receiveLikeNotice(final ArrayList<PraiseListDanmakuEntity> danmakuList) {
         mLogtf.d("receiveLikeNotice");
         if (mPraiseListPager != null)
             mWeakHandler.post(new Runnable() {
@@ -332,6 +330,7 @@ public class PraiseListBll implements PraiseListView {
     @Override
     public void closePraiseList() {
         mLogtf.d("closePraiseList");
+        mListType = 0;
         //停止点赞弹幕线程
         if (mPraiseListPager != null)
             mPraiseListPager.onDestroy();

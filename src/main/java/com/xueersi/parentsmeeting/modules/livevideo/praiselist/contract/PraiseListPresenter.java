@@ -12,7 +12,7 @@ public interface PraiseListPresenter {
     void getExcellentList();
     void getLikeList();
     void getMiniMarketList();
-    void getLikeProbability(final ArrayList<PraiseListDanmakuEntity> list);
-    void sendLikeNum(int agreeNum, int barrageType);
+    void getLikeProbability();
+    void sendLikeNum(int agreeNum, String teamId, int barrageType);
     String getStuName();
 }

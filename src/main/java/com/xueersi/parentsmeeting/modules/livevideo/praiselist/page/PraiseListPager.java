@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.praiselist.page;
 
 import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -21,7 +20,6 @@ import android.text.TextUtils;
 import android.text.style.AbsoluteSizeSpan;
 import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -46,7 +44,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.praiselist.contract.PraiseLi
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.contract.PraiseListView;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.ExcellentListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeListEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeProbabilityEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.MinimarketListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListDanmakuEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListStudentEntity;
@@ -81,7 +78,6 @@ public class PraiseListPager extends LiveBasePager {
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "praise_list/";
     private static final int ANIMATOR_TYPE_MAIN = 1;
     private static final int ANIMATOR_TYPE_THANKS = ANIMATOR_TYPE_MAIN + 1;
-    private static final int ANIMATOR_TYPE_TEACHER = ANIMATOR_TYPE_THANKS + 1;
     /**
      * 当前表扬榜类型
      */
@@ -103,6 +99,7 @@ public class PraiseListPager extends LiveBasePager {
     private LottieAnimationView lottieAnimationDoubleCardView;
     //点击 点赞按钮 动画
     private LottieAnimationView lottieAnimationClickLikeView;
+
     /**
      * 金榜题名
      */
@@ -172,6 +169,7 @@ public class PraiseListPager extends LiveBasePager {
             R.drawable.bg_livevideo_praiselist_tabs4,
             R.drawable.bg_livevideo_praiselist_tabs5,
     };
+    private List<PraiseListTeamEntity> mTeamList;
 
     /**
      * 弹幕消息
@@ -201,6 +199,7 @@ public class PraiseListPager extends LiveBasePager {
             isOnList = true;
         }
         this.excellentListEntity = excellentListEntity;
+        mTeamList = excellentListEntity.getTeamList();
         this.mPresenter = presenter;
         this.mPraiseListView = praiseListView;
         initData();
@@ -214,6 +213,7 @@ public class PraiseListPager extends LiveBasePager {
             isOnList = true;
         }
         this.minimarketListEntity = minimarketListEntity;
+        mTeamList = minimarketListEntity.getTeamList();
         this.mPresenter = presenter;
         this.mPraiseListView = praiseListView;
         initData();
@@ -227,6 +227,7 @@ public class PraiseListPager extends LiveBasePager {
             isOnList = true;
         }
         this.likeListEntity = likeListEntity;
+        mTeamList = likeListEntity.getTeamList();
         this.mPresenter = presenter;
         this.mPraiseListView = praiseListView;
         initData();
@@ -336,12 +337,12 @@ public class PraiseListPager extends LiveBasePager {
 
                 //金榜题名的位置
                 RelativeLayout.LayoutParams titleparams = (RelativeLayout.LayoutParams) tvCongratulations.getLayoutParams();
-                titleparams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 37));
+                titleparams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 38));
                 tvCongratulations.setLayoutParams(titleparams);
 
                 //战队列表的位置
                 RelativeLayout.LayoutParams teamListParams = (RelativeLayout.LayoutParams) rvTeamList.getLayoutParams();
-                teamListParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 55));
+                teamListParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 56));
                 teamListParams.leftMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 40));
                 teamListParams.rightMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 35));
                 teamListParams.height = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 58));
@@ -358,11 +359,13 @@ public class PraiseListPager extends LiveBasePager {
                 //点赞按钮的位置
                 RelativeLayout.LayoutParams likeParams = (RelativeLayout.LayoutParams) btnLike.getLayoutParams();
                 likeParams.rightMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 25));
+                likeParams.width = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 40));
+                likeParams.height = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 40));
                 btnLike.setLayoutParams(likeParams);
 
                 //点赞计数的位置
                 RelativeLayout.LayoutParams likeCountParams = (RelativeLayout.LayoutParams) tvLikeCount.getLayoutParams();
-                likeCountParams.rightMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 25));
+                likeCountParams.width = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 90));
                 likeCountParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 60));
                 tvLikeCount.setLayoutParams(likeCountParams);
 
@@ -378,16 +381,22 @@ public class PraiseListPager extends LiveBasePager {
                 lottieStarParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 30));
                 lottieStarParams.leftMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, -30));
                 lottieStarParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, -30));
+                lottieAnimationStarView.setLayoutParams(lottieStarParams);
 
                 //二倍卡动画的位置
                 RelativeLayout.LayoutParams lottieDoubleCardParams = (RelativeLayout.LayoutParams) lottieAnimationDoubleCardView.getLayoutParams();
                 lottieDoubleCardParams.rightMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 30));
-                lottieDoubleCardParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 30));
+                lottieDoubleCardParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 20));
                 lottieDoubleCardParams.leftMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, -30));
-                lottieDoubleCardParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, -30));
-
-                lottieAnimationStarView.setLayoutParams(lottieStarParams);
+                lottieDoubleCardParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, -20));
                 lottieAnimationDoubleCardView.setLayoutParams(lottieDoubleCardParams);
+
+                //点击动画
+                RelativeLayout.LayoutParams clickLikeParams = (RelativeLayout.LayoutParams) lottieAnimationClickLikeView.getLayoutParams();
+                clickLikeParams.rightMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 30));
+                clickLikeParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 20));
+                clickLikeParams.leftMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, -30));
+                clickLikeParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, -20));
 
                 //老师表扬学生文本框的位置
                 RelativeLayout.LayoutParams teacherTipsParams = (RelativeLayout.LayoutParams) teacherTipsView.getLayoutParams();
@@ -396,6 +405,7 @@ public class PraiseListPager extends LiveBasePager {
                 teacherTipsView.setLayoutParams(teacherTipsParams);
             }
         });
+
     }
 
     @Override
@@ -405,19 +415,33 @@ public class PraiseListPager extends LiveBasePager {
         startBackgtoundAnimation();
         initScrollAnimation();
         initDoubleCardAnimation();
-        //恭喜 金榜题名
-        if (isOnList) {
-            SpannableString successString = new SpannableString("恭喜 " + mPresenter.getStuName() + "同学 金榜题名，努力总有收获");
-            AbsoluteSizeSpan sizeSpan = new AbsoluteSizeSpan(SizeUtils.Dp2Px(mContext, 11));
-            ForegroundColorSpan colorSpan = new ForegroundColorSpan(mContext.getResources().getColor(R.color.white));
-            successString.setSpan(sizeSpan, "恭喜 ".length(), "恭喜 ".length() + mPresenter.getStuName().length() + "同学".length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-            successString.setSpan(colorSpan, "恭喜 ".length(), "恭喜 ".length() + mPresenter.getStuName().length() + "同学".length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
-            tvCongratulations.setText(successString);
-        } else {
-            tvCongratulations.setText("不要灰心，努力一点，下次一定上榜");
-            tvCongratulations.setBackgroundResource(R.drawable.bg_livevideo_praiselist_congratulations_fail);
-        }
 
+        //计算战队排名
+        if ((listType == PRAISE_LIST_TYPE_EXECELLENT || listType == PRAISE_LIST_TYPE_MINI_MARKET) && mTeamList.size() != 0) {
+            mTeamList.get(0).setTeamRanking(1);
+            for (int i = 1; i < mTeamList.size(); i++) {
+                if (mTeamList.get(i).getOnListNums() == mTeamList.get(i - 1).getOnListNums()) {
+                    mTeamList.get(i).setTeamRanking(mTeamList.get(i - 1).getTeamRanking());
+                } else {
+                    mTeamList.get(i).setTeamRanking(mTeamList.get(i - 1).getTeamRanking() + 1);
+                }
+                if (mTeamList.get(i).getIsMy() == 1) {
+                    selectedTeamTabs = i;
+                }
+            }
+        } else if (listType == PRAISE_LIST_TYPE_LIKE && mTeamList.size() != 0) {
+            mTeamList.get(0).setTeamRanking(1);
+            for (int i = 1; i < mTeamList.size(); i++) {
+                if (mTeamList.get(i).getPraiseTotalNum() == mTeamList.get(i - 1).getPraiseTotalNum()) {
+                    mTeamList.get(i).setTeamRanking(mTeamList.get(i - 1).getTeamRanking());
+                } else {
+                    mTeamList.get(i).setTeamRanking(mTeamList.get(i - 1).getTeamRanking() + 1);
+                }
+                if (mTeamList.get(i).getIsMy() == 1) {
+                    selectedTeamTabs = i;
+                }
+            }
+        }
 
         //播放声音
         if (mSoundPool == null)
@@ -433,29 +457,44 @@ public class PraiseListPager extends LiveBasePager {
             mSoundPool.play(soundPraiselistIn, 1, 1, 0, 0, 1);
         }
 
+        //恭喜 金榜题名
+        if (isOnList) {
+            SpannableString successString = new SpannableString("恭喜 " + mPresenter.getStuName() + "同学 金榜题名，努力总有收获");
+            AbsoluteSizeSpan sizeSpan = new AbsoluteSizeSpan(SizeUtils.Dp2Px(mContext, 11));
+            ForegroundColorSpan colorSpan = new ForegroundColorSpan(mContext.getResources().getColor(R.color.white));
+            successString.setSpan(sizeSpan, "恭喜 ".length(), "恭喜 ".length() + mPresenter.getStuName().length() + "同学".length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+            successString.setSpan(colorSpan, "恭喜 ".length(), "恭喜 ".length() + mPresenter.getStuName().length() + "同学".length(), Spanned.SPAN_EXCLUSIVE_INCLUSIVE);
+            tvCongratulations.setText(successString);
+        } else {
+            tvCongratulations.setText("不要灰心，努力一点，下次一定上榜");
+            tvCongratulations.setBackgroundResource(R.drawable.bg_livevideo_praiselist_congratulations_fail);
+        }
+
+        //备注
         switch (listType) {
             case PRAISE_LIST_TYPE_EXECELLENT:
                 tvNotes.setText("注:全对或者订正到全对的同学可以上榜哦~");
-                studentAdapter = new RCommonAdapter(mContext, excellentListEntity.getTeamList().get(selectedTeamTabs).getStudentList());
-                teamAdapter = new RCommonAdapter(mContext, excellentListEntity.getTeamList());
+
                 break;
             case PRAISE_LIST_TYPE_MINI_MARKET:
-                tvNotes.setText("注:统计周期为上讲当天到本讲前一天");
-                studentAdapter = new RCommonAdapter(mContext, minimarketListEntity.getTeamList().get(selectedTeamTabs).getStudentList());
-                teamAdapter = new RCommonAdapter(mContext, minimarketListEntity.getTeamList());
+
+                if (minimarketListEntity.getTitleId() == 1) {
+                    tvNotes.setText("注:统计周期为上讲当天到本讲前一天");
+                } else {
+                    tvNotes.setText("注:统计周期为本周一到本讲当天");
+                }
                 break;
             case PRAISE_LIST_TYPE_LIKE:
                 tvNotes.setText("注:点赞数高的同学可以上榜哦~");
                 rvDanmaku.setVisibility(View.GONE);
                 btnLike.setVisibility(View.GONE);
-                studentAdapter = new RCommonAdapter(mContext, likeListEntity.getTeamList().get(selectedTeamTabs).getStudentList());
-                teamAdapter = new RCommonAdapter(mContext, likeListEntity.getTeamList());
                 break;
             default:
                 break;
         }
 
         //学生列表
+        studentAdapter = new RCommonAdapter(mContext, mTeamList.get(selectedTeamTabs).getStudentList());
         studentAdapter.addItemViewDelegate(new StudentItem());
         GridLayoutManager studentLayoutManager = new GridLayoutManager(mContext, MAX_STUDENT_COLUMN_NUMBER);
         rvStudentlist.setLayoutManager(studentLayoutManager);
@@ -464,6 +503,7 @@ public class PraiseListPager extends LiveBasePager {
         rvStudentlist.setHasFixedSize(true);
 
         //战队列表
+        teamAdapter = new RCommonAdapter(mContext, mTeamList);
         teamAdapter.addItemViewDelegate(new TeamItem());
         LinearLayoutManager teamLayoutManager = new LinearLayoutManager(mContext);
         teamLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -489,6 +529,10 @@ public class PraiseListPager extends LiveBasePager {
                 outRect.set(left, top, right, bottom);
             }
         });
+
+        //默认直接展示自己战队的页卡
+        rvStudentlist.setBackgroundResource(tabsBackgroundRes[selectedTeamTabs]);
+        studentAdapter.updateData(mTeamList.get(selectedTeamTabs).getStudentList());
     }
 
     private class DanmakuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -529,10 +573,18 @@ public class PraiseListPager extends LiveBasePager {
             tvMsg.setVisibility(View.VISIBLE);
             if (data.getBarrageType() == 1) {
                 tvTeam.setVisibility(View.GONE);
-                tvMsg.setText(data.getName() + "同学点了" + data.getNumber() + "个赞！！");
+                if (mPresenter.getStuName() != null && mPresenter.getStuName().equals(data.getName())) {
+                    tvMsg.setText(data.getName() + "同学点了" + data.getNumber() + "个赞！！");
+                    tvMsg.setTextColor(Color.parseColor("#FFFFDB5C"));
+                } else {
+                    tvMsg.setText(data.getName() + "同学点了" + data.getNumber() + "个赞！！");
+                    tvMsg.setTextColor(mContext.getResources().getColor(R.color.white));
+                }
+
             } else if (data.getBarrageType() == 2) {
                 tvTeam.setVisibility(View.VISIBLE);
                 tvMsg.setText(data.getName() + "战队共获得" + data.getNumber() + "个赞！！");
+                tvMsg.setTextColor(mContext.getResources().getColor(R.color.white));
             }
         }
     }
@@ -544,19 +596,34 @@ public class PraiseListPager extends LiveBasePager {
 
 
     private int likeCount = 0;
+    private int latestLikeCount = 0;
     private Runnable hideLikeCountRunnable = new Runnable() {
         @Override
         public void run() {
             tvLikeCount.setVisibility(View.GONE);
-            lottieAnimationStarView.setVisibility(View.VISIBLE);
         }
     };
+
+    private Runnable hideDoubleCardRunnable = new Runnable() {
+        @Override
+        public void run() {
+            during = false;
+            tvLikeCount.setVisibility(View.VISIBLE);
+            tvLikeCount.setText("+" + likeCount);
+            lottieAnimationDoubleCardView.setVisibility(View.GONE);
+            mWeakHandler.postDelayed(hideLikeCountRunnable, 500);
+        }
+    };
+
+    private int btnLikeClickTime = 0;
+    boolean during = false;
     @Override
     public void initListener() {
         //监听点赞按钮点击事件
         btnLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                btnLikeClickTime++;
                 if (soundLike == 0) {
                     soundLike = mSoundPool.load(mContext, R.raw.thumbs_up, 1);
                     mSoundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
@@ -567,13 +634,33 @@ public class PraiseListPager extends LiveBasePager {
                 } else {
                     mSoundPool.play(soundLike, 1, 1, 0, 0, 1);
                 }
-//                startClickLikeAnimation();
-                tvLikeCount.setVisibility(View.VISIBLE);
+                startClickLikeAnimation();
                 lottieAnimationStarView.setVisibility(View.GONE);
-                likeCount++;
-                tvLikeCount.setText("+" + likeCount);
-                mWeakHandler.removeCallbacks(hideLikeCountRunnable);
-                mWeakHandler.postDelayed(hideLikeCountRunnable,500);
+                lottieAnimationStarView.cancelAnimation();
+
+                if (btnLikeClickTime >= 10) {
+                    if (during) {
+                        return;
+                    }
+                    if (triggerDoubleCard(1)) {
+                        during = true;
+                        startDoubleCardAnimation();
+                        likeCount *= 2;
+                        mWeakHandler.postDelayed(hideDoubleCardRunnable, 2000);
+                    } else {
+                        likeCount++;
+                        tvLikeCount.setVisibility(View.VISIBLE);
+                        tvLikeCount.setText("+" + likeCount);
+                        mWeakHandler.removeCallbacks(hideLikeCountRunnable);
+                        mWeakHandler.postDelayed(hideLikeCountRunnable, 500);
+                    }
+                } else {
+                    likeCount++;
+                    tvLikeCount.setVisibility(View.VISIBLE);
+                    tvLikeCount.setText("+" + likeCount);
+                    mWeakHandler.removeCallbacks(hideLikeCountRunnable);
+                    mWeakHandler.postDelayed(hideLikeCountRunnable, 500);
+                }
                 if (likeTimer == null) {
                     likeTimer = new Timer();
                     likeTimer.schedule(new LikeTimerTask(), 0, 3000);
@@ -616,40 +703,16 @@ public class PraiseListPager extends LiveBasePager {
                 selectedTeamTabs = position;
                 teamAdapter.notifyItemChanged(oldSelectedTeamTabs);
                 teamAdapter.notifyItemChanged(selectedTeamTabs);
-
-                switch (listType) {
-                    case PRAISE_LIST_TYPE_EXECELLENT:
-                        studentAdapter.updateData(excellentListEntity.getTeamList().get(selectedTeamTabs).getStudentList());
-                        break;
-                    case PRAISE_LIST_TYPE_MINI_MARKET:
-                        studentAdapter.updateData(minimarketListEntity.getTeamList().get(selectedTeamTabs).getStudentList());
-                        break;
-                    case PRAISE_LIST_TYPE_LIKE:
-                        studentAdapter.updateData(likeListEntity.getTeamList().get(selectedTeamTabs).getStudentList());
-                        break;
-                    default:
-                        break;
-                }
+                likeCount = 0;
+                latestLikeCount = 0;
+                btnLikeClickTime = 0;
+                studentAdapter.updateData(mTeamList.get(selectedTeamTabs).getStudentList());
                 rvStudentlist.setBackgroundResource(tabsBackgroundRes[selectedTeamTabs]);
             }
 
             @Override
             public boolean onItemLongClick(View view, RecyclerView.ViewHolder holder, int position) {
                 return false;
-            }
-        });
-
-        lottieAnimationTeacherView.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                logger.d("onAnimationUpdate: " + valueAnimator.getAnimatedFraction());
-                float animatedFraction = valueAnimator.getAnimatedFraction();
-                if (animatedFraction > 0.1) {
-                    teacherTipsView.setVisibility(View.VISIBLE);
-                }
-                if (animatedFraction > 0.4) {
-                    lottieAnimationTeacherGroup.setVisibility(View.GONE);
-                }
             }
         });
     }
@@ -690,39 +753,23 @@ public class PraiseListPager extends LiveBasePager {
     }
 
     /**
-     * 计算点赞数量的规则
+     * 是否触发二倍卡  1：概率不加倍  2：概率加倍
      */
-    public int calculateLikeNum(LikeProbabilityEntity likeProbabilityEntity) {
-        int likeNum = 1;
-        int probability = likeProbabilityEntity.getProbability();
+    public boolean triggerDoubleCard(int probability) {
         Random random = new Random();
         int i;
         if (probability == 1) {
-            //1：表示概率不加倍
-            i = random.nextInt(9);
-            if (i == 0) {
-                likeNum = 2;
-            } else {
-                i = random.nextInt(19);
-                if (i == 0)
-                    likeNum = 3;
-                else
-                    likeNum = 1;
+            i = random.nextInt(99);
+            if (i < 4) {
+                return true;
             }
         } else if (probability == 2) {
-            //2：表示概率加倍
-            i = random.nextInt(4);
-            if (i == 0) {
-                likeNum = 2;
-            } else {
-                i = random.nextInt(9);
-                if (i == 0)
-                    likeNum = 3;
-                else
-                    likeNum = 1;
+            i = random.nextInt(99);
+            if (i < 10) {
+                return true;
             }
         }
-        return likeNum;
+        return false;
     }
 
     /**
@@ -760,7 +807,13 @@ public class PraiseListPager extends LiveBasePager {
 
         //计算小超市榜资源替换
         final Map<String, String> miniMarketToBackgroundRes = new HashMap<>();
-        miniMarketToBackgroundRes.put("img_9.png", "img_9.png");
+        if (listType == PRAISE_LIST_TYPE_MINI_MARKET && minimarketListEntity != null) {
+            if (minimarketListEntity.getTitleId() == 1) {
+                miniMarketToBackgroundRes.put("img_9.png", "img_9_1.png");
+            } else {
+                miniMarketToBackgroundRes.put("img_9.png", "img_9_2.png");
+            }
+        }
 
         //点赞榜资源替换
         final Map<String, String> likeToBackgroundRes = new HashMap<>();
@@ -810,7 +863,6 @@ public class PraiseListPager extends LiveBasePager {
         lottieAnimationBGView.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                logger.d("lottieAnimationBGView:onAnimationUpdate");
                 float animatedFraction = animation.getAnimatedFraction();
                 if (animatedFraction > 0.1) {
                     lottieAnimationBGView.removeUpdateListener(this);
@@ -888,6 +940,7 @@ public class PraiseListPager extends LiveBasePager {
     }
 
     private void startDoubleCardAnimation() {
+        lottieAnimationDoubleCardView.setVisibility(View.VISIBLE);
         String doubleCardresPath = LOTTIE_RES_ASSETS_ROOTDIR + "double_card/images";
         String doubleCardJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "double_card/data.json";
         final LottieEffectInfo doubleCardLottieEffectInfo = new LottieEffectInfo(doubleCardresPath, doubleCardJsonPath);
@@ -912,10 +965,10 @@ public class PraiseListPager extends LiveBasePager {
      * 点赞 点击 动画
      */
     private void startClickLikeAnimation() {
-        String bubbleResPath = LOTTIE_RES_ASSETS_ROOTDIR + "interaction/press/images";
-        String bubbleJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "interaction/press/data.json";
+        String bubbleResPath = LOTTIE_RES_ASSETS_ROOTDIR + "click_like/images";
+        String bubbleJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "click_like/data.json";
         final LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo(bubbleResPath, bubbleJsonPath);
-        lottieAnimationClickLikeView.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(mContext), "click");
+        lottieAnimationClickLikeView.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(mContext), "click_like");
         lottieAnimationClickLikeView.useHardwareAcceleration(true);
         ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
             @Override
@@ -930,6 +983,7 @@ public class PraiseListPager extends LiveBasePager {
                         mContext);
             }
         };
+        lottieAnimationClickLikeView.setSpeed(2.0f);
         lottieAnimationClickLikeView.setImageAssetDelegate(imageAssetDelegate);
         lottieAnimationClickLikeView.playAnimation();
     }
@@ -976,6 +1030,21 @@ public class PraiseListPager extends LiveBasePager {
         teacherTipsView.setVisibility(View.GONE);
         lottieAnimationTeacherGroup.setVisibility(View.VISIBLE);
         lottieAnimationTeacherView.playAnimation();
+
+        lottieAnimationTeacherView.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                logger.d("onAnimationUpdate: " + valueAnimator.getAnimatedFraction());
+                float animatedFraction = valueAnimator.getAnimatedFraction();
+                if (animatedFraction > 0.1) {
+                    teacherTipsView.setVisibility(View.VISIBLE);
+                }
+                if (animatedFraction > 0.4) {
+                    lottieAnimationTeacherGroup.setVisibility(View.GONE);
+                    lottieAnimationTeacherView.cancelAnimation();
+                }
+            }
+        });
     }
 
     /**
@@ -1013,7 +1082,11 @@ public class PraiseListPager extends LiveBasePager {
             mWeakHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    mPresenter.sendLikeNum(likeCount,1);
+                    if (latestLikeCount == likeCount || tvLikeCount.getVisibility() == View.VISIBLE) {
+                        return;
+                    }
+                    mPresenter.sendLikeNum(likeCount - latestLikeCount, mTeamList.get(selectedTeamTabs).getPkTeamId(), 1);
+                    latestLikeCount = likeCount;
                 }
             });
         }
@@ -1036,6 +1109,7 @@ public class PraiseListPager extends LiveBasePager {
     class TeamItem implements RItemViewInterface<PraiseListTeamEntity> {
         ImageView ivHead;
         ImageView ivMedal;
+        ImageView ivLike;
         TextView tvCount;
 
         @Override
@@ -1052,6 +1126,7 @@ public class PraiseListPager extends LiveBasePager {
         public void initView(ViewHolder holder, int position) {
             ivHead = holder.getView(R.id.iv_livevideo_praiselist_team_head);
             ivMedal = holder.getView(R.id.iv_livevideo_praiselist_team_medal);
+            ivLike = holder.getView(R.id.iv_livevideo_praiselist_team_like);
             tvCount = holder.getView(R.id.tv_livevideo_praiselist_team_count);
 
             RecyclerView.LayoutParams holderParams = (RecyclerView.LayoutParams) holder.getConvertView().getLayoutParams();
@@ -1080,11 +1155,13 @@ public class PraiseListPager extends LiveBasePager {
             switch (listType) {
                 case PRAISE_LIST_TYPE_EXECELLENT:
                 case PRAISE_LIST_TYPE_MINI_MARKET: {
+                    ivLike.setVisibility(View.GONE);
                     tvCount.setText(teamEntity.getOnListNums() + "/" + teamEntity.getTeamMemberNums());
                     break;
                 }
                 case PRAISE_LIST_TYPE_LIKE: {
                     tvCount.setText(teamEntity.getPraiseTotalNum() + "");
+                    ivLike.setVisibility(View.VISIBLE);
                     break;
                 }
                 default:
@@ -1093,18 +1170,22 @@ public class PraiseListPager extends LiveBasePager {
 
             switch (teamEntity.getTeamRanking()) {
                 case 1: {
+                    ivMedal.setVisibility(View.VISIBLE);
                     ivMedal.setImageResource(R.drawable.livevide_list_jin_icon);
                     break;
                 }
                 case 2: {
+                    ivMedal.setVisibility(View.VISIBLE);
                     ivMedal.setImageResource(R.drawable.livevide_list_yin_icon);
                     break;
                 }
                 case 3: {
+                    ivMedal.setVisibility(View.VISIBLE);
                     ivMedal.setImageResource(R.drawable.livevide_list_tong_icon);
                     break;
                 }
                 default:
+                    ivMedal.setVisibility(View.GONE);
                     break;
             }
         }
@@ -1155,6 +1236,8 @@ public class PraiseListPager extends LiveBasePager {
                 if (studentEntity.getIsMy() == 1) {
                     //自己名字高亮
                     tvName.setTextColor(Color.parseColor("#FFAE00"));
+                } else {
+                    tvName.setTextColor(Color.parseColor("#7D553F"));
                 }
 
                 switch (listType) {

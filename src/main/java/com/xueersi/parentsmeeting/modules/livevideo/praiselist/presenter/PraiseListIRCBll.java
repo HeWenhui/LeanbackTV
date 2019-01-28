@@ -62,7 +62,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-        mPraiseListView.initView(mRootView);
+        mPraiseListView.initView(rlMessageBottom);
     }
 
     @Override
@@ -96,8 +96,8 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
             //老师广播赞数，包含一键表扬 和 某某学生点了多少赞
             case XESCODE.XCR_ROOM_PRAISELIST_LIKE_STUTENT: {
                 mLogtf.d("onNotice: like from student, data = " + data);
-                boolean isTeacher = data.optBoolean("isTeacher");
-                if (isTeacher) {
+                int isTeacher = data.optInt("isTeacher");
+                if (isTeacher == 1) {
                     // 只有 (isTeacher == 1) 时才有这个字段
                     String teacherName = data.optString("teacherName");
                     if (teacherName != null) {
@@ -106,7 +106,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
                 } else {
                     ArrayList<PraiseListDanmakuEntity> danmakuList = new ArrayList<>();
                     //学生名字列表，(isTeacher == 0) 时再解析这个字段
-                    JSONArray agreeForms = data.optJSONArray("agreeFroms");
+                    JSONArray agreeForms = data.optJSONArray("agreeFrom");
                     //学生点赞个数列表，(isTeacher == 0) 时再解析这个字段
                     JSONArray nums = data.optJSONArray("nums");
                     if (agreeForms != null && nums != null) {
@@ -127,11 +127,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
                     }
 
                     if (danmakuList.size() != 0) {
-                        if (mLikeProbabilityEntity != null) {
-                            mPraiseListView.receiveLikeNotice(danmakuList, mLikeProbabilityEntity);
-                        } else {
-                            getLikeProbability(danmakuList);
-                        }
+                        mPraiseListView.receiveLikeNotice(danmakuList);
                     }
 
                 }
@@ -146,7 +142,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
                         try {
                             PraiseListDanmakuEntity danmakuEntity = new PraiseListDanmakuEntity();
                             JSONObject team = teamList.getJSONObject(i);
-                            danmakuEntity.setBarrageType(1);
+                            danmakuEntity.setBarrageType(2);
                             danmakuEntity.setName(team.getString("teamName"));
                             danmakuEntity.setNumber(team.getInt("teamNum"));
                             danmakuList.add(danmakuEntity);
@@ -159,11 +155,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
                 }
 
                 if (danmakuList.size() != 0) {
-                    if (mLikeProbabilityEntity != null) {
-                        mPraiseListView.receiveLikeNotice(danmakuList, mLikeProbabilityEntity);
-                    } else {
-                        getLikeProbability(danmakuList);
-                    }
+                    mPraiseListView.receiveLikeNotice(danmakuList);
                 }
             }
             default:
@@ -188,7 +180,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
                 if (mPraiseListView == null) {
                     mPraiseListView = new PraiseListBll(activity);
                     mPraiseListView.setPresenter(PraiseListIRCBll.this);
-                    mPraiseListView.initView(mRootView);
+                    mPraiseListView.initView(rlMessageBottom);
                 }
                 if (mPraiseListView != null) {
                     if (coachRoomstatus.getListStatus() == PraiseListPager.PRAISE_LIST_TYPE_EXECELLENT) {
@@ -208,16 +200,10 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
      */
     @Override
     public synchronized void getExcellentList() {
-        if (listType == PraiseListPager.PRAISE_LIST_TYPE_EXECELLENT) {
-            return;
-        }
-        listType = PraiseListPager.PRAISE_LIST_TYPE_EXECELLENT;
         String stuId = mGetInfo.getStuId();
         String classId = mGetInfo.getStudentLiveInfo().getClassId();
-        String stuCouId = mGetInfo.getStuCouId();
-        String couseId = mGetInfo.getStudentLiveInfo().getCourseId();
         String teamId = mGetInfo.getStudentLiveInfo().getTeamId();
-        getHttpManager().getExcellentList(stuId, mLiveId, classId, stuCouId, couseId, teamId, new HttpCallBack(false) {
+        getHttpManager().getExcellentList("0", stuId, mLiveId, classId, teamId, new HttpCallBack(false) {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
@@ -241,14 +227,12 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
                         getExcellentList();
                     }
                 });
-                listType = 0;
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 mLogtf.d("getExcellentList => onPmError: errorMsg = " + responseEntity.getErrorMsg());
                 showToast("" + responseEntity.getErrorMsg());
-                listType = 0;
             }
         });
     }
@@ -258,10 +242,6 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
      */
     @Override
     public synchronized void getMiniMarketList() {
-        if (listType == PraiseListPager.PRAISE_LIST_TYPE_MINI_MARKET) {
-            return;
-        }
-        listType = PraiseListPager.PRAISE_LIST_TYPE_MINI_MARKET;
         String stuId = mGetInfo.getStuId();
         String classId = mGetInfo.getStudentLiveInfo().getClassId();
         String stuCouId = mGetInfo.getStuCouId();
@@ -290,14 +270,12 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
                         getMiniMarketList();
                     }
                 });
-                listType = 0;
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 mLogtf.d("getMiniMarketList => onPmError: errorMsg = " + responseEntity.getErrorMsg());
                 showToast("" + responseEntity.getErrorMsg());
-                listType = 0;
             }
         });
     }
@@ -308,10 +286,6 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
 
     @Override
     public synchronized void getLikeList() {
-        if (listType == PraiseListPager.PRAISE_LIST_TYPE_LIKE) {
-            return;
-        }
-        listType = PraiseListPager.PRAISE_LIST_TYPE_LIKE;
         String stuId = mGetInfo.getStuId();
         String classId = mGetInfo.getStudentLiveInfo().getClassId();
         String stuCouId = mGetInfo.getStuCouId();
@@ -347,7 +321,6 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
             public void onPmError(ResponseEntity responseEntity) {
                 mLogtf.d("getLikeList => onPmError: errorMsg = " + responseEntity.getErrorMsg());
                 showToast("" + responseEntity.getErrorMsg());
-                listType = 0;
             }
         });
     }
@@ -356,7 +329,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
      * 获取点赞概率标识
      */
     @Override
-    public synchronized void getLikeProbability(final ArrayList<PraiseListDanmakuEntity> danmakuList) {
+    public synchronized void getLikeProbability() {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         String classId = "";
         if (mGetInfo.getStudentLiveInfo() != null) {
@@ -368,10 +341,6 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
             public void onPmSuccess(ResponseEntity responseEntity) {
                 mLogtf.d("getLikeProbability => onPmSuccess:  + jsonObject = " + responseEntity.getJsonObject());
                 LikeProbabilityEntity likeProbabilityEntity = getHttpResponseParser().parseLikeProbability(responseEntity);
-                if (mLikeProbabilityEntity != null) {
-                    mLikeProbabilityEntity = likeProbabilityEntity;
-                    mPraiseListView.receiveLikeNotice(danmakuList, likeProbabilityEntity);
-                }
             }
 
             @Override
@@ -391,14 +360,14 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
      * 学生告诉教师点赞个数
      */
     @Override
-    public void sendLikeNum(int likes, int barrageType) {
-        mLogtf.d("sendLikeNum: likes = " + likes + ", mCounTeacherStr = " + mLiveBll.getCounTeacherStr());
+    public void sendLikeNum(int likes, String teamId, int barrageType) {
+        mLogtf.d("sendLikeNum: likes = " + likes + ", teamId = " + teamId + ", mCounTeacherStr = " + mLiveBll.getCounTeacherStr());
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("type", "" + XESCODE.XCR_ROOM_PRAISELIST_SEND_LIKE);
             jsonObject.put("likes", likes);
-            jsonObject.put("teamId", mGetInfo.getStudentLiveInfo().getTeamId());
-            jsonObject.put("barrageType", "" + barrageType);
+            jsonObject.put("teamId", teamId);
+            jsonObject.put("barrageType", barrageType);
             jsonObject.put("stuId", mGetInfo.getStuId());
             jsonObject.put("stuName", mGetInfo.getStuName());
             sendNotice(jsonObject, mLiveBll.getCounTeacherStr());

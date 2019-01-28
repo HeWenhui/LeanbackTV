@@ -22,7 +22,7 @@ public class MinimarketListEntity {
     /**
      * //榜单id 0:小超市每周风云榜 1:小超市上讲风云榜
      */
-    private String titleId;
+    private int titleId;
     /**
      * 战队数量
      */
@@ -48,11 +48,11 @@ public class MinimarketListEntity {
         this.title = title;
     }
 
-    public String getTitleId() {
+    public int getTitleId() {
         return titleId;
     }
 
-    public void setTitleId(String titleId) {
+    public void setTitleId(int titleId) {
         this.titleId = titleId;
     }
 
