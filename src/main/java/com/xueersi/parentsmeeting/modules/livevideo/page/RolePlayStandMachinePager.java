@@ -107,11 +107,14 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
      * 准备开始朗读前的提示文案
      */
     //private TextView tvBeginTipMsg;
-
     /**
      * roleplay回放的时候，增加关闭按钮
      */
     TextView tv_close_role_play;
+    /**
+     * roleplay我的结果页，增加关闭按钮
+     */
+    TextView tv_close_role_play_result;
 
     /**
      * 倒计时整体布局
@@ -312,10 +315,16 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.pager_stand_live_roleplayer, null);
-
         tv_close_role_play = view.findViewById(R.id.tv_close_role_play);
-        //关闭
-        tv_close_role_play.setOnClickListener(new View
+        tv_close_role_play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onUserBackPressed();
+            }
+        });
+        tv_close_role_play_result = view.findViewById(R.id.tv_close_role_play_result);
+        //关闭结果页
+        tv_close_role_play_result.setOnClickListener(new View
                 .OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -414,6 +423,15 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
     @Override
     public boolean onUserBackPressed() {
         //走返回的大逻辑，回放时候，答题结束，才不会卡顿
+        if(speechEvalAction != null){
+            speechEvalAction.stopSpeech(RolePlayStandMachinePager.this, getBaseVideoQuestionEntity(), getId());
+        }
+        new Thread() {
+            @Override
+            public void run() {
+                AudioPlayer.releaseAudioPlayer(mContext);
+            }
+        }.start();
         return super.onUserBackPressed();
     }
 

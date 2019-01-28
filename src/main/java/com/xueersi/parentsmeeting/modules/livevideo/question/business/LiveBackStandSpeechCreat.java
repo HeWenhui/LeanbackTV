@@ -75,7 +75,7 @@ public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
                                                     SpeechEvalAction speechEvalAction, String stuCouId, RolePlayMachineBll rolePlayMachineBll) {
         RolePlayStandMachinePager rolePlayerPager  = new RolePlayStandMachinePager(context,
                 videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
-                true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack,rolePlayMachineBll, liveGetInfo);
+                false, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack,rolePlayMachineBll, liveGetInfo);
         return rolePlayerPager;
     }
 
@@ -99,7 +99,7 @@ public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
 //        return speechAssessmentPager;
         RolePlayStandMachinePager rolePlayerPager  = new RolePlayStandMachinePager(context,
                 videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
-                true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack,rolePlayMachineBll, liveGetInfo);
+                false, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack,rolePlayMachineBll, liveGetInfo);
         return rolePlayerPager;
     }
 

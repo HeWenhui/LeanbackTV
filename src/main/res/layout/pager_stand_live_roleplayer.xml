@@ -41,7 +41,16 @@
                 android:textSize="11sp" />
 
         </LinearLayout>
-
+        <TextView
+            android:id="@+id/tv_close_role_play"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="9dp"
+            android:layout_marginRight="9dp"
+            android:background="@drawable/selector_close_roleplay_stand_bg"
+            android:visibility="gone"
+            />
         <!--ready go-->
         <com.xueersi.parentsmeeting.modules.livevideo.widget.ReadyGoImageView
             android:id="@+id/rgiv_livevideo_stand_readygo"
@@ -124,7 +133,7 @@
         </RelativeLayout>
 
         <TextView
-            android:id="@+id/tv_close_role_play"
+            android:id="@+id/tv_close_role_play_result"
             android:layout_width="45dp"
             android:layout_height="45dp"
             android:layout_alignParentRight="true"
