@@ -124,6 +124,11 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                                             (responseEntity);
                                     mGetInfo.setGoldCount(starAndGoldEntity.getGoldCount());
                                     mGetInfo.setStarCount(starAndGoldEntity.getStarCount());
+                                    StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
+                                    LiveGetInfo.EnPkEnergy enpkEnergy = mGetInfo.getEnpkEnergy();
+                                    enpkEnergy.me = pkEnergy.me;
+                                    enpkEnergy.myTeam = pkEnergy.myTeam;
+                                    enpkEnergy.opTeam = pkEnergy.opTeam;
                                     if (starAction != null) {
                                         starAction.onGetStar(starAndGoldEntity);
                                     }
