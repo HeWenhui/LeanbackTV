@@ -1011,7 +1011,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
             XESCODE.TEAM_PK_BLACK_RANK_LIST,
             XESCODE.TEAM_PK_STAR_RANK_LIST,
             XESCODE.TEAM_PK_PK_END
-            //130
     };
 
 
@@ -1050,10 +1049,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                     if (OPEN_STATE_OPEN.equals(open)) {
                         startSelectAdversary();
                         TeamPkLog.receiveMatchOpponent(mLiveBll, nonce, true);
-                        logger.e("====>onNotice startSelectAdversary:");
-                    } else if (OPEN_STATE_CLOSE.equals(open)) {
-                        stopSelectAdversary();
-                        TeamPkLog.receiveMatchOpponent(mLiveBll, nonce, false);
                     }
                     break;
 
@@ -1088,29 +1083,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                 case XESCODE.TEAM_PK_PK_END:
                     showPkEndToast();
                     break;
-             /*   case 130:
-                    String strCmd = data.optString("msg");
-                    if ("1".equals(strCmd)) {
-                        //startSelectAdversary();
-                       // showClassChest();
-                        closeClassChest();
-                        getStusStars();
-                        //getProgressStudent();
-                        //showPkEndToast();
-                    } else if ("2".equals(strCmd)) {
-                        //stopSelectAdversary();
-                        //closeStarts();
-                        //closeStuProgressList();
-                        closeStarts();
-                        getProgressStudent();
-                    }else if("3".equals(strCmd)){
-                        showPkEndToast();
-                    }else if("4".equals(strCmd)){
-                        showPkResult();
-                    }else if("5".equals(strCmd)){
-                        showClassChest();
-                    }
-                    break;*/
                 default:
                     break;
             }
@@ -1186,9 +1158,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                 } else if (LiveVideoConfig.TEAM_PK.TOPIC_PKSTEP_STAR_RANK_LIST == pkStateCode && !isTopicHandled()) {
                     setTopicHandled(true);
                     getStusStars();
-                } else if (LiveVideoConfig.TEAM_PK.TOPIC_PKSTEP_PK_END == pkStateCode && !isTopicHandled()) {
-                    setTopicHandled(true);
-                    showPkEndToast();
                 }
                 setTopicHandled(true);
             }
