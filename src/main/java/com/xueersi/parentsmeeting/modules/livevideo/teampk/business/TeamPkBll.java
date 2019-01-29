@@ -1075,21 +1075,25 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                     closeCurrentPkResult();
                     break;
                 case XESCODE.TEAM_PK_BLACK_RANK_LIST:
+                    closeStarts();
                     getProgressStudent();
                     break;
 
                 case XESCODE.TEAM_PK_STAR_RANK_LIST:
+                    //关闭 幸运星页面
+                    closeClassChest();
                     getStusStars();
                     break;
 
                 case XESCODE.TEAM_PK_PK_END:
                     showPkEndToast();
                     break;
-                /*case 130:
+             /*   case 130:
                     String strCmd = data.optString("msg");
                     if ("1".equals(strCmd)) {
                         //startSelectAdversary();
                        // showClassChest();
+                        closeClassChest();
                         getStusStars();
                         //getProgressStudent();
                         //showPkEndToast();
@@ -1097,6 +1101,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                         //stopSelectAdversary();
                         //closeStarts();
                         //closeStuProgressList();
+                        closeStarts();
                         getProgressStudent();
                     }else if("3".equals(strCmd)){
                         showPkEndToast();
@@ -1109,6 +1114,12 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                 default:
                     break;
             }
+        }
+    }
+
+    private void closeClassChest() {
+        if (mFocusPager != null && mFocusPager instanceof TeamPkAwardPager) {
+            ((TeamPkAwardPager) mFocusPager).closeAwardPager();
         }
     }
 
