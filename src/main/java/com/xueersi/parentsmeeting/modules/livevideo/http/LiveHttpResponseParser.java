@@ -1314,6 +1314,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     teamEntity.setTeamMemberNums(teamObject.getInt("teamMemberNums"));
                     teamEntity.setPkTeamId(teamObject.getString("pkTeamId"));
                     teamEntity.setIsMy(teamObject.optInt("isMy", -1));
+                    if (teamEntity.getIsMy() == 1) {
+                        entity.setIsMy(1);
+                    }
                     JSONArray stuList = teamObject.getJSONArray("stuList");
                     for (int j = 0; j < stuList.length(); j++) {
                         JSONObject studentObject = stuList.getJSONObject(j);
@@ -1370,6 +1373,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     teamEntity.setTeamRanking(teamObject.getInt("teamRanking"));
                     teamEntity.setPkTeamId(teamObject.getString("pkTeamId"));
                     teamEntity.setIsMy(teamObject.optInt("isMy", -1));
+                    if (teamEntity.getIsMy() == 1) {
+                        entity.setIsMy(1);
+                    }
                     JSONArray stuList = teamObject.getJSONArray("stuList");
                     for (int j = 0; j < stuList.length(); j++) {
                         JSONObject studentObject = stuList.getJSONObject(j);
@@ -1420,6 +1426,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     teamEntity.setPraiseTotalNum(teamObject.getInt("praiseTotalNum"));
                     teamEntity.setPkTeamId(teamObject.getString("pkTeamId"));
                     teamEntity.setIsMy(teamObject.optInt("isMy", -1));
+                    if (teamEntity.getIsMy() == 1) {
+                        entity.setIsMy(1);
+                    }
                     JSONArray stuList = teamObject.getJSONArray("stuList");
                     for (int j = 0; j < stuList.length(); j++) {
                         JSONObject studentObject = stuList.getJSONObject(j);

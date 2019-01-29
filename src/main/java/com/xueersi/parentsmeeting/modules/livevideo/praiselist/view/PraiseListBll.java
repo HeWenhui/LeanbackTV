@@ -140,7 +140,7 @@ public class PraiseListBll implements PraiseListView {
                     rlPraiseListContent.setLayoutParams(mainParam);
                     bottomContent.addView(rlPraiseListContent);
                 }
-                test();
+//                test();
             }
         });
     }

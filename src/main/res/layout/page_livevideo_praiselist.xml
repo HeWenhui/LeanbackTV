@@ -64,24 +64,7 @@
             android:layout_alignParentRight="true"
             android:background="@drawable/selector_livevideo_praiselist_close" />
 
-        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-            android:id="@+id/tv_livevideo_praiselist_like_count"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:gravity="center"
-            android:textColor="#FF4747"
-            android:textSize="18dp"
-            android:visibility="gone"/>
 
-        <Button
-            android:id="@+id/btn_livevideo_praiselist_like"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:background="@drawable/selector_livevideo_praiselist_like" />
     </RelativeLayout>
 
     <com.xueersi.parentsmeeting.modules.livevideo.praiselist.widget.DanmakuRecycleView
@@ -110,16 +93,41 @@
         android:scaleType="centerCrop" />
 
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lav_livevideo_praiselist_click_like"
+    <RelativeLayout
+        android:id="@+id/rl_livevideo_praiselist_lottie_click_like"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:scaleType="centerCrop" />
+        android:layout_height="match_parent" />
 
     <RelativeLayout
-        android:id="@+id/fl_livevideo_praiselist_teacher_group"
+        android:id="@+id/rl_livevideo_praiselist_like_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone">
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tv_livevideo_praiselist_like_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:gravity="center"
+            android:textColor="#FF4747"
+            android:textSize="18dp"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/btn_livevideo_praiselist_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/selector_livevideo_praiselist_like" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/rl_livevideo_praiselist_teacher_group"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#B3000000"
