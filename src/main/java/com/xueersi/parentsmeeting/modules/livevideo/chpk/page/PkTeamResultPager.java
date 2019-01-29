@@ -310,14 +310,14 @@ public class PkTeamResultPager extends BasePager {
         ivMyteamState.setVisibility(View.VISIBLE);
         ivOtherTeamState.setVisibility(View.VISIBLE);
         if (myTeamTotalEnergy > otherTeamTotalEnergy) {
-            ivMyteamState.setImageResource(R.drawable.livevideo_list_lead_img_disable);
-            ivOtherTeamState.setImageResource(R.drawable.livevideo_list_catchup_img_disable);
+            ivMyteamState.setImageResource(R.drawable.livevideo_chpk_result_lead);
+            ivOtherTeamState.setImageResource(R.drawable.livevideo_chpk_result_catch);
         } else if (otherTeamTotalEnergy > myTeamTotalEnergy) {
-            ivOtherTeamState.setImageResource(R.drawable.livevideo_list_lead_img_disable);
-            ivMyteamState.setImageResource(R.drawable.livevideo_list_catchup_img_disable);
+            ivOtherTeamState.setImageResource(R.drawable.livevideo_chpk_result_lead);
+            ivMyteamState.setImageResource(R.drawable.livevideo_chpk_result_catch);
         } else if (myTeamTotalEnergy == otherTeamTotalEnergy) {
-            ivOtherTeamState.setImageResource(R.drawable.livevideo_alertview_pingshou_img_disable);
-            ivMyteamState.setImageResource(R.drawable.livevideo_alertview_pingshou_img_disable);
+            ivOtherTeamState.setImageResource(R.drawable.livevideo_chpk_result_equal);
+            ivMyteamState.setImageResource(R.drawable.livevideo_chpk_result_equal);
         }
 
         ImageLoader.with(BaseApplication.getContext()).load(data.getMyTeamEngerInfo().getTeacherImg()).asBitmap
