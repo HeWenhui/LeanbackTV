@@ -65,6 +65,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
 
     @Override
     public void setPkTeamEntity(PkTeamEntity pkTeamEntity) {
+        PkTeamEntity oldPkTeamEntity = this.pkTeamEntity;
         this.pkTeamEntity = pkTeamEntity;
 //        if (AppConfig.DEBUG) {
 //            teamPkRankResultPager = new TeamPkRankResultPager(mContext, pkTeamEntity);
@@ -82,11 +83,16 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
 //            });
 //        }
         //主讲的时候，没有分队，显示上部栏
-        if (pkTeamEntity != null) {
+        if (oldPkTeamEntity == null && pkTeamEntity != null) {
             mLogtf.d("setPkTeamEntity:getInfo=null?" + (getInfo == null) + ",onRankStart=" + onRankStart + ",mode=" + mode + ",where=" + pkTeamEntity.getCreateWhere());
             if (getInfo != null && !onRankStart && LiveTopic.MODE_CLASS.equals(mode)) {
                 if (pkTeamEntity.getCreateWhere() != PkTeamEntity.CREATE_TYPE_LOCAL) {
-                    addTop();
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            addTop();
+                        }
+                    });
                 }
             }
         }

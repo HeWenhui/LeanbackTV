@@ -326,6 +326,7 @@
     <item name="tv_livevideo_speecteval_error" type="id" />
     <item name="ll_livevideo_speecteval_result_mine" type="id" />
     <item name="iv_livevideo_speecteval_result_mine" type="id" />
+    <item name="tv_livevideo_speecteval_result_answer" type="id" />
     <item name="iv_livevideo_speecteval_result_gold" type="id" />
     <item name="tv_livevideo_speecteval_result_gold" type="id" />
     <item name="iv_livevideo_speecteval_result_energy" type="id" />
