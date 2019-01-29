@@ -749,6 +749,9 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
     }
 
     private void addPager(BasePager aqAwardPager) {
+        if(mFocusPager != null){
+            mFocusPager.onDestroy();
+        }
         rlTeamPkContent.removeAllViews();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
@@ -764,6 +767,9 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      * @param pager
      */
     private void addFullScreenPager(BasePager pager) {
+        if(mFocusPager != null){
+            mFocusPager.onDestroy();
+        }
         rlTeamPkContent.removeAllViews();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
@@ -1005,6 +1011,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
             XESCODE.TEAM_PK_BLACK_RANK_LIST,
             XESCODE.TEAM_PK_STAR_RANK_LIST,
             XESCODE.TEAM_PK_PK_END
+            //130
     };
 
 
@@ -1078,18 +1085,25 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                 case XESCODE.TEAM_PK_PK_END:
                     showPkEndToast();
                     break;
-               /* case 130:
+                /*case 130:
                     String strCmd = data.optString("msg");
                     if ("1".equals(strCmd)) {
                         //startSelectAdversary();
                        // showClassChest();
-                        //getStusStars();
+                        getStusStars();
                         //getProgressStudent();
-                        showPkEndToast();
-                    } else if ("0".equals(strCmd)) {
+                        //showPkEndToast();
+                    } else if ("2".equals(strCmd)) {
                         //stopSelectAdversary();
                         //closeStarts();
                         //closeStuProgressList();
+                        getProgressStudent();
+                    }else if("3".equals(strCmd)){
+                        showPkEndToast();
+                    }else if("4".equals(strCmd)){
+                        showPkResult();
+                    }else if("5".equals(strCmd)){
+                        showClassChest();
                     }
                     break;*/
                 default:
