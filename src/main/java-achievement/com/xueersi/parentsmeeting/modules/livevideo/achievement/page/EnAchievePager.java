@@ -118,6 +118,7 @@ public class EnAchievePager extends LiveBasePager {
     }
 
     public void onEnglishPk() {
+        mLogtf.d("onEnglishPk");
         if (pkEmptyView != null) {
             pkEmptyView.removeAllViews();
             ViewGroup group = (ViewGroup) pkEmptyView.getParent();

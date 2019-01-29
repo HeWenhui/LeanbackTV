@@ -410,6 +410,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         if (pkTeamEntity == null && pkTeamEntity2 != null) {
             LiveGetInfo.EnglishPk englishPk = mGetInfo.getEnglishPk();
             englishPk.hasGroup = 1;
+            mLogtf.d("parsegetSelfTeamInfo:postEvent");
             mLiveBll.postEvent(EnPkTeam.class, pkTeamEntity2);
         }
         return pkTeamEntity2;

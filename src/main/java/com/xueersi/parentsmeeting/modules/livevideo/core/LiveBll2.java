@@ -1180,9 +1180,12 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
     public void postEvent(Class c, Object object) {
         ArrayList<LiveEvent> arrayList = eventMap.get(c);
         if (arrayList != null) {
+            mLogtf.d("postEvent(isEmpty):c=" + c + ",size=" + arrayList.size());
             for (int i = 0; i < arrayList.size(); i++) {
                 arrayList.get(i).onEvent(object);
             }
+        } else {
+            mLogtf.d("postEvent(null):c=" + c);
         }
     }
 
