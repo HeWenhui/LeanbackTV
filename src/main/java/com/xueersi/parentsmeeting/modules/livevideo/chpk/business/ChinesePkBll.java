@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.chpk.business;
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Looper;
@@ -31,6 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentCoinAndTotalEnergyEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentPkResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
@@ -537,8 +539,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     private int getRightMargin() {
         int returnValue = 0;
         if (!isFullScreenMode()) {
-            int screenWidth = ScreenUtils.getScreenWidth();
-            returnValue = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
+            returnValue = LiveVideoPoint.getInstance().getRightMargin();
         }
         return returnValue;
     }
@@ -550,6 +551,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
         params.rightMargin = rightMargin;
         rlTeamPkContent.addView(aqAwardPager.getRootView(), params);
         mFocusPager = aqAwardPager;
+//        aqAwardPager.getRootView().setBackgroundColor(Color.BLACK);
     }
 
     private void registLayotListener() {
@@ -668,8 +670,10 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
 
         if (event.getH5Type() == LiveRoomH5CloseEvent.H5_TYPE_EXAM) {
             savedTestPlan = event.getId();
+            savedTestId = "";
         } else {
             savedTestId = event.getId();
+            savedTestPlan = "";
         }
 
 
