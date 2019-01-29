@@ -205,6 +205,13 @@ public class EnAchievePager extends LiveBasePager {
         tvAchiveNumGold.setText("" + starAndGoldEntity.getGoldCount());
         StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
         tvAchiveNumFire.setText("" + pkEnergy.me);
+        //本场成就设置进度
+        if (tv_livevideo_en_achive_pk_energy_my != null) {
+            tv_livevideo_en_achive_pk_energy_my.setText("" + pkEnergy.myTeam);
+        }
+        if (tv_livevideo_en_achive_pk_energy_other != null) {
+            tv_livevideo_en_achive_pk_energy_other.setText("" + pkEnergy.opTeam);
+        }
         ViewGroup rl_livevideo_info = activity.findViewById(R.id.rl_livevideo_info);
         if (rl_livevideo_info != null) {
             final int energyCountAdd = starAndGoldEntity.getPkEnergy().me - energyCount;
