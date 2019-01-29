@@ -560,10 +560,15 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             public void onGlobalLayout() {
 
                 if (!isFullScreenMode()) {
-                    ViewGroup viewGroup = (ViewGroup) mActivity.getWindow().getDecorView();
-                    View videoView = viewGroup.findViewById(R.id.vv_course_video_video);
-                    ViewGroup.LayoutParams lp = videoView.getLayoutParams();
-                    setVideoLayout(lp.width, lp.height);
+                    if (mFocusPager != null) {
+                        int rightMargin = LiveVideoPoint.getInstance().getRightMargin();
+                        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mFocusPager.getRootView()
+                                .getLayoutParams();
+                        if (rightMargin != params.rightMargin) {
+                            params.rightMargin = rightMargin;
+                            LayoutParamsUtil.setViewLayoutParams(mFocusPager.getRootView(), params);
+                        }
+                    }
                 }
             }
         });
