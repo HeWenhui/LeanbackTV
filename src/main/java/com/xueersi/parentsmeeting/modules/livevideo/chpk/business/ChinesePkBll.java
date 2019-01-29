@@ -877,7 +877,6 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
                 break;
         }
     }
-
     private void onTopicReal(LiveTopic data, JSONObject jsonObject, boolean modeChange) {
         // 战队pk  topic 逻辑
         LiveTopic.TeamPkEntity teamPkEntity = data.getTeamPkEntity();
