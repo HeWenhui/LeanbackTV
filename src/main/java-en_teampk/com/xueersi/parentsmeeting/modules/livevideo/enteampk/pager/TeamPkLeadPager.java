@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -19,15 +18,12 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
-import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.config.EnTeamPkConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.item.TeamMemberStarItem;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
-import com.xueersi.ui.adapter.AdapterItemInterface;
-import com.xueersi.ui.adapter.CommonAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,7 +46,7 @@ public class TeamPkLeadPager extends LiveBasePager {
     private EnTeamPkRankEntity enTeamPkRankEntity;
     private RelativeLayout rlTeampkLeadBottom;
     private ProgressBar pgTeampkLead;
-    private ImageView iv_livevideo_en_teampk_lead_prog;
+    private ImageView ivTeampkLeadProg;
     private ImageView ivTeampkMine;
     private ImageView ivTeampkOther;
     private TextView tvTeampkLeadFireAddLeft;
@@ -99,7 +95,7 @@ public class TeamPkLeadPager extends LiveBasePager {
         }
         rlTeampkLeadBottom = view.findViewById(R.id.rl_livevideo_en_teampk_lead_bottom);
         pgTeampkLead = view.findViewById(R.id.pg_livevideo_en_teampk_lead);
-        iv_livevideo_en_teampk_lead_prog = view.findViewById(R.id.iv_livevideo_en_teampk_lead_prog);
+        ivTeampkLeadProg = view.findViewById(R.id.iv_livevideo_en_teampk_lead_prog);
         ivTeampkMine = view.findViewById(R.id.iv_livevideo_en_teampk_mine);
         ivTeampkOther = view.findViewById(R.id.iv_livevideo_en_teampk_other);
         tvTeampkLeadFireAddLeft = view.findViewById(R.id.tv_livevideo_en_teampk_lead_fire_add_left);
@@ -252,10 +248,18 @@ public class TeamPkLeadPager extends LiveBasePager {
             @Override
             public boolean onPreDraw() {
                 pgTeampkLead.getViewTreeObserver().removeOnPreDrawListener(this);
-                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) iv_livevideo_en_teampk_lead_prog.getLayoutParams();
-                lp.leftMargin = (int) (pgTeampkLead.getLeft() + pgTeampkLead.getWidth() * finalFprog) - iv_livevideo_en_teampk_lead_prog.getWidth() / 2;
-                iv_livevideo_en_teampk_lead_prog.setLayoutParams(lp);
-                iv_livevideo_en_teampk_lead_prog.setVisibility(View.VISIBLE);
+                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ivTeampkLeadProg.getLayoutParams();
+                int ivWidth = ivTeampkLeadProg.getWidth();
+                int leftMargin = (int) (pgTeampkLead.getLeft() + pgTeampkLead.getWidth() * finalFprog) - ivWidth / 2;
+                //为了和进度条对齐，计算火的宽度
+                float fireRatio = 88.0f / 395.0f;
+                int fireWidth = (int) (ivWidth * fireRatio);
+                //火最大和进度条右边距对齐
+                int maxLeftMargin = (pgTeampkLead.getLeft() + pgTeampkLead.getWidth() - ivWidth / 2 - fireWidth / 2);
+                logger.d("initData:leftMargin=" + leftMargin + ",maxLeftMargin=" + maxLeftMargin);
+                lp.leftMargin = Math.min(leftMargin, maxLeftMargin);
+                ivTeampkLeadProg.setLayoutParams(lp);
+                ivTeampkLeadProg.setVisibility(View.VISIBLE);
                 return false;
             }
         });
