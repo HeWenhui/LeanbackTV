@@ -31,6 +31,7 @@ import android.widget.TextView;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -965,6 +966,37 @@ public class PraiseListPager extends LiveBasePager {
      * 点赞 点击 动画
      */
     private void startClickLikeAnimation() {
+        final LottieAnimationView lottieAnimationClickLikeView = new LottieAnimationView(mContext);
+        ((ViewGroup) mView).addView(lottieAnimationClickLikeView);
+        lottieAnimationClickLikeView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        RelativeLayout.LayoutParams clickLikeParams = (RelativeLayout.LayoutParams) lottieAnimationClickLikeView.getLayoutParams();
+        clickLikeParams.rightMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 30));
+        clickLikeParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 20));
+        clickLikeParams.leftMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, -30));
+        clickLikeParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, -20));
+        lottieAnimationClickLikeView.setLayoutParams(clickLikeParams);
+        lottieAnimationClickLikeView.addAnimatorListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                ((ViewGroup) mView).removeView(lottieAnimationClickLikeView);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
+
         String bubbleResPath = LOTTIE_RES_ASSETS_ROOTDIR + "click_like/images";
         String bubbleJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "click_like/data.json";
         final LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo(bubbleResPath, bubbleJsonPath);
