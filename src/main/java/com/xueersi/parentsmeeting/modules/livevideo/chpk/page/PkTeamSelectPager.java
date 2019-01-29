@@ -148,6 +148,7 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
     private LinearLayout rl_teampk_rule;
     private ImageView ivReadyState;
     private ImageView ivFinishSelect;
+    private TimeCountDowTextView tvTimeCounter;
 
     public PkTeamSelectPager(Context context, ChinesePkBll pkBll) {
         super(context);
@@ -169,6 +170,8 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
         rl_teampk_rule = view.findViewById(R.id.rl_teampk_rule);
         ivReadyState = view.findViewById(R.id.iv_teampk_btn_ok);
         ivFinishSelect = view.findViewById(R.id.iv_teampk_finish_team_select);
+        tvTimeCounter = view.findViewById(R.id.tv_teampk_team_select_timecoutdown);
+        tvTimeCounter.setTimeSuffix("秒后进入下一步");
 
         ivReadyState.setOnClickListener(this);
         ivFinishSelect.setOnClickListener(this);
@@ -586,6 +589,8 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
                 if (soundPoolHelper != null) {
                     soundPoolHelper.playMusic(R.raw.marquee, MUSIC_VOLUME_RATIO_FRONT, false);
                 }
+
+                autoEnterNext();
             }
         };
 
@@ -629,11 +634,24 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
         return anim.getDuration();
     }
 
+    private void autoEnterNext() {
+        tvTimeCounter.setTimeDuration(10);
+        tvTimeCounter.startCountDow(10);
+        tvTimeCounter.setTimeCountDowListener(new TimeCountDowTextView.TimeCountDowListener() {
+            @Override
+            public void onFinish() {
+                tvTimeCounter.setVisibility(View.GONE);
+                upLoadStudentReady();
+            }
+        });
+    }
+
 
     /**
      * 上报学生 分队准备ok
      */
     private void upLoadStudentReady() {
+        tvTimeCounter.setVisibility(View.GONE);
         rl_teampk_rule.setVisibility(View.GONE);
         lavTeamSelectAnimView.setVisibility(View.INVISIBLE);
         lavTeamSelectAnimView.cancelAnimation();
