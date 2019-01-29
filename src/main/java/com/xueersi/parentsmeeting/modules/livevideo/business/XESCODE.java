@@ -154,14 +154,21 @@ public interface XESCODE {
     /** 退出每题pk 结果 */
     int TEAM_PK_EXIT_PK_RESULT = 235;
 
-    /** 一题多发 TODO */
+    /** 一题多发 */
     int MULTIPLE_H5_COURSEWARE = 251;
 
-    /** 开启/关闭语音弹幕 TODO */
+    /** 开启/关闭语音弹幕 */
     int XCR_ROOM_DANMU_OPEN = 260;
 
-    /** 发送语音弹幕 TODO */
+    /** 发送语音弹幕  */
     int XCR_ROOM_DANMU_SEND = 261;
+
+    /** 语文：开启/关闭语音弹幕 */
+    int XCR_ROOM_CHINESE_DANMU_OPEN = 290;
+
+    /** 语文：发送语音弹幕 */
+    int XCR_ROOM_CHINESE_DANMU_SEND = 291;
+
     /** 提醒学生标记 */
     int MARK_POINT_TIP = 800;
 
