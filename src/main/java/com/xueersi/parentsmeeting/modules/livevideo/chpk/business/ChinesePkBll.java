@@ -117,12 +117,6 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
      */
     private String mTeacherMode = LiveTopic.MODE_TRANING;
 
-    /**
-     * log埋点 nonce
-     * 主要记录 老师结束答题时下发的 nonce  作为 埋点上传log 参数
-     */
-    private String nonce;
-
     private String savedTestId = "";
     private String savedTestPlan = "";
 
@@ -243,31 +237,6 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
                 roomInitInfo.getStudentLiveInfo().getClassId()
                 , isAIPartner, callback);
 
-    }
-
-
-    /**
-     * 获取答题结果 埋点统计eventId
-     *
-     * @param h5Type
-     * @return
-     */
-    private String getLogEventId(int h5Type) {
-        String eventId;
-        switch (h5Type) {
-            case LiveRoomH5CloseEvent.H5_TYPE_EXAM:
-                eventId = "live_exam";
-                break;
-            case LiveRoomH5CloseEvent.H5_TYPE_COURSE:
-                eventId = "live_h5waretest";
-                break;
-            case LiveRoomH5CloseEvent.H5_TYPE_INTERACTION:
-                eventId = "live_h5test";
-                break;
-            default:
-                eventId = "";
-        }
-        return eventId;
     }
 
 
@@ -466,7 +435,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             return;
         }
 
-        if (data!=null){
+        if (data != null) {
             PkTeamResultPager resultPager = new PkTeamResultPager(mActivity, this);
             addPager(resultPager);
             resultPager.showCurrentResult(data);
@@ -695,11 +664,9 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRoomH5CloseEvent(final LiveRoomH5CloseEvent event) {
-        logger.e("=======>:onRoomH5CloseEvent:" + event.getId() + ":"
-                + event.getmGoldNum() + ":" + event.getmEnergyNum() + ":" + event.isCloseByTeacher());
+        logger.e("=======>:onRoomH5CloseEvent:" + event.getId() + ":" + event.getmGoldNum() + ":" + event.getmEnergyNum() + ":" + event.isCloseByTeacher());
 
         if (event.getH5Type() == LiveRoomH5CloseEvent.H5_TYPE_EXAM) {
-
             savedTestPlan = event.getId();
         } else {
             savedTestId = event.getId();
@@ -728,7 +695,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
                 rlTeamPkContent.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        getEnergyNumAndContributionStar(finalCacheEvent);
+                        getEnergyNumAndContributionStar();
                     }
                 }, 3000);
             } else {
@@ -739,7 +706,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
 
             //未展示答题结果
             if (event.isCloseByTeacher()) {
-                getEnergyNumAndContributionStar(event);
+                getEnergyNumAndContributionStar();
             } else {
                 h5CloseEvents.add(event);
             }
@@ -751,13 +718,11 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
      * 显示当前的pk 结果
      */
     public void showCurrentPkResult() {
-        logger.e("======>showCurrentPkResult: called 666669999:" + h5CloseEvents);
-        if (h5CloseEvents == null || h5CloseEvents.size() == 0) {
+        if (h5CloseEvents == null || h5CloseEvents.isEmpty()) {
             return;
         }
-        logger.e("======>showCurrentPkResult: called");
         LiveRoomH5CloseEvent cacheEvent = h5CloseEvents.remove(0);
-        getEnergyNumAndContributionStar(cacheEvent);
+        getEnergyNumAndContributionStar();
     }
 
 
@@ -796,18 +761,6 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     }
 
 
-    /**
-     * 设置 埋点统计nonce
-     */
-    public void setNonce(String nonce) {
-        this.nonce = nonce;
-    }
-
-    private String getNonce() {
-        return TextUtils.isEmpty(nonce) ? "" : nonce;
-    }
-
-
     ///////////////////////////消息通讯相关///////////////////////////////////////
     private int[] noticeCodes = {
             XESCODE.STOPQUESTION,
@@ -828,14 +781,14 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     @Override
     public void onNotice(final String sourceNick, final String target, final JSONObject data, final int type) {
         logger.e("=======>onNotice :" + type);
-        if(!isAvailable){
+        if (!isAvailable) {
             return;
         }
 
         Runnable action = new Runnable() {
             @Override
             public void run() {
-                onNoticeReal(sourceNick,target,data,type);
+                onNoticeReal(sourceNick, target, data, type);
             }
         };
 
@@ -844,14 +797,14 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
 
     @Override
     public void onTopic(final LiveTopic data, final JSONObject jsonObject, final boolean modeChange) {
-        if (!isAvailable){
+        if (!isAvailable) {
             return;
         }
 
         Runnable action = new Runnable() {
             @Override
             public void run() {
-                onTopicReal(data,jsonObject,modeChange);
+                onTopicReal(data, jsonObject, modeChange);
             }
         };
 
@@ -861,20 +814,20 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     @Override
     public void onModeChange(final String oldMode, final String mode, final boolean isPresent) {
         super.onModeChange(oldMode, mode, isPresent);
-        if (!isAvailable){
+        if (!isAvailable) {
             return;
         }
 
         Runnable action = new Runnable() {
             @Override
             public void run() {
-                onModeChangeReal(oldMode,mode,isPresent);
+                onModeChangeReal(oldMode, mode, isPresent);
             }
         };
         rlTeamPkContent.post(action);
     }
 
-    private void onNoticeReal(String sourceNick, String target, JSONObject data, int type){
+    private void onNoticeReal(String sourceNick, String target, JSONObject data, int type) {
         String nonce = "";
         String open = "";
 
@@ -883,7 +836,6 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             case XESCODE.EXAM_STOP:
             case XESCODE.ENGLISH_H5_COURSEWARE:
             case XESCODE.MULTIPLE_H5_COURSEWARE:
-                setNonce(data.optString("nonce", ""));
                 showCurrentPkResult();
                 break;
 
@@ -926,11 +878,11 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
         }
     }
 
-    private void onTopicReal(LiveTopic data, JSONObject jsonObject, boolean modeChange){
+    private void onTopicReal(LiveTopic data, JSONObject jsonObject, boolean modeChange) {
         // 战队pk  topic 逻辑
         LiveTopic.TeamPkEntity teamPkEntity = data.getTeamPkEntity();
 
-        if (teamPkEntity ==null){
+        if (teamPkEntity == null) {
             return;
         }
 
@@ -977,7 +929,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
         setTopicHandled(true);
     }
 
-    private void onModeChangeReal(String oldMode, String mode, boolean isPresent){
+    private void onModeChangeReal(String oldMode, String mode, boolean isPresent) {
         if (mFocusPager != null && mFocusPager instanceof PkTeamSelectPager) {
             ((PkTeamSelectPager) mFocusPager).closeTeamSelectPager();
         }
@@ -1112,9 +1064,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
      *
      * @param event
      */
-    private void getEnergyNumAndContributionStar(LiveRoomH5CloseEvent event) {
-
-        final String eventId = getLogEventId(event.getH5Type());
+    private void getEnergyNumAndContributionStar() {
 
         if (LiveVideoConfig.isNewEnglishH5) {
 

@@ -16,8 +16,21 @@ import org.greenrobot.eventbus.EventBus;
 public abstract class BaseLiveQuestionPager extends LiveBasePager {
     protected PutQuestion putQuestion;
 
+    protected boolean isPostEvent;
+
     public BaseLiveQuestionPager(Context context) {
         super(context);
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        if (!isPostEvent){
+            String testId = baseVideoQuestionEntity.getvQuestionID();
+            LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(-1, -1, LiveRoomH5CloseEvent.H5_TYPE_INTERACTION, testId);
+            event.setCloseByTeahcer(true);
+            EventBus.getDefault().post(event);
+        }
     }
 
     public void onSubSuccess(View popupWindow_view, final String testId, final VideoResultEntity entity) {
@@ -38,6 +51,7 @@ public abstract class BaseLiveQuestionPager extends LiveBasePager {
                     public void onViewDetachedFromWindow(View view) {
                         LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(entity.getGoldNum(), entity.getEnergy(), LiveRoomH5CloseEvent.H5_TYPE_INTERACTION, testId);
                         EventBus.getDefault().post(event);
+                        isPostEvent = true;
                     }
                 });
             }
@@ -68,6 +82,7 @@ public abstract class BaseLiveQuestionPager extends LiveBasePager {
                     public void onViewDetachedFromWindow(View view) {
                         LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(entity.getGoldNum(), entity.getEnergy(), LiveRoomH5CloseEvent.H5_TYPE_INTERACTION, testId);
                         EventBus.getDefault().post(event);
+                        isPostEvent = true;
                     }
                 });
             }

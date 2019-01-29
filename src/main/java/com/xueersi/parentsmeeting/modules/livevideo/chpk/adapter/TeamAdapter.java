@@ -38,8 +38,8 @@ public class TeamAdapter extends RecyclerView.Adapter<TeamHolder> {
     @Override
     public int getItemCount() {
         int itemCount = 0;
-        if (teamInfo != null && teamInfo.getTeamMembers() != null) {
-            itemCount = teamInfo.getTeamMembers().size();
+        if (teamInfo != null && teamInfo.getTeamLogoList() != null) {
+            itemCount = teamInfo.getTeamLogoList().size();
         }
 
         return itemCount;

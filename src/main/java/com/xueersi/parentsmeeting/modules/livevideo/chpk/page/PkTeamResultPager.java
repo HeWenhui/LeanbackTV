@@ -15,6 +15,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.AudioManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +35,8 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.chpk.adapter.TeamStarAdapter;
+import com.xueersi.parentsmeeting.modules.livevideo.chpk.adapter.TeamStarHolder;
 import com.xueersi.parentsmeeting.modules.livevideo.chpk.business.ChinesePkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentPkResultEntity;
@@ -114,9 +117,9 @@ public class PkTeamResultPager extends BasePager {
      */
     private static final int CURRENT_PK_RESULT_AUTO_CLOSE_DRUATION = 10;
     private StudentPkResultEntity mFinalPkResult;
-    private PkResultAdapter pkResultAdapter;
+    private TeamStarAdapter pkResultAdapter;
     private List<TeamEnergyAndContributionStarEntity.ContributionStar> mContributions;
-    private ContributionLayoutManager mLayoutManager;
+    private GridLayoutManager mLayoutManager;
     private SoundPoolHelper soundPoolHelper;
 
 
@@ -194,9 +197,9 @@ public class PkTeamResultPager extends BasePager {
     }
 
     private void initRecycleView() {
-        mContributions = new ArrayList<TeamEnergyAndContributionStarEntity.ContributionStar>();
         //一行显示item 个数
         int spanCount = 5;
+
         // 多屏幕 适配
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rclContributionRank.getLayoutParams();
         if(mTeamPkBll != null && mTeamPkBll.isHalfBodyLiveRoom()){
@@ -204,14 +207,14 @@ public class PkTeamResultPager extends BasePager {
         }else{
             params.rightMargin = (int) (mView.getMeasuredWidth() * CONTRIBUTION_VIEW_RIGHTMARGIN);
         }
+
         rclContributionRank.setLayoutParams(params);
-        mLayoutManager = new ContributionLayoutManager(spanCount);
-        int itemWidth = rclContributionRank.getMeasuredWidth() / spanCount;
-        mLayoutManager.setItemWidth(itemWidth);
-        logger.e("======>initRecycleView:" + itemWidth);
+        mLayoutManager = new GridLayoutManager(mContext,spanCount);
+
         rclContributionRank.setLayoutManager(mLayoutManager);
-        pkResultAdapter = new PkResultAdapter(mContributions, itemWidth);
+        pkResultAdapter = new TeamStarAdapter(mContributions);
         rclContributionRank.setAdapter(pkResultAdapter);
+
     }
 
 
@@ -277,10 +280,13 @@ public class PkTeamResultPager extends BasePager {
         rlLottieRootView.setVisibility(View.GONE);
         //显示贡献之星
         if (data.getContributionStarList() != null) {
-            initRecycleView();
+            if (mContributions==null){
+                mContributions = new ArrayList<TeamEnergyAndContributionStarEntity.ContributionStar>();
+            }
             mContributions.clear();
             mContributions.addAll(data.getContributionStarList());
-            pkResultAdapter.notifyDataSetChanged();
+            initRecycleView();
+
             StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext, StudyReportAction.class);
 
             if (studyReportAction != null && data.isMe()) {
@@ -313,6 +319,7 @@ public class PkTeamResultPager extends BasePager {
             ivOtherTeamState.setImageResource(R.drawable.livevideo_alertview_pingshou_img_disable);
             ivMyteamState.setImageResource(R.drawable.livevideo_alertview_pingshou_img_disable);
         }
+
         ImageLoader.with(BaseApplication.getContext()).load(data.getMyTeamEngerInfo().getTeacherImg()).asBitmap
                 (new SingleConfig.BitmapListener() {
                     @Override
@@ -402,77 +409,6 @@ public class PkTeamResultPager extends BasePager {
         tvOtherTeamEnergy.setText(otherTeamEnergy + "");
         int addEnergy = (int) data.getMyTeamEngerInfo().getAddEnergy();
         startAddEnergyEffect(addEnergy);
-    }
-
-
-    static class ItemHolder extends RecyclerView.ViewHolder {
-        ImageView ivHead;
-        TextView tvName;
-        TextView tvEnergy;
-
-        public ItemHolder(View itemView) {
-            super(itemView);
-            ivHead = itemView.findViewById(R.id.iv_teampk_pkresult_student_head);
-            tvName = itemView.findViewById(R.id.tv_teampk_pkresult_contribution_name);
-            tvEnergy = itemView.findViewById(R.id.tv_teampk_student_add_energy);
-        }
-
-        public void bindData(TeamEnergyAndContributionStarEntity.ContributionStar data) {
-            ImageLoader.with(BaseApplication.getContext()).load(data.getAvaterPath()).asBitmap(new SingleConfig.BitmapListener
-                    () {
-                @Override
-                public void onSuccess(Drawable drawable) {
-                    Bitmap headBitmap = null;
-                    if (drawable instanceof BitmapDrawable) {
-                        headBitmap = ((BitmapDrawable) drawable).getBitmap();
-                    } else if (drawable instanceof GifDrawable) {
-                        headBitmap = ((GifDrawable) drawable).getFirstFrame();
-                    }
-                    if (headBitmap != null) {
-                        Bitmap resultBitmap = scaleBitmap(headBitmap, Math.min(headBitmap.getWidth(), headBitmap
-                                .getHeight()) / 2);
-                        ivHead.setImageBitmap(resultBitmap);
-                    }
-                }
-
-                @Override
-                public void onFail() {
-                }
-            });
-            tvName.setText(data.getRealname());
-            tvEnergy.setText("+" + data.getEnergy());
-        }
-    }
-
-    static class PkResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
-        List<TeamEnergyAndContributionStarEntity.ContributionStar> mData;
-        int itemWidth;
-
-        PkResultAdapter(List<TeamEnergyAndContributionStarEntity.ContributionStar> data, int itemWidth) {
-            mData = data;
-            this.itemWidth = itemWidth;
-        }
-
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-            return new ItemHolder(LayoutInflater.from(parent.getContext()).
-                    inflate(R.layout.item_teampk_contribution, parent, false));
-        }
-
-        @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
-            layoutParams.width = itemWidth;
-            holder.itemView.setLayoutParams(layoutParams);
-            ((ItemHolder) holder).bindData(mData.get(position));
-        }
-
-        @Override
-        public int getItemCount() {
-            return mData == null ? 0 : mData.size();
-        }
     }
 
 
@@ -790,22 +726,7 @@ public class PkTeamResultPager extends BasePager {
         lottieAnimationView.addAnimatorListener(new PkAnimListener(ANIM_TYPE_PK_REUSLT, pkResult));
     }
 
-    public static Bitmap scaleBitmap(Bitmap input, int radius) {
 
-        Bitmap result = Bitmap.createBitmap(radius * 2, radius * 2, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(result);
-
-        Rect src = new Rect(0, 0, input.getWidth(), input.getHeight());
-        Rect dst = new Rect(0, 0, radius * 2, radius * 2);
-
-        Path path = new Path();
-        path.addCircle(radius, radius, radius, Path.Direction.CCW);
-        canvas.clipPath(path);
-        Paint paint = new Paint();
-        paint.setFlags(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
-        canvas.drawBitmap(input, src, dst, paint);
-        return result;
-    }
 
 
     private void startTimeCountDow(int duration) {
@@ -917,6 +838,23 @@ public class PkTeamResultPager extends BasePager {
     @Override
     public void initData() {
         logger.e("======> initData called");
+    }
+
+    public static Bitmap scaleBitmap(Bitmap input, int radius) {
+
+        Bitmap result = Bitmap.createBitmap(radius * 2, radius * 2, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(result);
+
+        Rect src = new Rect(0, 0, input.getWidth(), input.getHeight());
+        Rect dst = new Rect(0, 0, radius * 2, radius * 2);
+
+        Path path = new Path();
+        path.addCircle(radius, radius, radius, Path.Direction.CCW);
+        canvas.clipPath(path);
+        Paint paint = new Paint();
+        paint.setFlags(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+        canvas.drawBitmap(input, src, dst, paint);
+        return result;
     }
 }
 
