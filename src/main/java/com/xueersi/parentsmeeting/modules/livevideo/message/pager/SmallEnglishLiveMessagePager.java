@@ -327,8 +327,8 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         logger.i("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
         ImageView iv_livevideo_message_small_bg = mView.findViewById(R.id.iv_livevideo_message_small_bg);
         RelativeLayout.LayoutParams bgParams = (RelativeLayout.LayoutParams) iv_livevideo_message_small_bg.getLayoutParams();
-        bgParams.width = liveVideoPoint.x4 - liveVideoPoint.x3;
-        bgParams.height = bgParams.width / 251 * 258;
+        bgParams.width = liveVideoPoint.x4 - liveVideoPoint.x3 + 2;
+        bgParams.height = bgParams.width * 258 / 501;
         iv_livevideo_message_small_bg.setLayoutParams(bgParams);
         decorView = (ViewGroup) ((Activity) mContext).getWindow().getDecorView();
 

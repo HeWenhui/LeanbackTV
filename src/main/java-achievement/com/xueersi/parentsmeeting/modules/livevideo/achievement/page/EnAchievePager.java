@@ -49,7 +49,6 @@ public class EnAchievePager extends LiveBasePager {
     private ViewGroup pkEmptyView;
     private ProgressBar pgAchivePk;
     private FrameLayout flProgress;
-    private int progressWidth;
     //    private ImageView progressImageView;
     private Activity activity;
     private TextView tvAchiveNumStar;
@@ -344,12 +343,10 @@ public class EnAchievePager extends LiveBasePager {
                 flProgress = new FrameLayout(activity);
                 flProgress.setVisibility(View.INVISIBLE);
                 ImageView progressImageView = new ImageView(activity);
-                BitmapDrawable bitmapDrawable = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.app_livevideo_enteampk_pkbar_fire_pic_prog);
-                progressImageView.setImageDrawable(bitmapDrawable);
+                progressImageView.setImageResource(R.drawable.app_livevideo_enteampk_pkbar_fire_pic_prog);
 //                flProgress.setVisibility(View.INVISIBLE);
-                progressWidth = (int) (bitmapDrawable.getIntrinsicWidth() * ScreenUtils.getScreenDensity() / 3);
-                logger.d("setEngPro:getIntrinsicWidth=" + bitmapDrawable.getIntrinsicWidth() + ",width=" + progressWidth);
-                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(progressWidth, progressWidth);
+                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+//                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(progressWidth, progressWidth);
                 layoutParams.gravity = Gravity.CENTER;
                 flProgress.addView(progressImageView, layoutParams);
 //                flProgress.addView(progressImageView);
@@ -374,7 +371,7 @@ public class EnAchievePager extends LiveBasePager {
         int[] loc = ViewUtil.getLoc(pgAchivePk, rl_livevideo_info);
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) flProgress.getLayoutParams();
         lp.leftMargin = loc[0] - flProgress.getWidth() / 2 + pgAchivePk.getWidth() * pgAchivePk.getProgress() / pgAchivePk.getMax();
-        lp.topMargin = loc[1] - (flProgress.getHeight() - pgAchivePk.getHeight()) / 2 - 10;
+        lp.topMargin = loc[1] - (flProgress.getHeight() - pgAchivePk.getHeight()) / 2;
         logger.d("initListener:left=" + loc[0] + ",top=" + loc[1]);
         flProgress.setLayoutParams(lp);
         flProgress.setVisibility(View.VISIBLE);
