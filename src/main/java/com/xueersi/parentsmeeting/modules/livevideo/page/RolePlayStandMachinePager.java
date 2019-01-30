@@ -426,12 +426,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
         if(speechEvalAction != null){
             speechEvalAction.stopSpeech(RolePlayStandMachinePager.this, getBaseVideoQuestionEntity(), getId());
         }
-        new Thread() {
-            @Override
-            public void run() {
-                AudioPlayer.releaseAudioPlayer(mContext);
-            }
-        }.start();
+
         return super.onUserBackPressed();
     }
 
