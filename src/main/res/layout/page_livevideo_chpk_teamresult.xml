@@ -9,6 +9,13 @@
         android:scaleType="centerCrop"
         android:src="@drawable/livevideo_chpk_background" />
 
+    <ImageView
+        android:id="@id/iv_teampk_bgmask"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/COLOR_99000000" />
+
+
     <RelativeLayout
         android:id="@id/rl_teampk_pk_result_lottie_root"
         android:layout_width="match_parent"

@@ -108,10 +108,7 @@ public class PkTeamResultPager extends BasePager {
      */
     private static final float SOUND_VOLUME_FRONT = 0.6f;
     private TimeCountDowTextView timeCountDowTextView;
-    /**
-     * pk 对手 展示时间
-     */
-    private static final int TIME_DELAY_AUTO_CLOSE = 8;
+
     /**
      * 每题pk 结果页显示时长
      */
@@ -561,7 +558,7 @@ public class PkTeamResultPager extends BasePager {
         lottieAnimationView.addAnimatorListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                startTimeCountDow(TIME_DELAY_AUTO_CLOSE);
+                startTimeCountDow(10);
             }
         });
 
@@ -725,9 +722,6 @@ public class PkTeamResultPager extends BasePager {
         }
         lottieAnimationView.addAnimatorListener(new PkAnimListener(ANIM_TYPE_PK_REUSLT, pkResult));
     }
-
-
-
 
     private void startTimeCountDow(int duration) {
         timeCountDowTextView.setTimeDuration(duration);

@@ -329,8 +329,6 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
     }
 
     private void showTimeCutdown() {
-        logger.e("===>show time cut down");
-        ivBgMask.setVisibility(View.GONE);
         String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "time_cutdown/images";
         String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "time_cutdown/data.json";
         lavTeamSelectAnimView.cancelAnimation();
@@ -468,6 +466,10 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
             playBgMusic();
         }
 
+        if (ivBgMask.getVisibility() != View.VISIBLE){
+            ivBgMask.setVisibility(View.VISIBLE);
+        }
+
         final String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "team_selected/images";
         String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "team_selected/data.json";
         final TeamSelectLottieEffectInfo effectInfo = new TeamSelectLottieEffectInfo(lottieResPath, lottieJsonPath, "img_0.png");
@@ -512,12 +514,12 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
     private void showTeamIntroduce(LottieAnimationView bgAnimView) {
         // step 1  显示 背景黑色遮罩动画
 
-        if (ivBgMask.getVisibility() != View.VISIBLE) {
-            ivBgMask.setVisibility(View.VISIBLE);
-            AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(mContext, R.anim.anim_livevido_teampk_bg_mask);
-            alphaAnimation.setFillAfter(true);
-            ivBgMask.startAnimation(alphaAnimation);
-        }
+//        if (ivBgMask.getVisibility() != View.VISIBLE) {
+//            ivBgMask.setVisibility(View.VISIBLE);
+//            AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(mContext, R.anim.anim_livevido_teampk_bg_mask);
+//            alphaAnimation.setFillAfter(true);
+//            ivBgMask.startAnimation(alphaAnimation);
+//        }
 
         frTeamIntrocude.setVisibility(View.VISIBLE);
         rl_teampk_rule.setVisibility(View.GONE);
