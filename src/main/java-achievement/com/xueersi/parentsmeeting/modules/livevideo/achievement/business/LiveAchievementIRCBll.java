@@ -29,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.business.EnPkTeam;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
@@ -96,8 +97,9 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                         mHandler.post(new Runnable() {
                             @Override
                             public void run() {
-                                if (starAction != null) {
-                                    starAction.onEnglishPk();
+                                if (starAction instanceof EnPkInteractAction) {
+                                    EnPkInteractAction enPkInteractAction = (EnPkInteractAction) starAction;
+                                    enPkInteractAction.onEnglishPk();
                                 }
                             }
                         });
@@ -136,6 +138,15 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                             });
                         }
                     }, 500);
+                }
+
+                @Override
+                public void updateEnpk(EnTeamPkRankEntity enTeamPkRankEntity) {
+                    logger.d("updateEnpk");
+                    if (starAction instanceof EnPkInteractAction) {
+                        EnPkInteractAction enPkInteractAction = (EnPkInteractAction) starAction;
+                        enPkInteractAction.updateEnpk(enTeamPkRankEntity);
+                    }
                 }
             });
             AppInfoEntity appInfoEntity = AppBll.getInstance().getAppInfoEntity();
@@ -697,14 +708,18 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     }
                     break;
                 }
+                case XESCODE.STOPQUESTION: {
+                    updateAchievement("STOPQUESTION");
+                }
+                break;
                 case XESCODE.ARTS_H5_COURSEWARE:
                     String status = object.optString("status", "off");
                     if ("off".equals(status)) {
-                        updateAchievement();
+                        updateAchievement("ARTS_H5_COURSEWARE");
                     }
                     break;
                 case XESCODE.ARTS_STOP_QUESTION: {
-                    updateAchievement();
+                    updateAchievement("ARTS_STOP_QUESTION");
                     break;
                 }
                 default:
@@ -715,7 +730,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         }
     }
 
-    private void updateAchievement() {
+    private void updateAchievement(String method) {
+        logger.d("updateAchievement:method=" + method);
         final long before = System.currentTimeMillis();
         postDelayedIfNotFinish(new Runnable() {
             @Override

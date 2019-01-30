@@ -81,8 +81,4 @@ public class LiveAchievementEngStandBll implements StarInteractAction {
         }
     }
 
-    @Override
-    public void onEnglishPk() {
-
-    }
 }

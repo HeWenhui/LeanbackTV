@@ -9,6 +9,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -28,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -566,6 +568,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                                         }
                                     }
                                     enTeamPkRankEntity.setMyTeam(pkTeamEntity.getMyTeam());
+                                    updateEnpk(enTeamPkRankEntity);
                                     if (enTeamPkAction != null) {
                                         enTeamPkAction.onRankLead(enTeamPkRankEntity, testId, TeamPkLeadPager.TEAM_TYPE_1);
                                     }
@@ -639,6 +642,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                                         }
                                     }
                                     enTeamPkRankEntity.setMyTeam(pkTeamEntity.getMyTeam());
+                                    updateEnpk(enTeamPkRankEntity);
                                     if (enTeamPkAction != null) {
                                         enTeamPkAction.onRankLead(enTeamPkRankEntity, testId, TeamPkLeadPager.TEAM_TYPE_1);
                                     }
@@ -666,6 +670,13 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             runnable.run();
         } else {
             stopRunnable = runnable;
+        }
+    }
+
+    private void updateEnpk(EnTeamPkRankEntity enTeamPkRankEntity) {
+        UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class);
+        if (updateAchievement != null) {
+            updateAchievement.updateEnpk(enTeamPkRankEntity);
         }
     }
 

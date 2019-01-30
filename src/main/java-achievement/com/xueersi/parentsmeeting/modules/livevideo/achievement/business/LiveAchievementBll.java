@@ -989,11 +989,6 @@ public class LiveAchievementBll implements StarInteractAction {
     interface OnAnimationEnd {
         void onEnd();
     }
-
-    @Override
-    public void onEnglishPk() {
-
-    }
 }
 
 //        AllAnimation() {

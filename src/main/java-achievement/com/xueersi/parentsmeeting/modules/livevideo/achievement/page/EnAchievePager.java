@@ -29,6 +29,7 @@ import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
@@ -145,6 +146,23 @@ public class EnAchievePager extends LiveBasePager {
         tv_livevideo_en_achive_pk_energy_my.setText("" + enpkEnergy.myTeam);
         tv_livevideo_en_achive_pk_energy_other = pkView.findViewById(R.id.tv_livevideo_en_achive_pk_energy_other);
         tv_livevideo_en_achive_pk_energy_other.setText("" + enpkEnergy.opTeam);
+    }
+
+    public void updateEnpk(EnTeamPkRankEntity enTeamPkRankEntity) {
+        //本场成就设置进度
+        int myTeamTotal = enTeamPkRankEntity.getMyTeamTotal();
+        if (tv_livevideo_en_achive_pk_energy_my != null) {
+            tv_livevideo_en_achive_pk_energy_my.setText("" + myTeamTotal);
+        }
+        int opTeamTotal = enTeamPkRankEntity.getOpTeamTotal();
+        if (tv_livevideo_en_achive_pk_energy_other != null) {
+            tv_livevideo_en_achive_pk_energy_other.setText("" + opTeamTotal);
+        }
+        if (myTeamTotal + opTeamTotal != 0) {
+            int progress = (int) ((float) myTeamTotal * 100 / (float) (myTeamTotal + opTeamTotal));
+            logger.d("updateEnpk:progress=" + progress + "," + pgAchivePk.getProgress());
+            setEngPro(progress);
+        }
     }
 
     @Override

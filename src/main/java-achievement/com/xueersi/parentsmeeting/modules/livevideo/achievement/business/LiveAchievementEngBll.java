@@ -11,6 +11,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.page.EnAchievePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.StartInteractLog;
@@ -23,7 +24,7 @@ import java.util.ArrayList;
  * Created by linyuqiang on 2018/11/6.
  * 小英本场成就
  */
-public class LiveAchievementEngBll implements StarInteractAction {
+public class LiveAchievementEngBll implements StarInteractAction, EnPkInteractAction {
     private String TAG = "LiveAchievementEngBll";
     protected Logger logger = LiveLoggerFactory.getLogger(this.getClass().getSimpleName());
     private LiveGetInfo mLiveGetInfo;
@@ -161,6 +162,13 @@ public class LiveAchievementEngBll implements StarInteractAction {
     public void onEnglishPk() {
         if (enAchievePager != null) {
             enAchievePager.onEnglishPk();
+        }
+    }
+
+    @Override
+    public void updateEnpk(EnTeamPkRankEntity enTeamPkRankEntity) {
+        if (enAchievePager != null) {
+            enAchievePager.updateEnpk(enTeamPkRankEntity);
         }
     }
 }

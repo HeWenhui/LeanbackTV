@@ -405,11 +405,6 @@ public class LiveStandAchievementBll implements StarInteractAction {
     }
 
     @Override
-    public void onEnglishPk() {
-
-    }
-
-    @Override
     public void onStarAdd(int star, float x, float y) {
         Point startPoint = new Point(x, y);
         starCount += star;

@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.achievement.business;
 
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 
 import java.util.ArrayList;
@@ -19,6 +20,4 @@ public interface StarInteractAction {
     void onGetStar(StarAndGoldEntity starAndGoldEntity);
 
     void onStarAdd(int star, float x, float y);
-
-    void onEnglishPk();
 }
