@@ -401,7 +401,6 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
 
         PkDispatchTeamPager selectingPager = new PkDispatchTeamPager(mActivity, ChinesePkBll.this);
         addPager(selectingPager);
-
     }
 
     public void showPkSelectStart(final TeamPkAdversaryEntity data) {
