@@ -62,14 +62,22 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:visibility="gone">
+        android:visibility="visible">
 
+        <ImageView
+            android:id="@id/iv_teampk_pk_state"
+            android:layout_width="216dp"
+            android:layout_height="39dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/live_teampk_state_lead"
+            />
         <RelativeLayout
             android:id="@id/rl_teampk_pk_result"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="18dp">
+            android:layout_below="@id/iv_teampk_pk_state"
+            android:layout_marginTop="-6dp"
+            android:layout_centerHorizontal="true">
 
             <LinearLayout
                 android:id="@id/ll_teampk_pkresult_myteam"
@@ -78,24 +86,17 @@
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
-                <ImageView
-                    android:id="@id/iv_teampk_pkresult_myteam_state"
-                    android:layout_width="76dp"
-                    android:layout_height="23dp"
-                    android:src="@drawable/livevideo_list_lead_img_disable" />
-
                 <RelativeLayout
-                    android:layout_width="160dp"
-                    android:layout_height="214dp"
-                    android:layout_marginTop="-10dp"
-                    android:background="@drawable/livevideo_list_yellow_img_disable">
+                    android:layout_width="187dp"
+                    android:layout_height="253dp"
+                    android:background="@drawable/live_tempk_myteam_bg">
 
                     <ImageView
                         android:id="@id/iv_teampk_pkresult_myteam_logo"
                         android:layout_width="70dp"
                         android:layout_height="79dp"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="28dp"
+                        android:layout_marginTop="48dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/live_video_teampk_team_logo" />
 
@@ -151,10 +152,9 @@
                 android:id="@id/ll_teampk_pkresult_vs"
                 android:layout_width="58dp"
                 android:layout_height="41dp"
-                android:layout_alignBottom="@id/ll_teampk_pkresult_myteam"
-                android:layout_marginBottom="25dp"
+                android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/ll_teampk_pkresult_myteam"
-                android:src="@drawable/livevideo_list_vs_img_disable" />
+                android:src="@drawable/live_teampk_vs_icon" />
 
             <LinearLayout
                 android:id="@id/ll_teampk_pkresult_othreteam"
@@ -164,24 +164,17 @@
                 android:gravity="center_horizontal"
                 android:orientation="vertical">
 
-                <ImageView
-                    android:id="@id/iv_teampk_pkresult_otherteam_state"
-                    android:layout_width="76dp"
-                    android:layout_height="23dp"
-                    android:src="@drawable/livevideo_list_catchup_img_disable" />
-
                 <RelativeLayout
-                    android:layout_width="160dp"
-                    android:layout_height="214dp"
-                    android:layout_marginTop="-10dp"
-                    android:background="@drawable/livevideo_list_blue_img_disable">
+                    android:layout_width="187dp"
+                    android:layout_height="253dp"
+                    android:background="@drawable/live_teampk_otherteam_bg">
 
                     <ImageView
                         android:id="@id/iv_teampk_pkresult_otherteam_logo"
                         android:layout_width="70dp"
                         android:layout_height="79dp"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="28dp"
+                        android:layout_marginTop="48dp"
                         android:scaleType="centerCrop"
                         android:src="@drawable/live_video_teampk_team_logo" />
 
@@ -248,7 +241,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:text="3896"
                 android:textColor="@color/white"
                 android:textSize="20sp" />
 
@@ -258,7 +250,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="20dp"
-                android:text="1461"
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -290,35 +281,16 @@
             <!--   app:sliderHeaderBg="@drawable/livevideo_slider_bg" -->
         </RelativeLayout>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@id/rcl_teampk_pkresult_contribution_rank"
-            android:layout_width="match_parent"
-            android:layout_height="65dp"
-            android:layout_alignLeft="@id/rl_teampk_pkresult_bottom_pb_container"
-            android:layout_below="@id/rl_teampk_pkresult_bottom_pb_container"
-            android:layout_marginRight="23dp"
-            android:overScrollMode="never"
-            android:scrollbars="none" />
-
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="45dp"
-            android:layout_alignTop="@id/rcl_teampk_pkresult_contribution_rank"
-            android:layout_marginTop="15dp"
-            android:layout_toLeftOf="@id/rcl_teampk_pkresult_contribution_rank"
-            android:scaleType="centerCrop"
-            android:src="@drawable/livevideo_list_contribution_img_disable" />
 
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/rl_teampk_close_btn_container"
         android:layout_width="wrap_content"
         android:layout_height="37dp"
         android:layout_marginRight="13dp"
         android:layout_marginTop="11dp"
-        android:id="@+id/rl_teampk_close_btn_container"
-        android:visibility="gone"
-        >
+        android:visibility="gone">
 
         <ImageView
             android:id="@id/iv_teampk_close_btn"

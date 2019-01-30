@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.teampk.business;
 import android.app.Activity;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -233,6 +234,16 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
     public void showOpenBoxScene(boolean isWin) {
         showAwardGetScene(CHEST_TYPE_STUDENT, null, isWin);
     }
+
+
+    /**
+     * 显示贡献之星页面
+     * @param data
+     */
+    public void showContributionPage(TeamEnergyAndContributionStarEntity data){
+        Log.e("TeamPkBll","=======>showContributionPage");
+    }
+
 
     public boolean isWin() {
         return isWin;

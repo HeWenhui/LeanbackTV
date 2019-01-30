@@ -79,8 +79,8 @@ public class TeamPkResultPager extends BasePager {
      * pk 结果 信息 根节点
      */
     private RelativeLayout rlResultRootView;
-    private ImageView ivMyteamState;
-    private ImageView ivOtherTeamState;
+    //private ImageView ivMyteamState;
+    //private ImageView ivOtherTeamState;
     private ImageView ivMyTeamLogo;
     private ImageView ivOtherTeamLogo;
     private ImageView ivMyTeacherHead;
@@ -93,7 +93,6 @@ public class TeamPkResultPager extends BasePager {
     private SmoothAddNumTextView tvOtherTeamEnergy;
     private TextView tvAddEnergy;
     private TeamPkProgressBar tpbEnergyBar;
-    private RecyclerView rclContributionRank;
 
     /**
      * 背景音效大小
@@ -113,8 +112,6 @@ public class TeamPkResultPager extends BasePager {
      */
     private static final int CURRENT_PK_RESULT_AUTO_CLOSE_DRUATION = 10;
     private StudentPkResultEntity mFinalPkResult;
-    private PkResultAdapter pkResultAdapter;
-    private List<TeamEnergyAndContributionStarEntity.ContributionStar> mContributions;
     private ContributionLayoutManager mLayoutManager;
     private SoundPoolHelper soundPoolHelper;
 
@@ -142,6 +139,7 @@ public class TeamPkResultPager extends BasePager {
     private static final float CONTRIBUTION_VIEW_RIGHTMARGIN_HALFBODY =0.15f;
     private RelativeLayout rlCloseBtnCotainer;
     private ImageView ivCloseBtn;
+    private ImageView ivPkState;
 
 
     public TeamPkResultPager(Context context, TeamPkBll pkBll) {
@@ -158,11 +156,9 @@ public class TeamPkResultPager extends BasePager {
         tpbFinalProgress = view.findViewById(R.id.tpb_teampk_pkresult_pbbar_final);
         tpbFinalProgress.setMaxProgress(100);
         rlFinalPbBarContainer = view.findViewById(R.id.rl_teampk_pkresult_final_pbbar_container);
-
+        ivPkState = view.findViewById(R.id.iv_teampk_pk_state);
 
         rlResultRootView = view.findViewById(R.id.rl_teampk_pkresult_root);
-        ivMyteamState = view.findViewById(R.id.iv_teampk_pkresult_myteam_state);
-        ivOtherTeamState = view.findViewById(R.id.iv_teampk_pkresult_otherteam_state);
         ivMyTeamLogo = view.findViewById(R.id.iv_teampk_pkresult_myteam_logo);
         ivOtherTeamLogo = view.findViewById(R.id.iv_teampk_pkresult_otherteam_logo);
 
@@ -191,7 +187,6 @@ public class TeamPkResultPager extends BasePager {
             }
         });
         timeCountDowTextView = view.findViewById(R.id.tv_teampk_pkresult_time_countdow);
-        rclContributionRank = view.findViewById(R.id.rcl_teampk_pkresult_contribution_rank);
         return view;
     }
 
@@ -203,29 +198,6 @@ public class TeamPkResultPager extends BasePager {
         tvAddEnergy.startAnimation(animation);
         tvMyTeamEnergy.smoothAddNum(increment);
     }
-
-
-    private void initRecycleView() {
-
-        int spanCount = 5;
-        // 多屏幕 适配
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rclContributionRank.getLayoutParams();
-        if(mTeamPkBll != null && mTeamPkBll.isHalfBodyLiveRoom()){
-            params.rightMargin = (int) (mView.getMeasuredWidth() * CONTRIBUTION_VIEW_RIGHTMARGIN_HALFBODY);
-        }else{
-            params.rightMargin = (int) (mView.getMeasuredWidth() * CONTRIBUTION_VIEW_RIGHTMARGIN);
-        }
-        rclContributionRank.setLayoutParams(params);
-        mLayoutManager = new ContributionLayoutManager(spanCount);
-        int itemWidth = rclContributionRank.getMeasuredWidth() / spanCount;
-        mLayoutManager.setItemWidth(itemWidth);
-        logger.e("======>initRecycleView:" + itemWidth);
-        rclContributionRank.setLayoutManager(mLayoutManager);
-        pkResultAdapter = new PkResultAdapter(mContributions, itemWidth);
-        rclContributionRank.setAdapter(pkResultAdapter);
-
-    }
-
 
     /**
      * 显示当场次答题 最终pk 结果
@@ -291,30 +263,17 @@ public class TeamPkResultPager extends BasePager {
         if (data != null) {
             rlResultRootView.setVisibility(View.VISIBLE);
             rlLottieRootView.setVisibility(View.GONE);
-            //显示贡献之星
+
             if (data.getContributionStarList() != null) {
                 mView.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if (mContributions == null) {
-                            mContributions = data.getContributionStarList();
-                        } else {
-                            mContributions.clear();
-                            mContributions.addAll(data.getContributionStarList());
+                        StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext,
+                                StudyReportAction.class);
+                        if (studyReportAction != null && data.isMe()) {
+                            studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT, mView,
+                                    false, false);
                         }
-                        initRecycleView();
-                        pkResultAdapter.notifyDataSetChanged();
-                        mView.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext,
-                                        StudyReportAction.class);
-                                if (studyReportAction != null && data.isMe()) {
-                                    studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT, mView,
-                                            false, false);
-                                }
-                            }
-                        }, 200);
                     }
                 }, 200);
             }
@@ -332,18 +291,14 @@ public class TeamPkResultPager extends BasePager {
             // 初始战队信息
             long myTeamTotalEnergy = data.getMyTeamEngerInfo().getTotalEnergy();
             long otherTeamTotalEnergy = data.getCompetitorEngerInfo().getTotalEnergy();
-            ivMyteamState.setVisibility(View.VISIBLE);
-            ivOtherTeamState.setVisibility(View.VISIBLE);
             if (myTeamTotalEnergy > otherTeamTotalEnergy) {
-                ivMyteamState.setImageResource(R.drawable.livevideo_list_lead_img_disable);
-                ivOtherTeamState.setImageResource(R.drawable.livevideo_list_catchup_img_disable);
+                ivPkState.setImageResource(R.drawable.live_teampk_state_lead);
             } else if (otherTeamTotalEnergy > myTeamTotalEnergy) {
-                ivOtherTeamState.setImageResource(R.drawable.livevideo_list_lead_img_disable);
-                ivMyteamState.setImageResource(R.drawable.livevideo_list_catchup_img_disable);
+                ivPkState.setImageResource(R.drawable.live_teampk_state_follow);
             } else if (myTeamTotalEnergy == otherTeamTotalEnergy) {
-                ivOtherTeamState.setImageResource(R.drawable.livevideo_alertview_pingshou_img_disable);
-                ivMyteamState.setImageResource(R.drawable.livevideo_alertview_pingshou_img_disable);
+                ivPkState.setImageResource(R.drawable.live_teampk_state_draw);
             }
+
             ImageLoader.with(BaseApplication.getContext()).load(data.getMyTeamEngerInfo().getTeacherImg()).asBitmap
                     (new SingleConfig.BitmapListener() {
                         @Override
@@ -390,8 +345,13 @@ public class TeamPkResultPager extends BasePager {
             if (mTeamPkBll != null) {
                 mTeamPkBll.updatePkStateLayout(true);
             }
+
+            // TODO: 2019/1/30  跳转到贡献之星页面
+             turn2ContributionPage(data);
         }
     }
+
+
 
     private void updateProgressBar(final TeamEnergyAndContributionStarEntity data) {
         //显示之前的pk 进度
@@ -479,37 +439,6 @@ public class TeamPkResultPager extends BasePager {
             });
             tvName.setText(data.getRealname());
             tvEnergy.setText("+" + data.getEnergy());
-        }
-    }
-
-    static class PkResultAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
-        List<TeamEnergyAndContributionStarEntity.ContributionStar> mData;
-        int itemWidth;
-
-        PkResultAdapter(List<TeamEnergyAndContributionStarEntity.ContributionStar> data, int itemWidth) {
-            mData = data;
-            this.itemWidth = itemWidth;
-        }
-
-        @Override
-        public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
-            return new ItemHolder(LayoutInflater.from(parent.getContext()).
-                    inflate(R.layout.item_teampk_contribution, parent, false));
-        }
-
-        @Override
-        public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-            ViewGroup.LayoutParams layoutParams = holder.itemView.getLayoutParams();
-            layoutParams.width = itemWidth;
-            holder.itemView.setLayoutParams(layoutParams);
-            ((ItemHolder) holder).bindData(mData.get(position));
-        }
-
-        @Override
-        public int getItemCount() {
-            return mData == null ? 0 : mData.size();
         }
     }
 
@@ -949,6 +878,20 @@ public class TeamPkResultPager extends BasePager {
                     >= mFinalPkResult.getCompetitorResultInfo().getEnergy());
         }
     }
+
+    /**
+     * 跳转到贡献之星页面
+     * @param data
+     */
+    private void turn2ContributionPage(final TeamEnergyAndContributionStarEntity data) {
+        mView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+               mTeamPkBll.showContributionPage(data);
+            }
+        },3000);
+    }
+
 
     private void removeLottieView() {
         lottieAnimationView.cancelAnimation();

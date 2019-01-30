@@ -543,6 +543,7 @@
     <item name="tv_teampk_team_select_timecoutdown" type="id" />
     <item name="rl_teampk_head_container" type="id" />
     <item name="tv_teampk_pk_end" type="id"/>
+    <item name="iv_teampk_pk_state" type="id"/>
 
 
     <!--分队进行中-->
