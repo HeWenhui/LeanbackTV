@@ -5,7 +5,8 @@
     android:background="@drawable/bg_livevideo_en_team_bg_4_3">
 
     <RelativeLayout
-        android:layout_width="501dp"
+        android:id="@id/rl_livevideo_en_teampk_content"
+        android:layout_width="match_parent"
         android:layout_height="375dp"
         android:layout_gravity="center">
 
@@ -33,19 +34,12 @@
             android:layout_marginTop="13dp"
             android:layout_toRightOf="@id/iv_livevideo_en_teampk_vs" />
 
-        <View
-            android:id="@id/v_livevideo_en_teampk_center"
-            android:layout_width="1dp"
-            android:layout_height="1dp"
-            android:layout_centerInParent="true" />
-
         <RelativeLayout
             android:id="@id/rl_livevideo_en_teampk_rank_mine"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
             android:layout_marginTop="140dp"
-            android:layout_marginRight="25dp"
-            android:layout_toLeftOf="@id/v_livevideo_en_teampk_center"
             android:listSelector="@null"
             android:numColumns="3" />
 
@@ -53,9 +47,9 @@
             android:id="@id/rl_livevideo_en_teampk_rank_other"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="25dp"
+            android:layout_alignParentRight="true"
             android:layout_marginTop="140dp"
-            android:layout_toRightOf="@id/v_livevideo_en_teampk_center"
+            android:layout_marginRight="2dp"
             android:listSelector="@null"
             android:numColumns="3" />
 
