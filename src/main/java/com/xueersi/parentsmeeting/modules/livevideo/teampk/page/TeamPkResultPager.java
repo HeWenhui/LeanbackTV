@@ -337,7 +337,7 @@ public class TeamPkResultPager extends BasePager {
             tvOtherTeacherName.setText(data.getCompetitorEngerInfo().getTeacherName());
             tvMyTeamSlogan.setText(data.getMyTeamEngerInfo().getSlogon());
             tvOtherTeamSlogan.setText(data.getCompetitorEngerInfo().getSlogon());
-            startTimeCountDow(CURRENT_PK_RESULT_AUTO_CLOSE_DRUATION);
+           // startTimeCountDow(CURRENT_PK_RESULT_AUTO_CLOSE_DRUATION);
             //todo 根据二期效果图调整 UI
             timeCountDowTextView.setVisibility(View.INVISIBLE);
             ivCloseBtn.setVisibility(View.INVISIBLE);
@@ -887,9 +887,10 @@ public class TeamPkResultPager extends BasePager {
         mView.postDelayed(new Runnable() {
             @Override
             public void run() {
-               mTeamPkBll.showContributionPage(data);
+                 closePkResultPager();
+                 mTeamPkBll.showContributionPage(data);
             }
-        },3000);
+        },8000);
     }
 
 
