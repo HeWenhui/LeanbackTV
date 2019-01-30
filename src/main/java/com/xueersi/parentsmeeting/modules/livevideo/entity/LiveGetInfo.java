@@ -115,8 +115,9 @@ public class LiveGetInfo {
      */
     private int hbTime;
     /**
-     * 记录客户端日志地址
+     * 记录客户端日志地址 2019-1-14作废
      */
+    @Deprecated
     private String clientLog;
     /**
      * 直播id
@@ -515,6 +516,7 @@ public class LiveGetInfo {
         this.hbTime = hbTime;
     }
 
+    @Deprecated
     public void setClientLog(String clientLog) {
         this.clientLog = clientLog;
     }
@@ -1290,5 +1292,6 @@ public class LiveGetInfo {
         public String ePlanId;
         public String eTeacherId;
         public String eClassId;
+        public String fakePlanId;
     }
 }

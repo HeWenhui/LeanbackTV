@@ -109,6 +109,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 getInfo.ePlanInfo.ePlanId = ePlanInfo.optString("ePlanId");
                 getInfo.ePlanInfo.eTeacherId = ePlanInfo.optString("eTeacherId");
                 getInfo.ePlanInfo.eClassId = ePlanInfo.optString("eClassId");
+                if (ePlanInfo.has("fakePlanId")){
+                    getInfo.ePlanInfo.fakePlanId = ePlanInfo.optString("fakePlanId");
+                }
             }
             catch (JSONException e) {
                 MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo.ePlanInfo", e.getMessage());
@@ -393,12 +396,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             if (data.has("skeyPlayT")) {
                 getInfo.setSkeyPlayT(data.getString("skeyPlayT"));
             } else {
-                MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo", "skeyPlayT=null");
+//                MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo", "skeyPlayT=null");
             }
             if (data.has("skeyPlayF")) {
                 getInfo.setSkeyPlayF(data.getString("skeyPlayF"));
             } else {
-                MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo", "skeyPlayF=null");
+//                MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo", "skeyPlayF=null");
             }
             getInfo.setSpeechEvalUrl(data.optString("speechEvalUrl", "https://live.xueersi.com/Live/speechEval/"));
             getInfo.setUrlClick(data.optInt("urlClick", 0));
