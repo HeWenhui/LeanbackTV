@@ -74,14 +74,15 @@
             android:id="@id/iv_livevideo_en_teampk_lead_fire_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/tv_livevideo_en_teampk_lead_fire_add_left"
             android:src="@drawable/livevideo_enteampk_benchangchengjiu_fire_img_nor1" />
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@id/tv_livevideo_en_teampk_lead_fire_add_left"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
             android:layout_marginLeft="3dp"
-            android:layout_toRightOf="@id/iv_livevideo_en_teampk_lead_fire_left"
             android:text="+10"
             android:textColor="#ffffdf95"
             android:textSize="15sp" />
@@ -91,6 +92,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/iv_livevideo_en_teampk_lead_fire_left"
+            android:layout_alignParentRight="true"
             android:text="100"
             android:textColor="#ffffffff"
             android:textSize="21sp" />

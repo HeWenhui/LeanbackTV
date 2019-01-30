@@ -23,7 +23,7 @@
         android:layout_marginTop="67dp"
         android:gravity="center_horizontal">
 
-        <TextView
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@id/tv_livevideo_en_teampk_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/tv_livevideo_en_teampk_fire" />
 
-        <TextView
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@id/tv_livevideo_en_teampk_fire"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
