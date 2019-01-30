@@ -32,11 +32,19 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@id/rl_livevideo_speechbul_bottom_content"
         android:layout_width="match_parent"
         android:layout_height="99dp"
         android:layout_above="@id/rl_livevideo_speechbul_panelcontent"
         android:background="#B3000000">
+
+        <ImageView
+            android:id="@id/tv_livevideo_speechbul_close"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:padding="10dp"
+            android:src="@drawable/livevideo_alertview_guanbi_img_normal" />
 
         <RelativeLayout
             android:id="@+id/rl_livevideo_speechbul_title"

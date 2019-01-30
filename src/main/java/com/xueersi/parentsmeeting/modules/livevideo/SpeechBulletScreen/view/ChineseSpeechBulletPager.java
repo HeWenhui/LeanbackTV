@@ -57,6 +57,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.Contract.
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.dialog.CloseConfirmDialog;
+import com.xueersi.parentsmeeting.modules.livevideo.dialog.PrimaryChineseDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.PrimaryChineseToastDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
@@ -112,10 +114,6 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
      */
     private RelativeLayout root;
     /**
-     * 底部布局
-     */
-    private RelativeLayout rlSpeechbulBottomContent;
-    /**
      * 输入框布局
      */
     private RelativeLayout rlSpeechbulInputContent;
@@ -131,6 +129,10 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
      * 切换手动输入
      */
     private FangZhengCuYuanTextView tvSpeechbulSwitch;
+    /**
+     * 关闭按钮
+     */
+    private ImageView ivSpeechbulClose;
     /**
      * 音量波形
      */
@@ -247,11 +249,11 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
         root = mView.findViewById(R.id.rl_livevideo_speechbul_root);
         tvSpeechbulCloseTip = mView.findViewById(R.id.tv_livevideo_speechbul_closetip);
         switchFSPanelLinearLayout = mView.findViewById(R.id.rl_livevideo_speechbul_panelroot);
-        rlSpeechbulBottomContent = mView.findViewById(R.id.rl_livevideo_speechbul_bottom_content);
         tvSpeechbulTitle = mView.findViewById(R.id.tv_livevideo_speechbul_title);
         tvSpeechbulTitleCount = mView.findViewById(R.id.tv_livevideo_speechbul_title_count);
         tvSpeechbulSwitch = mView.findViewById(R.id.tv_livevideo_speechbul_title_switch);
         vwvSpeechbulWave = mView.findViewById(R.id.vwv_livevideo_speechbul_wave);
+        ivSpeechbulClose = mView.findViewById(R.id.tv_livevideo_speechbul_close);
         etSpeechbulWords = mView.findViewById(R.id.et_livevideo_speechbul_words);
         tvSpeechbulCount = mView.findViewById(R.id.tv_livevideo_speechbul_count);
         tvSpeechbulRepeat = mView.findViewById(R.id.tv_livevideo_speechbul_repeat);
@@ -372,7 +374,30 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
     @Override
     public void initListener() {
         logger.i("initListener()");
-        super.initListener();
+
+        //关闭语音识别
+        ivSpeechbulClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                logger.i("onClick: ivSpeechbulClose");
+                final PrimaryChineseDialog closeConfirmDialog = new PrimaryChineseDialog(mContext);
+                closeConfirmDialog.setOnClickCancelListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        closeConfirmDialog.cancelDialog();
+                    }
+                });
+                closeConfirmDialog.setOnClickConfirmlListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        closeConfirmDialog.cancelDialog();
+                        closetype = "activeClose";
+                        closeSpeechBullet(false);
+                    }
+                });
+                closeConfirmDialog.showDialog();
+            }
+        });
 
         //编辑话语
         etSpeechbulWords.setOnClickListener(new View.OnClickListener() {
@@ -507,7 +532,6 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
     public void showSpeechBullet(RelativeLayout rootView) {
         logger.i("showSpeechBullet");
         this.rootView = rootView;
-        isShowingSpeechBullet = true;
         showStartSpeechBulletToast();
         mWeakHandler.postDelayed(showSpeechBulletRunnable, 2000);
         initUmsAgentData();
@@ -516,6 +540,7 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
     protected Runnable showSpeechBulletRunnable = new Runnable() {
         @Override
         public void run() {
+            isShowingSpeechBullet = true;
             if (rlSpeechBulContent == null) {
                 rlSpeechBulContent = new RelativeLayout(mContext);
                 rlSpeechBulContent.setId(R.id.rl_livevideo_content_speechbul);
@@ -547,6 +572,7 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
             mData.put("cmdtype", "0");
             mData.put("devicestatus", devicestatus);
             umsAgentDebugSys(LiveVideoConfig.LIVE_SPEECH_BULLETSCREEN, mData);
+            mWeakHandler.removeCallbacks(showSpeechBulletRunnable);
         }
         if (!isShowingSpeechBullet) {
             return;
@@ -677,7 +703,7 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
     protected void startEvaluator() {
         logger.i("startEvaluator()");
         File saveFile = new File(dir, "speechbul" + System.currentTimeMillis() + ".mp3");
-        mSpeechEvaluatorUtils.startChineseSpeechBulletRecognize(saveFile.getPath(), SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
+        mSpeechEvaluatorUtils.startSpeechBulletScreenRecognize(saveFile.getPath(), SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
                 new EvaluatorListener() {
                     @Override
                     public void onBeginOfSpeech() {
@@ -704,7 +730,6 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
                             soundStartEvaluator = soundPool.load(mContext, R.raw.start_evaluator, 1);
                             soundPool.setOnLoadCompleteListener(new SoundPool.OnLoadCompleteListener() {
                                 public void onLoadComplete(SoundPool soundPool, int sampleId, int status) {
-                                    // TODO Auto-generated method stub
                                     soundPool.play(soundStartEvaluator, 1, 1, 0, 0, 1);
                                 }
                             });
