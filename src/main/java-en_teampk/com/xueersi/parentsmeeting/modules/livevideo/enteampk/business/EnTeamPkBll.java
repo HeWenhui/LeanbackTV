@@ -181,7 +181,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
     }
 
     @Override
-    public void onRankStart() {
+    public void onRankStart(final boolean showPk) {
         onRankStart = true;
         if (pkTeamEntity == null) {
             mLogtf.d("onRankStart:can=" + englishPk.canUsePK + ",has=" + englishPk.hasGroup + ",mode=" + mode);
@@ -192,7 +192,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if (LiveTopic.MODE_TRANING.equals(mode)) {
+                    if (LiveTopic.MODE_TRANING.equals(mode) && showPk) {
                         teamPkRankPager = new TeamPkRankPager(mContext);
                         teamPkRankPager.setOnTeamSelect(new TeamPkRankPager.OnTeamSelect() {
                             @Override

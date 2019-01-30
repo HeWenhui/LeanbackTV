@@ -4,7 +4,6 @@ import android.app.Activity;
 
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -426,7 +425,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 if (!psOpen) {
                     psOpen = true;
                     if (enTeamPkAction != null) {
-                        enTeamPkAction.onRankStart();
+                        enTeamPkAction.onRankStart(true);
                     }
                 }
                 break;
@@ -686,6 +685,9 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 XESCODE.STOPQUESTION, XESCODE.ARTS_STOP_QUESTION, XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_STULIKE, XESCODE.ARTS_H5_COURSEWARE};
     }
 
+    /** 第一次的topic消息 */
+    private boolean firstTopic = true;
+
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
         try {
@@ -694,15 +696,17 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             if (teamPKObj != null) {
                 boolean status = teamPKObj.optBoolean("status", false);
                 if (status) {
-                    logger.d("onTopic:psOpen=" + psOpen);
+                    logger.d("onTopic:psOpen=" + psOpen + ",firstTopic=" + firstTopic);
                     if (!psOpen) {
                         psOpen = true;
+                        //不是第一次topic,说明不是退出重进
                         if (enTeamPkAction != null) {
-                            enTeamPkAction.onRankStart();
+                            enTeamPkAction.onRankStart(!firstTopic);
                         }
                     }
                 }
             }
+            firstTopic = false;
         } catch (JSONException e) {
             e.printStackTrace();
         }

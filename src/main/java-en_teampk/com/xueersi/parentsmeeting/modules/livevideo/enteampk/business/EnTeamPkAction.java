@@ -12,7 +12,12 @@ public interface EnTeamPkAction {
 
     void setPkTeamEntity(PkTeamEntity pkTeamEntity);
 
-    void onRankStart();
+    /**
+     * 显示分队仪式，从notice显示，topic不显示
+     *
+     * @param showPk
+     */
+    void onRankStart(boolean showPk);
 
     void onRankResult();
 
