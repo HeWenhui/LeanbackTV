@@ -431,7 +431,20 @@ public class TeamPkAwardPager extends BasePager {
                 if (studyReportAction != null) {
                     studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_PK_GOLD, mView, false, false);
                 }
-                //closeAwardPager();
+            }
+        },5000);
+
+        //半身直播自动关闭
+        if(teamPKBll.isHalfBodyLiveRoom()){
+            autoClose();
+        }
+    }
+
+    private void autoClose() {
+        recyclerView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                closeAwardPager();
             }
         }, TIME_DELAY_AUTO_FINISH);
     }

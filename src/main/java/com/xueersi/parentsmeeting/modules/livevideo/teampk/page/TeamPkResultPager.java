@@ -507,7 +507,7 @@ public class TeamPkResultPager extends BasePager {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        closePkResultPager();
+        releaseSoundRes();
     }
 
     /**
@@ -665,29 +665,29 @@ public class TeamPkResultPager extends BasePager {
 
         final String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "lose/images";
         String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "lose/data.json";
-        String[] targetFileNames = {"img_14.png", "img_11.png", "img_12.png", "img_13.png",
+        String[] targetFileNames = {"img_15.png", "img_12.png", "img_13.png", "img_14.png",
                                     "img_5.png", "img_7.png", "img_8.png", "img_9.png"};
         final TeamPkResultLottieEffectInfo lottieEffectInfo =
                 new TeamPkResultLottieEffectInfo(lottieResPath, lottieJsonPath);
         lottieEffectInfo.setTargetFileFilter(targetFileNames);
-        lottieEffectInfo.setTextSize("img_12.png", 26);
-        lottieEffectInfo.setTextSize("img_8.png", 18);
+        lottieEffectInfo.setTextSize("img_13.png", 23);
+        lottieEffectInfo.setTextSize("img_8.png", 24);
 
-        lottieEffectInfo.setTextSize("img_13.png", 28);
-        lottieEffectInfo.setTextSize("img_9.png", 21);
+        lottieEffectInfo.setTextSize("img_14.png", 28);
+        lottieEffectInfo.setTextSize("img_9.png", 28);
 
         int color = Color.parseColor("#73510A");
         lottieEffectInfo.setTextColor(color);
-        lottieEffectInfo.addTeacherName("img_12.png", mFinalPkResult.getMyTeamResultInfo().getTeacherName());
+        lottieEffectInfo.addTeacherName("img_13.png", mFinalPkResult.getMyTeamResultInfo().getTeacherName());
         lottieEffectInfo.addTeacherName("img_8.png", mFinalPkResult.getCompetitorResultInfo().getTeacherName());
 
-        lottieEffectInfo.addSlogan("img_13.png", mFinalPkResult.getMyTeamResultInfo().getSlogon());
+        lottieEffectInfo.addSlogan("img_14.png", mFinalPkResult.getMyTeamResultInfo().getSlogon());
         lottieEffectInfo.addSlogan("img_9.png", mFinalPkResult.getCompetitorResultInfo().getSlogon());
 
-        lottieEffectInfo.addLogo("img_14.png", mFinalPkResult.getMyTeamResultInfo().getImg());
+        lottieEffectInfo.addLogo("img_15.png", mFinalPkResult.getMyTeamResultInfo().getImg());
         lottieEffectInfo.addLogo("img_5.png", mFinalPkResult.getCompetitorResultInfo().getImg());
 
-        lottieEffectInfo.addTeacherHead("img_11.png", mFinalPkResult.getMyTeamResultInfo().getTeacherImg());
+        lottieEffectInfo.addTeacherHead("img_12.png", mFinalPkResult.getMyTeamResultInfo().getTeacherImg());
         lottieEffectInfo.addTeacherHead("img_7.png", mFinalPkResult.getCompetitorResultInfo().getTeacherImg());
 
         try {
@@ -887,7 +887,7 @@ public class TeamPkResultPager extends BasePager {
         mView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                 closePkResultPager();
+                 //closePkResultPager();
                  mTeamPkBll.showContributionPage(data);
             }
         },8000);

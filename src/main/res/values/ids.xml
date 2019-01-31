@@ -544,6 +544,15 @@
     <item name="rl_teampk_head_container" type="id" />
     <item name="tv_teampk_pk_end" type="id"/>
     <item name="iv_teampk_pk_state" type="id"/>
+    <item name="rcl_teampk_contribution" type="id"/>
+    <item name="iv_teampk_praise" type="id"/>
+    <item name="lav_teampk_praise" type="id"/>
+    <item name="lav_teampk_praise_click" type="id"/>
+    <item name="rcl_teampk_praise" type="id"/>
+    <item name="pk_praise_layout" type="id"/>
+    <item name="lav_teampk_contribution" type="id"/>
+    <item name="iv_teampk_contribution_close" type="id"/>
+    <item name="tv_teampk_contribution_time" type="id"/>
 
 
     <!--分队进行中-->

@@ -40,6 +40,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.redpackage.entity.RedPackage
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkAqResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkAwardPager;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkContributionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkEndPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkImprovePager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkResultPager;
@@ -238,12 +239,16 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
 
     /**
      * 显示贡献之星页面
+     *
      * @param data
      */
-    public void showContributionPage(TeamEnergyAndContributionStarEntity data){
-        Log.e("TeamPkBll","=======>showContributionPage");
+    public void showContributionPage(TeamEnergyAndContributionStarEntity data) {
+        Log.e("TeamPkBll", "=======>showContributionPage");
+        if (mFocusPager == null || !(mFocusPager instanceof TeamPkEndPager)) {
+            TeamPkContributionPager contributionPager = new TeamPkContributionPager(mActivity, TeamPkBll.this, data);
+            addPager(contributionPager);
+        }
     }
-
 
     public boolean isWin() {
         return isWin;
@@ -769,6 +774,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
         int rightMargin = getRightMargin();
         params.rightMargin = rightMargin;
         rlTeamPkContent.addView(aqAwardPager.getRootView(), params);
+        Log.e("TeamPkBll", "=======>addPager:" + aqAwardPager.getRootView());
         mFocusPager = aqAwardPager;
     }
 
@@ -1022,6 +1028,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
             XESCODE.TEAM_PK_BLACK_RANK_LIST,
             XESCODE.TEAM_PK_STAR_RANK_LIST,
             XESCODE.TEAM_PK_PK_END
+           // , 130
     };
 
 
@@ -1081,19 +1088,25 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                     closeCurrentPkResult();
                     break;
                 case XESCODE.TEAM_PK_BLACK_RANK_LIST:
-                    closeStarts();
+                    //closeStarts();
                     getProgressStudent();
                     break;
 
                 case XESCODE.TEAM_PK_STAR_RANK_LIST:
                     //关闭 幸运星页面
-                    closeClassChest();
+                    //closeClassChest();
                     getStusStars();
                     break;
 
                 case XESCODE.TEAM_PK_PK_END:
                     showPkEndToast();
                     break;
+            /*    case 130:
+                    String strCmd = data.optString("msg");
+                    if ("1".equals(strCmd)) {
+                        showPkResult();
+                    }
+                    break;*/
                 default:
                     break;
             }
