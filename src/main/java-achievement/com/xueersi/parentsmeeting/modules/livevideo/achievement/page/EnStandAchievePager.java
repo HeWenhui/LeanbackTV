@@ -27,6 +27,7 @@ import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
@@ -311,6 +312,10 @@ public class EnStandAchievePager extends LiveBasePager {
     public void onStarAdd(int star, float x, float y) {
         starCount += star;
         tvAchiveNumStar.setText("" + starCount);
+    }
+
+    public void updateEnpk(EnTeamPkRankEntity enTeamPkRankEntity) {
+
     }
 
     private Bitmap createBitmap(int energyCount, int width, int height) {

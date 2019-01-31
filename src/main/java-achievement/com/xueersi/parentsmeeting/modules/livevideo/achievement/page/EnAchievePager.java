@@ -60,6 +60,8 @@ public class EnAchievePager extends LiveBasePager {
     private int starCount;
     private int goldCount;
     private int energyCount;
+    private int myTotal = 0;
+    private int otherTotal = 0;
 
     public EnAchievePager(Context context, RelativeLayout relativeLayout, LiveGetInfo mLiveGetInfo) {
         super(context, false);
@@ -142,6 +144,8 @@ public class EnAchievePager extends LiveBasePager {
             progress = (int) ((float) enpkEnergy.myTeam * 100 / (float) (enpkEnergy.myTeam + enpkEnergy.opTeam));
         }
         setEngPro(progress);
+        myTotal = enpkEnergy.myTeam;
+        otherTotal = enpkEnergy.opTeam;
         tv_livevideo_en_achive_pk_energy_my = pkView.findViewById(R.id.tv_livevideo_en_achive_pk_energy_my);
         tv_livevideo_en_achive_pk_energy_my.setText("" + enpkEnergy.myTeam);
         tv_livevideo_en_achive_pk_energy_other = pkView.findViewById(R.id.tv_livevideo_en_achive_pk_energy_other);
@@ -151,15 +155,25 @@ public class EnAchievePager extends LiveBasePager {
     public void updateEnpk(EnTeamPkRankEntity enTeamPkRankEntity) {
         //本场成就设置进度
         int myTeamTotal = enTeamPkRankEntity.getMyTeamTotal();
-        if (tv_livevideo_en_achive_pk_energy_my != null) {
-            tv_livevideo_en_achive_pk_energy_my.setText("" + myTeamTotal);
+        if (myTeamTotal > myTotal) {
+            myTotal = myTeamTotal;
+            if (tv_livevideo_en_achive_pk_energy_my != null) {
+                tv_livevideo_en_achive_pk_energy_my.setText("" + myTeamTotal);
+            }
+        } else {
+            mLogtf.d("updateEnpk:myTeamTotal=" + myTeamTotal + ",otherTotal=" + myTotal);
         }
         int opTeamTotal = enTeamPkRankEntity.getOpTeamTotal();
-        if (tv_livevideo_en_achive_pk_energy_other != null) {
-            tv_livevideo_en_achive_pk_energy_other.setText("" + opTeamTotal);
+        if (opTeamTotal > otherTotal) {
+            otherTotal = opTeamTotal;
+            if (tv_livevideo_en_achive_pk_energy_other != null) {
+                tv_livevideo_en_achive_pk_energy_other.setText("" + opTeamTotal);
+            }
+        } else {
+            mLogtf.d("updateEnpk:opTeamTotal=" + opTeamTotal + ",otherTotal=" + otherTotal);
         }
-        if (myTeamTotal + opTeamTotal != 0) {
-            int progress = (int) ((float) myTeamTotal * 100 / (float) (myTeamTotal + opTeamTotal));
+        if (myTotal + otherTotal != 0) {
+            int progress = (int) ((float) myTotal * 100 / (float) (myTotal + otherTotal));
             logger.d("updateEnpk:progress=" + progress + "," + pgAchivePk.getProgress());
             setEngPro(progress);
         }
@@ -224,11 +238,21 @@ public class EnAchievePager extends LiveBasePager {
         StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
         tvAchiveNumFire.setText("" + pkEnergy.me);
         //本场成就设置进度
-        if (tv_livevideo_en_achive_pk_energy_my != null) {
-            tv_livevideo_en_achive_pk_energy_my.setText("" + pkEnergy.myTeam);
+        if (pkEnergy.myTeam > myTotal) {
+            myTotal = pkEnergy.myTeam;
+            if (tv_livevideo_en_achive_pk_energy_my != null) {
+                tv_livevideo_en_achive_pk_energy_my.setText("" + myTotal);
+            }
+        } else {
+            mLogtf.d("onGetStar:myTeam=" + pkEnergy.myTeam + ",myTotal=" + myTotal);
         }
-        if (tv_livevideo_en_achive_pk_energy_other != null) {
-            tv_livevideo_en_achive_pk_energy_other.setText("" + pkEnergy.opTeam);
+        if (pkEnergy.opTeam > otherTotal) {
+            otherTotal = pkEnergy.opTeam;
+            if (tv_livevideo_en_achive_pk_energy_other != null) {
+                tv_livevideo_en_achive_pk_energy_other.setText("" + otherTotal);
+            }
+        } else {
+            mLogtf.d("onGetStar:opTeam=" + pkEnergy.opTeam + ",otherTotal=" + myTotal);
         }
         ViewGroup rl_livevideo_info = activity.findViewById(R.id.rl_livevideo_info);
         if (rl_livevideo_info != null) {
@@ -328,14 +352,20 @@ public class EnAchievePager extends LiveBasePager {
 
                 }
             });
-            if (tv_livevideo_en_achive_pk_energy_my != null) {
-                tv_livevideo_en_achive_pk_energy_my.setText("" + pkEnergy.myTeam);
+            if (pkEnergy.myTeam > myTotal) {
+                myTotal = pkEnergy.myTeam;
+                if (tv_livevideo_en_achive_pk_energy_my != null) {
+                    tv_livevideo_en_achive_pk_energy_my.setText("" + myTotal);
+                }
             }
-            if (tv_livevideo_en_achive_pk_energy_other != null) {
-                tv_livevideo_en_achive_pk_energy_other.setText("" + pkEnergy.opTeam);
+            if (pkEnergy.opTeam > otherTotal) {
+                otherTotal = pkEnergy.opTeam;
+                if (tv_livevideo_en_achive_pk_energy_other != null) {
+                    tv_livevideo_en_achive_pk_energy_other.setText("" + otherTotal);
+                }
             }
-            if (pkEnergy.myTeam + pkEnergy.opTeam != 0) {
-                int progress = (int) ((float) pkEnergy.myTeam * 100 / (float) (pkEnergy.myTeam + pkEnergy.opTeam));
+            if (myTotal + otherTotal != 0) {
+                int progress = (int) ((float) myTotal * 100 / (float) (myTotal + otherTotal));
                 setEngPro(progress);
             }
         } else {
