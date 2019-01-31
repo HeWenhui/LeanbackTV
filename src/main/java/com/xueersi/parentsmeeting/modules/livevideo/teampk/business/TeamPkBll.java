@@ -625,6 +625,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      */
     public void closeCurrentPager() {
         if (mFocusPager != null) {
+            mFocusPager.onDestroy();
             rlTeamPkContent.post(new Runnable() {
                 @Override
                 public void run() {
@@ -1089,22 +1090,34 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                     break;
                 case XESCODE.TEAM_PK_BLACK_RANK_LIST:
                     //closeStarts();
+                    closeCurrentPager();
                     getProgressStudent();
                     break;
 
                 case XESCODE.TEAM_PK_STAR_RANK_LIST:
                     //关闭 幸运星页面
                     //closeClassChest();
+                    closeCurrentPager();
                     getStusStars();
                     break;
 
                 case XESCODE.TEAM_PK_PK_END:
                     showPkEndToast();
                     break;
-            /*    case 130:
+               /* case 130:
                     String strCmd = data.optString("msg");
                     if ("1".equals(strCmd)) {
                         showPkResult();
+                    }else if("2".equals(strCmd)){
+                        showClassChest();
+                    }else if("3".equals(strCmd)){
+                        closeCurrentPager();
+                        getStusStars();
+                    }else if("4".equals(strCmd)){
+                        closeCurrentPager();
+                        getProgressStudent();
+                    }else if("5".equals(strCmd)){
+                        showPkEndToast();
                     }
                     break;*/
                 default:
