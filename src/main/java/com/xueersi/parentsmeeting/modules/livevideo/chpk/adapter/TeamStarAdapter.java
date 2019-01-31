@@ -28,12 +28,11 @@ public  class TeamStarAdapter extends RecyclerView.Adapter<TeamStarHolder> {
 
     @Override
     public void onBindViewHolder(TeamStarHolder holder, int position) {
-        holder.bindData(mData.get(0));
+        holder.bindData(mData.get(position));
     }
 
     @Override
     public int getItemCount() {
-//        return mData == null ? 0 : mData.size();
-        return 5;
+        return mData == null ? 0 : mData.size();
     }
 }
