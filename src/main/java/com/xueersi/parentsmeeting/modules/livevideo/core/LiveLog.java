@@ -13,6 +13,7 @@ import java.util.ArrayList;
 
 /**
  * 直播日志
+ *
  * @author linyuqiang
  * created  at 2019/1/14 17:33
  */
@@ -24,7 +25,10 @@ public class LiveLog {
     private String mLiveId;
     private String type;
     private String getPrefix;
+    private String tid;
+    private int times;
     private ArrayList<PerGetInfoLog> msg = new ArrayList<>();
+    public static int LIVE_TIME = 0;
 
     public LiveLog(Context mContext, int mLiveType, String mLiveId, String getPrefix) {
         this.mContext = mContext;
@@ -32,6 +36,8 @@ public class LiveLog {
         this.mLiveId = mLiveId;
         this.getPrefix = getPrefix;
         type = "a" + mLiveType;
+        tid = "" + System.currentTimeMillis();
+        times = LIVE_TIME++;
     }
 
     public void setGetInfo(LiveGetInfo mGetInfo) {
@@ -57,6 +63,8 @@ public class LiveLog {
 //        liveLogCallback.setParams(params);
         StableLogHashMap logHashMap = new StableLogHashMap();
         logHashMap.put("tag", "" + TAG);
+        logHashMap.put("tid", "" + tid);
+        logHashMap.put("times", "" + times);
         logHashMap.put("str", "" + str);
         logHashMap.put("prefix", "" + getPrefix);
         logHashMap.put("liveid", "" + mLiveId);
