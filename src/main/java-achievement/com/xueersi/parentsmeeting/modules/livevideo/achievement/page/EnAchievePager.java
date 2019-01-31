@@ -391,9 +391,11 @@ public class EnAchievePager extends LiveBasePager {
                 flProgress = new FrameLayout(activity);
                 flProgress.setVisibility(View.INVISIBLE);
                 ImageView progressImageView = new ImageView(activity);
-                progressImageView.setImageResource(R.drawable.app_livevideo_enteampk_pkbar_fire_pic_prog);
+                BitmapDrawable bitmapDrawable = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.app_livevideo_enteampk_pkbar_fire_pic_prog);
+//                progressImageView.setImageResource(R.drawable.app_livevideo_enteampk_pkbar_fire_pic_prog);
+                progressImageView.setImageDrawable(bitmapDrawable);
 //                flProgress.setVisibility(View.INVISIBLE);
-                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT, FrameLayout.LayoutParams.WRAP_CONTENT);
+                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(bitmapDrawable.getIntrinsicWidth(), bitmapDrawable.getIntrinsicHeight());
 //                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(progressWidth, progressWidth);
                 layoutParams.gravity = Gravity.CENTER;
                 flProgress.addView(progressImageView, layoutParams);
