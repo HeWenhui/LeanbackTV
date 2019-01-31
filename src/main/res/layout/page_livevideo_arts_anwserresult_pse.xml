@@ -45,10 +45,10 @@
 
         <ViewStub
             android:id="@id/vs_arts_answer_result_voice"
-            android:layout_width="wrap_content"
+            android:layout_width="295dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="187dp"
-            android:layout_marginTop="156dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="127dp"
             android:layout="@layout/page_livevideo_arts_anwserresult_voice_blank" />
 
         <TextView
