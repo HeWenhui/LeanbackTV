@@ -547,7 +547,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     if (pkTeamEntity != null) {
                         final String teamId = "" + pkTeamEntity.getPkTeamId();
                         final String testId = ("" + old.id).replace(",", "-");
-                        mLogtf.d("onCourseEnd:isShow:old=" + old.id + ",testId=" + testId + ",pkTeamEntity=" + teamId);
+                        mLogtf.d("onCourseEnd:isShow:old=" + old.id + ",testId=" + testId + ",teamId=" + teamId);
                         getHttpManager().updataEnglishPkByTestId(teamId, testId, new HttpCallBack(false) {
                             AtomicInteger tryCount = new AtomicInteger(5);
                             HttpCallBack callBack = this;
@@ -625,6 +625,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     if (pkTeamEntity != null) {
                         String teamId = "" + pkTeamEntity.getPkTeamId();
                         final String testId = old.id;
+                        mLogtf.d("onQuestionEnd:testId=" + testId + ",teamId=" + teamId);
                         getHttpManager().updataEnglishPkByTestId(teamId, testId, new HttpCallBack(false) {
                             @Override
                             public void onPmSuccess(ResponseEntity responseEntity) {

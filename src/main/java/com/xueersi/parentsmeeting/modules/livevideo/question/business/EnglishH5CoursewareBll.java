@@ -424,6 +424,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 if (h5CoursewarePager != null) {
                     h5CoursewarePager.destroy();
                     bottomContent.removeView(h5CoursewarePager.getRootView());
+                    h5CoursewarePager = null;
                     onQuestionShow(null, false, "onBack");
                 }
             }
@@ -1251,7 +1252,11 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
      * @param method
      */
     private void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isShow, String method) {
-        logToFile.d("onQuestionShow:isShow=" + isShow + ",method=" + method);
+        if (videoQuestionLiveEntity != null) {
+            logToFile.d("onQuestionShow:isShow=" + isShow + ",id=" + videoQuestionLiveEntity.id + ",method=" + method);
+        } else {
+            logToFile.d("onQuestionShow:isShow=" + isShow + ",method=" + method);
+        }
         for (QuestionShowAction questionShowAction : questionShowActions) {
             questionShowAction.onQuestionShow(videoQuestionLiveEntity, isShow);
         }

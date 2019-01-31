@@ -2356,7 +2356,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      * @param method
      */
     private void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isShow, String method) {
-        mLogtf.d("onQuestionShow:isShow=" + isShow + ",method=" + method);
+        if (videoQuestionLiveEntity != null) {
+            mLogtf.d("onQuestionShow:isShow=" + isShow + ",id=" + videoQuestionLiveEntity.id + ",method=" + method);
+        } else {
+            mLogtf.d("onQuestionShow:isShow=" + isShow + ",method=" + method);
+        }
         for (QuestionShowAction questionShowAction : questionShowActions) {
             questionShowAction.onQuestionShow(videoQuestionLiveEntity, isShow);
         }
