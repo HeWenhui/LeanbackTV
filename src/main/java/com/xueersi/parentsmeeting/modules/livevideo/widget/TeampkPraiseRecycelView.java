@@ -12,10 +12,9 @@ import android.view.MotionEvent;
  * @author chekun
  * created  at 2018/11/10 17:26
  */
-public class TeampkPraiseRecycelView extends RecyclerView implements MsgItemAnimator.ItemFadeOutListener {
+public class TeampkPraiseRecycelView extends RecyclerView {
 
-    private MsgItemAnimator mItemAnimator;
-    private ItemFadeAnimListener mItemFadeAnimListener;
+    private PkPraiseMsgAnimator mItemAnimator;
 
     public TeampkPraiseRecycelView(Context context) {
         this(context,null);
@@ -50,12 +49,11 @@ public class TeampkPraiseRecycelView extends RecyclerView implements MsgItemAnim
     }
 
     private void initItemAnimator() {
-        mItemAnimator = new MsgItemAnimator();
+        mItemAnimator = new PkPraiseMsgAnimator();
         mItemAnimator.setAddDuration(400);
         mItemAnimator.setMoveDuration(400);
         mItemAnimator.setRemoveDuration(300);
         this.setItemAnimator(mItemAnimator);
-        mItemAnimator.addFadeOutAnimListener(this);
     }
 
     @Override
@@ -64,18 +62,6 @@ public class TeampkPraiseRecycelView extends RecyclerView implements MsgItemAnim
         if(mItemAnimator != null){
             mItemAnimator.release();
         }
-        mItemFadeAnimListener = null;
-    }
-
-    @Override
-    public void onAnimEnd() {
-     if(mItemFadeAnimListener != null){
-         mItemFadeAnimListener.onAllItemFadeOut();
-     }
-    }
-
-    public void setItemFadeAnimListener(ItemFadeAnimListener listener){
-        mItemFadeAnimListener = listener;
     }
 
     public static interface  ItemFadeAnimListener{

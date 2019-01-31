@@ -17,13 +17,18 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkPraiseLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountDowTextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
-* 战队PK 二期  贡献之星
-*@author chekun
-*created  at 2019/1/30 13:48
-*/
+ * 战队PK 二期  贡献之星
+ *
+ * @author chekun
+ * created  at 2019/1/30 13:48
+ */
 public class TeamPkContributionPager extends BasePager {
     /**
      * toast 展示时间
@@ -34,12 +39,15 @@ public class TeamPkContributionPager extends BasePager {
     private LottieAnimationView animationView;
     private ImageView ivClose;
     private TimeCountDowTextView timeCountDowTextView;
+    private TeamPkPraiseLayout pkPraiseLayout;
 
-    public TeamPkContributionPager(Context context, TeamPkBll pkBll , TeamEnergyAndContributionStarEntity data){
+
+    public TeamPkContributionPager(Context context, TeamPkBll pkBll, TeamEnergyAndContributionStarEntity data) {
         super(context);
         teamPkBll = pkBll;
         mData = data;
     }
+
 
     @Override
     public View initView() {
@@ -57,7 +65,7 @@ public class TeamPkContributionPager extends BasePager {
                 }
             }
         });
-        Log.e("teampkContributionPager","====>initViewcalled");
+        Log.e("teampkContributionPager", "====>initViewcalled");
         animationView = view.findViewById(R.id.lav_teampk_contribution);
         ivClose = view.findViewById(R.id.iv_teampk_contribution_close);
         ivClose.setOnClickListener(new View.OnClickListener() {
@@ -67,11 +75,14 @@ public class TeamPkContributionPager extends BasePager {
             }
         });
         timeCountDowTextView = view.findViewById(R.id.tv_teampk_contribution_time);
+        pkPraiseLayout = view.findViewById(R.id.pk_praise_layout);
+         // todo  获取在线名单，点赞文案
+
         return view;
     }
 
 
-    private void  showContributionStar(){
+    private void showContributionStar() {
 
     }
 
@@ -79,7 +90,7 @@ public class TeamPkContributionPager extends BasePager {
     /**
      * 开始自动关闭
      */
-    public void startAutoClose(){
+    public void startAutoClose() {
         timeCountDowTextView.setTimeDuration(3);
         timeCountDowTextView.setTimeSuffix("秒后关闭");
         timeCountDowTextView.startCountDow();

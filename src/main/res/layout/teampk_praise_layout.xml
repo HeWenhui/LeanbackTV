@@ -8,11 +8,10 @@
         android:id="@id/lav_teampk_praise"
         android:layout_width="88dp"
         android:layout_height="117dp"
+        android:layout_marginBottom="40dp"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:layout_marginBottom="40dp"
-        />
+        app:layout_constraintRight_toRightOf="parent" />
 
 
     <com.airbnb.lottie.LottieAnimationView
@@ -21,8 +20,7 @@
         android:layout_height="88dp"
         android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        />
+        app:layout_constraintRight_toRightOf="parent" />
 
     <ImageView
         android:id="@id/iv_teampk_praise"
@@ -34,15 +32,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
-      <com.xueersi.parentsmeeting.modules.livevideo.widget.TeampkPraiseRecycelView
-          android:layout_width="235dp"
-          android:layout_height="150dp"
-          android:background="@color/half_alpha_black"
-          app:layout_constraintBottom_toBottomOf="parent"
-          app:layout_constraintLeft_toLeftOf="parent"
-          android:layout_marginLeft="11dp"
-          android:layout_marginBottom="20dp"
-          android:id="@id/rcl_teampk_praise"
-          />
+    <com.xueersi.parentsmeeting.modules.livevideo.widget.TeampkPraiseRecycelView
+        android:id="@id/rcl_teampk_praise"
+        android:layout_width="235dp"
+        android:layout_height="150dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="11dp"
+        android:background="@color/half_alpha_black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
