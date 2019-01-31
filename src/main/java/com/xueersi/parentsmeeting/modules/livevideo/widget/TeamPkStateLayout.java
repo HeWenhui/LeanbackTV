@@ -22,14 +22,16 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 
 /**
  * 战队pk  右侧状态栏
  *
  * @author chekun
- *         created  at 2018/4/16 18:38
+ * created  at 2018/4/16 18:38
  */
 public class TeamPkStateLayout extends FrameLayout {
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
@@ -133,6 +135,7 @@ public class TeamPkStateLayout extends FrameLayout {
         statBarRootView = View.inflate(getContext(), R.layout.team_pk_state_bar_layout, null);
         ViewGroup viewGroup = (ViewGroup) ((Activity) getContext()).getWindow().getDecorView();
         ViewGroup rootView = viewGroup.findViewById(R.id.rl_livevideo_message_root);
+
         if (rootView != null) {
             int stateBarHeight = SizeUtils.Dp2Px(getContext(), STATE_BAR_HEIGHT);
             int gapAbovePkStateLayout = SizeUtils.Dp2Px(getContext(), STATE_BAR_BOTTOM_MARGIN);
@@ -140,14 +143,29 @@ public class TeamPkStateLayout extends FrameLayout {
             int[] location = new int[2];
             this.getLocationInWindow(location);
             lp.topMargin = location[1] - (gapAbovePkStateLayout + stateBarHeight);
+            int rightMargin = (LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x4);
+            lp.rightMargin = rightMargin>0?rightMargin:0;
             lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
             rootView.addView(statBarRootView, lp);
             tvState = statBarRootView.findViewById(R.id.tv_answer_question_state);
             tvState.setVisibility(GONE);
             tvEnergyMyContribution = statBarRootView.findViewById(R.id.tv_teampk_pkstate_energy_mycontribution);
             tvEnergyMyContribution.setVisibility(GONE);
-
+            //监听布局变化设置边距
+            statBarRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
+                    .OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    int rightMargin = (LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x4);
+                    RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) statBarRootView.getLayoutParams();
+                    if (lp.rightMargin != rightMargin) {
+                        lp.rightMargin = rightMargin;
+                        LayoutParamsUtil.setViewLayoutParams(statBarRootView, lp);
+                    }
+                }
+            });
         }
+
     }
 
 
@@ -295,7 +313,7 @@ public class TeamPkStateLayout extends FrameLayout {
      * 显示 准备战斗提示
      */
     public void showPkReady() {
-        if (tvState!=null){
+        if (tvState != null) {
             tvState.setText("准备战斗");
             tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_ready_bg);
             showPkSateBar();
