@@ -1124,6 +1124,7 @@
     <item name="rl_livevideo_en_achive_content_num" type="id" />
     <item name="iv_livevideo_en_achive_num_gold" type="id" />
     <item name="tv_livevideo_en_achive_num_gold" type="id" />
+    <item name="rl_livevideo_en_achive_num_fire" type="id" />
     <item name="iv_livevideo_en_achive_num_fire" type="id" />
     <item name="tv_livevideo_en_achive_num_fire" type="id" />
     <item name="iv_livevideo_en_achive_num_star" type="id" />

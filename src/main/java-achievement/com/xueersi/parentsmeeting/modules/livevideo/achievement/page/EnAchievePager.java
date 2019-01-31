@@ -139,17 +139,17 @@ public class EnAchievePager extends LiveBasePager {
         }
         pkView = (RelativeLayout) view;
         pgAchivePk = pkView.findViewById(R.id.pg_livevideo_en_achive_pk);
-        int progress = 50;
-        if (enpkEnergy.myTeam + enpkEnergy.opTeam != 0) {
-            progress = (int) ((float) enpkEnergy.myTeam * 100 / (float) (enpkEnergy.myTeam + enpkEnergy.opTeam));
-        }
-        setEngPro(progress);
         myTotal = enpkEnergy.myTeam;
         otherTotal = enpkEnergy.opTeam;
+        int progress = 50;
+        if (myTotal + otherTotal != 0) {
+            progress = (int) ((float) myTotal * 100 / (float) (myTotal + otherTotal));
+        }
+        setEngPro(progress);
         tv_livevideo_en_achive_pk_energy_my = pkView.findViewById(R.id.tv_livevideo_en_achive_pk_energy_my);
-        tv_livevideo_en_achive_pk_energy_my.setText("" + enpkEnergy.myTeam);
+        tv_livevideo_en_achive_pk_energy_my.setText("" + myTotal);
         tv_livevideo_en_achive_pk_energy_other = pkView.findViewById(R.id.tv_livevideo_en_achive_pk_energy_other);
-        tv_livevideo_en_achive_pk_energy_other.setText("" + enpkEnergy.opTeam);
+        tv_livevideo_en_achive_pk_energy_other.setText("" + otherTotal);
     }
 
     public void updateEnpk(EnTeamPkRankEntity enTeamPkRankEntity) {

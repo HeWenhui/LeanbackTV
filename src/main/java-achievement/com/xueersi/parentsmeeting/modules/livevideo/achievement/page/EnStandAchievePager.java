@@ -55,6 +55,8 @@ public class EnStandAchievePager extends LiveBasePager {
     private int starCount;
     private int goldCount;
     private int energyCount;
+    private int myTotal = 0;
+    private int otherTotal = 0;
     private boolean firstCheck = false;
 
     public EnStandAchievePager(Context context, RelativeLayout relativeLayout, LiveGetInfo mLiveGetInfo) {
@@ -100,11 +102,13 @@ public class EnStandAchievePager extends LiveBasePager {
             pgAchivePk = pkview.findViewById(R.id.pg_livevideo_en_achive_pk);
             tv_livevideo_en_achive_pk_energy_my = pkview.findViewById(R.id.tv_livevideo_en_achive_pk_energy_my);
             tv_livevideo_en_achive_pk_energy_other = pkview.findViewById(R.id.tv_livevideo_en_achive_pk_energy_other);
-            tv_livevideo_en_achive_pk_energy_my.setText("" + enpkEnergy.myTeam);
-            tv_livevideo_en_achive_pk_energy_other.setText("" + enpkEnergy.opTeam);
+            myTotal = enpkEnergy.myTeam;
+            otherTotal = enpkEnergy.opTeam;
+            tv_livevideo_en_achive_pk_energy_my.setText("" + myTotal);
+            tv_livevideo_en_achive_pk_energy_other.setText("" + otherTotal);
             int progress = 50;
-            if (enpkEnergy.myTeam + enpkEnergy.opTeam != 0) {
-                progress = enpkEnergy.myTeam * 100 / (enpkEnergy.myTeam + enpkEnergy.opTeam);
+            if (myTotal + otherTotal != 0) {
+                progress = myTotal * 100 / (myTotal + otherTotal);
             }
             setEngPro(progress);
         } else {
@@ -204,10 +208,20 @@ public class EnStandAchievePager extends LiveBasePager {
         tvAchiveNumStar.setText("" + starAndGoldEntity.getStarCount());
         tvAchiveNumGold.setText("" + starAndGoldEntity.getGoldCount());
         StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
-        tv_livevideo_en_achive_pk_energy_my.setText("" + pkEnergy.myTeam);
-        tv_livevideo_en_achive_pk_energy_other.setText("" + pkEnergy.opTeam);
-        if (pkEnergy.myTeam + pkEnergy.opTeam != 0) {
-            int progress = pkEnergy.myTeam * 100 / (pkEnergy.myTeam + pkEnergy.opTeam);
+        if (pkEnergy.myTeam > myTotal) {
+            myTotal = pkEnergy.myTeam;
+            tv_livevideo_en_achive_pk_energy_my.setText("" + myTotal);
+        } else {
+            mLogtf.d("onGetStar:myTeam=" + pkEnergy.myTeam + ",myTotal=" + myTotal);
+        }
+        if (pkEnergy.opTeam > otherTotal) {
+            otherTotal = pkEnergy.opTeam;
+            tv_livevideo_en_achive_pk_energy_other.setText("" + otherTotal);
+        } else {
+            mLogtf.d("onGetStar:opTeam=" + pkEnergy.opTeam + ",otherTotal=" + otherTotal);
+        }
+        if (myTotal + otherTotal != 0) {
+            int progress = myTotal * 100 / (myTotal + otherTotal);
             setEngPro(progress);
         }
         final int energyCountAdd = starAndGoldEntity.getPkEnergy().me - energyCount;
@@ -315,7 +329,24 @@ public class EnStandAchievePager extends LiveBasePager {
     }
 
     public void updateEnpk(EnTeamPkRankEntity enTeamPkRankEntity) {
-
+        int myTeamTotal = enTeamPkRankEntity.getMyTeamTotal();
+        if (myTeamTotal > myTotal) {
+            myTotal = myTeamTotal;
+            tv_livevideo_en_achive_pk_energy_my.setText("" + myTotal);
+        } else {
+            mLogtf.d("updateEnpk:myTeamTotal=" + myTeamTotal + ",myTotal=" + myTotal);
+        }
+        int opTeamTotal = enTeamPkRankEntity.getOpTeamTotal();
+        if (opTeamTotal > otherTotal) {
+            otherTotal = opTeamTotal;
+            tv_livevideo_en_achive_pk_energy_other.setText("" + otherTotal);
+        } else {
+            mLogtf.d("updateEnpk:opTeamTotal=" + opTeamTotal + ",otherTotal=" + otherTotal);
+        }
+        if (myTotal + otherTotal != 0) {
+            int progress = myTotal * 100 / (myTotal + otherTotal);
+            setEngPro(progress);
+        }
     }
 
     private Bitmap createBitmap(int energyCount, int width, int height) {
