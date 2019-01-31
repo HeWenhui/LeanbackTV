@@ -6,6 +6,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.chpk.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -16,11 +17,9 @@ import java.util.List;
 public class WinnerAdapter extends RecyclerView.Adapter<WinnerHolder> {
 
     private List<ClassChestEntity.SubChestEntity> mData;
-    private boolean isAiPatner;
 
-    public WinnerAdapter(List<ClassChestEntity.SubChestEntity> data, boolean isAiPatner) {
+    public WinnerAdapter(List<ClassChestEntity.SubChestEntity> data) {
         this.mData = data;
-        this.isAiPatner = isAiPatner;
     }
 
     public List<ClassChestEntity.SubChestEntity> getData() {
@@ -33,17 +32,19 @@ public class WinnerAdapter extends RecyclerView.Adapter<WinnerHolder> {
 
     @Override
     public WinnerHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        int layout = isAiPatner ? R.layout.item_teampk_open_box_aipatnerwinner : R.layout.item_teampk_open_box_winner;
-        return new WinnerHolder(LayoutInflater.from(parent.getContext()).inflate(layout, parent, false));
+        LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        View itemView = layoutInflater.inflate(R.layout.item_livevideo_chpk_winner,parent,false);
+        return new WinnerHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(WinnerHolder holder, int position) {
-        holder.bindData(mData.get(position), position);
+        holder.bindData(mData.get(0), 0);
     }
 
     @Override
     public int getItemCount() {
-        return mData == null ? 0 : mData.size();
+//        return mData == null ? 0 : mData.size();
+        return 15;
     }
 }

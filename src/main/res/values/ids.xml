@@ -1083,6 +1083,9 @@
     <item name="iv_livevideo_chpk_teamView" type="id" />
     <item name="fr_livevideo_chpk_teamView" type="id" />
 
+    <item name="iv_livevideo_chpk_selectReady" type="id" />
+    <item name="iv_livevideo_chpk_selectClose" type="id" />
+
     <item name="fr_livevideo_chpk_finalViewWrapper" type="id" />
     <item name="bt_livevideo_chpk_finalOwnerEnergy" type="id" />
     <item name="bt_livevideo_chpk_finalOtherEnergy" type="id" />
@@ -1113,6 +1116,13 @@
 
     <item name="rv_livevideo_chpk_contributesRoot" type="id" />
     <item name="rv_livevideo_chpk_contributesView" type="id" />
+
+    <item name="iv_livevideo_chpk_awardClickImage" type="id" />
+    <item name="av_livevideo_chpk_awardUserNumber" type="id" />
+    <item name="av_livevideo_chpk_awardTeamNumber" type="id" />
+    <item name="iv_livevideo_chpk_openAwardRanker" type="id" />
+    <item name="iv_livevideo_chpk_openAwardState" type="id" />
+    <item name="iv_livevideo_chpk_openAwardClose" type="id" />
 
 
 </resources>

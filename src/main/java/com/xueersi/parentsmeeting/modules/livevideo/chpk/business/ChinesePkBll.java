@@ -260,6 +260,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
         return mHttpResponseParser;
     }
 
+    private boolean prepareSelcting;
 
     /**
      * 开启分队仪式
@@ -268,16 +269,20 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
         logger.e("====>startTeamSelect:");
         Log.e("TeamPk", "========>getTeamInfo:" + mHttpManager + ":" + roomInitInfo);
 
+        prepareSelcting = true;
+
         HttpCallBack callBack = new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 teamInfoEntity = mHttpResponseParser.parseTeamInfo(responseEntity);
                 showTeamSelectScene();
+                prepareSelcting = false;
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
+                prepareSelcting = false;
             }
         };
 
@@ -395,6 +400,10 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
      * 显示分队进行中
      */
     public void showTeamSelecting() {
+        if (prepareSelcting) {
+            return;
+        }
+
         if (mFocusPager != null && (mFocusPager instanceof PkTeamSelectPager)) {
             return;
         }
@@ -885,11 +894,12 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
                 break;
         }
     }
+
     private void onTopicReal(LiveTopic data, JSONObject jsonObject, boolean modeChange) {
         // 战队pk  topic 逻辑
         LiveTopic.TeamPkEntity teamPkEntity = data.getTeamPkEntity();
 
-        if (teamPkEntity == null) {
+        if (teamPkEntity == null || !isAvailable) {
             return;
         }
 
@@ -917,7 +927,6 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
         if (!isTopicHandled() && alloteamStateCode == 1) {
             setTopicHandled(true);
             showTeamSelecting();
-            logger.e("====>onTopic showTeamSelecting:");
             return;
         }
         if (allotpkmanStateCode == 1 && !isTopicHandled()) {

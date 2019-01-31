@@ -147,7 +147,7 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
     private TypeEffectTextView effectTextView;
     private LinearLayout rl_teampk_rule;
     private ImageView ivReadyState;
-    private ImageView ivFinishSelect;
+    private ImageView ivSelectClose;
     private TimeCountDowTextView tvTimeCounter;
 
     public PkTeamSelectPager(Context context, ChinesePkBll pkBll) {
@@ -168,13 +168,13 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
         ivBgMask = view.findViewById(R.id.iv_teampk_bgmask);
         lavTeamSelectAnimView = view.findViewById(R.id.lav_teampk_team_select);
         rl_teampk_rule = view.findViewById(R.id.rl_teampk_rule);
-        ivReadyState = view.findViewById(R.id.iv_teampk_btn_ok);
-        ivFinishSelect = view.findViewById(R.id.iv_teampk_finish_team_select);
+        ivReadyState = view.findViewById(R.id.iv_livevideo_chpk_selectReady);
+        ivSelectClose = view.findViewById(R.id.iv_livevideo_chpk_selectClose);
         tvTimeCounter = view.findViewById(R.id.tv_teampk_team_select_timecoutdown);
         tvTimeCounter.setTimeSuffix("秒后进入下一步");
 
         ivReadyState.setOnClickListener(this);
-        ivFinishSelect.setOnClickListener(this);
+        ivSelectClose.setOnClickListener(this);
 
         loadSoundRes();
         return view;
@@ -184,9 +184,9 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.iv_teampk_btn_ok) {
+        if (v.getId() == R.id.iv_livevideo_chpk_selectReady) {
             upLoadStudentReady();
-        } else if (v.getId() == R.id.iv_teampk_finish_team_select) {
+        } else if (v.getId() == R.id.iv_livevideo_chpk_selectClose) {
             closeTeamSelectPager();
         }
     }
@@ -605,7 +605,7 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
         delayed = delayed + bindAnimation(rule3, listener, R.anim.anim_livevideo_teampk_rule_in, delayed, null) + 1000;
         delayed = delayed + bindAnimation(ivReadyState, finish, R.anim.anim_livevido_teampk_click_btn, delayed, it) + 1000;
 
-        ImageView ivReadyBtn = rl_teampk_rule.findViewById(R.id.iv_teampk_btn_ok);
+        ImageView ivReadyBtn = rl_teampk_rule.findViewById(R.id.iv_livevideo_chpk_selectReady);
         ivReadyBtn.setOnClickListener(this);
     }
 
@@ -738,11 +738,11 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
      */
     private void finishTeamSelect() {
 
-        if (ivFinishSelect.getVisibility() != View.VISIBLE) {
-            ivFinishSelect.setVisibility(View.VISIBLE);
+        if (ivSelectClose.getVisibility() != View.VISIBLE) {
+            ivSelectClose.setVisibility(View.VISIBLE);
             ScaleAnimation scaleAnimation = (ScaleAnimation) AnimationUtils.loadAnimation(mContext, R.anim.anim_livevido_teampk_click_btn);
             scaleAnimation.setInterpolator(new SpringScaleInterpolator(0.19f));
-            ivFinishSelect.startAnimation(scaleAnimation);
+            ivSelectClose.startAnimation(scaleAnimation);
         }
 
     }

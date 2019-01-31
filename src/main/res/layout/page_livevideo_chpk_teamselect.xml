@@ -181,7 +181,7 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@id/iv_teampk_btn_ok"
+            android:id="@id/iv_livevideo_chpk_selectReady"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -238,12 +238,12 @@
             android:scrollbars="none" />
 
         <ImageView
-            android:id="@id/iv_teampk_finish_team_select"
+            android:id="@id/iv_livevideo_chpk_selectClose"
             android:layout_width="100dp"
-            android:layout_height="38dp"
+            android:layout_height="40dp"
             android:layout_gravity="center_horizontal|bottom"
             android:layout_marginTop="5dp"
-            android:src="@drawable/livevideo_list_closewindow_bth_normal" />
+            android:src="@drawable/livevideo_chpk_close_btn" />
     </FrameLayout>
 
     <com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountDowTextView
@@ -257,6 +257,5 @@
         android:textStyle="bold"
         android:visibility="gone"
         android:id="@id/tv_teampk_team_select_timecoutdown" />
-
 
 </com.xueersi.ui.widget.ZoomerLayout>
