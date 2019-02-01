@@ -22,13 +22,21 @@ public class LiveLog {
     private Context mContext;
     private LiveGetInfo mGetInfo;
     private int mLiveType;
+    /** 直播id */
     private String mLiveId;
+    /** 直播的类型。直播，讲座 */
     private String type;
+    /** 播放的类型。直播，回放，旁听 */
     private String getPrefix;
+    /** 进直播的时候，生成一次 */
     private String tid;
+    /** 进直播的次数，内存中 */
     private int times;
     private ArrayList<PerGetInfoLog> msg = new ArrayList<>();
+    /** 进直播的次数，内存中 */
     public static int LIVE_TIME = 0;
+    /** 日志顺序 */
+    private int logIndex = 0;
 
     public LiveLog(Context mContext, int mLiveType, String mLiveId, String getPrefix) {
         this.mContext = mContext;
@@ -69,6 +77,7 @@ public class LiveLog {
         logHashMap.put("prefix", "" + getPrefix);
         logHashMap.put("liveid", "" + mLiveId);
         logHashMap.put("type", "" + type);
+        logHashMap.put("logindex", "" + logIndex++);
         logHashMap.put("teacherId", "" + mGetInfo.getTeacherId());
         UmsAgentManager.umsAgentDebug(mContext, LogerTag.DEBUG_VIDEO_LIVEMSG, logHashMap.getData());
     }
