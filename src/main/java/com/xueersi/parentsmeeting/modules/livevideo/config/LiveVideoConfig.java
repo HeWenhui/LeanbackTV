@@ -417,4 +417,17 @@ public class LiveVideoConfig {
     /** 文理半身直播  文科科家长旁听数据接口 */
     public static final String URL_HALFBODY_LIVE_STULIVEINFO_ARTS = "https://app.chs.xueersi.com/LiveCourse/getStuDateOfVisitedParentPage";
 
+
+    /**
+     * 体验课类型
+     */
+    public static interface ExperiencLiveType{
+        /**半身直播体验课*/
+        int HALF_BODY = 1001;
+        /**普通直播体验课*/
+        int NORMAL = 1000;
+    }
+    /**半身直播体验课 试题 h5 地址**/
+    public static final String URL_HALFBODY_EXPERIENCE_LIVE_H5 = "https://laoshi.xueersi.com/science/AutoLive/halfBodyH5";
+
 }

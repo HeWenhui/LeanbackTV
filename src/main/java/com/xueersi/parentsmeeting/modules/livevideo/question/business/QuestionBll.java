@@ -956,6 +956,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
         VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
         boolean isSuccess = false;
+        View popupWindow_view = null;
         int type = 0;
         if (entity != null) {// 提交成功，否则是已经答过题了
             // 发送已答过这道题的标识
@@ -990,14 +991,14 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     } else {
                         // 回答正确提示
                         if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4) {
-                            initAnswerRightResult(entity);
+                            popupWindow_view = initAnswerRightResult(entity);
                             isSuccess = true;
                             // 回答错误提示
                         } else if (entity.getResultType() == QUE_RES_TYPE2) {
-                            initAnswerWrongResult();
+                            popupWindow_view = initAnswerWrongResult();
                             // 填空题部分正确提示
                         } else if (entity.getResultType() == QUE_RES_TYPE3 || entity.getResultType() == QUE_RES_TYPE5) {
-                            initAnswerPartRightResult(entity);
+                            popupWindow_view = initAnswerPartRightResult(entity);
                             isSuccess = true;
                         }
                     }
@@ -1015,7 +1016,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
         if (isSuccess) {
             if (tempBaseQuestionPager != null) {
-                tempBaseQuestionPager.onSubSuccess();
+                tempBaseQuestionPager.onSubSuccess(popupWindow_view, videoQuestionLiveEntity.id, entity);
             }
             postDelayedIfNotFinish(new Runnable() {
                 @Override
@@ -1028,7 +1029,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             }, 5000);
         } else {
             if (tempBaseQuestionPager != null) {
-                tempBaseQuestionPager.onSubFailure();
+                tempBaseQuestionPager.onSubFailure(popupWindow_view, videoQuestionLiveEntity.id, entity);
             }
         }
         String testId = "";
@@ -1075,21 +1076,21 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     @Override
     public void onStopQuestion(String ptype, final String nonce) {
-        mLogtf.d("onStopQuestion:ptype=" + ptype + ":" + mVideoQuestionLiveEntity+":"+rolePlayAction);
+        mLogtf.d("onStopQuestion:ptype=" + ptype + ":" + mVideoQuestionLiveEntity + ":" + rolePlayAction);
         boolean havePager = false;
         boolean oldisAnaswer = isAnaswer;
         isAnaswer = false;
         //解决多人的时候，除了初次的多人正常进对话，其他的都进不去
         if (rolePlayAction != null && mVideoQuestionLiveEntity != null) {
-            logger.i("onStopQuestion:" + rolePlayAction.getQuestionId()+":"+mVideoQuestionLiveEntity.id);
+            logger.i("onStopQuestion:" + rolePlayAction.getQuestionId() + ":" + mVideoQuestionLiveEntity.id);
             //if (mVideoQuestionLiveEntity.id.equals(rolePlayAction.getQuestionId())) {
-                rolePlayAction.onStopQuestion(mVideoQuestionLiveEntity, nonce);
+            rolePlayAction.onStopQuestion(mVideoQuestionLiveEntity, nonce);
             rolePlayAction = null;
             //}
         }
 
         if (rolePlayMachineAction != null) {
-            logger.i("onStopQuestion:" + rolePlayMachineAction.getQuestionId()+":"+mVideoQuestionLiveEntity.id);
+            logger.i("onStopQuestion:" + rolePlayMachineAction.getQuestionId() + ":" + mVideoQuestionLiveEntity.id);
             rolePlayMachineAction.onStopQuestion(mVideoQuestionLiveEntity, nonce);
             rolePlayMachineAction = null;
         }
@@ -1846,7 +1847,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      *
      * @param entity
      */
-    private void initAnswerRightResult(VideoResultEntity entity) {
+    private View initAnswerRightResult(VideoResultEntity entity) {
         int goldNum = entity.getGoldNum();
         int resultType = entity.getResultType();
         View popupWindow_view = activity.getLayoutInflater().inflate(R.layout.pop_question_answer_right, null, false);
@@ -1859,6 +1860,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             tvGoldHint.setVisibility(View.GONE);
         }
         initQuestionAnswerReslut(popupWindow_view);
+        return popupWindow_view;
     }
 
     /**
@@ -1900,15 +1902,16 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     /**
      * 互动题回答错误
      */
-    private void initAnswerWrongResult() {
+    private View initAnswerWrongResult() {
         View popupWindow_view = activity.getLayoutInflater().inflate(R.layout.pop_question_answer_wrong, null, false);
         initQuestionAnswerReslut(popupWindow_view);
+        return popupWindow_view;
     }
 
     /**
      * 互动题回答部分正确
      */
-    private void initAnswerPartRightResult(VideoResultEntity entity) {
+    private View initAnswerPartRightResult(VideoResultEntity entity) {
         int goldNum = entity.getGoldNum();
         int resultType = entity.getResultType();
         View popupWindow_view = activity.getLayoutInflater().inflate(R.layout.pop_question_answer_right, null, false);
@@ -1926,6 +1929,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             tvGoldHint.setVisibility(View.GONE);
         }
         initQuestionAnswerReslut(popupWindow_view);
+        return popupWindow_view;
     }
 
     /**

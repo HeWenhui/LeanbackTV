@@ -778,11 +778,11 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
         liveBackBll = new LiveBackBll(this, mVideoEntity);
         questionBll = new QuestionBll(this, mVideoEntity.getStuCourseId());
-        mLiveBll = new LiveBll(this, mVideoEntity.getSectionId(), mVideoEntity.getChapterId(), EXP_LIVE_TYPE, 0);
+        mLiveBll = new LiveBll(this, mVideoEntity.getLiveId(), mVideoEntity.getChapterId(), EXP_LIVE_TYPE, 0);
 
         mLiveBll.setSendMsgListener(new MsgSendListener());
         mHttpManager = new LiveHttpManager(mContext);
-        mHttpManager.addBodyParam("liveId", mVideoEntity.getSectionId());
+        mHttpManager.addBodyParam("liveId", mVideoEntity.getLiveId());
 
         liveMessageBll = new LiveMessageBll(this, 1);
 

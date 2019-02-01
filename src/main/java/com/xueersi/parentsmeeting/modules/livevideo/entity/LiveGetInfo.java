@@ -246,6 +246,7 @@ public class LiveGetInfo {
      * 1 :是pk 直播间  0 :非pk直播间
      */
     private String isAllowTeamPk;
+
     /** 是否是AI 伴侣直播间 */
     private int isAIPartner;
     private String[] subjectIds;//所有学科id
