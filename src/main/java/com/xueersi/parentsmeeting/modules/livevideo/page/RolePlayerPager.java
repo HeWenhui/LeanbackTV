@@ -410,8 +410,8 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
 
         rlDZBubbleMessage = view.findViewById(R.id.rl_live_roleplayer_dz_message_bubble_main);
         int colors[] = {0x1936BC9B, 0x3236BC9B, 0x6436BC9B, 0x9636BC9B, 0xFF36BC9B};
-        //vwvSpeechVolume.setColors(colors);
-        //vwvSpeechVolume.setBackColor(Color.TRANSPARENT);
+        vwvSpeechVolume.setColors(colors);
+        vwvSpeechVolume.setBackColor(Color.TRANSPARENT);
         rlResult = view.findViewById(R.id.rl_live_roleplayer_result_main);
 
         iv_live_roleplayer_title = view.findViewById(R.id.iv_live_roleplayer_title);
