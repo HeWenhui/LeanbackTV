@@ -47,10 +47,12 @@ public class TeamMemberStarItem implements AdapterItemInterface<TeamMemberEntity
     private int height;
     private OnItemClick onItemClick;
     private int type;
+    private int pattern;
 
-    public TeamMemberStarItem(Context context, int type, HashMap<TeamMemberEntity, LottieAnimationView> map) {
+    public TeamMemberStarItem(Context context, int type, int pattern, HashMap<TeamMemberEntity, LottieAnimationView> map) {
         this.context = context;
         this.type = type;
+        this.pattern = pattern;
         this.map = map;
     }
 
@@ -60,6 +62,9 @@ public class TeamMemberStarItem implements AdapterItemInterface<TeamMemberEntity
 
     @Override
     public int getLayoutResId() {
+        if (pattern == 2) {
+            return R.layout.item_livevideo_en_team_member_star_stand;
+        }
         return R.layout.item_livevideo_en_team_member_star;
     }
 

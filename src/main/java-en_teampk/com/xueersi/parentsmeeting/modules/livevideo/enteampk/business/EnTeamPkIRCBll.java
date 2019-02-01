@@ -108,8 +108,8 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         if (englishShowReg != null) {
             englishShowReg.registQuestionShow(enTeamPkQuestionShowAction);
         }
-//        if (AppConfig.DEBUG) {
-//            Random random = new Random();
+//        if (com.xueersi.common.config.AppConfig.DEBUG) {
+//            java.util.Random random = new java.util.Random();
 //            EnTeamPkRankEntity enTeamPkRankEntity = new EnTeamPkRankEntity();
 //            enTeamPkRankEntity.setApkTeamId(2);
 //            ArrayList<TeamMemberEntity> memberEntities = enTeamPkRankEntity.getMemberEntities();

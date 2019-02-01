@@ -328,7 +328,7 @@ public class TeamPkLeadPager extends LiveBasePager {
         final ArrayList<TeamMemberEntity> myTeamEntitys = enTeamPkRankEntity.getMemberEntities();
         LayoutInflater inflater = LayoutInflater.from(mContext);
         for (int i = 0; i < myTeamEntitys.size(); i++) {
-            TeamMemberStarItem teamMemberStarItem = new TeamMemberStarItem(mContext, type, map);
+            TeamMemberStarItem teamMemberStarItem = new TeamMemberStarItem(mContext, type, pattern, map);
             teamMemberStarItems.add(teamMemberStarItem);
             teamMemberStarItem.setOnItemClick(new TeamMemberStarItem.OnItemClick() {
                 @Override
@@ -343,7 +343,11 @@ public class TeamPkLeadPager extends LiveBasePager {
             teamMemberStarItem.updateViews(myTeamEntitys.get(i), i, null);
             LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) convertView.getLayoutParams();
             if (i != 0) {
-                layoutParams.leftMargin = (int) (20 * ScreenUtils.getScreenDensity());
+                if (pattern == 2) {
+                    layoutParams.leftMargin = SizeUtils.Dp2Px(mContext, 20);
+                } else {
+                    layoutParams.leftMargin = SizeUtils.Dp2Px(mContext, 11);
+                }
             }
             llTeampkLeadStar.addView(convertView, layoutParams);
         }
