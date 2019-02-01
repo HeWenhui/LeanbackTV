@@ -65,7 +65,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         super.onLiveInited(getInfo);
         LiveGetInfo.EnglishPk englishPk = getInfo.getEnglishPk();
         logger.d("onLiveInited:use=" + englishPk.canUsePK + ",has=" + englishPk.hasGroup);
-//        if (AppConfig.DEBUG) {
+//        if (com.xueersi.common.config.AppConfig.DEBUG) {
 //            englishPk.canUsePK = 1;
 //            englishPk.hasGroup = 0;
 //        }
