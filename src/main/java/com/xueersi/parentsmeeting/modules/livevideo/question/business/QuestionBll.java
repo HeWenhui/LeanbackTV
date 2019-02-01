@@ -1458,6 +1458,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                             }
                         }
                     });
+        } else {
+            if (!isAnaswer) {
+                onQuestionShow(null, false, "onSpeechPagerBack");
+            }
         }
         if (isNotNull) {
             return true;
