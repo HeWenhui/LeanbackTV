@@ -39,12 +39,11 @@ public class WinnerAdapter extends RecyclerView.Adapter<WinnerHolder> {
 
     @Override
     public void onBindViewHolder(WinnerHolder holder, int position) {
-        holder.bindData(mData.get(0), 0);
+        holder.bindData(mData.get(position), position);
     }
 
     @Override
     public int getItemCount() {
-//        return mData == null ? 0 : mData.size();
-        return 15;
+        return mData == null ? 0 : mData.size();
     }
 }

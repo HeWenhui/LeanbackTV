@@ -8,8 +8,11 @@
         android:id="@id/iv_teampk_member_head"
         android:layout_gravity="center_horizontal"
         android:scaleType="centerCrop"
-        android:padding="3dp"
-        android:background="@drawable/live_video_teampk_headmask"
+        android:paddingLeft="8dp"
+        android:paddingTop="6dp"
+        android:paddingRight="8dp"
+        android:paddingBottom="14dp"
+        android:background="@drawable/livevideo_chpk_logo_border"
         android:layout_width="62dp"
         android:layout_height="62dp" />
 
