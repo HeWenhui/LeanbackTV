@@ -7,12 +7,14 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
+import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.CharacterStyle;
+import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.text.util.Linkify;
@@ -168,6 +170,11 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         setVideoLayout(LiveVideoPoint.getInstance());
     }
 
+    /** 当前连对数 */
+    private TextView tvNowEvenNum;
+    /** 当前最高连对数 */
+    private TextView tvHighestEvenNum;
+
     @Override
     public View initView() {
         mView = View.inflate(mContext, R.layout.page_livevideo_message, null);
@@ -184,6 +191,13 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 .rl_livevideo_message_panelroot);
         ivExpressionCancle = (ImageView) mView.findViewById(R.id.iv_livevideo_message_expression_cancle);
         logger.setLogMethod(false);
+
+//        if (getInfo.getIsOpenNewCourseWare() == 1) {
+//        ViewStub viewStub = mView.findViewById(R.id.vs_livevideo_livemessage_middle_science_even);
+//        viewStub.setVisibility(View.VISIBLE);
+        tvNowEvenNum = mView.findViewById(R.id.tv_livevideo_livemessage_middle_even_right_now);
+        tvHighestEvenNum = mView.findViewById(R.id.tv_livevideo_livemessage_middle_even_right_max);
+//        }
         return mView;
     }
 
@@ -427,6 +441,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                         SpannableString spanttt = new SpannableString(sender + ": ");
                         int color;
                         switch (entity.getType()) {
+                            case LiveMessageEntity.EVEN_DRIVE_LIKE:
                             case LiveMessageEntity.MESSAGE_MINE:
                             case LiveMessageEntity.MESSAGE_TEACHER:
                             case LiveMessageEntity.MESSAGE_TIP:
@@ -437,6 +452,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                                 color = nameColors[0];
                                 break;
                         }
+
                         CharacterStyle characterStyle = new ForegroundColorSpan(color);
                         spanttt.setSpan(characterStyle, 0, sender.length() + 1, Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
                         if (urlclick == 1 && LiveMessageEntity.MESSAGE_TEACHER == entity.getType()) {
@@ -446,6 +462,13 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                             CharSequence text = tvMessageItem.getText();
                             tvMessageItem.setText(spanttt);
                             tvMessageItem.append(text);
+                        } else if (LiveMessageEntity.MESSAGE_TIP == entity.getType() && ("查看排行").equals(entity.getText().toString())) {
+                            //点击连对激励系统的查看排行榜，弹出排行榜的内容
+                            tvMessageItem.setText(spanttt);
+                            tvMessageItem.append(clickEvenDrive(entity));
+                        } else if (LiveMessageEntity.EVEN_DRIVE_LIKE == entity.getType()) {
+                            //显示别人给我点赞的信息
+                            tvMessageItem.setText(likeEvenDrive(entity));
                         } else {
                             tvMessageItem.setAutoLinkMask(0);
                             tvMessageItem.setText(spanttt);
@@ -471,6 +494,32 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         before = System.currentTimeMillis();
     }
 
+    /** 设置聊天消息的点赞图片 */
+    private SpannableStringBuilder likeEvenDrive(LiveMessageEntity entity) {
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(entity.getText());
+        String replacePos = "点赞心";
+        spannableStringBuilder.append(replacePos);
+        ImageSpan imageSpan = new ImageSpan(mContext.getResources().getDrawable(R.drawable.livevideo_list_redheart_icon_normal));
+        spannableStringBuilder.setSpan(imageSpan, entity.getText().length(), entity.getText().length() + replacePos.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannableStringBuilder;
+    }
+
+    //点击连对激励，弹出排行榜
+    private SpannableStringBuilder clickEvenDrive(LiveMessageEntity entity) {
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+                //弹出排行榜
+                if (liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_rank) != null) {
+                    liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_rank).performClick();
+                }
+            }
+        };
+        SpannableStringBuilder spannableBuilder = new SpannableStringBuilder(entity.getText());
+        spannableBuilder.setSpan(clickableSpan, 0, entity.getText().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return spannableBuilder;
+    }
+
     @Override
     public void setGetInfo(LiveGetInfo getInfo) {
         super.setGetInfo(getInfo);
@@ -483,6 +532,10 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                     LiveIRCMessageBll.requestGoldTotal(mContext);
                 }
             });
+            View view = mView.findViewById(R.id.vs_livevideo_livemessage_middle_science_even);
+            if (view != null) {
+                view.setVisibility(getInfo.getIsOpenNewCourseWare() == 1 ? View.VISIBLE : View.GONE);
+            }
         }
     }
 
@@ -1735,6 +1788,17 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             liveAndBackDebug.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE_IMMSG, logHashMap.getData());
         }
         Loger.e("Duncan", "sender:" + sender);
+    }
+
+    /**
+     * 设置连对数
+     *
+     * @param nowEvenNum      当前连对数
+     * @param highestRightNum 当前最高连对数
+     */
+    public void setEvenText(String nowEvenNum, String highestRightNum) {
+        tvNowEvenNum.setText("连对×" + nowEvenNum);
+        tvHighestEvenNum.setText("最高×" + highestRightNum);
     }
 
     @Override

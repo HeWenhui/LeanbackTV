@@ -80,10 +80,9 @@ public class EvenDriveEntity {
         }
     }
 
+    //    我的排名信息
     public static class MyEntity {
-
-        //    当前学生的排名信息
-//    学生展示
+        //    学生展示
         private String name;
 
         //    学生排名
@@ -94,6 +93,39 @@ public class EvenDriveEntity {
 
         //    当前学生的最高连对
         private String highestRightNum;
+        //学生ID
+        private String stuId;
+
+
+        /** 是否可以点赞 */
+        private int isThumbsUp;
+
+        /** 点赞数量 */
+        private int thumbsUpNum;
+
+        public int getThumbsUpNum() {
+            return thumbsUpNum;
+        }
+
+        public void setThumbsUpNum(int thumbsUpNum) {
+            this.thumbsUpNum = thumbsUpNum;
+        }
+
+        public int getIsThumbsUp() {
+            return isThumbsUp;
+        }
+
+        public void setIsThumbsUp(int isThumbsUp) {
+            this.isThumbsUp = isThumbsUp;
+        }
+
+        public String getStuId() {
+            return stuId;
+        }
+
+        public void setStuId(String stuId) {
+            this.stuId = stuId;
+        }
 
         public String getName() {
             return name;

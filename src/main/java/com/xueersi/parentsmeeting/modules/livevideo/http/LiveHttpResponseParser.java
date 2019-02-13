@@ -224,8 +224,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 
             //连对激励
             getInfo.setIsOpenNewCourseWare(data.optInt("isOpenNewCourseWare"));
-            getInfo.setGetEvenPairListUrl("getEvenPairListUrl");
-            getInfo.setGetThumbsUpUrl("getThumbsUpUrl");
+            getInfo.setIsOpenNewCourseWare(1);
+            getInfo.setGetJournalUrl(data.optString("getJournalUrl", " https://live.xueersi.com/science/Stimulation/getJournal"));
+            getInfo.setGetEvenPairListUrl(data.optString("getEvenPairListUrl", "https://live.xueersi.com/science/Stimulation/evenPairList"));
+            getInfo.setGetThumbsUpUrl(data.optString("getThumbsUpUrl", "https://live.xueersi.com/science/Stimulation/thumbsUp"));
             //getInfo.setIsShowMarkPoint("0");
             getInfo.setIsShowCounselorWhisper(data.optString("counselor_whisper"));
             getInfo.setIsSeniorOfHighSchool(data.optInt("isSeniorOfHighSchool"));
@@ -1927,8 +1929,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     public EvenDriveEntity parseEvenEntity(ResponseEntity responseEntity) {
         JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
         EvenDriveEntity evenDriveEntity = new EvenDriveEntity();
-
-
         EvenDriveEntity.MyEntity myEntity = new EvenDriveEntity.MyEntity();
         int myRank = 1;
         if (jsonObject.has("myInfo")) {
@@ -1937,15 +1937,16 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 myEntity.setEvenPairNum(myJSON.optInt("evenPairNum"));
                 myEntity.setHighestRightNum(myJSON.optString("highestRightNum"));
                 myEntity.setName(myJSON.optString("name"));
+                myEntity.setStuId(myJSON.optString("stuId"));
+                myEntity.setIsThumbsUp(myJSON.optInt("isThumbsUp"));
+                myEntity.setThumbsUpNum(myJSON.optInt("thumbsUpNum"));
                 myRank = myJSON.optInt("rank");
                 myEntity.setRank(myRank);
                 evenDriveEntity.setMyEntity(myEntity);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
         }
-
         if (jsonObject.has("stuRanking")) {
             JSONArray jsonArray;
             try {
@@ -1962,20 +1963,28 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     otherEntity.setThumbsUpNum(itemJSON.optInt("thumbsUpNum"));
                     int ranking = itemJSON.optInt("ranking");
                     otherEntity.setRanking(ranking);
-                    if (myRank == ranking) {
-                        EvenDriveEntity.OtherEntity myListEntity = new EvenDriveEntity.OtherEntity();
-                        myListEntity.setRanking(myRank);
-                        otherEntity.setEvenPairNum(itemJSON.optInt("evenPairNum"));
-                        otherEntity.setIsThumbsUp(itemJSON.optInt("isThumbsUp"));
-                        otherEntity.setName(itemJSON.optString("name"));
+//                    if (myRank == ranking) {
+//                    EvenDriveEntity.OtherEntity myListEntity = new EvenDriveEntity.OtherEntity();
+//                    myListEntity.setRanking(myRank);
+//                    myListEntity.setEvenPairNum(itemJSON.optInt("evenPairNum"));
+//                    myListEntity.setIsThumbsUp(itemJSON.optInt("isThumbsUp"));
+//                    myListEntity.setName(itemJSON.optString("name"));
 //                        String stuId = itemJSON.optString("stuId");
-                        otherEntity.setStuId(stuId);
-                        otherEntity.setThumbsUpNum(itemJSON.optInt("thumbsUpNum"));
-                        list.add(0, myListEntity);
-                    }
-
+//                    myListEntity.setStuId(stuId);
+//                    myListEntity.setThumbsUpNum(itemJSON.optInt("thumbsUpNum"));
+//                    list.add(0, myListEntity);
+//                    }
                     list.add(otherEntity);
                 }
+                EvenDriveEntity.OtherEntity myListEntity = new EvenDriveEntity.OtherEntity();
+                myListEntity.setRanking(myRank);
+                myListEntity.setEvenPairNum(myEntity.getEvenPairNum());
+                myListEntity.setIsThumbsUp(myEntity.getIsThumbsUp());
+                myListEntity.setName(myEntity.getName());
+//                        String stuId = itemJSON.optString("stuId");
+                myListEntity.setStuId(myEntity.getStuId());
+                myListEntity.setThumbsUpNum(myEntity.getThumbsUpNum());
+                list.add(0, myListEntity);
                 evenDriveEntity.setOtherEntities(list);
             } catch (JSONException e) {
                 e.printStackTrace();

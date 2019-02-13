@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#cc000000"
-    android:clickable="true"
-    tools:ignore="MissingConstraints">
+    android:visibility="gone">
 
     <TextView
         android:id="@id/tv_livevideo_middle_science_mygroup"
@@ -43,7 +41,7 @@
         app:layout_constraintTop_toTopOf="@id/tv_livevideo_middle_science_mygroup" />
 
     <View
-        android:id="@id/v_livevideo_rank_mygroup"
+        android:id="@id/v_livevideo_rank_groups"
         android:layout_width="30dp"
         android:layout_height="2dp"
         android:layout_marginTop="10dp"
@@ -64,7 +62,7 @@
         app:layout_constraintTop_toTopOf="@id/tv_livevideo_middle_science_mygroup" />
 
     <View
-        android:id="@id/v_livevideo_rank_mygroup"
+        android:id="@id/v_livevideo_rank_class"
         android:layout_width="30dp"
         android:layout_height="2dp"
         android:layout_marginTop="10dp"
@@ -81,53 +79,28 @@
         android:background="@color/white"
         app:layout_constraintTop_toBottomOf="@id/tv_livevideo_middle_science_mygroup" />
 
-    <TextView
-        android:id="@id/tv_livevideo_middle_science_even_title_rank"
-        style="@style/text_font11_ffffff_style"
-        android:layout_width="wrap_content"
+    <include
+        android:id="@id/include_livevideo_even_drive_tips_layout"
+        layout="@layout/page_livevideo_rank_even_drive_tips"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="13dp"
-        android:layout_marginTop="13dp"
-        android:text="排名"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@id/view_livevideo_middle_science_line" />
+        app:layout_constraintTop_toBottomOf="@id/view_livevideo_middle_science_line" />
 
-    <TextView
-        android:id="@id/tv_livevideo_middle_science_even_title_student"
-        style="@style/text_font11_ffffff_style"
-        android:layout_width="wrap_content"
+    <include
+        android:id="@id/include_livevideo_rank_normal_tips_layout"
+        layout="@layout/page_livevideo_rank_tips"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="7dp"
-        android:text="学员"
-        app:layout_constraintLeft_toRightOf="@id/tv_livevideo_middle_science_even_title_rank"
-        app:layout_constraintTop_toTopOf="@id/tv_livevideo_middle_science_even_title_rank" />
-
-    <TextView
-        android:id="@id/tv_livevideo_middle_science_even_title_right"
-        style="@style/text_font11_ffffff_style"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="7dp"
-        android:text="正确率"
-        app:layout_constraintRight_toLeftOf="@id/tv_livevideo_middle_science_even_title_like"
-        app:layout_constraintTop_toTopOf="@id/tv_livevideo_middle_science_even_title_rank" />
-
-    <TextView
-        android:id="@id/tv_livevideo_middle_science_even_title_like"
-        style="@style/text_font11_ffffff_style"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="12dp"
-        android:text="点赞"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/tv_livevideo_middle_science_even_title_rank" />
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/view_livevideo_middle_science_line" />
 
     <ListView
         android:id="@id/lv_livevideo_middle_science_list"
         style="@style/listview_common_style"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_marginTop="20dp"
         android:divider="@color/transparent"
-        android:dividerHeight="10dp" />
+        android:dividerHeight="10dp"
+        app:layout_constraintTop_toBottomOf="@id/include_livevideo_even_drive_tips_layout" />
 </android.support.constraint.ConstraintLayout>

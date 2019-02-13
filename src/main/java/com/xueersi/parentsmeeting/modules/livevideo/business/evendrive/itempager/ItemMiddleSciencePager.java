@@ -1,10 +1,11 @@
-package com.xueersi.parentsmeeting.modules.livevideo.business.evendrive;
+package com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.itempager;
 
 import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 
@@ -25,6 +26,12 @@ public abstract class ItemMiddleSciencePager<T> implements AdapterItemInterface<
     protected T entity;
 
     protected Context mContext;
+    /** 试题结束的时间 */
+    protected long endTime = -1;
+    /** 自己的学生id */
+    protected String myStuId;
+
+    protected final long TIME_SEND_PRIVATE_MSG = 15 * 1000;
 
     @Override
     public int getLayoutResId() {
@@ -40,16 +47,47 @@ public abstract class ItemMiddleSciencePager<T> implements AdapterItemInterface<
         ivRedHeard = root.findViewById(R.id.iv_livevideo_rank_item_right_leftimg);
     }
 
-    @Override
-    public void bindListener() {
+//    @Override
+//    public void bindListener() {
+//
+//    }
 
+    public void setMyStuId(String stuId) {
+        this.myStuId = stuId;
+    }
+
+    public void setEndTime(long endTime) {
+        this.endTime = endTime;
     }
 
     /**
      * 点赞发送消息
+     * wiki文档 ：http://wiki.xesv5.com/pages/viewpage.action?pageId=16827379
      */
     public interface INotice {
-        void sendNotice(JSONObject jsonObject);
+        /** 发送Notice消息 */
+        void sendNotice(JSONObject jsonObject, String targetName);
+
+        /**
+         * 发送点赞消息
+         *
+         * @param listFlag  榜单标识（1：排行榜 2：连对榜）
+         * @param bePraised 被点赞的ID
+         */
+        void sendLike(int listFlag, String bePraised, HttpCallBack httpCallBack);
+
+    }
+
+    /** 给自己点赞 */
+    public interface IClickSelf {
+        /** 点赞自己 */
+        void clickSelf();
+    }
+
+    protected IClickSelf iClickSelf;
+
+    public void setiClickSelf(IClickSelf iClickSelf) {
+        this.iClickSelf = iClickSelf;
     }
 
     private INotice iNotice;

@@ -1849,5 +1849,43 @@ public class LiveHttpManager extends BaseHttpBusiness {
         HttpRequestParams params = new HttpRequestParams();
         sendPost(liveVideoSAConfigInner.URL_LIVE_SCIENCE_GET_EVALUATE_OPTION, params, requestCallBack);
     }
+
+    /**
+     * 中学激励系统学生点赞
+     *
+     * @param url
+     * @param classId   班级id
+     * @param planId    场次id
+     * @param teamId    小组ID
+     * @param listFlag  榜单标识（1：排行榜 2：连对榜）
+     * @param bePraised 被点赞的ID
+     */
+    public void sendEvenDriveLike(String url, String classId, String planId, String teamId, String listFlag, String bePraised, HttpCallBack callBack) {
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+        httpRequestParams.addBodyParam("classId", classId);
+        httpRequestParams.addBodyParam("planId", planId);
+        httpRequestParams.addBodyParam("teamId", teamId);
+        httpRequestParams.addBodyParam("listFlag", listFlag);
+        httpRequestParams.addBodyParam("bePraised", bePraised);
+        sendPost(url, httpRequestParams, callBack);
+    }
+
+    /**
+     * 学报接口地址
+     *
+     * @param url
+     * @param classId 班级id
+     * @param liveId  场次id
+     * @param teamId  小组ID
+     * @param stuId   学生ID
+     */
+    public void getJournalUrl(String url, String classId, String liveId, String teamId, String stuId, HttpCallBack callBack) {
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+        httpRequestParams.addBodyParam("classId", classId);
+        httpRequestParams.addBodyParam("liveId", liveId);
+        httpRequestParams.addBodyParam("teamId", teamId);
+        httpRequestParams.addBodyParam("stuId", stuId);
+        sendPost(url, httpRequestParams, callBack);
+    }
 }
 

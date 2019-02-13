@@ -7,6 +7,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.ui.adapter.RItemViewInterface;
 import com.xueersi.ui.adapter.ViewHolder;
 
+/**
+ * 中学激励系统RecyclerView使用Adapter的子项，暂时未用
+ */
 public class EvenRItemViewInterface implements RItemViewInterface {
 
     protected TextView rankLeft;//tv_livevideo_rank_item_left;

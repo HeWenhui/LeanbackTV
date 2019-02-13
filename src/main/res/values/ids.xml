@@ -1080,6 +1080,7 @@
     <item name="tv_livevideo_middle_science_even_title_right" type="id" />
     <item name="tv_livevideo_middle_science_even_title_student" type="id" />
     <item name="tv_livevideo_middle_science_even_title_rank" type="id" />
+    <item name="ctlayout_livevideo_rank_middle_science_even_drive_tips" type="id" />
     <item name="lv_livevideo_middle_science_list" type="id" />
     <item name="tv_livevideo_livemessage_middle_even_right_now" type="id" />
     <item name="view_livevideo_livemessage_middle_even_right_barrair" type="id" />
@@ -1087,6 +1088,13 @@
     <item name="tv_livevideo_rank_item_mid_left" type="id" />
     <item name="tv_livevideo_rank_item_mid_right" type="id" />
     <item name="iv_livevideo_rank_item_right_leftimg" type="id" />
+    <item name="rl_livevideo_rank_tips" type="id" />
+    <item name="include_livevideo_even_drive_tips_layout" type="id" />
+    <item name="tv_livevideo_rank_tips_left" type="id" />
+    <item name="tv_livevideo_rank_tips_middle" type="id" />
+    <item name="tv_livevideo_rank_tips_right" type="id" />
+    <item name="include_livevideo_rank_normal_tips_layout" type="id" />
+    <item name="vs_livevideo_livemessage_middle_science_even" type="id" />
     <!--<item name="" type="id" />-->
     <!--<item name="" type="id" />-->
     <!--<item name="" type="id" />-->

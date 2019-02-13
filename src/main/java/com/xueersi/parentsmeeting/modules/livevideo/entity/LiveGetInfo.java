@@ -121,6 +121,7 @@ public class LiveGetInfo {
     private String clientLog;
     /**
      * 直播id
+     * liveId
      */
     private String id;
     /**
@@ -293,6 +294,16 @@ public class LiveGetInfo {
     private String getEvenPairListUrl;
     /** 点赞接口地址 */
     private String getThumbsUpUrl;
+
+    private String getJournalUrl;
+
+    public String getGetJournalUrl() {
+        return getJournalUrl;
+    }
+
+    public void setGetJournalUrl(String getJournalUrl) {
+        this.getJournalUrl = getJournalUrl;
+    }
 
     public int getIsOpenNewCourseWare() {
         return isOpenNewCourseWare;
