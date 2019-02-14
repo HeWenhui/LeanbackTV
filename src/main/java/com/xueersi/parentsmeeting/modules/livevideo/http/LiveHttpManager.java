@@ -222,6 +222,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         return cancelable;
     }
 
+
     class HttpURLConnectionCancelable implements Callback.Cancelable {
         HttpURLConnection connection;
         boolean isCancel;
@@ -1363,6 +1364,21 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(liveVideoSAConfigInner.URL_TEMPK_TEAMENERGYNUMANDCONTRIBUTIONSTARMUL + "/" + liveId, params,
                 requestCallBack);
     }
+
+    /**
+     * 理科战队pk  获取战队成员信息
+     * @param classId
+     * @param teamId
+     * @param httpCallBack
+     */
+    public void getTeamMates(String classId, String teamId, HttpCallBack httpCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("teamId", teamId);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_TEAMPK_GETTEAMMATES, params,httpCallBack);
+    }
+
 
     /**
      * 获取分队信息

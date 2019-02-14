@@ -44,6 +44,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentPkResultEntity
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAdversaryEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkStar;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkStuProgress;
@@ -104,18 +105,17 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         if (getInfo.getAllowLinkMicNew() == 1) {
             getInfo.setAllowLinkMic(false);
         }
-        if (data.has("ePlanInfo")){
+        if (data.has("ePlanInfo")) {
             try {
                 JSONObject ePlanInfo = data.getJSONObject("ePlanInfo");
                 getInfo.ePlanInfo = new LiveGetInfo.EPlanInfoBean();
                 getInfo.ePlanInfo.ePlanId = ePlanInfo.optString("ePlanId");
                 getInfo.ePlanInfo.eTeacherId = ePlanInfo.optString("eTeacherId");
                 getInfo.ePlanInfo.eClassId = ePlanInfo.optString("eClassId");
-                if (ePlanInfo.has("fakePlanId")){
+                if (ePlanInfo.has("fakePlanId")) {
                     getInfo.ePlanInfo.fakePlanId = ePlanInfo.optString("fakePlanId");
                 }
-            }
-            catch (JSONException e) {
+            } catch (JSONException e) {
                 MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo.ePlanInfo", e.getMessage());
             }
         }
@@ -1984,5 +1984,37 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             e.printStackTrace();
         }
         return resultList;
+    }
+
+
+    /**
+     * 解析战队pk 战队成员信息
+     *
+     * @param responseEntity
+     * @return
+     */
+    public List<TeamMate> parseTeamMates(ResponseEntity responseEntity) {
+        List<TeamMate> result = null;
+        try {
+            JSONObject data = (JSONObject) responseEntity.getJsonObject();
+            if (data.has("students")) {
+                result = new ArrayList<TeamMate>();
+                JSONArray jsonArray = data.optJSONArray("students");
+                if (jsonArray != null && jsonArray.length() > 0) {
+                    JSONObject jsonObject = null;
+                    TeamMate teamMate = null;
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        jsonObject = (JSONObject) jsonArray.get(i);
+                        teamMate = new TeamMate();
+                        teamMate.setId(jsonObject.optString("stuId"));
+                        teamMate.setName(jsonObject.optString("name"));
+                        result.add(teamMate);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 }

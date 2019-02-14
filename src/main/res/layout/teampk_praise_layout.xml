@@ -38,7 +38,6 @@
         android:layout_height="150dp"
         android:layout_marginBottom="20dp"
         android:layout_marginLeft="11dp"
-        android:background="@color/half_alpha_black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
 

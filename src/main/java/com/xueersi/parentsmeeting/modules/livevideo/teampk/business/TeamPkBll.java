@@ -28,6 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentCoinAndTotalEnergyEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentPkResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAdversaryEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkStar;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkStuProgress;
@@ -138,6 +139,10 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      * 当前老师模式
      */
     private String mTeacherMode = LiveTopic.MODE_TRANING;
+    /**
+     * 战队成员信息
+     **/
+    private List<TeamMate> mTeamMates;
 
     public TeamPkBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -766,7 +771,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
     }
 
     private void addPager(BasePager aqAwardPager) {
-        if(mFocusPager != null){
+        if (mFocusPager != null) {
             mFocusPager.onDestroy();
         }
         rlTeamPkContent.removeAllViews();
@@ -785,7 +790,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      * @param pager
      */
     private void addFullScreenPager(BasePager pager) {
-        if(mFocusPager != null){
+        if (mFocusPager != null) {
             mFocusPager.onDestroy();
         }
         rlTeamPkContent.removeAllViews();
@@ -870,7 +875,33 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
             isAIPartner = roomInitInfo.getIsAIPartner() == 1;
             isAvailable = true;
             this.mTeacherMode = mLiveBll.getMode();
+            getTeamMates();
         }
+    }
+
+    /**
+     * 获取战队成员信息
+     */
+    private void getTeamMates() {
+
+        mHttpManager.getTeamMates(roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStudentLiveInfo()
+                .getTeamId(), new HttpCallBack() {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                mTeamMates = mHttpResponseParser.parseTeamMates(responseEntity);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+            }
+        });
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -915,11 +946,9 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      * 显示当前的pk 结果
      */
     public void showCurrentPkResult() {
-        logger.e("======>showCurrentPkResult: called 666669999:" + h5CloseEvents);
         if (h5CloseEvents == null || h5CloseEvents.size() == 0) {
             return;
         }
-        logger.e("======>showCurrentPkResult: called");
         LiveRoomH5CloseEvent cacheEvent = h5CloseEvents.remove(0);
         getEnergyNumAndContributionStar(cacheEvent);
     }
@@ -1029,7 +1058,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
             XESCODE.TEAM_PK_BLACK_RANK_LIST,
             XESCODE.TEAM_PK_STAR_RANK_LIST,
             XESCODE.TEAM_PK_PK_END
-           // , 130
+           //  , 130
     };
 
 
@@ -1104,11 +1133,12 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                 case XESCODE.TEAM_PK_PK_END:
                     showPkEndToast();
                     break;
-               /* case 130:
+              /*  case 130:
                     String strCmd = data.optString("msg");
                     if ("1".equals(strCmd)) {
-                        showPkResult();
-                    }else if("2".equals(strCmd)){
+                       // showPkResult();
+                        showCurrentPkResult();
+                    }*//*else if("2".equals(strCmd)){
                         showClassChest();
                     }else if("3".equals(strCmd)){
                         closeCurrentPager();
@@ -1118,7 +1148,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                         getProgressStudent();
                     }else if("5".equals(strCmd)){
                         showPkEndToast();
-                    }
+                    }*//*
                     break;*/
                 default:
                     break;

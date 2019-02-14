@@ -118,7 +118,12 @@ public class TeamPkPraiseLayout extends FrameLayout {
             @Override
             public void onGlobalLayout() {
                 if (getMeasuredWidth() > 0) {
-                    playLoopAnim();
+                    postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            playLoopAnim();
+                        }
+                    },1500);
                     startMsgLoop();
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                         getViewTreeObserver().removeOnGlobalLayoutListener(this);
