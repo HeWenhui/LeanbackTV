@@ -1429,17 +1429,19 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     if (teamEntity.getIsMy() == 1) {
                         entity.setIsMy(1);
                     }
-                    JSONArray stuList = teamObject.getJSONArray("stuList");
-                    for (int j = 0; j < stuList.length(); j++) {
-                        JSONObject studentObject = stuList.getJSONObject(j);
-                        PraiseListStudentEntity studentEntity = new PraiseListStudentEntity();
-                        studentEntity.setExcellentNum(studentObject.getInt("stuPraiseNum"));
-                        studentEntity.setStuName(studentObject.getString("stuName"));
-                        studentEntity.setStuId(studentObject.getString("stuId"));
-                        studentEntity.setIsMy(studentObject.optInt("isMy"));
-                        teamEntity.getStudentList().add(studentEntity);
-                        if (studentEntity.getIsMy() == 1) {
-                            entity.setIsMy(1);
+                    JSONArray stuList = teamObject.optJSONArray("stuList");
+                    if (stuList != null) {
+                        for (int j = 0; j < stuList.length(); j++) {
+                            JSONObject studentObject = stuList.getJSONObject(j);
+                            PraiseListStudentEntity studentEntity = new PraiseListStudentEntity();
+                            studentEntity.setExcellentNum(studentObject.getInt("stuPraiseNum"));
+                            studentEntity.setStuName(studentObject.getString("stuName"));
+                            studentEntity.setStuId(studentObject.getString("stuId"));
+                            studentEntity.setIsMy(studentObject.optInt("isMy"));
+                            teamEntity.getStudentList().add(studentEntity);
+                            if (studentEntity.getIsMy() == 1) {
+                                entity.setIsMy(1);
+                            }
                         }
                     }
                     JSONObject pkTeamInfo = teamObject.getJSONObject("pkTeamInfo");
