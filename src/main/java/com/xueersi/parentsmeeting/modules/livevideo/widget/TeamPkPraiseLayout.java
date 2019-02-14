@@ -9,6 +9,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -154,7 +155,8 @@ public class TeamPkPraiseLayout extends FrameLayout {
 
     private void generateMsg() {
         wrodsIndex = new Random().nextInt(mWrodList.size());
-        String name = UserBll.getInstance().getMyUserInfoEntity().getNickName();
+        String name = TextUtils.isEmpty(UserBll.getInstance().getMyUserInfoEntity().getRealName())?
+                UserBll.getInstance().getMyUserInfoEntity().getNickName():UserBll.getInstance().getMyUserInfoEntity().getRealName();
         String wrods = mWrodList.get(wrodsIndex);
         Msg msg = new Msg(name, wrods, true);
         mCacheMsgList.add(msg);
