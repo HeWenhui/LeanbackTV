@@ -280,7 +280,7 @@ public class LiveGetPlayServer {
             });
         } else {
             if (mVideoAction instanceof LiveVideoFragment) {
-                ((LiveVideoFragment) mVideoAction).psRePlay(false);
+                ((LiveVideoFragment) mVideoAction).psRePlay(modechange);
             }
 //            if(mVideoAction instanceof )
 //            mVideoAction.onLiveStart(null, mLiveTopic, modechange);

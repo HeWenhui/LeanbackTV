@@ -120,6 +120,10 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     private Button btnVideoFailRetry;
     /** 是否上传切流埋点日志 */
     private boolean isSwitchUpload = false;
+    /** 当前处于线路哪条线路,比list中的实际多1 */
+    private int nowRoutePos = 1;
+    /** 当前切换线路的线路总数 */
+    private int totalSwitchRouteNum = 0;
 
     /** {@link #onActivityCreated(Bundle)} */
     @Override
@@ -312,7 +316,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     /** 点击重新加载按钮 */
 //    private volatile boolean isSwitchReloadShow;
     /** 当前处于什么状态 */
-    private int switchFlowStatus = LiveVideoAction.SWITCH_FLOW_RELOAD;
+    private int switchFlowStatus = LiveVideoAction.SWITCH_FLOW_NORMAL;
 
     /** 视频播放成功 */
     @Override
@@ -354,9 +358,6 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         }
     }
 
-//    private int switchFlowPos = 1;
-    /** 当前处于线路哪条线路,比list中的实际多1 */
-    private int nowRoutePos = 1;
 
     private void addSwitchFlowBll() {
         if (getSwitchFlowView() == null) {
@@ -364,6 +365,11 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         }
         switchFlowBll = new SwitchFlowBll(activity, mLiveBll);
         mLiveBll.addBusinessBll(switchFlowBll);
+        //设置线路总数
+        switchFlowBll.setListRoute(totalSwitchRouteNum);
+
+        liveVideoAction.setVideoSwitchFlowStatus(switchFlowStatus, nowRoutePos);
+        //设置最多的bll
         switchFlowBll.setmView(getSwitchFlowView(), liveMediaControllerBottom,
                 new SwitchFlowView.IReLoad() {
                     @Override
@@ -380,12 +386,14 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                         //1.重新加载,显示加载中
                         if (!MediaPlayer.isPSIJK) {
                             rePlay(false);
-                        } else {
-                            psRePlay(false);
                         }
+//                        else {
+//                            psRePlay(false);
+//                        }
                         //2. 自动切流
                         liveVideoAction.setVideoSwitchFlowStatus(switchFlowStatus, nowRoutePos);
                         if (mGetInfo != null && mGetInfo.getLiveTopic() != null) {
+                            //调度里面会重新走replay
                             mLiveVideoBll.liveGetPlayServer(mGetInfo.getLiveTopic().getMode(), false);
                         }
                     }
@@ -532,6 +540,8 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     @Override
     public void getPSServerList(int cur, int total, boolean modeChange) {
         super.getPSServerList(cur, total, modeChange);
+        this.totalSwitchRouteNum = total;
+        this.nowRoutePos = cur;
         if ((pattern == 1) && switchFlowBll != null) {
 //            if (total != 0) {
             switchFlowBll.setListRoute(total);
