@@ -4,15 +4,11 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.SpannableStringBuilder;
-import android.text.style.ImageSpan;
-import android.text.util.Linkify;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -26,16 +22,15 @@ import android.widget.TextView;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
-import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.message.pager.HalfBodyLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * 战队pk 二期 点赞UI
@@ -62,7 +57,7 @@ public class TeamPkPraiseLayout extends FrameLayout {
     /**
      * 随机名单列表
      **/
-    private List<String> mNameList;
+    private List<TeamMate> mOnLineTeamMates;
     /**
      * 点击时间间隔
      **/
@@ -71,11 +66,11 @@ public class TeamPkPraiseLayout extends FrameLayout {
     /**
      * recycleView 数据源
      **/
-    private List<Msg> mMsgList;
+    private List<Msg> mMsgList = new ArrayList<Msg>();
     /**
      * 消息缓存队列
      **/
-    private List<Msg> mCacheMsgList;
+    private List<Msg> mCacheMsgList = new ArrayList<Msg>();
 
     private int nameIndex;
     private int wrodsIndex;
@@ -113,7 +108,6 @@ public class TeamPkPraiseLayout extends FrameLayout {
             }
         });
 
-        test();
         getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -159,16 +153,18 @@ public class TeamPkPraiseLayout extends FrameLayout {
 
 
     private void generateMsg() {
+        wrodsIndex = new Random().nextInt(mWrodList.size());
         String name = UserBll.getInstance().getMyUserInfoEntity().getNickName();
-        String wrods = mWrodList.get(wrodsIndex % mWrodList.size());
+        String wrods = mWrodList.get(wrodsIndex);
         Msg msg = new Msg(name, wrods, true);
-        nameIndex++;
-        wrodsIndex++;
-        Msg msg2 = new Msg(mNameList.get(nameIndex % mNameList.size()), mWrodList.get(wrodsIndex % mWrodList.size()),
-                false);
-        wrodsIndex++;
         mCacheMsgList.add(msg);
-        mCacheMsgList.add(msg2);
+
+        if(mOnLineTeamMates != null && mOnLineTeamMates.size() > 0){
+            wrodsIndex = new Random().nextInt(mWrodList.size());
+            nameIndex = new Random().nextInt(mOnLineTeamMates.size());
+            Msg msg2 = new Msg(mOnLineTeamMates.get(nameIndex).getName(), mWrodList.get(wrodsIndex),false);
+            mCacheMsgList.add(msg2);
+        }
     }
 
     private void startMsgLoop(){
@@ -183,8 +179,8 @@ public class TeamPkPraiseLayout extends FrameLayout {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         cancleMsgLoop();
-        if(mNameList != null){
-            mNameList.clear();
+        if(mOnLineTeamMates != null){
+            mOnLineTeamMates.clear();
         }
         if(mWrodList != null){
             mWrodList.clear();
@@ -203,11 +199,11 @@ public class TeamPkPraiseLayout extends FrameLayout {
     };
 
     public void setWrodList(List<String> wrodList) {
-        this.mNameList = wrodList;
+        mWrodList = wrodList;
     }
 
-    public void setNameList(List<String> nameList) {
-        this.mNameList = nameList;
+    public void setOnLineTeammates(List<TeamMate> teamMates) {
+        this.mOnLineTeamMates = teamMates;
     }
 
     /**
@@ -243,25 +239,6 @@ public class TeamPkPraiseLayout extends FrameLayout {
         public boolean isMe() {
             return isMe;
         }
-    }
-
-    private void test() {
-
-        mWrodList = new ArrayList<String>();
-        mWrodList.add("新");
-        mWrodList.add("年");
-        mWrodList.add("快");
-        mWrodList.add("乐");
-        mWrodList.add("!");
-
-        mNameList = new ArrayList<String>();
-        mNameList.add("A");
-        mNameList.add("B");
-        mNameList.add("C");
-        mNameList.add("D");
-
-        mMsgList = new ArrayList<Msg>();
-        mCacheMsgList = new ArrayList<Msg>();
     }
 
     private void playClickAnim() {

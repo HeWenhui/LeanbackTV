@@ -11,9 +11,13 @@ public class TeamMate {
     private String id;
     /**昵称**/
     private String name;
-    /**是否在线**/
-    private boolean onLine;
 
+    public TeamMate(){}
+
+    public TeamMate(String id, String name) {
+        this.id = id;
+        this.name = name;
+    }
 
     public String getId() {
         return id;
@@ -29,13 +33,5 @@ public class TeamMate {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public boolean isOnLine() {
-        return onLine;
-    }
-
-    public void setOnLine(boolean onLine) {
-        this.onLine = onLine;
     }
 }

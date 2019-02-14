@@ -79,8 +79,6 @@ public class TeamPkContributionPager extends BasePager {
         });
         timeCountDowTextView = view.findViewById(R.id.tv_teampk_contribution_time);
         pkPraiseLayout = view.findViewById(R.id.pk_praise_layout);
-        // todo  获取在线名单，点赞文案
-
         return view;
     }
 
@@ -136,8 +134,40 @@ public class TeamPkContributionPager extends BasePager {
 
     private List<AnimInfo> animInfos;
 
+    private List<String> prasieTextList;
+    /**
+     * 获取点赞文案
+     * @return
+     */
+    public List<String> getPraiseText(){
+        if(prasieTextList == null){
+            prasieTextList = new ArrayList<String>();
+            //("\uD83D\uDE01"+"\uD83D\uDE04"+"\u2764"+"\uD83D\uDC4D");
+            //大拇指1
+            prasieTextList.add("\uD83D\uDC4D\uD83D\uDC4D\uD83D\uDC4D\uD83D\uDC4D\uD83D\uDC4D");
+            //大拇指2
+            prasieTextList.add("\uD83D\uDC4D\uD83D\uDC4D");
+            //爱心
+            prasieTextList.add("\u2764\u2764\u2764");
+            //大笑
+            prasieTextList.add("\uD83D\uDE04");
+            prasieTextList.add("我们的贡献之星超棒~！");
+            prasieTextList.add("一起加油！");
+            prasieTextList.add("神一样的队友！");
+            prasieTextList.add("一个大大的赞~");
+            prasieTextList.add("你们是最棒的！");
+            prasieTextList.add("祝贺你！");
+            prasieTextList.add("加油加小心,"+mData.getMyTeamEngerInfo().getTeamName() +"稳赢！");
+            prasieTextList.add("超爱"+mData.getMyTeamEngerInfo().getTeamName()+"的大家~");
+        }
+        return  prasieTextList;
+    }
+
 
     private void showContributionStar() {
+        pkPraiseLayout.setOnLineTeammates(teamPkBll.getOnlineTeamMates());
+        pkPraiseLayout.setWrodList(getPraiseText());
+
         final String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "images";
         String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "data.json";
         String[] targetFileNames = {"img_28.png", "img_26.png", "img_25.png", "img_24.png", "img_48.png",

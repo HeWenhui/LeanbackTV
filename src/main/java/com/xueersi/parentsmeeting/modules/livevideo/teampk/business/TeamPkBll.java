@@ -10,15 +10,19 @@ import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.BasePager;
+import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
@@ -67,7 +71,7 @@ import okhttp3.Call;
  * created  at 2018/4/12
  * 战队PK 相关业务处理
  */
-public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction {
+public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,MessageAction {
 
 
     public static final String TEAMPK_URL_FIFTE = "http://addenergyandgold.com/";
@@ -1357,4 +1361,108 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
             }
         });
     }
+
+    // pk 二期 实现聊天接口  维护在线用户信息
+    //在线用户聊天id列表
+    private List<String> onLineChatIds = new ArrayList<>();
+    @Override
+    public void onStartConnect() {
+
+    }
+
+    @Override
+    public void onConnect(IRCConnection connection) {
+
+    }
+
+    @Override
+    public void onRegister() {
+
+    }
+
+    @Override
+    public void onDisconnect(IRCConnection connection, boolean isQuitting) {
+
+    }
+
+    @Override
+    public void onMessage(String target, String sender, String login, String hostname, String text) {
+
+    }
+
+    @Override
+    public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target, String
+            message) {
+
+    }
+
+    @Override
+    public void onChannelInfo(String channel, int userCount, String topic) {
+
+    }
+
+    @Override
+    public void onUserList(String channel, User[] users) {
+        for (User user : users) {
+            if (!onLineChatIds.contains(user.getNick())) {
+                onLineChatIds.add(user.getNick());
+            }
+        }
+    }
+
+    @Override
+    public void onJoin(String target, String sender, String login, String hostname) {
+        if (!onLineChatIds.contains(sender)) {
+            onLineChatIds.add(sender);
+        }
+    }
+
+    @Override
+    public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
+        if (onLineChatIds.contains(sourceNick)) {
+            onLineChatIds.remove(sourceNick);
+        }
+    }
+
+    @Override
+    public void onKick(String target, String kickerNick, String kickerLogin, String kickerHostname, String
+            recipientNick, String reason) {
+
+    }
+
+    @Override
+    public void onUnknown(String line) {
+
+    }
+
+
+    /**
+     * 获取本队在线队员列表
+     * @return
+     */
+    public List<TeamMate> getOnlineTeamMates(){
+        List<TeamMate> resultList = null;
+        // 除去自己
+        if(mTeamMates != null && mTeamMates.size() > 1){
+            resultList = new ArrayList<TeamMate>();
+            String stuId = null;
+            TeamMate onLineTeamMate = null;
+            for (int i = 0; i < mTeamMates.size(); i++) {
+                //除去自己
+                stuId = mTeamMates.get(i).getId();
+                if(stuId != null && !stuId.equals(UserBll.getInstance().getMyUserInfoEntity().getStuId())){
+                    for (int j = 0; j < onLineChatIds.size(); j++) {
+                         if(onLineChatIds.get(j).contains(stuId)){
+                             onLineTeamMate = new TeamMate();
+                             onLineTeamMate.setName(mTeamMates.get(i).getName());
+                             onLineTeamMate.setId(stuId);
+                             resultList.add(onLineTeamMate);
+                         }
+                    }
+                }
+            }
+        }
+        return  resultList;
+    }
+
 }
