@@ -57,6 +57,7 @@ import com.xueersi.ui.adapter.RCommonAdapter;
 import com.xueersi.ui.adapter.RItemViewInterface;
 import com.xueersi.ui.adapter.ViewHolder;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -179,6 +180,7 @@ public class PraiseListPager extends LiveBasePager {
     private int[] likeTotalCount = new int[]{0, 0, 0, 0, 0, 0};
     private int[] latestLikeCount = new int[]{0, 0, 0, 0, 0, 0};
     private List<PraiseListTeamEntity> mTeamList;
+    private String ownTeamId;
 
     /**
      * 弹幕消息
@@ -462,6 +464,12 @@ public class PraiseListPager extends LiveBasePager {
                 }
             }
         }
+        //计算自己战队ID
+        for (int i = 0; i < mTeamList.size(); i++) {
+            if (mTeamList.get(i).getIsMy() == 0 || mTeamList.get(i).getIsMy() == 1) {
+                ownTeamId = mTeamList.get(i).getPkTeamId();
+            }
+        }
 
         //播放声音
         if (mSoundPool == null)
@@ -499,7 +507,7 @@ public class PraiseListPager extends LiveBasePager {
             case PRAISE_LIST_TYPE_MINI_MARKET:
 
                 if (minimarketListEntity.getTitleId() == 1) {
-                    tvNotes.setText("注:统计周期为上讲当天到本讲前一天");
+                    tvNotes.setText("注:统计周期为上讲结束后到本讲当天");
                 } else {
                     tvNotes.setText("注:统计周期为本周一到本讲当天");
                 }
@@ -531,6 +539,10 @@ public class PraiseListPager extends LiveBasePager {
         rvTeamList.setLayoutManager(teamLayoutManager);
         rvTeamList.setAdapter(teamAdapter);
 
+        //默认直接展示自己战队的页卡
+        rvStudentlist.setBackgroundResource(tabsBackgroundRes[selectedTeamTabs]);
+        studentAdapter.updateData(mTeamList.get(selectedTeamTabs).getStudentList());
+
         //弹幕消息
         danmakuAdapter = new DanmakuAdapter(danmakuList);
         rvDanmaku.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, true));
@@ -549,10 +561,6 @@ public class PraiseListPager extends LiveBasePager {
                 outRect.set(left, top, right, bottom);
             }
         });
-
-        //默认直接展示自己战队的页卡
-        rvStudentlist.setBackgroundResource(tabsBackgroundRes[selectedTeamTabs]);
-        studentAdapter.updateData(mTeamList.get(selectedTeamTabs).getStudentList());
     }
 
     private class DanmakuAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -594,16 +602,16 @@ public class PraiseListPager extends LiveBasePager {
             if (data.getBarrageType() == 1) {
                 tvTeam.setVisibility(View.GONE);
                 if (mPresenter.getStuName() != null && mPresenter.getStuName().equals(data.getName())) {
-                    tvMsg.setText(data.getName() + "同学点了" + data.getNumber() + "个赞！！");
+                    tvMsg.setText(data.getName() + "同学点了" + data.getNumber() + "个赞!!");
                     tvMsg.setTextColor(Color.parseColor("#FFFFDB5C"));
                 } else {
-                    tvMsg.setText(data.getName() + "同学点了" + data.getNumber() + "个赞！！");
+                    tvMsg.setText(data.getName() + "同学点了" + data.getNumber() + "个赞!!");
                     tvMsg.setTextColor(mContext.getResources().getColor(R.color.white));
                 }
 
             } else if (data.getBarrageType() == 2) {
                 tvTeam.setVisibility(View.VISIBLE);
-                tvMsg.setText(data.getName() + "战队共获得" + data.getNumber() + "个赞！！");
+                tvMsg.setText(data.getName() + "共获得" + data.getNumber() + "个赞!!");
                 tvMsg.setTextColor(mContext.getResources().getColor(R.color.white));
             }
         }
@@ -635,6 +643,7 @@ public class PraiseListPager extends LiveBasePager {
     private int btnLikeClickTime = 0;
     boolean duringDoubleCard = false;
     boolean duringFadeIn = false;
+
     @Override
     public void initListener() {
         //监听点赞按钮点击事件
@@ -976,7 +985,7 @@ public class PraiseListPager extends LiveBasePager {
     }
 
     /**
-     * 点赞按钮 循环星星 动画
+     * 点赞 循环星星 动画
      */
     private void startStarAnimation() {
         String starResPath = LOTTIE_RES_ASSETS_ROOTDIR + "star/images";
@@ -1174,7 +1183,7 @@ public class PraiseListPager extends LiveBasePager {
                     if (latestLikeCount[selectedTeamTabs] == likeTotalCount[selectedTeamTabs] || tvLikeCount.getVisibility() == View.VISIBLE) {
                         return;
                     }
-                    mPresenter.sendLikeNum(likeTotalCount[selectedTeamTabs] - latestLikeCount[selectedTeamTabs], mTeamList.get(selectedTeamTabs).getPkTeamId(), 1);
+                    mPresenter.sendLikeNum(likeTotalCount[selectedTeamTabs] - latestLikeCount[selectedTeamTabs], mTeamList.get(selectedTeamTabs).getPkTeamId(), ownTeamId, 1);
                     latestLikeCount[selectedTeamTabs] = likeTotalCount[selectedTeamTabs];
                 }
             });
@@ -1249,8 +1258,16 @@ public class PraiseListPager extends LiveBasePager {
                     break;
                 }
                 case PRAISE_LIST_TYPE_LIKE: {
-                    tvCount.setText(teamEntity.getPraiseTotalNum() + "");
                     ivLike.setVisibility(View.VISIBLE);
+
+                    if (teamEntity.getPraiseTotalNum() >= 10000) {
+                        double d = (double) teamEntity.getPraiseTotalNum() / (double) 10000;
+                        BigDecimal b = new BigDecimal(d);
+                        d = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                        tvCount.setText(d + "万");
+                    } else {
+                        tvCount.setText(teamEntity.getPraiseTotalNum() + "");
+                    }
                     break;
                 }
                 default:
@@ -1342,7 +1359,14 @@ public class PraiseListPager extends LiveBasePager {
                     case PRAISE_LIST_TYPE_LIKE: {
                         rlCount.setVisibility(View.VISIBLE);
                         ivLike.setVisibility(View.VISIBLE);
-                        tvCount.setText(studentEntity.getExcellentNum() + "");
+                        if (studentEntity.getExcellentNum() >= 10000) {
+                            double d = (double) studentEntity.getExcellentNum() / (double) 10000;
+                            BigDecimal b = new BigDecimal(d);
+                            d = b.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                            tvCount.setText(d + "万");
+                        } else {
+                            tvCount.setText(studentEntity.getExcellentNum() + "");
+                        }
                         break;
                     }
                     default:

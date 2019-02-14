@@ -360,13 +360,14 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
      * 学生告诉教师点赞个数
      */
     @Override
-    public void sendLikeNum(int likes, String teamId, int barrageType) {
+    public void sendLikeNum(int likes, String teamId, String ownTeamId, int barrageType) {
         mLogtf.d("sendLikeNum: likes = " + likes + ", teamId = " + teamId + ", mCounTeacherStr = " + mLiveBll.getCounTeacherStr());
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("type", "" + XESCODE.XCR_ROOM_PRAISELIST_SEND_LIKE);
             jsonObject.put("likes", likes);
             jsonObject.put("teamId", teamId);
+            jsonObject.put("ownTeamId", ownTeamId);
             jsonObject.put("barrageType", barrageType);
             jsonObject.put("stuId", mGetInfo.getStuId());
             jsonObject.put("stuName", mGetInfo.getStuName());

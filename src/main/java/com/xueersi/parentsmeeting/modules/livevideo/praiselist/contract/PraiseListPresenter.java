@@ -13,6 +13,6 @@ public interface PraiseListPresenter {
     void getLikeList();
     void getMiniMarketList();
     void getLikeProbability();
-    void sendLikeNum(int agreeNum, String teamId, int barrageType);
+    void sendLikeNum(int agreeNum, String teamId, String ownTeamId, int barrageType);
     String getStuName();
 }
