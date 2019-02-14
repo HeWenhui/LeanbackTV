@@ -167,13 +167,17 @@ public class AuditIRCMessage {
         @Override
         public void onNetStatusChanged(PMDefs.NetStatusResp netStatusResp) {
             logger.i("ircsdk net status:" + netStatusResp.netStatus);
-            if (PMDefs.ResultCode.Result_SeqRepeat == netStatusResp.netStatus) {
+            if (PMDefs.NetStatus.PMNetStatus_Connecting== netStatusResp.netStatus) {
                 if (mIRCCallback != null) {
                     mIRCCallback.onStartConnect();
+                    mIRCCallback.onRegister();
                 }
-            } else if (PMDefs.ResultCode.Result_AccessServerError == netStatusResp.netStatus) {
+            } else if (PMDefs.NetStatus.PMNetStatus_Unkown == netStatusResp.netStatus ||
+                    PMDefs.NetStatus.PMNetStatus_Unavailable == netStatusResp.netStatus ||
+                    PMDefs.NetStatus.PMNetStatus_ServerFailed == netStatusResp.netStatus ||
+                    PMDefs.NetStatus.PMNetStatus_DisConnected == netStatusResp.netStatus) {
                 mDisconnectCount++;
-                mLogtf.d("onDisconnect:count=" + mDisconnectCount + ",isQuitting=" + false);
+                mLogtf.d("onDisconnect:count=" + mDisconnectCount + ",isQuitting=" + false+",netstatus="+netStatusResp.netStatus);
                 if (mIRCCallback != null) {
                     mIRCCallback.onDisconnect(null, false);
                 }
