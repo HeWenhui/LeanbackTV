@@ -315,6 +315,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                         break;
                     }
                     default: {
+                        errorInfo.setText("视频播放失败 [" + arg2 + "]");
                         break;
                     }
                 }
