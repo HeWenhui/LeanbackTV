@@ -816,7 +816,6 @@ public class PkTeamResultPager extends BasePager {
             }
         }
     }
-
     private void turn2openBox() {
         if (mFinalPkResult != null && mFinalPkResult.getMyTeamResultInfo()
                 != null && mFinalPkResult.getCompetitorResultInfo() != null) {
