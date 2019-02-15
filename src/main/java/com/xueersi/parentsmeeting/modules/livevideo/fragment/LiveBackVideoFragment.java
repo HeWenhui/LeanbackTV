@@ -30,7 +30,6 @@ import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
-import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -642,7 +641,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
     @Override
     protected void sendPlayVideo() {
-        if (isArts == 1) {
+        if (isArts == 1 || isArts == 2) {
             // 如果观看视频时间等于或大于统计数则发送
             if (mPlayVideoTime >= mSendPlayVideoTime) {
                 String liveId = mVideoEntity.getLiveId();
