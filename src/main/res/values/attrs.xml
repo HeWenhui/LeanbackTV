@@ -78,4 +78,12 @@
         <attr name="useDefultTextFont" format="boolean"/>
     </declare-styleable>
 
+    <declare-styleable name="ExpGuideOptionView">
+        <attr name="titleText" format="string"/>
+        <attr name="titleColor" format="color"/>
+        <attr name="contentText" format="string" />
+        <attr name="contentColor" format="color"/>
+        <attr name="imageSrc" format="reference" />
+    </declare-styleable>
+
 </resources>

@@ -79,7 +79,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
+import com.xueersi.parentsmeeting.modules.livevideo.experience.bussiness.ExperienceGuideBll;
 import com.xueersi.parentsmeeting.modules.livevideo.experience.bussiness.ExperienceQuitFeedbackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.experience.bussiness.IPlayStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
@@ -235,7 +237,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                     .getVisitTimeKey()));
 //            initOldMessage(mVideoEntity.getLiveId(),mVideoEntity.getCourseId(),timer + 2970L);
             timer = timer + 10;
-            logger.e("timer:" + timer);
+            logger.i("timer:" + timer);
             scanHandler.postDelayed(this, 10000);
 
 
@@ -428,6 +430,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     private ExperienceResult mData;
 
     private boolean isFirstGetResult = true;
+    private IPlayStatus mPlayStatus;
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -498,7 +501,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         getInfo.setStuName(stuName);
         getInfo.setNickname(UserBll.getInstance().getMyUserInfoEntity().getNickName());
         getInfo.setHeadImgPath(UserBll.getInstance().getMyUserInfoEntity().getHeadImg());
-        logger.e("====>getRoomInitData:"
+        logger.i("====>getRoomInitData:"
                 + UserBll.getInstance().getMyUserInfoEntity().getRealName() + ":"
                 + UserBll.getInstance().getMyUserInfoEntity().getNickName() + ":" +
                 UserBll.getInstance().getMyUserInfoEntity().getChatName() + ":" +
@@ -525,7 +528,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         String channel = IRC_CHANNEL_PREFIX + expChatId;
         String chatRoomUid = "s_" + mGetInfo.getLiveType() + "_"
                 + expChatId + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
-        logger.e("=====>connectChatServer:channel=" + channel + ":nickname =" +
+        logger.i("=====>connectChatServer:channel=" + channel + ":nickname =" +
                 chatRoomUid);
 
         // 获取 聊天服务器地址  的接口地址
@@ -586,7 +589,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
         @Override
         public void onStartConnect() {
-            logger.e("=====>onStartConnect");
+            logger.i("=====>onStartConnect");
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onStartConnect();
             }
@@ -594,7 +597,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
         @Override
         public void onConnect(IRCConnection connection) {
-            logger.e("=====>onConnect");
+            logger.i("=====>onConnect");
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onConnect();
             }
@@ -602,7 +605,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
         @Override
         public void onRegister() {
-            logger.e("=====>onRegister");
+            logger.i("=====>onRegister");
 
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onRegister();
@@ -611,7 +614,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
         @Override
         public void onDisconnect(IRCConnection connection, boolean isQuitting) {
-            logger.e("=====>onDisconnect");
+            logger.i("=====>onDisconnect");
 
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onDisconnect();
@@ -621,7 +624,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
         @Override
         public void onMessage(String target, String sender, String login, String hostname, String text) {
-            logger.e("=====>onMessage");
+            logger.i("=====>onMessage");
 
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onMessage(target, sender, login, hostname, text, "");
@@ -631,7 +634,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         @Override
         public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target,
                                      String message) {
-            Loger.e("ExperiencLvieAvtiv", "=====>onPrivateMessage:isSelf=" + isSelf);
+            Loger.i("ExperiencLvieAvtiv", "=====>onPrivateMessage:isSelf=" + isSelf);
             if (isSelf && "T".equals(message)) {
                 mHandler.post(new Runnable() {
                     @Override
@@ -652,52 +655,52 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 
         @Override
         public void onChannelInfo(String channel, int userCount, String topic) {
-            logger.e("=====>onChannelInfo");
+            logger.i("=====>onChannelInfo");
 
         }
 
         @Override
         public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String
                 notice, String channelId) {
-            logger.e("=====>onNotice");
+            logger.i("=====>onNotice");
         }
 
         @Override
         public void onTopic(String channel, String topic, String setBy, long date, boolean changed, String channelId) {
-            logger.e("=====>onTopic");
+            logger.i("=====>onTopic");
 
         }
 
         @Override
         public void onUserList(String channel, User[] users) {
-            logger.e("=====>onUserList start:" + peopleCount);
+            logger.i("=====>onUserList start:" + peopleCount);
             peopleCount.set(users.length, new Exception());
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onUserList(channel, users);
             }
-            logger.e("=====>onUserList end:" + peopleCount);
+            logger.i("=====>onUserList end:" + peopleCount);
         }
 
         @Override
         public void onJoin(String target, String sender, String login, String hostname) {
 
-            logger.e("=====>onJoin start:" + peopleCount);
+            logger.i("=====>onJoin start:" + peopleCount);
             peopleCount.set(peopleCount.get() + 1, new Exception(sender));
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onJoin(target, sender, login, hostname);
             }
-            logger.e("=====>onJoin end:" + peopleCount);
+            logger.i("=====>onJoin end:" + peopleCount);
 
         }
 
         @Override
         public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason, String channel) {
-            logger.e("=====>onQuit start:" + peopleCount);
+            logger.i("=====>onQuit start:" + peopleCount);
             peopleCount.set(peopleCount.get() - 1, new Exception(sourceNick));
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onQuit(sourceNick, sourceLogin, sourceHostname, reason);
             }
-            logger.e("=====>onQuit end:" + peopleCount);
+            logger.i("=====>onQuit end:" + peopleCount);
         }
 
         @Override
@@ -733,7 +736,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
      * 发生聊天消息
      */
     public void sendMessage(String msg, String name) {
-        logger.e("====>sendMessage:" + msg + ":" + name + ":" + mGetInfo.getStuName());
+        logger.i("====>sendMessage:" + msg + ":" + name + ":" + mGetInfo.getStuName());
         if (mLiveBll.openchat()) {
             try {
                 JSONObject jsonObject = new JSONObject();
@@ -934,7 +937,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         chatCfgServerList = getIntent().getStringArrayListExtra("roomChatCfgServerList");
         expChatId = getIntent().getStringExtra("expChatId");
         sex = getIntent().getStringExtra("sex");
-        logger.e("=========>loadData:" + chatCfgServerList);
+        logger.i("=========>loadData:" + chatCfgServerList);
         List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
         //初始化 老师开关聊天事件
         if (lstVideoQuestion != null && lstVideoQuestion.size() > 0) {
@@ -958,6 +961,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         experienceQuitFeedbackBll = new ExperienceQuitFeedbackBll(activity,liveBackBll,false);
         experienceQuitFeedbackBll.setLiveVideo(this);
         liveBackBll.addBusinessBll(experienceQuitFeedbackBll);
+        ExperienceGuideBll experienceGuideBll = new ExperienceGuideBll(this,liveBackBll);
+        liveBackBll.addBusinessBll(experienceGuideBll);
+        mPlayStatus = experienceGuideBll;
         liveBackBll.onCreate();
     }
 
@@ -1017,8 +1023,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         isPlay = true;
         rePlayCount = 0;
         mTotaltime = getDuration();
-        Log.e("mqtt", "mTotaltime:" + mTotaltime);
-        Log.e("mqtt", "seekto:" + mVideoEntity.getVisitTimeKey());
+        logger.i("mTotaltime:" + mTotaltime);
+        logger.i("seekto:" + mVideoEntity.getVisitTimeKey());
         // 03.22 统计用户进入体验播放器的时间
         StableLogHashMap logHashMap = new StableLogHashMap("enterRoom");
         logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
@@ -1062,6 +1068,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 //                    seekTo(0);
 //                }
 //            }
+            if (mPlayStatus != null && isInitialized()){
+                mPlayStatus.onPlaySuccess(vPlayer);
+            }
         }
         // 心跳时间的统计
         mHandler.removeCallbacks(mPlayDuration);
@@ -1240,7 +1249,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         currentMsg = currentPosition;
         // 扫描互动题
         scanQuestion(currentPosition);
-        Log.e("Duncan", "currentPosition:" + currentPosition + ": threadId =" + Thread.currentThread().getId());
+        logger.i( "currentPosition:" + currentPosition + ": threadId =" + Thread.currentThread().getId());
         if (HISTROY_MSG_DISPLAY) {
             displayHistoryMsg();
         }
@@ -1291,33 +1300,33 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         if ((playPosition - lastCheckTime) >= MAX_CHECK_TIME_RANG || !isChatSateInited) {
             // isChatSateInited = false;
             boolean roomChatAvalible = recoverChatState(playPosition);
-            logger.e("=====> resetRoomChatState_:roomChatAvalible=" + roomChatAvalible + ":" +
+            logger.i("=====> resetRoomChatState_:roomChatAvalible=" + roomChatAvalible + ":" +
                     isChatSateInited);
             isChatSateInited = true;
         } else {
             if (chatEntity != null) {
-                logger.e("=====>handleChatEvent:category=" + chatEntity.getvCategory());
+                logger.i("=====>handleChatEvent:category=" + chatEntity.getvCategory());
                 //关闭聊天
                 if (LocalCourseConfig.CATEGORY_CLOSE_CHAT == chatEntity.getvCategory()) {
-                    logger.e("=====> CATEGORY_CLOSE_CHAT 11111:" + chatEntity.getvQuestionInsretTime() + ":"
+                    logger.i("=====> CATEGORY_CLOSE_CHAT 11111:" + chatEntity.getvQuestionInsretTime() + ":"
                             + playPosition);
                     if (playPosition == chatEntity.getvQuestionInsretTime()) {
-                        logger.e("=====> teahcer close chat called begin");
+                        logger.i("=====> teahcer close chat called begin");
                         mLiveMessagePager.onopenchat(false, "in-class", true);
                         mLiveBll.setChatOpen(false);
                         isRoomChatAvailable = false;
-                        logger.e("=====> teahcer close chat called end 11111");
+                        logger.i("=====> teahcer close chat called end 11111");
                     }
                 } else if (LocalCourseConfig.CATEGORY_OPEN_CHAT == chatEntity.getvCategory()) {
                     // 开启聊天
-                    logger.e("=====> CATEGORY_OPEN_CHAT  22222:" + chatEntity.getvQuestionInsretTime() +
+                    logger.i("=====> CATEGORY_OPEN_CHAT  22222:" + chatEntity.getvQuestionInsretTime() +
                             ":" + playPosition);
                     if (playPosition == chatEntity.getvQuestionInsretTime()) {
-                        logger.e("=====> teahcer open chat called begin");
+                        logger.i("=====> teahcer open chat called begin");
                         mLiveMessagePager.onopenchat(true, "in-class", true);
                         mLiveBll.setChatOpen(true);
                         isRoomChatAvailable = true;
-                        logger.e("=====> teahcer open chat called  end 111111");
+                        logger.i("=====> teahcer open chat called  end 111111");
                     }
                 }
             }
@@ -1425,7 +1434,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 public void run() {
                     super.run();
                     mIRCMessage.destory();
-                    logger.e("=========>:mIRCMessage.destory()");
+                    logger.i("=========>:mIRCMessage.destory()");
                 }
             }.start();
         }

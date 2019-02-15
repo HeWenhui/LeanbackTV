@@ -30,6 +30,7 @@
             android:name=".activity.ExperienceLiveVideoActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:screenOrientation="landscape"
+            android:process=":livevideo"
             android:windowSoftInputMode="adjustResize|stateHidden"></activity>
 
 
