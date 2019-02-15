@@ -85,18 +85,21 @@ public class PraiseListBll implements PraiseListView {
             @Override
             public void onClick(View v) {
                 mPresenter.getExcellentList();
+                mPresenter.getLikeProbability();
             }
         });
         btnTest2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mPresenter.getMiniMarketList();
+                mPresenter.getLikeProbability();
             }
         });
         btnTest3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mPresenter.getLikeList();
+                mPresenter.getLikeProbability();
             }
         });
         btnTest4.setOnClickListener(new View.OnClickListener() {

@@ -42,7 +42,6 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
      */
     private PraiseListView mPraiseListView;
     private LikeProbabilityEntity mLikeProbabilityEntity;
-    private int listType;
 
     public PraiseListIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -86,6 +85,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
                         default:
                             break;
                     }
+                    getLikeProbability();
                 } else if ("off".equals(open)) {
                     mPraiseListView.closePraiseList();
                 }
@@ -286,8 +286,6 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
     public synchronized void getLikeList() {
         String stuId = mGetInfo.getStuId();
         String classId = mGetInfo.getStudentLiveInfo().getClassId();
-        String stuCouId = mGetInfo.getStuCouId();
-        String couseId = mGetInfo.getStudentLiveInfo().getCourseId();
         String teamId = mGetInfo.getStudentLiveInfo().getTeamId();
         getHttpManager().getLikeList(stuId, mLiveId, classId, teamId, new HttpCallBack(false) {
 
@@ -312,7 +310,6 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
                         getLikeList();
                     }
                 });
-                listType = 0;
             }
 
             @Override
@@ -339,6 +336,7 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
             public void onPmSuccess(ResponseEntity responseEntity) {
                 mLogtf.d("getLikeProbability => onPmSuccess:  + jsonObject = " + responseEntity.getJsonObject());
                 LikeProbabilityEntity likeProbabilityEntity = getHttpResponseParser().parseLikeProbability(responseEntity);
+                mLikeProbabilityEntity = likeProbabilityEntity;
             }
 
             @Override
@@ -354,18 +352,27 @@ public class PraiseListIRCBll extends LiveBaseBll implements NoticeAction, Topic
         });
     }
 
+    @Override
+    public int getProbability() {
+        if (mLikeProbabilityEntity != null) {
+            return mLikeProbabilityEntity.getProbability();
+        } else {
+            return 1;
+        }
+    }
+
     /**
      * 学生告诉教师点赞个数
      */
     @Override
-    public void sendLikeNum(int likes, String teamId, String ownTeamId, int barrageType) {
+    public void sendLikeNum(int likes, String teamId, int barrageType) {
         mLogtf.d("sendLikeNum: likes = " + likes + ", teamId = " + teamId + ", mCounTeacherStr = " + mLiveBll.getCounTeacherStr());
         try {
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("type", "" + XESCODE.XCR_ROOM_PRAISELIST_SEND_LIKE);
             jsonObject.put("likes", likes);
             jsonObject.put("teamId", teamId);
-            jsonObject.put("ownTeamId", ownTeamId);
+            jsonObject.put("ownTeamId", mGetInfo.getStudentLiveInfo().getClassId() + "_" + mGetInfo.getStudentLiveInfo().getTeamId());
             jsonObject.put("barrageType", barrageType);
             jsonObject.put("stuId", mGetInfo.getStuId());
             jsonObject.put("stuName", mGetInfo.getStuName());
