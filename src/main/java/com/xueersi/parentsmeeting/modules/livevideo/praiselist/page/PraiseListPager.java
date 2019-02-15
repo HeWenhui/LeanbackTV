@@ -33,7 +33,6 @@ import android.widget.TextView;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
-import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -68,7 +67,7 @@ import java.util.TimerTask;
 
 /**
  * Created by Zhang Yuansun on 2018/1/2.
- * <p>
+ *
  * 小理表扬榜
  */
 
@@ -78,10 +77,7 @@ public class PraiseListPager extends LiveBasePager {
     private ExcellentListEntity excellentListEntity;
     private LikeListEntity likeListEntity;
     private MinimarketListEntity minimarketListEntity;
-
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "praise_list/";
-    private static final int ANIMATOR_TYPE_MAIN = 1;
-    private static final int ANIMATOR_TYPE_THANKS = ANIMATOR_TYPE_MAIN + 1;
     /**
      * 当前表扬榜类型
      */
@@ -89,6 +85,8 @@ public class PraiseListPager extends LiveBasePager {
     public final static int PRAISE_LIST_TYPE_EXECELLENT = 1;//优秀榜
     public final static int PRAISE_LIST_TYPE_MINI_MARKET = 2;//小超市计算榜
     public final static int PRAISE_LIST_TYPE_LIKE = 3;//点赞榜
+    //循环光芒动画
+    private LottieAnimationView lottieAnimationLoopLightView;
     //主背景动画
     private LottieAnimationView lottieAnimationBGView;
     //老师表扬学生
@@ -98,7 +96,7 @@ public class PraiseListPager extends LiveBasePager {
     private View contentGroup;
 
     //循环星星动画
-    private LottieAnimationView lottieAnimationStarView;
+    private LottieAnimationView lottieAnimationLoopStarView;
     //发现二倍卡动画
     private LottieAnimationView lottieAnimationDoubleCardView;
     //点击 点赞按钮 动画显示的图层
@@ -187,11 +185,13 @@ public class PraiseListPager extends LiveBasePager {
      */
     private RecyclerView rvDanmaku;
     private DanmakuAdapter danmakuAdapter;
-    private List<PraiseListDanmakuEntity> danmakuCache = new ArrayList<>();
+    private List<PraiseListDanmakuEntity> teamDanmakuCache = new ArrayList<>();
+    private List<PraiseListDanmakuEntity> stuDanmakuCache = new ArrayList<>();
     private List<PraiseListDanmakuEntity> danmakuList = new ArrayList<>();
     private static final int DURATION_DANMAKU_SCROOL = 1000; // 弹幕每1s滚动一条
     private Timer danmakuTimer; //弹幕定时器
-    private int danmakuCount = 0; //弹幕计数
+    private int teamDanmakuCount = 0; //弹幕计数
+    private int stuDanmakuCount = 0; //弹幕计数
 
     private Timer likeTimer; //点赞定时器
 
@@ -201,7 +201,6 @@ public class PraiseListPager extends LiveBasePager {
             return false;
         }
     });
-
 
     public PraiseListPager(Context context, ExcellentListEntity excellentListEntity, PraiseListPresenter presenter, PraiseListView praiseListView) {
         super(context);
@@ -248,12 +247,13 @@ public class PraiseListPager extends LiveBasePager {
     @Override
     public View initView() {
         mView = View.inflate(mContext, R.layout.page_livevideo_praiselist, null);
-        lottieAnimationBGView = mView.findViewById(R.id.lav_livevideo_praise_pager_bg);
+        lottieAnimationLoopLightView = mView.findViewById(R.id.lav_livevideo_praiselist_looplight);
+        lottieAnimationBGView = mView.findViewById(R.id.lav_livevideo_praiselist_pager_bg);
         lottieAnimationTeacherView = mView.findViewById(R.id.lav_livevideo_praiselist_teacher);
         lottieAnimationTeacherGroup = mView.findViewById(R.id.rl_livevideo_praiselist_teacher_group);
         teacherTipsView = mView.findViewById(R.id.tv_livevideo_praiselist_teacher_tips);
         contentGroup = mView.findViewById(R.id.rl_livevideo_praiselist_content);
-        lottieAnimationStarView = mView.findViewById(R.id.lav_livevideo_praiselist_star);
+        lottieAnimationLoopStarView = mView.findViewById(R.id.lav_livevideo_praiselist_star);
         lottieClickLikeGroup = mView.findViewById(R.id.rl_livevideo_praiselist_lottie_click_like);
         lottieAnimationDoubleCardView = mView.findViewById(R.id.lav_livevideo_praiselist_double_card);
         tvCongratulations = mView.findViewById(R.id.tv_livevideo_praiselist_congratulations);
@@ -403,12 +403,12 @@ public class PraiseListPager extends LiveBasePager {
                 tvNotes.setLayoutParams(noteParams);
 
                 //循环星星动画的位置
-                RelativeLayout.LayoutParams lottieStarParams = (RelativeLayout.LayoutParams) lottieAnimationStarView.getLayoutParams();
+                RelativeLayout.LayoutParams lottieStarParams = (RelativeLayout.LayoutParams) lottieAnimationLoopStarView.getLayoutParams();
                 lottieStarParams.rightMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 30));
                 lottieStarParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 30));
                 lottieStarParams.leftMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, -30));
                 lottieStarParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, -30));
-                lottieAnimationStarView.setLayoutParams(lottieStarParams);
+                lottieAnimationLoopStarView.setLayoutParams(lottieStarParams);
 
                 //二倍卡动画的位置
                 RelativeLayout.LayoutParams lottieDoubleCardParams = (RelativeLayout.LayoutParams) lottieAnimationDoubleCardView.getLayoutParams();
@@ -642,7 +642,6 @@ public class PraiseListPager extends LiveBasePager {
 
     private int btnLikeClickTime = 0;
     boolean duringDoubleCard = false;
-    boolean duringFadeIn = false;
 
     @Override
     public void initListener() {
@@ -662,8 +661,8 @@ public class PraiseListPager extends LiveBasePager {
                     mSoundPool.play(soundLike, 1, 1, 0, 0, 1);
                 }
                 startClickLikeAnimation();
-                lottieAnimationStarView.setVisibility(View.GONE);
-                lottieAnimationStarView.cancelAnimation();
+                lottieAnimationLoopStarView.setVisibility(View.GONE);
+                lottieAnimationLoopStarView.cancelAnimation();
 
                 if (btnLikeClickTime >= 10) {
                     if (duringDoubleCard) {
@@ -880,6 +879,7 @@ public class PraiseListPager extends LiveBasePager {
         bacnkgroundDeleteRes.add("img_8.png");
         bacnkgroundDeleteRes.add("img_8.png");
         bacnkgroundDeleteRes.add("img_10.png");
+        bacnkgroundDeleteRes.add("img_15.png");
 
         //计算小超市榜资源替换
         final Map<String, String> miniMarketToBackgroundRes = new HashMap<>();
@@ -947,6 +947,7 @@ public class PraiseListPager extends LiveBasePager {
                     if (listType != PRAISE_LIST_TYPE_LIKE) {
                         startStarAnimation();
                     }
+                    startLoopLightAnimation();
                 }
             }
         });
@@ -985,20 +986,28 @@ public class PraiseListPager extends LiveBasePager {
     }
 
     /**
+     * 循环光芒 动画
+     */
+    private void startLoopLightAnimation() {
+        lottieAnimationLoopLightView.useHardwareAcceleration(true);
+        lottieAnimationLoopLightView.playAnimation();
+    }
+
+    /**
      * 点赞 循环星星 动画
      */
     private void startStarAnimation() {
-        String starResPath = LOTTIE_RES_ASSETS_ROOTDIR + "star/images";
-        String starJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "star/data.json";
+        String starResPath = LOTTIE_RES_ASSETS_ROOTDIR + "loop_star/images";
+        String starJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "loop_star/data.json";
         final LottieEffectInfo starLottieEffectInfo = new LottieEffectInfo(starResPath, starJsonPath);
-        lottieAnimationStarView.setAnimationFromJson(starLottieEffectInfo.getJsonStrFromAssets(mContext));
-        lottieAnimationStarView.useHardwareAcceleration(true);
-        lottieAnimationStarView.loop(true);
-        lottieAnimationStarView.setImageAssetDelegate(new ImageAssetDelegate() {
+        lottieAnimationLoopStarView.setAnimationFromJson(starLottieEffectInfo.getJsonStrFromAssets(mContext));
+        lottieAnimationLoopStarView.useHardwareAcceleration(true);
+        lottieAnimationLoopStarView.loop(true);
+        lottieAnimationLoopStarView.setImageAssetDelegate(new ImageAssetDelegate() {
             @Override
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
                 return starLottieEffectInfo.fetchBitmapFromAssets(
-                        lottieAnimationStarView,
+                        lottieAnimationLoopStarView,
                         lottieImageAsset.getFileName(),
                         lottieImageAsset.getId(),
                         lottieImageAsset.getWidth(),
@@ -1006,7 +1015,7 @@ public class PraiseListPager extends LiveBasePager {
                         mContext);
             }
         });
-        lottieAnimationStarView.playAnimation();
+        lottieAnimationLoopStarView.playAnimation();
     }
 
     /**
@@ -1149,8 +1158,15 @@ public class PraiseListPager extends LiveBasePager {
      * 收到老师广播赞数的消息
      */
     public void receiveLikeNotice(final List<PraiseListDanmakuEntity> danmakuList) {
-        this.danmakuCache.addAll(danmakuList);
-        if (this.danmakuCache.size() != 0) {
+        for (int i = 0; i < danmakuList.size(); i++) {
+            if (danmakuList.get(i).getBarrageType() == 1) {
+                this.stuDanmakuCache.add(danmakuList.get(i));
+            } else if (danmakuList.get(i).getBarrageType() == 2) {
+                this.teamDanmakuCache.add(danmakuList.get(i));
+            }
+        }
+
+        if (this.teamDanmakuCache.size() != 0 || this.stuDanmakuCache.size() != 0) {
             //如果点赞消息列表不为空，开始滚动弹幕
             if (danmakuTimer == null) {
                 danmakuTimer = new Timer();
@@ -1165,9 +1181,12 @@ public class PraiseListPager extends LiveBasePager {
             mWeakHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if (danmakuCount < danmakuCache.size()) {
-                        addDanmaku(danmakuCache.get(danmakuCount));
-                        danmakuCount++;
+                    if (teamDanmakuCount < teamDanmakuCache.size()) {
+                        addDanmaku(teamDanmakuCache.get(teamDanmakuCount));
+                        teamDanmakuCount++;
+                    } else if (stuDanmakuCount < stuDanmakuCache.size()) {
+                        addDanmaku(stuDanmakuCache.get(stuDanmakuCount));
+                        stuDanmakuCount++;
                     }
                 }
             });

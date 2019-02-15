@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.praiselist.presenter;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
 import android.view.View;
 
 import com.xueersi.common.business.UserBll;
@@ -13,17 +12,16 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
-import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.ExcellentListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.contract.PraiseListPresenter;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.contract.PraiseListView;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.ExcellentListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeProbabilityEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.MinimarketListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListDanmakuEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.ProgressListEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeListEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.praiselist.contract.PraiseListPresenter;
-import com.xueersi.parentsmeeting.modules.livevideo.praiselist.contract.PraiseListView;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.page.PraiseListPager;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.view.PraiseListBll;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
