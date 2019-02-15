@@ -1165,18 +1165,16 @@ public class PraiseListPager extends LiveBasePager {
                 @Override
                 public void run() {
                     for (int i = 0; i < mTeamList.size(); i++) {
-                        if (latestLikeCount[i] == likeTotalCount[i] || tvLikeCount.getVisibility() == View.VISIBLE) {
-                            return;
+                        if (!(latestLikeCount[i] == likeTotalCount[i] || tvLikeCount.getVisibility() == View.VISIBLE)) {
+                            int increment = likeTotalCount[i] - latestLikeCount[i];
+                            mPresenter.sendLikeNum(increment, mTeamList.get(i).getPkTeamId(), 1);
+                            latestLikeCount[i] = likeTotalCount[i];
                         }
-                        int increment = likeTotalCount[i] - latestLikeCount[i];
-                        mPresenter.sendLikeNum(increment, mTeamList.get(i).getPkTeamId(), 1);
-                        latestLikeCount[i] = likeTotalCount[i];
                     }
                 }
             });
         }
     }
-
 
     public void showLikeToast() {
         StableLogHashMap logHashMap = new StableLogHashMap("praisePraiseList");
