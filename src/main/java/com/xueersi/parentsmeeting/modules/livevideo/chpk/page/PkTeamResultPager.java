@@ -265,7 +265,7 @@ public class PkTeamResultPager extends BasePager {
         finalViewWrapper.setVisibility(View.GONE);
 
         //显示贡献之星
-        if (data.getContributionStarList() != null) {
+        if (data.getContributionStarList() != null && data.getContributionStarList().size()>0) {
             if (mContributions == null) {
                 mContributions = new ArrayList<TeamEnergyAndContributionStarEntity.ContributionStar>();
             }
