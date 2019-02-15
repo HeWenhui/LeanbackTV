@@ -220,4 +220,12 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     public H5OnlineTechEntity getOnlineTechEntity() {
         return onlineTechEntity;
     }
+
+    public void setLiveType(int liveType){
+        englishH5Entity.setLiveType(liveType);
+    }
+    public int getLiveType(){
+        return  englishH5Entity.getLiveType();
+    }
+
 }

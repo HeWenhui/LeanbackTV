@@ -133,6 +133,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        if (data.has("isAllowTeamPk")) {
+            getInfo.setIsAllowTeamPk(data.optString("isAllowTeamPkNew","0"));
+        }
 
 //            LiveVideoConfig.isPrimary = true;
 //        } else {
@@ -221,6 +224,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             if (data.has("isAllowTeamPk")) {
                 getInfo.setIsAllowTeamPk(data.getString("isAllowTeamPk"));
             }
+
             getInfo.setIsShowMarkPoint(data.optString("isAllowMarkpoint"));
             getInfo.setIsAIPartner(data.optInt("isAIPartner"));
 
@@ -915,6 +919,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             entity.setTestId(jsonObject.optString("testId"));
             entity.setResultType(jsonObject.optInt("tip"));
             entity.setGoldNum(jsonObject.optInt("gold"));
+            entity.setEnergy(jsonObject.optInt("energy"));
             entity.setMsg(jsonObject.optString("msg"));
             entity.setRightNum(jsonObject.optInt("rightnum"));
 //            entity.setIsAnswer(jsonObject.optInt("isAnswer", 0));
