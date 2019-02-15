@@ -278,6 +278,7 @@ public class PkTeamResultPager extends BasePager {
             if (studyReportAction != null && data.isMe()) {
                 studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT, mView, false, false);
             }
+
         }
         //进度条动画
         try {
