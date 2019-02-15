@@ -50,6 +50,7 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
+
         <com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothProgressBar
             android:id="@+id/pb_livevideo_chpk_finalProgerssBar"
             android:layout_width="match_parent"
@@ -284,9 +285,9 @@
 
     </FrameLayout>
 
-    <LinearLayout
+    <FrameLayout
         android:id="@id/rv_livevideo_chpk_contributesRoot"
-        android:layout_width="wrap_content"
+        android:layout_width="460dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal|bottom"
         android:layout_marginBottom="5dp"
@@ -305,16 +306,26 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@id/rv_livevideo_chpk_contributesView"
-            android:layout_width="410dp"
+            android:layout_width="wrap_content"
             android:layout_height="45dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="10dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="25dp"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:overScrollMode="never"
             android:scrollbars="none" />
 
-    </LinearLayout>
+    </FrameLayout>
 
+    <com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountDowTextView
+        android:id="@id/tv_teampk_pkresult_time_countdow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal|bottom"
+        android:layout_marginBottom="10dp"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
 
 </FrameLayout>
