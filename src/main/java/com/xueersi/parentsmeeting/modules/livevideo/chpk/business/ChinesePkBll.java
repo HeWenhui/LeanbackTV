@@ -923,6 +923,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             }
         }
 
+
         if (!isTopicHandled() && alloteamStateCode == 1) {
             setTopicHandled(true);
             showTeamSelecting();

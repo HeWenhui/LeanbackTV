@@ -50,6 +50,7 @@
             android:textSize="16sp"
             android:textStyle="bold" />
 
+
         <com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothProgressBar
             android:id="@+id/pb_livevideo_chpk_finalProgerssBar"
             android:layout_width="match_parent"
