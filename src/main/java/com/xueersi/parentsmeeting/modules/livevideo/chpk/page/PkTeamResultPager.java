@@ -349,8 +349,21 @@ public class PkTeamResultPager extends BasePager {
     }
 
     private void initRecycleView() {
+        float density = mContext.getResources().getDisplayMetrics().density;
+
         //一行显示item 个数
-        int spanCount = 5;
+        int spanCount = mContributions.size();
+        if (spanCount > 5) {
+            spanCount = 5;
+        }
+
+        int width = (int) (82 * density + 0.5f) * spanCount;
+        ViewGroup.LayoutParams lp = contributesView.getLayoutParams();
+
+        if (lp.width != width) {
+            lp.width = width;
+            contributesView.setLayoutParams(lp);
+        }
 
         mLayoutManager = new GridLayoutManager(mContext, spanCount);
         contributesView.setLayoutManager(mLayoutManager);

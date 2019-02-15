@@ -450,7 +450,6 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             addPager(resultPager);
             resultPager.showCurrentResult(data);
         }
-
     }
 
     /**
