@@ -147,7 +147,7 @@ public class PkTeamResultPager extends BasePager {
     private SmoothAddNumTextView resultOtherEnergy;
     private SmoothProgressBar resultProgressBar;
 
-    private LinearLayout contributesRoot;
+    private FrameLayout contributesRoot;
     private RecyclerView contributesView;
     private TimeCountDowTextView timeCountDowTextView;
 
@@ -521,22 +521,29 @@ public class PkTeamResultPager extends BasePager {
             otherTeacherName = myTeacherName.substring(0, 6);
         }
 
-        lottieEffectInfo.addTeacherName("img_2.png", myTeacherName);
-        lottieEffectInfo.addTeacherName("img_8.png", otherTeacherName);
+        lottieEffectInfo.addTeacherName("img_8.png", myTeacherName);
+        lottieEffectInfo.addTeacherName("img_2.png", otherTeacherName);
 
-        lottieEffectInfo.addSlogan("img_1.png", data.getSelf().getSlogon());
-        lottieEffectInfo.addSlogan("img_7.png", data.getOpponent().getSlogon());
+        lottieEffectInfo.addSlogan("img_7.png", data.getSelf().getSlogon());
+        lottieEffectInfo.addSlogan("img_1.png", data.getOpponent().getSlogon());
 
-        lottieEffectInfo.addLogo("img_0.png", data.getSelf().getImg());
-        lottieEffectInfo.addLogo("img_12.png", data.getOpponent().getImg());
+        lottieEffectInfo.addLogo("img_12.png", data.getSelf().getImg());
+        lottieEffectInfo.addLogo("img_0.png", data.getOpponent().getImg());
 
-        lottieEffectInfo.addTeacherHead("img_3.png", data.getSelf().getTeacherImg());
-        lottieEffectInfo.addTeacherHead("img_9.png", data.getOpponent().getTeacherImg());
+        lottieEffectInfo.addTeacherHead("img_9.png", data.getSelf().getTeacherImg());
+        lottieEffectInfo.addTeacherHead("img_3.png", data.getOpponent().getTeacherImg());
+
+        final Runnable action = new Runnable() {
+            @Override
+            public void run() {
+                closePkResultPager();
+            }
+        };
 
         lottieEffectView.addAnimatorListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                startTimeCountDow(10);
+                lottieEffectView.postDelayed(action, 10 * 1000);
             }
         });
 
@@ -735,6 +742,8 @@ public class PkTeamResultPager extends BasePager {
      * 关闭页面释放资源
      */
     public void closePkResultPager() {
+        lottieEffectView.removeCallbacks(null);
+
         try {
             mView.post(new Runnable() {
                 @Override
