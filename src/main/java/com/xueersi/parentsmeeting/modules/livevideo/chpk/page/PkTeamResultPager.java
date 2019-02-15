@@ -838,7 +838,6 @@ public class PkTeamResultPager extends BasePager {
     }
 
     public static Bitmap scaleBitmap(Bitmap input, int radius) {
-
         Bitmap result = Bitmap.createBitmap(radius * 2, radius * 2, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(result);
 
