@@ -176,8 +176,8 @@ public class PraiseListPager extends LiveBasePager {
             R.drawable.bg_livevideo_praiselist_tabs4,
             R.drawable.bg_livevideo_praiselist_tabs5,
     };
-    private int[] likeTotalCount = new int[]{0, 0, 0, 0, 0, 0};
-    private int[] latestLikeCount = new int[]{0, 0, 0, 0, 0, 0};
+    private int[] likeTotalCount = new int[MAX_TEAM_NUMBER];
+    private int[] latestLikeCount = new int[MAX_TEAM_NUMBER];
     private List<PraiseListTeamEntity> mTeamList;
 
     /**
@@ -959,7 +959,7 @@ public class PraiseListPager extends LiveBasePager {
                     contentGroup.setVisibility(View.VISIBLE);
                     likeContentGroup.setVisibility(View.VISIBLE);
                     if (listType != PRAISE_LIST_TYPE_LIKE) {
-                        startStarAnimation();
+                        startLoopStarAnimation();
                     }
                     startLoopLightAnimation();
                 }
@@ -1010,7 +1010,7 @@ public class PraiseListPager extends LiveBasePager {
     /**
      * 点赞 循环星星 动画
      */
-    private void startStarAnimation() {
+    private void startLoopStarAnimation() {
         lottieAnimationLoopStarView.setVisibility(View.VISIBLE);
         lottieAnimationLoopStarView.useHardwareAcceleration(true);
         lottieAnimationLoopStarView.playAnimation();
@@ -1164,11 +1164,14 @@ public class PraiseListPager extends LiveBasePager {
             mWeakHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    if (latestLikeCount[selectedTeamTabs] == likeTotalCount[selectedTeamTabs] || tvLikeCount.getVisibility() == View.VISIBLE) {
-                        return;
+                    for (int i = 0; i < mTeamList.size(); i++) {
+                        if (latestLikeCount[i] == likeTotalCount[i] || tvLikeCount.getVisibility() == View.VISIBLE) {
+                            return;
+                        }
+                        int increment = likeTotalCount[i] - latestLikeCount[i];
+                        mPresenter.sendLikeNum(increment, mTeamList.get(i).getPkTeamId(), 1);
+                        latestLikeCount[i] = likeTotalCount[i];
                     }
-                    mPresenter.sendLikeNum(likeTotalCount[selectedTeamTabs] - latestLikeCount[selectedTeamTabs], mTeamList.get(selectedTeamTabs).getPkTeamId(), 1);
-                    latestLikeCount[selectedTeamTabs] = likeTotalCount[selectedTeamTabs];
                 }
             });
         }
