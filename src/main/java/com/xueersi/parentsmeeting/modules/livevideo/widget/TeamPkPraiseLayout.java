@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.media.AudioManager;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,6 +29,7 @@ import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
+import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,8 +78,15 @@ public class TeamPkPraiseLayout extends FrameLayout {
     private int nameIndex;
     private int wrodsIndex;
     private LiveMsgAdapter mMsgAdapter;
-    /**消息轮询间隔**/
-    private static final long MSG_LOOP_DURATION = 1 *1000;
+    /**
+     * 消息轮询间隔
+     **/
+    private static final long MSG_LOOP_DURATION = 1 * 1000;
+    /**
+     * 前景音效 音量
+     */
+    private static final float MUSIC_VOLUME_RATIO_FRONT = 0.8f;
+    private SoundPoolHelper soundPoolHelper;
 
     public TeamPkPraiseLayout(@NonNull Context context) {
         this(context, null);
@@ -108,6 +117,7 @@ public class TeamPkPraiseLayout extends FrameLayout {
                 }
             }
         });
+        soundPoolHelper = new SoundPoolHelper(getContext(), 2, AudioManager.STREAM_MUSIC);
 
         getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -118,7 +128,7 @@ public class TeamPkPraiseLayout extends FrameLayout {
                         public void run() {
                             playLoopAnim();
                         }
-                    },1500);
+                    }, 1500);
                     startMsgLoop();
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                         getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -132,7 +142,7 @@ public class TeamPkPraiseLayout extends FrameLayout {
     }
 
     private void initRecyclerView() {
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,true));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, true));
         mMsgAdapter = new LiveMsgAdapter(mMsgList);
         recyclerView.setAdapter(mMsgAdapter);
         recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
@@ -152,40 +162,47 @@ public class TeamPkPraiseLayout extends FrameLayout {
     }
 
 
-
     private void generateMsg() {
         wrodsIndex = new Random().nextInt(mWrodList.size());
-        String name = TextUtils.isEmpty(UserBll.getInstance().getMyUserInfoEntity().getRealName())?
-                UserBll.getInstance().getMyUserInfoEntity().getNickName():UserBll.getInstance().getMyUserInfoEntity().getRealName();
+        String name = TextUtils.isEmpty(UserBll.getInstance().getMyUserInfoEntity().getRealName()) ?
+                UserBll.getInstance().getMyUserInfoEntity().getNickName() : UserBll.getInstance().getMyUserInfoEntity
+                ().getRealName();
         String wrods = mWrodList.get(wrodsIndex);
         Msg msg = new Msg(name, wrods, true);
         mCacheMsgList.add(msg);
 
-        if(mOnLineTeamMates != null && mOnLineTeamMates.size() > 0){
+        if (mOnLineTeamMates != null && mOnLineTeamMates.size() > 0) {
             wrodsIndex = new Random().nextInt(mWrodList.size());
             nameIndex = new Random().nextInt(mOnLineTeamMates.size());
-            Msg msg2 = new Msg(mOnLineTeamMates.get(nameIndex).getName(), mWrodList.get(wrodsIndex),false);
+            Msg msg2 = new Msg(mOnLineTeamMates.get(nameIndex).getName(), mWrodList.get(wrodsIndex), false);
             mCacheMsgList.add(msg2);
         }
     }
 
-    private void startMsgLoop(){
+    private void startMsgLoop() {
         this.post(runnable);
     }
 
-    private void cancleMsgLoop(){
-      this.removeCallbacks(runnable);
+    private void cancleMsgLoop() {
+        this.removeCallbacks(runnable);
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+        releaseRes();
+    }
+
+    private void releaseRes() {
         cancleMsgLoop();
-        if(mOnLineTeamMates != null){
+        if (mOnLineTeamMates != null) {
             mOnLineTeamMates.clear();
         }
-        if(mWrodList != null){
+        if (mWrodList != null) {
             mWrodList.clear();
+        }
+        if (soundPoolHelper != null) {
+            soundPoolHelper.release();
         }
     }
 
@@ -196,7 +213,7 @@ public class TeamPkPraiseLayout extends FrameLayout {
                 mMsgList.add(mCacheMsgList.remove(0));
                 mMsgAdapter.notifyItemInserted(0);
             }
-            postDelayed(this,MSG_LOOP_DURATION);
+            postDelayed(this, MSG_LOOP_DURATION);
         }
     };
 
@@ -243,7 +260,9 @@ public class TeamPkPraiseLayout extends FrameLayout {
         }
     }
 
+
     private void playClickAnim() {
+        playClickSound();
         loopAnimationView.setVisibility(GONE);
         loopAnimationView.cancelAnimation();
         loopAnimationView.destroyDrawingCache();
@@ -290,10 +309,12 @@ public class TeamPkPraiseLayout extends FrameLayout {
 
     private class MsgItemHolder extends RecyclerView.ViewHolder {
         private TextView tvMsg;
+
         public MsgItemHolder(View itemView) {
             super(itemView);
             tvMsg = itemView.findViewById(R.id.tv_live_halfbody_msg);
         }
+
         public void bindData(Msg data) {
             if (data.isMe()) {
                 tvMsg.setTextColor(Color.parseColor("#FFDB5C"));
@@ -305,6 +326,10 @@ public class TeamPkPraiseLayout extends FrameLayout {
         }
     }
 
+
+    private void playClickSound() {
+        soundPoolHelper.playMusic(R.raw.like_btn_click, MUSIC_VOLUME_RATIO_FRONT, false);
+    }
 
     private class LiveMsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         private List<Msg> mData;

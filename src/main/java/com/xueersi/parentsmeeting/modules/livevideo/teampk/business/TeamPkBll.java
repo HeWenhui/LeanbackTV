@@ -1016,10 +1016,14 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      * 关闭 每题的 pk 结果展示
      */
     public void closeCurrentPkResult() {
-        if (mFocusPager != null && mFocusPager instanceof TeamPkResultPager) {
+       /* if (mFocusPager != null && mFocusPager instanceof TeamPkResultPager) {
             ((TeamPkResultPager) mFocusPager).closePkResultPager();
+        }*/
+        if(mFocusPager != null && mFocusPager instanceof TeamPkContributionPager){
+            ((TeamPkContributionPager)mFocusPager).startAutoClose();
         }
     }
+
 
     /**
      * 上传服务端 学生分队准备ok

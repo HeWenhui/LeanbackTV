@@ -106,7 +106,7 @@ public class TeamPkResultPager extends BasePager {
     /**
      * pk 对手 展示时间
      */
-    private static final int TIME_DELAY_AUTO_CLOSE = 10;
+    private static final int TIME_DELAY_AUTO_CLOSE = 15;
     /**
      * 每题pk 结果页显示时长
      */
@@ -259,8 +259,8 @@ public class TeamPkResultPager extends BasePager {
      * @param data
      */
     public void showCurrentResult(final TeamEnergyAndContributionStarEntity data) {
-
         if (data != null) {
+            playMusic(R.raw.pk_answer_result_bg, SOUND_VOLUME_BG, true);
             rlResultRootView.setVisibility(View.VISIBLE);
             rlLottieRootView.setVisibility(View.GONE);
 
@@ -338,15 +338,12 @@ public class TeamPkResultPager extends BasePager {
             tvMyTeamSlogan.setText(data.getMyTeamEngerInfo().getSlogon());
             tvOtherTeamSlogan.setText(data.getCompetitorEngerInfo().getSlogon());
            // startTimeCountDow(CURRENT_PK_RESULT_AUTO_CLOSE_DRUATION);
-            //todo 根据二期效果图调整 UI
             timeCountDowTextView.setVisibility(View.INVISIBLE);
             ivCloseBtn.setVisibility(View.INVISIBLE);
             // 更新左侧pk 状态栏
             if (mTeamPkBll != null) {
                 mTeamPkBll.updatePkStateLayout(true);
             }
-
-            // TODO: 2019/1/30  跳转到贡献之星页面
              turn2ContributionPage(data);
         }
     }
@@ -811,11 +808,9 @@ public class TeamPkResultPager extends BasePager {
     }
 
     private void releaseSoundRes() {
-
         if (soundPoolHelper != null) {
             soundPoolHelper.release();
         }
-
     }
 
     private class PkAnimListener implements Animator.AnimatorListener {
