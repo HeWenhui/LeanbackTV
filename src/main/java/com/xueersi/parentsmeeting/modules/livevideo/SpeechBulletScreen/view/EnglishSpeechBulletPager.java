@@ -955,6 +955,9 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
      */
     private void onEvaluatorSuccess(String curContent, boolean isSpeechFinished) {
         logger.i("onEvaluatorSuccess(): isSpeechFinish = " + isSpeechFinished);
+        if (curContent == null) {
+            return;
+        }
         String content = curContent;
         //语音录入，60个字符截停
         if (content.length() > 1) {
