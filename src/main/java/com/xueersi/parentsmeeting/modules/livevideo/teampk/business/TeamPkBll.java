@@ -1080,7 +1080,8 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
             XESCODE.TEAM_PK_STAR_RANK_LIST,
             XESCODE.TEAM_PK_PK_END,
             XESCODE.TEACHER_PRAISE,
-            XESCODE.TEAM_PK_PARISE_ANWSER_RIGHT
+           // XESCODE.TEAM_PK_PARISE_ANWSER_RIGHT
+            XESCODE.TEAM_PK_TEACHER_PRAISE
            //  , 130
     };
 
@@ -1168,6 +1169,12 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     if("1".equals(strCmd)){
                         showAnswerAllRightAward(10);
                     }
+                    break;
+                case XESCODE.TEAM_PK_TEACHER_PRAISE:
+                    if(mPraiseBll == null){
+                        mPraiseBll = new TeamPkPraiseBll(mActivity,this);
+                    }
+                    mPraiseBll.onPraise(sourceNick,target,data,type);
                     break;
               /*  case 130:
                     String strCmd = data.optString("msg");

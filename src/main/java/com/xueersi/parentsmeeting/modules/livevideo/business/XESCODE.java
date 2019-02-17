@@ -159,9 +159,10 @@ public interface XESCODE {
     int TEAM_PK_BLACK_RANK_LIST = 302;
     /** 教师端结束pk 统计**/
     int TEAM_PK_PK_END = 303;
-    /** 战队PK表扬答对超难题 **/
-    int TEAM_PK_PARISE_ANWSER_RIGHT = 130;
-
+    /** 战队PK答对超难题 **/
+    int TEAM_PK_PARISE_ANWSER_RIGHT = 13000;
+    /** 战队pk老师表扬**/
+    int TEAM_PK_TEACHER_PRAISE = 130;
 
     /** 一题多发 TODO */
     int MULTIPLE_H5_COURSEWARE = 251;
