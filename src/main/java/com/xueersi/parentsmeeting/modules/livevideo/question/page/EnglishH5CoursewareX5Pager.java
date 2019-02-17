@@ -1,12 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 
 import android.content.Context;
-import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -16,7 +10,6 @@ import android.webkit.JavascriptInterface;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.MimeTypeMap;
@@ -24,11 +17,9 @@ import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.UserBll;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
@@ -51,13 +42,14 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.UUID;
 
+import ren.yale.android.cachewebviewlib.CacheWebView;
+import ren.yale.android.cachewebviewlib.WebViewCache;
 import ren.yale.android.cachewebviewlib.utils.MD5Utils;
 
 /**
@@ -68,6 +60,8 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private String eventId = LiveVideoConfig.LIVE_ENGLISH_COURSEWARE;
     private String url;
     private String reloadurl;
+    /** 刷新次数，防止预加载文件有问题 */
+    private int refreshTimes = 0;
     private String nonce;
     private boolean isFinish = false;
     private String jsSubmitData = "javascript:submitData()";
@@ -357,6 +351,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             wvSubjectWeb.setWebViewClient(new MyWebViewClient() {
                 @Override
                 public WebResourceResponse shouldInterceptRequest(WebView view, String s) {
+                    if (refreshTimes % 2 != 0) {
+                        return super.shouldInterceptRequest(view, s);
+                    }
                     File file = null;
                     int index = s.indexOf("courseware_pages");
                     if (index != -1) {
@@ -566,6 +563,23 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
 //                newWebView();
                 logger.e("======> reloadUrlLives:" + mLoadUrls);
                 logger.e("======> reloadUrlLive:" + reloadurl);
+                refreshTimes++;
+                if (refreshTimes % 2 == 0) {
+                    if (wvSubjectWeb instanceof CacheWebView) {
+                        CacheWebView cacheWebView = (CacheWebView) wvSubjectWeb;
+                        cacheWebView.setCacheStrategy(WebViewCache.CacheStrategy.NORMAL);
+                        logger.d("refreshonClick:NORMAL");
+                    }
+                } else {
+                    if (wvSubjectWeb instanceof CacheWebView) {
+                        CacheWebView cacheWebView = (CacheWebView) wvSubjectWeb;
+                        cacheWebView.setCacheStrategy(WebViewCache.CacheStrategy.NO_CACHE);
+                        if (refreshTimes % 3 == 0) {
+                            cacheWebView.clearCache();
+                        }
+                        logger.d("refreshonClick:NO_CACHE");
+                    }
+                }
                 if ((englishH5Entity.getNewEnglishH5() || LiveVideoConfig.isMulLiveBack) && LiveVideoConfig.isPrimary) {
                     loadUrl(mLoadUrls);
                     logger.e("======> reloadUrlLiveds:" + mLoadUrls);
