@@ -150,12 +150,17 @@ public class SpeakerRecognitioner {
                                 logToFile.d("start:predict=" + destory + ",Request=" + audioRequest.get());
                                 return;
                             }
-                            String predict = speakerRecognitionerInterface.predict(mPCMBuffer, readSize, index++, stuId, false);
-                            if (!StringUtils.isEmpty(predict)) {
-                                logger.d("start:predict=" + predict);
-                                if (speakerPredict != null) {
-                                    speakerPredict.onPredict(predict);
+                            //小于0是错误码
+                            if (readSize > 0) {
+                                String predict = speakerRecognitionerInterface.predict(mPCMBuffer, readSize, index++, stuId, false);
+                                if (!StringUtils.isEmpty(predict)) {
+                                    logger.d("start:predict=" + predict);
+                                    if (speakerPredict != null) {
+                                        speakerPredict.onPredict(predict);
+                                    }
                                 }
+                            } else {
+                                logToFile.d("start:readSize=" + readSize);
                             }
                         }
                     }
