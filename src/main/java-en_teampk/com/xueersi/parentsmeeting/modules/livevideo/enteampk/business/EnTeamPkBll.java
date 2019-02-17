@@ -182,7 +182,9 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
 
     @Override
     public void onRankStart(final boolean showPk) {
-        onRankStart = true;
+        if (LiveTopic.MODE_TRANING.equals(mode) && showPk) {
+            onRankStart = true;
+        }
         if (pkTeamEntity == null) {
             mLogtf.d("onRankStart:can=" + englishPk.canUsePK + ",has=" + englishPk.hasGroup + ",mode=" + mode);
         } else {

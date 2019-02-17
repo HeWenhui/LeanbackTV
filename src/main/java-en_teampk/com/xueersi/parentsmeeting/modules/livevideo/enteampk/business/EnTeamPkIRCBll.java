@@ -687,28 +687,25 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 XESCODE.STOPQUESTION, XESCODE.ARTS_STOP_QUESTION, XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_STULIKE, XESCODE.ARTS_H5_COURSEWARE};
     }
 
-    /** 第一次的topic消息 */
-    private boolean firstTopic = true;
-
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
+        //退出重进不显示分队仪式
         try {
             JSONObject room_2 = jsonObject.getJSONObject("room_2");
             JSONObject teamPKObj = room_2.optJSONObject("teamPK");
             if (teamPKObj != null) {
                 boolean status = teamPKObj.optBoolean("status", false);
                 if (status) {
-                    logger.d("onTopic:psOpen=" + psOpen + ",firstTopic=" + firstTopic);
+                    logger.d("onTopic:psOpen=" + psOpen );
                     if (!psOpen) {
                         psOpen = true;
                         //不是第一次topic,说明不是退出重进
                         if (enTeamPkAction != null) {
-                            enTeamPkAction.onRankStart(!firstTopic);
+                            enTeamPkAction.onRankStart(false);
                         }
                     }
                 }
             }
-            firstTopic = false;
         } catch (JSONException e) {
             e.printStackTrace();
         }
