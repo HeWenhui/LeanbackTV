@@ -293,7 +293,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
             mPublicCacheout.mkdirs();
         }
         // 一次多发的接口调用
-        if (LiveVideoConfig.isScience) {
+        if (LiveVideoConfig.isScience || mGetInfo != null && mGetInfo.getIsArts() == 0) {
             ScienceMulPreDownLoad(todayLiveCacheDir);
         } else if (mGetInfo != null && mGetInfo.getIsArts() == 2) {
             //语文一题多发
