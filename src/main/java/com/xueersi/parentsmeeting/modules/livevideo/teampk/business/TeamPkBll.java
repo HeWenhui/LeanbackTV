@@ -1087,7 +1087,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
             XESCODE.TEACHER_PRAISE,
            // XESCODE.TEAM_PK_PARISE_ANWSER_RIGHT
             XESCODE.TEAM_PK_TEACHER_PRAISE
-            , 130
+           // , 130
     };
 
 
@@ -1181,7 +1181,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     }
                     mPraiseBll.onPraise(sourceNick,target,data,type);
                     break;
-                case 130:
+              /*  case 130:
                     String cmd = data.optString("msg");
                       if("1".equals(cmd)){
                         closeCurrentPager();
@@ -1190,7 +1190,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                         closeCurrentPager();
                         getProgressStudent();
                     }
-                    break;
+                    break;*/
                 default:
                     break;
             }
