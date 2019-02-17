@@ -58,7 +58,7 @@ import java.util.List;
  * @author chekun
  * created  at 2018/4/17 16:15
  */
-public class TeamPkResultPager extends BasePager {
+public class TeamPkResultPager extends TeamPkBasePager {
     private static final String TAG = "TeamPkResultPager";
     private LottieAnimationView lottieAnimationView;
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "team_pk/pkresult/";

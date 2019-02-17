@@ -6,14 +6,17 @@ import android.animation.TypeEvaluator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.media.AudioManager;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
@@ -21,11 +24,16 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.airbnb.lottie.ImageAssetDelegate;
+import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BezierEvaluator;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
@@ -37,7 +45,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
  * @author chekun
  * created  at 2018/4/17 16:26
  */
-public class TeamPkAqResultPager extends BasePager {
+public class TeamPkAqResultPager extends TeamPkBasePager {
 
     private RelativeLayout rlQuestionRootView;
     private ImageView ivEnergy;
@@ -71,6 +79,12 @@ public class TeamPkAqResultPager extends BasePager {
     public static final int AWARD_TYPE_QUESTION = 2;
 
     /**
+     * 全对奖励
+     */
+    public static final int AWARD_TYPE_ALL_RIGHT = 3;
+
+
+    /**
      * 奖励类型
      */
     int awardType;
@@ -90,6 +104,10 @@ public class TeamPkAqResultPager extends BasePager {
      * 缩放动画弹性系数
      */
     private static final float SCALE_ANIM_FACTOR = 0.23f;
+    private TextView tvAnswerRightEnergy;
+    private ImageView ivAnswerRightEnergy;
+    private View answerRightRootView;
+    private LottieAnimationView answerRightAnimView;
 
     public TeamPkAqResultPager(Context context, int type, TeamPkBll teamPKBll) {
         super(context);
@@ -114,6 +132,11 @@ public class TeamPkAqResultPager extends BasePager {
         tvVoteEnergy = view.findViewById(R.id.tv_vote_award_energy);
         ivVoteEnergy = view.findViewById(R.id.iv_vote_award_energy);
 
+        // 答题全对
+        tvAnswerRightEnergy = view.findViewById(R.id.tv_teampk_praise_energy);
+        ivAnswerRightEnergy = view.findViewById(R.id.iv_teampk_praise_energy);
+        answerRightRootView = view.findViewById(R.id.cstl_teampk_praise_answer_right);
+        answerRightAnimView = view.findViewById(R.id.lav_teampk_praise_anwser_right);
 
         view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -128,6 +151,8 @@ public class TeamPkAqResultPager extends BasePager {
                                     showQuestionAwardAnim();
                                 } else if (awardType == AWARD_TYPE_VOTE) {
                                     showVoteAwardAnim();
+                                } else if (awardType == AWARD_TYPE_ALL_RIGHT) {
+                                    showAnswerRightAnim();
                                 }
                             }
                         }, 200);
@@ -145,6 +170,63 @@ public class TeamPkAqResultPager extends BasePager {
         });
 
         return view;
+    }
+
+
+    private static final String LOTTIE_RES_ASSETS_ROOTDIR = "team_pk/teacher_praise/";
+    /**
+     * 能量动画开始时间点
+     */
+    private static final float ENERGY_ANIM_ENTER_FRACTION = 0.45f;
+    private boolean energyAnimRuning;
+
+    private void showAnswerRightAnim() {
+        answerRightRootView.setVisibility(View.VISIBLE);
+        String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "anwser_right/images";
+        String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "anwser_right/data.json";
+
+        final LottieEffectInfo effectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
+        answerRightAnimView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext));
+        answerRightAnimView.setImageAssetDelegate(new ImageAssetDelegate() {
+            @Override
+            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                return effectInfo.fetchBitmapFromAssets(answerRightAnimView, lottieImageAsset.getFileName(),
+                        lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(),
+                        mContext);
+            }
+        });
+        answerRightAnimView.playAnimation();
+        answerRightAnimView.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                if (animation.getAnimatedFraction() > ENERGY_ANIM_ENTER_FRACTION && !energyAnimRuning) {
+                    energyAnimRuning = true;
+                    playEnergyEnterAnim();
+                }
+            }
+        });
+    }
+
+    private void playEnergyEnterAnim() {
+        ivAnswerRightEnergy.setVisibility(View.VISIBLE);
+        ScaleAnimation scaleAnimation = (ScaleAnimation) AnimationUtils.
+                loadAnimation(mContext, R.anim.anim_livevido_teampk_aq_award);
+        scaleAnimation.setInterpolator(new SpringScaleInterpolator(0.23f));
+        ivAnswerRightEnergy.startAnimation(scaleAnimation);
+
+        tvAnswerRightEnergy.setVisibility(View.VISIBLE);
+        AnimationSet animationSet = (AnimationSet) AnimationUtils.
+                loadAnimation(mContext, R.anim.anim_livevideo_teampk_energy_in);
+
+        tvAnswerRightEnergy.startAnimation(animationSet);
+        tvAnswerRightEnergy.setText("+" + mEnergy);
+        tvAnswerRightEnergy.startAnimation(animationSet);
+        tvAnswerRightEnergy.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                startAnswerRightAwardAnim();
+            }
+        }, animationSet.getDuration());
     }
 
 
@@ -272,6 +354,31 @@ public class TeamPkAqResultPager extends BasePager {
         } else {
             closePager();
         }
+    }
+
+    /**
+     * 全部答对奖励
+     */
+    private void startAnswerRightAwardAnim() {
+        if (mEnergy > 0) {
+            decorView = (ViewGroup) ((Activity) mContext).getWindow().getDecorView();
+            teamPKStateLayout = decorView.findViewById(R.id.tpkL_teampk_pkstate_root);
+            if (teamPKStateLayout != null) {
+                // 能量图标动画
+                pkProgressBar = teamPKStateLayout.findViewById(R.id.tpb_teampk_pkstate_energy_bar);
+                Rect endRect = pkProgressBar.getSliderDrawRect();
+                if (endRect != null) {
+                    playFlayAnim(ivAnswerRightEnergy, endRect);
+                } else {
+                    closePager();
+                }
+            } else {
+                closePager();
+            }
+        } else {
+            closePager();
+        }
+
     }
 
     /**
@@ -403,29 +510,6 @@ public class TeamPkAqResultPager extends BasePager {
     private void releaseRes() {
         if (soundPoolHelper != null) {
             soundPoolHelper.release();
-        }
-    }
-
-    /**
-     * 贝塞尔曲线（二阶抛物线）
-     * controlPoint 是中间的转折点
-     * startValue 是起始的位置
-     * endValue 是结束的位置
-     */
-    public class BezierEvaluator implements TypeEvaluator<Point> {
-        private Point controlPoint;
-
-        BezierEvaluator(Point controlPoint) {
-            this.controlPoint = controlPoint;
-        }
-
-        @Override
-        public Point evaluate(float fraction, Point startValue, Point endValue) {
-            int x = (int) ((1 - fraction) * (1 - fraction) * startValue.x + 2 * fraction * (1 - fraction) *
-                    controlPoint.x + fraction * fraction * endValue.x);
-            int y = (int) ((1 - fraction) * (1 - fraction) * startValue.y + 2 * fraction * (1 - fraction) *
-                    controlPoint.y + fraction * fraction * endValue.y);
-            return new Point(x, y);
         }
     }
 

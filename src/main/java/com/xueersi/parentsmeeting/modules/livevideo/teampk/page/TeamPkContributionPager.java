@@ -33,7 +33,7 @@ import java.util.List;
  * @author chekun
  * created  at 2019/1/30 13:48
  */
-public class TeamPkContributionPager extends BasePager {
+public class TeamPkContributionPager extends TeamPkBasePager {
     /**
      * toast 展示时间
      **/

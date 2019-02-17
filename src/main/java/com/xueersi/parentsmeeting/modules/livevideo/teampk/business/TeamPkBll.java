@@ -45,6 +45,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.redpackage.entity.RedPackage
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkAqResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkAwardPager;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkContributionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkEndPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkImprovePager;
@@ -96,7 +97,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     private LiveGetInfo roomInitInfo;
     private LiveHttpResponseParser mHttpResponseParser;
     private TeamPkTeamInfoEntity teamInfoEntity;
-    private BasePager mFocusPager;
+    private TeamPkBasePager mFocusPager;
 
     private static final String OPEN_STATE_OPEN = "1";
 
@@ -147,6 +148,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      * 战队成员信息
      **/
     private List<TeamMate> mTeamMates;
+    private TeamPkPraiseBll mPraiseBll;
 
     public TeamPkBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -740,8 +742,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         aqAwardPager.setData(0, addEnergy);
 
         TeamPkLog.showAddPower(mLiveBll, voteId, addEnergy + "");
-
-
         //上报服务器 增加加能量
         mHttpManager.addPersonAndTeamEnergy(mLiveBll.getLiveId(), addEnergy,
                 roomInitInfo.getStudentLiveInfo().getTeamId(),
@@ -751,6 +751,18 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
 
                     }
                 });
+    }
+
+    private void showAnswerAllRightAward(final int addEnergy) {
+         mHandler.post(new Runnable() {
+             @Override
+             public void run() {
+                 TeamPkAqResultPager aqAwardPager = new TeamPkAqResultPager(mActivity, TeamPkAqResultPager.AWARD_TYPE_ALL_RIGHT,
+                         TeamPkBll.this);
+                 addFullScreenPager(aqAwardPager);
+                 aqAwardPager.setData(0, addEnergy);
+             }
+         });
     }
 
     /**
@@ -774,7 +786,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         return result;
     }
 
-    private void addPager(BasePager aqAwardPager) {
+    private void addPager(TeamPkBasePager aqAwardPager) {
         if (mFocusPager != null) {
             mFocusPager.onDestroy();
         }
@@ -793,11 +805,12 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      *
      * @param pager
      */
-    private void addFullScreenPager(BasePager pager) {
+    private void addFullScreenPager(TeamPkBasePager pager) {
         if (mFocusPager != null) {
             mFocusPager.onDestroy();
         }
         rlTeamPkContent.removeAllViews();
+        pager.setFullScreenMode(true);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
         rlTeamPkContent.addView(pager.getRootView(), params);
@@ -810,7 +823,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
             public void onGlobalLayout() {
 
                 if (!isFullScreenMode()) {
-                    if (mFocusPager != null && !(mFocusPager instanceof TeamPkEndPager)) {
+                    if (mFocusPager != null && !mFocusPager.isFullScreenMode()) {
                         int rightMargin = LiveVideoPoint.getInstance().getRightMargin();
                         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mFocusPager.getRootView()
                                 .getLayoutParams();
@@ -1065,9 +1078,13 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
             XESCODE.MULTIPLE_H5_COURSEWARE,
             XESCODE.TEAM_PK_BLACK_RANK_LIST,
             XESCODE.TEAM_PK_STAR_RANK_LIST,
-            XESCODE.TEAM_PK_PK_END
+            XESCODE.TEAM_PK_PK_END,
+            XESCODE.TEACHER_PRAISE,
+            XESCODE.TEAM_PK_PARISE_ANWSER_RIGHT
            //  , 130
     };
+
+
 
 
     @Override
@@ -1084,9 +1101,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     setNonce(data.optString("nonce", ""));
                     showCurrentPkResult();
                     break;
-
                 case XESCODE.TEAM_PK_TEAM_SELECT:
-
                     open = data.optString("open");
                     nonce = data.optString("nonce", "");
                     if (OPEN_STATE_OPEN.equals(open)) {
@@ -1141,6 +1156,19 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                 case XESCODE.TEAM_PK_PK_END:
                     showPkEndToast();
                     break;
+                case XESCODE.TEACHER_PRAISE:
+                    TeamPkLog.receiveVoicePraise(mLiveBll, data.optString("nonce", ""));
+                    break;
+                case XESCODE.TEAM_PK_PARISE_ANWSER_RIGHT:
+                 /*   if(mPraiseBll == null){
+                        mPraiseBll = new TeamPkPraiseBll(mActivity,this);
+                    }
+                    mPraiseBll.onPraise(sourceNick,target,data,type);*/
+                    String strCmd = data.optString("msg");
+                    if("1".equals(strCmd)){
+                        showAnswerAllRightAward(10);
+                    }
+                    break;
               /*  case 130:
                     String strCmd = data.optString("msg");
                     if ("1".equals(strCmd)) {
@@ -1163,6 +1191,8 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
             }
         }
     }
+
+
 
     private void closeClassChest() {
         if (mFocusPager != null && mFocusPager instanceof TeamPkAwardPager) {

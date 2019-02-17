@@ -73,7 +73,7 @@ import okhttp3.Call;
  * @author chekun
  * created  at 2018/4/17 16:21
  */
-public class TeamPkAwardPager extends BasePager {
+public class TeamPkAwardPager extends TeamPkBasePager {
     private static final String TAG = "TeamPkAwardPager";
     Logger loger= LoggerFactory.getLogger(TAG);
     private CoinAwardDisplayer cadTeamCoin;

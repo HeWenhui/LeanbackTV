@@ -622,7 +622,13 @@
     <item name="iv_teampk_stars_head" type="id" />
     <item name="iv_teampk_stars_super_star" type="id" />
 
-
+    <!--战队pk老师表扬-->
+    <item name="lav_teampk_praise_anwser_right" type="id"/>
+    <item name="lav_teampk_praise_badge" type="id"/>
+    <item name="cstl_teampk_praise_answer_right" type="id"/>
+    <item name="iv_teampk_praise_energy" type="id"/>
+    <item name="tv_teampk_praise_energy" type="id"/>
+    <item name="gl_teampk_praise_answer_top_guide_line" type="id"/>
 
     <!--实时答题-->
     <item name="rl_answer_question_award_root" type="id" />

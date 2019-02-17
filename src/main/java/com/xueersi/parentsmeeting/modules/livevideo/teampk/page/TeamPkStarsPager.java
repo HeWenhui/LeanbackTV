@@ -51,7 +51,7 @@ import java.util.List;
  * @author chekun
  * created  at 2019/1/14 9:57
  */
-public class TeamPkStarsPager extends BasePager {
+public class TeamPkStarsPager extends TeamPkBasePager {
 
     private final TeamPkBll mPkBll;
     private View bgMask;

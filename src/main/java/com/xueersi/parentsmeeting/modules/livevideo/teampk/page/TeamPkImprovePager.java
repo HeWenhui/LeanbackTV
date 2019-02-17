@@ -46,7 +46,7 @@ import java.util.List;
  * @author chekun
  * created  at 2019/1/14 9:57
  */
-public class TeamPkImprovePager extends BasePager {
+public class TeamPkImprovePager extends TeamPkBasePager {
 
     private final TeamPkBll mPkBll;
     private View bgMask;

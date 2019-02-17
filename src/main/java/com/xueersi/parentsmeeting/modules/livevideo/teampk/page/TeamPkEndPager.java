@@ -21,7 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolat
  * @author chekun
  * created  at 2019/1/18 14:44
  */
-public class TeamPkEndPager extends BasePager {
+public class TeamPkEndPager extends TeamPkBasePager {
     private TextView tvToast;
     /**
      * 缩放动画弹性系数
@@ -111,4 +111,5 @@ public class TeamPkEndPager extends BasePager {
             mView.removeCallbacks(autoCloseTask);
         }
     }
+
 }
