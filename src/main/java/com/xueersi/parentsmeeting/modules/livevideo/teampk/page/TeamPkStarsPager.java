@@ -42,6 +42,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamMemberGridlayoutManager;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkPraiseLayout;
 
 import java.util.List;
 
@@ -62,6 +63,8 @@ public class TeamPkStarsPager extends TeamPkBasePager {
     private StarsAdapter mAdapter;
     private List<TeamPkStar> mData;
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "team_pk/student_stars/";
+
+    private TeamPkPraiseLayout teamPkPraiseLayout;
 
     /**
      * 默认背景音效大小
@@ -108,7 +111,7 @@ public class TeamPkStarsPager extends TeamPkBasePager {
                 }
             }
         });
-
+        teamPkPraiseLayout = view.findViewById(R.id.pk_praise_layout);
         return view;
     }
 
@@ -170,6 +173,8 @@ public class TeamPkStarsPager extends TeamPkBasePager {
                 outRect.set(left, top, right, bottom);
             }
         });
+        teamPkPraiseLayout.setOnLineTeammates(mPkBll.getOnlineTeamMates());
+        teamPkPraiseLayout.setWrodList(mPkBll.getPraiseText());
     }
 
     static class StarItemHolder extends RecyclerView.ViewHolder {

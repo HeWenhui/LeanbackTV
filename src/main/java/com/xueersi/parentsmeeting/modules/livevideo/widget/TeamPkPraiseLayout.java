@@ -198,9 +198,7 @@ public class TeamPkPraiseLayout extends FrameLayout {
         if (mOnLineTeamMates != null) {
             mOnLineTeamMates.clear();
         }
-        if (mWrodList != null) {
-            mWrodList.clear();
-        }
+        mWrodList = null;
         if (soundPoolHelper != null) {
             soundPoolHelper.release();
         }

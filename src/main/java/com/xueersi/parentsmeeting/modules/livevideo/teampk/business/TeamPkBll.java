@@ -104,6 +104,8 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     private static final String OPEN_STATE_CLOSE = "0";
 
 
+    /**战队名称**/
+    String mTeamName = "";
     /**
      * pk对手
      */
@@ -624,6 +626,9 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     break;
                 case PK_RESULT_TYPE_PKRESULT:
                     resultPager.showCurrentResult((TeamEnergyAndContributionStarEntity) data);
+                    if(data != null && TextUtils.isEmpty(mTeamName)){
+                        mTeamName = ((TeamEnergyAndContributionStarEntity) data).getMyTeamEngerInfo().getTeamName();
+                    }
                     break;
                 default:
                     break;
@@ -1082,7 +1087,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
             XESCODE.TEACHER_PRAISE,
            // XESCODE.TEAM_PK_PARISE_ANWSER_RIGHT
             XESCODE.TEAM_PK_TEACHER_PRAISE
-           //  , 130
+            , 130
     };
 
 
@@ -1176,23 +1181,16 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     }
                     mPraiseBll.onPraise(sourceNick,target,data,type);
                     break;
-              /*  case 130:
-                    String strCmd = data.optString("msg");
-                    if ("1".equals(strCmd)) {
-                       // showPkResult();
-                        showCurrentPkResult();
-                    }*//*else if("2".equals(strCmd)){
-                        showClassChest();
-                    }else if("3".equals(strCmd)){
+                case 130:
+                    String cmd = data.optString("msg");
+                      if("1".equals(cmd)){
                         closeCurrentPager();
                         getStusStars();
-                    }else if("4".equals(strCmd)){
+                    }else if("2".equals(cmd)){
                         closeCurrentPager();
                         getProgressStudent();
-                    }else if("5".equals(strCmd)){
-                        showPkEndToast();
-                    }*//*
-                    break;*/
+                    }
+                    break;
                 default:
                     break;
             }
@@ -1299,6 +1297,9 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                         List<TeamPkStar> data = mHttpResponseParser.parseTeamPkStar(responseEntity);
                         if (data != null && data.size() > 0) {
                             showStars(data);
+                            if(TextUtils.isEmpty(mTeamName)){
+                                mTeamName = data.get(0).getTeamName();
+                            }
                         }
                     }
 
@@ -1346,6 +1347,9 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                         List<TeamPkStuProgress> data = mHttpResponseParser.parseTeamPkProgressStu(responseEntity);
                         if (data != null && data.size() > 0) {
                             showStuProgressList(data);
+                            if(TextUtils.isEmpty(mTeamName)){
+                                mTeamName = data.get(0).getTeamName();
+                            }
                         }
                     }
 
@@ -1506,4 +1510,33 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         return  resultList;
     }
 
+    private List<String> prasieTextList;
+    /**
+     * 获取点赞文案
+     *
+     * @return
+     */
+    public List<String> getPraiseText() {
+        if (prasieTextList == null || prasieTextList.size() == 0) {
+            prasieTextList = new ArrayList<String>();
+            //("\uD83D\uDE01"+"\uD83D\uDE04"+"\u2764"+"\uD83D\uDC4D");
+            //大拇指1
+            prasieTextList.add("\uD83D\uDC4D\uD83D\uDC4D\uD83D\uDC4D\uD83D\uDC4D\uD83D\uDC4D");
+            //大拇指2
+            prasieTextList.add("\uD83D\uDC4D\uD83D\uDC4D");
+            //爱心
+            prasieTextList.add("\u2764\u2764\u2764");
+            //大笑
+            prasieTextList.add("\uD83D\uDE04");
+            prasieTextList.add("我们的贡献之星超棒~！");
+            prasieTextList.add("一起加油！");
+            prasieTextList.add("神一样的队友！");
+            prasieTextList.add("一个大大的赞~");
+            prasieTextList.add("你们是最棒的！");
+            prasieTextList.add("祝贺你！");
+            prasieTextList.add("加油加小心," +mTeamName + "稳赢！");
+            prasieTextList.add("超爱" + mTeamName + "的大家~");
+        }
+        return prasieTextList;
+    }
 }

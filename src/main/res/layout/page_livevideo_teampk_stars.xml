@@ -46,6 +46,10 @@
         app:layout_constraintHeight_percent=".664"
         app:layout_constraintTop_toTopOf="@id/gl_teampk_starts_top_guide_line" />
 
+    <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkPraiseLayout
+        android:id="@id/pk_praise_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <ImageView
         android:id="@id/iv_teampk_open_btn_close"
