@@ -103,7 +103,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         getInfo.setAllowLinkMicNew(data.optInt("allowLinkMicNew"));
         getInfo.setGetCourseWareHtmlNew(data.optString("getCourseWareHtmlNew"));
         getInfo.setGetCourseWareHtmlZhongXueUrl(data.optString("getCourseWareHtmlZhongXueUrl"));
-        getInfo.setScienceStaticConfig(parseScienceStaticConfig(data));
+        // TODO 理科小学
+//        getInfo.setScienceStaticConfig(parseScienceStaticConfig(data));
         if (getInfo.getAllowLinkMicNew() == 1) {
             getInfo.setAllowLinkMic(false);
         }

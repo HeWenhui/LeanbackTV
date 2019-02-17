@@ -57,20 +57,22 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
                 if (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage)) {
                     englishH5Entity.setDynamicurl(liveGetInfo.getGetCourseWareHtmlZhongXueUrl());
                 } else {
-                    ScienceStaticConfig scienceStaticConfig = liveGetInfo.getScienceStaticConfig();
-                    String localfile = null;
-                    if (scienceStaticConfig != null) {
-                        ScienceStaticConfig.Version version = scienceStaticConfig.stringVersionHashMap.get(ScienceStaticConfig.THIS_VERSION);
-                        if (version != null) {
-                            localfile = version.localfile;
-                        }
-                    }
-                    if (localfile != null) {
-                        localfile = "file://" + localfile;
-                        englishH5Entity.setDynamicurl(localfile);
-                    } else {
-                        englishH5Entity.setDynamicurl(liveGetInfo.getGetCourseWareHtmlNew() + ScienceStaticConfig.THIS_VERSION_HTML + "/index.html");
-                    }
+                    // TODO 理科小学
+//                    ScienceStaticConfig scienceStaticConfig = liveGetInfo.getScienceStaticConfig();
+//                    String localfile = null;
+//                    if (scienceStaticConfig != null) {
+//                        ScienceStaticConfig.Version version = scienceStaticConfig.stringVersionHashMap.get(ScienceStaticConfig.THIS_VERSION);
+//                        if (version != null) {
+//                            localfile = version.localfile;
+//                        }
+//                    }
+//                    if (localfile != null) {
+//                        localfile = "file://" + localfile;
+//                        englishH5Entity.setDynamicurl(localfile);
+//                    } else {
+//                        englishH5Entity.setDynamicurl(liveGetInfo.getGetCourseWareHtmlNew() + ScienceStaticConfig.THIS_VERSION_HTML + "/index.html");
+//                    }
+                    englishH5Entity.setDynamicurl("https://live.xueersi.com/science/LiveExam/getCourseWareTestHtml");
                 }
             }
         }
