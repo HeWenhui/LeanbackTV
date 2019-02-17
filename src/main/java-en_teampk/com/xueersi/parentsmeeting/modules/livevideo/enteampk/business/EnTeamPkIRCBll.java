@@ -453,6 +453,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                                     }
                                 }
                                 enTeamPkRankEntity.setMyTeam(pkTeamEntity.getMyTeam());
+                                updateEnpk(enTeamPkRankEntity);
                                 if (enTeamPkAction != null) {
                                     enTeamPkAction.onRankLead(enTeamPkRankEntity, "-1-end", TeamPkLeadPager.TEAM_TYPE_2);
                                 }
@@ -696,7 +697,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             if (teamPKObj != null) {
                 boolean status = teamPKObj.optBoolean("status", false);
                 if (status) {
-                    logger.d("onTopic:psOpen=" + psOpen );
+                    logger.d("onTopic:psOpen=" + psOpen);
                     if (!psOpen) {
                         psOpen = true;
                         //不是第一次topic,说明不是退出重进
