@@ -16,13 +16,13 @@ import android.widget.TextView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.config.AppConfig;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.config.EnTeamPkConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.item.TeamMemberStarItem;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
 import java.util.ArrayList;
@@ -54,6 +54,7 @@ public class TeamPkLeadPager extends LiveBasePager {
     private TextView ivTeampkLeadFireAddRight;
     private TextView tvTeampkLeadScoreRight;
     private int pattern;
+    private float finalFprog;
     private Handler handler = new Handler(Looper.getMainLooper());
     private OnClose onClose;
     private OnStudyClick onStudyClick;
@@ -199,7 +200,7 @@ public class TeamPkLeadPager extends LiveBasePager {
         int[] res = EnTeamPkConfig.TEAM_RES;
         ivTeampkMine.setImageResource(res[enTeamPkRankEntity.getMyTeam()]);
         int progress = 50;
-        float fprog = 0.0f;
+        float fprog = 0.5f;
         int total = enTeamPkRankEntity.getMyTeamTotal() + enTeamPkRankEntity.getOpTeamTotal();
         ivTeampkOther.setImageResource(res[enTeamPkRankEntity.getBpkTeamId()]);
         tvTeampkLeadFireAddLeft.setText("+" + enTeamPkRankEntity.getMyTeamCurrent());
@@ -242,24 +243,13 @@ public class TeamPkLeadPager extends LiveBasePager {
             tv_livevideo_en_teampk_rank_start_close.setText(integer.get() + "s后关闭");
         }
         pgTeampkLead.setProgress(progress);
-        final float finalFprog = fprog;
+        finalFprog = fprog;
         mLogtf.d("initData:type=" + type + ",fprog=" + fprog);
         pgTeampkLead.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
                 pgTeampkLead.getViewTreeObserver().removeOnPreDrawListener(this);
-                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ivTeampkLeadProg.getLayoutParams();
-                int ivWidth = ivTeampkLeadProg.getWidth();
-                int leftMargin = (int) (pgTeampkLead.getLeft() + pgTeampkLead.getWidth() * finalFprog) - ivWidth / 2;
-                //为了和进度条对齐，计算火的宽度
-                float fireRatio = 88.0f / 395.0f;
-                int fireWidth = (int) (ivWidth * fireRatio);
-                //火最大和进度条右边距对齐
-                int maxLeftMargin = (pgTeampkLead.getLeft() + pgTeampkLead.getWidth() - ivWidth / 2 - fireWidth / 2);
-                logger.d("initData:leftMargin=" + leftMargin + ",maxLeftMargin=" + maxLeftMargin);
-                lp.leftMargin = Math.min(leftMargin, maxLeftMargin);
-                ivTeampkLeadProg.setLayoutParams(lp);
-                ivTeampkLeadProg.setVisibility(View.VISIBLE);
+                setProgFire();
                 return false;
             }
         });
@@ -282,6 +272,54 @@ public class TeamPkLeadPager extends LiveBasePager {
                 }
             }
         }, countDelay);
+    }
+
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+//        pgTeampkLead.post(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//            }
+//        });
+        lastLeftMargin = 0;
+        pgTeampkLead.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                boolean same = setProgFire();
+                if (same) {
+                    pgTeampkLead.getViewTreeObserver().removeOnPreDrawListener(this);
+                }
+                return false;
+            }
+        });
+    }
+
+    /** 火焰上次的位置 */
+    private int lastLeftMargin;
+
+    //设置火焰在进度条的位置
+    private boolean setProgFire() {
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ivTeampkLeadProg.getLayoutParams();
+        int ivWidth = ivTeampkLeadProg.getWidth();
+        int leftMargin = (int) (pgTeampkLead.getLeft() + pgTeampkLead.getWidth() * finalFprog) - ivWidth / 2;
+        //为了和进度条对齐，计算火的宽度
+        float fireRatio = 88.0f / 395.0f;
+        int fireWidth = (int) (ivWidth * fireRatio);
+        //火最大和进度条右边距对齐
+        int maxLeftMargin = (pgTeampkLead.getLeft() + pgTeampkLead.getWidth() - ivWidth / 2 - fireWidth / 2);
+        logger.d("initData:width=" + mView.getWidth() + ",left=" + pgTeampkLead.getLeft() + ",leftMargin=" + leftMargin + ",maxLeftMargin=" + maxLeftMargin);
+        int leftMargin2 = Math.min(leftMargin, maxLeftMargin);
+        if (lp.leftMargin != leftMargin2) {
+            lp.leftMargin = leftMargin2;
+            ivTeampkLeadProg.setLayoutParams(lp);
+        }
+        ivTeampkLeadProg.setVisibility(View.VISIBLE);
+        //两次距离一样，说明绘制完成
+        if (lastLeftMargin == lp.leftMargin) {
+            return true;
+        }
+        lastLeftMargin = lp.leftMargin;
+        return false;
     }
 
     private void setCloseText(TextView textView, AtomicInteger integer) {

@@ -24,6 +24,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEn
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkLeadPager;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
@@ -830,6 +831,14 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 uservector.remove(j);
                 break;
             }
+        }
+    }
+
+    @Override
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+        super.setVideoLayout(liveVideoPoint);
+        if (enTeamPkAction != null) {
+            enTeamPkAction.setVideoLayout(liveVideoPoint);
         }
     }
 

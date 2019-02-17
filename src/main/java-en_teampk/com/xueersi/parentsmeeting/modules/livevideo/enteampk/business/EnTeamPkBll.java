@@ -429,6 +429,22 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
     }
 
     @Override
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+        if (teamPkLeadPager != null) {
+            if (pattern != 2) {
+                View mView = teamPkLeadPager.getRootView();
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mView.getLayoutParams();
+                int rightMargin = LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x3;
+                if (layoutParams.rightMargin != rightMargin) {
+                    layoutParams.rightMargin = rightMargin;
+                    mView.setLayoutParams(layoutParams);
+                    teamPkLeadPager.setVideoLayout(liveVideoPoint);
+                }
+            }
+        }
+    }
+
+    @Override
     public void onStuLike(String testId, final ArrayList<TeamMemberEntity> teamMemberEntities) {
         if (teamPkLeadPager != null) {
             if (TextUtils.equals(testId, teamPkLeadPager.getTestId())) {

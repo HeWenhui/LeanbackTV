@@ -4,6 +4,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRank
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 
 import java.util.ArrayList;
 
@@ -26,6 +27,8 @@ public interface EnTeamPkAction {
     void onRankLead(EnTeamPkRankEntity enTeamPkRankEntity, String testId, int type);
 
     void onModeChange(String mode);
+
+    void setVideoLayout(LiveVideoPoint liveVideoPoint);
 
     void destory();
 }
