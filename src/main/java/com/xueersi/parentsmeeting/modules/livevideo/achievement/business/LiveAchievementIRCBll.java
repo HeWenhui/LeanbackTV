@@ -19,6 +19,7 @@ import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.common.util.LoadSoCallBack;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
@@ -113,39 +114,44 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                                 boolean result = speakerRecognitionerInterface.init();
                                 if (result) {
                                     String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
-                                    byte[] pcmdata = new byte[10];
-                                    int enrollIvector = speakerRecognitionerInterface.
-                                            enrollIvector(pcmdata, pcmdata.length, 0, stuId, false);
-                                    if (enrollIvector != 0) {
-                                        long interval = sTime * 1000 - System.currentTimeMillis();
-                                        boolean allow = true;
-                                        if (!LiveTopic.MODE_TRANING.equals(mGetInfo.getMode()) ||
-                                                interval <= 60 * 1000) {
-                                            allow = false;
-                                        }
-
-                                        if (allow) {
-                                            handler.post(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    if (recognizeDialog != null && !recognizeDialog.isDialogShow()) {
-                                                        UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext
-                                                                .getResources().getString(R.string.personal_1701001));
-                                                        recognizeDialog.showDialog();
-                                                    }
-                                                }
-                                            });
-                                        } else {
-                                            startAchievement();
-                                        }
-                                    } else {
-                                        mLogtf.d("onLiveInited:isDestory=" + isDestory);
-                                        if (!isDestory) {
-                                            speakerRecognitioner = new SpeakerRecognitioner(activity, audioRequest);
-                                            if (englishSpeekAction != null) {
-                                                englishSpeekAction.setSpeakerRecognitioner(speakerRecognitioner);
+                                    if (StringUtils.isEmpty(stuId)) {
+                                        mLogtf.d("onLiveInited:stuId=" + stuId);
+                                        startAchievement();
+                                    }else {
+                                        byte[] pcmdata = new byte[10];
+                                        int enrollIvector = speakerRecognitionerInterface.
+                                                enrollIvector(pcmdata, pcmdata.length, 0, stuId, false);
+                                        if (enrollIvector != 0) {
+                                            long interval = sTime * 1000 - System.currentTimeMillis();
+                                            boolean allow = true;
+                                            if (!LiveTopic.MODE_TRANING.equals(mGetInfo.getMode()) ||
+                                                    interval <= 60 * 1000) {
+                                                allow = false;
                                             }
-                                            startAchievement();
+
+                                            if (allow) {
+                                                handler.post(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        if (recognizeDialog != null && !recognizeDialog.isDialogShow()) {
+                                                            UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext
+                                                                    .getResources().getString(R.string.personal_1701001));
+                                                            recognizeDialog.showDialog();
+                                                        }
+                                                    }
+                                                });
+                                            } else {
+                                                startAchievement();
+                                            }
+                                        } else {
+                                            mLogtf.d("onLiveInited:isDestory=" + isDestory);
+                                            if (!isDestory) {
+                                                speakerRecognitioner = new SpeakerRecognitioner(activity, audioRequest);
+                                                if (englishSpeekAction != null) {
+                                                    englishSpeekAction.setSpeakerRecognitioner(speakerRecognitioner);
+                                                }
+                                                startAchievement();
+                                            }
                                         }
                                     }
                                 } else {
@@ -186,19 +192,24 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     boolean result = speakerRecognitionerInterface.init();
                     if (result) {
                         String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
-                        byte[] pcmdata = new byte[10];
-                        int enrollIvector = speakerRecognitionerInterface.
-                                enrollIvector(pcmdata, pcmdata.length, 0, stuId, false);
-                        if (enrollIvector != 0) {
+                        if (StringUtils.isEmpty(stuId)) {
+                            mLogtf.d("onResume:stuId=" + stuId);
                             startAchievement();
-                        } else {
-                            mLogtf.d("onLiveInited:isDestory=" + isDestory);
-                            if (!isDestory) {
-                                speakerRecognitioner = new SpeakerRecognitioner(activity, audioRequest);
-                                if (englishSpeekAction != null) {
-                                    englishSpeekAction.setSpeakerRecognitioner(speakerRecognitioner);
-                                }
+                        }else {
+                            byte[] pcmdata = new byte[10];
+                            int enrollIvector = speakerRecognitionerInterface.
+                                    enrollIvector(pcmdata, pcmdata.length, 0, stuId, false);
+                            if (enrollIvector != 0) {
                                 startAchievement();
+                            } else {
+                                mLogtf.d("onResume:isDestory=" + isDestory);
+                                if (!isDestory) {
+                                    speakerRecognitioner = new SpeakerRecognitioner(activity, audioRequest);
+                                    if (englishSpeekAction != null) {
+                                        englishSpeekAction.setSpeakerRecognitioner(speakerRecognitioner);
+                                    }
+                                    startAchievement();
+                                }
                             }
                         }
                     } else {
