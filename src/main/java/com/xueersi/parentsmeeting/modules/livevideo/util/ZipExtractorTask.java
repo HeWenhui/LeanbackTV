@@ -8,7 +8,7 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveLogConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 
 import org.apache.tools.zip.ZipEntry;
@@ -125,7 +125,7 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
                             logHashMap.put("extractedsize", "" + extractedSize);
                             logHashMap.put("length1", "" + destinationTemp.length());
                             logHashMap.put("length2", "" + destination.length());
-                            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LiveLogConfig.LIVE_ZIP_FILE_ERROR, logHashMap.getData());
+                            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_ZIP_FILE_ERROR, logHashMap.getData());
                         } catch (Exception e) {
                             CrashReport.postCatchedException(e);
                         }
@@ -140,7 +140,7 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
                         logHashMap.put("exception", "" + Log.getStackTraceString(e));
                         logHashMap.put("length1", "" + destinationTemp.length());
                         logHashMap.put("length2", "" + destination.length());
-                        UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LiveLogConfig.LIVE_ZIP_FILE_ERROR, logHashMap.getData());
+                        UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_ZIP_FILE_ERROR, logHashMap.getData());
                     } catch (Exception e2) {
                         CrashReport.postCatchedException(e2);
                     }
@@ -180,7 +180,7 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
             logHashMap.put("input", "" + mInput);
             logHashMap.put("output", "" + mOutput);
             logHashMap.put("exception", "" + Log.getStackTraceString(exception));
-            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LiveLogConfig.LIVE_ZIP_ERROR, logHashMap.getData());
+            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_ZIP_ERROR, logHashMap.getData());
         } catch (Exception e) {
             CrashReport.postCatchedException(e);
         }
