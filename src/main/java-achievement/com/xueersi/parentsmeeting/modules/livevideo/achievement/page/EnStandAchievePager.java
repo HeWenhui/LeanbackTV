@@ -96,9 +96,6 @@ public class EnStandAchievePager extends LiveBasePager {
         LiveGetInfo.EnglishPk englishPk = mLiveGetInfo.getEnglishPk();
         if (1 == englishPk.canUsePK) {
             pkview = (ViewGroup) vsAchiveBottom.inflate();
-            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) pkview.getLayoutParams();
-            layoutParams.topMargin = SizeUtils.Dp2Px(mContext, 12);
-            pkview.setLayoutParams(layoutParams);
             pgAchivePk = pkview.findViewById(R.id.pg_livevideo_en_achive_pk);
             tv_livevideo_en_achive_pk_energy_my = pkview.findViewById(R.id.tv_livevideo_en_achive_pk_energy_my);
             tv_livevideo_en_achive_pk_energy_other = pkview.findViewById(R.id.tv_livevideo_en_achive_pk_energy_other);

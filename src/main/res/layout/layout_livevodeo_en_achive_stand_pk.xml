@@ -2,10 +2,23 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
+    <TextView
+        android:id="@id/tv_livevideo_en_achive_pk_target"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="23dp"
+        android:includeFontPadding="false"
+        android:text="你真棒！继续加油哦~"
+        android:textColor="#ffffffff"
+        android:textSize="11sp" />
+
     <RelativeLayout
         android:id="@id/rl_livevideo_en_achive_pk_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/tv_livevideo_en_achive_pk_target"
+        android:layout_marginTop="23dp"
         android:gravity="center_vertical">
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
