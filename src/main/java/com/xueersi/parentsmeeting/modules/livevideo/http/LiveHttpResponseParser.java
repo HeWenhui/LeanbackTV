@@ -49,6 +49,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ThumbsUpProbabilityEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ScienceStaticConfig;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -56,10 +57,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class LiveHttpResponseParser extends HttpResponseParser {
-    String TAG = "LiveHttpResponseParser";
+    static String TAG = "LiveHttpResponseParser";
     Context mContext;
 
     public LiveHttpResponseParser(Context mContext) {
@@ -99,10 +101,14 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         LiveVideoConfig.LIVEMULH5URL = data.optString("getCourseWareHtml");
         getInfo.setStuPutUpHandsNum(data.optInt("stuPutUpHandsNum"));
         getInfo.setAllowLinkMicNew(data.optInt("allowLinkMicNew"));
+        getInfo.setGetCourseWareHtmlNew(data.optString("getCourseWareHtmlNew"));
+        getInfo.setGetCourseWareHtmlZhongXueUrl(data.optString("getCourseWareHtmlZhongXueUrl"));
+        // TODO 理科小学
+//        getInfo.setScienceStaticConfig(parseScienceStaticConfig(data));
         if (getInfo.getAllowLinkMicNew() == 1) {
             getInfo.setAllowLinkMic(false);
         }
-        if (data.has("ePlanInfo")){
+        if (data.has("ePlanInfo")) {
             try {
                 JSONObject ePlanInfo = data.getJSONObject("ePlanInfo");
                 getInfo.ePlanInfo = new LiveGetInfo.EPlanInfoBean();
@@ -117,6 +123,38 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo.ePlanInfo", e.getMessage());
             }
         }
+    }
+
+    public static ScienceStaticConfig parseScienceStaticConfig(JSONObject data) {
+        ScienceStaticConfig scienceStaticConfig = null;
+        if (data.has("science_static_config")) {
+            JSONObject science_static_config = data.optJSONObject("science_static_config");
+            if (science_static_config != null) {
+                scienceStaticConfig = new ScienceStaticConfig();
+                HashMap<String, ScienceStaticConfig.Version> stringVersionHashMap = scienceStaticConfig.stringVersionHashMap;
+                Iterator<String> keys = science_static_config.keys();
+                if (keys.hasNext()) {
+                    String key = keys.next();
+                    ScienceStaticConfig.Version version = new ScienceStaticConfig.Version();
+                    version.version = key;
+                    try {
+                        JSONObject versionObj = science_static_config.getJSONObject(key);
+                        int canUseLocal = versionObj.getInt("canUseLocal");
+                        if (canUseLocal == 1) {
+                            version.url = versionObj.getString("url");
+                            version.templateURL = versionObj.getString("templateURL");
+                            version.tarballURL = versionObj.getString("tarballURL");
+                            version.assetsHash = versionObj.getString("assetsHash");
+                            version.templateForLocalURL = versionObj.getString("templateForLocalURL");
+                            stringVersionHashMap.put(key, version);
+                        }
+                    } catch (JSONException e) {
+                        MobAgent.httpResponseParserError(TAG, "parseScienceStaticConfig", e.getMessage());
+                    }
+                }
+            }
+        }
+        return scienceStaticConfig;
     }
 
     /**
@@ -224,7 +262,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             if (data.has("isAllowTeamPk")) {
                 getInfo.setIsAllowTeamPk(data.getString("isAllowTeamPk"));
             }
-
             getInfo.setIsShowMarkPoint(data.optString("isAllowMarkpoint"));
             getInfo.setIsAIPartner(data.optInt("isAIPartner"));
 
