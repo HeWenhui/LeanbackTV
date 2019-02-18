@@ -147,7 +147,7 @@
         android:layout_height="41dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="130dp"
-        android:src="@drawable/livevideo_list_vs_img_disable"
+        android:src="@drawable/livevideo_chpk_yellow_vs"
         android:visibility="gone" />
 
 
