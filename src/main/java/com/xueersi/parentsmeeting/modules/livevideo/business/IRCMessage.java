@@ -198,7 +198,7 @@ public class IRCMessage {
         @Override
         public void onNetStatusChanged(PMDefs.NetStatusResp netStatusResp) {
             logger.i("ircsdk net status:" + netStatusResp.netStatus);
-            if (PMDefs.NetStatus.PMNetStatus_Connecting== netStatusResp.netStatus) {
+            if (PMDefs.NetStatus.PMNetStatus_Connecting == netStatusResp.netStatus) {
                 if (mIRCCallback != null) {
                     mIRCCallback.onStartConnect();
                     mIRCCallback.onRegister();
@@ -208,7 +208,7 @@ public class IRCMessage {
                     PMDefs.NetStatus.PMNetStatus_ServerFailed == netStatusResp.netStatus ||
                     PMDefs.NetStatus.PMNetStatus_DisConnected == netStatusResp.netStatus) {
                 mDisconnectCount++;
-                mLogtf.d("onDisconnect:count=" + mDisconnectCount + ",isQuitting=" + false+",netstatus="+netStatusResp.netStatus);
+                mLogtf.d("onDisconnect:count=" + mDisconnectCount + ",isQuitting=" + false + ",netstatus=" + netStatusResp.netStatus);
                 if (mIRCCallback != null) {
                     mIRCCallback.onDisconnect(null, false);
                 }
@@ -802,7 +802,9 @@ public class IRCMessage {
         if (mChatClient != null) {
             logger.i("ircsdk ondestory");
             mChatClient.logout("relogin");
-            mChatClient.getRoomManager().leaveChatRooms(roomid);
+            if (roomid != null && !roomid.isEmpty()){
+                mChatClient.getRoomManager().leaveChatRooms(roomid);
+            }
             mChatClient.unInit();
             mChatClient.getPeerManager().removeListener(mPeerListener);
             mChatClient.getRoomManager().removeListener(mRoomListener);
