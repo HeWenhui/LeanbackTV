@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ScienceStaticConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -245,6 +246,7 @@ public class LiveGetInfo {
      * 1 :是pk 直播间  0 :非pk直播间
      */
     private String isAllowTeamPk;
+
     /** 是否是AI 伴侣直播间 */
     private int isAIPartner;
     private String[] subjectIds;//所有学科id
@@ -255,7 +257,9 @@ public class LiveGetInfo {
     /** 一发多题的动态接口 */
     private String mulpreload;
     private String mulh5url;
-
+    private String getCourseWareHtmlNew;
+    private String getCourseWareHtmlZhongXueUrl;
+    private ScienceStaticConfig scienceStaticConfig;
     /**
      * 是否是高三理科
      */
@@ -1317,6 +1321,30 @@ public class LiveGetInfo {
 
     public void setMulh5url(String mulh5url) {
         this.mulh5url = mulh5url;
+    }
+
+    public String getGetCourseWareHtmlNew() {
+        return getCourseWareHtmlNew;
+    }
+
+    public void setGetCourseWareHtmlNew(String getCourseWareHtmlNew) {
+        this.getCourseWareHtmlNew = getCourseWareHtmlNew;
+    }
+
+    public String getGetCourseWareHtmlZhongXueUrl() {
+        return getCourseWareHtmlZhongXueUrl;
+    }
+
+    public void setGetCourseWareHtmlZhongXueUrl(String getCourseWareHtmlZhongXueUrl) {
+        this.getCourseWareHtmlZhongXueUrl = getCourseWareHtmlZhongXueUrl;
+    }
+
+    public ScienceStaticConfig getScienceStaticConfig() {
+        return scienceStaticConfig;
+    }
+
+    public void setScienceStaticConfig(ScienceStaticConfig science_static_config) {
+        this.scienceStaticConfig = science_static_config;
     }
 
     /** 直播间额外参数信息 */

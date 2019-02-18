@@ -1101,4 +1101,50 @@
     <!--<item name="" type="id" />-->
     <!--<item name="" type="id" />-->
     <!--<item name="" type="id" />-->
+    <item name="iv_livevideo_chpk_teamLogo" type="id" />
+    <item name="iv_livevideo_chpk_teamView" type="id" />
+    <item name="fr_livevideo_chpk_teamView" type="id" />
+
+    <item name="iv_livevideo_chpk_selectReady" type="id" />
+    <item name="iv_livevideo_chpk_selectClose" type="id" />
+
+    <item name="fr_livevideo_chpk_finalViewWrapper" type="id" />
+    <item name="bt_livevideo_chpk_finalOwnerEnergy" type="id" />
+    <item name="bt_livevideo_chpk_finalOtherEnergy" type="id" />
+    <item name="pb_livevideo_chpk_finalProgerssBar" type="id" />
+    <item name="lv_livevideo_chpk_lottieEffectView" type="id" />
+
+    <item name="fr_livevideo_chpk_resultViewWrapper" type="id" />
+    <item name="bt_livevideo_chpk_resultMyAddEnergy" type="id" />
+    <item name="bt_livevideo_chpk_resultOwnerEnergy" type="id" />
+    <item name="bt_livevideo_chpk_resultOtherEnergy" type="id" />
+    <item name="pb_livevideo_chpk_resultProgerssBar" type="id" />
+
+    <item name="fr_livevideo_chpk_resultOwnerTeam" type="id" />
+    <item name="iv_livevideo_chpk_ownerTeamState" type="id" />
+    <item name="iv_livevideo_chpk_OwnerTeamImage" type="id" />
+    <item name="tv_livevideo_chpk_ownerTeamSlogan" type="id" />
+    <item name="iv_livevideo_chpk_ownerTeacherLogo" type="id" />
+    <item name="tv_livevideo_chpk_ownerTeacherName" type="id" />
+
+    <item name="iv_livevideo_chpk_resultTeamVsLogo" type="id" />
+
+    <item name="fr_livevideo_chpk_resultOtherTeam" type="id" />
+    <item name="iv_livevideo_chpk_otherTeamState" type="id" />
+    <item name="iv_livevideo_chpk_otherTeamImage" type="id" />
+    <item name="tv_livevideo_chpk_otherTeamSlogan" type="id" />
+    <item name="iv_livevideo_chpk_otherTeacherLogo" type="id" />
+    <item name="tv_livevideo_chpk_otherTeacherName" type="id" />
+
+    <item name="rv_livevideo_chpk_contributesRoot" type="id" />
+    <item name="rv_livevideo_chpk_contributesView" type="id" />
+
+    <item name="iv_livevideo_chpk_awardClickImage" type="id" />
+    <item name="av_livevideo_chpk_awardUserNumber" type="id" />
+    <item name="av_livevideo_chpk_awardTeamNumber" type="id" />
+    <item name="iv_livevideo_chpk_openAwardRanker" type="id" />
+    <item name="iv_livevideo_chpk_openAwardState" type="id" />
+    <item name="iv_livevideo_chpk_openAwardClose" type="id" />
+
+
 </resources>

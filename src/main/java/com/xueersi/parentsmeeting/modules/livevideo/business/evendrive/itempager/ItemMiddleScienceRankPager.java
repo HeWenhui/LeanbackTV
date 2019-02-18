@@ -45,7 +45,13 @@ public class ItemMiddleScienceRankPager extends ItemMiddleSciencePager<RankEntit
                             entity.setIsThumbsUp(0);
                             long nowTime = System.currentTimeMillis();
                             //15s内点赞需要给用户发送相关消息
-                            if (nowTime - endTime <= TIME_SEND_PRIVATE_MSG && getiNotice() != null) {
+
+                            //如果是给自己点赞
+                            if (entity.getId() != null && entity.getId().equals(myStuId)) {
+                                if (iClickSelf != null) {
+                                    iClickSelf.clickSelf();
+                                }
+                            } else if (nowTime - endTime <= TIME_SEND_PRIVATE_MSG && getiNotice() != null) {
                                 JSONObject jsonObject = new JSONObject();
                                 try {
                                     jsonObject.put("type", XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT);
@@ -55,15 +61,19 @@ public class ItemMiddleScienceRankPager extends ItemMiddleSciencePager<RankEntit
                                 }
                                 getiNotice().sendNotice(jsonObject, entity.getName());
                             }
-                            //如果是给自己点赞
-                            if (entity.getId() != null && entity.getId().equals(myStuId)) {
-                                if (iClickSelf != null) {
-                                    iClickSelf.clickSelf();
-                                }
-                            }
                         }
                     });
                 }
+//
+//                JSONObject jsonObject = new JSONObject();
+//                try {
+//                    jsonObject.put("type", XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT);
+//                    jsonObject.put("approvalType", 1);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//                getiNotice().sendNotice(jsonObject, entity.getName());
+
             }
         });
     }

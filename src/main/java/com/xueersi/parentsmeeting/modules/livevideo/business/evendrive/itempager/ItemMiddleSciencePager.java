@@ -6,12 +6,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 
 import org.json.JSONObject;
 
 public abstract class ItemMiddleSciencePager<T> implements AdapterItemInterface<T> {
+    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     /**  */
     protected TextView rankLeft;//tv_livevideo_rank_item_left;
 

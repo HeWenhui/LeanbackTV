@@ -13,10 +13,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.itempager
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.itempager.ItemMiddleSciencePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.itempager.ItemMiddleScienceRankPager;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MyRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 import com.xueersi.ui.adapter.RCommonAdapter;
+
+import java.util.List;
 
 /**
  * 中学激励系统里面的连对页面
@@ -169,47 +172,59 @@ public class MiddleScienceEvenDrivePager extends BasePager {
 
     public void updateEvenData(final EvenDriveEntity evenDriveEntity) {
         this.evenDriveEntity = evenDriveEntity;
-        if (evenDriveEntityCommonAdapter == null) {
-            evenDriveEntityCommonAdapter = new CommonAdapter<EvenDriveEntity.OtherEntity>(evenDriveEntity.getOtherEntities()) {
-                @Override
-                public AdapterItemInterface<EvenDriveEntity.OtherEntity> getItemView(Object type) {
-                    ItemMiddleScienceEvenPager itemMiddleScienceEvenPager = new ItemMiddleScienceEvenPager(mContext);
-                    itemMiddleScienceEvenPager.setiNotice(iNotice);
-                    itemMiddleScienceEvenPager.setMyStuId(evenDriveEntity.getMyEntity().getStuId());
-                    itemMiddleScienceEvenPager.setEndTime(endTime);
-                    itemMiddleScienceEvenPager.setiClickSelf(new ItemMiddleSciencePager.IClickSelf() {
-                        @Override
-                        public void clickSelf() {
-                            for (EvenDriveEntity.OtherEntity otherEntity : evenDriveEntity.getOtherEntities()) {
-                                if (otherEntity.getStuId().equals(evenDriveEntity.getMyEntity().getStuId())) {
-                                    if (otherEntity.getIsThumbsUp() == 1) {
-                                        otherEntity.setThumbsUpNum(otherEntity.getThumbsUpNum() + 1);
-                                        otherEntity.setIsThumbsUp(0);
-                                    }
+//        if (evenDriveEntityCommonAdapter == null) {
+        evenDriveEntityCommonAdapter = new CommonAdapter<EvenDriveEntity.OtherEntity>(evenDriveEntity.getOtherEntities()) {
+            @Override
+            public AdapterItemInterface<EvenDriveEntity.OtherEntity> getItemView(Object type) {
+                ItemMiddleScienceEvenPager itemMiddleScienceEvenPager = new ItemMiddleScienceEvenPager(mContext);
+                itemMiddleScienceEvenPager.setiNotice(iNotice);
+                itemMiddleScienceEvenPager.setMyStuId(evenDriveEntity.getMyEntity().getStuId());
+                itemMiddleScienceEvenPager.setEndTime(endTime);
+                itemMiddleScienceEvenPager.setiClickSelf(new ItemMiddleSciencePager.IClickSelf() {
+                    @Override
+                    public void clickSelf() {
+                        for (EvenDriveEntity.OtherEntity otherEntity : evenDriveEntity.getOtherEntities()) {
+                            if (otherEntity.getStuId().equals(evenDriveEntity.getMyEntity().getStuId())) {
+                                if (otherEntity.getIsThumbsUp() == 1) {
+                                    otherEntity.setThumbsUpNum(otherEntity.getThumbsUpNum() + 1);
+                                    otherEntity.setIsThumbsUp(0);
                                 }
                             }
-
-                            notifyDataSetChanged();
                         }
-                    });
-                    return itemMiddleScienceEvenPager;
-                }
-            };
-        } else {
-            evenDriveEntityCommonAdapter.updateData(evenDriveEntity.getOtherEntities());
-            evenDriveEntityCommonAdapter.notifyDataSetChanged();
-        }
+                        notifyDataSetChanged();
+                    }
+                });
+                return itemMiddleScienceEvenPager;
+            }
+        };
+//        } else {
+//            evenDriveEntityCommonAdapter.updateData(evenDriveEntity.getOtherEntities());
+//            evenDriveEntityCommonAdapter.notifyDataSetChanged();
+//        }
         if (index == 2) {
             lvEven.setAdapter(evenDriveEntityCommonAdapter);
         }
     }
 
     public void updataRankData(final AllRankEntity allRankEntity) {
+        if (allRankEntity == null) {
+            return;
+        }
         this.allRankEntity = allRankEntity;
 //        lvEven.setAdapter(new);
         //排行榜组内的数据
-        if (rankEntityAdapter == null) {
-            rankEntityAdapter = new CommonAdapter<RankEntity>(allRankEntity.getMyRankEntityMyTeam().getRankEntities()) {
+//        if (rankEntityAdapter == null) {
+        MyRankEntity myRankEntity = allRankEntity.getMyRankEntityMyTeam();
+
+        if (myRankEntity != null) {
+            List<RankEntity> rankEntities = myRankEntity.getRankEntities();
+            for (RankEntity rankEntity : myRankEntity.getRankEntities()) {
+                if (myRankEntity.getMyId().equals(rankEntity.getId())) {
+                    rankEntities.add(0, rankEntity);
+                    break;
+                }
+            }
+            rankEntityAdapter = new CommonAdapter<RankEntity>(rankEntities) {
                 @Override
                 public AdapterItemInterface<RankEntity> getItemView(Object type) {
                     ItemMiddleScienceRankPager itemMiddleScienceRankPager = new ItemMiddleScienceRankPager(mContext);
@@ -235,9 +250,10 @@ public class MiddleScienceEvenDrivePager extends BasePager {
                     return itemMiddleScienceRankPager;
                 }
             };
-        } else {
-            rankEntityAdapter.updateData(allRankEntity.getMyRankEntityMyTeam().getRankEntities());
-            rankEntityAdapter.notifyDataSetChanged();
+//        } else {
+//            rankEntityAdapter.updateData(allRankEntity.getMyRankEntityMyTeam().getRankEntities());
+//            rankEntityAdapter.notifyDataSetChanged();
+//        }
         }
         final int colorYellow = mContext.getResources().getColor(R.color.COLOR_FFFF00);
         final int colorWhite = mContext.getResources().getColor(R.color.white);
@@ -267,6 +283,12 @@ public class MiddleScienceEvenDrivePager extends BasePager {
 
     public void setEndTime(long time) {
         this.endTime = time;
+        if (rankEntityAdapter != null) {
+            rankEntityAdapter.notifyDataSetChanged();
+        }
+        if (evenDriveEntityCommonAdapter != null) {
+            evenDriveEntityCommonAdapter.notifyDataSetChanged();
+        }
     }
 
     private ItemMiddleSciencePager.INotice iNotice;

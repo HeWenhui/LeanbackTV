@@ -13,6 +13,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.method.LinkMovementMethod;
 import android.text.style.CharacterStyle;
 import android.text.style.ClickableSpan;
 import android.text.style.ForegroundColorSpan;
@@ -43,6 +44,7 @@ import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.RegexUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -150,6 +152,15 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         this.liveMessageEntities = liveMessageEntities;
         this.otherLiveMessageEntities = otherLiveMessageEntities;
         Resources resources = context.getResources();
+        nameColors = new int[]{
+                resources.getColor(R.color.COLOR_E74C3C),
+                resources.getColor(R.color.COLOR_20ABFF),
+                resources.getColor(R.color.COLOR_666666),
+                resources.getColor(R.color.COLOR_E74C3C),
+                resources.getColor(R.color.COLOR_E74C3C),
+                resources.getColor(R.color.COLOR_E74C3C),
+                resources.getColor(R.color.COLOR_E74C3C)};
+
         nameColors[0] = resources.getColor(R.color.COLOR_32B16C);
         nameColors[1] = resources.getColor(R.color.COLOR_E74C3C);
         nameColors[2] = resources.getColor(R.color.COLOR_20ABFF);
@@ -442,6 +453,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                         int color;
                         switch (entity.getType()) {
                             case LiveMessageEntity.EVEN_DRIVE_LIKE:
+                            case LiveMessageEntity.EVEN_DRIVE_REPORT:
                             case LiveMessageEntity.MESSAGE_MINE:
                             case LiveMessageEntity.MESSAGE_TEACHER:
                             case LiveMessageEntity.MESSAGE_TIP:
@@ -462,10 +474,13 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                             CharSequence text = tvMessageItem.getText();
                             tvMessageItem.setText(spanttt);
                             tvMessageItem.append(text);
-                        } else if (LiveMessageEntity.MESSAGE_TIP == entity.getType() && ("查看排行").equals(entity.getText().toString())) {
+                        } else if (LiveMessageEntity.EVEN_DRIVE_REPORT == entity.getType()) {
                             //点击连对激励系统的查看排行榜，弹出排行榜的内容
                             tvMessageItem.setText(spanttt);
+                            entity.setText(entity.getText());
                             tvMessageItem.append(clickEvenDrive(entity));
+                            tvMessageItem.setMovementMethod(LinkMovementMethod.getInstance());
+                            tvMessageItem.setHighlightColor(mContext.getResources().getColor(R.color.COLOR_00000000));
                         } else if (LiveMessageEntity.EVEN_DRIVE_LIKE == entity.getType()) {
                             //显示别人给我点赞的信息
                             tvMessageItem.setText(likeEvenDrive(entity));
@@ -499,8 +514,11 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(entity.getText());
         String replacePos = "点赞心";
         spannableStringBuilder.append(replacePos);
-        ImageSpan imageSpan = new ImageSpan(mContext.getResources().getDrawable(R.drawable.livevideo_list_redheart_icon_normal));
-        spannableStringBuilder.setSpan(imageSpan, entity.getText().length(), entity.getText().length() + replacePos.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        Drawable drawable = mContext.getResources().getDrawable(R.drawable.livevideo_list_redheart_icon_normal);
+        drawable.setBounds(0, 0, SizeUtils.Dp2Px(mContext, 13), SizeUtils.Dp2Px(mContext, 13));
+        ImageSpan imageSpan = new ImageSpan(drawable);
+
+        spannableStringBuilder.setSpan(imageSpan, entity.getText().length(), entity.getText().length() + replacePos.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         return spannableStringBuilder;
     }
 
@@ -515,8 +533,14 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 }
             }
         };
-        SpannableStringBuilder spannableBuilder = new SpannableStringBuilder(entity.getText());
-        spannableBuilder.setSpan(clickableSpan, 0, entity.getText().length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        String text = "查看排行>";
+        SpannableStringBuilder spannableBuilder = new SpannableStringBuilder(text);
+        spannableBuilder.setSpan(clickableSpan, 0, text.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
+        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(mContext.getResources().getColor(R.color.COLOR_97091D));
+
+        spannableBuilder.setSpan(foregroundColorSpan, 0, text.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
         return spannableBuilder;
     }
 

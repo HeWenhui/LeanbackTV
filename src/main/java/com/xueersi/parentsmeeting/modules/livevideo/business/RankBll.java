@@ -26,8 +26,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RankPage.SmallChine
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.MiddleScienceEvenDrivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.itempager.ItemMiddleSciencePager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -56,7 +58,7 @@ import okhttp3.Response;
  * Created by lyqai on 2017/9/20.
  */
 
-public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBottom.MediaChildViewClick, NoticeAction {
+public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBottom.MediaChildViewClick, NoticeAction, MessageAction {
     Logger logger = LoggerFactory.getLogger("RankBll");
     LiveMediaController mMediaController;
     BaseLiveMediaControllerBottom liveMediaControllerBottom;
@@ -175,6 +177,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
 
                             if (mGetInfo.getIsOpenNewCourseWare() == 1) {
                                 //中学连对激励
+
                                 scienceEvenDrivePager.updataRankData(allRankEntity);
                             } else {
                                 if (!LiveVideoConfig.isSmallChinese) {
@@ -467,10 +470,18 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                         try {
                             jsonObject.put("from", mGetInfo.getStuId());
                             jsonObject.put("stuName", mGetInfo.getStuName());
+                            logger.i(jsonObject.toString());
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        RankBll.this.sendNotice(jsonObject, targetName);
+                        String senderId = "";
+                        for (int i = 0; i < users.size(); i++) {
+                            if (targetName.equals(findUserId(users.get(i)))) {
+                                senderId = users.get(i);
+                                break;
+                            }
+                        }
+                        RankBll.this.sendNotice(jsonObject, senderId);
                     }
 
                     @Override
@@ -650,6 +661,34 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
         setVideoLayout();
     }
 
+    private static String findUserId(String user) {
+        if (user == null) {
+            return "";
+        }
+        int len = user.length();
+        int numSum = 0;
+        char last = 'a';
+        String ans = "";
+        String nowStr = "";
+        for (int i = 0; i < len; i++) {
+            char ch = user.charAt(i);
+            if (ch == '_') {
+                if (last >= '0' && last <= '9') {
+                    numSum++;
+                }
+                if (numSum == 3) {
+                    ans = nowStr;
+                    break;
+                }
+                nowStr = "";
+            } else if (ch >= '0' && ch <= '9') {
+                nowStr += ch;
+            }
+            last = ch;
+        }
+        return ans;
+    }
+
     public boolean onBack() {
         if (relativeLayout != null && relativeLayout.getVisibility() == View.VISIBLE) {
             relativeLayout.startAnimation(mAnimSlideOut);
@@ -693,6 +732,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
+        logger.i("sourceNick" + sourceNick + ",target" + target + ",data" + data + ",type" + type);
         switch (type) {
             case XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT:
 
@@ -704,7 +744,12 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                 break;
             case XESCODE.STOPQUESTION: {
                 if (scienceEvenDrivePager != null) {
+                    //是否收题
+//                    boolean isOff = data.optBoolean("open");
+//                    if (!isOff) {
+                    logger.i("设置结束时间");
                     scienceEvenDrivePager.setEndTime(System.currentTimeMillis());
+//                    }
                 }
                 break;
             }
@@ -716,7 +761,11 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
             }
             case XESCODE.MULTIPLE_H5_COURSEWARE: {
                 if (scienceEvenDrivePager != null) {
-                    scienceEvenDrivePager.setEndTime(System.currentTimeMillis());
+                    boolean isOff = data.optBoolean("open");
+                    if (!isOff) {
+                        logger.i("设置结束时间");
+                        scienceEvenDrivePager.setEndTime(System.currentTimeMillis());
+                    }
                 }
                 break;
             }
@@ -728,6 +777,84 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
     @Override
     public int[] getNoticeFilter() {
         //学生点赞
-        return new int[]{XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT};
+        return new int[]{
+                XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT,
+                XESCODE.EvenDrive.BROADCAST_STUDY_REPORT,
+                XESCODE.STOPQUESTION,
+                XESCODE.EXAM_STOP,
+                XESCODE.MULTIPLE_H5_COURSEWARE};
+    }
+
+    @Override
+    public void onStartConnect() {
+
+    }
+
+    @Override
+    public void onConnect(IRCConnection connection) {
+
+    }
+
+    @Override
+    public void onRegister() {
+
+    }
+
+    @Override
+    public void onDisconnect(IRCConnection connection, boolean isQuitting) {
+
+    }
+
+    @Override
+    public void onMessage(String target, String sender, String login, String hostname, String text) {
+
+    }
+
+    @Override
+    public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target, String message) {
+
+    }
+
+    @Override
+    public void onChannelInfo(String channel, int userCount, String topic) {
+
+    }
+
+    private List<String> users = new ArrayList<>();
+
+    @Override
+    public void onUserList(String channel, User[] users) {
+//        this.users = users;
+
+        if (users == null) {
+            this.users = new ArrayList<>();
+        }
+        for (int i = 0; i < users.length; i++) {
+            logger.i("channel =" + channel + "nick = " + users[i].getNick() + " prefix = " + users[i].getPrefix());
+            this.users.add(users[i].getNick());
+        }
+    }
+
+    @Override
+    public void onJoin(String target, String sender, String login, String hostname) {
+        logger.i("target " + target + " sender" + sender + " login" + login + " hostname" + hostname);
+        if (!users.contains(sender)) {
+            users.add(new String(sender));
+        }
+    }
+
+    @Override
+    public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
+
+    }
+
+    @Override
+    public void onKick(String target, String kickerNick, String kickerLogin, String kickerHostname, String recipientNick, String reason) {
+
+    }
+
+    @Override
+    public void onUnknown(String line) {
+
     }
 }

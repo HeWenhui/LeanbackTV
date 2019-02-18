@@ -1,184 +1,96 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.xueersi.ui.widget.ZoomerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:library="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+    android:layout_height="match_parent"
+    library:designHeight="360dp"
+    library:designWidth="500dp">
 
     <ImageView
-        android:id="@id/iv_teampk_open_box_bg"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:src="@drawable/livevideo_chpk_background" />
+        android:src="@drawable/livevideo_chpk_background"
+        library:layoutType="frame" />
 
     <ImageView
-        android:id="@id/iv_teampk_open_box_bg_mask"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/COLOR_99000000"
-        android:visibility="gone" />
+        library:layoutType="frame" />
 
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@id/lav_teampk_open_box"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <com.xueersi.parentsmeeting.modules.livevideo.widget.CoinAwardDisplayer
-        android:id="@id/cad_teampk_open_box_my_coin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="55dp"
-        android:visibility="gone" />
 
     <LinearLayout
-        android:id="@id/ll_teampk_aipartner_award_root"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="62dp"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:layout_width="500dp"
+        android:layout_height="230dp"
+        android:layout_marginTop="130dp"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical">
-
-            <ImageView
-                android:layout_width="94dp"
-                android:layout_height="18dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/livevideo_alertview_tosmoke_img_disable" />
-
-            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-                android:id="@id/tv_teampk_aipartner_award_coin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:drawableLeft="@drawable/livevideo_aipatner_coin"
-                android:drawablePadding="5dp"
-                android:gravity="center_vertical"
-                android:text="+13"
-                android:textColor="@color/COLOR_FF8F24"
-                android:textSize="24sp" />
-
-
-            <FrameLayout
-                android:layout_width="26dp"
-                android:layout_height="28dp"
-                android:id="@id/fl_teampk_aipatner_chip_contanier"
-                android:layout_marginLeft="18dp"
-                >
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/livevideo_aipatner_award_icon" />
-
-                <ImageView
-                    android:id="@id/iv_teampk_aipatner_chip"
-                    android:layout_width="9dp"
-                    android:layout_height="10dp"
-                    android:layout_gravity="right|center_vertical"
-                    android:layout_marginRight="6dp"
-                    android:scaleType="centerCrop" />
-
-            </FrameLayout>
-
-            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-                android:id="@id/tv_teampk_aipartner_award_patch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:gravity="center_vertical"
-                android:text="+13"
-                android:textColor="@color/COLOR_FF8F24"
-                android:textSize="24sp" />
-
-            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-                android:id="@id/tv_teampk_aipartner_award_patchname"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="(侏罗纪套装)"
-                android:textColor="@color/COLOR_FF8F24"
-                android:textSize="17sp" />
-
-        </LinearLayout>
-
-        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-            android:id="@id/tv_teampk_aipartner_award_remind"
+        <com.xueersi.parentsmeeting.modules.livevideo.chpk.widget.AwardNumberView
+            android:id="@id/av_livevideo_chpk_awardTeamNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="15dp"
-            android:text="可在移动端我的阿丘中打开"
-            android:textColor="@color/white"
-            android:visibility="invisible" />
-    </LinearLayout>
-
-
-    <RelativeLayout
-        android:id="@id/rl_teampk_open_box_lucy_start_root"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone">
-
-        <LinearLayout
-            android:id="@id/ll_teampk_open_box_team_coin_container"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:orientation="horizontal">
-
-            <com.xueersi.parentsmeeting.modules.livevideo.widget.CoinAwardDisplayer
-                android:id="@id/cad_teampk_open_box_team_coin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone" />
-
-            <!--ai伴侣 奖励碎片-->
-            <com.xueersi.parentsmeeting.modules.livevideo.widget.CoinAwardDisplayer
-                android:id="@id/cad_teampk_open_box_team_patch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="3dp"
-                android:visibility="gone" />
-
-        </LinearLayout>
+            android:visibility="gone" />
 
         <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkRecyclerView
-            android:id="@id/rcl_teampk_open_box_rank"
+            android:id="@id/iv_livevideo_chpk_openAwardRanker"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/ll_teampk_open_box_team_coin_container"
+            android:layout_gravity="center_horizontal"
             android:layout_marginLeft="36dp"
             android:layout_marginRight="36dp"
             android:layout_marginTop="14dp"
             android:overScrollMode="never"
             android:scrollbars="none" />
-    </RelativeLayout>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="300dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center_horizontal|bottom">
+
+        <com.xueersi.parentsmeeting.modules.livevideo.chpk.widget.AwardNumberView
+            android:id="@id/av_livevideo_chpk_awardUserNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@id/iv_livevideo_chpk_openAwardState"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:scaleType="fitCenter"
+            android:src="@drawable/livevideo_chpk_openalready" />
+
+    </FrameLayout>
 
     <ImageView
-        android:id="@id/iv_teampk_open_box_open_state"
-        android:layout_width="273dp"
-        android:layout_height="28dp"
-        android:layout_centerHorizontal="true"
-        android:src="@drawable/livevideo_alertview_kaiguo_img_disable"
-        android:visibility="gone" />
-
-    <ImageView
-        android:id="@id/iv_teampk_open_box_close"
+        android:id="@id/iv_livevideo_chpk_openAwardClose"
+        library:layoutType="frame"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_alignParentRight="true"
+        android:layout_gravity="right"
         android:layout_marginRight="15dp"
         android:layout_marginTop="15dp"
         android:padding="3dp"
-        android:scaleType="centerCrop"
+        android:scaleType="fitXY"
         android:src="@drawable/livevideo_alertview_close_bth_normal"
         android:visibility="gone" />
-</RelativeLayout>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@id/lv_livevideo_chpk_lottieEffectView"
+        library:layoutType="frame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <ImageView
+        android:id="@id/iv_livevideo_chpk_awardClickImage"
+        android:layout_gravity="center"
+        android:layout_width="110dp"
+        android:layout_height="110dp" />
+
+</com.xueersi.ui.widget.ZoomerLayout>

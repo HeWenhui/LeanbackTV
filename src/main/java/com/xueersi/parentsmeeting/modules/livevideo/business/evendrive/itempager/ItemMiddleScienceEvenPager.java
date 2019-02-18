@@ -18,6 +18,7 @@ import org.json.JSONObject;
  */
 public class ItemMiddleScienceEvenPager extends ItemMiddleSciencePager<EvenDriveEntity.OtherEntity> {
 
+
     private int colorWhite = R.color.white;
 
     public ItemMiddleScienceEvenPager(Context context) {
@@ -45,28 +46,42 @@ public class ItemMiddleScienceEvenPager extends ItemMiddleSciencePager<EvenDrive
                             rankRight.setText(String.valueOf(entity.getThumbsUpNum()));
                             entity.setIsThumbsUp(0);
                             //如果是给自己点赞，自己的两处显示信息都需要加一
+                            //15s内点赞需要给用户发送相关消息
+                            long nowTime = System.currentTimeMillis();
                             if (entity.getStuId() != null && entity.getStuId().equals(myStuId)) {
                                 if (iClickSelf != null) {
                                     iClickSelf.clickSelf();
                                 }
-                            }
-                            //15s内点赞需要给用户发送相关消息
-                            long nowTime = System.currentTimeMillis();
-                            if (nowTime - endTime <= TIME_SEND_PRIVATE_MSG && getiNotice() != null) {
+                            } else if (nowTime - endTime <= TIME_SEND_PRIVATE_MSG && getiNotice() != null) {
                                 JSONObject jsonObject = new JSONObject();
                                 try {
-                                    jsonObject.put("type", XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT);
+                                    jsonObject.put("type", String.valueOf(XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT));
 //                            jsonObject.put("from", entity.getStuId());
 //                            jsonObject.put("stuName", entity.getName());
                                     jsonObject.put("approvalType", 2);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
-                                getiNotice().sendNotice(jsonObject, entity.getName());
+                                logger.i("发送点赞IRC消息:" + entity.getName() + " " + jsonObject.toString());
+                                getiNotice().sendNotice(jsonObject, entity.getStuId());
+                            } else {
+                                logger.i("发送IRC点赞消息失败");
                             }
                         }
                     });
                 }
+//                JSONObject jsonObject = new JSONObject();
+//                try {
+//                    jsonObject.put("type", String.valueOf(XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT));
+////                            jsonObject.put("from", entity.getStuId());
+////                            jsonObject.put("stuName", entity.getName());
+//                    jsonObject.put("approvalType", 2);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//                logger.i("发送点赞IRC消息:" + entity.getName() + " " + jsonObject.toString());
+//
+//                getiNotice().sendNotice(jsonObject, entity.getStuId());
             }
         });
     }

@@ -481,6 +481,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     @Override
     public void onNotice(String sourceNick, String target, JSONObject object, int type) {
         String msg = "onNotice";
+        logger.i("收到指令" + type);
         switch (type) {
             case XESCODE.OPENBARRAGE: {
                 try {
@@ -727,28 +728,75 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 break;
             }
             case XESCODE.MULTIPLE_H5_COURSEWARE: {
-                getHttpManager().getEvenLikeData(
+                boolean isOff = object.optBoolean("open");
+                //
+                if (!isOff) {
+                    getHttpManager().getEvenLikeData(
 //                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
-                        mGetInfo.getGetEvenPairListUrl(),
-                        mGetInfo.getStudentLiveInfo().getClassId(),
-                        mGetInfo.getId(),
-                        mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
-                            @Override
-                            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                                EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
-                                mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
-                            }
-                        });
+                            mGetInfo.getGetEvenPairListUrl(),
+                            mGetInfo.getStudentLiveInfo().getClassId(),
+                            mGetInfo.getId(),
+                            mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
+                                @Override
+                                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                                    EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
+                                    mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
+                                }
+                            });
+                }
                 break;
             }
             case XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT: {
                 //点赞
+
                 String likeSender = object.optString("stuName");
+                logger.i(likeSender + " 刚刚赞了你");
                 mRoomAction.addMessage("", LiveMessageEntity.EVEN_DRIVE_LIKE, likeSender + " 刚刚赞了你");
+
+//
+//                logger.i("获取学报");
+//                getHttpManager().getJournalUrl(
+//                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/getJournal",
+////                        mGetInfo.getGetJournalUrl(),
+//                        mGetInfo.getStudentLiveInfo().getClassId(),
+//                        mGetInfo.getId(),
+//                        mGetInfo.getStudentLiveInfo().getTeamId(),
+//                        mGetInfo.getStuId(),
+//                        new HttpCallBack() {
+//                            @Override
+//                            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+//                                JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+//                                String message = jsonObject.getString("message");
+//                                logger.i(message);
+//                                if (!TextUtils.isEmpty(message)) {
+//                                    mRoomAction.addMessage("提示", LiveMessageEntity.EVEN_DRIVE_REPORT, message);
+//                                }
+//                            }
+//                        });
+//
+//
+//                //中学连对激励系统，教师广播发送学报消息
+//                logger.i("中学连对激励系统，教师广播发送学报消息");
+//                getHttpManager().getEvenLikeData(
+////                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
+//                        mGetInfo.getGetEvenPairListUrl(),
+//                        mGetInfo.getStudentLiveInfo().getClassId(),
+//                        mGetInfo.getId(),
+//                        mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
+//                            @Override
+//                            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+//                                EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
+//                                mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
+//                            }
+//                        });
+
                 break;
             }
             case XESCODE.EvenDrive.BROADCAST_STUDY_REPORT: {
                 //获取学报
+                logger.i("获取学报");
+                //中学连对激励系统，教师广播发送学报消息
+                logger.i("中学连对激励系统，教师广播发送学报消息");
                 getHttpManager().getJournalUrl(
 //                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/getJournal",
                         mGetInfo.getGetJournalUrl(),
@@ -762,72 +810,10 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                                 JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                                 String message = jsonObject.getString("message");
                                 if (!TextUtils.isEmpty(message)) {
-                                    mRoomAction.addMessage("提示", LiveMessageEntity.MESSAGE_TIP, message);
+                                    mRoomAction.addMessage("提示", LiveMessageEntity.EVEN_DRIVE_REPORT, message);
                                 }
                             }
                         });
-//                getHttpManager().getNewArtsAllRank(mGetInfo.getId(), mGetInfo.getStuCouId(), new HttpCallBack() {
-//                    @Override
-//                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-//                        AllRankEntity allRankEntity = getHttpResponseParser().parseAllRank(responseEntity);
-//                        MyRankEntity rankEntity = allRankEntity.getMyRankEntityTeams();
-//                        List<String> list = new ArrayList<>();
-//                        /**
-//                         *
-//                         「学报」你的正确率
-//                         93%，排名第4位！小红、招
-//                         财猫、大熊位于本组排行榜
-//                         前3名。
-//                         */
-//                        //找到我的排名
-//                        String myRite = "";
-//                        String myRank = "";
-//                        for (int item = 0; item < rankEntity.getRankEntities().size(); item++) {
-//                            RankEntity myEntity = rankEntity.getRankEntities().get(item);
-//                            if (!myEntity.isMe()) {
-//                                if (list.size() < 3) {
-//                                    list.add(myEntity.getName());
-//                                }
-//                            } else {
-//                                myRite = myEntity.getRate();
-//                                myRank = myEntity.getRank();
-//                                break;
-//                            }
-//                        }
-//                        StringBuilder sb = new StringBuilder("「学报」").append("你的正确率")
-//                                .append(myRite)
-//                                .append("，")
-//                                .append("排名第")
-//                                .append(myRank)
-//                                .append("位！");//.append().append();
-//                        int len = list.size();
-//                        for (int item = 0; item < len - 1; item++) {
-//                            sb.append(list.get(item)).append("、");
-//                        }
-//                        int last = len - 1;
-//                        if (last > 0) {
-//                            sb.append(list.get(last));
-//                        }
-//                        sb.append("位于本组排行榜前三名。").append("查看排行>");
-//                        mRoomAction.addMessage("提示", LiveMessageEntity.MESSAGE_TIP, sb.toString());
-
-//                        callBack.onDataSucess(allRankEntity);
-//                    }
-//
-//                    @Override
-//                    public void onPmError(ResponseEntity responseEntity) {
-//                        super.onPmError(responseEntity);
-//                        logger.e("getAllRanking:onPmError" + responseEntity.getErrorMsg());
-//                    }
-//
-//                    @Override
-//                    public void onPmFailure(Throwable error, String msg) {
-//                        super.onPmFailure(error, msg);
-//                        logger.e("getAllRanking:onPmFailure" + msg);
-//                    }
-//                });
-
-                //中学连对激励系统，教师广播发送学报消息
                 getHttpManager().getEvenLikeData(
 //                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
                         mGetInfo.getGetEvenPairListUrl(),
@@ -855,7 +841,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 XESCODE.ARTS_WORD_DICTATION, XESCODE.RAISE_HAND, XESCODE.XCR_ROOM_OPEN_VOICEBARRAGE, XESCODE
                 .RAISE_HAND_SELF, XESCODE.ENGLISH_H5_COURSEWARE, XESCODE.ARTS_H5_COURSEWARE, XESCODE.SENDQUESTION,
                 XESCODE.ARTS_SEND_QUESTION, XESCODE.EXAM_START, XESCODE.STOPQUESTION, XESCODE.EXAM_STOP, XESCODE.ARTS_STOP_QUESTION,
-                XESCODE.EvenDrive.BROADCAST_STUDY_REPORT
+                XESCODE.EvenDrive.BROADCAST_STUDY_REPORT, XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT, XESCODE.MULTIPLE_H5_COURSEWARE
         };
     }
 
