@@ -116,8 +116,8 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     private boolean isEnd = false;
     /** 是不是评测失败 */
     private boolean isSpeechError = false;
-    /** 是不是评测得到结果 */
-    private boolean isSpeechSuccess = false;
+    /** 是不是显示评测结果页 */
+    private boolean isSpeechResult = false;
     /** 是不是直播 */
     private boolean isLive;
     /** 是不是小英 */
@@ -595,11 +595,14 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 return;
             }
         }
-        tvSpeectevalError.removeCallbacks(autoUploadRunnable);
-        ivSpeectevalError.setImageResource(R.drawable.bg_livevideo_speecteval_upload);
-        errorSetVisible();
-        tvSpeectevalError.setTextColor(mContext.getResources().getColor(R.color.COLOR_6462A2));
-        tvSpeectevalError.setText("录音上传中");
+        //强制收卷，继续显示倒计时
+        if (!isEnd) {
+            handler.removeCallbacks(autoUploadRunnable);
+            ivSpeectevalError.setImageResource(R.drawable.bg_livevideo_speecteval_upload);
+            errorSetVisible();
+            tvSpeectevalError.setTextColor(mContext.getResources().getColor(R.color.COLOR_6462A2));
+            tvSpeectevalError.setText("录音上传中");
+        }
         speechSuccess = true;
         List<PhoneScore> lstPhonemeScore = resultEntity.getLstPhonemeScore();
         String nbest = "";
@@ -650,37 +653,62 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 // 发送已答过的状态
                 EventBus.getDefault().post(new ArtsAnswerResultEvent(id, ArtsAnswerResultEvent
                         .TYPE_NATIVE_ANSWERRESULT));
+                final boolean isNewArts = LiveVideoConfig.isNewArts;
                 speechEvalAction.sendSpeechEvalResult2(id, answers.toString(), new OnSpeechEval() {
                     OnSpeechEval onSpeechEval = this;
 
                     @Override
                     public void onSpeechEval(Object object) {
                         logger.d("sendSpeechEvalResult2:onSpeechEval:object=" + object);
-                        JSONObject jsonObject = (JSONObject) object;
-                        if (LiveVideoConfig.isNewArts) {
-                            int gold = jsonObject.optInt("gold");
-                            int energy = jsonObject.optInt("energy");
-                            onSpeechEvalSuccess(resultEntity, gold, energy);
-                            speechEvalAction.onSpeechSuccess(id);
+                        final JSONObject jsonObject = (JSONObject) object;
+                        if (count < 3 && count > 0) {
+                            long delayMillis = count * 1000;
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (isNewArts) {
+                                        int gold = jsonObject.optInt("gold");
+                                        int energy = jsonObject.optInt("energy");
+                                        onSpeechEvalSuccess(resultEntity, gold, energy);
+                                        speechEvalAction.onSpeechSuccess(id);
+                                    } else {
+                                        int gold = jsonObject.optInt("gold");
+                                        int energy = jsonObject.optInt("energy");
+                                        haveAnswer = jsonObject.optInt("isAnswered", 0) == 1;
+                                        onSpeechEvalSuccess(resultEntity, gold, energy);
+                                        speechEvalAction.onSpeechSuccess(id);
+                                    }
+                                }
+                            }, delayMillis);
                         } else {
-                            int gold = jsonObject.optInt("gold");
-                            int energy = jsonObject.optInt("energy");
-                            haveAnswer = jsonObject.optInt("isAnswered", 0) == 1;
-                            onSpeechEvalSuccess(resultEntity, gold, energy);
-                            speechEvalAction.onSpeechSuccess(id);
+                            if (isNewArts) {
+                                int gold = jsonObject.optInt("gold");
+                                int energy = jsonObject.optInt("energy");
+                                onSpeechEvalSuccess(resultEntity, gold, energy);
+                                speechEvalAction.onSpeechSuccess(id);
+                            } else {
+                                int gold = jsonObject.optInt("gold");
+                                int energy = jsonObject.optInt("energy");
+                                haveAnswer = jsonObject.optInt("isAnswered", 0) == 1;
+                                onSpeechEvalSuccess(resultEntity, gold, energy);
+                                speechEvalAction.onSpeechSuccess(id);
+                            }
                         }
-
                     }
 
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
                         logger.d("sendSpeechEvalResult2:onPmFailure:msg=" + msg);
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                speechEvalAction.sendSpeechEvalResult2(id, answers.toString(), onSpeechEval);
-                            }
-                        }, 1000);
+                        if (isEnd) {
+                            speechEvalAction.stopSpeech(SpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
+                        } else {
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    speechEvalAction.sendSpeechEvalResult2(id, answers.toString(), onSpeechEval);
+                                }
+                            }, 1000);
+                        }
                     }
 
                     @Override
@@ -697,7 +725,6 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     }
 
     private void onSpeechEvalSuccess(ResultEntity resultEntity, int gold, int energy) {
-        isSpeechSuccess = true;
         rlSpeectevalBg.setVisibility(View.GONE);
         rlSpeectevalBg.removeAllViews();
         ivSpeectevalTimeEmoji.setImageResource(R.drawable.bg_livevideo_speecteval_time_emoji4);
@@ -733,6 +760,10 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 @Override
                 public void onClose(LiveBasePager basePager) {
                     group.removeView(basePager.getRootView());
+                    isSpeechResult = true;
+                    if (isEnd) {
+                        speechEvalAction.stopSpeech(SpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
+                    }
                 }
             });
         } else {
@@ -745,6 +776,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 @Override
                 public void onClose(LiveBasePager basePager) {
                     group.removeView(basePager.getRootView());
+                    isSpeechResult = true;
                     if (isEnd) {
                         speechEvalAction.stopSpeech(SpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
                     }
@@ -771,7 +803,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     private void onEvaluatorError(final ResultEntity resultEntity, final EvaluatorListener evaluatorListener) {
         mLogtf.d("onResult:ERROR:ErrorNo=" + resultEntity.getErrorNo() + ",isEnd=" + isEnd + ",isOfflineFail=" + mIse
                 .isOfflineFail());
-        tvSpeectevalError.removeCallbacks(autoUploadRunnable);
+        handler.removeCallbacks(autoUploadRunnable);
         ivSpeectevalError.setImageResource(R.drawable.bg_livevideo_speecteval_error);
         errorSetVisible();
         mParam.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
@@ -1090,12 +1122,13 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 tvSpeectevalError.postDelayed(this, 1000);
             } else {
                 errorSetGone();
-                if (mIse != null) {
-                    mIse.stop();
-                }
-                if (isSpeechError || isSpeechSuccess) {
-                    speechEvalAction.stopSpeech(SpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
-                }
+                //不在倒计时结束的时候停止录音了
+//                if (mIse != null) {
+//                    mIse.stop();
+//                }
+//                if (isSpeechError || isSpeechSuccess) {
+//                    speechEvalAction.stopSpeech(SpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
+//                }
             }
             count--;
         }
@@ -1104,17 +1137,21 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     public void examSubmitAll() {
         isEnd = true;
         ViewGroup group = (ViewGroup) mView.getParent();
-        mLogtf.d("examSubmitAll:mIse=" + (mIse != null) + ",Success=" + speechSuccess + ",group=" + (group == null));
+        mLogtf.d("examSubmitAll:mIse=" + (mIse != null) + ",Start=" + isSpeechStart + ",error=" + isSpeechError + ",Result=" + isSpeechResult + ",group=" + (group == null));
         if (group == null) {
             return;
         }
-        if (!isSpeechStart || isSpeechError || isSpeechSuccess) {
+        if (!isSpeechStart || isSpeechError || isSpeechResult) {
             speechEvalAction.stopSpeech(SpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
         } else {
+            //倒计时直接停止录音
+            if (mIse != null) {
+                mIse.stop();
+            }
             ivSpeectevalError.setImageResource(R.drawable.bg_livevideo_speecteval_error);
             errorSetVisible();
             tvSpeectevalError.setText(count + "秒后自动提交");
-            tvSpeectevalError.postDelayed(autoUploadRunnable, 1000);
+            handler.postDelayed(autoUploadRunnable, 1000);
             count--;
         }
 //        if (group != null) {
