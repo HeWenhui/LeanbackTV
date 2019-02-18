@@ -362,6 +362,9 @@ public class LiveVideoAction implements VideoAction {
                     }
                 }
                 if (tvLoadingHint != null) {
+                    if (mediaErrorInfo == null) {
+                        return;
+                    }
                     switch (mediaErrorInfo.mErrorCode) {
                         case MediaErrorInfo.PSPlayerError: {
                             PlayErrorCode playErrorCode = PlayErrorCode.getError(mediaErrorInfo.mPlayerErrorCode);

@@ -460,7 +460,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
 //        mUri = uri;
 //        mDisplayName = displayName;
         if (viewRoot != null) {
-            viewRoot.invalidate();
+            viewRoot.postInvalidate();
         }
         if (mOpened != null) {
             mOpened.set(false);
@@ -931,7 +931,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
             mDisplayName = displayName;
 
             if (viewRoot != null) {
-                viewRoot.invalidate();
+                viewRoot.postInvalidate();
             }
             if (mOpened != null) {
                 mOpened.set(false);
@@ -954,7 +954,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
             mDisplayName = displayName;
 
             if (viewRoot != null) {
-                viewRoot.invalidate();
+                viewRoot.postInvalidate();
             }
             if (mOpened != null) {
                 mOpened.set(false);
@@ -996,7 +996,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         mDisplayName = displayName;
 
         if (viewRoot != null)
-            viewRoot.invalidate();
+            viewRoot.postInvalidate();
         if (mOpened != null)
             mOpened.set(false);
 

@@ -182,9 +182,12 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         mUri = uri;
         mDisplayName = displayName;
 
+
         if (viewRoot != null) {
-            viewRoot.invalidate();
+            viewRoot.postInvalidate();
         }
+
+
         if (mOpened != null) {
             mOpened.set(false);
         }
@@ -206,9 +209,11 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         mUri = uri;
         mDisplayName = displayName;
 
+
         if (viewRoot != null) {
-            viewRoot.invalidate();
+            viewRoot.postInvalidate();
         }
+
         if (mOpened != null) {
             mOpened.set(false);
         }
@@ -550,9 +555,14 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         mIsEnd = false;
 //        mUri = uri;
 //        mDisplayName = displayName;
+//        vPlayerHandler.post(new Runnable() {
+//            @Override
+//            public void run() {
         if (viewRoot != null) {
-            viewRoot.invalidate();
+            viewRoot.postInvalidate();
         }
+//            }
+//        });
         if (mOpened != null) {
             mOpened.set(false);
         }
@@ -591,9 +601,14 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 //        mUri = uri;
 //        mDisplayName = displayName;
 
+//        vPlayerHandler.post(new Runnable() {
+//            @Override
+//            public void run() {
         if (viewRoot != null) {
-            viewRoot.invalidate();
+            viewRoot.postInvalidate();
         }
+//            }
+//        });
         if (mOpened != null) {
             mOpened.set(false);
         }
@@ -632,7 +647,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 //        mDisplayName = displayName;
 
         if (viewRoot != null) {
-            viewRoot.invalidate();
+            viewRoot.postInvalidate();
         }
         if (mOpened != null) {
             mOpened.set(false);
@@ -1180,7 +1195,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 
     public MediaErrorInfo getMediaErrorInfo() {
 //        if (mPlayer instanceof PSIJK) {
-        return vPlayer != null ? vPlayer.getMediaErrorInfo() : null;
+        return vPlayer != null ? vPlayer.getMediaErrorInfo() : MediaErrorInfo.getInstance();
 //        }
 //        return null;
     }
