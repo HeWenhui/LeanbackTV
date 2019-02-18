@@ -61,7 +61,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
             logHashMap.put("rfh", "" + rfh);
             logHashMap.put("create_times", "" + CREATE_TIMES);
             //距离进程创建的时间
-            logHashMap.put("app_time", "" + (System.currentTimeMillis() - UmsConstants.PROCRESS_CREATE_TIME));
+//            logHashMap.put("app_time", "" + (System.currentTimeMillis() - UmsConstants.PROCRESS_CREATE_TIME));
             UmsAgentManager.umsAgentDebug(this, LogConfig.LIVE_TOKEN_NULL, logHashMap.getData());
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
