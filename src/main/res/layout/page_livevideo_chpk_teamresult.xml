@@ -141,13 +141,14 @@
 
     </com.xueersi.ui.widget.ZoomerLayout>
 
+
     <ImageView
         android:id="@id/iv_livevideo_chpk_resultTeamVsLogo"
-        android:layout_width="58dp"
-        android:layout_height="41dp"
+        android:layout_width="19dp"
+        android:layout_height="12dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="130dp"
-        android:src="@drawable/livevideo_list_vs_img_disable"
+        android:src="@drawable/livevideo_chpk_yellow_vs"
         android:visibility="gone" />
 
 

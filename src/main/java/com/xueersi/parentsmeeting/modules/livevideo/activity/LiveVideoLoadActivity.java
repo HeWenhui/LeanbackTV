@@ -16,12 +16,18 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.common.toast.XesToast;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
@@ -38,11 +44,41 @@ import java.util.HashMap;
  */
 public class LiveVideoLoadActivity extends BaseActivity {
     public static HashMap<String, LiveGetInfo> getInfos = new HashMap();
+    /** Activity创建次数 */
+    public static int CREATE_TIMES = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EventBus.getDefault().register(this);
+        String token = AppBll.getInstance().getUserToken();
+        //如果没有token，只能重新点击进入了
+        if (StringUtils.isEmpty(token)) {
+            XESToastUtils.showToast(this, "登录信息失效，重新登录");
+            StableLogHashMap logHashMap = new StableLogHashMap();
+            String rfh = AppBll.getInstance().getUserRfh();
+            logHashMap.put("token", "" + token);
+            logHashMap.put("rfh", "" + rfh);
+            logHashMap.put("create_times", "" + CREATE_TIMES);
+            //距离进程创建的时间
+//            logHashMap.put("app_time", "" + (System.currentTimeMillis() - UmsConstants.PROCRESS_CREATE_TIME));
+            UmsAgentManager.umsAgentDebug(this, LogConfig.LIVE_TOKEN_NULL, logHashMap.getData());
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    finish();
+                }
+            }, 700);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    System.exit(0);
+                }
+            }, 1000);
+            return;
+        }
+        CREATE_TIMES++;
         initData();
     }
 
