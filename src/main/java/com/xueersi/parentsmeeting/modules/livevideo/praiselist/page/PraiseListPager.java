@@ -448,7 +448,9 @@ public class PraiseListPager extends LiveBasePager {
                     mTeamList.get(i).setTeamRanking(mTeamList.get(i - 1).getTeamRanking() + 1);
                 }
                 if (mTeamList.get(i).getIsMy() == 1 || mTeamList.get(i).getIsMy() == 0) {
-                    selectedTeamTabs = i;
+                    if (mTeamList.get(i).getIsMy() == 1 ) {
+                        selectedTeamTabs = i;
+                    }
                     myTeamTabs = i;
                 }
             }
@@ -461,7 +463,9 @@ public class PraiseListPager extends LiveBasePager {
                     mTeamList.get(i).setTeamRanking(mTeamList.get(i - 1).getTeamRanking() + 1);
                 }
                 if (mTeamList.get(i).getIsMy() == 1 || mTeamList.get(i).getIsMy() == 0) {
-                    selectedTeamTabs = i;
+                    if (mTeamList.get(i).getIsMy() == 1 ) {
+                        selectedTeamTabs = i;
+                    }
                     myTeamTabs = i;
                 }
             }
@@ -657,7 +661,6 @@ public class PraiseListPager extends LiveBasePager {
                 }
                 startClickLikeAnimation();
                 lottieAnimationLoopStarView.setVisibility(View.GONE);
-                lottieAnimationLoopStarView.cancelAnimation();
 
                 if (btnLikeClickTime >= 10) {
                     if (duringDoubleCard) {
@@ -774,6 +777,7 @@ public class PraiseListPager extends LiveBasePager {
             @Override
             public void onAnimationEnd(Animator animator) {
                 tvLikeCount.setVisibility(View.GONE);
+                lottieAnimationLoopStarView.setVisibility(View.VISIBLE);
             }
 
             @Override
