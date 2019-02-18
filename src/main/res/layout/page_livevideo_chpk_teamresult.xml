@@ -258,7 +258,6 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-
         <com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView
             android:id="@id/bt_livevideo_chpk_resultOtherEnergy"
             android:layout_width="wrap_content"
