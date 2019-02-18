@@ -301,7 +301,7 @@ public class TeamPkStateLayout extends FrameLayout {
                 tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_follow_bg);
             } else if (ratio == HALF_PROGRESS) {
 
-                if (LiveVideoConfig.isNewEnglishH5) {
+                if (LiveVideoConfig.isSmallChinese) {
                     tvState.setText("");
                     tvState.setBackgroundResource(0);
                 } else {
