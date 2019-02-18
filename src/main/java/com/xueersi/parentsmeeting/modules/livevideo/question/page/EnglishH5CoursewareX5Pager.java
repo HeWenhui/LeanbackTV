@@ -472,9 +472,11 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     String stuId = "";
                     String classId = "";
                     String classTestId = "";
+                    String string = null;
                     try {
-                        JSONObject jsonObject = new JSONObject(mShareDataManager.getString(LiveVideoConfig
-                                .newEnglishH5, "{}", ShareDataManager.SHAREDATA_USER));
+                        string = mShareDataManager.getString(LiveVideoConfig
+                                .newEnglishH5, "{}", ShareDataManager.SHAREDATA_USER);
+                        JSONObject jsonObject = new JSONObject(string);
                         packageId = jsonObject.optString("packageId");
                         packageSource = jsonObject.optString("packageSource");
                         packageAttr = jsonObject.optString("packageAttr");
@@ -486,6 +488,11 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                         classTestId = jsonObject.optString("classTestId");
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        CrashReport.postCatchedException(e);
+                        mLogtf.e("initData:string=" + string, e);
+                    }
+                    if (StringUtils.isEmpty(packageId) || StringUtils.isEmpty(stuCouId)) {
+                        mLogtf.d("initData:string=" + string);
                     }
                     String defaulturl;
                     boolean useMine = false;
