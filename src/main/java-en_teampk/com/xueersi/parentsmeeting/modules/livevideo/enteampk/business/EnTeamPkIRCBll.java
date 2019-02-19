@@ -145,8 +145,9 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             } else {
                 logger.d("onQuestionShow:notShow:run=" + (stopRunnable == null));
                 if (stopRunnable != null) {
-                    stopRunnable.run();
+                    Runnable runnable = stopRunnable;
                     stopRunnable = null;
+                    runnable.run();
                 }
             }
         }

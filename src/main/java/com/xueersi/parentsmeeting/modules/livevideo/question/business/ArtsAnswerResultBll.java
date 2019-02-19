@@ -508,10 +508,10 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         if (mDsipalyer != null) {
             mDsipalyer.close();
             mDsipalyer = null;
-            EventBus.getDefault().post(new AnswerResultCplShowEvent());
+            EventBus.getDefault().post(new AnswerResultCplShowEvent("closeAnswerResult1"));
         }
         if(mGetInfo.getPattern() == 2){
-            EventBus.getDefault().post(new AnswerResultCplShowEvent());
+            EventBus.getDefault().post(new AnswerResultCplShowEvent("closeAnswerResult2"));
         }
 
        // logger.e("=====>closeAnswerResult:" + forceSumbmit + ":" + this);
@@ -565,7 +565,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             mRootView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    EventBus.getDefault().post(new AnswerResultCplShowEvent());
+                    EventBus.getDefault().post(new AnswerResultCplShowEvent("onCompeletShow"));
                 }
             }, AUTO_CLOSE_DELAY);
         }
@@ -798,7 +798,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
                         }
                     });
-                    EventBus.getDefault().post(new AnswerResultCplShowEvent());
+                    EventBus.getDefault().post(new AnswerResultCplShowEvent("ARTS_STOP_QUESTION"));
                 }else{
                     closeAnswerResult(true);
                 }
@@ -817,7 +817,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
                             }
                         });
-                        EventBus.getDefault().post(new AnswerResultCplShowEvent());
+                        EventBus.getDefault().post(new AnswerResultCplShowEvent("ARTS_H5_COURSEWARE"));
                     }else{
                         closeAnswerResult(true);
                     }
@@ -840,7 +840,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             mRootView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    EventBus.getDefault().post(new AnswerResultCplShowEvent());
+                    EventBus.getDefault().post(new AnswerResultCplShowEvent("forceCloseGamePage"));
                 }
             }, AUTO_CLOSE_DELAY);
         }

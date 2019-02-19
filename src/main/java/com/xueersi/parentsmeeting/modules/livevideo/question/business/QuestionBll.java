@@ -492,20 +492,15 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     @Override
     public void showQuestion(final VideoQuestionLiveEntity videoQuestionLiveEntity) {
         if (videoQuestionLiveEntity == null) {
-            mLogtf.d("showQuestion:noQuestion");
             if (isAnaswer) {
-                onQuestionShow(null, false, "showQuestion");
+                if (this.videoQuestionLiveEntity != null) {
+                    mLogtf.d("showQuestion:noQuestion:type=" + this.videoQuestionLiveEntity.type);
+                    onStopQuestion(this.videoQuestionLiveEntity.type, "");
+                } else {
+                    mLogtf.d("showQuestion:noQuestion:Entity=null");
+                }
             }
             isAnaswer = false;
-            if (voiceAnswerPager != null && !voiceAnswerPager.isEnd()) {
-                final BaseVoiceAnswerPager answerPager = voiceAnswerPager;
-                mVPlayVideoControlHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        answerPager.examSubmitAll("showQuestion", "");
-                    }
-                });
-            }
             return;
         }
         logger.e("======> showQuestion 11111");
@@ -1076,9 +1071,12 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     @Override
     public void onStopQuestion(String ptype, final String nonce) {
-        mLogtf.d("onStopQuestion:ptype=" + ptype + ":" + mVideoQuestionLiveEntity + ":" + rolePlayAction);
+        mLogtf.d("onStopQuestion:ptype=" + ptype + ":" + mVideoQuestionLiveEntity + ",nonce=" + nonce + ",isAnaswer=" + isAnaswer);
         boolean havePager = false;
         boolean oldisAnaswer = isAnaswer;
+        if (!oldisAnaswer) {
+            return;
+        }
         isAnaswer = false;
         //解决多人的时候，除了初次的多人正常进对话，其他的都进不去
         if (rolePlayAction != null && mVideoQuestionLiveEntity != null) {
@@ -2377,13 +2375,13 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onArtsResultCmplShow(AnswerResultCplShowEvent event) {
-        forceClose();
+        forceClose(event.getMethod());
     }
 
     /**
      * 强制关闭当前 答题页面
      */
-    public void forceClose() {
+    public void forceClose(final String method) {
         if (mVPlayVideoControlHandler != null) {
             mVPlayVideoControlHandler.post(new Runnable() {
                 @Override
@@ -2394,7 +2392,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         if (questionWebPager instanceof BaseQuestionWebInter) {
                             setHaveWebQuestion(false);
                         }
-                        onQuestionShow(null, false, "forceClose");
+                        onQuestionShow(null, false, "forceClose:method=" + method);
                     }
                 }
             });
