@@ -777,22 +777,21 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    int gold = jsonObject.optInt("gold");
-                                    int energy = jsonObject.optInt("energy");
-                                    haveAnswer = jsonObject.optInt("isAnswered", 0) == 1;
-                                    logger.d("onSpeechEval:jsonObject=" + jsonObject);
-                                    onSpeechEvalSuccess(resultEntity, gold, energy);
-                                    speechEvalAction.onSpeechSuccess(id);
+                                    onSuccess(jsonObject);
                                 }
                             }, delayMillis);
                         } else {
-                            int gold = jsonObject.optInt("gold");
-                            int energy = jsonObject.optInt("energy");
-                            haveAnswer = jsonObject.optInt("isAnswered", 0) == 1;
-                            logger.d("onSpeechEval:jsonObject=" + jsonObject);
-                            onSpeechEvalSuccess(resultEntity, gold, energy);
-                            speechEvalAction.onSpeechSuccess(id);
+                            onSuccess(jsonObject);
                         }
+                    }
+
+                    private void onSuccess(JSONObject jsonObject) {
+                        int gold = jsonObject.optInt("gold");
+                        int energy = jsonObject.optInt("energy");
+                        haveAnswer = jsonObject.optInt("isAnswered", 0) == 1;
+                        logger.d("onSpeechEval:jsonObject=" + jsonObject);
+                        onSpeechEvalSuccess(resultEntity, gold, energy);
+                        speechEvalAction.onSpeechSuccess(id);
                     }
 
                     @Override

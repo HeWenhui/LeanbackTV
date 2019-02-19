@@ -666,33 +666,26 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (isNewArts) {
-                                        int gold = jsonObject.optInt("gold");
-                                        int energy = jsonObject.optInt("energy");
-                                        onSpeechEvalSuccess(resultEntity, gold, energy);
-                                        speechEvalAction.onSpeechSuccess(id);
-                                    } else {
-                                        int gold = jsonObject.optInt("gold");
-                                        int energy = jsonObject.optInt("energy");
-                                        haveAnswer = jsonObject.optInt("isAnswered", 0) == 1;
-                                        onSpeechEvalSuccess(resultEntity, gold, energy);
-                                        speechEvalAction.onSpeechSuccess(id);
-                                    }
+                                    onSuccess(jsonObject);
                                 }
                             }, delayMillis);
                         } else {
-                            if (isNewArts) {
-                                int gold = jsonObject.optInt("gold");
-                                int energy = jsonObject.optInt("energy");
-                                onSpeechEvalSuccess(resultEntity, gold, energy);
-                                speechEvalAction.onSpeechSuccess(id);
-                            } else {
-                                int gold = jsonObject.optInt("gold");
-                                int energy = jsonObject.optInt("energy");
-                                haveAnswer = jsonObject.optInt("isAnswered", 0) == 1;
-                                onSpeechEvalSuccess(resultEntity, gold, energy);
-                                speechEvalAction.onSpeechSuccess(id);
-                            }
+                            onSuccess(jsonObject);
+                        }
+                    }
+
+                    private void onSuccess(JSONObject jsonObject) {
+                        if (isNewArts) {
+                            int gold = jsonObject.optInt("gold");
+                            int energy = jsonObject.optInt("energy");
+                            onSpeechEvalSuccess(resultEntity, gold, energy);
+                            speechEvalAction.onSpeechSuccess(id);
+                        } else {
+                            int gold = jsonObject.optInt("gold");
+                            int energy = jsonObject.optInt("energy");
+                            haveAnswer = jsonObject.optInt("isAnswered", 0) == 1;
+                            onSpeechEvalSuccess(resultEntity, gold, energy);
+                            speechEvalAction.onSpeechSuccess(id);
                         }
                     }
 
