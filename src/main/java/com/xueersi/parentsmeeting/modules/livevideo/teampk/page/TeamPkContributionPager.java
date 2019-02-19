@@ -1,5 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.teampk.page;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -188,6 +191,13 @@ public class TeamPkContributionPager extends TeamPkBasePager {
             }
         });
         animationView.playAnimation();
+        animationView.addAnimatorListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+              //  super.onAnimationEnd(animation);
+                startAutoClose();
+            }
+        });
     }
 
     /**
@@ -285,7 +295,7 @@ public class TeamPkContributionPager extends TeamPkBasePager {
      * 开始自动关闭
      */
     public void startAutoClose() {
-        timeCountDowTextView.setTimeDuration(3);
+        timeCountDowTextView.setTimeDuration(5);
         timeCountDowTextView.setTimeSuffix("秒后关闭");
         timeCountDowTextView.startCountDow();
         timeCountDowTextView.setTimeCountDowListener(new TimeCountDowTextView.TimeCountDowListener() {
