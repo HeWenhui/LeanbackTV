@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.evendrive;
 
 import android.content.Context;
 import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -71,14 +72,12 @@ public class MiddleScienceEvenDrivePager extends BasePager {
 
     @Override
     public void initListener() {
-
-
-        mView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                logger.i("点击事件触发");
-            }
-        });
+//        mView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                logger.i("点击事件触发");
+//            }
+//        });
         //组内
         tvMygroup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,11 +124,14 @@ public class MiddleScienceEvenDrivePager extends BasePager {
             vGroupsLine.setVisibility(View.GONE);
             evenDriveLayout.setVisibility(View.VISIBLE);
 
+
             tvMygroup.setTextColor(COLOR_F13232);
             tvEven.setTextColor(white);
             tvGroups.setTextColor(white);
 
             normalLayout.setVisibility(View.GONE);
+
+
             tvMiddleRight.setText("正确率");
         } else if (type == 2) {
             vMyGroup.setVisibility(View.GONE);
@@ -153,7 +155,14 @@ public class MiddleScienceEvenDrivePager extends BasePager {
             tvGroups.setTextColor(COLOR_F13232);
 
             normalLayout.setVisibility(View.VISIBLE);
-            evenDriveLayout.setVisibility(View.GONE);
+
+            ConstraintSet constraintSet = new ConstraintSet();
+
+            constraintSet.clone((ConstraintLayout) mView);
+
+//            constraintSet.connect(R.id.lv_livevideo_middle_science_list, ConstraintSet.TOP, R.id.include_livevideo_rank_normal_tips_layout, ConstraintSet.BOTTOM, SizeUtils.Dp2Px(mContext, 20));
+            //这里必须设置成INVISIBLE，因为lvEven需要此布局来限制位置
+            evenDriveLayout.setVisibility(View.INVISIBLE);
         }
     }
 

@@ -731,6 +731,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 boolean isOff = object.optBoolean("open");
                 //
                 if (!isOff) {
+                    //老师收题之后，更新聊天区连对榜
                     getHttpManager().getEvenLikeData(
 //                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
                             mGetInfo.getGetEvenPairListUrl(),
@@ -743,16 +744,24 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                                     mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
                                 }
                             });
+                    //设置结束时间，判断是否显示XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT点赞消息
+                    endTime = System.currentTimeMillis();
+                    isHasReceiveLike = false;
+                } else {
+                    isHasReceiveLike = true;
                 }
                 break;
             }
             case XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT: {
                 //点赞
-
-                String likeSender = object.optString("stuName");
-                logger.i(likeSender + " 刚刚赞了你");
-                mRoomAction.addMessage("", LiveMessageEntity.EVEN_DRIVE_LIKE, likeSender + " 刚刚赞了你");
-
+                logger.i("收到点赞消息");
+                long nowTime = System.currentTimeMillis();
+                if (!isHasReceiveLike && (nowTime - endTime < TIME_SEND_PRIVATE_MSG)) {
+                    String likeSender = object.optString("stuName");
+                    logger.i(likeSender + " 刚刚赞了你");
+                    mRoomAction.addMessage("", LiveMessageEntity.EVEN_DRIVE_LIKE, likeSender + " 刚刚赞了你");
+                    isHasReceiveLike = true;
+                }
 //
 //                logger.i("获取学报");
 //                getHttpManager().getJournalUrl(
@@ -833,6 +842,15 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         }
         mLogtf.d(msg);
     }
+
+    /**
+     * 中学激励系统，15s内来判断是否显示点赞消息
+     */
+    protected final long TIME_SEND_PRIVATE_MSG = 15 * 1000;
+    //中学激励系统，收题时间,判断是否在15s内来决定点赞
+    private long endTime;
+    //中学激励系统，这段时间是否接收过点赞消息,一道题目只显示一次点赞消息
+    private boolean isHasReceiveLike = false;
 
     @Override
     public int[] getNoticeFilter() {

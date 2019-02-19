@@ -34,8 +34,6 @@ public abstract class ItemMiddleSciencePager<T> implements AdapterItemInterface<
     /** 自己的学生id */
     protected String myStuId;
 
-    protected final long TIME_SEND_PRIVATE_MSG = 15 * 1000;
-
     @Override
     public int getLayoutResId() {
         return R.layout.item_livevideo_middle_science_even_drive_listview_item;

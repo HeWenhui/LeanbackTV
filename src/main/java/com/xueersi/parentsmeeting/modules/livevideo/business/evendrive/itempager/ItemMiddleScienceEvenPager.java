@@ -52,7 +52,7 @@ public class ItemMiddleScienceEvenPager extends ItemMiddleSciencePager<EvenDrive
                                 if (iClickSelf != null) {
                                     iClickSelf.clickSelf();
                                 }
-                            } else if (nowTime - endTime <= TIME_SEND_PRIVATE_MSG && getiNotice() != null) {
+                            } else if (getiNotice() != null) {
                                 JSONObject jsonObject = new JSONObject();
                                 try {
                                     jsonObject.put("type", String.valueOf(XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT));

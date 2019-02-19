@@ -477,7 +477,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                         } else if (LiveMessageEntity.EVEN_DRIVE_REPORT == entity.getType()) {
                             //点击连对激励系统的查看排行榜，弹出排行榜的内容
                             tvMessageItem.setText(spanttt);
-                            entity.setText(entity.getText());
+                            tvMessageItem.append(entity.getText());
                             tvMessageItem.append(clickEvenDrive(entity));
                             tvMessageItem.setMovementMethod(LinkMovementMethod.getInstance());
                             tvMessageItem.setHighlightColor(mContext.getResources().getColor(R.color.COLOR_00000000));
@@ -1821,10 +1821,21 @@ public class LiveMessagePager extends BaseLiveMessagePager {
      * @param highestRightNum 当前最高连对数
      */
     public void setEvenText(String nowEvenNum, String highestRightNum) {
-        tvNowEvenNum.setText("连对×" + nowEvenNum);
-        tvHighestEvenNum.setText("最高×" + highestRightNum);
+        if (nowEvenNum.equals("0") || nowEvenNum.equals("1")) {
+            tvNowEvenNum.setText("连对 -");
+        } else {
+            tvNowEvenNum.setText("连对×" + nowEvenNum);
+        }
+        if (highestRightNum.equals("0") || highestRightNum.equals("1")) {
+            tvHighestEvenNum.setText("最高 -");
+        } else {
+            tvHighestEvenNum.setText("最高×" + highestRightNum);
+        }
     }
 
+    private void isAlpha(String str){
+
+    }
     @Override
     public CommonAdapter<LiveMessageEntity> getMessageAdapter() {
         return messageAdapter;

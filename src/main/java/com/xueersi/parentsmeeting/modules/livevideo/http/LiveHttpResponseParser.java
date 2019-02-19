@@ -114,11 +114,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 getInfo.ePlanInfo.ePlanId = ePlanInfo.optString("ePlanId");
                 getInfo.ePlanInfo.eTeacherId = ePlanInfo.optString("eTeacherId");
                 getInfo.ePlanInfo.eClassId = ePlanInfo.optString("eClassId");
-                if (ePlanInfo.has("fakePlanId")){
+                if (ePlanInfo.has("fakePlanId")) {
                     getInfo.ePlanInfo.fakePlanId = ePlanInfo.optString("fakePlanId");
                 }
-            }
-            catch (JSONException e) {
+            } catch (JSONException e) {
                 MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo.ePlanInfo", e.getMessage());
             }
         }
@@ -171,7 +170,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             e.printStackTrace();
         }
         if (data.has("isAllowTeamPk")) {
-            getInfo.setIsAllowTeamPk(data.optString("isAllowTeamPkNew","0"));
+            getInfo.setIsAllowTeamPk(data.optString("isAllowTeamPkNew", "0"));
         }
 
 //            LiveVideoConfig.isPrimary = true;
@@ -266,8 +265,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 
             //连对激励
             getInfo.setIsOpenNewCourseWare(data.optInt("isOpenNewCourseWare"));
-            getInfo.setIsOpenNewCourseWare(1);
-            getInfo.setGetJournalUrl(data.optString("getJournalUrl", " https://live.xueersi.com/science/Stimulation/getJournal"));
+//            getInfo.setIsOpenNewCourseWare(1);
+            getInfo.setGetJournalUrl(data.optString("getJournalUrl", "https://live.xueersi.com/science/Stimulation/getJournal"));
             getInfo.setGetEvenPairListUrl(data.optString("getEvenPairListUrl", "https://live.xueersi.com/science/Stimulation/evenPairList"));
             getInfo.setGetThumbsUpUrl(data.optString("getThumbsUpUrl", "https://live.xueersi.com/science/Stimulation/thumbsUp"));
             //getInfo.setIsShowMarkPoint("0");
@@ -2019,15 +2018,17 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 //                    }
                     list.add(otherEntity);
                 }
-                EvenDriveEntity.OtherEntity myListEntity = new EvenDriveEntity.OtherEntity();
-                myListEntity.setRanking(myRank);
-                myListEntity.setEvenPairNum(myEntity.getEvenPairNum());
-                myListEntity.setIsThumbsUp(myEntity.getIsThumbsUp());
-                myListEntity.setName(myEntity.getName());
+                if (myRank != 0) {
+                    EvenDriveEntity.OtherEntity myInOtherEntity = new EvenDriveEntity.OtherEntity();
+                    myInOtherEntity.setRanking(myRank);
+                    myInOtherEntity.setEvenPairNum(myEntity.getEvenPairNum());
+                    myInOtherEntity.setIsThumbsUp(myEntity.getIsThumbsUp());
+                    myInOtherEntity.setName(myEntity.getName());
 //                        String stuId = itemJSON.optString("stuId");
-                myListEntity.setStuId(myEntity.getStuId());
-                myListEntity.setThumbsUpNum(myEntity.getThumbsUpNum());
-                list.add(0, myListEntity);
+                    myInOtherEntity.setStuId(myEntity.getStuId());
+                    myInOtherEntity.setThumbsUpNum(myEntity.getThumbsUpNum());
+                    list.add(0, myInOtherEntity);
+                }
                 evenDriveEntity.setOtherEntities(list);
             } catch (JSONException e) {
                 e.printStackTrace();
