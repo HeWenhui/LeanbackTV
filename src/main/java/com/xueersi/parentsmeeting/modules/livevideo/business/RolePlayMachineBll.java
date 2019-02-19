@@ -439,8 +439,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
 
                 @Override
                 public void onPmError(ResponseEntity responseEntity) {
-                    logger.i("onPmError: responseEntity.toString()  =" + responseEntity.toString
-                            () + "提交结果失败，但是要释放资源");
+                    logger.i("onPmError: responseEntity=" + responseEntity.getErrorMsg()+ ",提交结果失败，但是要释放资源");
                     super.onPmError(responseEntity);
                     if (mRolePlayMachinePager != null) {
                         mRolePlayMachinePager.recoverListScrollAndCancelDZ();
@@ -477,12 +476,15 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
     @Override
     public void onStopQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity, String nonce) {
         logger.i("onStopQuestion 老师收题了,断开socket ");
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
+        if(mRolePlayMachinePager != null){
+            mRolePlayMachinePager.stopSpeech();
+        }
+        mHertHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 closeCurPage();
             }
-        });
+        },200);
     }
 
     @Override

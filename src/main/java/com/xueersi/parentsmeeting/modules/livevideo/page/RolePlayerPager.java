@@ -175,7 +175,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
      * 角色业务
      */
     private RolePlayerBll mRolePlayBll;
-
+    private boolean mIsEnd;
     /**
      * 语音评测
      */
@@ -784,9 +784,11 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
                     mCurrentReadIndex++;
                     Message temp = mReadHandler.obtainMessage();
                     temp.what = READ_MESSAGE;
-                    logger.i("currentMessage.getMaxReadTime() = " + currentMessage.getMaxReadTime());
-                    mReadHandler.sendMessageDelayed(temp, (currentMessage.getMaxReadTime()) * 1000);
-                    mReadHandler.sendEmptyMessageDelayed(GO_SPEECH, (currentMessage.getMaxReadTime() - 1) * 1000);
+                    mLogtf.i("currentMessage.getMaxReadTime() = " + currentMessage.getMaxReadTime()+",mIsEnd="+mIsEnd);
+                    if(!mIsEnd){
+                        mReadHandler.sendMessageDelayed(temp, (currentMessage.getMaxReadTime()) * 1000);
+                        mReadHandler.sendEmptyMessageDelayed(GO_SPEECH, (currentMessage.getMaxReadTime() - 1) * 1000);
+                    }
                 } else if (msg.what == GO_SPEECH) {
                     //结束评测
                     if (mIse != null) {
@@ -1433,6 +1435,22 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
                         Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
             }
             return span;
+        }
+    }
+
+    public void stopSpeech(){
+        if (mIse != null) {
+            mIse.stop();
+        }
+        mIsEnd=true;
+        mReadHandler.removeMessages(GO_SPEECH);
+        mReadHandler.removeMessages(READ_MESSAGE);
+        if (mEntity!=null&&!mEntity.isResult()&&mRolePlayBll.getRoleEntry()!=null) {
+            if (mEntity.isNewArts()) {
+                mRolePlayBll.requestNewArtsResult();
+            } else {
+                mRolePlayBll.requestResult();
+            }
         }
     }
 

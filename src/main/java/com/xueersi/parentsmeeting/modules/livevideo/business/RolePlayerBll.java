@@ -268,12 +268,15 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             mWebSocket.close();
             mWebSocket = null;
         }
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
+        if(mRolePlayerPager != null){
+            mRolePlayerPager.stopSpeech();
+        }
+        mHertHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 closeCurPage();
             }
-        });
+        },200);
     }
 
     /**
@@ -768,6 +771,10 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             e.printStackTrace();
         }
 
+    }
+
+    public RolePlayerEntity getRoleEntry() {
+        return mRolePlayerEntity;
     }
 
     /**
