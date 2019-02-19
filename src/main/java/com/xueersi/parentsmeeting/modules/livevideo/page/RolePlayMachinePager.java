@@ -531,13 +531,14 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                         RolePlayerEntity.RolePlayerMessage upMessage = mEntity.getLstRolePlayerMessage().get
                                 (mCurrentReadIndex - 1);
                         if ((mCurrentReadIndex - 1) == mEntity.getSelfLastIndex()) {
-                            logger.i("提交结果 mCurrentReadIndex = " + mCurrentReadIndex);
-                            if(mEntity.isNewArts()){
-                                mRolePlayBll.requestNewArtsResult();
-                            }else {
-                                mRolePlayBll.requestResult();
+                            mLogtf.i("handleMessage:mCurrentReadIndex = " + mCurrentReadIndex+",isResult="+mEntity.isResult());
+                            if (!mEntity.isResult()){
+                                if(mEntity.isNewArts()){
+                                    mRolePlayBll.requestNewArtsResult();
+                                }else {
+                                    mRolePlayBll.requestResult();
+                                }
                             }
-
                         }
                         if (upMessage.getMsgStatus() != RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH) {
                             upMessage.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY);
@@ -725,14 +726,18 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                             message.getRolePlayer().getRoleId());
                     //XESToastUtils.showToast(mContext, resultEntity.getScore() + "");
                     //提前开始下一条
-                    nextReadMessage();
+                    if(!mIsEnd){
+                        nextReadMessage();
+                    }
                 } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
-                    logger.i("测评失败，" + resultEntity.getErrorNo() + " 不上传自己的mp3");
+                    mLogtf.i("onResult:errorNo=" + resultEntity.getErrorNo() + ",mIsEnd="+mIsEnd);
                     //XESToastUtils.showToast(mContext, "测评失败");
                     //mIsEvaluatoring = false;
                     message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
-                    //提前开始下一条
-                    nextReadMessage();
+                    if(!mIsEnd){
+                        //提前开始下一条
+                        nextReadMessage();
+                    }
                 } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
                     // logger.i("RolePlayerDemoTest", "测评中");
 
