@@ -12,7 +12,6 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
@@ -20,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
@@ -279,9 +279,12 @@ public class LiveGetPlayServer {
 
             });
         } else {
-            if (mVideoAction instanceof LiveVideoFragment) {
-                ((LiveVideoFragment) mVideoAction).psRePlay(modechange);
+            if (mVideoAction instanceof LiveFragmentBase) {
+                ((LiveFragmentBase) mVideoAction).psRePlay(modechange);
             }
+//            if (mVideoAction instanceof LectureLiveVideoFrame) {
+//                ((LectureLiveVideoFrame) mVideoAction).psRePlay(modechange);
+//            }
 //            if(mVideoAction instanceof )
 //            mVideoAction.onLiveStart(null, mLiveTopic, modechange);
 //            mLivevideoBll.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
