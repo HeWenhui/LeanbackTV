@@ -697,7 +697,7 @@ public class PraiseListPager extends LiveBasePager {
                 }
                 if (likeTimer == null) {
                     likeTimer = new Timer();
-                    likeTimer.schedule(new LikeTimerTask(), 0, 3000);
+                    likeTimer.schedule(new LikeTimerTask(), 0, 4000);
                 }
                 btnLikeClickTime++;
             }
