@@ -86,7 +86,7 @@ import okhttp3.Call;
  *
  * @author linyuqiang
  */
-public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, QuestionHttp, EnglishH5CoursewareHttp, SpeechFeedBackHttp, LearnReportHttp, LecAdvertHttp, LiveOnLineLogs {
+public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, QuestionHttp, EnglishH5CoursewareHttp, SpeechFeedBackHttp, LearnReportHttp, LecAdvertHttp {
     private String TAG = "LiveBllLog";
     /** 互动题 */
     private QuestionAction mQuestionAction;
@@ -201,7 +201,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpManager.addBodyParam("form", "" + form);
         mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(TAG, this);
+        mLogtf = new LogToFile(context,TAG);
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         if (liveGetInfo != null) {
@@ -217,7 +217,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         mHttpManager = new LiveHttpManager(mContext);
         mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(TAG, this);
+        mLogtf = new LogToFile(context,TAG);
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
@@ -234,7 +234,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         mHttpManager = new LiveHttpManager(mContext);
         mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(TAG, this);
+        mLogtf = new LogToFile(context,TAG);
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
@@ -244,11 +244,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
 
     public void setLivePlayLog(LivePlayLog livePlayLog) {
         this.livePlayLog = livePlayLog;
-    }
-
-    @Override
-    public String getPrefix() {
-        return "OL";
     }
 
     /**

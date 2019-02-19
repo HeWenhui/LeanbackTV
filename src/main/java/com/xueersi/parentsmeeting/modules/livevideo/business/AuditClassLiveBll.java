@@ -26,7 +26,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveLog;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HalfBodyLiveStudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.StudentLiveInfoEntity;
@@ -63,7 +62,7 @@ import okhttp3.Response;
  *
  * @author linyuqiang
  */
-public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, LiveOnLineLogs {
+public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
     private String TAG = "AuditClassLiveBllLog";
     String liveListenEventid = LiveVideoConfig.LIVE_LISTEN;
     private AuditVideoAction mVideoAction;
@@ -142,7 +141,11 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         mLiveTopic.setMode(LiveTopic.MODE_CLASS);
-        liveLog = new LiveLog(context, mLiveType, mLiveId, getPrefix());
+        liveLog = new LiveLog(context, mLiveType, mLiveId, "AC");
+    }
+
+    public LiveLog getLiveLog() {
+        return liveLog;
     }
 
     /**
@@ -195,11 +198,6 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
         this.livePlayLog = livePlayLog;
     }
 
-    @Override
-    public String getPrefix() {
-        return "AC";
-    }
-
     public boolean isHalfBodyLive() {
         return isHalfBodyLive;
     }
@@ -209,18 +207,6 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
      */
     public void setHalfBodyLive(boolean halfBodyLive){
         this.isHalfBodyLive = halfBodyLive;
-    }
-
-    /**
-     * 播放器异常日志
-     *
-     * @param str
-     */
-    @Override
-    public void getOnloadLogs(String TAG, String str) {
-        if (liveLog != null) {
-            liveLog.getOnloadLogs(TAG,str);
-        }
     }
 
     public void setVideoAction(AuditVideoAction videoAction) {

@@ -83,9 +83,6 @@ import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
 import master.flame.danmaku.danmaku.ui.widget.DanmakuView;
 
-import static com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile.liveBll;
-
-
 /**
  * Created by David on 2018/8/1.
  */

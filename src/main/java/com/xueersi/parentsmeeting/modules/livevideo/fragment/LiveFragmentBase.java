@@ -96,7 +96,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
             onUserBackPressed();
             return false;
         }
-        mLogtf = new LogToFile(mLiveBll, TAG);
+        mLogtf = new LogToFile(activity, TAG);
         userOnline = new UserOnline(activity, liveType, mVSectionID);
         userOnline.setHttpManager(mLiveBll.getHttpManager());
         //先让播放器按照默认模式设置

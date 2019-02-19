@@ -62,7 +62,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * @author chekun
  * created  at 2018/6/20 10:32
  */
-public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLogs {
+public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     Logger logger = LoggerFactory.getLogger("LiveBll2");
     /** 需处理 topic 业务集合 */
     private List<TopicAction> mTopicActions = new ArrayList<>();
@@ -136,8 +136,8 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
             mLiveTopic = new LiveTopic();
         }
         ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, this);
-        ProxUtil.getProxUtil().put(context, LiveOnLineLogs.class, this);
-        liveLog = new LiveLog(mContext, mLiveType, mLiveId, getPrefix());
+        liveLog = new LiveLog(mContext, mLiveType, mLiveId, "NL");
+        ProxUtil.getProxUtil().put(context, LiveOnLineLogs.class, liveLog);
         allLiveBasePagerIml = new AllLiveBasePagerIml(context);
     }
 
@@ -168,8 +168,8 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         }
         mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, this);
-        ProxUtil.getProxUtil().put(context, LiveOnLineLogs.class, this);
-        liveLog = new LiveLog(mContext, mLiveType, mLiveId, getPrefix());
+        liveLog = new LiveLog(mContext, mLiveType, mLiveId, "NL");
+        ProxUtil.getProxUtil().put(context, LiveOnLineLogs.class, liveLog);
         allLiveBasePagerIml = new AllLiveBasePagerIml(context);
     }
 
@@ -201,8 +201,8 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
             mLiveTopic.setMode(LiveTopic.MODE_CLASS);
         }
         ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, this);
-        ProxUtil.getProxUtil().put(context, LiveOnLineLogs.class, this);
-        liveLog = new LiveLog(mContext, mLiveType, mLiveId, getPrefix());
+        liveLog = new LiveLog(mContext, mLiveType, mLiveId, "NL");
+        ProxUtil.getProxUtil().put(context, LiveOnLineLogs.class, liveLog);
         allLiveBasePagerIml = new AllLiveBasePagerIml(context);
     }
 
@@ -992,23 +992,6 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug, LiveOnLineLog
         analysis.put("clientip", IpAddressUtil.USER_IP);
         analysis.put("traceid", "" + UUID.randomUUID());
         analysis.put("platform", "android");
-    }
-
-    @Override
-    public String getPrefix() {
-        return "NL";
-    }
-
-    /**
-     * 播放器异常日志
-     *
-     * @param str
-     */
-    public void getOnloadLogs(String TAG, String str) {
-        //不能出现空
-        if (liveLog != null) {
-            liveLog.getOnloadLogs(TAG, str);
-        }
     }
 
     /**

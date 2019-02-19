@@ -53,8 +53,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by linyuqiang on 2018/7/17.
  */
-public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlaybackMediaController.OnPointClick,
-        LiveOnLineLogs {
+public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlaybackMediaController.OnPointClick {
     protected String TAG = "LiveBackBll";
     protected Logger logger = LiveLoggerFactory.getLogger(getClass().getSimpleName());
     protected Activity activity;
@@ -233,8 +232,9 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                 }
             }
         }
-        logToFile = new LogToFile(this, TAG);
-        ProxUtil.getProxUtil().put(activity, LiveOnLineLogs.class, this);
+        liveLog = new LiveLog(activity, mLiveType, mVideoEntity.getLiveId(), getPrefix());
+        ProxUtil.getProxUtil().put(activity, LiveOnLineLogs.class, liveLog);
+        logToFile = new LogToFile(activity, TAG);
         mCourseHttpManager = new LivePlayBackHttpManager(activity);
         if (liveVideoSAConfig != null) {
             mCourseHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
@@ -248,7 +248,6 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         if (liveVideoSAConfig != null) {
             mHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
         }
-        liveLog = new LiveLog(activity, mLiveType, mVideoEntity.getLiveId(), getPrefix());
         mHttpManager.addBodyParam("liveId", mVideoEntity.getLiveId());
         if (mVideoEntity.getvLivePlayBackType() == LocalCourseConfig.LIVETYPE_RECORDED) {
             try {
@@ -872,23 +871,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         }
     }
 
-    @Override
     public String getPrefix() {
         return "LB";
-    }
-
-    String mFileName = null;
-
-    /**
-     * 播放器异常日志
-     *
-     * @param str
-     */
-    @Override
-    public void getOnloadLogs(String TAG, String str) {
-        //不能出现空
-        if (liveLog != null) {
-            liveLog.getOnloadLogs(TAG, str);
-        }
     }
 }
