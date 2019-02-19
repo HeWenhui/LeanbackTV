@@ -828,17 +828,31 @@ public class PraiseListPager extends LiveBasePager {
     }
 
     /**
-     * 二倍卡触发次数 最多触发2次
+     * 二倍卡触发次数
      */
     int doubleCardCount = 0;
+    /**
+     * 普通学生最多触发2次
+     */
+    private static int NORMOL_MAX_DOUBLE_CARD_COUNT = 2;
+    /**
+     * 新生和未续保学生最多触发4次
+     */
+    private static int VIP_MAX_DOUBLE_CARD_COUNT = 4;
     /**
      * 是否触发二倍卡  1：概率不加倍  2：概率加倍
      */
     public boolean findDoubleCard() {
-        if (doubleCardCount >= 2) {
+        int probability = mPresenter.getProbability();
+        int maxCount;
+        if (probability == 2) {
+            maxCount = VIP_MAX_DOUBLE_CARD_COUNT;
+        } else {
+            maxCount = NORMOL_MAX_DOUBLE_CARD_COUNT;
+        }
+        if (doubleCardCount >= maxCount) {
             return false;
         }
-        int probability = mPresenter.getProbability();
         if (myTeamTabs != selectedTeamTabs) {
             //给其他战队点赞 概率加倍
             probability = 2;
@@ -848,15 +862,15 @@ public class PraiseListPager extends LiveBasePager {
         }
         Random random = new Random();
         int i;
-        if (probability == 1) {
+        if (probability == 2) {
             i = random.nextInt(1000);
-            if (i < 4) {
+            if (i < 10) {
                 doubleCardCount++;
                 return true;
             }
-        } else if (probability == 2) {
+        } else {
             i = random.nextInt(1000);
-            if (i < 10) {
+            if (i < 4) {
                 doubleCardCount++;
                 return true;
             }
@@ -1169,7 +1183,7 @@ public class PraiseListPager extends LiveBasePager {
                 @Override
                 public void run() {
                     for (int i = 0; i < mTeamList.size(); i++) {
-                        if (!(latestLikeCount[i] == likeTotalCount[i] || tvLikeCount.getVisibility() == View.VISIBLE)) {
+                        if (!(latestLikeCount[i] == likeTotalCount[i])) {
                             int increment = likeTotalCount[i] - latestLikeCount[i];
                             mPresenter.sendLikeNum(increment, mTeamList.get(i).getPkTeamId(), 1);
                             latestLikeCount[i] = likeTotalCount[i];
