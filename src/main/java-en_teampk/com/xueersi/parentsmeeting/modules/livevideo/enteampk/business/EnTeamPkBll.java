@@ -136,7 +136,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
         enTeamPkHttp.getEnglishPkGroup(new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objects) {
-                pkTeamEntity = (PkTeamEntity) objects[0];
+                PkTeamEntity pkTeamEntity = (PkTeamEntity) objects[0];
                 setPkTeamEntity(pkTeamEntity);
             }
 

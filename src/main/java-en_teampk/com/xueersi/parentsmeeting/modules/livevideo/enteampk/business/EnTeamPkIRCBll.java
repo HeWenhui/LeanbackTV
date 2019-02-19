@@ -54,6 +54,9 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private VideoQuestionLiveEntity videoQuestionLiveEntity;
     private boolean mIsShow = false;
     private Runnable stopRunnable = null;
+    /** 最大延迟时间 */
+    private static long maxdelayMillis = 3000;
+    private long stopQuestTime;
     private AtomicBoolean firstConnect = new AtomicBoolean(false);
     private Runnable reportStuInfoRun;
 
@@ -143,11 +146,23 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 logger.d("onQuestionShow:isShow");
                 videoQuestionLiveEntity = questionLiveEntity;
             } else {
-                logger.d("onQuestionShow:notShow:run=" + (stopRunnable == null));
                 if (stopRunnable != null) {
                     Runnable runnable = stopRunnable;
                     stopRunnable = null;
-                    runnable.run();
+                    long delayMillis = System.currentTimeMillis() - stopQuestTime;
+                    if (delayMillis > maxdelayMillis) {
+                        runnable.run();
+                    } else {
+                        delayMillis = maxdelayMillis - delayMillis;
+                        if (delayMillis < 0) {
+                            runnable.run();
+                        } else {
+                            mHandler.postDelayed(runnable, delayMillis);
+                        }
+                    }
+                    logger.d("onQuestionShow:delayMillis=" + delayMillis);
+                } else {
+                    logger.d("onQuestionShow:notShow");
                 }
             }
         }
@@ -412,9 +427,12 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         PkTeamEntity pkTeamEntity2 = getHttpResponseParser().parsegetSelfTeamInfo(responseEntity, mGetInfo.getStuId());
         if (pkTeamEntity == null && pkTeamEntity2 != null) {
             LiveGetInfo.EnglishPk englishPk = mGetInfo.getEnglishPk();
+            int oldHasGroup = englishPk.hasGroup;
             englishPk.hasGroup = 1;
-            mLogtf.d("parsegetSelfTeamInfo:postEvent");
-            mLiveBll.postEvent(EnPkTeam.class, pkTeamEntity2);
+            mLogtf.d("parsegetSelfTeamInfo:postEvent:oldHasGroup=" + oldHasGroup);
+            if (oldHasGroup == 0) {
+                mLiveBll.postEvent(EnPkTeam.class, pkTeamEntity2);
+            }
         }
         return pkTeamEntity2;
     }
@@ -610,8 +628,9 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             }
         };
         logger.d("onCourseEnd:isShow=" + mIsShow);
+        stopQuestTime = System.currentTimeMillis();
         if (!mIsShow) {
-            runnable.run();
+            mHandler.postDelayed(runnable, maxdelayMillis);
         } else {
             stopRunnable = runnable;
         }
@@ -669,8 +688,9 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             }
         };
         logger.d("onQuestionEnd:isShow=" + mIsShow);
+        stopQuestTime = System.currentTimeMillis();
         if (!mIsShow) {
-            runnable.run();
+            mHandler.postDelayed(runnable, maxdelayMillis);
         } else {
             stopRunnable = runnable;
         }
