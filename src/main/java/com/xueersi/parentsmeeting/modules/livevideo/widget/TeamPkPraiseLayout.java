@@ -82,6 +82,16 @@ public class TeamPkPraiseLayout extends FrameLayout {
      * 消息轮询间隔
      **/
     private static final long MSG_LOOP_DURATION = 1 * 1000;
+
+    /**
+     * 假消息生成 随机时间范围
+     */
+    private static final int FAKE_MSG_BUILD_TIME_RANGE = 8;
+    /**
+     * 每次随机生成的消息数条数
+     **/
+    private static final int FAKE_MSG_NUM = 4;
+
     /**
      * 前景音效 音量
      */
@@ -169,22 +179,17 @@ public class TeamPkPraiseLayout extends FrameLayout {
                 ().getRealName();
         String wrods = mWrodList.get(wrodsIndex);
         Msg msg = new Msg(name, wrods, true);
-        mCacheMsgList.add(msg);
-
-        if (mOnLineTeamMates != null && mOnLineTeamMates.size() > 0) {
-            wrodsIndex = new Random().nextInt(mWrodList.size());
-            nameIndex = new Random().nextInt(mOnLineTeamMates.size());
-            Msg msg2 = new Msg(mOnLineTeamMates.get(nameIndex).getName(), mWrodList.get(wrodsIndex), false);
-            mCacheMsgList.add(msg2);
-        }
+        mCacheMsgList.add(0, msg);
     }
 
     private void startMsgLoop() {
         this.post(runnable);
+        this.post(fakeMsgBuidTask);
     }
 
     private void cancleMsgLoop() {
         this.removeCallbacks(runnable);
+        this.removeCallbacks(fakeMsgBuidTask);
     }
 
     @Override
@@ -212,6 +217,25 @@ public class TeamPkPraiseLayout extends FrameLayout {
                 mMsgAdapter.notifyItemInserted(0);
             }
             postDelayed(this, MSG_LOOP_DURATION);
+        }
+    };
+
+    /**
+     * 假消息生成任务
+     */
+    Runnable fakeMsgBuidTask = new Runnable() {
+        @Override
+        public void run() {
+            if (mOnLineTeamMates != null && mOnLineTeamMates.size() > 0) {
+                for (int i = 0; i < FAKE_MSG_NUM; i++) {
+                    wrodsIndex = new Random().nextInt(mWrodList.size());
+                    nameIndex = new Random().nextInt(mOnLineTeamMates.size());
+                    Msg msg2 = new Msg(mOnLineTeamMates.get(nameIndex).getName(), mWrodList.get(wrodsIndex), false);
+                    mCacheMsgList.add(msg2);
+                }
+            }
+            int seconds = new Random().nextInt(FAKE_MSG_BUILD_TIME_RANGE);
+            postDelayed(this, seconds * 1000);
         }
     };
 

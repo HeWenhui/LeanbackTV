@@ -32,7 +32,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.BezierEvaluator;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 小理战队pk 二期  答题表扬，徽章 动效
@@ -56,7 +60,8 @@ public class TeamPkPraiseBll {
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "team_pk/teacher_praise/";
     private String mResPath;
     private String mJsonFilePath;
-
+    private static final int BADGE_LOW_BOUND = 0;
+    private static final int BADGE_UP_BOUND = 10;
 
     public TeamPkPraiseBll(Activity activity, TeamPkBll pkBll) {
         mActivity = activity;
@@ -72,14 +77,50 @@ public class TeamPkPraiseBll {
     public void onPraise(String sourceNick, String target, JSONObject data, int type) {
         switch (type) {
             case XESCODE.TEAM_PK_TEACHER_PRAISE:
-                int strCmd = data.optInt("msg",-1);
-                if(strCmd != -1){
-                    showBadge(strCmd);
+                int praiseType = data.optInt("praiseType", 0);
+                if (isMyTeam(data)) {
+                    showBadge(praiseType);
                 }
+                break;
+            case XESCODE.TEAM_PK_PARISE_ANWSER_RIGHT:
+                showPraise();
                 break;
             default:
                 break;
         }
+    }
+
+    /**
+     * 展示老师表扬动画
+     **/
+    private void showPraise() {
+        mResPath = "team_pk/pkresult/teacher_praise/images";
+        mJsonFilePath = "team_pk/pkresult/teacher_praise/data.json";
+        addPraiseView();
+    }
+
+    /**
+     * 是否是本队
+     *
+     * @param data
+     * @return
+     */
+    private boolean isMyTeam(JSONObject data) {
+        boolean result = false;
+        try {
+            JSONArray jsonArray = data.getJSONArray("teamList");
+            if (jsonArray != null && jsonArray.length() > 0) {
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    if (mPkBll.getRoomInitInfo().getStudentLiveInfo().getTeamId().equals(jsonArray.getString(i))) {
+                        result = true;
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     /**
@@ -88,8 +129,14 @@ public class TeamPkPraiseBll {
      * @param badgeType 徽章类型
      */
     private void showBadge(int badgeType) {
-        mResPath = LOTTIE_RES_ASSETS_ROOTDIR + "badge_"+badgeType+"/images";
-        mJsonFilePath = LOTTIE_RES_ASSETS_ROOTDIR + "badge_"+badgeType+"/data.json";
+        if (badgeType > BADGE_LOW_BOUND && badgeType < BADGE_UP_BOUND) {
+            mResPath = LOTTIE_RES_ASSETS_ROOTDIR + "badge_" + badgeType + "/images";
+            mJsonFilePath = LOTTIE_RES_ASSETS_ROOTDIR + "badge_" + badgeType + "/data.json";
+            addPraiseView();
+        }
+    }
+
+    private void addPraiseView() {
         try {
             if (mActivity != null) {
                 mActivity.runOnUiThread(new Runnable() {
@@ -131,11 +178,6 @@ public class TeamPkPraiseBll {
         animView.addAnimatorListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
-                StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mActivity, StudyReportAction.class);
-                if (studyReportAction != null) {
-                    studyReportAction.cutImageAndVideo(LiveVideoConfig.STUDY_REPORT.TYPE_PRAISE, decorView, false,
-                            false);
-                }
                 closeTeacherPriase();
             }
         });

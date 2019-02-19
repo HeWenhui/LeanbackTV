@@ -609,6 +609,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     @JavascriptInterface
     public void onAnswerResult_LiveVideo(String data){
         // TODO: 2019/2/15  对接理科课件回传 答案
+        Log.e("H5CallBakc","========>onAnswerResult_LiveVideo:"+data);
 
     }
 

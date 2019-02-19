@@ -219,12 +219,14 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         wvSubjectWeb.setWebChromeClient(new MyWebChromeClient());
         wvSubjectWeb.setWebViewClient(new MyWebViewClient());
         logger.e("=======> isNewArtsTest:" + isNewArtsTest);
+
+        WebSettings webSetting = wvSubjectWeb.getSettings();
+        webSetting.setBuiltInZoomControls(true);
+        webSetting.setJavaScriptEnabled(true);
+        wvSubjectWeb.addJavascriptInterface(this, "wx_xesapp");
+
         // 文科新课件平台 填空选择题
         if (isNewArtsTest) {
-            WebSettings webSetting = wvSubjectWeb.getSettings();
-            webSetting.setBuiltInZoomControls(true);
-            webSetting.setJavaScriptEnabled(true);
-            wvSubjectWeb.addJavascriptInterface(this, "wx_xesapp");
             logger.e("=======> loadUrl:" + examUrl);
             wvSubjectWeb.loadUrl(examUrl);
         } else {
@@ -284,6 +286,16 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         EventBus.getDefault().post(new ArtsAnswerResultEvent(data, ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT));
     }
 
+
+    /**
+     * 理科 课件 答题结果回调
+     */
+    @JavascriptInterface
+    public void onAnswerResult_LiveVideo(String data){
+        // TODO: 2019/2/15  对接理科课件回传 答案
+        Log.e("H5CallBakc","========>onAnswerResult_LiveVideo:"+data);
+
+    }
 
     @android.webkit.JavascriptInterface
     private void addJavascriptInterface() {

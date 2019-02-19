@@ -926,6 +926,11 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
 
     }
 
+    /**
+     *
+     */
+    private LiveRoomH5CloseEvent latestAnswerRecord = null;
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRoomH5CloseEvent(final LiveRoomH5CloseEvent event) {
         logger.e("=======>:onRoomH5CloseEvent:" + event.getId() + ":"
@@ -1166,13 +1171,17 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     TeamPkLog.receiveVoicePraise(mLiveBll, data.optString("nonce", ""));
                     break;
                 case XESCODE.TEAM_PK_PARISE_ANWSER_RIGHT:
-                 /*   if(mPraiseBll == null){
-                        mPraiseBll = new TeamPkPraiseBll(mActivity,this);
-                    }
-                    mPraiseBll.onPraise(sourceNick,target,data,type);*/
-                    String strCmd = data.optString("msg");
-                    if("1".equals(strCmd)){
-                        showAnswerAllRightAward(10);
+                    boolean isDouble = data.optInt("isDouble",0) == 1;
+                    if(isDouble){
+                        String strCmd = data.optString("msg");
+                        if("1".equals(strCmd)){
+                            showAnswerAllRightAward(10);
+                        }
+                    }else{
+                        if(mPraiseBll == null){
+                            mPraiseBll = new TeamPkPraiseBll(mActivity,this);
+                        }
+                        mPraiseBll.onPraise(sourceNick,target,data,type);
                     }
                     break;
                 case XESCODE.TEAM_PK_TEACHER_PRAISE:
