@@ -241,6 +241,9 @@ public class LivePlayBackHttpResponseParser extends HttpResponseParser {
     public void parseLiveGetInfoScience(JSONObject data, LiveGetInfo getInfo) {
         int isPrimarySchool = data.optInt("isPrimarySchool", 0);
         getInfo.setIsPrimarySchool(isPrimarySchool);
+        getInfo.setEducationStage(data.optString("educationStage", "1"));
+        getInfo.setGetCourseWareHtmlNew(data.optString("getCourseWareHtml"));
+        getInfo.setGetCourseWareHtmlZhongXueUrl(data.optString("getCourseWareHtmlZhongXueUrl"));
     }
 
     /**
