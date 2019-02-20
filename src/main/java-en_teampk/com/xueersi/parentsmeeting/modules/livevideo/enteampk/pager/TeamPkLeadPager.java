@@ -227,10 +227,16 @@ public class TeamPkLeadPager extends LiveBasePager {
         final TextView tv_livevideo_en_teampk_rank_start_close = rlTeampkLeadBottom.findViewById(R.id.tv_livevideo_en_teampk_rank_start_close);
         final AtomicInteger integer = new AtomicInteger(closeDelay / 1000);
         int countDelay = 1000;
-        if (type == TEAM_TYPE_2 && win > 0) {
+        if (type == TEAM_TYPE_2 && win >= 0) {
             countDelay += WIN_VIEW_SHOW;
             final ViewGroup group = (ViewGroup) mView;
             final View view = LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_en_team_lead_win, group, false);
+            ImageView ivResult = view.findViewById(R.id.iv_livevideo_enpk_jieguo_pic_nor);
+            if (win == 0) {
+                ivResult.setImageResource(R.drawable.livevideo_enpk_jieguo_pingshou_pic_nor);
+            } else {
+                ivResult.setImageResource(R.drawable.livevideo_enpk_jieguo_shengli_pic_nor);
+            }
             group.addView(view);
             handler.postDelayed(new Runnable() {
                 @Override
