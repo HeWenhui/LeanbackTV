@@ -962,15 +962,16 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
             speechResultEntity.fluency = head.getFluency();
             speechResultEntity.accuracy = head.getAccuracy();
             speechResultEntity.headUrl = mLiveGetInfo.getHeadImgPath();
-            ArrayList<SpeechResultMember> speechResultMembers = speechResultEntity.speechResultMembers;
-            for (int i = 0; i < lstHead.size(); i++) {
-                RolePlayerEntity.RolePlayerHead head1 = lstHead.get(i);
-                SpeechResultMember speechResultMember = new SpeechResultMember();
-                speechResultMember.name = head1.getNickName();
-                speechResultMember.score = head1.getSpeechScore();
-                speechResultMember.headUrl = head1.getHeadImg();
-                speechResultMembers.add(speechResultMember);
-            }
+            //人机暂时不显示别人分数
+//            ArrayList<SpeechResultMember> speechResultMembers = speechResultEntity.speechResultMembers;
+//            for (int i = 0; i < lstHead.size(); i++) {
+//                RolePlayerEntity.RolePlayerHead head1 = lstHead.get(i);
+//                SpeechResultMember speechResultMember = new SpeechResultMember();
+//                speechResultMember.name = head1.getNickName();
+//                speechResultMember.score = head1.getSpeechScore();
+//                speechResultMember.headUrl = head1.getHeadImg();
+//                speechResultMembers.add(speechResultMember);
+//            }
             ViewGroup group = (ViewGroup) mView;
             SpeechResultPager resultPager = new SpeechResultPager(mContext, group, speechResultEntity, mLiveGetInfo);
             group.addView(resultPager.getRootView());
