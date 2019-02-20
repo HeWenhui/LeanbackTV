@@ -13,6 +13,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.text.style.CharacterStyle;
 import android.text.style.ClickableSpan;
@@ -1826,16 +1827,29 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         } else {
             tvNowEvenNum.setText("连对×" + nowEvenNum);
         }
-        if (highestRightNum.equals("0") || highestRightNum.equals("1")) {
+        if (highestRightNum.equals("0") || highestRightNum.equals("1") || !isAlpha(highestRightNum)) {
             tvHighestEvenNum.setText("最高 -");
         } else {
             tvHighestEvenNum.setText("最高×" + highestRightNum);
         }
     }
 
-    private void isAlpha(String str){
+    private boolean isAlpha(String str) {
+        if (TextUtils.isEmpty(str)) {
+            return false;
+        }
+        int len = str.length();
+        for (int i = 0; i < len; i++) {
+            char ch = str.charAt(i);
+            if (ch >= '0' && ch <= '9') {
 
+            } else {
+                return false;
+            }
+        }
+        return true;
     }
+
     @Override
     public CommonAdapter<LiveMessageEntity> getMessageAdapter() {
         return messageAdapter;

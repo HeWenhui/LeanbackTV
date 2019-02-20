@@ -29,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RegMediaPlayerContr
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -746,9 +747,11 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                             });
                     //设置结束时间，判断是否显示XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT点赞消息
                     endTime = System.currentTimeMillis();
-                    isHasReceiveLike = false;
+//                    isHasReceiveLike = false;
+                    isMiddleScienceH5Open = false;
                 } else {
-                    isHasReceiveLike = true;
+                    isHasReceiveLike = false;
+                    isMiddleScienceH5Open = true;
                 }
                 break;
             }
@@ -756,7 +759,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 //点赞
                 logger.i("收到点赞消息");
                 long nowTime = System.currentTimeMillis();
-                if (!isHasReceiveLike && (nowTime - endTime < TIME_SEND_PRIVATE_MSG)) {
+                if (!isHasReceiveLike
+                        && isInLikeTime()) {
                     String likeSender = object.optString("stuName");
                     logger.i(likeSender + " 刚刚赞了你");
                     mRoomAction.addMessage("", LiveMessageEntity.EVEN_DRIVE_LIKE, likeSender + " 刚刚赞了你");
@@ -837,12 +841,26 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         });
                 break;
             }
+
             default:
                 break;
         }
         mLogtf.d(msg);
     }
 
+    /**
+     * 是否在点赞时间里面
+     * 现在点赞消息是在  发题至收题后15s.
+     *
+     * @return
+     */
+    private boolean isInLikeTime() {
+        long nowTime = System.currentTimeMillis();
+        return (isMiddleScienceH5Open || (nowTime - endTime < TIME_SEND_PRIVATE_MSG));
+    }
+
+    //当前互动题是否处于打开状态
+    private boolean isMiddleScienceH5Open = false;
     /**
      * 中学激励系统，15s内来判断是否显示点赞消息
      */
@@ -1218,5 +1236,32 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         super.onDestory();
         mRoomAction.onDestroy();
         EventBus.getDefault().unregister(this);
+    }
+
+    /**
+     * 中学激励系统,用户关闭页面后，更新连天区的信息
+     *
+     * @param evenDriveEvent
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getEvenDrive(EvenDriveEvent evenDriveEvent) {
+        if (evenDriveEvent.getStatus() == EvenDriveEvent.CLOSE_H5) {
+            //老师收题之后，更新聊天区连对榜
+            getHttpManager().getEvenLikeData(
+//                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
+                    mGetInfo.getGetEvenPairListUrl(),
+                    mGetInfo.getStudentLiveInfo().getClassId(),
+                    mGetInfo.getId(),
+                    mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                            EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
+                            mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
+                        }
+                    });
+            //设置结束时间，判断是否显示XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT点赞消息
+//            endTime = System.currentTimeMillis();
+//            isHasReceiveLike = false;
+        }
     }
 }

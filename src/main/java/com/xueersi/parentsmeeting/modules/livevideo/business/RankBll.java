@@ -748,32 +748,54 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
 //                    boolean isOff = data.optBoolean("open");
 //                    if (!isOff) {
                     logger.i("设置结束时间");
+                    isMiddleScienceH5Open = false;
+                    scienceEvenDrivePager.setH5Open(isMiddleScienceH5Open);
                     scienceEvenDrivePager.setEndTime(System.currentTimeMillis());
 //                    }
                 }
                 break;
             }
             case XESCODE.EXAM_STOP: {
+
                 if (scienceEvenDrivePager != null) {
+                    isMiddleScienceH5Open = false;
+                    scienceEvenDrivePager.setH5Open(isMiddleScienceH5Open);
                     scienceEvenDrivePager.setEndTime(System.currentTimeMillis());
                 }
                 break;
             }
             case XESCODE.MULTIPLE_H5_COURSEWARE: {
-                if (scienceEvenDrivePager != null) {
-                    boolean isOff = data.optBoolean("open");
-                    if (!isOff) {
+                boolean isOff = data.optBoolean("open");
+                if (!isOff) {
+                    if (scienceEvenDrivePager != null) {
                         logger.i("设置结束时间");
                         scienceEvenDrivePager.setEndTime(System.currentTimeMillis());
+                        isMiddleScienceH5Open = false;
+                        scienceEvenDrivePager.setH5Open(isMiddleScienceH5Open);
                     }
+                } else {
+                    isMiddleScienceH5Open = true;
                 }
                 break;
             }
+//            case XESCODE.ENGLISH_H5_COURSEWARE: {
+//                isMiddleScienceH5Open = true;
+//                break;
+//            }
+//            case XESCODE.ARTS_STOP_QUESTION:
+//            case XESCODE.ARTS_H5_COURSEWARE: {
+//
+//                break;
+//            }
             default:
                 break;
         }
     }
 
+    //现在点赞消息是在  发题至收题后15s.
+    private boolean isMiddleScienceH5Open = false;
+
+    //    private boolean isNot;
     @Override
     public int[] getNoticeFilter() {
         //学生点赞
