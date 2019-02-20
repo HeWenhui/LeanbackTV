@@ -264,19 +264,6 @@ public class TeamPkResultPager extends TeamPkBasePager {
             rlResultRootView.setVisibility(View.VISIBLE);
             rlLottieRootView.setVisibility(View.GONE);
 
-            if (data.getContributionStarList() != null) {
-                mView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext,
-                                StudyReportAction.class);
-                        if (studyReportAction != null && data.isMe()) {
-                            studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT, mView,
-                                    false, false);
-                        }
-                    }
-                }, 200);
-            }
             //进度条动画
             try {
                 mView.postDelayed(new Runnable() {

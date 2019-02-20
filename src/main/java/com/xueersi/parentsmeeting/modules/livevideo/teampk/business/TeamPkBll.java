@@ -1091,9 +1091,8 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
             XESCODE.TEAM_PK_STAR_RANK_LIST,
             XESCODE.TEAM_PK_PK_END,
             XESCODE.TEACHER_PRAISE,
-           // XESCODE.TEAM_PK_PARISE_ANWSER_RIGHT
+            XESCODE.TEAM_PK_PARISE_ANWSER_RIGHT,
             XESCODE.TEAM_PK_TEACHER_PRAISE
-           // , 130
     };
 
 
@@ -1149,8 +1148,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     break;
 
                 case XESCODE.TEAM_PK_EXIT_PK_RESULT:
-
-                    closeCurrentPkResult();
+                    //closeCurrentPkResult();
                     break;
                 case XESCODE.TEAM_PK_BLACK_RANK_LIST:
                     //closeStarts();
@@ -1192,7 +1190,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     }
                     mPraiseBll.onPraise(sourceNick,target,data,type);
                     break;
-              /*  case 130:
+             /*   case 130:
                     String cmd = data.optString("msg");
                       if("1".equals(cmd)){
                         closeCurrentPager();
@@ -1200,7 +1198,9 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     }else if("2".equals(cmd)){
                         closeCurrentPager();
                         getProgressStudent();
-                    }
+                    }else if("3".equals(cmd)){
+                          showCurrentPkResult();
+                      }
                     break;*/
                 default:
                     break;
@@ -1530,7 +1530,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     public List<String> getPraiseText() {
         if (prasieTextList == null || prasieTextList.size() == 0) {
             prasieTextList = new ArrayList<String>();
-            //("\uD83D\uDE01"+"\uD83D\uDE04"+"\u2764"+"\uD83D\uDC4D");
             //大拇指1
             prasieTextList.add("\uD83D\uDC4D\uD83D\uDC4D\uD83D\uDC4D\uD83D\uDC4D\uD83D\uDC4D");
             //大拇指2

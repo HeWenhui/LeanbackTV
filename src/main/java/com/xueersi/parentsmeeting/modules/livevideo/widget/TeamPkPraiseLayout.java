@@ -12,7 +12,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -288,7 +287,6 @@ public class TeamPkPraiseLayout extends FrameLayout {
         loopAnimationView.setVisibility(GONE);
         loopAnimationView.cancelAnimation();
         loopAnimationView.destroyDrawingCache();
-        Log.e("TeamPkPraiseLayout", "======> playClickAnim:" + clickAnimView.getComposition());
         if (clickAnimView.getComposition() == null) {
             String lottieResPath = ANIM_RES_DIR + "click/images";
             String lottieJsonPath = ANIM_RES_DIR + "click/data.json";

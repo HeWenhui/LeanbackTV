@@ -160,7 +160,7 @@ public interface XESCODE {
     /** 教师端结束pk 统计**/
     int TEAM_PK_PK_END = 303;
     /** 战队PK答对超难题 **/
-    int TEAM_PK_PARISE_ANWSER_RIGHT = -304;
+    int TEAM_PK_PARISE_ANWSER_RIGHT = 304;
     /** 战队pk老师徽章表扬**/
     int TEAM_PK_TEACHER_PRAISE = 305;
 

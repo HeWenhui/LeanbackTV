@@ -20,9 +20,12 @@ import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkContribStarLottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportAction;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkPraiseLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountDowTextView;
@@ -191,13 +194,31 @@ public class TeamPkContributionPager extends TeamPkBasePager {
             }
         });
         animationView.playAnimation();
-        animationView.addAnimatorListener(new AnimatorListenerAdapter() {
+        animationView.postDelayed(new Runnable() {
             @Override
-            public void onAnimationEnd(Animator animation) {
-              //  super.onAnimationEnd(animation);
+            public void run() {
                 startAutoClose();
+                recordHighLight();
             }
-        });
+        },2000);
+    }
+
+
+    /**记录学生 高光时刻**/
+    private void recordHighLight() {
+        if (mData.getContributionStarList() != null) {
+            mView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    StudyReportAction studyReportAction = ProxUtil.getProxUtil().get(mContext,
+                            StudyReportAction.class);
+                    if (studyReportAction != null && mData.isMe()) {
+                        studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT, mView,
+                                false, false);
+                    }
+                }
+            }, 200);
+        }
     }
 
     /**

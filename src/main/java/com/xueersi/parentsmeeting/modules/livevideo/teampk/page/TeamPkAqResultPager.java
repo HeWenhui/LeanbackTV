@@ -221,12 +221,12 @@ public class TeamPkAqResultPager extends TeamPkBasePager {
         tvAnswerRightEnergy.startAnimation(animationSet);
         tvAnswerRightEnergy.setText("+" + mEnergy);
         tvAnswerRightEnergy.startAnimation(animationSet);
-        tvAnswerRightEnergy.postDelayed(new Runnable() {
+       /* tvAnswerRightEnergy.postDelayed(new Runnable() {
             @Override
             public void run() {
                 startAnswerRightAwardAnim();
             }
-        }, animationSet.getDuration());
+        }, animationSet.getDuration());*/
     }
 
 
@@ -265,7 +265,7 @@ public class TeamPkAqResultPager extends TeamPkBasePager {
         rlQuestionRootView.startAnimation(scaleAnimation);
 
          //能量不在飞
-     /*   scaleAnimation.setAnimationListener(new Animation.AnimationListener() {
+        scaleAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
             }
@@ -282,7 +282,7 @@ public class TeamPkAqResultPager extends TeamPkBasePager {
             @Override
             public void onAnimationRepeat(Animation animation) {
             }
-        });*/
+        });
 
     }
 
