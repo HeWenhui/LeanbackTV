@@ -76,6 +76,8 @@ public class LiveVideoConfig {
     public final static int LIVE_TYPE_LIVE = 3;
     /** 视频类型为站立直播体验课 */
     public static final int LIVE_TYPE_STAND_EXPERIENCE = 10000;
+
+    public static final String EVEN_DRIVE_PAIR_INFO = "https://live.xueersi.com/science/Stimulation/getEvenPairInfo";
     /**
      * 语音评测地址
      */
@@ -412,13 +414,14 @@ public class LiveVideoConfig {
     /**
      * 体验课类型
      */
-    public static interface ExperiencLiveType{
-        /**半身直播体验课*/
+    public static interface ExperiencLiveType {
+        /** 半身直播体验课 */
         int HALF_BODY = 1001;
-        /**普通直播体验课*/
+        /** 普通直播体验课 */
         int NORMAL = 1000;
     }
-    /**半身直播体验课 试题 h5 地址**/
+
+    /** 半身直播体验课 试题 h5 地址 **/
     public static final String URL_HALFBODY_EXPERIENCE_LIVE_H5 = "https://laoshi.xueersi.com/science/AutoLive/halfBodyH5";
 
 }

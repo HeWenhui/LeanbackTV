@@ -414,6 +414,24 @@ public class LiveHttpManager extends BaseHttpBusiness {
     }
 
     /**
+     * 中学激励系统接口，用来更新聊天界面的最高连对和当前连对
+     *
+     * @param classId
+     * @param liveId
+     * @param teamId
+     * @param stuId
+     * @param httpCallBack
+     */
+    public void getEvenPairInfo(String classId, String liveId, String teamId, String stuId, HttpCallBack httpCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("teamId", teamId);
+        params.addBodyParam("stuId", stuId);
+        sendPost(LiveVideoConfig.EVEN_DRIVE_PAIR_INFO, params, httpCallBack);
+    }
+
+    /**
      * 提交测试题
      *
      * @param type            视频类型

@@ -189,6 +189,7 @@ public class MiddleScienceEvenDrivePager extends BasePager {
                 itemMiddleScienceEvenPager.setiNotice(iNotice);
                 itemMiddleScienceEvenPager.setMyStuId(evenDriveEntity.getMyEntity().getStuId());
                 itemMiddleScienceEvenPager.setEndTime(endTime);
+                itemMiddleScienceEvenPager.setH5Open(isH5Open);
                 itemMiddleScienceEvenPager.setiClickSelf(new ItemMiddleSciencePager.IClickSelf() {
                     @Override
                     public void clickSelf() {
@@ -239,6 +240,7 @@ public class MiddleScienceEvenDrivePager extends BasePager {
                     ItemMiddleScienceRankPager itemMiddleScienceRankPager = new ItemMiddleScienceRankPager(mContext);
                     itemMiddleScienceRankPager.setiNotice(iNotice);
                     itemMiddleScienceRankPager.setEndTime(endTime);
+                    itemMiddleScienceRankPager.setH5Open(isH5Open);
                     itemMiddleScienceRankPager.setMyStuId(allRankEntity.getMyRankEntityMyTeam().getMyId());
                     itemMiddleScienceRankPager.setiClickSelf(new ItemMiddleSciencePager.IClickSelf() {
                         @Override
@@ -298,6 +300,19 @@ public class MiddleScienceEvenDrivePager extends BasePager {
         if (evenDriveEntityCommonAdapter != null) {
             evenDriveEntityCommonAdapter.notifyDataSetChanged();
         }
+    }
+
+    /**
+     * H5课件是否处于打开状态
+     */
+    private boolean isH5Open = false;
+
+    public boolean isH5Open() {
+        return isH5Open;
+    }
+
+    public void setH5Open(boolean h5Open) {
+        isH5Open = h5Open;
     }
 
     private ItemMiddleSciencePager.INotice iNotice;

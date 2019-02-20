@@ -62,6 +62,18 @@ public abstract class ItemMiddleSciencePager<T> implements AdapterItemInterface<
     }
 
     /**
+     * H5课件是否处于打开状态
+     */
+    private boolean isH5Open = false;
+
+    public boolean isH5Open() {
+        return isH5Open;
+    }
+
+    public void setH5Open(boolean h5Open) {
+        isH5Open = h5Open;
+    }
+    /**
      * 点赞发送消息
      * wiki文档 ：http://wiki.xesv5.com/pages/viewpage.action?pageId=16827379
      */
