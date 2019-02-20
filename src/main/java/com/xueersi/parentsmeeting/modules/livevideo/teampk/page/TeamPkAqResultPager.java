@@ -264,7 +264,8 @@ public class TeamPkAqResultPager extends TeamPkBasePager {
         rlQuestionRootView.setVisibility(View.VISIBLE);
         rlQuestionRootView.startAnimation(scaleAnimation);
 
-        scaleAnimation.setAnimationListener(new Animation.AnimationListener() {
+         //能量不在飞
+     /*   scaleAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
             }
@@ -278,11 +279,10 @@ public class TeamPkAqResultPager extends TeamPkBasePager {
                     }
                 }, 500);
             }
-
             @Override
             public void onAnimationRepeat(Animation animation) {
             }
-        });
+        });*/
 
     }
 

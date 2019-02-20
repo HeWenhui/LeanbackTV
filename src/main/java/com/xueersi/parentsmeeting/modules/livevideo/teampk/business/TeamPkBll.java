@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
-import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -29,6 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ScienceAnswerResult;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentCoinAndTotalEnergyEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentPkResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
@@ -37,6 +37,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAdversaryEntity
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkStar;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkStuProgress;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.NativeVoteRusltulCloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
@@ -1173,10 +1174,11 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                 case XESCODE.TEAM_PK_PARISE_ANWSER_RIGHT:
                     boolean isDouble = data.optInt("isDouble",0) == 1;
                     if(isDouble){
-                        String strCmd = data.optString("msg");
-                        if("1".equals(strCmd)){
-                            showAnswerAllRightAward(10);
-                        }
+                       if(answerResult != null){
+                           showAnswerAllRightAward(answerResult.getEnergy());
+                       }
+                       // 刷新右侧状态栏
+                        updatePkStateLayout(false);
                     }else{
                         if(mPraiseBll == null){
                             mPraiseBll = new TeamPkPraiseBll(mActivity,this);
@@ -1547,5 +1549,13 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
             prasieTextList.add("超爱" + mTeamName + "的大家~");
         }
         return prasieTextList;
+    }
+
+    /**用户最近一次答题 答题结果**/
+    ScienceAnswerResult answerResult;
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onScineceAnswerResutlEvent(AnswerResultEvent event){
+        // TODO: 2019/2/20  解析理科答题结果
+        Log.e("H5CallBakc","========>onAnswerResult_LiveVideo:"+event.toString());
     }
 }

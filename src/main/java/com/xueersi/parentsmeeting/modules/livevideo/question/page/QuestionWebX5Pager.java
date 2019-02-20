@@ -25,12 +25,12 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
@@ -292,9 +292,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
      */
     @JavascriptInterface
     public void onAnswerResult_LiveVideo(String data){
-        // TODO: 2019/2/15  对接理科课件回传 答案
-        Log.e("H5CallBakc","========>onAnswerResult_LiveVideo:"+data);
-
+        EventBus.getDefault().post(new AnswerResultEvent(data));
     }
 
     @android.webkit.JavascriptInterface
