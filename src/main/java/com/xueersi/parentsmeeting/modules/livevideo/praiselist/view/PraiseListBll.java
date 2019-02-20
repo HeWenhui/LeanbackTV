@@ -116,9 +116,6 @@ public class PraiseListBll implements PraiseListView {
         this.activity = activity;
         LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
         setVideoLayout(liveVideoPoint);
-        if (mPraiseListPager != null) {
-            mPraiseListPager.alignLayout();
-        }
     }
 
     @Override
@@ -370,6 +367,9 @@ public class PraiseListBll implements PraiseListView {
                     params.height = displayHeight;
                     params.width = videoWidth;
                     rlPraiseListContent.setLayoutParams(params);
+                }
+                if (mPraiseListPager != null) {
+                    mPraiseListPager.alignLayout();
                 }
             }
         });

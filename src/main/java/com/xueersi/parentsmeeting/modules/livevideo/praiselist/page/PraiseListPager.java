@@ -33,6 +33,7 @@ import android.widget.TextView;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
+import com.bumptech.glide.Glide;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -359,27 +360,27 @@ public class PraiseListPager extends LiveBasePager {
                     likeContentParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 65) - differenceHeight);
                     likeContentParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 45) - differenceHeight);
                 }
-                likeContentParams.width = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 415));
+                likeContentParams.width = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 435));
                 likeContentGroup.setLayoutParams(likeContentParams);
 
                 //金榜题名的位置
                 RelativeLayout.LayoutParams titleparams = (RelativeLayout.LayoutParams) tvCongratulations.getLayoutParams();
-                titleparams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 38));
+                titleparams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 39));
                 tvCongratulations.setLayoutParams(titleparams);
 
                 //战队列表的位置
                 RelativeLayout.LayoutParams teamListParams = (RelativeLayout.LayoutParams) rvTeamList.getLayoutParams();
-                teamListParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 56));
-                teamListParams.leftMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 40));
-                teamListParams.rightMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 35));
+                teamListParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 57));
+                teamListParams.leftMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 42));
+                teamListParams.rightMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 32));
                 teamListParams.height = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 58));
                 rvTeamList.setLayoutParams(teamListParams);
 
                 //学生列表的位置
                 RelativeLayout.LayoutParams studentListParams = (RelativeLayout.LayoutParams) rvStudentlist.getLayoutParams();
-                studentListParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 115));
+                studentListParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 116));
                 studentListParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 45));
-                studentListParams.leftMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 50));
+                studentListParams.leftMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 47));
                 studentListParams.rightMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 40));
                 rvStudentlist.setLayoutParams(studentListParams);
 
@@ -404,17 +405,17 @@ public class PraiseListPager extends LiveBasePager {
 
                 //循环星星动画的位置
                 RelativeLayout.LayoutParams lottieStarParams = (RelativeLayout.LayoutParams) lottieAnimationLoopStarView.getLayoutParams();
-                lottieStarParams.rightMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 30));
+                lottieStarParams.rightMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 20));
                 lottieStarParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 30));
-                lottieStarParams.leftMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, -30));
+                lottieStarParams.leftMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, -20));
                 lottieStarParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, -30));
                 lottieAnimationLoopStarView.setLayoutParams(lottieStarParams);
 
                 //二倍卡动画的位置
                 RelativeLayout.LayoutParams lottieDoubleCardParams = (RelativeLayout.LayoutParams) lottieAnimationDoubleCardView.getLayoutParams();
-                lottieDoubleCardParams.rightMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 30));
+                lottieDoubleCardParams.rightMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 20));
                 lottieDoubleCardParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 20));
-                lottieDoubleCardParams.leftMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, -30));
+                lottieDoubleCardParams.leftMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, -20));
                 lottieDoubleCardParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, -20));
                 lottieAnimationDoubleCardView.setLayoutParams(lottieDoubleCardParams);
 
@@ -423,18 +424,21 @@ public class PraiseListPager extends LiveBasePager {
                 teacherTipsParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 225));
                 teacherTipsParams.width = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 287));
                 teacherTipsView.setLayoutParams(teacherTipsParams);
+
+                if (teamAdapter != null) {
+                    teamAdapter.updateData(mTeamList);
+                }
             }
         });
-
     }
 
     @Override
     public void initData() {
-        test();
+//        test();
         alignLayout();
         startBackgtoundAnimation();
 
-        while (mTeamList.size() > 6) {
+        while (mTeamList.size() > MAX_TEAM_NUMBER) {
             mTeamList.remove(mTeamList.size() - 1);
         }
 
@@ -1051,9 +1055,9 @@ public class PraiseListPager extends LiveBasePager {
         lottieClickLikeGroup.addView(lottieAnimationClickLikeView);
         lottieAnimationClickLikeView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         RelativeLayout.LayoutParams clickLikeParams = (RelativeLayout.LayoutParams) lottieAnimationClickLikeView.getLayoutParams();
-        clickLikeParams.rightMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 30));
+        clickLikeParams.rightMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 20));
         clickLikeParams.bottomMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, 20));
-        clickLikeParams.leftMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, -30));
+        clickLikeParams.leftMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, -20));
         clickLikeParams.topMargin = caculateVerticalMargin(SizeUtils.Dp2Px(mContext, -20));
         lottieAnimationClickLikeView.setLayoutParams(clickLikeParams);
         lottieAnimationClickLikeView.addAnimatorListener(new Animator.AnimatorListener() {
