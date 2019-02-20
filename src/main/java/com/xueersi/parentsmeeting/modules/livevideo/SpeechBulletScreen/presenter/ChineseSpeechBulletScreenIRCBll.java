@@ -40,7 +40,7 @@ public class ChineseSpeechBulletScreenIRCBll extends LiveBaseBll implements Topi
     /** 主讲老师前缀 */
     public static final String TEACHER_PREFIX = "t_";
     /** 辅导老师前缀 */
-    public static String COUNTTEACHER_PREFIX = "f_";
+    public static final String COUNTTEACHER_PREFIX = "f_";
 
     public ChineseSpeechBulletScreenIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -167,7 +167,7 @@ public class ChineseSpeechBulletScreenIRCBll extends LiveBaseBll implements Topi
 
     @Override
     public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target, String message) {
-        JSONObject jsonObject = null;
+        JSONObject jsonObject;
         try {
             jsonObject = new JSONObject(message);
             int type = jsonObject.getInt("type");
