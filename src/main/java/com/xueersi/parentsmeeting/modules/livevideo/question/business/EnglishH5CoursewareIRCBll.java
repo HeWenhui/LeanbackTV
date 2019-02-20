@@ -9,6 +9,7 @@ import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.common.speech.SpeechUtils;
@@ -39,10 +40,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 /**
  * Created by lyqai on 2018/7/5.
@@ -95,6 +103,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                     LiveQuestionSwitchImpl(), englishH5CoursewareBll));
         }
         LiveBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new LiveBaseEnglishH5CoursewareCreat();
+        liveBaseEnglishH5CoursewareCreat.setLiveGetInfo(getInfo);
         int isArts = (int) mLiveBll.getBusinessShareParam("isArts");
         liveBaseEnglishH5CoursewareCreat.setArts(isArts);
         if (isArts == 0) {
@@ -548,7 +557,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         };
     }
 
-    class EnglishH5CoursewareImpl implements EnglishH5CoursewareHttp {
+    class EnglishH5CoursewareImpl implements EnglishH5CoursewareSecHttp {
 
         @Override
         public void getStuGoldCount() {
@@ -778,6 +787,46 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                     }
                                 });
             }
+        }
+
+        private HttpRequestParams creatHttpRequestParams(String params) {
+            HttpRequestParams httpRequestParams = new HttpRequestParams();
+            try {
+                JSONObject jsonObject = new JSONObject(params);
+                Iterator<String> keys = jsonObject.keys();
+                while (keys.hasNext()) {
+                    String key = keys.next();
+                    String value = jsonObject.getString(key);
+                    httpRequestParams.addBodyParam(key, value);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return httpRequestParams;
+        }
+
+        @Override
+        public void getCourseWareTests(String url, String params, final AbstractBusinessDataCallBack callBack) {
+            HttpRequestParams httpRequestParams = creatHttpRequestParams(params);
+            getHttpManager().sendPostNoBusiness(url, httpRequestParams, new Callback() {
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    String r = response.body().string();
+                    logger.d("getCourseWareTests:onResponse=" + r);
+                    callBack.onDataSucess(r);
+                }
+
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    logger.e("onFailure", e);
+                    if (e instanceof UnknownHostException) {
+                        callBack.onDataFail(0, "UnknownHostException");
+                    } else {
+                        callBack.onDataFail(0, Log.getStackTraceString(e));
+                    }
+                }
+            });
         }
     }
 

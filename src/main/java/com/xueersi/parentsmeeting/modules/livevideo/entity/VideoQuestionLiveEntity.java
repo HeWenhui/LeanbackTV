@@ -77,6 +77,8 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
 
     /**语音评测独有。答案**/
     public String answer;
+    /** 年级阶段的标识 */
+    private String educationstage = "";
 
     public VideoQuestionLiveEntity() {
     }
@@ -228,4 +230,12 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
         return  englishH5Entity.getLiveType();
     }
 
+
+    public String getEducationstage() {
+        return educationstage;
+    }
+
+    public void setEducationstage(String educationstage) {
+        this.educationstage = educationstage;
+    }
 }

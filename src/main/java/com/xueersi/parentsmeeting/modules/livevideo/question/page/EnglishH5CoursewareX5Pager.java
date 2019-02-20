@@ -1,12 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 
 import android.content.Context;
-import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -16,7 +10,6 @@ import android.webkit.JavascriptInterface;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.MimeTypeMap;
@@ -24,11 +17,9 @@ import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.UserBll;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
@@ -41,6 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseWebviewX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareSecHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 
 import org.greenrobot.eventbus.EventBus;
@@ -50,13 +42,14 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.UUID;
 
+import ren.yale.android.cachewebviewlib.CacheWebView;
+import ren.yale.android.cachewebviewlib.WebViewCache;
 import ren.yale.android.cachewebviewlib.utils.MD5Utils;
 
 /**
@@ -67,13 +60,15 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private String eventId = LiveVideoConfig.LIVE_ENGLISH_COURSEWARE;
     private String url;
     private String reloadurl;
+    /** 刷新次数，防止预加载文件有问题 */
+    private int refreshTimes = 0;
     private String nonce;
     private boolean isFinish = false;
     private String jsSubmitData = "javascript:submitData()";
     private String jsforceSubmit = "javascript:forceSubmit()";
-    /**
-     * 文科新课件平台 强制提交js
-     */
+    /** 理科初高中新课件平台 强制提交js */
+    private String jsClientSubmit = "javascript:__CLIENT_SUBMIT__()";
+    /** 文科新课件平台 强制提交js */
     private String jsArtsForceSubmit = "javascript:examSubmitAll()";
     private EnglishH5CoursewareBll.OnH5ResultClose onClose;
     private String id;
@@ -82,9 +77,12 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private File cacheFile;
     private String liveId;
     private EnglishH5CoursewareBll mEnglishH5CoursewareBll;
+    // TODO 理科小学，提交换到原生
+    private EnglishH5CoursewareSecHttp englishH5CoursewareSecHttp;
     private String isShowRanks;
     private RelativeLayout rlLivevideoSubjectWeb;
     private int isArts;
+    private String educationstage = "";
     private int mGoldNum;
     private int mEnergyNum;
     private final File mMorecacheout;
@@ -107,10 +105,8 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         mEnglishH5CoursewareBll = englishH5CoursewareBll;
     }
 
-    public EnglishH5CoursewareX5Pager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, boolean
-            isPlayBack, String liveId, String id, EnglishH5Entity englishH5Entity,
-                                      final String courseware_type, String nonce, EnglishH5CoursewareBll
-                                              .OnH5ResultClose onClose,
+    public EnglishH5CoursewareX5Pager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, boolean isPlayBack, String liveId, String id, EnglishH5Entity englishH5Entity,
+                                      final String courseware_type, String nonce, EnglishH5CoursewareBll.OnH5ResultClose onClose,
                                       String isShowRanks, int isArts, boolean allowTeamPk) {
         super(context);
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
@@ -128,6 +124,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         this.isNewArtsCourseware = englishH5Entity.isArtsNewH5Courseware();
         LiveVideoConfig.englishH5Entity = englishH5Entity;
         this.detailInfo = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
+        if (isArts == 0) {
+            this.educationstage = detailInfo.getEducationstage();
+        }
         initWebView();
         setErrorTip("H5课件加载失败，请重试");
         setLoadTip("H5课件正在加载，请稍候");
@@ -198,7 +197,12 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             commit = jsArtsForceSubmit;
             Log.e("Duncan", "js:");
         } else {
-            String command = englishH5Entity.getNewEnglishH5() ? jsforceSubmit : jsSubmitData;
+            String command;
+            if (isArts == 0 && (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage))) {
+                command = jsClientSubmit;
+            } else {
+                command = englishH5Entity.getNewEnglishH5() ? jsforceSubmit : jsSubmitData;
+            }
             commit = command;
             Log.e("Duncan", "command:" + command);
             wvSubjectWeb.loadUrl(command);
@@ -347,6 +351,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             wvSubjectWeb.setWebViewClient(new MyWebViewClient() {
                 @Override
                 public WebResourceResponse shouldInterceptRequest(WebView view, String s) {
+                    if (refreshTimes % 2 != 0) {
+                        return super.shouldInterceptRequest(view, s);
+                    }
                     File file = null;
                     int index = s.indexOf("courseware_pages");
                     if (index != -1) {
@@ -446,11 +453,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        String livebackurl = isArts == 2 ? "https://live.chs.xueersi" +
-                                ".com/LiveExam/getCourseWareTestHtml" : "https://live.xueersi" +
-                                ".com/science/LiveExam/getCourseWareTestHtml";
-                        String realurl = TextUtils.isEmpty(AppConfig.LIVEPLAYBACKINFOS) ? livebackurl : AppConfig
-                                .LIVEPLAYBACKINFOS;
+                        String realurl = englishH5Entity.getDynamicurl();
                         mLoadUrls = realurl + "?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId +
                                 "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId +
                                 "&packageSource=" + packageSource + "&packageAttr=" + packageAttr +
@@ -469,9 +472,11 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     String stuId = "";
                     String classId = "";
                     String classTestId = "";
+                    String string = null;
                     try {
-                        JSONObject jsonObject = new JSONObject(mShareDataManager.getString(LiveVideoConfig
-                                .newEnglishH5, "{}", ShareDataManager.SHAREDATA_USER));
+                        string = mShareDataManager.getString(LiveVideoConfig
+                                .newEnglishH5, "{}", ShareDataManager.SHAREDATA_USER);
+                        JSONObject jsonObject = new JSONObject(string);
                         packageId = jsonObject.optString("packageId");
                         packageSource = jsonObject.optString("packageSource");
                         packageAttr = jsonObject.optString("packageAttr");
@@ -483,16 +488,25 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                         classTestId = jsonObject.optString("classTestId");
                     } catch (JSONException e) {
                         e.printStackTrace();
+                        CrashReport.postCatchedException(e);
+                        mLogtf.e("initData:string=" + string, e);
+                    }
+                    if (StringUtils.isEmpty(packageId) || StringUtils.isEmpty(stuCouId)) {
+                        mLogtf.d("initData:string=" + string);
+                    }
+                    String defaulturl;
+                    boolean useMine = false;
+                    if (isArts == 0) {
+                        useMine = true;
+                        defaulturl = englishH5Entity.getDynamicurl();
+                    } else {
+                        defaulturl = "https://live.chs.xueersi.com/LiveExam/getCourseWareTestHtml";
                     }
                     String dynamicurl;
-                    if (isArts == 2) {
-                        String defaulturl = "https://live.chs.xueersi.com/LiveExam/getCourseWareTestHtml";
-                        dynamicurl = TextUtils.isEmpty(LiveVideoConfig.LIVEMULH5URLCHS) ? defaulturl :
-                                LiveVideoConfig.LIVEMULH5URLCHS;
+                    if (useMine) {
+                        dynamicurl = defaulturl;
                     } else {
-                        String defaulturl = "https://live.xueersi.com/science/LiveExam/getCourseWareTestHtml";
-                        dynamicurl = TextUtils.isEmpty(LiveVideoConfig.LIVEMULH5URL) ? defaulturl : LiveVideoConfig
-                                .LIVEMULH5URL;
+                        dynamicurl = TextUtils.isEmpty(LiveVideoConfig.LIVEMULH5URL) ? defaulturl : LiveVideoConfig.LIVEMULH5URL;
                     }
                     mLoadUrls = dynamicurl + "?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId +
                             "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId +
@@ -556,6 +570,23 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
 //                newWebView();
                 logger.e("======> reloadUrlLives:" + mLoadUrls);
                 logger.e("======> reloadUrlLive:" + reloadurl);
+                refreshTimes++;
+                if (refreshTimes % 2 == 0) {
+                    if (wvSubjectWeb instanceof CacheWebView) {
+                        CacheWebView cacheWebView = (CacheWebView) wvSubjectWeb;
+                        cacheWebView.setCacheStrategy(WebViewCache.CacheStrategy.NORMAL);
+                        logger.d("refreshonClick:NORMAL");
+                    }
+                } else {
+                    if (wvSubjectWeb instanceof CacheWebView) {
+                        CacheWebView cacheWebView = (CacheWebView) wvSubjectWeb;
+                        cacheWebView.setCacheStrategy(WebViewCache.CacheStrategy.NO_CACHE);
+                        if (refreshTimes % 3 == 0) {
+                            cacheWebView.clearCache();
+                        }
+                        logger.d("refreshonClick:NO_CACHE");
+                    }
+                }
                 if ((englishH5Entity.getNewEnglishH5() || LiveVideoConfig.isMulLiveBack) && LiveVideoConfig.isPrimary) {
                     loadUrl(mLoadUrls);
                     logger.e("======> reloadUrlLiveds:" + mLoadUrls);
@@ -676,6 +707,10 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         Loger.e(TAG, "======> newArtsH5CourseWare refresh:");
         addJavascriptInterface();
         wvSubjectWeb.addJavascriptInterface(this, "wx_xesapp");
+        // TODO 理科小学
+//        if (isArts == 0) {
+//            wvSubjectWeb.addJavascriptInterface(new ScienceStaticWeb(this, wvSubjectWeb, englishH5CoursewareSecHttp), "xesApp");
+//        }
         WebSettings webSetting = wvSubjectWeb.getSettings();
         webSetting.setBuiltInZoomControls(true);
         wvSubjectWeb.setInitialScale(100);
@@ -696,5 +731,12 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         return englishH5Entity;
     }
 
-
+    @Override
+    public void setEnglishH5CoursewareSecHttp(EnglishH5CoursewareSecHttp englishH5CoursewareSecHttp) {
+        this.englishH5CoursewareSecHttp = englishH5CoursewareSecHttp;
+        // TODO 理科小学
+//        if (isArts == 0) {
+//            wvSubjectWeb.addJavascriptInterface(new ScienceStaticWeb(this, wvSubjectWeb, englishH5CoursewareSecHttp), "xesApp");
+//        }
+    }
 }
