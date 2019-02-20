@@ -9,7 +9,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="23dp"
         android:includeFontPadding="false"
-        android:text="你真棒！继续加油哦~"
+        android:text="@string/livevideo_enpk_notarget"
         android:textColor="#ffffffff"
         android:textSize="11sp" />
 

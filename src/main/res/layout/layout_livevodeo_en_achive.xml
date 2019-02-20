@@ -116,7 +116,7 @@
                 android:layout_below="@id/rl_livevideo_en_achive_content_num"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="17dp"
-                android:text="本场目标待解锁"
+                android:text="@string/livevideo_enpk_notarget"
                 android:textColor="#ff449cee"
                 android:textSize="9sp" />
         </RelativeLayout>
