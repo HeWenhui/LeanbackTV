@@ -1248,9 +1248,9 @@ public class PraiseListPager extends LiveBasePager {
         @Override
         public void convert(ViewHolder holder, PraiseListTeamEntity teamEntity, int position) {
             if (selectedTeamTabs == position) {
-                ImageLoader.with(mContext).load(teamEntity.getPressImg()).into(ivHead);
+                ImageLoader.with(mContext).load(teamEntity.getPressImg()).placeHolder(R.drawable.icon_livevideo_praiselist_team_head_default).into(ivHead);
             } else {
-                ImageLoader.with(mContext).load(teamEntity.getNormalImg()).into(ivHead);
+                ImageLoader.with(mContext).load(teamEntity.getNormalImg()).placeHolder(R.drawable.icon_livevideo_praiselist_team_head_default).into(ivHead);
             }
 
             switch (listType) {
