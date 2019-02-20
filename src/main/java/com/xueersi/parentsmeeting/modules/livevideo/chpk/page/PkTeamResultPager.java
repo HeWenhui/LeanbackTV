@@ -265,7 +265,7 @@ public class PkTeamResultPager extends BasePager {
         finalViewWrapper.setVisibility(View.GONE);
 
         //显示贡献之星
-        if (data.getContributionStarList() != null) {
+        if (data.getContributionStarList() != null && data.getContributionStarList().size()>0) {
             if (mContributions == null) {
                 mContributions = new ArrayList<TeamEnergyAndContributionStarEntity.ContributionStar>();
             }
@@ -278,6 +278,7 @@ public class PkTeamResultPager extends BasePager {
             if (studyReportAction != null && data.isMe()) {
                 studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_PK_RESULT, mView, false, false);
             }
+
         }
         //进度条动画
         try {
@@ -373,11 +374,10 @@ public class PkTeamResultPager extends BasePager {
 
     private void updateProgressBar(final TeamEnergyAndContributionStarEntity data) {
         //显示之前的pk 进度
-        final long myTeamOldEnergy = data.getMyTeamEngerInfo().getTotalEnergy() - data.getMyTeamEngerInfo()
-                .getAddEnergy();
-        long otherTeamOldEnergy = data.getCompetitorEngerInfo().getTotalEnergy() - data.getCompetitorEngerInfo()
-                .getAddEnergy();
+        final long myTeamOldEnergy = data.getMyTeamEngerInfo().getTotalEnergy() - data.getMyTeamEngerInfo().getAddEnergy();
+        long otherTeamOldEnergy = data.getCompetitorEngerInfo().getTotalEnergy() - data.getCompetitorEngerInfo().getAddEnergy();
         logger.e("========>updateProgressBar:" + myTeamOldEnergy + ":" + otherTeamOldEnergy);
+
         float ratio;
         if ((myTeamOldEnergy + otherTeamOldEnergy) > 0) {
             ratio = myTeamOldEnergy / (float) (myTeamOldEnergy + otherTeamOldEnergy);
@@ -389,12 +389,14 @@ public class PkTeamResultPager extends BasePager {
         resultOwnerEnergy.setText(myTeamOldEnergy + "");
         resultOtherEnergy.setText(otherTeamOldEnergy + "");
         logger.e("========>updateProgressBar22222:" + progress);
-        mView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                showNewProgress(data, myTeamOldEnergy);
-            }
-        }, 2000);
+//        mView.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//            }
+//        }, 2000);
+
+        showNewProgress(data, myTeamOldEnergy);
     }
 
     private void showNewProgress(TeamEnergyAndContributionStarEntity data, long myTeamOldEnergy) {
