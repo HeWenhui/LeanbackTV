@@ -214,6 +214,7 @@ public class EnStandAchievePager extends LiveBasePager {
         if (pkEnergy.opTeam > otherTotal) {
             otherTotal = pkEnergy.opTeam;
             tv_livevideo_en_achive_pk_energy_other.setText("" + otherTotal);
+            mLogtf.d("onGetStar:otherTotal=" + otherTotal);
         } else {
             mLogtf.d("onGetStar:opTeam=" + pkEnergy.opTeam + ",otherTotal=" + otherTotal);
         }
@@ -337,6 +338,7 @@ public class EnStandAchievePager extends LiveBasePager {
         if (opTeamTotal > otherTotal) {
             otherTotal = opTeamTotal;
             tv_livevideo_en_achive_pk_energy_other.setText("" + otherTotal);
+            mLogtf.d("updateEnpk:otherTotal=" + otherTotal);
         } else {
             mLogtf.d("updateEnpk:opTeamTotal=" + opTeamTotal + ",otherTotal=" + otherTotal);
         }

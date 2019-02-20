@@ -260,7 +260,7 @@ public class EnAchievePager extends LiveBasePager {
             final int goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
             energyCount = starAndGoldEntity.getPkEnergy().me;
             goldCount = starAndGoldEntity.getGoldCount();
-            logger.d("onGetStar:energyCountAdd=" + energyCountAdd + ",goldCountAdd=" + goldCountAdd);
+            mLogtf.d("onGetStar:energyCountAdd=" + energyCountAdd + ",goldCountAdd=" + goldCountAdd);
             String LOTTIE_RES_ASSETS_ROOTDIR;
             String[] targetFileNames;
             final int type;
