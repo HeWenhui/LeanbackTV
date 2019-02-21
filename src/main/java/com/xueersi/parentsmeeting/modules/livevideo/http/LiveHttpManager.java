@@ -10,7 +10,6 @@ import com.alibaba.fastjson.JSON;
 import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.AppBll;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.CommonRequestCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
@@ -449,24 +448,20 @@ public class LiveHttpManager extends BaseHttpBusiness {
     /**
      * 提交文科新课件平台测试题
      *
-     * @param type            视频类型
-     * @param enstuId         用户加密ID
      * @param testId          测试题ID
      * @param liveId          直播ID
      * @param testAnswer      测试题答案
-     * @param isRight
      * @param requestCallBack
      */
-    public void liveNewArtsSubmitTestAnswer(int type, String enstuId, String srcType, String testId, String liveId, String
-            testAnswer, String userMode, boolean isVoice,
-                                            boolean isRight, HttpCallBack requestCallBack) {
+    public void liveNewArtsSubmitTestAnswer(String testId, String liveId, String
+            testAnswer, String isForce, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         String url = liveVideoSAConfigInner.URL_LIVE_SUBMIT_NEWARTSTEST_ANSWER;
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("testId", testId);
         params.addBodyParam("answer", testAnswer);
         params.addBodyParam("isPlayBack", "1");
-        params.addBodyParam("isForce", "1");
+        params.addBodyParam("isForce", isForce);
         setDefaultParameter(params);
         sendPost(url, params, requestCallBack);
         Loger.e("Duncan", "======> liveNewArtsSubmitTestAnswer:" + url);

@@ -81,7 +81,8 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
     boolean userBack = false;
     /** 是不是用户切换答题 */
     boolean userSwitch = false;
-    String type;
+    private String type;
+    private boolean isNewArts;
     int netWorkType = NetWorkHelper.WIFI_STATE;
     private long entranceTime;
     private VideoQuestionLiveEntity mDetail;
@@ -94,6 +95,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
         this.questionSwitch = questionSwitch;
         this.type = type;
         this.assess_ref = assess_ref;
+        isNewArts = LiveVideoConfig.isNewArts;
         if (LiveVideoConfig.isNewArts) {
             if (LocalCourseConfig.QUESTION_TYPE_SELECT_VOICE.equals(mDetail.getVoiceType()) || LocalCourseConfig.QUESTION_TYPE_SELECT_H5VOICE.equals(mDetail.getVoiceType())) {
                 try {
@@ -424,7 +426,14 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
             if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(type) || LocalCourseConfig.QUESTION_TYPE_SELECT_VOICE.equals(type) || LocalCourseConfig.QUESTION_TYPE_SELECT_H5VOICE.equals(type)) {
                 submitQuestionSelect("", false, resultEntity.getSpeechDuration());
             } else {
-                submitQuestionBlack(false, "", "", false, resultEntity.getSpeechDuration());
+                try {
+                    JSONArray options = assess_ref.getJSONArray("options");
+                    JSONObject jsonObject = options.getJSONObject(0);
+                    JSONArray content1 = jsonObject.getJSONArray("content");
+                    submitQuestionBlack(content1.getString(0), "", false, resultEntity.getSpeechDuration());
+                } catch (Exception e) {
+                    mLogtf.e("onEvaluatorError:submitQuestionBlack", e);
+                }
             }
             return;
         }
@@ -647,7 +656,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                     tvVoiceansSwitch.setVisibility(View.GONE);
                     questionSwitch.uploadVoiceFile(saveVideoFile);
                     isSpeechSuccess = true;
-                    submitQuestionBlack(false, content1.getString(0), content1.getString(0), isRight, resultEntity.getSpeechDuration());
+                    submitQuestionBlack(content1.getString(0), content1.getString(0), isRight, resultEntity.getSpeechDuration());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -656,8 +665,14 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
     }
 
     private void submitQuestionSelect(final String option, boolean isRight, double speechDuration) {
+        String isSubmit;
+        if (isNewArts) {
+            isSubmit = isEnd ? "2" : "1";
+        } else {
+            isSubmit = isEnd ? "1" : "0";
+        }
         questionSwitch.onPutQuestionResult(this, baseVideoQuestionEntity, answer, option, 1, isRight,
-                speechDuration, isEnd ? "1" : "0", new QuestionSwitch
+                speechDuration, isSubmit, new QuestionSwitch
                         .OnAnswerReslut() {
                     @Override
                     public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity,
@@ -704,9 +719,15 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                 });
     }
 
-    private void submitQuestionBlack(boolean showResult, final String answer, String result, boolean isRight, double speechDuration) {
+    private void submitQuestionBlack(final String answer, String result, boolean isRight, double speechDuration) {
+        String isSubmit;
+        if (isNewArts) {
+            isSubmit = isEnd ? "2" : "1";
+        } else {
+            isSubmit = isEnd ? "1" : "0";
+        }
         questionSwitch.onPutQuestionResult(this, baseVideoQuestionEntity, answer,
-                result, 1, isRight, speechDuration, isEnd ? "1" : "0",
+                result, 1, isRight, speechDuration, isSubmit,
                 new QuestionSwitch.OnAnswerReslut() {
                     @Override
                     public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity

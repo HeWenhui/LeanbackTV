@@ -387,15 +387,21 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
         if (answerList.size() == 1) {
             AnswerResultEntity.Answer answer = answerList.get(0);
             String myAnswer = "";
-            if (AnswerResultEntity.TEST_TYPE_2 == answer.getTestType()) {
-                List<String> choiceList = answer.getChoiceList();
-                if (choiceList != null) {
-                    for (int i = 0; i < choiceList.size(); i++) {
-                        myAnswer += choiceList.get(i);
-                    }
+//            if (AnswerResultEntity.TEST_TYPE_2 == answer.getTestType()) {
+//                List<String> choiceList = answer.getChoiceList();
+//                if (choiceList != null) {
+//                    for (int i = 0; i < choiceList.size(); i++) {
+//                        myAnswer += choiceList.get(i);
+//                    }
+//                }
+//            } else {
+//                tv_arts_answer_result_voice_my.setVisibility(View.GONE);
+//            }
+            List<String> choiceList = answer.getChoiceList();
+            if (choiceList != null) {
+                for (int i = 0; i < choiceList.size(); i++) {
+                    myAnswer += choiceList.get(i);
                 }
-            } else {
-                tv_arts_answer_result_voice_my.setVisibility(View.GONE);
             }
             SpannableString spannableStringBuilder = new SpannableString("你的答案：" + myAnswer);
             if (answer.getIsRight() == 0) {

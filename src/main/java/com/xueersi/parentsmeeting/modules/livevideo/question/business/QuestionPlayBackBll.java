@@ -313,7 +313,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
     @Override
     public void liveSubmitTestAnswer(final LiveBasePager liveBasePager, final VideoQuestionLiveEntity
             videoQuestionLiveEntity1, String mVSectionID, String testAnswer, final boolean isVoice, boolean isRight,
-                                     final QuestionSwitch.OnAnswerReslut answerReslut) {
+                                     final QuestionSwitch.OnAnswerReslut answerReslut, String isSubmit) {
         DataLoadEntity loadEntity = new DataLoadEntity(mContext);
         loadEntity.setLoadingTip(R.string.loading_tip_default);
         BaseBll.postDataLoadEvent(loadEntity.beginLoading());

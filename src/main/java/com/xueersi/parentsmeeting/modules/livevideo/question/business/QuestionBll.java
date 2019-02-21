@@ -2330,7 +2330,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             }
             questionHttp.liveSubmitTestAnswer(baseVoiceAnswerPager, videoQuestionLiveEntity1, mVSectionID,
                     testAnswer, true, isRight,
-                    answerReslut);
+                    answerReslut, isSubmit);
         }
 
         @Override
