@@ -126,8 +126,6 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpManager.addBodyParam("form", "" + form);
         mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(context, TAG);
-        mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         if (liveGetInfo != null) {
             mLiveTopic = liveGetInfo.getLiveTopic();
@@ -138,6 +136,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, this);
         liveLog = new LiveLog(mContext, mLiveType, mLiveId, "NL");
         ProxUtil.getProxUtil().put(context, LiveOnLineLogs.class, liveLog);
+        mLogtf = new LogToFile(context, TAG);
         allLiveBasePagerIml = new AllLiveBasePagerIml(context);
     }
 
@@ -158,8 +157,6 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         mHttpManager = new LiveHttpManager(mContext);
         mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(context, TAG);
-        mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         if (liveGetInfo != null) {
             mLiveTopic = liveGetInfo.getLiveTopic();
@@ -170,6 +167,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, this);
         liveLog = new LiveLog(mContext, mLiveType, mLiveId, "NL");
         ProxUtil.getProxUtil().put(context, LiveOnLineLogs.class, liveLog);
+        mLogtf = new LogToFile(context, TAG);
         allLiveBasePagerIml = new AllLiveBasePagerIml(context);
     }
 
@@ -193,8 +191,6 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         mHttpManager = new LiveHttpManager(mContext);
         mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(context, TAG);
-        mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         mLiveTopic = new LiveTopic();
         if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
@@ -203,6 +199,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         ProxUtil.getProxUtil().put(context, LiveAndBackDebug.class, this);
         liveLog = new LiveLog(mContext, mLiveType, mLiveId, "NL");
         ProxUtil.getProxUtil().put(context, LiveOnLineLogs.class, liveLog);
+        mLogtf = new LogToFile(context, TAG);
         allLiveBasePagerIml = new AllLiveBasePagerIml(context);
     }
 

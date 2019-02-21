@@ -22,7 +22,6 @@ import java.util.Locale;
 
 public class LogToFile {
     String TAG;
-    String path;
     private static SimpleDateFormat dateFormat;
     /** 静态唯一 */
     public static LiveOnLineLogs auditClassLiveBll;
@@ -36,13 +35,6 @@ public class LogToFile {
     public LogToFile(String tag) {
         logger = LiveLoggerFactory.getLogger(tag);
         this.TAG = "OL:" + tag;
-        File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
-        this.path = file.getPath();
-        File parent = file.getParentFile();
-        if (!parent.exists()) {
-            parent.mkdirs();
-        }
-        file.delete();
         if (auditClassLiveBll != null) {
             liveOnLineLogs = auditClassLiveBll;
         }
@@ -51,13 +43,6 @@ public class LogToFile {
     public LogToFile(String tag, LiveOnLineLogs liveOnLineLogs) {
         logger = LiveLoggerFactory.getLogger(tag);
         this.TAG = tag + "";
-        File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
-        this.path = file.getPath();
-        File parent = file.getParentFile();
-        if (!parent.exists()) {
-            parent.mkdirs();
-        }
-        file.delete();
         this.liveOnLineLogs = liveOnLineLogs;
     }
 
@@ -68,27 +53,13 @@ public class LogToFile {
     public LogToFile(LiveOnLineLogs liveBll2, String tag) {
         logger = LiveLoggerFactory.getLogger(tag);
         this.TAG = tag + "";
-        File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
-        this.path = file.getPath();
-        File parent = file.getParentFile();
         liveOnLineLogs = liveBll2;
-        if (!parent.exists()) {
-            parent.mkdirs();
-        }
-        file.delete();
     }
 
     public LogToFile(Context context, String tag) {
         logger = LiveLoggerFactory.getLogger(tag);
         this.TAG = tag + "";
-        File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
-        this.path = file.getPath();
-        File parent = file.getParentFile();
         liveOnLineLogs = ProxUtil.getProxUtil().get(context, LiveOnLineLogs.class);
-        if (!parent.exists()) {
-            parent.mkdirs();
-        }
-        file.delete();
     }
 
     @Deprecated
