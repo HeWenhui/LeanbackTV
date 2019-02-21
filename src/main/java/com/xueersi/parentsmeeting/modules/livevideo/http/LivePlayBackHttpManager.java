@@ -152,7 +152,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
                 params.addBodyParam("liveId", classId);
                 params.addBodyParam("answers", testResult);
                 params.addBodyParam("isPlayBack", "2");
-                params.addBodyParam("isForce", "1");
+                params.addBodyParam("isForce", isSubmit);
                 params.addBodyParam("Cookie", AppBll.getInstance().getUserToken());
                 sendPost(url, params, requestCallBack);
             }

@@ -537,7 +537,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("answers", testAnswer);
         params.addBodyParam("isPlayBack", "1");
-        params.addBodyParam("isForce", "1");
+        params.addBodyParam("isForce", isSubmit);
         params.addBodyParam("Cookie", AppBll.getInstance().getUserToken());
         sendPost(url, params, requestCallBack);
     }
