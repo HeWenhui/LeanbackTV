@@ -33,7 +33,6 @@ import android.widget.TextView;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
-import com.bumptech.glide.Glide;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -68,7 +67,7 @@ import java.util.TimerTask;
 
 /**
  * Created by Zhang Yuansun on 2018/1/2.
- *
+ * <p>
  * 小理表扬榜
  */
 
@@ -136,10 +135,6 @@ public class PraiseListPager extends LiveBasePager {
      */
     private TextView tvNotes;
     /**
-     * 我的姓名
-     */
-    private String mName;
-    /**
      * 我是否上榜
      */
     private boolean isOnList = false;
@@ -177,9 +172,13 @@ public class PraiseListPager extends LiveBasePager {
             R.drawable.bg_livevideo_praiselist_tabs4,
             R.drawable.bg_livevideo_praiselist_tabs5,
     };
-    private int[] likeTotalCount = new int[MAX_TEAM_NUMBER];
+    private int[] totalLikeCount = new int[MAX_TEAM_NUMBER];
     private int[] latestLikeCount = new int[MAX_TEAM_NUMBER];
+    private int totalLikeSum = 0;
+    private int latestLikeSum = 0;
     private List<PraiseListTeamEntity> mTeamList;
+//    private Drawable[] pressImg = new Drawable[MAX_TEAM_NUMBER];
+//    private Drawable[] normalImg = new Drawable[MAX_TEAM_NUMBER];
 
     /**
      * 弹幕消息
@@ -188,12 +187,13 @@ public class PraiseListPager extends LiveBasePager {
     private DanmakuAdapter danmakuAdapter;
     private List<PraiseListDanmakuEntity> teamDanmakuCache = new ArrayList<>();
     private List<PraiseListDanmakuEntity> stuDanmakuCache = new ArrayList<>();
+    private List<PraiseListDanmakuEntity> myDanmakuCache = new ArrayList<>();
     private List<PraiseListDanmakuEntity> danmakuList = new ArrayList<>();
     private static final int DURATION_DANMAKU_SCROOL = 1000; // 弹幕每1s滚动一条
     private Timer danmakuTimer; //弹幕定时器
     private int teamDanmakuCount = 0; //弹幕计数
     private int stuDanmakuCount = 0; //弹幕计数
-
+    private int myDanmakuCount = 0; //弹幕计数
     private Timer likeTimer; //点赞定时器
 
     private WeakHandler mWeakHandler = new WeakHandler(Looper.getMainLooper(), new Handler.Callback() {
@@ -434,7 +434,7 @@ public class PraiseListPager extends LiveBasePager {
 
     @Override
     public void initData() {
-//        test();
+        test();
         alignLayout();
         startBackgtoundAnimation();
 
@@ -452,7 +452,7 @@ public class PraiseListPager extends LiveBasePager {
                     mTeamList.get(i).setTeamRanking(mTeamList.get(i - 1).getTeamRanking() + 1);
                 }
                 if (mTeamList.get(i).getIsMy() == 1 || mTeamList.get(i).getIsMy() == 0) {
-                    if (mTeamList.get(i).getIsMy() == 1 ) {
+                    if (mTeamList.get(i).getIsMy() == 1) {
                         selectedTeamTabs = i;
                     }
                     myTeamTabs = i;
@@ -467,7 +467,7 @@ public class PraiseListPager extends LiveBasePager {
                     mTeamList.get(i).setTeamRanking(mTeamList.get(i - 1).getTeamRanking() + 1);
                 }
                 if (mTeamList.get(i).getIsMy() == 1 || mTeamList.get(i).getIsMy() == 0) {
-                    if (mTeamList.get(i).getIsMy() == 1 ) {
+                    if (mTeamList.get(i).getIsMy() == 1) {
                         selectedTeamTabs = i;
                     }
                     myTeamTabs = i;
@@ -638,7 +638,7 @@ public class PraiseListPager extends LiveBasePager {
         public void run() {
             duringDoubleCard = false;
             tvLikeCount.setVisibility(View.VISIBLE);
-            tvLikeCount.setText("+" + likeTotalCount[selectedTeamTabs]);
+            tvLikeCount.setText("+" + totalLikeCount[selectedTeamTabs]);
             lottieAnimationDoubleCardView.setVisibility(View.GONE);
             mWeakHandler.postDelayed(hideLikeCountRunnable, 2000);
         }
@@ -674,7 +674,7 @@ public class PraiseListPager extends LiveBasePager {
                     if (findDoubleCard()) {
                         duringDoubleCard = true;
                         tvLikeCount.setVisibility(View.GONE);
-                        likeTotalCount[selectedTeamTabs] *= 2;
+                        totalLikeCount[selectedTeamTabs] *= 2;
                         startDoubleCardAnimation();
                         mWeakHandler.removeCallbacks(hideLikeCountRunnable);
                         mWeakHandler.removeCallbacks(hideDoubleCardRunnable);
@@ -684,8 +684,8 @@ public class PraiseListPager extends LiveBasePager {
                             tvLikeCount.setVisibility(View.VISIBLE);
                             fadeIn();
                         }
-                        likeTotalCount[selectedTeamTabs]++;
-                        tvLikeCount.setText("+" + likeTotalCount[selectedTeamTabs]);
+                        totalLikeCount[selectedTeamTabs]++;
+                        tvLikeCount.setText("+" + totalLikeCount[selectedTeamTabs]);
                         mWeakHandler.removeCallbacks(hideLikeCountRunnable);
                         mWeakHandler.postDelayed(hideLikeCountRunnable, 2000);
                     }
@@ -694,8 +694,8 @@ public class PraiseListPager extends LiveBasePager {
                         tvLikeCount.setVisibility(View.VISIBLE);
                         fadeIn();
                     }
-                    likeTotalCount[selectedTeamTabs]++;
-                    tvLikeCount.setText("+" + likeTotalCount[selectedTeamTabs]);
+                    totalLikeCount[selectedTeamTabs]++;
+                    tvLikeCount.setText("+" + totalLikeCount[selectedTeamTabs]);
                     mWeakHandler.removeCallbacks(hideLikeCountRunnable);
                     mWeakHandler.postDelayed(hideLikeCountRunnable, 2000);
                 }
@@ -843,6 +843,7 @@ public class PraiseListPager extends LiveBasePager {
      * 新生和未续保学生最多触发4次
      */
     private static int VIP_MAX_DOUBLE_CARD_COUNT = 4;
+
     /**
      * 是否触发二倍卡  1：概率不加倍  2：概率加倍
      */
@@ -1147,7 +1148,10 @@ public class PraiseListPager extends LiveBasePager {
     public void receiveLikeNotice(final List<PraiseListDanmakuEntity> danmakuList) {
         for (int i = 0; i < danmakuList.size(); i++) {
             if (danmakuList.get(i).getBarrageType() == 1) {
-                this.stuDanmakuCache.add(danmakuList.get(i));
+                if (!danmakuList.get(i).getName().equals(mPresenter.getStuName())) {
+                    //过滤掉自己点赞数的消息
+                    this.stuDanmakuCache.add(danmakuList.get(i));
+                }
             } else if (danmakuList.get(i).getBarrageType() == 2) {
                 this.teamDanmakuCache.add(danmakuList.get(i));
             }
@@ -1168,9 +1172,13 @@ public class PraiseListPager extends LiveBasePager {
             mWeakHandler.post(new Runnable() {
                 @Override
                 public void run() {
+                    //优先级：战队>自己>学生
                     if (teamDanmakuCount < teamDanmakuCache.size()) {
                         addDanmaku(teamDanmakuCache.get(teamDanmakuCount));
                         teamDanmakuCount++;
+                    } else if (myDanmakuCount < myDanmakuCache.size()) {
+                        addDanmaku(myDanmakuCache.get(myDanmakuCount));
+                        myDanmakuCount++;
                     } else if (stuDanmakuCount < stuDanmakuCache.size()) {
                         addDanmaku(stuDanmakuCache.get(stuDanmakuCount));
                         stuDanmakuCount++;
@@ -1186,11 +1194,36 @@ public class PraiseListPager extends LiveBasePager {
             mWeakHandler.post(new Runnable() {
                 @Override
                 public void run() {
+                    //自己的点赞数本地显示
+                    totalLikeSum = 0;
+                    latestLikeSum = 0;
                     for (int i = 0; i < mTeamList.size(); i++) {
-                        if (!(latestLikeCount[i] == likeTotalCount[i])) {
-                            int increment = likeTotalCount[i] - latestLikeCount[i];
+                        totalLikeSum += totalLikeCount[i];
+                        latestLikeSum += latestLikeCount[i];
+                    }
+                    logger.i("totalLikeSum=" + totalLikeSum + " latestLikeSum=" + latestLikeSum);
+                    if (totalLikeSum != latestLikeSum) {
+                        PraiseListDanmakuEntity praiseListDanmakuEntity = new PraiseListDanmakuEntity();
+                        praiseListDanmakuEntity.setBarrageType(1);
+                        praiseListDanmakuEntity.setNumber(totalLikeSum);
+                        praiseListDanmakuEntity.setName(mPresenter.getStuName());
+
+                        myDanmakuCache.add(praiseListDanmakuEntity);
+                        if (myDanmakuCache.size() != 0) {
+                            //如果点赞消息列表不为空，开始滚动弹幕
+                            if (danmakuTimer == null) {
+                                danmakuTimer = new Timer();
+                                danmakuTimer.schedule(new DanmakuTimerTask(), 4000, DURATION_DANMAKU_SCROOL);
+                            }
+                        }
+                    }
+
+                    //上传点赞数
+                    for (int i = 0; i < mTeamList.size(); i++) {
+                        if (totalLikeCount[i] != latestLikeCount[i]) {
+                            int increment = totalLikeCount[i] - latestLikeCount[i];
                             mPresenter.sendLikeNum(increment, mTeamList.get(i).getPkTeamId(), 1);
-                            latestLikeCount[i] = likeTotalCount[i];
+                            latestLikeCount[i] = totalLikeCount[i];
                         }
                     }
                 }
@@ -1207,6 +1240,7 @@ public class PraiseListPager extends LiveBasePager {
         logHashMap.put("ex", "Y");
         umsAgentDebugInter(LiveVideoConfig.LIVE_PRAISE_LIST, logHashMap.getData());
     }
+
 
     /**
      * 战队列表item
@@ -1250,11 +1284,47 @@ public class PraiseListPager extends LiveBasePager {
         }
 
         @Override
-        public void convert(ViewHolder holder, PraiseListTeamEntity teamEntity, int position) {
+        public void convert(ViewHolder holder, PraiseListTeamEntity teamEntity, final int position) {
             if (selectedTeamTabs == position) {
-                ImageLoader.with(mContext).load(teamEntity.getPressImg()).placeHolder(R.drawable.icon_livevideo_praiselist_team_head_default).into(ivHead);
+                //这里自己做缓存。因为频繁切换战队页情况下，Glide缓存有闪动
+//                if (pressImg[position] != null) {
+//                    ivHead.setImageDrawable(pressImg[position]);
+//                } else {
+//                    ivHead.setImageResource(R.drawable.icon_livevideo_praiselist_team_head_default);
+//                    ImageLoader.with(mContext).load(teamEntity.getPressImg()).asBitmap(new SingleConfig.BitmapListener() {
+//                        @Override
+//                        public void onSuccess(Drawable drawable) {
+//                            pressImg[position] = drawable;
+//                            ivHead.setImageDrawable(drawable);
+//                        }
+//
+//                        @Override
+//                        public void onFail() {
+//
+//                        }
+//                    });
+//                }
+
+                ImageLoader.with(mContext).load(teamEntity.getPressImg()).error(R.drawable.icon_livevideo_praiselist_team_head_default).into(ivHead);
             } else {
-                ImageLoader.with(mContext).load(teamEntity.getNormalImg()).placeHolder(R.drawable.icon_livevideo_praiselist_team_head_default).into(ivHead);
+//                if (normalImg[position] != null) {
+//                    ivHead.setImageDrawable(normalImg[position]);
+//                } else {
+//                    ivHead.setImageResource(R.drawable.icon_livevideo_praiselist_team_head_default);
+//                    ImageLoader.with(mContext).load(teamEntity.getNormalImg()).asBitmap(new SingleConfig.BitmapListener() {
+//                        @Override
+//                        public void onSuccess(Drawable drawable) {
+//                            normalImg[position] = drawable;
+//                            ivHead.setImageDrawable(drawable);
+//                        }
+//
+//                        @Override
+//                        public void onFail() {
+//                        }
+//                    });
+//                }
+
+                ImageLoader.with(mContext).load(teamEntity.getNormalImg()).error(R.drawable.icon_livevideo_praiselist_team_head_default).into(ivHead);
             }
 
             switch (listType) {
