@@ -224,10 +224,10 @@ public class StandExperienceVideoBll {
         /**
          * 回放原来没有回调
          */
-        @Override
-        public void getPServerListFail() {
+//        @Override
+//        public void getPServerListFail() {
 //            super.getPServerListFail();
-        }
+//        }
 
         @Override
         public void onOpenFailed(int arg1, int arg2) {

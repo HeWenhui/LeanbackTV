@@ -515,13 +515,13 @@ public class LiveVideoBll implements VPlayerListenerReg {
         /**
          * 获取调度接口失败
          */
-        @Override
-        public void getPServerListFail() {
-            for (VPlayerCallBack.VPlayerListener vPlayerListener : mPlayStatistics) {
-                vPlayerListener.getPServerListFail();
-            }
-            mVideoAction.getPServerListFail();
-        }
+//        @Override
+//        public void getPServerListFail() {
+//            for (VPlayerCallBack.VPlayerListener vPlayerListener : mPlayStatistics) {
+//                vPlayerListener.getPServerListFail();
+//            }
+//            mVideoAction.getPServerListFail();
+//        }
 
         @Override
         public void getPSServerList(int cur, int total, boolean modeChange) {

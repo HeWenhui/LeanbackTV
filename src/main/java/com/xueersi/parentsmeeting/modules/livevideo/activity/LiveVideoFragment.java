@@ -20,6 +20,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
+import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.bussiness.EvaluateTeacherBll;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenIRCBll;
@@ -512,9 +513,41 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     protected void onFail(int arg1, int arg2) {
         super.onFail(arg1, arg2);
         isSwitchUpload = false;
+        if (liveVideoAction != null) {
+            MediaErrorInfo mediaErrorInfo = videoFragment.getMediaErrorInfo();
+            liveVideoAction.onFail(mediaErrorInfo);
+            switch (arg2) {
+                case MediaErrorInfo.PSDispatchFailed: {
+//                        if (mediaListener != null) {
+//                            mediaListener.getPServerListFail(getMediaErrorInfo());
+//                        }
+                    //调度失败，建议重新访问playLive或者playVod频道不存在
+                    //调度失败，延迟1s再次访问调度
+
+                    if ((pattern == 1) && switchFlowBll != null) {
+//            if (server != null) {
+                        switchFlowBll.setListRoute(0);
+                        logger.i("0");
+//        } else {
+//            switchFlowBll.setListRoute(null);
+//            logger.i("null");
+//        }
+                    }
+
+                }
+                break;
+                case MediaErrorInfo.PSServer403: {
+
+                }
+                break;
+                default:
+                    break;
+            }
+        }
     }
 
-    /** 更新调度的list，{@link com.xueersi.parentsmeeting.modules.livevideo.video.LiveGetPlayServer#liveGetPlayServer(String, boolean),}无论成功时报都会走 */
+
+    /** 更新调度的list，{@link com.xueersi.parentsmeeting.modules.livevideo.video.LiveGetPlayServer#liveGetPlayServer(String, boolean),}无论成功失败都会走 */
     @Override
     public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
         super.onLiveStart(server, cacheData, modechange);
@@ -556,20 +589,19 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     /**
      * 获取调度接口失败
      */
-    @Override
-    public void getPServerListFail() {
-        if ((pattern == 1) && switchFlowBll != null) {
-//            if (server != null) {
-            switchFlowBll.setListRoute(0);
-            logger.i("0");
-//        } else {
-//            switchFlowBll.setListRoute(null);
-//            logger.i("null");
+//    @Override
+//    public void getPServerListFail() {
+//        if ((pattern == 1) && switchFlowBll != null) {
+////            if (server != null) {
+//            switchFlowBll.setListRoute(0);
+//            logger.i("0");
+////        } else {
+////            switchFlowBll.setListRoute(null);
+////            logger.i("null");
+////        }
 //        }
-        }
-
-    }
-
+//
+//    }
     protected void createMediaControllerBottom() {
         Intent intent = activity.getIntent();
         LiveVideoConfig.isPrimary = intent.getBooleanExtra("isPrimary", false);

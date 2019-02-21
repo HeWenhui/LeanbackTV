@@ -85,10 +85,10 @@ public class LiveVideoReportBll {
         /**
          * 获取调度接口失败
          */
-        @Override
-        public void getPServerListFail() {
-
-        }
+//        @Override
+//        public void getPServerListFail() {
+//
+//        }
 
         @Override
         public void onOpenStart() {

@@ -249,10 +249,10 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
             }
 
-            @Override
-            public void getPServerListFail() {
-
-            }
+//            @Override
+//            public void getPServerListFail() {
+//
+//            }
 
             @Override
             public void onHWRenderFailed() {
@@ -987,6 +987,12 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         return mGetInfo != null && mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY;
     }
 
+    /***
+     * PSIJK不在走这个方法
+     * @param server
+     * @param cacheData
+     * @param modechange
+     */
     @Override
     public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
 //        if (!MediaPlayer.isPSIJK) {
@@ -1423,6 +1429,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         msg += addBody("rePlay", stringBuilder);
         msg += ",url=" + stringBuilder;
         mLogtf.d(msg);
+        logger.i("url = " + url);
         if (!MediaPlayer.isPSIJK) {
             playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
         } else {
@@ -1773,8 +1780,8 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 //        rePlay(change.get());
     }
 
-    @Override
-    public void getPServerListFail() {
-
-    }
+//    @Override
+//    public void getPServerListFail() {
+//
+//    }
 }

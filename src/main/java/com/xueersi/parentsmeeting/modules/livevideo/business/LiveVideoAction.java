@@ -591,16 +591,15 @@ public class LiveVideoAction implements VideoAction {
     /**
      * PSIJK调度失败
      */
-    @Override
-    public void getPServerListFail() {
+//    @Override
+//    public void getPServerListFail() {
 
-        mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
+//        mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
 //        final String msg = "" + responseEntity.getErrorMsg();
-        if (tvLoadingHint != null) {
+//        if (tvLoadingHint != null) {
 //            tvLoadingHint.setText(msg);
-        }
-    }
-
+//        }
+//}
     @Override
     public void onLiveTimeOut() {
 //        final Button bt = mContentView.findViewById(R.id.bt_course_video_livetimeout);

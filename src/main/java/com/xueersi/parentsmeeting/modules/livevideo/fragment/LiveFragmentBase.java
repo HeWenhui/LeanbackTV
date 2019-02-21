@@ -444,6 +444,10 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 //        rePlay(change.get());
     }
 
+    /**
+     * 更新调度的list，无论成功失败都会走
+     * PSIJK去掉调度，所以不会走这里
+     */
     @Override
     public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
         if (!MediaPlayer.isPSIJK) {
@@ -456,10 +460,11 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
             mLiveVideoBll.onLiveStart(server, cacheData, modechange);
             AtomicBoolean change = new AtomicBoolean(modechange);// 直播状态是不是变化
             rePlay(change.get());
-        } else {
-//            videoFragment.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
-            mLiveVideoBll.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
         }
+//        else {
+////            videoFragment.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+//            mLiveVideoBll.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+//        }
     }
 
     @Override
@@ -520,6 +525,8 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
     /**
      * 播放失败，或者完成时调用
+     * 这里主要进行业务逻辑处理，不涉及到界面展示
+     * 界面展示交给子类{@link BasePlayerFragment}
      */
     protected void onFail(int arg1, final int arg2) {
         if (liveVideoAction != null) {
@@ -534,11 +541,17 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
                         break;
                     }
                     case MediaErrorInfo.PSDispatchFailed: {
-//                        if (mediaListener != null) {
-//                            mediaListener.getPServerListFail(getMediaErrorInfo());
-//                        }
                         //调度失败，建议重新访问playLive或者playVod频道不存在
-                        mLiveVideoBll.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+                        //调度失败，延迟1s再次访问调度
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mLiveVideoBll != null) {
+                                    mLiveVideoBll.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+                                }
+                            }
+                        }, 1000);
+
                     }
                     break;
 

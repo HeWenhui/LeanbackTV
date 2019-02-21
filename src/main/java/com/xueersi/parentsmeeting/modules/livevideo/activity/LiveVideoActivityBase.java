@@ -914,7 +914,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
 
     /** 播放一个新的视频 */
     protected void playNewVideo(Uri uri, String displayName) {
-
+        //
         if (!MediaPlayer.isPSIJK) {
             if (isInitialized()) {
                 vPlayer.release();
@@ -1174,10 +1174,10 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
 
         }
 
-        @Override
-        public void getPServerListFail() {
-
-        }
+//        @Override
+//        public void getPServerListFail() {
+//
+//        }
 
         /** 硬解码失败 */
         @Override

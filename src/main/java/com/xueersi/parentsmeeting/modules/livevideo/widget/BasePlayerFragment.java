@@ -49,7 +49,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by linyuqiang on 2018/8/3.
  * 直播和回放的基础控制
  */
-public abstract class BasePlayerFragment extends Fragment implements VideoView.SurfaceCallback {
+public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCallback {
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     BaseActivity activity;
     /** 视频的名称，用于显示在播放器上面的信息栏 */
@@ -306,9 +306,13 @@ public abstract class BasePlayerFragment extends Fragment implements VideoView.S
         return vPlayer;
     }
 
-    protected abstract void setFileName();
+    protected void setFileName() {
 
-    public abstract void showLongMediaController();
+    }
+
+    public void showLongMediaController() {
+
+    }
 
     /**
      * Activity 设置了横竖
@@ -338,7 +342,6 @@ public abstract class BasePlayerFragment extends Fragment implements VideoView.S
                     // 准备开始播放指定视频
                     synchronized (mOpenLock) {
                         if (!mOpened.get() && vPlayer != null) {
-
                             if (!MediaPlayer.isPSIJK) {
                                 mOpened.set(true);
                                 vPlayer.setVPlayerListener(vPlayerServiceListener);
@@ -662,14 +665,14 @@ public abstract class BasePlayerFragment extends Fragment implements VideoView.S
             }
         }
 
-        @Override
-        public void getPServerListFail() {
-            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
-            if (wrapListener != null) {
-                wrapListener.getPServerListFail();
-//                BasePlayerFragment.this.getPSServerList(cur, total);
-            }
-        }
+//        @Override
+//        public void getPServerListFail() {
+//            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
+//            if (wrapListener != null) {
+//                wrapListener.getPServerListFail();
+////                BasePlayerFragment.this.getPSServerList(cur, total);
+//            }
+//        }
 
         /** 硬解码失败 */
         @Override
@@ -1087,8 +1090,9 @@ public abstract class BasePlayerFragment extends Fragment implements VideoView.S
 //
 //    }
 
-    protected abstract VPlayerCallBack.VPlayerListener getWrapListener();
-
+    protected VPlayerCallBack.VPlayerListener getWrapListener() {
+        return null;
+    }
 
     class VideoOrientationEventListener extends OrientationEventListener {
         /** 当前界面方向-上方 */

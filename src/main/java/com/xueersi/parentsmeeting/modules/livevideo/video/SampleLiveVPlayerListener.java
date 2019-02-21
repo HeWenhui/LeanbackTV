@@ -85,8 +85,8 @@ public class SampleLiveVPlayerListener implements LiveVPlayerListener {
 
     }
 
-    @Override
-    public void getPServerListFail() {
-
-    }
+//    @Override
+//    public void getPServerListFail() {
+//
+//    }
 }

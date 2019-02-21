@@ -472,9 +472,4 @@ public class LectureLiveVideoFrame extends LiveFragmentBase implements ActivityC
             videoFragment.changeLOrP();
         }
     }
-
-    @Override
-    public void getPServerListFail() {
-
-    }
 }

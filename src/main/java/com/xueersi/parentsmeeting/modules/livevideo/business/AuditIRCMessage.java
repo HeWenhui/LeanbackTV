@@ -690,7 +690,9 @@ public class AuditIRCMessage {
         if (mChatClient != null) {
             logger.i("ircsdk ondestory");
             mChatClient.logout("relogin");
-            mChatClient.getRoomManager().leaveChatRooms(roomid);
+            if (roomid != null && !roomid.isEmpty()){
+                mChatClient.getRoomManager().leaveChatRooms(roomid);
+            }
             mChatClient.unInit();
             mChatClient.getPeerManager().removeListener(mPeerListener);
             mChatClient.getRoomManager().removeListener(mRoomListener);
