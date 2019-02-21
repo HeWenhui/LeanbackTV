@@ -49,7 +49,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * Created by linyuqiang on 2018/8/3.
  * 直播和回放的基础控制
  */
-public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCallback {
+public abstract class BasePlayerFragment extends Fragment implements VideoView.SurfaceCallback {
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     BaseActivity activity;
     /** 视频的名称，用于显示在播放器上面的信息栏 */
@@ -306,13 +306,9 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         return vPlayer;
     }
 
-    protected void setFileName() {
+    protected abstract void setFileName();
 
-    }
-
-    public void showLongMediaController() {
-
-    }
+    public abstract void showLongMediaController();
 
     /**
      * Activity 设置了横竖
@@ -1091,9 +1087,8 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 //
 //    }
 
-    protected VPlayerCallBack.VPlayerListener getWrapListener() {
-        return null;
-    }
+    protected abstract VPlayerCallBack.VPlayerListener getWrapListener();
+
 
     class VideoOrientationEventListener extends OrientationEventListener {
         /** 当前界面方向-上方 */
