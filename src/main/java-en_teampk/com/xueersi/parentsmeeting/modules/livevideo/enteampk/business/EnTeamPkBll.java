@@ -45,7 +45,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
     private String mode;
     private LiveGetInfo.EnglishPk englishPk;
     /** 分队仪式开始 */
-    private boolean onRankStart = false;
+    private boolean isRankStart = false;
     private PkTeamEntity pkTeamEntity;
     private int reportTimes = 1;
     private LogToFile mLogtf;
@@ -84,13 +84,13 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
 //        }
         //主讲的时候，没有分队，显示上部栏
         if (oldPkTeamEntity == null && pkTeamEntity != null) {
-            mLogtf.d("setPkTeamEntity:getInfo=null?" + (getInfo == null) + ",onRankStart=" + onRankStart + ",mode=" + mode + ",where=" + pkTeamEntity.getCreateWhere());
-            if (getInfo != null && !onRankStart && LiveTopic.MODE_CLASS.equals(mode)) {
+            mLogtf.d("setPkTeamEntity:getInfo=null?" + (getInfo == null) + ",isRankStart=" + isRankStart + ",mode=" + mode + ",where=" + pkTeamEntity.getCreateWhere());
+            if (getInfo != null && !isRankStart && LiveTopic.MODE_CLASS.equals(mode)) {
                 if (pkTeamEntity.getCreateWhere() != PkTeamEntity.CREATE_TYPE_LOCAL) {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            addTop();
+                            addTop("setPkTeamEntity");
                         }
                     });
                 }
@@ -156,8 +156,8 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
         });
     }
 
-    private void addTop() {
-        logger.d("addTop:myteam=" + pkTeamEntity.getMyTeam());
+    private void addTop(String method) {
+        mLogtf.d("addTop:myteam=" + pkTeamEntity.getMyTeam() + ",method=" + method);
         final View view = LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_en_team_join, rootView, false);
         TextView tv_livevideo_en_teampk_top_name = view.findViewById(R.id.tv_livevideo_en_teampk_top_name);
         ImageView iv_livevideo_en_teampk_top_img = view.findViewById(R.id.iv_livevideo_en_teampk_top_img);
@@ -183,12 +183,12 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
     @Override
     public void onRankStart(final boolean showPk) {
         if (LiveTopic.MODE_TRANING.equals(mode) && showPk) {
-            onRankStart = true;
+            isRankStart = true;
         }
         if (pkTeamEntity == null) {
-            mLogtf.d("onRankStart:can=" + englishPk.canUsePK + ",has=" + englishPk.hasGroup + ",mode=" + mode);
+            mLogtf.d("onRankStart:can=" + englishPk.canUsePK + ",has=" + englishPk.hasGroup + ",mode=" + mode + ",showPk=" + showPk);
         } else {
-            mLogtf.d("onRankStart:can=" + englishPk.canUsePK + ",has=" + englishPk.hasGroup + ",mode=" + mode + ",where=" + pkTeamEntity.getCreateWhere());
+            mLogtf.d("onRankStart:can=" + englishPk.canUsePK + ",has=" + englishPk.hasGroup + ",mode=" + mode + ",showPk=" + showPk + ",where=" + pkTeamEntity.getCreateWhere());
         }
         if (englishPk.canUsePK == 1 && (pkTeamEntity == null || pkTeamEntity.getCreateWhere() != PkTeamEntity.CREATE_TYPE_LOCAL)) {
             handler.post(new Runnable() {
@@ -231,7 +231,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                                 if (!teamEnd) {
                                     teamPkRankPager.setPkTeamEntity(pkTeamEntity);
                                 } else {
-                                    addTop();
+                                    addTop("onRankStart1");
                                 }
                             }
 
@@ -263,7 +263,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                                 if (pkTeamEntity == null) {
                                     return;
                                 }
-                                addTop();
+                                addTop("onRankStart2");
                             }
 
                             @Override
@@ -377,7 +377,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                 int lastM = enTeamPkRankEntity.getMyTeamTotal() - enTeamPkRankEntity.getMyTeamCurrent();
                 int lastO = enTeamPkRankEntity.getOpTeamTotal() - enTeamPkRankEntity.getOpTeamCurrent();
                 int lastWin = lastM - lastO;
-                if (lastWin < 0) {
+                if (lastWin <= 0) {
                     s = "2";
                     handler.post(new Runnable() {
                         @Override

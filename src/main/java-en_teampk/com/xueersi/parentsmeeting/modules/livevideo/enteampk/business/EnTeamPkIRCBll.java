@@ -709,6 +709,8 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 XESCODE.STOPQUESTION, XESCODE.ARTS_STOP_QUESTION, XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_STULIKE, XESCODE.ARTS_H5_COURSEWARE};
     }
 
+    private int firstTopic = 0;
+
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
         //退出重进不显示分队仪式
@@ -720,14 +722,16 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 if (status) {
                     logger.d("onTopic:psOpen=" + psOpen);
                     if (!psOpen) {
+                        mLogtf.d("onTopic:firstTopic=" + firstTopic);
                         psOpen = true;
-                        //不是第一次topic,说明不是退出重进
+                        //firstTopic>1,说明不是退出重进
                         if (enTeamPkAction != null) {
-                            enTeamPkAction.onRankStart(false);
+                            enTeamPkAction.onRankStart(firstTopic > 1);
                         }
                     }
                 }
             }
+            firstTopic++;
         } catch (JSONException e) {
             e.printStackTrace();
         }
