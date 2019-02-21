@@ -1354,17 +1354,17 @@ public class PraiseListPager extends LiveBasePager {
             switch (teamEntity.getTeamRanking()) {
                 case 1: {
                     ivMedal.setVisibility(View.VISIBLE);
-                    ivMedal.setImageResource(R.drawable.livevide_list_jin_icon);
+                    ivMedal.setImageResource(R.drawable.livevideo_list_jin_icon);
                     break;
                 }
                 case 2: {
                     ivMedal.setVisibility(View.VISIBLE);
-                    ivMedal.setImageResource(R.drawable.livevide_list_yin_icon);
+                    ivMedal.setImageResource(R.drawable.livevideo_list_yin_icon);
                     break;
                 }
                 case 3: {
                     ivMedal.setVisibility(View.VISIBLE);
-                    ivMedal.setImageResource(R.drawable.livevide_list_tong_icon);
+                    ivMedal.setImageResource(R.drawable.livevido_list_tong_icon);
                     break;
                 }
                 default:
