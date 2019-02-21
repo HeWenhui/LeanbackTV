@@ -1213,7 +1213,7 @@ public class PraiseListPager extends LiveBasePager {
                             //如果点赞消息列表不为空，开始滚动弹幕
                             if (danmakuTimer == null) {
                                 danmakuTimer = new Timer();
-                                danmakuTimer.schedule(new DanmakuTimerTask(), 4000, DURATION_DANMAKU_SCROOL);
+                                danmakuTimer.schedule(new DanmakuTimerTask(), 0, DURATION_DANMAKU_SCROOL);
                             }
                         }
                     }
