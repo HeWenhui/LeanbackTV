@@ -26,6 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkRankRes
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 
 import java.util.ArrayList;
 
@@ -112,6 +113,14 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
             }
         }
 //        addTop();
+    }
+
+    @Override
+    public void onQuestionShow(VideoQuestionLiveEntity questionLiveEntity, boolean isShow) {
+        if (isShow && teamPkLeadPager != null) {
+            rootView.removeView(teamPkLeadPager.getRootView());
+            teamPkLeadPager = null;
+        }
     }
 
     private void reportStuInfo() {

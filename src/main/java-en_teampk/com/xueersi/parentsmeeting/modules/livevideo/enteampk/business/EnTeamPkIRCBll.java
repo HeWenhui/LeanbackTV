@@ -165,6 +165,9 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     logger.d("onQuestionShow:notShow");
                 }
             }
+            if (enTeamPkAction != null) {
+                enTeamPkAction.onQuestionShow(questionLiveEntity, isShow);
+            }
         }
     }
 
