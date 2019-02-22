@@ -257,6 +257,10 @@ public class LiveVideoConfig {
      * 提交体验课退出反馈
      */
     public static String URL_AUTO_LIVE_QUIT_FEED_BACK = AppConfig.HTTP_HOST_TEAMPK + "/science/AutoLive/submitClassQuitFeedback";
+    /**
+     * 提交体验课新手引导页是否展示
+     */
+    public static String URL_AUTO_LIVE_NOVIC_GUIDE = AppConfig.HTTP_HOST_TEAMPK + "/science/AutoLive/submitNoviceGuide";
     /** 视频播放失败的eventId */
     public final static String STAND_EXPERIENCE_LIVE_PLAY_ERROR = "stand_experience_live_play_error";
 
@@ -403,6 +407,19 @@ public class LiveVideoConfig {
     public static final String URL_HALFBODY_LIVE_STULIVEINFO = "https://laoshi.xueersi.com/science/LiveCourse/getStuDateOfVisitedParentPage";
     /** 文理半身直播  文科科家长旁听数据接口 */
     public static final String URL_HALFBODY_LIVE_STULIVEINFO_ARTS = "https://app.chs.xueersi.com/LiveCourse/getStuDateOfVisitedParentPage";
+
+
+    /**
+     * 体验课类型
+     */
+    public static interface ExperiencLiveType{
+        /**半身直播体验课*/
+        int HALF_BODY = 1001;
+        /**普通直播体验课*/
+        int NORMAL = 1000;
+    }
+    /**半身直播体验课 试题 h5 地址**/
+    public static final String URL_HALFBODY_EXPERIENCE_LIVE_H5 = "https://laoshi.xueersi.com/science/AutoLive/halfBodyH5";
 
     /**战队PK 常量配置**/
     public interface TEAM_PK{

@@ -174,7 +174,7 @@ public class TeamPkStateLayout extends FrameLayout {
             this.getLocationInWindow(location);
             lp.topMargin = location[1] - (gapAbovePkStateLayout + stateBarHeight);
             int rightMargin = (LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x4);
-            lp.rightMargin = rightMargin>0?rightMargin:0;
+            lp.rightMargin = rightMargin > 0 ? rightMargin : 0;
             lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
             rootView.addView(statBarRootView, lp);
             tvState = statBarRootView.findViewById(R.id.tv_answer_question_state);
@@ -332,7 +332,7 @@ public class TeamPkStateLayout extends FrameLayout {
                     tvState.setText("全力追赶");
                     tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_follow_bg);
                 } else if (ratio == HALF_PROGRESS) {
-                    tvState.setText("打成平手");
+                    tvState.setText("");
                     tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_lead_bg);
                 }
             }else{

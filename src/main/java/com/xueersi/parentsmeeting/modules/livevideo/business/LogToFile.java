@@ -28,7 +28,6 @@ public class LogToFile {
     public static LiveBll liveBll;
     public static AuditClassLiveBll auditClassLiveBll;
     LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
-    public static int LIVE_TIME = 0;
     public LiveOnLineLogs liveOnLineLogs;
     protected Logger logger = LoggerFactory.getLogger("LogToFile");
 
@@ -38,7 +37,7 @@ public class LogToFile {
 
     public LogToFile(String tag) {
         logger = LiveLoggerFactory.getLogger(tag);
-        this.TAG = "OL:" + tag + ":" + LIVE_TIME;
+        this.TAG = "OL:" + tag;
         File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();
         File parent = file.getParentFile();
@@ -55,7 +54,7 @@ public class LogToFile {
 
     public LogToFile(String tag, LiveOnLineLogs liveOnLineLogs) {
         logger = LiveLoggerFactory.getLogger(tag);
-        this.TAG = tag + ":" + LIVE_TIME;
+        this.TAG = tag + "";
         File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();
         File parent = file.getParentFile();
@@ -72,7 +71,7 @@ public class LogToFile {
 
     public LogToFile(LiveOnLineLogs liveBll2, String tag) {
         logger = LiveLoggerFactory.getLogger(tag);
-        this.TAG = tag + ":" + LIVE_TIME;
+        this.TAG = tag + "";
         File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();
         File parent = file.getParentFile();
@@ -85,7 +84,7 @@ public class LogToFile {
 
     public LogToFile(Context context, String tag) {
         logger = LiveLoggerFactory.getLogger(tag);
-        this.TAG = tag + ":" + LIVE_TIME;
+        this.TAG = tag + "";
         File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();
         File parent = file.getParentFile();
