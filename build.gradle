@@ -13,7 +13,7 @@ android {
             jniLibs.srcDirs = ['libs']
         }
     }
-    compileSdkVersion 27
+    compileSdkVersion 26
     buildToolsVersion '27.0.3'
 }
 dependencies {
