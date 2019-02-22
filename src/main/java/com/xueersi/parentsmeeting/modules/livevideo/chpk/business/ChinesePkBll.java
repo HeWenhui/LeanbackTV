@@ -97,6 +97,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
 
     private boolean isWin;
 
+    private  boolean newCourseWare;
     private TeamPkStateLayout pkStateRootView;
     /**
      * 直播间内答题 H5 答题结果页面关闭事件队列
@@ -679,7 +680,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRoomH5CloseEvent(final LiveRoomH5CloseEvent event) {
         logger.e("=======>:onRoomH5CloseEvent:" + event.getId() + ":" + event.getmGoldNum() + ":" + event.getmEnergyNum() + ":" + event.isCloseByTeacher());
-
+        newCourseWare = event.isScienceNewCourseWare();
         if (event.getH5Type() == LiveRoomH5CloseEvent.H5_TYPE_EXAM) {
             savedTestPlan = event.getId();
             savedTestId = "";
@@ -1082,7 +1083,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
      */
     private void getEnergyNumAndContributionStar() {
 
-        if (event.isScienceNewCourseWare()) {
+        if (newCourseWare) {
 
             HttpCallBack callback = new HttpCallBack() {
                 @Override
