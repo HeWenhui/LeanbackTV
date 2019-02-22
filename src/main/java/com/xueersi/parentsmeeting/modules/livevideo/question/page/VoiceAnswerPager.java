@@ -591,7 +591,8 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                     }
                 } else {
                     if (isEnd) {
-                        questionSwitch.stopSpeech(VoiceAnswerPager.this, baseVideoQuestionEntity);
+                        submitQuestionSelect("", false, resultEntity.getSpeechDuration());
+//                        questionSwitch.stopSpeech(VoiceAnswerPager.this, baseVideoQuestionEntity);
                     } else {
 //                        XESToastUtils.showToast(mContext, "重读");
                         rlSpeectevalTip.setVisibility(View.VISIBLE);

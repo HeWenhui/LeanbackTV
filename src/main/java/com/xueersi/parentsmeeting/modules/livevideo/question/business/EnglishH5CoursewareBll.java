@@ -1072,11 +1072,11 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 answers.put(answerdetail);
                 String testAnswer = "";
                 testAnswer = answers.toString();
-                if ("0".equals(isSubmit)) {
-                    isSubmit = "1";
-                } else if ("1".equals(isSubmit)) {
-                    isSubmit = "2";
-                }
+//                if ("0".equals(isSubmit)) {
+//                    isSubmit = "1";
+//                } else if ("1".equals(isSubmit)) {
+//                    isSubmit = "2";
+//                }
                 LiveVideoConfig.answer = answer;
                 // 文科新课件平台的对接
                 mLiveBll.liveSubmitTestH5Answer(videoQuestionLiveEntity1, mVSectionID, testAnswer, videoQuestionLiveEntity1.courseware_type, isSubmit, voiceTime, isRight, new OnAnswerReslut() {
