@@ -603,14 +603,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     }
 
 
-    public void onDestroy() {
-        if (mFocusPager != null) {
-            mFocusPager.onDestroy();
-            mFocusPager = null;
-        }
-        isTopicHandled = false;
-        EventBus.getDefault().unregister(this);
-    }
+
 
     /**
      * activity stop
@@ -645,6 +638,12 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     public void onDestory() {
         super.onDestory();
         logger.e("======>onDestory");
+        if (mFocusPager != null) {
+            mFocusPager.onDestroy();
+            mFocusPager = null;
+        }
+        isTopicHandled = false;
+        EventBus.getDefault().unregister(this);
     }
 
 
