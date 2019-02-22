@@ -181,7 +181,6 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
     /**
      * 获取分组信息后去请求试题
      */
-    @Override
     public void requestTestInfos() {
         if (videoQuestionLiveEntity != null) {
             logger.i("请求试题信息 mRolePlayerEntity.toString() = " + videoQuestionLiveEntity.id);
@@ -198,6 +197,13 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                                     ".getLstRolePlayerMessage()" +
                                     ".size() = " + mRolePlayerEntity.getLstRolePlayerMessage().size() + "/ " +
                                     mRolePlayerEntity.toString());
+                            //只在人机的时候，在数据回来后展示对话
+                            if(mRolePlayMachinePager != null){
+                                mRolePlayMachinePager.initData();
+                            }
+                            if(mRolePlayStandMachinePager != null){
+                                mRolePlayStandMachinePager.initData();
+                            }
                         }
 
                     }
@@ -258,6 +264,14 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                                            ".getLstRolePlayerMessage()" +
                                            ".size() = " + mRolePlayerEntity.getLstRolePlayerMessage().size() + "/ " +
                                            mRolePlayerEntity.toString());
+                                   //只在人机的时候，在数据回来后展示对话
+                                   if(mRolePlayStandMachinePager != null){
+                                       mRolePlayStandMachinePager.initData();
+                                   }
+                                   if(mRolePlayMachinePager != null){
+                                       mRolePlayMachinePager.initData();
+                                   }
+
                                }
 
                             }

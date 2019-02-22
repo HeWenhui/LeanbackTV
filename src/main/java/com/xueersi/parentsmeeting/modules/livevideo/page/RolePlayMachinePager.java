@@ -68,7 +68,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
     /**
      * 匹配页默认停留时间
      */
-    private final int MATCH_WAIT_SECOND = 4000;
+    private final int MATCH_WAIT_SECOND =0;
     /**
      * 角色确认页停留时间
      */
