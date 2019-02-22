@@ -21,7 +21,7 @@ public interface QuestionHttp {
 
     void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, OnSpeechEval onSpeechEval);
 
-    void sendSpeechEvalResult2(String id, String stuAnswer, OnSpeechEval onSpeechEval);
+    void sendSpeechEvalResult2(String id, String stuAnswer, String isSubmit, OnSpeechEval onSpeechEval);
 
     void getTestAnswerTeamStatus(VideoQuestionLiveEntity videoQuestionLiveEntity1, AbstractBusinessDataCallBack callBack);
 

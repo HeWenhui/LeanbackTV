@@ -654,7 +654,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 EventBus.getDefault().post(new ArtsAnswerResultEvent(id, ArtsAnswerResultEvent
                         .TYPE_NATIVE_ANSWERRESULT));
                 final boolean isNewArts = LiveVideoConfig.isNewArts;
-                speechEvalAction.sendSpeechEvalResult2(id, answers.toString(), new OnSpeechEval() {
+                speechEvalAction.sendSpeechEvalResult2(id, answers.toString(), "1", new OnSpeechEval() {
                     OnSpeechEval onSpeechEval = this;
 
                     @Override
@@ -698,7 +698,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    speechEvalAction.sendSpeechEvalResult2(id, answers.toString(), onSpeechEval);
+                                    speechEvalAction.sendSpeechEvalResult2(id, answers.toString(), "1", onSpeechEval);
                                 }
                             }, 1000);
                         }
@@ -884,12 +884,62 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //        vwvSpeectevalWave.setVisibility(View.INVISIBLE);
         vwvSpeectevalWave.stop();
         if (isEnd) {
-            handler.postDelayed(new Runnable() {
+            tvSpeectevalError.setText("提交中");
+            forceSubmit();
+//            handler.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    speechEvalAction.stopSpeech(SpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
+//                }
+//            }, 1000);
+        }
+    }
+
+    private void forceSubmit() {
+        logger.d("forceSubmit");
+        try {
+            final JSONObject answers = new JSONObject();
+            JSONObject answers1 = new JSONObject();
+            entranceTime = System.currentTimeMillis() - entranceTime;
+            answers1.put("entranceTime", (int) (entranceTime / 1000));
+            answers1.put("score", 0);
+            JSONObject detail = new JSONObject();
+            detail.put("cont_score", 0);
+            detail.put("level", 0);
+            JSONArray nbestArray = new JSONArray();
+            detail.put("nbest", nbestArray);
+            detail.put("pron_score", 0);
+            detail.put("total_score", 0);
+            answers1.put("detail", detail);
+            answers.put("1", answers1);
+            // 发送分数和TestId
+//            EventBus.getDefault().post(new VoiceAnswerResultEvent(id, 0));
+            // 发送已答过的状态
+//            EventBus.getDefault().post(new ArtsAnswerResultEvent(id, ArtsAnswerResultEvent
+//                    .TYPE_NATIVE_ANSWERRESULT));
+            speechEvalAction.sendSpeechEvalResult2(id, answers.toString(), "2", new OnSpeechEval() {
+
                 @Override
-                public void run() {
+                public void onSpeechEval(Object object) {
+                    final JSONObject jsonObject = (JSONObject) object;
+                    logger.d("sendSpeechEvalResult2:onSpeechEval:object=" + jsonObject);
                     speechEvalAction.stopSpeech(SpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
                 }
-            }, 1000);
+
+                @Override
+                public void onPmFailure(Throwable error, String msg) {
+                    logger.d("sendSpeechEvalResult2:onPmFailure:msg=" + msg);
+                    speechEvalAction.stopSpeech(SpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
+                }
+
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    logger.d("sendSpeechEvalResult2:onPmError:error=" + responseEntity.getErrorMsg());
+                    speechEvalAction.stopSpeech(SpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
+                }
+            });
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
     }
 

@@ -621,33 +621,6 @@ public class LectureLivePlayBackBll extends BaseBll {
                 });
     }
 
-    public void sendSpeechEvalResult2(String liveid, String id, String stuAnswer,
-                                      final OnSpeechEval onSpeechEval) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mCourseHttpManager.sendSpeechEvalResult2(enstuId, liveid, id, stuAnswer, new
-                HttpCallBack(false) {
-
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) {
-                        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                        logger.i( "sendSpeechEvalResult:onPmSuccess=" + jsonObject);
-                        onSpeechEval.onSpeechEval(jsonObject);
-                    }
-
-                    @Override
-                    public void onPmFailure(Throwable error, String msg) {
-                        logger.i( "sendSpeechEvalResult:onPmFailure=" + msg);
-                        onSpeechEval.onPmFailure(error, msg);
-                    }
-
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-                        logger.i( "sendSpeechEvalResult:onPmError=" + responseEntity.getErrorMsg());
-                        onSpeechEval.onPmError(responseEntity);
-                    }
-                });
-    }
-
     public void speechEval42IsAnswered(final String liveId, String num, final SpeechEvalAction.SpeechIsAnswered isAnswered) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mCourseHttpManager.speechEval42IsAnswered(enstuId, liveId, num, new

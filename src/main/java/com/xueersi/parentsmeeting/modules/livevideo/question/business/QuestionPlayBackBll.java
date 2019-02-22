@@ -486,13 +486,13 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
 
     /**
      * 发送语音评测
-     *
-     * @param id
+     *  @param id
      * @param stuAnswer
+     * @param isSubmit
      * @param onSpeechEval
      */
     @Override
-    public void sendSpeechEvalResult2(String id, String stuAnswer, final OnSpeechEval onSpeechEval) {
+    public void sendSpeechEvalResult2(String id, String stuAnswer, String isSubmit, final OnSpeechEval onSpeechEval) {
         String liveid = mVideoEntity.getLiveId();
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         HttpCallBack httpCallBack = new HttpCallBack(false) {
@@ -525,7 +525,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
 //        if (!liveBackBll.getExperience()) {
 //            getCourseHttpManager().sendSpeechEvalResult(enstuId, liveid, id, stuAnswer, times, entranceTime,
 //                    httpCallBack);
-        getCourseHttpManager().sendSpeechEvalResult2(enstuId, liveid, id, stuAnswer, httpCallBack);
+        getCourseHttpManager().sendSpeechEvalResult2(enstuId, liveid, id, stuAnswer, httpCallBack, isSubmit);
 //    } else
 
 //    {

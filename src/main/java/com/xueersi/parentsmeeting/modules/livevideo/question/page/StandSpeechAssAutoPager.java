@@ -766,7 +766,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 detail.put("total_score", score);
                 answers1.put("detail", detail);
                 answers.put("1", answers1);
-                speechEvalAction.sendSpeechEvalResult2(id, answers.toString(), new OnSpeechEval() {
+                speechEvalAction.sendSpeechEvalResult2(id, answers.toString(), "1", new OnSpeechEval() {
                     OnSpeechEval onSpeechEval = this;
 
                     @Override
@@ -802,7 +802,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                             mView.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    speechEvalAction.sendSpeechEvalResult2(id, answers.toString(), onSpeechEval);
+                                    speechEvalAction.sendSpeechEvalResult2(id, answers.toString(), "1", onSpeechEval);
                                 }
                             }, 1000);
                         }

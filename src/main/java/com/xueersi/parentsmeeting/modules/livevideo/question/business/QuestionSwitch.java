@@ -4,6 +4,7 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 
 import java.io.File;
 
@@ -17,6 +18,8 @@ public interface QuestionSwitch {
     String getsourcetype(BaseVideoQuestionEntity baseQuestionEntity);
 
     /**
+     * 普通语音答题的提交{@linkplain LiveHttpManager#liveSubmitNewArtsH5Answer}
+     * H5语音答题的提交{@linkplain LiveHttpManager#liveSubmitNewArtsRealH5Answer}
      * 提交答案
      * @param baseVoiceAnswerPager
      * @param videoQuestionLiveEntity

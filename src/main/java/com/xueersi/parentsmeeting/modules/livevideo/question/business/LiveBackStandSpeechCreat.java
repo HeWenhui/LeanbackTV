@@ -136,8 +136,8 @@ public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
         }
 
         @Override
-        public void sendSpeechEvalResult2(String id, String stuAnswer, OnSpeechEval onSpeechEval) {
-            action.sendSpeechEvalResult2(id, stuAnswer, onSpeechEval);
+        public void sendSpeechEvalResult2(String id, String stuAnswer, String isSubmit, OnSpeechEval onSpeechEval) {
+            action.sendSpeechEvalResult2(id, stuAnswer, isSubmit, onSpeechEval);
         }
 
         @Override

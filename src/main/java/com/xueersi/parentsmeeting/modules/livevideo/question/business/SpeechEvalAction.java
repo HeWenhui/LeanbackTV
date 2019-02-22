@@ -26,12 +26,12 @@ public interface SpeechEvalAction {
     /**
      * 新课件{@linkplain LiveHttpManager#sendSpeechEvalResultNewArts}
      * 旧课件{@linkplain LiveHttpManager#sendSpeechEvalResult2}
-     *
-     * @param id
+     *  @param id
      * @param stuAnswer
+     * @param isSubmit 1(1主动提交,2 强制提交)
      * @param onSpeechEval
      */
-    void sendSpeechEvalResult2(String id, String stuAnswer, OnSpeechEval onSpeechEval);
+    void sendSpeechEvalResult2(String id, String stuAnswer, String isSubmit, OnSpeechEval onSpeechEval);
 
     void onSpeechSuccess(String num);
 
