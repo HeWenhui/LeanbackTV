@@ -43,7 +43,7 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="2dp"
             android:layout_toLeftOf="@+id/tv_livevideo_praiselist_team_count"
-            android:src="@drawable/icon_livevideo_praiselist_praise"
+            android:src="@drawable/icon_livevideo_praiselist_dianzan_team"
             android:visibility="gone" />
     </RelativeLayout>
 </RelativeLayout>
