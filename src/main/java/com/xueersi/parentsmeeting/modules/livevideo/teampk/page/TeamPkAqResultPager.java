@@ -482,6 +482,11 @@ public class TeamPkAqResultPager extends TeamPkBasePager {
             if (teamPKStateLayout != null && mTeamPkBll != null) {
                 teamPKStateLayout.updateData(mEnergy, 0, mGoldNum);
                 teamPKStateLayout.showEnergyMyContribute(mEnergy);
+                //投票题 动画结束刷新右侧总能量
+                if(awardType == AWARD_TYPE_VOTE){
+                    mTeamPkBll.updatePkStateLayout(false);
+                }
+
             }
             closePager();
         }
