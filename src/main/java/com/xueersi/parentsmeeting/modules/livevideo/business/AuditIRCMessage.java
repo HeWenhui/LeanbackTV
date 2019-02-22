@@ -90,11 +90,12 @@ public class AuditIRCMessage {
     private PMDefs.LiveInfo liveInfo;
     private boolean isConnected;
 
-    public AuditIRCMessage(int netWorkType, String channel, String login, String nickname, LiveAndBackDebug liveAndBackDebug) {
+    public AuditIRCMessage(Context context,int netWorkType, String channel, String login, String nickname, LiveAndBackDebug liveAndBackDebug) {
         this.netWorkType = netWorkType;
         this.mChannel = channel;
         this.mNickname = nickname;
         this.liveAndBackDebug = liveAndBackDebug;
+        mContext = context;
         mLogtf = new LogToFile(TAG);
         mLogtf.clear();
         mLogtf.d("AuditIRCMessage:channel=" + channel + ",login=" + login + ",nickname=" + nickname);
