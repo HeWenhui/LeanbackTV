@@ -107,7 +107,7 @@ public class TeamPkResultPager extends TeamPkBasePager {
     /**
      * pk 对手 展示时间
      */
-    private static final int TIME_DELAY_AUTO_CLOSE = 15;
+    private static final int TIME_DELAY_AUTO_CLOSE = 10;
     /**
      * 每题pk 结果页显示时长
      */

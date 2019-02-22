@@ -20,6 +20,19 @@ public class LiveRoomH5CloseEvent {
     /** 是否是老师发起的关闭*/
     private boolean closeByTeacher;
 
+    public boolean isScienceNewCourseWare() {
+        return scienceNewCourseWare;
+    }
+
+    public void setScienceNewCourseWare(boolean scienceNewCourseWare) {
+        this.scienceNewCourseWare = scienceNewCourseWare;
+    }
+
+    /**
+     * 是否是理科新课件平台
+     */
+    private boolean scienceNewCourseWare;
+
     public void setCloseByTeahcer(boolean closeByTeacher) {
         this.closeByTeacher = closeByTeacher;
     }

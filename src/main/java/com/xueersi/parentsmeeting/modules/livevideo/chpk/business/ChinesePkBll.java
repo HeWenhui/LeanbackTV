@@ -1068,7 +1068,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
 
         final String eventId = getLogEventId(event.getH5Type());
 
-        if (LiveVideoConfig.isNewEnglishH5) {
+        if (event.isScienceNewCourseWare()) {
 
             HttpCallBack callback = new HttpCallBack() {
                 @Override

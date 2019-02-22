@@ -570,14 +570,15 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     event.setCloseByTeahcer(mEnglishH5CoursewareBll.isWebViewCloseByTeacher());
                     mEnglishH5CoursewareBll.setWebViewCloseByTeacher(false);
                 }
+                event.setScienceNewCourseWare(englishH5Entity.getNewEnglishH5());
                 EventBus.getDefault().post(event);
                 mGoldNum = -1;
                 mEnergyNum = -1;
-                if (englishH5Entity.getNewEnglishH5()) {
+              /*  if (englishH5Entity.getNewEnglishH5()) {
                     LiveVideoConfig.isNewEnglishH5 = true;
                 } else {
                     LiveVideoConfig.isNewEnglishH5 = false;
-                }
+                }*/
             }
         });
 
