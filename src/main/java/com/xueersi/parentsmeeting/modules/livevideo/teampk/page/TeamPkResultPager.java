@@ -35,6 +35,7 @@ import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.TeamPkConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentPkResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAdversaryEntity;
@@ -285,7 +286,12 @@ public class TeamPkResultPager extends TeamPkBasePager {
             long myTeamTotalEnergy = data.getMyTeamEngerInfo().getTotalEnergy();
             long otherTeamTotalEnergy = data.getCompetitorEngerInfo().getTotalEnergy();
             if (myTeamTotalEnergy > otherTeamTotalEnergy) {
-                ivPkState.setImageResource(R.drawable.live_teampk_state_lead);
+                // 最近一次pk 状态为落后
+                if(mTeamPkBll != null && mTeamPkBll.getLatesPkState() == TeamPkConfig.PK_STATE_BEHIND){
+                    ivPkState.setImageResource(R.drawable.live_teampk_state_inverse);
+                }else{
+                    ivPkState.setImageResource(R.drawable.live_teampk_state_lead);
+                }
             } else if (otherTeamTotalEnergy > myTeamTotalEnergy) {
                 ivPkState.setImageResource(R.drawable.live_teampk_state_follow);
             } else if (myTeamTotalEnergy == otherTeamTotalEnergy) {

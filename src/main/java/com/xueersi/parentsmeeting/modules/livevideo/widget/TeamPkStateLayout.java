@@ -22,6 +22,7 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.TeamPkConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
@@ -433,5 +434,19 @@ public class TeamPkStateLayout extends FrameLayout {
         mTeamPkBll = teamPkBll;
     }
 
-
+    /**
+     * 返回当前pk 结果
+     * @return
+     */
+    public int getLatesPkState(){
+        int result = 0;
+        if(mMyTeamEnergy > mOtherTeamEnergy){
+            result = TeamPkConfig.PK_STATE_LEAD;
+        }else if(mMyTeamEnergy < mOtherTeamEnergy){
+            result = TeamPkConfig.PK_STATE_BEHIND;
+        }else {
+            result = TeamPkConfig.PK_STATE_DRAW;
+        }
+        return  result;
+    }
 }

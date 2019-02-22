@@ -20,6 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.TeamPkConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
@@ -1590,4 +1591,17 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
              e.printStackTrace();
         }
     }
+
+    /**
+     * 获取最近一次 pk 胜负关系
+     * @return
+     */
+    public int getLatesPkState(){
+        int result = TeamPkConfig.PK_STATE_DRAW;
+        if(pkStateRootView != null){
+            result  = pkStateRootView.getLatesPkState();
+        }
+        return  result;
+    }
+
 }
