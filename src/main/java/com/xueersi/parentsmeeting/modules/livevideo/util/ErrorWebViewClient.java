@@ -26,10 +26,20 @@ public class ErrorWebViewClient extends WebViewClient {
     protected Logger logger;
     LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
     public HashMap<String, String> urlAndIp = new HashMap<>();
+    protected String loadUrl = null;
 
     public ErrorWebViewClient(String TAG) {
         this.TAG = TAG;
         logger = LoggerFactory.getLogger(TAG);
+    }
+
+    @Override
+    public void onLoadResource(WebView webView, String s) {
+        //第一次加载的就是课件地址
+        if (loadUrl == null) {
+            loadUrl = s;
+        }
+        super.onLoadResource(webView, s);
     }
 
     @Override
@@ -67,7 +77,7 @@ public class ErrorWebViewClient extends WebViewClient {
                 logHashMap.put("tag", TAG);
                 logHashMap.put("isformain", "" + webResourceRequest.isForMainFrame());
                 logHashMap.put("request", url);
-                logHashMap.put("weburl", "" + webView.getUrl());
+                logHashMap.put("weburl", "" + loadUrl);
                 logHashMap.put("errorcode", "" + webResourceError.getErrorCode());
                 logHashMap.put("description", "" + webResourceError.getDescription());
                 logHashMap.put("remoteip", "" + remoteip);

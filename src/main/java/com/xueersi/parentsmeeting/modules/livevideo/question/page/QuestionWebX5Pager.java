@@ -50,6 +50,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import ren.yale.android.cachewebviewlib.CacheWebView;
+import ren.yale.android.cachewebviewlib.WebViewCache;
 import ren.yale.android.cachewebviewlib.utils.MD5Utils;
 
 /**
@@ -61,6 +62,8 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
     private String questionEventId = LiveVideoConfig.LIVE_H5_TEST;
     private Button btSubjectClose;
     private Button btSubjectCalljs;
+    /** 刷新次数，防止预加载文件有问题 */
+    private int refreshTimes = 0;
     private WebView wvSubjectWeb;
     private View errorView;
     private StopWebQuestion questionBll;
@@ -177,6 +180,22 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
             public void onClick(View v) {
 //                view.findViewById(R.id.rl_livevideo_subject_error).setVisibility(View.GONE);
 //                wvSubjectWeb.setVisibility(View.VISIBLE);
+                if (refreshTimes % 2 == 0) {
+                    if (wvSubjectWeb instanceof CacheWebView) {
+                        CacheWebView cacheWebView = (CacheWebView) wvSubjectWeb;
+                        cacheWebView.setCacheStrategy(WebViewCache.CacheStrategy.NORMAL);
+                        logger.d("refreshonClick:NORMAL");
+                    }
+                } else {
+                    if (wvSubjectWeb instanceof CacheWebView) {
+                        CacheWebView cacheWebView = (CacheWebView) wvSubjectWeb;
+                        cacheWebView.setCacheStrategy(WebViewCache.CacheStrategy.NO_CACHE);
+                        if (refreshTimes % 3 == 0) {
+                            cacheWebView.clearCache();
+                        }
+                        logger.d("refreshonClick:NO_CACHE");
+                    }
+                }
                 wvSubjectWeb.reload();
                 errorView.setVisibility(View.GONE);
                 mView.findViewById(R.id.rl_livevideo_subject_loading).setVisibility(View.VISIBLE);
@@ -262,6 +281,11 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                 EventBus.getDefault().post(event);
                 mGoldNum = -1;
                 mEngerNum = -1;
+                if (isNewArtsTest) {
+                    LiveVideoConfig.isNewEnglishH5 = true;
+                } else {
+                    LiveVideoConfig.isNewEnglishH5 = false;
+                }
             }
         });
     }
