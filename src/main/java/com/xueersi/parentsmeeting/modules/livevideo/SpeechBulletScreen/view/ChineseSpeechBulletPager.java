@@ -27,6 +27,7 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ImageSpan;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -198,10 +199,6 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
      */
     private boolean isShowingSpeechBullet = false;
     /**
-     * 是否有有效的语音识别结果
-     */
-    private boolean hasValidSpeechInput = false;
-    /**
      * 是否恢复了音量
      */
     private boolean isVolumeResume = false;
@@ -237,7 +234,7 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
     public View initView() {
         mView = View.inflate(mContext, R.layout.page_livevideo_chinese_speech_bullet_screen, null);
         root = mView.findViewById(R.id.rl_livevideo_speechbul_root);
-        tvSpeechbulCloseTip = mView.findViewById(R.id.tv_livevideo_speechbul_closetip);
+//        tvSpeechbulCloseTip = mView.findViewById(R.id.tv_livevideo_speechbul_closetip);
         switchFSPanelLinearLayout = mView.findViewById(R.id.rl_livevideo_speechbul_panelroot);
         tvSpeechbulTitle = mView.findViewById(R.id.tv_livevideo_speechbul_title);
         tvSpeechbulTitleCount = mView.findViewById(R.id.tv_livevideo_speechbul_title_count);
@@ -263,7 +260,6 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
         tvSpeechbulTitle.setTypeface(fontFace);
         tvSpeechbulCount.setTypeface(fontFace);
         tvSpeechbulTitleCount.setTypeface(fontFace);
-        tvSpeechbulCloseTip.setTypeface(fontFace);
         root.setClickable(true);
         return mView;
     }
@@ -321,6 +317,7 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
         // 检查用户麦克风权限
         if (hasAudidoPermission) {
             devicestatus = "1";
+            recoginzeStatus = START;
             startEvaluator();
         } else {
             //如果没有麦克风权限，申请麦克风权限
@@ -340,7 +337,6 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
                 @Override
                 public void onDeny(String permission, int position) {
                     logger.i("onDeny()");
-                    closetype = "activeClose";
                     startTextInput("");
                 }
 
@@ -350,6 +346,7 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
                 @Override
                 public void onGuarantee(String permission, int position) {
                     logger.i("onGuarantee()");
+                    recoginzeStatus = START;
                     startEvaluator();
                 }
             }, PermissionConfig.PERMISSION_CODE_AUDIO);
@@ -517,27 +514,32 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
     public void showSpeechBullet(RelativeLayout rootView) {
         logger.i("showSpeechBullet");
         this.rootView = rootView;
+        if (rlSpeechBulContent == null) {
+            rlSpeechBulContent = new RelativeLayout(mContext);
+            rlSpeechBulContent.setId(R.id.rl_livevideo_content_speechbul);
+            rootView.addView(rlSpeechBulContent, new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT));
+        }
         showStartSpeechBulletToast();
-        mWeakHandler.postDelayed(showSpeechBulletRunnable, 2000);
         initUmsAgentData();
+        closeSpeechBullet(false);
+        mWeakHandler.postDelayed(showSpeechBulletRunnable, 2000);
+
     }
 
-    protected Runnable showSpeechBulletRunnable = new Runnable() {
+    private Runnable showSpeechBulletRunnable = new Runnable() {
         @Override
         public void run() {
             isShowingSpeechBullet = true;
-            if (rlSpeechBulContent == null) {
-                rlSpeechBulContent = new RelativeLayout(mContext);
-                rlSpeechBulContent.setId(R.id.rl_livevideo_content_speechbul);
-                rootView.addView(rlSpeechBulContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+            if (mDanmakuView == null) {
+                rlSpeechBulContent.addView(initDanmaku(), new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT));
             }
-            if (mDanmakuView == null) {
-                rlSpeechBulContent.addView(initDanmaku(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
-                        .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-            }
-            rlSpeechBulContent.addView(initView().getRootView(), new ViewGroup.LayoutParams(ViewGroup.LayoutParams
-                    .MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+            rlSpeechBulContent.addView(initView().getRootView(), new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT));
             rlSpeechBulContent.setVisibility(View.VISIBLE);
             initSkin();
             initData();
@@ -548,7 +550,30 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
     @Override
     public void closeSpeechBullet(boolean hasTip) {
         logger.i("closeSpeechBullet");
+        if (rootView == null || rlSpeechBulContent == null) {
+            return;
+        }
         if (hasTip) {
+            mWeakHandler.removeCallbacks(showSpeechBulletRunnable);
+            if (tvSpeechbulCloseTip == null) {
+                tvSpeechbulCloseTip = new FangZhengCuYuanTextView(mContext);
+                tvSpeechbulCloseTip.setBackgroundResource(R.drawable.shellwindow_forbbiden_voicebullet_board);
+                tvSpeechbulCloseTip.setTextColor(Color.parseColor("#FF755942"));
+                tvSpeechbulCloseTip.setTextSize(19);
+                tvSpeechbulCloseTip.setGravity(Gravity.CENTER);
+                rlSpeechBulContent.addView(tvSpeechbulCloseTip, new ViewGroup.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT,
+                        ViewGroup.LayoutParams.WRAP_CONTENT));
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvSpeechbulCloseTip.getLayoutParams();
+                layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                tvSpeechbulCloseTip.setLayoutParams(layoutParams);
+            }
+            if (!closetype.equals("sendSuccessClose") && !closetype.equals("activeClose")) {
+                //已发送和主动关闭，不弹
+                tvSpeechbulCloseTip.setVisibility(View.VISIBLE);
+                countDownTimer.start();
+            }
+
             //系统日志
             Map<String, String> mData = new HashMap<>();
             mData.put("logtype", "voiceBarrageSwitch");
@@ -557,12 +582,40 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
             mData.put("cmdtype", "0");
             mData.put("devicestatus", devicestatus);
             umsAgentDebugSys(LiveVideoConfig.LIVE_SPEECH_BULLETSCREEN, mData);
-            mWeakHandler.removeCallbacks(showSpeechBulletRunnable);
+
+        } else {
+            removeSpeechBullet();
         }
+    }
+
+    private CountDownTimer countDownTimer = new CountDownTimer(2050, 1000) {
+
+        @Override
+        public void onTick(long millisUntilFinished) {
+            int i = (int) (millisUntilFinished / 1000);
+            if (i > 0) {
+                tvSpeechbulCloseTip.setText(i + "秒后将禁止发弹幕");
+            }
+        }
+
+        @Override
+        public void onFinish() {
+            closetype = "passiveClose";
+            tvSpeechbulCloseTip.setVisibility(View.GONE);
+            removeSpeechBullet();
+        }
+    };
+
+    private void removeSpeechBullet() {
         if (!isShowingSpeechBullet) {
             return;
         }
         isShowingSpeechBullet = false;
+
+        KeyboardUtil.hideKeyboard(root);
+        rlSpeechBulContent.removeView(root);
+        root.setClickable(false);
+        stopEvaluator();
 
         //交互日志
         if (tvSpeechbulTitle.getVisibility() == View.VISIBLE) {
@@ -584,39 +637,6 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
         mDataInter.put("closetype", closetype);
         mDataInter.put("finalui", finalui);
         umsAgentDebugInter(LiveVideoConfig.LIVE_SPEECH_BULLETSCREEN, mDataInter);
-
-        if (hasTip) {
-            tvSpeechbulCloseTip.setVisibility(View.VISIBLE);
-            countDownTimer.start();
-        } else {
-            removeSpeechBullet();
-        }
-    }
-
-    private CountDownTimer countDownTimer = new CountDownTimer(2050, 1000) {
-
-        @Override
-        public void onTick(long millisUntilFinished) {
-            int i = (int) (millisUntilFinished / 1000);
-            if (i > 0) {
-                tvSpeechbulCloseTip.setText(i + "秒后将禁止发弹幕");
-            }
-        }
-
-        @Override
-        public void onFinish() {
-            closetype = "passiveClose";
-            removeSpeechBullet();
-        }
-    };
-
-    private void removeSpeechBullet() {
-        if (root != null && rlSpeechBulContent != null) {
-            KeyboardUtil.hideKeyboard(root);
-            rlSpeechBulContent.removeView(root);
-            root.setClickable(false);
-        }
-        stopEvaluator();
     }
 
     @Override
@@ -682,8 +702,20 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
      * ************************************************** 语音识别 **************************************************
      */
     private final static String VOICE_RECOG_HINT = "语音录入中（15字以内）";
-    private final static String VOICE_RECOG_NOVOICE_HINT = "没听清请重说或切换";
-    private boolean isPleaseSayAgain = false;
+    private final static String VOICE_RECOG_NOVOICE_HINT = "没听清请重说或";
+
+    private int START = 1;
+    private int RECOGNIZING = 2;
+    private int PLEASE_SAY_AGGIN = 3;
+    private int TEXT_INPUT = 4;
+    private int recoginzeStatus = 0;
+
+    Runnable pleaseSayAgainRunnable = new Runnable() {
+        @Override
+        public void run() {
+            pleaseSayAgain();
+        }
+    };
 
     protected void startEvaluator() {
         logger.i("startEvaluator()");
@@ -693,19 +725,21 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
                     @Override
                     public void onBeginOfSpeech() {
                         logger.i("onBeginOfSpeech()");
-                        if (isPleaseSayAgain) {
+
+                        if (recoginzeStatus == PLEASE_SAY_AGGIN) {
                             tvSpeechbulTitle.setText(VOICE_RECOG_NOVOICE_HINT);
                             tvSpeechbulSwitch.setVisibility(View.VISIBLE);
                         } else {
                             tvSpeechbulTitle.setText(VOICE_RECOG_HINT);
+                            mWeakHandler.postDelayed(pleaseSayAgainRunnable, 5000);
                         }
+
                         KeyboardUtil.hideKeyboard(mView);
                         tvSpeechbulTitleCount.setText("");
                         rlSpeechbulInputContent.setVisibility(View.GONE);
                         tvSpeechbulTitle.setVisibility(View.VISIBLE);
                         tvSpeechbulTitleCount.setVisibility(View.VISIBLE);
                         vwvSpeechbulWave.setVisibility(View.VISIBLE);
-                        hasValidSpeechInput = false;
 
                         //静音处理
                         mAM = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE); // 音量管理
@@ -748,6 +782,8 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
             mAM.setStreamVolume(AudioManager.STREAM_MUSIC, mVolume, 0);
             isVolumeResume = true;
         }
+        recoginzeStatus = 0;
+        mWeakHandler.removeCallbacks(pleaseSayAgainRunnable);
     }
 
     protected void onEvaluatorSuccess(String str, boolean isSpeechFinished) {
@@ -784,8 +820,8 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
                     tvSpeechbulTitle.setText(content);
                     tvSpeechbulTitleCount.setText("（" + content.length() + "/15）");
                     tvSpeechbulSwitch.setVisibility(View.GONE);
-                    hasValidSpeechInput = true;
-                    isPleaseSayAgain = false;
+                    recoginzeStatus = RECOGNIZING;
+                    mWeakHandler.removeCallbacks(pleaseSayAgainRunnable);
 
                     //15字截停
                     if (content.length() == 15) {
@@ -793,10 +829,9 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
                         mWeakHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                if (rlSpeechbulInputContent != null && rlSpeechbulInputContent.getVisibility() == View.VISIBLE) {
-                                    return;
+                                if (recoginzeStatus == RECOGNIZING) {
+                                    startTextInput(finalContent);
                                 }
-                                startTextInput(finalContent);
                             }
                         }, 3000);
                     }
@@ -831,7 +866,7 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
             }
             startTextInput("");
         } else {
-            if (hasValidSpeechInput) {
+            if (recoginzeStatus == RECOGNIZING) {
                 startTextInput(tvSpeechbulTitle.getText().toString());
             } else {
                 startTextInput("");
@@ -863,6 +898,7 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
      */
     private void startTextInput(String evaluateResult) {
         stopEvaluator();
+        recoginzeStatus = TEXT_INPUT;
         aiText = evaluateResult;
         tvSpeechbulTitle.setVisibility(View.GONE);
         tvSpeechbulTitleCount.setVisibility(View.GONE);
@@ -887,22 +923,16 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
      * 没听清，请重说
      */
     private void pleaseSayAgain() {
-        if (rlSpeechbulInputContent != null && rlSpeechbulInputContent.getVisibility() == View.VISIBLE) {
-            //如果已经跳转到手动输入，不处理
-            return;
-        }
+        logger.i("pleaseSayAgain()");
         stopEvaluator();
-        isPleaseSayAgain = true;
         mWeakHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (rlSpeechbulInputContent != null && rlSpeechbulInputContent.getVisibility() == View.VISIBLE) {
-                    //如果已经跳转到手动输入，不处理
-                    return;
-                }
+                recoginzeStatus = PLEASE_SAY_AGGIN;
                 startEvaluator();
             }
         }, 300);
+
     }
 
     /**
