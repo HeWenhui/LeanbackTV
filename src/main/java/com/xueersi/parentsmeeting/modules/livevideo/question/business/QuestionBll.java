@@ -717,7 +717,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         speechAssessmentPager.initData();
 
                     } else {
-                        logger.e("走人机000");
                         if ("1".equals(videoQuestionLiveEntity.multiRolePlay)) {
                             if (rolePlayAction != null) {
                                 mQueAndBool.add(id);
@@ -752,7 +751,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                     rolePlayMachineBll.setRolePlayMachinePager((RolePlayMachinePager) speechAssessmentPager);
                                     rolePlayMachineBll.setBottomView(rlQuestionContent);
                                     rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
-                                    speechAssessmentPager.initData();
+                                    //人机initData在pager中等接口返回试题信息再调用
+                                    //speechAssessmentPager.initData();
                                 } else {
                                     logger.i("--------------新课件平台走rolaplay人机，初始化数据失败，退出");
                                     speechAssessmentPager.onDestroy();
@@ -766,7 +766,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                     rolePlayMachineBll.setRolePlayStandMachinePager((RolePlayStandMachinePager) speechAssessmentPager);
                                     rolePlayMachineBll.setBottomView(rlQuestionContent);
                                     rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
-                                    speechAssessmentPager.initData();
+                                    //人机initData在pager中等接口返回试题信息再调用
+                                    //speechAssessmentPager.initData();
                                 } else {
                                     logger.i("--------------站立式新课件平台走rolaplay人机，初始化数据失败，退出");
                                     speechAssessmentPager.onDestroy();
@@ -921,7 +922,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 rolePlayMachineBll.setRolePlayMachinePager((RolePlayMachinePager) speechAssessmentPager);
                                 rolePlayMachineBll.setBottomView(rlQuestionContent);
                                 rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
-                                speechAssessmentPager.initData();
+                                //人机initData在pager中等接口返回试题信息再调用
+                                //speechAssessmentPager.initData();
                             } else {
                                 logger.i("--------------走rolaplay人机，初始化数据失败，退出");
                                 speechAssessmentPager.onDestroy();
