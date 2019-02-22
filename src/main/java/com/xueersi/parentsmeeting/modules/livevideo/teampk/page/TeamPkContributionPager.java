@@ -156,9 +156,12 @@ public class TeamPkContributionPager extends TeamPkBasePager {
 
 
     private void showContributionStar() {
-
-        playMusic(R.raw.pk_contribution_starlist_bg, DEFAULT_BG_VOLUME, true);
-
+        mView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                playMusic(R.raw.pk_contribution_starlist_bg, DEFAULT_BG_VOLUME, false);
+            }
+        },700);
 
         pkPraiseLayout.setOnLineTeammates(teamPkBll.getOnlineTeamMates());
         pkPraiseLayout.setWrodList(teamPkBll.getPraiseText());
@@ -198,9 +201,15 @@ public class TeamPkContributionPager extends TeamPkBasePager {
             @Override
             public void run() {
                 startAutoClose();
-                recordHighLight();
             }
         },2000);
+
+        animationView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                recordHighLight();
+            }
+        },3500);
     }
 
 

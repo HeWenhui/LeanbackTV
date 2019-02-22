@@ -260,7 +260,13 @@ public class TeamPkResultPager extends TeamPkBasePager {
      */
     public void showCurrentResult(final TeamEnergyAndContributionStarEntity data) {
         if (data != null) {
-            playMusic(R.raw.pk_answer_result_bg, SOUND_VOLUME_BG, true);
+            //延迟 播放音效  匹配动画展示
+            mView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    playMusic(R.raw.pk_answer_result_bg, SOUND_VOLUME_BG, false);
+                }
+            },1500);
             rlResultRootView.setVisibility(View.VISIBLE);
             rlLottieRootView.setVisibility(View.GONE);
 

@@ -327,6 +327,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
 
     }
 
+
     /**
      * 获取每题的 pk 结果
      *
@@ -931,9 +932,12 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      *
      */
     private LiveRoomH5CloseEvent latestAnswerRecord = null;
-
+    //最近一次答题信息
+    private LiveRoomH5CloseEvent latesH5CloseEvent;
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRoomH5CloseEvent(final LiveRoomH5CloseEvent event) {
+        latesH5CloseEvent = event;
+
         logger.e("=======>:onRoomH5CloseEvent:" + event.getId() + ":"
                 + event.getmGoldNum() + ":" + event.getmEnergyNum() + ":" + event.isCloseByTeacher());
         if (h5CloseEvents == null) {
@@ -1081,8 +1085,10 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     ///////////////////////////消息通讯相关///////////////////////////////////////
     private int[] noticeCodes = {
             XESCODE.STOPQUESTION,
-            XESCODE.EXAM_STOP, XESCODE.ENGLISH_H5_COURSEWARE,
-            XESCODE.TEAM_PK_TEAM_SELECT, XESCODE.TEAM_PK_SELECT_PKADVERSARY,
+            XESCODE.EXAM_STOP,
+            XESCODE.ENGLISH_H5_COURSEWARE,
+            XESCODE.TEAM_PK_TEAM_SELECT,
+            XESCODE.TEAM_PK_SELECT_PKADVERSARY,
             XESCODE.TEAM_PK_PUBLIC_PK_RESULT,
             XESCODE.TEAM_PK_PUBLIC_CONTRIBUTION_STAR,
             XESCODE.TEAM_PK_EXIT_PK_RESULT,
@@ -1092,7 +1098,9 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
             XESCODE.TEAM_PK_PK_END,
             XESCODE.TEACHER_PRAISE,
             XESCODE.TEAM_PK_PARISE_ANWSER_RIGHT,
-            XESCODE.TEAM_PK_TEACHER_PRAISE
+            XESCODE.TEAM_PK_TEACHER_PRAISE,
+            XESCODE.SENDQUESTION,
+            XESCODE.EXAM_START
     };
 
 
@@ -1105,10 +1113,33 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
             String nonce = "";
             String open = "";
             switch (type) {
+                case XESCODE.EXAM_START:
+                case XESCODE.SENDQUESTION:
+                    //收到发题指令 清空上一次 答题结果记录
+                    answerResult = null;
+                    break;
+                case XESCODE.ENGLISH_H5_COURSEWARE:
+                     String status = data.optString("status");
+                     if("on".equals(status)){
+                        //收到发题指令 清空上一次 答题结果记录
+                         answerResult = null;
+                     }else if("off".equals(status)){
+                         setNonce(data.optString("nonce", ""));
+                         showCurrentPkResult();
+                     }
+                    break;
+                case XESCODE.MULTIPLE_H5_COURSEWARE:
+                    boolean isOpen = data.optBoolean("open");
+                    if(isOpen){
+                        //收到发题指令 清空上一次 答题结果记录
+                        answerResult = null;
+                    }else{
+                        setNonce(data.optString("nonce", ""));
+                        showCurrentPkResult();
+                    }
+                    break;
                 case XESCODE.STOPQUESTION:
                 case XESCODE.EXAM_STOP:
-                case XESCODE.ENGLISH_H5_COURSEWARE:
-                case XESCODE.MULTIPLE_H5_COURSEWARE:
                     setNonce(data.optString("nonce", ""));
                     showCurrentPkResult();
                     break;
@@ -1122,9 +1153,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                         stopTeamSelect();
                         TeamPkLog.receiveCreateTeam(mLiveBll, nonce, false);
                     }
-
                     break;
-
                 case XESCODE.TEAM_PK_SELECT_PKADVERSARY:
                     open = data.optString("open");
                     nonce = data.optString("nonce", "");
@@ -1172,8 +1201,11 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                 case XESCODE.TEAM_PK_PARISE_ANWSER_RIGHT:
                     boolean isDouble = data.optInt("isDouble",0) == 1;
                     if(isDouble){
-                       if(answerResult != null){
-                           showAnswerAllRightAward(answerResult.getEnergy());
+                       if(answerResult != null && latesH5CloseEvent != null){
+                           if(answerResult.getIsRight() == ScienceAnswerResult.STATE_CODE_RIGHT
+                                   && latesH5CloseEvent.getmEnergyNum() > 0){
+                               showAnswerAllRightAward(latesH5CloseEvent.getmEnergyNum());
+                           }
                        }
                        // 刷新右侧状态栏
                         updatePkStateLayout(false);
@@ -1190,18 +1222,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     }
                     mPraiseBll.onPraise(sourceNick,target,data,type);
                     break;
-             /*   case 130:
-                    String cmd = data.optString("msg");
-                      if("1".equals(cmd)){
-                        closeCurrentPager();
-                        getStusStars();
-                    }else if("2".equals(cmd)){
-                        closeCurrentPager();
-                        getProgressStudent();
-                    }else if("3".equals(cmd)){
-                          showCurrentPkResult();
-                      }
-                    break;*/
                 default:
                     break;
             }
@@ -1556,5 +1576,18 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     public void onScineceAnswerResutlEvent(AnswerResultEvent event){
         // TODO: 2019/2/20  解析理科答题结果
         Log.e("H5CallBakc","========>onAnswerResult_LiveVideo:"+event.toString());
+        //String jonsStr = event.getData();
+        try {
+           JSONObject jsonObject = new JSONObject(event.getData());
+           String id = jsonObject.optString("id");
+           int isRight = jsonObject.optInt("isRight",-1);
+           if(!TextUtils.isEmpty(id)){
+               answerResult = new ScienceAnswerResult();
+               answerResult.setId(id);
+               answerResult.setIsRight(isRight);
+           }
+        }catch (Exception e){
+             e.printStackTrace();
+        }
     }
 }

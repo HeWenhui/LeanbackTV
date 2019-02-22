@@ -6,6 +6,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
 *created  at 2019/2/20 10:28
 */
 public class ScienceAnswerResult {
+
+    public static int STATE_CODE_RIGHT = 1;
     /**试题id**/
     private String id;
     /**答题所得金币**/
