@@ -1232,6 +1232,9 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
     /**
      * 第一次播放，或者播放失败，重新播放
+     * <p>
+     * 左边区域采用PlayLive来播放，右边采用playFile，
+     * 这里是播放左边区域，采用playLive
      *
      * @param modechange
      */
@@ -1433,7 +1436,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         if (!MediaPlayer.isPSIJK) {
             playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
         } else {
-            playPSVideo(url, 0);
+            playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
         }
     }
 

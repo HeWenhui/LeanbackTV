@@ -446,6 +446,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     private int protocol;
 
     protected void playPSVideo(String videoPath, int protocol) {
+        logger.i("videoPath = " + videoPath);
         this.videoPath = videoPath;
         this.protocol = protocol;
         if (mCreated && vPlayer != null) {

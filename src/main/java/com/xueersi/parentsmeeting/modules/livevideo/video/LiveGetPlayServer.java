@@ -12,6 +12,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
@@ -281,6 +282,9 @@ public class LiveGetPlayServer {
         } else {
             if (mVideoAction instanceof LiveFragmentBase) {
                 ((LiveFragmentBase) mVideoAction).psRePlay(modechange);
+            }
+            if (mVideoAction instanceof AuditClassLiveActivity) {
+                ((AuditClassLiveActivity) mVideoAction).rePlay(modechange);
             }
 //            if (mVideoAction instanceof LectureLiveVideoFrame) {
 //                ((LectureLiveVideoFrame) mVideoAction).psRePlay(modechange);
