@@ -720,7 +720,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                 });
     }
 
-    private void submitQuestionBlack(final String answer, String result, boolean isRight, double speechDuration) {
+    private void submitQuestionBlack(final String answer, final String result, boolean isRight, double speechDuration) {
         String isSubmit;
         if (isNewArts) {
             isSubmit = isEnd ? "2" : "1";
@@ -734,6 +734,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                     public void onAnswerReslut(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity
                             entity) {
                         if (entity != null) {
+                            entity.setYourAnswer(result);
                             entity.setStandardAnswer(answer);
                             String sourcetype = questionSwitch.getsourcetype(baseVideoQuestionEntity);
                             VoiceAnswerLog.sno5(VoiceAnswerPager.this, sourcetype, baseVideoQuestionEntity
