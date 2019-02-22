@@ -52,6 +52,7 @@ import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
 import com.xueersi.parentsmeeting.module.browser.event.BrowserEvent;
+import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
@@ -116,8 +117,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
 /**
 *半身直播体验课
@@ -506,7 +505,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
             }
         }
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
-        mIRCMessage = new IRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, channel);
+        mIRCMessage = new IRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid,mGetInfo, channel);
         IRCTalkConf ircTalkConf = new IRCTalkConf(this, mGetInfo, mGetInfo.getLiveType(), mHttpManager, talkConfHosts);
         //聊天连接调度失败日志
         ircTalkConf.setChatServiceError(new IRCTalkConf.ChatServiceError() {
@@ -736,9 +735,9 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         logger.i("onEvent:netWorkType=" + event.netWorkType);
         mNetWorkType = event.netWorkType;
 
-        if (mIRCMessage != null) {
-            mIRCMessage.onNetWorkChange(mNetWorkType);
-        }
+//        if (mIRCMessage != null) {
+//            mIRCMessage.onNetWorkChange(mNetWorkType);
+//        }
     }
 
 
