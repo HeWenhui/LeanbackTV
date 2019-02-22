@@ -4,44 +4,54 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.tal.speech.speechrecognizer.EvaluatorListener;
-import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
-import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.UserBll;
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.speech.SpeechConfig;
 import com.xueersi.common.speech.SpeechEvaluatorUtils;
-import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerMachineOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerSelfItem;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerStandMachineOtherItem;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerStandMachineSelfItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.RolePlayConfig;
@@ -49,26 +59,41 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.StandSpeechAssAutoPager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
+import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 import com.xueersi.parentsmeeting.modules.livevideo.view.CustomUnScorllListView;
-import com.xueersi.parentsmeeting.widget.VolumeWaveView;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.ReadyGoImageView;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 import com.xueersi.ui.widget.CircleImageView;
+import com.xueersi.ui.widget.WaveView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
-public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
-
+public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
+    String file3 = "live_stand/frame_anim/speech/mine_score";
+    String file4 = "live_stand/frame_anim/speech/mine_score_loop";
     /**
      * 匹配页默认停留时间
      */
-    private final int MATCH_WAIT_SECOND =0;
+    private final int MATCH_WAIT_SECOND = 0;
     /**
      * 角色确认页停留时间
      */
@@ -77,32 +102,19 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
 
     SpeechEvalAction speechEvalAction;
 
-    /**
-     * 匹配页我的头像
-     */
-    private CircleImageView civMatchHead;
 
-    /**
-     * 匹配页
-     */
-    private RelativeLayout rlMatchPager;
-    /**
-     * 角色列表展示区
-     */
-    private RelativeLayout rlMatchRoleList;
-    /**
-     * 角色显示页
-     */
-    private RelativeLayout rlMatchLottie;
     /**
      * 准备开始朗读前的提示文案
      */
-    private TextView tvBeginTipMsg;
-
+    //private TextView tvBeginTipMsg;
     /**
      * roleplay回放的时候，增加关闭按钮
      */
     TextView tv_close_role_play;
+    /**
+     * roleplay我的结果页，增加关闭按钮
+     */
+    TextView tv_close_role_play_result;
 
     /**
      * 倒计时整体布局
@@ -113,10 +125,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
      * 倒计时器
      */
     private TextView tvCountTime;
-    /**
-     * 角色展示列表
-     */
-    private GridView gvRoleHeadShow;
+
     /**
      * 朗读区
      */
@@ -129,17 +138,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
     /**
      * 测评音量波形
      */
-    private VolumeWaveView vwvSpeechVolume;
-
-    /**
-     * 结果页
-     */
-    private RelativeLayout rlResult;
-
-    /**
-     * 角色展示区适配器
-     */
-    private RolePlayerHeadShowAdapter mHeadShowAdapter;
+    private WaveView vwvSpeechVolume;
 
     /**
      * 对话区
@@ -176,91 +175,11 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
     private File saveVideoFile, dir;
 
 
-    /**
-     * 结果总分
-     */
-    private TextView tvTotalScore;
-    /**
-     * 获得的点赞数
-     */
-    private TextView tvDzCount;
-    /**
-     * 流畅性
-     */
-    private TextView tvFluency;
-    /**
-     * 金币数
-     */
-    private TextView tvGoldCount;
-    /**
-     * 准确性
-     */
-    private TextView tvAccuracy;
-    /**
-     * 结果页自己的头像
-     */
-    private CircleImageView civResultHeadImg;
-    /**
-     * 总评
-     */
-    private TextView tvResultMsgTip;
-
-    /**
-     * 排名1
-     */
-    private RelativeLayout rlResultRole1;
-    /**
-     * 排名1头像
-     */
-    private CircleImageView civResultRoleHeadImg1;
-    /**
-     * 排名1分数
-     */
-    private TextView tvResultRoleScore1;
-    /**
-     * 排名1名字
-     */
-    private TextView tvResultRoleName1;
-
-    /**
-     * 排名2
-     */
-    private RelativeLayout rlResultRole2;
-    /**
-     * 排名2头像
-     */
-    private CircleImageView civResultRoleHeadImg2;
-    /**
-     * 排名2分数
-     */
-    private TextView tvResultRoleScore2;
-    /**
-     * 排名2名字
-     */
-    private TextView tvResultRoleName2;
-
-    /**
-     * 排名3
-     */
-    private RelativeLayout rlResultRole3;
-    /**
-     * 排名3头像
-     */
-    private CircleImageView civResultRoleHeadImg3;
-    /**
-     * 排名3分数
-     */
-    private TextView tvResultRoleScore3;
-    /**
-     * 排名3名字
-     */
-    private TextView tvResultRoleName3;
     private ImageView ivRoleplayerResultStar;//显示成绩结果星星旗帜
     private boolean isShowResult;//标记是否正在显示结果页
     private LiveGetInfo mLiveGetInfo;//用于获取学科字段，以此判断roleplay进入哪个学科的连麦
-    private RolePlayerSelfItem mRolePlayerSelfItem;
-    private RolePlayerMachineOtherItem mRolePlayerOtherItem;
-    private ImageView iv_live_roleplayer_title;//roleplay标题icon
+    private RolePlayerStandMachineSelfItem mRolePlayerSelfItem;
+    private RolePlayerStandMachineOtherItem mRolePlayerOtherItem;
     private boolean mIsListViewUnSroll;//listview是否可滑动
 
     /**
@@ -277,7 +196,21 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
      */
     private final static int GO_SPEECH = 200;
     private RolePlayerEntity mEntity;
+    private ImageView lottieAnimationView;
+    private ReadyGoImageView rgivLivevideoStandReadygo;
+    private LiveSoundPool liveSoundPool;
 
+    /** 是不是已经开始 */
+    private boolean isSpeechStart = false;
+    /** 是不是评测失败 */
+    private boolean isSpeechError = false;
+    private Bitmap headBitmap;
+    private String headUrl;
+    private Bitmap canvasBitmap;
+    private View resultUiParent;
+    private String myNickName;
+    private int myGold;
+    private LinearLayout llLivevideoSpeectevalResultMine;
     /**
      * 用来自动朗读
      */
@@ -300,9 +233,9 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
      * @param rolePlayMachineBll
      * @param liveGetInfo
      */
-    public RolePlayMachinePager(Context context, VideoQuestionLiveEntity videoQuestionLiveEntity, String id, String
+    public RolePlayStandMachinePager(Context context, VideoQuestionLiveEntity videoQuestionLiveEntity, String id, String
             testId, String stuId, boolean islive, String nonce, SpeechEvalAction speechEvalAction, String stuCouId,
-                                boolean isSilence, LivePagerBack livePagerBack, RolePlayMachineBll
+                                     boolean isSilence, LivePagerBack livePagerBack, RolePlayMachineBll
                                         rolePlayMachineBll, LiveGetInfo liveGetInfo) {
         super(context);
         this.mIsLive = islive;
@@ -365,7 +298,6 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
      * 设置英语标题布局
      */
     private void setEnRoleplayUI() {
-        iv_live_roleplayer_title.setImageResource(R.drawable.livevideo_roleplay_title);
         //记录当前正在走的模型，留给界面更新使用
         ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA, RolePlayConfig
                 .VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
@@ -375,7 +307,6 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
      * 设置语文标题布局
      */
     private void setChRoleplayUI() {
-        iv_live_roleplayer_title.setImageResource(R.drawable.live_role_play_title);
         //记录当前正在走的模型，留给界面更新使用
         ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA,
                 RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
@@ -383,59 +314,62 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
 
     @Override
     public View initView() {
-        View view = View.inflate(mContext, R.layout.pager_roleplayer, null);
-        rlMatchPager = view.findViewById(R.id.rl_live_roleplayer_matchpager);
-        rlMatchLottie = view.findViewById(R.id.rl_live_roleplayer_match_lottie);
-        rlMatchRoleList = view.findViewById(R.id.rl_live_roleplayer_rolelist);
-        rlMatchPager.setVisibility(View.VISIBLE);
-
+        View view = View.inflate(mContext, R.layout.pager_stand_live_roleplayer, null);
         tv_close_role_play = view.findViewById(R.id.tv_close_role_play);
+        tv_close_role_play.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onUserBackPressed();
+            }
+        });
+        tv_close_role_play_result = view.findViewById(R.id.tv_close_role_play_result);
+        //关闭结果页
+        tv_close_role_play_result.setOnClickListener(new View
+                .OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recoverListScrollAndCancelDZ();
+                StandLiveMethod.onClickVoice(liveSoundPool);
+                if (!mIsLive) {
+                    logger.i("close:"+getId());
+                    if(speechEvalAction != null){
+                        speechEvalAction.stopSpeech(RolePlayStandMachinePager.this, getBaseVideoQuestionEntity(), getId());
+                    }
+
+                }
+            }
+        });
         //倒计时整体布局,在回放的时候隐藏显示
         ll_live_roleplayer_countdown_main = view.findViewById(R.id.ll_live_roleplayer_countdown_main);
         //倒计时textview
         tvCountTime = view.findViewById(R.id.tv_live_roleplayer_countdown);
 
-        gvRoleHeadShow = view.findViewById(R.id.gv_live_roleplayer_headshow);
         rlRoleReadMain = view.findViewById(R.id.rl_live_roleplayer_read_main);
-        tvBeginTipMsg = view.findViewById(R.id.tv_live_roleplayer_countdown_tip);
         lvReadList = view.findViewById(R.id.lv_live_roleplayer_read_list);
         mIsListViewUnSroll = true;
         lvReadList.setUnScroll(mIsListViewUnSroll);//设置listview不可滑动
-        civMatchHead = view.findViewById(R.id.civ_live_roleplayer_match_head);
         rlSpeechVolumnMain = view.findViewById(R.id.rl_live_roleplayer_speech_volumewave_main);
         vwvSpeechVolume = view.findViewById(R.id.vwv_livevideo_roleplayer_speech_volumewave);
-        tvTotalScore = view.findViewById(R.id.tv_livevideo_roleplayer_result_totalscore);
-        tvDzCount = view.findViewById(R.id.tv_livevideo_roleplayer_result_dz_count);
-        tvFluency = view.findViewById(R.id.tv_livevideo_roleplayer_result_fluency);
-        tvGoldCount = view.findViewById(R.id.tv_livevideo_roleplayer_result_gold_count);
-        tvAccuracy = view.findViewById(R.id.tv_livevideo_roleplayer_result_accuracy);
-        civResultHeadImg = view.findViewById(R.id.civ_livevideo_roleplayer_result_headimg);
-        tvResultMsgTip = view.findViewById(R.id.tv_livevideo_roleplayer_result_msgtip);
 
         ivRoleplayerResultStar = view.findViewById(R.id.iv_live_roleplayer_result_star);
 
-        rlResultRole1 = view.findViewById(R.id.rl_livevideo_roleplayer_result_role_1);
-        civResultRoleHeadImg1 = view.findViewById(R.id.civ_livevideo_roleplayer_result_role_head_1);
-        tvResultRoleScore1 = view.findViewById(R.id.tv_livevideo_roleplayer_result_role_score_1);
-        tvResultRoleName1 = view.findViewById(R.id.tv_livevideo_roleplayer_result_role_nickname_1);
-
-        rlResultRole2 = view.findViewById(R.id.rl_livevideo_roleplayer_result_role_2);
-        civResultRoleHeadImg2 = view.findViewById(R.id.civ_livevideo_roleplayer_result_role_head_2);
-        tvResultRoleScore2 = view.findViewById(R.id.tv_livevideo_roleplayer_result_role_score_2);
-        tvResultRoleName2 = view.findViewById(R.id.tv_livevideo_roleplayer_result_role_nickname_2);
-
-        rlResultRole3 = view.findViewById(R.id.rl_livevideo_roleplayer_result_role_3);
-        civResultRoleHeadImg3 = view.findViewById(R.id.civ_livevideo_roleplayer_result_role_head_3);
-        tvResultRoleScore3 = view.findViewById(R.id.tv_livevideo_roleplayer_result_role_score_3);
-        tvResultRoleName3 = view.findViewById(R.id.tv_livevideo_roleplayer_result_role_nickname_3);
 
         rlDZBubbleMessage = view.findViewById(R.id.rl_live_roleplayer_dz_message_bubble_main);
+
+        //ready go动画
+        rgivLivevideoStandReadygo = view.findViewById(R.id.rgiv_livevideo_stand_readygo);
+
+        //结果页的父布局
+        resultUiParent = view.findViewById(R.id.rl_roleplay_stand_result_lay);
+        //结果页，我的分数动画
+        lottieAnimationView = view.findViewById(R.id.iv_livevideo_speecteval_result_mine);
+        //我的分数
+        llLivevideoSpeectevalResultMine = view.findViewById(R.id
+                .ll_livevideo_speecteval_result_mine);
+
         int colors[] = {0x1936BC9B, 0x3236BC9B, 0x6436BC9B, 0x9636BC9B, 0xFF36BC9B};
         //vwvSpeechVolume.setColors(colors);
         //vwvSpeechVolume.setBackColor(Color.TRANSPARENT);
-        rlResult = view.findViewById(R.id.rl_live_roleplayer_result_main);
-
-        iv_live_roleplayer_title = view.findViewById(R.id.iv_live_roleplayer_title);
 
         view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             @Override
@@ -466,17 +400,11 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         if (mIsLive) {
             //只在直播的时候显示倒计时布局
             ll_live_roleplayer_countdown_main.setVisibility(View.VISIBLE);
-            tv_close_role_play.setVisibility(View.GONE);
         } else {
             //只在回放的时候显示关闭按钮的布局
             ll_live_roleplayer_countdown_main.setVisibility(View.GONE);
             tv_close_role_play.setVisibility(View.VISIBLE);
-            tv_close_role_play.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onUserBackPressed();
-                }
-            });
+
         }
     }
 
@@ -495,6 +423,10 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
     @Override
     public boolean onUserBackPressed() {
         //走返回的大逻辑，回放时候，答题结束，才不会卡顿
+        if(speechEvalAction != null){
+            speechEvalAction.stopSpeech(RolePlayStandMachinePager.this, getBaseVideoQuestionEntity(), getId());
+        }
+
         return super.onUserBackPressed();
     }
 
@@ -509,7 +441,6 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
             mRolePlayerSelfItem.relaseAudioPlay();
         }
     }
-
 
     /**
      * 用来自动朗读
@@ -529,7 +460,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                     if (msg.obj != null) {
                         position = (int) msg.obj;
                     }
-                    vwvSpeechVolume.stop();
+                    //vwvSpeechVolume.stop();
                     if (position == 0) {
                         RolePlayerEntity.RolePlayerMessage upMessage = mEntity.getLstRolePlayerMessage().get
                                 (mCurrentReadIndex - 1);
@@ -578,10 +509,10 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                     //lvReadList.smoothScrollToPosition(mCurrentReadIndex + 1);
 
                     if (mCurrentReadIndex == 1) {
-                        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvBeginTipMsg
+                        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) rgivLivevideoStandReadygo
                                 .getLayoutParams();
-                        int animDistance = tvBeginTipMsg.getHeight() + layoutParams.topMargin;
-                        ObjectAnimator oaAnimTransY = ObjectAnimator.ofFloat(tvBeginTipMsg, ImageView.TRANSLATION_Y,
+                        int animDistance = rgivLivevideoStandReadygo.getHeight() + layoutParams.topMargin;
+                        ObjectAnimator oaAnimTransY = ObjectAnimator.ofFloat(rgivLivevideoStandReadygo, ImageView.TRANSLATION_Y,
                                 0, -animDistance * 3 / 2);
                         oaAnimTransY.setInterpolator(new AccelerateInterpolator());
                         oaAnimTransY.addListener(new Animator.AnimatorListener() {
@@ -607,7 +538,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                         });
                         oaAnimTransY.setDuration(500);
                         oaAnimTransY.start();
-                        tvBeginTipMsg.setVisibility(View.GONE);
+                        rgivLivevideoStandReadygo.setVisibility(View.GONE);
                         lvReadList.setSelection(mCurrentReadIndex);
                         logger.i("滚动到下一条" + mCurrentReadIndex);
                         logger.i("第一条读完了，将提示带着平滑动画消失");
@@ -695,7 +626,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
             default:
                 //走英语离线测评
                 logger.i(TAG + "走英语离线测评");
-               mIse = new SpeechEvaluatorUtils(true);
+                mIse = new SpeechEvaluatorUtils(true);
 //                mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
                 break;
         }
@@ -707,7 +638,8 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                     @Override
                     public void onBeginOfSpeech() {
                         logger.i("开始测评 mCurrentReadIndex = "+mCurrentReadIndex);
-                        vwvSpeechVolume.start();
+                        isSpeechError = false;
+                        vwvSpeechVolume.initialize();
                     }
 
             @Override
@@ -732,6 +664,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                     nextReadMessage();
                 } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
                     logger.i("测评失败，" + resultEntity.getErrorNo() + " 不上传自己的mp3");
+                    isSpeechError = true;
                     //XESToastUtils.showToast(mContext, "测评失败");
                     //mIsEvaluatoring = false;
                     message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
@@ -746,8 +679,12 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
 
             @Override
             public void onVolumeUpdate(int volume) {
-                vwvSpeechVolume.setVolume(volume * 3);
-                //logger.i("volume = " + volume);
+                //vwvSpeechVolume.setVolume(volume * 3);
+
+                float fVolume = (float) volume*3/90;
+                logger.i("volume = " + volume+":"+fVolume);
+                fVolume = fVolume < 0.5f?0.5f:fVolume;
+                vwvSpeechVolume.setWaveAmplitude(fVolume);
             }
 
             @Override
@@ -801,26 +738,147 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
 
         if (isShowResult) {
             logger.i("结果页已经在显示");
-            mRolePlayBll.cancelDZ();//取消点赞
+            mRolePlayBll.cancelStandLiveDZ();//取消点赞
             return;
         }
 
         isShowResult = true;
-        logger.i("显示结果,记录日志");
-        //显示结果的时候记录日志
-        // RolePlayLog.sno7(liveAndBackDebug, mEntity, mContext);
-        tvBeginTipMsg.setVisibility(View.GONE);//readgo不再占位
+        resultUiParent.setVisibility(View.VISIBLE);
+        mEntity = mRolePlayBll.getRoleEntry();
+        if(mEntity != null){
+            RolePlayerEntity.RolePlayerHead head = mEntity.getSelfRoleHead();
+            if(head != null){
+              int score = head.getSpeechScore();
+                int[] scoreRes = {R.drawable.bg_livevideo_speecteval_result_number_0,
+                        R.drawable.bg_livevideo_speecteval_result_number_1,
+                        R.drawable.bg_livevideo_speecteval_result_number_2,
+                        R.drawable.bg_livevideo_speecteval_result_number_3,
+                        R.drawable.bg_livevideo_speecteval_result_number_4,
+                        R.drawable.bg_livevideo_speecteval_result_number_5,
+                        R.drawable.bg_livevideo_speecteval_result_number_6,
+                        R.drawable.bg_livevideo_speecteval_result_number_7,
+                        R.drawable.bg_livevideo_speecteval_result_number_8,
+                        R.drawable.bg_livevideo_speecteval_result_number_9,};
+                for (int i = 0; i < ("" + score).length(); i++) {
+                    char c = ("" + score).charAt(i);
+                    ImageView imageView = new ImageView(mContext);
+                    int res = -1;
+                    if (c - '0' < scoreRes.length) {
+                        res = scoreRes[c - '0'];
+                    }
+                    if (res == -1) {
+                        String name = "bg_livevideo_speecteval_result_number_" + c;
+                        imageView.setImageResource(mContext.getResources().getIdentifier(name, "drawable", mContext
+                                .getPackageName()));
+                    } else {
+                        imageView.setImageResource(res);
+                    }
+                    llLivevideoSpeectevalResultMine.addView(imageView);
+                }
+                ImageView imageViewScore = new ImageView(mContext);
+                imageViewScore.setImageResource(R.drawable.bg_livevideo_speecteval_result_number_unit);
+                llLivevideoSpeectevalResultMine.addView(imageViewScore);
+                myNickName = head.getNickName();
+            }
+
+
+
+            headUrl = UserBll.getInstance().getMyUserInfoEntity()
+                    .getHeadImg();
+
+            ImageLoader.with(BaseApplication.getContext()).load(headUrl).asCircle().asBitmap(new SingleConfig
+                    .BitmapListener() {
+                @Override
+                public void onSuccess(Drawable drawable) {
+                    headBitmap = GlideDrawableUtil.getBitmap(drawable, mLogtf, "initData", headUrl);
+                }
+
+                @Override
+                public void onFail() {
+
+                }
+            });
+
+            myGold = mEntity.getGoldCount();
+            logger.i("显示结果"+myNickName+":"+headUrl+":"+myGold);
+        }
 
         vwvSpeechVolume.stop();
         rlSpeechVolumnMain.setVisibility(View.INVISIBLE);
-        vwvSpeechVolume.setVisibility(View.GONE);
-        //XESToastUtils.showToast(mContext, "结束");
-        rlResult.setVisibility(View.VISIBLE);
+        vwvSpeechVolume.setVisibility(View.INVISIBLE);
 
-        ///获取当前应该走的离线模型
-        final int curSubModEva = ShareDataManager.getInstance().getInt(RolePlayConfig
-                .KEY_FOR_WHICH_SUBJECT_MODEL_EVA, RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager
-                .SHAREDATA_NOT_CLEAR);
+        try{
+            final FrameAnimation frameAnimation = FrameAnimation.createFromAees(mContext, lottieAnimationView, file3, 50,
+                    false);
+            //frameAnimations.add(frameAnimation);
+            frameAnimation.setBitmapCreate(new FrameAnimation.BitmapCreate() {
+                @Override
+                public Bitmap onAnimationCreate(String file) {
+                    if (file.contains("WDDFruchang_00169") || file.contains("WDDFruchang_00170") || file.contains
+                            ("WDDFruchang_00171")) {
+                        return null;
+                    }
+                    boolean havename = true;
+                    if (file.contains("_00172") || file.contains("_00173") || file.contains("_00174") || file.contains
+                            ("_00175")
+                            || file.contains("_00176") || file.contains("_00177")) {
+                        havename = false;
+                    }
+                    return updateHead(frameAnimation, file, havename, myGold);
+                }
+            });
+            frameAnimation.setAnimationListener(new FrameAnimation.AnimationListener() {
+                @Override
+                public void onAnimationStart() {
+
+                }
+
+                @Override
+                public void onAnimationEnd() {
+                    final FrameAnimation frameAnimation2 = FrameAnimation.createFromAees(mContext, lottieAnimationView,
+                            file4, 50, true);
+                    //frameAnimations.add(frameAnimation2);
+                    frameAnimation2.setBitmapCreate(new FrameAnimation.BitmapCreate() {
+                        @Override
+                        public Bitmap onAnimationCreate(String file) {
+                            return updateHead(frameAnimation2, file, true, myGold);
+                        }
+                    });
+                    //结果弹窗5秒后消失
+                    resultUiParent.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            recoverListScrollAndCancelDZ();
+
+                            //isShowResult = false;
+                        }
+                    }, 5000);
+                }
+
+                @Override
+                public void onAnimationRepeat() {
+
+                }
+            });
+            frameAnimation.startAnimation();
+        }catch (Exception e){
+            logger.i("exception:"+e.getMessage());
+        }
+
+
+        //显示结果的时候记录日志
+        // RolePlayLog.sno7(liveAndBackDebug, mEntity, mContext);
+        //结果弹窗5秒后消失
+//        resultUiParent.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                //TODO:暂时注释掉
+//                //recoverListScrollAndCancelDZ();
+//
+//                //isShowResult = false;
+//            }
+//        }, 5000);
+
 
         if (mEntity == null) {
             logger.i("需要显示结果弹窗，可是数据为空,不再往下执行，恢复滑动，取消点赞，离开频道");
@@ -829,174 +887,138 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
             return;
 
         }
-        List<RolePlayerEntity.RolePlayerHead> lstHead = mEntity.getResultRoleList();
-        RolePlayerEntity.RolePlayerHead head = mEntity.getSelfRoleHead();
 
-
-        if (head != null) {
-            Typeface tFace = getTypeface(mContext);
-            if (tFace != null) {
-                tvResultMsgTip.setTypeface(getTypeface(mContext));
-                tvTotalScore.setTypeface(getTypeface(mContext));
-            }
-            if (head.getSpeechScore() >= 90) {
-                tvResultMsgTip.setText((curSubModEva == RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA) ? "天才" :
-                        "Fantastic");
-
-            } else if (head.getSpeechScore() >= 60) {
-                tvResultMsgTip.setText((curSubModEva == RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA) ? "不错哦" :
-                        "Welldone");
-            } else {
-                tvResultMsgTip.setText((curSubModEva == RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA) ? "加油哦" :
-                        "Fighting");
-            }
-
-            if (head.getSpeechScore() >= 0 && head.getSpeechScore() < 40) {
-                ivRoleplayerResultStar.setImageResource(R.drawable.livevideo_roleplay_alertview_pic_xingxing1);
-                head.setResultStar(1);
-            }
-            if (head.getSpeechScore() >= 40 && head.getSpeechScore() < 60) {
-                ivRoleplayerResultStar.setImageResource(R.drawable.livevideo_roleplay_alertview_pic_xingxing2);
-                head.setResultStar(2);
-            }
-            if (head.getSpeechScore() >= 60 && head.getSpeechScore() < 75) {
-                ivRoleplayerResultStar.setImageResource(R.drawable.livevideo_roleplay_alertview_pic_xingxing3);
-                head.setResultStar(3);
-            }
-            if (head.getSpeechScore() >= 75 && head.getSpeechScore() < 90) {
-                ivRoleplayerResultStar.setImageResource(R.drawable.livevideo_roleplay_alertview_pic_xingxing4);
-                head.setResultStar(4);
-            }
-            if (head.getSpeechScore() >= 90) {
-                ivRoleplayerResultStar.setImageResource(R.drawable.livevideo_roleplay_alertview_pic_xingxing5);
-                head.setResultStar(5);
-            }
-
-
-            tvTotalScore.setText(head.getSpeechScore() + "分");
-            tvDzCount.setText(mEntity.getPullDZCount() + "");
-            tvFluency.setText("流畅性:" + head.getFluency());
-            tvGoldCount.setText(mEntity.getGoldCount() + "");
-            tvAccuracy.setText("准确性:" + head.getAccuracy());
-
-            /** catch exception:java.lang.IllegalArgumentException: You cannot start a load for a destroyed activity;
-             *
-             *  at com.bumptech.glide.manager.RequestManagerRetriever.assertNotDestroyed(RequestManagerRetriever
-             *  .java:284) at com.bumptech.glide.manager.RequestManagerRetriever.get(RequestManagerRetriever.java:145)
-             *  at com.bumptech.glide.manager.RequestManagerRetriever.get(RequestManagerRetriever.java:111)
-             *  at com.bumptech.glide.Glide.with(Glide.java:554)
-             *
-             * 通过查看源码发现，异常的原因在于，当前activity已经销毁，所以无法加载角色头像
-             *
-             * */
-            if (mContext instanceof Activity) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    if (!((Activity) mContext).isDestroyed()) {
-                        ImageLoader.with(mContext).load(UserBll.getInstance().getMyUserInfoEntity().getHeadImg())
-                                .into(civResultHeadImg);
-                    }
-                }
-            }
-
-            if (lstHead.size() >= 1) {
-                RolePlayerEntity.RolePlayerHead head1 = lstHead.get(0);
-                tvResultRoleScore1.setText(head1.getSpeechScore() + "分");
-                tvResultRoleName1.setText(head1.getNickName());
-                ImageLoader.with(ContextManager.getApplication()).load(head1.getHeadImg()).into(civResultRoleHeadImg1);
-                civResultRoleHeadImg1.setBorderWidth(SizeUtils.Dp2Px(mContext, 2));
-                if (head1.isSelfRole()) {
-                    civResultRoleHeadImg1.setBorderColor(Color.parseColor("#FAD2D1"));
-                    tvResultRoleScore1.setTextColor(Color.parseColor("#333333"));
-                    tvResultRoleName1.setTextColor(Color.parseColor("#333333"));
-                } else {
-                    civResultRoleHeadImg1.setBorderColor(Color.parseColor("#E0E0E0"));
-                    tvResultRoleScore1.setTextColor(Color.parseColor("#666666"));
-                    tvResultRoleName1.setTextColor(Color.parseColor("#666666"));
-                }
-            } else {
-                rlResultRole1.setVisibility(View.INVISIBLE);
-            }
-
-            if (lstHead.size() >= 2) {
-                RolePlayerEntity.RolePlayerHead head2 = lstHead.get(1);
-                tvResultRoleScore2.setText(head2.getSpeechScore() + "分");
-                tvResultRoleName2.setText(head2.getNickName());
-                ImageLoader.with(ContextManager.getApplication()).load(head2.getHeadImg()).into(civResultRoleHeadImg2);
-                civResultRoleHeadImg2.setBorderWidth(SizeUtils.Dp2Px(mContext, 2));
-                if (head2.isSelfRole()) {
-                    civResultRoleHeadImg2.setBorderColor(Color.parseColor("#FAD2D1"));
-                    tvResultRoleScore2.setTextColor(Color.parseColor("#333333"));
-                    tvResultRoleName2.setTextColor(Color.parseColor("#333333"));
-                } else {
-                    civResultRoleHeadImg2.setBorderColor(Color.parseColor("#E0E0E0"));
-                    tvResultRoleScore2.setTextColor(Color.parseColor("#666666"));
-                    tvResultRoleName2.setTextColor(Color.parseColor("#666666"));
-                }
-            } else {
-                rlResultRole2.setVisibility(View.INVISIBLE);
-            }
-
-            if (lstHead.size() >= 3) {
-                RolePlayerEntity.RolePlayerHead head3 = lstHead.get(2);
-                tvResultRoleScore3.setText(head3.getSpeechScore() + "分");
-                tvResultRoleName3.setText(head3.getNickName());
-                ImageLoader.with(ContextManager.getApplication()).load(head3.getHeadImg()).into(civResultRoleHeadImg3);
-                civResultRoleHeadImg3.setBorderWidth(SizeUtils.Dp2Px(mContext, 2));
-                if (head3.isSelfRole()) {
-                    civResultRoleHeadImg3.setBorderColor(Color.parseColor("#FAD2D1"));
-                    tvResultRoleScore3.setTextColor(Color.parseColor("#333333"));
-                    tvResultRoleName3.setTextColor(Color.parseColor("#333333"));
-                } else {
-                    civResultRoleHeadImg3.setBorderColor(Color.parseColor("#E0E0E0"));
-                    tvResultRoleScore3.setTextColor(Color.parseColor("#666666"));
-                    tvResultRoleName3.setTextColor(Color.parseColor("#666666"));
-                }
-            } else {
-                rlResultRole3.setVisibility(View.INVISIBLE);
-            }
-
-        }
-
-        //结果弹窗5秒后消失
-        rlResult.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (!mIsLive) {
-                    //回放，在弹窗消失的同时，离开连麦界面
-                    logger.i("liveback leave roleplay");
-                    recoverListScrollAndCancelDZ();
-                    if (mReadHandler != null) {
-                        mReadHandler.removeMessages(READ_MESSAGE);
-                    }
-
-                } else {
-                    //直播
-                    logger.i("live not leave roleplay");
-                    recoverListScrollAndCancelDZ();
-                }
-
-
-                //isShowResult = false;
-            }
-        }, 5000);
     }
+    private Bitmap updateHead(final FrameAnimation frameAnimation, final String file,
+                              final boolean havename, final int gold) {
+        InputStream inputStream = null;
+        try {
+            inputStream = FrameAnimation.getInputStream(mContext, file);
+            Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
+            bitmap.setDensity(FrameAnimation.DEFAULT_DENSITY);
+            Bitmap canvasBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+            canvasBitmap.setDensity(FrameAnimation.DEFAULT_DENSITY);
+            Canvas canvas = new Canvas(canvasBitmap);
+            canvas.drawBitmap(bitmap, 0, 0, null);
+            final Bitmap head = headBitmap;
+            if (head != null && !head.isRecycled()) {
+                float scaleWidth = 148f / head.getHeight();
+                Matrix matrix = new Matrix();
+                matrix.postScale(scaleWidth, scaleWidth);
+                Bitmap scalHeadBitmap = Bitmap.createBitmap(head, 0, 0, head.getWidth(), head.getHeight(), matrix,
+                        true);
+                scalHeadBitmap.setDensity(FrameAnimation.DEFAULT_DENSITY);
+                float left = (bitmap.getWidth() - scalHeadBitmap.getWidth()) / 2;
+                float top;
+                left += 3f;
+                top = (bitmap.getHeight() - scalHeadBitmap.getHeight()) / 2 - 30;
+                canvas.drawBitmap(scalHeadBitmap, left, top - 2, null);
+                scalHeadBitmap.recycle();
+            } else {
+                Activity activity = (Activity) mContext;
+                if (!activity.isFinishing()) {
+                    activity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ImageLoader.with(mContext).load(headUrl).asCircle().asBitmap(new SingleConfig
+                                    .BitmapListener() {
+                                @Override
+                                public void onSuccess(Drawable drawable) {
+                                    Bitmap headBitmap = GlideDrawableUtil.getBitmap(drawable, mLogtf, "updateHead",
+                                            headUrl);
+                                    RolePlayStandMachinePager.this.headBitmap = headBitmap;
+                                    frameAnimation.removeBitmapCache(file);
+                                }
 
+                                @Override
+                                public void onFail() {
 
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+            bitmap.recycle();
+            //画名字和金币数量
+            if (havename) {
+                String strGold = "+" + gold;
+                View layout_live_stand_red_mine1 = LayoutInflater.from(mContext).inflate(R.layout
+                        .layout_live_stand_red_mine2, null);
+                TextView tv_livevideo_redpackage_name = layout_live_stand_red_mine1.findViewById(R.id
+                        .tv_livevideo_redpackage_name);
+                tv_livevideo_redpackage_name.setText("" + myNickName);
+                TextView tv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id
+                        .tv_livevideo_redpackage_num);
+                ImageView iv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id
+                        .iv_livevideo_redpackage_num);
+                tv_livevideo_redpackage_num.setText(strGold);
+                tv_livevideo_redpackage_name.setTextSize(TypedValue.COMPLEX_UNIT_PX, 23f);
+                tv_livevideo_redpackage_num.setTextSize(TypedValue.COMPLEX_UNIT_PX, 18f);
+                tv_livevideo_redpackage_name.setTextColor(0xff97091D);
+                tv_livevideo_redpackage_num.setTextColor(0xff97091D);
+                tv_livevideo_redpackage_name.setTypeface(getTypeface(mContext));
+                iv_livevideo_redpackage_num.setImageResource(R.drawable.bg_live_stand_red_gold_big);
+                int width = 122;
+                int height = 72;
+                int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
+                int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
+                layout_live_stand_red_mine1.measure(widthMeasureSpec, heightMeasureSpec);
+                layout_live_stand_red_mine1.layout(0, 0, width, height);
+
+                canvas.save();
+                int measuredWidth = layout_live_stand_red_mine1.getMeasuredWidth();
+                int measuredHeight = layout_live_stand_red_mine1.getMeasuredHeight();
+//                canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2,
+// 345 + (height - measuredHeight) / 2);
+                canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 348);
+//                logger.d( "updateHead:measuredWidth=" + measuredWidth + ",measuredHeight=" + measuredHeight);
+                layout_live_stand_red_mine1.draw(canvas);
+                canvas.restore();
+            }
+            return canvasBitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+            logger.e("roleplay IOException:"+e.getMessage());
+        } finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    logger.e("roleplay IOException:"+e.getMessage());
+                }
+            }
+        }
+        return null;
+    }
     /**
      * 恢复页面滑动，取消点赞
      */
     public void recoverListScrollAndCancelDZ() {
         //恢复listview可滑动
         mIsListViewUnSroll = false;
-        if (rlResult != null) {
-            rlResult.setVisibility(View.GONE);
-        }
+
         if (lvReadList != null) {
             lvReadList.setUnScroll(mIsListViewUnSroll);//恢复列表滑动
+            logger.i("恢复列表滑动");
         }
         if (mRolePlayBll != null) {
-             mRolePlayBll.cancelDZ();//取消点赞
+            logger.i("取消点赞");
+             mRolePlayBll.cancelStandLiveDZ();//取消点赞
         }
+        //TODO:通知弹出top3
+        //XESToastUtils.showToast(mContext,"test");
+        if(resultUiParent != null){
+            resultUiParent.setVisibility(View.GONE);
+        }
+
+        JSONObject jsonObject = mEntity.getJson();
+        if(jsonObject != null){
+            String data = jsonObject.toString();
+            EventBus.getDefault().post(new ArtsAnswerResultEvent(data, ArtsAnswerResultEvent.TYPE_ROLEPLAY_ANSWERRESULT));
+        }
+
 
     }
 
@@ -1025,15 +1047,9 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         //mRolePlayBll.teacherPushTest(videoQuestionLiveEntity);
         mEntity = mRolePlayBll.getRoleEntry();
         //默认MATCH_WAIT_SECOND 后，匹配页消失
-        rlRoleReadMain.setVisibility(View.GONE);
+        //rlRoleReadMain.setVisibility(View.GONE);
         final HashMap<String, String> assetFolders = new HashMap<String, String>();
-        civMatchHead.setBorderWidth(SizeUtils.Dp2Px(mContext, 3));
-        civMatchHead.setBorderColor(Color.WHITE);
-        ImageLoader.with(BaseApplication.getContext()).load(UserBll.getInstance().getMyUserInfoEntity().getHeadImg())
-                .into(civMatchHead);
 
-        rlMatchPager.setVisibility(View.VISIBLE);
-        rlMatchLottie.setVisibility(View.VISIBLE);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -1048,25 +1064,21 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                     if (rolePlayerHeads != null && rolePlayerHeads.size() > 0 && rolePlayerMessages != null &&
                             rolePlayerMessages.size() > 0) {
                         logger.i("开始匹配");
-                        rlMatchLottie.setVisibility(View.GONE);
-                        rlMatchRoleList.setVisibility(View.VISIBLE);
                         roleConfirmPage(); //确定角色开始RolePlayer
                     } else {
-                        rlMatchPager.setVisibility(View.GONE);
-                        logger.i("无朗读数据,回到直播界面" + rolePlayerHeads.size() + ":" + rolePlayerMessages.size());
+                        logger.i("无朗读数据,回到直播界面" + rolePlayerHeads.size());
                         XESToastUtils.showToast(mContext, "无朗读数据");
                         //mRolePlayBll.goToRobot();
-                        if (mRolePlayBll != null) {
-                            mRolePlayBll.onStopQuestion(null, null);
-                        }
+//                        if (mRolePlayBll != null) {
+//                            mRolePlayBll.onStopQuestion(null, null);
+//                        }
                     }
                 } else {
-                    rlMatchPager.setVisibility(View.GONE);
                     logger.i("匹配失败");
                     XESToastUtils.showToast(mContext, "匹配失败");
-                    if (mRolePlayBll != null) {
-                        mRolePlayBll.onStopQuestion(null, null);
-                    }
+//                    if (mRolePlayBll != null) {
+//                        mRolePlayBll.onStopQuestion(null, null);
+//                    }
                     //mRolePlayBll.goToRobot();
                 }
 
@@ -1078,17 +1090,6 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
      * 确定角色准备开始RolePlayer
      */
     private void roleConfirmPage() {
-        mHeadShowAdapter = new RolePlayerHeadShowAdapter(mContext, mEntity.getLstRoleInfo());
-        int roleHeadsSize = mEntity.getLstRoleInfo().size();
-        //当角色小于3个的时候，为保证角色头像都居中显示，动态改变列数
-        if (roleHeadsSize < 3) {
-            gvRoleHeadShow.setNumColumns(roleHeadsSize);
-            gvRoleHeadShow.setHorizontalSpacing(-20);
-        } else {
-            gvRoleHeadShow.setNumColumns(3);
-            gvRoleHeadShow.setHorizontalSpacing(SizeUtils.Dp2Px(mContext, 42));
-        }
-        gvRoleHeadShow.setAdapter(mHeadShowAdapter);
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -1112,7 +1113,6 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                 .SHAREDATA_NOT_CLEAR);
 
 
-        rlMatchPager.setVisibility(View.GONE);
         rlRoleReadMain.setVisibility(View.VISIBLE);
 
         //只在直播的时候显示倒计时
@@ -1122,42 +1122,42 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
 
         rlRoleReadMain.setVisibility(View.VISIBLE);
         Typeface tFace = getTypeface(mContext);
-        if (tFace != null) {
-            tvBeginTipMsg.setTypeface(getTypeface(mContext));
-        }
-        if (mEntity.getLstRolePlayerMessage().get(0).getRolePlayer().isSelfRole()) {
-            tvBeginTipMsg.setText((curSubModEva == RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA) ? "你先开始.准备好了吗？" : "You" +
-                    " go first. Are you ready?");
-            tvBeginTipMsg.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    switch (curSubModEva) {
-                        case RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA:
-                            //当前是英语离线测评
-                            tvBeginTipMsg.setBackgroundResource(R.drawable.shape_livevideo_roleplayer_ready_go_bg);
-                            tvBeginTipMsg.setText("GO");
-                            break;
-                        case RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA:
-                            //当前是语文离线测评
-                            tvBeginTipMsg.setBackgroundResource(R.drawable.shape_livevideo_roleplayer_ready_go_bg);
-                            tvBeginTipMsg.setText("开始");
-                            break;
-                        default:
-                            //默认走英语离线测评
-                            tvBeginTipMsg.setBackgroundResource(R.drawable.shape_livevideo_roleplayer_ready_go_bg);
-                            tvBeginTipMsg.setText("GO");
-                            break;
-                    }
 
-                    //tvBeginTipMsg.setPadding(60, 10, 60, 15);
-                    tvBeginTipMsg.setGravity(Gravity.CENTER);
+//        if (mEntity.getLstRolePlayerMessage().get(0).getRolePlayer().isSelfRole()) {
+//            tvBeginTipMsg.setText((curSubModEva == RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA) ? "你先开始.准备好了吗？" : "You" +
+//                    " go first. Are you ready?");
+//            tvBeginTipMsg.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    switch (curSubModEva) {
+//                        case RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA:
+//                            //当前是英语离线测评
+//                            tvBeginTipMsg.setBackgroundResource(R.drawable.shape_livevideo_roleplayer_ready_go_bg);
+//                            tvBeginTipMsg.setText("GO");
+//                            break;
+//                        case RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA:
+//                            //当前是语文离线测评
+//                            tvBeginTipMsg.setBackgroundResource(R.drawable.shape_livevideo_roleplayer_ready_go_bg);
+//                            tvBeginTipMsg.setText("开始");
+//                            break;
+//                        default:
+//                            //默认走英语离线测评
+//                            tvBeginTipMsg.setBackgroundResource(R.drawable.shape_livevideo_roleplayer_ready_go_bg);
+//                            tvBeginTipMsg.setText("GO");
+//                            break;
+//                    }
+//
+//                    //tvBeginTipMsg.setPadding(60, 10, 60, 15);
+//                    tvBeginTipMsg.setGravity(Gravity.CENTER);
+//
+//                }
+//            }, 2000);
+//        } else {
+//            tvBeginTipMsg.setText((curSubModEva == RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA) ? "别着急.还没到你." : "Don't" +
+//                    " hurry. Not your turn yet.");
+//        }
 
-                }
-            }, 2000);
-        } else {
-            tvBeginTipMsg.setText((curSubModEva == RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA) ? "别着急.还没到你." : "Don't" +
-                    " hurry. Not your turn yet.");
-        }
+        showReadyGo();
         //只在直播的时候，有倒计时的逻辑
         if (mIsLive) {
             //开始倒计时，1秒更新一次
@@ -1183,11 +1183,11 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                 logger.i("type = " + type);
                 if ((boolean) type) {
                     //自己朗读的
-                    mRolePlayerSelfItem = new RolePlayerSelfItem(mContext, mRolePlayBll);
+                    mRolePlayerSelfItem = new RolePlayerStandMachineSelfItem(mContext, mRolePlayBll);
                     return mRolePlayerSelfItem;
                 } else {
                     //他人朗读的
-                    mRolePlayerOtherItem = new RolePlayerMachineOtherItem(mContext, mRolePlayBll, mReadHandler);
+                    mRolePlayerOtherItem = new RolePlayerStandMachineOtherItem(mContext, mRolePlayBll, mReadHandler);
                     return mRolePlayerOtherItem;
                 }
             }
@@ -1208,22 +1208,57 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         vHead.setLayoutParams(lp);
         lvReadList.addFooterView(vHead);
 
-//        int rop = ScreenUtils.getScreenHeight() / 2;;
-//        lvReadList.smoothScrollToPositionFromTop(0, -rop);
-//        lvReadList.setSelection(0);
-
-
         //整个前奏3秒后开始
-        tvBeginTipMsg.postDelayed(new Runnable() {
+        rgivLivevideoStandReadygo.postDelayed(new Runnable() {
             @Override
             public void run() {
-                tvBeginTipMsg.setVisibility(View.INVISIBLE);
+                if(rgivLivevideoStandReadygo != null){
+                    //此刻要占位
+                    rgivLivevideoStandReadygo.setVisibility(View.INVISIBLE);
+                    //rgivLivevideoStandReadygo.destory();
+                }
+
                 beginRolePlayer();
             }
         }, 3000);
 
 
     }
+
+    /**
+     * 显示ready go
+     */
+    private void showReadyGo() {
+        rgivLivevideoStandReadygo.setAnimationListener(new FrameAnimation.AnimationListener() {
+            @Override
+            public void onAnimationStart() {
+
+            }
+
+            @Override
+            public void onAnimationEnd() {
+//                ViewGroup group = (ViewGroup) rgivLivevideoStandReadygo.getParent();
+//                if (group != null) {
+//                    group.removeView(rgivLivevideoStandReadygo);
+//                }
+                //rgivLivevideoStandReadygo.destory();
+                if (mContext instanceof Activity) {
+                    Activity activity = (Activity) mContext;
+                    if (activity.isFinishing()) {
+                        return;
+                    }
+                }
+            }
+
+            @Override
+            public void onAnimationRepeat() {
+
+            }
+        });
+        liveSoundPool = LiveSoundPool.createSoundPool();
+        rgivLivevideoStandReadygo.start(liveSoundPool);
+    }
+
 
     /**
      * 开始进入RolePlayer对话
@@ -1287,7 +1322,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         if (group != null) {
             logger.i("关闭roleplay界面");
             group.removeView(mView);
-            speechEvalAction.stopSpeech(RolePlayMachinePager.this, getBaseVideoQuestionEntity(),
+            speechEvalAction.stopSpeech(RolePlayStandMachinePager.this, getBaseVideoQuestionEntity(),
                     videoQuestionLiveEntity.id);
             //speechEvalAction = null;
         }
