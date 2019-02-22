@@ -678,7 +678,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
     @Override
     protected void sendPlayVideo() {
-        if (isArts == 1) {
+        if (isArts == 1 || isArts == 2) {
             // 如果观看视频时间等于或大于统计数则发送
             if (mPlayVideoTime >= mSendPlayVideoTime) {
                 String liveId = mVideoEntity.getLiveId();
