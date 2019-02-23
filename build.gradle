@@ -11,6 +11,10 @@ android {
     sourceSets {
         main {
             jniLibs.srcDirs = ['libs']
+            java.srcDirs += ['src/main/java-en_teampk']
+            res.srcDirs += ['src/main/res-en_teampk']
+            java.srcDirs += ['src/main/java-achievement']
+            res.srcDirs += ['src/main/res-achievement']
         }
     }
     compileSdkVersion 26

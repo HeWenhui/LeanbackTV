@@ -207,16 +207,6 @@ public class PScienceRedPackageBll implements RedPackageAction, Handler.Callback
                 }
             }
         }, 1000);
-        postDelayedIfNotFinish(new Runnable() {
-            @Override
-            public void run() {
-                // 更新 本场成就
-                UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(activity, UpdateAchievement.class);
-                if (updateAchievement != null) {
-                    updateAchievement.getStuGoldCount();
-                }
-            }
-        }, 2900);
         view.findViewById(R.id.iv_livevideo_redpackage_close).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

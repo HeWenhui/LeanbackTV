@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     android:background="#CC000000">
 
-
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@id/tv_arts_answer_result_sumbit_toast"
         android:layout_width="269dp"
@@ -15,8 +14,7 @@
         android:text="你要快快提交哦~"
         android:textColor="#F46832"
         android:textSize="20sp"
-        android:visibility="gone"
-        />
+        android:visibility="gone" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:id="@id/lv_arts_answer_state_pse"
@@ -25,43 +23,56 @@
 
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:id="@id/rl_arts_pse_answer_result_root"
-        >
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
         <com.airbnb.lottie.LottieAnimationView
             android:id="@id/lv_arts_answer_result_pse"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-
         <com.xueersi.parentsmeeting.modules.livevideo.widget.FastScrollableRecyclerView
             android:id="@id/rcl_arts_answer_result_detail"
             android:layout_width="370dp"
             android:layout_height="130dp"
-            android:layout_below="@id/tv_arts_answer_result_detail_title"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:overScrollMode="never"
             android:visibility="gone"
             app:VerticalThumbDrawable="@drawable/arts_pse_fastscorller_header_selector"
-            app:VerticalTrackDrawable="@drawable/arts_rcl_fastscroller_tracker"
-            />
-    </RelativeLayout>
+            app:VerticalTrackDrawable="@drawable/arts_rcl_fastscroller_tracker" />
 
+        <ViewStub
+            android:id="@id/vs_arts_answer_result_voice"
+            android:layout_width="295dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="127dp"
+            android:layout="@layout/page_livevideo_arts_anwserresult_voice_blank" />
+
+        <TextView
+            android:id="@id/tv_arts_answer_result_pse_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="268dp"
+            android:textColor="#ff8C8080"
+            android:textSize="10sp"
+            android:visibility="gone" />
+
+    </RelativeLayout>
 
     <ImageView
         android:id="@id/iv_arts_answer_result_answer_btn"
         android:layout_width="83dp"
         android:layout_height="30dp"
-        android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="61dp"
+        android:layout_alignParentBottom="true"
         android:layout_marginRight="20dp"
+        android:layout_marginBottom="61dp"
         android:scaleType="centerCrop"
         android:src="@drawable/selector_live_artspse_answer_result"
-        android:visibility="gone"
-        />
-
+        android:visibility="gone" />
 
 </RelativeLayout>

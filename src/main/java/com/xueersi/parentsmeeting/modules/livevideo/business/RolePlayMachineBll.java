@@ -12,6 +12,7 @@ import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -181,6 +182,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
     /**
      * 获取分组信息后去请求试题
      */
+    @Override
     public void requestTestInfos() {
         if (videoQuestionLiveEntity != null) {
             logger.i("请求试题信息 mRolePlayerEntity.toString() = " + videoQuestionLiveEntity.id);
@@ -305,7 +307,10 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
         return mRolePlayerEntity;
     }
 
+    public void setRolePlayMachinePager(RolePlayMachinePager rolePlayMachinePager) {
+        this.mRolePlayMachinePager = rolePlayMachinePager;
 
+    }
 
     @Override
     public synchronized void requestResult() {
@@ -356,9 +361,11 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
 
                     JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                     int gold = jsonObject.optInt("gold");
+                    int energy = jsonObject.optInt("energy");
                     mRolePlayerEntity.setGoldCount(gold);
                     mRolePlayerEntity.setJson(jsonObject);
-                    logger.i("onPmSuccess: gold  =" + gold);
+                    mRolePlayerEntity.setEnergy(energy);
+                    logger.i("onPmSuccess: gold  =" + gold+",energy="+energy);
                 }
 
                 @Override
@@ -439,8 +446,10 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                     JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                     int gold = jsonObject.optInt("gold");
                     int scores = jsonObject.optInt("scores");
+                    int energy = jsonObject.optInt("energy");
                     mRolePlayerEntity.setGoldCount(gold);
                     mRolePlayerEntity.setJson(jsonObject);
+                    mRolePlayerEntity.setEnergy(energy);
                     // 发送已答过的状态
                     EventBus.getDefault().post(new ArtsAnswerResultEvent(mRolePlayerEntity.getTestId(), ArtsAnswerResultEvent.TYPE_NATIVE_ANSWERRESULT));
                     EventBus.getDefault().post(new VoiceAnswerResultEvent(mRolePlayerEntity.getTestId(), scores));
@@ -455,8 +464,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
 
                 @Override
                 public void onPmError(ResponseEntity responseEntity) {
-                    logger.i("onPmError: responseEntity.toString()  =" + responseEntity.toString
-                            () + "提交结果失败，但是要释放资源");
+                    logger.i("onPmError: responseEntity=" + responseEntity.getErrorMsg()+ ",提交结果失败，但是要释放资源");
                     super.onPmError(responseEntity);
                     if (mRolePlayMachinePager != null) {
                         mRolePlayMachinePager.recoverListScrollAndCancelDZ();
@@ -481,12 +489,15 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
             //站立式直播老师收题的时候，不再关闭当前页面
             return;
         }
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
+        if(mRolePlayMachinePager != null){
+            mRolePlayMachinePager.stopSpeech();
+        }
+        mHertHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 closeCurPage();
             }
-        });
+        },200);
     }
 
     @Override

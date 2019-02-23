@@ -268,12 +268,15 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             mWebSocket.close();
             mWebSocket = null;
         }
-        new Handler(Looper.getMainLooper()).post(new Runnable() {
+        if(mRolePlayerPager != null){
+            mRolePlayerPager.stopSpeech();
+        }
+        mHertHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 closeCurPage();
             }
-        });
+        },200);
     }
 
     /**
@@ -292,7 +295,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             }
             UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext,UpdateAchievement.class);
             if (updateAchievement != null) {
-                updateAchievement.getStuGoldCount();
+                updateAchievement.getStuGoldCount("closeCurPage", UpdateAchievement.GET_TYPE_QUE);
             }
         }
         //bottomContent = null;
@@ -390,7 +393,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             }
 
             @Override
-            public void onError() {
+            public void onError(Throwable throwable) {
                 logger.i( "onError");
                 isBeginConnWebSocket = false;
             }
@@ -739,8 +742,10 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
                     JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                     int gold = jsonObject.optInt("gold");
+                    int energy = jsonObject.optInt("energy");
                     mRolePlayerEntity.setGoldCount(gold);
-                    logger.i( "onPmSuccess: gold  =" + gold);
+                    mRolePlayerEntity.setEnergy(energy);
+                    logger.i( "onPmSuccess: gold  =" + gold+",energy="+energy);
                 }
 
                 @Override
@@ -765,6 +770,10 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
             e.printStackTrace();
         }
 
+    }
+
+    public RolePlayerEntity getRoleEntry() {
+        return mRolePlayerEntity;
     }
 
     /**
@@ -820,7 +829,9 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                     JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                     int gold = jsonObject.optInt("gold");
                     int scores = jsonObject.optInt("scores");
+                    int energy = jsonObject.optInt("energy");
                     mRolePlayerEntity.setGoldCount(gold);
+                    mRolePlayerEntity.setEnergy(energy);
                     // 发送已答过的状态
                     EventBus.getDefault().post(new ArtsAnswerResultEvent(mRolePlayerEntity.getTestId(),ArtsAnswerResultEvent.TYPE_NATIVE_ANSWERRESULT));
                     EventBus.getDefault().post(new VoiceAnswerResultEvent(mRolePlayerEntity.getTestId(),scores));

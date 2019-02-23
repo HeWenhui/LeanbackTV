@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--开始分队-->
+    <item name="iv_livevideo_en_teampk_rank" type="id" />
+    <item name="gv_livevideo_en_teampk_rank" type="id" />
+    <item name="iv_livevideo_en_teampk_rank_select" type="id" />
+    <!--分队结果-->
+    <item name="rl_livevideo_en_teampk_content" type="id" />
+    <item name="iv_livevideo_en_teampk_mine" type="id" />
+    <item name="iv_livevideo_en_teampk_vs" type="id" />
+    <item name="iv_livevideo_en_teampk_other" type="id" />
+    <item name="rl_livevideo_en_teampk_rank_mine" type="id" />
+    <item name="rl_livevideo_en_teampk_rank_other" type="id" />
+    <item name="bt_livevideo_en_teampk_rank_start" type="id" />
+    <item name="tv_livevideo_en_teampk_rank_start_close" type="id" />
+    <item name="iv_livevideo_en_teampk_rank_score" type="id" />
+    <item name="ll_livevideo_en_teampk_rank_score_tip" type="id" />
+    <item name="tv_livevideo_en_teampk_rank_score_tip_lable" type="id" />
+    <item name="iv_livevideo_en_teampk_rank_score_tip" type="id" />
+    <item name="tv_livevideo_en_teampk_rank_score_tip" type="id" />
+    <item name="iv_livevideo_en_teampk_top_img" type="id" />
+    <item name="tv_livevideo_en_teampk_top_name" type="id" />
+    <!--分队成员-->
+    <item name="fl_livevideo_en_teampk_member" type="id" />
+    <item name="rl_livevideo_en_teampk_member" type="id" />
+    <item name="iv_livevideo_en_teampk_member" type="id" />
+    <item name="civ_livevideo_en_teampk_member" type="id" />
+    <item name="rl_livevideo_en_teampk_head" type="id" />
+    <item name="civ_livevideo_en_teampk_head" type="id" />
+    <item name="rl_livevideo_en_teampk_name_fire" type="id" />
+    <item name="tv_livevideo_en_teampk_name" type="id" />
+    <item name="iv_livevideo_en_teampk_fire" type="id" />
+    <item name="tv_livevideo_en_teampk_fire" type="id" />
+    <item name="lav_livevideo_en_teampk_zan" type="id" />
+    <item name="rl_livevideo_en_teampk_zan" type="id" />
+    <!--答题领先-->
+    <item name="iv_livevideo_en_teampk_lead_left" type="id" />
+    <item name="iv_livevideo_en_teampk_lead_mid" type="id" />
+    <item name="iv_livevideo_en_teampk_lead_right" type="id" />
+    <item name="pg_livevideo_en_teampk_lead" type="id" />
+    <item name="iv_livevideo_en_teampk_lead_prog" type="id" />
+    <item name="rl_livevideo_en_teampk_lead_bottom" type="id" />
+    <item name="iv_livevideo_en_teampk_lead_star" type="id" />
+    <item name="ll_livevideo_en_teampk_lead_star" type="id" />
+    <item name="rl_livevideo_en_teampk_lead_left" type="id" />
+    <item name="iv_livevideo_en_teampk_lead_fire_left" type="id" />
+    <item name="tv_livevideo_en_teampk_lead_fire_add_left" type="id" />
+    <item name="tv_livevideo_en_teampk_lead_score_left" type="id" />
+    <item name="rl_livevideo_en_teampk_lead_right" type="id" />
+    <item name="iv_livevideo_en_teampk_lead_fire_right" type="id" />
+    <item name="iv_livevideo_en_teampk_lead_fire_add_right" type="id" />
+    <item name="tv_livevideo_en_teampk_lead_score_right" type="id" />
+    <item name="iv_livevideo_enpk_jieguo_pic_nor" type="id" />
+</resources>

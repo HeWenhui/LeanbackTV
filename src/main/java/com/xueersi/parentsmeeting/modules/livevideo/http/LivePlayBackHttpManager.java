@@ -152,7 +152,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
                 params.addBodyParam("liveId", classId);
                 params.addBodyParam("answers", testResult);
                 params.addBodyParam("isPlayBack", "2");
-                params.addBodyParam("isForce", "1");
+                params.addBodyParam("isForce", isSubmit);
                 params.addBodyParam("Cookie", AppBll.getInstance().getUserToken());
                 sendPost(url, params, requestCallBack);
             }
@@ -274,12 +274,13 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
 
     //语音评测2期答案提交
     public void sendSpeechEvalResult2(String enstuId, String liveId, String id, String stuAnswer, HttpCallBack
-            requestCallBack) {
+            requestCallBack, String isSubmit) {
         if (LiveVideoConfig.isNewArts) {
             HttpRequestParams params = new HttpRequestParams();
             params.addBodyParam("liveId", liveId);
             params.addBodyParam("testId", id);
             params.addBodyParam("isRejected", "1");
+            params.addBodyParam("isSubmit", ""+isSubmit);
             params.addBodyParam("answers", "" + stuAnswer);
             params.addBodyParam("type", "2");
             setDefaultParameter(params);
