@@ -59,6 +59,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.LiveStandSpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
+import com.xueersi.parentsmeeting.modules.livevideo.question.view.StandSpeechResult;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
@@ -875,27 +876,9 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             bitmap.recycle();
             //画名字和金币数量
             if (havename) {
-                String strGold = "+" + gold;
-                View layout_live_stand_red_mine1 = LayoutInflater.from(mContext).inflate(R.layout
-                        .layout_live_stand_speech_head, null);
-                TextView tv_livevideo_redpackage_name = layout_live_stand_red_mine1.findViewById(R.id
-                        .tv_livevideo_redpackage_name);
-                tv_livevideo_redpackage_name.setText("" + userName);
-                tv_livevideo_redpackage_name.setTextSize(TypedValue.COMPLEX_UNIT_PX, 23f);
-                tv_livevideo_redpackage_name.setTextColor(0xff97091D);
-                tv_livevideo_redpackage_name.setTypeface(fontFace);
-                int width = 122;
-                int height = 72;
-                int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
-                int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
-                layout_live_stand_red_mine1.measure(widthMeasureSpec, heightMeasureSpec);
-                layout_live_stand_red_mine1.layout(0, 0, width, height);
-
+                View layout_live_stand_red_mine1 = StandSpeechResult.resultViewName(mContext, userName);
                 canvas.save();
-//                canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2,
-// 345 + (height - measuredHeight) / 2);
                 canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 348);
-//                logger.d( "updateHead:measuredWidth=" + measuredWidth + ",measuredHeight=" + measuredHeight);
                 layout_live_stand_red_mine1.draw(canvas);
                 canvas.restore();
             }
@@ -925,73 +908,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         StandLiveMethod.leaderBoard(liveSoundPool);
         int score = resultEntity.getScore();
         final RelativeLayout group = (RelativeLayout) mView;
-        final View resultMine = LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_stand_speech_mine,
-                group, false);
-        TextView tv_livevideo_speecteval_result_gold = resultMine.findViewById(R.id.tv_livevideo_speecteval_result_gold);
-        tv_livevideo_speecteval_result_gold.setText("+" + gold);
-        TextView tv_livevideo_speecteval_result_energy = resultMine.findViewById(R.id.tv_livevideo_speecteval_result_energy);
-        tv_livevideo_speecteval_result_energy.setText("+" + energy);
-        InputStream inputStream = null;
-        try {
-            inputStream = mContext.getAssets().open
-                    ("live_stand/frame_anim/redpackage/9_teams_bg/package_team_bg_00035.png");
-            final Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            resultMine.setBackgroundDrawable(new BitmapDrawable(bitmap));
-            resultMine.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-                @Override
-                public void onViewAttachedToWindow(View v) {
-
-                }
-
-                @Override
-                public void onViewDetachedFromWindow(View v) {
-                    bitmap.recycle();
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        LinearLayout llLivevideoSpeectevalResultMine = resultMine.findViewById(R.id
-                .ll_livevideo_speecteval_result_mine);
-//        bg_livevideo_speecteval_result_number_0
-        //有用，误删
-        int[] scoreRes = {R.drawable.bg_livevideo_speecteval_result_number_0,
-                R.drawable.bg_livevideo_speecteval_result_number_1,
-                R.drawable.bg_livevideo_speecteval_result_number_2,
-                R.drawable.bg_livevideo_speecteval_result_number_3,
-                R.drawable.bg_livevideo_speecteval_result_number_4,
-                R.drawable.bg_livevideo_speecteval_result_number_5,
-                R.drawable.bg_livevideo_speecteval_result_number_6,
-                R.drawable.bg_livevideo_speecteval_result_number_7,
-                R.drawable.bg_livevideo_speecteval_result_number_8,
-                R.drawable.bg_livevideo_speecteval_result_number_9,};
-        for (int i = 0; i < ("" + score).length(); i++) {
-            char c = ("" + score).charAt(i);
-            ImageView imageView = new ImageView(mContext);
-            int res = -1;
-            if (c - '0' < scoreRes.length) {
-                res = scoreRes[c - '0'];
-            }
-            if (res == -1) {
-                String name = "bg_livevideo_speecteval_result_number_" + c;
-                imageView.setImageResource(mContext.getResources().getIdentifier(name, "drawable", mContext
-                        .getPackageName()));
-            } else {
-                imageView.setImageResource(res);
-            }
-            llLivevideoSpeectevalResultMine.addView(imageView);
-        }
-        ImageView imageViewScore = new ImageView(mContext);
-        imageViewScore.setImageResource(R.drawable.bg_livevideo_speecteval_result_number_unit);
-        llLivevideoSpeectevalResultMine.addView(imageViewScore);
+        final View resultMine = StandSpeechResult.resultViewScore(mContext, group, gold, energy, score);
         resultMine.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View
                 .OnClickListener() {
             @Override

@@ -107,48 +107,6 @@
 
     </RelativeLayout>
 
-    <!-- 结果弹窗 -->
-
-    <RelativeLayout
-        android:id="@+id/rl_roleplay_stand_result_lay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:background="@drawable/roleplay_bg_pic_nor_stand_live"
-        android:visibility="gone">
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="60dp"
-            android:background="@drawable/bg_livevideo_speecteval_result_mine">
-
-            <LinearLayout
-                android:id="@+id/ll_livevideo_speecteval_result_mine"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:orientation="horizontal" />
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/tv_close_role_play_result"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:layout_alignParentRight="true"
-            android:layout_marginTop="9dp"
-            android:layout_marginRight="9dp"
-            android:background="@drawable/selector_close_roleplay_stand_bg" />
-
-
-        <ImageView
-            android:id="@+id/iv_livevideo_speecteval_result_mine"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true" />
-    </RelativeLayout>
-
 </RelativeLayout>
 
 
