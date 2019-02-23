@@ -108,7 +108,8 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
             }
             putInstance(UpdateAchievement.class, new UpdateAchievement() {
                 @Override
-                public void getStuGoldCount(int type) {
+                public void getStuGoldCount(Object method, int type) {
+                    mLogtf.d("getStuGoldCount:method=" + method + ",type=" + type);
                     if (1 == englishPk.canUsePK) {
                         if (type != UpdateAchievement.GET_TYPE_RED) {
                             return;

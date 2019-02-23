@@ -329,16 +329,18 @@ public class EnAchievePager extends LiveBasePager {
             lp.addRule(RelativeLayout.ALIGN_RIGHT, R.id.rl_livevideo_info);
             lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
             lp.bottomMargin = ScreenUtils.getScreenHeight() - rl_livevideo_info.getTop();
+            logger.d("onGetStar:bottomMargin=" + lp.bottomMargin);
             viewGroup.addView(lottieAnimationView, lp);
             lottieAnimationView.playAnimation();
             lottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
                 @Override
                 public void onAnimationStart(Animator animation) {
-
+                    logger.d("onAnimationStart");
                 }
 
                 @Override
                 public void onAnimationEnd(Animator animation) {
+                    logger.d("onAnimationEnd");
                     viewGroup.removeView(lottieAnimationView);
                 }
 

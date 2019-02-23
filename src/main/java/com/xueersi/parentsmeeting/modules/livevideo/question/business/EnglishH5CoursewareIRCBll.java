@@ -554,7 +554,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         public void getStuGoldCount() {
             UpdateAchievement updateAchievement = getInstance(UpdateAchievement.class);
             if (updateAchievement != null) {
-                updateAchievement.getStuGoldCount(UpdateAchievement.GET_TYPE_QUE);
+                updateAchievement.getStuGoldCount("getStuGoldCount", UpdateAchievement.GET_TYPE_QUE);
             }
         }
 

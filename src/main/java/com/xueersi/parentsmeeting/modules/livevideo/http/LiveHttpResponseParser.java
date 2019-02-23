@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
@@ -137,7 +138,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             e.printStackTrace();
         }
         if (data.has("isAllowTeamPk")) {
-            getInfo.setIsAllowTeamPk(data.optString("isAllowTeamPkNew","0"));
+            getInfo.setIsAllowTeamPk(data.optString("isAllowTeamPkNew", "0"));
         }
 
 //            LiveVideoConfig.isPrimary = true;

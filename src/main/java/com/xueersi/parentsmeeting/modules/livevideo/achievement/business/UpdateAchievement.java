@@ -10,7 +10,7 @@ public interface UpdateAchievement {
     int GET_TYPE_RED = 1;
     int GET_TYPE_QUE = 2;
 
-    void getStuGoldCount(int type);
+    void getStuGoldCount(Object method, int type);
 
     void updateEnpk(EnTeamPkRankEntity enTeamPkRankEntity);
 }
