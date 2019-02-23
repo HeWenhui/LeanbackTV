@@ -480,10 +480,6 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
     @Override
     public void onStopQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity, String nonce) {
         logger.i("onStopQuestion 老师收题了,断开socket ");
-        if(mLiveGetInfo.getPattern() == 2){
-            //站立式直播老师收题的时候，不再关闭当前页面
-            return;
-        }
         if(mRolePlayMachinePager != null){
             mRolePlayMachinePager.stopSpeech();
         }
