@@ -307,11 +307,6 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
         return mRolePlayerEntity;
     }
 
-    public void setRolePlayMachinePager(RolePlayMachinePager rolePlayMachinePager) {
-        this.mRolePlayMachinePager = rolePlayMachinePager;
-
-    }
-
     @Override
     public synchronized void requestResult() {
         logger.i("提交结果");
