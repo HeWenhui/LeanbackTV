@@ -46,6 +46,7 @@ public class TeamPkLeadPager extends LiveBasePager {
     private EnTeamPkRankEntity enTeamPkRankEntity;
     private RelativeLayout rlTeampkLeadBottom;
     private ProgressBar pgTeampkLead;
+    private RelativeLayout rlTeampkLead;
     private ImageView ivTeampkLeadProg;
     private ImageView ivTeampkMine;
     private ImageView ivTeampkOther;
@@ -96,6 +97,7 @@ public class TeamPkLeadPager extends LiveBasePager {
         }
         rlTeampkLeadBottom = view.findViewById(R.id.rl_livevideo_en_teampk_lead_bottom);
         pgTeampkLead = view.findViewById(R.id.pg_livevideo_en_teampk_lead);
+        rlTeampkLead = view.findViewById(R.id.rl_livevideo_en_teampk_lead);
         ivTeampkLeadProg = view.findViewById(R.id.iv_livevideo_en_teampk_lead_prog);
         ivTeampkMine = view.findViewById(R.id.iv_livevideo_en_teampk_mine);
         ivTeampkOther = view.findViewById(R.id.iv_livevideo_en_teampk_other);
@@ -307,13 +309,13 @@ public class TeamPkLeadPager extends LiveBasePager {
     private boolean setProgFire() {
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ivTeampkLeadProg.getLayoutParams();
         int ivWidth = ivTeampkLeadProg.getWidth();
-        int leftMargin = (int) (pgTeampkLead.getLeft() + pgTeampkLead.getWidth() * finalFprog) - ivWidth / 2;
+        int leftMargin = (int) (rlTeampkLead.getLeft() + pgTeampkLead.getLeft() + pgTeampkLead.getWidth() * finalFprog) - ivWidth / 2;
         //为了和进度条对齐，计算火的宽度
         float fireRatio = 88.0f / 395.0f;
         int fireWidth = (int) (ivWidth * fireRatio);
         //火最大和进度条右边距对齐
-        int maxLeftMargin = (pgTeampkLead.getLeft() + pgTeampkLead.getWidth() - ivWidth / 2 - fireWidth / 2);
-        logger.d("initData:width=" + mView.getWidth() + ",left=" + pgTeampkLead.getLeft() + ",leftMargin=" + leftMargin + ",maxLeftMargin=" + maxLeftMargin);
+        int maxLeftMargin = (rlTeampkLead.getLeft() + pgTeampkLead.getLeft() + pgTeampkLead.getWidth() - ivWidth / 2 - fireWidth / 2);
+        logger.d("initData:width=" + mView.getWidth() + ",left=" + rlTeampkLead.getLeft() + "," + pgTeampkLead.getLeft() + ",leftMargin=" + leftMargin + ",maxLeftMargin=" + maxLeftMargin);
         int leftMargin2 = Math.min(leftMargin, maxLeftMargin);
         if (lp.leftMargin != leftMargin2) {
             lp.leftMargin = leftMargin2;

@@ -37,6 +37,7 @@
     <item name="iv_livevideo_en_teampk_lead_left" type="id" />
     <item name="iv_livevideo_en_teampk_lead_mid" type="id" />
     <item name="iv_livevideo_en_teampk_lead_right" type="id" />
+    <item name="rl_livevideo_en_teampk_lead" type="id" />
     <item name="pg_livevideo_en_teampk_lead" type="id" />
     <item name="iv_livevideo_en_teampk_lead_prog" type="id" />
     <item name="rl_livevideo_en_teampk_lead_bottom" type="id" />
