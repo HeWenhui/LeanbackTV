@@ -30,7 +30,6 @@ public class LiveEventBus {
     }
 
     public static EventBus getDefault(Context context) {
-        EventBus.getDefault();
         EventBus eventBus = ProxUtil.getProxUtil().get(context, EventBus.class);
         if (eventBus == null) {
 //            eventBus = EventBus.builder().build();

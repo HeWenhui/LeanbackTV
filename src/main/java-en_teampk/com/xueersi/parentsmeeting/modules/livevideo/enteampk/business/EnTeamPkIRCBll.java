@@ -15,12 +15,14 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
 import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.event.ClassEndEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkLeadPager;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -31,6 +33,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSh
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,6 +63,9 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private long stopQuestTime;
     private AtomicBoolean firstConnect = new AtomicBoolean(false);
     private Runnable reportStuInfoRun;
+    private ClassEndRec classEndRec;
+    private ClassEndReg classEndReg;
+    private boolean isEnglishPkTotalRank = false;
 
     public EnTeamPkIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -135,6 +142,28 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //            enTeamPkRankEntity.setOpTeamTotal(154);
 //            enTeamPkAction.onRankLead(enTeamPkRankEntity, "1", TeamPkLeadPager.TEAM_TYPE_1);
 //        }
+        if (getInfo.getStudentLiveInfo() != null) {
+            String classId = getInfo.getStudentLiveInfo().getClassId();
+            try {
+                mLogtf.d("onLiveInited:classInt=" + classId);
+                int classInt = Integer.parseInt(classId);
+                if (classInt < 0) {
+                    classEndReg = new ClassEndReg(mContext, getInfo);
+                    classEndRec = new ClassEndRec();
+                    LiveEventBus.getDefault(mContext).register(classEndRec);
+                }
+            } catch (Exception e) {
+                CrashReport.postCatchedException(e);
+            }
+        }
+    }
+
+    private class ClassEndRec {
+        @Subscribe(threadMode = ThreadMode.POSTING)
+        public void onClassEndEvent(ClassEndEvent endEvent) {
+            mLogtf.d("onClassEndEvent:isEnglishPkTotalRank=" + isEnglishPkTotalRank);
+            getEnglishPkTotalRank();
+        }
     }
 
     class EnTeamPkQuestionShowAction implements QuestionShowAction {
@@ -454,55 +483,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 break;
             case XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_RESULT:
                 logger.d("onNotice:XCR_ROOM_TEAMPK_RESULT:pkTeamEntity=" + pkTeamEntity);
-                if (pkTeamEntity != null) {
-                    final String teamId = "" + pkTeamEntity.getPkTeamId();
-                    getHttpManager().getEnglishPkTotalRank(teamId, "", new HttpCallBack(false) {
-                        AtomicInteger tryCount = new AtomicInteger(5);
-                        HttpCallBack callBack = this;
-
-                        @Override
-                        public void onPmSuccess(ResponseEntity responseEntity) {
-                            logger.d("getEnglishPkTotalRank:onPmSuccess=" + responseEntity.getJsonObject());
-                            EnTeamPkRankEntity enTeamPkRankEntity = getHttpResponseParser().parseUpdataEnglishPkByTestId(responseEntity, mGetInfo.getStuId());
-                            if (pkTeamEntity != null && enTeamPkRankEntity != null) {
-                                ArrayList<TeamMemberEntity> myTeamEntitys = enTeamPkRankEntity.getMemberEntities();
-                                for (int i = 0; i < myTeamEntitys.size(); i++) {
-                                    TeamMemberEntity teamMemberEntity = myTeamEntitys.get(i);
-                                    if (teamMemberEntity.isMy) {
-                                        myTeamEntitys.remove(i);
-                                        myTeamEntitys.add(0, teamMemberEntity);
-                                        break;
-                                    }
-                                }
-                                enTeamPkRankEntity.setMyTeam(pkTeamEntity.getMyTeam());
-                                updateEnpk(enTeamPkRankEntity);
-                                if (enTeamPkAction != null) {
-                                    enTeamPkAction.onRankLead(enTeamPkRankEntity, "-1-end", TeamPkLeadPager.TEAM_TYPE_2);
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onPmError(ResponseEntity responseEntity) {
-                            super.onPmError(responseEntity);
-                            logger.e("getEnglishPkTotalRank:onPmError=" + responseEntity.getErrorMsg());
-                        }
-
-                        @Override
-                        public void onPmFailure(Throwable error, String msg) {
-                            super.onPmFailure(error, msg);
-                            logger.e("getEnglishPkTotalRank:onPmFailure=" + msg, error);
-                            if (tryCount.decrementAndGet() > 0) {
-                                postDelayedIfNotFinish(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        getHttpManager().getEnglishPkTotalRank(teamId, "", callBack);
-                                    }
-                                }, 1000);
-                            }
-                        }
-                    });
-                }
+                getEnglishPkTotalRank();
                 break;
             case XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_GO:
                 logger.d("onNotice:XCR_ROOM_TEAMPK_GO:data=" + data);
@@ -699,6 +680,62 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         }
     }
 
+    private void getEnglishPkTotalRank() {
+        if (pkTeamEntity != null) {
+            if (isEnglishPkTotalRank) {
+                return;
+            }
+            isEnglishPkTotalRank = true;
+            final String teamId = "" + pkTeamEntity.getPkTeamId();
+            getHttpManager().getEnglishPkTotalRank(teamId, "", new HttpCallBack(false) {
+                AtomicInteger tryCount = new AtomicInteger(5);
+                HttpCallBack callBack = this;
+
+                @Override
+                public void onPmSuccess(ResponseEntity responseEntity) {
+                    logger.d("getEnglishPkTotalRank:onPmSuccess=" + responseEntity.getJsonObject());
+                    EnTeamPkRankEntity enTeamPkRankEntity = getHttpResponseParser().parseUpdataEnglishPkByTestId(responseEntity, mGetInfo.getStuId());
+                    if (pkTeamEntity != null && enTeamPkRankEntity != null) {
+                        ArrayList<TeamMemberEntity> myTeamEntitys = enTeamPkRankEntity.getMemberEntities();
+                        for (int i = 0; i < myTeamEntitys.size(); i++) {
+                            TeamMemberEntity teamMemberEntity = myTeamEntitys.get(i);
+                            if (teamMemberEntity.isMy) {
+                                myTeamEntitys.remove(i);
+                                myTeamEntitys.add(0, teamMemberEntity);
+                                break;
+                            }
+                        }
+                        enTeamPkRankEntity.setMyTeam(pkTeamEntity.getMyTeam());
+                        updateEnpk(enTeamPkRankEntity);
+                        if (enTeamPkAction != null) {
+                            enTeamPkAction.onRankLead(enTeamPkRankEntity, "-1-end", TeamPkLeadPager.TEAM_TYPE_2);
+                        }
+                    }
+                }
+
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    super.onPmError(responseEntity);
+                    logger.e("getEnglishPkTotalRank:onPmError=" + responseEntity.getErrorMsg());
+                }
+
+                @Override
+                public void onPmFailure(Throwable error, String msg) {
+                    super.onPmFailure(error, msg);
+                    logger.e("getEnglishPkTotalRank:onPmFailure=" + msg, error);
+                    if (tryCount.decrementAndGet() > 0) {
+                        postDelayedIfNotFinish(new Runnable() {
+                            @Override
+                            public void run() {
+                                getHttpManager().getEnglishPkTotalRank(teamId, "", callBack);
+                            }
+                        }, 1000);
+                    }
+                }
+            });
+        }
+    }
+
     private void updateEnpk(EnTeamPkRankEntity enTeamPkRankEntity) {
         UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class);
         if (updateAchievement != null) {
@@ -751,6 +788,12 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void onDestory() {
         super.onDestory();
+        if (classEndReg != null) {
+            classEndReg.destory();
+        }
+        if (classEndRec != null) {
+            LiveEventBus.getDefault(mContext).unregister(classEndRec);
+        }
         if (enTeamPkAction != null) {
             enTeamPkAction.destory();
         }

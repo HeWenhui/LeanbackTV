@@ -95,7 +95,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     private long sysTimeOffset;
     private final String ROOM_MIDDLE = "L";
     private IRCMessage mIRCMessage;
-    LiveVideoBll liveVideoBll;
+    private LiveVideoBll liveVideoBll;
     private String mCurrentDutyId;
     private AtomicBoolean mIsLand;
     private static String Tag = "LiveBll2";
