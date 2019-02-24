@@ -137,8 +137,8 @@
                 android:layout_marginRight="11dp"
                 android:layout_toLeftOf="@+id/tv_livevideo_speechbul_send"
                 android:gravity="right"
-                android:textColor="#66FFFFFF"
-                android:textSize="13sp" />
+                android:textColor="#FFFFFF"
+                android:textSize="13dp" />
 
             <ImageView
                 android:id="@id/tv_livevideo_speechbul_send"

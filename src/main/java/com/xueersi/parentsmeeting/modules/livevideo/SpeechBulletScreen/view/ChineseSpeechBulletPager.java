@@ -317,7 +317,6 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
         // 检查用户麦克风权限
         if (hasAudidoPermission) {
             devicestatus = "1";
-            recoginzeStatus = START;
             startEvaluator();
         } else {
             //如果没有麦克风权限，申请麦克风权限
@@ -346,7 +345,6 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
                 @Override
                 public void onGuarantee(String permission, int position) {
                     logger.i("onGuarantee()");
-                    recoginzeStatus = START;
                     startEvaluator();
                 }
             }, PermissionConfig.PERMISSION_CODE_AUDIO);
@@ -710,7 +708,7 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
     private int TEXT_INPUT = 4;
     private int recoginzeStatus = 0;
 
-    Runnable pleaseSayAgainRunnable = new Runnable() {
+    private Runnable pleaseSayAgainRunnable = new Runnable() {
         @Override
         public void run() {
             pleaseSayAgain();
@@ -719,6 +717,8 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
 
     protected void startEvaluator() {
         logger.i("startEvaluator()");
+        recoginzeStatus = START;
+
         File saveFile = new File(dir, "speechbul" + System.currentTimeMillis() + ".mp3");
         mSpeechEvaluatorUtils.startChineseSpeechBulletRecognize(saveFile.getPath(), SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
                 new EvaluatorListener() {
@@ -726,10 +726,7 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
                     public void onBeginOfSpeech() {
                         logger.i("onBeginOfSpeech()");
 
-                        if (recoginzeStatus == PLEASE_SAY_AGGIN) {
-                            tvSpeechbulTitle.setText(VOICE_RECOG_NOVOICE_HINT);
-                            tvSpeechbulSwitch.setVisibility(View.VISIBLE);
-                        } else {
+                        if (recoginzeStatus == START) {
                             tvSpeechbulTitle.setText(VOICE_RECOG_HINT);
                             mWeakHandler.postDelayed(pleaseSayAgainRunnable, 5000);
                         }
@@ -852,7 +849,13 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
         }
         if (resultEntity.getErrorNo() == ResultCode.MUTE_AUDIO || resultEntity.getErrorNo() == ResultCode.MUTE) {
             logger.i("声音有点小，再来一次哦！");
-            pleaseSayAgain();
+            mWeakHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startEvaluator();
+                    pleaseSayAgain();
+                }
+            }, 300);
         } else if (resultEntity.getErrorNo() == ResultCode.NO_AUTHORITY) {
             logger.i("麦克风不可用，快去检查一下！");
             startTextInput("");
@@ -883,23 +886,13 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
         umsAgentDebugSys(LiveVideoConfig.LIVE_SPEECH_BULLETSCREEN, mData);
     }
 
-    protected String str2json(String str) {
-        JSONObject object = new JSONObject();
-        try {
-            object.put("nbest", str);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return object.toString();
-    }
-
     /**
      * 结束语音输入，跳转文本输入
      */
     private void startTextInput(String evaluateResult) {
         stopEvaluator();
         recoginzeStatus = TEXT_INPUT;
-        aiText = evaluateResult;
+
         tvSpeechbulTitle.setVisibility(View.GONE);
         tvSpeechbulTitleCount.setVisibility(View.GONE);
         vwvSpeechbulWave.setVisibility(View.GONE);
@@ -917,6 +910,7 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
             tvSpeechbulSend.setEnabled(true);
             tvSpeechbulSend.setAlpha(1.0f);
         }
+        aiText = evaluateResult;
     }
 
     /**
@@ -924,15 +918,9 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
      */
     private void pleaseSayAgain() {
         logger.i("pleaseSayAgain()");
-        stopEvaluator();
-        mWeakHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                recoginzeStatus = PLEASE_SAY_AGGIN;
-                startEvaluator();
-            }
-        }, 300);
-
+        recoginzeStatus = PLEASE_SAY_AGGIN;
+        tvSpeechbulTitle.setText(VOICE_RECOG_NOVOICE_HINT);
+        tvSpeechbulSwitch.setVisibility(View.VISIBLE);
     }
 
     /**
