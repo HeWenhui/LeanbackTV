@@ -325,11 +325,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         params.topMargin = liveVideoPoint.y3;
         logger.setLogMethod(false);
         logger.i("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
-        ImageView iv_livevideo_message_small_bg = mView.findViewById(R.id.iv_livevideo_message_small_bg);
-        RelativeLayout.LayoutParams bgParams = (RelativeLayout.LayoutParams) iv_livevideo_message_small_bg.getLayoutParams();
-        bgParams.width = liveVideoPoint.x4 - liveVideoPoint.x3 + 2;
-        bgParams.height = bgParams.width * 258 / 501;
-        iv_livevideo_message_small_bg.setLayoutParams(bgParams);
+        setBack();
         decorView = (ViewGroup) ((Activity) mContext).getWindow().getDecorView();
 
         int colors[] = {0x19FFA63C, 0x32FFA63C, 0x64FFC12C, 0x96FFC12C, 0xFFFFA200};
@@ -1058,6 +1054,23 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                 LayoutParamsUtil.setViewLayoutParams(lvMessage, params);
                 //logger.e( "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
             }
+        }
+        setBack();
+    }
+
+    private void setBack() {
+        LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+        ImageView ivBack = mView.findViewById(R.id.iv_livevideo_message_small_bg);
+        if (ivBack == null) {
+            return;
+        }
+        RelativeLayout.LayoutParams bgParams = (RelativeLayout.LayoutParams) ivBack.getLayoutParams();
+        int width = liveVideoPoint.x4 - liveVideoPoint.x3 + 2;
+        int height = width * 258 / 501;
+        if (bgParams.width != width || bgParams.height != height) {
+            bgParams.width = width;
+            bgParams.height = height;
+            ivBack.setLayoutParams(bgParams);
         }
     }
 
