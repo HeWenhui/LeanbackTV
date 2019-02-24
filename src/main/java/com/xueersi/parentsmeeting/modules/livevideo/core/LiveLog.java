@@ -45,8 +45,8 @@ public class LiveLog implements LiveOnLineLogs {
     private String type;
     /** 播放的类型。直播，回放，旁听 */
     private String getPrefix;
-    /** 进直播的时候，生成一次 */
-    private String tid;
+    /** 进直播的时间 */
+    private long enterTime;
     /** 进直播的次数，内存中 */
     private int times;
     private ArrayList<PerGetInfoLog> msg = new ArrayList<>();
@@ -63,13 +63,13 @@ public class LiveLog implements LiveOnLineLogs {
         this.mLiveId = mLiveId;
         this.getPrefix = getPrefix;
         type = "a" + mLiveType;
-        tid = "" + System.currentTimeMillis();
+        enterTime = System.currentTimeMillis();
         times = LIVE_TIME++;
         File logDir = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + mLiveId + "-" + getPrefix);
         if (!logDir.exists()) {
             logDir.mkdirs();
         }
-        logFile = new File(logDir, tid + ".txt");
+        logFile = new File(logDir, enterTime + ".txt");
     }
 
     public void setGetInfo(LiveGetInfo mGetInfo) {
@@ -96,13 +96,14 @@ public class LiveLog implements LiveOnLineLogs {
 //        liveLogCallback.setParams(params);
         StableLogHashMap logHashMap = new StableLogHashMap();
         logHashMap.put("tag", "" + TAG);
-        logHashMap.put("tid", "" + tid);
+        logHashMap.put("enterTime", "" + enterTime);
         logHashMap.put("times", "" + times);
         logHashMap.put("str", "" + str);
         logHashMap.put("prefix", "" + getPrefix);
         logHashMap.put("liveid", "" + mLiveId);
         logHashMap.put("type", "" + type);
         logHashMap.put("logindex", "" + logIndex++);
+        logHashMap.put("nowlivetime", "" + (System.currentTimeMillis() - enterTime));
         logHashMap.put("teacherId", "" + mGetInfo.getTeacherId());
         UmsAgentManager.umsAgentDebug(mContext, LogerTag.DEBUG_VIDEO_LIVEMSG, logHashMap.getData());
         if (AppConfig.DEBUG) {
@@ -125,13 +126,14 @@ public class LiveLog implements LiveOnLineLogs {
 //        liveLogCallback.setParams(params);
         StableLogHashMap logHashMap = new StableLogHashMap();
         logHashMap.put("tag", "" + TAG);
-        logHashMap.put("tid", "" + tid);
+        logHashMap.put("enterTime", "" + enterTime);
         logHashMap.put("times", "" + times);
         logHashMap.put("str", "" + str);
         logHashMap.put("prefix", "" + getPrefix);
         logHashMap.put("liveid", "" + mLiveId);
         logHashMap.put("type", "" + type);
         logHashMap.put("logindex", "" + logIndex++);
+        logHashMap.put("nowlivetime", "" + (System.currentTimeMillis() - enterTime));
         logHashMap.put("throwable", "" + Log.getStackTraceString(e));
         logHashMap.put("teacherId", "" + mGetInfo.getTeacherId());
         UmsAgentManager.umsAgentDebug(mContext, LogerTag.DEBUG_VIDEO_LIVEMSG, logHashMap.getData());
