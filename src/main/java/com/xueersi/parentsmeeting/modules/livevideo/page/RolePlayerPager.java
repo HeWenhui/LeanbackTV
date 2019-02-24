@@ -486,7 +486,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
                     }
                 } else {
                     rlMatchPager.setVisibility(View.GONE);
-                    logger.i("匹配失败,进人机");
+                    mLogtf.i("匹配失败,进人机");
                     XESToastUtils.showToast(mContext, "匹配失败,进人机");
                     mRolePlayBll.goToRobot();
                 }

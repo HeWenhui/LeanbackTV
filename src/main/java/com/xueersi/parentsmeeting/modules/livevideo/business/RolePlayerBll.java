@@ -57,7 +57,7 @@ import okhttp3.Call;
 public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
-
+    protected LogToFile mLogtf;
     private final LiveGetInfo mLiveGetInfo;
     /**
      * 是否已经通过权限判断进入连接WebSocket
@@ -116,6 +116,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         this.mLiveGetInfo = liveGetInfo;
         mRolePlayerHttpManager = new RolePlayerHttpManager(mContext);
         mRolePlayerHttpResponseParser = new RolePlayerHttpResponseParser();
+        mLogtf=new LogToFile(context,"RolePlayerBll");
     }
 
     /**
@@ -203,7 +204,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         }else{
             requestTestInfos();
         }
-        logger.d( "创建了原生页面");
+        mLogtf.d( "teacherPushTest:mRolePlayerEntity=null?"+(mRolePlayerEntity==null));
         if(mRolePlayerPager == null){
             mRolePlayerPager = new RolePlayerPager(mContext, mRolePlayerEntity, true, this, mLiveGetInfo);
             mRolePlayerPager.initData();
@@ -227,7 +228,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                             mRolePlayerEntity = mRolePlayerHttpResponseParser.parserNewArtsMutRolePlayTestInfos(responseEntity, mRolePlayerEntity);
                             if(responseEntity != null && responseEntity.getJsonObject() != null){
                                 logger.i( "多人新课件服务器试题信息返回 " + responseEntity.getJsonObject().toString());
-                                logger.i( "多人新课件服务器试题信息返回以后，解析到的角色对话长度 mRolePlayerEntity" +
+                                mLogtf.i( "多人新课件服务器试题信息返回以后，解析到的角色对话长度 mRolePlayerEntity" +
                                         ".getLstRolePlayerMessage()" +
                                         ".size() = " + mRolePlayerEntity.getLstRolePlayerMessage().size() + "/ " +
                                         mRolePlayerEntity.toString());
@@ -239,7 +240,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                         public void onPmError(ResponseEntity responseEntity) {
                             super.onPmError(responseEntity);
                             if(responseEntity != null){
-                                logger.i( "onPmError:多人新课件" + responseEntity.getErrorMsg());
+                                mLogtf.i( "onPmError:多人新课件" + responseEntity.getErrorMsg());
                             }
 
                         }
@@ -247,7 +248,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                         @Override
                         public void onPmFailure(Throwable error, String msg) {
                             super.onPmFailure(error, msg);
-                            logger.i( "onPmFailure:多人新课件" + msg);
+                            mLogtf.i( "onPmFailure:多人新课件" + msg);
                         }
                     });
         }
@@ -263,7 +264,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
     @Override
     public void onStopQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity, String nonce) {
-        logger.i( "onStopQuestion 老师收题了,断开socket ");
+        mLogtf.i( "onStopQuestion 老师收题了,断开socket ");
         if (mWebSocket != null && mWebSocket.isOpen()) {
             mWebSocket.close();
             mWebSocket = null;
@@ -318,7 +319,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     @Override
     public void goToRobot() {
         isGoToRobot = true;
-        logger.d( "进人机");
+        mLogtf.d( "进人机");
         new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
             public void run() {
