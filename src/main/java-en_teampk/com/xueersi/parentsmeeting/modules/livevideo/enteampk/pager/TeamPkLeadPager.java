@@ -33,19 +33,17 @@ import java.util.concurrent.atomic.AtomicInteger;
  * 贡献之星
  */
 public class TeamPkLeadPager extends LiveBasePager {
-    /**
-     * 贡献之星，课中
-     */
+    /** 贡献之星，课中 */
     public static int TEAM_TYPE_1 = 1;
-    /**
-     * 贡献之星，课后
-     */
+    /** 贡献之星，课后 */
     public static int TEAM_TYPE_2 = 2;
-    private int WIN_VIEW_SHOW = 3000;
+    private static int WIN_VIEW_SHOW = 3000;
     private int type;
     private EnTeamPkRankEntity enTeamPkRankEntity;
     private RelativeLayout rlTeampkLeadBottom;
     private ProgressBar pgTeampkLead;
+    private View rlTeampkLeadLeft;
+    private View rlTeampkLeadRight;
     private RelativeLayout rlTeampkLead;
     private ImageView ivTeampkLeadProg;
     private ImageView ivTeampkMine;
@@ -97,6 +95,8 @@ public class TeamPkLeadPager extends LiveBasePager {
         }
         rlTeampkLeadBottom = view.findViewById(R.id.rl_livevideo_en_teampk_lead_bottom);
         pgTeampkLead = view.findViewById(R.id.pg_livevideo_en_teampk_lead);
+        rlTeampkLeadLeft = view.findViewById(R.id.rl_livevideo_en_teampk_lead_left);
+        rlTeampkLeadRight = view.findViewById(R.id.rl_livevideo_en_teampk_lead_right);
         rlTeampkLead = view.findViewById(R.id.rl_livevideo_en_teampk_lead);
         ivTeampkLeadProg = view.findViewById(R.id.iv_livevideo_en_teampk_lead_prog);
         ivTeampkMine = view.findViewById(R.id.iv_livevideo_en_teampk_mine);
@@ -300,33 +300,75 @@ public class TeamPkLeadPager extends LiveBasePager {
                 return false;
             }
         });
+        setTeamWidth();
     }
 
     /** 火焰上次的位置 */
     private int lastLeftMargin;
+    private int lastwidthPg = 0;
 
     //设置火焰在进度条的位置
     private boolean setProgFire() {
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ivTeampkLeadProg.getLayoutParams();
-        int ivWidth = ivTeampkLeadProg.getWidth();
-        int leftMargin = (int) (rlTeampkLead.getLeft() + pgTeampkLead.getLeft() + pgTeampkLead.getWidth() * finalFprog) - ivWidth / 2;
-        //为了和进度条对齐，计算火的宽度
-        float fireRatio = 88.0f / 395.0f;
-        int fireWidth = (int) (ivWidth * fireRatio);
-        //火最大和进度条右边距对齐
-        int maxLeftMargin = (rlTeampkLead.getLeft() + pgTeampkLead.getLeft() + pgTeampkLead.getWidth() - ivWidth / 2 - fireWidth / 2);
-        logger.d("initData:width=" + mView.getWidth() + ",left=" + rlTeampkLead.getLeft() + "," + pgTeampkLead.getLeft() + ",leftMargin=" + leftMargin + ",maxLeftMargin=" + maxLeftMargin);
-        int leftMargin2 = Math.min(leftMargin, maxLeftMargin);
-        if (lp.leftMargin != leftMargin2) {
-            lp.leftMargin = leftMargin2;
-            ivTeampkLeadProg.setLayoutParams(lp);
+        //左边的宽度
+        int widthLeft = rlTeampkLeadLeft.getWidth();
+        //右边的宽度
+        int widthRight = rlTeampkLeadRight.getWidth();
+        //总体的宽度
+        int myWidth = mView.getWidth();
+        int widthPg = myWidth - Math.max(widthLeft, widthRight) * 2 - SizeUtils.Dp2Px(mContext, 8);
+        //进度条的最大宽度
+        int maxPgWidth = SizeUtils.Dp2Px(mContext, 364);
+        if (widthPg > maxPgWidth) {
+            widthPg = maxPgWidth;
         }
-        ivTeampkLeadProg.setVisibility(View.VISIBLE);
+        int pgLeft = (myWidth - widthPg) / 2;
+        RelativeLayout.LayoutParams lpIvProg = (RelativeLayout.LayoutParams) ivTeampkLeadProg.getLayoutParams();
+        RelativeLayout.LayoutParams lpPg = (RelativeLayout.LayoutParams) pgTeampkLead.getLayoutParams();
+        if (lpPg.width != widthPg) {
+            //设置进度条的宽度，可以显示下左右的布局
+            lpPg.width = widthPg;
+            pgTeampkLead.setLayoutParams(lpPg);
+        }
+        {
+            int ivWidth = ivTeampkLeadProg.getWidth();
+            int pgLeftMargin = (int) (pgTeampkLead.getLeft() + widthPg * finalFprog) - ivWidth / 2;
+            //为了和进度条对齐，计算火的宽度
+            float fireRatio = 88.0f / 395.0f;
+            int fireWidth = (int) (ivWidth * fireRatio);
+            //火最大和进度条右边距对齐
+            int maxLeftMargin = (pgTeampkLead.getLeft() + widthPg - ivWidth / 2 - fireWidth / 2);
+            logger.d("setProgFire:width=" + mView.getWidth() + ",left=" + pgTeampkLead.getLeft() + ",widthPg=" + widthPg + "," + pgTeampkLead.getWidth() + ",pgLeftMargin=" + pgLeftMargin + ",maxLeftMargin=" + maxLeftMargin);
+            int leftMargin2 = Math.min(pgLeftMargin, maxLeftMargin);
+            if (lpIvProg.leftMargin != leftMargin2) {
+                lpIvProg.leftMargin = leftMargin2;
+                ivTeampkLeadProg.setLayoutParams(lpIvProg);
+            }
+            ivTeampkLeadProg.setVisibility(View.VISIBLE);
+        }
+        {
+            //设置左边的左边距
+            RelativeLayout.LayoutParams lpLet = (RelativeLayout.LayoutParams) rlTeampkLeadLeft.getLayoutParams();
+            int leftMargin = pgLeft - widthLeft - SizeUtils.Dp2Px(mContext, 4);
+            if (leftMargin != lpLet.leftMargin) {
+                lpLet.leftMargin = leftMargin;
+                rlTeampkLeadLeft.setLayoutParams(lpLet);
+            }
+        }
+        {
+            //设置右边的左边距
+            RelativeLayout.LayoutParams lpRight = (RelativeLayout.LayoutParams) rlTeampkLeadRight.getLayoutParams();
+            int leftMargin = (pgLeft + widthPg) + SizeUtils.Dp2Px(mContext, 4);
+            if (leftMargin != lpRight.leftMargin) {
+                lpRight.leftMargin = leftMargin;
+                rlTeampkLeadRight.setLayoutParams(lpRight);
+            }
+        }
         //两次距离一样，说明绘制完成
-        if (lastLeftMargin == lp.leftMargin) {
+        if (lastLeftMargin == lpIvProg.leftMargin && lastwidthPg == widthPg) {
             return true;
         }
-        lastLeftMargin = lp.leftMargin;
+        lastLeftMargin = lpIvProg.leftMargin;
+        lastwidthPg = widthPg;
         return false;
     }
 
@@ -397,6 +439,57 @@ public class TeamPkLeadPager extends LiveBasePager {
             }
             llTeampkLeadStar.addView(convertView, layoutParams);
         }
+        setTeamWidth();
+    }
+
+    private void setTeamWidth() {
+        final LinearLayout llTeampkLeadStar = rlTeampkLeadBottom.findViewById(R.id.ll_livevideo_en_teampk_lead_star);
+        llTeampkLeadStar.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                llTeampkLeadStar.getViewTreeObserver().removeOnPreDrawListener(this);
+                if (llTeampkLeadStar.getChildCount() > 4) {
+                    int llWidth = llTeampkLeadStar.getWidth();
+                    int myWidth = rlTeampkLeadBottom.getWidth();
+                    logger.d("addTeam:llWidth=" + llWidth + "," + myWidth);
+                    int leftMargin;
+                    if (llWidth > myWidth) {
+                        leftMargin = (llWidth - myWidth) / (llTeampkLeadStar.getChildCount() - 1);
+                        if (leftMargin < 0) {
+                            leftMargin = 0;
+                        }
+                    } else if (llWidth < myWidth) {
+                        leftMargin = (myWidth - llWidth) / (llTeampkLeadStar.getChildCount() - 1);
+                        if (leftMargin < 0) {
+                            leftMargin = 0;
+                        }
+                        int maxleftMargin;
+                        if (pattern == 2) {
+                            maxleftMargin = SizeUtils.Dp2Px(mContext, 20);
+                        } else {
+                            maxleftMargin = SizeUtils.Dp2Px(mContext, 11);
+                        }
+                        if (leftMargin > maxleftMargin) {
+                            leftMargin = maxleftMargin;
+                        }
+                    } else {
+                        return false;
+                    }
+                    logger.d("addTeam:leftMargin=" + leftMargin);
+                    for (int i = 1; i < llTeampkLeadStar.getChildCount(); i++) {
+                        View childView = llTeampkLeadStar.getChildAt(i);
+                        LinearLayout.LayoutParams layoutParams = (LinearLayout.LayoutParams) childView.getLayoutParams();
+                        if (leftMargin != layoutParams.leftMargin) {
+                            layoutParams.leftMargin = leftMargin;
+                            childView.setLayoutParams(layoutParams);
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                return false;
+            }
+        });
     }
 
     private void setBg(final ImageView ivTeampkMine, final ImageView back) {

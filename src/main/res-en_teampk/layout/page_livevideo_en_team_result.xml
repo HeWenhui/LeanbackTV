@@ -34,31 +34,21 @@
         android:layout_toRightOf="@id/iv_livevideo_en_teampk_vs"
         android:src="@drawable/livevideo_enteampk_benchangzhanduifenzu_02rockstarjohn_pic_normal" />
 
-    <RelativeLayout
-        android:id="@id/rl_livevideo_en_teampk_lead"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ProgressBar
+        android:id="@id/pg_livevideo_en_teampk_lead"
+        style="@style/ProgressBar_live_enspeek"
+        android:layout_width="364dp"
+        android:layout_height="18dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="176dp"
-        android:layout_toLeftOf="@id/rl_livevideo_en_teampk_lead_right"
-        android:layout_toRightOf="@id/rl_livevideo_en_teampk_lead_left">
-
-        <ProgressBar
-            android:id="@id/pg_livevideo_en_teampk_lead"
-            style="@style/ProgressBar_live_enspeek"
-            android:layout_width="364dp"
-            android:layout_height="18dp"
-            android:layout_centerHorizontal="true"
-            android:max="100"
-            android:progress="10" />
-
-    </RelativeLayout>
+        android:max="100"
+        android:progress="10" />
 
     <RelativeLayout
         android:id="@id/rl_livevideo_en_teampk_lead_left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/rl_livevideo_en_teampk_lead"
+        android:layout_alignBottom="@id/pg_livevideo_en_teampk_lead"
         android:gravity="right">
 
         <ImageView
@@ -85,14 +75,14 @@
             android:text="100"
             android:textColor="#ffffffff"
             android:textSize="21sp" />
+
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@id/rl_livevideo_en_teampk_lead_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@id/rl_livevideo_en_teampk_lead"
-        android:layout_alignParentRight="true">
+        android:layout_alignBottom="@id/pg_livevideo_en_teampk_lead">
 
         <ImageView
             android:id="@id/iv_livevideo_en_teampk_lead_fire_right"
@@ -132,7 +122,7 @@
         android:id="@id/rl_livevideo_en_teampk_lead_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/rl_livevideo_en_teampk_lead"
+        android:layout_below="@id/pg_livevideo_en_teampk_lead"
         android:layout_marginTop="12dp"
         android:clipChildren="false">
 
