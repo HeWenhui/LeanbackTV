@@ -767,19 +767,18 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                     speechAssessmentPager.onDestroy();
                                     return;
                                 }
+                            }else {
+                                logger.i("--------------新课件平台跟读走h5");
+                                //跟读之类的题型
+                                speechAssessmentPager.initData();
                             }
 
-                        } else {
-                            logger.i("--------------新课件平台跟读走h5");
-                            //跟读之类的题型
-                            speechAssessmentPager.initData();
+                            logger.i("走人机 END");
+                            setHaveSpeech(true);
+                            rlQuestionContent.addView(speechAssessmentPager.getRootView(), lp);
                         }
-
-                        logger.i("走人机 END");
-                        //rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
                     }
-                    setHaveSpeech(true);
-                    rlQuestionContent.addView(speechAssessmentPager.getRootView(), lp);
+
                 } else if (LocalCourseConfig.QUESTION_TYPE_SUBJECT.equals(videoQuestionLiveEntity.type)) {
                     showSubjectiveQuestion(videoQuestionLiveEntity);
                 } else {
@@ -912,32 +911,51 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         speechAssessmentPager = baseSpeechCreat.createRolePlay(activity, liveGetInfo, videoQuestionLiveEntity,
                                 id, QuestionBll.this, stuCouId, rolePlayMachineBll);
                         speechAssessmentPager.setIse(mIse);
-                        if (speechAssessmentPager instanceof RolePlayMachinePager) {
-                            logger.i("--------------走rolaplay人机");
-                            //人机，roles不为空的题型
-                            if (rolePlayMachineBll != null) {
-                                rolePlayMachineBll.setRolePlayMachinePager((RolePlayMachinePager) speechAssessmentPager);
-                                rolePlayMachineBll.setBottomView(rlQuestionContent);
-                                rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
-                                //人机initData在pager中等接口返回试题信息再调用
-                                //speechAssessmentPager.initData();
+                        if(speechAssessmentPager != null){
+                            if (speechAssessmentPager instanceof RolePlayMachinePager) {
+                                logger.i("--------------走rolaplay人机");
+                                //人机，roles不为空的题型
+                                if (rolePlayMachineBll != null) {
+                                    rolePlayMachineBll.setRolePlayMachinePager((RolePlayMachinePager) speechAssessmentPager);
+                                    rolePlayMachineBll.setBottomView(rlQuestionContent);
+                                    rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
+                                    //人机initData在pager中等接口返回试题信息再调用
+                                    //speechAssessmentPager.initData();
+                                } else {
+                                    logger.i("--------------走rolaplay人机，初始化数据失败，退出");
+                                    speechAssessmentPager.onDestroy();
+                                    return;
+                                }
+
+                            }else if(speechAssessmentPager instanceof RolePlayStandMachinePager){
+                                logger.i("--------------站立式新课件平台走rolaplay人机");
+                                //人机，roles不为空的题型
+                                if (rolePlayMachineBll != null) {
+                                    logger.i("--------------站立式新课件平台走rolaplay人机，初始化数据");
+                                    rolePlayMachineBll.setRolePlayStandMachinePager((RolePlayStandMachinePager) speechAssessmentPager);
+                                    rolePlayMachineBll.setBottomView(rlQuestionContent);
+                                    rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
+                                    //人机initData在pager中等接口返回试题信息再调用
+                                    //speechAssessmentPager.initData();
+                                } else {
+                                    logger.i("--------------站立式新课件平台走rolaplay人机，初始化数据失败，退出");
+                                    speechAssessmentPager.onDestroy();
+                                    return;
+                                }
                             } else {
-                                logger.i("--------------走rolaplay人机，初始化数据失败，退出");
-                                speechAssessmentPager.onDestroy();
-                                return;
+                                logger.i("--------------走跟读");
+                                //跟读之类的题型
+                                speechAssessmentPager.initData();
                             }
 
-                        } else {
-                            logger.i("--------------走跟读");
-                            //跟读之类的题型
-                            speechAssessmentPager.initData();
+                            logger.i("走人机 END");
+                            //rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
+                            setHaveSpeech(true);
+                            rlQuestionContent.addView(speechAssessmentPager.getRootView(), lp);
                         }
 
-                        logger.i("走人机 END");
-                        //rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
                     }
-                    setHaveSpeech(true);
-                    rlQuestionContent.addView(speechAssessmentPager.getRootView(), lp);
+
 
                 } else {
                     XESToastUtils.showToast(activity, "不支持的试题类型，可能需要升级版本");
