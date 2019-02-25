@@ -12,7 +12,7 @@
         android:orientation="vertical">
 
         <RelativeLayout
-            android:id="@+id/rl_livevideo_message_top"
+            android:id="@id/rl_livevideo_message_top"
             android:layout_marginBottom="-1.2dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">

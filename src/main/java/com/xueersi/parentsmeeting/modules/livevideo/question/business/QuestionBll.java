@@ -50,6 +50,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoti
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayMachinePager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayStandMachinePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.CreateAnswerReslutEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseLiveQuestionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseQuestionWebInter;
@@ -236,12 +238,15 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private VideoQuestionLiveEntity mVideoQuestionLiveEntity;
     private boolean hasQuestion;
     private boolean hasExam;
-    private long submitTime;
     private boolean hasSubmit;
     private String stuCouId;
     private RolePlayAction rolePlayAction;
     private RolePlayAction rolePlayMachineAction;
 
+
+    /**
+     * 新课件平台，人机roleplay业务类
+     */
     RolePlayMachineBll rolePlayMachineBll;
 
     public QuestionBll(Activity activity, String stuCouId) {
@@ -491,20 +496,15 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     @Override
     public void showQuestion(final VideoQuestionLiveEntity videoQuestionLiveEntity) {
         if (videoQuestionLiveEntity == null) {
-            mLogtf.d("showQuestion:noQuestion");
             if (isAnaswer) {
-                onQuestionShow(null, false, "showQuestion");
+                if (this.videoQuestionLiveEntity != null) {
+                    mLogtf.d("showQuestion:noQuestion:type=" + this.videoQuestionLiveEntity.type);
+                    onStopQuestion(this.videoQuestionLiveEntity.type, "");
+                } else {
+                    mLogtf.d("showQuestion:noQuestion:Entity=null");
+                }
             }
             isAnaswer = false;
-            if (voiceAnswerPager != null && !voiceAnswerPager.isEnd()) {
-                final BaseVoiceAnswerPager answerPager = voiceAnswerPager;
-                mVPlayVideoControlHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        answerPager.examSubmitAll("showQuestion", "");
-                    }
-                });
-            }
             return;
         }
         logger.e("======> showQuestion 11111");
@@ -735,33 +735,55 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         speechAssessmentPager = baseSpeechCreat.createNewRolePlay(activity, liveGetInfo, videoQuestionLiveEntity,
                                 id, QuestionBll.this, stuCouId, rolePlayMachineBll);
                         speechAssessmentPager.setIse(mIse);
-                        if (speechAssessmentPager != null && speechAssessmentPager instanceof RolePlayMachinePager) {
-                            logger.i("--------------新课件平台走rolaplay人机");
-                            //人机，roles不为空的题型
-                            if (rolePlayMachineBll != null) {
-                                logger.i("--------------新课件平台走rolaplay人机，初始化数据");
-                                rolePlayMachineBll.setRolePlayMachinePager((RolePlayMachinePager) speechAssessmentPager);
-                                rolePlayMachineBll.setBottomView(rlQuestionContent);
-                                rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
-                                speechAssessmentPager.initData();
-                            } else {
-                                logger.i("--------------新课件平台走rolaplay人机，初始化数据失败，退出");
-                                speechAssessmentPager.onDestroy();
-                                return;
-                            }
-                        } else {
-                            logger.i("--------------新课件平台跟读走h5");
-                            //跟读之类的题型
-                            speechAssessmentPager.initData();
-                        }
 
-                        logger.i("走人机 END");
-                        //rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
+                        if (speechAssessmentPager != null) {
+                            if(speechAssessmentPager instanceof RolePlayMachinePager){
+                                logger.i("--------------新课件平台走rolaplay人机");
+                                //人机，roles不为空的题型
+                                if (rolePlayMachineBll != null) {
+                                    logger.i("--------------新课件平台走rolaplay人机，初始化数据");
+                                    rolePlayMachineBll.setRolePlayMachinePager((RolePlayMachinePager) speechAssessmentPager);
+                                    rolePlayMachineBll.setBottomView(rlQuestionContent);
+                                    rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
+                                    //人机initData在pager中等接口返回试题信息再调用
+                                    //speechAssessmentPager.initData();
+                                } else {
+                                    logger.i("--------------新课件平台走rolaplay人机，初始化数据失败，退出");
+                                    speechAssessmentPager.onDestroy();
+                                    return;
+                                }
+                            }else if(speechAssessmentPager instanceof RolePlayStandMachinePager){
+                                logger.i("--------------站立式新课件平台走rolaplay人机");
+                                //人机，roles不为空的题型
+                                if (rolePlayMachineBll != null) {
+                                    logger.i("--------------站立式新课件平台走rolaplay人机，初始化数据");
+                                    rolePlayMachineBll.setRolePlayStandMachinePager((RolePlayStandMachinePager) speechAssessmentPager);
+                                    rolePlayMachineBll.setBottomView(rlQuestionContent);
+                                    rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
+                                    //人机initData在pager中等接口返回试题信息再调用
+                                    //speechAssessmentPager.initData();
+                                } else {
+                                    logger.i("--------------站立式新课件平台走rolaplay人机，初始化数据失败，退出");
+                                    speechAssessmentPager.onDestroy();
+                                    return;
+                                }
+                            }else {
+                                logger.i("--------------新课件平台跟读走h5");
+                                //跟读之类的题型
+                                speechAssessmentPager.initData();
+                            }
+
+                            logger.i("走人机 END");
+                            setHaveSpeech(true);
+                            rlQuestionContent.addView(speechAssessmentPager.getRootView(), lp);
+                        }
                     }
-                    setHaveSpeech(true);
-                    rlQuestionContent.addView(speechAssessmentPager.getRootView(), lp);
+
                 } else if (LocalCourseConfig.QUESTION_TYPE_SUBJECT.equals(videoQuestionLiveEntity.type)) {
                     showSubjectiveQuestion(videoQuestionLiveEntity);
+                } else {
+                    isAnaswer = false;
+                    logger.d("doNewArtsAnswerQuetion:othertype=" + videoQuestionLiveEntity.type);
                 }
             }
         });
@@ -889,31 +911,51 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         speechAssessmentPager = baseSpeechCreat.createRolePlay(activity, liveGetInfo, videoQuestionLiveEntity,
                                 id, QuestionBll.this, stuCouId, rolePlayMachineBll);
                         speechAssessmentPager.setIse(mIse);
-                        if (speechAssessmentPager instanceof RolePlayMachinePager) {
-                            logger.i("--------------走rolaplay人机");
-                            //人机，roles不为空的题型
-                            if (rolePlayMachineBll != null) {
-                                rolePlayMachineBll.setRolePlayMachinePager((RolePlayMachinePager) speechAssessmentPager);
-                                rolePlayMachineBll.setBottomView(rlQuestionContent);
-                                rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
-                                speechAssessmentPager.initData();
+                        if(speechAssessmentPager != null){
+                            if (speechAssessmentPager instanceof RolePlayMachinePager) {
+                                logger.i("--------------走rolaplay人机");
+                                //人机，roles不为空的题型
+                                if (rolePlayMachineBll != null) {
+                                    rolePlayMachineBll.setRolePlayMachinePager((RolePlayMachinePager) speechAssessmentPager);
+                                    rolePlayMachineBll.setBottomView(rlQuestionContent);
+                                    rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
+                                    //人机initData在pager中等接口返回试题信息再调用
+                                    //speechAssessmentPager.initData();
+                                } else {
+                                    logger.i("--------------走rolaplay人机，初始化数据失败，退出");
+                                    speechAssessmentPager.onDestroy();
+                                    return;
+                                }
+
+                            }else if(speechAssessmentPager instanceof RolePlayStandMachinePager){
+                                logger.i("--------------站立式新课件平台走rolaplay人机");
+                                //人机，roles不为空的题型
+                                if (rolePlayMachineBll != null) {
+                                    logger.i("--------------站立式新课件平台走rolaplay人机，初始化数据");
+                                    rolePlayMachineBll.setRolePlayStandMachinePager((RolePlayStandMachinePager) speechAssessmentPager);
+                                    rolePlayMachineBll.setBottomView(rlQuestionContent);
+                                    rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
+                                    //人机initData在pager中等接口返回试题信息再调用
+                                    //speechAssessmentPager.initData();
+                                } else {
+                                    logger.i("--------------站立式新课件平台走rolaplay人机，初始化数据失败，退出");
+                                    speechAssessmentPager.onDestroy();
+                                    return;
+                                }
                             } else {
-                                logger.i("--------------走rolaplay人机，初始化数据失败，退出");
-                                speechAssessmentPager.onDestroy();
-                                return;
+                                logger.i("--------------走跟读");
+                                //跟读之类的题型
+                                speechAssessmentPager.initData();
                             }
 
-                        } else {
-                            logger.i("--------------走跟读");
-                            //跟读之类的题型
-                            speechAssessmentPager.initData();
+                            logger.i("走人机 END");
+                            //rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
+                            setHaveSpeech(true);
+                            rlQuestionContent.addView(speechAssessmentPager.getRootView(), lp);
                         }
 
-                        logger.i("走人机 END");
-                        //rolePlayMachineBll.teacherPushTest(videoQuestionLiveEntity);
                     }
-                    setHaveSpeech(true);
-                    rlQuestionContent.addView(speechAssessmentPager.getRootView(), lp);
+
 
                 } else {
                     XESToastUtils.showToast(activity, "不支持的试题类型，可能需要升级版本");
@@ -975,8 +1017,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     XESToastUtils.showToast(activity, "您已经答过此题");
                 } else {
                     if (isVoice) {
-                        isSuccess = baseVoiceAnswerCreat.onAnswerReslut(activity, this, voiceAnswerPager,
-                                baseVideoQuestionEntity, entity);
+                        CreateAnswerReslutEntity createAnswerReslutEntity =
+                                baseVoiceAnswerCreat.onAnswerReslut(activity, this, voiceAnswerPager,
+                                        baseVideoQuestionEntity, entity);
+                        isSuccess = createAnswerReslutEntity.isSuccess;
                         StableLogHashMap logHashMap = new StableLogHashMap("showResultDialog");
                         logHashMap.put("testid", "" + baseVideoQuestionEntity.getvQuestionID());
                         logHashMap.put("sourcetype", "h5test").addNonce(baseVideoQuestionEntity.nonce);
@@ -1070,9 +1114,12 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     @Override
     public void onStopQuestion(String ptype, final String nonce) {
-        mLogtf.d("onStopQuestion:ptype=" + ptype + ":" + mVideoQuestionLiveEntity + ":" + rolePlayAction);
+        mLogtf.d("onStopQuestion:ptype=" + ptype + ":" + mVideoQuestionLiveEntity + ",nonce=" + nonce + ",isAnaswer=" + isAnaswer);
         boolean havePager = false;
         boolean oldisAnaswer = isAnaswer;
+        if (!oldisAnaswer) {
+            return;
+        }
         isAnaswer = false;
         //解决多人的时候，除了初次的多人正常进对话，其他的都进不去
         if (rolePlayAction != null && mVideoQuestionLiveEntity != null) {
@@ -1987,8 +2034,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     }
 
     @Override
-    public void sendSpeechEvalResult2(String id, String stuAnswer, OnSpeechEval onSpeechEval) {
-        questionHttp.sendSpeechEvalResult2(id, stuAnswer, onSpeechEval);
+    public void sendSpeechEvalResult2(String id, String stuAnswer, String isSubmit, OnSpeechEval onSpeechEval) {
+        questionHttp.sendSpeechEvalResult2(id, stuAnswer, isSubmit, onSpeechEval);
     }
 
     public void onPause() {
@@ -2124,7 +2171,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     }
 
     public void onSubmit(int type, boolean isForceSubmit) {
-        submitTime = System.currentTimeMillis();
         questionHttp.sendRankMessage(XESCODE.RANK_STU_MESSAGE);
         if (isForceSubmit) {
             getFullMarkList(type, 3000);
@@ -2326,7 +2372,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             }
             questionHttp.liveSubmitTestAnswer(baseVoiceAnswerPager, videoQuestionLiveEntity1, mVSectionID,
                     testAnswer, true, isRight,
-                    answerReslut);
+                    answerReslut, isSubmit);
         }
 
         @Override
@@ -2354,7 +2400,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      * @param method
      */
     private void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isShow, String method) {
-        mLogtf.d("onQuestionShow:isShow=" + isShow + ",method=" + method);
+        if (videoQuestionLiveEntity != null) {
+            mLogtf.d("onQuestionShow:isShow=" + isShow + ",id=" + videoQuestionLiveEntity.id + ",method=" + method);
+        } else {
+            mLogtf.d("onQuestionShow:isShow=" + isShow + ",method=" + method);
+        }
         for (QuestionShowAction questionShowAction : questionShowActions) {
             questionShowAction.onQuestionShow(videoQuestionLiveEntity, isShow);
         }
@@ -2367,13 +2417,13 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onArtsResultCmplShow(AnswerResultCplShowEvent event) {
-        forceClose();
+        forceClose(event.getMethod());
     }
 
     /**
      * 强制关闭当前 答题页面
      */
-    public void forceClose() {
+    public void forceClose(final String method) {
         if (mVPlayVideoControlHandler != null) {
             mVPlayVideoControlHandler.post(new Runnable() {
                 @Override
@@ -2384,6 +2434,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         if (questionWebPager instanceof BaseQuestionWebInter) {
                             setHaveWebQuestion(false);
                         }
+                        onQuestionShow(null, false, "forceClose:method=" + method);
                     }
                 }
             });

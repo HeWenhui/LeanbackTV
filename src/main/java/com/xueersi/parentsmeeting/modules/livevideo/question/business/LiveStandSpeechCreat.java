@@ -10,6 +10,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineBll;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayMachinePager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayStandMachinePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssessmentWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.StandSpeechAssAutoPager;
@@ -50,12 +52,11 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
     @Override
     public BaseSpeechAssessmentPager createRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity videoQuestionLiveEntity, String testId,
                                                     SpeechEvalAction speechEvalAction, String stuCouId, RolePlayMachineBll rolePlayMachineBll) {
-        SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
+
+        RolePlayStandMachinePager rolePlayerPager  = new RolePlayStandMachinePager(context,
                 videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
-                true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack);
-        speechAssessmentPager.setStandingLive(true);
-        RolePlayStandLog.sno3(liveAndBackDebug, testId);
-        return speechAssessmentPager;
+                true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack,rolePlayMachineBll, liveGetInfo);
+        return rolePlayerPager;
     }
 
 
@@ -71,12 +72,18 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
 
     @Override
     public BaseSpeechAssessmentPager createNewRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity videoQuestionLiveEntity, String testId, SpeechEvalAction speechEvalAction, String stuCouId, RolePlayMachineBll rolePlayMachineBll) {
-        SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
+//        SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
+//                videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
+//                true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack);
+//        speechAssessmentPager.setStandingLive(true);
+//        RolePlayStandLog.sno3(liveAndBackDebug, testId);
+//        return speechAssessmentPager;
+
+        RolePlayStandMachinePager rolePlayerPager  = new RolePlayStandMachinePager(context,
                 videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
-                true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack);
-        speechAssessmentPager.setStandingLive(true);
-        RolePlayStandLog.sno3(liveAndBackDebug, testId);
-        return speechAssessmentPager;
+                true, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack,rolePlayMachineBll, liveGetInfo);
+        return rolePlayerPager;
+
     }
 
     class LiveStandSpeechEvalActionImpl implements LiveStandSpeechEvalAction {
@@ -122,8 +129,8 @@ public class LiveStandSpeechCreat implements BaseSpeechCreat {
         }
 
         @Override
-        public void sendSpeechEvalResult2(String id, String stuAnswer, OnSpeechEval onSpeechEval) {
-            action.sendSpeechEvalResult2(id, stuAnswer, onSpeechEval);
+        public void sendSpeechEvalResult2(String id, String stuAnswer, String isSubmit, OnSpeechEval onSpeechEval) {
+            action.sendSpeechEvalResult2(id, stuAnswer, isSubmit, onSpeechEval);
         }
 
         @Override

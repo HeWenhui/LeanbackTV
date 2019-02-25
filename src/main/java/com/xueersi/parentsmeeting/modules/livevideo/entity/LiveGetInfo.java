@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ScienceStaticConfig;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -216,6 +217,8 @@ public class LiveGetInfo {
      */
     private String mode = LiveTopic.MODE_TRANING;
     private TotalOpeningLength totalOpeningLength;
+    private EnglishPk englishPk = new EnglishPk();
+    private EnPkEnergy enpkEnergy = new EnPkEnergy();
     /**
      * 是否显示满分榜
      */
@@ -255,7 +258,9 @@ public class LiveGetInfo {
     /** 一发多题的动态接口 */
     private String mulpreload;
     private String mulh5url;
-
+    private String getCourseWareHtmlNew;
+    private String getCourseWareHtmlZhongXueUrl;
+    private ScienceStaticConfig scienceStaticConfig;
     /**
      * 是否是高三理科
      */
@@ -280,10 +285,10 @@ public class LiveGetInfo {
     private ArrayList<Double> praiseGiftRate = new ArrayList();
 
     //连续点赞多长时间弹出礼物
-    private int praiseAutoCutTime=5;
+    private int praiseAutoCutTime = 5;
 
     //暂停点赞多长时间弹出礼物
-    private int praiseAutoBarrageTime=1;
+    private int praiseAutoBarrageTime = 1;
 
 
     // add by William on 2018/12/5  专属老师用
@@ -905,6 +910,22 @@ public class LiveGetInfo {
         this.totalOpeningLength = totalOpeningLength;
     }
 
+    public EnglishPk getEnglishPk() {
+        return englishPk;
+    }
+
+    public void setEnglishPk(EnglishPk englishPk) {
+        this.englishPk = englishPk;
+    }
+
+    public EnPkEnergy getEnpkEnergy() {
+        return enpkEnergy;
+    }
+
+    public void setEnpkEnergy(EnPkEnergy enpkEnergy) {
+        this.enpkEnergy = enpkEnergy;
+    }
+
     public String getMode() {
         return mode;
     }
@@ -1000,8 +1021,7 @@ public class LiveGetInfo {
         /**
          * 课id，加入聊天服务的房间
          */
-        private String
-                classId;
+        private String classId;
         private String shutupStatus;
         /**
          * 弹出学习报告 1弹，0不弹
@@ -1233,7 +1253,8 @@ public class LiveGetInfo {
     }
 
     EvaluateTeacherEntity evaluateTeacherEntity;
-    public static class EvaluateTeacherEntity{
+
+    public static class EvaluateTeacherEntity {
         boolean evaluateIsOpen = false;
         long evaluateTime;
 
@@ -1254,7 +1275,7 @@ public class LiveGetInfo {
         }
     }
 
-    public void setEvaluateTeacherEntity(EvaluateTeacherEntity evaluateTeacherEntity){
+    public void setEvaluateTeacherEntity(EvaluateTeacherEntity evaluateTeacherEntity) {
         this.evaluateTeacherEntity = evaluateTeacherEntity;
     }
 
@@ -1278,6 +1299,30 @@ public class LiveGetInfo {
         this.mulh5url = mulh5url;
     }
 
+    public String getGetCourseWareHtmlNew() {
+        return getCourseWareHtmlNew;
+    }
+
+    public void setGetCourseWareHtmlNew(String getCourseWareHtmlNew) {
+        this.getCourseWareHtmlNew = getCourseWareHtmlNew;
+    }
+
+    public String getGetCourseWareHtmlZhongXueUrl() {
+        return getCourseWareHtmlZhongXueUrl;
+    }
+
+    public void setGetCourseWareHtmlZhongXueUrl(String getCourseWareHtmlZhongXueUrl) {
+        this.getCourseWareHtmlZhongXueUrl = getCourseWareHtmlZhongXueUrl;
+    }
+
+    public ScienceStaticConfig getScienceStaticConfig() {
+        return scienceStaticConfig;
+    }
+
+    public void setScienceStaticConfig(ScienceStaticConfig science_static_config) {
+        this.scienceStaticConfig = science_static_config;
+    }
+
     /** 直播间额外参数信息 */
     private ArtsExtLiveInfo artsExtLiveInfo;
 
@@ -1294,5 +1339,26 @@ public class LiveGetInfo {
         public String eTeacherId;
         public String eClassId;
         public String fakePlanId;
+    }
+
+    /**
+     * https://wiki.xesv5.com/pages/viewpage.action?pageId=14027645
+     */
+    public static class EnglishPk {
+        public int canUsePK;//: 1,  // 是否可以使用战队pk
+
+        // 能使用条件：英语 && 直播 && 标准课 && 不迟到 （时间在小于等于一个小时，1/3   大于一个小时，1/6） && 双优英语 带学段的
+
+        public int historyScore;//10, // 历史场次(最近三场)计算的评估值
+
+        public int isTwoLose;//1,  // 是否连输两场      0 => 正常  1 => 连输两场
+
+        public int hasGroup;//0    // 是否已经进行分组，0 => 未分组 1=> 已分组 如果该字段为1 就不用再请求go重新分组
+    }
+
+    public static class EnPkEnergy {
+        public  int me;//: 10,
+        public  int myTeam;//":80,
+        public  int opTeam;//":100
     }
 }

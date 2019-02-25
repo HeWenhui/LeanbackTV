@@ -109,7 +109,7 @@ public class LiveVideoAction implements VideoAction {
 
 //        btnSwitchFlowRetry = mContentView.findViewById(R.id.btn_livevideo_switch_flow_retry_btn);
 
-        mLogtf = new LogToFile(mLiveBll, TAG);
+        mLogtf = new LogToFile(activity, TAG);
         updateLoadingImage();
 
         pattern = activity.getIntent().getIntExtra("pattern", 2);

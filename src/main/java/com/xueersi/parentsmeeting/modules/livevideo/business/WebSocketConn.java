@@ -51,7 +51,7 @@ public class WebSocketConn {
 
         void onClose();
 
-        void onError();
+        void onError(Throwable throwable);
     }
 
     public void connect(String url, WebSocketCallBack callBack) {
@@ -94,7 +94,7 @@ public class WebSocketConn {
                 public void onError(Exception ex) {
                     ex.printStackTrace();
                     logger.i( "onError : "+ex.toString());
-                    mCallBack.onError();
+                    mCallBack.onError(ex);
                 }
             };
             if (url.startsWith("wss")) {
@@ -141,7 +141,7 @@ public class WebSocketConn {
             mWebSocketClient.connect();
             mWebSocketClient.setConnectionLostTimeout(CONNECTING_TIME_OUT);
         } catch (Exception e) {
-            mCallBack.onError();
+            mCallBack.onError(e);
         }
 
     }
@@ -177,7 +177,7 @@ public class WebSocketConn {
         if (mWebSocketClient != null && mWebSocketClient.isOpen()) {
             mWebSocketClient.send(data);
         } else {
-            mCallBack.onError();
+            mCallBack.onError(null);
         }
     }
 

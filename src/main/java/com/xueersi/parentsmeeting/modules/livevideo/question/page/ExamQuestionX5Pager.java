@@ -23,6 +23,7 @@ import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoChConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
@@ -143,7 +144,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
         ((AnimationDrawable) ivLoading.getBackground()).start();
         String host = isArts != 1 ? ShareBusinessConfig.LIVE_SCIENCE : ShareBusinessConfig.LIVE_LIBARTS;
         if (isArts == 2) {
-            EXAM_URL = "https://live.chs.xueersi.com/LiveExam/examPaper";
+            EXAM_URL = LiveVideoChConfig.URL_EXAM_PAGER;
         } else {
             EXAM_URL = "https://live.xueersi.com/" + host + "/LiveExam/examPaper";
         }
@@ -179,6 +180,8 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
                 EventBus.getDefault().post(event);
                 mGoldNum = -1;
                 mEnergyNum = -1;
+                // TODO 影响不确定，暂时注释isNewEnglishH5_isNewEnglishH5
+//                LiveVideoConfig.isNewEnglishH5 = false;
             }
         });
 //        wvSubjectWeb.loadUrl("http://7.xesweb.sinaapp.com/test/examPaper2.html");

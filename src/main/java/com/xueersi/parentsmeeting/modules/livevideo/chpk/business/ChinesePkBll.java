@@ -450,7 +450,6 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             addPager(resultPager);
             resultPager.showCurrentResult(data);
         }
-
     }
 
     /**
@@ -923,6 +922,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
                         alloteamStateCode + ":" + allotpkmanStateCode);
             }
         }
+
 
         if (!isTopicHandled() && alloteamStateCode == 1) {
             setTopicHandled(true);

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@android:id/background"
+        android:drawable="@drawable/app_livevideo_enteampk_pkbar_blue_img_nor"></item>
+    <item
+        android:id="@android:id/progress"
+        android:drawable="@drawable/pc_livevideo_enteampk_pkbar_orange_img_nor"></item>
+</layer-list>
