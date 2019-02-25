@@ -307,4 +307,9 @@ public class ChineseSpeechBulletScreenIRCBll extends LiveBaseBll implements Topi
     public String getStuSex() {
         return mGetInfo.getStuSex();
     }
+
+    @Override
+    public void onStop() {
+        speechBulletView.onStop();
+    }
 }

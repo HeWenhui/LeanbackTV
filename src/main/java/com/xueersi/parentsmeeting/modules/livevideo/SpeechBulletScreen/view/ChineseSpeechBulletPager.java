@@ -234,7 +234,6 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
     public View initView() {
         mView = View.inflate(mContext, R.layout.page_livevideo_chinese_speech_bullet_screen, null);
         root = mView.findViewById(R.id.rl_livevideo_speechbul_root);
-//        tvSpeechbulCloseTip = mView.findViewById(R.id.tv_livevideo_speechbul_closetip);
         switchFSPanelLinearLayout = mView.findViewById(R.id.rl_livevideo_speechbul_panelroot);
         tvSpeechbulTitle = mView.findViewById(R.id.tv_livevideo_speechbul_title);
         tvSpeechbulTitleCount = mView.findViewById(R.id.tv_livevideo_speechbul_title_count);
@@ -565,10 +564,10 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
                 RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvSpeechbulCloseTip.getLayoutParams();
                 layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
                 tvSpeechbulCloseTip.setLayoutParams(layoutParams);
+                tvSpeechbulCloseTip.setVisibility(View.GONE);
             }
             if (!closetype.equals("sendSuccessClose") && !closetype.equals("activeClose")) {
-                //已发送和主动关闭，不弹
-                tvSpeechbulCloseTip.setVisibility(View.VISIBLE);
+                //已发送和主动关闭，不弹倒计时提示
                 countDownTimer.start();
             }
 
@@ -586,13 +585,14 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
         }
     }
 
-    private CountDownTimer countDownTimer = new CountDownTimer(2050, 1000) {
+    private CountDownTimer countDownTimer = new CountDownTimer(2100, 1000) {
 
         @Override
         public void onTick(long millisUntilFinished) {
             int i = (int) (millisUntilFinished / 1000);
             if (i > 0) {
-                tvSpeechbulCloseTip.setText(i + "秒后将禁止发弹幕");
+                tvSpeechbulCloseTip.setVisibility(View.VISIBLE);
+                tvSpeechbulCloseTip.setText(i + "S后将禁止发弹幕");
             }
         }
 
@@ -700,7 +700,7 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
      * ************************************************** 语音识别 **************************************************
      */
     private final static String VOICE_RECOG_HINT = "语音录入中（15字以内）";
-    private final static String VOICE_RECOG_NOVOICE_HINT = "没听清请重说或";
+    private final static String VOICE_RECOG_NOVOICE_HINT = "没听清，请重说或切换";
 
     private int START = 1;
     private int RECOGNIZING = 2;
@@ -1232,6 +1232,15 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
             }
         }
 
+    }
+
+    @Override
+    public void onStop() {
+        if (recoginzeStatus == RECOGNIZING) {
+            startTextInput(tvSpeechbulTitle.getText().toString());
+        } else {
+            startTextInput("");
+        }
     }
 
     public void onDestroy() {
