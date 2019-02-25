@@ -82,7 +82,6 @@ public class TeamPkProgressBar extends View {
      * 滑动头 底部背景缩放比例
      */
     private float sliderBgScaleRatio = 0;
-
     /**
      * 滑动头底部背景 最大放大比列
      */
