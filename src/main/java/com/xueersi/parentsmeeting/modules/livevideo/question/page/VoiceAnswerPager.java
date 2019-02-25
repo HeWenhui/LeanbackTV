@@ -657,7 +657,8 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
                     tvVoiceansSwitch.setVisibility(View.GONE);
                     questionSwitch.uploadVoiceFile(saveVideoFile);
                     isSpeechSuccess = true;
-                    submitQuestionBlack(content1.getString(0), content1.getString(0), isRight, resultEntity.getSpeechDuration());
+                    String result = isRight ? "" + content1.getString(0) : "";
+                    submitQuestionBlack(content1.getString(0), result, isRight, resultEntity.getSpeechDuration());
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

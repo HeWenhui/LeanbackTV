@@ -483,6 +483,9 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
         if(mRolePlayMachinePager != null){
             mRolePlayMachinePager.stopSpeech();
         }
+        if(mRolePlayStandMachinePager!=null){
+            mRolePlayStandMachinePager.stopSpeech();
+        }
         mHertHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
