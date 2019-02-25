@@ -77,7 +77,6 @@ public class TeamPkProgressBar extends View {
     private Bitmap sliderBg;
     private int sliderBgWidth;
     private int sliderBgHeight;
-
     /**
      * 滑动头 底部背景缩放比例
      */
