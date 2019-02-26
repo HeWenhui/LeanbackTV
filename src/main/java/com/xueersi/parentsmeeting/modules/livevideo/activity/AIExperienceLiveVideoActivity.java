@@ -1287,9 +1287,13 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
             // 如果不为横屏，没有正在播放，或正在显示互动题都退出扫描
             return;
         }
+        int playPosition = TimeUtils.gennerSecond(position);
+        // 去除导语和第一个知识点之间的间隔
+        if(playPosition == mVideoEntity.getSciAiEvent().getLeadingStage().getEndTime()){
+            seekTo(mVideoEntity.getSciAiEvent().getExercises().get(0).getKnowledgePoints().getBeginTime() * 1000);
+        }
         for(int i = 0 ; i < mVideoEntity.getSciAiEvent().getExercises().size() ; i++){
                 if(!mVideoEntity.getSciAiEvent().getExercises().get(i).isShare()){
-                    int playPosition = TimeUtils.gennerSecond(position);
                     if(LiveVideoConfig.isAITrue){
                         if(mVideoEntity.getSciAiEvent().getExercises().get(i).getKnowledgePoints().getEndTime() != 0 && playPosition == mVideoEntity.getSciAiEvent().getExercises().get(i).getKnowledgePoints().getEndTime() ){
                             if(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getIntroduce().getBeginTime() != 0){
