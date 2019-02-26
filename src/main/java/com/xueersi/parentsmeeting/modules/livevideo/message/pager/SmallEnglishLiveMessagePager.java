@@ -1058,6 +1058,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         setBack();
     }
 
+    /** app_livevideo_enteampk_bg_img1_nor */
     private void setBack() {
         LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
         ImageView ivBack = mView.findViewById(R.id.iv_livevideo_message_small_bg);
@@ -1066,7 +1067,12 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         }
         RelativeLayout.LayoutParams bgParams = (RelativeLayout.LayoutParams) ivBack.getLayoutParams();
         int width = liveVideoPoint.x4 - liveVideoPoint.x3 + 2;
-        int height = width * 258 / 501;
+        int height = width * 287 / 501;
+        int minHeight = SizeUtils.Dp2Px(mContext, 167 * 287 / 501);
+        logger.d("setBack:height=" + height + ",minHeight=" + minHeight);
+        if (height < minHeight) {
+            height = minHeight;
+        }
         if (bgParams.width != width || bgParams.height != height) {
             bgParams.width = width;
             bgParams.height = height;

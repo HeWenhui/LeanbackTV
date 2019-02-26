@@ -257,7 +257,9 @@ public class TeamPkLeadPager extends LiveBasePager {
         viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
-                viewTreeObserver.removeOnPreDrawListener(this);
+                if (viewTreeObserver.isAlive()) {
+                    viewTreeObserver.removeOnPreDrawListener(this);
+                }
                 pgTeampkLead.getViewTreeObserver().removeOnPreDrawListener(this);
                 setProgFire();
                 return false;
@@ -298,7 +300,9 @@ public class TeamPkLeadPager extends LiveBasePager {
             public boolean onPreDraw() {
                 boolean same = setProgFire();
                 if (same) {
-                    viewTreeObserver.removeOnPreDrawListener(this);
+                    if (viewTreeObserver.isAlive()) {
+                        viewTreeObserver.removeOnPreDrawListener(this);
+                    }
                     logger.d("setVideoLayout:equal=" + (viewTreeObserver == pgTeampkLead.getViewTreeObserver()));
                     pgTeampkLead.getViewTreeObserver().removeOnPreDrawListener(this);
                 }

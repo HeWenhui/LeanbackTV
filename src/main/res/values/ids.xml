@@ -1193,4 +1193,5 @@
     <item name="tv_livevideo_en_achive_pk_energy_other_lable" type="id" />
     <item name="tv_livevideo_en_achive_pk_energy_other" type="id" />
     <item name="pg_livevideo_en_achive_pk" type="id" />
+    <item name="rl_livevideo_en_achive_pk" type="id" />
 </resources>

@@ -20,7 +20,8 @@
             android:id="@id/iv_livevideo_message_small_bg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/app_livevideo_enteampk_bg_img_nor" />
+            android:scaleType="fitXY"
+            android:src="@drawable/app_livevideo_enteampk_bg_img1_nor" />
 
         <RelativeLayout
             android:id="@id/rl_livevideo_message_top"

@@ -187,6 +187,25 @@ public class EnAchievePager extends LiveBasePager {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 rlAchiveContent.setVisibility(isChecked ? View.VISIBLE : View.GONE);
                 View view = activity.findViewById(R.id.iv_livevideo_message_small_bg);
+//                {
+//                    logger.d("onCheckedChanged:isChecked=" + isChecked + ",height=" + mView.getHeight());
+//                    ViewGroup.LayoutParams layoutParams = mView.getLayoutParams();
+//                    if (isChecked) {
+//                        layoutParams.height = SizeUtils.Dp2Px(mContext, 133);
+//                    } else {
+//                        layoutParams.height = SizeUtils.Dp2Px(mContext, 60);
+//                    }
+//                    mView.setLayoutParams(layoutParams);
+//                }
+//                if (pkView != null) {
+//                    RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) pkView.getLayoutParams();
+//                    if (isChecked) {
+//                        layoutParams.topMargin = SizeUtils.Dp2Px(mContext, 106);
+//                    } else {
+//                        layoutParams.topMargin = SizeUtils.Dp2Px(mContext, 33);
+//                    }
+//                    pkView.setLayoutParams(layoutParams);
+//                }
                 if (isChecked) {
                     if (view != null) {
                         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
