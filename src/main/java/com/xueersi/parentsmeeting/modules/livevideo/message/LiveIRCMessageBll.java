@@ -804,8 +804,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                                             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                                             mRoomAction.setEvenNum(
-                                                    jsonObject.optString("highestRightNum"),
-                                                    jsonObject.optString("evenPairNum")
+                                                    jsonObject.optString("evenPairNum"),
+                                                    jsonObject.optString("highestRightNum")
                                             );
 
 
