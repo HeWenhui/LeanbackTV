@@ -195,31 +195,31 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         vPlayerHandler.sendEmptyMessage(OPEN_FILE);
     }
 
-    public void playNewVideo(Uri uri, String displayName, String shareKey) {
-        if (isInitialized()) {
-            vPlayer.release();
-            vPlayer.releaseContext();
-        }
-        mDisplayName = "";
-        mIsHWCodec = false;
-        mFromStart = false;
-        mStartPos = 0;
-        mIsEnd = false;
-
-        mUri = uri;
-        mDisplayName = displayName;
-
-
-        if (viewRoot != null) {
-            viewRoot.postInvalidate();
-        }
-
-        if (mOpened != null) {
-            mOpened.set(false);
-        }
-
-        vPlayerHandler.sendEmptyMessage(OPEN_FILE);
-    }
+//    public void playNewVideo(Uri uri, String displayName, String shareKey) {
+//        if (isInitialized()) {
+//            vPlayer.release();
+//            vPlayer.releaseContext();
+//        }
+//        mDisplayName = "";
+//        mIsHWCodec = false;
+//        mFromStart = false;
+//        mStartPos = 0;
+//        mIsEnd = false;
+//
+//        mUri = uri;
+//        mDisplayName = displayName;
+//
+//
+//        if (viewRoot != null) {
+//            viewRoot.postInvalidate();
+//        }
+//
+//        if (mOpened != null) {
+//            mOpened.set(false);
+//        }
+//
+//        vPlayerHandler.sendEmptyMessage(OPEN_FILE);
+//    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -289,6 +289,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
      * 用户点击返回，判断是不是程序崩溃
      */
     protected void onUserBackPressed() {
+        vPlayer.psExit();
         activity.onBackPressed();
 //        activity.finish(LiveVideoConfig.VIDEO_CANCLE);
     }

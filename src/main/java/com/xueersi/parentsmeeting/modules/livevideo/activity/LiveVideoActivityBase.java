@@ -787,6 +787,9 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
      * 用户点击返回，判断是不是程序崩溃
      */
     protected void onUserBackPressed() {
+        if (vPlayer != null) {
+            vPlayer.psExit();
+        }
         finish(VIDEO_CANCLE);
     }
 

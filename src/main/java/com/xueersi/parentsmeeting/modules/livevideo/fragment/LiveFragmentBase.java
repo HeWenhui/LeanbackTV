@@ -498,7 +498,6 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
     @Override
     protected void resultFailed(final int arg1, final int arg2) {
         postDelayedIfNotFinish(new Runnable() {
-
             @Override
             public void run() {
                 LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
@@ -541,16 +540,17 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
                         break;
                     }
                     case MediaErrorInfo.PSDispatchFailed: {
+
                         //调度失败，建议重新访问playLive或者playVod频道不存在
-                        //调度失败，延迟1s再次访问调度
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (mLiveVideoBll != null) {
-                                    mLiveVideoBll.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
-                                }
-                            }
-                        }, 1000);
+                        //调度失败，延迟1s再次访问调度，交给LiveVideoBll
+//                        mHandler.postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                if (mLiveVideoBll != null) {
+//                                    mLiveVideoBll.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+//                                }
+//                            }
+//                        }, 1000);
 
                     }
                     break;
@@ -561,8 +561,8 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
                         break;
                     }
                     case MediaErrorInfo.PSServer403: {
-                        //防盗链鉴权失败，需要重新访问playLive或者playVod
-                        mLiveVideoBll.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+                        //防盗链鉴权失败，需要重新访问playLive或者playVod,交给liveVideoBll
+//                        mLiveVideoBll.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
                     }
                     break;
                     default:

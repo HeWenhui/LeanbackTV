@@ -12,6 +12,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
+import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
@@ -45,6 +46,8 @@ import okhttp3.Response;
 /**
  * Created by linyuqiang on 2018/6/22.
  * 直播bll
+ * <p>
+ * 所有跟直播中视频播放有关的逻辑处理（不处理任何ui）都在这里操作。
  */
 public class LiveVideoBll implements VPlayerListenerReg {
     private final String TAG = "LiveVideoBll";
@@ -187,14 +190,23 @@ public class LiveVideoBll implements VPlayerListenerReg {
         liveVideoReportBll.setServer(server);
     }
 
-    public void getPSServerList(int cur, int total) {
-
-    }
-
     public void psRePlay(boolean modeChange) {
         videoFragment.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
     }
 
+    /**
+     * PSIJK重新播放视频,
+     * 目前仅有四种情况需要
+     * {@link com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase#onFail(int, int)}中的
+     * 调度失败 MediaErrorInfo.PSDispatchFailed
+     * 鉴权失败 MediaErrorInfo.PSServer403
+     * 第一次播放
+     * 点击重试按钮
+     * 教师端切换服务器 ,走irc
+     *
+     * @param streamId
+     * @param protocol
+     */
     public void playPSVideo(String streamId, int protocol) {
         videoFragment.playPSVideo(streamId, protocol);
     }
@@ -399,6 +411,47 @@ public class LiveVideoBll implements VPlayerListenerReg {
         }
     }
 
+    /** 当前使用的协议,初始值为-1 */
+    private int nowProtol = MediaPlayer.VIDEO_PROTOCOL_NO_PROTOL;
+    /** 当前处于哪条线路 */
+    private int nowPos;
+
+    /**
+     * PSIJK 切换线路
+     * 缓冲超时{@link #mBufferTimeOutRun}
+     * <p>
+     * 起播超时{@link #mOpenTimeOutRun}
+     * <p>
+     * 视频播放失败有很多种情况，目前只有鉴权失败和调度失败需要playLive，其他全部都是changLive
+     */
+    public void changeLine(int pos) {
+        this.nowPos = pos;
+        if (nowProtol == -1) {
+            //初始化
+            nowProtol = MediaPlayer.VIDEO_PROTOCOL_RTMP;
+            videoFragment.playPSVideo(mGetInfo.getChannelname(), nowProtol);
+            return;
+        }
+        //当前线路小于总线路数
+        if (pos < total) {
+            videoFragment.changPlayLive(pos, nowProtol);
+        } else {
+            nowProtol = changeProtol(nowProtol);
+            videoFragment.playPSVideo(mGetInfo.getChannelname(), nowProtol);
+        }
+    }
+
+    /** 得到转化的协议 */
+    public int changeProtol(int now) {
+        int tempProtol;
+        if (now == MediaPlayer.VIDEO_PROTOCOL_RTMP) {
+            tempProtol = MediaPlayer.VIDEO_PROTOCOL_FLV;
+        } else {
+            tempProtol = MediaPlayer.VIDEO_PROTOCOL_RTMP;
+        }
+        return tempProtol;
+    }
+
     /** 构造url */
     private String constructUrl(int pos) {
         String url = "";
@@ -510,6 +563,10 @@ public class LiveVideoBll implements VPlayerListenerReg {
         return mPlayListener;
     }
 
+    /**
+     * 当前线路，一共多少线路
+     */
+    private int cur, total;
     private VPlayerCallBack.VPlayerListener mPlayListener = new VPlayerCallBack.SimpleVPlayerListener() {
 
         /**
@@ -522,10 +579,11 @@ public class LiveVideoBll implements VPlayerListenerReg {
 //            }
 //            mVideoAction.getPServerListFail();
 //        }
-
         @Override
         public void getPSServerList(int cur, int total, boolean modeChange) {
 //            liveGetPlayServer.mVideoAction.onLiveStart();
+            LiveVideoBll.this.cur = cur;
+            LiveVideoBll.this.total = total;
             for (VPlayerCallBack.VPlayerListener vPlayerListener : mPlayStatistics) {
                 vPlayerListener.getPSServerList(cur, total, modeChange);
             }
@@ -666,7 +724,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
     }
 
     /**
-     * 打开超时
+     * 打开超时,也就是起播超时
      */
     private Runnable mOpenTimeOutRun = new Runnable() {
 
@@ -683,9 +741,9 @@ public class LiveVideoBll implements VPlayerListenerReg {
         }
     };
 
-    public void liveGetPlayServer() {
-        liveGetPlayServer.liveGetPlayServer(false);
-    }
+//    public void liveGetPlayServer() {
+//        liveGetPlayServer.liveGetPlayServer(false);
+//    }
 
     /**
      * 缓冲超时
@@ -716,7 +774,11 @@ public class LiveVideoBll implements VPlayerListenerReg {
                     vPlayerListener1.onBufferTimeOutRun();
                 }
             }
-            liveGetPlayServer.liveGetPlayServer(false);
+            if (!MediaPlayer.isPSIJK) {
+                liveGetPlayServer.liveGetPlayServer(false);
+            } else {
+                changeLine(nowPos + 1);
+            }
         }
     };
 
@@ -791,7 +853,44 @@ public class LiveVideoBll implements VPlayerListenerReg {
                 }
             }
         }
-        liveGetPlayServer.liveGetPlayServer(false);
+        if (!MediaPlayer.isPSIJK) {
+            liveGetPlayServer.liveGetPlayServer(false);
+        } else {
+            switch (arg2) {
+                case MediaErrorInfo.PSPlayerError: {
+                    //播放器错误
+                    break;
+                }
+                case MediaErrorInfo.PSDispatchFailed: {
+                    //调度失败，建议重新访问playLive或者playVod频道不存在
+                    //调度失败，延迟1s再次访问调度
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+                        }
+                    }, 1000);
+
+                }
+                break;
+
+                case MediaErrorInfo.PSChannelNotExist: {
+                    //提示用户等待,交给上层来处理
+
+                    break;
+                }
+                case MediaErrorInfo.PSServer403: {
+                    //防盗链鉴权失败，需要重新访问playLive或者playVod
+                    playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+                }
+                break;
+                default:
+                    break;
+            }
+        }
+//        else {
+//            changeLine(nowPos + 1);
+//        }
     }
 
 

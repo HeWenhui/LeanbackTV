@@ -121,8 +121,10 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     private Button btnVideoFailRetry;
     /** 是否上传切流埋点日志 */
     private boolean isSwitchUpload = false;
-    /** 当前处于线路哪条线路,比list中的实际多1 */
-    private int nowRoutePos = 1;
+    /** 用户严重处于哪条线路,比list中的实际多1 */
+    private int userEyePos = 1;
+    /** 当前实际所在线路，从0开始计数 */
+    private int nowPos = 0;
     /** 当前切换线路的线路总数 */
     private int totalSwitchRouteNum = 0;
 
@@ -329,18 +331,19 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                 liveVideoAction.onPlaySuccess();
             }
             if (switchFlowStatus == LiveVideoAction.SWITCH_FLOW_ROUTE_SWITCH) {
+                //用户眼中的线路，比实际线路大1
                 if (isSwitchUpload) {
                     UmsAgentManager.umsAgentCustomerBusiness(getActivity(), getActivity().getResources().getString(R.string
                             .livevideo_switch_flow_170711));
                 }
                 if (LiveVideoConfig.isPrimary || isSmallEnglish || LiveVideoConfig.isSmallChinese) {
                     SwitchRouteSuccessDialog switchRouteSuccessDialog = new SwitchRouteSuccessDialog(activity);
-                    switchRouteSuccessDialog.updateView(nowRoutePos);
+                    switchRouteSuccessDialog.updateView(this.userEyePos);
                     switchRouteSuccessDialog.showDialogAutoClose(2000);
                 } else {
-                    XESToastUtils.showToast(activity, "线路" + nowRoutePos + "切换成功");
+                    XESToastUtils.showToast(activity, "线路" + this.userEyePos + "切换成功");
                 }
-                mLogtf.i("route " + nowRoutePos + "(add 1) switch success");
+                mLogtf.i("route " + this.userEyePos + "(add 1) switch success");
             } else if (switchFlowStatus == LiveVideoAction.SWITCH_FLOW_RELOAD) {
                 if (isSwitchUpload) {
                     UmsAgentManager.umsAgentCustomerBusiness(getActivity(), getActivity().getResources().getString(R.string
@@ -369,7 +372,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         //设置线路总数
         switchFlowBll.setListRoute(totalSwitchRouteNum);
 
-        liveVideoAction.setVideoSwitchFlowStatus(switchFlowStatus, nowRoutePos);
+        liveVideoAction.setVideoSwitchFlowStatus(switchFlowStatus, userEyePos);
         //设置最多的bll
         switchFlowBll.setmView(getSwitchFlowView(), liveMediaControllerBottom,
                 new SwitchFlowView.IReLoad() {
@@ -392,7 +395,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
 //                            psRePlay(false);
 //                        }
                         //2. 自动切流
-                        liveVideoAction.setVideoSwitchFlowStatus(switchFlowStatus, nowRoutePos);
+                        liveVideoAction.setVideoSwitchFlowStatus(switchFlowStatus, userEyePos);
                         if (mGetInfo != null && mGetInfo.getLiveTopic() != null) {
                             //调度里面会重新走replay
                             mLiveVideoBll.liveGetPlayServer(mGetInfo.getLiveTopic().getMode(), false);
@@ -411,9 +414,9 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                             }
                         }
                         //todo 显示线路切换中的字样
-                        mLiveVideoBll.playNewVideo(pos);
-                        nowRoutePos = pos + 1;
-                        liveVideoAction.setVideoSwitchFlowStatus(switchFlowStatus, nowRoutePos);
+                        psChangeLine(pos);
+                        userEyePos = pos + 1;
+                        liveVideoAction.setVideoSwitchFlowStatus(switchFlowStatus, userEyePos);
                         liveVideoAction.rePlay(false);
 //                        liveVideoAction.setVideoSwitchFlowStatus(LiveAc);
 //                        tvLoadingTint.setText("线路" + String.valueOf(pos) + "切换中...");
@@ -453,7 +456,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                     if (!MediaPlayer.isPSIJK) {
                         rePlay(false);
                     } else {
-                        psRePlay(false);
+                        psChangeLine(userEyePos - 1);
                     }
                 } else {
                     mLogtf.i("click again btn,other");
@@ -574,7 +577,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     public void getPSServerList(int cur, int total, boolean modeChange) {
         super.getPSServerList(cur, total, modeChange);
         this.totalSwitchRouteNum = total;
-        this.nowRoutePos = cur;
+        this.userEyePos = cur;
         if ((pattern == 1) && switchFlowBll != null) {
 //            if (total != 0) {
             switchFlowBll.setListRoute(total);
@@ -834,4 +837,12 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
 //        onPauseNotStopVideo = true;
     }
 
+    /**
+     * 使用psijk
+     */
+    public void psChangeLine(int pos) {
+        if (mLiveVideoBll != null) {
+            mLiveVideoBll.changeLine(pos);
+        }
+    }
 }
