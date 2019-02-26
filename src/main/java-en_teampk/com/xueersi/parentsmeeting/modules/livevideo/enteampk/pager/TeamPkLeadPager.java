@@ -253,9 +253,11 @@ public class TeamPkLeadPager extends LiveBasePager {
         pgTeampkLead.setProgress(progress);
         finalFprog = fprog;
         mLogtf.d("initData:type=" + type + ",fprog=" + fprog);
-        pgTeampkLead.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+        final ViewTreeObserver viewTreeObserver = pgTeampkLead.getViewTreeObserver();
+        viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
+                viewTreeObserver.removeOnPreDrawListener(this);
                 pgTeampkLead.getViewTreeObserver().removeOnPreDrawListener(this);
                 setProgFire();
                 return false;
@@ -290,11 +292,14 @@ public class TeamPkLeadPager extends LiveBasePager {
 //            }
 //        });
         lastLeftMargin = 0;
+        final ViewTreeObserver viewTreeObserver = pgTeampkLead.getViewTreeObserver();
         pgTeampkLead.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
                 boolean same = setProgFire();
                 if (same) {
+                    viewTreeObserver.removeOnPreDrawListener(this);
+                    logger.d("setVideoLayout:equal=" + (viewTreeObserver == pgTeampkLead.getViewTreeObserver()));
                     pgTeampkLead.getViewTreeObserver().removeOnPreDrawListener(this);
                 }
                 return false;
@@ -343,7 +348,9 @@ public class TeamPkLeadPager extends LiveBasePager {
                 lpIvProg.leftMargin = leftMargin2;
                 ivTeampkLeadProg.setLayoutParams(lpIvProg);
             }
-            ivTeampkLeadProg.setVisibility(View.VISIBLE);
+            if (ivTeampkLeadProg.getVisibility() != View.VISIBLE) {
+                ivTeampkLeadProg.setVisibility(View.VISIBLE);
+            }
         }
         {
             //设置左边的左边距
