@@ -258,7 +258,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                         mStateListener.onAutoClose(ArtsPSEAnswerResultPager.this);
                     }
                 }else {
-                    hideAnswerReuslt();
+                    closeReusltUi();
                 }
             }
         });
@@ -300,10 +300,13 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
     /**
      * 隐藏 答题结果
      */
-    private void hideAnswerReuslt() {
-        ivLookAnswer.setVisibility(View.VISIBLE);
+    private void closeReusltUi() {
+      /*  ivLookAnswer.setVisibility(View.VISIBLE);
         rlAnswerRootLayout.setVisibility(View.INVISIBLE);
-        mView.setBackgroundColor(Color.TRANSPARENT);
+        mView.setBackgroundColor(Color.TRANSPARENT);*/
+      if(mStateListener != null){
+          mStateListener.onCloseByUser();
+      }
     }
 
     /**

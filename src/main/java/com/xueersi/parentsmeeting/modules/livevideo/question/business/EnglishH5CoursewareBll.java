@@ -420,7 +420,9 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         bottomContent.post(new Runnable() {
             @Override
             public void run() {
-                logger.e("EnglishH5CoursewareCBll:froceClose " + h5CoursewarePager + ":" + (h5CoursewarePager == curPager));
+                if(mLiveBll != null){
+                    mLiveBll.getStuGoldCount();
+                }
                 if (h5CoursewarePager != null) {
                     h5CoursewarePager.destroy();
                     bottomContent.removeView(h5CoursewarePager.getRootView());
@@ -799,6 +801,10 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
             @Override
             public void onAutoClose(BasePager basePager) {
 
+            }
+
+            @Override
+            public void onCloseByUser() {
             }
         });
         initQuestionAnswerReslut(popupWindow_view, false);

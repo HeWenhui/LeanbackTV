@@ -502,6 +502,10 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     private boolean forceSumbmit;
 
+    /**
+     * 关闭作答结果页面
+     * @param forceSumbmit
+     */
     public void closeAnswerResult(boolean forceSumbmit) {
         //logger.e( "=====>closeAnswerResult:" + forceSumbmit + ":" + mDsipalyer);
         // 已展示过答题结果
@@ -578,6 +582,12 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             rlAnswerResultLayout.removeView(mDsipalyer.getRootLayout());
             mDsipalyer = null;
         }
+    }
+
+
+    @Override
+    public void onCloseByUser() {
+        closeAnswerResult(false);
     }
 
     /**
