@@ -21,6 +21,7 @@ public interface QuestionSwitch {
      * 普通语音答题的提交{@linkplain LiveHttpManager#liveSubmitNewArtsH5Answer}
      * H5语音答题的提交{@linkplain LiveHttpManager#liveSubmitNewArtsRealH5Answer}
      * 提交答案
+     *
      * @param baseVoiceAnswerPager
      * @param videoQuestionLiveEntity
      * @param answer
@@ -48,11 +49,13 @@ public interface QuestionSwitch {
     void stopSpeech(BaseVoiceAnswerPager answerPager, BaseVideoQuestionEntity baseVideoQuestionEntity);
 
     /**
-     * 语音答题强制提交，评测错误
+     * 语音答题强制提交，评测错误,加了张队pk，去掉这个
+     * {@link EnglishH5CoursewareBll.LiveStandQuestionSwitchImpl#onAnswerTimeOutError}
      *
      * @param baseVideoQuestionEntity
      * @param entity
      */
+    @Deprecated
     void onAnswerTimeOutError(BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity);
 
     /**

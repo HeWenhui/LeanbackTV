@@ -97,7 +97,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
         this.type = type;
         this.assess_ref = assess_ref;
         isNewArts = LiveVideoConfig.isNewArts;
-        if (LiveVideoConfig.isNewArts) {
+        if (isNewArts) {
             if (LocalCourseConfig.QUESTION_TYPE_SELECT_VOICE.equals(mDetail.getVoiceType()) || LocalCourseConfig.QUESTION_TYPE_SELECT_H5VOICE.equals(mDetail.getVoiceType())) {
                 try {
                     answer = assess_ref.getJSONArray("answer").getString(0);
@@ -668,12 +668,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
     }
 
     private void submitQuestionSelect(final String option, boolean isRight, double speechDuration) {
-        String isSubmit;
-        if (isNewArts) {
-            isSubmit = isEnd ? "2" : "1";
-        } else {
-            isSubmit = isEnd ? "1" : "0";
-        }
+        String isSubmit = EngForceSubmit.getSubmit(isNewArts, isEnd);
         questionSwitch.onPutQuestionResult(this, baseVideoQuestionEntity, answer, option, 1, isRight,
                 speechDuration, isSubmit, new QuestionSwitch
                         .OnAnswerReslut() {
