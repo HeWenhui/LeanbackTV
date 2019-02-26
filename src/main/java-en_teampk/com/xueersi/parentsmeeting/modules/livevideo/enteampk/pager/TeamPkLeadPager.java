@@ -88,12 +88,16 @@ public class TeamPkLeadPager extends LiveBasePager {
         } else {
             view = LayoutInflater.from(mContext).inflate(R.layout.page_livevideo_en_team_lead, null);
         }
+        rlTeampkLeadBottom = view.findViewById(R.id.rl_livevideo_en_teampk_lead_bottom);
+        RelativeLayout.LayoutParams bottomLayoutParams = (RelativeLayout.LayoutParams) rlTeampkLeadBottom.getLayoutParams();
         if (pattern == 2) {
             view.setBackgroundResource(R.drawable.bg_livevideo_en_team_bg_16_9);
+            bottomLayoutParams.height = SizeUtils.Dp2Px(mContext, 165);
         } else {
             view.setBackgroundResource(R.drawable.bg_livevideo_en_team_bg_4_3);
+            bottomLayoutParams.height = SizeUtils.Dp2Px(mContext, 164);
         }
-        rlTeampkLeadBottom = view.findViewById(R.id.rl_livevideo_en_teampk_lead_bottom);
+        rlTeampkLeadBottom.setLayoutParams(bottomLayoutParams);
         pgTeampkLead = view.findViewById(R.id.pg_livevideo_en_teampk_lead);
         rlTeampkLeadLeft = view.findViewById(R.id.rl_livevideo_en_teampk_lead_left);
         rlTeampkLeadRight = view.findViewById(R.id.rl_livevideo_en_teampk_lead_right);
@@ -295,7 +299,7 @@ public class TeamPkLeadPager extends LiveBasePager {
 //        });
         lastLeftMargin = 0;
         final ViewTreeObserver viewTreeObserver = pgTeampkLead.getViewTreeObserver();
-        pgTeampkLead.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+        viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
                 boolean same = setProgFire();
@@ -458,9 +462,13 @@ public class TeamPkLeadPager extends LiveBasePager {
             return;
         }
         final LinearLayout llTeampkLeadStar = rlTeampkLeadBottom.findViewById(R.id.ll_livevideo_en_teampk_lead_star);
-        llTeampkLeadStar.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+        final ViewTreeObserver viewTreeObserver = llTeampkLeadStar.getViewTreeObserver();
+        viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
+                if (viewTreeObserver.isAlive()) {
+                    viewTreeObserver.removeOnPreDrawListener(this);
+                }
                 llTeampkLeadStar.getViewTreeObserver().removeOnPreDrawListener(this);
                 if (llTeampkLeadStar.getChildCount() > 4) {
                     int llWidth = llTeampkLeadStar.getWidth();
@@ -502,9 +510,13 @@ public class TeamPkLeadPager extends LiveBasePager {
     }
 
     private void setBg(final ImageView ivTeampkMine, final ImageView back) {
-        ivTeampkMine.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+        final ViewTreeObserver viewTreeObserver = ivTeampkMine.getViewTreeObserver();
+        viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
+                if (viewTreeObserver.isAlive()) {
+                    viewTreeObserver.removeOnPreDrawListener(this);
+                }
                 ivTeampkMine.getViewTreeObserver().removeOnPreDrawListener(this);
 //                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ivTeampkMine.getLayoutParams();
                 RelativeLayout.LayoutParams lp2 = (RelativeLayout.LayoutParams) back.getLayoutParams();

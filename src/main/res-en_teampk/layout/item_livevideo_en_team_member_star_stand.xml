@@ -27,6 +27,7 @@
             android:id="@id/tv_livevideo_en_teampk_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/iv_livevideo_en_teampk_fire"
             android:maxWidth="55dp"
             android:singleLine="true"
@@ -45,6 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:textColor="#F9DF95"
             android:textSize="11sp" />
     </RelativeLayout>
@@ -54,5 +56,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/rl_livevideo_en_teampk_name_fire"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="-4dp" />
 </RelativeLayout>

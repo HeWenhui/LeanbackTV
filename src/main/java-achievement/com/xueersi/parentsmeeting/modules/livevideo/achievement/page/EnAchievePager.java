@@ -411,6 +411,7 @@ public class EnAchievePager extends LiveBasePager {
             if (flProgress == null) {
                 flProgress = new FrameLayout(activity);
                 flProgress.setVisibility(View.INVISIBLE);
+                flProgress.setClipChildren(false);
                 ImageView progressImageView = new ImageView(activity);
                 BitmapDrawable bitmapDrawable = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.app_livevideo_enteampk_pkbar_fire_pic_prog);
 //                progressImageView.setImageResource(R.drawable.app_livevideo_enteampk_pkbar_fire_pic_prog);
@@ -423,11 +424,15 @@ public class EnAchievePager extends LiveBasePager {
 //                flProgress.addView(progressImageView);
 //                rl_livevideo_info.addView(flProgress, width, width);
                 rl_livevideo_info.addView(flProgress);
-                pgAchivePk.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                final ViewTreeObserver viewTreeObserver = pgAchivePk.getViewTreeObserver();
+                viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                     @Override
                     public boolean onPreDraw() {
+                        setLayoutOnDraw();
+                        if (viewTreeObserver.isAlive()) {
+                            viewTreeObserver.removeOnPreDrawListener(this);
+                        }
                         pgAchivePk.getViewTreeObserver().removeOnPreDrawListener(this);
-                        setLayout();
                         return false;
                     }
                 });
@@ -437,15 +442,49 @@ public class EnAchievePager extends LiveBasePager {
         }
     }
 
-    private void setLayout() {
+    private int lastFlProgress = 0;
+
+    private void setLayoutOnDraw() {
+        setLayout();
+        final ViewTreeObserver viewTreeObserver = flProgress.getViewTreeObserver();
+        viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                setLayout();
+                if (viewTreeObserver.isAlive()) {
+                    viewTreeObserver.removeOnPreDrawListener(this);
+                }
+                flProgress.getViewTreeObserver().removeOnPreDrawListener(this);
+                return false;
+            }
+        });
+    }
+
+    private boolean setLayout() {
         ViewGroup rl_livevideo_info = activity.findViewById(R.id.rl_livevideo_info);
         int[] loc = ViewUtil.getLoc(pgAchivePk, rl_livevideo_info);
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) flProgress.getLayoutParams();
-        lp.leftMargin = loc[0] - flProgress.getWidth() / 2 + pgAchivePk.getWidth() * pgAchivePk.getProgress() / pgAchivePk.getMax();
-        lp.topMargin = loc[1] - (flProgress.getHeight() - pgAchivePk.getHeight()) / 2;
-        logger.d("initListener:left=" + loc[0] + ",top=" + loc[1]);
-        flProgress.setLayoutParams(lp);
-        flProgress.setVisibility(View.VISIBLE);
+        int rlWidth = flProgress.getWidth();
+        ImageView progressImageView = (ImageView) flProgress.getChildAt(0);
+        BitmapDrawable bitmapDrawable = (BitmapDrawable) progressImageView.getDrawable();
+        int minWidth = bitmapDrawable.getBitmap().getWidth() * 108 / 176;
+        if (rlWidth < minWidth) {
+            rlWidth = minWidth;
+        }
+        int leftMargin = loc[0] - rlWidth / 2 + pgAchivePk.getWidth() * pgAchivePk.getProgress() / pgAchivePk.getMax();
+        int topMargin = loc[1] - (flProgress.getHeight() - pgAchivePk.getHeight()) / 2;
+        logger.d("initListener:left=" + loc[0] + ",top=" + loc[1] + ",width=" + lastFlProgress + "," + rlWidth + ",minWidth=" + minWidth);
+        if (leftMargin != lp.leftMargin || topMargin != lp.topMargin) {
+            lp.leftMargin = leftMargin;
+            lp.topMargin = topMargin;
+            flProgress.setLayoutParams(lp);
+            flProgress.setVisibility(View.VISIBLE);
+        }
+//        if (lastFlProgress == flProgress.getWidth()) {
+//            return true;
+//        }
+//        lastFlProgress = flProgress.getWidth();
+        return false;
     }
 
     private Bitmap createBitmap(int energyCount, int width, int height) {

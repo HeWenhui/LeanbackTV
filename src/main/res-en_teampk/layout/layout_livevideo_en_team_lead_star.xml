@@ -12,7 +12,8 @@
     <HorizontalScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="12dp">
 
         <LinearLayout
             android:id="@id/ll_livevideo_en_teampk_lead_star"
@@ -22,7 +23,7 @@
 
     </HorizontalScrollView>
 
-    <TextView
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@id/tv_livevideo_en_teampk_rank_start_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

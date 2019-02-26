@@ -13,6 +13,7 @@
             android:id="@id/tv_livevideo_en_achive_pk_energy_my_lable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:includeFontPadding="false"
             android:shadowColor="#b3061b40"
             android:shadowDx="0"
@@ -26,6 +27,7 @@
             android:id="@id/tv_livevideo_en_achive_pk_energy_my"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_marginLeft="1dp"
             android:layout_toRightOf="@id/tv_livevideo_en_achive_pk_energy_my_lable"
             android:includeFontPadding="false"
@@ -49,6 +51,8 @@
             android:id="@id/tv_livevideo_en_achive_pk_energy_other_lable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:includeFontPadding="false"
             android:shadowColor="#b3061b40"
             android:shadowDx="0"
@@ -62,7 +66,7 @@
             android:id="@id/tv_livevideo_en_achive_pk_energy_other"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="3dp"
+            android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/tv_livevideo_en_achive_pk_energy_other_lable"
             android:includeFontPadding="false"
             android:shadowColor="#cc061b40"
@@ -70,7 +74,7 @@
             android:shadowDy="1"
             android:shadowRadius="3.0"
             android:text="100"
-            android:textColor="#ff8fd6fe"
+            android:textColor="#ff8FD6FE"
             android:textSize="11sp" />
 
     </RelativeLayout>
