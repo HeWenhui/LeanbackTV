@@ -13,6 +13,15 @@ public interface AnswerResultStateListener {
     /** UI 完全显示 **/
     void onCompeletShow();
 
-    /** 自动关闭 */
+    /**
+     * 自动关闭
+     * @param basePager
+     */
     void onAutoClose(BasePager basePager);
+
+
+    /**用户主动关闭答题结果页面**/
+    void onCloseByUser();
+
+
 }

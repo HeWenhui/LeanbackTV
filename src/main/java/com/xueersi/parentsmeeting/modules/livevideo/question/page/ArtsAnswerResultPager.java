@@ -265,7 +265,7 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
             ivClose.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    hideResultUi();
+                    closeResultUi();
                 }
             });
 
@@ -333,10 +333,13 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
     /**
      * 隐藏答题详情页面
      */
-    private void hideResultUi() {
-        mView.setBackgroundColor(Color.TRANSPARENT);
+    private void closeResultUi() {
+      /*  mView.setBackgroundColor(Color.TRANSPARENT);
         resultDetailRootView.setVisibility(View.INVISIBLE);
-        ivResultBtn.setVisibility(View.VISIBLE);
+        ivResultBtn.setVisibility(View.VISIBLE);*/
+      if(mStateListenr != null){
+          mStateListenr.onCloseByUser();
+      }
     }
 
     @Override

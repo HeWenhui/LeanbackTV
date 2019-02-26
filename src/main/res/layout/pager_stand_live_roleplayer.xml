@@ -37,7 +37,7 @@
                 android:layout_marginLeft="25dp"
                 android:layout_marginTop="9dp"
                 android:text="3分0秒"
-                android:textColor="#7a86e7"
+                android:textColor="#4e5bc1"
                 android:textSize="11sp" />
 
         </LinearLayout>

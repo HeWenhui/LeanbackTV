@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingRight="25dp">
+    android:paddingRight="25dp"
+    >
 
 
     <RelativeLayout
@@ -31,7 +33,7 @@
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:background="@drawable/roleplay_touxiangzhezhao_pic_nor"
-                   android:layout_centerInParent="true"
+                    android:layout_centerInParent="true"
                     />
                 <com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView
                     android:id="@id/civ_live_roleplayer_message_user_head"
@@ -48,7 +50,6 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:layout_gravity="center_horizontal"
-                    android:textColor="#FFFFFF"
                     android:textSize="18sp"
                     android:visibility="invisible" />
 
@@ -62,7 +63,7 @@
                 android:layout_gravity="center_horizontal"
                 android:gravity="center"
                 android:layout_marginTop="2dp"
-                android:textColor="#108479"
+                android:textColor="#e85c84"
                 android:textSize="11sp"
                 android:singleLine="true"
                 android:ellipsize="end" />
@@ -77,7 +78,7 @@
             android:layout_gravity="right"
             android:layout_marginRight="70dp"
             android:layout_alignParentRight="true"
-            android:background="@drawable/selector_live_roleplayer_self_item_bubble"
+            android:background="@drawable/selector_live_stand_roleplayer_self_item_bubble"
             android:clickable="true"
             android:minHeight="32dp"
             android:minWidth="120dp"
@@ -90,12 +91,16 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
+                android:layout_marginTop="-2dp"
                 android:layout_toLeftOf="@id/iv_live_roleplayer_message_voice_main"
-                android:gravity="center_vertical"
-                android:maxWidth="200dp"
+                android:gravity="center_vertical|right"
+                android:maxWidth="325dp"
                 android:textColor="@color/COLOR_000000"
                 android:textSize="17sp"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                android:lineSpacingExtra="2dp"
+                tools:text = "context"
+                />
 
             <ImageView
                 android:id="@id/iv_live_roleplayer_message_voice_main"

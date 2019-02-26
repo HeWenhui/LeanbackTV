@@ -2429,12 +2429,18 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 @Override
                 public void run() {
                     logger.e("=======>forceClose 2222:" + curQuestionView);
+                    if(questionHttp != null){
+                        questionHttp.getStuGoldCount();
+                    }
                     if (questionWebPager != null) {
                         rlQuestionContent.removeView(questionWebPager.getRootView());
                         if (questionWebPager instanceof BaseQuestionWebInter) {
+                            questionWebPager.onDestroy();
                             setHaveWebQuestion(false);
                         }
-                        onQuestionShow(null, false, "forceClose:method=" + method);
+                        if (!isAnaswer) {
+                            onQuestionShow(null, false, "forceClose:method=" + method);
+                        }
                     }
                 }
             });
