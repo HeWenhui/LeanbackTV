@@ -539,8 +539,6 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
                 temp.what = READ_MESSAGE;
                 mLogtf.i("handleMessage:maxReadTime=" + currentMessage.getMaxReadTime()+",mIsEnd="+mIsEnd);
                 if (currentMessage.getRolePlayer().isSelfRole()&&!mIsEnd) {
-                    //人机的时候，只在自己阅读的时候再根据服务器返回的时间定时通知下一条
-                    mReadHandler.sendMessageDelayed(temp, (currentMessage.getMaxReadTime()) * 1000);
                     mReadHandler.sendEmptyMessageDelayed(GO_SPEECH, (currentMessage.getMaxReadTime() - 1) * 1000);
                 }
 
@@ -636,6 +634,10 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
                                     message.getRolePlayer().getRoleId());
                             //XESToastUtils.showToast(mContext, resultEntity.getScore() + "");
                             //提前开始下一条
+                            if(mRolePlayerAdapter != null){
+                                mRolePlayerAdapter.updataSingleRow(lvReadList, message);
+                            }
+
                             if(!mIsEnd){
                                 nextReadMessage();
                             }
@@ -681,7 +683,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
     private void nextReadMessage() {
         mReadHandler.removeMessages(GO_SPEECH);
         mReadHandler.removeMessages(READ_MESSAGE);
-        mReadHandler.sendEmptyMessage(READ_MESSAGE);
+        mReadHandler.sendEmptyMessageDelayed(READ_MESSAGE,1000);
     }
 
     /**
@@ -767,12 +769,12 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
             public void onClick(View v) {
                 recoverListScrollAndCancelDZ();
                 StandLiveMethod.onClickVoice(liveSoundPool);
-                if (!mIsLive) {
+               /* if (!mIsLive) {
                     logger.i("close:" + getId());
                     if (speechEvalAction != null) {
                         speechEvalAction.stopSpeech(RolePlayStandMachinePager.this, getBaseVideoQuestionEntity(), getId());
                     }
-                }
+                }*/
             }
         });
         vwvSpeechVolume.stop();
@@ -817,14 +819,17 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
                         }
                     });
                     //结果弹窗5秒后消失
-                    resultUiParent.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            recoverListScrollAndCancelDZ();
+                    if(resultUiParent != null){
+                        resultUiParent.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                recoverListScrollAndCancelDZ();
 
-                            //isShowResult = false;
-                        }
-                    }, 5000);
+                                //isShowResult = false;
+                            }
+                        }, 5000);
+                    }
+
                 }
 
                 @Override

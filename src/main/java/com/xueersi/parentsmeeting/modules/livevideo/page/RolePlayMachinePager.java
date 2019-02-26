@@ -630,8 +630,6 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                 temp.what = READ_MESSAGE;
                 mLogtf.i("handleMessage:maxReadTime=" + currentMessage.getMaxReadTime()+",mIsEnd="+mIsEnd);
                 if (currentMessage.getRolePlayer().isSelfRole()&&!mIsEnd) {
-                    //人机的时候，只在自己阅读的时候再根据服务器返回的时间定时通知下一条
-                    mReadHandler.sendMessageDelayed(temp, (currentMessage.getMaxReadTime()) * 1000);
                     mReadHandler.sendEmptyMessageDelayed(GO_SPEECH, (currentMessage.getMaxReadTime() - 1) * 1000);
                 }
 
@@ -726,6 +724,11 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                             message.getRolePlayer().getRoleId());
                     //XESToastUtils.showToast(mContext, resultEntity.getScore() + "");
                     //提前开始下一条
+                    //人机的时候，只在自己阅读的时候再根据服务器返回的时间定时通知下一条
+                    if(mRolePlayerAdapter != null){
+                        mRolePlayerAdapter.updataSingleRow(lvReadList, message);
+                    }
+
                     if(!mIsEnd){
                         nextReadMessage();
                     }
@@ -765,7 +768,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
     private void nextReadMessage() {
         mReadHandler.removeMessages(GO_SPEECH);
         mReadHandler.removeMessages(READ_MESSAGE);
-        mReadHandler.sendEmptyMessage(READ_MESSAGE);
+        mReadHandler.sendEmptyMessageDelayed(READ_MESSAGE,1000);
     }
 
     /**
