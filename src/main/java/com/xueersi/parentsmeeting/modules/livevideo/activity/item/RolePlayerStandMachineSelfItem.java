@@ -149,6 +149,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
         RolePlayLog.sno8(liveAndBackDebug, mEntity, mContext);
         ivVoiceAnimtor.setBackgroundResource(R.drawable.animlst_livevideo_roleplayer_self_voice_white_anim);
         vVoiceMain.setBackgroundResource(R.drawable.livevideo_roleplay_stand_bubble_me_reading);
+        tvMessageContent.setTextColor(Color.WHITE);
         AnimationDrawable selfVoiceAnimationDrawable = null;
         selfVoiceAnimationDrawable = (AnimationDrawable) ivVoiceAnimtor.getBackground();
         if (selfVoiceAnimationDrawable != null && !selfVoiceAnimationDrawable.isRunning()) {
@@ -163,6 +164,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
                 mIsPlaying = false;
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3_lan);
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
+                tvMessageContent.setTextColor(Color.parseColor("#4E5BC1"));
                 //speechPhoneScore();
             }
 
@@ -177,6 +179,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
                         //如果是子线程的回调，会报出异常Only the original thread that created a view hierarchy can touch its views.
                         ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3_lan);
                         vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
+                        tvMessageContent.setTextColor(Color.parseColor("#4E5BC1"));
                         //speechPhoneScore();
                     }
                 });
@@ -186,7 +189,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
             public void onPreparing(Object dataSource, AudioPlayerManager manager) {
                 logger.i( "准备播放");
                 mIsPlaying = true;
-
+                tvMessageContent.setTextColor(Color.WHITE);
             }
 
             @Override
@@ -195,6 +198,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
                 mIsPlaying = false;
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3_lan);
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
+                tvMessageContent.setTextColor(Color.parseColor("#4E5BC1"));
                 //speechPhoneScore();
             }
 
