@@ -29,7 +29,6 @@ import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.speechrecognizer.TalSpeech;
 import com.tencent.bugly.crashreport.CrashReport;
-import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.speech.SpeechConfig;
 import com.xueersi.common.speech.SpeechUtils;
@@ -39,11 +38,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.VoiceAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.EngForceSubmit;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
@@ -148,12 +149,15 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     String learning_stage;
     private LiveGetInfo liveGetInfo;
     private SpeechParamEntity mParam;
+    /** 是不是新课件 */
+    final boolean isNewArts;
 
-    public SpeechAssAutoPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, String liveid, String
+    public SpeechAssAutoPager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity, String liveid, String
             testId, LiveGetInfo liveGetInfo,
                               String nonce, String content, int time, boolean haveAnswer, String learning_stage,
                               SpeechEvalAction speechEvalAction, LivePagerBack livePagerBack) {
         super(context);
+        isNewArts = baseVideoQuestionEntity.isNewArtsH5Courseware();
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.isLive = true;
         this.id = testId;
@@ -182,11 +186,12 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         umsAgentDebugPv(eventId, mData);
     }
 
-    public SpeechAssAutoPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, String liveid, String
+    public SpeechAssAutoPager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity, String liveid, String
             testId, LiveGetInfo liveGetInfo,
                               String nonce, String content, int time, int examSubmit, String learning_stage,
                               SpeechEvalAction speechEvalAction, LivePagerBack livePagerBack) {
         super(context);
+        isNewArts = baseVideoQuestionEntity.isNewArtsH5Courseware();
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.isLive = false;
         this.id = testId;
@@ -653,8 +658,10 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 // 发送已答过的状态
                 EventBus.getDefault().post(new ArtsAnswerResultEvent(id, ArtsAnswerResultEvent
                         .TYPE_NATIVE_ANSWERRESULT));
-                final boolean isNewArts = LiveVideoConfig.isNewArts;
-                speechEvalAction.sendSpeechEvalResult2(id, answers.toString(), "1", new OnSpeechEval() {
+                VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
+                final boolean isNewArts = videoQuestionLiveEntity.isNewArtsH5Courseware();
+                final String isSubmit = EngForceSubmit.getSubmit(isNewArts, false);
+                speechEvalAction.sendSpeechEvalResult2(id, videoQuestionLiveEntity, answers.toString(), isSubmit, new OnSpeechEval() {
                     OnSpeechEval onSpeechEval = this;
 
                     @Override
@@ -698,7 +705,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                             handler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
-                                    speechEvalAction.sendSpeechEvalResult2(id, answers.toString(), "1", onSpeechEval);
+                                    speechEvalAction.sendSpeechEvalResult2(id, (VideoQuestionLiveEntity) baseVideoQuestionEntity, answers.toString(), isSubmit, onSpeechEval);
                                 }
                             }, 1000);
                         }
@@ -896,50 +903,55 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     }
 
     private void forceSubmit() {
-        logger.d("forceSubmit");
-        try {
-            final JSONObject answers = new JSONObject();
-            JSONObject answers1 = new JSONObject();
-            entranceTime = System.currentTimeMillis() - entranceTime;
-            answers1.put("entranceTime", (int) (entranceTime / 1000));
-            answers1.put("score", 0);
-            JSONObject detail = new JSONObject();
-            detail.put("cont_score", 0);
-            detail.put("level", 0);
-            JSONArray nbestArray = new JSONArray();
-            detail.put("nbest", nbestArray);
-            detail.put("pron_score", 0);
-            detail.put("total_score", 0);
-            answers1.put("detail", detail);
-            answers.put("1", answers1);
-            // 发送分数和TestId
+        mLogtf.d("forceSubmit:haveAnswer=" + haveAnswer);
+        if (haveAnswer) {
+            speechEvalAction.stopSpeech(SpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
+        } else {
+            try {
+                final JSONObject answers = new JSONObject();
+                JSONObject answers1 = new JSONObject();
+                entranceTime = System.currentTimeMillis() - entranceTime;
+                answers1.put("entranceTime", (int) (entranceTime / 1000));
+                answers1.put("score", 0);
+                JSONObject detail = new JSONObject();
+                detail.put("cont_score", 0);
+                detail.put("level", 0);
+                JSONArray nbestArray = new JSONArray();
+                detail.put("nbest", nbestArray);
+                detail.put("pron_score", 0);
+                detail.put("total_score", 0);
+                answers1.put("detail", detail);
+                answers.put("1", answers1);
+                // 发送分数和TestId
 //            EventBus.getDefault().post(new VoiceAnswerResultEvent(id, 0));
-            // 发送已答过的状态
+                // 发送已答过的状态
 //            EventBus.getDefault().post(new ArtsAnswerResultEvent(id, ArtsAnswerResultEvent
 //                    .TYPE_NATIVE_ANSWERRESULT));
-            speechEvalAction.sendSpeechEvalResult2(id, answers.toString(), "2", new OnSpeechEval() {
+                String isSubmit = EngForceSubmit.getSubmit(isNewArts, true);
+                speechEvalAction.sendSpeechEvalResult2(id, (VideoQuestionLiveEntity) baseVideoQuestionEntity, answers.toString(), isSubmit, new OnSpeechEval() {
 
-                @Override
-                public void onSpeechEval(Object object) {
-                    final JSONObject jsonObject = (JSONObject) object;
-                    logger.d("sendSpeechEvalResult2:onSpeechEval:object=" + jsonObject);
-                    speechEvalAction.stopSpeech(SpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
-                }
+                    @Override
+                    public void onSpeechEval(Object object) {
+                        final JSONObject jsonObject = (JSONObject) object;
+                        logger.d("sendSpeechEvalResult2:onSpeechEval:object=" + jsonObject);
+                        speechEvalAction.stopSpeech(SpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
+                    }
 
-                @Override
-                public void onPmFailure(Throwable error, String msg) {
-                    logger.d("sendSpeechEvalResult2:onPmFailure:msg=" + msg);
-                    speechEvalAction.stopSpeech(SpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
-                }
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        logger.d("sendSpeechEvalResult2:onPmFailure:msg=" + msg);
+                        speechEvalAction.stopSpeech(SpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
+                    }
 
-                @Override
-                public void onPmError(ResponseEntity responseEntity) {
-                    logger.d("sendSpeechEvalResult2:onPmError:error=" + responseEntity.getErrorMsg());
-                    speechEvalAction.stopSpeech(SpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
-                }
-            });
-        } catch (JSONException e) {
-            e.printStackTrace();
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        logger.d("sendSpeechEvalResult2:onPmError:error=" + responseEntity.getErrorMsg());
+                        speechEvalAction.stopSpeech(SpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
+                    }
+                });
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 

@@ -118,8 +118,15 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
     @Override
     public void onQuestionShow(VideoQuestionLiveEntity questionLiveEntity, boolean isShow) {
         if (isShow && teamPkLeadPager != null) {
-            rootView.removeView(teamPkLeadPager.getRootView());
-            teamPkLeadPager = null;
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (teamPkLeadPager != null) {
+                        rootView.removeView(teamPkLeadPager.getRootView());
+                        teamPkLeadPager = null;
+                    }
+                }
+            });
         }
     }
 

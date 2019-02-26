@@ -28,6 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSwitch;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.EngForceSubmit;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VoiceAnswerLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
@@ -722,12 +723,7 @@ public class VoiceAnswerPager extends BaseVoiceAnswerPager {
     }
 
     private void submitQuestionBlack(final String answer, final String result, boolean isRight, double speechDuration) {
-        String isSubmit;
-        if (isNewArts) {
-            isSubmit = isEnd ? "2" : "1";
-        } else {
-            isSubmit = isEnd ? "1" : "0";
-        }
+        String isSubmit = EngForceSubmit.getSubmit(isNewArts, isEnd);
         questionSwitch.onPutQuestionResult(this, baseVideoQuestionEntity, answer,
                 result, 1, isRight, speechDuration, isSubmit,
                 new QuestionSwitch.OnAnswerReslut() {
