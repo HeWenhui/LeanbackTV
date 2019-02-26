@@ -227,27 +227,27 @@ public class ChineseSpeechBulletScreenIRCBll extends LiveBaseBll implements Topi
 
     @Override
     public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
-        if (sourceNick.startsWith(TEACHER_PREFIX)) {
-            logger.i("onQuit:mainTeacher quit");
-            if (LiveTopic.MODE_CLASS.equals(mLiveTopic.getMode()) && speechBulletView != null) {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        speechBulletView.closeSpeechBullet(false);
-                    }
-                });
-            }
-        } else if (sourceNick.startsWith(COUNTTEACHER_PREFIX)) {
-            logger.i("onQuit:Counteacher quit");
-            if (LiveTopic.MODE_TRANING.equals(mLiveTopic.getMode()) && speechBulletView != null) {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        speechBulletView.closeSpeechBullet(false);
-                    }
-                });
-            }
-        }
+//        if (sourceNick.startsWith(TEACHER_PREFIX)) {
+//            logger.i("onQuit:mainTeacher quit");
+//            if (LiveTopic.MODE_CLASS.equals(mLiveTopic.getMode()) && speechBulletView != null) {
+//                mHandler.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        speechBulletView.closeSpeechBullet(false);
+//                    }
+//                });
+//            }
+//        } else if (sourceNick.startsWith(COUNTTEACHER_PREFIX)) {
+//            logger.i("onQuit:Counteacher quit");
+//            if (LiveTopic.MODE_TRANING.equals(mLiveTopic.getMode()) && speechBulletView != null) {
+//                mHandler.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        speechBulletView.closeSpeechBullet(false);
+//                    }
+//                });
+//            }
+//        }
     }
 
     @Override

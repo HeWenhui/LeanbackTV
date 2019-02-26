@@ -397,9 +397,11 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
                 if (StringUtils.isSpace(charSequence.toString())) {
                     tvSpeechbulSend.setEnabled(false);
                     tvSpeechbulSend.setAlpha(0.6f);
+                    tvSpeechbulCount.setAlpha(0.6f);
                 } else {
                     tvSpeechbulSend.setEnabled(true);
                     tvSpeechbulSend.setAlpha(1.0f);
+                    tvSpeechbulCount.setAlpha(1.0f);
                 }
                 tvSpeechbulCount.setText(charSequence.toString().length() + "/15");
             }
@@ -906,9 +908,11 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
         if (StringUtils.isSpace(evaluateResult)) {
             tvSpeechbulSend.setEnabled(false);
             tvSpeechbulSend.setAlpha(0.6f);
+            tvSpeechbulCount.setAlpha(0.6f);
         } else {
             tvSpeechbulSend.setEnabled(true);
             tvSpeechbulSend.setAlpha(1.0f);
+            tvSpeechbulCount.setAlpha(1.0f);
         }
         aiText = evaluateResult;
     }
