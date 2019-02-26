@@ -421,11 +421,5 @@ public class LiveVideoConfig {
     /**半身直播体验课 试题 h5 地址**/
     public static final String URL_HALFBODY_EXPERIENCE_LIVE_H5 = "https://laoshi.xueersi.com/science/AutoLive/halfBodyH5";
 
-    /**战队PK 常量配置**/
-    public interface TEAM_PK{
-        int TOPIC_PKSTEP_STAR_RANK_LIST = 3;
-        int TOPIC_PKSTEP_BLACK_RANK_LIST = 4;
-        int TOPIC_PKSTEP_PK_END = 5;
-    }
 
 }
