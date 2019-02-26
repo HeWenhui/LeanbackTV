@@ -61,6 +61,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -777,6 +778,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             case XESCODE.MULTIPLE_H5_COURSEWARE: {
                 boolean isOff = object.optBoolean("open");
                 //
+                userLikeList.clear();
                 if (!isOff) {
                     //老师收题之后，更新聊天区连对榜
 //                    getHttpManager().getEvenLikeData(
@@ -807,8 +809,6 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                                                     jsonObject.optString("evenPairNum"),
                                                     jsonObject.optString("highestRightNum")
                                             );
-
-
                                         }
                                     }
                             );
@@ -819,7 +819,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 //                    isHasReceiveLike = false;
                     isMiddleScienceH5Open = false;
                 } else {
-                    isHasReceiveLike = false;
+//                    isHasReceiveLike = false;
                     isMiddleScienceH5Open = true;
                 }
                 break;
@@ -828,14 +828,17 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 //点赞
                 logger.i("收到点赞消息");
                 long nowTime = System.currentTimeMillis();
-                if (!isHasReceiveLike
-                        && isInLikeTime()) {
+                String senderId = object.optString("from");
+                if (isInLikeTime() && !userLikeList.contains(senderId)) {
                     String likeSender = object.optString("stuName");
                     logger.i(likeSender + " 刚刚赞了你");
                     mRoomAction.addMessage("", LiveMessageEntity.EVEN_DRIVE_LIKE, likeSender + " 刚刚赞了你");
-                    isHasReceiveLike = true;
+                    userLikeList.add(senderId);
+//                    isHasReceiveLike = true;
+                } else {
+                    logger.i("超过时间或者senderId重复");
                 }
-//
+
 //                logger.i("获取学报");
 //                getHttpManager().getJournalUrl(
 //                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/getJournal",
@@ -879,6 +882,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 logger.i("获取学报");
                 //中学连对激励系统，教师广播发送学报消息
                 logger.i("中学连对激励系统，教师广播发送学报消息");
+
                 getHttpManager().getJournalUrl(
 //                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/getJournal",
                         mGetInfo.getGetJournalUrl(),
@@ -896,18 +900,18 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                                 }
                             }
                         });
-                getHttpManager().getEvenLikeData(
-//                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
-                        mGetInfo.getGetEvenPairListUrl(),
-                        mGetInfo.getStudentLiveInfo().getClassId(),
-                        mGetInfo.getId(),
-                        mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
-                            @Override
-                            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                                EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
-                                mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
-                            }
-                        });
+//                getHttpManager().getEvenLikeData(
+////                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
+//                        mGetInfo.getGetEvenPairListUrl(),
+//                        mGetInfo.getStudentLiveInfo().getClassId(),
+//                        mGetInfo.getId(),
+//                        mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
+//                            @Override
+//                            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+//                                EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
+//                                mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
+//                            }
+//                        });
                 break;
             }
 
@@ -917,6 +921,15 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         mLogtf.d(msg);
     }
 
+    public void postDelayIfNotFinished(Runnable runnable, long time) {
+        if (mHandler != null) {
+            mHandler.postDelayed(runnable, time);
+        }
+    }
+
+    /** 列表，用户点赞列表 */
+    private List<String> userLikeList = new LinkedList<>();
+
     /**
      * 是否在点赞时间里面
      * 现在点赞消息是在  发题至收题后15s.
@@ -925,7 +938,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
      */
     private boolean isInLikeTime() {
         long nowTime = System.currentTimeMillis();
-        return (isMiddleScienceH5Open || (nowTime - endTime < TIME_SEND_PRIVATE_MSG));
+        return (isMiddleScienceH5Open || (((nowTime - endTime) < TIME_SEND_PRIVATE_MSG)));
     }
 
     //当前互动题是否处于打开状态
@@ -937,7 +950,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     //中学激励系统，收题时间,判断是否在15s内来决定点赞
     private long endTime;
     //中学激励系统，这段时间是否接收过点赞消息,一道题目只显示一次点赞消息
-    private boolean isHasReceiveLike = false;
+//    private boolean isHasReceiveLike = false;
 
     @Override
     public int[] getNoticeFilter() {

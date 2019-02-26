@@ -51,15 +51,15 @@ public class ItemMiddleScienceRankPager extends ItemMiddleSciencePager<RankEntit
                                 if (iClickSelf != null) {
                                     iClickSelf.clickSelf();
                                 }
-                            } else if ( getiNotice() != null) {
+                            } else if (getiNotice() != null) {
                                 JSONObject jsonObject = new JSONObject();
                                 try {
-                                    jsonObject.put("type", XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT);
+                                    jsonObject.put("type", String.valueOf(XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT));
                                     jsonObject.put("approvalType", 1);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
-                                getiNotice().sendNotice(jsonObject, entity.getName());
+                                getiNotice().sendNotice(jsonObject, entity.getId());
                             }
                         }
                     });

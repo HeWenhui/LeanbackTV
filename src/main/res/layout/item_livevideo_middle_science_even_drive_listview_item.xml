@@ -40,22 +40,26 @@
 
     <ImageView
         android:id="@id/iv_livevideo_rank_item_right_leftimg"
-        android:layout_width="12dp"
-        android:layout_height="12dp"
+        android:layout_width="22dp"
+        android:layout_height="17dp"
         android:layout_marginTop="3dp"
-        android:layout_marginRight="21dp"
+        android:layout_marginRight="25dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:paddingBottom="5dp"
         android:src="@drawable/livevideo_list_heart_icon_normal"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_livevideo_rank_item_left" />
 
     <TextView
         android:id="@id/tv_livevideo_rank_item_right"
-        android:layout_width="wrap_content"
+        android:layout_width="30dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="2dp"
-        android:layout_marginRight="13dp"
+
+        android:layout_marginLeft="3dp"
         android:textSize="11dp"
         app:layout_constraintLeft_toRightOf="@id/iv_livevideo_rank_item_right_leftimg"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="@id/tv_livevideo_rank_item_left"
-        tools:text="fadfads" />
+        tools:text="123" />
 </android.support.constraint.ConstraintLayout>
