@@ -53,7 +53,7 @@
                     android:layout_height="wrap_content"
                     android:src="@drawable/livevideo_enteampk_benchangchengjiu_fair_img_nor" />
 
-                <TextView
+                <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                     android:id="@id/tv_livevideo_en_achive_num_fire"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
                     android:gravity="center_vertical"
                     android:includeFontPadding="false"
                     android:text="0"
-                    android:textColor="#ff449cee"
+                    android:textColor="@color/COLOR_FF449CEE"
                     android:textSize="12sp" />
 
                 <ImageView
@@ -74,7 +74,7 @@
                     android:layout_toRightOf="@id/tv_livevideo_en_achive_num_fire"
                     android:src="@drawable/livevideo_enteampk_benchangchengjiu_star_img_nor" />
 
-                <TextView
+                <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                     android:id="@id/tv_livevideo_en_achive_num_star"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -84,7 +84,7 @@
                     android:gravity="center_vertical"
                     android:includeFontPadding="false"
                     android:text="0"
-                    android:textColor="#ff449cee"
+                    android:textColor="@color/COLOR_FF449CEE"
                     android:textSize="12sp" />
 
                 <ImageView
@@ -94,7 +94,7 @@
                     android:layout_toLeftOf="@id/tv_livevideo_en_achive_num_gold"
                     android:src="@drawable/livevideo_enteampk_benchangchengjiu_gold_img_nor" />
 
-                <TextView
+                <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                     android:id="@id/tv_livevideo_en_achive_num_gold"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -105,19 +105,19 @@
                     android:gravity="center_vertical"
                     android:includeFontPadding="false"
                     android:text="0"
-                    android:textColor="#ff449cee"
+                    android:textColor="@color/COLOR_FF449CEE"
                     android:textSize="12sp" />
 
             </RelativeLayout>
 
-            <TextView
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/rl_livevideo_en_achive_content_num"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="17dp"
                 android:text="@string/livevideo_enpk_notarget"
-                android:textColor="#ff449cee"
+                android:textColor="@color/COLOR_FF449CEE"
                 android:textSize="9sp" />
         </RelativeLayout>
 
@@ -125,7 +125,7 @@
 
     <ViewStub
         android:id="@id/vs_livevideo_en_achive_bottom"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/rl_livevideo_en_achive_back"
         android:layout="@layout/layout_livevodeo_en_achive_pk" />

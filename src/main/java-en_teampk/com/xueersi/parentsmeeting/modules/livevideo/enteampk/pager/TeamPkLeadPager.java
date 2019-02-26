@@ -443,6 +443,9 @@ public class TeamPkLeadPager extends LiveBasePager {
     }
 
     private void setTeamWidth() {
+        if (pattern == 2) {
+            return;
+        }
         final LinearLayout llTeampkLeadStar = rlTeampkLeadBottom.findViewById(R.id.ll_livevideo_en_teampk_lead_star);
         llTeampkLeadStar.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
@@ -463,12 +466,7 @@ public class TeamPkLeadPager extends LiveBasePager {
                         if (leftMargin < 0) {
                             leftMargin = 0;
                         }
-                        int maxleftMargin;
-                        if (pattern == 2) {
-                            maxleftMargin = SizeUtils.Dp2Px(mContext, 20);
-                        } else {
-                            maxleftMargin = SizeUtils.Dp2Px(mContext, 11);
-                        }
+                        int maxleftMargin = SizeUtils.Dp2Px(mContext, 11);
                         if (leftMargin > maxleftMargin) {
                             leftMargin = maxleftMargin;
                         }

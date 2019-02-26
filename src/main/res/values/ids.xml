@@ -1186,6 +1186,8 @@
     <!--英语战队pk-->
     <item name="tv_livevideo_en_achive_pk_target" type="id" />
     <item name="rl_livevideo_en_achive_pk_back" type="id" />
+    <item name="rl_livevideo_en_achive_pk_my" type="id" />
+    <item name="rl_livevideo_en_achive_pk_other" type="id" />
     <item name="tv_livevideo_en_achive_pk_energy_my_lable" type="id" />
     <item name="tv_livevideo_en_achive_pk_energy_my" type="id" />
     <item name="tv_livevideo_en_achive_pk_energy_other_lable" type="id" />

@@ -1,5 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <TextView
@@ -14,18 +14,17 @@
         android:textSize="11sp" />
 
     <RelativeLayout
-        android:id="@id/rl_livevideo_en_achive_pk_back"
+        android:id="@id/rl_livevideo_en_achive_pk_my"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_livevideo_en_achive_pk_target"
-        android:layout_marginTop="23dp"
-        android:gravity="center_vertical">
+        android:layout_alignLeft="@id/pg_livevideo_en_achive_pk"
+        android:layout_marginTop="23dp">
 
-        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        <TextView
             android:id="@id/tv_livevideo_en_achive_pk_energy_my_lable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
             android:includeFontPadding="false"
             android:shadowColor="#b3061b40"
             android:shadowDx="0"
@@ -35,7 +34,7 @@
             android:textColor="#ffffffff"
             android:textSize="9sp" />
 
-        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        <TextView
             android:id="@id/tv_livevideo_en_achive_pk_energy_my"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -50,12 +49,21 @@
             android:textColor="#fff6b288"
             android:textSize="11sp" />
 
-        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@id/rl_livevideo_en_achive_pk_other"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tv_livevideo_en_achive_pk_target"
+        android:layout_alignRight="@id/pg_livevideo_en_achive_pk"
+        android:layout_marginTop="23dp">
+
+        <TextView
             android:id="@id/tv_livevideo_en_achive_pk_energy_other_lable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="15dp"
             android:includeFontPadding="false"
             android:shadowColor="#b3061b40"
             android:shadowDx="0"
@@ -65,7 +73,7 @@
             android:textColor="#ffffffff"
             android:textSize="9sp" />
 
-        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        <TextView
             android:id="@id/tv_livevideo_en_achive_pk_energy_other"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -87,7 +95,7 @@
         style="@style/ProgressBar_live_en_pk_stand"
         android:layout_width="147dp"
         android:layout_height="17dp"
-        android:layout_below="@id/rl_livevideo_en_achive_pk_back"
+        android:layout_below="@id/rl_livevideo_en_achive_pk_my"
         android:layout_centerHorizontal="true"
         android:max="100"
         android:progress="50" />
