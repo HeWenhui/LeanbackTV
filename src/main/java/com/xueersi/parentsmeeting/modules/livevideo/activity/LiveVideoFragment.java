@@ -124,7 +124,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     /** 用户严重处于哪条线路,比list中的实际多1 */
     private int userEyePos = 1;
     /** 当前实际所在线路，从0开始计数 */
-    private int nowPos = 0;
+//    private int nowPos = 0;
     /** 当前切换线路的线路总数 */
     private int totalSwitchRouteNum = 0;
 
@@ -414,7 +414,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                             }
                         }
                         //todo 显示线路切换中的字样
-                        psChangeLine(pos);
+                        changeLine(pos);
                         userEyePos = pos + 1;
                         liveVideoAction.setVideoSwitchFlowStatus(switchFlowStatus, userEyePos);
                         liveVideoAction.rePlay(false);
@@ -456,7 +456,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                     if (!MediaPlayer.isPSIJK) {
                         rePlay(false);
                     } else {
-                        psChangeLine(userEyePos - 1);
+                        changeLine(userEyePos - 1);
                     }
                 } else {
                     mLogtf.i("click again btn,other");
@@ -536,7 +536,6 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
 //            logger.i("null");
 //        }
                     }
-
                 }
                 break;
                 case MediaErrorInfo.PSServer403: {
@@ -550,7 +549,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     }
 
 
-    /** 更新调度的list，{@link com.xueersi.parentsmeeting.modules.livevideo.video.LiveGetPlayServer#liveGetPlayServer(String, boolean),}无论成功失败都会走 */
+    /** 新psijk已经不再使用 更新调度的list，无论成功失败都会走 */
     @Override
     public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
         super.onLiveStart(server, cacheData, modechange);
@@ -803,6 +802,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
      *
      * @param modechange
      */
+    @Deprecated
     @Override
     public void rePlay(boolean modechange) {
         mLogtf.d("rePlay:mHaveStop=" + mHaveStop);
@@ -833,6 +833,19 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     }
 
     @Override
+    public void changeLine(int pos) {
+        if (mLiveVideoBll != null) {
+            mLiveVideoBll.changeLine(pos);
+        }
+    }
+
+    @Override
+    public void changeNextLine() {
+        mLiveVideoBll.changeNextLine();
+//        }
+    }
+
+    @Override
     public void onMsgUrlClick(String url) {
 //        onPauseNotStopVideo = true;
     }
@@ -840,9 +853,4 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     /**
      * 使用psijk
      */
-    public void psChangeLine(int pos) {
-        if (mLiveVideoBll != null) {
-            mLiveVideoBll.changeLine(pos);
-        }
-    }
 }

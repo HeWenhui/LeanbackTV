@@ -145,7 +145,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
         if (!MediaPlayer.isPSIJK) {
             liveFragmentBase.rePlay(b);
         } else {
-            liveFragmentBase.psRePlay(b);
+            liveFragmentBase.changeNextLine();
         }
     }
 

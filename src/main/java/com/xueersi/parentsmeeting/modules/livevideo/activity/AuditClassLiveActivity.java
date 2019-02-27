@@ -43,6 +43,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack.SimpleVPlayerListener;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack.VPlayerListener;
 import com.xueersi.parentsmeeting.module.videoplayer.media.XESVideoView;
+import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
@@ -604,7 +605,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                     @Override
                     public void run() {
                         synchronized (mIjkLock) {
-                            onFail(0, 0);
+                            onFail(0, MediaErrorInfo.PLAY_COMPLETE);
                         }
                     }
                 });
@@ -746,9 +747,27 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             }
             mLogtf.d("bufferTimeOut:progress=" + vPlayer.getBufferProgress());
             mLiveBll.repair(true);
-            mLiveBll.liveGetPlayServer(false);
+//            mLiveBll.liveGetPlayServer(false);
+            changeNextLine();
         }
     };
+
+    private void changeNextLine() {
+        this.nowPos++;
+        if (nowProtol == MediaPlayer.VIDEO_PROTOCOL_NO_PROTOL) {
+            //初始化
+            nowProtol = MediaPlayer.VIDEO_PROTOCOL_RTMP;
+            mLiveBll.liveGetPlayServer(false);
+            return;
+        }
+        //当前线路小于总线路数
+        if (this.nowPos < totalRouteNum) {
+            changPlayLive(this.nowPos, nowProtol);
+        } else {
+            nowProtol = changeProtol(nowProtol);
+            mLiveBll.liveGetPlayServer(false);
+        }
+    }
 
     /**
      * 打开超时
@@ -760,7 +779,8 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             long openTimeOut = System.currentTimeMillis() - openStartTime;
             mLogtf.d("openTimeOut:progress=" + vPlayer.getBufferProgress() + ",openTimeOut=" + openTimeOut);
             mLiveBll.repair(false);
-            mLiveBll.liveGetPlayServer(false);
+//            mLiveBll.liveGetPlayServer(false);
+            changeNextLine();
         }
     };
 
@@ -1436,8 +1456,21 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         if (!MediaPlayer.isPSIJK) {
             playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
         } else {
+
             playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
         }
+    }
+
+
+    /** 得到转化的协议 */
+    public int changeProtol(int now) {
+        int tempProtol;
+        if (now == MediaPlayer.VIDEO_PROTOCOL_RTMP) {
+            tempProtol = MediaPlayer.VIDEO_PROTOCOL_FLV;
+        } else {
+            tempProtol = MediaPlayer.VIDEO_PROTOCOL_RTMP;
+        }
+        return tempProtol;
     }
 
     protected String addBody(String method, StringBuilder url) {
@@ -1599,7 +1632,47 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 }
             }
         });
-        mLiveBll.liveGetPlayServer(false);
+
+        switch (arg2) {
+            case MediaErrorInfo.PSPlayerError: {
+                //播放器错误
+                break;
+            }
+            case MediaErrorInfo.PSDispatchFailed: {
+                //调度失败，建议重新访问playLive或者playVod频道不存在
+                //调度失败，延迟1s再次访问调度
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+//                        playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+                        mLiveBll.liveGetPlayServer(false);
+                    }
+                }, 1000);
+            }
+            break;
+            case MediaErrorInfo.PSChannelNotExist: {
+                //提示用户等待,交给上层来处理
+
+                break;
+            }
+            case MediaErrorInfo.PSServer403: {
+                //防盗链鉴权失败，需要重新访问playLive或者playVod
+//                mLiveBll.liveGetPlayServer(false);
+//                playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+                mLiveBll.liveGetPlayServer(false);
+            }
+            break;
+            case MediaErrorInfo.PLAY_COMPLETE: {
+//                mLiveBll.liveGetPlayServer(false);
+//                playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+                mLiveBll.liveGetPlayServer(false);
+            }
+            break;
+            default:
+                //除了这四种情况，还有播放完成的情况
+                break;
+        }
+
     }
 
     public void postDelayedIfNotFinish(Runnable r, long delayMillis) {
@@ -1753,9 +1826,21 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         }
     }
 
+    /**
+     * 当前处于哪条线路
+     */
+    private int nowPos;
+    /** 当前使用的协议,初始值为-1 */
+    private int nowProtol = MediaPlayer.VIDEO_PROTOCOL_NO_PROTOL;
+    /**
+     *
+     */
+    private int totalRouteNum;
+
     @Override
     public void getPSServerList(int cur, int total, boolean modeChange) {
-
+        this.nowPos = cur;
+        this.totalRouteNum = total;
 //        mServer = server;
         // 直播状态是不是变化
         final AtomicBoolean change = new AtomicBoolean(modeChange);

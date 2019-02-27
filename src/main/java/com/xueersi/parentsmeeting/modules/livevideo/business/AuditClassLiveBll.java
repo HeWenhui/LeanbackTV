@@ -578,7 +578,6 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
             return;
         }
 
-
         if (mGetInfo.getPattern() == 2) {
             ResponseEntity responseEntity = new ResponseEntity();
             responseEntity.setErrorMsg("家长旁听暂不支持全身直播，程序员哥哥正在夜以继日的开发哦!");
@@ -776,7 +775,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
         liveGetPlayServer(mLiveTopic.getMode(), modechange);
     }
 
-    private long lastGetPlayServer;
+//    private long lastGetPlayServer;
 
     private void liveGetPlayServer(final String mode, final boolean modechange) {
         if (fluentMode.get()) {

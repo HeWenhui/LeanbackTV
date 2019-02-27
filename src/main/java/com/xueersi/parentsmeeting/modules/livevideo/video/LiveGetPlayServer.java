@@ -96,6 +96,8 @@ public class LiveGetPlayServer {
 
     /**
      * 调度，使用LiveTopic的mode
+     * <p>
+     * 旁听不使用这个
      *
      * @param modechange
      */

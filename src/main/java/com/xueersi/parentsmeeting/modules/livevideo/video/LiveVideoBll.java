@@ -191,7 +191,12 @@ public class LiveVideoBll implements VPlayerListenerReg {
     }
 
     public void psRePlay(boolean modeChange) {
-        videoFragment.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+        if (nowProtol != MediaPlayer.VIDEO_PROTOCOL_RTMP && nowProtol != MediaPlayer.VIDEO_PROTOCOL_FLV) {
+            nowProtol = MediaPlayer.VIDEO_PROTOCOL_RTMP;
+            videoFragment.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+        } else {
+            videoFragment.playPSVideo(mGetInfo.getChannelname(), nowProtol);
+        }
     }
 
     /**
@@ -202,6 +207,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
      * 鉴权失败 MediaErrorInfo.PSServer403
      * 第一次播放
      * 点击重试按钮
+     * <p>
      * 教师端切换服务器 ,走irc
      *
      * @param streamId
@@ -417,19 +423,17 @@ public class LiveVideoBll implements VPlayerListenerReg {
     private int nowPos;
 
     /**
-     * PSIJK 切换线路
-     * 缓冲超时{@link #mBufferTimeOutRun}
-     * <p>
-     * 起播超时{@link #mOpenTimeOutRun}
-     * <p>
-     * 视频播放失败有很多种情况，目前只有鉴权失败和调度失败需要playLive，其他全部都是changLive
+     * 用户指定切换至哪条线路
+     *
+     * @param pos
      */
     public void changeLine(int pos) {
         this.nowPos = pos;
-        if (nowProtol == -1) {
+        if (nowProtol == MediaPlayer.VIDEO_PROTOCOL_NO_PROTOL) {
             //初始化
             nowProtol = MediaPlayer.VIDEO_PROTOCOL_RTMP;
-            videoFragment.playPSVideo(mGetInfo.getChannelname(), nowProtol);
+//            videoFragment.playPSVideo(mGetInfo.getChannelname(), nowProtol);
+            liveGetPlayServer.liveGetPlayServer(false);
             return;
         }
         //当前线路小于总线路数
@@ -437,7 +441,35 @@ public class LiveVideoBll implements VPlayerListenerReg {
             videoFragment.changPlayLive(pos, nowProtol);
         } else {
             nowProtol = changeProtol(nowProtol);
-            videoFragment.playPSVideo(mGetInfo.getChannelname(), nowProtol);
+            liveGetPlayServer.liveGetPlayServer(false);
+//            videoFragment.playPSVideo(mGetInfo.getChannelname(), nowProtol);
+        }
+    }
+
+    /**
+     * PSIJK 自动切换线路
+     * 缓冲超时{@link #mBufferTimeOutRun}
+     * <p>
+     * 起播超时{@link #mOpenTimeOutRun}
+     * <p>
+     * 视频播放失败有很多种情况，目前只有鉴权失败和调度失败需要playLive，其他全部都是changLive
+     */
+    public void changeNextLine() {
+        this.nowPos++;
+        if (nowProtol == MediaPlayer.VIDEO_PROTOCOL_NO_PROTOL) {
+            //初始化
+            nowProtol = MediaPlayer.VIDEO_PROTOCOL_RTMP;
+//            videoFragment.playPSVideo(mGetInfo.getChannelname(), nowProtol);
+            liveGetPlayServer.liveGetPlayServer(false);
+            return;
+        }
+        //当前线路小于总线路数
+        if (this.nowPos < total) {
+            videoFragment.changPlayLive(this.nowPos, nowProtol);
+        } else {
+            nowProtol = changeProtol(nowProtol);
+//            videoFragment.playPSVideo(mGetInfo.getChannelname(), nowProtol);
+            liveGetPlayServer.liveGetPlayServer(false);
         }
     }
 
@@ -566,7 +598,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
     /**
      * 当前线路，一共多少线路
      */
-    private int cur, total;
+    private int total;
     private VPlayerCallBack.VPlayerListener mPlayListener = new VPlayerCallBack.SimpleVPlayerListener() {
 
         /**
@@ -582,7 +614,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
         @Override
         public void getPSServerList(int cur, int total, boolean modeChange) {
 //            liveGetPlayServer.mVideoAction.onLiveStart();
-            LiveVideoBll.this.cur = cur;
+            LiveVideoBll.this.nowPos = cur;
             LiveVideoBll.this.total = total;
             for (VPlayerCallBack.VPlayerListener vPlayerListener : mPlayStatistics) {
                 vPlayerListener.getPSServerList(cur, total, modeChange);
@@ -615,7 +647,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
             }
             isPlay = false;
             openSuccess = false;
-            onFail(0, 0);
+            onFail(0, MediaErrorInfo.PLAY_COMPLETE);
         }
 
         @Override
@@ -777,7 +809,8 @@ public class LiveVideoBll implements VPlayerListenerReg {
             if (!MediaPlayer.isPSIJK) {
                 liveGetPlayServer.liveGetPlayServer(false);
             } else {
-                changeLine(nowPos + 1);
+//                changeLine(nowPos + 1);
+                changeNextLine();
             }
         }
     };
@@ -867,7 +900,8 @@ public class LiveVideoBll implements VPlayerListenerReg {
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+//                            playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+                            liveGetPlayServer.liveGetPlayServer(false);
                         }
                     }, 1000);
 
@@ -881,10 +915,17 @@ public class LiveVideoBll implements VPlayerListenerReg {
                 }
                 case MediaErrorInfo.PSServer403: {
                     //防盗链鉴权失败，需要重新访问playLive或者playVod
-                    playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+//                    playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+                    liveGetPlayServer.liveGetPlayServer(false);
+                }
+                break;
+                case MediaErrorInfo.PLAY_COMPLETE: {
+//                    playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+                    liveGetPlayServer.liveGetPlayServer(false);
                 }
                 break;
                 default:
+                    //除了这四种情况，还有播放完成的情况
                     break;
             }
         }

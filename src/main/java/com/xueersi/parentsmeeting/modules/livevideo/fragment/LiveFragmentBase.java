@@ -387,7 +387,21 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
     public abstract void rePlay(boolean modechange);
 
+    /**
+     * PS重播
+     *
+     * @param modeChange
+     */
     public abstract void psRePlay(boolean modeChange);
+
+    /**
+     * 切换线路
+     *
+     * @param pos
+     */
+    public abstract void changeLine(int pos);
+
+    public abstract void changeNextLine();
 
     @Override
     public void onTeacherNotPresent(final boolean isBefore) {
@@ -566,6 +580,8 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
                     }
                     break;
                     default:
+                        //除了这四种情况，还有播放完成的情况
+
                         break;
                 }
             }

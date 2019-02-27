@@ -331,22 +331,22 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
                                     vPlayer.setDisplay(videoView.getHolder());
                                 }
                                 vPlayer.psInit(MediaPlayer.VIDEO_PLAYER_NAME, 0, vPlayerServiceListener, mIsHWCodec);
-//                                if (isChangeLine) {
-//                                    vPlayer.changeLine(changeLinePos, protocol);
-//                                    isChangeLine = false;
-//                                } else {
-                                try {
-                                    if (vPlayer.getPlayer() instanceof PSIJK) {
-                                        vPlayer.getPlayer().setUserInfo(AppBll.getInstance().getAppInfoEntity().getChildName(), UserBll.getInstance().getMyUserInfoEntity().getStuId());
+                                if (isChangeLine) {
+                                    vPlayer.changeLine(changeLinePos, protocol);
+                                    isChangeLine = false;
+                                } else {
+                                    try {
+                                        if (vPlayer.getPlayer() instanceof PSIJK) {
+                                            vPlayer.getPlayer().setUserInfo(AppBll.getInstance().getAppInfoEntity().getChildName(), UserBll.getInstance().getMyUserInfoEntity().getStuId());
+                                        }
+                                        vPlayer.playPSVideo(videoPath, protocol);
+                                    } catch (IOException e) {
+                                        vPlayerHandler.sendEmptyMessage(OPEN_FAILED);
+                                        e.printStackTrace();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
                                     }
-                                    vPlayer.playPSVideo(videoPath, protocol);
-                                } catch (IOException e) {
-                                    vPlayerHandler.sendEmptyMessage(OPEN_FAILED);
-                                    e.printStackTrace();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
                                 }
-//                                }
                             }
                         }
                     }
@@ -443,9 +443,79 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     };
 
     private String videoPath;
-    private int protocol;
+    /** 切换线路使用位置 */
+    protected int changeLinePos;
+    /** 当前使用的协议 */
+    protected int protocol;
+    /**
+     * 使用切换线路，
+     * true代表切换线路，走
+     * {@link com.xueersi.parentsmeeting.module.videoplayer.ps.PSIJK#changePlayLine(int)}
+     * 和{@link PSIJK#tryPlayLive()}
+     * false代表不切换线路,直接走{@link com.xueersi.parentsmeeting.module.videoplayer.ps.PSIJK#playLive(String, int)}
+     */
+    protected boolean isChangeLine = false;
+    /**
+     * @param streamId 直播的话为channel_name
+     * @param protocol 回放的话为videoPath
+     */
+    /** 直播类型 */
+    public int liveType = 0;
+    /** 直播，使用{@link PSIJK#playLive(String, int)} */
+    public final static int PLAY_LIVE = 0;
+    /** 回放，使用{@link PSIJK#playVod(String, int)} */
+    public final static int PLAY_BACK = 1;
+    /** 录播，使用{@link PSIJK#playFile(String, int)} */
+    public final static int PLAY_TUTORIAL = 2;
+
+    /**
+     * PSIJK切换线路使用
+     *
+     * @param pos
+     * @param protocol
+     */
+    public void changPlayLive(int pos, int protocol) {
+        isChangeLine = true;
+        this.changeLinePos = pos;
+        this.protocol = protocol;
+        if (protocol == MediaPlayer.VIDEO_PROTOCOL_RTMP || protocol == MediaPlayer.VIDEO_PROTOCOL_FLV || protocol == MediaPlayer.VIDEO_PROTOCOL_HLS) {
+            this.liveType = PLAY_LIVE;
+        } else if (protocol == MediaPlayer.VIDEO_PROTOCOL_MP4 || protocol == MediaPlayer.VIDEO_PROTOCOL_M3U8) {
+            this.liveType = PLAY_BACK;
+        }
+        if (mCreated && vPlayer != null) {
+//        if (vPlayer != null) {
+            vPlayer.release();
+            vPlayer.psStop();
+        }
+//        }
+        //初始化
+
+        mDisplayName = "";
+        mIsHWCodec = false;
+        mFromStart = false;
+        mStartPos = 0;
+        mIsEnd = false;
+//        mUri = uri;
+//        mDisplayName = displayName;
+
+//        vPlayerHandler.post(new Runnable() {
+//            @Override
+//            public void run() {
+        if (viewRoot != null) {
+            viewRoot.postInvalidate();
+        }
+//            }
+//        });
+        if (mOpened != null) {
+            mOpened.set(false);
+        }
+        vPlayerHandler.sendEmptyMessage(OPEN_FILE);
+
+    }
 
     protected void playPSVideo(String videoPath, int protocol) {
+        isChangeLine = false;
         logger.i("videoPath = " + videoPath);
         this.videoPath = videoPath;
         this.protocol = protocol;

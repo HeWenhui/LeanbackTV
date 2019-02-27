@@ -410,6 +410,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                 case OPEN_FAILED:
                     // 视频打开失败
                     int arg1 = msg.arg1, arg2 = msg.arg2;
+                    //通知LiveVideoFragment
                     resultFailed(arg1, arg2);
                     break;
                 case STOP_PLAYER:
@@ -722,6 +723,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             vPlayerHandler.sendMessage(vPlayerHandler.obtainMessage(OPEN_FAILED, arg1, arg2));
             VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
+                //通知
                 wrapListener.onOpenFailed(arg1, arg2);
             }
         }

@@ -33,6 +33,7 @@ public interface VideoAction extends VPlayerCallBack.PSVPlayerListener {
      * 拿到调度结果
      * 直播开始
      */
+    @Deprecated
     void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange);
 
     /**

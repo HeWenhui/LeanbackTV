@@ -153,6 +153,9 @@ public class LectureLiveVideoFrame extends LiveFragmentBase implements ActivityC
         mLiveVideoBll.rePlay(modechange);
     }
 
+    /**
+     * @param modeChange
+     */
     @Override
     public void psRePlay(boolean modeChange) {
         if (mGetInfo == null || liveVideoAction == null) {//上次初始化尚未完成
@@ -160,6 +163,20 @@ public class LectureLiveVideoFrame extends LiveFragmentBase implements ActivityC
         }
         liveVideoAction.rePlay(modeChange);
         mLiveVideoBll.psRePlay(modeChange);
+    }
+
+    @Override
+    public void changeLine(int pos) {
+        if (mLiveVideoBll != null) {
+            mLiveVideoBll.changeLine(pos);
+        }
+    }
+
+    @Override
+    public void changeNextLine() {
+        if (mLiveVideoBll != null) {
+            mLiveVideoBll.changeNextLine();
+        }
     }
 
     protected void addBusiness(Activity activity) {
@@ -194,6 +211,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase implements ActivityC
         liveMediaControllerBottom.setVisibility(View.INVISIBLE);
     }
 
+    // TODO: 2019/2/27 为什么onResume
     @Override
     public void onResume() {
         super.onResume();
