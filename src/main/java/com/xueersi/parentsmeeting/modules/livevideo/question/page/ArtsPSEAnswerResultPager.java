@@ -228,25 +228,23 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
      */
     private void addCloseBtn() {
         closeBtnAdded = true;
-        ImageView closeBtn = new ImageView(mContext);
+        final ImageView closeBtn = new ImageView(mContext);
+        final ImageView jsonBackImageView=new ImageView(mContext);
+//        jsonBackImageView.setBackgroundColor(mContext.getResources().getColor(R.color.COLOR_7FFFFF00));
+
         if (mData.isVoice == 1) {
             closeBtn.setImageResource(R.drawable.selector_live_enpk_shell_window_guanbi_btn);
         } else {
             closeBtn.setImageResource(R.drawable.selector_live_answer_result_close);
         }
         closeBtn.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        int hieght = SizeUtils.Dp2Px(mContext, CLOSEBTN_HEIGHT);
-        int width = SizeUtils.Dp2Px(mContext, CLOSEBTN_WIDTH);
+        final int closeHieght = SizeUtils.Dp2Px(mContext, CLOSEBTN_HEIGHT);
+        final int closeWidth = SizeUtils.Dp2Px(mContext, CLOSEBTN_WIDTH);
 
         Point point = new Point();
         ((Activity) mContext).getWindowManager().getDefaultDisplay().getSize(point);
-        int screenWidth = Math.min(point.x, point.y);
-        int screenHeight = Math.max(point.x, point.y);
 
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(width, hieght);
-        layoutParams.topMargin = (int) (screenWidth * 0.122f);
-        layoutParams.rightMargin = (int) (screenHeight * 0.180f);
-        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        final RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(closeHieght, closeWidth);
         rlAnswerRootLayout.addView(closeBtn, layoutParams);
 
         closeBtn.setOnClickListener(new View.OnClickListener() {
@@ -265,12 +263,63 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
         ScaleAnimation scaleAnimation = (ScaleAnimation) AnimationUtils.loadAnimation(mContext, R.anim.anim_livevideo_close_btn_in);
         scaleAnimation.setInterpolator(new SpringScaleInterpolator(0.23f));
         closeBtn.startAnimation(scaleAnimation);
+        final ViewTreeObserver viewTreeObserver=resultAnimeView.getViewTreeObserver();
+        viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                if(viewTreeObserver.isAlive()){
+                    viewTreeObserver.removeOnPreDrawListener(this);
+                }
+                resultAnimeView.getViewTreeObserver().removeOnPreDrawListener(this);
+                //找到动画中的背景图。business\livevideo\src\main\assets\arts_answer_result\result_part_correct\images\img_20.png
+                int resultWidth=resultAnimeView.getWidth();
+                int height=resultAnimeView.getHeight();
+                //json中总的json宽度
+                int jsonWidth=960;
+                //json中总的json高度
+                int jsonHeight=540;
+                //json中背景的高度
+                int jsonBackWidth=590;
+                //json中背景的高度
+                int jsonBackHeight=340;
+                int backWidth=resultWidth*jsonBackWidth/jsonWidth;
+                int backHeight=height*jsonBackHeight/jsonHeight;
+//                    rlAnswerRootLayout
+                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(backWidth,backHeight);
+                lp.leftMargin=(resultWidth-backWidth)/2;
+                lp.topMargin=(height-backHeight)/2;
+                rlAnswerRootLayout.addView(jsonBackImageView,lp);
+                logger.d("addCloseBtn:width="+resultWidth+","+backWidth+",height="+height+","+backHeight);
+                layoutParams.topMargin = lp.topMargin-closeHieght/2;
+                layoutParams.leftMargin = (resultWidth-backWidth)/2+backWidth-closeWidth*2/3;
+                closeBtn.setLayoutParams(layoutParams);
+                if (mData.isVoice == 1){
+                    final TextView tvClose = mView.findViewById(R.id.tv_arts_answer_result_pse_close);
+                    final ViewTreeObserver tvCloseTreeObserver=tvClose.getViewTreeObserver();
+                    tvCloseTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                        @Override
+                        public boolean onPreDraw() {
+                            if(tvCloseTreeObserver.isAlive()){
+                                tvCloseTreeObserver.removeOnPreDrawListener(this);
+                            }
+                            tvClose.getViewTreeObserver().removeOnPreDrawListener(this);
+
+                            RelativeLayout.LayoutParams closeLp = (RelativeLayout.LayoutParams) tvClose.getLayoutParams();
+                            closeLp.topMargin= jsonBackImageView.getTop()+jsonBackImageView.getHeight()-3*tvClose.getHeight();
+                            tvClose.setLayoutParams(closeLp);
+                            return false;
+                        }
+                    });
+                }
+                return false;
+            }
+        });
         if (mData.isVoice == 1){
-            final TextView textView = mView.findViewById(R.id.tv_arts_answer_result_pse_close);
-            textView.setVisibility(View.VISIBLE);
+            final TextView tvClose = mView.findViewById(R.id.tv_arts_answer_result_pse_close);
+            tvClose.setVisibility(View.VISIBLE);
             final AtomicInteger integer = new AtomicInteger(5);
-            setCloseText(textView, integer);
-            textView.postDelayed(new Runnable() {
+            setCloseText(tvClose, integer);
+            tvClose.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     int count = integer.decrementAndGet();
@@ -283,8 +332,8 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                             group.removeView(mView);
                         }
                     } else {
-                        setCloseText(textView, integer);
-                        textView.postDelayed(this, 1000);
+                        setCloseText(tvClose, integer);
+                        tvClose.postDelayed(this, 1000);
                     }
                 }
             }, 1000);

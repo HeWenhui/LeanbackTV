@@ -117,38 +117,44 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //            SpeechResultPager speechResultPager = new SpeechResultPager(activity, bottomContent, speechResultEntity);
 //            bottomContent.addView(speechResultPager.getRootView());
 //        }
-//        if (AppConfig.DEBUG) {
-//            AnswerResultEntity answerResultEntity = new AnswerResultEntity();
+//        if (com.xueersi.common.config.AppConfig.DEBUG) {
+//            com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity answerResultEntity = new com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity();
 //            answerResultEntity.isVoice = 1;
 //            answerResultEntity.setEnergy(11);
 //            answerResultEntity.setGold(2);
-//            answerResultEntity.setIsRight(ArtsPSEAnswerResultPager.RESULT_TYPE_PART_CORRECT);
-//            ArrayList<AnswerResultEntity.Answer> answerList = new ArrayList<>();
-//            AnswerResultEntity.Answer answer = new AnswerResultEntity.Answer();
-//            answer.setTestType(AnswerResultEntity.TEST_TYPE_2);
-//            List<String> rightAnswers = new ArrayList<>();
+//            answerResultEntity.setIsRight(com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsPSEAnswerResultPager.RESULT_TYPE_PART_CORRECT);
+//            java.util.ArrayList<com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity.Answer> answerList = new java.util.ArrayList<>();
+//            com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity.Answer answer = new com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity.Answer();
+//            answer.setTestType(com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity.TEST_TYPE_2);
+//            List<String> rightAnswers = new java.util.ArrayList<>();
 //            rightAnswers.add("A");
 //            answer.setRightAnswers(rightAnswers);
-//            List<String> blankList = new ArrayList<>();
+//            List<String> blankList = new java.util.ArrayList<>();
 //            blankList.add("C");
 //            answer.setBlankList(blankList);
-//            List<String> choiceList = new ArrayList<>();
+//            List<String> choiceList = new java.util.ArrayList<>();
 //            choiceList.add("C");
 //            answer.setChoiceList(choiceList);
 //            answerList.add(answer);
 //            answerResultEntity.setAnswerList(answerList);
-//            final ViewGroup group = bottomContent;
-//            ArtsPSEAnswerResultPager artsPSEAnswerResultPager = new ArtsPSEAnswerResultPager(activity, answerResultEntity, new AnswerResultStateListener() {
-//                @Override
-//                public void onCompeletShow() {
+//            final android.view.ViewGroup group = bottomContent;
+//            com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsPSEAnswerResultPager artsPSEAnswerResultPager = new com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsPSEAnswerResultPager(activity, answerResultEntity,
+//                    new com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerResultStateListener() {
+//                        @Override
+//                        public void onCompeletShow() {
 //
-//                }
+//                        }
 //
-//                @Override
-//                public void onAutoClose(BasePager basePager) {
-//                    group.removeView(basePager.getRootView());
-//                }
-//            });
+//                        @Override
+//                        public void onAutoClose(com.xueersi.common.base.BasePager basePager) {
+//                            group.removeView(basePager.getRootView());
+//                        }
+//
+//                        @Override
+//                        public void onCloseByUser() {
+//
+//                        }
+//                    });
 //            bottomContent.addView(artsPSEAnswerResultPager.getRootView());
 //        }
     }

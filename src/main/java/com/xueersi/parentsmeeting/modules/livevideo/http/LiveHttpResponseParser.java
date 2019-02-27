@@ -345,7 +345,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setUname(data.getString("uname"));
             getInfo.setStuName(data.getString("stuName"));
             getInfo.setStuSex(data.getString("stuSex"));
-            getInfo.setStuImg(data.getString("stuImg"));
+            getInfo.setStuImg(data.optString("stuImg"));
             if (data.has("studentLiveInfo")) {
                 StudentLiveInfoEntity studentLiveInfoEntity = new StudentLiveInfoEntity();
                 JSONObject studentLiveInfo = data.getJSONObject("studentLiveInfo");

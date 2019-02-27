@@ -48,7 +48,7 @@
             android:layout_width="295dp"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="127dp"
+            android:layout_marginTop="120dp"
             android:layout="@layout/page_livevideo_arts_anwserresult_voice_blank" />
 
         <TextView
@@ -56,7 +56,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="268dp"
             android:textColor="#ff8C8080"
             android:textSize="10sp"
             android:visibility="gone" />
