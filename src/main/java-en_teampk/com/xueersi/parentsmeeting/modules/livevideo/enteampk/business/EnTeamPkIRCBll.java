@@ -537,6 +537,22 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     }
                 }
                 break;
+            case XESCODE.CLASSBEGIN:
+                boolean end = data.optBoolean("end", false);
+                logger.d("CLASSBEGIN:end=" + end);
+                if (end && mGetInfo.getStudentLiveInfo() != null) {
+                    String classId = mGetInfo.getStudentLiveInfo().getClassId();
+                    try {
+                        mLogtf.d("CLASSBEGIN:classInt=" + classId);
+                        int classInt = Integer.parseInt(classId);
+                        if (classInt < 0) {
+                            getEnglishPkTotalRank();
+                        }
+                    } catch (Exception e) {
+                        CrashReport.postCatchedException(e);
+                    }
+                }
+                break;
             default:
                 break;
         }
@@ -746,7 +762,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public int[] getNoticeFilter() {
         return new int[]{XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_OPEN, XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_RESULT, XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_GO,
-                XESCODE.STOPQUESTION, XESCODE.ARTS_STOP_QUESTION, XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_STULIKE, XESCODE.ARTS_H5_COURSEWARE};
+                XESCODE.STOPQUESTION, XESCODE.ARTS_STOP_QUESTION, XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_STULIKE, XESCODE.ARTS_H5_COURSEWARE, XESCODE.CLASSBEGIN};
     }
 
     private int firstTopic = 0;
