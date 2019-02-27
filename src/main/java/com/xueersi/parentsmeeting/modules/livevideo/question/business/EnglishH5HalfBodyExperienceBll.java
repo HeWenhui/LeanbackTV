@@ -74,7 +74,6 @@ public class EnglishH5HalfBodyExperienceBll extends LiveBackBaseBll {
         liveBaseEnglishH5CoursewareCreat.setArts(isArts);
         liveBaseEnglishH5CoursewareCreat.setWrapOnH5ResultClose(new WrapOnH5ResultClose(activity));
         liveBaseEnglishH5CoursewareCreat.setLivePagerBack(englishH5CoursewareBll);
-        liveBaseEnglishH5CoursewareCreat.setLiveGetInfo(liveGetInfo);
         englishH5CoursewareBll.setBaseEnglishH5CoursewareCreat(liveBaseEnglishH5CoursewareCreat);
     }
 
