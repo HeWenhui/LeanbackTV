@@ -61,7 +61,7 @@ public class SpeechCollectiveBll implements SpeechFeedBackAction {
     private AudioRecord mAudioRecord = null;
 
     /** 播放声音对象 */
-    private AudioTrack mAudioTrack = null;
+//    private AudioTrack mAudioTrack = null;
     /** 原始录音数据 */
     private short[] mPCMBuffer;
     protected LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
@@ -93,9 +93,9 @@ public class SpeechCollectiveBll implements SpeechFeedBackAction {
             m_canceler.setEnabled(true);
         }
 
-        mAudioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, DEFAULT_SAMPLING_RATE, DEFAULT_CHANNEL_CONFIG,
-                DEFAULT_AUDIO_FORMAT.getAudioFormat(), mBufferSize, AudioTrack.MODE_STREAM, mAudioRecord
-                .getAudioSessionId());
+//        mAudioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, DEFAULT_SAMPLING_RATE, DEFAULT_CHANNEL_CONFIG,
+//                DEFAULT_AUDIO_FORMAT.getAudioFormat(), mBufferSize, AudioTrack.MODE_STREAM, mAudioRecord
+//                .getAudioSessionId());
 
     }
 
@@ -162,14 +162,14 @@ public class SpeechCollectiveBll implements SpeechFeedBackAction {
                 logger.d("start:startRecording:mAudioRecord=" + (mAudioRecord == null));
                 long time = System.currentTimeMillis();
                 mAudioRecord.startRecording();
-                mAudioTrack.play();
+//                mAudioTrack.play();
                 while (isStart) {
                     if (mAudioRecord != null) {
                         int readSize = mAudioRecord.read(mPCMBuffer, 0, mBufferSize);
                         if (readSize > 0) {
                             calculateRealVolume(mPCMBuffer, readSize);
                         }
-                        mAudioTrack.write(mPCMBuffer, 0, mPCMBuffer.length);
+//                        mAudioTrack.write(mPCMBuffer, 0, mPCMBuffer.length);
                     }
                 }
                 logger.d("start:startRecording:end;time=" + (System.currentTimeMillis() - time));
@@ -212,10 +212,10 @@ public class SpeechCollectiveBll implements SpeechFeedBackAction {
             mAudioRecord.release();
             mAudioRecord = null;
         }
-        if (mAudioTrack != null) {
-            mAudioTrack.release();
-            mAudioTrack = null;
-        }
+//        if (mAudioTrack != null) {
+//            mAudioTrack.release();
+//            mAudioTrack = null;
+//        }
 
         if (speechFeedBackPager != null) {
             mHandler.post(new Runnable() {
@@ -280,17 +280,17 @@ public class SpeechCollectiveBll implements SpeechFeedBackAction {
     }
 
     public void onResume() {
-        if (mAudioTrack != null) {
-            if (mAudioTrack.getPlayState() == AudioTrack.PLAYSTATE_PAUSED) {
-                mAudioTrack.play();
-            }
-        }
+//        if (mAudioTrack != null) {
+//            if (mAudioTrack.getPlayState() == AudioTrack.PLAYSTATE_PAUSED) {
+//                mAudioTrack.play();
+//            }
+//        }
     }
 
     public void onPause() {
-        if (mAudioTrack != null) {
-            mAudioTrack.pause();
-        }
+//        if (mAudioTrack != null) {
+//            mAudioTrack.pause();
+//        }
 
     }
 }
