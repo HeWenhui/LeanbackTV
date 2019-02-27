@@ -9,8 +9,8 @@ import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RankItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.itempager.ItemMiddleScienceEvenPager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.itempager.ItemMiddleScienceGroupsPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.itempager.ItemMiddleSciencePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.itempager.ItemMiddleScienceRankPager;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
@@ -273,7 +273,7 @@ public class MiddleScienceEvenDrivePager extends BasePager {
             teamsCommonAdapter = new CommonAdapter<RankEntity>(allRankEntity.getMyRankEntityTeams().getRankEntities()) {
                 @Override
                 public AdapterItemInterface<RankEntity> getItemView(Object type) {
-                    return new RankItem(colorYellow, colorWhite, false);
+                    return new ItemMiddleScienceGroupsPager(colorYellow, colorWhite);
                 }
             };
         } else {

@@ -22,9 +22,10 @@
     <View
         android:id="@id/view_livevideo_livemessage_middle_even_right_barrair"
         android:layout_width="1dp"
-        android:layout_height="15dp"
+        android:layout_height="12dp"
         android:layout_marginLeft="8dp"
         android:background="@color/COLOR_33FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@id/tv_livevideo_livemessage_middle_even_right_now"
         app:layout_constraintLeft_toRightOf="@id/tv_livevideo_livemessage_middle_even_right_now"
         app:layout_constraintTop_toTopOf="@id/tv_livevideo_livemessage_middle_even_right_now" />
 

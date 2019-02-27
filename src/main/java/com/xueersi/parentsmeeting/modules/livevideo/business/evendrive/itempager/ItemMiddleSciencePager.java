@@ -34,6 +34,8 @@ public abstract class ItemMiddleSciencePager<T> implements AdapterItemInterface<
     /** 自己的学生id */
     protected String myStuId;
 
+    protected View viewRoot;
+
     @Override
     public int getLayoutResId() {
         return R.layout.item_livevideo_middle_science_even_drive_listview_item;
@@ -41,6 +43,7 @@ public abstract class ItemMiddleSciencePager<T> implements AdapterItemInterface<
 
     @Override
     public void initViews(View root) {
+        viewRoot = root;
         rankLeft = root.findViewById(R.id.tv_livevideo_rank_item_left);
         rankMiddleLeft = root.findViewById(R.id.tv_livevideo_rank_item_mid_left);
         rankMiddleRight = root.findViewById(R.id.tv_livevideo_rank_item_mid_right);
@@ -73,6 +76,7 @@ public abstract class ItemMiddleSciencePager<T> implements AdapterItemInterface<
     public void setH5Open(boolean h5Open) {
         isH5Open = h5Open;
     }
+
     /**
      * 点赞发送消息
      * wiki文档 ：http://wiki.xesv5.com/pages/viewpage.action?pageId=16827379

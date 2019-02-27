@@ -90,6 +90,9 @@ public class ItemMiddleScienceEvenPager extends ItemMiddleSciencePager<EvenDrive
     @Override
     public void updateViews(EvenDriveEntity.OtherEntity entity, int position, Object objTag) {
         this.entity = entity;
+        if (position == 0 && viewRoot != null) {
+            viewRoot.setBackgroundDrawable(mContext.getResources().getDrawable(R.color.COLOR_1AFFFFFF));
+        }
         colorWhite = mContext.getResources().getColor(R.color.white);
         String index = String.valueOf(entity.getRanking());
         if ("1".equals(index)) {

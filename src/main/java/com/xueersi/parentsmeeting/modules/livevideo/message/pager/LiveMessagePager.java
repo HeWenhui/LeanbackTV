@@ -159,8 +159,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 resources.getColor(R.color.COLOR_666666),
                 resources.getColor(R.color.COLOR_E74C3C),
                 resources.getColor(R.color.COLOR_E74C3C),
-                resources.getColor(R.color.COLOR_E74C3C),
-                resources.getColor(R.color.COLOR_E74C3C)};
+                resources.getColor(R.color.COLOR_327af1)};
 
         nameColors[0] = resources.getColor(R.color.COLOR_32B16C);
         nameColors[1] = resources.getColor(R.color.COLOR_E74C3C);
@@ -512,14 +511,15 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     /** 设置聊天消息的点赞图片 */
     private SpannableStringBuilder likeEvenDrive(LiveMessageEntity entity) {
-        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(entity.getText());
+        String textShow = entity.getText() + "  ";
+        SpannableStringBuilder spannableStringBuilder = new SpannableStringBuilder(textShow);
         String replacePos = "点赞心";
         spannableStringBuilder.append(replacePos);
         Drawable drawable = mContext.getResources().getDrawable(R.drawable.livevideo_list_redheart_icon_normal);
         drawable.setBounds(0, 0, SizeUtils.Dp2Px(mContext, 13), SizeUtils.Dp2Px(mContext, 13));
         ImageSpan imageSpan = new ImageSpan(drawable);
 
-        spannableStringBuilder.setSpan(imageSpan, entity.getText().length(), entity.getText().length() + replacePos.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        spannableStringBuilder.setSpan(imageSpan, textShow.length(), textShow.length() + replacePos.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
         return spannableStringBuilder;
     }
 

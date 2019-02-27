@@ -83,6 +83,11 @@ public class ItemMiddleScienceRankPager extends ItemMiddleSciencePager<RankEntit
     public void updateViews(RankEntity entity, int position, Object objTag) {
         this.entity = entity;
 
+        if (position == 0 && viewRoot != null) {
+//            viewRoot.setBackgroundColor(R.color.COLOR_E6FFFFFF);
+            viewRoot.setBackgroundDrawable(mContext.getResources().getDrawable(R.color.COLOR_1AFFFFFF));
+
+        }
         colorWhite = mContext.getResources().getColor(R.color.white);
         String index = entity.getRank();
         if ("1".equals(index)) {

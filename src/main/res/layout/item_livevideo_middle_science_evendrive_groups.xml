@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:ignore="MissingConstraints">
+
+    <TextView
+        android:id="@id/tv_livevideo_rank_item_left"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:gravity="center"
+        android:textSize="11dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="100" />
+
+    <TextView
+        android:id="@id/tv_livevideo_rank_item_mid"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:ellipsize="end"
+        android:gravity="left"
+        android:maxLines="1"
+        android:textSize="11dp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_livevideo_rank_item_left"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_livevideo_rank_item_left"
+        tools:text="王佳佳" />
+
+    <TextView
+        android:id="@id/tv_livevideo_rank_item_right"
+        android:layout_width="35dp"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="7dp"
+        android:gravity="left"
+        android:textSize="11dp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_livevideo_rank_item_left"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/tv_livevideo_rank_item_left"
+        tools:text="100%" />
+</android.support.constraint.ConstraintLayout>
