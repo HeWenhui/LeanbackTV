@@ -7,7 +7,7 @@
     <item android:id="@android:id/progress">
         <clip xmlns:android="http://schemas.android.com/apk/res/android"
             android:clipOrientation="horizontal"
-            android:drawable="@drawable/zhanduipk_pkbar_orange_pic_nor"
+            android:drawable="@drawable/zhanduipk_pkbar_orange_pic_nor1"
             android:gravity="left" />
     </item>
 </layer-list>

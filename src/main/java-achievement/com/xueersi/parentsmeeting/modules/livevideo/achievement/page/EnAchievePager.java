@@ -274,12 +274,14 @@ public class EnAchievePager extends LiveBasePager {
             mLogtf.d("onGetStar:opTeam=" + pkEnergy.opTeam + ",otherTotal=" + myTotal);
         }
         ViewGroup rl_livevideo_info = activity.findViewById(R.id.rl_livevideo_info);
-        if (rl_livevideo_info != null) {
+        if (!cbAchiveTitle.isChecked() && rl_livevideo_info != null) {
             final int energyCountAdd = starAndGoldEntity.getPkEnergy().me - energyCount;
             final int goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
+            final int startCountAdd = starAndGoldEntity.getStarCount() - starCount;
             energyCount = starAndGoldEntity.getPkEnergy().me;
             goldCount = starAndGoldEntity.getGoldCount();
-            mLogtf.d("onGetStar:energyCountAdd=" + energyCountAdd + ",goldCountAdd=" + goldCountAdd);
+            starCount = starAndGoldEntity.getStarCount();
+            mLogtf.d("onGetStar:energyCountAdd=" + energyCountAdd + ",goldCountAdd=" + goldCountAdd + ",startCountAdd=" + startCountAdd);
             String LOTTIE_RES_ASSETS_ROOTDIR;
             String[] targetFileNames;
             final int type;
