@@ -13,6 +13,7 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.DeviceDetectionActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.HalfBodyLiveExperienceActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLivePlayBackVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -373,6 +374,18 @@ public class LiveVideoEnter {
         ExperienceLiveVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
         return true;
     }
+
+
+    /**
+     * 跳转到半身直播体验课
+     * @param context
+     * @param bundle
+     */
+    public static boolean intentToHalfBodyExperience(Activity context, Bundle bundle, String where) {
+        HalfBodyLiveExperienceActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+        return true;
+    }
+
 
     /**
      * 跳转到全身直播体验课

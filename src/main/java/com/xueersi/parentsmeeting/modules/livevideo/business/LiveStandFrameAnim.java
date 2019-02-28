@@ -139,7 +139,7 @@ public class LiveStandFrameAnim {
                     }
                 });
                 LiveZip liveZip = new LiveZip(view, callBack, saveFile, saveFileTemp);
-                zipExtractorTask = new StandLiveZipExtractorTask(saveFileZip, saveFileTemp, activity, liveZip);
+                zipExtractorTask = new StandLiveZipExtractorTask(saveFileZip, saveFileTemp, liveZip);
                 zipExtractorTask.execute();
             }
         } else {
@@ -248,7 +248,7 @@ public class LiveStandFrameAnim {
                 UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), eventId, logHashMap.getData());
                 onProgress(pbLiveStandUpdate.getLeft(), rlLiveStandUpdateProg, ivLiveStandUpdateProgLight, 50);
                 LiveZip liveZip = new LiveZip(view, callBack, saveFile, saveFileTemp);
-                zipExtractorTask = new StandLiveZipExtractorTask(saveFileZip, saveFileTemp, activity, liveZip);
+                zipExtractorTask = new StandLiveZipExtractorTask(saveFileZip, saveFileTemp, liveZip);
                 zipExtractorTask.execute();
             }
 
@@ -472,8 +472,8 @@ public class LiveStandFrameAnim {
         boolean cancle = false;
         ZipProg zipProg;
 
-        public StandLiveZipExtractorTask(File in, File out, Context context, ZipProg zipProg) {
-            super(in, out, context, true);
+        public StandLiveZipExtractorTask(File in, File out, ZipProg zipProg) {
+            super(in, out, true, null);
             this.zipProg = zipProg;
         }
 

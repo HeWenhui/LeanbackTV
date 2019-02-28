@@ -35,8 +35,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
  * 实时答题
  *
  * @author yuanwei
- * <p>
- * created  at 2018/11/14 11:31
+ *         <p>
+ *         created  at 2018/11/14 11:31
  */
 public class PkAnswerResultPager extends BasePager {
 
@@ -124,7 +124,7 @@ public class PkAnswerResultPager extends BasePager {
         view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                if (mView.getMeasuredWidth() > 0) {
+                if(mView.getMeasuredWidth() > 0){
                     try {
                         //延迟200 解决播放动画时卡顿问题
                         mView.postDelayed(new Runnable() {
@@ -136,14 +136,14 @@ public class PkAnswerResultPager extends BasePager {
                                     showVoteAwardAnim();
                                 }
                             }
-                        }, 300);
+                        },200);
 
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
                         view.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    } else {
+                    }else{
                         view.getViewTreeObserver().removeGlobalOnLayoutListener(this);
                     }
                 }
@@ -161,8 +161,8 @@ public class PkAnswerResultPager extends BasePager {
      * @param energy
      */
     public void setData(int goldNum, int energy) {
-        mGoldNum = goldNum < 0 ? 0 : goldNum;
-        mEnergy = energy < 0 ? 0 : energy;
+        mGoldNum = goldNum;
+        mEnergy = energy;
     }
 
 
@@ -424,10 +424,8 @@ public class PkAnswerResultPager extends BasePager {
 
         @Override
         public Point evaluate(float fraction, Point startValue, Point endValue) {
-            int x = (int) ((1 - fraction) * (1 - fraction) * startValue.x + 2 * fraction * (1 - fraction) *
-                    controlPoint.x + fraction * fraction * endValue.x);
-            int y = (int) ((1 - fraction) * (1 - fraction) * startValue.y + 2 * fraction * (1 - fraction) *
-                    controlPoint.y + fraction * fraction * endValue.y);
+            int x = (int) ((1 - fraction) * (1 - fraction) * startValue.x + 2 * fraction * (1 - fraction) * controlPoint.x + fraction * fraction * endValue.x);
+            int y = (int) ((1 - fraction) * (1 - fraction) * startValue.y + 2 * fraction * (1 - fraction) * controlPoint.y + fraction * fraction * endValue.y);
             return new Point(x, y);
         }
     }

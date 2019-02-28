@@ -22,6 +22,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherBll;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.presenter.ChineseSpeechBulletScreenIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.presenter.EnglishSpeechBulletIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
@@ -250,7 +251,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new SpeechCollectiveIRCBll(activity, mLiveBll));
 //            mLiveBll.addBusinessBll(new LiveRemarkIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new UnderstandIRCBll(activity, mLiveBll));
-            mLiveBll.addBusinessBll(new SpeechBulletScreenIRCBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new ChineseSpeechBulletScreenIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new PraiseListIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new PraiseInteractionBll(activity, mLiveBll));
 //            mLiveBll.addBusinessBll(new StudyReportBll(activity, mLiveBll));
