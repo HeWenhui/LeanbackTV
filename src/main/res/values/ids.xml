@@ -833,6 +833,7 @@
     <item name="tv_arts_answer_result_stander_answer_below" type="id" />
     <item name="tv_arts_answer_result_sumbit_toast" type="id" />
     <item name="iv_arts_answer_result_answer_btn" type="id" />
+    <item name="iv_arts_answer_result_close_btn" type="id" />
 
     <item name="tv_arts_answer_result_answer_index" type="id" />
     <item name="tvw_arts_answer_result_answer_state" type="id" />
