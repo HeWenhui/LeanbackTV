@@ -232,11 +232,12 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
         final ImageView jsonBackImageView=new ImageView(mContext);
 //        jsonBackImageView.setBackgroundColor(mContext.getResources().getColor(R.color.COLOR_7FFFFF00));
 
-        if (mData.isVoice == 1) {
+        closeBtn.setImageResource(R.drawable.selector_live_enpk_shell_window_guanbi_btn);
+       /* if (mData.isVoice == 1) {
             closeBtn.setImageResource(R.drawable.selector_live_enpk_shell_window_guanbi_btn);
         } else {
             closeBtn.setImageResource(R.drawable.selector_live_answer_result_close);
-        }
+        }*/
         closeBtn.setScaleType(ImageView.ScaleType.CENTER_CROP);
         final int closeHieght = SizeUtils.Dp2Px(mContext, CLOSEBTN_HEIGHT);
         final int closeWidth = SizeUtils.Dp2Px(mContext, CLOSEBTN_WIDTH);
