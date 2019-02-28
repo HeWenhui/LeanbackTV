@@ -715,8 +715,6 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                                                 jsonObject.optString("evenPairNum"),
                                                 jsonObject.optString("highestRightNum")
                                         );
-
-
                                     }
                                 }
                         );
@@ -766,8 +764,6 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                                                 jsonObject.optString("evenPairNum"),
                                                 jsonObject.optString("highestRightNum")
                                         );
-
-
                                     }
                                 }
                         );

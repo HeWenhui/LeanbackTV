@@ -159,6 +159,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 resources.getColor(R.color.COLOR_666666),
                 resources.getColor(R.color.COLOR_E74C3C),
                 resources.getColor(R.color.COLOR_E74C3C),
+                resources.getColor(R.color.COLOR_327af1),
                 resources.getColor(R.color.COLOR_327af1)};
 
         nameColors[0] = resources.getColor(R.color.COLOR_32B16C);

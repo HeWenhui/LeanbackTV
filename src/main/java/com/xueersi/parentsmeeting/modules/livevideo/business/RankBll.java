@@ -532,21 +532,11 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                         .tv_livevideo_rank_subtitle_mid);
                 lv_livevideo_rank_list = relativeLayout.findViewById(R.id.lv_livevideo_rank_list);
 
-//        ArrayList<RankEntity> rankEntities = new ArrayList<>();
-//        for (int i = 0; i < 10; i++) {
-//            RankEntity rankEntity = new RankEntity();
-//            rankEntity.setRank(i + 1);
-//            rankEntity.setName("王星" + i);
-//            rankEntity.setRate((100 - i) + "%");
-//            rankEntities.add(rankEntity);
-//        }
+
                 final int COLOR_F13232 = activity.getResources().getColor(R.color.COLOR_F13232);
                 final int white = activity.getResources().getColor(R.color.white);
                 final int slider = activity.getResources().getColor(R.color.COLOR_SLIDER);
 
-//            if (mGetInfo.getIsOpenNewCourseWare() == 1) {
-//                tv_livevideo_rank_groups.setText("连对");
-//            }
 
                 rl_livevideo_rank_mygroup.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -567,21 +557,12 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                             return;
                         }
                         ArrayList<RankEntity> rankEntities = allRankEntity.getMyRankEntityMyTeam().getRankEntities();
-//                    if (mGetInfo.getIsOpenNewCourseWare() == 1) {
-//                        lv_livevideo_rank_list.setAdapter(rankEntityAdapter);
-//                        if (rankEvenDriveTipsLayout != null && rankTipsLayout != null) {
-//                            rankTipsLayout.setVisibility(View.VISIBLE);
-//                            tvEvenDriveTitleRight.setText("正确率");
-//                            rankTipsLayout.setVisibility(View.GONE);
-//                        }
-//                    } else {
                         lv_livevideo_rank_list.setAdapter(new CommonAdapter<RankEntity>(rankEntities) {
                             @Override
                             public AdapterItemInterface<RankEntity> getItemView(Object type) {
                                 return new RankItem(colorYellow, colorWhite, isSmallEnglish);
                             }
                         });
-//                    }
                     }
                 });
                 rl_livevideo_rank_groups.setOnClickListener(new View.OnClickListener() {
@@ -603,15 +584,6 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                             return;
                         }
                         ArrayList<RankEntity> rankEntities = allRankEntity.getMyRankEntityTeams().getRankEntities();
-//                    if (mGetInfo.getIsOpenNewCourseWare() == 1) {
-//                        lv_livevideo_rank_list.setAdapter(evenDriveEntityCommonAdapter);
-//
-//                        if (rankEvenDriveTipsLayout != null && rankTipsLayout != null) {
-//                            rankTipsLayout.setVisibility(View.VISIBLE);
-//                            tvEvenDriveTitleRight.setText("连对");
-//                            rankTipsLayout.setVisibility(View.GONE);
-//                        }
-//                    } else {
                         lv_livevideo_rank_list.setAdapter(new CommonAdapter<RankEntity>(rankEntities) {
                             @Override
                             public AdapterItemInterface<RankEntity> getItemView(Object type) {
@@ -743,45 +715,67 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
 //                }
                 break;
             case XESCODE.STOPQUESTION: {
-                if (scienceEvenDrivePager != null) {
-                    //是否收题
-//                    boolean isOff = data.optBoolean("open");
-//                    if (!isOff) {
-                    logger.i("设置结束时间");
-                    isMiddleScienceH5Open = false;
-                    scienceEvenDrivePager.setH5Open(isMiddleScienceH5Open);
-                    scienceEvenDrivePager.setEndTime(System.currentTimeMillis());
-//                    }
-                }
+//                if (scienceEvenDrivePager != null) {
+//                    //是否收题
+////                    boolean isOff = data.optBoolean("open");
+////                    if (!isOff) {
+//                    logger.i("设置结束时间");
+//                    isMiddleScienceH5Open = false;
+//                    scienceEvenDrivePager.setH5Open(isMiddleScienceH5Open);
+//                    scienceEvenDrivePager.setEndTime(System.currentTimeMillis());
+////                    }
+//                }
                 break;
             }
             case XESCODE.EXAM_STOP: {
 
-                if (scienceEvenDrivePager != null) {
-                    isMiddleScienceH5Open = false;
-                    scienceEvenDrivePager.setH5Open(isMiddleScienceH5Open);
-                    scienceEvenDrivePager.setEndTime(System.currentTimeMillis());
-                }
+//                if (scienceEvenDrivePager != null) {
+//                    isMiddleScienceH5Open = false;
+//                    scienceEvenDrivePager.setH5Open(isMiddleScienceH5Open);
+//                    scienceEvenDrivePager.setEndTime(System.currentTimeMillis());
+//                }
                 break;
             }
             case XESCODE.MULTIPLE_H5_COURSEWARE: {
                 boolean isOff = data.optBoolean("open");
                 if (!isOff) {
-                    if (scienceEvenDrivePager != null) {
-                        logger.i("设置结束时间");
-                        scienceEvenDrivePager.setEndTime(System.currentTimeMillis());
-                        isMiddleScienceH5Open = false;
-                        scienceEvenDrivePager.setH5Open(isMiddleScienceH5Open);
-                    }
+
+//                    if (scienceEvenDrivePager != null) {
+//                        logger.i("设置结束时间");
+//                        scienceEvenDrivePager.setEndTime(System.currentTimeMillis());
+//                        isMiddleScienceH5Open = false;
+//                        scienceEvenDrivePager.setH5Open(isMiddleScienceH5Open);
+//                    }
                 } else {
-                    isMiddleScienceH5Open = true;
+                    //收到题目把排行榜收起来
+                    if (relativeLayout.getVisibility() == View.VISIBLE) {
+                        relativeLayout.startAnimation(mAnimSlideOut);
+                    }
+//                    isMiddleScienceH5Open = true;
+////                    if (mHandler != null) {
+////                        mHandler.post(new Runnable() {
+////                            @Override
+////                            public void run() {
+////                                relativeLayout.requestLayout();
+////                            }
+////                        });
+////                    }
+
                 }
                 break;
             }
-//            case XESCODE.ENGLISH_H5_COURSEWARE: {
-//                isMiddleScienceH5Open = true;
-//                break;
-//            }
+            case XESCODE.ENGLISH_H5_COURSEWARE: {
+                isMiddleScienceH5Open = true;
+//                if (mHandler != null) {
+//                    mHandler.post(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            relativeLayout.requestLayout();
+//                        }
+//                    });
+//                }
+                break;
+            }
 //            case XESCODE.ARTS_STOP_QUESTION:
 //            case XESCODE.ARTS_H5_COURSEWARE: {
 //

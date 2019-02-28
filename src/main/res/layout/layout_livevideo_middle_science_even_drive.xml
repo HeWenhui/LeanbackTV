@@ -35,7 +35,7 @@
         android:layout_height="2dp"
 
         android:background="@color/COLOR_F13232"
-        app:layout_constraintBottom_toTopOf="@id/view_livevideo_middle_science_line"
+        app:layout_constraintBottom_toBottomOf="@id/view_livevideo_middle_science_line"
         app:layout_constraintLeft_toLeftOf="@id/tv_livevideo_middle_science_mygroup"
         app:layout_constraintRight_toRightOf="@id/tv_livevideo_middle_science_mygroup" />
 
@@ -58,7 +58,7 @@
         android:layout_height="2dp"
         android:background="@color/COLOR_F13232"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@id/view_livevideo_middle_science_line"
+        app:layout_constraintBottom_toBottomOf="@id/view_livevideo_middle_science_line"
         app:layout_constraintLeft_toLeftOf="@id/tv_livevideo_middle_science_even"
         app:layout_constraintRight_toRightOf="@id/tv_livevideo_middle_science_even" />
 
@@ -81,7 +81,7 @@
         android:background="@color/COLOR_F13232"
         android:visibility="gone"
 
-        app:layout_constraintBottom_toTopOf="@id/view_livevideo_middle_science_line"
+        app:layout_constraintBottom_toBottomOf="@id/view_livevideo_middle_science_line"
         app:layout_constraintLeft_toLeftOf="@id/tv_livevideo_middle_science_groups"
         app:layout_constraintRight_toRightOf="@id/tv_livevideo_middle_science_groups" />
 

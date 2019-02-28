@@ -294,12 +294,12 @@ public class MiddleScienceEvenDrivePager extends BasePager {
 
     public void setEndTime(long time) {
         this.endTime = time;
-        if (rankEntityAdapter != null) {
-            rankEntityAdapter.notifyDataSetChanged();
-        }
-        if (evenDriveEntityCommonAdapter != null) {
-            evenDriveEntityCommonAdapter.notifyDataSetChanged();
-        }
+//        if (rankEntityAdapter != null) {
+//            rankEntityAdapter.notifyDataSetChanged();
+//        }
+//        if (evenDriveEntityCommonAdapter != null) {
+//            evenDriveEntityCommonAdapter.notifyDataSetChanged();
+//        }
     }
 
     /**
