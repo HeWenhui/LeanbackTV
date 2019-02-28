@@ -114,14 +114,22 @@ public interface XESCODE {
     int VOTE_SEND = 212;
     /** 上墙-学生发送消息 */
 
-    /** 学生私聊老师点赞 */
-    int XCR_ROOM_AGREE_SEND_S = 220;
-    /** 老师广播学生点赞 TODO */
-    int XCR_ROOM_AGREE_SEND_T = 221;
-    /** 学生计算赞数后私发老师 */
-    int XCR_ROOM_AGREE_NUM_S = 222;
-    /** 开/关榜单 TODO */
-    int XCR_ROOM_AGREE_OPEN = 224;
+    /**
+     * 开启和发布榜单
+     */
+    int XCR_ROOM_PRAISELIST_OPEN = 294;
+    /**
+     * 学生告诉教师点赞个数
+     */
+    int XCR_ROOM_PRAISELIST_SEND_LIKE = 290;
+    /**
+     * 老师广播赞数，包含一键表扬 和 某某学生点了多少赞
+     */
+    int XCR_ROOM_PRAISELIST_LIKE_STUTENT = 291;
+    /**
+     * 老师广播赞数，告诉学生 当前各个战队有多少赞
+     */
+    int XCR_ROOM_PRAISELIST_LIKE_TEAM = 293;
 
     int RANK_STU_MESSAGE = 225;
     /** 上墙-老师发送消息 */

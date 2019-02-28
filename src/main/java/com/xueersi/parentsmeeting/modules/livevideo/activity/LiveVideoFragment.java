@@ -46,7 +46,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.ArtsPraiseListBll;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseInteractionBll;
-import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseListIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.presenter.PraiseListIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerRankIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.ArtsAnswerResultBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareIRCBll;
