@@ -1049,7 +1049,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
             }
             Long keyTime = Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() -
                     startTime);
-            if(mVideoEntity.getSciAiEvent().getLeadingStage().getBeginTime() > Integer.parseInt(mVideoEntity.getVisitTimeKey())){
+            if(mVideoEntity.getSciAiEvent().getLeadingStage().getBeginTime() > Integer.parseInt(mVideoEntity.getVisitTimeKey()) && LiveVideoConfig.liveKey.get(mVideoEntity.getChapterId()) == 0L){
                 seekTo(mVideoEntity.getSciAiEvent().getLeadingStage().getBeginTime() * 1000);  // AI体验课的这个方法需要重写
             }else{
                 if(LiveVideoConfig.liveKey.get(mVideoEntity.getChapterId()) != 0L){
