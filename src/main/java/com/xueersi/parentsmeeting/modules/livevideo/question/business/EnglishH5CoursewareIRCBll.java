@@ -33,6 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 
 import org.greenrobot.eventbus.EventBus;
@@ -63,6 +64,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
     private LiveAutoNoticeIRCBll mLiveAutoNoticeBll;
     private EnglishH5Cache englishH5Cache;
     private String Tag = "EnglishH5CoursewareIRCBll";
+    private CourseWareHttpManager courseWareHttpManager;
 
     public EnglishH5CoursewareIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -76,7 +78,6 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         englishH5CoursewareBll.setShareDataManager(mShareDataManager);
         englishH5CoursewareBll.setLiveType(mLiveType);
         englishH5CoursewareBll.setVSectionID(mLiveId);
-        englishH5CoursewareBll.setLiveBll(new EnglishH5CoursewareImpl());
         englishH5CoursewareBll.initData();
         mAnswerRankBll = getInstance(AnswerRankIRCBll.class);
         mLiveAutoNoticeBll = getInstance(LiveAutoNoticeIRCBll.class);
@@ -111,6 +112,9 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             if (mAnswerRankBll != null) {
                 liveBaseEnglishH5CoursewareCreat.setmAnswerRankBll(mAnswerRankBll);
             }
+            englishH5CoursewareBll.setLiveBll(new EnglishH5CoursewareSecImpl());
+        } else {
+            englishH5CoursewareBll.setLiveBll(new EnglishH5CoursewareImpl());
         }
         liveBaseEnglishH5CoursewareCreat.setAllowTeamPk(getInfo != null && "1".equals(getInfo.getIsAllowTeamPk()));
         liveBaseEnglishH5CoursewareCreat.setLivePagerBack(englishH5CoursewareBll);
@@ -557,7 +561,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         };
     }
 
-    class EnglishH5CoursewareImpl implements EnglishH5CoursewareSecHttp {
+    class EnglishH5CoursewareImpl implements EnglishH5CoursewareHttp {
 
         @Override
         public void getStuGoldCount() {
@@ -788,21 +792,45 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                 });
             }
         }
+    }
 
-        private HttpRequestParams creatHttpRequestParams(String params) {
-            HttpRequestParams httpRequestParams = new HttpRequestParams();
+    public CourseWareHttpManager getCourseWareHttpManager() {
+        if (courseWareHttpManager == null) {
+            courseWareHttpManager = new CourseWareHttpManager(getHttpManager());
+        }
+        return courseWareHttpManager;
+    }
+
+    class EnglishH5CoursewareSecImpl extends EnglishH5CoursewareImpl implements EnglishH5CoursewareSecHttp {
+
+        @Override
+        public void getCourseWareTests(VideoQuestionLiveEntity detailInfo, AbstractBusinessDataCallBack callBack) {
+            EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
+            String classId = mGetInfo.getStudentLiveInfo().getClassId();
+            String srcTypes = "";
+            String testIds = "";
             try {
-                JSONObject jsonObject = new JSONObject(params);
-                Iterator<String> keys = jsonObject.keys();
-                while (keys.hasNext()) {
-                    String key = keys.next();
-                    String value = jsonObject.getString(key);
-                    httpRequestParams.addBodyParam(key, value);
+                JSONArray array = new JSONArray(englishH5Entity.getReleasedPageInfos());
+                int length = array.length();
+                for (int i = 0; i < length; i++) {
+                    JSONObject jsonObject = array.getJSONObject(i);
+                    Iterator<String> keys = jsonObject.keys();
+                    while (keys.hasNext()) {
+                        String key = keys.next();
+                        JSONArray value = jsonObject.getJSONArray(key);
+                        srcTypes += value.getString(0);
+                        testIds += value.getString(1);
+                        if (i != length - 1) {
+                            srcTypes += ",";
+                            testIds += ",";
+                        }
+                    }
                 }
             } catch (JSONException e) {
-                e.printStackTrace();
+                logger.e("getCourseWareTests", e);
             }
-            return httpRequestParams;
+            getCourseWareHttpManager().getCourseWareTests(mGetInfo.getStuId(), englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
+                    englishH5Entity.getReleasedPageInfos(), 0, classId, englishH5Entity.getClassTestId(), srcTypes, testIds, mGetInfo.getEducationStage(), detailInfo.nonce, callBack);
         }
 
         @Override
@@ -828,8 +856,23 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 }
             });
         }
-    }
 
+        private HttpRequestParams creatHttpRequestParams(String params) {
+            HttpRequestParams httpRequestParams = new HttpRequestParams();
+            try {
+                JSONObject jsonObject = new JSONObject(params);
+                Iterator<String> keys = jsonObject.keys();
+                while (keys.hasNext()) {
+                    String key = keys.next();
+                    String value = jsonObject.getString(key);
+                    httpRequestParams.addBodyParam(key, value);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return httpRequestParams;
+        }
+    }
 
     @Override
     public void onDestory() {

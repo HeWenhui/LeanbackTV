@@ -45,4 +45,8 @@
         <item name="android:textColor">@color/COLOR_666666</item>
     </style>
 
+    <style name="ProgressBar_live_new_course_junior" parent="@android:style/Widget.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/layerlst_livevideo_newcourse_junior_prog</item>
+    </style>
+
 </resources>

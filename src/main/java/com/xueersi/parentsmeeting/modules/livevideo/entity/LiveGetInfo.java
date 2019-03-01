@@ -1003,8 +1003,7 @@ public class LiveGetInfo {
         /**
          * 课id，加入聊天服务的房间
          */
-        private String
-                classId;
+        private String classId;
         private String shutupStatus;
         /**
          * 弹出学习报告 1弹，0不弹

@@ -65,7 +65,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         defaultKey.put(key, value);
     }
 
-    void setDefaultParameter(HttpRequestParams httpRequestParams) {
+    public void setDefaultParameter(HttpRequestParams httpRequestParams) {
         for (String key : defaultKey.keySet()) {
             String value = defaultKey.get(key);
             httpRequestParams.addBodyParam(key, value);
