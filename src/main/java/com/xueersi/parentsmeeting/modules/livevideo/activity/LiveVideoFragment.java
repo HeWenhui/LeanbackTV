@@ -690,6 +690,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             if (videoChatEvent != null && videoChatEvent.getStartRemote().get()) {
                 return;
             }
+
             if (!pauseNotStopVideoIml.getPause()) {
                 setFirstBackgroundVisible(View.VISIBLE);
                 liveThreadPoolExecutor.execute(new Runnable() {

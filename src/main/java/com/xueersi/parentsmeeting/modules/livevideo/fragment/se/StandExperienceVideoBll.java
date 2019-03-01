@@ -155,8 +155,44 @@ public class StandExperienceVideoBll {
             logger.d("playNewVideo:url=" + url);
             liveBackPlayVideoFragment.playNewVideo(Uri.parse(url), mSectionName);
         } else {
+            //使用PSIJK播放新视屏
+
+            String videoPath;
+            String url = mVideoEntity.getVideoPath();
+            if (url.contains("http") || url.contains("https")) {
+                videoPath = getPSVideoPath(url);
+            } else {
+                videoPath = url;
+            }
+            liveBackPlayVideoFragment.playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
             liveBackPlayVideoFragment.playPSVideo(mVideoEntity.getVideoPath(), MediaPlayer.VIDEO_PROTOCOL_MP4);
         }
+    }
+
+    /**
+     * 去掉Url里面的域名
+     *
+     * @param url
+     * @return
+     */
+    private String getPSVideoPath(String url) {
+        int len = url.length();
+        char lastCh = 'a';
+        //第一次遇到这种 '/'+字母的形式
+        boolean isFirst = true;
+        int pos;
+        for (pos = 1; pos < len; pos++) {
+            char ch = url.charAt(pos);
+            if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') && (lastCh == '/')) {
+                if (isFirst) {
+                    isFirst = false;
+                } else {
+                    break;
+                }
+            }
+            lastCh = ch;
+        }
+        return url.substring(pos-1);
     }
 
 
