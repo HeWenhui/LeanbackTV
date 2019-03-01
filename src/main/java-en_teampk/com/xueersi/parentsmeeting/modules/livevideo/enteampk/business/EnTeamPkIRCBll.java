@@ -698,6 +698,10 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     private void getEnglishPkTotalRank() {
         if (pkTeamEntity != null) {
+            if (classEndReg != null) {
+                classEndReg.destory();
+                classEndReg = null;
+            }
             if (isEnglishPkTotalRank) {
                 return;
             }
@@ -806,6 +810,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         super.onDestory();
         if (classEndReg != null) {
             classEndReg.destory();
+            classEndReg = null;
         }
         if (classEndRec != null) {
             LiveEventBus.getDefault(mContext).unregister(classEndRec);
