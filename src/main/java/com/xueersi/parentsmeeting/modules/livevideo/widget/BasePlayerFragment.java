@@ -577,7 +577,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
      * @param pos
      * @param protocol
      */
-    public void changPlayLive(int pos, int protocol) {
+    public void changePlayLive(int pos, int protocol) {
         isChangeLine = true;
         this.changeLinePos = pos;
         this.protocol = protocol;

@@ -403,6 +403,9 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
     public abstract void changeNextLine();
 
+    /** 切换到当前线路，用于接麦 */
+    public abstract void changeNowLine();
+
     @Override
     public void onTeacherNotPresent(final boolean isBefore) {
         if (liveVideoAction != null) {

@@ -1214,7 +1214,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
     protected void onRefresh() {
         if (AppBll.getInstance(this).isNetWorkAlert()) {
             videoBackgroundRefresh.setVisibility(View.GONE);
-            if (MediaPlayer.isPSIJK) {
+            if (!MediaPlayer.isPSIJK) {
                 playNewVideo(Uri.parse(mWebPath), mSectionName);
             } else {
 //                playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_MP4);

@@ -1051,6 +1051,9 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 startTime = System.currentTimeMillis();
                 firstTime = false;
             }
+            Long keyTime = Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() -
+                    startTime);
+            seekTo(keyTime);
             if (mTotaltime < Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000) {
                 // 03.21 提示直播已结束
                 ivTeacherNotpresent.setVisibility(View.VISIBLE);
@@ -1065,9 +1068,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                         getDataCallBack);
                 return;
             }
-            Long keyTime = Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() -
-                    startTime);
-            seekTo(keyTime);
+
 
 //            seekTo(590000);
 //            if (vPlayer != null) {

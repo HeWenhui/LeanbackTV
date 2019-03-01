@@ -413,7 +413,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
                 videoFragment.playNewVideo(Uri.parse(url), mGetInfo.getName());
             }
         } else {
-            videoFragment.changPlayLive(pos, MediaPlayer.VIDEO_PROTOCOL_RTMP);
+            videoFragment.changePlayLive(pos, MediaPlayer.VIDEO_PROTOCOL_RTMP);
         }
     }
 
@@ -438,7 +438,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
         }
         //当前线路小于总线路数
         if (pos < total) {
-            videoFragment.changPlayLive(pos, nowProtol);
+            videoFragment.changePlayLive(pos, nowProtol);
         } else {
             nowProtol = changeProtol(nowProtol);
             liveGetPlayServer.liveGetPlayServer(false);
@@ -465,12 +465,19 @@ public class LiveVideoBll implements VPlayerListenerReg {
         }
         //当前线路小于总线路数
         if (this.nowPos < total) {
-            videoFragment.changPlayLive(this.nowPos, nowProtol);
+            videoFragment.changePlayLive(this.nowPos, nowProtol);
         } else {
             nowProtol = changeProtol(nowProtol);
 //            videoFragment.playPSVideo(mGetInfo.getChannelname(), nowProtol);
             liveGetPlayServer.liveGetPlayServer(false);
         }
+    }
+
+    /**
+     * 切换到当前线路，用于接麦
+     */
+    public void changeNowLine() {
+        videoFragment.changePlayLive(this.nowPos, nowProtol);
     }
 
     /** 得到转化的协议 */

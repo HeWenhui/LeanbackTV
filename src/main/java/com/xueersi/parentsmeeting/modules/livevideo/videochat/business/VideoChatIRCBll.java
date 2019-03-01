@@ -129,7 +129,7 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
             liveFragmentBase.rePlay(b);
         } else {
 //            liveFragmentBase.psRePlay(b);
-            liveFragmentBase.changeNextLine();
+            liveFragmentBase.changeNowLine();
         }
     }
 

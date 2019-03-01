@@ -1,5 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.video;
 
+/**
+ * 视频播放相关处理类
+ */
 public class DoPSVideoHandle {
     /**
      * 去掉Url里面的域名

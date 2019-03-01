@@ -124,7 +124,7 @@ public class LiveBackVideoBll {
      * PSIJK使用，改变线路播放
      */
     public void changeLine(int pos) {
-        liveBackPlayVideoFragment.changPlayLive(pos, MediaPlayer.VIDEO_PROTOCOL_MP4);
+        liveBackPlayVideoFragment.changePlayLive(pos, MediaPlayer.VIDEO_PROTOCOL_MP4);
     }
 
     /**

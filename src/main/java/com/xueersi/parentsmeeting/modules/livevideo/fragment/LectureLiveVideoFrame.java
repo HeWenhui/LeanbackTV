@@ -179,6 +179,13 @@ public class LectureLiveVideoFrame extends LiveFragmentBase implements ActivityC
         }
     }
 
+    @Override
+    public void changeNowLine() {
+        if (mLiveVideoBll != null) {
+            mLiveVideoBll.changeNowLine();
+        }
+    }
+
     protected void addBusiness(Activity activity) {
         liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
         liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);

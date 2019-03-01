@@ -1456,7 +1456,11 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         if (!MediaPlayer.isPSIJK) {
             playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
         } else {
-            playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+            if (nowProtol == MediaPlayer.VIDEO_PROTOCOL_RTMP || nowProtol == MediaPlayer.VIDEO_PROTOCOL_FLV) {
+            } else {
+                nowProtol = MediaPlayer.VIDEO_PROTOCOL_RTMP;
+            }
+            playPSVideo(mGetInfo.getChannelname(), nowProtol);
         }
     }
 

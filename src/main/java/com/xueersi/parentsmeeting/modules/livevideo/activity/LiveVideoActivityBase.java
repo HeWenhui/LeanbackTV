@@ -1058,7 +1058,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         }
     }
 
-//    /**
+    //    /**
 //     * 播放一个新的视频
 //     *
 //     * @param uri
@@ -1088,7 +1088,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
 //
 //        vPlayerHandler.sendEmptyMessage(OPEN_FILE);
 //    }
-
+    @Deprecated
     protected void playNewVideo() {
         if (mUri != null && mDisplayName != null) {
             playNewVideo(mUri, mDisplayName);
