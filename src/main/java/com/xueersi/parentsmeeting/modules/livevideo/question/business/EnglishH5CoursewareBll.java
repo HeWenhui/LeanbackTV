@@ -494,6 +494,9 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         h5CoursewarePager = baseEnglishH5CoursewareCreat.creat(context, videoQuestionH5Entity, onH5ResultClose,
                 mVSectionID);
         h5CoursewarePager.setEnglishH5CoursewareBll(this);
+        if (mLiveBll instanceof EnglishH5CoursewareSecHttp) {
+            h5CoursewarePager.setEnglishH5CoursewareSecHttp((EnglishH5CoursewareSecHttp) mLiveBll);
+        }
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup
                 .LayoutParams.MATCH_PARENT);
         bottomContent.addView(h5CoursewarePager.getRootView(), lp);
@@ -626,6 +629,21 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
      */
     @Override
     public void initQuestionAnswerReslut(final View popupWindow_view) {
+        logger.d("initQuestionAnswerReslut");
+        popupWindow_view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            long before;
+
+            @Override
+            public void onViewAttachedToWindow(View view) {
+                before = System.currentTimeMillis();
+                logger.d("initQuestionAnswerReslut:onViewAttachedToWindow");
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View view) {
+                logToFile.d("initQuestionAnswerReslut:onViewDetachedFromWindow:time=" + (System.currentTimeMillis() - before));
+            }
+        });
         bottomContent.removeView(rlQuestionResContent);
         bottomContent.addView(rlQuestionResContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         rlQuestionResContent.addView(popupWindow_view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams

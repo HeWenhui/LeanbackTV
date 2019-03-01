@@ -30,6 +30,7 @@ import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.speechrecognizer.TalSpeech;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.umeng.analytics.MobclickAgent;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.http.ResponseEntity;
@@ -690,7 +691,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 }
             }
         } catch (Exception e) {
-            MobclickAgent.reportError(mContext, new Error(content + "-" + nbest, e));
+            CrashReport.postCatchedException(new Error(content + "-" + nbest, e));
         }
         mLogtf.d("onEvaluatorSuccess:content=" + content + ",sid=" + resultEntity.getSid() + ",score=" + score + "," +
                 "haveAnswer=" + haveAnswer + ",nbest=" + nbest);

@@ -2,8 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -17,8 +15,6 @@ import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.common.logerhelper.LogerTag;
-import com.xueersi.lib.analytics.umsagent.UmsAgent;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
@@ -29,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveLog;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HalfBodyLiveStudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -41,7 +38,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveLogCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveGetPlayServer;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
@@ -51,7 +47,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.xutils.xutils.common.Callback;
-import org.xutils.xutils.http.RequestParams;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -130,7 +125,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
     String appID = UmsConstants.LIVE_APP_ID;
     /** 直播调度 */
     private LiveGetPlayServer liveGetPlayServer;
-
+    private LiveLog liveLog;
     private boolean isHalfBodyLive = false;
 
     public AuditClassLiveBll(Context context, String vStuCourseID, String courseId, String vSectionID, int form) {
@@ -147,6 +142,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         mLiveTopic.setMode(LiveTopic.MODE_CLASS);
+        liveLog = new LiveLog(context, mLiveType, mLiveId, getPrefix());
     }
 
     /**
@@ -215,8 +211,6 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
         this.isHalfBodyLive = halfBodyLive;
     }
 
-    String mFileName = null;
-
     /**
      * 播放器异常日志
      *
@@ -224,31 +218,9 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
      */
     @Override
     public void getOnloadLogs(String TAG, String str) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        String bz = UserBll.getInstance().getMyUserInfoEntity().getUserType() == 1 ? "student" : "teacher";
-        if (mFileName == null) {
-            PackageManager packageManager = mContext.getPackageManager();
-            PackageInfo packInfo = null;
-            String filename = "f";
-            try {
-                packInfo = packageManager.getPackageInfo(mContext.getPackageName(), 0);
-            } catch (PackageManager.NameNotFoundException e) {
-                e.printStackTrace();
-            }
-            if (packInfo != null) {//else不会发生
-                filename = packInfo.versionCode + "";
-            }
-            filename = Build.VERSION.SDK_INT + "&" + filename;
-            mFileName = filename;
+        if (liveLog != null) {
+            liveLog.getOnloadLogs(TAG,str);
         }
-        if (mGetInfo == null) {
-            UmsAgent.onEvent(mContext, LogerTag.DEBUG_VIDEO_LIVEMSG, LogerTag.DEBUG_VIDEO_LIVEMSG, 0, str);
-            return;
-        }
-        LiveLogCallback liveLogCallback = new LiveLogCallback();
-        RequestParams params = mHttpManager.liveOnloadLogs(mGetInfo.getClientLog(), "a" + mLiveType, mLiveId, mGetInfo.getUname(), enstuId,
-                mGetInfo.getStuId(), mGetInfo.getTeacherId(), mFileName, str, bz, liveLogCallback);
-        liveLogCallback.setParams(params);
     }
 
     public void setVideoAction(AuditVideoAction videoAction) {
@@ -598,8 +570,8 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
             onLiveFailure("服务器异常", null);
             return;
         }
-
-        if(isChineseHalfBodyLive(mGetInfo)){
+        liveLog.setGetInfo(mGetInfo);
+        if (isChineseHalfBodyLive(mGetInfo)) {
             ResponseEntity responseEntity = new ResponseEntity();
             responseEntity.setErrorMsg("语文半身直播旁听暂不支持，程序员哥哥正在夜以继日的开发哦!");
             onLiveError(responseEntity);
@@ -617,7 +589,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug, Live
             appID = UmsConstants.ARTS_APP_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
         } else if (mGetInfo.getIsArts() == 2) {
-            appID = UmsConstants.ARTS_APP_ID;
+            appID = UmsConstants.LIVE_CN_ID;
             liveVideoSAConfig = new LiveVideoSAConfig(LiveVideoConfig.HTTP_PRIMARY_CHINESE_HOST);
         } else {
             appID = UmsConstants.LIVE_APP_ID;

@@ -51,6 +51,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeProbab
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.MinimarketListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListStudentEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListTeamEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ScienceStaticConfig;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -58,10 +59,11 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class LiveHttpResponseParser extends HttpResponseParser {
-    String TAG = "LiveHttpResponseParser";
+    static String TAG = "LiveHttpResponseParser";
     Context mContext;
 
     public LiveHttpResponseParser(Context mContext) {
@@ -101,21 +103,60 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         LiveVideoConfig.LIVEMULH5URL = data.optString("getCourseWareHtml");
         getInfo.setStuPutUpHandsNum(data.optInt("stuPutUpHandsNum"));
         getInfo.setAllowLinkMicNew(data.optInt("allowLinkMicNew"));
+        getInfo.setGetCourseWareHtmlNew(data.optString("getCourseWareHtmlNew"));
+        getInfo.setGetCourseWareHtmlZhongXueUrl(data.optString("getCourseWareHtmlZhongXueUrl"));
+        // TODO 理科小学
+//        getInfo.setScienceStaticConfig(parseScienceStaticConfig(data));
         if (getInfo.getAllowLinkMicNew() == 1) {
             getInfo.setAllowLinkMic(false);
         }
-        if (data.has("ePlanInfo")){
+        if (data.has("ePlanInfo")) {
             try {
                 JSONObject ePlanInfo = data.getJSONObject("ePlanInfo");
                 getInfo.ePlanInfo = new LiveGetInfo.EPlanInfoBean();
                 getInfo.ePlanInfo.ePlanId = ePlanInfo.optString("ePlanId");
                 getInfo.ePlanInfo.eTeacherId = ePlanInfo.optString("eTeacherId");
                 getInfo.ePlanInfo.eClassId = ePlanInfo.optString("eClassId");
+                if (ePlanInfo.has("fakePlanId")){
+                    getInfo.ePlanInfo.fakePlanId = ePlanInfo.optString("fakePlanId");
+                }
             }
             catch (JSONException e) {
                 MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo.ePlanInfo", e.getMessage());
             }
         }
+    }
+
+    public static ScienceStaticConfig parseScienceStaticConfig(JSONObject data) {
+        ScienceStaticConfig scienceStaticConfig = null;
+        if (data.has("science_static_config")) {
+            JSONObject science_static_config = data.optJSONObject("science_static_config");
+            if (science_static_config != null) {
+                scienceStaticConfig = new ScienceStaticConfig();
+                HashMap<String, ScienceStaticConfig.Version> stringVersionHashMap = scienceStaticConfig.stringVersionHashMap;
+                Iterator<String> keys = science_static_config.keys();
+                if (keys.hasNext()) {
+                    String key = keys.next();
+                    ScienceStaticConfig.Version version = new ScienceStaticConfig.Version();
+                    version.version = key;
+                    try {
+                        JSONObject versionObj = science_static_config.getJSONObject(key);
+                        int canUseLocal = versionObj.getInt("canUseLocal");
+                        if (canUseLocal == 1) {
+                            version.url = versionObj.getString("url");
+                            version.templateURL = versionObj.getString("templateURL");
+                            version.tarballURL = versionObj.getString("tarballURL");
+                            version.assetsHash = versionObj.getString("assetsHash");
+                            version.templateForLocalURL = versionObj.getString("templateForLocalURL");
+                            stringVersionHashMap.put(key, version);
+                        }
+                    } catch (JSONException e) {
+                        MobAgent.httpResponseParserError(TAG, "parseScienceStaticConfig", e.getMessage());
+                    }
+                }
+            }
+        }
+        return scienceStaticConfig;
     }
 
     /**
@@ -131,6 +172,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setGrade(Integer.parseInt(data.optString("gradeIds").split(",")[0]));
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        if (data.has("isAllowTeamPk")) {
+            getInfo.setIsAllowTeamPk(data.optString("isAllowTeamPkNew","0"));
         }
 
 //            LiveVideoConfig.isPrimary = true;
@@ -395,12 +439,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             if (data.has("skeyPlayT")) {
                 getInfo.setSkeyPlayT(data.getString("skeyPlayT"));
             } else {
-                MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo", "skeyPlayT=null");
+//                MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo", "skeyPlayT=null");
             }
             if (data.has("skeyPlayF")) {
                 getInfo.setSkeyPlayF(data.getString("skeyPlayF"));
             } else {
-                MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo", "skeyPlayF=null");
+//                MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo", "skeyPlayF=null");
             }
             getInfo.setSpeechEvalUrl(data.optString("speechEvalUrl", "https://live.xueersi.com/Live/speechEval/"));
             getInfo.setUrlClick(data.optInt("urlClick", 0));
@@ -914,6 +958,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             entity.setTestId(jsonObject.optString("testId"));
             entity.setResultType(jsonObject.optInt("tip"));
             entity.setGoldNum(jsonObject.optInt("gold"));
+            entity.setEnergy(jsonObject.optInt("energy"));
             entity.setMsg(jsonObject.optString("msg"));
             entity.setRightNum(jsonObject.optInt("rightnum"));
 //            entity.setIsAnswer(jsonObject.optInt("isAnswer", 0));
@@ -1540,6 +1585,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 
         return teamInfoEntity;
     }
+
 
     /**
      * 解析pk 对手信息

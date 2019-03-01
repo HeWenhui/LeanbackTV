@@ -28,7 +28,6 @@ public class LogToFile {
     public static LiveBll liveBll;
     public static AuditClassLiveBll auditClassLiveBll;
     LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
-    public static int LIVE_TIME = 0;
     public LiveOnLineLogs liveOnLineLogs;
     protected Logger logger = LoggerFactory.getLogger("LogToFile");
 
@@ -38,7 +37,7 @@ public class LogToFile {
 
     public LogToFile(String tag) {
         logger = LiveLoggerFactory.getLogger(tag);
-        this.TAG = "OL:" + tag + ":" + LIVE_TIME;
+        this.TAG = "OL:" + tag;
         File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();
         File parent = file.getParentFile();
@@ -55,7 +54,7 @@ public class LogToFile {
 
     public LogToFile(String tag, LiveOnLineLogs liveOnLineLogs) {
         logger = LiveLoggerFactory.getLogger(tag);
-        this.TAG = tag + ":" + LIVE_TIME;
+        this.TAG = tag + "";
         File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();
         File parent = file.getParentFile();
@@ -72,7 +71,7 @@ public class LogToFile {
 
     public LogToFile(LiveOnLineLogs liveBll2, String tag) {
         logger = LiveLoggerFactory.getLogger(tag);
-        this.TAG = tag + ":" + LIVE_TIME;
+        this.TAG = tag + "";
         File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();
         File parent = file.getParentFile();
@@ -85,7 +84,7 @@ public class LogToFile {
 
     public LogToFile(Context context, String tag) {
         logger = LiveLoggerFactory.getLogger(tag);
-        this.TAG = tag + ":" + LIVE_TIME;
+        this.TAG = tag + "";
         File file = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + tag + ".txt");
         this.path = file.getPath();
         File parent = file.getParentFile();
@@ -103,10 +102,8 @@ public class LogToFile {
     }
 
     public void i(String message) {
-        String getPrefix = "";
         if (liveOnLineLogs != null) {
-            getPrefix = liveOnLineLogs.getPrefix();
-            liveOnLineLogs.getOnloadLogs(TAG, getPrefix + ":" + TAG + "**" + message);
+            liveOnLineLogs.getOnloadLogs(TAG, message);
         }
         logger.i(message);
         if (AppConfig.DEBUG) {
@@ -116,10 +113,8 @@ public class LogToFile {
     }
 
     public void d(String message) {
-        String getPrefix = "";
         if (liveOnLineLogs != null) {
-            getPrefix = liveOnLineLogs.getPrefix();
-            liveOnLineLogs.getOnloadLogs(TAG, getPrefix + ":" + TAG + "**" + message);
+            liveOnLineLogs.getOnloadLogs(TAG, message);
         }
         logger.d(message);
         if (AppConfig.DEBUG) {
@@ -137,10 +132,8 @@ public class LogToFile {
     }
 
     public void e(String message, Throwable e) {
-        String getPrefix = "";
         if (liveOnLineLogs != null) {
-            getPrefix = liveOnLineLogs.getPrefix();
-            liveOnLineLogs.getOnloadLogs(TAG, getPrefix + ":" + TAG + "**" + message + "**" + e);
+            liveOnLineLogs.getOnloadLogs(TAG, message + "**" + e);
         }
         logger.e(message, e);
         if (AppConfig.DEBUG) {

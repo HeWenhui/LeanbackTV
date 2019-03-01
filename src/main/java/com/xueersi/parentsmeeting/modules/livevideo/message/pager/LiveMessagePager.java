@@ -1113,6 +1113,10 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     public void onMessage(String target, String sender, String login, String hostname, String text, String headurl) {
         Loger.e("LiveMessagerPager", "=====>onMessage called");
         if (sender.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
+            // 专属老师，如果当前是辅导态，则不显示主讲老师发的聊天
+            if (getInfo != null && getInfo.ePlanInfo != null && LiveTopic.MODE_TRANING.equals(getInfo.getMode())) {
+                return;
+            }
             sender = "主讲老师";
         } else if (sender.startsWith(LiveIRCMessageBll.COUNTTEACHER_PREFIX)) {
             sender = getInfo.ePlanInfo == null ? "辅导老师" : "专属老师";

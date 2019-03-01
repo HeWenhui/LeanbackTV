@@ -1,10 +1,15 @@
 package com.xueersi.parentsmeeting.modules.livevideo.util;
 
-import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
+import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 
 import org.apache.tools.zip.ZipEntry;
 import org.apache.tools.zip.ZipFile;
@@ -26,25 +31,25 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
     private final File mInput;
     private final File mOutput;
     private int mProgress = 0;
-    private final Context mContext;
     private boolean mReplaceAll;
     protected int max;
     private boolean cancle = false;
+    private ZipProg zipProg;
 
-    public ZipExtractorTask(File in, File out, Context context, boolean replaceAll) {
+    public ZipExtractorTask(File in, File out, boolean replaceAll, ZipProg zipProg) {
         mInput = in;
         mOutput = out;
         if (!mOutput.exists()) {
             if (!mOutput.mkdirs()) {
-                logger.e( "Failed to make directories:" + mOutput.getAbsolutePath());
+                logger.e("Failed to make directories:" + mOutput.getAbsolutePath());
             }
         }
-        mContext = context;
         mReplaceAll = replaceAll;
+        this.zipProg = zipProg;
     }
 
-    public ZipExtractorTask(String in, String out, Context context, boolean replaceAll) {
-        this(new File(in), new File(out), context, replaceAll);
+    public ZipExtractorTask(String in, String out, boolean replaceAll) {
+        this(new File(in), new File(out), replaceAll, null);
     }
 
     protected Exception doInBackground(Void... params) {
@@ -52,7 +57,9 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
     }
 
     protected void onPostExecute(Exception exception) {
-
+        if (zipProg != null) {
+            zipProg.onPostExecute(exception);
+        }
     }
 
     @Override
@@ -68,9 +75,13 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
     protected void onProgressUpdate(Integer... values) {
         if (values.length > 1) {
             max = values[1];
-
+            if (zipProg != null) {
+                zipProg.setMax(max);
+            }
         } else {
-
+            if (zipProg != null) {
+                zipProg.onProgressUpdate(values);
+            }
         }
     }
 
@@ -95,13 +106,50 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
                 if (entry.isDirectory() || entry.getSize() == 0) {
                     continue;
                 }
+                File destinationTemp = new File(mOutput, entry.getName() + ".tmp");
                 File destination = new File(mOutput, entry.getName());
-                if (!destination.getParentFile().exists()) {
-                    boolean mkdir = destination.getParentFile().mkdirs();
+                File parentFile = destination.getParentFile();
+                if (!parentFile.exists()) {
+                    boolean mkdir = parentFile.mkdirs();
                 }
-                ProgressReportingOutputStream outStream = new ProgressReportingOutputStream(destination);
-                extractedSize += copy(zip.getInputStream(entry), outStream);
-                outStream.close();
+                ProgressReportingOutputStream outStream = new ProgressReportingOutputStream(destinationTemp);
+                try {
+                    extractedSize += copy(zip.getInputStream(entry), outStream);
+                    boolean renameTo = destinationTemp.renameTo(destination);
+                    if (!renameTo) {
+                        try {
+                            StableLogHashMap logHashMap = new StableLogHashMap();
+                            logHashMap.put("logtype", "renameto");
+                            logHashMap.put("path", "" + destination.getPath());
+                            logHashMap.put("parentfile", "" + parentFile.exists());
+                            logHashMap.put("extractedsize", "" + extractedSize);
+                            logHashMap.put("length1", "" + destinationTemp.length());
+                            logHashMap.put("length2", "" + destination.length());
+                            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_ZIP_FILE_ERROR, logHashMap.getData());
+                        } catch (Exception e) {
+                            CrashReport.postCatchedException(e);
+                        }
+                    }
+                } catch (Exception e) {
+                    try {
+                        StableLogHashMap logHashMap = new StableLogHashMap();
+                        logHashMap.put("logtype", "exception");
+                        logHashMap.put("path", "" + destination.getPath());
+                        logHashMap.put("parentfile", "" + parentFile.exists());
+                        logHashMap.put("extractedsize", "" + extractedSize);
+                        logHashMap.put("exception", "" + Log.getStackTraceString(e));
+                        logHashMap.put("length1", "" + destinationTemp.length());
+                        logHashMap.put("length2", "" + destination.length());
+                        UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_ZIP_FILE_ERROR, logHashMap.getData());
+                    } catch (Exception e2) {
+                        CrashReport.postCatchedException(e2);
+                    }
+                    destinationTemp.delete();
+                    destination.delete();
+                    throw e;
+                } finally {
+                    outStream.close();
+                }
             }
             if (isBreak) {
                 return new Exception("cancel");
@@ -117,7 +165,7 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
         } catch (Exception e) {
             exception = e;
             e.printStackTrace();
-        }  finally {
+        } finally {
             if (zip != null) {
                 try {
                     zip.close();
@@ -126,6 +174,15 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
                     e.printStackTrace();
                 }
             }
+        }
+        try {
+            StableLogHashMap logHashMap = new StableLogHashMap();
+            logHashMap.put("input", "" + mInput);
+            logHashMap.put("output", "" + mOutput);
+            logHashMap.put("exception", "" + Log.getStackTraceString(exception));
+            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_ZIP_ERROR, logHashMap.getData());
+        } catch (Exception e) {
+            CrashReport.postCatchedException(e);
         }
         return exception;
     }
@@ -143,7 +200,7 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
         return originalSize;
     }
 
-    private int copy(InputStream input, OutputStream output) {
+    private int copy(InputStream input, OutputStream output) throws IOException {
         byte[] buffer = new byte[1024 * 8];
         BufferedInputStream in = new BufferedInputStream(input, 1024 * 8);
         BufferedOutputStream out = new BufferedOutputStream(output, 1024 * 8);
@@ -157,6 +214,7 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
         } catch (IOException e) {
 
             e.printStackTrace();
+            throw e;
         } finally {
             try {
                 out.close();
