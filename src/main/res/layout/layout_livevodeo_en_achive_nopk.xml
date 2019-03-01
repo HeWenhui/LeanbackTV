@@ -5,8 +5,8 @@
 
     <ImageView
         android:id="@id/tv_livevideo_en_achive_pk_energy_my_lable"
-        android:layout_width="wrap_content"
-        android:layout_height="28dp"
+        android:layout_width="93dp"
+        android:layout_height="34dp"
         android:layout_gravity="center_horizontal" />
 
 </FrameLayout>
