@@ -18,7 +18,7 @@ android {
 }
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    implementation (name:'pschatsdk1.2.5',ext:'aar')
+    implementation (name:'pschatsdk1.2.7',ext:'aar')
     compile 'org.java-websocket:Java-WebSocket:1.3.4'
     //glide库
     implementation rootProject.ext.thirdlibraries.glide
