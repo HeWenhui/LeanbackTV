@@ -107,11 +107,12 @@ public class TeamPkPraiseBll {
      */
     private boolean isMyTeam(JSONObject data) {
         boolean result = false;
+        String classTeamId = mPkBll.getRoomInitInfo().getStudentLiveInfo().getClassId() +"-"+mPkBll.getRoomInitInfo().getStudentLiveInfo().getTeamId();
         try {
             JSONArray jsonArray = data.getJSONArray("teamList");
             if (jsonArray != null && jsonArray.length() > 0) {
                 for (int i = 0; i < jsonArray.length(); i++) {
-                    if (mPkBll.getRoomInitInfo().getStudentLiveInfo().getTeamId().equals(jsonArray.getString(i))) {
+                    if (classTeamId.equals(jsonArray.getString(i))) {
                         result = true;
                         break;
                     }
