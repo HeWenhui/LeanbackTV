@@ -221,12 +221,13 @@ public class TeamPkAqResultPager extends TeamPkBasePager {
         tvAnswerRightEnergy.startAnimation(animationSet);
         tvAnswerRightEnergy.setText("+" + mEnergy);
         tvAnswerRightEnergy.startAnimation(animationSet);
-       /* tvAnswerRightEnergy.postDelayed(new Runnable() {
+        tvAnswerRightEnergy.postDelayed(new Runnable() {
             @Override
             public void run() {
-                startAnswerRightAwardAnim();
+               // startAnswerRightAwardAnim();
+                closePager();
             }
-        }, animationSet.getDuration());*/
+        }, animationSet.getDuration() + 2000);
     }
 
 

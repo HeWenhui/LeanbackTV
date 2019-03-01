@@ -60,8 +60,16 @@ public class TeamPkPraiseBll {
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "team_pk/teacher_praise/";
     private String mResPath;
     private String mJsonFilePath;
+    private String mAnimScriptCacheKey;
+
     private static final int BADGE_LOW_BOUND = 0;
     private static final int BADGE_UP_BOUND = 10;
+    /**
+     * lottie 动画 脚本缓存key
+     */
+    private static final String LOTTIE_JSON_PRAISE = "teacherPraise";
+
+    private static final String LOTTIE_JSON_BADGE = "badge";
 
     public TeamPkPraiseBll(Activity activity, TeamPkBll pkBll) {
         mActivity = activity;
@@ -96,6 +104,7 @@ public class TeamPkPraiseBll {
     private void showPraise() {
         mResPath = "team_pk/pkresult/teacher_praise/images";
         mJsonFilePath = "team_pk/pkresult/teacher_praise/data.json";
+        mAnimScriptCacheKey = LOTTIE_JSON_PRAISE;
         addPraiseView();
     }
 
@@ -133,6 +142,7 @@ public class TeamPkPraiseBll {
         if (badgeType > BADGE_LOW_BOUND && badgeType < BADGE_UP_BOUND) {
             mResPath = LOTTIE_RES_ASSETS_ROOTDIR + "badge_" + badgeType + "/images";
             mJsonFilePath = LOTTIE_RES_ASSETS_ROOTDIR + "badge_" + badgeType + "/data.json";
+            mAnimScriptCacheKey = LOTTIE_JSON_BADGE;
             addPraiseView();
         }
     }
@@ -166,7 +176,7 @@ public class TeamPkPraiseBll {
     private void startAnim() {
         animView.useHardwareAcceleration(true);
         final LottieEffectInfo effectInfo = new LottieEffectInfo(mResPath, mJsonFilePath);
-        animView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mActivity));
+        animView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mActivity),mAnimScriptCacheKey);
         animView.setImageAssetDelegate(new ImageAssetDelegate() {
             @Override
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
