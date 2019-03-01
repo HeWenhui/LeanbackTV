@@ -34,7 +34,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRank
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.SendMessageReg;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
 import com.xueersi.parentsmeeting.speakerrecognition.SpeakerRecognitionerInterface;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
@@ -106,6 +110,15 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                         });
                     }
                 });
+                AchieveQuestionShowAction enTeamPkQuestionShowAction = new AchieveQuestionShowAction();
+                QuestionShowReg questionShowReg = getInstance(QuestionShowReg.class);
+                if (questionShowReg != null) {
+                    questionShowReg.registQuestionShow(enTeamPkQuestionShowAction);
+                }
+                EnglishShowReg englishShowReg = getInstance(EnglishShowReg.class);
+                if (englishShowReg != null) {
+                    englishShowReg.registQuestionShow(enTeamPkQuestionShowAction);
+                }
             }
             putInstance(UpdateAchievement.class, new UpdateAchievement() {
                 @Override
@@ -175,7 +188,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                                     if (StringUtils.isEmpty(stuId)) {
                                         mLogtf.d("onLiveInited:stuId=" + stuId);
                                         startAchievement();
-                                    }else {
+                                    } else {
                                         byte[] pcmdata = new byte[10];
                                         int enrollIvector = speakerRecognitionerInterface.
                                                 enrollIvector(pcmdata, pcmdata.length, 0, stuId, false);
@@ -253,7 +266,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                         if (StringUtils.isEmpty(stuId)) {
                             mLogtf.d("onResume:stuId=" + stuId);
                             startAchievement();
-                        }else {
+                        } else {
                             byte[] pcmdata = new byte[10];
                             int enrollIvector = speakerRecognitionerInterface.
                                     enrollIvector(pcmdata, pcmdata.length, 0, stuId, false);
@@ -720,20 +733,20 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     }
                     break;
                 }
-                case XESCODE.STOPQUESTION: {
-                    updateAchievement("STOPQUESTION");
-                }
-                break;
-                case XESCODE.ARTS_H5_COURSEWARE:
-                    String status = object.optString("status", "off");
-                    if ("off".equals(status)) {
-                        updateAchievement("ARTS_H5_COURSEWARE");
-                    }
-                    break;
-                case XESCODE.ARTS_STOP_QUESTION: {
-                    updateAchievement("ARTS_STOP_QUESTION");
-                    break;
-                }
+//                case XESCODE.STOPQUESTION: {
+//                    updateAchievement("STOPQUESTION");
+//                }
+//                break;
+//                case XESCODE.ARTS_H5_COURSEWARE:
+//                    String status = object.optString("status", "off");
+//                    if ("off".equals(status)) {
+//                        updateAchievement("ARTS_H5_COURSEWARE");
+//                    }
+//                    break;
+//                case XESCODE.ARTS_STOP_QUESTION: {
+//                    updateAchievement("ARTS_STOP_QUESTION");
+//                    break;
+//                }
                 default:
                     break;
             }
@@ -742,46 +755,57 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         }
     }
 
-    private void updateAchievement(String method) {
-        logger.d("updateAchievement:method=" + method);
-        final long before = System.currentTimeMillis();
-        postDelayedIfNotFinish(new Runnable() {
-            @Override
-            public void run() {
-                String liveid = mGetInfo.getId();
-                String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-                getHttpManager().getStuGoldCount(enstuId, liveid, new HttpCallBack() {
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        final StarAndGoldEntity starAndGoldEntity = getHttpResponseParser().parseStuGoldCount
-                                (responseEntity);
-                        mGetInfo.setGoldCount(starAndGoldEntity.getGoldCount());
-                        mGetInfo.setStarCount(starAndGoldEntity.getStarCount());
-                        StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
-                        LiveGetInfo.EnPkEnergy enpkEnergy = mGetInfo.getEnpkEnergy();
-                        enpkEnergy.me = pkEnergy.me;
-                        enpkEnergy.myTeam = pkEnergy.myTeam;
-                        enpkEnergy.opTeam = pkEnergy.opTeam;
-                        long time = System.currentTimeMillis() - before;
-                        mLogtf.d("getStuGoldCount:onPmSuccess:time=" + time);
-                        if (time < 5000) {
-                            postDelayedIfNotFinish(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (starAction != null) {
-                                        starAction.onGetStar(starAndGoldEntity);
-                                    }
-                                }
-                            }, 5000 - time);
-                        } else {
+    private class AchieveQuestionShowAction implements QuestionShowAction {
+
+        @Override
+        public void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isShow) {
+            if (!isShow) {
+                updateAchievement("onQuestionShow");
+            }
+        }
+
+        private void updateAchievement(String method) {
+            logger.d("updateAchievement:method=" + method);
+            final long before = System.currentTimeMillis();
+            postDelayedIfNotFinish(new Runnable() {
+                @Override
+                public void run() {
+                    String liveid = mGetInfo.getId();
+                    String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+                    getHttpManager().getStuGoldCount(enstuId, liveid, new HttpCallBack() {
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                            final StarAndGoldEntity starAndGoldEntity = getHttpResponseParser().parseStuGoldCount
+                                    (responseEntity);
+                            mGetInfo.setGoldCount(starAndGoldEntity.getGoldCount());
+                            mGetInfo.setStarCount(starAndGoldEntity.getStarCount());
+                            StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
+                            LiveGetInfo.EnPkEnergy enpkEnergy = mGetInfo.getEnpkEnergy();
+                            enpkEnergy.me = pkEnergy.me;
+                            enpkEnergy.myTeam = pkEnergy.myTeam;
+                            enpkEnergy.opTeam = pkEnergy.opTeam;
+                            long time = System.currentTimeMillis() - before;
+                            mLogtf.d("updateAchievement:onPmSuccess:time=" + time);
                             if (starAction != null) {
                                 starAction.onGetStar(starAndGoldEntity);
                             }
                         }
-                    }
-                });
-            }
-        }, 500);
+
+                        @Override
+                        public void onPmError(ResponseEntity responseEntity) {
+                            super.onPmError(responseEntity);
+                            logger.d("updateAchievement:onPmError="+responseEntity.getErrorMsg());
+                        }
+
+                        @Override
+                        public void onPmFailure(Throwable error, String msg) {
+                            super.onPmFailure(error, msg);
+                            logger.d("updateAchievement:onPmFailure="+msg,error);
+                        }
+                    });
+                }
+            }, 2000);
+        }
     }
 
     @Override

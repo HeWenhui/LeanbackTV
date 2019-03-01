@@ -29,6 +29,9 @@ import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.lottie.AchieveType1LottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.lottie.AchieveType2LottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.lottie.AchieveType3LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
@@ -274,7 +277,7 @@ public class EnAchievePager extends LiveBasePager {
             mLogtf.d("onGetStar:opTeam=" + pkEnergy.opTeam + ",otherTotal=" + myTotal);
         }
         ViewGroup rl_livevideo_info = activity.findViewById(R.id.rl_livevideo_info);
-        if (!cbAchiveTitle.isChecked() && rl_livevideo_info != null) {
+        if (rl_livevideo_info != null) {
             final int energyCountAdd = starAndGoldEntity.getPkEnergy().me - energyCount;
             final int goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
             final int startCountAdd = starAndGoldEntity.getStarCount() - starCount;
@@ -283,54 +286,27 @@ public class EnAchievePager extends LiveBasePager {
             starCount = starAndGoldEntity.getStarCount();
             mLogtf.d("onGetStar:energyCountAdd=" + energyCountAdd + ",goldCountAdd=" + goldCountAdd + ",startCountAdd=" + startCountAdd);
             String LOTTIE_RES_ASSETS_ROOTDIR;
-            String[] targetFileNames;
-            final int type;
+            String bubbleResPath;
+            String bubbleJsonPath;
+            final LottieEffectInfo bubbleEffectInfo;
             if (energyCountAdd > 0 && goldCountAdd > 0) {
                 LOTTIE_RES_ASSETS_ROOTDIR = "en_team_pk/gold_energy";
-                targetFileNames = new String[]{"img_0.png", "img_1.png"};
-                type = 1;
+                bubbleResPath = LOTTIE_RES_ASSETS_ROOTDIR + "/images";
+                bubbleJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "/data.json";
+                bubbleEffectInfo = new AchieveType1LottieEffectInfo(activity, energyCountAdd, goldCountAdd, bubbleResPath, bubbleJsonPath);
             } else if (energyCountAdd > 0) {
                 LOTTIE_RES_ASSETS_ROOTDIR = "en_team_pk/nogold_energy";
-                targetFileNames = new String[]{"img_0.png"};
-                type = 2;
+                bubbleResPath = LOTTIE_RES_ASSETS_ROOTDIR + "/images";
+                bubbleJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "/data.json";
+                bubbleEffectInfo = new AchieveType2LottieEffectInfo(activity, energyCountAdd, bubbleResPath, bubbleJsonPath);
             } else if (goldCountAdd > 0) {
                 LOTTIE_RES_ASSETS_ROOTDIR = "en_team_pk/gold_noenergy";
-                targetFileNames = new String[]{"img_0.png"};
-                type = 3;
+                bubbleResPath = LOTTIE_RES_ASSETS_ROOTDIR + "/images";
+                bubbleJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "/data.json";
+                bubbleEffectInfo = new AchieveType3LottieEffectInfo(activity, goldCountAdd, bubbleResPath, bubbleJsonPath);
             } else {
                 return;
             }
-            String bubbleResPath = LOTTIE_RES_ASSETS_ROOTDIR + "/images";
-            String bubbleJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "/data.json";
-            final LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo(bubbleResPath, bubbleJsonPath, targetFileNames) {
-                @Override
-                public Bitmap fetchTargetBitMap(LottieAnimationView animationView, String fileName, String bitmapId, int width, int height) {
-                    if ("img_0.png".equals(fileName)) {
-                        if (type == 1) {
-                            Bitmap bitmap2 = createBitmap(energyCountAdd, width, height);
-                            if (bitmap2 != null) {
-                                return bitmap2;
-                            }
-                        } else if (type == 2) {
-                            Bitmap bitmap2 = createBitmap(energyCountAdd, width, height);
-                            if (bitmap2 != null) {
-                                return bitmap2;
-                            }
-                        } else {
-                            Bitmap bitmap2 = createBitmap(goldCountAdd, width, height);
-                            if (bitmap2 != null) {
-                                return bitmap2;
-                            }
-                        }
-                    } else if ("img_1.png".equals(fileName)) {
-                        Bitmap bitmap2 = createBitmap(goldCountAdd, width, height);
-                        if (bitmap2 != null) {
-                            return bitmap2;
-                        }
-                    }
-                    return null;
-                }
-            };
             final ViewGroup viewGroup = (ViewGroup) rl_livevideo_info.getParent();
             final LottieAnimationView lottieAnimationView = new LottieAnimationView(activity);
             lottieAnimationView.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(activity), "fir_energy");
