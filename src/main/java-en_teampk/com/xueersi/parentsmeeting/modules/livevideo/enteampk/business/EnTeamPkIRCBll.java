@@ -66,6 +66,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private ClassEndRec classEndRec;
     private ClassEndReg classEndReg;
     private boolean isEnglishPkTotalRank = false;
+    private int classInt = 0;
 
     public EnTeamPkIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -146,7 +147,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             String classId = getInfo.getStudentLiveInfo().getClassId();
             try {
                 mLogtf.d("onLiveInited:classInt=" + classId);
-                int classInt = Integer.parseInt(classId);
+                classInt = Integer.parseInt(classId);
                 if (classInt < 0) {
                     classEndReg = new ClassEndReg(mContext, getInfo);
                     classEndRec = new ClassEndRec();
@@ -539,16 +540,14 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 break;
             case XESCODE.CLASSBEGIN:
                 boolean end = data.optBoolean("end", false);
-                logger.d("CLASSBEGIN:end=" + end);
-                if (end && mGetInfo.getStudentLiveInfo() != null) {
-                    String classId = mGetInfo.getStudentLiveInfo().getClassId();
+                mLogtf.d("CLASSBEGIN:end=" + end + ",classInt=" + classInt);
+                if (end) {
                     try {
-                        mLogtf.d("CLASSBEGIN:classInt=" + classId);
-                        int classInt = Integer.parseInt(classId);
                         if (classInt < 0) {
                             getEnglishPkTotalRank();
                         }
                     } catch (Exception e) {
+                        mLogtf.e("CLASSBEGIN", e);
                         CrashReport.postCatchedException(e);
                     }
                 }
@@ -697,6 +696,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     private void getEnglishPkTotalRank() {
+        mLogtf.d("getEnglishPkTotalRank:pkTeamEntity=null?" + (pkTeamEntity == null) + ",is=" + isEnglishPkTotalRank);
         if (pkTeamEntity != null) {
             if (classEndReg != null) {
                 classEndReg.destory();
