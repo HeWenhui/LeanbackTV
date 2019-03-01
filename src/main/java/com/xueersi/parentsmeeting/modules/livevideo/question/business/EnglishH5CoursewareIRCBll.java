@@ -560,10 +560,10 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
     class EnglishH5CoursewareImpl implements EnglishH5CoursewareSecHttp {
 
         @Override
-        public void getStuGoldCount() {
+        public void getStuGoldCount(String method) {
             UpdateAchievement updateAchievement = getInstance(UpdateAchievement.class);
             if (updateAchievement != null) {
-                updateAchievement.getStuGoldCount("getStuGoldCount", UpdateAchievement.GET_TYPE_QUE);
+                updateAchievement.getStuGoldCount("getStuGoldCount:"+method, UpdateAchievement.GET_TYPE_QUE);
             }
         }
 

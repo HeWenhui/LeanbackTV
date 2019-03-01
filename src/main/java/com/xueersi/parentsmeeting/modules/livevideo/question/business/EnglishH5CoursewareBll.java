@@ -421,7 +421,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
             @Override
             public void run() {
                 if(mLiveBll != null){
-                    mLiveBll.getStuGoldCount();
+                    mLiveBll.getStuGoldCount("froceClose");
                 }
                 if (h5CoursewarePager != null) {
                     h5CoursewarePager.destroy();
@@ -490,7 +490,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 if (!isAnaswer) {
                     onQuestionShow(null, false, "onH5ResultClose");
                 }
-                mLiveBll.getStuGoldCount();
+                mLiveBll.getStuGoldCount("showH5Paper");
 
                 WebViewRequest webViewRequest = ProxUtil.getProxUtil().get(context, WebViewRequest.class);
                 if (webViewRequest != null) {
@@ -1110,7 +1110,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                mLiveBll.getStuGoldCount();
+                                mLiveBll.getStuGoldCount("liveSubmitTestH5Answer");
                             }
                         }, 2500);
                         // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
@@ -1174,7 +1174,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                mLiveBll.getStuGoldCount();
+                                mLiveBll.getStuGoldCount("liveSubmitTestH5Answer");
                             }
                         }, 2500);
                         // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
