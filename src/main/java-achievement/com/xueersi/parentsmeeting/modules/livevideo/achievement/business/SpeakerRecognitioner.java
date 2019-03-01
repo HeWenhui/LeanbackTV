@@ -110,6 +110,8 @@ public class SpeakerRecognitioner {
                 mBufferSize);
     }
 
+    private int lastReadSize;
+
     public void start() {
         if (isStart) {
             return;
@@ -160,7 +162,10 @@ public class SpeakerRecognitioner {
                                     }
                                 }
                             } else {
-                                logToFile.d("start:readSize=" + readSize);
+                                if(lastReadSize!=readSize){
+                                    logToFile.d("start:readSize=" + readSize);
+                                }
+                                lastReadSize=readSize;
                             }
                         }
                     }
