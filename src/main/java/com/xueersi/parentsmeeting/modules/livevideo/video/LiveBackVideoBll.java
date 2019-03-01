@@ -13,6 +13,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
 
 import org.json.JSONArray;
@@ -24,7 +25,7 @@ import java.util.ArrayList;
  * 回放的视频播放
  * <p>
  * 直播回放的Bll，主要负责管理回放的视频播放
- * 类似的还有{@link com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceVideoBll}
+ * 类似的还有{@link StandExperienceVideoBll}
  */
 public class LiveBackVideoBll {
     Logger logger;
@@ -143,7 +144,7 @@ public class LiveBackVideoBll {
             String videoPath;
             String url = mVideoEntity.getVideoPath();
             if (url.contains("http") || url.contains("https")) {
-                videoPath = getPSVideoPath(url);
+                videoPath = DoPSVideoHandle.getPSVideoPath(url);
             } else {
                 videoPath = url;
             }
@@ -151,31 +152,6 @@ public class LiveBackVideoBll {
         }
     }
 
-    /**
-     * 去掉Url里面的域名
-     *
-     * @param url
-     * @return
-     */
-    private String getPSVideoPath(String url) {
-        int len = url.length();
-        char lastCh = 'a';
-        //第一次遇到这种 '/'+字母的形式
-        boolean isFirst = true;
-        int pos;
-        for (pos = 1; pos < len; pos++) {
-            char ch = url.charAt(pos);
-            if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') && (lastCh == '/')) {
-                if (isFirst) {
-                    isFirst = false;
-                } else {
-                    break;
-                }
-            }
-            lastCh = ch;
-        }
-        return url.substring(pos-1);
-    }
 
     public void savePosition(long fromStart) {
         if (playbackComplete) {

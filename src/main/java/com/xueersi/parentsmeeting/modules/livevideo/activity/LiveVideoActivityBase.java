@@ -474,7 +474,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
      * @param pos
      * @param protocol
      */
-    public void changPlayLive(int pos, int protocol) {
+    public void changePlayLive(int pos, int protocol) {
         isChangeLine = true;
         this.changeLinePos = pos;
         this.protocol = protocol;
@@ -749,7 +749,18 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         } else {
             if (mCloseComplete) {
                 // 如果当前没有初始化，并且是已经播放完毕的状态则重新打开播放
-                playNewVideo();
+                if (!MediaPlayer.isPSIJK) {
+                    playNewVideo();
+                } else {
+//                    String videoPath;
+//
+//                    if (url.contains("http") || url.contains("https")) {
+//                        videoPath = DoPSVideoHandle.getPSVideoPath(url);
+//                    } else {
+//                        videoPath = url;
+//                    }
+//                    playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+                }
             }
         }
     }
@@ -987,6 +998,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     }
 
     /** 播放一个新的视频 */
+    @Deprecated
     protected void playNewVideo(Uri uri, String displayName) {
         //
         if (!MediaPlayer.isPSIJK) {
@@ -1046,36 +1058,36 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         }
     }
 
-    /**
-     * 播放一个新的视频
-     *
-     * @param uri
-     * @param displayName
-     * @param shareKey    用于标识当前视频的唯一值
-     * @author zouhao
-     * @Create at: 2015-9-23 下午7:45:41
-     */
-    protected void playNewVideo(Uri uri, String displayName, String shareKey) {
-        if (isInitialized()) {
-            vPlayer.release();
-            vPlayer.releaseContext();
-        }
-        mDisplayName = "";
-        mIsHWCodec = false;
-        mFromStart = false;
-        mStartPos = 0;
-        mIsEnd = false;
-
-        mUri = uri;
-        mDisplayName = displayName;
-
-        if (viewRoot != null)
-            viewRoot.postInvalidate();
-        if (mOpened != null)
-            mOpened.set(false);
-
-        vPlayerHandler.sendEmptyMessage(OPEN_FILE);
-    }
+//    /**
+//     * 播放一个新的视频
+//     *
+//     * @param uri
+//     * @param displayName
+//     * @param shareKey    用于标识当前视频的唯一值
+//     * @author zouhao
+//     * @Create at: 2015-9-23 下午7:45:41
+//     */
+//    protected void playNewVideo(Uri uri, String displayName, String shareKey) {
+//        if (isInitialized()) {
+//            vPlayer.release();
+//            vPlayer.releaseContext();
+//        }
+//        mDisplayName = "";
+//        mIsHWCodec = false;
+//        mFromStart = false;
+//        mStartPos = 0;
+//        mIsEnd = false;
+//
+//        mUri = uri;
+//        mDisplayName = displayName;
+//
+//        if (viewRoot != null)
+//            viewRoot.postInvalidate();
+//        if (mOpened != null)
+//            mOpened.set(false);
+//
+//        vPlayerHandler.sendEmptyMessage(OPEN_FILE);
+//    }
 
     protected void playNewVideo() {
         if (mUri != null && mDisplayName != null) {

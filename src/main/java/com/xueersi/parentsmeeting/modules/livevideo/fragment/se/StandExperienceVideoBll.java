@@ -13,6 +13,8 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
+import com.xueersi.parentsmeeting.modules.livevideo.video.DoPSVideoHandle;
+import com.xueersi.parentsmeeting.modules.livevideo.video.LiveBackVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
 
@@ -20,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 站立直播体验课的视频播放，仿照{@link com.xueersi.parentsmeeting.modules.livevideo.video.LiveBackVideoBll}
+ * 站立直播体验课的视频播放，仿照{@link LiveBackVideoBll}
  * 管理全身直播的视频播放
  */
 public class StandExperienceVideoBll {
@@ -160,39 +162,13 @@ public class StandExperienceVideoBll {
             String videoPath;
             String url = mVideoEntity.getVideoPath();
             if (url.contains("http") || url.contains("https")) {
-                videoPath = getPSVideoPath(url);
+                videoPath = DoPSVideoHandle.getPSVideoPath(url);
             } else {
                 videoPath = url;
             }
             liveBackPlayVideoFragment.playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
             liveBackPlayVideoFragment.playPSVideo(mVideoEntity.getVideoPath(), MediaPlayer.VIDEO_PROTOCOL_MP4);
         }
-    }
-
-    /**
-     * 去掉Url里面的域名
-     *
-     * @param url
-     * @return
-     */
-    private String getPSVideoPath(String url) {
-        int len = url.length();
-        char lastCh = 'a';
-        //第一次遇到这种 '/'+字母的形式
-        boolean isFirst = true;
-        int pos;
-        for (pos = 1; pos < len; pos++) {
-            char ch = url.charAt(pos);
-            if ((ch >= 'A' && ch <= 'Z') || (ch >= 'a' && ch <= 'z') && (lastCh == '/')) {
-                if (isFirst) {
-                    isFirst = false;
-                } else {
-                    break;
-                }
-            }
-            lastCh = ch;
-        }
-        return url.substring(pos-1);
     }
 
 
@@ -264,7 +240,6 @@ public class StandExperienceVideoBll {
 //        public void getPServerListFail() {
 //            super.getPServerListFail();
 //        }
-
         @Override
         public void onOpenFailed(int arg1, int arg2) {
             logger.d("onOpenFailed:index=" + index + ",arg2=" + arg2);

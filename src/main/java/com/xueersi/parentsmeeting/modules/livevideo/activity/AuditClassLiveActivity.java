@@ -762,7 +762,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         }
         //当前线路小于总线路数
         if (this.nowPos < totalRouteNum) {
-            changPlayLive(this.nowPos, nowProtol);
+            changePlayLive(this.nowPos, nowProtol);
         } else {
             nowProtol = changeProtol(nowProtol);
             mLiveBll.liveGetPlayServer(false);
@@ -1456,7 +1456,6 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         if (!MediaPlayer.isPSIJK) {
             playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
         } else {
-
             playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
         }
     }

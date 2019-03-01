@@ -12,7 +12,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -53,6 +52,7 @@ import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
 import com.xueersi.parentsmeeting.module.browser.event.BrowserEvent;
 import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
@@ -94,6 +94,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionEx
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.video.DoPSVideoHandle;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
@@ -541,7 +542,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
             }
         }
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
-        mIRCMessage = new IRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid,mGetInfo, channel);
+        mIRCMessage = new IRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, mGetInfo, channel);
         IRCTalkConf ircTalkConf = new IRCTalkConf(this, mGetInfo, mGetInfo.getLiveType(), mHttpManager, talkConfHosts);
         //聊天连接调度失败日志
         ircTalkConf.setChatServiceError(new IRCTalkConf.ChatServiceError() {
@@ -932,7 +933,18 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         }
 //        ProxUtil.getProxUtil().put(this, MediaControllerAction.class, this);
         ProxUtil.getProxUtil().put(this, LiveVideoActivityBase.class, this);
-        playNewVideo(Uri.parse(mWebPath), mSectionName);
+        if (!MediaPlayer.isPSIJK) {
+            playNewVideo(Uri.parse(mWebPath), mSectionName);
+        } else {
+            String videoPath;
+            String url = mVideoEntity.getVideoPath();
+            if (url.contains("http") || url.contains("https")) {
+                videoPath = DoPSVideoHandle.getPSVideoPath(url);
+            } else {
+                videoPath = url;
+            }
+            playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+        }
         chatCfgServerList = getIntent().getStringArrayListExtra("roomChatCfgServerList");
         expChatId = getIntent().getStringExtra("expChatId");
         sex = getIntent().getStringExtra("sex");
@@ -960,7 +972,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         experienceQuitFeedbackBll = new ExperienceQuitFeedbackBll(activity, liveBackBll, false);
         experienceQuitFeedbackBll.setLiveVideo(this);
         liveBackBll.addBusinessBll(experienceQuitFeedbackBll);
-        ExperienceGuideBll experienceGuideBll = new ExperienceGuideBll(this,liveBackBll);
+        ExperienceGuideBll experienceGuideBll = new ExperienceGuideBll(this, liveBackBll);
         liveBackBll.addBusinessBll(experienceGuideBll);
         mPlayStatus = experienceGuideBll;
         liveBackBll.onCreate();
@@ -1067,7 +1079,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 //                    seekTo(0);
 //                }
 //            }
-            if (mPlayStatus != null && isInitialized()){
+            if (mPlayStatus != null && isInitialized()) {
                 mPlayStatus.onPlaySuccess(vPlayer);
             }
         }
@@ -1248,7 +1260,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         currentMsg = currentPosition;
         // 扫描互动题
         scanQuestion(currentPosition);
-        logger.i( "currentPosition:" + currentPosition + ": threadId =" + Thread.currentThread().getId());
+        logger.i("currentPosition:" + currentPosition + ": threadId =" + Thread.currentThread().getId());
         if (HISTROY_MSG_DISPLAY) {
             displayHistoryMsg();
         }
@@ -1404,7 +1416,19 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 //            if (rlQuestionContent.getChildCount() > 0) {
 //                rlQuestionContent.setVisibility(View.VISIBLE);
 //            }
-            playNewVideo(Uri.parse(mWebPath), mSectionName);
+            if (!MediaPlayer.isPSIJK) {
+                playNewVideo(Uri.parse(mWebPath), mSectionName);
+            } else {
+//                playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_MP4);
+                String videoPath;
+                String url = mVideoEntity.getVideoPath();
+                if (url.contains("http") || url.contains("https")) {
+                    videoPath = DoPSVideoHandle.getPSVideoPath(url);
+                } else {
+                    videoPath = url;
+                }
+                playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+            }
         }
         AppBll.getInstance(mBaseApplication);
     }
@@ -1454,7 +1478,19 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     @Override
     public void onResume() {
         super.onResume();
-        playNewVideo(Uri.parse(mWebPath), mSectionName);
+        if (MediaPlayer.isPSIJK) {
+            playNewVideo(Uri.parse(mWebPath), mSectionName);
+        } else {
+//            playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_MP4);
+            String videoPath;
+            String url = mVideoEntity.getVideoPath();
+            if (url.contains("http") || url.contains("https")) {
+                videoPath = DoPSVideoHandle.getPSVideoPath(url);
+            } else {
+                videoPath = url;
+            }
+            playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+        }
 
     }
 
@@ -1510,7 +1546,19 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         }
         if (rePlayCount < MAX_REPLAY_COUNT) {
             rePlayCount++;
-            playNewVideo(Uri.parse(mWebPath), mSectionName);
+            if (!MediaPlayer.isPSIJK) {
+                playNewVideo(Uri.parse(mWebPath), mSectionName);
+            } else {
+//                playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_MP4);
+                String videoPath;
+                String url = mVideoEntity.getVideoPath();
+                if (url.contains("http") || url.contains("https")) {
+                    videoPath = DoPSVideoHandle.getPSVideoPath(url);
+                } else {
+                    videoPath = url;
+                }
+                playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+            }
         } else {
             super.resultFailed(arg1, arg2);
         }
