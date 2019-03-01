@@ -167,7 +167,7 @@ public class StandExperienceVideoBll {
                 videoPath = url;
             }
             liveBackPlayVideoFragment.playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
-            liveBackPlayVideoFragment.playPSVideo(mVideoEntity.getVideoPath(), MediaPlayer.VIDEO_PROTOCOL_MP4);
+//            liveBackPlayVideoFragment.playPSVideo(mVideoEntity.getVideoPath(), MediaPlayer.VIDEO_PROTOCOL_MP4);
         }
     }
 
@@ -175,7 +175,9 @@ public class StandExperienceVideoBll {
     public void playNewVideo(Uri uri, String displayName) {
 //        mUri = uri;
 //        mDisplayName = displayName;
-        liveBackPlayVideoFragment.playNewVideo(uri, displayName);
+        if (uri != null && displayName != null) {
+            liveBackPlayVideoFragment.playNewVideo(uri, displayName);
+        }
     }
 
     public void savePosition(long fromStart) {

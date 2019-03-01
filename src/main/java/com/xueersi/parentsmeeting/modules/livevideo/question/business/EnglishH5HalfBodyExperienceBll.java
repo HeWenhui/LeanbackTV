@@ -14,14 +14,12 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -64,6 +62,7 @@ public class EnglishH5HalfBodyExperienceBll extends LiveBackBaseBll {
 
         LiveBackBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new
                 LiveBackBaseEnglishH5CoursewareCreat();
+        liveBaseEnglishH5CoursewareCreat.setLiveGetInfo(liveGetInfo);
         int isArts = liveBackBll.getIsArts();
         liveBaseEnglishH5CoursewareCreat.setArts(isArts);
         liveBaseEnglishH5CoursewareCreat.setWrapOnH5ResultClose(new WrapOnH5ResultClose(activity));
@@ -156,7 +155,7 @@ public class EnglishH5HalfBodyExperienceBll extends LiveBackBaseBll {
      * 构建体验课 新课件平台 试题加载地址
      **/
     private String buildCourseUrl(VideoQuestionLiveEntity videoQuestionLiveEntity, VideoQuestionEntity questionEntity) {
-        if(questionEntity == null){
+        if (questionEntity == null) {
             return "";
         }
         StringBuilder stringBuilder = new StringBuilder();
