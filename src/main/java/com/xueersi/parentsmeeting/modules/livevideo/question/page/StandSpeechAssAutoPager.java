@@ -685,7 +685,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
     private void onEvaluatorSuccess(final ResultEntity resultEntity, final EvaluatorListener evaluatorListener) {
         final int score = resultEntity.getScore();
-        logger.d("onEvaluatorSuccess:score=" + score + ",isEnd=" + isEnd);
+        mLogtf.d("onEvaluatorSuccess:score=" + score + ",isEnd=" + isEnd);
         if (!isEnd) {
             if (score == 1) {
                 errorSetVisible();

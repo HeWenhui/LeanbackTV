@@ -1058,7 +1058,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             postDelayedIfNotFinish(new Runnable() {
                 @Override
                 public void run() {
-                    questionHttp.getStuGoldCount();
+                    questionHttp.getStuGoldCount("onAnswerReslut");
 
                     // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
                     //EventBusUtil.post(new UpdateAchievementEvent(mLiveBll.getLiveId()));
@@ -1523,7 +1523,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        questionHttp.getStuGoldCount();
+        questionHttp.getStuGoldCount("stopExam");
     }
 
     @Override
@@ -1549,7 +1549,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         } else {
             subjectResultPager = null;
         }
-        questionHttp.getStuGoldCount();
+        questionHttp.getStuGoldCount("stopWebQuestion");
 
         // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
         //EventBusUtil.post(new UpdateAchievementEvent(mLiveBll.getLiveId()));
@@ -1600,7 +1600,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             pager.onDestroy();
             rlQuestionContent.removeView(pager.getRootView());
         }
-        questionHttp.getStuGoldCount();
+        questionHttp.getStuGoldCount("stopSpeech");
     }
 
 
@@ -2429,7 +2429,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 public void run() {
                     logger.e("=======>forceClose 2222:" + curQuestionView);
                     if (questionHttp != null) {
-                        questionHttp.getStuGoldCount();
+                        questionHttp.getStuGoldCount("forceClose");
                     }
                     if (questionWebPager != null) {
                         rlQuestionContent.removeView(questionWebPager.getRootView());

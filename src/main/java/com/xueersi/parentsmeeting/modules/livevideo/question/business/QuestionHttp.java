@@ -9,7 +9,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
  */
 
 public interface QuestionHttp {
-    void getStuGoldCount();
+    void getStuGoldCount(String method);
 
     void sendRankMessage(int rankStuReconnectMessage);
 

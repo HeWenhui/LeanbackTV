@@ -151,7 +151,7 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
 
 
     @Override
-    public void getStuGoldCount() {
+    public void getStuGoldCount(String method) {
 
     }
 

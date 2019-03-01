@@ -1635,7 +1635,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     }
 
     @Override
-    public void getStuGoldCount() {
+    public void getStuGoldCount(String method) {
         postDelayedIfNotFinish(new Runnable() {
             @Override
             public void run() {

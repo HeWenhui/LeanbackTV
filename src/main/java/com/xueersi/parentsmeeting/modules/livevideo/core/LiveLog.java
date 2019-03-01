@@ -176,20 +176,22 @@ public class LiveLog implements LiveOnLineLogs {
 
         @Override
         public void run() {
-            String s = dateFormat.format(new Date());
-            String[] ss = s.split(",");
-            try {
-                FileOutputStream os = new FileOutputStream(logFile, true);
-                os.write((ss[1] + " message:" + message + "\n").getBytes());
-                if (e != null) {
-                    if (e instanceof UnknownHostException) {
-                        os.write((ss[1] + " errorlog:UnknownHostException\n").getBytes());
-                    } else {
-                        os.write((ss[1] + " errorlog:" + Log.getStackTraceString(e) + "\n").getBytes());
+            synchronized (WriteThread.class) {
+                String s = dateFormat.format(new Date());
+                String[] ss = s.split(",");
+                try {
+                    FileOutputStream os = new FileOutputStream(logFile, true);
+                    os.write((ss[1] + " message:" + message + "\n").getBytes());
+                    if (e != null) {
+                        if (e instanceof UnknownHostException) {
+                            os.write((ss[1] + " errorlog:UnknownHostException\n").getBytes());
+                        } else {
+                            os.write((ss[1] + " errorlog:" + Log.getStackTraceString(e) + "\n").getBytes());
+                        }
                     }
+                    os.close();
+                } catch (Exception e) {
                 }
-                os.close();
-            } catch (Exception e) {
             }
         }
     }

@@ -768,10 +768,10 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     @Override
-    public void getStuGoldCount() {
+    public void getStuGoldCount(String method) {
         UpdateAchievement updateAchievement = getInstance(UpdateAchievement.class);
         if (updateAchievement != null) {
-            updateAchievement.getStuGoldCount("getStuGoldCount", UpdateAchievement.GET_TYPE_QUE);
+            updateAchievement.getStuGoldCount("getStuGoldCount:"+method, UpdateAchievement.GET_TYPE_QUE);
         }
     }
 

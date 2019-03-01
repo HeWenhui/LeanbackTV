@@ -295,7 +295,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
     }
 
     @Override
-    public void getStuGoldCount() {
+    public void getStuGoldCount(String method) {
 //回放没有
     }
 
