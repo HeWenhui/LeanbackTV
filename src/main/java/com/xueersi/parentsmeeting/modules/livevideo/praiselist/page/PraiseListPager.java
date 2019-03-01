@@ -269,49 +269,49 @@ public class PraiseListPager extends LiveBasePager {
         return mView;
     }
 
-    public void test() {
-        Button button1 = mView.findViewById(R.id.btn_livevideo_praiselist_test1);
-        Button button2 = mView.findViewById(R.id.btn_livevideo_praiselist_test2);
-        Button button3 = mView.findViewById(R.id.btn_livevideo_praiselist_test3);
-        Button button4 = mView.findViewById(R.id.btn_livevideo_praiselist_test4);
-        button1.setText("学生点赞+1");
-        button2.setText("战队点赞+1");
-        button3.setText("老师表扬");
-
-        final List<PraiseListDanmakuEntity> tempList = new ArrayList<>();
-        button1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                PraiseListDanmakuEntity danmakuEntity = new PraiseListDanmakuEntity();
-                danmakuEntity.setName("詹姆斯哈登");
-                danmakuEntity.setNumber(100);
-                danmakuEntity.setBarrageType(1);
-                tempList.add(danmakuEntity);
-                receiveLikeNotice(tempList);
-                tempList.clear();
-            }
-        });
-        button2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                PraiseListDanmakuEntity danmakuEntity = new PraiseListDanmakuEntity();
-                danmakuEntity.setName("休斯敦火箭");
-                danmakuEntity.setNumber(200);
-                danmakuEntity.setBarrageType(2);
-                tempList.add(danmakuEntity);
-                receiveLikeNotice(tempList);
-                tempList.clear();
-            }
-        });
-
-        button3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startScrollAnimation("詹姆斯", "安东尼");
-            }
-        });
-    }
+//    public void test() {
+//        Button button1 = mView.findViewById(R.id.btn_livevideo_praiselist_test1);
+//        Button button2 = mView.findViewById(R.id.btn_livevideo_praiselist_test2);
+//        Button button3 = mView.findViewById(R.id.btn_livevideo_praiselist_test3);
+//        Button button4 = mView.findViewById(R.id.btn_livevideo_praiselist_test4);
+//        button1.setText("学生点赞+1");
+//        button2.setText("战队点赞+1");
+//        button3.setText("老师表扬");
+//
+//        final List<PraiseListDanmakuEntity> tempList = new ArrayList<>();
+//        button1.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                PraiseListDanmakuEntity danmakuEntity = new PraiseListDanmakuEntity();
+//                danmakuEntity.setName("詹姆斯哈登");
+//                danmakuEntity.setNumber(100);
+//                danmakuEntity.setBarrageType(1);
+//                tempList.add(danmakuEntity);
+//                receiveLikeNotice(tempList);
+//                tempList.clear();
+//            }
+//        });
+//        button2.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                PraiseListDanmakuEntity danmakuEntity = new PraiseListDanmakuEntity();
+//                danmakuEntity.setName("休斯敦火箭");
+//                danmakuEntity.setNumber(200);
+//                danmakuEntity.setBarrageType(2);
+//                tempList.add(danmakuEntity);
+//                receiveLikeNotice(tempList);
+//                tempList.clear();
+//            }
+//        });
+//
+//        button3.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                startScrollAnimation("詹姆斯", "安东尼");
+//            }
+//        });
+//    }
 
     /**
      * 校准布局
@@ -434,7 +434,7 @@ public class PraiseListPager extends LiveBasePager {
 
     @Override
     public void initData() {
-        test();
+//        test();
         alignLayout();
         startBackgtoundAnimation();
 
