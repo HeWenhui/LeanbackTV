@@ -116,7 +116,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
         this.mLiveGetInfo = liveGetInfo;
         mRolePlayerHttpManager = new RolePlayerHttpManager(mContext);
         mRolePlayerHttpResponseParser = new RolePlayerHttpResponseParser();
-        mLogtf=new LogToFile(context,"RolePlayerBll");
+        mLogtf=new LogToFile(context, getClass().getSimpleName());
     }
 
     /**
@@ -264,7 +264,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
 
     @Override
     public void onStopQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity, String nonce) {
-        mLogtf.i( "onStopQuestion 老师收题了,断开socket ");
+        mLogtf.i( "onStopQuestion 老师收题了,断开socket,this="+hashCode());
         if (mWebSocket != null && mWebSocket.isOpen()) {
             mWebSocket.close();
             mWebSocket = null;
@@ -284,7 +284,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
      * 关掉当前页面
      */
     public void closeCurPage() {
-        logger.i( "onStopQuestion 关闭当前页面 "+bottomContent+":"+mRolePlayerPager);
+        mLogtf.i( "closeCurPage:bottomContent=null?"+(bottomContent==null)+",pager=null?"+(mRolePlayerPager==null));
         if (bottomContent != null && mRolePlayerPager != null) {
             logger.i( "onStopQuestion 关闭当前页面 ");
             bottomContent.removeView(mRolePlayerPager.getRootView());

@@ -1413,7 +1413,11 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
 
     @Override
     public void examSubmitAll() {
-
+        if(mRolePlayBll==null){
+            mLogtf.d("examSubmitAll:bll=0");
+        }else{
+            mLogtf.d("examSubmitAll:bll="+mRolePlayBll.hashCode());
+        }
     }
 
     @Override

@@ -479,7 +479,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
 
     @Override
     public void onStopQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity, String nonce) {
-        logger.i("onStopQuestion 老师收题了,断开socket ");
+        mLogtf.i( "onStopQuestion 老师收题了,断开socket,this="+hashCode());
         if(mRolePlayMachinePager != null){
             mRolePlayMachinePager.stopSpeech();
         }
@@ -496,7 +496,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
 
     @Override
     public void closeCurPage() {
-        logger.i("onStopQuestion 关闭当前页面 " + mBottomContent + ":" + mRolePlayMachinePager);
+        mLogtf.i( "closeCurPage:bottomContent=null?"+(mBottomContent==null)+",pager=null?"+(mRolePlayMachinePager==null)+","+(mRolePlayStandMachinePager==null));
         if (mBottomContent != null && mRolePlayMachinePager != null) {
             logger.i("onStopQuestion 关闭当前页面 ");
             //让pager自己移除
