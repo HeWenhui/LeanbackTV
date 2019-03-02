@@ -1115,6 +1115,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     public void onStopQuestion(String ptype, final String nonce) {
         mLogtf.d("onStopQuestion:ptype=" + ptype + ":" + mVideoQuestionLiveEntity + ",nonce=" + nonce + ",isAnaswer=" + isAnaswer);
         boolean havePager = false;
+        BasePager basePager = null;
         boolean oldisAnaswer = isAnaswer;
         if (!oldisAnaswer) {
             return;
@@ -1136,6 +1137,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
         if (voiceAnswerPager != null) {
             havePager = true;
+            basePager = voiceAnswerPager;
             mVPlayVideoControlHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -1166,6 +1168,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         } else {
             if (speechAssessmentPagerUserBack != null) {
                 havePager = true;
+                basePager = speechAssessmentPagerUserBack;
                 String id = speechAssessmentPagerUserBack.getId();
                 if (speechEndAction != null) {
                     speechEndAction.examSubmitAll(speechAssessmentPagerUserBack, id);
@@ -1176,6 +1179,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         int delayTime = 0;
         if (questionWebPager != null) {
             havePager = true;
+            basePager = (BasePager) questionWebPager;
             curQuestionView = (BasePager) questionWebPager;
             mLogtf.d("onStopQuestion:questionWebPager");
             mVPlayVideoControlHandler.post(new Runnable() {
@@ -1194,6 +1198,12 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
         if (oldisAnaswer && !havePager) {
             onQuestionShow(null, false, "onStopQuestion");
+        } else {
+            if (basePager.getRootView() != null) {
+                mLogtf.d("onStopQuestion:basePager=" + basePager + ",parent=" + basePager.getRootView().getParent());
+            } else {
+                mLogtf.d("onStopQuestion:basePager=" + basePager + ",parent=null");
+            }
         }
         if (hasSubmit) {
             getFullMarkList(XESCODE.STOPQUESTION, delayTime);
@@ -1559,7 +1569,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     @Override
     public void stopSpeech(BaseSpeechAssessmentPager pager, BaseVideoQuestionEntity baseVideoQuestionEntity, final
     String num) {
-        mLogtf.d("stopSpeech:num=" + num + ",isAnaswer=" + isAnaswer + ",same=" + (pager == speechAssessmentPager));
+        if (speechAssessmentPager == null) {
+            mLogtf.d("stopSpeech:num=" + num + ",isAnaswer=" + isAnaswer + ",same=" + (pager == null));
+        } else {
+            mLogtf.d("stopSpeech:num=" + num + ",isAnaswer=" + isAnaswer + ",same=" + (pager == speechAssessmentPager) + ",id=" + speechAssessmentPager.getId());
+        }
         mQueAndBool.add("" + num);
         if (pager == speechAssessmentPager && speechAssessmentPager != null) {
             speechAssessmentPager.onDestroy();
@@ -1576,6 +1590,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 }
             }
             if (speechEndAction != null) {
+                speechAssessmentPagerUserBack = speechAssessmentPager;
                 speechEndAction.onStopSpeech(speechAssessmentPager, num, new SpeechEndAction.OnTop3End() {
                     @Override
                     public void onShowEnd() {
@@ -1592,12 +1607,14 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     onQuestionShow(null, false, "stopSpeech");
                 }
             }
-            if (speechAssessmentPager.getId().equals(num)) {
-                speechAssessmentPagerUserBack = speechAssessmentPager;
-                setHaveSpeech(false);
-            }
+            setHaveSpeech(false);
         } else {
             pager.onDestroy();
+            if (pager.getRootView() != null) {
+                mLogtf.d("stopSpeech:isHaveSpeech=" + isHaveSpeech + ",parent=" + pager.getRootView().getParent());
+            } else {
+                mLogtf.d("stopSpeech:isHaveSpeech=" + isHaveSpeech + ",view=null");
+            }
             rlQuestionContent.removeView(pager.getRootView());
         }
         questionHttp.getStuGoldCount("stopSpeech");
@@ -1634,6 +1651,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     }
 
     private void setHaveSpeech(boolean haveSpeech) {
+        mLogtf.d("setHaveSpeech:isHaveSpeech=" + isHaveSpeech + ",haveSpeech=" + haveSpeech);
         isHaveSpeech = haveSpeech;
         if (!haveSpeech) {
             speechAssessmentPager = null;
