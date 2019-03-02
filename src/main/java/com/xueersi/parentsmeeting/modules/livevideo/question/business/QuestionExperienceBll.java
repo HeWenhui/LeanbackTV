@@ -87,7 +87,7 @@ public class QuestionExperienceBll extends LiveBackBaseBll implements QuestionHt
         int vCategory = questionEntity.getvCategory();
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_QUESTION: {
-                questionBll.onStopQuestion(questionEntity.getvQuestionType(), "");
+                questionBll.onStopQuestion("Experience:onQuestionEnd", questionEntity.getvQuestionType(), "");
             }
             break;
             case LocalCourseConfig.CATEGORY_EXAM: {

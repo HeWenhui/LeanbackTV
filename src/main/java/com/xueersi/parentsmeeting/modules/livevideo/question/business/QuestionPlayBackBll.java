@@ -122,7 +122,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         int vCategory = questionEntity.getvCategory();
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_QUESTION: {
-                questionBll.onStopQuestion(questionEntity.getvQuestionType(), "");
+                questionBll.onStopQuestion("PlayBack:onQuestionEnd1", questionEntity.getvQuestionType(), "");
             }
             break;
             case LocalCourseConfig.CATEGORY_EXAM: {
@@ -132,7 +132,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             case LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE: {
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                 EventBus.getDefault().post(new LiveBackQuestionEvent(QUSTION_CLOSE, videoQuestionLiveEntity));
-                questionBll.onStopQuestion(questionEntity.getvQuestionType(), "");
+                questionBll.onStopQuestion("PlayBack:onQuestionEnd3", questionEntity.getvQuestionType(), "");
             }
             break;
         }
