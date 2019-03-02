@@ -20,7 +20,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateA
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayActionEnd;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineActionEnd;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -51,7 +53,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.Call;
 
 /**
- * Created by lyqai on 2018/7/5.
+ * 互动题
+ * Created by linyuqiang on 2018/7/5.
  */
 
 public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAction, QuestionHttp {
@@ -60,6 +63,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private LiveAutoNoticeIRCBll mLiveAutoNoticeBll;
     //    private SpeechEvaluatorUtils mIse;
     private SpeechUtils mIse;
+    /** 置空roleplay，防止QuestionBll里为空，外面不为空 */
+    private RolePlayEnd rolePlayActionEnd = new RolePlayEnd();
     /** RolePlayer功能接口 */
     private RolePlayAction rolePlayAction;
 
@@ -350,8 +355,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                                     RolePlayerBll rolePlayerBll = new RolePlayerBll(activity, mRootView, mLiveBll, mGetInfo);
                                     rolePlayAction = rolePlayerBll;
                                 }
-                                mQuestionAction.setRolePlayMachineAction(rolePlayMachineAction);
-                                mQuestionAction.setRolePlayAction(rolePlayAction);
+                                mQuestionAction.setRolePlayMachineAction(rolePlayMachineAction, rolePlayActionEnd);
+                                mQuestionAction.setRolePlayAction(rolePlayAction, rolePlayActionEnd);
                             }
 
                             mQuestionAction.showQuestion(videoQuestionLiveEntity);
@@ -468,8 +473,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 RolePlayerBll rolePlayerBll = new RolePlayerBll(activity, mRootView, mLiveBll, mGetInfo);
                 rolePlayAction = rolePlayerBll;
             }
-            mQuestionAction.setRolePlayMachineAction(rolePlayMachineAction);
-            mQuestionAction.setRolePlayAction(rolePlayAction);
+            mQuestionAction.setRolePlayMachineAction(rolePlayMachineAction, rolePlayActionEnd);
+            mQuestionAction.setRolePlayAction(rolePlayAction, rolePlayActionEnd);
         }
     }
 
@@ -525,7 +530,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !videoQuestionLiveEntity.multiRolePlay.equals("1")) {
                         logger.i("走人机start,拉取试题");
                         RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
-                        mQuestionAction.setRolePlayMachineAction(rolePlayerBll);
+                        mQuestionAction.setRolePlayMachineAction(rolePlayerBll, rolePlayActionEnd);
                         rolePlayMachineAction = rolePlayerBll;
 
                     }
@@ -581,7 +586,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !videoQuestionLiveEntity.multiRolePlay.equals("1")) {
                         logger.i("onNotice 新课件平台，走人机start,拉取试题");
                         RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
-                        mQuestionAction.setRolePlayMachineAction(rolePlayerBll);
+                        mQuestionAction.setRolePlayMachineAction(rolePlayerBll, rolePlayActionEnd);
                         rolePlayMachineAction = rolePlayerBll;
 
                     }
@@ -668,14 +673,14 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 logger.i("onNotice XCR_ROOM_ROLE_READ ");
                 if (rolePlayAction == null) {
                     RolePlayerBll rolePlayerBll = new RolePlayerBll(activity, mRootView, mLiveBll, mGetInfo);
-                    mQuestionAction.setRolePlayAction(rolePlayerBll);
+                    mQuestionAction.setRolePlayAction(rolePlayerBll, rolePlayActionEnd);
                     rolePlayAction = rolePlayerBll;
                 }
 
                 //在多人的时候，同时设置人机的roleplayaction
                 if (rolePlayMachineAction == null) {
                     RolePlayMachineBll rolePlayerMachineBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
-                    mQuestionAction.setRolePlayMachineAction(rolePlayerMachineBll);
+                    mQuestionAction.setRolePlayMachineAction(rolePlayerMachineBll, rolePlayActionEnd);
                     rolePlayMachineAction = (RolePlayMachineAction) rolePlayerMachineBll;
 
                 }
@@ -771,7 +776,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     public void getStuGoldCount(String method) {
         UpdateAchievement updateAchievement = getInstance(UpdateAchievement.class);
         if (updateAchievement != null) {
-            updateAchievement.getStuGoldCount("getStuGoldCount:"+method, UpdateAchievement.GET_TYPE_QUE);
+            updateAchievement.getStuGoldCount("getStuGoldCount:" + method, UpdateAchievement.GET_TYPE_QUE);
         }
     }
 
@@ -1255,6 +1260,22 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             mQuestionAction.onDestroy();
         }
     }
+
+    private class RolePlayEnd implements RolePlayActionEnd, RolePlayMachineActionEnd {
+
+        @Override
+        public void endRolePlayAction(String method, RolePlayAction action) {
+            mLogtf.d("endRolePlayAction:method=" + method + ",same=" + (action == rolePlayAction));
+            rolePlayAction = null;
+        }
+
+        @Override
+        public void endRolePlayMachineAction(String method, RolePlayAction action) {
+            mLogtf.d("endRolePlayMachineAction:method=" + method + ",same=" + (action == rolePlayMachineAction));
+            rolePlayMachineAction = null;
+        }
+    }
+
 }
 
 

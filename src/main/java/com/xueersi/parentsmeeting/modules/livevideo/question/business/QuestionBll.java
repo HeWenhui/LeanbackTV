@@ -30,6 +30,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayActionEnd;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineActionEnd;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -241,7 +243,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private boolean hasSubmit;
     private String stuCouId;
     private RolePlayAction rolePlayAction;
+    private RolePlayActionEnd playActionEnd;
     private RolePlayAction rolePlayMachineAction;
+    private RolePlayMachineActionEnd rolePlayMachineActionEnd;
 
 
     /**
@@ -463,8 +467,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         return false;
     }
 
-    public void setRolePlayAction(RolePlayAction rolePlayAction) {
+    public void setRolePlayAction(RolePlayAction rolePlayAction, RolePlayActionEnd playActionEnd) {
         this.rolePlayAction = rolePlayAction;
+        this.playActionEnd = playActionEnd;
         rolePlayAction.setOnError(new RolePlayAction.OnError() {
 
             @Override
@@ -480,8 +485,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      *
      * @param rolePlayAction
      */
-    public void setRolePlayMachineAction(RolePlayAction rolePlayAction) {
+    public void setRolePlayMachineAction(RolePlayAction rolePlayAction, RolePlayMachineActionEnd rolePlayMachineActionEnd) {
         this.rolePlayMachineAction = rolePlayAction;
+        this.rolePlayMachineActionEnd = rolePlayMachineActionEnd;
         rolePlayMachineAction.setOnError(new RolePlayAction.OnError() {
 
             @Override
@@ -1126,6 +1132,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             logger.i("onStopQuestion:" + rolePlayAction.getQuestionId() + ":" + mVideoQuestionLiveEntity.id);
             //if (mVideoQuestionLiveEntity.id.equals(rolePlayAction.getQuestionId())) {
             rolePlayAction.onStopQuestion(mVideoQuestionLiveEntity, nonce);
+            if (playActionEnd != null) {
+                playActionEnd.endRolePlayAction(method, rolePlayAction);
+            }
             rolePlayAction = null;
             //}
         }
@@ -1133,6 +1142,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         if (rolePlayMachineAction != null) {
             logger.i("onStopQuestion:" + rolePlayMachineAction.getQuestionId() + ":" + mVideoQuestionLiveEntity.id);
             rolePlayMachineAction.onStopQuestion(mVideoQuestionLiveEntity, nonce);
+            if (rolePlayMachineActionEnd != null) {
+                rolePlayMachineActionEnd.endRolePlayMachineAction(method, rolePlayMachineAction);
+            }
             rolePlayMachineAction = null;
         }
         if (voiceAnswerPager != null) {

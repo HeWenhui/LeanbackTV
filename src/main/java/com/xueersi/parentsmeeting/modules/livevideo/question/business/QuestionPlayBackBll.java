@@ -182,7 +182,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !"1".equals(videoQuestionLiveEntity.multiRolePlay)) {
                     logger.i("走人机start,拉取试题");
                     RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, liveBackBll, liveGetInfo);
-                    questionBll.setRolePlayMachineAction(rolePlayerBll);
+                    questionBll.setRolePlayMachineAction(rolePlayerBll, null);
 
                 }
 
@@ -265,7 +265,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                         if ("5".equals(videoQuestionLiveEntity.type)) {
                             logger.i("yzl_init new rolePlay bll");
                             RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, liveBackBll, liveGetInfo);
-                            questionBll.setRolePlayMachineAction(rolePlayerBll);
+                            questionBll.setRolePlayMachineAction(rolePlayerBll, null);
                         }
                         videoQuestionLiveEntity.setNewArtsCourseware(true);
                         videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
