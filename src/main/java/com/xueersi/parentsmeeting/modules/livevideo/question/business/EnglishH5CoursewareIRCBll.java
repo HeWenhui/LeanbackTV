@@ -33,6 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 
@@ -325,6 +326,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                     objects.put("classId", classId);
                                     englishH5Entity.setClassId(classId);
                                     objects.put("classTestId", object.getString("ctId"));
+                                    englishH5Entity.setClassTestId(object.getString("ctId"));
                                     mShareDataManager.put(LiveVideoConfig.newEnglishH5, objects.toString(),
                                             ShareDataManager.SHAREDATA_USER);
                                 } catch (JSONException e) {
@@ -802,11 +804,53 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
     }
 
     class EnglishH5CoursewareSecImpl extends EnglishH5CoursewareImpl implements EnglishH5CoursewareSecHttp {
+        @Override
+        public String getResultUrl(VideoQuestionLiveEntity detailInfo, int isforce, String nonce) {
+            LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
+            EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
+            String classId = studentLiveInfo.getClassId();
+            String teamId = studentLiveInfo.getTeamId();
+            String educationStage = mGetInfo.getEducationStage();
+            StringBuilder stringBuilder = new StringBuilder(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_RESULT);
+            stringBuilder.append("?stuId=").append(mGetInfo.getStuId());
+            stringBuilder.append("&liveId=").append(mGetInfo.getId());
+            stringBuilder.append("&stuCouId=").append(mLiveBll.getStuCouId());
+            stringBuilder.append("&classId=").append(classId);
+            stringBuilder.append("&teamId=").append(teamId);
+            stringBuilder.append("&packageId=").append(englishH5Entity.getPackageId());
+            stringBuilder.append("&packageSource=").append(englishH5Entity.getPackageSource());
+            stringBuilder.append("&packageAttr=").append(englishH5Entity.getPackageAttr());
+            stringBuilder.append("&classTestId=").append(englishH5Entity.getClassTestId());
+            stringBuilder.append("&isPlayBack=0");
+            stringBuilder.append("&educationStage=").append(educationStage);
+            stringBuilder.append("&isShowTeamPk=").append(0);
+            stringBuilder.append("&nonce=").append(nonce);
+            stringBuilder.append("&isforce=").append(isforce);
+            stringBuilder.append("&releasedPageInfos=").append(englishH5Entity.getReleasedPageInfos());
+            String resUrl = stringBuilder.toString();
+            return resUrl;
+        }
+
+        @Override
+        public void submitCourseWareTests(VideoQuestionLiveEntity detailInfo, int isforce, String nonce, long entranceTime, String testInfos, AbstractBusinessDataCallBack callBack) {
+            EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
+            String classId = mGetInfo.getStudentLiveInfo().getClassId();
+            String[] res = getSrcType(englishH5Entity);
+            getCourseWareHttpManager().submitCourseWareTests(mGetInfo.getStuId(), englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
+                    englishH5Entity.getReleasedPageInfos(), 0, classId, englishH5Entity.getClassTestId(), res[0], res[1], mGetInfo.getEducationStage(), nonce, testInfos, isforce, entranceTime, callBack);
+        }
 
         @Override
         public void getCourseWareTests(VideoQuestionLiveEntity detailInfo, AbstractBusinessDataCallBack callBack) {
             EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
             String classId = mGetInfo.getStudentLiveInfo().getClassId();
+            String[] res = getSrcType(englishH5Entity);
+            getCourseWareHttpManager().getCourseWareTests(mGetInfo.getStuId(), englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
+                    englishH5Entity.getReleasedPageInfos(), 0, classId, englishH5Entity.getClassTestId(), res[0], res[1], mGetInfo.getEducationStage(), detailInfo.nonce, callBack);
+        }
+
+        private String[] getSrcType(EnglishH5Entity englishH5Entity) {
+            String[] res = new String[2];
             String srcTypes = "";
             String testIds = "";
             try {
@@ -829,8 +873,9 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             } catch (JSONException e) {
                 logger.e("getCourseWareTests", e);
             }
-            getCourseWareHttpManager().getCourseWareTests(mGetInfo.getStuId(), englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
-                    englishH5Entity.getReleasedPageInfos(), 0, classId, englishH5Entity.getClassTestId(), srcTypes, testIds, mGetInfo.getEducationStage(), detailInfo.nonce, callBack);
+            res[0] = srcTypes;
+            res[1] = testIds;
+            return res;
         }
 
         @Override

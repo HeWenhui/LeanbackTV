@@ -5,6 +5,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -17,9 +18,11 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareSecHttp;
@@ -28,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.web.NewCourseCache;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.StaticWeb;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.WebInstertJs;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -39,16 +43,19 @@ import java.util.HashMap;
 import java.util.Locale;
 
 public class CoursewareNativePager extends BaseCoursewareNativePager implements BaseEnglishH5CoursewarePager {
+    private String eventId = LiveVideoConfig.LIVE_ENGLISH_COURSEWARE;
     private boolean isFinish = false;
     private String liveId;
     EnglishH5Entity englishH5Entity;
     private boolean isPlayBack;
     EnglishH5CoursewareBll.OnH5ResultClose onClose;
+    EnglishH5CoursewareSecHttp englishH5CoursewareSecHttp;
     String url;
     String id;
     String courseware_type;
     String nonce;
     String isShowRanks;
+    long entranceTime;
     int isArts;
     boolean allowTeamPk;
     boolean isNewArtsCourseware;
@@ -65,8 +72,17 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     ProgressBar pg_livevideo_new_course_prog;
     RelativeLayout rl_livevideo_new_course_control;
     TextView tv_data_loading_tip;
-    NewCourseCache newCourseCache;
+    ImageView iv_livevideo_course_refresh;
     ImageView ivLoading;
+    Button iv_livevideo_new_course_pre;
+    Button iv_livevideo_new_course_next;
+    Button iv_livevideo_new_course_submit;
+    NewCourseCache newCourseCache;
+    boolean addJs = false;
+    ArrayList<NewCourseSec.Test> tests = new ArrayList<>();
+    private int currentIndex = 0;
+    private int isNext = 0;
+    private boolean loadResult = false;
 
     public CoursewareNativePager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, boolean isPlayBack, String liveId, String id, EnglishH5Entity englishH5Entity,
                                  final String courseware_type, String nonce, EnglishH5CoursewareBll.OnH5ResultClose onClose,
@@ -94,7 +110,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
 //        setErrorTip("H5课件加载失败，请重试");
 //        setLoadTip("H5课件正在加载，请稍候");
 //        cacheFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webview/");
-
+        entranceTime = System.currentTimeMillis() / 1000;
         initData();
     }
 
@@ -104,9 +120,13 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         ivLoading = (ImageView) view.findViewById(R.id.iv_data_loading_show);
         wvSubjectWeb = view.findViewById(R.id.wv_livevideo_subject_web);
         tv_data_loading_tip = view.findViewById(R.id.tv_data_loading_tip);
+        iv_livevideo_course_refresh = view.findViewById(R.id.iv_livevideo_course_refresh);
         rl_livevideo_subject_loading = view.findViewById(R.id.rl_livevideo_subject_loading);
         pg_livevideo_new_course_prog = view.findViewById(R.id.pg_livevideo_new_course_prog);
         rl_livevideo_new_course_control = view.findViewById(R.id.rl_livevideo_new_course_control);
+        iv_livevideo_new_course_pre = view.findViewById(R.id.iv_livevideo_new_course_pre);
+        iv_livevideo_new_course_next = view.findViewById(R.id.iv_livevideo_new_course_next);
+        iv_livevideo_new_course_submit = view.findViewById(R.id.iv_livevideo_new_course_submit);
         return view;
     }
 
@@ -143,11 +163,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, new StaticWeb.OnMessage() {
 
             @Override
-            public void postMessage(JSONObject message, String origin) {
+            public void postMessage(final JSONObject message, String origin) {
                 try {
                     String type = message.getString("type");
                     if ("close".equals(type)) {
-                        wvSubjectWeb.post(new Runnable() {
+                        handler.post(new Runnable() {
                             @Override
                             public void run() {
 
@@ -156,10 +176,48 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     } else if ("submitAnswer".equals(type)) {
 //                        submit(message);
                     } else if ("answer".equals(type)) {
-                        wvSubjectWeb.post(new Runnable() {
+                        handler.post(new Runnable() {
                             @Override
                             public void run() {
-
+                                NewCourseSec.Test oldTest = tests.get(currentIndex);
+                                try {
+                                    oldTest.setUserAnswerContent(message.getJSONArray("data"));
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                logger.d("postMessage:answer:isNext=" + isNext + ",index=" + currentIndex);
+                                if (isNext == 3 || isNext == 4) {
+                                    submit(isNext == 3 ? 0 : 1, "");
+                                } else {
+                                    if (isNext == 1) {
+                                        currentIndex--;
+                                        iv_livevideo_new_course_submit.setVisibility(View.GONE);
+                                    } else if (isNext == 2) {
+                                        currentIndex++;
+                                    }
+                                    if (currentIndex == 0) {
+                                        iv_livevideo_new_course_pre.setEnabled(false);
+                                        if (tests.size() > 0) {
+                                            iv_livevideo_new_course_next.setEnabled(true);
+                                        }
+                                    } else if (currentIndex == tests.size() - 1) {
+                                        iv_livevideo_new_course_next.setEnabled(false);
+                                        iv_livevideo_new_course_next.setVisibility(View.INVISIBLE);
+                                        iv_livevideo_new_course_submit.setVisibility(View.VISIBLE);
+                                        if (tests.size() > 0) {
+                                            iv_livevideo_new_course_pre.setEnabled(true);
+                                        }
+                                    } else {
+                                        iv_livevideo_new_course_pre.setEnabled(true);
+                                        iv_livevideo_new_course_next.setVisibility(View.VISIBLE);
+                                        iv_livevideo_new_course_next.setEnabled(true);
+                                    }
+                                    if (currentIndex >= 0 && currentIndex < tests.size()) {
+                                        NewCourseSec.Test test = tests.get(currentIndex);
+                                        addJs = false;
+                                        wvSubjectWeb.loadUrl(test.getPreviewPath());
+                                    }
+                                }
                             }
                         });
                     }
@@ -168,6 +226,62 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 }
             }
         }), "xesApp");
+        iv_livevideo_new_course_pre.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                JSONObject jsonData = new JSONObject();
+                try {
+                    jsonData.put("type", "getAnswer");
+                    JSONObject resultData = new JSONObject();
+                    jsonData.put("data", resultData);
+                    StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                isNext = 1;
+                iv_livevideo_new_course_pre.setEnabled(false);
+                iv_livevideo_new_course_next.setEnabled(false);
+            }
+        });
+        iv_livevideo_new_course_next.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                JSONObject jsonData = new JSONObject();
+                try {
+                    jsonData.put("type", "getAnswer");
+                    JSONObject resultData = new JSONObject();
+                    jsonData.put("data", resultData);
+                    StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                isNext = 2;
+                iv_livevideo_new_course_pre.setEnabled(false);
+                iv_livevideo_new_course_next.setEnabled(false);
+            }
+        });
+        iv_livevideo_new_course_submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                JSONObject jsonData = new JSONObject();
+                try {
+                    jsonData.put("type", "getAnswer");
+                    JSONObject resultData = new JSONObject();
+                    jsonData.put("data", resultData);
+                    StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                isNext = 3;
+            }
+        });
+        iv_livevideo_course_refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                iv_livevideo_course_refresh.setVisibility(View.GONE);
+                getCourseWareTests();
+            }
+        });
     }
 
     @Override
@@ -207,7 +321,53 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
 
     @Override
     public void submitData() {
+        JSONObject jsonData = new JSONObject();
+        try {
+            jsonData.put("type", "getAnswer");
+            JSONObject resultData = new JSONObject();
+            jsonData.put("data", resultData);
+            StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        isNext = 4;
+    }
 
+    private void submit(final int isforce, String nonce) {
+        JSONObject testInfos = new JSONObject();
+        for (int i = 0; i < tests.size(); i++) {
+            NewCourseSec.Test test = tests.get(i);
+            JSONObject json = test.getJson();
+            JSONArray userAnswerContent = test.getUserAnswerContent();
+            try {
+                json.put("index", i);
+                json.put("hasAnswer", 0);
+                json.put("userAnswerStatus", userAnswerContent.length() > 0 ? 1 : 0);
+                json.put("endTime", System.currentTimeMillis() / 1000);
+                json.put("userAnswerContent", userAnswerContent);
+                testInfos.put(test.getId(), json);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        englishH5CoursewareSecHttp.submitCourseWareTests(detailInfo, isforce, nonce, entranceTime, testInfos.toString(), new AbstractBusinessDataCallBack() {
+            @Override
+            public void onDataSucess(Object... objData) {
+                JSONObject jsonObject = (JSONObject) objData[0];
+                int toAnswered = jsonObject.optInt("toAnswered");
+                rl_livevideo_new_course_control.setVisibility(View.GONE);
+                String url = englishH5CoursewareSecHttp.getResultUrl(detailInfo, isforce, "");
+                loadResult = true;
+                wvSubjectWeb.loadUrl(url);
+            }
+
+            @Override
+            public void onDataFail(int errStatus, String failMsg) {
+                super.onDataFail(errStatus, failMsg);
+//                String url = englishH5CoursewareSecHttp.getResultUrl(detailInfo, isforce, "");
+//                wvSubjectWeb.loadUrl(url);
+            }
+        });
     }
 
     @Override
@@ -218,19 +378,21 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     @Override
     protected void onProgressChanged(WebView view, int newProgress) {
         super.onProgressChanged(view, newProgress);
-        pg_livevideo_new_course_prog.setProgress(newProgress);
-        tv_data_loading_tip.setText("加载中 " + newProgress + "%");
-        if (newProgress == 100) {
-            rl_livevideo_subject_loading.setVisibility(View.GONE);
-            rl_livevideo_new_course_control.setVisibility(View.VISIBLE);
-            try {
-                Drawable drawable = ivLoading.getBackground();
-                if (drawable instanceof AnimationDrawable) {
-                    ((AnimationDrawable) drawable).stop();
-                }
-            } catch (Exception e) {
-                if (mLogtf != null) {
-                    mLogtf.e("onProgressChanged", e);
+        if (!loadResult) {
+            pg_livevideo_new_course_prog.setProgress(newProgress);
+            tv_data_loading_tip.setText("加载中 " + newProgress + "%");
+            if (newProgress == 100) {
+                rl_livevideo_subject_loading.setVisibility(View.GONE);
+                rl_livevideo_new_course_control.setVisibility(View.VISIBLE);
+                try {
+                    Drawable drawable = ivLoading.getBackground();
+                    if (drawable instanceof AnimationDrawable) {
+                        ((AnimationDrawable) drawable).stop();
+                    }
+                } catch (Exception e) {
+                    if (mLogtf != null) {
+                        mLogtf.e("onProgressChanged", e);
+                    }
                 }
             }
         }
@@ -238,6 +400,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
 
     @Override
     public void setEnglishH5CoursewareSecHttp(EnglishH5CoursewareSecHttp englishH5CoursewareSecHttp) {
+        this.englishH5CoursewareSecHttp = englishH5CoursewareSecHttp;
         try {
             Drawable drawable = mContext.getResources().getDrawable(R.drawable.animlst_app_loading);
             ivLoading.setBackground(drawable);
@@ -247,19 +410,36 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 mLogtf.e("initData", e);
             }
         }
+        getCourseWareTests();
+    }
+
+    private void getCourseWareTests() {
         englishH5CoursewareSecHttp.getCourseWareTests(detailInfo, new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
-                logger.d("onDataSucess:objData=" + objData);
                 NewCourseSec newCourseSec = (NewCourseSec) objData[0];
-                ArrayList<NewCourseSec.Test> tests = newCourseSec.getTests();
-                NewCourseSec.Test test = tests.get(0);
-                wvSubjectWeb.loadUrl(test.getPreviewPath());
+                logger.d("onDataSucess:newCourseSec=" + newCourseSec);
+                if (newCourseSec.getIsAnswer() == 1) {
+                    rl_livevideo_subject_loading.setVisibility(View.GONE);
+                    String url = englishH5CoursewareSecHttp.getResultUrl(detailInfo, 0, "");
+                    loadResult = true;
+                    wvSubjectWeb.loadUrl(url);
+                } else {
+                    tests = newCourseSec.getTests();
+                    if (tests.isEmpty()) {
+                        XESToastUtils.showToast(mContext, "互动题为空");
+                        return;
+                    }
+                    NewCourseSec.Test test = tests.get(0);
+                    currentIndex = 0;
+                    wvSubjectWeb.loadUrl(test.getPreviewPath());
+                }
             }
 
             @Override
             public void onDataFail(int errStatus, String failMsg) {
                 super.onDataFail(errStatus, failMsg);
+                iv_livevideo_course_refresh.setVisibility(View.VISIBLE);
                 logger.d("onDataFail:errStatus=" + errStatus + ",failMsg=" + failMsg);
             }
         });
@@ -276,6 +456,20 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     }
 
     @Override
+    protected boolean shouldOverrideUrlLoading(WebView view, String url) {
+        if (url.contains("baidu.com")) {
+            onClose.onH5ResultClose(this, getBaseVideoQuestionEntity());
+            StableLogHashMap logHashMap = new StableLogHashMap("coursewareClose");
+            logHashMap.put("coursewareid", id);
+            logHashMap.put("coursewaretype", courseware_type);
+            logHashMap.put("closetype", "clickWebCloseButton");
+            umsAgentDebugSys(eventId, logHashMap.getData());
+            return true;
+        }
+        return super.shouldOverrideUrlLoading(view, url);
+    }
+
+    @Override
     public EnglishH5Entity getEnglishH5Entity() {
         return englishH5Entity;
     }
@@ -286,10 +480,13 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
             String url = request.getUrl() + "";
             if (url.contains(".html")) {
-                WebResourceResponse webResourceResponse = newCourseCache.interceptIndexRequest(view, url);
-                logger.d("shouldInterceptRequest:index:url=" + url + ",response=null?" + (webResourceResponse == null));
-                if (webResourceResponse != null) {
-                    return webResourceResponse;
+                if (!addJs) {
+                    addJs = true;
+                    WebResourceResponse webResourceResponse = newCourseCache.interceptIndexRequest(view, url);
+                    logger.d("shouldInterceptRequest:index:url=" + url + ",response=null?" + (webResourceResponse == null));
+                    if (webResourceResponse != null) {
+                        return webResourceResponse;
+                    }
                 }
             } else if (WebInstertJs.indexStr().equals(url)) {
                 WebResourceResponse webResourceResponse = newCourseCache.interceptJsRequest(view, url);

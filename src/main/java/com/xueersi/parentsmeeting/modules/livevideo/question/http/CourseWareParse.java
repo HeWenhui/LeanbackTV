@@ -14,6 +14,7 @@ public class CourseWareParse {
         try {
             NewCourseSec newCourseSec = new NewCourseSec();
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+            newCourseSec.setIsAnswer(jsonObject.optInt("isAnswer"));
             ArrayList<NewCourseSec.Test> tests = newCourseSec.getTests();
             JSONArray array = jsonObject.getJSONArray("testInfos");
             for (int i = 0; i < array.length(); i++) {
@@ -21,6 +22,7 @@ public class CourseWareParse {
                 NewCourseSec.Test test = new NewCourseSec.Test();
                 test.setId(testObj.getString("id"));
                 test.setPreviewPath(testObj.getString("previewPath"));
+                test.setJson(testObj);
                 tests.add(test);
             }
             return newCourseSec;

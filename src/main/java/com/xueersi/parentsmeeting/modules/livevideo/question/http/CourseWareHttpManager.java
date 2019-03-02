@@ -21,6 +21,48 @@ public class CourseWareHttpManager {
         courseWareParse = new CourseWareParse();
     }
 
+    public void submitCourseWareTests(String stuId, String packageId, String packageSource, String packageAttr, String releasedPageInfos, int isPlayBack, String classId,
+                                      String classTestId, String srcTypes, String testIds, String educationStage, String nonce, String testInfos, int isforce, long entranceTime, final AbstractBusinessDataCallBack callBack) {
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+        liveHttpManager.setDefaultParameter(httpRequestParams);
+        httpRequestParams.addBodyParam("stuId", stuId);
+        httpRequestParams.addBodyParam("packageId", packageId);
+        httpRequestParams.addBodyParam("stuId", stuId);
+        httpRequestParams.addBodyParam("packageId", packageId);
+        httpRequestParams.addBodyParam("packageSource", packageSource);
+        httpRequestParams.addBodyParam("packageAttr", packageAttr);
+        httpRequestParams.addBodyParam("releasedPageInfos", releasedPageInfos);
+        httpRequestParams.addBodyParam("isPlayBack", "" + isPlayBack);
+        httpRequestParams.addBodyParam("classId", "" + classId);
+        httpRequestParams.addBodyParam("classTestId", "" + classTestId);
+        httpRequestParams.addBodyParam("srcTypes", "" + srcTypes);
+        httpRequestParams.addBodyParam("testIds", "" + testIds);
+        httpRequestParams.addBodyParam("educationStage", "" + educationStage);
+        httpRequestParams.addBodyParam("nonce", "" + nonce);
+        httpRequestParams.addBodyParam("testInfos", "" + testInfos);
+        httpRequestParams.addBodyParam("entranceTime", "" + entranceTime);
+        httpRequestParams.addBodyParam("isForce", "" + isforce);
+        liveHttpManager.sendPost(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE, httpRequestParams, new HttpCallBack() {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                logger.d("submitCourseWareTests:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
+                callBack.onDataSucess(responseEntity.getJsonObject());
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                logger.d("submitCourseWareTests:onPmError:responseEntity=" + responseEntity.getErrorMsg());
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR, responseEntity.getErrorMsg());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                logger.d("submitCourseWareTests:onPmFailure:responseEntity=" + msg, error);
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
+            }
+        });
+    }
+
     public void getCourseWareTests(String stuId, String packageId, String packageSource, String packageAttr, String releasedPageInfos, int isPlayBack, String classId, String classTestId,
                                    String srcTypes, String testIds, String educationStage, String nonce, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
@@ -52,14 +94,12 @@ public class CourseWareHttpManager {
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 logger.d("getCourseWareTests:onPmError:responseEntity=" + responseEntity.getErrorMsg());
-                super.onPmError(responseEntity);
                 callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR, responseEntity.getErrorMsg());
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 logger.d("getCourseWareTests:onPmFailure:responseEntity=" + msg, error);
-                super.onPmFailure(error, msg);
                 callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
             }
         });

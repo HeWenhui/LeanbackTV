@@ -4,7 +4,9 @@ import android.content.Context;
 import android.util.Log;
 import android.webkit.WebViewClient;
 
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -23,20 +25,32 @@ import java.net.UnknownHostException;
 
 public class WebInstertJs {
     String TAG = "WebInstertJs";
+    Logger logger;
     Context context;
     File cacheDir;
+    static long saveTime;
 
     public WebInstertJs(Context context) {
         this.context = context;
+        logger = LiveLoggerFactory.getLogger(TAG);
         cacheDir = LiveCacheFile.geCacheFile(context, "webview");
         if (!cacheDir.exists()) {
             cacheDir.mkdirs();
         }
+        if (saveTime == 0) {
+            saveTime = System.currentTimeMillis() / 60000;
+        }
     }
 
     private InputStream insertJs(InputStream inputStream) throws Exception {
-        File saveFile = new File(cacheDir, "index_" + System.currentTimeMillis() + ".html");
-        FileOutputStream outputStream = new FileOutputStream(saveFile);
+        String fileName = "index_" + saveTime + ".html";
+        File saveFile = new File(cacheDir, fileName);
+        logger.d("insertJs:fileName=" + fileName + ",exists=" + saveFile.exists());
+        if (saveFile.exists()) {
+            return new FileInputStream(saveFile);
+        }
+        File saveFileTmp = new File(cacheDir, fileName + "tmp");
+        FileOutputStream outputStream = new FileOutputStream(saveFileTmp);
         BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(outputStream));
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
         StringBuilder stringBuilder = new StringBuilder();
@@ -63,6 +77,8 @@ public class WebInstertJs {
             stringBuilder.append(line + "\n");
         }
         bufferedWriter.flush();
+        boolean renameTo = saveFileTmp.renameTo(saveFile);
+        logger.d("insertJs:fileName=" + fileName + ",renameTo=" + renameTo);
         return new FileInputStream(saveFile);
     }
 
@@ -77,6 +93,16 @@ public class WebInstertJs {
     }
 
     public InputStream httpRequest(String url) {
+        String fileName = "index_" + saveTime + ".html";
+        File saveFile = new File(cacheDir, fileName);
+        logger.d("httpRequest:fileName=" + fileName + ",exists=" + saveFile.exists());
+        if (saveFile.exists()) {
+            try {
+                return new FileInputStream(saveFile);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
         HttpURLConnection httpURLConnection = null;
         boolean isFail = false;
         Exception dnsException = new Exception();

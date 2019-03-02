@@ -77,7 +77,7 @@ public class NewCourseCache {
             String extension = android.webkit.MimeTypeMap.getFileExtensionFromUrl(url.toLowerCase());
             String mimeType = android.webkit.MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
             logger.d("shouldInterceptRequest:url=" + url);
-            WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "", inputStream);
+            WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "", new WrapInputStream(inputStream));
             webResourceResponse.setResponseHeaders(header);
             return webResourceResponse;
         }

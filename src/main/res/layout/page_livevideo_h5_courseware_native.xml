@@ -25,25 +25,52 @@
 
     <RelativeLayout
         android:id="@id/rl_livevideo_new_course_control"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:visibility="gone">
 
-        <Button
-            android:id="@id/iv_livevideo_new_course_pre"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
             android:layout_alignParentBottom="true"
-            android:layout_toLeftOf="@id/iv_livevideo_new_course_next"
-            android:text="上一题" />
+            android:background="#80000000">
 
-        <Button
-            android:id="@id/iv_livevideo_new_course_next"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:text="下一题" />
+            <Button
+                android:id="@id/iv_livevideo_new_course_pre"
+                android:layout_width="84dp"
+                android:layout_height="30dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:layout_toLeftOf="@id/iv_livevideo_new_course_next"
+                android:background="@drawable/selector_livevideo_course_pre_next"
+                android:enabled="false"
+                android:text="上一题"
+                android:textColor="@color/selector_livevideo_couse_pre_next"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@id/iv_livevideo_new_course_next"
+                android:layout_width="84dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/selector_livevideo_course_pre_next"
+                android:enabled="true"
+                android:text="下一题"
+                android:textColor="@color/selector_livevideo_couse_pre_next"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@id/iv_livevideo_new_course_submit"
+                android:layout_width="84dp"
+                android:layout_height="30dp"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/shape_livevideo_course_submit"
+                android:text="提交"
+                android:visibility="gone" />
+        </RelativeLayout>
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -81,11 +108,20 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="5dp"
-                android:text="加载中 90%"
+                android:text="加载中 0%"
                 android:textColor="@color/white"
                 android:textSize="16dp" />
 
         </LinearLayout>
+
+        <ImageView
+            android:id="@id/iv_livevideo_course_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/cy_main_shuaxinbai_icon_normal"
+            android:visibility="gone" />
 
     </RelativeLayout>
 
