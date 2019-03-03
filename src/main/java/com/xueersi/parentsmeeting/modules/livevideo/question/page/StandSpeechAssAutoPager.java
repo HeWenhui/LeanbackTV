@@ -879,7 +879,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             bitmap.recycle();
             //画名字和金币数量
             if (havename) {
-                View layout_live_stand_red_mine1 = StandSpeechResult.resultViewName(mContext, userName);
+                View layout_live_stand_red_mine1 = StandSpeechResult.resultViewName(mContext, "" + gold, fontFace, userName);
                 canvas.save();
                 canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 348);
                 layout_live_stand_red_mine1.draw(canvas);
