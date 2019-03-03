@@ -823,7 +823,6 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             case XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT: {
                 //点赞
                 logger.i("收到点赞消息");
-                long nowTime = System.currentTimeMillis();
                 String senderId = object.optString("from");
                 if (isInLikeTime() && !userLikeList.contains(senderId)) {
                     String likeSender = object.optString("stuName");
