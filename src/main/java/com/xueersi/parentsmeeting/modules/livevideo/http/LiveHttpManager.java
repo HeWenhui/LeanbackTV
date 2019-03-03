@@ -7,6 +7,8 @@ import android.os.Looper;
 
 import com.alibaba.android.arouter.utils.TextUtils;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
@@ -14,6 +16,7 @@ import com.xueersi.common.http.CommonRequestCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.lib.framework.utils.DeviceUtils;
+import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
@@ -38,6 +41,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Response;
@@ -925,6 +929,49 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("liveId", liveId);
         requestCallBack.url = liveVideoSAConfigInner.URL_LIVE_GET_ARTSMORE_COURSEWARE_URL;
         sendPost(requestCallBack.url, params, requestCallBack);
+    }
+
+    /**
+     * 语文预加载互动题
+     * @param liveId
+     * @param requestCallBack
+     */
+    public void getArtsCourewareInfo(String liveId,HttpCallBack requestCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        if (liveId !=null && !"".equals(liveId)){
+            params.addBodyParam("liveId",liveId);
+        }
+        requestCallBack.url = liveVideoSAConfigInner.URL_LIVE_GET_ARTS_COURSEWARE_URL;
+        sendPost(requestCallBack.url,params,requestCallBack);
+    }
+
+    /**
+     * 英语预加载互动题
+     * @param liveId
+     * @param requestCallBack
+     */
+    public void getEnglishCourewareInfo(String liveId,HttpCallBack requestCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        if (liveId !=null && !"".equals(liveId)){
+            params.addBodyParam("liveId",liveId);
+        }
+        requestCallBack.url = liveVideoSAConfigInner.URL_LIVE_GET_ENGLISH_COURSEWARE_URL;
+        sendPost(requestCallBack.url,params,requestCallBack);
+    }
+
+    /**
+     * 理科预加载互动题
+     * @param liveId
+     * @param requestCallBack
+     */
+    public void getScienceCourewareInfo(String liveId,HttpCallBack requestCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        if (liveId !=null && !"".equals(liveId)){
+            params.addBodyParam("liveId",liveId);
+        }
+        requestCallBack.url = liveVideoSAConfigInner.URL_LIVE_GET_SCIENCE_COURSEWARE_URL;
+//        requestCallBack.url = "https://laoshi.xueersi.com/science/LiveCourses/preLoadNewCourseWare/?liveId=355540";
+        sendPost(requestCallBack.url,params,requestCallBack);
     }
 
     /**

@@ -120,6 +120,20 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_GET_MORE_WARE_URL = LiveVideoConfig.HTTP_HOST + "/science/LiveCourse/courseWarePreLoad";
         /** 文科一发多题课件 */
         public String URL_LIVE_GET_ARTSMORE_COURSEWARE_URL = "https://app.arts.xueersi.com/v2/preLoad/preLoading";
+        /**
+         * 文科课件预加载
+         */
+        public String URL_LIVE_GET_ARTS_COURSEWARE_URL = "https://app.chs.xueersi.com/LiveCourses/preLoadNewCourseWare";
+        /**
+         * 英语课件预加载
+         */
+        public String URL_LIVE_GET_ENGLISH_COURSEWARE_URL = "https://app.arts.xueersi.com/preloading/preLoading";
+        /**
+         * 理科课件预加载
+         */
+        public String URL_LIVE_GET_SCIENCE_COURSEWARE_URL =  LiveVideoConfig.HTTP_HOST+"/science/LiveCourses/preLoadNewCourseWare";
+
+
         /** 文科新域名chs预加载 */
         public String URL_LIVE_CHS_GET_ARTSMORE_COURSEWARE_URL = "https://app.chs.xueersi.com/LiveCourse/getCourseWareUrl";
         /** 互动题满分榜接口 */
