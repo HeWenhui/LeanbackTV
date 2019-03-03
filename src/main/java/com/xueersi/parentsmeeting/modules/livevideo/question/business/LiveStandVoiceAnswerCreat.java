@@ -237,7 +237,8 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
 //                    final ViewGroup group = (ViewGroup) baseVoiceAnswerPager.getRootView();
 //                    group.addView(rlResult);
                     questionBll.initQuestionAnswerReslut(rlResult);
-                    setWrongTipEnpk(context, lottieAnimationView, entity.getStandardAnswer(), entity.getGoldNum(), entity.getEnergy());
+//                    setWrongTipEnpk(context, lottieAnimationView, entity.getStandardAnswer(), entity.getGoldNum(), entity.getEnergy());
+                    setWrongTip(context, lottieAnimationView, entity.getStandardAnswer());
                     final LiveSoundPool liveSoundPool = LiveSoundPool.createSoundPool();
                     final LiveSoundPool.SoundPlayTask task = StandLiveMethod.voiceWrong(liveSoundPool);
                     rlResult.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View.OnClickListener() {
@@ -283,6 +284,32 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     }
 
     public static void setRightGold(Context context, LottieAnimationView lottieAnimationView, int goldCount, int energy) {
+        String num = "获得 " + goldCount + " 枚金币";
+        AssetManager manager = context.getAssets();
+        Bitmap img_7Bitmap;
+        try {
+            img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/lottie/voice_answer/my_right/img_22.png"));
+//            Bitmap img_3Bitmap = BitmapFactory.decodeStream(manager.open("Images/jindu/img_3.png"));
+            Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(creatBitmap);
+            canvas.drawBitmap(img_7Bitmap, 0, 0, null);
+            Paint paint = new Paint();
+            paint.setTextSize(48);
+            paint.setColor(0xffCC6E12);
+            Typeface fontFace = FontCache.getTypeface(context, "fangzhengcuyuan.ttf");
+            paint.setTypeface(fontFace);
+            float width = paint.measureText(num);
+            canvas.drawText(num, (img_7Bitmap.getWidth() - width) / 2, (img_7Bitmap.getHeight() + paint.measureText("a")) / 2, paint);
+            img_7Bitmap.recycle();
+            img_7Bitmap = creatBitmap;
+        } catch (IOException e) {
+            logger.e( "setRightGold", e);
+            return;
+        }
+        lottieAnimationView.updateBitmap("image_22", img_7Bitmap);
+    }
+
+    public static void setRightGoldEnergy(Context context, LottieAnimationView lottieAnimationView, int goldCount, int energy) {
         View resultMine = LayoutInflater.from(context).inflate(R.layout.layout_live_stand_voice_right, null);
         TextView tv_livevideo_speecteval_result_gold = resultMine.findViewById(R.id.tv_livevideo_speecteval_result_gold);
         tv_livevideo_speecteval_result_gold.setText("+" + goldCount);
@@ -315,7 +342,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
         lottieAnimationView.updateBitmap("image_22", img_7Bitmap);
     }
 
-    public static void setWrongTipEnpk(Context context, LottieAnimationView lottieAnimationView, String standardAnswer, int goldCount, int energy) {
+    public static void setWrongTipEnergy(Context context, LottieAnimationView lottieAnimationView, String standardAnswer, int goldCount, int energy) {
         String num = "正确答案: " + standardAnswer;
         View resultMine = LayoutInflater.from(context).inflate(R.layout.layout_live_stand_voice_wrong, null);
         TextView tv_livevideo_speecteval_result_answer = resultMine.findViewById(R.id.tv_livevideo_speecteval_result_answer);
@@ -351,7 +378,7 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
         lottieAnimationView.updateBitmap("image_5", img_7Bitmap);
     }
 
-    private void setWrongTip(Context context, LottieAnimationView lottieAnimationView, String standardAnswer) {
+    public static void setWrongTip(Context context, LottieAnimationView lottieAnimationView, String standardAnswer) {
         String num = "正确答案: " + standardAnswer;
         AssetManager manager = context.getAssets();
         Bitmap img_7Bitmap;
