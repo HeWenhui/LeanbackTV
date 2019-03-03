@@ -296,6 +296,7 @@
     <item name="rl_livevideo_subject_loading" type="id" />
     <item name="rl_livevideo_subject_error" type="id" />
     <item name="iv_livevideo_subject_refresh" type="id" />
+    <item name="iv_livevideo_course_refresh" type="id" />
     <!--直播-语音评测-->
     <item name="rl_livevideo_speecteval_group" type="id" />
     <item name="rl_livevideo_speecteval_title" type="id" />

@@ -1,0 +1,59 @@
+package com.xueersi.parentsmeeting.modules.livevideo.question.dialog;
+
+import android.app.Application;
+import android.content.Context;
+import android.view.View;
+import android.widget.TextView;
+
+import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.ui.dialog.BaseAlertDialog;
+
+public class CourseTipDialog extends BaseAlertDialog {
+    private TextView tvCommitOk;
+    private TextView tvCommitContinue;
+    private OnClick onClick;
+
+    /**
+     * 初始化
+     *
+     * @param context
+     * @param application
+     */
+    public CourseTipDialog(Context context, Application application) {
+        super(context, application, false, 0);
+    }
+
+    @Override
+    protected View initDialogLayout(int type) {
+        View view = mInflater.inflate(R.layout.dialog_livevideo_courseware_answer, null);
+        tvCommitOk = view.findViewById(R.id.tv_livevideo_new_course_commit_ok);
+        tvCommitContinue = view.findViewById(R.id.tv_livevideo_new_course_commit_continue);
+        tvCommitOk.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (onClick != null) {
+                    onClick.onCommit(view);
+                }
+            }
+        });
+        tvCommitContinue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (onClick != null) {
+                    onClick.onCancle(view);
+                }
+            }
+        });
+        return view;
+    }
+
+    public void setOnClick(OnClick onClick) {
+        this.onClick = onClick;
+    }
+
+    public interface OnClick {
+        void onCancle(View view);
+
+        void onCommit(View view);
+    }
+}
