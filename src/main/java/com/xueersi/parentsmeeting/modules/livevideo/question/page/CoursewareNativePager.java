@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 
+import android.app.Application;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
@@ -21,11 +22,13 @@ import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareSecHttp;
+import com.xueersi.parentsmeeting.modules.livevideo.question.dialog.CourseTipDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.NewCourseCache;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.StaticWeb;
@@ -73,6 +76,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     RelativeLayout rl_livevideo_new_course_control;
     TextView tv_data_loading_tip;
     ImageView iv_livevideo_course_refresh;
+    TextView tv_livevideo_new_course_num;
     ImageView ivLoading;
     Button iv_livevideo_new_course_pre;
     Button iv_livevideo_new_course_next;
@@ -81,8 +85,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     boolean addJs = false;
     ArrayList<NewCourseSec.Test> tests = new ArrayList<>();
     private int currentIndex = 0;
-    private int isNext = 0;
+    private int getAnswerType = 0;
     private boolean loadResult = false;
+    CourseTipDialog courseTipDialog;
 
     public CoursewareNativePager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, boolean isPlayBack, String liveId, String id, EnglishH5Entity englishH5Entity,
                                  final String courseware_type, String nonce, EnglishH5CoursewareBll.OnH5ResultClose onClose,
@@ -121,6 +126,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         wvSubjectWeb = view.findViewById(R.id.wv_livevideo_subject_web);
         tv_data_loading_tip = view.findViewById(R.id.tv_data_loading_tip);
         iv_livevideo_course_refresh = view.findViewById(R.id.iv_livevideo_course_refresh);
+        tv_livevideo_new_course_num = view.findViewById(R.id.tv_livevideo_new_course_num);
         rl_livevideo_subject_loading = view.findViewById(R.id.rl_livevideo_subject_loading);
         pg_livevideo_new_course_prog = view.findViewById(R.id.pg_livevideo_new_course_prog);
         rl_livevideo_new_course_control = view.findViewById(R.id.rl_livevideo_new_course_control);
@@ -185,14 +191,60 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
-                                logger.d("postMessage:answer:isNext=" + isNext + ",index=" + currentIndex);
-                                if (isNext == 3 || isNext == 4) {
-                                    submit(isNext == 3 ? 0 : 1, "");
+                                logger.d("postMessage:answer:getAnswerType=" + getAnswerType + ",index=" + currentIndex);
+                                if (getAnswerType == 3 || getAnswerType == 4) {
+                                    if (getAnswerType == 3) {
+                                        boolean needTip = false;
+                                        a:
+                                        for (int i = 0; i < tests.size(); i++) {
+                                            NewCourseSec.Test test = tests.get(i);
+                                            JSONArray userAnswerContent = test.getUserAnswerContent();
+                                            if (userAnswerContent == null) {
+                                                needTip = true;
+                                                break;
+                                            } else {
+                                                for (int j = 0; j < userAnswerContent.length(); j++) {
+                                                    try {
+                                                        JSONArray answerContent = userAnswerContent.getJSONObject(j).getJSONArray("userAnswerContent");
+                                                        if (answerContent.length() == 0) {
+                                                            needTip = true;
+                                                            break a;
+                                                        }
+                                                    } catch (JSONException e) {
+                                                        e.printStackTrace();
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        if (needTip) {
+                                            courseTipDialog = new CourseTipDialog(mContext, (Application) mContext.getApplicationContext());
+                                            courseTipDialog.setOnClick(new CourseTipDialog.OnClick() {
+
+                                                @Override
+                                                public void onCancle(View view) {
+                                                    if (courseTipDialog != null) {
+                                                        courseTipDialog.cancelDialog();
+                                                    }
+                                                    courseTipDialog = null;
+                                                }
+
+                                                @Override
+                                                public void onCommit(View view) {
+                                                    submit(0, "");
+                                                }
+                                            });
+                                            courseTipDialog.showDialog();
+                                        } else {
+                                            submit(0, "");
+                                        }
+                                    } else {
+                                        submit(1, "");
+                                    }
                                 } else {
-                                    if (isNext == 1) {
+                                    if (getAnswerType == 1) {
                                         currentIndex--;
                                         iv_livevideo_new_course_submit.setVisibility(View.GONE);
-                                    } else if (isNext == 2) {
+                                    } else if (getAnswerType == 2) {
                                         currentIndex++;
                                     }
                                     if (currentIndex == 0) {
@@ -213,6 +265,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                                         iv_livevideo_new_course_next.setEnabled(true);
                                     }
                                     if (currentIndex >= 0 && currentIndex < tests.size()) {
+                                        tv_livevideo_new_course_num.setText((currentIndex + 1) + " / " + tests.size());
                                         NewCourseSec.Test test = tests.get(currentIndex);
                                         addJs = false;
                                         wvSubjectWeb.loadUrl(test.getPreviewPath());
@@ -238,7 +291,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                isNext = 1;
+                getAnswerType = 1;
                 iv_livevideo_new_course_pre.setEnabled(false);
                 iv_livevideo_new_course_next.setEnabled(false);
             }
@@ -255,7 +308,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                isNext = 2;
+                getAnswerType = 2;
                 iv_livevideo_new_course_pre.setEnabled(false);
                 iv_livevideo_new_course_next.setEnabled(false);
             }
@@ -272,7 +325,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                isNext = 3;
+                getAnswerType = 3;
             }
         });
         iv_livevideo_course_refresh.setOnClickListener(new View.OnClickListener() {
@@ -301,22 +354,28 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
 
     @Override
     public void onBack() {
-
+        StableLogHashMap logHashMap = new StableLogHashMap("coursewareClose");
+        logHashMap.put("coursewareid", id);
+        logHashMap.put("coursewaretype", courseware_type);
+        logHashMap.put("closetype", "clickBackButton");
+        logHashMap.put("isFinish", "" + isFinish);
+        umsAgentDebugSys(eventId, logHashMap.getData());
     }
 
     @Override
     public void destroy() {
         isFinish = true;
+        wvSubjectWeb.destroy();
     }
 
     @Override
     public void onPause() {
-
+        wvSubjectWeb.onPause();
     }
 
     @Override
     public void onResume() {
-
+        wvSubjectWeb.onResume();
     }
 
     @Override
@@ -330,7 +389,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        isNext = 4;
+        getAnswerType = 4;
+        if (courseTipDialog != null) {
+            courseTipDialog.cancelDialog();
+        }
+        courseTipDialog = null;
     }
 
     private void submit(final int isforce, String nonce) {
@@ -340,6 +403,12 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             JSONObject json = test.getJson();
             JSONArray userAnswerContent = test.getUserAnswerContent();
             try {
+                if (userAnswerContent == null) {
+                    userAnswerContent = new JSONArray();
+                    JSONObject jsonObject = new JSONObject();
+                    JSONArray array = new JSONArray();
+                    jsonObject.put("userAnswerContent", array);
+                }
                 json.put("index", i);
                 json.put("hasAnswer", 0);
                 json.put("userAnswerStatus", userAnswerContent.length() > 0 ? 1 : 0);
@@ -430,6 +499,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         XESToastUtils.showToast(mContext, "互动题为空");
                         return;
                     }
+                    tv_livevideo_new_course_num.setText("1 / " + tests.size());
                     NewCourseSec.Test test = tests.get(0);
                     currentIndex = 0;
                     wvSubjectWeb.loadUrl(test.getPreviewPath());
@@ -439,6 +509,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             @Override
             public void onDataFail(int errStatus, String failMsg) {
                 super.onDataFail(errStatus, failMsg);
+                if (errStatus == LiveHttpConfig.HTTP_ERROR_ERROR) {
+                    XESToastUtils.showToast(mContext, failMsg + ",请刷新");
+                } else {
+                    XESToastUtils.showToast(mContext, "请求互动题失败，请刷新");
+                }
                 iv_livevideo_course_refresh.setVisibility(View.VISIBLE);
                 logger.d("onDataFail:errStatus=" + errStatus + ",failMsg=" + failMsg);
             }

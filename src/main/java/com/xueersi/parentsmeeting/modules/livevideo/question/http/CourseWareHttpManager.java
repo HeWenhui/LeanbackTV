@@ -79,7 +79,7 @@ public class CourseWareHttpManager {
         httpRequestParams.addBodyParam("testIds", "" + testIds);
         httpRequestParams.addBodyParam("educationStage", "" + educationStage);
         httpRequestParams.addBodyParam("nonce", "" + nonce);
-        liveHttpManager.sendPost(LiveQueHttpConfig.LIVE_GET_COURSEWARE_TESTS, httpRequestParams, new HttpCallBack() {
+        liveHttpManager.sendPost(LiveQueHttpConfig.LIVE_GET_COURSEWARE_TESTS, httpRequestParams, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("getCourseWareTests:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
