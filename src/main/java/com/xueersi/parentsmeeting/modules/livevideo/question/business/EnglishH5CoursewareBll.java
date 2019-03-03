@@ -1271,4 +1271,50 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         }
     }
 
+    class SmEnAnswerRightResultVoice extends EnAnswerRightResultVoice implements BaseVoiceAnswerCreat.NewArtsAnswerRightResultVoice {
+
+        @Override
+        public View initArtsAnswerRightResultVoice(AnswerResultEntity entity) {
+            return EnglishH5CoursewareBll.this.initArtsAnswerRightResultVoice(entity);
+        }
+
+    }
+
+    class EnAnswerRightResultVoice implements BaseVoiceAnswerCreat.AnswerRightResultVoice {
+
+        @Override
+        public void initQuestionAnswerReslut(View popupWindowView) {
+            EnglishH5CoursewareBll.this.initQuestionAnswerReslut(popupWindowView);
+        }
+
+        @Override
+        public void removeQuestionAnswerReslut(View popupWindowView) {
+            EnglishH5CoursewareBll.this.removeQuestionAnswerReslut(popupWindowView);
+        }
+
+        @Override
+        public void removeBaseVoiceAnswerPager(BaseVoiceAnswerPager voiceAnswerPager) {
+            EnglishH5CoursewareBll.this.removeBaseVoiceAnswerPager(voiceAnswerPager);
+        }
+
+        @Override
+        public void initSelectAnswerRightResultVoice(VideoResultEntity entity) {
+            EnglishH5CoursewareBll.this.initSelectAnswerRightResultVoice(entity);
+        }
+
+        @Override
+        public void initFillinAnswerRightResultVoice(VideoResultEntity entity) {
+            EnglishH5CoursewareBll.this.initFillinAnswerRightResultVoice(entity);
+        }
+
+        @Override
+        public void initSelectAnswerWrongResultVoice(VideoResultEntity entity) {
+            EnglishH5CoursewareBll.this.initSelectAnswerWrongResultVoice(entity);
+        }
+
+        @Override
+        public void initFillAnswerWrongResultVoice(VideoResultEntity entity) {
+            EnglishH5CoursewareBll.this.initFillAnswerWrongResultVoice(entity);
+        }
+    }
 }

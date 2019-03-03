@@ -70,7 +70,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
     public LiveAchievementIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
         putInstance(LiveAchievementIRCBll.class, this);
-//        smallEnglish = activity.getIntent().getIntExtra("smallEnglish", 0);
+        smallEnglish = activity.getIntent().getIntExtra("smallEnglish", 0);
     }
 
     @Override

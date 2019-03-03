@@ -12,6 +12,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.CreateAnswerReslutEntity;
@@ -32,10 +33,12 @@ public class LiveBackVoiceAnswerCreat implements BaseVoiceAnswerCreat {
     private WrapQuestionSwitch questionSwitch;
     Logger logger = LoggerFactory.getLogger("LiveBackVoiceAnswerCreat");
     LivePagerBack livePagerBack;
+    LiveGetInfo getInfo;
 
-    public LiveBackVoiceAnswerCreat(WrapQuestionSwitch questionSwitch, LivePagerBack livePagerBack) {
+    public LiveBackVoiceAnswerCreat(WrapQuestionSwitch questionSwitch, LivePagerBack livePagerBack, LiveGetInfo getInfo) {
         this.questionSwitch = questionSwitch;
         this.livePagerBack = livePagerBack;
+        this.getInfo = getInfo;
     }
 
     @Override
@@ -64,13 +67,19 @@ public class LiveBackVoiceAnswerCreat implements BaseVoiceAnswerCreat {
         CreateAnswerReslutEntity createAnswerReslutEntity = new CreateAnswerReslutEntity();
         boolean isSuccess = false;
         VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
-//        if (answerRightResultVoice instanceof NewArtsAnswerRightResultVoice) {
-//            NewArtsAnswerRightResultVoice artsAnswerRightResultVoice = (NewArtsAnswerRightResultVoice) answerRightResultVoice;
-//            AnswerResultEntity answerResultEntity = AnswerResultEntity.getAnswerResultEntity(videoQuestionLiveEntity, entity);
-//            artsAnswerRightResultVoice.initArtsAnswerRightResultVoice(answerResultEntity);
-//            isSuccess = answerResultEntity.getIsRight() == 2;
-//        } else
-            {
+        boolean smallEnglish = false;
+        if (videoQuestionLiveEntity.englishH5Entity.isArtsNewH5Courseware() && answerRightResultVoice instanceof NewArtsAnswerRightResultVoice) {
+            if (getInfo != null) {
+                smallEnglish = getInfo.getSmallEnglish();
+            }
+            if (smallEnglish) {
+                NewArtsAnswerRightResultVoice artsAnswerRightResultVoice = (NewArtsAnswerRightResultVoice) answerRightResultVoice;
+                AnswerResultEntity answerResultEntity = AnswerResultEntity.getAnswerResultEntity(videoQuestionLiveEntity, entity);
+                artsAnswerRightResultVoice.initArtsAnswerRightResultVoice(answerResultEntity);
+                isSuccess = answerResultEntity.getIsRight() == 2;
+            }
+        }
+        if (!smallEnglish) {
             if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4) {
                 if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity.type)) {
                     answerRightResultVoice.initSelectAnswerRightResultVoice(entity);

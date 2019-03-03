@@ -228,7 +228,8 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 //                    group.addView(rlResult);
                     rlAnswerResultLayout.addView(mRlResult);
                     lottieAnimationView.playAnimation();
-                    LiveStandVoiceAnswerCreat.setRightGold(mContext, lottieAnimationView, mAnswerReulst.getGold(), mAnswerReulst.getEnergy());
+//                    LiveStandVoiceAnswerCreat.setRightGold(mContext, lottieAnimationView, mAnswerReulst.getGold(), mAnswerReulst.getEnergy());
+                    LiveStandVoiceAnswerCreat.setRightGoldEnergy(mContext, lottieAnimationView, mAnswerReulst.getGold(), mAnswerReulst.getEnergy());
                     mLiveSoundPool = LiveSoundPool.createSoundPool();
                     final LiveSoundPool.SoundPlayTask task = StandLiveMethod.voiceRight(mLiveSoundPool);
                     mRlResult.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View.OnClickListener() {

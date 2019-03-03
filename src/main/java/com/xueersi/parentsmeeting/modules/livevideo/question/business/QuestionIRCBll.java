@@ -190,13 +190,13 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         mQuestionAction.setBaseSubjectResultCreat(baseSubjectResultCreat);
         mQuestionAction.setQuestionWebCreate(new LiveQuestionWebCreate());
         if (data.getPattern() == 2) {
-            mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new LiveQuestionSwitchImpl(), mQuestionAction));
+            mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new LiveQuestionSwitchImpl(), mQuestionAction, data));
             mQuestionAction.setBaseSpeechCreat(new LiveStandSpeechCreat(this, mLiveBll, mQuestionAction));
             StandSpeechTop3Bll standSpeechTop3Bll = new StandSpeechTop3Bll(activity, this, mLiveBll);
             standSpeechTop3Bll.initView(mRootView);
             mQuestionAction.setSpeechEndAction(standSpeechTop3Bll);
         } else {
-            mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new LiveQuestionSwitchImpl(), mQuestionAction));
+            mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new LiveQuestionSwitchImpl(), mQuestionAction, data));
             mQuestionAction.setBaseSpeechCreat(new LiveSpeechCreat(mQuestionAction, data));
         }
         if (1 == data.getIsEnglish()) {

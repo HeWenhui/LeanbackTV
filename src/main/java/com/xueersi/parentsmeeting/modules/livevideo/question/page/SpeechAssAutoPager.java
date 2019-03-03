@@ -224,7 +224,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     }
 
     public void setSmallEnglish(int smallEnglish) {
-//        this.smallEnglish = smallEnglish;
+        this.smallEnglish = smallEnglish;
     }
 
     @Override

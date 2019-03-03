@@ -734,7 +734,8 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
             RolePlayerEntity.RolePlayerHead head = mEntity.getSelfRoleHead();
             if (head != null) {
                 int score = head.getSpeechScore();
-                resultUiParent = StandSpeechResult.resultViewScore(mContext, group, myGold, energy, score);
+//                resultUiParent = StandSpeechResult.resultViewScore(mContext, group, myGold, energy, score);
+                resultUiParent = StandSpeechResult.resultViewScoreEnergy(mContext, group, myGold, energy, score);
                 myNickName = head.getNickName();
             }
 
@@ -758,7 +759,8 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
         }
         //没有作答，或者没分队成功
         if (resultUiParent == null) {
-            resultUiParent = StandSpeechResult.resultViewScore(mContext, group, 0, 0, 0);
+//            resultUiParent = StandSpeechResult.resultViewScore(mContext, group, 0, 0, 0);
+            resultUiParent = StandSpeechResult.resultViewScoreEnergy(mContext, group, myGold, 0, 0);
         }
         group.addView(resultUiParent, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         View tv_close_role_play_result = resultUiParent.findViewById(R.id.iv_livevideo_speecteval_result_close);
@@ -920,7 +922,8 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
             bitmap.recycle();
             //画名字和金币数量
             if (havename) {
-                View layout_live_stand_red_mine1 = StandSpeechResult.resultViewName(mContext, "" + myGold, getTypeface(mContext), mLiveGetInfo.getStandLiveName());
+//                View layout_live_stand_red_mine1 = StandSpeechResult.resultViewName(mContext, "" + myGold, getTypeface(mContext), mLiveGetInfo.getStandLiveName());
+                View layout_live_stand_red_mine1 = StandSpeechResult.resultViewNameEnergy(mContext, mLiveGetInfo.getStandLiveName());
                 canvas.save();
                 canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 348);
                 layout_live_stand_red_mine1.draw(canvas);
