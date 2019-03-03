@@ -16,7 +16,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.util.Size;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
@@ -39,7 +38,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsAnswerResultLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsAnswerStateLottieEffectInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsAnswerStateNoEnergyLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerResultStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.IArtsAnswerRsultDisplayer;
@@ -150,48 +148,34 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
         String titleBgPath = null;
         final LottieEffectInfo lottieEffectInfo;
         logger.d("showAnswerReuslt:resultType=" + resultType);
-        if (resultType == RESULT_TYPE_CORRECT) {
-            lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/huo.json";
-            titleFilePath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/images/img_17.png";
-            titleBgPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/images/img_18.png";
 
-            ArtsAnswerStateLottieEffectInfo effectInfo = new ArtsAnswerStateLottieEffectInfo(lottieResPath,
-                    lottieJsonPath, "img_15.png", "img_16.png", "img_17.png", "img_18.png");
-            effectInfo.setTilteFilePath(titleFilePath);
-            effectInfo.setTitleBgFilePath(titleBgPath);
-            effectInfo.setCoinStr("+" + mData.getGold());
-            effectInfo.setEnergyStr("+" + mData.getEnergy());
-            lottieEffectInfo = effectInfo;
+        if(resultType == RESULT_TYPE_CORRECT){
+            lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/data.json";
+            titleFilePath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/images/img_15.png";
+            titleBgPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/images/img_16.png";
 
-        } else if (resultType == RESULT_TYPE_PART_CORRECT) {
+        }else if(resultType == RESULT_TYPE_PART_CORRECT){
             lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_part_correct/data.json";
-            titleFilePath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_part_correct/images/img_17.png";
-            titleBgPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_part_correct/images/img_18.png";
+            titleFilePath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_part_correct/images/img_15.png";
+            titleBgPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_part_correct/images/img_16.png";
+        }else {
 
-            ArtsAnswerStateLottieEffectInfo effectInfo = new ArtsAnswerStateLottieEffectInfo(lottieResPath,
-                    lottieJsonPath, "img_15.png", "img_16.png", "img_17.png", "img_18.png");
-            effectInfo.setTilteFilePath(titleFilePath);
-            effectInfo.setTitleBgFilePath(titleBgPath);
-            effectInfo.setCoinStr("+" + mData.getGold());
-            effectInfo.setEnergyStr("+" + mData.getEnergy());
-            lottieEffectInfo = effectInfo;
-
-        } else {
-            String imgDir = "arts_answer_result/result_state_error/images";
-            lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_error/come.json";
-            ArtsAnswerStateNoEnergyLottieEffectInfo effectInfo = new ArtsAnswerStateNoEnergyLottieEffectInfo(imgDir,
-                    lottieJsonPath, "img_15.png", "img_16.png");
-            effectInfo.setmCoinStr("+" + mData.getGold());
-            effectInfo.setEnergyStr("+" + mData.getEnergy());
-            lottieEffectInfo = effectInfo;
+            lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_error/data.json";
+            titleFilePath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_error/images/img_15.png";
+            titleBgPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_error/images/img_16.png";
         }
+        final ArtsAnswerStateLottieEffectInfo effectInfo = new ArtsAnswerStateLottieEffectInfo(lottieResPath,
+                lottieJsonPath, "img_14.png", "img_15.png", "img_16.png");
 
-        animationView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext));
+        effectInfo.setTilteFilePath(titleFilePath);
+        effectInfo.setTitleBgFilePath(titleBgPath);
+        effectInfo.setCoinStr("+"+mData.getGold());
+        animationView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext));
         animationView.setImageAssetDelegate(new ImageAssetDelegate() {
             @Override
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
                 logger.d("showAnswerReuslt:FileName=" + lottieImageAsset.getFileName());
-                return lottieEffectInfo.fetchBitmapFromAssets(animationView, lottieImageAsset.getFileName(),
+                return effectInfo.fetchBitmapFromAssets(animationView, lottieImageAsset.getFileName(),
                         lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(),
                         mContext);
             }
