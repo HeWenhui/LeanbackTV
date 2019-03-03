@@ -16,11 +16,13 @@ import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * 文科答题统计面板
+ * 文科答题统计面板,不带能量
  *
  * @author chenkun
  * @version 1.0, 2018/8/7 上午10:36
@@ -29,17 +31,14 @@ import java.io.InputStream;
 public class ArtsAnswerStateLottieEffectInfo extends LottieEffectInfo {
 
     private String mCoinStr;
-    /** 获得的能量数 */
-    private String energyStr;
     protected Logger logger = LoggerFactory.getLogger("ArtsAnswerStateLottieEffectInfo");
 
     private static final String TEXTCOLOR = "#FFDB2A";
     private static final int TEXTSIZE = 30;
 
-    private static final String COIN_FILE_NAME = "img_16.png";
-    private static final String ENERGY_FILE_NAME = "img_15.png";
-    private static final String TITLE_FILE_NAME = "img_17.png";
-    private static final String TITLE_BG_FILE_NAME = "img_18.png";
+    private static final String TITLE_FILE_NAME = "img_15.png";
+    private static final String TITLE_BG_FILE_NAME = "img_16.png";
+    private static final String COIN_FILE_NAME = "img_14.png";
     private String mTitlePath;
     private String mTitleBgPath;
 
@@ -53,20 +52,18 @@ public class ArtsAnswerStateLottieEffectInfo extends LottieEffectInfo {
             height) {
         Bitmap resultBitmap = null;
         if (COIN_FILE_NAME.equals(fileName)) {
-            resultBitmap = generateCoinNum(mCoinStr, width, height);
-        } else if (ENERGY_FILE_NAME.equals(fileName)) {
-            resultBitmap = generateCoinNum(energyStr, width, height);
+            resultBitmap = generateCoinNum(width, height);
         } else if (TITLE_FILE_NAME.equals(fileName)) {
-            resultBitmap = getBitMap(animationView.getContext(), mTitlePath);
+            resultBitmap = getBitMap(animationView.getContext(),mTitlePath);
         } else if (TITLE_BG_FILE_NAME.equals(fileName)) {
-            resultBitmap = getBitMap(animationView.getContext(), mTitleBgPath);
+            resultBitmap = getBitMap(animationView.getContext(),mTitleBgPath);
 
         }
         return resultBitmap;
     }
 
 
-    private Bitmap getBitMap(Context context, String path) {
+    private Bitmap getBitMap(Context context,String path) {
         Bitmap resultBitMap = null;
         InputStream in = null;
         try {
@@ -93,7 +90,9 @@ public class ArtsAnswerStateLottieEffectInfo extends LottieEffectInfo {
      * @param filePath
      */
     public void setTilteFilePath(String filePath) {
+
         mTitlePath = filePath;
+
     }
 
     /**
@@ -102,7 +101,9 @@ public class ArtsAnswerStateLottieEffectInfo extends LottieEffectInfo {
      * @param filePath
      */
     public void setTitleBgFilePath(String filePath) {
+
         mTitleBgPath = filePath;
+
     }
 
 
@@ -110,15 +111,12 @@ public class ArtsAnswerStateLottieEffectInfo extends LottieEffectInfo {
         this.mCoinStr = coinStr;
     }
 
-    public void setEnergyStr(String energyStr) {
-        this.energyStr = energyStr;
-    }
 
-    private Bitmap generateCoinNum(String str, int width, int height) {
+    private Bitmap generateCoinNum(int width, int height) {
 
         Bitmap resultBitmap = null;
 
-        if (!TextUtils.isEmpty(str)) {
+        if (!TextUtils.isEmpty(mCoinStr)) {
             resultBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(resultBitmap);
             Paint paint = new Paint();
@@ -128,19 +126,19 @@ public class ArtsAnswerStateLottieEffectInfo extends LottieEffectInfo {
             paint.setTextAlign(Paint.Align.LEFT);
 
             Typeface fontFace = FontCache.getTypeface(BaseApplication.getContext(), "fangzhengcuyuan.ttf");
-            if (fontFace != null) {
+            if(fontFace != null){
                 paint.setTypeface(fontFace);
             }
 
             Rect fontRect = new Rect();
-            paint.getTextBounds(str, 0, str.length(), fontRect);
+            paint.getTextBounds(mCoinStr, 0, mCoinStr.length(), fontRect);
             int textHeight = fontRect.height();
-            logger.e("=====>textHeight:" + textHeight + ":" + height);
+            logger.e("=====>textHeight:"+textHeight+":"+height);
             Paint.FontMetricsInt fontMetricsInt = paint.getFontMetricsInt();
             //int baseLine = (height - fontMetricsInt.bottom + fontMetricsInt.top) / 2 - fontMetricsInt.top;
-            int baseLine = (height - (fontMetricsInt.descent - fontMetricsInt.ascent)) / 2 - fontMetricsInt.ascent;
-            logger.e("=====>baseLine:" + baseLine);
-            canvas.drawText(str, 0, baseLine, paint);
+            int baseLine = (height -(fontMetricsInt.descent - fontMetricsInt.ascent))/2 - fontMetricsInt.ascent;
+            logger.e("=====>baseLine:"+baseLine);
+            canvas.drawText(mCoinStr, 0, baseLine, paint);
         }
         return resultBitmap;
     }

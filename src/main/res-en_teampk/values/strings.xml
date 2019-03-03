@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--战队pk没有小目标显示-->
-    <string name="livevideo_enpk_notarget">你真棒！继续加油哦~</string>
+
 </resources>
