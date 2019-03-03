@@ -920,7 +920,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
             bitmap.recycle();
             //画名字和金币数量
             if (havename) {
-                View layout_live_stand_red_mine1 = StandSpeechResult.resultViewName(mContext, "" + myGold, getTypeface(mContext), myNickName);
+                View layout_live_stand_red_mine1 = StandSpeechResult.resultViewName(mContext, "" + myGold, getTypeface(mContext), mLiveGetInfo.getStandLiveName());
                 canvas.save();
                 canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 348);
                 layout_live_stand_red_mine1.draw(canvas);
