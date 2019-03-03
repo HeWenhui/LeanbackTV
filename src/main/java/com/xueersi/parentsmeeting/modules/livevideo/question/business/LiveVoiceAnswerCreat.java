@@ -91,13 +91,14 @@ public class LiveVoiceAnswerCreat implements BaseVoiceAnswerCreat {
         boolean isSuccess = false;
         VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
         if (LiveVideoConfig.isNewArts) {
-            if (answerRightResultVoice instanceof NewArtsAnswerRightResultVoice) {
-                NewArtsAnswerRightResultVoice artsAnswerRightResultVoice = (NewArtsAnswerRightResultVoice) answerRightResultVoice;
-                AnswerResultEntity answerResultEntity = AnswerResultEntity.getAnswerResultEntity(videoQuestionLiveEntity, entity);
-                View view = artsAnswerRightResultVoice.initArtsAnswerRightResultVoice(answerResultEntity);
-                createAnswerReslutEntity.resultView = view;
-                isSuccess = answerResultEntity.getIsRight() == 2;
-            } else {
+//            if (answerRightResultVoice instanceof NewArtsAnswerRightResultVoice) {
+//                NewArtsAnswerRightResultVoice artsAnswerRightResultVoice = (NewArtsAnswerRightResultVoice) answerRightResultVoice;
+//                AnswerResultEntity answerResultEntity = AnswerResultEntity.getAnswerResultEntity(videoQuestionLiveEntity, entity);
+//                View view = artsAnswerRightResultVoice.initArtsAnswerRightResultVoice(answerResultEntity);
+//                createAnswerReslutEntity.resultView = view;
+//                isSuccess = answerResultEntity.getIsRight() == 2;
+//            } else
+                {
                 if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE2) {
                     if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity.type)) {
                         answerRightResultVoice.initSelectAnswerRightResultVoice(entity);
