@@ -26,7 +26,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkRankRes
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 
 import java.util.ArrayList;
 
@@ -116,8 +115,8 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
     }
 
     @Override
-    public void onQuestionShow(VideoQuestionLiveEntity questionLiveEntity, boolean isShow) {
-        if (isShow && teamPkLeadPager != null) {
+    public void hideTeam() {
+        if (teamPkLeadPager != null) {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -321,6 +320,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
 
     @Override
     public void onModeChange(String mode) {
+        hideTeam();
         this.mode = mode;
         if (LiveTopic.MODE_CLASS.equals(mode)) {
             teamEnd = true;

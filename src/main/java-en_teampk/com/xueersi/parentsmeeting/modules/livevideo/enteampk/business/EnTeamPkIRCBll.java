@@ -196,7 +196,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
             }
             if (enTeamPkAction != null) {
-                enTeamPkAction.onQuestionShow(questionLiveEntity, isShow);
+                enTeamPkAction.hideTeam();
             }
         }
     }
@@ -552,6 +552,11 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     }
                 }
                 break;
+            case XESCODE.READPACAGE:
+                if (enTeamPkAction != null) {
+                    enTeamPkAction.hideTeam();
+                }
+                break;
             default:
                 break;
         }
@@ -765,7 +770,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     @Override
     public int[] getNoticeFilter() {
-        return new int[]{XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_OPEN, XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_RESULT, XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_GO,
+        return new int[]{XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_OPEN, XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_RESULT, XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_GO,XESCODE.READPACAGE,
                 XESCODE.STOPQUESTION, XESCODE.ARTS_STOP_QUESTION, XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_STULIKE, XESCODE.ARTS_H5_COURSEWARE, XESCODE.CLASSBEGIN};
     }
 

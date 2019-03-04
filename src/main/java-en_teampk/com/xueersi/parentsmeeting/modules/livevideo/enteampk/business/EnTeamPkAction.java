@@ -5,14 +5,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 
 import java.util.ArrayList;
 
 public interface EnTeamPkAction {
     void onLiveInited(LiveGetInfo getInfo);
 
-    void onQuestionShow(VideoQuestionLiveEntity questionLiveEntity, boolean isShow);
+    void hideTeam();
 
     void setPkTeamEntity(PkTeamEntity pkTeamEntity);
 
