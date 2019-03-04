@@ -722,7 +722,12 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
 
             //未展示答题结果
             if (event.isCloseByTeacher()) {
-                getEnergyNumAndContributionStar();
+                rlTeamPkContent.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        getEnergyNumAndContributionStar();
+                    }
+                }, 3000);
             } else {
                 h5CloseEvents.add(event);
             }

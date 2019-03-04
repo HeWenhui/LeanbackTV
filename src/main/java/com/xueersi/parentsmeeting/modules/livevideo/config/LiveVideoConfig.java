@@ -419,7 +419,7 @@ public class LiveVideoConfig {
         int NORMAL = 1000;
     }
     /**半身直播体验课 试题 h5 地址**/
-    public static final String URL_HALFBODY_EXPERIENCE_LIVE_H5 = "https://laoshi.xueersi.com/science/AutoLive/halfBodyH5";
+    public static final String URL_HALFBODY_EXPERIENCE_LIVE_H5 = "https://expclass.xueersi.com/live-rewrite/courseware-sci/index.html";
 
 
 }
