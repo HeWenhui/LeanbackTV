@@ -617,9 +617,10 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
 
                     @Override
                     public void onResult(ResultEntity resultEntity) {
+
                         if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
-                            logger.i("测评成功，开始上传自己的mp3,开口时长：" + resultEntity.getSpeechDuration()
-                                    + "得分：" + resultEntity.getScore());
+                            logger.i("show_eva_score_suc:"+resultEntity.getSpeechDuration()
+                                    + ":" + resultEntity.getScore());
                             entity.setSelfValidSpeechTime(resultEntity.getSpeechDuration());
                             //mIsEvaluatoring = false;
                             message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
@@ -642,11 +643,13 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
                                 nextReadMessage();
                             }
                         } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
-                            mLogtf.i("onResult:errorNo=" + resultEntity.getErrorNo() + ",mIsEnd=" + mIsEnd);
+                            logger.i("show_eva_score_error:"+resultEntity.getSpeechDuration()
+                                    + ":" + resultEntity.getScore());
                             isSpeechError = true;
                             //XESToastUtils.showToast(mContext, "测评失败");
                             //mIsEvaluatoring = false;
                             message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
+                            message.setSpeechScore(resultEntity.getScore());
                             if (mRolePlayerAdapter != null) {
                                 mRolePlayerAdapter.updataSingleRow(lvReadList, message);
                             }
