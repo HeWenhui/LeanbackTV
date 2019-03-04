@@ -1214,7 +1214,10 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                         if(mPraiseBll == null){
                             mPraiseBll = new TeamPkPraiseBll(mActivity,this);
                         }
-                        mPraiseBll.onPraise(sourceNick,target,data,type);
+                        //判断是否 作答正确
+                        if(answerResult != null && answerResult.getIsRight() == ScienceAnswerResult.STATE_CODE_RIGHT){
+                            mPraiseBll.onPraise(sourceNick,target,data,type);
+                        }
                     }
                     break;
                 case XESCODE.TEAM_PK_TEACHER_PRAISE:
