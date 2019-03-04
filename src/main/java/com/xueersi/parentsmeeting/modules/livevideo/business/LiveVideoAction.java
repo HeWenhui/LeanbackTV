@@ -369,6 +369,7 @@ public class LiveVideoAction implements VideoAction {
                     }
                 }
                 if (tvLoadingHint != null) {
+                    tvLoadingHint.setVisibility(View.VISIBLE);
                     if (mediaErrorInfo == null) {
                         return;
                     }
@@ -376,16 +377,14 @@ public class LiveVideoAction implements VideoAction {
                         case MediaErrorInfo.PSPlayerError: {
                             PlayErrorCode playErrorCode = PlayErrorCode.getError(mediaErrorInfo.mPlayerErrorCode);
                             lastPlayErrorCode = playErrorCode;
-                            if (tvLoadingHint != null) {
-                                tvLoadingHint.setVisibility(View.VISIBLE);
-                                int netWorkState = NetWorkHelper.getNetWorkState(activity);
-                                if (netWorkState == NetWorkHelper.NO_NETWORK) {
-                                    playErrorCode = PlayErrorCode.PLAY_NO_WIFI;
-                                    tvLoadingHint.setText(PlayErrorCode.PLAY_NO_WIFI.getTip());
-                                } else {
-                                    tvLoadingHint.setText("视频播放失败[" + mediaErrorInfo.mPlayerErrorCode + " " + "]");
-                                }
+                            int netWorkState = NetWorkHelper.getNetWorkState(activity);
+                            if (netWorkState == NetWorkHelper.NO_NETWORK) {
+                                playErrorCode = PlayErrorCode.PLAY_NO_WIFI;
+                                tvLoadingHint.setText(PlayErrorCode.PLAY_NO_WIFI.getTip());
+                            } else {
+                                tvLoadingHint.setText("视频播放失败[" + mediaErrorInfo.mPlayerErrorCode + " " + "]");
                             }
+
                             LiveTopic.RoomStatusEntity status = mGetInfo.getLiveTopic().getMainRoomstatus();
                             if (status != null) {
                                 mLogtf.d("onFail:classbegin=" + status.isClassbegin());
@@ -430,6 +429,7 @@ public class LiveVideoAction implements VideoAction {
 
     }
 
+    @Deprecated
     public void onFail(final int arg1, final int arg2) {
         mHandler.post(new Runnable() {
 

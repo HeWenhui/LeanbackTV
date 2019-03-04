@@ -47,7 +47,7 @@ import java.util.List;
  * Created by linyuqiang on 2018/7/18.
  * 讲座布局
  */
-public class LectureLiveVideoFrame extends LiveFragmentBase implements ActivityChangeLand {
+public class LectureLiveVideoFragment extends LiveFragmentBase implements ActivityChangeLand {
     private String TAG = "LectureLiveVideoFrameLog";
     protected LiveIRCMessageBll liveIRCMessageBll;
     BaseLiveMediaControllerTop baseLiveMediaControllerTop;

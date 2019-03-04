@@ -102,16 +102,6 @@ public class LiveGetPlayServer {
      * @param modechange
      */
     public void liveGetPlayServer(boolean modechange) {
-        liveThreadPoolExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                boolean isPresent = LiveGetPlayServer.this.isPresent.isPresent();
-                mLogtf.d("liveGetPlayServer:isPresent=" + isPresent);
-                if (!isPresent && mVideoAction != null) {
-                    mVideoAction.onTeacherNotPresent(true);
-                }
-            }
-        });
         liveGetPlayServer(mLiveTopic.getMode(), modechange);
     }
 
@@ -126,6 +116,16 @@ public class LiveGetPlayServer {
      * @param modechange
      */
     public void liveGetPlayServer(final String mode, final boolean modechange) {
+        liveThreadPoolExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                boolean isPresent = LiveGetPlayServer.this.isPresent.isPresent();
+                mLogtf.d("liveGetPlayServer:isPresent=" + isPresent);
+                if (!isPresent && mVideoAction != null) {
+                    mVideoAction.onTeacherNotPresent(true);
+                }
+            }
+        });
         mHandler.removeCallbacks(timeLiveGetPlay);
         if (timeLiveGetPlay.modechange != modechange) {
             timeLiveGetPlay.modechange = modechange;
@@ -288,8 +288,8 @@ public class LiveGetPlayServer {
             if (mVideoAction instanceof AuditClassLiveActivity) {
                 ((AuditClassLiveActivity) mVideoAction).rePlay(modechange);
             }
-//            if (mVideoAction instanceof LectureLiveVideoFrame) {
-//                ((LectureLiveVideoFrame) mVideoAction).psRePlay(modechange);
+//            if (mVideoAction instanceof LectureLiveVideoFragment) {
+//                ((LectureLiveVideoFragment) mVideoAction).psRePlay(modechange);
 //            }
 //            if(mVideoAction instanceof )
 //            mVideoAction.onLiveStart(null, mLiveTopic, modechange);
