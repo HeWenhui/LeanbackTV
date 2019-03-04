@@ -2,7 +2,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@id/tv_livevideo_en_achive_pk_target"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,9 +19,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_livevideo_en_achive_pk_target"
         android:layout_alignLeft="@id/pg_livevideo_en_achive_pk"
-        android:layout_marginTop="23dp">
+        android:layout_marginTop="23dp"
+        android:gravity="center_vertical">
 
-        <TextView
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@id/tv_livevideo_en_achive_pk_energy_my_lable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -34,7 +35,7 @@
             android:textColor="#ffffffff"
             android:textSize="9sp" />
 
-        <TextView
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@id/tv_livevideo_en_achive_pk_energy_my"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -57,9 +58,10 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_livevideo_en_achive_pk_target"
         android:layout_alignRight="@id/pg_livevideo_en_achive_pk"
-        android:layout_marginTop="23dp">
+        android:layout_marginTop="23dp"
+        android:gravity="center_vertical">
 
-        <TextView
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@id/tv_livevideo_en_achive_pk_energy_other_lable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -73,7 +75,7 @@
             android:textColor="#ffffffff"
             android:textSize="9sp" />
 
-        <TextView
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@id/tv_livevideo_en_achive_pk_energy_other"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
