@@ -646,11 +646,10 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
                             isSpeechError = true;
                             //XESToastUtils.showToast(mContext, "测评失败");
                             //mIsEvaluatoring = false;
+                            message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
                             if (mRolePlayerAdapter != null) {
                                 mRolePlayerAdapter.updataSingleRow(lvReadList, message);
                             }
-
-                            message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
                             //提前开始下一条
                             if (!mIsEnd) {
                                 nextReadMessage();
