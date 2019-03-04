@@ -1079,8 +1079,8 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
     private Long computeKeytime(long position) {
         Log.e("Duncan", "compute:position" + position);
         for(int i = 0 ; i < mVideoEntity.getSciAiEvent().getExercises().size() ; i++){
+            int playPosition = TimeUtils.gennerSecond(position);
             if(!mVideoEntity.getSciAiEvent().getExercises().get(i).isShare()){
-                int playPosition = TimeUtils.gennerSecond(position);
                 if(LiveVideoConfig.isAITrue){
                     if(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getIntroduce().getBeginTime() != 0 && (playPosition  >= mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getIntroduce().getBeginTime() && playPosition <=  mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getInterpret().getEndTime())){
                         Log.e("Duncan", "compute:one");
@@ -1090,16 +1090,23 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                         return mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getInterpret().getEndTime() * 1000L;
                     }
                 }else{
-                    if(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getIntroduce().getBeginTime() != 0 && (playPosition  >= mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getIntroduce().getBeginTime() && playPosition <=  mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getInterpret().getEndTime())){
-                        Log.e("Duncan", "compute:three");
-                        return mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getInterpret().getEndTime() * 1000L;
-                    }else if(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getIntroduce().getBeginTime() == 0 && (playPosition  >= mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getPublish().getBeginTime() && playPosition <=  mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getInterpret().getEndTime())){
-                        Log.e("Duncan", "compute:four");
-                        return mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getInterpret().getEndTime() * 1000L;
-                    }else if(playPosition  > mVideoEntity.getSciAiEvent().getExercises().get(i).getKnowledgePoints().getEndTime() && playPosition <  mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getInterpret().getEndTime()){
-                        Log.e("Duncan", "compute:five:" + i);
-                        return mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getInterpret().getEndTime() * 1000L;
+                   if(playPosition  >= mVideoEntity.getSciAiEvent().getExercises().get(i).getKnowledgePoints().getEndTime() && playPosition <=  mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getInterpret().getEndTime()){
+                        Log.e("Duncan", "compute:three:" + i);
+                        if(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getIntroduce().getBeginTime() != 0){
+                            return mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getIntroduce().getBeginTime() * 1000L;
+                        }else{
+                            return mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getPublish().getBeginTime() * 1000L;
+                        }
                     }
+                }
+            }else{
+                // 公共题的处理逻辑
+                if(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getIntroduce().getBeginTime() != 0 && (playPosition  >= mVideoEntity.getSciAiEvent().getExercises().get(i).getKnowledgePoints().getEndTime() && playPosition <=  mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getIntroduce().getBeginTime())){
+                    Log.e("Duncan", "compute:four:" + i);
+                    return mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getIntroduce().getBeginTime() * 1000L;
+                }else if(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getIntroduce().getBeginTime() == 0 && (playPosition  >= mVideoEntity.getSciAiEvent().getExercises().get(i).getKnowledgePoints().getEndTime() && playPosition <=  mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getPublish().getBeginTime())) {
+                    Log.e("Duncan", "compute:five:" + i);
+                    return mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getPublish().getBeginTime() * 1000L;
                 }
             }
         }
