@@ -159,8 +159,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 resources.getColor(R.color.COLOR_666666),
                 resources.getColor(R.color.COLOR_E74C3C),
                 resources.getColor(R.color.COLOR_E74C3C),
-                resources.getColor(R.color.COLOR_327af1),
-                resources.getColor(R.color.COLOR_327af1)};
+                resources.getColor(R.color.COLOR_327af1),//没用
+                resources.getColor(R.color.COLOR_E74C3C)};
 
         nameColors[0] = resources.getColor(R.color.COLOR_32B16C);
         nameColors[1] = resources.getColor(R.color.COLOR_E74C3C);
@@ -539,7 +539,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         SpannableStringBuilder spannableBuilder = new SpannableStringBuilder(text);
         spannableBuilder.setSpan(clickableSpan, 0, text.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
-        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(mContext.getResources().getColor(R.color.COLOR_97091D));
+        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(mContext.getResources().getColor(R.color.COLOR_327af1));
 
         spannableBuilder.setSpan(foregroundColorSpan, 0, text.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
 
