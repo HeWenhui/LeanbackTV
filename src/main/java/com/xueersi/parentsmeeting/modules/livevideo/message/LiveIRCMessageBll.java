@@ -967,6 +967,14 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 forbidSendMsg = true;
             }
         }
+
+        JSONObject object = jsonObject.optJSONObject("platformTest");
+        if (object != null && !object.toString().equals("{}")) {
+            isMiddleScienceH5Open = true;
+        } else {
+            isMiddleScienceH5Open = false;
+        }
+
         liveTopic.setDisable(forbidSendMsg);
         if (mRoomAction != null) {
             try {
