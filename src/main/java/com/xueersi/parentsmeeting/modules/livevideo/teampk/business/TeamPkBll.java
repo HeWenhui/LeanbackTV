@@ -258,7 +258,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      * @param data
      */
     public void showContributionPage(TeamEnergyAndContributionStarEntity data) {
-        Log.e("TeamPkBll", "=======>showContributionPage");
         if (mFocusPager == null || !(mFocusPager instanceof TeamPkEndPager)) {
             TeamPkContributionPager contributionPager = new TeamPkContributionPager(mActivity, TeamPkBll.this, data);
             addPager(contributionPager);
@@ -806,7 +805,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         int rightMargin = getRightMargin();
         params.rightMargin = rightMargin;
         rlTeamPkContent.addView(aqAwardPager.getRootView(), params);
-        Log.e("TeamPkBll", "=======>addPager:" + aqAwardPager.getRootView());
         mFocusPager = aqAwardPager;
     }
 
@@ -1577,9 +1575,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     ScienceAnswerResult answerResult;
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onScineceAnswerResutlEvent(AnswerResultEvent event){
-        // TODO: 2019/2/20  解析理科答题结果
         Log.e("H5CallBakc","========>onAnswerResult_LiveVideo:"+event.toString());
-        //String jonsStr = event.getData();
         try {
            JSONObject jsonObject = new JSONObject(event.getData());
            String id = jsonObject.optString("id");
