@@ -229,21 +229,21 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setSmallEnglish(false);
             LiveVideoConfig.isSmallChinese = false;
         }
-//        JSONObject englishPkObj = data.optJSONObject("englishPk");
-//        if (englishPkObj != null) {
-//            LiveGetInfo.EnglishPk englishPk = getInfo.getEnglishPk();
-//            englishPk.canUsePK = englishPkObj.optInt("canUsePK");
-//            englishPk.historyScore = englishPkObj.optInt("historyScore");
-//            englishPk.isTwoLose = englishPkObj.optInt("isTwoLose");
-//            englishPk.hasGroup = englishPkObj.optInt("hasGroup");
-//        }
-//        JSONObject pkEnergyObj = data.optJSONObject("pkEnergy");
-//        if (pkEnergyObj != null) {
-//            LiveGetInfo.EnPkEnergy enpkEnergy = getInfo.getEnpkEnergy();
-//            enpkEnergy.me = pkEnergyObj.optInt("me");
-//            enpkEnergy.myTeam = pkEnergyObj.optInt("myTeam");
-//            enpkEnergy.opTeam = pkEnergyObj.optInt("opTeam");
-//        }
+        JSONObject englishPkObj = data.optJSONObject("englishPk");
+        if (englishPkObj != null) {
+            LiveGetInfo.EnglishPk englishPk = getInfo.getEnglishPk();
+            englishPk.canUsePK = englishPkObj.optInt("canUsePK");
+            englishPk.historyScore = englishPkObj.optInt("historyScore");
+            englishPk.isTwoLose = englishPkObj.optInt("isTwoLose");
+            englishPk.hasGroup = englishPkObj.optInt("hasGroup");
+        }
+        JSONObject pkEnergyObj = data.optJSONObject("pkEnergy");
+        if (pkEnergyObj != null) {
+            LiveGetInfo.EnPkEnergy enpkEnergy = getInfo.getEnpkEnergy();
+            enpkEnergy.me = pkEnergyObj.optInt("me");
+            enpkEnergy.myTeam = pkEnergyObj.optInt("myTeam");
+            enpkEnergy.opTeam = pkEnergyObj.optInt("opTeam");
+        }
     }
 
     /**
