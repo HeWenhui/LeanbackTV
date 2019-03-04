@@ -646,6 +646,10 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
                             isSpeechError = true;
                             //XESToastUtils.showToast(mContext, "测评失败");
                             //mIsEvaluatoring = false;
+                            if (mRolePlayerAdapter != null) {
+                                mRolePlayerAdapter.updataSingleRow(lvReadList, message);
+                            }
+
                             message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
                             //提前开始下一条
                             if (!mIsEnd) {
@@ -818,8 +822,8 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
                             return updateHead(frameAnimation2, file, true, myGold);
                         }
                     });
-                    //结果弹窗5秒后消失
-                    if (resultUiParent != null) {
+                    //结果弹窗5秒后消失,全身直播不要自动消失
+                   /* if (resultUiParent != null) {
                         resultUiParent.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -828,7 +832,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
                                 //isShowResult = false;
                             }
                         }, 5000);
-                    }
+                    }*/
 
                 }
 
