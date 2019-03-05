@@ -592,7 +592,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
                 //走语文离线测评
                 logger.i(TAG + "走语文离线测评");
                 mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
-                mIse.setLanguage(Constants
+                mIse.setLanguage(com.tal.speech.speechrecognizer.Constants
                         .ASSESS_PARAM_LANGUAGE_CH);
                 break;
             default:
@@ -1339,9 +1339,9 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            Holder holder;
+            RolePlayerHeadShowAdapter.Holder holder;
             if (convertView == null) {
-                holder = new Holder();
+                holder = new RolePlayerHeadShowAdapter.Holder();
                 convertView = View.inflate(mContext, R.layout.item_live_roleplayer_rolehead, null);
                 holder.tvNickName = convertView.findViewById(R.id.tv_live_roleplayer_item_rolehead_nickname);
                 holder.civHeadImg = convertView.findViewById(R.id.civ_roleplayer_item_rolehead_img);
@@ -1349,13 +1349,13 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
                 holder.tvRoleName = convertView.findViewById(R.id.tv_live_roleplayer_item_rolename);
                 convertView.setTag(holder);
             } else {
-                holder = (Holder) convertView.getTag();
+                holder = (RolePlayerHeadShowAdapter.Holder) convertView.getTag();
             }
             setData(lstRolePlayerHead.get(position), holder);
             return convertView;
         }
 
-        private void setData(RolePlayerEntity.RolePlayerHead entity, Holder holder) {
+        private void setData(RolePlayerEntity.RolePlayerHead entity, RolePlayerHeadShowAdapter.Holder holder) {
             holder.tvNickName.setText(entity.getNickName());
             holder.tvRoleName.setText(entity.getRoleName());
             ImageLoader.with(ContextManager.getApplication()).load(entity.getHeadImg()).into(holder.civHeadImg);

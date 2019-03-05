@@ -69,7 +69,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
     /**
      * 匹配页默认停留时间
      */
-    private final int MATCH_WAIT_SECOND = 4000;
+    private final int MATCH_WAIT_SECOND = 0;
     /**
      * 角色确认页停留时间
      */
@@ -701,8 +701,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                 mIse.setLanguage(Constants.ASSESS_PARAM_LANGUAGE_EN);
                 break;
         }
-
-
+        mIse.prepar();
         mIse.cancel();
         SpeechParamEntity param = new SpeechParamEntity();
         param.setStrEvaluator(spechMsg);
