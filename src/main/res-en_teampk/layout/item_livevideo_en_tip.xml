@@ -1,0 +1,37 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="11dp"
+    android:layout_marginTop="8dp"
+    android:gravity="bottom">
+
+    <TextView
+        android:id="@id/tv_livevideo_en_teampk_rank_score_tip_lable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:includeFontPadding="false"
+        android:text="答对互动题"
+        android:textColor="#ffffffff"
+        android:textSize="11sp" />
+
+    <ImageView
+        android:id="@id/iv_livevideo_en_teampk_rank_score_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@id/tv_livevideo_en_teampk_rank_score_tip_lable"
+        android:src="@drawable/livevideo_enpk_toast_huomiao_pic" />
+
+    <TextView
+        android:id="@id/tv_livevideo_en_teampk_rank_score_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="10dp"
+        android:layout_toRightOf="@id/iv_livevideo_en_teampk_rank_score_tip"
+        android:includeFontPadding="false"
+        android:text="+10"
+        android:textColor="#ffffde8a"
+        android:textSize="13sp" />
+</RelativeLayout>

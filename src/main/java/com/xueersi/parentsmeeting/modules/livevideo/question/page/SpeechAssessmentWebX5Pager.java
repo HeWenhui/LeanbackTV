@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
 import android.widget.ImageView;
 
+import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultCode;
@@ -19,6 +20,7 @@ import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.speechrecognizer.TalSpeech;
+import com.tal.speech.utils.SpeechUtils;
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
 import com.tencent.smtt.export.external.interfaces.JsResult;
 import com.tencent.smtt.sdk.WebChromeClient;
@@ -31,8 +33,6 @@ import com.xueersi.common.http.DownloadCallBack;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
-import com.xueersi.common.speech.SpeechConfig;
-import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.AppUtils;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
@@ -46,6 +46,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
@@ -69,7 +70,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
 
     private WebView wvSubjectWeb;
     private View errorView;
-
+    private SpeechResultEntity speechResultEntity;
     /** 学生ID */
     private String stuId;
     /** 直播ID */
@@ -284,7 +285,12 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
     @JavascriptInterface
     public void showAnswerResult_LiveVideo(String data) {
         logger.e("=========>showAnswerResult_LiveVideo:" + data);
-        EventBus.getDefault().post(new ArtsAnswerResultEvent(data, ArtsAnswerResultEvent.TYPE_ROLEPLAY_ANSWERRESULT));
+        ArtsAnswerResultEvent event = new ArtsAnswerResultEvent(data, ArtsAnswerResultEvent.TYPE_ROLEPLAY_ANSWERRESULT);
+        if (speechResultEntity == null) {
+            speechResultEntity = new SpeechResultEntity();
+        }
+        event.setSpeechResultEntity(speechResultEntity);
+        EventBus.getDefault().post(event);
     }
 
 
@@ -582,6 +588,7 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
                 if (mIse == null) {
 //                    mIse = new SpeechEvaluatorUtils(true);
                     mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
+                    mIse.prepar();
                 }
                 SpeechParamEntity param = new SpeechParamEntity();
                 param.setStrEvaluator(assessRef);
@@ -592,12 +599,16 @@ public class SpeechAssessmentWebX5Pager extends BaseSpeechAssessmentPager {
                     mIse.startRecog(param, new EvaluatorListener() {
                         @Override
                         public void onBeginOfSpeech() {
+                            speechResultEntity = null;
                             jsRecord();
                         }
 
                         @Override
                         public void onResult(ResultEntity resultEntity) {
                             if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
+                                speechResultEntity = new SpeechResultEntity();
+                                speechResultEntity.fluency = resultEntity.getContScore();
+                                speechResultEntity.accuracy = resultEntity.getPronScore();
                                 if (resultEntity.getErrorNo() > 0) {
                                     jsRecordError(resultEntity.getErrorNo());
                                 }

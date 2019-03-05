@@ -5,13 +5,13 @@ import android.text.TextUtils;
 import android.widget.RelativeLayout;
 
 import com.tal.speech.speechrecognizer.Constants;
+import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.lib.framework.utils.string.Base64;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
@@ -20,7 +20,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateA
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayActionEnd;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineActionEnd;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -40,7 +42,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoti
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -52,7 +53,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import okhttp3.Call;
 
 /**
- * Created by lyqai on 2018/7/5.
+ * 互动题
+ * Created by linyuqiang on 2018/7/5.
  */
 
 public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAction, QuestionHttp {
@@ -61,6 +63,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private LiveAutoNoticeIRCBll mLiveAutoNoticeBll;
     //    private SpeechEvaluatorUtils mIse;
     private SpeechUtils mIse;
+    /** 置空roleplay，防止QuestionBll里为空，外面不为空 */
+    private RolePlayEnd rolePlayActionEnd = new RolePlayEnd();
     /** RolePlayer功能接口 */
     private RolePlayAction rolePlayAction;
 
@@ -100,6 +104,64 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean isLand) {
         mQuestionAction.initView(bottomContent, isLand.get());
+//        if (AppConfig.DEBUG) {
+//            SpeechResultEntity speechResultEntity = new SpeechResultEntity();
+//            speechResultEntity.score = 12;
+//            speechResultEntity.enery = 2;
+//            speechResultEntity.gold = 3;
+//            speechResultEntity.praise = 10;
+//            speechResultEntity.accuracy = 22;
+//            speechResultEntity.fluency = 33;
+//            ArrayList<SpeechResultMember> speechResultMembers = speechResultEntity.speechResultMembers;
+//            for (int i = 0; i < 2; i++) {
+//                SpeechResultMember speechResultMember = new SpeechResultMember();
+//                speechResultMember.name = "测试" + i;
+//                speechResultMember.score = i;
+//                speechResultMembers.add(speechResultMember);
+//            }
+//            SpeechResultPager speechResultPager = new SpeechResultPager(activity, bottomContent, speechResultEntity);
+//            bottomContent.addView(speechResultPager.getRootView());
+//        }
+//        if (com.xueersi.common.config.AppConfig.DEBUG) {
+//            com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity answerResultEntity = new com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity();
+//            answerResultEntity.isVoice = 1;
+//            answerResultEntity.setEnergy(11);
+//            answerResultEntity.setGold(2);
+//            answerResultEntity.setIsRight(com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsPSEAnswerResultPager.RESULT_TYPE_PART_CORRECT);
+//            java.util.ArrayList<com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity.Answer> answerList = new java.util.ArrayList<>();
+//            com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity.Answer answer = new com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity.Answer();
+//            answer.setTestType(com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity.TEST_TYPE_2);
+//            List<String> rightAnswers = new java.util.ArrayList<>();
+//            rightAnswers.add("A");
+//            answer.setRightAnswers(rightAnswers);
+//            List<String> blankList = new java.util.ArrayList<>();
+//            blankList.add("C");
+//            answer.setBlankList(blankList);
+//            List<String> choiceList = new java.util.ArrayList<>();
+//            choiceList.add("C");
+//            answer.setChoiceList(choiceList);
+//            answerList.add(answer);
+//            answerResultEntity.setAnswerList(answerList);
+//            final android.view.ViewGroup group = bottomContent;
+//            com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsPSEAnswerResultPager artsPSEAnswerResultPager = new com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsPSEAnswerResultPager(activity, answerResultEntity,
+//                    new com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerResultStateListener() {
+//                        @Override
+//                        public void onCompeletShow() {
+//
+//                        }
+//
+//                        @Override
+//                        public void onAutoClose(com.xueersi.common.base.BasePager basePager) {
+//                            group.removeView(basePager.getRootView());
+//                        }
+//
+//                        @Override
+//                        public void onCloseByUser() {
+//
+//                        }
+//                    });
+//            bottomContent.addView(artsPSEAnswerResultPager.getRootView());
+//        }
     }
 
     public void onPause() {
@@ -135,7 +197,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             mQuestionAction.setSpeechEndAction(standSpeechTop3Bll);
         } else {
             mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new LiveQuestionSwitchImpl(), mQuestionAction));
-            mQuestionAction.setBaseSpeechCreat(new LiveSpeechCreat(mQuestionAction));
+            mQuestionAction.setBaseSpeechCreat(new LiveSpeechCreat(mQuestionAction, data));
         }
         if (1 == data.getIsEnglish()) {
             mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
@@ -197,7 +259,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         Loger.e(Tag, "=======>onTopic:" + jsonObject);
         if (isNewArtsH5Courseware(jsonObject)) {
             try {
-                if(change){
+                if (change) {
                     LiveVideoConfig.isNewArts = false;
                 }
                 String onlineTechStatus = "";
@@ -253,6 +315,65 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         }
                     }
                 } else {
+                    LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
+                    if (mainRoomstatus.isHaveExam() && mQuestionAction != null) {
+                        String num = mainRoomstatus.getExamNum();
+                        if ("on".equals(mainRoomstatus.getExamStatus())) {
+                            VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                            videoQuestionLiveEntity.id = num;
+                            mQuestionAction.onExamStart(mLiveId, videoQuestionLiveEntity);
+                            if (mAnswerRankBll != null) {
+                                mAnswerRankBll.setTestId(num);
+                            }
+                        } else {
+                            mQuestionAction.onExamStop(num);
+                        }
+                    }
+
+
+                    if (liveTopic.getVideoQuestionLiveEntity() != null) {
+                        logger.e("======>QuestionIRCBlle:" + "走了错误的逻辑");
+                        if (mQuestionAction != null) {
+
+                            VideoQuestionLiveEntity videoQuestionLiveEntity = liveTopic.getVideoQuestionLiveEntity();
+
+                            JSONObject topicObj = jsonObject.optJSONObject("topic");
+                            videoQuestionLiveEntity.roles = topicObj.optString("roles");
+                            videoQuestionLiveEntity.id = topicObj.optString("id");
+
+                            //解决，老师发题后，学生后进来，无法进入roleplay的问题
+                            //人机的回调
+
+                            if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles)) {
+                                if (rolePlayMachineAction == null) {
+                                    RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
+                                    rolePlayMachineAction = (RolePlayMachineAction) rolePlayerBll;
+                                }
+
+                                //多人的回调
+                                if (rolePlayAction == null) {
+                                    RolePlayerBll rolePlayerBll = new RolePlayerBll(activity, mRootView, mLiveBll, mGetInfo);
+                                    rolePlayAction = rolePlayerBll;
+                                }
+                                mQuestionAction.setRolePlayMachineAction(rolePlayMachineAction, rolePlayActionEnd);
+                                mQuestionAction.setRolePlayAction(rolePlayAction, rolePlayActionEnd);
+                            }
+
+                            mQuestionAction.showQuestion(videoQuestionLiveEntity);
+                            if (mAnswerRankBll != null) {
+                                mAnswerRankBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
+                            }
+                            if (mLiveAutoNoticeBll != null) {
+                                mLiveAutoNoticeBll.setTestId(videoQuestionLiveEntity.getvQuestionID());
+                                mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.srcType);
+                            }
+                        }
+                    } else {
+                        logger.e("======>QuestionIRCBlle:" + "正常的逻辑");
+                        if (mQuestionAction != null) {
+                            mQuestionAction.showQuestion(null);
+                        }
+                    }
 //                    JSONObject coursewareH5 = jsonObject.getJSONObject("coursewareH5");
 //                    VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
 //                    videoQuestionLiveEntity.setNewArtsCourseware(true);
@@ -352,8 +473,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 RolePlayerBll rolePlayerBll = new RolePlayerBll(activity, mRootView, mLiveBll, mGetInfo);
                 rolePlayAction = rolePlayerBll;
             }
-            mQuestionAction.setRolePlayMachineAction(rolePlayMachineAction);
-            mQuestionAction.setRolePlayAction(rolePlayAction);
+            mQuestionAction.setRolePlayMachineAction(rolePlayMachineAction, rolePlayActionEnd);
+            mQuestionAction.setRolePlayAction(rolePlayAction, rolePlayActionEnd);
         }
     }
 
@@ -409,7 +530,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !videoQuestionLiveEntity.multiRolePlay.equals("1")) {
                         logger.i("走人机start,拉取试题");
                         RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
-                        mQuestionAction.setRolePlayMachineAction(rolePlayerBll);
+                        mQuestionAction.setRolePlayMachineAction(rolePlayerBll, rolePlayActionEnd);
                         rolePlayMachineAction = rolePlayerBll;
 
                     }
@@ -465,7 +586,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !videoQuestionLiveEntity.multiRolePlay.equals("1")) {
                         logger.i("onNotice 新课件平台，走人机start,拉取试题");
                         RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
-                        mQuestionAction.setRolePlayMachineAction(rolePlayerBll);
+                        mQuestionAction.setRolePlayMachineAction(rolePlayerBll, rolePlayActionEnd);
                         rolePlayMachineAction = rolePlayerBll;
 
                     }
@@ -481,7 +602,6 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
 
 
-
                 break;
             }
             case XESCODE.STOPQUESTION:
@@ -489,7 +609,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 mGetInfo.getLiveTopic().setVideoQuestionLiveEntity(null);
                 if (mQuestionAction != null) {
                     try {
-                        mQuestionAction.onStopQuestion(object.getString("ptype"), object.optString("nonce"));
+                        mQuestionAction.onStopQuestion("STOPQUESTION", object.getString("ptype"), object.optString("nonce"));
                         //解决多人的时候，除了初次的多人正常进对话，其他的都进不去
                         rolePlayAction = null;
                         rolePlayMachineAction = null;
@@ -512,7 +632,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 String package_socurce = object.optString("package_socurce");
                 if (mQuestionAction != null) {
                     try {
-                        mQuestionAction.onStopQuestion(object.getString("ptype"), object.optString("nonce"));
+                        mQuestionAction.onStopQuestion("ARTS_STOP_QUESTION", object.getString("ptype"), object.optString("nonce"));
                         //解决多人的时候，除了初次的多人正常进对话，其他的都进不去
                         rolePlayAction = null;
                         rolePlayMachineAction = null;
@@ -553,14 +673,14 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 logger.i("onNotice XCR_ROOM_ROLE_READ ");
                 if (rolePlayAction == null) {
                     RolePlayerBll rolePlayerBll = new RolePlayerBll(activity, mRootView, mLiveBll, mGetInfo);
-                    mQuestionAction.setRolePlayAction(rolePlayerBll);
+                    mQuestionAction.setRolePlayAction(rolePlayerBll, rolePlayActionEnd);
                     rolePlayAction = rolePlayerBll;
                 }
 
                 //在多人的时候，同时设置人机的roleplayaction
                 if (rolePlayMachineAction == null) {
                     RolePlayMachineBll rolePlayerMachineBll = new RolePlayMachineBll(activity, mRootView, mLiveBll, mGetInfo);
-                    mQuestionAction.setRolePlayMachineAction(rolePlayerMachineBll);
+                    mQuestionAction.setRolePlayMachineAction(rolePlayerMachineBll, rolePlayActionEnd);
                     rolePlayMachineAction = (RolePlayMachineAction) rolePlayerMachineBll;
 
                 }
@@ -653,10 +773,10 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     @Override
-    public void getStuGoldCount() {
+    public void getStuGoldCount(String method) {
         UpdateAchievement updateAchievement = getInstance(UpdateAchievement.class);
         if (updateAchievement != null) {
-            updateAchievement.getStuGoldCount();
+            updateAchievement.getStuGoldCount("getStuGoldCount:" + method, UpdateAchievement.GET_TYPE_QUE);
         }
     }
 
@@ -707,7 +827,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     @Override
     public void liveSubmitTestAnswer(final LiveBasePager liveBasePager, final VideoQuestionLiveEntity videoQuestionLiveEntity,
-                                     String mVSectionID, String testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut) {
+                                     String mVSectionID, String testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut, String isSubmit) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mLogtf.d("liveSubmitTestAnswer:enstuId=" + enstuId + "," + videoQuestionLiveEntity.srcType + ",testId=" +
                 videoQuestionLiveEntity.id + ",liveId=" + mVSectionID + ",testAnswer="
@@ -720,8 +840,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         }
         if (LiveVideoConfig.isNewArts) {
             logger.e("======> liveSubmitTestAnswer:" + videoQuestionLiveEntity.isNewArtsH5Courseware());
-            getHttpManager().liveNewArtsSubmitTestAnswer(mLiveType, enstuId, videoQuestionLiveEntity.srcType,
-                    videoQuestionLiveEntity.id, mLiveId, testAnswer, userMode, isVoice, isRight, new HttpCallBack() {
+            getHttpManager().liveNewArtsSubmitTestAnswer(
+                    videoQuestionLiveEntity.id, mLiveId, testAnswer, isSubmit, new HttpCallBack() {
 
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) {
@@ -876,11 +996,11 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     @Override
-    public void sendSpeechEvalResult2(String id, String stuAnswer, final OnSpeechEval onSpeechEval) {
+    public void sendSpeechEvalResult2(String id, String stuAnswer, String isSubmit, final OnSpeechEval onSpeechEval) {
         String liveid = mGetInfo.getId();
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         if (LiveVideoConfig.isNewArts) {
-            getHttpManager().sendSpeechEvalResultNewArts(enstuId, liveid, id, stuAnswer, new HttpCallBack(false) {
+            getHttpManager().sendSpeechEvalResultNewArts(enstuId, liveid, id, stuAnswer, isSubmit, new HttpCallBack(false) {
 
                 @Override
                 public void onPmSuccess(final ResponseEntity responseEntity) {
@@ -981,9 +1101,14 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 public void onPmSuccess(final ResponseEntity responseEntity) {
                     JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
                     JSONObject detail = jsonObject.optJSONObject("data");
-                    mLogtf.i("speechEvaluatenewArtsIsAnswered:onPmSuccess=" + jsonObject);
-                    boolean isAnswer = detail.optInt("isAnswer") == 1;
-                    isAnswered.isAnswer(isAnswer);
+                    if (detail != null) {
+                        mLogtf.i("speechEvaluatenewArtsIsAnswered:onPmSuccess=" + jsonObject);
+                        boolean isAnswer = detail.optInt("isAnswer") == 1;
+                        isAnswered.isAnswer(isAnswer);
+                    } else {
+                        boolean isAnswer = jsonObject.optInt("isAnswer") == 1;
+                        isAnswered.isAnswer(isAnswer);
+                    }
                 }
 
                 @Override
@@ -1135,6 +1260,22 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             mQuestionAction.onDestroy();
         }
     }
+
+    private class RolePlayEnd implements RolePlayActionEnd, RolePlayMachineActionEnd {
+
+        @Override
+        public void endRolePlayAction(String method, RolePlayAction action) {
+            mLogtf.d("endRolePlayAction:method=" + method + ",same=" + (action == rolePlayAction));
+            rolePlayAction = null;
+        }
+
+        @Override
+        public void endRolePlayMachineAction(String method, RolePlayAction action) {
+            mLogtf.d("endRolePlayMachineAction:method=" + method + ",same=" + (action == rolePlayMachineAction));
+            rolePlayMachineAction = null;
+        }
+    }
+
 }
 
 

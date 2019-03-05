@@ -37,17 +37,21 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ISpeechRecogInterface;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
+import com.tal.speech.utils.SpeechEvaluatorUtils;
+import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.http.HttpCallBack;
@@ -56,9 +60,6 @@ import com.xueersi.common.permission.PermissionCallback;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.speech.SpeechConfig;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
-import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.component.cloud.XesCloudUploadBusiness;
 import com.xueersi.component.cloud.config.CloudDir;
 import com.xueersi.component.cloud.config.XesCloudConfig;
@@ -324,7 +325,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         params.topMargin = liveVideoPoint.y3;
         logger.setLogMethod(false);
         logger.i("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
-
+        setBack();
         decorView = (ViewGroup) ((Activity) mContext).getWindow().getDecorView();
 
         int colors[] = {0x19FFA63C, 0x32FFA63C, 0x64FFC12C, 0x96FFC12C, 0xFFFFA200};
@@ -381,7 +382,12 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         mAM = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE); // 音量管理
         mMaxVolume = mAM.getStreamMaxVolume(AudioManager.STREAM_MUSIC); // 获取系统最大音量
         mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
-        speechUtils.setOnFileSuccess(new SpeechEvaluatorUtils.OnFileSuccess() {
+        speechUtils.prepar(new SpeechEvaluatorUtils.OnFileSuccess() {
+            @Override
+            public void onFileInit(int code) {
+
+            }
+
             @Override
             public void onFileSuccess() {
                 mSpeechFail = "模型正在启动，请稍后";
@@ -1053,6 +1059,29 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                 LayoutParamsUtil.setViewLayoutParams(lvMessage, params);
                 //logger.e( "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
             }
+        }
+        setBack();
+    }
+
+    /** app_livevideo_enteampk_bg_img1_nor */
+    private void setBack() {
+        LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+        ImageView ivBack = mView.findViewById(R.id.iv_livevideo_message_small_bg);
+        if (ivBack == null) {
+            return;
+        }
+        RelativeLayout.LayoutParams bgParams = (RelativeLayout.LayoutParams) ivBack.getLayoutParams();
+        int width = liveVideoPoint.x4 - liveVideoPoint.x3 + 2;
+        int height = width * 287 / 501;
+        int minHeight = SizeUtils.Dp2Px(mContext, 167 * 287 / 501);
+        logger.d("setBack:height=" + height + ",minHeight=" + minHeight);
+        if (height < minHeight) {
+            height = minHeight;
+        }
+        if (bgParams.width != width || bgParams.height != height) {
+            bgParams.width = width;
+            bgParams.height = height;
+            ivBack.setLayoutParams(bgParams);
         }
     }
 

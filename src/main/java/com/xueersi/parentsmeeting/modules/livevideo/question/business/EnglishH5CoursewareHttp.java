@@ -8,7 +8,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
  */
 
 public interface EnglishH5CoursewareHttp {
-    void getStuGoldCount();
+    void getStuGoldCount(String method);
 
     void sendRankMessage(int rankStuReconnectMessage);
 

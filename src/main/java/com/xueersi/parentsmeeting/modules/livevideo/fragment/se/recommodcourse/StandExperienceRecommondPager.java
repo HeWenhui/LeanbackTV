@@ -18,6 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.RecommondCourseEntity
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoBannerBuyCourseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.CustomVerticalBannerView;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 
 import java.util.LinkedList;
