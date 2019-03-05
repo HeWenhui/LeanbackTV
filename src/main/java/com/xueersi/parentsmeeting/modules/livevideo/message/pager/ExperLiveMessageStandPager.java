@@ -38,6 +38,7 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.Constants;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.ResultCode;
@@ -209,9 +210,9 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
 
     public ExperLiveMessageStandPager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                       BaseLiveMediaControllerBottom
-                                         liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities,
+                                              liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities,
                                       ArrayList<LiveMessageEntity>
-                                         otherLiveMessageEntities) {
+                                              otherLiveMessageEntities) {
         super(context);
         liveVideoActivity = (Activity) context;
         this.liveMediaControllerBottom = liveMediaControllerBottom;
@@ -303,6 +304,7 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
      * @param isVisible
      */
     private boolean isNotExpericence = true;
+
     public void setStarGoldImageViewVisible(boolean isVisible) {
         isNotExpericence = isVisible;
         btnVoiceMesOpen.setVisibility(View.GONE);
@@ -808,15 +810,11 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
 //        });
         dir = LiveCacheFile.geCacheFile(mContext, "livevoice");
         FileUtils.deleteDir(dir);
-        if (!dir.exists())
-
-        {
+        if (!dir.exists()) {
             dir.mkdirs();
         }
 
-        messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities, 5)
-
-        {
+        messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities, 5) {
             String fileName = "live_stand_head.json";
 
             @Override
@@ -1077,6 +1075,7 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
     }
 
     /** 聊天开始连接 */
+    @Override
     public void onStartConnect() {
         mainHandler.post(new Runnable() {
             @Override
@@ -1109,6 +1108,7 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
     }
 
     /** 聊天连上 */
+    @Override
     public void onConnect() {
         mainHandler.post(new Runnable() {
             @Override
@@ -1130,6 +1130,7 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
     }
 
     /** 聊天进入房间 */
+    @Override
     public void onRegister() {
         mainHandler.post(new Runnable() {
             @Override
@@ -1141,6 +1142,7 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
     }
 
     /** 聊天断开 */
+    @Override
     public void onDisconnect() {
         mainHandler.post(new Runnable() {
             @Override
@@ -1237,6 +1239,7 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
     }
 
     /** 被禁言 */
+    @Override
     public void onDisable(final boolean disable, final boolean fromNotice) {
         mView.post(new Runnable() {
             @Override
@@ -1299,7 +1302,7 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
                         }
                         //现在的隐藏显示和liveStandMessageContent一致
                         btMesOpen.setVisibility(View.VISIBLE);
-                        if (isNotExpericence){
+                        if (isNotExpericence) {
                             btnVoiceMesOpen.setVisibility(View.VISIBLE);
                         }
                         Animation animation;
@@ -1363,6 +1366,7 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
     }
 
     /** 关闭开启弹幕 */
+    @Override
     public void onOpenbarrage(final boolean openbarrage, final boolean fromNotice) {
         mView.post(new Runnable() {
             @Override
@@ -1560,7 +1564,7 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
                         logger.i("显示聊天框");
                         //现在的隐藏显示和liveStandMessageContent一致
                         btMesOpen.setVisibility(View.VISIBLE);
-                        if (isNotExpericence){
+                        if (isNotExpericence) {
                             btnVoiceMesOpen.setVisibility(View.VISIBLE);
                         }
                         if (isMessageLayoutShow) {
