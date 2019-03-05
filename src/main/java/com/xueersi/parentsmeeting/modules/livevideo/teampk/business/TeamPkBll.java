@@ -170,7 +170,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     }
 
 
-    public void setRoomInitInfo(LiveGetInfo roomInfo) {
+    private void setRoomInitInfo(LiveGetInfo roomInfo) {
         roomInitInfo = roomInfo;
     }
 
@@ -187,7 +187,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         ((RelativeLayout) mRootView).addView(rlTeamPkContent, params);
         showPkStateLayout();
         registLayotListener();
-
     }
 
     @Override
@@ -432,7 +431,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      * 开启分队仪式
      */
     public void startTeamSelect() {
-        logger.e("====>startTeamSelect:");
         getTeamInfo();
     }
 
@@ -469,26 +467,15 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                 });
     }
 
-
-    public void initView(RelativeLayout bottomContent) {
-        rlTeamPkContent = new RelativeLayout(mActivity);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.
-                LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        bottomContent.addView(rlTeamPkContent, params);
-
-    }
-
     /**
      * 显示分队仪式 场景
      */
     private void showTeamSelectScene() {
         if (mFocusPager == null || !(mFocusPager instanceof TeamPkTeamSelectingPager)) {
             logger.e("====>showTeamSelectScene:" + mFocusPager);
-
             if (mFocusPager != null && mFocusPager instanceof TeamPkTeamSelectPager) {
                 return;
             }
-
             TeamPkTeamSelectPager teamSelectPager = new TeamPkTeamSelectPager(mActivity, this);
             addPager(teamSelectPager);
             teamSelectPager.setData(teamInfoEntity);
@@ -539,11 +526,8 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      * @param isWin
      */
     public void showAwardGetScene(int type, final Object data, final boolean isWin) {
-        logger.e("======>showAwardGetScene called");
         //   if (mFocusPager == null || !(mFocusPager instanceof TeamPkAwardPager)) {
         if (mFocusPager == null || !(mFocusPager instanceof TeamPkAwardPager)) {
-            logger.e("======>showAwardGetScene called 11111");
-
             if (type == CHEST_TYPE_CLASS) {
                 //从pk结果页面直接跳到 贡献之星
                 if (mFocusPager != null && mFocusPager instanceof TeamPkResultPager) {
@@ -569,7 +553,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                         TeamPkAwardPager awardGetPager = new TeamPkAwardPager(mActivity, TeamPkBll.this);
                         addPager(awardGetPager);
                         awardGetPager.showBoxLoop();
-                        logger.e("======>showAwardGetScene called 3333");
                     }
                 }, 1000);
             }
@@ -745,12 +728,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      */
     private void showVoteEnergyAnim(int addEnergy, String voteId) {
         logger.e("========> showVoteEnergyAnim:" + voteId + ":" + addEnergy);
-        TeamPkAqResultPager aqAwardPager = new TeamPkAqResultPager(mActivity, TeamPkAqResultPager.AWARD_TYPE_VOTE,
-                this);
-        addPager(aqAwardPager);
-        aqAwardPager.setData(0, addEnergy);
-
-        TeamPkLog.showAddPower(mLiveBll, voteId, addEnergy + "");
         //上报服务器 增加加能量
         mHttpManager.addPersonAndTeamEnergy(mLiveBll.getLiveId(), addEnergy,
                 roomInitInfo.getStudentLiveInfo().getTeamId(),
@@ -760,8 +737,17 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
 
                     }
                 });
+        TeamPkAqResultPager aqAwardPager = new TeamPkAqResultPager(mActivity, TeamPkAqResultPager.AWARD_TYPE_VOTE,
+                this);
+        addPager(aqAwardPager);
+        aqAwardPager.setData(0, addEnergy);
+        TeamPkLog.showAddPower(mLiveBll, voteId, addEnergy + "");
     }
 
+    /**
+     * 显示答对超难题 动画
+     * @param addEnergy
+     */
     private void showAnswerAllRightAward(final int addEnergy) {
          mHandler.post(new Runnable() {
              @Override
@@ -810,7 +796,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
 
     /**
      * 添加全屏模式 页面
-     *
      * @param pager
      */
     private void addFullScreenPager(TeamPkBasePager pager) {
@@ -1233,14 +1218,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     }
 
 
-
-    private void closeClassChest() {
-        if (mFocusPager != null && mFocusPager instanceof TeamPkAwardPager) {
-            ((TeamPkAwardPager) mFocusPager).closeAwardPager();
-        }
-    }
-
-
     @Override
     public int[] getNoticeFilter() {
         return noticeCodes;
@@ -1249,7 +1226,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
 
     @Override
     public void onTopic(LiveTopic data, JSONObject jsonObject, boolean modeChange) {
-        logger.e("====>onTopic");
         if (isAvailable) {
             // 战队pk  topic 逻辑
             LiveTopic.TeamPkEntity teamPkEntity = data.getTeamPkEntity();
@@ -1354,6 +1330,10 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
 
     }
 
+    /**
+     * 展示明星榜UI
+     * @param data
+     */
     private void showStars(List<TeamPkStar> data) {
         if (mFocusPager == null || !(mFocusPager instanceof TeamPkStarsPager)) {
             TeamPkStarsPager startsPager = new TeamPkStarsPager(mActivity, data, TeamPkBll.this);
@@ -1361,14 +1341,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         }
     }
 
-    /**
-     * 关闭明星榜
-     */
-    private void closeStarts() {
-        if (mFocusPager != null && mFocusPager instanceof TeamPkStarsPager) {
-            ((TeamPkStarsPager) mFocusPager).close();
-        }
-    }
 
     /**
      * 获取进步榜
@@ -1421,14 +1393,8 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         }
     }
 
-    private void closeStuProgressList() {
-        if (mFocusPager != null && mFocusPager instanceof TeamPkImprovePager) {
-            ((TeamPkImprovePager) mFocusPager).close();
-        }
-    }
-
     /**
-     * 显示 pk 结束
+     * 显示 pk 总结 结束弹框
      */
     private void showPkEndToast() {
         mHandler.post(new Runnable() {
@@ -1442,9 +1408,11 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         });
     }
 
-    // pk 二期 实现聊天接口  维护在线用户信息
-    //在线用户聊天id列表
+
+    /**在线用户聊天id列表**/
     private List<String> onLineChatIds = new ArrayList<>();
+
+
     @Override
     public void onStartConnect() {
 
@@ -1604,5 +1572,4 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         }
         return  result;
     }
-
 }
