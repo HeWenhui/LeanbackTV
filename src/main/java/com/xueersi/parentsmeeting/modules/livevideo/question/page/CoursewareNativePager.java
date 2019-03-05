@@ -46,6 +46,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * Created by linyuqiang on 2019/3/5.
+ * 新课件，去掉h5壳
+ */
 public class CoursewareNativePager extends BaseCoursewareNativePager implements BaseEnglishH5CoursewarePager {
     private String eventId = LiveVideoConfig.LIVE_ENGLISH_COURSEWARE;
     /** 理科初高中新课件平台 强制提交js */
@@ -178,6 +182,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         btCoursePre.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                getAnswerType = LiveQueConfig.GET_ANSWERTYPE_PRE;
+                btCoursePre.setEnabled(false);
+                btCourseNext.setEnabled(false);
                 JSONObject jsonData = new JSONObject();
                 try {
                     jsonData.put("type", CourseMessage.SEND_getAnswer);
@@ -187,14 +194,14 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                getAnswerType = LiveQueConfig.GET_ANSWERTYPE_PRE;
-                btCoursePre.setEnabled(false);
-                btCourseNext.setEnabled(false);
             }
         });
         btCourseNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                getAnswerType = LiveQueConfig.GET_ANSWERTYPE_NEXT;
+                btCoursePre.setEnabled(false);
+                btCourseNext.setEnabled(false);
                 JSONObject jsonData = new JSONObject();
                 try {
                     jsonData.put("type", CourseMessage.SEND_getAnswer);
@@ -204,14 +211,12 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                getAnswerType = LiveQueConfig.GET_ANSWERTYPE_NEXT;
-                btCoursePre.setEnabled(false);
-                btCourseNext.setEnabled(false);
             }
         });
         btCourseSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                getAnswerType = LiveQueConfig.GET_ANSWERTYPE_SUBMIT;
                 JSONObject jsonData = new JSONObject();
                 try {
                     jsonData.put("type", CourseMessage.SEND_getAnswer);
@@ -222,7 +227,6 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     CrashReport.postCatchedException(e);
                     mLogtf.e("btCourseSubmit", e);
                 }
-                getAnswerType = LiveQueConfig.GET_ANSWERTYPE_SUBMIT;
             }
         });
         ivCourseRefresh.setOnClickListener(new View.OnClickListener() {
@@ -486,6 +490,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         if (loadResult) {
             wvSubjectWeb.loadUrl(jsClientSubmit);
         } else {
+            getAnswerType = LiveQueConfig.GET_ANSWERTYPE_FORCE_SUBMIT;
+            if (courseTipDialog != null) {
+                courseTipDialog.cancelDialog();
+            }
+            courseTipDialog = null;
             JSONObject jsonData = new JSONObject();
             try {
                 jsonData.put("type", CourseMessage.SEND_getAnswer);
@@ -496,11 +505,6 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 CrashReport.postCatchedException(e);
                 mLogtf.e("submitData", e);
             }
-            getAnswerType = LiveQueConfig.GET_ANSWERTYPE_FORCE_SUBMIT;
-            if (courseTipDialog != null) {
-                courseTipDialog.cancelDialog();
-            }
-            courseTipDialog = null;
         }
     }
 

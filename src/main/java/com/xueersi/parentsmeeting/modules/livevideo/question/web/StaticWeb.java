@@ -9,6 +9,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Created by linyuqiang on 2019/3/5.
+ * 新课件和客户端通信
+ */
 public class StaticWeb {
     private static String TAG = "StaticWeb";
     private OnMessage onMessage;

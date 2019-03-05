@@ -25,6 +25,10 @@ import java.util.Locale;
 
 import ren.yale.android.cachewebviewlib.utils.MD5Utils;
 
+/**
+ * Created by linyuqiang on 2019/3/5.
+ * 新课件预加载
+ */
 public class NewCourseCache {
     private String eventId = "NewCourseCache_cache";
     private String TAG = "NewCourseCache";
@@ -101,6 +105,12 @@ public class NewCourseCache {
         return null;
     }
 
+    /**
+     * 新课件地址都带courseware_pages，和本地文件对比
+     *
+     * @param url
+     * @return
+     */
     private File getCourseWareFile(String url) {
         File file = null;
         int index = url.indexOf("courseware_pages");
