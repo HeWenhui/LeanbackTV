@@ -701,8 +701,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                 mIse.setLanguage(Constants.ASSESS_PARAM_LANGUAGE_EN);
                 break;
         }
-
-
+        mIse.prepar();
         mIse.cancel();
         SpeechParamEntity param = new SpeechParamEntity();
         param.setStrEvaluator(spechMsg);

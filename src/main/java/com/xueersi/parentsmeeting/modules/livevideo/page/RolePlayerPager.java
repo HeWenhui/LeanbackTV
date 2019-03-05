@@ -1187,7 +1187,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
                 mIse.setLanguage(com.tal.speech.speechrecognizer.Constants.ASSESS_PARAM_LANGUAGE_EN);
                 break;
         }
-
+        mIse.prepar();
         mIse.cancel();
         if (param == null){
             param = new SpeechParamEntity();
