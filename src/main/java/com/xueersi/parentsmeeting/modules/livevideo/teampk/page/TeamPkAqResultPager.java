@@ -396,12 +396,15 @@ public class TeamPkAqResultPager extends TeamPkBasePager {
                 if (endRect != null) {
                     playFlayAnim(ivVoteEnergy, endRect);
                 } else {
+                    mTeamPkBll.updatePkStateLayout(true);
                     closePager();
                 }
             } else {
+                mTeamPkBll.updatePkStateLayout(true);
                 closePager();
             }
         } else {
+            mTeamPkBll.updatePkStateLayout(true);
             closePager();
         }
     }
@@ -485,7 +488,7 @@ public class TeamPkAqResultPager extends TeamPkBasePager {
                 teamPKStateLayout.showEnergyMyContribute(mEnergy);
                 //投票题 动画结束刷新右侧总能量
                 if(awardType == AWARD_TYPE_VOTE){
-                    mTeamPkBll.updatePkStateLayout(false);
+                    mTeamPkBll.updatePkStateLayout(true);
                 }
 
             }

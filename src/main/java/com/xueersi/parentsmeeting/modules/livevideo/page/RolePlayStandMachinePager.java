@@ -11,17 +11,11 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
@@ -33,14 +27,17 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tal.speech.config.SpeechConfig;
+import com.tal.speech.speechrecognizer.Constants;
+import com.tal.speech.speechrecognizer.EvaluatorListener;
+import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
+import com.tal.speech.speechrecognizer.SpeechParamEntity;
+import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.UserBll;
-import com.xueersi.common.permission.XesPermission;
-import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -48,8 +45,6 @@ import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerMachineOtherItem;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerSelfItem;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerStandMachineOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.item.RolePlayerStandMachineSelfItem;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineBll;
@@ -62,11 +57,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.StandSpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.view.StandSpeechResult;
-import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
@@ -167,7 +159,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
     /**
      * 语音评测
      */
-    protected SpeechEvaluatorUtils mIse;
+    protected SpeechUtils mIse;
     private SpeechEvaluatorInter speechEvaluatorInter;
     private File saveVideoFile, dir;
 
@@ -196,9 +188,13 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
     private ReadyGoImageView rgivLivevideoStandReadygo;
     private LiveSoundPool liveSoundPool;
 
-    /** 是不是已经开始 */
+    /**
+     * 是不是已经开始
+     */
     private boolean isSpeechStart = false;
-    /** 是不是评测失败 */
+    /**
+     * 是不是评测失败
+     */
     private boolean isSpeechError = false;
     private Bitmap headBitmap;
     private String headUrl;
@@ -207,6 +203,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
     private String myNickName;
     private int myGold;
     private LinearLayout llLivevideoSpeectevalResultMine;
+    private SpeechParamEntity param;
     /**
      * 用来自动朗读
      */
@@ -586,28 +583,37 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
             case RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA:
                 //走英语离线测评
                 logger.i(TAG + "走英语离线测评");
-                mIse = new SpeechEvaluatorUtils(true);
+                mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
+                mIse.setLanguage(Constants.ASSESS_PARAM_LANGUAGE_EN);
 //                mIse = SpeechEvaluatorUtils.getInstance(mContext.getApplicationContext());
 
                 break;
             case RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA:
                 //走语文离线测评
                 logger.i(TAG + "走语文离线测评");
-                mIse = new SpeechEvaluatorUtils(true, com.tal.speech.speechrecognizer.Constants
+                mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
+                mIse.setLanguage(Constants
                         .ASSESS_PARAM_LANGUAGE_CH);
                 break;
             default:
                 //走英语离线测评
                 logger.i(TAG + "走英语离线测评");
-                mIse = new SpeechEvaluatorUtils(true);
+                mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
+                mIse.setLanguage(Constants.ASSESS_PARAM_LANGUAGE_EN);
 //                mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
                 break;
         }
-
-
+        mIse.prepar();
         mIse.cancel();
-        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(spechMsg, saveVideoFile.getAbsolutePath(), false,
-                new RolePlayerPager.RoleEvaluatorListener() {
+        if (param == null) {
+            param = new SpeechParamEntity();
+        }
+        param.setStrEvaluator(spechMsg);
+        param.setLocalSavePath(saveVideoFile.getAbsolutePath());
+        param.setMultRef(false);
+        param.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
+        mIse.startRecog(param,
+                new RoleEvaluatorListener() {
                     @Override
                     public void onBeginOfSpeech() {
                         logger.i("开始测评 mCurrentReadIndex = " + mCurrentReadIndex);
@@ -619,7 +625,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
                     public void onResult(ResultEntity resultEntity) {
 
                         if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
-                            logger.i("show_eva_score_suc:"+resultEntity.getSpeechDuration()
+                            logger.i("show_eva_score_suc:" + resultEntity.getSpeechDuration()
                                     + ":" + resultEntity.getScore());
                             entity.setSelfValidSpeechTime(resultEntity.getSpeechDuration());
                             //mIsEvaluatoring = false;
@@ -643,7 +649,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
                                 nextReadMessage();
                             }
                         } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
-                            logger.i("show_eva_score_error:"+resultEntity.getSpeechDuration()
+                            logger.i("show_eva_score_error:" + resultEntity.getSpeechDuration()
                                     + ":" + resultEntity.getScore());
                             isSpeechError = true;
                             //XESToastUtils.showToast(mContext, "测评失败");
@@ -1333,9 +1339,9 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            RolePlayerHeadShowAdapter.Holder holder;
+            Holder holder;
             if (convertView == null) {
-                holder = new RolePlayerHeadShowAdapter.Holder();
+                holder = new Holder();
                 convertView = View.inflate(mContext, R.layout.item_live_roleplayer_rolehead, null);
                 holder.tvNickName = convertView.findViewById(R.id.tv_live_roleplayer_item_rolehead_nickname);
                 holder.civHeadImg = convertView.findViewById(R.id.civ_roleplayer_item_rolehead_img);
@@ -1343,13 +1349,13 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
                 holder.tvRoleName = convertView.findViewById(R.id.tv_live_roleplayer_item_rolename);
                 convertView.setTag(holder);
             } else {
-                holder = (RolePlayerHeadShowAdapter.Holder) convertView.getTag();
+                holder = (Holder) convertView.getTag();
             }
             setData(lstRolePlayerHead.get(position), holder);
             return convertView;
         }
 
-        private void setData(RolePlayerEntity.RolePlayerHead entity, RolePlayerHeadShowAdapter.Holder holder) {
+        private void setData(RolePlayerEntity.RolePlayerHead entity, Holder holder) {
             holder.tvNickName.setText(entity.getNickName());
             holder.tvRoleName.setText(entity.getRoleName());
             ImageLoader.with(ContextManager.getApplication()).load(entity.getHeadImg()).into(holder.civHeadImg);
@@ -1422,4 +1428,10 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
         }
     }
 
+    /**
+     * 带PCM音频数据的回调
+     */
+    interface RoleEvaluatorListener extends EvaluatorListenerWithPCM, EvaluatorListener {
+
+    }
 }

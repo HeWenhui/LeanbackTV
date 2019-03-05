@@ -1957,15 +1957,14 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(liveVideoSAConfigInner.URL_TEMPK_GETPROGRESSSTU, params, requestCallBack);
     }
 
-}
-
-
     /**
      * go-战队pk-更新用户分组
      *
      * @param requestCallBack
      */
-    public void reportStuLike(String unique_id, String stu_id, String nick_name, String teamId, String testId, String like_info, HttpCallBack requestCallBack) {
+    public void reportStuLike(String unique_id, String stu_id, String nick_name,
+                              String teamId, String testId, String like_info,
+                              HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
         params.addBodyParam("stu_id", "" + stu_id);
