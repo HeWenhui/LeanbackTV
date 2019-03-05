@@ -26,6 +26,8 @@ public class CourseTipDialog extends BaseAlertDialog {
     @Override
     protected View initDialogLayout(int type) {
         View view = mInflater.inflate(R.layout.dialog_livevideo_courseware_answer, null);
+        TextView tvCommitTip=view.findViewById(R.id.tv_livevideo_new_course_commit_tip);
+        tvCommitTip.setText("您还有题目未作答完\n答完所有题目才能提交呦~");
         tvCommitOk = view.findViewById(R.id.tv_livevideo_new_course_commit_ok);
         tvCommitContinue = view.findViewById(R.id.tv_livevideo_new_course_commit_continue);
         tvCommitOk.setOnClickListener(new View.OnClickListener() {
@@ -37,6 +39,14 @@ public class CourseTipDialog extends BaseAlertDialog {
             }
         });
         tvCommitContinue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (onClick != null) {
+                    onClick.onCancle(view);
+                }
+            }
+        });
+        view.findViewById(R.id.iv_livevideo_new_course_commit_close).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (onClick != null) {

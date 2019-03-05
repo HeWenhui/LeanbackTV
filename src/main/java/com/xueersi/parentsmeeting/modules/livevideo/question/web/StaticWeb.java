@@ -1,33 +1,40 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.web;
 
-import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.webkit.JavascriptInterface;
 
 import com.tencent.smtt.sdk.WebView;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * Created by linyuqiang on 2019/3/5.
+ * 新课件和客户端通信
+ */
 public class StaticWeb {
-    private String TAG = "StaticWeb";
-    private Context activity;
-    private WebView mWvSubjectWeb;
+    private static String TAG = "StaticWeb";
     private OnMessage onMessage;
+    private LogToFile logToFile;
 
     public StaticWeb(Context activity, WebView wvSubjectWeb, OnMessage onMessage) {
-        this.activity = activity;
-        this.mWvSubjectWeb = wvSubjectWeb;
+        logToFile = new LogToFile(activity, TAG);
         this.onMessage = onMessage;
     }
 
     @JavascriptInterface
     public void postMessage(String jsonStr) {
-        Log.d(TAG, "postMessage:jsonStr=" + jsonStr);
+        if (!("" + jsonStr).contains("errorInfo")) {
+            logToFile.d("postMessage:jsonStr=" + jsonStr);
+        }
         try {
             JSONObject jsonObject = new JSONObject(jsonStr);
-            onMessage.postMessage(jsonObject.getJSONObject("message"), jsonObject.optString("origin"));
+            JSONObject message = jsonObject.optJSONObject("message");
+            if (message != null) {
+                String where = jsonObject.optString("where");
+                onMessage.postMessage(where, message, jsonObject.optString("origin"));
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -35,10 +42,17 @@ public class StaticWeb {
 
     public interface OnMessage {
 
-        void postMessage(JSONObject message, String origin);
+        /**
+         * @param where   assets\webview_postmessage\index.js 代码中定义
+         * @param message
+         * @param origin
+         */
+        void postMessage(String where, JSONObject message, String origin);
     }
 
     public static void sendToCourseware(WebView wvSubjectWeb, JSONObject type, String data) {
+        LogToFile logToFile = new LogToFile(wvSubjectWeb.getContext(), TAG);
+        logToFile.d("sendToCourseware:type=" + type);
         wvSubjectWeb.loadUrl("javascript:sendToCourseware(" + type + ",'" + data + "')");
     }
 }

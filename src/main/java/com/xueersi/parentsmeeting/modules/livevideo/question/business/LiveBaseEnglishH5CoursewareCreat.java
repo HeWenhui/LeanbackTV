@@ -57,11 +57,13 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
                 videoQuestionH5Entity.setEducationstage(liveGetInfo.getEducationStage());
                 if (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage)) {
                     englishH5Entity.setDynamicurl(liveGetInfo.getGetCourseWareHtmlZhongXueUrl());
-                    CoursewareNativePager h5CoursewarePager = new CoursewareNativePager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
-                            videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, mAnswerRankBll == null ? "0"
-                            : mAnswerRankBll.getIsShow(), isArts, allowTeamPk);
-                    h5CoursewarePager.setLivePagerBack(livePagerBack);
-                    return h5CoursewarePager;
+                    if (englishH5Entity.getNewEnglishH5()) {
+                        CoursewareNativePager h5CoursewarePager = new CoursewareNativePager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
+                                videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, mAnswerRankBll == null ? "0"
+                                : mAnswerRankBll.getIsShow(), isArts, allowTeamPk);
+                        h5CoursewarePager.setLivePagerBack(livePagerBack);
+                        return h5CoursewarePager;
+                    }
                 } else {
                     // TODO 理科小学
 //                    ScienceStaticConfig scienceStaticConfig = liveGetInfo.getScienceStaticConfig();

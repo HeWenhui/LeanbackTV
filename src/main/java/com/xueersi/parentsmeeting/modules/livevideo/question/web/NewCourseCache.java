@@ -11,19 +11,29 @@ import com.tencent.smtt.sdk.WebView;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 import ren.yale.android.cachewebviewlib.utils.MD5Utils;
 
+/**
+ * Created by linyuqiang on 2019/3/5.
+ * 新课件预加载
+ */
 public class NewCourseCache {
-    String eventId = "NewCourseCache_cache";
-    protected Logger logger = LiveLoggerFactory.getLogger("NewCourseCache");
+    private String eventId = "NewCourseCache_cache";
+    private String TAG = "NewCourseCache";
+    protected Logger logger = LiveLoggerFactory.getLogger(TAG);
+    LogToFile logToFile;
     private Context mContext;
     private File cacheFile;
     private File mMorecacheout;
@@ -32,9 +42,10 @@ public class NewCourseCache {
      */
     private File mPublicCacheout;
     private HashMap header;
-    WebInstertJs webInstertJs;
+    private WebInstertJs webInstertJs;
 
-    public NewCourseCache(Context mContext) {
+    public NewCourseCache(Context mContext, String liveId) {
+        logToFile = new LogToFile(mContext, TAG);
         cacheFile = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/parentsmeeting/webviewCache");
         webInstertJs = new WebInstertJs(mContext);
         if (cacheFile == null) {
@@ -47,6 +58,15 @@ public class NewCourseCache {
         if (!mPublicCacheout.exists()) {
             mPublicCacheout.mkdirs();
         }
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+        Date date = new Date();
+        final String today = dateFormat.format(date);
+        final File todayCacheDir = new File(cacheFile, today);
+        final File todayLiveCacheDir = new File(todayCacheDir, liveId);
+        mMorecacheout = new File(todayLiveCacheDir, liveId + "child");
+        if (!mMorecacheout.exists()) {
+            mMorecacheout.mkdirs();
+        }
         header = new HashMap();
         header.put("Access-Control-Allow-Origin", "*");
     }
@@ -55,7 +75,7 @@ public class NewCourseCache {
         String extension = android.webkit.MimeTypeMap.getFileExtensionFromUrl(url.toLowerCase());
         String mimeType = android.webkit.MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
         InputStream inputStream = webInstertJs.indexStream();
-        logger.d("interceptJsRequest:url=" + url + ",inputStream=" + (inputStream == null));
+        logToFile.d("interceptJsRequest:url=" + url + ",inputStream=" + (inputStream == null));
         if (inputStream != null) {
             WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "", inputStream);
             webResourceResponse.setResponseHeaders(header);
@@ -70,13 +90,14 @@ public class NewCourseCache {
         if (file != null) {
             inputStream = webInstertJs.readFile(file);
         }
+        logToFile.d("interceptIndexRequest:url=" + url + ",inputStream1=" + (inputStream == null));
         if (inputStream == null) {
             inputStream = webInstertJs.httpRequest(url);
         }
+        logToFile.d("interceptIndexRequest:url=" + url + ",inputStream2=" + (inputStream == null));
         if (inputStream != null) {
             String extension = android.webkit.MimeTypeMap.getFileExtensionFromUrl(url.toLowerCase());
             String mimeType = android.webkit.MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-            logger.d("shouldInterceptRequest:url=" + url);
             WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "", new WrapInputStream(inputStream));
             webResourceResponse.setResponseHeaders(header);
             return webResourceResponse;
@@ -84,6 +105,12 @@ public class NewCourseCache {
         return null;
     }
 
+    /**
+     * 新课件地址都带courseware_pages，和本地文件对比
+     *
+     * @param url
+     * @return
+     */
     private File getCourseWareFile(String url) {
         File file = null;
         int index = url.indexOf("courseware_pages");

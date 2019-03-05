@@ -1,17 +1,19 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.web;
 
-import android.util.Log;
-
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * Created by linyuqiang on 2019/3/5.
+ * 包裹一个输入流，可以进行关闭流
+ */
 public class WrapInputStream extends InputStream {
-    String TAG = "WrapInputStream";
-    InputStream inputStream;
-    Logger logger;
+    private String TAG = "WrapInputStream";
+    private InputStream inputStream;
+    private Logger logger;
 
     public WrapInputStream(InputStream inputStream) {
         this.inputStream = inputStream;

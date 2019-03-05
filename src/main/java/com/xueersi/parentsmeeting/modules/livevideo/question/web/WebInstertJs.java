@@ -5,6 +5,7 @@ import android.util.Log;
 import android.webkit.WebViewClient;
 
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
@@ -23,14 +24,20 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
 
+/**
+ * Created by linyuqiang on 2019/3/5.
+ * 往html中嵌入js
+ */
 public class WebInstertJs {
     String TAG = "WebInstertJs";
     Logger logger;
     Context context;
     File cacheDir;
     static long saveTime;
+    private LogToFile logToFile;
 
     public WebInstertJs(Context context) {
+        logToFile = new LogToFile(context, TAG);
         this.context = context;
         logger = LiveLoggerFactory.getLogger(TAG);
         cacheDir = LiveCacheFile.geCacheFile(context, "webview");
@@ -45,7 +52,7 @@ public class WebInstertJs {
     private InputStream insertJs(InputStream inputStream) throws Exception {
         String fileName = "index_" + saveTime + ".html";
         File saveFile = new File(cacheDir, fileName);
-        logger.d("insertJs:fileName=" + fileName + ",exists=" + saveFile.exists());
+        logToFile.d("insertJs:fileName=" + fileName + ",exists=" + saveFile.exists());
         if (saveFile.exists()) {
             return new FileInputStream(saveFile);
         }
@@ -61,6 +68,7 @@ public class WebInstertJs {
         String findStr = "</script>";
         while ((line = br.readLine()) != null) {
 //                    outputStream.write(line.getBytes());
+            //找到第一个script标签。在后面添加自己的js
             if (!addJs) {
                 int index = line.indexOf(findStr);
                 if (index != -1) {
@@ -69,7 +77,7 @@ public class WebInstertJs {
                     } else {
                         line = line.substring(0, index + findStr.length()) + "\n" + indexJs + "\n" + line.substring(index);
                     }
-                    Log.d(TAG, "httpRequest:index=" + index);
+                    logToFile.d("httpRequest:insertJs=" + index);
                     addJs = true;
                 }
             }
@@ -78,7 +86,7 @@ public class WebInstertJs {
         }
         bufferedWriter.flush();
         boolean renameTo = saveFileTmp.renameTo(saveFile);
-        logger.d("insertJs:fileName=" + fileName + ",renameTo=" + renameTo);
+        logToFile.d("insertJs:fileName=" + fileName + ",renameTo=" + renameTo);
         return new FileInputStream(saveFile);
     }
 
@@ -95,7 +103,7 @@ public class WebInstertJs {
     public InputStream httpRequest(String url) {
         String fileName = "index_" + saveTime + ".html";
         File saveFile = new File(cacheDir, fileName);
-        logger.d("httpRequest:fileName=" + fileName + ",exists=" + saveFile.exists());
+        logToFile.d("httpRequest:fileName=" + fileName + ",exists=" + saveFile.exists());
         if (saveFile.exists()) {
             try {
                 return new FileInputStream(saveFile);
@@ -138,7 +146,7 @@ public class WebInstertJs {
         } finally {
 
         }
-        Log.e(TAG, "httpRequest", dnsException);
+        logToFile.e("httpRequest", dnsException);
         return null;
     }
 
@@ -155,6 +163,6 @@ public class WebInstertJs {
     }
 
     public static String indexStr() {
-        return "https://live.xueersi.com/android/index.js";
+        return "https://live.xueersi.com/android/courseware/index.js";
     }
 }
