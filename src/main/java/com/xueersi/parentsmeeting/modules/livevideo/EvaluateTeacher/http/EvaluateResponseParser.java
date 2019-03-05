@@ -1,7 +1,7 @@
-package com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.http;
+package com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.http;
 
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.entity.EvaluateOptionEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.entity.EvaluateOptionEntity;
 
 import org.json.JSONArray;
 import org.json.JSONException;

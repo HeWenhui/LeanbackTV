@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.util.Log;
 import android.widget.RelativeLayout;
 
+import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
@@ -12,7 +13,6 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.lib.framework.utils.string.Base64;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
@@ -560,10 +560,10 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
     class EnglishH5CoursewareImpl implements EnglishH5CoursewareSecHttp {
 
         @Override
-        public void getStuGoldCount() {
+        public void getStuGoldCount(String method) {
             UpdateAchievement updateAchievement = getInstance(UpdateAchievement.class);
             if (updateAchievement != null) {
-                updateAchievement.getStuGoldCount();
+                updateAchievement.getStuGoldCount("getStuGoldCount:"+method, UpdateAchievement.GET_TYPE_QUE);
             }
         }
 

@@ -214,6 +214,12 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                 onDestroy();
             }
         });
+        view.findViewById(R.id.iv_livevideo_subject_refresh).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                wvSubjectWeb.reload();
+            }
+        });
         return view;
     }
 

@@ -11,6 +11,7 @@ import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
@@ -165,6 +166,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     bundle.putBoolean("isSmallEnglish", mGetInfo.getSmallEnglish());
                     if (mGetInfo.getIsArts() == 0) {
                         bundle.putInt("allowLinkMicNew", mGetInfo.getAllowLinkMicNew());
+                    }else {
+                        bundle.putInt("smallEnglish", mGetInfo.getSmallEnglish() ? 1 : 0);
                     }
 //                if (mGetInfo.getPattern() == 2) {
 //                    StandLiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle, -1);

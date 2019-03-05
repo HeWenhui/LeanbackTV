@@ -37,17 +37,21 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ISpeechRecogInterface;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
+import com.tal.speech.utils.SpeechEvaluatorUtils;
+import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.http.HttpCallBack;
@@ -56,9 +60,6 @@ import com.xueersi.common.permission.PermissionCallback;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.speech.SpeechConfig;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
-import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.component.cloud.XesCloudUploadBusiness;
 import com.xueersi.component.cloud.config.CloudDir;
 import com.xueersi.component.cloud.config.XesCloudConfig;
@@ -91,6 +92,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
@@ -323,7 +325,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         params.topMargin = liveVideoPoint.y3;
         logger.setLogMethod(false);
         logger.i("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
-
+        setBack();
         decorView = (ViewGroup) ((Activity) mContext).getWindow().getDecorView();
 
         int colors[] = {0x19FFA63C, 0x32FFA63C, 0x64FFC12C, 0x96FFC12C, 0xFFFFA200};
@@ -380,7 +382,12 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         mAM = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE); // 音量管理
         mMaxVolume = mAM.getStreamMaxVolume(AudioManager.STREAM_MUSIC); // 获取系统最大音量
         mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
-        speechUtils.setOnFileSuccess(new SpeechEvaluatorUtils.OnFileSuccess() {
+        speechUtils.prepar(new SpeechEvaluatorUtils.OnFileSuccess() {
+            @Override
+            public void onFileInit(int code) {
+
+            }
+
             @Override
             public void onFileSuccess() {
                 mSpeechFail = "模型正在启动，请稍后";
@@ -999,47 +1006,83 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
 
     @Override
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
-//        {
-//            setMessageLayout(liveVideoPoint, false);
+        {
+            setMessageLayout(liveVideoPoint, false);
 //
-//            int wradio = liveVideoPoint.x4 - liveVideoPoint.x3;
-//            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
-//            if (wradio != params.width || params.rightMargin != liveVideoPoint.screenWidth - liveVideoPoint.x4) {
-//                //logger.e( "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
-//                // + ",wradio=" + wradio + "," + params.width);
-//                params.width = wradio;
-//                params.rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
-////                rlInfo.setLayoutParams(params);
-//                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
-//            }
-//            if (cbMessageClock != null) {
-//                int rightMargin = liveVideoPoint.getRightMargin();
-//                params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
-//                if (params.rightMargin != rightMargin) {
-//                    params.rightMargin = rightMargin;
-////                cbMessageClock.setLayoutParams(params);
-//                    LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
-//                }
-//            }
-//        }
-//        {
-//            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlInfo.getLayoutParams();
-//            int topMargin = liveVideoPoint.y3;
-//            if (topMargin != params.topMargin) {
-//                params.topMargin = topMargin;
-////                rlInfo.setLayoutParams(params);
-//                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
-//                logger.i("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
-//            }
-//            int bottomMargin = liveVideoPoint.y2;
-//            params = (ViewGroup.MarginLayoutParams) lvMessage.getLayoutParams();
-//            if (params.bottomMargin != bottomMargin) {
-//                params.bottomMargin = bottomMargin;
-////                lvMessage.setLayoutParams(params);
-//                LayoutParamsUtil.setViewLayoutParams(lvMessage, params);
-//                //logger.e( "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
-//            }
-//        }
+//            RelativeLayout.LayoutParams sendLayoutParams = (RelativeLayout.LayoutParams) btMessageSend
+// .getLayoutParams();
+//            sendLayoutParams.setMargins(0, 0, margin, 0);
+//            btMessageSend.setLayoutParams(sendLayoutParams);
+//            RelativeLayout.LayoutParams etLayoutParams = (RelativeLayout.LayoutParams) etMessageContent
+// .getLayoutParams();
+//            etLayoutParams.setMargins(SizeUtils.Dp2Px(mContext,10), 0, margin, 0);
+//            etMessageContent.setLayoutParams(etLayoutParams);
+//            RelativeLayout.LayoutParams msvLayoutParams = (RelativeLayout.LayoutParams) btnMessageStartVoice
+// .getLayoutParams();
+//            msvLayoutParams.setMargins(SizeUtils.Dp2Px(mContext,10), 0, margin, 0);
+//            btnMessageStartVoice.setLayoutParams(etLayoutParams);
+
+            int wradio = liveVideoPoint.x4 - liveVideoPoint.x3;
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
+            if (wradio != params.width || params.rightMargin != liveVideoPoint.screenWidth - liveVideoPoint.x4) {
+                //logger.e( "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
+                // + ",wradio=" + wradio + "," + params.width);
+                params.width = wradio;
+                params.rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
+//                rlInfo.setLayoutParams(params);
+                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
+            }
+            if (cbMessageClock != null) {
+                int rightMargin = liveVideoPoint.getRightMargin();
+                params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
+                if (params.rightMargin != rightMargin) {
+                    params.rightMargin = rightMargin;
+//                cbMessageClock.setLayoutParams(params);
+                    LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
+                }
+            }
+        }
+        {
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlInfo.getLayoutParams();
+            int topMargin = liveVideoPoint.y3;
+            if (topMargin != params.topMargin) {
+                params.topMargin = topMargin;
+//                rlInfo.setLayoutParams(params);
+                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
+                logger.i("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
+            }
+            int bottomMargin = liveVideoPoint.y2;
+            params = (ViewGroup.MarginLayoutParams) lvMessage.getLayoutParams();
+            if (params.bottomMargin != bottomMargin) {
+                params.bottomMargin = bottomMargin;
+//                lvMessage.setLayoutParams(params);
+                LayoutParamsUtil.setViewLayoutParams(lvMessage, params);
+                //logger.e( "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
+            }
+        }
+        setBack();
+    }
+
+    /** app_livevideo_enteampk_bg_img1_nor */
+    private void setBack() {
+        LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+        ImageView ivBack = mView.findViewById(R.id.iv_livevideo_message_small_bg);
+        if (ivBack == null) {
+            return;
+        }
+        RelativeLayout.LayoutParams bgParams = (RelativeLayout.LayoutParams) ivBack.getLayoutParams();
+        int width = liveVideoPoint.x4 - liveVideoPoint.x3 + 2;
+        int height = width * 287 / 501;
+        int minHeight = SizeUtils.Dp2Px(mContext, 167 * 287 / 501);
+        logger.d("setBack:height=" + height + ",minHeight=" + minHeight);
+        if (height < minHeight) {
+            height = minHeight;
+        }
+        if (bgParams.width != width || bgParams.height != height) {
+            bgParams.width = width;
+            bgParams.height = height;
+            ivBack.setLayoutParams(bgParams);
+        }
     }
 
     /** 聊天开始连接 */

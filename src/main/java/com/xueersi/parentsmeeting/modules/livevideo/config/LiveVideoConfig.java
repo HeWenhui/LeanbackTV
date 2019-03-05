@@ -16,15 +16,22 @@ public class LiveVideoConfig {
 
     public static String HTTP_HOST = "https://laoshi.xueersi.com";
     public static String HTTP_PRIMARY_CHINESE_HOST = "https://app.chs.xueersi.com";
+    /** 文科的接口域名 */
+    public static String APP_ARTS_HTTP_HOST = "https://app.arts.xueersi.com";
+    /** 文科的接口域名 */
+    public static String APP_ARTS_WXEN_HTTP_HOST = "https://wxen.arts.xueersi.com";
     /** 直播辅导用户在线心跳 */
+    @Deprecated
     public final static String URL_LIVE_TUTORIAL_USER_ONLINE = LiveVideoConfig.HTTP_HOST + "/LiveTutorial/userOnline";
     /** 公开直播用户在线心跳 */
     public final static String URL_LIVE_LECTURE_USER_ONLINE = LiveVideoConfig.HTTP_HOST + "/LiveLecture/userOnline";
     /** 直播辅导领取金币 */
+    @Deprecated
     public final static String URL_LIVE_TUTORIAL_GOLD = LiveVideoConfig.HTTP_HOST + "/LiveTutorial/receiveGold";
     /** 公开直播领取金币 */
     public final static String URL_LIVE_LECTURE_GOLD = LiveVideoConfig.HTTP_HOST + "/LiveLecture/receiveGold";
     /** 直播辅导献花 */
+    @Deprecated
     public final static String URL_LIVE_TUTORIAL_PRAISE_TEACHER = LiveVideoConfig.HTTP_HOST +
             "/LiveTutorial/praiseTeacher";
     /** 直播讲座献花 */
@@ -34,6 +41,8 @@ public class LiveVideoConfig {
     public final static String URL_LIVE_GET_SPEECHEVAL = LiveVideoConfig.HTTP_HOST + "/StudyCenter/getSpeechEvalInfo";
     /** 发送语音评测答案 */
     public final static String URL_LIVE_SEND_SPEECHEVAL = LiveVideoConfig.HTTP_HOST + "/StudyCenter/submitSpeechEval";
+    /** 直播辅导发送语音评测答案 */
+    @Deprecated
     public final static String URL_LIVE_TUTORIAL_SUBMIT_TEST_ANSWER = LiveVideoConfig.HTTP_HOST +
             "/LiveTutorial/submitTestAnswer";
     /** 公开直播提交测试题 */
@@ -94,6 +103,7 @@ public class LiveVideoConfig {
     // public final static String URL_LIVE_GET_INFO = TEST_HOST + "/LiveCourse/getInfo";
 
     /** 直播辅导播放器数据初始化 */
+    @Deprecated
     public final static String URL_LIVE_TUTORIAL_GET_INFO = LiveVideoConfig.HTTP_HOST + "/LiveTutorial/initInfo";
     /** 公开直播播放器数据初始化 */
     public final static String URL_LIVE_LECTURE_GET_INFO = LiveVideoConfig.HTTP_HOST + "/LiveLecture/initInfo";
@@ -200,10 +210,14 @@ public class LiveVideoConfig {
     public static String LIVE_PLAY_ERROR = "live_play_error";
     /** 直播-学习报告截图 */
     public static String LIVE_STUDY_REPORT_IMG = "live_study_report_img";
-    /** 直播-小英语音聊天 */
+    /** 直播-小英语音聊天*/
     public static String LIVE_VOICE_CHAT = "voicechat";
-    /** 直播-小英语音弹幕 */
+    /** 直播-小英语音弹幕*/
     public static String LIVE_VOICE_BULLET = "voicebullet";
+
+    public static class ShareData {
+
+    }
 
     /**
      * 体验课互动题提交答案
@@ -372,12 +386,11 @@ public class LiveVideoConfig {
 
     /** 文科新课件平台的标识 */
     public static Boolean isNewArts = false;
-    /** 全身直播的标识 */
+    /** 全身直播的标识*/
     public static Boolean isStandLive = false;
-    /** H5语音答题新增字段 */
+    /** H5语音答题新增字段*/
     public static String userAnswer;
     public static String answer;
-
     /** 学习报告精彩瞬间 */
     public interface STUDY_REPORT {
         /** 贡献之星 */
