@@ -9,6 +9,9 @@
     <item name="iv_livevideo_new_course_time" type="id" />
     <item name="tv_livevideo_new_course_time_lable" type="id" />
     <item name="tv_livevideo_new_course_time_text" type="id" />
+    <!--对话框提示-->
+    <item name="tv_livevideo_new_course_commit_tip" type="id" />
+    <item name="iv_livevideo_new_course_commit_close" type="id" />
     <item name="v_livevideo_new_course_commit_center" type="id" />
     <item name="tv_livevideo_new_course_commit_ok" type="id" />
     <item name="tv_livevideo_new_course_commit_continue" type="id" />

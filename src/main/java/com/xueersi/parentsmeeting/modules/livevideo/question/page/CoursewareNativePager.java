@@ -83,6 +83,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private ArrayList<NewCourseSec.Test> tests = new ArrayList<>();
     private int currentIndex = 0;
     private int getAnswerType = 0;
+    /** 加载结果页 */
     private boolean loadResult = false;
     private CourseTipDialog courseTipDialog;
     private String today;
@@ -265,13 +266,16 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                                     JSONArray userAnswerContent = quesJson.optJSONArray("" + currentIndex);
                                     if (userAnswerContent != null && userAnswerContent.length() > 0) {
                                         try {
-                                            jsonData.put("type", CourseMessage.SEND_lookAnswerStatus);
-                                            JSONObject resultData = new JSONObject();
-                                            resultData.put("isCanAnswer", 1);
                                             JSONObject answerObj = userAnswerContent.getJSONObject(0);
-                                            resultData.put("userAnswerContent", answerObj.getJSONArray("userAnswerContent"));
-                                            jsonData.put("data", resultData);
-                                            StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+                                            JSONArray userAnswerContent2 = answerObj.getJSONArray("userAnswerContent");
+                                            if (userAnswerContent2.length() > 0) {
+                                                jsonData.put("type", CourseMessage.SEND_lookAnswerStatus);
+                                                JSONObject resultData = new JSONObject();
+                                                resultData.put("isCanAnswer", 1);
+                                                resultData.put("userAnswerContent", userAnswerContent2);
+                                                jsonData.put("data", resultData);
+                                                StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+                                            }
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
@@ -329,7 +333,8 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     jsonData.put("data", resultData);
                     StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
                 } catch (JSONException e) {
-                    e.printStackTrace();
+                    CrashReport.postCatchedException(e);
+                    mLogtf.e("ivCourseSubmit", e);
                 }
                 getAnswerType = 3;
             }
@@ -369,11 +374,15 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         JSONObject jsonObject = getTodayLive(string);
         if (jsonObject != null) {
             try {
-                JSONObject todayLiveObj = jsonObject.getJSONObject(liveId);
-                String queskey = englishH5Entity.getPackageId().hashCode() + "-" + englishH5Entity.getReleasedPageInfos().hashCode();
-                quesJson = todayLiveObj.optJSONObject("ques-" + queskey);
+                JSONObject todayObj = jsonObject.getJSONObject("todaylive");
+                if (todayObj.has(liveId)) {
+                    JSONObject todayLiveObj = todayObj.getJSONObject(liveId);
+                    String queskey = englishH5Entity.getPackageId().hashCode() + "-" + englishH5Entity.getReleasedPageInfos().hashCode();
+                    quesJson = todayLiveObj.optJSONObject("ques-" + queskey);
+                }
             } catch (JSONException e) {
-                e.printStackTrace();
+                CrashReport.postCatchedException(e);
+                mLogtf.e("getTodayQues", e);
             }
         }
     }
@@ -401,6 +410,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             return jsonObject;
         } catch (Exception e) {
             CrashReport.postCatchedException(e);
+            mLogtf.e("getTodayLive", e);
         }
         return null;
     }
@@ -410,7 +420,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             String string = mShareDataManager.getString(LiveQueConfig.LIVE_STUDY_REPORT_IMG, "{}", ShareDataManager.SHAREDATA_USER);
             JSONObject jsonObject = getTodayLive(string);
             if (jsonObject != null) {
-                JSONObject todayLiveObj = jsonObject.getJSONObject(liveId);
+                JSONObject todayLiveObj = jsonObject.getJSONObject("todaylive").getJSONObject(liveId);
                 String queskey = englishH5Entity.getPackageId().hashCode() + "-" + englishH5Entity.getReleasedPageInfos().hashCode();
                 JSONObject ques = todayLiveObj.optJSONObject("ques-" + queskey);
                 if (ques == null) {
@@ -422,8 +432,8 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 mShareDataManager.put(LiveQueConfig.LIVE_STUDY_REPORT_IMG, "" + jsonObject, ShareDataManager.SHAREDATA_USER);
             }
         } catch (Exception e) {
-            mLogtf.e("live_new_course_que_save", e);
             CrashReport.postCatchedException(e);
+            mLogtf.e("saveThisQues", e);
         }
     }
 
@@ -455,63 +465,73 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
 
     @Override
     public void submitData() {
-        JSONObject jsonData = new JSONObject();
-        try {
-            jsonData.put("type", "getAnswer");
-            JSONObject resultData = new JSONObject();
-            jsonData.put("data", resultData);
-            StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
-        } catch (JSONException e) {
-            e.printStackTrace();
+        if (loadResult) {
+            wvSubjectWeb.loadUrl(jsClientSubmit);
+        } else {
+            JSONObject jsonData = new JSONObject();
+            try {
+                jsonData.put("type", "getAnswer");
+                JSONObject resultData = new JSONObject();
+                jsonData.put("data", resultData);
+                StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+            } catch (JSONException e) {
+                CrashReport.postCatchedException(e);
+                mLogtf.e("submitData", e);
+            }
+            getAnswerType = 4;
+            if (courseTipDialog != null) {
+                courseTipDialog.cancelDialog();
+            }
+            courseTipDialog = null;
         }
-        getAnswerType = 4;
-        if (courseTipDialog != null) {
-            courseTipDialog.cancelDialog();
-        }
-        courseTipDialog = null;
     }
 
     private void submit(final int isforce, String nonce) {
-        JSONObject testInfos = new JSONObject();
-        for (int i = 0; i < tests.size(); i++) {
-            NewCourseSec.Test test = tests.get(i);
-            JSONObject json = test.getJson();
-            JSONArray userAnswerContent = test.getUserAnswerContent();
-            try {
-                if (userAnswerContent == null) {
-                    userAnswerContent = new JSONArray();
-                    JSONObject jsonObject = new JSONObject();
-                    JSONArray array = new JSONArray();
-                    jsonObject.put("userAnswerContent", array);
+        if (loadResult) {
+            wvSubjectWeb.loadUrl(jsClientSubmit);
+        } else {
+            JSONObject testInfos = new JSONObject();
+            for (int i = 0; i < tests.size(); i++) {
+                NewCourseSec.Test test = tests.get(i);
+                JSONObject json = test.getJson();
+                JSONArray userAnswerContent = test.getUserAnswerContent();
+                try {
+                    if (userAnswerContent == null) {
+                        userAnswerContent = new JSONArray();
+                        JSONObject jsonObject = new JSONObject();
+                        JSONArray array = new JSONArray();
+                        jsonObject.put("userAnswerContent", array);
+                    }
+                    json.put("index", i);
+                    json.put("hasAnswer", 0);
+                    json.put("userAnswerStatus", userAnswerContent.length() > 0 ? 1 : 0);
+                    json.put("endTime", System.currentTimeMillis() / 1000);
+                    json.put("userAnswerContent", userAnswerContent);
+                    testInfos.put(test.getId(), json);
+                } catch (JSONException e) {
+                    CrashReport.postCatchedException(e);
+                    mLogtf.e("submit", e);
                 }
-                json.put("index", i);
-                json.put("hasAnswer", 0);
-                json.put("userAnswerStatus", userAnswerContent.length() > 0 ? 1 : 0);
-                json.put("endTime", System.currentTimeMillis() / 1000);
-                json.put("userAnswerContent", userAnswerContent);
-                testInfos.put(test.getId(), json);
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
-        }
-        englishH5CoursewareSecHttp.submitCourseWareTests(detailInfo, isforce, nonce, entranceTime, testInfos.toString(), new AbstractBusinessDataCallBack() {
-            @Override
-            public void onDataSucess(Object... objData) {
-                JSONObject jsonObject = (JSONObject) objData[0];
-                int toAnswered = jsonObject.optInt("toAnswered");
-                rlCourseControl.setVisibility(View.GONE);
-                String url = englishH5CoursewareSecHttp.getResultUrl(detailInfo, isforce, "");
-                loadResult = true;
-                wvSubjectWeb.loadUrl(url);
-            }
+            englishH5CoursewareSecHttp.submitCourseWareTests(detailInfo, isforce, nonce, entranceTime, testInfos.toString(), new AbstractBusinessDataCallBack() {
+                @Override
+                public void onDataSucess(Object... objData) {
+                    JSONObject jsonObject = (JSONObject) objData[0];
+                    int toAnswered = jsonObject.optInt("toAnswered");
+                    rlCourseControl.setVisibility(View.GONE);
+                    String url = englishH5CoursewareSecHttp.getResultUrl(detailInfo, isforce, "");
+                    loadResult = true;
+                    wvSubjectWeb.loadUrl(url);
+                }
 
-            @Override
-            public void onDataFail(int errStatus, String failMsg) {
-                super.onDataFail(errStatus, failMsg);
+                @Override
+                public void onDataFail(int errStatus, String failMsg) {
+                    super.onDataFail(errStatus, failMsg);
 //                String url = englishH5CoursewareSecHttp.getResultUrl(detailInfo, isforce, "");
 //                wvSubjectWeb.loadUrl(url);
-            }
-        });
+                }
+            });
+        }
     }
 
     @Override
@@ -539,8 +559,6 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     }
                 }
             }
-        } else {
-            wvSubjectWeb.loadUrl(jsClientSubmit);
         }
     }
 

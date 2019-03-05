@@ -27,7 +27,10 @@ public class StaticWeb {
         Log.d(TAG, "postMessage:jsonStr=" + jsonStr);
         try {
             JSONObject jsonObject = new JSONObject(jsonStr);
-            onMessage.postMessage(jsonObject.getJSONObject("message"), jsonObject.optString("origin"));
+            JSONObject message = jsonObject.optJSONObject("message");
+            if (message != null) {
+                onMessage.postMessage(message, jsonObject.optString("origin"));
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
