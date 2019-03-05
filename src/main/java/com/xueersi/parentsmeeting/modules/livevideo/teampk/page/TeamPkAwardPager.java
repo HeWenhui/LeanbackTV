@@ -55,6 +55,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportAction;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCutImage;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CoinAwardDisplayer;
@@ -833,7 +834,7 @@ public class TeamPkAwardPager extends TeamPkBasePager {
                                 resultBitmap = ((GifDrawable) drawable).getFirstFrame();
                             }
                             if (resultBitmap != null) {
-                                Bitmap circleBitmap = scaleBitmap(resultBitmap, Math.min(resultBitmap.getWidth(),
+                                Bitmap circleBitmap = LiveCutImage.scaleBitmap(resultBitmap, Math.min(resultBitmap.getWidth(),
                                         resultBitmap.getHeight()) / 2);
                                 ivHead.setImageBitmap(circleBitmap);
                             }
@@ -908,20 +909,5 @@ public class TeamPkAwardPager extends TeamPkBasePager {
         if (soundPoolHelper != null) {
             soundPoolHelper.release();
         }
-    }
-
-
-    public static Bitmap scaleBitmap(Bitmap input, int radius) {
-        Bitmap result = Bitmap.createBitmap(radius * 2, radius * 2, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(result);
-        Rect src = new Rect(0, 0, input.getWidth(), input.getHeight());
-        Rect dst = new Rect(0, 0, radius * 2, radius * 2);
-        Path path = new Path();
-        path.addCircle(radius, radius, radius, Path.Direction.CCW);
-        canvas.clipPath(path);
-        Paint paint = new Paint();
-        paint.setFlags(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
-        canvas.drawBitmap(input, src, dst, paint);
-        return result;
     }
 }

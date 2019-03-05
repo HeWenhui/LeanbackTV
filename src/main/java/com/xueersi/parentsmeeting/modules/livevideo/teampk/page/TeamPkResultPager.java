@@ -42,6 +42,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAdversaryEntity
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkResultLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportAction;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCutImage;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ContributionLayoutManager;
@@ -303,7 +304,7 @@ public class TeamPkResultPager extends TeamPkBasePager {
                         @Override
                         public void onSuccess(Drawable drawable) {
                             Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
-                            Bitmap resultBitmap = scaleBitmap(headBitmap, Math.min(headBitmap.getWidth(), headBitmap
+                            Bitmap resultBitmap = LiveCutImage.scaleBitmap(headBitmap, Math.min(headBitmap.getWidth(), headBitmap
                                     .getHeight()) / 2);
                             ivMyTeacherHead.setImageBitmap(resultBitmap);
                         }
@@ -319,7 +320,7 @@ public class TeamPkResultPager extends TeamPkBasePager {
                         @Override
                         public void onSuccess(Drawable drawable) {
                             Bitmap headBitmap = ((BitmapDrawable) drawable).getBitmap();
-                            Bitmap resultBitmap = scaleBitmap(headBitmap, Math.min(headBitmap.getWidth(), headBitmap
+                            Bitmap resultBitmap = LiveCutImage.scaleBitmap(headBitmap, Math.min(headBitmap.getWidth(), headBitmap
                                     .getHeight()) / 2);
                             ivOtherTeacherHead.setImageBitmap(resultBitmap);
                         }
@@ -423,7 +424,7 @@ public class TeamPkResultPager extends TeamPkBasePager {
                         headBitmap = ((GifDrawable) drawable).getFirstFrame();
                     }
                     if (headBitmap != null) {
-                        Bitmap resultBitmap = scaleBitmap(headBitmap, Math.min(headBitmap.getWidth(), headBitmap
+                        Bitmap resultBitmap = LiveCutImage.scaleBitmap(headBitmap, Math.min(headBitmap.getWidth(), headBitmap
                                 .getHeight()) / 2);
                         ivHead.setImageBitmap(resultBitmap);
                     }
@@ -755,25 +756,6 @@ public class TeamPkResultPager extends TeamPkBasePager {
         }
         lottieAnimationView.addAnimatorListener(new PkAnimListener(ANIM_TYPE_PK_REUSLT, pkResult));
     }
-
-
-    public static Bitmap scaleBitmap(Bitmap input, int radius) {
-
-        Bitmap result = Bitmap.createBitmap(radius * 2, radius * 2, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(result);
-
-        Rect src = new Rect(0, 0, input.getWidth(), input.getHeight());
-        Rect dst = new Rect(0, 0, radius * 2, radius * 2);
-
-        Path path = new Path();
-        path.addCircle(radius, radius, radius, Path.Direction.CCW);
-        canvas.clipPath(path);
-        Paint paint = new Paint();
-        paint.setFlags(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
-        canvas.drawBitmap(input, src, dst, paint);
-        return result;
-    }
-
 
     private void startTimeCountDow(int duration) {
         rlCloseBtnCotainer.setVisibility(View.VISIBLE);
