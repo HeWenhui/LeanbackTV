@@ -43,7 +43,7 @@
             android:layout_marginTop="45dp"
             android:src="@drawable/selector_live_enpk_shell_window_guanbi_btn"
             android:id="@id/iv_arts_answer_result_close_btn"
-            android:visibility="invisible"
+            android:visibility="gone"
             />
 
         <com.xueersi.parentsmeeting.modules.livevideo.widget.FastScrollableRecyclerView
