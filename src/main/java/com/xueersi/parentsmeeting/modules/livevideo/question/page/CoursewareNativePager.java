@@ -76,9 +76,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private ImageView iv_livevideo_subject_refresh;
     private TextView tvCourseNum;
     private ImageView ivLoading;
-    private Button ivCoursePre;
-    private Button ivCourseNext;
-    private Button ivCourseSubmit;
+    private Button btCoursePre;
+    private Button btCourseNext;
+    private Button btCourseSubmit;
     private NewCourseCache newCourseCache;
     private boolean addJs = false;
     private ArrayList<NewCourseSec.Test> tests = new ArrayList<>();
@@ -133,9 +133,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         pgCourseProg = view.findViewById(R.id.pg_livevideo_new_course_prog);
         rlCourseControl = view.findViewById(R.id.rl_livevideo_new_course_control);
         tvCourseTimeText = view.findViewById(R.id.tv_livevideo_new_course_time_text);
-        ivCoursePre = view.findViewById(R.id.iv_livevideo_new_course_pre);
-        ivCourseNext = view.findViewById(R.id.iv_livevideo_new_course_next);
-        ivCourseSubmit = view.findViewById(R.id.iv_livevideo_new_course_submit);
+        btCoursePre = view.findViewById(R.id.bt_livevideo_new_course_pre);
+        btCourseNext = view.findViewById(R.id.bt_livevideo_new_course_next);
+        btCourseSubmit = view.findViewById(R.id.bt_livevideo_new_course_submit);
         return view;
     }
 
@@ -146,14 +146,14 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         Date date = new Date();
         today = dateFormat.format(date);
         getTodayQues();
-        newCourseCache = new NewCourseCache(mContext);
+        newCourseCache = new NewCourseCache(mContext, liveId);
         addJavascriptInterface();
         wvSubjectWeb.setWebChromeClient(new BaseCoursewareNativePager.MyWebChromeClient());
         wvSubjectWeb.setWebViewClient(new CourseWebViewClient());
         wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, new StaticWeb.OnMessage() {
 
             @Override
-            public void postMessage(final JSONObject message, String origin) {
+            public void postMessage(String where, final JSONObject message, String origin) {
                 try {
                     String type = message.getString("type");
                     if (CourseMessage.REC_close.equals(type)) {
@@ -168,14 +168,14 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     } else if (CourseMessage.REC_answer.equals(type)) {
                         onAnswer(message);
                     } else if (CourseMessage.REC_loadComplete.equals(type)) {
-                        onLoadComplete(message);
+                        onLoadComplete(where, message);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         }), "xesApp");
-        ivCoursePre.setOnClickListener(new View.OnClickListener() {
+        btCoursePre.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 JSONObject jsonData = new JSONObject();
@@ -188,11 +188,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     e.printStackTrace();
                 }
                 getAnswerType = LiveQueConfig.GET_ANSWERTYPE_PRE;
-                ivCoursePre.setEnabled(false);
-                ivCourseNext.setEnabled(false);
+                btCoursePre.setEnabled(false);
+                btCourseNext.setEnabled(false);
             }
         });
-        ivCourseNext.setOnClickListener(new View.OnClickListener() {
+        btCourseNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 JSONObject jsonData = new JSONObject();
@@ -205,11 +205,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     e.printStackTrace();
                 }
                 getAnswerType = LiveQueConfig.GET_ANSWERTYPE_NEXT;
-                ivCoursePre.setEnabled(false);
-                ivCourseNext.setEnabled(false);
+                btCoursePre.setEnabled(false);
+                btCourseNext.setEnabled(false);
             }
         });
-        ivCourseSubmit.setOnClickListener(new View.OnClickListener() {
+        btCourseSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 JSONObject jsonData = new JSONObject();
@@ -220,7 +220,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
                 } catch (JSONException e) {
                     CrashReport.postCatchedException(e);
-                    mLogtf.e("ivCourseSubmit", e);
+                    mLogtf.e("btCourseSubmit", e);
                 }
                 getAnswerType = LiveQueConfig.GET_ANSWERTYPE_SUBMIT;
             }
@@ -387,7 +387,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 } else {
                     if (getAnswerType == LiveQueConfig.GET_ANSWERTYPE_PRE) {
                         currentIndex--;
-                        ivCourseSubmit.setVisibility(View.GONE);
+                        btCourseSubmit.setVisibility(View.GONE);
                     } else if (getAnswerType == LiveQueConfig.GET_ANSWERTYPE_NEXT) {
                         currentIndex++;
                     }
@@ -403,11 +403,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         });
     }
 
-    private void onLoadComplete(JSONObject message) {
-        if(message.has("postMessage")){
-            handler.post(new Runnable() {
-                @Override
-                public void run() {
+    private void onLoadComplete(final String where, final JSONObject message) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if ("postMessage".equals(where)) {
                     JSONObject jsonData = new JSONObject();
                     if (quesJson != null) {
                         JSONArray userAnswerContent = quesJson.optJSONArray("" + currentIndex);
@@ -428,30 +428,30 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                             }
                         }
                     }
-                    setViewEnable("onLoadComplete");
                 }
-            });
-        }
+                setViewEnable("onLoadComplete");
+            }
+        });
     }
 
     private void setViewEnable(String method) {
         mLogtf.d("setViewEnable:method=" + method);
         if (currentIndex == 0) {
-            ivCoursePre.setEnabled(false);
+            btCoursePre.setEnabled(false);
             if (tests.size() > 0) {
-                ivCourseNext.setEnabled(true);
+                btCourseNext.setEnabled(true);
             }
         } else if (currentIndex == tests.size() - 1) {
-            ivCourseNext.setEnabled(false);
-            ivCourseNext.setVisibility(View.INVISIBLE);
-            ivCourseSubmit.setVisibility(View.VISIBLE);
+            btCourseNext.setEnabled(false);
+            btCourseNext.setVisibility(View.INVISIBLE);
+            btCourseSubmit.setVisibility(View.VISIBLE);
             if (tests.size() > 0) {
-                ivCoursePre.setEnabled(true);
+                btCoursePre.setEnabled(true);
             }
         } else {
-            ivCoursePre.setEnabled(true);
-            ivCourseNext.setVisibility(View.VISIBLE);
-            ivCourseNext.setEnabled(true);
+            btCoursePre.setEnabled(true);
+            btCourseNext.setVisibility(View.VISIBLE);
+            btCourseNext.setEnabled(true);
         }
     }
 
@@ -611,6 +611,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     if (tests.isEmpty()) {
                         XESToastUtils.showToast(mContext, "互动题为空");
                         return;
+                    }
+                    if (tests.size() == 1) {
+                        btCoursePre.setVisibility(View.GONE);
+                        btCourseNext.setVisibility(View.GONE);
+                        btCourseSubmit.setVisibility(View.VISIBLE);
                     }
                     if (quesJson != null) {
                         for (int i = 0; i < tests.size(); i++) {

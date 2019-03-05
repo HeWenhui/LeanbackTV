@@ -28,7 +28,8 @@ public class StaticWeb {
             JSONObject jsonObject = new JSONObject(jsonStr);
             JSONObject message = jsonObject.optJSONObject("message");
             if (message != null) {
-                onMessage.postMessage(message, jsonObject.optString("origin"));
+                String where = jsonObject.optString("where");
+                onMessage.postMessage(where, message, jsonObject.optString("origin"));
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -37,7 +38,12 @@ public class StaticWeb {
 
     public interface OnMessage {
 
-        void postMessage(JSONObject message, String origin);
+        /**
+         * @param where   assets\webview_postmessage\index.js 代码中定义
+         * @param message
+         * @param origin
+         */
+        void postMessage(String where, JSONObject message, String origin);
     }
 
     public static void sendToCourseware(WebView wvSubjectWeb, JSONObject type, String data) {

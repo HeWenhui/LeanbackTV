@@ -18,7 +18,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 import ren.yale.android.cachewebviewlib.utils.MD5Utils;
 
@@ -37,7 +40,7 @@ public class NewCourseCache {
     private HashMap header;
     private WebInstertJs webInstertJs;
 
-    public NewCourseCache(Context mContext) {
+    public NewCourseCache(Context mContext, String liveId) {
         logToFile = new LogToFile(mContext, TAG);
         cacheFile = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/parentsmeeting/webviewCache");
         webInstertJs = new WebInstertJs(mContext);
@@ -50,6 +53,15 @@ public class NewCourseCache {
         mPublicCacheout = new File(cacheFile, EnglishH5Cache.mPublicCacheoutName);
         if (!mPublicCacheout.exists()) {
             mPublicCacheout.mkdirs();
+        }
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+        Date date = new Date();
+        final String today = dateFormat.format(date);
+        final File todayCacheDir = new File(cacheFile, today);
+        final File todayLiveCacheDir = new File(todayCacheDir, liveId);
+        mMorecacheout = new File(todayLiveCacheDir, liveId + "child");
+        if (!mMorecacheout.exists()) {
+            mMorecacheout.mkdirs();
         }
         header = new HashMap();
         header.put("Access-Control-Allow-Origin", "*");

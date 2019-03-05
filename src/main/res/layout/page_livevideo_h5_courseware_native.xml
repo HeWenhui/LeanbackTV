@@ -69,12 +69,12 @@
                 android:textSize="18sp" />
 
             <Button
-                android:id="@id/iv_livevideo_new_course_pre"
+                android:id="@id/bt_livevideo_new_course_pre"
                 android:layout_width="84dp"
                 android:layout_height="30dp"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="10dp"
-                android:layout_toLeftOf="@id/iv_livevideo_new_course_next"
+                android:layout_toLeftOf="@id/bt_livevideo_new_course_next"
                 android:background="@drawable/selector_livevideo_course_pre_next"
                 android:enabled="false"
                 android:text="上一题"
@@ -82,7 +82,7 @@
                 android:textSize="16sp" />
 
             <Button
-                android:id="@id/iv_livevideo_new_course_next"
+                android:id="@id/bt_livevideo_new_course_next"
                 android:layout_width="84dp"
                 android:layout_height="30dp"
                 android:layout_alignParentRight="true"
@@ -95,7 +95,7 @@
                 android:textSize="16sp" />
 
             <Button
-                android:id="@id/iv_livevideo_new_course_submit"
+                android:id="@id/bt_livevideo_new_course_submit"
                 android:layout_width="84dp"
                 android:layout_height="30dp"
                 android:layout_alignParentRight="true"

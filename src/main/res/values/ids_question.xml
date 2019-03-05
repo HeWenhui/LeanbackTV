@@ -3,9 +3,9 @@
     <item name="pg_livevideo_new_course_prog" type="id" />
     <item name="rl_livevideo_new_course_control" type="id" />
     <item name="tv_livevideo_new_course_num" type="id" />
-    <item name="iv_livevideo_new_course_pre" type="id" />
-    <item name="iv_livevideo_new_course_next" type="id" />
-    <item name="iv_livevideo_new_course_submit" type="id" />
+    <item name="bt_livevideo_new_course_pre" type="id" />
+    <item name="bt_livevideo_new_course_next" type="id" />
+    <item name="bt_livevideo_new_course_submit" type="id" />
     <item name="iv_livevideo_new_course_time" type="id" />
     <item name="tv_livevideo_new_course_time_lable" type="id" />
     <item name="tv_livevideo_new_course_time_text" type="id" />
