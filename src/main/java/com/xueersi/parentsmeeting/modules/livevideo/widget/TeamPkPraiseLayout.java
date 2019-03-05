@@ -97,6 +97,10 @@ public class TeamPkPraiseLayout extends FrameLayout {
     private static final float MUSIC_VOLUME_RATIO_FRONT = 0.8f;
     private SoundPoolHelper soundPoolHelper;
 
+    private static final String LOTTIE_CACHE_KEY_PRAISE_LOOP = "priase_loop";
+    private static final String LOTTIE_CACHE_KEY_PRAISE_CLICK = "priase_click";
+
+
     public TeamPkPraiseLayout(@NonNull Context context) {
         this(context, null);
     }
@@ -282,6 +286,8 @@ public class TeamPkPraiseLayout extends FrameLayout {
     }
 
 
+
+
     private void playClickAnim() {
         playClickSound();
         loopAnimationView.setVisibility(GONE);
@@ -291,7 +297,7 @@ public class TeamPkPraiseLayout extends FrameLayout {
             String lottieResPath = ANIM_RES_DIR + "click/images";
             String lottieJsonPath = ANIM_RES_DIR + "click/data.json";
             final LottieEffectInfo effectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
-            clickAnimView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(getContext()));
+            clickAnimView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(getContext()), LOTTIE_CACHE_KEY_PRAISE_CLICK);
             clickAnimView.useHardwareAcceleration(true);
             clickAnimView.setRepeatCount(0);
             clickAnimView.setImageAssetDelegate(new ImageAssetDelegate() {
@@ -312,7 +318,7 @@ public class TeamPkPraiseLayout extends FrameLayout {
         String lottieResPath = ANIM_RES_DIR + "loop/images";
         String lottieJsonPath = ANIM_RES_DIR + "loop/data.json";
         final LottieEffectInfo effectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
-        loopAnimationView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(getContext()));
+        loopAnimationView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(getContext()),LOTTIE_CACHE_KEY_PRAISE_LOOP);
         loopAnimationView.useHardwareAcceleration(true);
         loopAnimationView.setRepeatCount(-1);
         loopAnimationView.setImageAssetDelegate(new ImageAssetDelegate() {

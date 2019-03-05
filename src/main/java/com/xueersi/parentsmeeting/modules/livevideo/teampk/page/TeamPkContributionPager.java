@@ -153,6 +153,7 @@ public class TeamPkContributionPager extends TeamPkBasePager {
     private List<AnimInfo> animInfos;
 
 
+    private static final String LOTTIE_CACHE_KEY_RANK = "contribution_rank";
 
 
     private void showContributionStar() {
@@ -187,7 +188,7 @@ public class TeamPkContributionPager extends TeamPkBasePager {
         buildAnimInfo(effectInfo);
 
         animationView.useHardwareAcceleration(true);
-        animationView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext));
+        animationView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext),LOTTIE_CACHE_KEY_RANK);
         animationView.setImageAssetDelegate(new ImageAssetDelegate() {
             @Override
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
