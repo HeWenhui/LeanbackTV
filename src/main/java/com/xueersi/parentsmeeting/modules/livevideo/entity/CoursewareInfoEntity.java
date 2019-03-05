@@ -1,7 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
-import com.airbnb.lottie.L;
-
 import java.util.List;
 
 /**
@@ -74,7 +72,7 @@ public class CoursewareInfoEntity {
         /** 课件id*/
         String liveId;
         long stime;
-        List<CoursewareInfo> coursewareInfos;
+        List<ItemCoursewareInfo> coursewareInfos;
 
         public String getLiveId() {
             return liveId;
@@ -92,15 +90,15 @@ public class CoursewareInfoEntity {
             this.stime = stime;
         }
 
-        public List<CoursewareInfo> getCoursewareInfos() {
+        public List<ItemCoursewareInfo> getCoursewareInfos() {
             return coursewareInfos;
         }
 
-        public void setCoursewareInfos(List<CoursewareInfo> coursewareInfos) {
+        public void setCoursewareInfos(List<ItemCoursewareInfo> coursewareInfos) {
             this.coursewareInfos = coursewareInfos;
         }
     }
-    public static class CoursewareInfo{
+    public static class ItemCoursewareInfo {
         /** 页面包ID*/
         String packageId;
         /** 页面ID*/

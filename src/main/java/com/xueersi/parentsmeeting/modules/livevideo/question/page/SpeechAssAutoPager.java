@@ -22,6 +22,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.PhoneScore;
@@ -30,12 +31,11 @@ import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.speechrecognizer.TalSpeech;
+import com.tal.speech.utils.SpeechUtils;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.umeng.analytics.MobclickAgent;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.common.speech.SpeechConfig;
-import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -393,6 +393,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         if (mIse == null) {
 //            mIse = new SpeechEvaluatorUtils(true);
             mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
+            mIse.prepar();
         }
         Map<String, String> mData = new HashMap<>();
         mData.put("logtype", "startRecord");

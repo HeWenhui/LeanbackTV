@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager;
+package com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.pager;
 
 import android.content.Context;
 import android.view.View;

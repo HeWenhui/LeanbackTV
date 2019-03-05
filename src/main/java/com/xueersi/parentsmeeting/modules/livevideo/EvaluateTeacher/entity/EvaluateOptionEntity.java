@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.entity;
+package com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.entity;
 
 import java.util.HashMap;
 import java.util.List;
