@@ -21,9 +21,12 @@ import org.xutils.xutils.common.util.MD5;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import ren.yale.android.cachewebviewlib.utils.MD5Utils;
@@ -62,6 +65,8 @@ public class CoursewarePreload {
         this.mHttpManager = mHttpManager;
     }
 
+    List<CoursewareInfoEntity> courseWareInfos = new CopyOnWriteArrayList<>();
+
     /**
      * 获取课件信息
      */
@@ -86,11 +91,20 @@ public class CoursewarePreload {
         }
     }
 
-    class CoursewareHttpCallBack extends HttpCallBack {
 
+    class CoursewareHttpCallBack extends HttpCallBack {
         @Override
         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
             CoursewareInfoEntity coursewareInfoEntity = liveHttpResponseParser.parseCoursewareInfo(responseEntity);
+            courseWareInfos.add(coursewareInfoEntity);
+            if (courseWareInfos.size() == 3) {
+                Collections.sort(courseWareInfos, new Comparator<CoursewareInfoEntity>() {
+                    @Override
+                    public int compare(CoursewareInfoEntity o1, CoursewareInfoEntity o2) {
+
+                    }
+                });
+            }
             //直播资源列表
             List<CoursewareInfoEntity.LiveCourseware> liveCoursewareList = coursewareInfoEntity.getCoursewaresList();
             //cdns列表
@@ -152,7 +166,7 @@ public class CoursewarePreload {
                     final File save = new File(mPublicCacheout, fileName);
                     if (!fileIsExists(save.getAbsolutePath())) {
                         logger.d("resource zip url path:  " + ip + url + "   file name:" + fileName + ".zip");
-                        DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(ip + url, mPublicCacheout.getAbsolutePath(), fileName+".temp", "");
+                        DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(ip + url, mPublicCacheout.getAbsolutePath(), fileName + ".temp", "");
                         downLoadInfo.setHost(cdn);
                         final DownLoader downLoader = new DownLoader(mContext, downLoadInfo);
                         downLoader.start(new ZipDownloadListener(mPublicCacheout, mPublicCacheout, fileName, ips, cdns, url, "", downTryCount));
@@ -162,7 +176,7 @@ public class CoursewarePreload {
                     final File save = new File(mPublicCacheout, fileName);
                     if (!fileIsExists(save.getPath())) {
                         logger.d("resource ttf url path:  " + ip + url + "   file name:" + fileName + ".zip");
-                        DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(ip + url, mPublicCacheout.getAbsolutePath(), fileName+".temp", "");
+                        DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(ip + url, mPublicCacheout.getAbsolutePath(), fileName + ".temp", "");
                         final DownLoader downLoader = new DownLoader(mContext, downLoadInfo);
                         downLoader.start(new NoZipDownloadListener(mPublicCacheout, mPublicCacheout, fileName, ips, cdns, url, "", downTryCount));
                     }
@@ -193,12 +207,12 @@ public class CoursewarePreload {
             final String resourceName = MD5.md5(coursewareInfo.getResourceUrl()) + ".zip";
             File resourceSave = new File(mMorecachein, resourceName);
             boolean equals = false;
-            if (fileIsExists(resourceSave.getAbsolutePath())){
+            if (fileIsExists(resourceSave.getAbsolutePath())) {
                 String filemd5 = FileUtils.getFileMD5ToString(resourceSave);
                 equals = coursewareInfo.getMd5().equalsIgnoreCase(filemd5);
             }
-            if (!fileIsExists(resourceSave.getAbsolutePath())||(fileIsExists(resourceSave.getAbsolutePath())&& !equals)) {
-                DownLoadInfo resourceDownLoadInfo = DownLoadInfo.createFileInfo(ip + coursewareInfo.getResourceUrl(), mMorecachein.getAbsolutePath(), resourceName+".temp", coursewareInfo.getMd5());
+            if (!fileIsExists(resourceSave.getAbsolutePath()) || (fileIsExists(resourceSave.getAbsolutePath()) && !equals)) {
+                DownLoadInfo resourceDownLoadInfo = DownLoadInfo.createFileInfo(ip + coursewareInfo.getResourceUrl(), mMorecachein.getAbsolutePath(), resourceName + ".temp", coursewareInfo.getMd5());
                 resourceDownLoadInfo.setHost(cdn);
                 DownLoader resourceDownLoader = new DownLoader(mContext, resourceDownLoadInfo);
                 resourceDownLoader.setDownloadThreadCount(mDownloadThreadCount);
@@ -209,7 +223,7 @@ public class CoursewarePreload {
             final String templateName = MD5.md5(coursewareInfo.getTemplateUrl()) + ".zip";
             File templateSave = new File(mMorecachein, resourceName);
             if (!fileIsExists(templateSave.getAbsolutePath())) {
-                DownLoadInfo templateDownLoadInfo = DownLoadInfo.createFileInfo(ip + coursewareInfo.getTemplateUrl(), mMorecachein.getAbsolutePath(), templateName+".temp", "");
+                DownLoadInfo templateDownLoadInfo = DownLoadInfo.createFileInfo(ip + coursewareInfo.getTemplateUrl(), mMorecachein.getAbsolutePath(), templateName + ".temp", "");
                 logger.d("template url path:  " + ip + coursewareInfo.getTemplateUrl() + "   file name:" + templateName + ".zip");
                 templateDownLoadInfo.setHost(cdn);
                 DownLoader templateDownLoader = new DownLoader(mContext, templateDownLoadInfo);
@@ -272,8 +286,8 @@ public class CoursewarePreload {
         @Override
         public void onSuccess(String folderPath, String fileName) {
             logger.d("download success");
-            File tempFile = new File(folderPath,fileName);
-            File file = new File(folderPath,mFileName);
+            File tempFile = new File(folderPath, fileName);
+            File file = new File(folderPath, mFileName);
             boolean rename = tempFile.renameTo(file);
             new ZipExtractorTask(file, mMorecacheout, true, new Progresses()).execute();
         }
@@ -286,7 +300,7 @@ public class CoursewarePreload {
             logger.d("download fail trycount" + tryCount);
             if (tryCount < cdns.size()) {
                 int index = cdns.get(tryCount).indexOf("/") + 2;
-                DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(ip + url, mMorecachein.getAbsolutePath(), mFileName+".temp", md5);
+                DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(ip + url, mMorecachein.getAbsolutePath(), mFileName + ".temp", md5);
                 logger.d("fail url path:  " + ip + url + "   file name:" + mFileName + ".zip");
                 downLoadInfo.setHost(cdns.get(tryCount).substring(index));
                 DownLoader downLoader = new DownLoader(mContext, downLoadInfo);
@@ -335,8 +349,8 @@ public class CoursewarePreload {
         @Override
         public void onSuccess(String folderPath, String fileName) {
             logger.d("download ttf success");
-            File file = new File(folderPath,fileName);
-            file.renameTo(new File(folderPath,mFileName));
+            File file = new File(folderPath, fileName);
+            file.renameTo(new File(folderPath, mFileName));
         }
 
         @Override
@@ -347,7 +361,7 @@ public class CoursewarePreload {
             logger.d("download fail trycount" + tryCount);
             if (tryCount < cdns.size()) {
                 int index = cdns.get(tryCount).indexOf("/") + 2;
-                DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(ip + url, mMorecachein.getAbsolutePath(), mFileName+".temp", md5);
+                DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(ip + url, mMorecachein.getAbsolutePath(), mFileName + ".temp", md5);
                 logger.d("fail url path:  " + cdns.get(tryCount) + url + "   file name:" + mFileName + ".zip");
                 downLoadInfo.setHost(cdns.get(tryCount).substring(index));
                 DownLoader downLoader = new DownLoader(mContext, downLoadInfo);

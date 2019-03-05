@@ -29,8 +29,8 @@
         <activity
             android:name=".activity.ExperienceLiveVideoActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:screenOrientation="landscape"
             android:process=":livevideo"
+            android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustResize|stateHidden"></activity>
 
 
@@ -38,7 +38,7 @@
             android:name=".activity.HalfBodyLiveExperienceActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
 
         <activity
@@ -140,6 +140,15 @@
             <intent-filter>
                 <action android:name="${applicationId}.XesPaySuccess" />
 
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name=".broadcast.StudyCenterMainStartBroadCastReceiver"
+            android:process=":livevideo">
+            <intent-filter>
+                <action android:name="${applicationId}.StudyCenterMainStart" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
