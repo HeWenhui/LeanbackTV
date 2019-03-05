@@ -603,8 +603,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
 //                mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
                 break;
         }
-
-
+        mIse.prepar();
         mIse.cancel();
         if (param == null) {
             param = new SpeechParamEntity();
