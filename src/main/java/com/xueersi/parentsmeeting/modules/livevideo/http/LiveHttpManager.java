@@ -1040,59 +1040,63 @@ public class LiveHttpManager extends BaseHttpBusiness {
     }
 
     /**
-     * 获取光荣榜
+     * 获取优秀榜
      *
-     * @param classId         班级Id
-     * @param enstuId         学生Id加密串
+     * @param stuId           学生Id
      * @param liveId          场次Id
-     * @param status          是否点赞标志位
+     * @param classId         班级Id
      * @param requestCallBack
      */
-    public void getHonorList(String classId, String enstuId, String liveId, String status, HttpCallBack
+    public void getExcellentList(String status, String stuId, String liveId, String classId, String teamId,HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("classId", classId);
-        params.addBodyParam("enstuId", enstuId);
-        params.addBodyParam("liveId", liveId);
         params.addBodyParam("status", status);
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("teamId", teamId);
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_LIVE_GET_HONOR_LIST, params, requestCallBack);
     }
 
     /**
-     * 获取点赞榜
+     * 获取计算小超市榜
      *
+     * @param stuId           学生Id
+     * @param liveId          场次Id
      * @param classId         班级Id
-     * @param stuId           学生Id加密串
      * @param requestCallBack
      */
-    public void getThumbsUpList(String classId, String stuId, HttpCallBack
+    public void getMiniMarketList(String stuId, String liveId, String classId, String stuCouId,String courseId, String teamId, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("classId", classId);
         params.addBodyParam("stuId", stuId);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("stuCouId", stuCouId);
+        params.addBodyParam("courseId", courseId);
+        params.addBodyParam("teamId", teamId);
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_LIVE_GET_THUMBS_UP_LIST, params, requestCallBack);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_GET_MINI_MARKET_LIST, params, requestCallBack);
     }
 
     /**
-     * 获取进步榜
+     * 获取点赞榜
      *
-     * @param classId         班级Id
-     * @param enstuId         学生Id加密串
+     * @param stuId           学生Id
      * @param liveId          场次Id
-     * @param status          是否点赞标志位
+     * @param classId         班级Id
      * @param requestCallBack
      */
-    public void getProgressList(String classId, String enstuId, String liveId, String status, HttpCallBack
+    public void getLikeList(String stuId, String liveId, String classId, String teamId, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
-        params.addBodyParam("classId", classId);
-        params.addBodyParam("enstuId", enstuId);
+        params.addBodyParam("stuId", stuId);
         params.addBodyParam("liveId", liveId);
-        params.addBodyParam("status", status);
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("teamId", teamId);
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_LIVE_GET_PRPGRESS_LIST, params, requestCallBack);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_GET_LIKE_LIST, params, requestCallBack);
     }
 
     /**
@@ -1102,13 +1106,13 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param enstuId         学生Id加密串
      * @param requestCallBack
      */
-    public void getThumbsUpProbability(String classId, String enstuId, HttpCallBack
+    public void getLikeProbability(String classId, String enstuId, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("enstuId", enstuId);
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_LIVE_GET_THUMBS_UP_PROBABILITY, params, requestCallBack);
+        sendPost(liveVideoSAConfigInner.URL_LIVE_GET_LIKE_PROBABILITY, params, requestCallBack);
     }
 
     /**

@@ -4,8 +4,8 @@ import android.content.Context;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
-import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 

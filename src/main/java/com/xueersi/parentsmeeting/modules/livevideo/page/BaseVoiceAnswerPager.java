@@ -2,8 +2,9 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 
 import android.content.Context;
 
+import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
-import com.xueersi.common.speech.SpeechUtils;
+
 
 /**
  * Created by linyuqiang on 2018/4/3.
