@@ -64,12 +64,13 @@ public class LiveBackVoiceAnswerCreat implements BaseVoiceAnswerCreat {
         CreateAnswerReslutEntity createAnswerReslutEntity = new CreateAnswerReslutEntity();
         boolean isSuccess = false;
         VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
-        if (answerRightResultVoice instanceof NewArtsAnswerRightResultVoice) {
-            NewArtsAnswerRightResultVoice artsAnswerRightResultVoice = (NewArtsAnswerRightResultVoice) answerRightResultVoice;
-            AnswerResultEntity answerResultEntity = AnswerResultEntity.getAnswerResultEntity(videoQuestionLiveEntity, entity);
-            artsAnswerRightResultVoice.initArtsAnswerRightResultVoice(answerResultEntity);
-            isSuccess = answerResultEntity.getIsRight() == 2;
-        } else {
+//        if (answerRightResultVoice instanceof NewArtsAnswerRightResultVoice) {
+//            NewArtsAnswerRightResultVoice artsAnswerRightResultVoice = (NewArtsAnswerRightResultVoice) answerRightResultVoice;
+//            AnswerResultEntity answerResultEntity = AnswerResultEntity.getAnswerResultEntity(videoQuestionLiveEntity, entity);
+//            artsAnswerRightResultVoice.initArtsAnswerRightResultVoice(answerResultEntity);
+//            isSuccess = answerResultEntity.getIsRight() == 2;
+//        } else
+            {
             if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4) {
                 if (LocalCourseConfig.QUESTION_TYPE_SELECT.equals(videoQuestionLiveEntity.type)) {
                     answerRightResultVoice.initSelectAnswerRightResultVoice(entity);

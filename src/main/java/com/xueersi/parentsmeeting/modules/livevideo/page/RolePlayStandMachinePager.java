@@ -537,8 +537,8 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
                 mCurrentReadIndex++;
                 Message temp = mReadHandler.obtainMessage();
                 temp.what = READ_MESSAGE;
-                mLogtf.i("handleMessage:maxReadTime=" + currentMessage.getMaxReadTime()+",mIsEnd="+mIsEnd);
-                if (currentMessage.getRolePlayer().isSelfRole()&&!mIsEnd) {
+                mLogtf.i("handleMessage:maxReadTime=" + currentMessage.getMaxReadTime() + ",mIsEnd=" + mIsEnd);
+                if (currentMessage.getRolePlayer().isSelfRole() && !mIsEnd) {
                     mReadHandler.sendEmptyMessageDelayed(GO_SPEECH, (currentMessage.getMaxReadTime() - 1) * 1000);
                 }
 
@@ -617,9 +617,10 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
 
                     @Override
                     public void onResult(ResultEntity resultEntity) {
+
                         if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
-                            logger.i("测评成功，开始上传自己的mp3,开口时长：" + resultEntity.getSpeechDuration()
-                                    + "得分：" + resultEntity.getScore());
+                            logger.i("show_eva_score_suc:"+resultEntity.getSpeechDuration()
+                                    + ":" + resultEntity.getScore());
                             entity.setSelfValidSpeechTime(resultEntity.getSpeechDuration());
                             //mIsEvaluatoring = false;
                             message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
@@ -634,21 +635,26 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
                                     message.getRolePlayer().getRoleId());
                             //XESToastUtils.showToast(mContext, resultEntity.getScore() + "");
                             //提前开始下一条
-                            if(mRolePlayerAdapter != null){
+                            if (mRolePlayerAdapter != null) {
                                 mRolePlayerAdapter.updataSingleRow(lvReadList, message);
                             }
 
-                            if(!mIsEnd){
+                            if (!mIsEnd) {
                                 nextReadMessage();
                             }
                         } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
-                            mLogtf.i("onResult:errorNo=" + resultEntity.getErrorNo() + ",mIsEnd="+mIsEnd);
+                            logger.i("show_eva_score_error:"+resultEntity.getSpeechDuration()
+                                    + ":" + resultEntity.getScore());
                             isSpeechError = true;
                             //XESToastUtils.showToast(mContext, "测评失败");
                             //mIsEvaluatoring = false;
                             message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
+                            message.setSpeechScore(resultEntity.getScore());
+                            if (mRolePlayerAdapter != null) {
+                                mRolePlayerAdapter.updataSingleRow(lvReadList, message);
+                            }
                             //提前开始下一条
-                            if(!mIsEnd){
+                            if (!mIsEnd) {
                                 nextReadMessage();
                             }
                         } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
@@ -683,7 +689,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
     private void nextReadMessage() {
         mReadHandler.removeMessages(GO_SPEECH);
         mReadHandler.removeMessages(READ_MESSAGE);
-        mReadHandler.sendEmptyMessageDelayed(READ_MESSAGE,1000);
+        mReadHandler.sendEmptyMessageDelayed(READ_MESSAGE, 1000);
     }
 
     /**
@@ -818,8 +824,8 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
                             return updateHead(frameAnimation2, file, true, myGold);
                         }
                     });
-                    //结果弹窗5秒后消失
-                    if(resultUiParent != null){
+                    //结果弹窗5秒后消失,全身直播不要自动消失
+                   /* if (resultUiParent != null) {
                         resultUiParent.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -828,7 +834,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
                                 //isShowResult = false;
                             }
                         }, 5000);
-                    }
+                    }*/
 
                 }
 
@@ -920,7 +926,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
             bitmap.recycle();
             //画名字和金币数量
             if (havename) {
-                View layout_live_stand_red_mine1 = StandSpeechResult.resultViewName(mContext, myNickName);
+                View layout_live_stand_red_mine1 = StandSpeechResult.resultViewName(mContext, "" + myGold, getTypeface(mContext), mLiveGetInfo.getStandLiveName());
                 canvas.save();
                 canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 348);
                 layout_live_stand_red_mine1.draw(canvas);
@@ -1259,14 +1265,14 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
         }
     }
 
-    public void stopSpeech(){
+    public void stopSpeech() {
         if (mIse != null) {
             mIse.stop();
         }
-        mIsEnd=true;
+        mIsEnd = true;
         mReadHandler.removeMessages(GO_SPEECH);
         mReadHandler.removeMessages(READ_MESSAGE);
-        if (mEntity!=null&&!mEntity.isResult()&&mRolePlayBll.getRoleEntry()!=null) {
+        if (mEntity != null && !mEntity.isResult() && mRolePlayBll.getRoleEntry() != null) {
             if (mEntity.isNewArts()) {
                 mRolePlayBll.requestNewArtsResult();
             } else {
