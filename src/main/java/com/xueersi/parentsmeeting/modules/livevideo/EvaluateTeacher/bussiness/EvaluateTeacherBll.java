@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.bussiness;
+package com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness;
 
 import android.app.Activity;
 import android.content.pm.ActivityInfo;
@@ -7,22 +7,20 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.http.HttpCallBack;
-import com.xueersi.common.http.LoggingInterceptor;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
-import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.http.EvaluateResponseParser;
-import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager.BaseEvaluateTeacherPaper;
-import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager.EvaluateTeacherPager;
-import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager.PrimaryChineseEvaluateTeacherPager;
-import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager.PrimaryScienceEvaluateTeacherPager;
-import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager.SmallEnglishEvaluateTeacherPager;
+import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.http.EvaluateResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.pager.BaseEvaluateTeacherPaper;
+import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.pager.EvaluateTeacherPager;
+import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.pager.PrimaryChineseEvaluateTeacherPager;
+import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.pager.PrimaryScienceEvaluateTeacherPager;
+import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.pager.SmallEnglishEvaluateTeacherPager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 
 import java.util.Map;

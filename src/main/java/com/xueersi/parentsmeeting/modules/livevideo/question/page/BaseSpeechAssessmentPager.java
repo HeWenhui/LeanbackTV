@@ -3,7 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 
 import android.content.Context;
 
-import com.xueersi.common.speech.SpeechUtils;
+import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;

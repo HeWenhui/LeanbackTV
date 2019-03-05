@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.bussiness;
+package com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness;
 
 import java.util.Map;
 

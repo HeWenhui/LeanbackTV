@@ -2,9 +2,11 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Spannable;
@@ -21,12 +23,17 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tal.speech.config.SpeechConfig;
+import com.tal.speech.speechrecognizer.Constants;
+import com.tal.speech.speechrecognizer.EvaluatorListener;
+import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
+import com.tal.speech.speechrecognizer.SpeechParamEntity;
+import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -43,10 +50,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
-import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultMember;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.view.CustomUnScorllListView;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
@@ -65,7 +69,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
     /**
      * 匹配页默认停留时间
      */
-    private final int MATCH_WAIT_SECOND =0;
+    private final int MATCH_WAIT_SECOND = 4000;
     /**
      * 角色确认页停留时间
      */
@@ -539,6 +543,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                                     mRolePlayBll.requestResult();
                                 }
                             }
+
                         }
                         if (upMessage.getMsgStatus() != RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH) {
                             upMessage.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY);
@@ -677,33 +682,39 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
             case RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA:
                 //走英语离线测评
                 logger.i(TAG + "走英语离线测评");
-               mIse = new SpeechEvaluatorUtils(true);
-//                mIse = SpeechEvaluatorUtils.getInstance(mContext.getApplicationContext());
-
+//               mIse = new SpeechEvaluatorUtils(true);
+                mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
+                mIse.setLanguage(Constants.ASSESS_PARAM_LANGUAGE_EN);
                 break;
             case RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA:
                 //走语文离线测评
                 logger.i(TAG+"走语文离线测评");
-                mIse = new SpeechEvaluatorUtils(true, com.tal.speech.speechrecognizer.Constants
+                mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
+                mIse.setLanguage(com.tal.speech.speechrecognizer.Constants
                         .ASSESS_PARAM_LANGUAGE_CH);
                 break;
             default:
                 //走英语离线测评
                 logger.i(TAG + "走英语离线测评");
-               mIse = new SpeechEvaluatorUtils(true);
-//                mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
+//               mIse = new SpeechEvaluatorUtils(true);
+                mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
+                mIse.setLanguage(Constants.ASSESS_PARAM_LANGUAGE_EN);
                 break;
         }
 
 
         mIse.cancel();
-        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(spechMsg, saveVideoFile.getAbsolutePath(), false,
-                new RolePlayerPager.RoleEvaluatorListener() {
-                    @Override
-                    public void onBeginOfSpeech() {
-                        logger.i("开始测评 mCurrentReadIndex = "+mCurrentReadIndex);
-                        vwvSpeechVolume.start();
-                    }
+        SpeechParamEntity param = new SpeechParamEntity();
+        param.setStrEvaluator(spechMsg);
+        param.setLocalSavePath(saveVideoFile.getAbsolutePath());
+        param.setMultRef(false);
+        param.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
+        mIse.startRecog(param, new RolePlayerPager.RoleEvaluatorListener() {
+            @Override
+            public void onBeginOfSpeech() {
+                logger.i("开始测评 mCurrentReadIndex = "+mCurrentReadIndex);
+                vwvSpeechVolume.start();
+            }
 
             @Override
             public void onResult(ResultEntity resultEntity) {
