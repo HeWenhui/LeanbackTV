@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -23,9 +22,7 @@ import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -43,53 +40,43 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Locale;
 
 public class CoursewareNativePager extends BaseCoursewareNativePager implements BaseEnglishH5CoursewarePager {
     private String eventId = LiveVideoConfig.LIVE_ENGLISH_COURSEWARE;
     private boolean isFinish = false;
     private String liveId;
-    EnglishH5Entity englishH5Entity;
+    private EnglishH5Entity englishH5Entity;
     private boolean isPlayBack;
-    EnglishH5CoursewareBll.OnH5ResultClose onClose;
-    EnglishH5CoursewareSecHttp englishH5CoursewareSecHttp;
-    String url;
-    String id;
-    String courseware_type;
-    String nonce;
-    String isShowRanks;
-    long entranceTime;
-    int isArts;
-    boolean allowTeamPk;
-    boolean isNewArtsCourseware;
-    VideoQuestionLiveEntity detailInfo;
-    String educationstage;
-    private File cacheFile;
-    private File mMorecacheout;
-    /**
-     * 公共资源
-     */
-    private File mPublicCacheout;
-    private HashMap header;
-    RelativeLayout rl_livevideo_subject_loading;
-    ProgressBar pg_livevideo_new_course_prog;
-    RelativeLayout rl_livevideo_new_course_control;
-    TextView tv_data_loading_tip;
-    ImageView iv_livevideo_course_refresh;
-    TextView tv_livevideo_new_course_num;
-    ImageView ivLoading;
-    Button iv_livevideo_new_course_pre;
-    Button iv_livevideo_new_course_next;
-    Button iv_livevideo_new_course_submit;
-    NewCourseCache newCourseCache;
-    boolean addJs = false;
-    ArrayList<NewCourseSec.Test> tests = new ArrayList<>();
+    private EnglishH5CoursewareBll.OnH5ResultClose onClose;
+    private EnglishH5CoursewareSecHttp englishH5CoursewareSecHttp;
+    private String url;
+    private String id;
+    private String courseware_type;
+    private String nonce;
+    private String isShowRanks;
+    private long entranceTime;
+    private int isArts;
+    private boolean allowTeamPk;
+    private boolean isNewArtsCourseware;
+    private VideoQuestionLiveEntity detailInfo;
+    private String educationstage;
+    private RelativeLayout rlSubjectLoading;
+    private ProgressBar pgCourseProg;
+    private RelativeLayout rlCourseControl;
+    private TextView tvDataLoadingTip;
+    private ImageView ivCourseRefresh;
+    private TextView tvCourseNum;
+    private ImageView ivLoading;
+    private Button ivCoursePre;
+    private Button ivCourseNext;
+    private Button ivCourseSubmit;
+    private NewCourseCache newCourseCache;
+    private boolean addJs = false;
+    private ArrayList<NewCourseSec.Test> tests = new ArrayList<>();
     private int currentIndex = 0;
     private int getAnswerType = 0;
     private boolean loadResult = false;
@@ -132,49 +119,29 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         View view = View.inflate(mContext, R.layout.page_livevideo_h5_courseware_native, null);
         ivLoading = (ImageView) view.findViewById(R.id.iv_data_loading_show);
         wvSubjectWeb = view.findViewById(R.id.wv_livevideo_subject_web);
-        tv_data_loading_tip = view.findViewById(R.id.tv_data_loading_tip);
-        iv_livevideo_course_refresh = view.findViewById(R.id.iv_livevideo_course_refresh);
-        tv_livevideo_new_course_num = view.findViewById(R.id.tv_livevideo_new_course_num);
-        rl_livevideo_subject_loading = view.findViewById(R.id.rl_livevideo_subject_loading);
-        pg_livevideo_new_course_prog = view.findViewById(R.id.pg_livevideo_new_course_prog);
-        rl_livevideo_new_course_control = view.findViewById(R.id.rl_livevideo_new_course_control);
-        iv_livevideo_new_course_pre = view.findViewById(R.id.iv_livevideo_new_course_pre);
-        iv_livevideo_new_course_next = view.findViewById(R.id.iv_livevideo_new_course_next);
-        iv_livevideo_new_course_submit = view.findViewById(R.id.iv_livevideo_new_course_submit);
+        tvDataLoadingTip = view.findViewById(R.id.tv_data_loading_tip);
+        ivCourseRefresh = view.findViewById(R.id.iv_livevideo_course_refresh);
+        tvCourseNum = view.findViewById(R.id.tv_livevideo_new_course_num);
+        rlSubjectLoading = view.findViewById(R.id.rl_livevideo_subject_loading);
+        pgCourseProg = view.findViewById(R.id.pg_livevideo_new_course_prog);
+        rlCourseControl = view.findViewById(R.id.rl_livevideo_new_course_control);
+        ivCoursePre = view.findViewById(R.id.iv_livevideo_new_course_pre);
+        ivCourseNext = view.findViewById(R.id.iv_livevideo_new_course_next);
+        ivCourseSubmit = view.findViewById(R.id.iv_livevideo_new_course_submit);
         return view;
     }
 
     @Override
     public void initData() {
         super.initData();
-        cacheFile = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/parentsmeeting/webviewCache");
-        if (cacheFile == null) {
-            cacheFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webviewCache");
-        }
-        if (!cacheFile.exists()) {
-            cacheFile.mkdirs();
-        }
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
         Date date = new Date();
         today = dateFormat.format(date);
-        final File todayCacheDir = new File(cacheFile, today);
-        final File todayLiveCacheDir = new File(todayCacheDir, liveId);
-        if (isNewArtsCourseware) {
-            mMorecacheout = new File(todayLiveCacheDir, liveId + "artschild");
-        } else {
-            mMorecacheout = new File(todayLiveCacheDir, liveId + "child");
-        }
-        mPublicCacheout = new File(cacheFile, EnglishH5Cache.mPublicCacheoutName);
-        if (!mPublicCacheout.exists()) {
-            mPublicCacheout.mkdirs();
-        }
         getTodayQues();
         newCourseCache = new NewCourseCache(mContext);
         addJavascriptInterface();
         wvSubjectWeb.setWebChromeClient(new BaseCoursewareNativePager.MyWebChromeClient());
         wvSubjectWeb.setWebViewClient(new CourseWebViewClient());
-        header = new HashMap();
-        header.put("Access-Control-Allow-Origin", "*");
         wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, new StaticWeb.OnMessage() {
 
             @Override
@@ -254,29 +221,29 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                                 } else {
                                     if (getAnswerType == 1) {
                                         currentIndex--;
-                                        iv_livevideo_new_course_submit.setVisibility(View.GONE);
+                                        ivCourseSubmit.setVisibility(View.GONE);
                                     } else if (getAnswerType == 2) {
                                         currentIndex++;
                                     }
                                     if (currentIndex == 0) {
-                                        iv_livevideo_new_course_pre.setEnabled(false);
+                                        ivCoursePre.setEnabled(false);
                                         if (tests.size() > 0) {
-                                            iv_livevideo_new_course_next.setEnabled(true);
+                                            ivCourseNext.setEnabled(true);
                                         }
                                     } else if (currentIndex == tests.size() - 1) {
-                                        iv_livevideo_new_course_next.setEnabled(false);
-                                        iv_livevideo_new_course_next.setVisibility(View.INVISIBLE);
-                                        iv_livevideo_new_course_submit.setVisibility(View.VISIBLE);
+                                        ivCourseNext.setEnabled(false);
+                                        ivCourseNext.setVisibility(View.INVISIBLE);
+                                        ivCourseSubmit.setVisibility(View.VISIBLE);
                                         if (tests.size() > 0) {
-                                            iv_livevideo_new_course_pre.setEnabled(true);
+                                            ivCoursePre.setEnabled(true);
                                         }
                                     } else {
-                                        iv_livevideo_new_course_pre.setEnabled(true);
-                                        iv_livevideo_new_course_next.setVisibility(View.VISIBLE);
-                                        iv_livevideo_new_course_next.setEnabled(true);
+                                        ivCoursePre.setEnabled(true);
+                                        ivCourseNext.setVisibility(View.VISIBLE);
+                                        ivCourseNext.setEnabled(true);
                                     }
                                     if (currentIndex >= 0 && currentIndex < tests.size()) {
-                                        tv_livevideo_new_course_num.setText((currentIndex + 1) + " / " + tests.size());
+                                        tvCourseNum.setText((currentIndex + 1) + " / " + tests.size());
                                         NewCourseSec.Test test = tests.get(currentIndex);
                                         addJs = false;
                                         wvSubjectWeb.loadUrl(test.getPreviewPath());
@@ -307,7 +274,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 }
             }
         }), "xesApp");
-        iv_livevideo_new_course_pre.setOnClickListener(new View.OnClickListener() {
+        ivCoursePre.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 JSONObject jsonData = new JSONObject();
@@ -320,11 +287,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     e.printStackTrace();
                 }
                 getAnswerType = 1;
-                iv_livevideo_new_course_pre.setEnabled(false);
-                iv_livevideo_new_course_next.setEnabled(false);
+                ivCoursePre.setEnabled(false);
+                ivCourseNext.setEnabled(false);
             }
         });
-        iv_livevideo_new_course_next.setOnClickListener(new View.OnClickListener() {
+        ivCourseNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 JSONObject jsonData = new JSONObject();
@@ -337,11 +304,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     e.printStackTrace();
                 }
                 getAnswerType = 2;
-                iv_livevideo_new_course_pre.setEnabled(false);
-                iv_livevideo_new_course_next.setEnabled(false);
+                ivCoursePre.setEnabled(false);
+                ivCourseNext.setEnabled(false);
             }
         });
-        iv_livevideo_new_course_submit.setOnClickListener(new View.OnClickListener() {
+        ivCourseSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 JSONObject jsonData = new JSONObject();
@@ -356,10 +323,10 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 getAnswerType = 3;
             }
         });
-        iv_livevideo_course_refresh.setOnClickListener(new View.OnClickListener() {
+        ivCourseRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                iv_livevideo_course_refresh.setVisibility(View.GONE);
+                ivCourseRefresh.setVisibility(View.GONE);
                 getCourseWareTests();
             }
         });
@@ -515,7 +482,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             public void onDataSucess(Object... objData) {
                 JSONObject jsonObject = (JSONObject) objData[0];
                 int toAnswered = jsonObject.optInt("toAnswered");
-                rl_livevideo_new_course_control.setVisibility(View.GONE);
+                rlCourseControl.setVisibility(View.GONE);
                 String url = englishH5CoursewareSecHttp.getResultUrl(detailInfo, isforce, "");
                 loadResult = true;
                 wvSubjectWeb.loadUrl(url);
@@ -539,11 +506,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     protected void onProgressChanged(WebView view, int newProgress) {
         super.onProgressChanged(view, newProgress);
         if (!loadResult) {
-            pg_livevideo_new_course_prog.setProgress(newProgress);
-            tv_data_loading_tip.setText("加载中 " + newProgress + "%");
+            pgCourseProg.setProgress(newProgress);
+            tvDataLoadingTip.setText("加载中 " + newProgress + "%");
             if (newProgress == 100) {
-                rl_livevideo_subject_loading.setVisibility(View.GONE);
-                rl_livevideo_new_course_control.setVisibility(View.VISIBLE);
+                rlSubjectLoading.setVisibility(View.GONE);
+                rlCourseControl.setVisibility(View.VISIBLE);
                 try {
                     Drawable drawable = ivLoading.getBackground();
                     if (drawable instanceof AnimationDrawable) {
@@ -580,7 +547,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 NewCourseSec newCourseSec = (NewCourseSec) objData[0];
                 logger.d("onDataSucess:newCourseSec=" + newCourseSec);
                 if (newCourseSec.getIsAnswer() == 1) {
-                    rl_livevideo_subject_loading.setVisibility(View.GONE);
+                    rlSubjectLoading.setVisibility(View.GONE);
                     String url = englishH5CoursewareSecHttp.getResultUrl(detailInfo, 0, "");
                     loadResult = true;
                     wvSubjectWeb.loadUrl(url);
@@ -597,7 +564,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                             test.setUserAnswerContent(userAnswerContent);
                         }
                     }
-                    tv_livevideo_new_course_num.setText("1 / " + tests.size());
+                    tvCourseNum.setText("1 / " + tests.size());
                     NewCourseSec.Test test = tests.get(0);
                     currentIndex = 0;
                     wvSubjectWeb.loadUrl(test.getPreviewPath());
@@ -612,7 +579,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 } else {
                     XESToastUtils.showToast(mContext, "请求互动题失败，请刷新");
                 }
-                iv_livevideo_course_refresh.setVisibility(View.VISIBLE);
+                ivCourseRefresh.setVisibility(View.VISIBLE);
                 logger.d("onDataFail:errStatus=" + errStatus + ",failMsg=" + failMsg);
             }
         });
