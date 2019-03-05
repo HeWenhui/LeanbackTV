@@ -70,6 +70,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private RelativeLayout rlSubjectLoading;
     private ProgressBar pgCourseProg;
     private RelativeLayout rlCourseControl;
+    private TextView tvCourseTimeText;
     private TextView tvDataLoadingTip;
     private ImageView ivCourseRefresh;
     private ImageView iv_livevideo_subject_refresh;
@@ -131,6 +132,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         rlSubjectLoading = view.findViewById(R.id.rl_livevideo_subject_loading);
         pgCourseProg = view.findViewById(R.id.pg_livevideo_new_course_prog);
         rlCourseControl = view.findViewById(R.id.rl_livevideo_new_course_control);
+        tvCourseTimeText = view.findViewById(R.id.tv_livevideo_new_course_time_text);
         ivCoursePre = view.findViewById(R.id.iv_livevideo_new_course_pre);
         ivCourseNext = view.findViewById(R.id.iv_livevideo_new_course_next);
         ivCourseSubmit = view.findViewById(R.id.iv_livevideo_new_course_submit);
@@ -166,7 +168,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     } else if (CourseMessage.REC_answer.equals(type)) {
                         onAnswer(message);
                     } else if (CourseMessage.REC_loadComplete.equals(type)) {
-                        onLoadComplete();
+                        onLoadComplete(message);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -401,33 +403,35 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         });
     }
 
-    private void onLoadComplete() {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                JSONObject jsonData = new JSONObject();
-                if (quesJson != null) {
-                    JSONArray userAnswerContent = quesJson.optJSONArray("" + currentIndex);
-                    if (userAnswerContent != null && userAnswerContent.length() > 0) {
-                        try {
-                            JSONObject answerObj = userAnswerContent.getJSONObject(0);
-                            JSONArray userAnswerContent2 = answerObj.getJSONArray("userAnswerContent");
-                            if (userAnswerContent2.length() > 0) {
-                                jsonData.put("type", CourseMessage.SEND_lookAnswerStatus);
-                                JSONObject resultData = new JSONObject();
-                                resultData.put("isCanAnswer", 1);
-                                resultData.put("userAnswerContent", userAnswerContent2);
-                                jsonData.put("data", resultData);
-                                StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+    private void onLoadComplete(JSONObject message) {
+        if(message.has("postMessage")){
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    JSONObject jsonData = new JSONObject();
+                    if (quesJson != null) {
+                        JSONArray userAnswerContent = quesJson.optJSONArray("" + currentIndex);
+                        if (userAnswerContent != null && userAnswerContent.length() > 0) {
+                            try {
+                                JSONObject answerObj = userAnswerContent.getJSONObject(0);
+                                JSONArray userAnswerContent2 = answerObj.getJSONArray("userAnswerContent");
+                                if (userAnswerContent2.length() > 0) {
+                                    jsonData.put("type", CourseMessage.SEND_lookAnswerStatus);
+                                    JSONObject resultData = new JSONObject();
+                                    resultData.put("isCanAnswer", 1);
+                                    resultData.put("userAnswerContent", userAnswerContent2);
+                                    jsonData.put("data", resultData);
+                                    StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
                     }
+                    setViewEnable("onLoadComplete");
                 }
-                setViewEnable("onLoadComplete");
-            }
-        });
+            });
+        }
     }
 
     private void setViewEnable(String method) {
@@ -484,7 +488,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         } else {
             JSONObject jsonData = new JSONObject();
             try {
-                jsonData.put("type", "getAnswer");
+                jsonData.put("type", CourseMessage.SEND_getAnswer);
                 JSONObject resultData = new JSONObject();
                 jsonData.put("data", resultData);
                 StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
@@ -619,7 +623,32 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     NewCourseSec.Test test = tests.get(0);
                     currentIndex = 0;
                     wvSubjectWeb.loadUrl(test.getPreviewPath());
+                    final long startTime;
+                    if (isPlayBack) {
+                        startTime = System.currentTimeMillis() / 1000;
+                        tvCourseTimeText.setText("0秒");
+                    } else {
+                        startTime = newCourseSec.getReleaseTime();
+                        tvCourseTimeText.setText(getTime(startTime));
+                    }
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            tvCourseTimeText.setText(getTime(startTime));
+                            if (loadResult || mView.getParent() == null) {
+                                return;
+                            }
+                            handler.postDelayed(this, 1000);
+                        }
+                    }, 1000);
                 }
+            }
+
+            private String getTime(long startTime) {
+                long time = System.currentTimeMillis() / 1000 - startTime;
+                long second = time % 60;
+                long minute = time / 60;
+                return minute + "分" + second + "秒";
             }
 
             @Override

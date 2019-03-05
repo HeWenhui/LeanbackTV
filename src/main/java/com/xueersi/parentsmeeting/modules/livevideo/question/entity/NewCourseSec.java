@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 public class NewCourseSec {
     private int isAnswer;
+    private long releaseTime;
     private ArrayList<Test> tests = new ArrayList<>();
 
     public ArrayList<Test> getTests() {
@@ -19,6 +20,14 @@ public class NewCourseSec {
 
     public void setIsAnswer(int isAnswer) {
         this.isAnswer = isAnswer;
+    }
+
+    public long getReleaseTime() {
+        return releaseTime;
+    }
+
+    public void setReleaseTime(long releaseTime) {
+        this.releaseTime = releaseTime;
     }
 
     public static class Test {

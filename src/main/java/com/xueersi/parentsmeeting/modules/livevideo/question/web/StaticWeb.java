@@ -1,30 +1,29 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.web;
 
-import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
 import android.webkit.JavascriptInterface;
 
 import com.tencent.smtt.sdk.WebView;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 public class StaticWeb {
-    private String TAG = "StaticWeb";
-    private Context activity;
-    private WebView mWvSubjectWeb;
+    private static String TAG = "StaticWeb";
     private OnMessage onMessage;
+    private LogToFile logToFile;
 
     public StaticWeb(Context activity, WebView wvSubjectWeb, OnMessage onMessage) {
-        this.activity = activity;
-        this.mWvSubjectWeb = wvSubjectWeb;
+        logToFile = new LogToFile(activity, TAG);
         this.onMessage = onMessage;
     }
 
     @JavascriptInterface
     public void postMessage(String jsonStr) {
-        Log.d(TAG, "postMessage:jsonStr=" + jsonStr);
+        if (!("" + jsonStr).contains("errorInfo")) {
+            logToFile.d("postMessage:jsonStr=" + jsonStr);
+        }
         try {
             JSONObject jsonObject = new JSONObject(jsonStr);
             JSONObject message = jsonObject.optJSONObject("message");
@@ -42,6 +41,8 @@ public class StaticWeb {
     }
 
     public static void sendToCourseware(WebView wvSubjectWeb, JSONObject type, String data) {
+        LogToFile logToFile = new LogToFile(wvSubjectWeb.getContext(), TAG);
+        logToFile.d("sendToCourseware:type=" + type);
         wvSubjectWeb.loadUrl("javascript:sendToCourseware(" + type + ",'" + data + "')");
     }
 }

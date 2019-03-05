@@ -45,8 +45,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:layout_marginLeft="20dp"
                 android:layout_toRightOf="@id/iv_livevideo_new_course_time"
-                android:text="还剩："
+                android:text="已用时："
                 android:textColor="@color/white"
                 android:textSize="16sp" />
 

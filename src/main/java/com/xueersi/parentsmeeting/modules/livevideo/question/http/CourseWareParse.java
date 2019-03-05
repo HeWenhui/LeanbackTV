@@ -15,6 +15,7 @@ public class CourseWareParse {
             NewCourseSec newCourseSec = new NewCourseSec();
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
             newCourseSec.setIsAnswer(jsonObject.optInt("isAnswer"));
+            newCourseSec.setReleaseTime(jsonObject.optLong("releaseTime", System.currentTimeMillis()));
             ArrayList<NewCourseSec.Test> tests = newCourseSec.getTests();
             JSONArray array = jsonObject.getJSONArray("testInfos");
             for (int i = 0; i < array.length(); i++) {

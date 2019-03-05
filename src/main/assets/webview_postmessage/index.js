@@ -11,6 +11,7 @@ window.parent = {}
 
 window.parent.postMessage = function (message, origin) {
     var data = {
+        where: 'postMessage',
         message: message,
         origin: origin
     }
@@ -22,6 +23,7 @@ window.parent.postMessage = function (message, origin) {
  */
 window.addEventListener('message', function (e) {
     var data = {
+        where: 'addEventListener',
         message: e.data,
         origin: e.origin
     }
