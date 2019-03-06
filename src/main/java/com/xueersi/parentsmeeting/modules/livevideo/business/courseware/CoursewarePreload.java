@@ -13,6 +13,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.CoursewareInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ZipExtractorTask;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ZipProg;
 
@@ -50,7 +51,7 @@ public class CoursewarePreload {
     public static String mPublicCacheoutName = "publicRes";
     public static int mDownloadThreadCount = 1;
 
-    private AtomicInteger subjectNum = new AtomicInteger(3);
+    private AtomicInteger subjectNum = new AtomicInteger(0);
 
     public CoursewarePreload(Context context, String liveId, int subject) {
         mContext = context;
@@ -75,6 +76,41 @@ public class CoursewarePreload {
     AtomicInteger ipPos, cdnPos, ipLength, cdnLength;
 
     /**
+     * 删除旧的Dir
+     */
+    private void deleteOldDir(final File file, final String today) {
+        LiveThreadPoolExecutor executor = LiveThreadPoolExecutor.getInstance();
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                for (File itemFile : file.listFiles()) {
+                    if (!itemFile.isDirectory()) {
+                        if (isCoursewareDir(itemFile.getName()) && !itemFile.getName().equals(today)) {
+                            itemFile.delete();
+                        }
+                    }
+                }
+            }
+        });
+
+    }
+
+    /**
+     * 是否是课件的文件夹
+     *
+     * @return
+     */
+    private boolean isCoursewareDir(String fileName) {
+        try {
+            Integer.parseInt(fileName);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+
+    }
+
+    /**
      * 获取课件信息
      */
     public void getCoursewareInfo() {
@@ -82,6 +118,7 @@ public class CoursewarePreload {
         Date date = new Date();
         final String today = dateFormat.format(date);
         todayCacheDir = new File(cacheFile, today);
+        deleteOldDir(cacheFile, today);
         //根据传liveid来判断 不为空或者不是""则为直播进入下载资源，否则为学习中心进入下载资源
         ipPos = new AtomicInteger(0);
         ipLength = new AtomicInteger();
@@ -91,18 +128,24 @@ public class CoursewarePreload {
             isPrecise.set(true);
             if (0 == mSubject) {//理科
                 logger.i("下载理科");
+                subjectNum.getAndIncrement();
                 mHttpManager.getScienceCourewareInfo(liveId, new CoursewareHttpCallBack());
             } else if (1 == mSubject) {//英语
                 logger.i("下载英语");
+                subjectNum.getAndIncrement();
                 mHttpManager.getEnglishCourewareInfo(liveId, new CoursewareHttpCallBack());
             } else if (2 == mSubject) {//语文
                 logger.i("下载语文");
+                subjectNum.getAndIncrement();
                 mHttpManager.getArtsCourewareInfo(liveId, new CoursewareHttpCallBack());
             }
         } else {//下载当天所有课件资源
             logger.i("下载当天所有课件资源");
+            subjectNum.getAndIncrement();
             mHttpManager.getScienceCourewareInfo("", new CoursewareHttpCallBack());
+            subjectNum.getAndIncrement();
             mHttpManager.getEnglishCourewareInfo("", new CoursewareHttpCallBack());
+            subjectNum.getAndIncrement();
             mHttpManager.getArtsCourewareInfo("", new CoursewareHttpCallBack());
         }
     }
@@ -131,7 +174,6 @@ public class CoursewarePreload {
             super.onPmError(responseEntity);
             subjectNum.getAndDecrement();
             performDownLoad();
-//            subjectNum.set(subjectNum.get() - 1);
             if (responseEntity != null) {
                 logger.i("onPmError:" + responseEntity.getJsonObject() + "  " + responseEntity.getErrorMsg());
                 if (responseEntity.getJsonObject() != null) {
@@ -212,13 +254,6 @@ public class CoursewarePreload {
     private void execDownLoad(List<CoursewareInfoEntity.LiveCourseware> liveCoursewares, List<String> cdns, List<String> ips, List<String> resources) {
         //直播资源列表
         //cdns列表
-//        final List<String> cdns = coursewareInfoEntity.getCdns();
-//        List<String> ips = coursewareInfoEntity.getIps();
-//        List<String> resources = coursewareInfoEntity.getResources();
-//            final List<String> loadpages = coursewareInfoEntity.getLoadpages();
-//            List<String> staticSources = coursewareInfoEntity.getStaticSources();
-//        ips.addAll(cdns);
-
         List<String> newIPs = new LinkedList<>();
 //        newIPs.add("https://icourse.xesimg.com");
         newIPs.addAll(cdns);
@@ -536,7 +571,7 @@ public class CoursewarePreload {
                 DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(ip + url, mMorecachein.getAbsolutePath(), mFileName + ".temp", md5);
                 logger.d("now url path:  " + ip + url + "   file name:" + mFileName + ".zip");
                 if (isIP) {
-                    downLoadInfo.setHost(cdns.get(tryCount).substring(index));
+                    downLoadInfo.setHost(cdns.get(tryCount % cdnLength.get()).substring(index));
                 }
 //                DownLoader downLoader = new DownLoader(mContext, downLoadInfo);
 //                downLoader.start(new ZipDownloadListener(mMorecachein, mMorecacheout, mFileName, ips, cdns, url, md5, downTryCount));
@@ -617,7 +652,7 @@ public class CoursewarePreload {
                 DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(ip + url, mMorecachein.getAbsolutePath(), mFileName + ".temp", md5);
                 logger.d("now url path:  " + ip + url + "   file name:" + mFileName + ".nozip");
                 if (isIP) {
-                    downLoadInfo.setHost(cdns.get((cdnPos.get()) % cdnLength.get()).substring(index));
+                    downLoadInfo.setHost(cdns.get(cdnPos.get() % cdnLength.get()).substring(index));
                 }
                 PreLoadDownLoaderManager.DownLoadInfoListener downLoadInfoListener = new PreLoadDownLoaderManager.DownLoadInfoListener(downLoadInfo, this);
                 if (!isPrecise.get()) {
