@@ -160,11 +160,11 @@ public class TeamPkLeadPager extends LiveBasePager {
                 group.addView(imageView, 0, lp);
                 setBg(ivTeampkMine, imageView);
             } else {
-                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width, width);
+//                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width, width);
 //                lp.leftMargin = SizeUtils.Dp2Px(mContext, 275);
 //                lp.topMargin = SizeUtils.Dp2Px(mContext, 17);
-                group.addView(imageView, 0, lp);
-                setBg(ivTeampkOther, imageView);
+//                group.addView(imageView, 0, lp);
+//                setBg(ivTeampkOther, imageView);
             }
         } else {
             int lastM = enTeamPkRankEntity.getMyTeamTotal() - enTeamPkRankEntity.getMyTeamCurrent();
