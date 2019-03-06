@@ -2,12 +2,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/roleplay_bg_pic_nor_stand_live">
+    android:background="@drawable/roleplay_bg_pic_nor_stand_live"
+    >
 
     <RelativeLayout
         android:id="@+id/rl_live_roleplayer_read_main"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingBottom="8dp"
+        >
 
         <ImageView
             android:id="@id/iv_live_roleplayer_title"
@@ -34,7 +37,7 @@
                 style="@style/text_font16_999999_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="25dp"
+                android:layout_marginLeft="28dp"
                 android:layout_marginTop="9dp"
                 android:text="3分0秒"
                 android:textColor="#4e5bc1"
@@ -91,7 +94,6 @@
             android:layout_height="46dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="6dp"
             android:background="@drawable/shape_livevideo_roleplayer_speech_volumewave_bg"
             android:gravity="center"
             android:visibility="invisible">
