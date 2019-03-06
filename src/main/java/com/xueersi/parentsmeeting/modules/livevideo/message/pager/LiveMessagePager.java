@@ -934,7 +934,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 //                rlInfo.setLayoutParams(params);
                 LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
             }
-       /*     if (cbMessageClock != null) {
+            if (cbMessageClock != null) {
                 int rightMargin = liveVideoPoint.getRightMargin();
                 params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
                 if (params.rightMargin != rightMargin) {
@@ -942,7 +942,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 //                cbMessageClock.setLayoutParams(params);
                     LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
                 }
-            }*/
+            }
         }
         {
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlInfo.getLayoutParams();

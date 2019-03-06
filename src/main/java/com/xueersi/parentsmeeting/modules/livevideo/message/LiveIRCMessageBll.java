@@ -15,6 +15,7 @@ import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.utils.Log;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
@@ -24,12 +25,18 @@ import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 //import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.RegMediaPlayerControl;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
+import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RegMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
-import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
@@ -179,7 +186,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     && LiveTopic.MODE_CLASS.equals(getInfo.getMode())) {
                 mRoomAction.initHalfBodyLive(mRootView);
             } else {
-                mRoomAction.initViewLive(rlMessageBottom);
+                mRoomAction.initViewLive(mRootView);
             }
         }
     }
@@ -204,7 +211,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     if (LiveTopic.MODE_CLASS.equals(mode)) {
                         mRoomAction.initViewLiveStand(mRootView);
                     } else {
-                        mRoomAction.initViewLive(rlMessageBottom);
+                        mRoomAction.initViewLive(mRootView);
                     }
                     if (view != null) {
                         view.setVisibility(View.VISIBLE);
@@ -222,7 +229,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                             if (LiveTopic.MODE_CLASS.equals(mode)) {
                                 mRoomAction.initHalfBodyLive(mRootView);
                             } else {
-                                mRoomAction.initViewLive(rlMessageBottom);
+                                mRoomAction.initViewLive(mRootView);
                             }
 
                             if (view != null) {
@@ -807,7 +814,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
-        mRoomAction.initView(rlMessageBottom, mIsLand.get());
+        mRoomAction.initView(bottomContent, mIsLand.get());
     }
 
     //发送聊天消息所需要的IRCState

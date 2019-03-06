@@ -104,8 +104,6 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     protected RelativeLayout rlMessageBottom;
     protected String vStuCourseID;
     protected String courseId;
-    /** 播放器底部控制按钮 */
-//    protected RelativeLayout bottomControllerContent;
     /** 小学英语 */
     private boolean isSmallEnglish;
     private LiveVideoSAConfig liveVideoSAConfig;
@@ -487,7 +485,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         bottomContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_live_question_content);
         bottomContent.setVisibility(View.VISIBLE);
         rlMessageBottom = mContentView.findViewById(R.id.rl_course_message_bottom);
-//        bottomControllerContent = mContentView.findViewById(R.id.rl_course_video_live_bottom_controller);
+
 //        tvLoadingTint = mContentView.findViewById(R.id.tv_course_video_loading_content);
 
         logger.e("========>:initView:" + bottomContent);
@@ -501,10 +499,6 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         // TODO: 2018/10/23  添加了LayoutParams 是否会有其他异常？
         bottomContent.addView(liveMediaControllerBottom, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
-
-//        bottomControllerContent.addView(liveMediaControllerBottom, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-//                ViewGroup.LayoutParams.MATCH_PARENT));
-
         android.util.Log.e("HalfBody", "====>LiveVideoFragment initView:add mediaContriller:"
                 + liveMediaControllerBottom.getClass().getSimpleName());
 

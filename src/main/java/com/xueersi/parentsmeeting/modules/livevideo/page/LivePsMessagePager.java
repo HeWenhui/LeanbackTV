@@ -1146,15 +1146,15 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
 //                rlInfo.setLayoutParams(params);
                 LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
             }
-//            if (cbMessageClock != null) {
-//                int rightMargin = liveVideoPoint.getRightMargin();
-//                params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
-//                if (params.rightMargin != rightMargin) {
-//                    params.rightMargin = rightMargin;
-////                cbMessageClock.setLayoutParams(params);
-//                    LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
-//                }
-//            }
+            if (cbMessageClock != null) {
+                int rightMargin = liveVideoPoint.getRightMargin();
+                params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
+                if (params.rightMargin != rightMargin) {
+                    params.rightMargin = rightMargin;
+//                cbMessageClock.setLayoutParams(params);
+                    LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
+                }
+            }
         }
         {
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlInfo.getLayoutParams();
