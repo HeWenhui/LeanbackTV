@@ -21,12 +21,17 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tal.speech.config.SpeechConfig;
+import com.tal.speech.speechrecognizer.Constants;
+import com.tal.speech.speechrecognizer.EvaluatorListener;
+import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
+import com.tal.speech.speechrecognizer.SpeechParamEntity;
+import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -43,10 +48,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
-import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultMember;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.view.CustomUnScorllListView;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
@@ -168,7 +170,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
     /**
      * 语音评测
      */
-    protected SpeechEvaluatorUtils mIse;
+    protected SpeechUtils mIse;
     private SpeechEvaluatorInter speechEvaluatorInter;
     private File saveVideoFile, dir;
 
@@ -539,6 +541,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                                     mRolePlayBll.requestResult();
                                 }
                             }
+
                         }
                         if (upMessage.getMsgStatus() != RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH) {
                             upMessage.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY);
@@ -677,89 +680,93 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
             case RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA:
                 //走英语离线测评
                 logger.i(TAG + "走英语离线测评");
-                mIse = new SpeechEvaluatorUtils(true);
-//                mIse = SpeechEvaluatorUtils.getInstance(mContext.getApplicationContext());
-
+//               mIse = new SpeechEvaluatorUtils(true);
+                mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
+                mIse.setLanguage(Constants.ASSESS_PARAM_LANGUAGE_EN);
                 break;
             case RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA:
                 //走语文离线测评
-                logger.i(TAG + "走语文离线测评");
-                mIse = new SpeechEvaluatorUtils(true, com.tal.speech.speechrecognizer.Constants
+                logger.i(TAG+"走语文离线测评");
+                mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
+                mIse.setLanguage(com.tal.speech.speechrecognizer.Constants
                         .ASSESS_PARAM_LANGUAGE_CH);
                 break;
             default:
                 //走英语离线测评
                 logger.i(TAG + "走英语离线测评");
-                mIse = new SpeechEvaluatorUtils(true);
-//                mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
+//               mIse = new SpeechEvaluatorUtils(true);
+                mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
+                mIse.setLanguage(Constants.ASSESS_PARAM_LANGUAGE_EN);
                 break;
         }
-
-
+        mIse.prepar();
         mIse.cancel();
-        speechEvaluatorInter = mIse.startEnglishEvaluatorOffline(spechMsg, saveVideoFile.getAbsolutePath(), false,
-                new RolePlayerPager.RoleEvaluatorListener() {
-                    @Override
-                    public void onBeginOfSpeech() {
-                        logger.i("开始测评 mCurrentReadIndex = " + mCurrentReadIndex);
-                        vwvSpeechVolume.start();
+        SpeechParamEntity param = new SpeechParamEntity();
+        param.setStrEvaluator(spechMsg);
+        param.setLocalSavePath(saveVideoFile.getAbsolutePath());
+        param.setMultRef(false);
+        param.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
+        mIse.startRecog(param, new RolePlayerPager.RoleEvaluatorListener() {
+            @Override
+            public void onBeginOfSpeech() {
+                logger.i("开始测评 mCurrentReadIndex = "+mCurrentReadIndex);
+                vwvSpeechVolume.start();
+            }
+
+            @Override
+            public void onResult(ResultEntity resultEntity) {
+                if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
+                    logger.i("测评成功，开始上传自己的mp3,开口时长：" + resultEntity.getSpeechDuration()
+                            + "得分：" + resultEntity.getScore());
+                    entity.setSelfValidSpeechTime(resultEntity.getSpeechDuration());
+                    //mIsEvaluatoring = false;
+                    message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
+                    message.setSpeechScore(resultEntity.getScore());
+                    message.setLstPhoneScore(resultEntity.getLstPhonemeScore());
+                    message.setFluency(resultEntity.getContScore());
+                    message.setAccuracy(resultEntity.getPronScore());
+                    message.setWebVoiceUrl(saveVideoFile.getAbsolutePath());
+                    message.setLevel(resultEntity.getLevel());
+                    //上传自己读完的语句，只通知除了自己以外的其他组内成员
+                    mRolePlayBll.uploadFileToAliCloud(saveVideoFile.getAbsolutePath(), message, entity,
+                            message.getRolePlayer().getRoleId());
+                    //XESToastUtils.showToast(mContext, resultEntity.getScore() + "");
+                    //提前开始下一条
+                    //人机的时候，只在自己阅读的时候再根据服务器返回的时间定时通知下一条
+                    if(mRolePlayerAdapter != null){
+                        mRolePlayerAdapter.updataSingleRow(lvReadList, message);
                     }
 
-                    @Override
-                    public void onResult(ResultEntity resultEntity) {
-                        if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
-                            logger.i("测评成功，开始上传自己的mp3,开口时长：" + resultEntity.getSpeechDuration()
-                                    + "得分：" + resultEntity.getScore());
-                            entity.setSelfValidSpeechTime(resultEntity.getSpeechDuration());
-                            //mIsEvaluatoring = false;
-                            message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
-                            message.setSpeechScore(resultEntity.getScore());
-                            message.setLstPhoneScore(resultEntity.getLstPhonemeScore());
-                            message.setFluency(resultEntity.getContScore());
-                            message.setAccuracy(resultEntity.getPronScore());
-                            message.setWebVoiceUrl(saveVideoFile.getAbsolutePath());
-                            message.setLevel(resultEntity.getLevel());
-                            //上传自己读完的语句，只通知除了自己以外的其他组内成员
-                            mRolePlayBll.uploadFileToAliCloud(saveVideoFile.getAbsolutePath(), message, entity,
-                                    message.getRolePlayer().getRoleId());
-                            //XESToastUtils.showToast(mContext, resultEntity.getScore() + "");
-                            //提前开始下一条
-                            //人机的时候，只在自己阅读的时候再根据服务器返回的时间定时通知下一条
-                            if (mRolePlayerAdapter != null) {
-                                mRolePlayerAdapter.updataSingleRow(lvReadList, message);
-                            }
-
-                            if (!mIsEnd) {
-                                nextReadMessage();
-                            }
-                        } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
-                            mLogtf.i("onResult:errorNo=" + resultEntity.getErrorNo() + ",mIsEnd=" + mIsEnd);
-                            //XESToastUtils.showToast(mContext, "测评失败");
-                            //mIsEvaluatoring = false;
-                            message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
-                            if (!mIsEnd) {
-                                //提前开始下一条
-                                nextReadMessage();
-                            }
-                        } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
-                            // logger.i("RolePlayerDemoTest", "测评中");
-
-                        }
-
+                    if(!mIsEnd){
+                        nextReadMessage();
                     }
-
-                    @Override
-                    public void onVolumeUpdate(int volume) {
-                        vwvSpeechVolume.setVolume(volume * 3);
-                        //logger.i("volume = " + volume);
+                } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
+                    mLogtf.i("onResult:errorNo=" + resultEntity.getErrorNo() + ",mIsEnd="+mIsEnd);
+                    //XESToastUtils.showToast(mContext, "测评失败");
+                    //mIsEvaluatoring = false;
+                    message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
+                    if(!mIsEnd){
+                        //提前开始下一条
+                        nextReadMessage();
                     }
+                } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
+                    // logger.i("RolePlayerDemoTest", "测评中");
 
-                    @Override
-                    public void onRecordPCMData(short[] shorts, int readSize) {
+                }
+
+            }
+
+            @Override
+            public void onVolumeUpdate(int volume) {
+                vwvSpeechVolume.setVolume(volume * 3);
+                //logger.i("volume = " + volume);
+            }
+
+            @Override
+            public void onRecordPCMData(short[] shorts, int readSize) {
                         // logger.i("RolePlayerDemoTest", "通过声网走");
                         //通过声网走
-                    }
-                });
+            }});
     }
 
 

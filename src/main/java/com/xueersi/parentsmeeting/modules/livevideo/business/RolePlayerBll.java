@@ -7,6 +7,7 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.widget.RelativeLayout;
 
+import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
@@ -15,7 +16,6 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.PermissionItem;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
-import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.component.cloud.XesCloudUploadBusiness;
 import com.xueersi.component.cloud.config.CloudDir;
 import com.xueersi.component.cloud.config.XesCloudConfig;

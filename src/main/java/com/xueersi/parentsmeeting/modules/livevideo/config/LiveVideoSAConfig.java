@@ -130,14 +130,15 @@ public class LiveVideoSAConfig {
         /** 测试卷满分榜接口 */
         public String LIVE_FULL_MARK_LIST_TEST = HTTP_HOST + "/LiveCourse/teamFullScoreRank";
 
-        /** 获取光荣榜 */
+        /** 获取优秀榜 */
         public String URL_LIVE_GET_HONOR_LIST = HTTP_HOST + "/LiveCourse/getClassExcellentList";
+        /** 获取计算小超市榜 */
+        public String URL_LIVE_GET_MINI_MARKET_LIST = HTTP_HOST + "/LiveCourse/getDayDayPracPraiseList";
         /** 获取点赞榜 */
-        public String URL_LIVE_GET_THUMBS_UP_LIST = HTTP_HOST + "/LiveCourse/getClassStuPraiseList";
-        /** 获取进步榜 */
-        public String URL_LIVE_GET_PRPGRESS_LIST = HTTP_HOST + "/LiveCourse/getStuIsOnProgressList";
+        public String URL_LIVE_GET_LIKE_LIST = HTTP_HOST + "/LiveCourse/getClassStuPraiseList";
         /** 获取点赞概率 */
-        public String URL_LIVE_GET_THUMBS_UP_PROBABILITY = HTTP_HOST + "/LiveCourse/getStuOnList";
+        public String URL_LIVE_GET_LIKE_PROBABILITY = HTTP_HOST + "/LiveCourse/getStuOnList";
+
         /** 存标记点 */
         public String URL_LIVE_SAVE_MARK_POINT = HTTP_HOST + "/LiveCourse/setMarkpoint";
         /** 获取标记点 */

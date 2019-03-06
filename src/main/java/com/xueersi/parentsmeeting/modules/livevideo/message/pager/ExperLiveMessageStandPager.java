@@ -38,11 +38,14 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.Constants;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
+import com.tal.speech.utils.SpeechEvaluatorUtils;
+import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -50,9 +53,6 @@ import com.xueersi.common.permission.PermissionCallback;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.speech.SpeechConfig;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
-import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.component.cloud.XesCloudUploadBusiness;
 import com.xueersi.component.cloud.config.CloudDir;
 import com.xueersi.component.cloud.config.XesCloudConfig;
@@ -108,6 +108,10 @@ import java.util.Map;
 import cn.dreamtobe.kpswitch.util.KPSwitchConflictUtil;
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
+
+//import com.xueersi.common.speech.SpeechConfig;
+//import com.xueersi.common.speech.SpeechEvaluatorUtils;
+//import com.xueersi.common.speech.SpeechUtils;
 
 /**
  * @author linyuqiang
@@ -206,9 +210,9 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
 
     public ExperLiveMessageStandPager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                       BaseLiveMediaControllerBottom
-                                         liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities,
+                                              liveMediaControllerBottom, ArrayList<LiveMessageEntity> liveMessageEntities,
                                       ArrayList<LiveMessageEntity>
-                                         otherLiveMessageEntities) {
+                                              otherLiveMessageEntities) {
         super(context);
         liveVideoActivity = (Activity) context;
         this.liveMediaControllerBottom = liveMediaControllerBottom;
@@ -300,6 +304,7 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
      * @param isVisible
      */
     private boolean isNotExpericence = true;
+
     public void setStarGoldImageViewVisible(boolean isVisible) {
         isNotExpericence = isVisible;
         btnVoiceMesOpen.setVisibility(View.GONE);
@@ -742,7 +747,12 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
             mSpeechUtils.setLanguage(Constants.ASSESS_PARAM_LANGUAGE_EN);
         }
         mParam = new SpeechParamEntity();
-        mSpeechUtils.setOnFileSuccess(new SpeechEvaluatorUtils.OnFileSuccess() {
+        mSpeechUtils.prepar(new SpeechEvaluatorUtils.OnFileSuccess() {
+            @Override
+            public void onFileInit(int code) {
+
+            }
+
             @Override
             public void onFileSuccess() {
                 mSpeechFail = "模型正在启动，请稍后";
@@ -765,18 +775,20 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
                                         isShowSpeechRecog = (mRecogtestEndTime - mRecogtestBeginTime) < 3000l ? true
                                                 : false;
                                         if (isShowSpeechRecog) {
-                                            mSdm.put(SpeechEvaluatorUtils.RECOG_RESULT, isShowSpeechRecog, ShareDataManager.SHAREDATA_USER);
+                                            mSdm.put(SpeechEvaluatorUtils.RECOG_RESULT, isShowSpeechRecog,
+                                                    ShareDataManager.SHAREDATA_USER);
                                             initOpenBt(false, true);
                                         }
                                     }
                                 }
+
                                 @Override
                                 public void onVolumeUpdate(int volume) {
 
                                 }
                             });
                         }
-                    },4000);
+                    }, 4000);
                 }
             }
 
@@ -785,7 +797,6 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
                 mSpeechFail = "模型启动失败，请使用手动输入";
             }
         });
-
 //        SpeechEvaluatorUtils.setOnFileSuccess(new SpeechEvaluatorUtils.OnFileSuccess() {
 //            @Override
 //            public void onFileSuccess() {
@@ -799,15 +810,11 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
 //        });
         dir = LiveCacheFile.geCacheFile(mContext, "livevoice");
         FileUtils.deleteDir(dir);
-        if (!dir.exists())
-
-        {
+        if (!dir.exists()) {
             dir.mkdirs();
         }
 
-        messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities, 5)
-
-        {
+        messageAdapter = new CommonAdapter<LiveMessageEntity>(liveMessageEntities, 5) {
             String fileName = "live_stand_head.json";
 
             @Override
@@ -1068,6 +1075,7 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
     }
 
     /** 聊天开始连接 */
+    @Override
     public void onStartConnect() {
         mainHandler.post(new Runnable() {
             @Override
@@ -1100,6 +1108,7 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
     }
 
     /** 聊天连上 */
+    @Override
     public void onConnect() {
         mainHandler.post(new Runnable() {
             @Override
@@ -1121,6 +1130,7 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
     }
 
     /** 聊天进入房间 */
+    @Override
     public void onRegister() {
         mainHandler.post(new Runnable() {
             @Override
@@ -1132,6 +1142,7 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
     }
 
     /** 聊天断开 */
+    @Override
     public void onDisconnect() {
         mainHandler.post(new Runnable() {
             @Override
@@ -1228,6 +1239,7 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
     }
 
     /** 被禁言 */
+    @Override
     public void onDisable(final boolean disable, final boolean fromNotice) {
         mView.post(new Runnable() {
             @Override
@@ -1290,7 +1302,7 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
                         }
                         //现在的隐藏显示和liveStandMessageContent一致
                         btMesOpen.setVisibility(View.VISIBLE);
-                        if (isNotExpericence){
+                        if (isNotExpericence) {
                             btnVoiceMesOpen.setVisibility(View.VISIBLE);
                         }
                         Animation animation;
@@ -1354,6 +1366,7 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
     }
 
     /** 关闭开启弹幕 */
+    @Override
     public void onOpenbarrage(final boolean openbarrage, final boolean fromNotice) {
         mView.post(new Runnable() {
             @Override
@@ -1551,7 +1564,7 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
                         logger.i("显示聊天框");
                         //现在的隐藏显示和liveStandMessageContent一致
                         btMesOpen.setVisibility(View.VISIBLE);
-                        if (isNotExpericence){
+                        if (isNotExpericence) {
                             btnVoiceMesOpen.setVisibility(View.VISIBLE);
                         }
                         if (isMessageLayoutShow) {

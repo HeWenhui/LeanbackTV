@@ -245,9 +245,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
             }
         });
 
-        ScaleAnimation scaleAnimation = (ScaleAnimation) AnimationUtils.loadAnimation(mContext, R.anim.anim_livevideo_close_btn_in);
-        scaleAnimation.setInterpolator(new SpringScaleInterpolator(0.23f));
-        closeBtn.startAnimation(scaleAnimation);
+
 
        final ViewTreeObserver viewTreeObserver=resultAnimeView.getViewTreeObserver();
         viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -269,6 +267,9 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
 
                     if(closeBtn.getVisibility() != View.VISIBLE){
                         closeBtn.setVisibility(View.VISIBLE);
+                        ScaleAnimation scaleAnimation = (ScaleAnimation) AnimationUtils.loadAnimation(mContext, R.anim.anim_livevideo_close_btn_in);
+                        scaleAnimation.setInterpolator(new SpringScaleInterpolator(0.23f));
+                        closeBtn.startAnimation(scaleAnimation);
                     }
                     //语音答题倒计时按钮位置
                     if(mData.isVoice == 1){

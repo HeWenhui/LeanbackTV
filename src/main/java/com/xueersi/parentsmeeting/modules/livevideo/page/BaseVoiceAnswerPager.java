@@ -2,8 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.page;
 
 import android.content.Context;
 
+import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
-import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
@@ -15,13 +15,13 @@ public abstract class BaseVoiceAnswerPager extends LiveBasePager {
 
     public BaseVoiceAnswerPager(Context context) {
         super(context);
-        BasePlayerFragment videoFragment = ProxUtil.getProxUtil().get(context, BasePlayerFragment.class);
-        if (videoFragment != null) {
-            videoFragment.setVolume(0, 0);
-            logger.d(TAG + ":setVolume:0");
-        } else {
-            logger.d(TAG + ":setVolume:null");
-        }
+//        BasePlayerFragment videoFragment = ProxUtil.getProxUtil().get(context, BasePlayerFragment.class);
+//        if (videoFragment != null) {
+//            videoFragment.setVolume(0, 0);
+//            logger.d(TAG + ":setVolume:0");
+//        } else {
+//            logger.d(TAG + ":setVolume:null");
+//        }
     }
 
     public abstract void setIse(SpeechUtils mIse);
@@ -46,12 +46,12 @@ public abstract class BaseVoiceAnswerPager extends LiveBasePager {
     public void onDestroy() {
         super.onDestroy();
         BasePlayerFragment videoFragment = ProxUtil.getProxUtil().get(mContext, BasePlayerFragment.class);
-        if (videoFragment != null) {
-            videoFragment.setVolume(VP.DEFAULT_STEREO_VOLUME, VP.DEFAULT_STEREO_VOLUME);
-            logger.d("onDestroy:setVolume:1");
-        } else {
-            logger.d("onDestroy:setVolume:null");
-        }
+//        if (videoFragment != null) {
+//            videoFragment.setVolume(VP.DEFAULT_STEREO_VOLUME, VP.DEFAULT_STEREO_VOLUME);
+//            logger.d("onDestroy:setVolume:1");
+//        } else {
+//            logger.d("onDestroy:setVolume:null");
+//        }
     }
 
 }
