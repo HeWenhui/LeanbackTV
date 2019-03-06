@@ -50,6 +50,7 @@ public class LiveVideoActivityBase extends XesActivity {
         intent.putExtra("livepid", android.os.Process.myPid());
         startService(intent);
         BuglyLog.i(TAG,"onCreate");
+//        FloatWindowManager.addView(this,new Button(this),2);
     }
 
     @Override

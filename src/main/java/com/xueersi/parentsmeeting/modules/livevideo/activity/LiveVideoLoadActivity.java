@@ -16,12 +16,11 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.toast.XesToast;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
@@ -88,6 +87,27 @@ public class LiveVideoLoadActivity extends BaseActivity {
         super.onDestroy();
     }
 
+    private void performDownLoadPreLoad(LiveHttpManager mHttpManager, LiveGetInfo getInfo) {
+        String liveId = getInfo.getId();
+        int mSubject = getInfo.getIsArts();
+        CoursewarePreload coursewarePreload = new CoursewarePreload(this, liveId, mSubject);
+        coursewarePreload.setmHttpManager(mHttpManager);
+        coursewarePreload.getCoursewareInfo();
+
+//        if (liveId != null && !"".equals(liveId)) {
+//
+//            if (0 == mSubject) {//理科
+//                logger.i("下载理科");
+//                mHttpManager.getScienceCourewareInfo(liveId, new CoursewarePreload.CoursewareHttpCallBack());
+//            } else if (1 == mSubject) {//英语
+//                logger.i("下载英语");
+//                mHttpManager.getEnglishCourewareInfo(liveId, new CoursewarePreload.CoursewareHttpCallBack());
+//            } else if (2 == mSubject) {//语文
+//                logger.i("下载语文");
+//                mHttpManager.getArtsCourewareInfo(liveId, new CoursewarePreload.CoursewareHttpCallBack());
+//            }
+//        }
+    }
 
     private void initData() {
         Intent intent = getIntent();
@@ -97,7 +117,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
         final int from = intent.getIntExtra("", 0);
         DataLoadEntity dataLoadEntity = new DataLoadEntity(this);
         BaseBll.postDataLoadEvent(dataLoadEntity.beginLoading());
-        LiveHttpManager httpManager = new LiveHttpManager(this);
+        final LiveHttpManager httpManager = new LiveHttpManager(this);
+
         if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
             httpManager.liveLectureGetInfo("", vSectionID, new HttpCallBack(dataLoadEntity) {
                 @Override
@@ -106,11 +127,14 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     JSONObject object = (JSONObject) responseEntity.getJsonObject();
                     LiveTopic mLiveTopic = new LiveTopic();
                     LiveGetInfo mGetInfo = mHttpResponseParser.parseLiveGetInfo(object, mLiveTopic, liveType, from);
+
+
                     if (mGetInfo == null) {
                         XESToastUtils.showToast(LiveVideoLoadActivity.this, "服务器异常");
                         finish();
                         return;
                     }
+                    performDownLoadPreLoad(httpManager, mGetInfo);
                     String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
                     getInfos.put(liveType + "-" + stuId + "-" + vSectionID, mGetInfo);
                     com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
@@ -142,11 +166,14 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     JSONObject object = (JSONObject) responseEntity.getJsonObject();
                     LiveTopic mLiveTopic = new LiveTopic();
                     LiveGetInfo mGetInfo = mHttpResponseParser.parseLiveGetInfo(object, mLiveTopic, liveType, from);
+
+
                     if (mGetInfo == null) {
                         XESToastUtils.showToast(LiveVideoLoadActivity.this, "服务器异常");
                         finish();
                         return;
                     }
+                    performDownLoadPreLoad(httpManager, mGetInfo);
                     // 语文半身直播 暂不支持观看
                     if (isChineseHalfBodyLive(mGetInfo)) {
                         XESToastUtils.showToast(LiveVideoLoadActivity.this, "语文半身直播暂不支持,请升级版本");

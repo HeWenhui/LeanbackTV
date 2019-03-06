@@ -421,4 +421,17 @@ public class LiveVideoConfig {
     /**半身直播体验课 试题 h5 地址**/
     public static final String URL_HALFBODY_EXPERIENCE_LIVE_H5 = "https://expclass.xueersi.com/live-rewrite/courseware-sci/index.html";
 
+    /**
+     * 文科课件预加载
+     */
+    public static String URL_LIVE_GET_ARTS_COURSEWARE_URL = "https://app.chs.xueersi.com/LiveCourses/preLoadNewCourseWare";
+    /**
+     * 英语课件预加载
+     */
+    public static String URL_LIVE_GET_ENGLISH_COURSEWARE_URL = "https://app.arts.xueersi.com/preloading/preLoading";
+    /**
+     * 理科课件预加载
+     */
+    public static String URL_LIVE_GET_SCIENCE_COURSEWARE_URL =  LiveVideoConfig.HTTP_HOST+"/science/LiveCourses/preLoadNewCourseWare";
+
 }
