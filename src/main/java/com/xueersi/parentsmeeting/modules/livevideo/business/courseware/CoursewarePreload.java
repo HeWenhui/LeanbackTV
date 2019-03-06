@@ -254,8 +254,11 @@ public class CoursewarePreload {
     private void execDownLoad(List<CoursewareInfoEntity.LiveCourseware> liveCoursewares, List<String> cdns, List<String> ips, List<String> resources) {
         //直播资源列表
         //cdns列表
+        if (cdns == null || cdns.size() == 0) {
+            return;
+        }
         List<String> newIPs = new LinkedList<>();
-//        newIPs.add("https://icourse.xesimg.com");
+        newIPs.add("https://icourse.xesimg.com");
         newIPs.addAll(cdns);
         newIPs.addAll(ips);
 
@@ -674,7 +677,7 @@ public class CoursewarePreload {
 
     //判断文件是否存在
     public boolean fileIsExists(String strFile) {
-        logger.i(strFile);
+//        logger.i(strFile);
         try {
             File f = new File(strFile);
             logger.i("" + f.getName() + " " + f.isFile() + " " + f.exists());
