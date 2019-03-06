@@ -64,6 +64,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.ui.adapter.AdapterItemInterface;
@@ -183,14 +184,6 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                 .rl_livevideo_message_panelroot);
         ivExpressionCancle = (ImageView) mView.findViewById(R.id.iv_livevideo_message_expression_cancle);
         logger.setLogMethod(false);
-        int screenWidth = ScreenUtils.getScreenWidth();
-        int screenHeight = ScreenUtils.getScreenHeight();
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
-        int wradio = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * screenWidth / LiveVideoConfig.VIDEO_WIDTH);
-        int hradio = (int) ((LiveVideoConfig.VIDEO_HEIGHT - LiveVideoConfig.VIDEO_HEAD_HEIGHT) * screenHeight /
-                LiveVideoConfig.VIDEO_HEIGHT);
-        params.width = wradio;
-        params.topMargin = screenHeight - hradio;
         return mView;
     }
 
@@ -213,7 +206,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         btMsgCommon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                if (!commonWordInited) {
+                if(!commonWordInited){
                     initCommonWord();
                 }
                 liveMediaControllerBottom.onChildViewClick(v);
@@ -474,7 +467,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         logger.i("initData:time3=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
         //initCommonWord();
-        logger.i("initData:time4=" + (System.currentTimeMillis() - before));
+        logger.i( "initData:time4=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
     }
 
@@ -492,6 +485,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             });
         }
     }
+
 
 
     private boolean commonWordInited = false;
@@ -929,45 +923,45 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     @Override
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
-//        {
-//            int wradio = liveVideoPoint.x4 - liveVideoPoint.x3;
-//            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
-//            if (wradio != params.width || params.rightMargin != liveVideoPoint.screenWidth - liveVideoPoint.x4) {
-//                //logger.e( "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
-//                // + ",wradio=" + wradio + "," + params.width);
-//                params.width = wradio;
-//                params.rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
-////                rlInfo.setLayoutParams(params);
-//                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
-//            }
-//            if (cbMessageClock != null) {
-//                int rightMargin = liveVideoPoint.getRightMargin();
-//                params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
-//                if (params.rightMargin != rightMargin) {
-//                    params.rightMargin = rightMargin;
-////                cbMessageClock.setLayoutParams(params);
-//                    LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
-//                }
-//            }
-//        }
-//        {
-//            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlInfo.getLayoutParams();
-//            int topMargin = liveVideoPoint.y3;
-//            if (topMargin != params.topMargin) {
-//                params.topMargin = topMargin;
-////                rlInfo.setLayoutParams(params);
-//                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
-//                logger.d("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
-//            }
-//            int bottomMargin = liveVideoPoint.y2;
-//            params = (ViewGroup.MarginLayoutParams) lvMessage.getLayoutParams();
-//            if (params.bottomMargin != bottomMargin) {
-//                params.bottomMargin = bottomMargin;
-////                lvMessage.setLayoutParams(params);
-//                LayoutParamsUtil.setViewLayoutParams(lvMessage, params);
-//                //logger.e( "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
-//            }
-//        }
+        {
+            int wradio = liveVideoPoint.x4 - liveVideoPoint.x3;
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
+            if (wradio != params.width || params.rightMargin != liveVideoPoint.screenWidth - liveVideoPoint.x4) {
+                //logger.e( "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
+                // + ",wradio=" + wradio + "," + params.width);
+                params.width = wradio;
+                params.rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
+//                rlInfo.setLayoutParams(params);
+                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
+            }
+       /*     if (cbMessageClock != null) {
+                int rightMargin = liveVideoPoint.getRightMargin();
+                params = (RelativeLayout.LayoutParams) cbMessageClock.getLayoutParams();
+                if (params.rightMargin != rightMargin) {
+                    params.rightMargin = rightMargin;
+//                cbMessageClock.setLayoutParams(params);
+                    LayoutParamsUtil.setViewLayoutParams(cbMessageClock, params);
+                }
+            }*/
+        }
+        {
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlInfo.getLayoutParams();
+            int topMargin = liveVideoPoint.y3;
+            if (topMargin != params.topMargin) {
+                params.topMargin = topMargin;
+//                rlInfo.setLayoutParams(params);
+                LayoutParamsUtil.setViewLayoutParams(rlInfo, params);
+                logger.d("initView:width=" + liveVideoPoint.getRightMargin() + "," + liveVideoPoint.y3);
+            }
+            int bottomMargin = liveVideoPoint.y2;
+            params = (ViewGroup.MarginLayoutParams) lvMessage.getLayoutParams();
+            if (params.bottomMargin != bottomMargin) {
+                params.bottomMargin = bottomMargin;
+//                lvMessage.setLayoutParams(params);
+                LayoutParamsUtil.setViewLayoutParams(lvMessage, params);
+                //logger.e( "setVideoWidthAndHeight:bottomMargin=" + bottomMargin);
+            }
+        }
 //        {
 //            int wradio = liveVideoPoint.getRightMargin();
 //            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
@@ -1097,12 +1091,12 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             public void run() {
                 if (ircState.isSeniorOfHighSchool()) {
                     String mode = ircState.getMode();
-                    // Loger.d("___ircState:  "+ircState.getMode());
+                   // Loger.d("___ircState:  "+ircState.getMode());
                     StringBuilder sb = new StringBuilder();
-                    for (User user : users) {
+                    for (User user : users){
                         sb.append(user.getNick());
                     }
-                    //  Loger.d("___bug6:  users:  "+sb.toString());
+                  //  Loger.d("___bug6:  users:  "+sb.toString());
                     tvMessageCount.setText("班内" + peopleCount + "人");
                 } else {
                     if (ircState.isHaveTeam()) {
@@ -1150,7 +1144,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                         addDanmaKuFlowers(jsonObject.getInt("ftype"), jsonObject.getString("name"));
                     }
                 } catch (JSONException e) {
-                    //  Loger.d("____bug20  private message sender:  "+sender);
+                  //  Loger.d("____bug20  private message sender:  "+sender);
                     addMessage(sender, LiveMessageEntity.MESSAGE_CLASS, message, "");
                 }
             }
@@ -1163,9 +1157,9 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             @Override
             public void run() {
                 if (ircState.isSeniorOfHighSchool()) {
-                    //  Loger.d("___ircState:  "+ircState.getMode()+"  sender:  "+sender);
-                    // for (User user : )
-                    // Loger.d("___bug34 :  "+peopleCount);
+                  //  Loger.d("___ircState:  "+ircState.getMode()+"  sender:  "+sender);
+                   // for (User user : )
+                   // Loger.d("___bug34 :  "+peopleCount);
                     tvMessageCount.setText("班内" + peopleCount + "人");
                 } else {
                     if (ircState.isHaveTeam()) {
@@ -1184,8 +1178,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             @Override
             public void run() {
                 if (ircState.isSeniorOfHighSchool()) {
-                    // Loger.d("___ircState:  "+ircState.getMode()+"  sourceLogin:  "+sourceLogin);
-                    //    Loger.d("___bug35 :  "+peopleCount);
+                   // Loger.d("___ircState:  "+ircState.getMode()+"  sourceLogin:  "+sourceLogin);
+                //    Loger.d("___bug35 :  "+peopleCount);
                     tvMessageCount.setText("班内" + peopleCount + "人");
                 } else {
                     if (ircState.isHaveTeam()) {
