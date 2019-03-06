@@ -176,7 +176,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
             lottieEffectInfo = effectInfo;
 
         } else {
-            String imgDir = "arts_answer_result/result_state_error/images";
+            String imgDir = LOTTIE_RES_ASSETS_ROOTDIR  +"result_state_error/images";
             lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_error/come.json";
             ArtsAnswerEnergyStateLottieEffectInfo effectInfo = new ArtsAnswerEnergyStateLottieEffectInfo(imgDir,
                     lottieJsonPath, "img_15.png", "img_16.png");
