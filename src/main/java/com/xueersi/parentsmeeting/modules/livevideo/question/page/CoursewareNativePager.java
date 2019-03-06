@@ -444,6 +444,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             btCoursePre.setEnabled(false);
             if (tests.size() > 0) {
                 btCourseNext.setEnabled(true);
+                btCourseNext.setVisibility(View.VISIBLE);
             }
         } else if (currentIndex == tests.size() - 1) {
             btCourseNext.setEnabled(false);

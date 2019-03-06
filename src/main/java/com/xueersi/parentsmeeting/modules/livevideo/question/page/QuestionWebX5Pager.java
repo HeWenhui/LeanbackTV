@@ -37,6 +37,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -146,13 +147,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         type = testInfo.type;
         liveid = liveid;
         mLogtf.i("QuestionWebX5Pager:liveid=" + liveid + ",testId=" + testId);
-        cacheFile = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/parentsmeeting/webviewCache");
-        if (cacheFile == null) {
-            cacheFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webviewCache");
-        }
-        if (!cacheFile.exists()) {
-            cacheFile.mkdirs();
-        }
+        cacheFile = LiveCacheFile.geCacheFile(context, "webviewCache");
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
         Date date = new Date();
         final String today = dateFormat.format(date);
