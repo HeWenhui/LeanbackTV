@@ -12,6 +12,8 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
 import java.io.File;
@@ -46,18 +48,9 @@ public class NewCourseCache {
 
     public NewCourseCache(Context mContext, String liveId) {
         logToFile = new LogToFile(mContext, TAG);
-        cacheFile = mContext.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/parentsmeeting/webviewCache");
         webInstertJs = new WebInstertJs(mContext);
-        if (cacheFile == null) {
-            cacheFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webviewCache");
-        }
-        if (!cacheFile.exists()) {
-            cacheFile.mkdirs();
-        }
-        mPublicCacheout = new File(cacheFile, EnglishH5Cache.mPublicCacheoutName);
-        if (!mPublicCacheout.exists()) {
-            mPublicCacheout.mkdirs();
-        }
+        cacheFile = LiveCacheFile.geCacheFile(mContext, "webviewCache");
+        mPublicCacheout = new File(cacheFile, CoursewarePreload.mPublicCacheoutName);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
         Date date = new Date();
         final String today = dateFormat.format(date);
