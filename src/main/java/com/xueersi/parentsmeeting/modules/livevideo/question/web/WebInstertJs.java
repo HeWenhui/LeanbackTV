@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.web;
 
 import android.content.Context;
 import android.util.Log;
-import android.webkit.WebViewClient;
 
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -49,10 +48,10 @@ public class WebInstertJs {
         }
     }
 
-    private InputStream insertJs(InputStream inputStream) throws Exception {
-        String fileName = "index_" + saveTime + ".html";
+    private InputStream insertJs(String url, InputStream inputStream) throws Exception {
+        String fileName = "index_" + url.hashCode() + "_" + saveTime + ".html";
         File saveFile = new File(cacheDir, fileName);
-        logToFile.d("insertJs:fileName=" + fileName + ",exists=" + saveFile.exists());
+        logToFile.d("insertJs:fileName=" + saveFile + ",exists=" + saveFile.exists());
         if (saveFile.exists()) {
             return new FileInputStream(saveFile);
         }
@@ -90,10 +89,10 @@ public class WebInstertJs {
         return new FileInputStream(saveFile);
     }
 
-    public InputStream readFile(File file) {
+    public InputStream readFile(String url, File file) {
         try {
             FileInputStream fileInputStream = new FileInputStream(file);
-            return insertJs(fileInputStream);
+            return insertJs(url, fileInputStream);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -101,9 +100,9 @@ public class WebInstertJs {
     }
 
     public InputStream httpRequest(String url) {
-        String fileName = "index_" + saveTime + ".html";
+        String fileName = "index_" + url.hashCode() + "_" + saveTime + ".html";
         File saveFile = new File(cacheDir, fileName);
-        logToFile.d("httpRequest:fileName=" + fileName + ",exists=" + saveFile.exists());
+        logToFile.d("httpRequest:fileName=" + saveFile + ",exists=" + saveFile.exists());
         if (saveFile.exists()) {
             try {
                 return new FileInputStream(saveFile);
@@ -128,7 +127,7 @@ public class WebInstertJs {
             Log.d(TAG, "httpRequest:responseCode=" + responseCode);
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 InputStream inputStream = httpURLConnection.getInputStream();
-                return insertJs(inputStream);
+                return insertJs(url, inputStream);
 //                return null;
             }
         } catch (MalformedURLException e) {

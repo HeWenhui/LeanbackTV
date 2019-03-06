@@ -81,7 +81,7 @@ public class NewCourseCache {
         File file = getCourseWareFile(url);
         InputStream inputStream = null;
         if (file != null) {
-            inputStream = webInstertJs.readFile(file);
+            inputStream = webInstertJs.readFile(url, file);
         }
         logToFile.d("interceptIndexRequest:url=" + url + ",inputStream1=" + (inputStream == null));
         if (inputStream == null) {
