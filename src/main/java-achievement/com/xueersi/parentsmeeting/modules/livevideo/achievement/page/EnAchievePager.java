@@ -32,6 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.lottie.AchieveType1LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.lottie.AchieveType2LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.lottie.AchieveType3LottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
@@ -103,7 +104,7 @@ public class EnAchievePager extends LiveBasePager {
         tvAchiveNumFire.setText("" + enpkEnergy.me);
         LiveGetInfo.EnglishPk englishPk = mLiveGetInfo.getEnglishPk();
         View view = activity.findViewById(R.id.iv_livevideo_message_small_bg);
-        if (1 == englishPk.canUsePK && 1 == englishPk.hasGroup) {
+        if (1 == englishPk.canUsePK && EnglishPk.HAS_GROUP_MAIN == englishPk.hasGroup) {
             showPk();
         } else {
             pkEmptyView = (ViewGroup) vsAchiveBottom2.inflate();

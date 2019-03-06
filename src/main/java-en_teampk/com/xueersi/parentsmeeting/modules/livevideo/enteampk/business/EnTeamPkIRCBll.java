@@ -13,6 +13,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
@@ -63,6 +64,8 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private long stopQuestTime;
     private AtomicBoolean firstConnect = new AtomicBoolean(false);
     private Runnable reportStuInfoRun;
+    /** 通知了eventBus */
+    private boolean haveTeamRun = false;
     private ClassEndRec classEndRec;
     private ClassEndReg classEndReg;
     private boolean isEnglishPkTotalRank = false;
@@ -90,25 +93,6 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         EnTeamPkBll teamPkBll = new EnTeamPkBll(activity);
         teamPkBll.setRootView(mRootView);
         teamPkBll.setEnTeamPkHttp(new EnTeamPkHttpImp());
-        if (englishPk.hasGroup == 1) {
-            try {
-                String string = mShareDataManager.getString(ShareDataConfig.LIVE_ENPK_MY_TEAM, "{}", ShareDataManager.SHAREDATA_USER);
-                JSONObject jsonObject = new JSONObject(string);
-                if (jsonObject.has(getInfo.getId())) {
-                    ResponseEntity responseEntity = new ResponseEntity();
-                    responseEntity.setJsonObject(jsonObject.getJSONObject(getInfo.getId()));
-                    pkTeamEntity = getHttpResponseParser().parsegetSelfTeamInfo(responseEntity, mGetInfo.getStuId());
-                    logger.d("onLiveInited:pkTeamEntity=null?" + (pkTeamEntity == null));
-                    if (pkTeamEntity != null) {
-                        pkTeamEntity.setCreateWhere(PkTeamEntity.CREATE_TYPE_LOCAL);
-                    }
-                    teamPkBll.setPkTeamEntity(pkTeamEntity);
-                }
-            } catch (Exception e) {
-                pkTeamEntity = null;
-                CrashReport.postCatchedException(e);
-            }
-        }
         enTeamPkAction = teamPkBll;
         teamPkBll.onLiveInited(getInfo);
         EnTeamPkQuestionShowAction enTeamPkQuestionShowAction = new EnTeamPkQuestionShowAction();
@@ -119,6 +103,26 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         EnglishShowReg englishShowReg = getInstance(EnglishShowReg.class);
         if (englishShowReg != null) {
             englishShowReg.registQuestionShow(enTeamPkQuestionShowAction);
+        }
+        if (englishPk.hasGroup != EnglishPk.HAS_GROUP_NO) {
+            try {
+                String string = mShareDataManager.getString(ShareDataConfig.LIVE_ENPK_MY_TEAM, "{}", ShareDataManager.SHAREDATA_USER);
+                JSONObject jsonObject = new JSONObject(string);
+                if (jsonObject.has(getInfo.getId())) {
+                    ResponseEntity responseEntity = new ResponseEntity();
+                    responseEntity.setJsonObject(jsonObject.getJSONObject(getInfo.getId()));
+                    parsegetSelfTeamInfo(responseEntity);
+                    pkTeamEntity = parsegetSelfTeamInfo(responseEntity);
+                    logger.d("onLiveInited:pkTeamEntity=null?" + (pkTeamEntity == null));
+                    if (pkTeamEntity != null) {
+                        pkTeamEntity.setCreateWhere(PkTeamEntity.CREATE_TYPE_LOCAL);
+                    }
+                    teamPkBll.setPkTeamEntity(pkTeamEntity);
+                }
+            } catch (Exception e) {
+                pkTeamEntity = null;
+                CrashReport.postCatchedException(e);
+            }
         }
 //        if (com.xueersi.common.config.AppConfig.DEBUG) {
 //            java.util.Random random = new java.util.Random();
@@ -345,6 +349,11 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
         @Override
         public void getEnglishPkGroup(final AbstractBusinessDataCallBack abstractBusinessDataCallBack) {
+            mLogtf.d("getEnglishPkGroup:haveTeamRun=" + haveTeamRun);
+            if (haveTeamRun) {
+                haveTeamRun = false;
+                poseEvent();
+            }
             if (pkTeamEntity != null) {
                 abstractBusinessDataCallBack.onDataSucess(pkTeamEntity);
                 return;
@@ -461,13 +470,33 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         if (pkTeamEntity == null && pkTeamEntity2 != null) {
             LiveGetInfo.EnglishPk englishPk = mGetInfo.getEnglishPk();
             int oldHasGroup = englishPk.hasGroup;
-            englishPk.hasGroup = 1;
-            mLogtf.d("parsegetSelfTeamInfo:postEvent:oldHasGroup=" + oldHasGroup);
-            if (oldHasGroup == 0) {
-                mLiveBll.postEvent(EnPkTeam.class, pkTeamEntity2);
+            mLogtf.d("parsegetSelfTeamInfo:psOpen=" + psOpen + ",mode=" + mGetInfo.getMode() + ",oldHasGroup=" + oldHasGroup);
+            if (psOpen || LiveTopic.MODE_CLASS.equals(mGetInfo.getMode())) {
+                englishPk.hasGroup = EnglishPk.HAS_GROUP_MAIN;
+                if (oldHasGroup != EnglishPk.HAS_GROUP_MAIN) {
+                    mLiveBll.postEvent(EnPkTeam.class, pkTeamEntity2);
+                }
+            } else {
+                if (oldHasGroup != 1) {
+                    haveTeamRun = true;
+                }
             }
         }
         return pkTeamEntity2;
+    }
+
+    private void poseEvent() {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                LiveGetInfo.EnglishPk englishPk = mGetInfo.getEnglishPk();
+                int oldHasGroup = englishPk.hasGroup;
+                if (oldHasGroup != EnglishPk.HAS_GROUP_MAIN) {
+                    englishPk.hasGroup = EnglishPk.HAS_GROUP_MAIN;
+                    mLiveBll.postEvent(EnPkTeam.class, pkTeamEntity);
+                }
+            }
+        });
     }
 
     @Override
@@ -770,7 +799,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     @Override
     public int[] getNoticeFilter() {
-        return new int[]{XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_OPEN, XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_RESULT, XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_GO,XESCODE.READPACAGE,
+        return new int[]{XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_OPEN, XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_RESULT, XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_GO, XESCODE.READPACAGE,
                 XESCODE.STOPQUESTION, XESCODE.ARTS_STOP_QUESTION, XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_STULIKE, XESCODE.ARTS_H5_COURSEWARE, XESCODE.CLASSBEGIN};
     }
 
@@ -805,6 +834,11 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
         super.onModeChange(oldMode, mode, isPresent);
+        mLogtf.d("onModeChange:haveTeamRun=" + haveTeamRun);
+        if (haveTeamRun) {
+            haveTeamRun = false;
+            poseEvent();
+        }
         if (enTeamPkAction != null) {
             enTeamPkAction.onModeChange(mode);
         }

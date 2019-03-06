@@ -9,6 +9,7 @@ import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.LiveExperienceEntity;
@@ -237,7 +238,14 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             englishPk.canUsePK = englishPkObj.optInt("canUsePK");
             englishPk.historyScore = englishPkObj.optInt("historyScore");
             englishPk.isTwoLose = englishPkObj.optInt("isTwoLose");
-            englishPk.hasGroup = englishPkObj.optInt("hasGroup");
+            int hasGroup = englishPkObj.optInt("hasGroup");
+            if (EnglishPk.HAS_GROUP_MAIN == hasGroup) {
+                if (LiveTopic.MODE_CLASS.equals(getInfo.getMode())) {
+                    englishPk.hasGroup = hasGroup;
+                } else {
+                    englishPk.hasGroup = EnglishPk.HAS_GROUP_TRAN;
+                }
+            }
         }
         JSONObject pkEnergyObj = data.optJSONObject("pkEnergy");
         if (pkEnergyObj != null) {

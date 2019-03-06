@@ -15,6 +15,7 @@ import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.SmallEnglishMicTipDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.config.EnTeamPkConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
@@ -105,7 +106,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
         mode = getInfo.getMode();
         englishPk = getInfo.getEnglishPk();
         if (pkTeamEntity == null) {
-            if (englishPk.hasGroup == 0) {
+            if (englishPk.hasGroup == EnglishPk.HAS_GROUP_NO) {
                 reportStuInfo();
             } else {
                 getEnglishPkGroup();
