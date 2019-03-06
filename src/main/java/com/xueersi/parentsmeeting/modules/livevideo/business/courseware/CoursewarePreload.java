@@ -218,21 +218,23 @@ public class CoursewarePreload {
 //            final List<String> loadpages = coursewareInfoEntity.getLoadpages();
 //            List<String> staticSources = coursewareInfoEntity.getStaticSources();
 //        ips.addAll(cdns);
+
         List<String> newIPs = new LinkedList<>();
+//        newIPs.add("https://icourse.xesimg.com");
         newIPs.addAll(cdns);
         newIPs.addAll(ips);
+
         logger.i("" + cdns.size() + " " + newIPs.size());
         cdnLength.set(cdns.size());
         ipLength.set(newIPs.size());
-        logger.i("下载公共资源");
-        //下载公共资源
-        downloadResources(resources, cdns, ips);
+
+        downloadResources(resources, cdns, newIPs);
         exeDownLoadCourseware(liveCoursewares, cdns, newIPs);
 
     }
 
     /**
-     * //下载异一场直播的课件资源
+     * //下载同一场直播的课件资源
      *
      * @param liveCoursewares
      * @param cdns
@@ -240,11 +242,8 @@ public class CoursewarePreload {
      */
     private void exeDownLoadCourseware(List<CoursewareInfoEntity.LiveCourseware> liveCoursewares, List<String> cdns, List<String> ips) {
 
-//        List<CoursewareInfoEntity.LiveCourseware> liveCoursewareList = liveCoursewares;
-//        for (int i = 0; i < liveCoursewares.size(); i++) {
         for (CoursewareInfoEntity.LiveCourseware liveCourseware : liveCoursewares) {
             //课件列表
-//            CoursewareInfoEntity.LiveCourseware liveCourseware = liveCoursewares.get(i);
             List<CoursewareInfoEntity.ItemCoursewareInfo> coursewareInfos = liveCourseware.getCoursewareInfos();
             File todayLiveCacheDir = new File(todayCacheDir, liveCourseware.getLiveId());
             boolean exists = todayLiveCacheDir.exists();
@@ -256,8 +255,6 @@ public class CoursewarePreload {
             downloadCourseware(todayLiveCacheDir, coursewareInfos, ips, cdns);
         }
     }
-
-//    private int resourceTextPos = 0, courseWarePos = 0;
 
     /**
      * 下载每一个单独的课件资源
@@ -277,7 +274,7 @@ public class CoursewarePreload {
         if (!mMorecacheout.exists()) {
             mMorecacheout.mkdirs();
         }
-        String tempIP = ips.get((ipPos.get()) % ipLength.get());
+        String tempIP = ips.get(0);
         String ip;
         boolean isIP = false;
         //拼接ip
@@ -289,8 +286,8 @@ public class CoursewarePreload {
             ip = "http://" + tempIP;
         }
         //截取host
-        int index = cdns.get((cdnPos.get()) % cdnLength.get()).indexOf("/") + 2;
-        String cdn = cdns.get(cdnPos.get() % cdnLength.get()).substring(index);
+        int index = cdns.get(0).indexOf("/") + 2;
+        String cdn = cdns.get(0).substring(index);
 //        for (int j = 0; j < coursewareInfos.size(); j++) {
         for (CoursewareInfoEntity.ItemCoursewareInfo coursewareInfo : coursewareInfos) {
 //            CoursewareInfoEntity.ItemCoursewareInfo coursewareInfo = coursewareInfos.get((courseWarePos++) % courseWareInfos.size());
@@ -304,6 +301,12 @@ public class CoursewarePreload {
             }
             if (!fileIsExists(resourceSave.getAbsolutePath()) || (fileIsExists(resourceSave.getAbsolutePath()) && !equals)) {
                 DownLoadInfo resourceDownLoadInfo = DownLoadInfo.createFileInfo(ip + coursewareInfo.getResourceUrl(), mMorecachein.getAbsolutePath(), resourceName + ".temp", coursewareInfo.getMd5());
+                resourceSave.mkdirs();
+//                try {
+//                    resourceSave.createNewFile();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
                 if (isIP) {
                     resourceDownLoadInfo.setHost(cdn);
                 }
@@ -324,6 +327,12 @@ public class CoursewarePreload {
             final String templateName = MD5.md5(coursewareInfo.getTemplateUrl()) + ".zip";
             File templateSave = new File(mMorecachein, resourceName);
             if (!fileIsExists(templateSave.getAbsolutePath())) {
+                templateSave.mkdirs();
+//                try {
+//                    templateSave.createNewFile();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
                 DownLoadInfo templateDownLoadInfo = DownLoadInfo.createFileInfo(ip + coursewareInfo.getTemplateUrl(), mMorecachein.getAbsolutePath(), templateName + ".temp", "");
                 logger.d("template url path:  " + ip + coursewareInfo.getTemplateUrl() + "   file name:" + templateName + ".zip");
                 if (isIP) {
@@ -344,15 +353,15 @@ public class CoursewarePreload {
     }
 
 
-    private List<DownLoadInfo> courseWareDownLoadInfos;
-
-    private List<ZipDownloadListener> courseWareDownListeners;
-
-    private List<DownLoadInfo> resourcesDownLoadInfos;
+//    private List<DownLoadInfo> courseWareDownLoadInfos;
+//
+//    private List<ZipDownloadListener> courseWareDownListeners;
+//
+//    private List<DownLoadInfo> resourcesDownLoadInfos;
 
 
     /**
-     * 下载公共资源
+     * 下载公共资源(字体)
      *
      * @param resourseInfos
      * @param ips
@@ -363,7 +372,8 @@ public class CoursewarePreload {
         if (!mPublicCacheout.exists()) {
             mPublicCacheout.mkdirs();
         }
-        String tempIP = ips.get(ipPos.get() % ipLength.get());
+        logger.i("下载公共资源");
+        String tempIP = ips.get(0);
         String ip;
         boolean isIp = false;
         //拼接ip
@@ -374,56 +384,70 @@ public class CoursewarePreload {
             ip = "http://" + tempIP;
             isIp = true;
         }
-        int cdnIndex = (cdnPos.get()) % cdnLength.get();
+        int cdnIndex = 0;
         int subIndex = cdns.get(cdnIndex).indexOf("/") + 2;
         String cdn = cdns.get(cdnIndex).substring(subIndex);
-        if (resourseInfos.size() > 0) {
+//        if (resourseInfos.size() > 0) {
 //            for (int i = 0; i < resourseInfos.size(); i++) {
-            for (String url : resourseInfos) {
+        for (String url : resourseInfos) {
 //                String url = resourseInfos.get(i);
-                final AtomicInteger downTryCount = new AtomicInteger();
-                if (url.endsWith(".zip")) {
-                    final String fileName;
-                    int index = url.lastIndexOf("/");
-                    if (index != -1) {
-                        fileName = url.substring(index + 1);
-                    } else {
-                        fileName = MD5Utils.getMD5(url);
+            final AtomicInteger downTryCount = new AtomicInteger();
+            if (url.endsWith(".zip")) {
+                final String fileName;
+                int index = url.lastIndexOf("/");
+                if (index != -1) {
+                    fileName = url.substring(index + 1);
+                } else {
+                    fileName = MD5Utils.getMD5(url);
+                }
+                final File save = new File(mPublicCacheout, fileName);
+                if (!fileIsExists(save.getAbsolutePath())) {
+                    save.mkdirs();
+//                    try {
+//                        save.createNewFile();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                if (!fileIsExists(save.getAbsolutePath())) {
+                    logger.d("resource zip url path:  " + ip + url + "   file name:" + fileName + ".zip");
+                    DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(ip + url, mPublicCacheout.getAbsolutePath(), fileName + ".temp", "");
+                    if (isIp) {
+                        downLoadInfo.setHost(cdn);
                     }
-                    final File save = new File(mPublicCacheout, fileName);
-                    if (!fileIsExists(save.getAbsolutePath())) {
-                        logger.d("resource zip url path:  " + ip + url + "   file name:" + fileName + ".zip");
-                        DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(ip + url, mPublicCacheout.getAbsolutePath(), fileName + ".temp", "");
-                        if (isIp) {
-                            downLoadInfo.setHost(cdn);
-                        }
 //                        final DownLoader downLoader = new DownLoader(mContext, downLoadInfo);
 //                        downLoader.start(new ZipDownloadListener(mPublicCacheout, mPublicCacheout, fileName, ips, cdns, url, "", downTryCount));
-                        PreLoadDownLoaderManager.DownLoadInfoListener infoListener = new PreLoadDownLoaderManager.DownLoadInfoListener(
-                                downLoadInfo,
-                                new ZipDownloadListener(save, save, fileName, ips, cdns, url, fileName, new AtomicInteger(0)));
-                        if (!isPrecise.get()) {
-                            PreLoadDownLoaderManager.addToAutoDownloadPool(infoListener);
-                        } else {
-                            PreLoadDownLoaderManager.addUrgentInfo(infoListener);
-                        }
+                    PreLoadDownLoaderManager.DownLoadInfoListener infoListener = new PreLoadDownLoaderManager.DownLoadInfoListener(
+                            downLoadInfo,
+                            new ZipDownloadListener(mPublicCacheout, mPublicCacheout, fileName, ips, cdns, url, fileName, new AtomicInteger(0)));
+                    if (!isPrecise.get()) {
+                        PreLoadDownLoaderManager.addToAutoDownloadPool(infoListener);
+                    } else {
+                        PreLoadDownLoaderManager.addUrgentInfo(infoListener);
                     }
-                } else {
-                    String fileName = MD5Utils.getMD5(url);
-                    final File save = new File(mPublicCacheout, fileName);
-                    if (!fileIsExists(save.getPath())) {
-                        logger.d("resource ttf url path:  " + ip + url + "   file name:" + fileName + ".zip");
-                        DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(ip + url, mPublicCacheout.getAbsolutePath(), fileName + ".temp", "");
-//                        final DownLoader downLoader = new DownLoader(mContext, downLoadInfo);
-                        PreLoadDownLoaderManager.DownLoadInfoListener infoListener = new PreLoadDownLoaderManager.DownLoadInfoListener(
-                                downLoadInfo,
-                                new NoZipDownloadListener(save, save, fileName, ips, cdns, url, fileName, new AtomicInteger(0)));
-                        if (!isPrecise.get()) {
-                            PreLoadDownLoaderManager.addToAutoDownloadPool(infoListener);
-                        } else {
-                            PreLoadDownLoaderManager.addUrgentInfo(infoListener);
-                        }
+                }
+            } else {
+                String fileName = MD5Utils.getMD5(url);
+                final File save = new File(mPublicCacheout, fileName);
+                if (!fileIsExists(save.getPath())) {
+                    save.mkdirs();
+//                    try {
+//                        save.createNewFile();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
 //                        downLoader.start(new NoZipDownloadListener(mPublicCacheout, mPublicCacheout, fileName, ips, cdns, url, "", downTryCount));
+//                }
+                    logger.d("resource ttf url path:  " + ip + url + "   file name:" + fileName + ".nozip");
+                    DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(ip + url, mPublicCacheout.getAbsolutePath(), fileName + ".temp", "");
+//                        final DownLoader downLoader = new DownLoader(mContext, downLoadInfo);
+                    PreLoadDownLoaderManager.DownLoadInfoListener infoListener = new PreLoadDownLoaderManager.DownLoadInfoListener(
+                            downLoadInfo,
+                            new NoZipDownloadListener(mPublicCacheout, mPublicCacheout, fileName, ips, cdns, url, fileName, new AtomicInteger(0)));
+                    if (!isPrecise.get()) {
+                        PreLoadDownLoaderManager.addToAutoDownloadPool(infoListener);
+                    } else {
+                        PreLoadDownLoaderManager.addUrgentInfo(infoListener);
                     }
                 }
             }
@@ -481,7 +505,7 @@ public class CoursewarePreload {
 
         @Override
         public void onSuccess(String folderPath, String fileName) {
-            logger.d("download success");
+            logger.d("download zip success");
             File tempFile = new File(folderPath, fileName);
             File file = new File(folderPath, mFileName);
             boolean rename = tempFile.renameTo(file);
@@ -490,10 +514,10 @@ public class CoursewarePreload {
 
         @Override
         public void onFail(int errorCode) {
-            String oldIP = ips.get((ipPos.get()) % ipLength.get());
+            String oldIP = ips.get(downTryCount.get() % ipLength.get());
             logger.d("fail url path:  " + oldIP + url + "   file name:" + mFileName + ".zip");
-            ipPos.getAndIncrement();
-            String tempIP = ips.get((ipPos.get()) % ipLength.get());
+            downTryCount.getAndIncrement();
+            String tempIP = ips.get(downTryCount.get() % ipLength.get());
             String ip;
             boolean isIP;
             //拼接ip
@@ -504,12 +528,11 @@ public class CoursewarePreload {
                 ip = "http://" + tempIP;
                 isIP = true;
             }
-//            String ip = "http://" + ips.get((ipPos.getAndIncrement()) % ipLength.get());
             int tryCount = downTryCount.get();
-            downTryCount.getAndIncrement();
-            logger.d("download fail trycount" + tryCount);
+            logger.d("download zip fail trycount" + tryCount);
             if (tryCount < ips.size()) {
-                int index = cdns.get(tryCount).indexOf("/") + 2;
+                logger.i(ips.size() + "");
+                int index = cdns.get(tryCount % cdnLength.get()).indexOf("/") + 2;
                 DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(ip + url, mMorecachein.getAbsolutePath(), mFileName + ".temp", md5);
                 logger.d("now url path:  " + ip + url + "   file name:" + mFileName + ".zip");
                 if (isIP) {
@@ -528,7 +551,7 @@ public class CoursewarePreload {
 
         @Override
         public void onFinish() {
-//            logger.i("zip download finish");
+            logger.i("zip download finish");
         }
     }
 
@@ -573,10 +596,10 @@ public class CoursewarePreload {
         @Override
         public void onFail(int errorCode) {
 //            String ip = "http://" + ips.get((cdnPos.getAndIncrement()) % cdnLength.get());
-            String oldIP = ips.get((ipPos.get()) % ipLength.get());
+            String oldIP = ips.get(downTryCount.get() % ipLength.get());
             logger.d("fail url path:  " + oldIP + url + "   file name:" + mFileName + ".nozip");
-            ipPos.getAndIncrement();
-            String tempIP = ips.get((ipPos.get()) % ipLength.get());
+            downTryCount.getAndIncrement();
+            String tempIP = ips.get(downTryCount.get() % ipLength.get());
             String ip;
             boolean isIP;
             //拼接ip
@@ -588,10 +611,9 @@ public class CoursewarePreload {
                 isIP = true;
             }
             int tryCount = downTryCount.get();
-            downTryCount.getAndIncrement();
             logger.d("download fail trycount" + tryCount);
             if (tryCount < ips.size()) {
-                int index = cdns.get(tryCount).indexOf("/") + 2;
+                int index = cdns.get(tryCount % cdnLength.get()).indexOf("/") + 2;
                 DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(ip + url, mMorecachein.getAbsolutePath(), mFileName + ".temp", md5);
                 logger.d("now url path:  " + ip + url + "   file name:" + mFileName + ".nozip");
                 if (isIP) {
@@ -611,14 +633,16 @@ public class CoursewarePreload {
 
         @Override
         public void onFinish() {
-//            logger.i("no zip download finish");
+            logger.i("no zip download finish");
         }
     }
 
     //判断文件是否存在
     public boolean fileIsExists(String strFile) {
+        logger.i(strFile);
         try {
             File f = new File(strFile);
+            logger.i("" + f.getName() + " " + f.isFile() + " " + f.exists());
             if (!f.exists()) {
                 return false;
             }

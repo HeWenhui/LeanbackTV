@@ -148,7 +148,7 @@
             android:name=".broadcast.StudyCenterMainStartBroadCastReceiver"
             android:process=":livevideo">
             <intent-filter>
-                <action android:name="tttssssaaaa.StudyCenterMainStart" />
+                <action android:name="${applicationId}.StudyCenterMainStart" />
             </intent-filter>
         </receiver>
     </application>

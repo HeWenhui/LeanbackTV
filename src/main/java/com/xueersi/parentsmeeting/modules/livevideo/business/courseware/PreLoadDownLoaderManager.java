@@ -78,6 +78,7 @@ public class PreLoadDownLoaderManager {
 
         //非Wi-Fi 不能自动下载
         if (!NetWorkHelper.isWifiDataEnable(RunningEnvironment.sAppContext)) {
+            logger.i("非wifi环境，不能下载");
             sDownUrl = null;
             return;
         }
@@ -167,6 +168,7 @@ public class PreLoadDownLoaderManager {
                     public void onProgressChange(long currentLength,
                                                  long fileLength) {
                         if (realDownLoadListener != null) {
+//                            logger.i(currentLength + " " + fileLength);
                             realDownLoadListener.onProgressChange(currentLength, fileLength);
                         }
                     }
