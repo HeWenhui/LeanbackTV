@@ -15,6 +15,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.LiveExperienceEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
@@ -499,9 +500,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 getInfo.setSubjectIds(arrSubjIds);
             }
             if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
-                if (getInfo.getIsArts() == 1) {
+                if (getInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
                     parseLiveGetInfoLibarts(data, liveTopic, getInfo);
-                } else if (getInfo.getIsArts() == 2) {
+                } else if (getInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
                     parseLiveGetInfoChinese(data, liveTopic, getInfo);
                 } else {
                     parseLiveGetInfoScience(data, liveTopic, getInfo);
