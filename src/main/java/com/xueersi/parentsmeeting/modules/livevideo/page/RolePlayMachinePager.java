@@ -135,6 +135,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
     /**
      * 结果页
      */
+    private LiveBasePager resultPager;
 //    private RelativeLayout rlResult;
 
     /**
@@ -972,6 +973,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
             //初中结果页
             RolePlayResultPager rolePlayResultPager=new RolePlayResultPager(mContext, mEntity,group);
             group.addView(rolePlayResultPager.getRootView());
+            resultPager=rolePlayResultPager;
             //小学结果页
 //            SpeechResultEntity speechResultEntity = new SpeechResultEntity();
 //            speechResultEntity.score = head.getSpeechScore();
@@ -1027,6 +1029,12 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         mIsListViewUnSroll = false;
         if (lvReadList != null) {
             lvReadList.setUnScroll(mIsListViewUnSroll);//恢复列表滑动
+        }
+        if(resultPager!=null&&resultPager.getRootView()!=null){
+           ViewGroup group= (ViewGroup) resultPager.getRootView().getParent();
+           if(group!=null){
+               group.removeView(resultPager.getRootView());
+           }
         }
         if (mRolePlayBll != null) {
              mRolePlayBll.cancelDZ();//取消点赞
