@@ -1257,7 +1257,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
         if (hour == 0) {
             SpannableString span = new SpannableString(min + "分" + sec + "秒");
             if (isFu) {
-                span.setSpan(new ForegroundColorSpan(Color.RED), 0, span.length(),
+                span.setSpan(new ForegroundColorSpan(Color.parseColor("#e85050")), 0, span.length(),
                         Spannable.SPAN_INCLUSIVE_EXCLUSIVE);
             }
             return span;
