@@ -145,6 +145,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
     /**
      * 结果页
      */
+    private LiveBasePager resultPager;
 //    private RelativeLayout rlResult;
 
     /**
@@ -1018,6 +1019,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
                 //初中结果页
                 RolePlayResultPager rolePlayResultPager = new RolePlayResultPager(mContext, mEntity, group);
                 group.addView(rolePlayResultPager.getRootView());
+                resultPager=rolePlayResultPager;
             } else {
                 //小学结果页
                 SpeechResultEntity speechResultEntity = new SpeechResultEntity();
@@ -1039,6 +1041,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
                 }
                 SpeechResultPager resultPager = new SpeechResultPager(mContext, group, speechResultEntity, mLiveGetInfo);
                 group.addView(resultPager.getRootView());
+                RolePlayerPager.this.resultPager=resultPager;
             }
         }
 
@@ -1063,6 +1066,13 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
 //        if (rlResult != null) {
 //            rlResult.setVisibility(View.GONE);
 //        }
+        if(resultPager!=null&&resultPager.getRootView()!=null){
+            ViewGroup group= (ViewGroup) resultPager.getRootView().getParent();
+            if(group!=null){
+                group.removeView(resultPager.getRootView());
+            }
+            resultPager=null;
+        }
         if (lvReadList != null) {
             lvReadList.setUnScroll(mIsListViewUnSroll);//恢复列表滑动
         }
