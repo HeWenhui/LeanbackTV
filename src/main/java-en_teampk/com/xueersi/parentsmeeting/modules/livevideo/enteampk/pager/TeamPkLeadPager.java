@@ -92,10 +92,10 @@ public class TeamPkLeadPager extends LiveBasePager {
         RelativeLayout.LayoutParams bottomLayoutParams = (RelativeLayout.LayoutParams) rlTeampkLeadBottom.getLayoutParams();
         if (pattern == 2) {
             view.setBackgroundResource(R.drawable.bg_livevideo_en_team_bg_16_9);
-            bottomLayoutParams.height = SizeUtils.Dp2Px(mContext, 165);
+            bottomLayoutParams.height = SizeUtils.Dp2Px(mContext, 154);
         } else {
             view.setBackgroundResource(R.drawable.bg_livevideo_en_team_bg_4_3);
-            bottomLayoutParams.height = SizeUtils.Dp2Px(mContext, 164);
+            bottomLayoutParams.height = SizeUtils.Dp2Px(mContext, 153);
         }
         rlTeampkLeadBottom.setLayoutParams(bottomLayoutParams);
         pgTeampkLead = view.findViewById(R.id.pg_livevideo_en_teampk_lead);
