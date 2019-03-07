@@ -74,7 +74,7 @@ import okhttp3.Call;
  * created  at 2018/4/12
  * 战队PK 相关业务处理
  */
-public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,MessageAction {
+public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction, MessageAction {
 
 
     public static final String TEAMPK_URL_FIFTE = "http://addenergyandgold.com/";
@@ -106,7 +106,9 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     private static final String OPEN_STATE_CLOSE = "0";
 
 
-    /**战队名称**/
+    /**
+     * 战队名称
+     **/
     String mTeamName = "";
     /**
      * pk对手
@@ -325,8 +327,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                 });
 
     }
-
-
 
 
     /**
@@ -613,7 +613,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     break;
                 case PK_RESULT_TYPE_PKRESULT:
                     resultPager.showCurrentResult((TeamEnergyAndContributionStarEntity) data);
-                    if(data != null && TextUtils.isEmpty(mTeamName)){
+                    if (data != null && TextUtils.isEmpty(mTeamName)) {
                         mTeamName = ((TeamEnergyAndContributionStarEntity) data).getMyTeamEngerInfo().getTeamName();
                     }
                     break;
@@ -745,22 +745,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     }
 
     /**
-     * 显示答对超难题 动画
-     * @param addEnergy
-     */
-    private void showAnswerAllRightAward(final int addEnergy) {
-         mHandler.post(new Runnable() {
-             @Override
-             public void run() {
-                 TeamPkAqResultPager aqAwardPager = new TeamPkAqResultPager(mActivity, TeamPkAqResultPager.AWARD_TYPE_ALL_RIGHT,
-                         TeamPkBll.this);
-                 addFullScreenPager(aqAwardPager);
-                 aqAwardPager.setData(0, addEnergy);
-             }
-         });
-    }
-
-    /**
      * @return
      */
     private int getRightMargin() {
@@ -796,6 +780,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
 
     /**
      * 添加全屏模式 页面
+     *
      * @param pager
      */
     private void addFullScreenPager(TeamPkBasePager pager) {
@@ -869,6 +854,9 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
             mFocusPager = null;
         }
         isTopicHandled = false;
+        if(mPraiseBll != null){
+            mPraiseBll.releas();
+        }
         EventBus.getDefault().unregister(this);
     }
 
@@ -920,6 +908,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     private LiveRoomH5CloseEvent latestAnswerRecord = null;
     //最近一次答题信息
     private LiveRoomH5CloseEvent latesH5CloseEvent;
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRoomH5CloseEvent(final LiveRoomH5CloseEvent event) {
         latesH5CloseEvent = event;
@@ -959,6 +948,16 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         }
     }
 
+
+    /**
+     * 获取最近一次答题结果信息
+     *
+     * @return
+     */
+    public LiveRoomH5CloseEvent getLatesH5CloseEvent() {
+
+        return latesH5CloseEvent;
+    }
 
     /**
      * 显示当前的pk 结果
@@ -1033,8 +1032,8 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
        /* if (mFocusPager != null && mFocusPager instanceof TeamPkResultPager) {
             ((TeamPkResultPager) mFocusPager).closePkResultPager();
         }*/
-        if(mFocusPager != null && mFocusPager instanceof TeamPkContributionPager){
-            ((TeamPkContributionPager)mFocusPager).startAutoClose();
+        if (mFocusPager != null && mFocusPager instanceof TeamPkContributionPager) {
+            ((TeamPkContributionPager) mFocusPager).startAutoClose();
         }
     }
 
@@ -1090,8 +1089,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     };
 
 
-
-
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
         logger.e("=======>onNotice :" + type + ":" + data);
@@ -1105,21 +1102,21 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     answerResult = null;
                     break;
                 case XESCODE.ENGLISH_H5_COURSEWARE:
-                     String status = data.optString("status");
-                     if("on".equals(status)){
+                    String status = data.optString("status");
+                    if ("on".equals(status)) {
                         //收到发题指令 清空上一次 答题结果记录
-                         answerResult = null;
-                     }else if("off".equals(status)){
-                         setNonce(data.optString("nonce", ""));
-                         showCurrentPkResult();
-                     }
+                        answerResult = null;
+                    } else if ("off".equals(status)) {
+                        setNonce(data.optString("nonce", ""));
+                        showCurrentPkResult();
+                    }
                     break;
                 case XESCODE.MULTIPLE_H5_COURSEWARE:
                     boolean isOpen = data.optBoolean("open");
-                    if(isOpen){
+                    if (isOpen) {
                         //收到发题指令 清空上一次 答题结果记录
                         answerResult = null;
-                    }else{
+                    } else {
                         setNonce(data.optString("nonce", ""));
                         showCurrentPkResult();
                     }
@@ -1185,32 +1182,23 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     TeamPkLog.receiveVoicePraise(mLiveBll, data.optString("nonce", ""));
                     break;
                 case XESCODE.TEAM_PK_PARISE_ANWSER_RIGHT:
-                    boolean isDouble = data.optInt("isDouble",0) == 1;
-                    if(isDouble){
-                       if(answerResult != null && latesH5CloseEvent != null){
-                           if(answerResult.getIsRight() == ScienceAnswerResult.STATE_CODE_RIGHT
-                                   && latesH5CloseEvent.getmEnergyNum() > 0){
-                               showAnswerAllRightAward(latesH5CloseEvent.getmEnergyNum());
-                           }
-                       }
-                       // 刷新右侧状态栏
+                    boolean isDouble = data.optInt("isDouble", 0) == 1;
+                    if (mPraiseBll == null) {
+                        mPraiseBll = new TeamPkPraiseBll(mActivity, this);
+                    }
+                    mPraiseBll.onPraise(sourceNick, target, data, type);
+                    //表扬全对 刷新右侧状态栏
+                    if (isDouble) {
                         updatePkStateLayout(false);
-                    }else{
-                        if(mPraiseBll == null){
-                            mPraiseBll = new TeamPkPraiseBll(mActivity,this);
-                        }
-                        //判断是否 作答正确
-                        if(answerResult != null && answerResult.getIsRight() == ScienceAnswerResult.STATE_CODE_RIGHT){
-                            mPraiseBll.onPraise(sourceNick,target,data,type);
-                        }
                     }
                     break;
                 case XESCODE.TEAM_PK_TEACHER_PRAISE:
-                    if(mPraiseBll == null){
-                        mPraiseBll = new TeamPkPraiseBll(mActivity,this);
+                    if (mPraiseBll == null) {
+                        mPraiseBll = new TeamPkPraiseBll(mActivity, this);
                     }
-                    mPraiseBll.onPraise(sourceNick,target,data,type);
+                    mPraiseBll.onPraise(sourceNick, target, data, type);
                     break;
+
                 default:
                     break;
             }
@@ -1276,7 +1264,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                 if (TeamPkConfig.TOPIC_PKSTEP_BLACK_RANK_LIST == pkStateCode && !isTopicHandled()) {
                     setTopicHandled(true);
                     getProgressStudent();
-                } else if(TeamPkConfig.TOPIC_PKSTEP_STAR_RANK_LIST == pkStateCode && !isTopicHandled()) {
+                } else if (TeamPkConfig.TOPIC_PKSTEP_STAR_RANK_LIST == pkStateCode && !isTopicHandled()) {
                     setTopicHandled(true);
                     getStusStars();
                 }
@@ -1308,7 +1296,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                         List<TeamPkStar> data = mHttpResponseParser.parseTeamPkStar(responseEntity);
                         if (data != null && data.size() > 0) {
                             showStars(data);
-                            if(TextUtils.isEmpty(mTeamName)){
+                            if (TextUtils.isEmpty(mTeamName)) {
                                 mTeamName = data.get(0).getTeamName();
                             }
                         }
@@ -1332,6 +1320,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
 
     /**
      * 展示明星榜UI
+     *
      * @param data
      */
     private void showStars(List<TeamPkStar> data) {
@@ -1354,7 +1343,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                         List<TeamPkStuProgress> data = mHttpResponseParser.parseTeamPkProgressStu(responseEntity);
                         if (data != null && data.size() > 0) {
                             showStuProgressList(data);
-                            if(TextUtils.isEmpty(mTeamName)){
+                            if (TextUtils.isEmpty(mTeamName)) {
                                 mTeamName = data.get(0).getTeamName();
                             }
                         }
@@ -1409,7 +1398,9 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     }
 
 
-    /**在线用户聊天id列表**/
+    /**
+     * 在线用户聊天id列表
+     **/
     private List<String> onLineChatIds = new ArrayList<>();
 
 
@@ -1486,34 +1477,36 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
 
     /**
      * 获取本队在线队员列表
+     *
      * @return
      */
-    public List<TeamMate> getOnlineTeamMates(){
+    public List<TeamMate> getOnlineTeamMates() {
         List<TeamMate> resultList = null;
         // 除去自己
-        if(mTeamMates != null && mTeamMates.size() > 1){
+        if (mTeamMates != null && mTeamMates.size() > 1) {
             resultList = new ArrayList<TeamMate>();
             String stuId = null;
             TeamMate onLineTeamMate = null;
             for (int i = 0; i < mTeamMates.size(); i++) {
                 //除去自己
                 stuId = mTeamMates.get(i).getId();
-                if(stuId != null && !stuId.equals(UserBll.getInstance().getMyUserInfoEntity().getStuId())){
+                if (stuId != null && !stuId.equals(UserBll.getInstance().getMyUserInfoEntity().getStuId())) {
                     for (int j = 0; j < onLineChatIds.size(); j++) {
-                         if(onLineChatIds.get(j).contains(stuId)){
-                             onLineTeamMate = new TeamMate();
-                             onLineTeamMate.setName(mTeamMates.get(i).getName());
-                             onLineTeamMate.setId(stuId);
-                             resultList.add(onLineTeamMate);
-                         }
+                        if (onLineChatIds.get(j).contains(stuId)) {
+                            onLineTeamMate = new TeamMate();
+                            onLineTeamMate.setName(mTeamMates.get(i).getName());
+                            onLineTeamMate.setId(stuId);
+                            resultList.add(onLineTeamMate);
+                        }
                     }
                 }
             }
         }
-        return  resultList;
+        return resultList;
     }
 
     private List<String> prasieTextList;
+
     /**
      * 获取点赞文案
      *
@@ -1536,40 +1529,54 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
             prasieTextList.add("一个大大的赞~");
             prasieTextList.add("你们是最棒的！");
             prasieTextList.add("祝贺你！");
-            prasieTextList.add("加油加小心," +mTeamName + "稳赢！");
+            prasieTextList.add("加油加小心," + mTeamName + "稳赢！");
             prasieTextList.add("超爱" + mTeamName + "的大家~");
         }
         return prasieTextList;
     }
 
-    /**用户最近一次答题 答题结果**/
+    /**
+     * 用户最近一次答题 答题结果
+     **/
     ScienceAnswerResult answerResult;
+
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onScineceAnswerResutlEvent(AnswerResultEvent event){
-        Log.e("H5CallBakc","========>onAnswerResult_LiveVideo:"+event.toString());
+    public void onScineceAnswerResutlEvent(AnswerResultEvent event) {
+        Log.e("H5CallBakc", "========>onAnswerResult_LiveVideo:" + event.toString());
         try {
-           JSONObject jsonObject = new JSONObject(event.getData());
-           String id = jsonObject.optString("id");
-           int isRight = jsonObject.optInt("isRight",-1);
-           if(!TextUtils.isEmpty(id)){
-               answerResult = new ScienceAnswerResult();
-               answerResult.setId(id);
-               answerResult.setIsRight(isRight);
-           }
-        }catch (Exception e){
-             e.printStackTrace();
+            JSONObject jsonObject = new JSONObject(event.getData());
+            String id = jsonObject.optString("id");
+            int isRight = jsonObject.optInt("isRight", -1);
+            if (!TextUtils.isEmpty(id)) {
+                answerResult = new ScienceAnswerResult();
+                answerResult.setId(id);
+                answerResult.setIsRight(isRight);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     /**
-     * 获取最近一次 pk 胜负关系
+     * 获取最近一次 答题结果
+     *
      * @return
      */
-    public int getLatesPkState(){
+    public ScienceAnswerResult getCurrentAnswerResult() {
+        return answerResult;
+    }
+
+
+    /**
+     * 获取最近一次 pk 胜负关系
+     *
+     * @return
+     */
+    public int getLatesPkState() {
         int result = TeamPkConfig.PK_STATE_DRAW;
-        if(pkStateRootView != null){
-            result  = pkStateRootView.getLatesPkState();
+        if (pkStateRootView != null) {
+            result = pkStateRootView.getLatesPkState();
         }
-        return  result;
+        return result;
     }
 }

@@ -78,10 +78,6 @@ public class TeamPkAqResultPager extends TeamPkBasePager {
      */
     public static final int AWARD_TYPE_QUESTION = 2;
 
-    /**
-     * 全对奖励
-     */
-    public static final int AWARD_TYPE_ALL_RIGHT = 3;
 
 
     /**
@@ -104,10 +100,6 @@ public class TeamPkAqResultPager extends TeamPkBasePager {
      * 缩放动画弹性系数
      */
     private static final float SCALE_ANIM_FACTOR = 0.23f;
-    private TextView tvAnswerRightEnergy;
-    private ImageView ivAnswerRightEnergy;
-    private View answerRightRootView;
-    private LottieAnimationView answerRightAnimView;
 
     public TeamPkAqResultPager(Context context, int type, TeamPkBll teamPKBll) {
         super(context);
@@ -132,11 +124,6 @@ public class TeamPkAqResultPager extends TeamPkBasePager {
         tvVoteEnergy = view.findViewById(R.id.tv_vote_award_energy);
         ivVoteEnergy = view.findViewById(R.id.iv_vote_award_energy);
 
-        // 答题全对
-        tvAnswerRightEnergy = view.findViewById(R.id.tv_teampk_praise_energy);
-        ivAnswerRightEnergy = view.findViewById(R.id.iv_teampk_praise_energy);
-        answerRightRootView = view.findViewById(R.id.cstl_teampk_praise_answer_right);
-        answerRightAnimView = view.findViewById(R.id.lav_teampk_praise_anwser_right);
 
         view.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -151,8 +138,6 @@ public class TeamPkAqResultPager extends TeamPkBasePager {
                                     showQuestionAwardAnim();
                                 } else if (awardType == AWARD_TYPE_VOTE) {
                                     showVoteAwardAnim();
-                                } else if (awardType == AWARD_TYPE_ALL_RIGHT) {
-                                    showAnswerRightAnim();
                                 }
                             }
                         }, 200);
@@ -173,62 +158,6 @@ public class TeamPkAqResultPager extends TeamPkBasePager {
     }
 
 
-    private static final String LOTTIE_RES_ASSETS_ROOTDIR = "team_pk/teacher_praise/";
-    /**
-     * 能量动画开始时间点
-     */
-    private static final float ENERGY_ANIM_ENTER_FRACTION = 0.45f;
-    private boolean energyAnimRuning;
-
-    private void showAnswerRightAnim() {
-        answerRightRootView.setVisibility(View.VISIBLE);
-        String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "anwser_right/images";
-        String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "anwser_right/data.json";
-
-        final LottieEffectInfo effectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
-        answerRightAnimView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext));
-        answerRightAnimView.setImageAssetDelegate(new ImageAssetDelegate() {
-            @Override
-            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
-                return effectInfo.fetchBitmapFromAssets(answerRightAnimView, lottieImageAsset.getFileName(),
-                        lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(),
-                        mContext);
-            }
-        });
-        answerRightAnimView.playAnimation();
-        answerRightAnimView.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                if (animation.getAnimatedFraction() > ENERGY_ANIM_ENTER_FRACTION && !energyAnimRuning) {
-                    energyAnimRuning = true;
-                    playEnergyEnterAnim();
-                }
-            }
-        });
-    }
-
-    private void playEnergyEnterAnim() {
-        ivAnswerRightEnergy.setVisibility(View.VISIBLE);
-        ScaleAnimation scaleAnimation = (ScaleAnimation) AnimationUtils.
-                loadAnimation(mContext, R.anim.anim_livevido_teampk_aq_award);
-        scaleAnimation.setInterpolator(new SpringScaleInterpolator(0.23f));
-        ivAnswerRightEnergy.startAnimation(scaleAnimation);
-
-        tvAnswerRightEnergy.setVisibility(View.VISIBLE);
-        AnimationSet animationSet = (AnimationSet) AnimationUtils.
-                loadAnimation(mContext, R.anim.anim_livevideo_teampk_energy_in);
-
-        tvAnswerRightEnergy.startAnimation(animationSet);
-        tvAnswerRightEnergy.setText("+" + mEnergy);
-        tvAnswerRightEnergy.startAnimation(animationSet);
-        tvAnswerRightEnergy.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-               // startAnswerRightAwardAnim();
-                closePager();
-            }
-        }, animationSet.getDuration() + 2000);
-    }
 
 
     /**
@@ -355,31 +284,6 @@ public class TeamPkAqResultPager extends TeamPkBasePager {
         } else {
             closePager();
         }
-    }
-
-    /**
-     * 全部答对奖励
-     */
-    private void startAnswerRightAwardAnim() {
-        if (mEnergy > 0) {
-            decorView = (ViewGroup) ((Activity) mContext).getWindow().getDecorView();
-            teamPKStateLayout = decorView.findViewById(R.id.tpkL_teampk_pkstate_root);
-            if (teamPKStateLayout != null) {
-                // 能量图标动画
-                pkProgressBar = teamPKStateLayout.findViewById(R.id.tpb_teampk_pkstate_energy_bar);
-                Rect endRect = pkProgressBar.getSliderDrawRect();
-                if (endRect != null) {
-                    playFlayAnim(ivAnswerRightEnergy, endRect);
-                } else {
-                    closePager();
-                }
-            } else {
-                closePager();
-            }
-        } else {
-            closePager();
-        }
-
     }
 
     /**
