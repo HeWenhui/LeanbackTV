@@ -239,6 +239,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         iv_livevideo_subject_refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                addJs = false;
                 wvSubjectWeb.reload();
             }
         });
@@ -606,7 +607,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             public void onDataSucess(Object... objData) {
                 NewCourseSec newCourseSec = (NewCourseSec) objData[0];
                 logger.d("onDataSucess:newCourseSec=" + newCourseSec);
-                if (newCourseSec.getIsAnswer() == 1) {
+                if (newCourseSec.getIsAnswer() == 1 && !isPlayBack) {
                     rlSubjectLoading.setVisibility(View.GONE);
                     String url = englishH5CoursewareSecHttp.getResultUrl(detailInfo, 0, "");
                     loadResult = true;
