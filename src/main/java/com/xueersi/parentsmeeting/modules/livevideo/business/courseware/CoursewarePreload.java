@@ -9,6 +9,7 @@ import com.xueersi.common.network.download.DownloadListener;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.BuildConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.CoursewareInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
@@ -258,7 +259,9 @@ public class CoursewarePreload {
             return;
         }
         List<String> newIPs = new LinkedList<>();
-        newIPs.add("https://icourse.xesimg.com");
+        if (BuildConfig.DEBUG) {
+            newIPs.add("https://icourse.xesimg.com");
+        }
         newIPs.addAll(cdns);
         newIPs.addAll(ips);
 
