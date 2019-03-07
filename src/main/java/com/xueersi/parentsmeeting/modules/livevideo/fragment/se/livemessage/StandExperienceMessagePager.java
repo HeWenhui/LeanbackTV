@@ -38,11 +38,14 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.Constants;
 import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
+import com.tal.speech.utils.SpeechEvaluatorUtils;
+import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -50,9 +53,6 @@ import com.xueersi.common.permission.PermissionCallback;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.speech.SpeechConfig;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
-import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.component.cloud.XesCloudUploadBusiness;
 import com.xueersi.component.cloud.config.CloudDir;
 import com.xueersi.component.cloud.config.XesCloudConfig;
@@ -728,7 +728,12 @@ public class StandExperienceMessagePager extends BaseLiveMessagePager implements
         }
         mParam = new SpeechParamEntity();
         if (isShowSpeechRecog) {
-            mSpeechUtils.setOnFileSuccess(new SpeechEvaluatorUtils.OnFileSuccess() {
+            mSpeechUtils.prepar(new SpeechEvaluatorUtils.OnFileSuccess() {
+                @Override
+                public void onFileInit(int code) {
+
+                }
+
                 @Override
                 public void onFileSuccess() {
                     mSpeechFail = "模型正在启动，请稍后";
