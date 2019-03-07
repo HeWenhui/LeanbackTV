@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -31,7 +30,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsMoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreCache;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ScienceStaticConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ZipExtractorTask;
@@ -291,16 +289,23 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         if (!mPublicCacheout.exists()) {
             mPublicCacheout.mkdirs();
         }
+        boolean isNewPreLoad = ((Activity) context).getIntent().getBooleanExtra("preload", false);
         // 一次多发的接口调用
         if (LiveVideoConfig.isScience || mGetInfo != null && mGetInfo.getIsArts() == 0) {
-            ScienceMulPreDownLoad(todayLiveCacheDir);
+            if (!isNewPreLoad) {
+                ScienceMulPreDownLoad(todayLiveCacheDir);
+            }
             // TODO 理科小学
 //            scienceStatic();
         } else if (mGetInfo != null && mGetInfo.getIsArts() == 2) {
             //语文一题多发
-            chineseMulPreDownLoad(todayLiveCacheDir);
+            if (!isNewPreLoad) {
+                chineseMulPreDownLoad(todayLiveCacheDir);
+            }
         } else {
-            ArtsMulPreDownLoad(todayLiveCacheDir);
+            if (!isNewPreLoad) {
+                ArtsMulPreDownLoad(todayLiveCacheDir);
+            }
         }
     }
 

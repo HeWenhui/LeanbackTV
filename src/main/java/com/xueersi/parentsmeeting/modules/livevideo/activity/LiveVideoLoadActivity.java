@@ -135,7 +135,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         finish();
                         return;
                     }
-                    performDownLoadPreLoad(httpManager, mGetInfo);
+//                    performDownLoadPreLoad(httpManager, mGetInfo);
                     String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
                     getInfos.put(liveType + "-" + stuId + "-" + vSectionID, mGetInfo);
                     com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
