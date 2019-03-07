@@ -22,6 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
@@ -108,14 +109,18 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         liveBaseEnglishH5CoursewareCreat.setLiveGetInfo(getInfo);
         int isArts = (int) mLiveBll.getBusinessShareParam("isArts");
         liveBaseEnglishH5CoursewareCreat.setArts(isArts);
-        if (isArts == 0) {
+        if (isArts == LiveVideoSAConfig.ART_SEC) {
             // TODO: 2018/12/5
             if (mAnswerRankBll != null) {
                 liveBaseEnglishH5CoursewareCreat.setmAnswerRankBll(mAnswerRankBll);
             }
-            englishH5CoursewareBll.setLiveBll(new EnglishH5CoursewareSecImpl());
+            englishH5CoursewareBll.setLiveBll(new EnglishH5NewCoursewareImpl());
         } else {
-            englishH5CoursewareBll.setLiveBll(new EnglishH5CoursewareImpl());
+            if (isArts == LiveVideoSAConfig.ART_CH) {
+                englishH5CoursewareBll.setLiveBll(new EnglishH5NewCoursewareImpl());
+            } else {
+                englishH5CoursewareBll.setLiveBll(new EnglishH5CoursewareImpl());
+            }
         }
         liveBaseEnglishH5CoursewareCreat.setAllowTeamPk(getInfo != null && "1".equals(getInfo.getIsAllowTeamPk()));
         liveBaseEnglishH5CoursewareCreat.setLivePagerBack(englishH5CoursewareBll);
@@ -806,7 +811,10 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         return courseWareHttpManager;
     }
 
-    class EnglishH5CoursewareSecImpl extends EnglishH5CoursewareImpl implements EnglishH5CoursewareSecHttp {
+    /**
+     * 新课件
+     */
+    class EnglishH5NewCoursewareImpl extends EnglishH5CoursewareImpl implements EnglishH5CoursewareSecHttp {
         @Override
         public String getResultUrl(VideoQuestionLiveEntity detailInfo, int isforce, String nonce) {
             LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();

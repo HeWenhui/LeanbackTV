@@ -15,10 +15,14 @@ public class CourseWareHttpManager {
     private final Logger logger = LoggerFactory.getLogger("CourseWareHttpManager");
     private LiveHttpManager liveHttpManager;
     private CourseWareParse courseWareParse;
+    private int arts;
 
     public CourseWareHttpManager(LiveHttpManager liveHttpManager) {
         this.liveHttpManager = liveHttpManager;
         courseWareParse = new CourseWareParse();
+        if (liveHttpManager.getLiveVideoSAConfig() != null) {
+            arts = liveHttpManager.getLiveVideoSAConfig().getArts();
+        }
     }
 
     public void submitCourseWareTests(String stuId, String packageId, String packageSource, String packageAttr, String releasedPageInfos, int isPlayBack, String classId,
@@ -42,7 +46,13 @@ public class CourseWareHttpManager {
         httpRequestParams.addBodyParam("testInfos", "" + testInfos);
         httpRequestParams.addBodyParam("entranceTime", "" + entranceTime);
         httpRequestParams.addBodyParam("isForce", "" + isforce);
-        liveHttpManager.sendPost(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE, httpRequestParams, new HttpCallBack() {
+        String url;
+        if (arts == 0) {
+            url = LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE;
+        } else {
+            url = LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_CN;
+        }
+        liveHttpManager.sendPost(url, httpRequestParams, new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 logger.d("submitCourseWareTests:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
@@ -79,7 +89,13 @@ public class CourseWareHttpManager {
         httpRequestParams.addBodyParam("testIds", "" + testIds);
         httpRequestParams.addBodyParam("educationStage", "" + educationStage);
         httpRequestParams.addBodyParam("nonce", "" + nonce);
-        liveHttpManager.sendPost(LiveQueHttpConfig.LIVE_GET_COURSEWARE_TESTS, httpRequestParams, new HttpCallBack(false) {
+        String url;
+        if (arts == 0) {
+            url = LiveQueHttpConfig.LIVE_GET_COURSEWARE_TESTS;
+        } else {
+            url = LiveQueHttpConfig.LIVE_GET_COURSEWARE_TESTS_CN;
+        }
+        liveHttpManager.sendPost(url, httpRequestParams, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("getCourseWareTests:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
