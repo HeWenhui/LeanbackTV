@@ -80,7 +80,13 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
 //                    } else {
 //                        englishH5Entity.setDynamicurl(liveGetInfo.getGetCourseWareHtmlNew() + ScienceStaticConfig.THIS_VERSION_HTML + "/index.html");
 //                    }
-                    englishH5Entity.setDynamicurl("https://live.xueersi.com/science/LiveExam/getCourseWareTestHtml");
+                    if (englishH5Entity.getNewEnglishH5()) {
+                        CoursewareNativePager h5CoursewarePager = new CoursewareNativePager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
+                                videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, mAnswerRankBll == null ? "0"
+                                : mAnswerRankBll.getIsShow(), isArts, allowTeamPk);
+                        h5CoursewarePager.setLivePagerBack(livePagerBack);
+                        return h5CoursewarePager;
+                    }
                 }
             }
         }
