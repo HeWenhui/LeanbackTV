@@ -209,7 +209,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                             int position, Object objTag) {
         super.updateViews(entity, position, objTag);
         String imgUrl = entity.getRolePlayer().getHeadImg();
-        if(imgUrl == null){
+        if(TextUtils.isEmpty(imgUrl)){
             imgUrl = UserBll.getInstance().getMyUserInfoEntity().getHeadImg();
         }
         updateUserHeadImage(civUserHead, imgUrl);
