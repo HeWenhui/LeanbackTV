@@ -6,7 +6,6 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationSet;
@@ -156,34 +155,6 @@ public class TeamPkPraiseBll {
         }
     }
 
-
-    // 测试代码
-    public void onPraiseForTest(int type) {
-        switch (type) {
-            case 0:
-                PraiseInfo info = new PraiseInfo();
-                info.setPraiseType(XESCODE.TEAM_PK_TEACHER_PRAISE);
-                info.setData(2);
-                cachePraiseInfo(info);
-                break;
-            case 1:
-                PraiseInfo info2 = new PraiseInfo();
-                info2.setPraiseType(XESCODE.TEAM_PK_PARISE_ANWSER_RIGHT);
-                info2.setData(true);
-                cachePraiseInfo(info2);
-                break;
-            case 2:
-                PraiseInfo info3 = new PraiseInfo();
-                info3.setPraiseType(XESCODE.TEAM_PK_PARISE_ANWSER_RIGHT);
-                info3.setData(false);
-                cachePraiseInfo(info3);
-                break;
-            default:
-                break;
-        }
-    }
-
-
     /**
      * 缓存表扬信息
      *
@@ -194,10 +165,8 @@ public class TeamPkPraiseBll {
             if (praiseInfoList.isEmpty()) {
                 praiseInfoList.add(info);
                 consumPraiseInfo(info);
-                Log.e("TeamPkPraiseBll", "===>cache praiseInfo 11111");
             } else {
                 praiseInfoList.add(info);
-                Log.e("TeamPkPraiseBll", "===>cache praiseInfo 0000");
             }
         }
     }
@@ -208,7 +177,6 @@ public class TeamPkPraiseBll {
      * @param info
      */
     private void consumPraiseInfo(PraiseInfo info) {
-        Log.e("TeamPkPraiseBll", "===>consumPraiseInfo :" + info);
         if (info != null) {
             switch (info.getPraiseType()) {
                 case XESCODE.TEAM_PK_TEACHER_PRAISE:
@@ -447,7 +415,6 @@ public class TeamPkPraiseBll {
                     @Override
                     public void run() {
                         PraiseInfo praiseInfo = getNextPraiseInfo();
-                        Log.e("TeamPkPraiseBll", "===>closeTeacherPriase getNext one :" + praiseInfo);
                         if (praiseInfo != null) {
                             consumPraiseInfo(praiseInfo);
                         }
