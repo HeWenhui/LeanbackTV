@@ -888,7 +888,7 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                                 try {
                                     int goldSum = Integer.parseInt(goldNum);
                                     if (goldSend > goldSum) {
-                                        XESToastUtils.showToast(mContext, "当前金币余额不住");
+                                        XESToastUtils.showToast(mContext, "当前金币余额不足");
                                         return;
                                     }
                                 } catch (Exception e) {
