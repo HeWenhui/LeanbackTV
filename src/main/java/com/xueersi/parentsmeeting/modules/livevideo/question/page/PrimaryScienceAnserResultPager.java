@@ -26,7 +26,7 @@ public class PrimaryScienceAnserResultPager extends LiveBasePager {
     @Override
     public View initView() {
         mView = View.inflate(mContext, R.layout.page_livevideo_primaryscience_anwserresult, null);
-        lavRight = mView.findViewById(R.id.lav_livevideo_primaryscience_anwserrsult_right);
+//        lavRight = mView.findViewById(R.id.lav_livevideo_primaryscience_anwserrsult_right);
         lavGameRight = mView.findViewById(R.id.lav_livevideo_primaryscience_anwserrsult_game_right);
         lavActiveRight = mView.findViewById(R.id.lav_livevideo_primaryscience_anwserrsult_active_right);
 

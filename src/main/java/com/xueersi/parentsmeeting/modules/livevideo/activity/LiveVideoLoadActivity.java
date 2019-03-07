@@ -21,6 +21,7 @@ import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
+import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.PreloadStaticStorage;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
@@ -185,6 +186,14 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     getInfos.put(stuId + "-" + vStuCourseID + "-" + vSectionID, mGetInfo);
 //                    mGetInfo.setPattern(1);
                     bundle.putString("mode", mGetInfo.getMode());
+                    for (String itemLiveId : PreloadStaticStorage.preloadLiveId) {
+                        if (itemLiveId.equals(mGetInfo.getId())) {
+                            bundle.putBoolean("preload", true);
+                            break;
+                        }
+                    }
+
+//                    bundle.putIntegerArrayList("preloadliveid", PreloadStaticStorage.preloadLiveId);
                     bundle.putInt("isArts", mGetInfo.getIsArts());
                     bundle.putInt("pattern", mGetInfo.getPattern());
                     bundle.putBoolean("isPrimary", LiveVideoConfig.isPrimary);
