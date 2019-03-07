@@ -1211,6 +1211,28 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                     if (LiveTopic.MODE_CLASS.equals(ircState.getMode())) {
                         if (ircState.isOpenbarrage()) {
                             String educationStage = getInfo.getEducationStage();
+
+                            int goldSend = 0;
+                            if (smallEnglishSendFlowerPager.getWhichFlower() == FLOWERS_SMALL) {
+                                goldSend = 10;
+                            } else if (smallEnglishSendFlowerPager.getWhichFlower() == FLOWERS_MIDDLE) {
+                                goldSend = 50;
+                            } else if (smallEnglishSendFlowerPager.getWhichFlower() == FLOWERS_BIG) {
+                                goldSend = 100;
+                            }
+                            if (goldNum == null) {
+                                OtherModulesEnter.requestGoldTotal(mContext);
+                            } else {
+                                try {
+                                    int goldSum = Integer.parseInt(goldNum);
+                                    if (goldSend > goldSum) {
+                                        XESToastUtils.showToast(mContext, "当前金币余额不住");
+                                        return;
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
                             ircState.praiseTeacher("", smallEnglishSendFlowerPager.getWhichFlower() + "",
                                     educationStage, new HttpCallBack(false) {
                                         @Override
