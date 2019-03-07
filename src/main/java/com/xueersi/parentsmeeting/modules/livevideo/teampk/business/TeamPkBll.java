@@ -155,6 +155,11 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      **/
     private List<TeamMate> mTeamMates;
     private TeamPkPraiseBll mPraiseBll;
+    /**
+     * 分队仪式是否是有notice 触发的
+     */
+    private boolean teamSelectByNotice = false;
+
 
     public TeamPkBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -1089,6 +1094,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     };
 
 
+
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
         logger.e("=======>onNotice :" + type + ":" + data);
@@ -1129,6 +1135,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                 case XESCODE.TEAM_PK_TEAM_SELECT:
                     open = data.optString("open");
                     nonce = data.optString("nonce", "");
+                    teamSelectByNotice = true;
                     if (OPEN_STATE_OPEN.equals(open)) {
                         startTeamSelect();
                         TeamPkLog.receiveCreateTeam(mLiveBll, nonce, true);
@@ -1243,7 +1250,9 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
 
                 if (!isTopicHandled() && alloteamStateCode == 1) {
                     setTopicHandled(true);
-                    showTeamSelecting();
+                    if(!teamSelectByNotice){
+                        showTeamSelecting();
+                    }
                     logger.e("====>onTopic showTeamSelecting:");
                     return;
                 }
