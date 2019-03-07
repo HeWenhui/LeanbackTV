@@ -10,11 +10,10 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
-import android.util.TypedValue;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -30,22 +29,20 @@ import android.widget.TextView;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
+import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
-import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.PhoneScore;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.speechrecognizer.TalSpeech;
+import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
-import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
-import com.xueersi.common.speech.SpeechConfig;
-import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
@@ -55,9 +52,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.LiveStandSpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.EngForceSubmit;
+import com.xueersi.parentsmeeting.modules.livevideo.question.view.StandSpeechResult;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
@@ -90,6 +90,7 @@ import java.util.Random;
 public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     public static boolean DEBUG = false;
     String eventId = LiveVideoConfig.LIVE_STAND_SPEECH_TEST;
+    private Handler handler = new Handler(Looper.getMainLooper());
     private ArrayList<FrameAnimation> frameAnimations = new ArrayList<>();
     /** 组内战况已经被加入的学生 */
     private ArrayList<GoldTeamStatus.Student> addStudents = new ArrayList<>();
@@ -142,8 +143,8 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     private boolean isEnd = false;
     /** 是不是评测失败 */
     private boolean isSpeechError = false;
-    /** 是不是评测得到结果 */
-    private boolean isSpeechSuccess = false;
+    /** 是不是显示评测结果页 */
+    private boolean isSpeechResult = false;
     /** 是不是直播 */
     private boolean isLive;
     /** 评测内容 */
@@ -181,14 +182,17 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     LiveSoundPool liveSoundPool;
     //语音识别参数
     SpeechParamEntity mParam;
+    /** 是不是新课件 */
+    final boolean isNewArts;
 
     /** 语音答题直播 */
-    public StandSpeechAssAutoPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, String liveid,
+    public StandSpeechAssAutoPager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity, String liveid,
                                    String testId,
                                    String nonce, String content, int time, boolean haveAnswer, SpeechEvalAction
                                            speechEvalAction, String userName, String headUrl, String learning_stage,
                                    LivePagerBack livePagerBack) {
         super(context);
+        isNewArts = baseVideoQuestionEntity.isNewArtsH5Courseware();
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.isLive = true;
         this.id = testId;
@@ -219,11 +223,12 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     }
 
     /** 语音答题回放 */
-    public StandSpeechAssAutoPager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, String liveid,
+    public StandSpeechAssAutoPager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity, String liveid,
                                    String testId,
                                    String nonce, String content, int time, int examSubmit, SpeechEvalAction
                                            speechEvalAction, String userName, String headUrl, String learning_stage) {
         super(context);
+        isNewArts = baseVideoQuestionEntity.isNewArtsH5Courseware();
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.isLive = false;
         this.id = testId;
@@ -543,6 +548,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         //语音评测开始
         if (mIse == null) {
             mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
+            mIse.prepar();
         }
         Map<String, String> mData = new HashMap<>();
         mData.put("logtype", "startRecord");
@@ -680,7 +686,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 
     private void onEvaluatorSuccess(final ResultEntity resultEntity, final EvaluatorListener evaluatorListener) {
         final int score = resultEntity.getScore();
-        logger.d("onEvaluatorSuccess:score=" + score + ",isEnd=" + isEnd);
+        mLogtf.d("onEvaluatorSuccess:score=" + score + ",isEnd=" + isEnd);
         if (!isEnd) {
             if (score == 1) {
                 errorSetVisible();
@@ -726,7 +732,10 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //            teamOnCompositionLoadedListener.updateScore(mContext, lavLivevideoVoiceansTeamMine, "" + resultEntity
 // .getScore());
 //        }
-        tvSpeectevalTip.removeCallbacks(autoUploadRunnable);
+        //强制收卷，继续显示倒计时
+        if (!isEnd) {
+            handler.removeCallbacks(autoUploadRunnable);
+        }
 //        errorSetVisible();
 //        tvSpeectevalTip.setTextColor(mContext.getResources().getColor(R.color.COLOR_6462A2));
 //        tvSpeectevalTip.setText("录音上传中");
@@ -743,7 +752,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         mLogtf.d("onEvaluatorSuccess:content=" + content + ",sid=" + resultEntity.getSid() + ",score=" + score + "," +
                 "haveAnswer=" + haveAnswer + ",nbest=" + nbest);
         if (haveAnswer) {
-            onSpeechEvalSuccess(resultEntity, 0);
+            onSpeechEvalSuccess(resultEntity, 0, 0);
         } else {
             try {
                 final JSONObject answers = new JSONObject();
@@ -761,26 +770,47 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 detail.put("total_score", score);
                 answers1.put("detail", detail);
                 answers.put("1", answers1);
-                speechEvalAction.sendSpeechEvalResult2(id, answers.toString(), new OnSpeechEval() {
+                final String isSubmit = EngForceSubmit.getSubmit(isNewArts, false);
+                speechEvalAction.sendSpeechEvalResult2(id, (VideoQuestionLiveEntity) baseVideoQuestionEntity, answers.toString(), isSubmit, new OnSpeechEval() {
                     OnSpeechEval onSpeechEval = this;
 
                     @Override
                     public void onSpeechEval(Object object) {
-                        JSONObject jsonObject = (JSONObject) object;
+                        final JSONObject jsonObject = (JSONObject) object;
+                        if (count < 3 && count > 0) {
+                            long delayMillis = count * 1000;
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    onSuccess(jsonObject);
+                                }
+                            }, delayMillis);
+                        } else {
+                            onSuccess(jsonObject);
+                        }
+                    }
+
+                    private void onSuccess(JSONObject jsonObject) {
                         int gold = jsonObject.optInt("gold");
+                        int energy = jsonObject.optInt("energy");
                         haveAnswer = jsonObject.optInt("isAnswered", 0) == 1;
-                        onSpeechEvalSuccess(resultEntity, gold);
+                        logger.d("onSpeechEval:jsonObject=" + jsonObject);
+                        onSpeechEvalSuccess(resultEntity, gold, energy);
                         speechEvalAction.onSpeechSuccess(id);
                     }
 
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
-                        mView.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                speechEvalAction.sendSpeechEvalResult2(id, answers.toString(), onSpeechEval);
-                            }
-                        }, 1000);
+                        if (isEnd) {
+                            speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
+                        } else {
+                            mView.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    speechEvalAction.sendSpeechEvalResult2(id, (VideoQuestionLiveEntity) baseVideoQuestionEntity, answers.toString(), isSubmit, onSpeechEval);
+                                }
+                            }, 1000);
+                        }
                     }
 
                     @Override
@@ -850,37 +880,9 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             bitmap.recycle();
             //画名字和金币数量
             if (havename) {
-                String strGold = "+" + gold;
-                View layout_live_stand_red_mine1 = LayoutInflater.from(mContext).inflate(R.layout
-                        .layout_live_stand_red_mine2, null);
-                TextView tv_livevideo_redpackage_name = layout_live_stand_red_mine1.findViewById(R.id
-                        .tv_livevideo_redpackage_name);
-                tv_livevideo_redpackage_name.setText("" + userName);
-                TextView tv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id
-                        .tv_livevideo_redpackage_num);
-                ImageView iv_livevideo_redpackage_num = layout_live_stand_red_mine1.findViewById(R.id
-                        .iv_livevideo_redpackage_num);
-                tv_livevideo_redpackage_num.setText(strGold);
-                tv_livevideo_redpackage_name.setTextSize(TypedValue.COMPLEX_UNIT_PX, 23f);
-                tv_livevideo_redpackage_num.setTextSize(TypedValue.COMPLEX_UNIT_PX, 18f);
-                tv_livevideo_redpackage_name.setTextColor(0xff97091D);
-                tv_livevideo_redpackage_num.setTextColor(0xff97091D);
-                tv_livevideo_redpackage_name.setTypeface(fontFace);
-                iv_livevideo_redpackage_num.setImageResource(R.drawable.bg_live_stand_red_gold_big);
-                int width = 122;
-                int height = 72;
-                int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
-                int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
-                layout_live_stand_red_mine1.measure(widthMeasureSpec, heightMeasureSpec);
-                layout_live_stand_red_mine1.layout(0, 0, width, height);
-
+                View layout_live_stand_red_mine1 = StandSpeechResult.resultViewName(mContext, "" + gold, fontFace, userName);
                 canvas.save();
-                int measuredWidth = layout_live_stand_red_mine1.getMeasuredWidth();
-                int measuredHeight = layout_live_stand_red_mine1.getMeasuredHeight();
-//                canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2,
-// 345 + (height - measuredHeight) / 2);
                 canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 348);
-//                logger.d( "updateHead:measuredWidth=" + measuredWidth + ",measuredHeight=" + measuredHeight);
                 layout_live_stand_red_mine1.draw(canvas);
                 canvas.restore();
             }
@@ -899,8 +901,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         return null;
     }
 
-    private void onSpeechEvalSuccess(final ResultEntity resultEntity, final int gold) {
-        isSpeechSuccess = true;
+    private void onSpeechEvalSuccess(final ResultEntity resultEntity, final int gold, int energy) {
         ivLivevideoSpeectevalWave.setVisibility(View.INVISIBLE);
         rlSpeectevalBg.setVisibility(View.GONE);
         rlSpeectevalBg.removeAllViews();
@@ -911,75 +912,14 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         StandLiveMethod.leaderBoard(liveSoundPool);
         int score = resultEntity.getScore();
         final RelativeLayout group = (RelativeLayout) mView;
-        final View resultMine = LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_stand_speech_mine,
-                group, false);
-        InputStream inputStream = null;
-        try {
-            inputStream = mContext.getAssets().open
-                    ("live_stand/frame_anim/redpackage/9_teams_bg/package_team_bg_00035.png");
-            final Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
-            resultMine.setBackgroundDrawable(new BitmapDrawable(bitmap));
-            resultMine.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-                @Override
-                public void onViewAttachedToWindow(View v) {
-
-                }
-
-                @Override
-                public void onViewDetachedFromWindow(View v) {
-                    bitmap.recycle();
-                }
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (inputStream != null) {
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        LinearLayout llLivevideoSpeectevalResultMine = resultMine.findViewById(R.id
-                .ll_livevideo_speecteval_result_mine);
-//        bg_livevideo_speecteval_result_number_0
-        //有用，误删
-        int[] scoreRes = {R.drawable.bg_livevideo_speecteval_result_number_0,
-                R.drawable.bg_livevideo_speecteval_result_number_1,
-                R.drawable.bg_livevideo_speecteval_result_number_2,
-                R.drawable.bg_livevideo_speecteval_result_number_3,
-                R.drawable.bg_livevideo_speecteval_result_number_4,
-                R.drawable.bg_livevideo_speecteval_result_number_5,
-                R.drawable.bg_livevideo_speecteval_result_number_6,
-                R.drawable.bg_livevideo_speecteval_result_number_7,
-                R.drawable.bg_livevideo_speecteval_result_number_8,
-                R.drawable.bg_livevideo_speecteval_result_number_9,};
-        for (int i = 0; i < ("" + score).length(); i++) {
-            char c = ("" + score).charAt(i);
-            ImageView imageView = new ImageView(mContext);
-            int res = -1;
-            if (c - '0' < scoreRes.length) {
-                res = scoreRes[c - '0'];
-            }
-            if (res == -1) {
-                String name = "bg_livevideo_speecteval_result_number_" + c;
-                imageView.setImageResource(mContext.getResources().getIdentifier(name, "drawable", mContext
-                        .getPackageName()));
-            } else {
-                imageView.setImageResource(res);
-            }
-            llLivevideoSpeectevalResultMine.addView(imageView);
-        }
-        ImageView imageViewScore = new ImageView(mContext);
-        imageViewScore.setImageResource(R.drawable.bg_livevideo_speecteval_result_number_unit);
-        llLivevideoSpeectevalResultMine.addView(imageViewScore);
+        final View resultMine = StandSpeechResult.resultViewScore(mContext, group, gold, energy, score);
         resultMine.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View
                 .OnClickListener() {
             @Override
             public void onClick(View v) {
                 StandLiveMethod.onClickVoice(liveSoundPool);
                 group.removeView(resultMine);
+                isSpeechResult = true;
                 if (isEnd || !isLive) {
                     speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
                 }
@@ -1032,6 +972,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                     public void run() {
                         group.removeView(resultMine);
                         frameAnimation2.destory();
+                        isSpeechResult = true;
                         if (isEnd || !isLive) {
                             speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
                         }
@@ -1074,7 +1015,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     private void onEvaluatorError(final ResultEntity resultEntity, final EvaluatorListener evaluatorListener) {
         mLogtf.d("onResult:ERROR:ErrorNo=" + resultEntity.getErrorNo() + ",isEnd=" + isEnd + ",isOfflineFail=" + mIse
                 .isOfflineFail());
-        tvSpeectevalTip.removeCallbacks(autoUploadRunnable);
+        handler.removeCallbacks(autoUploadRunnable);
         errorSetVisible();
         if (resultEntity.getErrorNo() == ResultCode.MUTE_AUDIO || resultEntity.getErrorNo() == ResultCode
                 .MUTE) {
@@ -1180,12 +1121,57 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
 //        vwvSpeectevalWave.setVisibility(View.INVISIBLE);
 //        vwvSpeectevalWave.stop();
         if (isEnd) {
-            mView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
-                }
-            }, 1000);
+            forceSubmit();
+//            mView.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
+//                }
+//            }, 1000);
+        }
+    }
+
+    private void forceSubmit() {
+        mLogtf.d("forceSubmit:haveAnswer=" + haveAnswer);
+        if (haveAnswer) {
+            speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
+        } else {
+            try {
+                final JSONObject answers = new JSONObject();
+                JSONObject answers1 = new JSONObject();
+                entranceTime = System.currentTimeMillis() - entranceTime;
+                answers1.put("entranceTime", (int) (entranceTime / 1000));
+                answers1.put("score", 0);
+                JSONObject detail = new JSONObject();
+                detail.put("cont_score", 0);
+                detail.put("level", 0);
+                JSONArray nbestArray = new JSONArray();
+                detail.put("nbest", nbestArray);
+                detail.put("pron_score", 0);
+                detail.put("total_score", 0);
+                answers1.put("detail", detail);
+                answers.put("1", answers1);
+                String isSubmit = EngForceSubmit.getSubmit(isNewArts, true);
+                speechEvalAction.sendSpeechEvalResult2(id, (VideoQuestionLiveEntity) baseVideoQuestionEntity, answers.toString(), isSubmit, new OnSpeechEval() {
+
+                    @Override
+                    public void onSpeechEval(Object object) {
+                        speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
+                    }
+
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
+                    }
+
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
+                    }
+                });
+            } catch (JSONException e) {
+                logger.e("sendSpeechEvalResult2", e);
+            }
         }
     }
 
@@ -1406,12 +1392,13 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
                 tvSpeectevalTip.postDelayed(this, 1000);
             } else {
                 errorSetGone();
-                if (mIse != null) {
-                    mIse.stop();
-                }
-                if (isSpeechError || isSpeechSuccess) {
-                    speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
-                }
+                //不在倒计时结束的时候停止录音了
+//                if (mIse != null) {
+//                    mIse.stop();
+//                }
+//                if (isSpeechError || isSpeechSuccess) {
+//                    speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
+//                }
             }
             count--;
         }
@@ -1420,17 +1407,21 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
     public void examSubmitAll() {
         isEnd = true;
         ViewGroup group = (ViewGroup) mView.getParent();
-        mLogtf.d("examSubmitAll:mIse=" + (mIse != null) + ",Success=" + speechSuccess + ",group=" + (group == null));
+        mLogtf.d("examSubmitAll:mIse=" + (mIse != null) + ",Start=" + isSpeechStart + ",error=" + isSpeechError + ",Result=" + isSpeechResult + ",group=" + (group == null));
         if (group == null) {
             return;
         }
-        if (!isSpeechStart || isSpeechError || isSpeechSuccess) {
+        if (!isSpeechStart || isSpeechError || isSpeechResult) {
             speechEvalAction.stopSpeech(StandSpeechAssAutoPager.this, getBaseVideoQuestionEntity(), id);
         } else {
 //            errorSetVisible();
 //            tvSpeectevalTip.setText(count + "秒后自动提交");
 //            XESToastUtils.showToast(mContext, count + "秒后自动提交");
-            tvSpeectevalTip.postDelayed(autoUploadRunnable, 1000);
+            //倒计时直接停止录音
+            if (mIse != null) {
+                mIse.stop();
+            }
+            handler.postDelayed(autoUploadRunnable, 1000);
             count--;
         }
 //        if (group != null) {
