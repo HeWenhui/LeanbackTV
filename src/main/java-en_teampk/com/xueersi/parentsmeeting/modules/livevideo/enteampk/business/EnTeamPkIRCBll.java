@@ -536,10 +536,10 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             case XESCODE.ARTS_STOP_QUESTION:
                 onCourseEnd();
                 break;
-            case XESCODE.STOPQUESTION: {
-                onQuestionEnd();
-            }
-            break;
+//            case XESCODE.STOPQUESTION: {
+//                onQuestionEnd();
+//            }
+//            break;
             case XESCODE.ARTS_H5_COURSEWARE:
                 String status = data.optString("status", "off");
                 if ("off".equals(status)) {
