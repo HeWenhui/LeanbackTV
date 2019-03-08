@@ -822,6 +822,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             String classId = studentLiveInfo.getClassId();
             String teamId = studentLiveInfo.getTeamId();
             String educationStage = mGetInfo.getEducationStage();
+            String local = "file:///android_asset/newcourse_result/sec/middleSchoolCourseware/index.html";
+//            StringBuilder stringBuilder = new StringBuilder(local);
             StringBuilder stringBuilder = new StringBuilder(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_RESULT);
             stringBuilder.append("?stuId=").append(mGetInfo.getStuId());
             stringBuilder.append("&liveId=").append(mGetInfo.getId());

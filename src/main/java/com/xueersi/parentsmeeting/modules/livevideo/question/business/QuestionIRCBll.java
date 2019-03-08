@@ -25,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayMachineBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.RolePlayConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
@@ -38,9 +39,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.KeyboardShowingReg;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -55,7 +56,7 @@ import okhttp3.Call;
  * Created by lyqai on 2018/7/5.
  */
 
-public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAction, QuestionHttp {
+public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAction {
     private QuestionBll mQuestionAction;
     private AnswerRankIRCBll mAnswerRankBll;
     private LiveAutoNoticeIRCBll mLiveAutoNoticeBll;
@@ -68,7 +69,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private RolePlayMachineAction rolePlayMachineAction;
 
     private String Tag = "QuestionIRCBll";
-
+    private CourseWareHttpManager courseWareHttpManager;
 
     private List<String> questiongtype;
 
@@ -82,7 +83,6 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void onCreate(HashMap<String, Object> data) {
         super.onCreate(data);
-        mQuestionAction.setLiveBll(this);
         mQuestionAction.setVSectionID(mLiveId);
         mQuestionAction.setShareDataManager(mShareDataManager);
         mAnswerRankBll = getInstance(AnswerRankIRCBll.class);
@@ -121,7 +121,15 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 liveExamQuestionCreat.setmAnswerRankBll(mAnswerRankBll);
             }
         }
-        liveExamQuestionCreat.setQuestionHttp(this);
+        if (isArts == LiveVideoSAConfig.ART_EN) {
+            QueArtHttp queArtHttp = new QueArtHttp();
+            liveExamQuestionCreat.setQuestionHttp(queArtHttp);
+            mQuestionAction.setLiveBll(queArtHttp);
+        } else {
+            QueIrcHttp queIrcHttp = new QueIrcHttp();
+            liveExamQuestionCreat.setQuestionHttp(queIrcHttp);
+            mQuestionAction.setLiveBll(queIrcHttp);
+        }
         mQuestionAction.setBaseExamQuestionCreat(liveExamQuestionCreat);
         LiveSubjectResultCreat baseSubjectResultCreat = new LiveSubjectResultCreat();
         baseSubjectResultCreat.setLiveGetInfo(data);
@@ -197,7 +205,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         Loger.e(Tag, "=======>onTopic:" + jsonObject);
         if (isNewArtsH5Courseware(jsonObject)) {
             try {
-                if(change){
+                if (change) {
                     LiveVideoConfig.isNewArts = false;
                 }
                 String onlineTechStatus = "";
@@ -479,9 +487,6 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.srcType);
                     }
                 }
-
-
-
                 break;
             }
             case XESCODE.STOPQUESTION:
@@ -652,261 +657,262 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         mQuestionAction.setVideoLayout(liveVideoPoint);
     }
 
-    @Override
-    public void getStuGoldCount() {
-        UpdateAchievement updateAchievement = getInstance(UpdateAchievement.class);
-        if (updateAchievement != null) {
-            updateAchievement.getStuGoldCount();
-        }
-    }
-
-    @Override
-    public void sendRankMessage(int rankStuReconnectMessage) {
-        if (mLiveBll.getLiveTopic().isDisable()) {
-            return;
-        }
-        if (mLiveBll.getMainTeacherStr() != null) {
-            try {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("type", rankStuReconnectMessage + "");
-                jsonObject.put("classId", mGetInfo.getStudentLiveInfo().getClassId());
-                jsonObject.put("teamId", mGetInfo.getStudentLiveInfo().getTeamId());
-                mLiveBll.sendNotice(mLiveBll.getMainTeacherStr(), jsonObject);
-            } catch (Exception e) {
-                e.printStackTrace();
+    class QueIrcHttp implements QuestionHttp {
+        @Override
+        public void getStuGoldCount() {
+            UpdateAchievement updateAchievement = getInstance(UpdateAchievement.class);
+            if (updateAchievement != null) {
+                updateAchievement.getStuGoldCount();
             }
         }
-    }
 
-    @Override
-    public void getQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity, final AbstractBusinessDataCallBack callBack) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        getHttpManager().getQuestion(enstuId, mGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(), new
-                HttpCallBack() {
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        logger.d("getQuestion:onPmSuccess" + responseEntity.getJsonObject());
-                        callBack.onDataSucess();
-                    }
-
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-                        logger.e("getQuestion:onFailure", e);
-                        super.onFailure(call, e);
-                        callBack.onDataSucess();
-                    }
-
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-                        logger.d("getQuestion:onPmError" + responseEntity.getErrorMsg());
-                        super.onPmError(responseEntity);
-                        callBack.onDataSucess();
-                    }
-                });
-    }
-
-    @Override
-    public void liveSubmitTestAnswer(final LiveBasePager liveBasePager, final VideoQuestionLiveEntity videoQuestionLiveEntity,
-                                     String mVSectionID, String testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mLogtf.d("liveSubmitTestAnswer:enstuId=" + enstuId + "," + videoQuestionLiveEntity.srcType + ",testId=" +
-                videoQuestionLiveEntity.id + ",liveId=" + mVSectionID + ",testAnswer="
-                + testAnswer);
-        String userMode = "1";
-        if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
-            if (mGetInfo.getStudentLiveInfo().isExpe()) {
-                userMode = "0";
+        @Override
+        public void sendRankMessage(int rankStuReconnectMessage) {
+            if (mLiveBll.getLiveTopic().isDisable()) {
+                return;
             }
-        }
-        if (LiveVideoConfig.isNewArts) {
-            logger.e("======> liveSubmitTestAnswer:" + videoQuestionLiveEntity.isNewArtsH5Courseware());
-            getHttpManager().liveNewArtsSubmitTestAnswer(mLiveType, enstuId, videoQuestionLiveEntity.srcType,
-                    videoQuestionLiveEntity.id, mLiveId, testAnswer, userMode, isVoice, isRight, new HttpCallBack() {
-
-                        @Override
-                        public void onPmSuccess(ResponseEntity responseEntity) {
-                            mLogtf.d("liveSubmitTestAnswer:onPmSuccess=" + responseEntity.getJsonObject().toString() + "," +
-                                    videoQuestionLiveEntity);
-                            VideoResultEntity entity = getHttpResponseParser().parseQuestionAnswer(responseEntity, isVoice);
-                            entity.setVoice(isVoice);
-                            if (StringUtils.isSpace(entity.getTestId())) {
-                                entity.setTestId(videoQuestionLiveEntity.id);
-                            }
-                            if (answerReslut != null) {
-                                answerReslut.onAnswerReslut(videoQuestionLiveEntity, entity);
-                            }
-                            if (mQuestionAction != null) {
-                                mQuestionAction.onAnswerReslut(liveBasePager, videoQuestionLiveEntity, entity);
-                            }
-                        }
-
-                        @Override
-                        public void onPmFailure(Throwable error, String msg) {
-                            mLogtf.d("liveSubmitTestAnswer:onPmFailure=" + msg + ",testId=" + videoQuestionLiveEntity.id);
-                            if (mQuestionAction != null) {
-                                mQuestionAction.onAnswerFailure();
-                            }
-                            if (answerReslut != null) {
-                                answerReslut.onAnswerFailure();
-                            }
-                        }
-
-                        @Override
-                        public void onPmError(ResponseEntity responseEntity) {
-                            mLogtf.d("liveSubmitTestAnswer:onPmError=" + responseEntity.getErrorMsg() + ",testId=" +
-                                    videoQuestionLiveEntity.id);
-//                        if (!responseEntity.isJsonError()) {
-//
-//                        }
-                            if (mQuestionAction != null) {
-                                mQuestionAction.onAnswerReslut(liveBasePager, videoQuestionLiveEntity, null);
-                            }
-                            if (answerReslut != null) {
-                                answerReslut.onAnswerReslut(videoQuestionLiveEntity, null);
-                            }
-                        }
-                    });
-        } else {
-            getHttpManager().liveSubmitTestAnswer(mLiveType, enstuId, videoQuestionLiveEntity.srcType,
-                    videoQuestionLiveEntity.id, mLiveId, testAnswer, userMode, isVoice, isRight, new HttpCallBack() {
-
-                        @Override
-                        public void onPmSuccess(ResponseEntity responseEntity) {
-                            mLogtf.d("liveSubmitTestAnswer:onPmSuccess=" + responseEntity.getJsonObject().toString() + "," +
-                                    videoQuestionLiveEntity);
-                            VideoResultEntity entity = getHttpResponseParser().parseQuestionAnswer(responseEntity, isVoice);
-                            entity.setVoice(isVoice);
-                            if (StringUtils.isSpace(entity.getTestId())) {
-                                entity.setTestId(videoQuestionLiveEntity.id);
-                            }
-                            if (answerReslut != null) {
-                                answerReslut.onAnswerReslut(videoQuestionLiveEntity, entity);
-                            }
-                            if (mQuestionAction != null) {
-                                mQuestionAction.onAnswerReslut(liveBasePager, videoQuestionLiveEntity, entity);
-                            }
-                        }
-
-                        @Override
-                        public void onPmFailure(Throwable error, String msg) {
-                            mLogtf.d("liveSubmitTestAnswer:onPmFailure=" + msg + ",testId=" + videoQuestionLiveEntity.id);
-                            if (mQuestionAction != null) {
-                                mQuestionAction.onAnswerFailure();
-                            }
-                            if (answerReslut != null) {
-                                answerReslut.onAnswerFailure();
-                            }
-                        }
-
-                        @Override
-                        public void onPmError(ResponseEntity responseEntity) {
-                            mLogtf.d("liveSubmitTestAnswer:onPmError=" + responseEntity.getErrorMsg() + ",testId=" +
-                                    videoQuestionLiveEntity.id);
-//                        if (!responseEntity.isJsonError()) {
-//
-//                        }
-                            if (mQuestionAction != null) {
-                                mQuestionAction.onAnswerReslut(liveBasePager, videoQuestionLiveEntity, null);
-                            }
-                            if (answerReslut != null) {
-                                answerReslut.onAnswerReslut(videoQuestionLiveEntity, null);
-                            }
-                        }
-                    });
-        }
-
-    }
-
-    @Override
-    public void getSpeechEval(String id, final OnSpeechEval onSpeechEval) {
-        String liveid = mGetInfo.getId();
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        getHttpManager().getSpeechEval(enstuId, liveid, id, new HttpCallBack() {
-
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) {
-                SpeechEvalEntity speechEvalEntity = getHttpResponseParser().parseSpeechEval(responseEntity);
-                if (speechEvalEntity != null) {
-                    onSpeechEval.onSpeechEval(speechEvalEntity);
-                } else {
-                    responseEntity = new ResponseEntity();
-                    responseEntity.setStatus(false);
-                    responseEntity.setErrorMsg("出了点意外，请稍后试试");
-                    responseEntity.setJsonError(true);
-                    onSpeechEval.onPmError(responseEntity);
+            if (mLiveBll.getMainTeacherStr() != null) {
+                try {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("type", rankStuReconnectMessage + "");
+                    jsonObject.put("classId", mGetInfo.getStudentLiveInfo().getClassId());
+                    jsonObject.put("teamId", mGetInfo.getStudentLiveInfo().getTeamId());
+                    mLiveBll.sendNotice(mLiveBll.getMainTeacherStr(), jsonObject);
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
+        }
 
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                onSpeechEval.onPmFailure(error, msg);
+        @Override
+        public void getQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity, final AbstractBusinessDataCallBack callBack) {
+            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+            getHttpManager().getQuestion(enstuId, mGetInfo.getId(), videoQuestionLiveEntity.getvQuestionID(), new
+                    HttpCallBack() {
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                            logger.d("getQuestion:onPmSuccess" + responseEntity.getJsonObject());
+                            callBack.onDataSucess();
+                        }
+
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                            logger.e("getQuestion:onFailure", e);
+                            super.onFailure(call, e);
+                            callBack.onDataSucess();
+                        }
+
+                        @Override
+                        public void onPmError(ResponseEntity responseEntity) {
+                            logger.d("getQuestion:onPmError" + responseEntity.getErrorMsg());
+                            super.onPmError(responseEntity);
+                            callBack.onDataSucess();
+                        }
+                    });
+        }
+
+        @Override
+        public void liveSubmitTestAnswer(final LiveBasePager liveBasePager, final VideoQuestionLiveEntity videoQuestionLiveEntity,
+                                         String mVSectionID, String testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut) {
+            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+            mLogtf.d("liveSubmitTestAnswer:enstuId=" + enstuId + "," + videoQuestionLiveEntity.srcType + ",testId=" +
+                    videoQuestionLiveEntity.id + ",liveId=" + mVSectionID + ",testAnswer="
+                    + testAnswer);
+            String userMode = "1";
+            if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
+                if (mGetInfo.getStudentLiveInfo().isExpe()) {
+                    userMode = "0";
+                }
+            }
+            if (LiveVideoConfig.isNewArts) {
+                logger.e("======> liveSubmitTestAnswer:" + videoQuestionLiveEntity.isNewArtsH5Courseware());
+                getHttpManager().liveNewArtsSubmitTestAnswer(mLiveType, enstuId, videoQuestionLiveEntity.srcType,
+                        videoQuestionLiveEntity.id, mLiveId, testAnswer, userMode, isVoice, isRight, new HttpCallBack() {
+
+                            @Override
+                            public void onPmSuccess(ResponseEntity responseEntity) {
+                                mLogtf.d("liveSubmitTestAnswer:onPmSuccess=" + responseEntity.getJsonObject().toString() + "," +
+                                        videoQuestionLiveEntity);
+                                VideoResultEntity entity = getHttpResponseParser().parseQuestionAnswer(responseEntity, isVoice);
+                                entity.setVoice(isVoice);
+                                if (StringUtils.isSpace(entity.getTestId())) {
+                                    entity.setTestId(videoQuestionLiveEntity.id);
+                                }
+                                if (answerReslut != null) {
+                                    answerReslut.onAnswerReslut(videoQuestionLiveEntity, entity);
+                                }
+                                if (mQuestionAction != null) {
+                                    mQuestionAction.onAnswerReslut(liveBasePager, videoQuestionLiveEntity, entity);
+                                }
+                            }
+
+                            @Override
+                            public void onPmFailure(Throwable error, String msg) {
+                                mLogtf.d("liveSubmitTestAnswer:onPmFailure=" + msg + ",testId=" + videoQuestionLiveEntity.id);
+                                if (mQuestionAction != null) {
+                                    mQuestionAction.onAnswerFailure();
+                                }
+                                if (answerReslut != null) {
+                                    answerReslut.onAnswerFailure();
+                                }
+                            }
+
+                            @Override
+                            public void onPmError(ResponseEntity responseEntity) {
+                                mLogtf.d("liveSubmitTestAnswer:onPmError=" + responseEntity.getErrorMsg() + ",testId=" +
+                                        videoQuestionLiveEntity.id);
+//                        if (!responseEntity.isJsonError()) {
+//
+//                        }
+                                if (mQuestionAction != null) {
+                                    mQuestionAction.onAnswerReslut(liveBasePager, videoQuestionLiveEntity, null);
+                                }
+                                if (answerReslut != null) {
+                                    answerReslut.onAnswerReslut(videoQuestionLiveEntity, null);
+                                }
+                            }
+                        });
+            } else {
+                getHttpManager().liveSubmitTestAnswer(mLiveType, enstuId, videoQuestionLiveEntity.srcType,
+                        videoQuestionLiveEntity.id, mLiveId, testAnswer, userMode, isVoice, isRight, new HttpCallBack() {
+
+                            @Override
+                            public void onPmSuccess(ResponseEntity responseEntity) {
+                                mLogtf.d("liveSubmitTestAnswer:onPmSuccess=" + responseEntity.getJsonObject().toString() + "," +
+                                        videoQuestionLiveEntity);
+                                VideoResultEntity entity = getHttpResponseParser().parseQuestionAnswer(responseEntity, isVoice);
+                                entity.setVoice(isVoice);
+                                if (StringUtils.isSpace(entity.getTestId())) {
+                                    entity.setTestId(videoQuestionLiveEntity.id);
+                                }
+                                if (answerReslut != null) {
+                                    answerReslut.onAnswerReslut(videoQuestionLiveEntity, entity);
+                                }
+                                if (mQuestionAction != null) {
+                                    mQuestionAction.onAnswerReslut(liveBasePager, videoQuestionLiveEntity, entity);
+                                }
+                            }
+
+                            @Override
+                            public void onPmFailure(Throwable error, String msg) {
+                                mLogtf.d("liveSubmitTestAnswer:onPmFailure=" + msg + ",testId=" + videoQuestionLiveEntity.id);
+                                if (mQuestionAction != null) {
+                                    mQuestionAction.onAnswerFailure();
+                                }
+                                if (answerReslut != null) {
+                                    answerReslut.onAnswerFailure();
+                                }
+                            }
+
+                            @Override
+                            public void onPmError(ResponseEntity responseEntity) {
+                                mLogtf.d("liveSubmitTestAnswer:onPmError=" + responseEntity.getErrorMsg() + ",testId=" +
+                                        videoQuestionLiveEntity.id);
+//                        if (!responseEntity.isJsonError()) {
+//
+//                        }
+                                if (mQuestionAction != null) {
+                                    mQuestionAction.onAnswerReslut(liveBasePager, videoQuestionLiveEntity, null);
+                                }
+                                if (answerReslut != null) {
+                                    answerReslut.onAnswerReslut(videoQuestionLiveEntity, null);
+                                }
+                            }
+                        });
             }
 
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                onSpeechEval.onPmError(responseEntity);
-            }
-        });
-    }
+        }
 
-    @Override
-    public void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, final OnSpeechEval onSpeechEval) {
-        String liveid = mGetInfo.getId();
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        getHttpManager().sendSpeechEvalResult(enstuId, liveid, id, stuAnswer, times, entranceTime, new HttpCallBack(false) {
-
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) {
-                mLogtf.i("sendSpeechEvalResult:onPmSuccess=" + responseEntity.getJsonObject());
-                onSpeechEval.onSpeechEval(null);
-            }
-
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                mLogtf.i("sendSpeechEvalResult:onPmFailure=" + msg);
-                onSpeechEval.onPmFailure(error, msg);
-            }
-
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                mLogtf.i("sendSpeechEvalResult:onPmError=" + responseEntity.getErrorMsg());
-                onSpeechEval.onPmError(responseEntity);
-            }
-        });
-    }
-
-    @Override
-    public void sendSpeechEvalResult2(String id, String stuAnswer, final OnSpeechEval onSpeechEval) {
-        String liveid = mGetInfo.getId();
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        if (LiveVideoConfig.isNewArts) {
-            getHttpManager().sendSpeechEvalResultNewArts(enstuId, liveid, id, stuAnswer, new HttpCallBack(false) {
+        @Override
+        public void getSpeechEval(String id, final OnSpeechEval onSpeechEval) {
+            String liveid = mGetInfo.getId();
+            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+            getHttpManager().getSpeechEval(enstuId, liveid, id, new HttpCallBack() {
 
                 @Override
-                public void onPmSuccess(final ResponseEntity responseEntity) {
-                    mLogtf.i("sendSpeechEvalResult2:onPmSuccess=" + responseEntity.getJsonObject());
-                    JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                    onSpeechEval.onSpeechEval(jsonObject);
+                public void onPmSuccess(ResponseEntity responseEntity) {
+                    SpeechEvalEntity speechEvalEntity = getHttpResponseParser().parseSpeechEval(responseEntity);
+                    if (speechEvalEntity != null) {
+                        onSpeechEval.onSpeechEval(speechEvalEntity);
+                    } else {
+                        responseEntity = new ResponseEntity();
+                        responseEntity.setStatus(false);
+                        responseEntity.setErrorMsg("出了点意外，请稍后试试");
+                        responseEntity.setJsonError(true);
+                        onSpeechEval.onPmError(responseEntity);
+                    }
                 }
 
                 @Override
                 public void onPmFailure(Throwable error, String msg) {
-                    mLogtf.i("sendSpeechEvalResult2:onPmFailure=" + msg);
                     onSpeechEval.onPmFailure(error, msg);
                 }
 
                 @Override
                 public void onPmError(ResponseEntity responseEntity) {
-                    mLogtf.i("sendSpeechEvalResult2:onPmError=" + responseEntity.getErrorMsg());
                     onSpeechEval.onPmError(responseEntity);
                 }
             });
-        } else {
-            getHttpManager().sendSpeechEvalResult2(enstuId, liveid, id, stuAnswer, new HttpCallBack(false) {
+        }
+
+        @Override
+        public void sendSpeechEvalResult(String id, String stuAnswer, String times, int entranceTime, final OnSpeechEval onSpeechEval) {
+            String liveid = mGetInfo.getId();
+            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+            getHttpManager().sendSpeechEvalResult(enstuId, liveid, id, stuAnswer, times, entranceTime, new HttpCallBack(false) {
 
                 @Override
-                public void onPmSuccess(final ResponseEntity responseEntity) {
-                    mLogtf.i("sendSpeechEvalResult2:onPmSuccess=" + responseEntity.getJsonObject());
+                public void onPmSuccess(ResponseEntity responseEntity) {
+                    mLogtf.i("sendSpeechEvalResult:onPmSuccess=" + responseEntity.getJsonObject());
+                    onSpeechEval.onSpeechEval(null);
+                }
+
+                @Override
+                public void onPmFailure(Throwable error, String msg) {
+                    mLogtf.i("sendSpeechEvalResult:onPmFailure=" + msg);
+                    onSpeechEval.onPmFailure(error, msg);
+                }
+
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    mLogtf.i("sendSpeechEvalResult:onPmError=" + responseEntity.getErrorMsg());
+                    onSpeechEval.onPmError(responseEntity);
+                }
+            });
+        }
+
+        @Override
+        public void sendSpeechEvalResult2(String id, String stuAnswer, final OnSpeechEval onSpeechEval) {
+            String liveid = mGetInfo.getId();
+            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+            if (LiveVideoConfig.isNewArts) {
+                getHttpManager().sendSpeechEvalResultNewArts(enstuId, liveid, id, stuAnswer, new HttpCallBack(false) {
+
+                    @Override
+                    public void onPmSuccess(final ResponseEntity responseEntity) {
+                        mLogtf.i("sendSpeechEvalResult2:onPmSuccess=" + responseEntity.getJsonObject());
+                        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                        onSpeechEval.onSpeechEval(jsonObject);
+                    }
+
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        mLogtf.i("sendSpeechEvalResult2:onPmFailure=" + msg);
+                        onSpeechEval.onPmFailure(error, msg);
+                    }
+
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        mLogtf.i("sendSpeechEvalResult2:onPmError=" + responseEntity.getErrorMsg());
+                        onSpeechEval.onPmError(responseEntity);
+                    }
+                });
+            } else {
+                getHttpManager().sendSpeechEvalResult2(enstuId, liveid, id, stuAnswer, new HttpCallBack(false) {
+
+                    @Override
+                    public void onPmSuccess(final ResponseEntity responseEntity) {
+                        mLogtf.i("sendSpeechEvalResult2:onPmSuccess=" + responseEntity.getJsonObject());
 //                Handler handler=new Handler();
 //                handler.postDelayed(new Runnable() {
 //                    @Override
@@ -915,44 +921,44 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //                        onSpeechEval.onSpeechEval(jsonObject);
 //                    }
 //                },2000);
-                    JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                    onSpeechEval.onSpeechEval(jsonObject);
+                        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                        onSpeechEval.onSpeechEval(jsonObject);
+                    }
+
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        mLogtf.i("sendSpeechEvalResult2:onPmFailure=" + msg);
+                        onSpeechEval.onPmFailure(error, msg);
+                    }
+
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        mLogtf.i("sendSpeechEvalResult2:onPmError=" + responseEntity.getErrorMsg());
+                        onSpeechEval.onPmError(responseEntity);
+                    }
+                });
+            }
+        }
+
+        @Override
+        public void getTestAnswerTeamStatus(VideoQuestionLiveEntity videoQuestionLiveEntity, final AbstractBusinessDataCallBack callBack) {
+            getHttpManager().getTestAnswerTeamStatus(videoQuestionLiveEntity.id, new HttpCallBack(false) {
+                @Override
+                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                    GoldTeamStatus entity = getHttpResponseParser().testAnswerTeamStatus(responseEntity, mGetInfo.getStuId(),
+                            mGetInfo.getHeadImgPath());
+                    callBack.onDataSucess(entity);
                 }
 
                 @Override
                 public void onPmFailure(Throwable error, String msg) {
-                    mLogtf.i("sendSpeechEvalResult2:onPmFailure=" + msg);
-                    onSpeechEval.onPmFailure(error, msg);
+                    super.onPmFailure(error, msg);
+                    callBack.onDataFail(0, msg);
                 }
 
                 @Override
                 public void onPmError(ResponseEntity responseEntity) {
-                    mLogtf.i("sendSpeechEvalResult2:onPmError=" + responseEntity.getErrorMsg());
-                    onSpeechEval.onPmError(responseEntity);
-                }
-            });
-        }
-    }
-
-    @Override
-    public void getTestAnswerTeamStatus(VideoQuestionLiveEntity videoQuestionLiveEntity, final AbstractBusinessDataCallBack callBack) {
-        getHttpManager().getTestAnswerTeamStatus(videoQuestionLiveEntity.id, new HttpCallBack(false) {
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                GoldTeamStatus entity = getHttpResponseParser().testAnswerTeamStatus(responseEntity, mGetInfo.getStuId(),
-                        mGetInfo.getHeadImgPath());
-                callBack.onDataSucess(entity);
-            }
-
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                super.onPmFailure(error, msg);
-                callBack.onDataFail(0, msg);
-            }
-
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                super.onPmError(responseEntity);
+                    super.onPmError(responseEntity);
 //                if (AppConfig.DEBUG) {
 //                    GoldTeamStatus entity = new GoldTeamStatus();
 //                    for (int i = 0; i < 3; i++) {
@@ -967,59 +973,61 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //                } else {
 //                    callBack.onDataFail(1, responseEntity.getErrorMsg());
 //                }
-                callBack.onDataFail(1, responseEntity.getErrorMsg());
-            }
-        });
-    }
-
-    @Override
-    public void speechEval42IsAnswered(String mVSectionID, String num, final SpeechEvalAction.SpeechIsAnswered isAnswered) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        if (LiveVideoConfig.isNewArts) {
-            getHttpManager().speechNewArtEvaluateIsAnswered(enstuId, mVSectionID, num, new HttpCallBack(false) {
-                @Override
-                public void onPmSuccess(final ResponseEntity responseEntity) {
-                    JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                    JSONObject detail = jsonObject.optJSONObject("data");
-                    mLogtf.i("speechEvaluatenewArtsIsAnswered:onPmSuccess=" + jsonObject);
-                    boolean isAnswer = detail.optInt("isAnswer") == 1;
-                    isAnswered.isAnswer(isAnswer);
-                }
-
-                @Override
-                public void onPmFailure(Throwable error, String msg) {
-                    mLogtf.i("speechEvaluatenewArtsIsAnswered:onPmFailure=" + msg);
-                }
-
-                @Override
-                public void onPmError(ResponseEntity responseEntity) {
-                    mLogtf.i("speechEvaluatenewArtsIsAnswered:onPmError=" + responseEntity.getErrorMsg());
-                }
-            });
-        } else {
-            getHttpManager().speechEval42IsAnswered(enstuId, mVSectionID, num, new HttpCallBack(false) {
-                @Override
-                public void onPmSuccess(final ResponseEntity responseEntity) {
-                    JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                    mLogtf.i("speechEval42IsAnswered:onPmSuccess=" + jsonObject);
-                    boolean isAnswer = jsonObject.optInt("isAnswer") == 1;
-                    isAnswered.isAnswer(isAnswer);
-                }
-
-                @Override
-                public void onPmFailure(Throwable error, String msg) {
-                    mLogtf.i("speechEval42IsAnswered:onPmFailure=" + msg);
-                }
-
-                @Override
-                public void onPmError(ResponseEntity responseEntity) {
-                    mLogtf.i("speechEval42IsAnswered:onPmError=" + responseEntity.getErrorMsg());
+                    callBack.onDataFail(1, responseEntity.getErrorMsg());
                 }
             });
         }
-    }
 
-    private int test1 = 0;
+        @Override
+        public void speechEval42IsAnswered(String mVSectionID, String num, final SpeechEvalAction.SpeechIsAnswered isAnswered) {
+            String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
+            if (LiveVideoConfig.isNewArts) {
+                getHttpManager().speechNewArtEvaluateIsAnswered(enstuId, mVSectionID, num, new HttpCallBack(false) {
+                    @Override
+                    public void onPmSuccess(final ResponseEntity responseEntity) {
+                        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                        JSONObject detail = jsonObject.optJSONObject("data");
+                        mLogtf.i("speechEvaluatenewArtsIsAnswered:onPmSuccess=" + jsonObject);
+                        boolean isAnswer = detail.optInt("isAnswer") == 1;
+                        isAnswered.isAnswer(isAnswer);
+                    }
+
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        mLogtf.i("speechEvaluatenewArtsIsAnswered:onPmFailure=" + msg);
+                    }
+
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        mLogtf.i("speechEvaluatenewArtsIsAnswered:onPmError=" + responseEntity.getErrorMsg());
+                    }
+                });
+            } else {
+                getHttpManager().speechEval42IsAnswered(enstuId, mVSectionID, num, new HttpCallBack(false) {
+                    @Override
+                    public void onPmSuccess(final ResponseEntity responseEntity) {
+                        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+                        mLogtf.i("speechEval42IsAnswered:onPmSuccess=" + jsonObject);
+                        boolean isAnswer = jsonObject.optInt("isAnswer") == 1;
+                        isAnswered.isAnswer(isAnswer);
+                    }
+
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        mLogtf.i("speechEval42IsAnswered:onPmFailure=" + msg);
+                    }
+
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        mLogtf.i("speechEval42IsAnswered:onPmError=" + responseEntity.getErrorMsg());
+                    }
+                });
+            }
+        }
+
+        private int test1 = 0;
+
+    }
 
     public void getSpeechEvalAnswerTeamStatus(String testId, final AbstractBusinessDataCallBack callBack) {
         getHttpManager().getSpeechEvalAnswerTeamStatus(testId, new HttpCallBack(false) {
@@ -1127,6 +1135,47 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         });
     }
 
+    public CourseWareHttpManager getCourseWareHttpManager() {
+        if (courseWareHttpManager == null) {
+            courseWareHttpManager = new CourseWareHttpManager(getHttpManager());
+        }
+        return courseWareHttpManager;
+    }
+
+    class QueArtHttp extends QueIrcHttp implements EnglishH5CoursewareSecHttp {
+
+        @Override
+        public void getCourseWareTests(String url, String params, AbstractBusinessDataCallBack callBack) {
+
+        }
+
+        @Override
+        public void getCourseWareTests(VideoQuestionLiveEntity detailInfo, AbstractBusinessDataCallBack callBack) {
+            getCourseWareHttpManager().getTestInfos(detailInfo.id, callBack);
+        }
+
+        @Override
+        public void submitCourseWareTests(VideoQuestionLiveEntity detailInfo, int isforce, String nonce, long entranceTime, String testInfos, AbstractBusinessDataCallBack callBack) {
+            getCourseWareHttpManager().submitMultiTest("" + testInfos, 1, isforce, callBack);
+        }
+
+        @Override
+        public String getResultUrl(VideoQuestionLiveEntity detailInfo, int isforce, String nonce) {
+            return null;
+        }
+
+        @Override
+        public void liveSubmitTestH5Answer(VideoQuestionLiveEntity videoQuestionLiveEntity, String mVSectionID, String testAnswer, String courseware_type, String isSubmit, double voiceTime, boolean isRight, QuestionSwitch.OnAnswerReslut onAnswerReslut) {
+
+        }
+    }
+
+    public void getStuGoldCount() {
+        UpdateAchievement updateAchievement = getInstance(UpdateAchievement.class);
+        if (updateAchievement != null) {
+            updateAchievement.getStuGoldCount();
+        }
+    }
 
     @Override
     public void onDestory() {

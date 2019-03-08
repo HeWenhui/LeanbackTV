@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CourseWareParse {
-    public NewCourseSec parse(ResponseEntity responseEntity) {
+    public NewCourseSec parseSec(ResponseEntity responseEntity) {
         try {
             NewCourseSec newCourseSec = new NewCourseSec();
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
@@ -60,6 +60,30 @@ public class CourseWareParse {
                 }
             }
             return resultEntity;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public NewCourseSec parseEn(ResponseEntity responseEntity) {
+        try {
+            NewCourseSec newCourseSec = new NewCourseSec();
+            JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+            newCourseSec.setIsAnswer(jsonObject.optInt("isAnswer"));
+            newCourseSec.setReleaseTime(jsonObject.optLong("releaseTime", System.currentTimeMillis()));
+            ArrayList<NewCourseSec.Test> tests = newCourseSec.getTests();
+            JSONArray array = jsonObject.getJSONArray("list");
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject testObj = array.getJSONObject(i);
+                NewCourseSec.Test test = new NewCourseSec.Test();
+                test.setId(testObj.getString("testId"));
+                test.setTestType(testObj.getString("testType"));
+                test.setPreviewPath(testObj.getString("previewPath"));
+                test.setJson(testObj);
+                tests.add(test);
+            }
+            return newCourseSec;
         } catch (JSONException e) {
             e.printStackTrace();
         }
