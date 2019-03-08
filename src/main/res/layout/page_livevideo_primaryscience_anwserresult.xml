@@ -5,6 +5,7 @@
     android:background="@color/transparent_80">
 
     <RelativeLayout
+        android:layout_marginTop="128dp"
         android:layout_width="445dp"
         android:layout_height="205dp"
         android:layout_centerHorizontal="true"
@@ -41,5 +42,21 @@
         android:scaleType="centerCrop"
         app:lottie_fileName="primary_science_answer_result/interact-active-right.json"
         app:lottie_imageAssetsFolder="primary_science_answer_result/animation/interact-active/right" />
+
+    <RelativeLayout
+        android:layout_width="445dp"
+        android:layout_height="205dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="128dp">
+
+        <TextView
+            android:id="@+id/tv_livevideo_primaryscience_anwerresult_gold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFEFE30F"
+            android:textSize="14dp"
+            android:layout_marginLeft="278dp"/>
+
+    </RelativeLayout>
 
 </RelativeLayout>

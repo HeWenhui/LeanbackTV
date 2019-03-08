@@ -7,9 +7,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
@@ -25,6 +27,24 @@ import java.util.List;
 public class PrimaryScienceAnserResultPager extends LiveBasePager {
     PrimaryScienceAnswerResultEntity mEnytity;
     AnswerResultAdapter mAdapter;
+    static final int[] rightImageResource = new int[]{
+            R.drawable.live_interact_primary_wrong,
+            R.drawable.live_interact_primary_right,
+            R.drawable.live_interact_primary_middle
+    };
+    static final String LOTTIE_RES_ASSETS_ROOTDIR = "primary_science_answer_result/";
+
+    static final String[] jsonAssetsFolder = new String[]{
+            LOTTIE_RES_ASSETS_ROOTDIR + "interact-active-wrong.json",
+            LOTTIE_RES_ASSETS_ROOTDIR + "interact-active-right.json",
+            LOTTIE_RES_ASSETS_ROOTDIR + "interact-active-middle.json"
+    };
+
+    static final String[] imageAssetsFolder = new String[]{
+            LOTTIE_RES_ASSETS_ROOTDIR + "animation/interact-active/wrong",
+            LOTTIE_RES_ASSETS_ROOTDIR + "animation/interact-active/right",
+            LOTTIE_RES_ASSETS_ROOTDIR + "animation/interact-active/middle"
+    };
 
     public PrimaryScienceAnserResultPager(Context context, PrimaryScienceAnswerResultEntity enytity) {
         super(context);
@@ -36,6 +56,7 @@ public class PrimaryScienceAnserResultPager extends LiveBasePager {
     LottieAnimationView lavGameRight;
     LottieAnimationView lavActiveRight;
     FastScrollableRecyclerView mRecycleView;
+    TextView tvGold;
 
     @Override
     public View initView() {
@@ -43,25 +64,18 @@ public class PrimaryScienceAnserResultPager extends LiveBasePager {
         lavGameRight = mView.findViewById(R.id.lav_livevideo_primaryscience_anwserrsult_game_right);
         lavActiveRight = mView.findViewById(R.id.lav_livevideo_primaryscience_anwserrsult_active_right);
         mRecycleView = mView.findViewById(R.id.frv_livevideo_primaryscience_anwserrsult);
+        tvGold = mView.findViewById(R.id.tv_livevideo_primaryscience_anwerresult_gold);
         return mView;
     }
 
     @Override
     public void initData() {
-//        if (mEnytity.getType() == 1) {
-//            lavGameRight.setVisibility(View.VISIBLE);
-//            lavGameRight.playAnimation();
-//        }
-//
-//        if (mEnytity.getType() == 2) {
-//            lavActiveRight.setVisibility(View.VISIBLE);
-//            lavActiveRight.playAnimation();
-//        }
 
         mAdapter = new AnswerResultAdapter(mEnytity.getAnswerList());
-        mRecycleView.setLayoutManager(new GridLayoutManager(mContext, 1, LinearLayoutManager.VERTICAL,
-                false));
+        mRecycleView.setLayoutManager(new GridLayoutManager(mContext, 1, LinearLayoutManager.VERTICAL, false));
         mRecycleView.setAdapter(mAdapter);
+        tvGold.setText("+" + mEnytity.getGold());
+        startLottieAnimation();
     }
 
     @Override
@@ -94,6 +108,7 @@ public class PrimaryScienceAnserResultPager extends LiveBasePager {
     }
 
     class AnswerViewHolder extends RecyclerView.ViewHolder {
+        View vDashLine;
         TextView tvAnswerNumber;
         TextView tvRightAnswer;
         TextView tvMyAnswer;
@@ -101,6 +116,7 @@ public class PrimaryScienceAnserResultPager extends LiveBasePager {
 
         AnswerViewHolder(View itemView) {
             super(itemView);
+            vDashLine = itemView.findViewById(R.id.tv_livevideo_primaryscience_answerresult_dash_line);
             tvAnswerNumber = itemView.findViewById(R.id.tv_livevideo_primaryscience_answerresult_answer_number);
             tvRightAnswer = itemView.findViewById(R.id.tv_livevideo_primaryscience_answerresult_right_answer);
             tvMyAnswer = itemView.findViewById(R.id.tv_livevideo_primaryscience_answerresult_my_answer);
@@ -108,25 +124,42 @@ public class PrimaryScienceAnserResultPager extends LiveBasePager {
         }
 
         public void bindData(PrimaryScienceAnswerResultEntity.Answer data, int position) {
-            tvAnswerNumber.setText(data.getAmswerNumber()+"");
+            if (position == 0) {
+                vDashLine.setVisibility(View.GONE);
+            } else {
+                RelativeLayout.LayoutParams dashLineLayoutParams = (RelativeLayout.LayoutParams) vDashLine.getLayoutParams();
+                if (data.getAmswerNumber() == 0) {
+
+                    dashLineLayoutParams.width = SizeUtils.Dp2Px(mContext, 264);
+                } else {
+                    dashLineLayoutParams.width = SizeUtils.Dp2Px(mContext, 361);
+                }
+                vDashLine.setLayoutParams(dashLineLayoutParams);
+            }
+
+            if (data.getAmswerNumber() == 0) {
+                tvAnswerNumber.setText("");
+            } else {
+                tvAnswerNumber.setText(data.getAmswerNumber() + "");
+            }
             tvRightAnswer.setText(data.getRightAnswer());
             tvMyAnswer.setText(data.getMyAnswer());
-            switch (data.getRight()) {
-                case 0: {
-                    ivRight.setImageResource(R.drawable.live_interact_primary_right);
-                    break;
-                }
-                case 1: {
-                    ivRight.setImageResource(R.drawable.live_interact_primary_wrong);
-                    break;
-                }
-                case 2: {
-                    ivRight.setImageResource(R.drawable.live_interact_primary_middle);
-                    break;
-                }
-                default:
-                    break;
+            if (data.getRight() < 0 || data.getRight() >= rightImageResource.length) {
+                return;
             }
+            ivRight.setImageResource(rightImageResource[data.getRight()]);
         }
+    }
+
+    private void startLottieAnimation() {
+        if (mEnytity.getType() < 0 || mEnytity.getType() >= jsonAssetsFolder.length) {
+            return;
+        }
+        lavActiveRight.setAnimation(jsonAssetsFolder[mEnytity.getType()]);
+        lavActiveRight.setImageAssetsFolder(imageAssetsFolder[mEnytity.getType()]);
+        lavActiveRight.setVisibility(View.VISIBLE);
+        lavActiveRight.useHardwareAcceleration();
+        lavActiveRight.loop(true);
+        lavActiveRight.playAnimation();
     }
 }
