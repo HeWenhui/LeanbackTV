@@ -1168,6 +1168,11 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         public void liveSubmitTestH5Answer(VideoQuestionLiveEntity videoQuestionLiveEntity, String mVSectionID, String testAnswer, String courseware_type, String isSubmit, double voiceTime, boolean isRight, QuestionSwitch.OnAnswerReslut onAnswerReslut) {
 
         }
+
+        @Override
+        public void getStuTestResult(VideoQuestionLiveEntity detailInfo, int isforce, String testInfos, AbstractBusinessDataCallBack callBack) {
+
+        }
     }
 
     public void getStuGoldCount() {
