@@ -139,7 +139,7 @@ public class PreLoadDownLoaderManager {
                         if (realDownLoadListener != null) {
                             realDownLoadListener.onFinish();
                         }
-                        logger.i("next auto download");
+//                        logger.i("next auto download");
                         startAutoDownload();
                     }
 

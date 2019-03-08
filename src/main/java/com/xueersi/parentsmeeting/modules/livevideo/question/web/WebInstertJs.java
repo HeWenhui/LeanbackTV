@@ -23,6 +23,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
 
+import ren.yale.android.cachewebviewlib.utils.FileUtil;
+
 /**
  * Created by linyuqiang on 2019/3/5.
  * 往html中嵌入js
@@ -39,7 +41,8 @@ public class WebInstertJs {
         logToFile = new LogToFile(context, TAG);
         this.context = context;
         logger = LiveLoggerFactory.getLogger(TAG);
-        cacheDir = LiveCacheFile.geCacheFile(context, "webview");
+        cacheDir = LiveCacheFile.geCacheFile(context, "webviewCache");
+        FileUtil.deleteDirs(cacheDir.getPath(), false);
         if (!cacheDir.exists()) {
             cacheDir.mkdirs();
         }
