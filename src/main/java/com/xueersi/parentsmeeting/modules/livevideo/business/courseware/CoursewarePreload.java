@@ -2,10 +2,12 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.courseware;
 
 import android.content.Context;
 
+import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.network.download.DownLoadInfo;
 import com.xueersi.common.network.download.DownloadListener;
+import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
@@ -28,6 +30,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -277,6 +283,8 @@ public class CoursewarePreload {
         cdnLength.set(cdns.size());
         ipLength.set(newIPs.size());
 
+        resources.add("/courseware_pages/74989b568bfceaab053a8b6b297ac007/katex@0.10.1.zip");
+
         downloadResources(resources, cdns, newIPs);
         exeDownLoadCourseware(liveCoursewares, cdns, newIPs);
 
@@ -291,9 +299,13 @@ public class CoursewarePreload {
      */
     private void exeDownLoadCourseware(List<CoursewareInfoEntity.LiveCourseware> liveCoursewares, List<String> cdns, List<String> ips) {
 
+        StringBuilder liveIds = new StringBuilder("");
         for (CoursewareInfoEntity.LiveCourseware liveCourseware : liveCoursewares) {
             //课件列表
+            liveIds.append(liveCourseware.getLiveId() + ",");
+
             PreloadStaticStorage.preloadLiveId.add(liveCourseware.getLiveId());
+
             List<CoursewareInfoEntity.ItemCoursewareInfo> coursewareInfos = liveCourseware.getCoursewareInfos();
             File todayLiveCacheDir = new File(todayCacheDir, liveCourseware.getLiveId());
             boolean exists = todayLiveCacheDir.exists();
@@ -304,6 +316,10 @@ public class CoursewarePreload {
             logger.d("getCourseWareUrl:exists=" + exists + ",mkdirs=" + mkdirs);
             downloadCourseware(todayLiveCacheDir, coursewareInfos, ips, cdns);
         }
+        ShareDataManager shareDataManager = ShareDataManager.getInstance();
+
+        shareDataManager.put(ShareBusinessConfig.SP_PRELOAD_COURSEWARE, liveIds.toString(), ShareDataManager.SHAREDATA_USER);
+
     }
 
     /**
@@ -506,6 +522,13 @@ public class CoursewarePreload {
         }
     }
 
+//    AtomicBoolean isUnZip = new AtomicBoolean(false);
+
+//    private ZipExtractorTask zipExtractorTask;
+
+    Executor executos = new ThreadPoolExecutor(3, 3,
+            0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
+
     class ZipDownloadListener implements DownloadListener {
 
         private File mMorecacheout;
@@ -544,7 +567,11 @@ public class CoursewarePreload {
             File tempFile = new File(folderPath, fileName);
             File file = new File(folderPath, mFileName);
             boolean rename = tempFile.renameTo(file);
-            new ZipExtractorTask(file, mMorecacheout, true, new Progresses()).execute();
+//            if (!isUnZip.get()) {
+            new ZipExtractorTask(file, mMorecacheout, true, new Progresses()).executeOnExecutor(executos);
+
+//                isUnZip.set(true);
+//            }
         }
 
         @Override
