@@ -6,6 +6,7 @@ import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -35,6 +36,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.config.CourseMessag
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.dialog.CourseTipDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.NewCourseCache;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.StaticWeb;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.WebInstertJs;
@@ -599,7 +601,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     }
                 });
             } else {
-                JSONObject testInfos = new JSONObject();
+                final JSONObject testInfos = new JSONObject();
                 for (int i = 0; i < tests.size(); i++) {
                     NewCourseSec.Test test = tests.get(i);
                     JSONObject json = test.getJson();
@@ -627,10 +629,22 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     public void onDataSucess(Object... objData) {
                         JSONObject jsonObject = (JSONObject) objData[0];
                         int toAnswered = jsonObject.optInt("toAnswered");
-                        rlCourseControl.setVisibility(View.GONE);
-                        String url = englishH5CoursewareSecHttp.getResultUrl(detailInfo, isforce, "");
-                        loadResult = true;
-                        wvSubjectWeb.loadUrl(url);
+                        if(LiveVideoConfig.isPrimary){
+                            englishH5CoursewareSecHttp.getStuTestResult(detailInfo, isforce, testInfos.toString(), new AbstractBusinessDataCallBack() {
+                                @Override
+                                public void onDataSucess(Object... objData) {
+                                    PrimaryScienceAnswerResultEntity entity = (PrimaryScienceAnswerResultEntity) objData[0];
+                                    PrimaryScienceAnserResultPager primaryScienceAnserResultPager = new PrimaryScienceAnserResultPager(mContext, entity);
+                                    ((RelativeLayout)mView).addView(primaryScienceAnserResultPager.getRootView(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                                }
+                            });
+                        }
+                        else{
+                            rlCourseControl.setVisibility(View.GONE);
+                            String url = englishH5CoursewareSecHttp.getResultUrl(detailInfo, isforce, "");
+                            loadResult = true;
+                            wvSubjectWeb.loadUrl(url);
+                        }
                     }
 
                     @Override
