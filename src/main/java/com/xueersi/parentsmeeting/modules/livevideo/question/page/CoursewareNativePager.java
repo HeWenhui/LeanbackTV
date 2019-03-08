@@ -704,11 +704,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         XESToastUtils.showToast(mContext, "互动题为空");
                         return;
                     }
-                    if (tests.size() == 1) {
-                        btCoursePre.setVisibility(View.GONE);
-                        btCourseNext.setVisibility(View.GONE);
-                        btCourseSubmit.setVisibility(View.VISIBLE);
-                    }
+                    showControl();
                     if (quesJson != null) {
                         for (int i = 0; i < tests.size(); i++) {
                             NewCourseSec.Test test = tests.get(i);
@@ -760,6 +756,34 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 logger.d("onDataFail:errStatus=" + errStatus + ",failMsg=" + failMsg);
             }
         });
+    }
+
+    private void showControl() {
+        boolean show = false;
+        if (isArts == LiveVideoSAConfig.ART_EN) {
+            for (int i = 0; i < tests.size(); i++) {
+                NewCourseSec.Test test = tests.get(i);
+                String testType = test.getTestType();
+                if (LiveQueConfig.EN_COURSE_TYPE_BLANK.equals(testType) || LiveQueConfig.EN_COURSE_TYPE_CHOICE.equals(testType)
+                        || LiveQueConfig.EN_COURSE_TYPE_OUT.equals(testType) || LiveQueConfig.EN_COURSE_TYPE_19.equals(testType)) {
+                    show = true;
+                    break;
+                }
+            }
+        } else {
+            if (LiveQueConfig.SEC_COURSE_TYPE_QUE.equals(englishH5Entity.getPackageSource())) {
+                show = true;
+            }
+        }
+        if (show) {
+            if (tests.size() == 1) {
+                btCoursePre.setVisibility(View.GONE);
+                btCourseNext.setVisibility(View.GONE);
+                btCourseSubmit.setVisibility(View.VISIBLE);
+            }
+        } else {
+            rlCourseControl.setVisibility(View.GONE);
+        }
     }
 
     @Override
