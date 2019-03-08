@@ -226,7 +226,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         btSubjectCalljs.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                examSubmitAll();
+                submitData();
             }
         });
         addJavascriptInterface();
@@ -331,7 +331,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
     }
 
     @Override
-    public void examSubmitAll() {
+    public void submitData() {
         Map<String, String> mData = new HashMap<>();
         mData.put("testid", "" + testId);
         mData.put("logtype", "interactTestEnd");

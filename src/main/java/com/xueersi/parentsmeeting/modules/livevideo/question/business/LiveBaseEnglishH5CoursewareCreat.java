@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 import android.content.Context;
 
 import com.xueersi.common.entity.EnglishH5Entity;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
@@ -12,6 +13,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ScienceStati
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.CoursewareNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.EnglishH5CoursewareX5Pager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
 /**
  * Created by linyuqiang on 2018/7/26.
@@ -21,11 +23,12 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
     private int isArts;
     private boolean allowTeamPk;
     private LiveGetInfo liveGetInfo;
+    private Logger logger;
 
     LivePagerBack livePagerBack;
 
     public LiveBaseEnglishH5CoursewareCreat() {
-
+        logger = LiveLoggerFactory.getLogger("LiveBaseEnglishH5CoursewareCreat");
     }
 
     public void setmAnswerRankBll(AnswerRankIRCBll mAnswerRankBll) {
@@ -107,6 +110,18 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
                         h5CoursewarePager.setLivePagerBack(livePagerBack);
                         return h5CoursewarePager;
                     }
+                }
+            } else if (isArts == LiveVideoSAConfig.ART_EN) {
+                // 英语
+                videoQuestionH5Entity.setEducationstage(liveGetInfo.getEducationStage());
+                englishH5Entity.setDynamicurl(liveGetInfo.getGetCourseWareHtmlZhongXueUrl());
+                if (videoQuestionH5Entity.isNewArtsH5Courseware()) {
+                    long before = System.currentTimeMillis();
+                    CoursewareNativePager h5CoursewarePager = new CoursewareNativePager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
+                            videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, "0", isArts, false);
+                    logger.d("CoursewareNativePagerCreat:time=" + (System.currentTimeMillis() - before));
+                    h5CoursewarePager.setLivePagerBack(livePagerBack);
+                    return h5CoursewarePager;
                 }
             }
         }

@@ -32,6 +32,7 @@ public class NewCourseSec {
 
     public static class Test {
         String id;
+        String testType;
         String previewPath;
         String hasAnswer;
         JSONObject json;
@@ -43,6 +44,14 @@ public class NewCourseSec {
 
         public void setId(String id) {
             this.id = id;
+        }
+
+        public String getTestType() {
+            return testType;
+        }
+
+        public void setTestType(String testType) {
+            this.testType = testType;
         }
 
         public String getPreviewPath() {

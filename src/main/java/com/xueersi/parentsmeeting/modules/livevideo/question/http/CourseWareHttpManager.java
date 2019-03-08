@@ -8,8 +8,10 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListDanmakuEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
 
 public class CourseWareHttpManager {
     private final Logger logger = LoggerFactory.getLogger("CourseWareHttpManager");
@@ -99,7 +101,7 @@ public class CourseWareHttpManager {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("getCourseWareTests:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
-                NewCourseSec newCourseSec = courseWareParse.parse(responseEntity);
+                NewCourseSec newCourseSec = courseWareParse.parseSec(responseEntity);
                 if (newCourseSec != null) {
                     callBack.onDataSucess(newCourseSec);
                 } else {
@@ -116,6 +118,108 @@ public class CourseWareHttpManager {
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 logger.d("getCourseWareTests:onPmFailure:responseEntity=" + msg, error);
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
+            }
+        });
+    }
+
+    /**
+     * Created by ZhangYuansun on 2019/3/7
+     *
+     * 学生作答情况列表
+     */
+    public void getStuTestResult(String liveId, String classId, String teamId, String stuId, String srcTypes, String testIds, String classTestId, String packageId,
+                                 String packageAttr, final AbstractBusinessDataCallBack callBack) {
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+        liveHttpManager.setDefaultParameter(httpRequestParams);
+        httpRequestParams.addBodyParam("liveId", liveId);
+        httpRequestParams.addBodyParam("classId", classId);
+        httpRequestParams.addBodyParam("teamId", teamId);
+        httpRequestParams.addBodyParam("stuId", stuId);
+        httpRequestParams.addBodyParam("srcTypes", srcTypes);
+        httpRequestParams.addBodyParam("testIds", "" + testIds);
+        httpRequestParams.addBodyParam("classTestId", "" + classTestId);
+        httpRequestParams.addBodyParam("packageId", "" + packageId);
+        httpRequestParams.addBodyParam("packageAttr", "" + packageAttr);
+        liveHttpManager.sendPost(LiveQueHttpConfig.LIVE_GET_STU_TESTS_RESULT, httpRequestParams, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                logger.d("getStuTestResult:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
+                PrimaryScienceAnswerResultEntity primaryScienceAnswerResultEntity = courseWareParse.parseStuTestResult(responseEntity);
+                if (primaryScienceAnswerResultEntity != null) {
+                    callBack.onDataSucess(primaryScienceAnswerResultEntity);
+                } else {
+                    callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_NULL, "null");
+                }
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                logger.d("getStuTestResult:onPmError:responseEntity=" + responseEntity.getErrorMsg());
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR, responseEntity.getErrorMsg());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                logger.d("getStuTestResult:onPmFailure:responseEntity=" + msg, error);
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
+            }
+        });
+    }
+
+    public void getTestInfos(String testIds, final AbstractBusinessDataCallBack callBack) {
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+        liveHttpManager.setDefaultParameter(httpRequestParams);
+        httpRequestParams.addBodyParam("testIds", testIds);
+        String url = LiveQueHttpConfig.LIVE_GET_COURSEWARE_TESTS_EN;
+        liveHttpManager.sendPost(url, httpRequestParams, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                logger.d("getTestInfos:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
+                NewCourseSec newCourseSec = courseWareParse.parseEn(responseEntity);
+                if (newCourseSec != null) {
+                    callBack.onDataSucess(newCourseSec);
+                } else {
+                    callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_NULL, "null");
+                }
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                logger.d("getTestInfos:onPmError:responseEntity=" + responseEntity.getErrorMsg());
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR, responseEntity.getErrorMsg());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                logger.d("getTestInfos:onPmFailure:responseEntity=" + msg, error);
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
+            }
+        });
+    }
+
+    public void submitMultiTest(String answers, int isPlayBack, int isForce, final AbstractBusinessDataCallBack callBack) {
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+        liveHttpManager.setDefaultParameter(httpRequestParams);
+        httpRequestParams.addBodyParam("answers", answers);
+        httpRequestParams.addBodyParam("isPlayBack", "" + isPlayBack);
+        httpRequestParams.addBodyParam("isForce", "" + isForce);
+        liveHttpManager.sendPost(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_EN, httpRequestParams, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                logger.d("getTestInfos:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
+                callBack.onDataSucess(responseEntity.getJsonObject());
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                logger.d("getTestInfos:onPmError:responseEntity=" + responseEntity.getErrorMsg());
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR, responseEntity.getErrorMsg());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                logger.d("getTestInfos:onPmFailure:responseEntity=" + msg, error);
                 callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
             }
         });
