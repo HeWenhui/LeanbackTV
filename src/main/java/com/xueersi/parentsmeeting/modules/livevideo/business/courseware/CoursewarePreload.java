@@ -283,7 +283,7 @@ public class CoursewarePreload {
         cdnLength.set(cdns.size());
         ipLength.set(newIPs.size());
 
-        resources.add("/courseware_pages/74989b568bfceaab053a8b6b297ac007/katex@0.10.1.zip");
+//        resources.add("/courseware_pages/74989b568bfceaab053a8b6b297ac007/katex@0.10.1.zip");
 
         downloadResources(resources, cdns, newIPs);
         exeDownLoadCourseware(liveCoursewares, cdns, newIPs);

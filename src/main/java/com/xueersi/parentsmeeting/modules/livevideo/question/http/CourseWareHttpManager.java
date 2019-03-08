@@ -126,7 +126,7 @@ public class CourseWareHttpManager {
     /**
      * Created by ZhangYuansun on 2019/3/7
      *
-     * 学生作答情况列表
+     * 请求学生作答情况列表
      */
     public void getStuTestResult(String liveId, String classId, String teamId, String stuId, String srcTypes, String testIds, String classTestId, String packageId,
                                  String packageAttr, final AbstractBusinessDataCallBack callBack) {
