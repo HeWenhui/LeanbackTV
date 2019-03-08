@@ -72,6 +72,10 @@ public class LiveHttpManager extends BaseHttpBusiness {
         }
     }
 
+    public LiveVideoSAConfig getLiveVideoSAConfig() {
+        return liveVideoSAConfig;
+    }
+
     /**
      * 播放器数据初始化
      *

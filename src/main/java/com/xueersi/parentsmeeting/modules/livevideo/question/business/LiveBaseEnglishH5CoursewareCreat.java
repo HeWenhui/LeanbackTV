@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -22,6 +23,10 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
     private LiveGetInfo liveGetInfo;
 
     LivePagerBack livePagerBack;
+
+    public LiveBaseEnglishH5CoursewareCreat() {
+
+    }
 
     public void setmAnswerRankBll(AnswerRankIRCBll mAnswerRankBll) {
         this.mAnswerRankIRCBll = mAnswerRankBll;
@@ -52,7 +57,7 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
         EnglishH5Entity englishH5Entity = videoQuestionH5Entity.englishH5Entity;
         //应该是没有为null的时候
         if (liveGetInfo != null) {
-            if (isArts == 0) {
+            if (isArts == LiveVideoSAConfig.ART_SEC) {
                 String educationstage = liveGetInfo.getEducationStage();
                 videoQuestionH5Entity.setEducationstage(liveGetInfo.getEducationStage());
                 if (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage)) {
@@ -80,6 +85,21 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
 //                    } else {
 //                        englishH5Entity.setDynamicurl(liveGetInfo.getGetCourseWareHtmlNew() + ScienceStaticConfig.THIS_VERSION_HTML + "/index.html");
 //                    }
+                    if (englishH5Entity.getNewEnglishH5()) {
+                        CoursewareNativePager h5CoursewarePager = new CoursewareNativePager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
+                                videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, mAnswerRankBll == null ? "0"
+                                : mAnswerRankBll.getIsShow(), isArts, allowTeamPk);
+                        h5CoursewarePager.setLivePagerBack(livePagerBack);
+                        return h5CoursewarePager;
+                    }
+                }
+                //语文
+            } else if (isArts == LiveVideoSAConfig.ART_CH) {
+                String educationstage = liveGetInfo.getEducationStage();
+                videoQuestionH5Entity.setEducationstage(liveGetInfo.getEducationStage());
+                //语文初中
+                if (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage)) {
+                    englishH5Entity.setDynamicurl(liveGetInfo.getGetCourseWareHtmlZhongXueUrl());
                     if (englishH5Entity.getNewEnglishH5()) {
                         CoursewareNativePager h5CoursewarePager = new CoursewareNativePager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
                                 videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, mAnswerRankBll == null ? "0"

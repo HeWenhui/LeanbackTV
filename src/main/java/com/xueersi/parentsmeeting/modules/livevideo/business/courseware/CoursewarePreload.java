@@ -9,7 +9,6 @@ import com.xueersi.common.network.download.DownloadListener;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.BuildConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.CoursewareInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
@@ -153,6 +152,7 @@ public class CoursewarePreload {
 
 
     public class CoursewareHttpCallBack extends HttpCallBack {
+
         @Override
         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
             CoursewareInfoEntity coursewareInfoEntity = liveHttpResponseParser.parseCoursewareInfo(responseEntity);
@@ -188,6 +188,7 @@ public class CoursewarePreload {
         logger.i("" + courseWareInfos.size() + " " + subjectNum.get());
         if (courseWareInfos.size() == subjectNum.get()) {
             logger.i("数据返回成功");
+//            storageLiveId();
             execDownLoad(
                     sortArrays(),
                     mergeList(courseWareInfos, 1),
@@ -259,9 +260,9 @@ public class CoursewarePreload {
             return;
         }
         List<String> newIPs = new LinkedList<>();
-        if (BuildConfig.DEBUG) {
-            newIPs.add("https://icourse.xesimg.com");
-        }
+//        if (BuildConfig.DEBUG) {
+//            newIPs.add("https://icourse.xesimg.com");
+//        }
         newIPs.addAll(cdns);
         newIPs.addAll(ips);
 
@@ -285,6 +286,7 @@ public class CoursewarePreload {
 
         for (CoursewareInfoEntity.LiveCourseware liveCourseware : liveCoursewares) {
             //课件列表
+            PreloadStaticStorage.preloadLiveId.add(liveCourseware.getLiveId());
             List<CoursewareInfoEntity.ItemCoursewareInfo> coursewareInfos = liveCourseware.getCoursewareInfos();
             File todayLiveCacheDir = new File(todayCacheDir, liveCourseware.getLiveId());
             boolean exists = todayLiveCacheDir.exists();
@@ -329,9 +331,7 @@ public class CoursewarePreload {
         //截取host
         int index = cdns.get(0).indexOf("/") + 2;
         String cdn = cdns.get(0).substring(index);
-//        for (int j = 0; j < coursewareInfos.size(); j++) {
         for (CoursewareInfoEntity.ItemCoursewareInfo coursewareInfo : coursewareInfos) {
-//            CoursewareInfoEntity.ItemCoursewareInfo coursewareInfo = coursewareInfos.get((courseWarePos++) % courseWareInfos.size());
             //下载课件资源
             final String resourceName = MD5.md5(coursewareInfo.getResourceUrl()) + ".zip";
             File resourceSave = new File(mMorecachein, resourceName);
@@ -369,11 +369,6 @@ public class CoursewarePreload {
             File templateSave = new File(mMorecachein, resourceName);
             if (!fileIsExists(templateSave.getAbsolutePath())) {
                 templateSave.mkdirs();
-//                try {
-//                    templateSave.createNewFile();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
                 DownLoadInfo templateDownLoadInfo = DownLoadInfo.createFileInfo(ip + coursewareInfo.getTemplateUrl(), mMorecachein.getAbsolutePath(), templateName + ".temp", "");
                 logger.d("template url path:  " + ip + coursewareInfo.getTemplateUrl() + "   file name:" + templateName + ".zip");
                 if (isIP) {
