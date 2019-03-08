@@ -185,11 +185,25 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     getInfos.put(stuId + "-" + vStuCourseID + "-" + vSectionID, mGetInfo);
 //                    mGetInfo.setPattern(1);
                     bundle.putString("mode", mGetInfo.getMode());
-                    for (String itemLiveId : PreloadStaticStorage.preloadLiveId) {
-                        if (itemLiveId.equals(mGetInfo.getId())) {
-                            bundle.putBoolean("preload", true);
-                            performDownLoadPreLoad(httpManager, mGetInfo);
-                            break;
+                    if (PreloadStaticStorage.preloadLiveId.size() != 0) {
+                        for (String itemLiveId : PreloadStaticStorage.preloadLiveId) {
+                            if (itemLiveId.equals(mGetInfo.getId())) {
+                                bundle.putBoolean("preload", true);
+                                performDownLoadPreLoad(httpManager, mGetInfo);
+                                break;
+                            }
+                        }
+                    } else {
+                        String liveIds = ShareDataManager.getInstance().getString(ShareBusinessConfig.SP_PRELOAD_COURSEWARE, "", ShareDataManager.SHAREDATA_USER);
+                        if (liveIds.contains(",")) {
+                            String[] preLoadLiveId = liveIds.split(",");
+                            for (String tempPreLoadLiveId : preLoadLiveId) {
+                                if (tempPreLoadLiveId.equals(mGetInfo.getId())) {
+                                    bundle.putBoolean("preload", true);
+                                    performDownLoadPreLoad(httpManager, mGetInfo);
+                                    break;
+                                }
+                            }
                         }
                     }
 

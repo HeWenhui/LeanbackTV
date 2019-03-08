@@ -13,7 +13,7 @@ android {
             jniLibs.srcDirs = ['libs']
         }
     }
-    compileSdkVersion 26
+    compileSdkVersion 27
     buildToolsVersion '27.0.3'
 }
 dependencies {
@@ -52,7 +52,6 @@ dependencies {
     //    implementation project(':business:endictation')
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.endictation)
     implementation rootProject.ext.thirdlibraries.ticker
-
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.agora)
-//    implementation project(':library:agora')
+    //    implementation project(':library:agora')
 }

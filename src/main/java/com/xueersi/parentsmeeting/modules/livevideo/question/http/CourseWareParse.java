@@ -35,23 +35,30 @@ public class CourseWareParse {
         return null;
     }
 
+    /**
+     * 小学理科互动题 - 解析学生作答情况列表
+     *
+     * @param responseEntity
+     * @return
+     */
     public PrimaryScienceAnswerResultEntity parseStuTestResult(ResponseEntity responseEntity) {
         try {
             PrimaryScienceAnswerResultEntity resultEntity = new PrimaryScienceAnswerResultEntity();
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
             resultEntity.setType(jsonObject.getInt("type"));
-            resultEntity.setType(jsonObject.getInt("gold"));
+            resultEntity.setGold(jsonObject.getInt("gold"));
 
             List<PrimaryScienceAnswerResultEntity.Answer> answerList = resultEntity.getAnswerList();
             JSONArray array = jsonObject.getJSONArray("answerLists");
             for (int i = 0; i < array.length(); i++) {
-                PrimaryScienceAnswerResultEntity.Answer answer = new PrimaryScienceAnswerResultEntity.Answer();
                 JSONObject answerObject = array.getJSONObject(i);
-                answer.setAmswerNumber(i + 1);
-
                 JSONArray myAnswerArray = answerObject.getJSONArray("stuAnswer");
                 JSONArray rightAnswerArray = answerObject.getJSONArray("rightAnswer");
                 for (int j = 0; j < myAnswerArray.length(); j++) {
+                    PrimaryScienceAnswerResultEntity.Answer answer = new PrimaryScienceAnswerResultEntity.Answer();
+                    if (j == 0) {
+                        answer.setAmswerNumber(i + 1);
+                    }
                     JSONObject myAnswerObject = myAnswerArray.getJSONObject(j);
                     answer.setMyAnswer(myAnswerObject.getString("answer"));
                     answer.setRight(myAnswerObject.getInt("right"));
