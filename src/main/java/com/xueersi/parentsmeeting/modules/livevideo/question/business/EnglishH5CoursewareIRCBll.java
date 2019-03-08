@@ -834,6 +834,19 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             return resUrl;
         }
 
+        /**
+         * 学生作答情况列表
+         */
+        @Override
+        public void getStuTestResult(VideoQuestionLiveEntity detailInfo, int isforce, String testInfos, AbstractBusinessDataCallBack callBack) {
+            EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
+            String classId = mGetInfo.getStudentLiveInfo().getClassId();
+            String teamId = mGetInfo.getStudentLiveInfo().getTeamId();
+            String[] res = getSrcType(englishH5Entity);
+            getCourseWareHttpManager().getStuTestResult(mGetInfo.getId(), classId, teamId, mGetInfo.getStuId(), res[0], res[1], englishH5Entity.getClassTestId(), englishH5Entity.getPackageAttr(),
+                    englishH5Entity.getReleasedPageInfos(), callBack);
+        }
+
         @Override
         public void submitCourseWareTests(VideoQuestionLiveEntity detailInfo, int isforce, String nonce, long entranceTime, String testInfos, AbstractBusinessDataCallBack callBack) {
             EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;

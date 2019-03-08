@@ -15,13 +15,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="67dp"
-            android:layout_marginLeft="40dp"
-            android:layout_marginRight="46dp"
+            android:layout_marginLeft="19dp"
+            android:layout_marginRight="10dp"
             android:layout_marginBottom="24dp"
             android:overScrollMode="never"
             app:VerticalThumbDrawable="@drawable/arts_pse_fastscorller_header_selector"
-            app:VerticalTrackDrawable="@drawable/arts_rcl_fastscroller_tracker"
-            />
+            app:VerticalTrackDrawable="@drawable/arts_rcl_fastscroller_tracker" />
+
     </RelativeLayout>
 
     <com.airbnb.lottie.LottieAnimationView
@@ -30,8 +30,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        app:lottie_fileName="primary_science_answer_result/interact-active-right.json"
-        app:lottie_imageAssetsFolder="primary_science_answer_result/animation/interact-active/right" />
+        app:lottie_fileName="primary_science_answer_result/game-right.json"
+        app:lottie_imageAssetsFolder="primary_science_answer_result/animation/game/right" />
 
     <com.airbnb.lottie.LottieAnimationView
         android:visibility="gone"
@@ -39,7 +39,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        app:lottie_fileName="primary_science_answer_result/game-right.json"
-        app:lottie_imageAssetsFolder="primary_science_answer_result/animation/game/right" />
+        app:lottie_fileName="primary_science_answer_result/interact-active-right.json"
+        app:lottie_imageAssetsFolder="primary_science_answer_result/animation/interact-active/right" />
 
 </RelativeLayout>
