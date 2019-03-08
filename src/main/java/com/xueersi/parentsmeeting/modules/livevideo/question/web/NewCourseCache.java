@@ -45,6 +45,9 @@ public class NewCourseCache {
     private File mPublicCacheout;
     private HashMap header;
     private WebInstertJs webInstertJs;
+    private String coursewarePages = "courseware_pages";
+    private String mathJax = "MathJax";
+    private String katex = "katex";
 
     public NewCourseCache(Context mContext, String liveId) {
         logToFile = new LogToFile(mContext, TAG);
@@ -124,30 +127,21 @@ public class NewCourseCache {
 
     public WebResourceResponse shouldInterceptRequest(WebView view, String s) {
         File file = null;
-        int index = s.indexOf("courseware_pages");
+        int index = s.indexOf(coursewarePages);
         if (index != -1) {
-            String url2 = s.substring(index + "courseware_pages".length());
-            int index2 = url2.indexOf("?");
-            if (index2 != -1) {
-                url2 = url2.substring(0, index2);
-            }
-            file = new File(mMorecacheout, url2);
+            file = getCourseWarePagesFileName(s, index);
             logger.d("shouldInterceptRequest:file=" + file + ",file=" + file.exists());
         } else {
-            index = s.indexOf("MathJax");
+            index = s.indexOf(mathJax);
             if (index != -1) {
-                String name;
-                int questionIndex = s.indexOf("?");
-                if (questionIndex != -1) {
-                    name = s.substring(index + 8, questionIndex);
-                } else {
-                    name = s.substring(index + 8);
-                }
-                File pubFile = new File(mPublicCacheout, name);
-                file = pubFile;
+                file = getMathJaxFileName(s, index);
             } else {
-                String filemd5 = MD5Utils.getMD5(s);
-                file = new File(mMorecacheout, filemd5);
+                index = s.indexOf(katex);
+                if (index != -1) {
+                    file = getkatexFileName(s, index);
+                } else {
+                    file = getPubFileName(s);
+                }
             }
             index = s.lastIndexOf("/");
             String name = s;
@@ -186,4 +180,53 @@ public class NewCourseCache {
         return null;
     }
 
+    private File getCourseWarePagesFileName(String s, int index) {
+        String url2 = s.substring(index + coursewarePages.length());
+        int index2 = url2.indexOf("?");
+        if (index2 != -1) {
+            url2 = url2.substring(0, index2);
+        }
+        File file = new File(mMorecacheout, url2);
+        return file;
+    }
+
+    private File getMathJaxFileName(String s, int index) {
+        String name;
+        int questionIndex = s.indexOf("?");
+        if (questionIndex != -1) {
+            name = s.substring(index + mathJax.length() + 1, questionIndex);
+        } else {
+            name = s.substring(index + mathJax.length() + 1);
+        }
+        File file = new File(mPublicCacheout, name);
+        return file;
+    }
+
+    private File getkatexFileName(String s, int index) {
+        String name;
+        int questionIndex = s.indexOf("?");
+        if (questionIndex != -1) {
+            name = s.substring(index + katex.length() + 1, questionIndex);
+        } else {
+            name = s.substring(index + katex.length() + 1);
+        }
+        name = name.replace("%40", "@");
+        File file = new File(mPublicCacheout, name);
+        return file;
+    }
+
+    private File getPubFileName(String s) {
+        String path = s;
+        int index = s.indexOf("://");
+        if (index != -1) {
+            path = s.substring(index + 3);
+            index = path.indexOf("/");
+            if (index != -1) {
+                path = path.substring(index + 1);
+            }
+        }
+        String filemd5 = MD5Utils.getMD5(path);
+        File file = new File(mPublicCacheout, filemd5);
+        return file;
+    }
 }

@@ -16,9 +16,16 @@ public class LiveQueConfig {
     /**
      * 1-在线教研填空，2-在线教研选择，8-在线教研语文主观题，4-在线教研语音测评，5-在线教研roleplay，6-在线教研语文跟读，7-本地上传普通，9-本地上传课前测，
      * 10-本地上传课中测，11-本地上传出门考，12-本地上传游戏，13-本地上传互动题，14-本地上传语音测评
+     * http://wiki.xesv5.com/pages/viewpage.action?pageId=12955807
      */
     public static final String EN_COURSE_TYPE_BLANK = "1";
     public static final String EN_COURSE_TYPE_CHOICE = "2";
     public static final String EN_COURSE_TYPE_OUT = "11";
+    /** 直播- 本地上传-语音答题填空 */
+    public static final String EN_COURSE_TYPE_VOICE_BLANK = "15";
+    /** 直播- 本地上传-语音答题选择 */
+    public static final String EN_COURSE_TYPE_VOICE_CHOICE = "16";
+    /** 直播- 本地上传-老课件(含loading页和结果页) */
+    public static final String EN_COURSE_TYPE_NEW_GAME = "17";
     public static final String EN_COURSE_TYPE_19 = "19";
 }

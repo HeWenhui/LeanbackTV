@@ -224,4 +224,35 @@ public class CourseWareHttpManager {
             }
         });
     }
+
+    public void submitH5(String testAnswer, int testNum, String testId, String type, String stu_id, int isPlayBack, int isSubmit, final AbstractBusinessDataCallBack callBack) {
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+        liveHttpManager.setDefaultParameter(httpRequestParams);
+        httpRequestParams.addBodyParam("testAnswer", testAnswer);
+        httpRequestParams.addBodyParam("testNum", "" + testNum);
+        httpRequestParams.addBodyParam("testId", "" + testId);
+        httpRequestParams.addBodyParam("type", "" + type);
+        httpRequestParams.addBodyParam("isPlayBack", "" + isPlayBack);
+        httpRequestParams.addBodyParam("isSubmit", "" + isSubmit);
+        httpRequestParams.addBodyParam("stu_id", "" + stu_id);
+        liveHttpManager.sendPost(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_VOICE_EN, httpRequestParams, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                logger.d("submitH5:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
+                callBack.onDataSucess(responseEntity.getJsonObject());
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                logger.d("submitH5:onPmError:responseEntity=" + responseEntity.getErrorMsg());
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR, responseEntity.getErrorMsg());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                logger.d("getTestInfos:onPmFailure:responseEntity=" + msg, error);
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
+            }
+        });
+    }
 }

@@ -34,6 +34,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
@@ -658,7 +659,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             }
             if (LiveVideoConfig.isNewArts) {
                 Log.d("Duncan", "onPutQuestionResultNewArts3");
-                if ("15".equals(videoQuestionLiveEntity.voiceType) || "16".equals(videoQuestionLiveEntity.voiceType)) {
+                if (LiveQueConfig.EN_COURSE_TYPE_VOICE_BLANK.equals(videoQuestionLiveEntity.voiceType) || LiveQueConfig.EN_COURSE_TYPE_VOICE_CHOICE.equals(videoQuestionLiveEntity.voiceType)) {
                     getHttpManager().liveSubmitNewArtsRealH5Answer(videoQuestionLiveEntity.voiceType,
                             videoQuestionLiveEntity.id, mLiveId, testAnswer, courseware_type, userMode, isSubmit, voiceTime,
                             isRight, new HttpCallBack() {
@@ -816,6 +817,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
      * 新课件
      */
     class EnglishH5NewCoursewareImpl extends EnglishH5CoursewareImpl implements EnglishH5CoursewareSecHttp {
+
         @Override
         public String getResultUrl(VideoQuestionLiveEntity detailInfo, int isforce, String nonce) {
             LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
@@ -823,9 +825,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             String classId = studentLiveInfo.getClassId();
             String teamId = studentLiveInfo.getTeamId();
             String educationStage = mGetInfo.getEducationStage();
-            String local = "file:///android_asset/newcourse_result/sec/middleSchoolCourseware/index.html";
-//            StringBuilder stringBuilder = new StringBuilder(local);
-            StringBuilder stringBuilder = new StringBuilder(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_RESULT);
+            StringBuilder stringBuilder = new StringBuilder(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_RESULT_FILE);
+//            StringBuilder stringBuilder = new StringBuilder(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_RESULT);
             stringBuilder.append("?stuId=").append(mGetInfo.getStuId());
             stringBuilder.append("&liveId=").append(mGetInfo.getId());
             stringBuilder.append("&stuCouId=").append(mLiveBll.getStuCouId());
@@ -861,7 +862,11 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         @Override
         public void submitCourseWareTests(VideoQuestionLiveEntity detailInfo, int isforce, String nonce, long entranceTime, String testInfos, AbstractBusinessDataCallBack callBack) {
             if (isArts == LiveVideoSAConfig.ART_EN) {
-                getCourseWareHttpManager().submitMultiTest("" + testInfos, 1, isforce, callBack);
+                if (LiveQueConfig.EN_COURSE_TYPE_VOICE_BLANK.equals(detailInfo.voiceType) || LiveQueConfig.EN_COURSE_TYPE_VOICE_CHOICE.equals(detailInfo.voiceType)) {
+                    getCourseWareHttpManager().submitH5("" + testInfos, detailInfo.num, detailInfo.id, detailInfo.voiceType, mGetInfo.getStuId(), 1, isforce, callBack);
+                } else {
+                    getCourseWareHttpManager().submitMultiTest("" + testInfos, 1, isforce, callBack);
+                }
             } else {
                 EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
                 String classId = mGetInfo.getStudentLiveInfo().getClassId();
