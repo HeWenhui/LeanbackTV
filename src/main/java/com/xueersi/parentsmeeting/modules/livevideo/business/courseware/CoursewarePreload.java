@@ -388,14 +388,6 @@ public class CoursewarePreload {
         }
     }
 
-
-//    private List<DownLoadInfo> courseWareDownLoadInfos;
-//
-//    private List<ZipDownloadListener> courseWareDownListeners;
-//
-//    private List<DownLoadInfo> resourcesDownLoadInfos;
-
-
     /**
      * 下载公共资源(字体)
      *
@@ -587,7 +579,7 @@ public class CoursewarePreload {
 
         @Override
         public void onFinish() {
-            logger.i("zip download finish");
+//            logger.i("zip download finish");
         }
     }
 
@@ -669,7 +661,7 @@ public class CoursewarePreload {
 
         @Override
         public void onFinish() {
-            logger.i("no zip download finish");
+//            logger.i("no zip download finish");
         }
     }
 
@@ -678,7 +670,7 @@ public class CoursewarePreload {
 //        logger.i(strFile);
         try {
             File f = new File(strFile);
-            logger.i("" + f.getName() + " " + f.isFile() + " " + f.exists());
+            logger.i(strFile + "" + f.getName() + " " + f.isFile() + " " + f.exists());
             if (!f.exists()) {
                 return false;
             }
