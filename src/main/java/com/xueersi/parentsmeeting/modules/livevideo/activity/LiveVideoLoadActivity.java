@@ -174,7 +174,6 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         finish();
                         return;
                     }
-                    performDownLoadPreLoad(httpManager, mGetInfo);
                     // 语文半身直播 暂不支持观看
                     if (isChineseHalfBodyLive(mGetInfo)) {
                         XESToastUtils.showToast(LiveVideoLoadActivity.this, "语文半身直播暂不支持,请升级版本");
@@ -189,6 +188,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     for (String itemLiveId : PreloadStaticStorage.preloadLiveId) {
                         if (itemLiveId.equals(mGetInfo.getId())) {
                             bundle.putBoolean("preload", true);
+                            performDownLoadPreLoad(httpManager, mGetInfo);
                             break;
                         }
                     }
