@@ -1297,8 +1297,10 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      * 展示明星榜
      */
     private void getStusStars() {
-        mHttpManager.getTeamPkStarStudents(mLiveBll.getLiveId(), roomInitInfo.getStudentLiveInfo().getClassId(), new
-                HttpCallBack() {
+        mHttpManager.getTeamPkStarStudents(mLiveBll.getLiveId(),
+                roomInitInfo.getStudentLiveInfo().getClassId(),
+                roomInitInfo.getStudentLiveInfo().getCourseId(),
+                new HttpCallBack() {
 
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -1345,7 +1347,9 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      */
     private void getProgressStudent() {
         mHttpManager.getTeamPkProgressStudent(mLiveBll.getLiveId(),
-                roomInitInfo.getStudentLiveInfo().getClassId(), new HttpCallBack() {
+                roomInitInfo.getStudentLiveInfo().getClassId(),
+                roomInitInfo.getStudentLiveInfo().getCourseId(),
+                new HttpCallBack() {
 
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {

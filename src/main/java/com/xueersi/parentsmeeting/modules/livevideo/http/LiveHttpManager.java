@@ -1934,25 +1934,27 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param classId
      * @param requestCallBack
      */
-    public void getTeamPkStarStudents(String liveId,String classId, HttpCallBack requestCallBack){
+    public void getTeamPkStarStudents(String liveId,String classId,String courseId, HttpCallBack requestCallBack){
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("liveId", liveId);
+        params.addBodyParam("courseId",courseId);
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_TEMPK_GETSTARSTUDENTS, params, requestCallBack);
     }
 
 
     /**
-     * 小理战队PK 二期 获取明星榜
+     * 小理战队PK 二期 获取黑马榜
      * @param liveId
      * @param classId
      * @param requestCallBack
      */
-    public void getTeamPkProgressStudent(String liveId,String classId, HttpCallBack requestCallBack){
+    public void getTeamPkProgressStudent(String liveId,String classId,String courseId, HttpCallBack requestCallBack){
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("liveId", liveId);
+        params.addBodyParam("courseId",courseId);
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_TEMPK_GETPROGRESSSTU, params, requestCallBack);
     }
