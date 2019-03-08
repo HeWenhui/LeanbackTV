@@ -1240,9 +1240,12 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
 
     @Override
     public void onStop() {
+        if (!isShowingSpeechBullet) {
+            return;
+        }
         if (recoginzeStatus == RECOGNIZING) {
             startTextInput(tvSpeechbulTitle.getText().toString());
-        } else {
+        } else if (recoginzeStatus == START || recoginzeStatus == PLEASE_SAY_AGGIN) {
             startTextInput("");
         }
     }
