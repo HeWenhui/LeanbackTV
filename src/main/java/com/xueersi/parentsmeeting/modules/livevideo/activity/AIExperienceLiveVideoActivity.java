@@ -1056,21 +1056,6 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
             if(mVideoEntity.getSciAiEvent().getLeadingStage().getBeginTime() > Integer.parseInt(mVideoEntity.getVisitTimeKey()) && LiveVideoConfig.liveKey.get(mVideoEntity.getChapterId()) == 0L){
                 seekTo(mVideoEntity.getSciAiEvent().getLeadingStage().getBeginTime() * 1000 + keyTime);  // AI体验课的这个方法需要重写
             }else{
-//                if(LiveVideoConfig.liveKey.get(mVideoEntity.getChapterId()) != 0L){
-////                    long keyPoint = computeKeytime(LiveVideoConfig.liveKey.get(mVideoEntity.getChapterId()) + (System.currentTimeMillis() - LiveVideoConfig.curentTime.get(mVideoEntity.getChapterId())) + (System.currentTimeMillis() -
-////                            startTime));
-//                    long keyPoint = computeNewKeytime(LiveVideoConfig.liveKey.get(mVideoEntity.getChapterId()) + (System.currentTimeMillis() - LiveVideoConfig.curentTime.get(mVideoEntity.getChapterId())) + (System.currentTimeMillis() -
-//                            startTime));
-//                    seekTo(keyPoint);
-//                    Log.e("Duncan", "liveKey:" + LiveVideoConfig.liveKey.get(mVideoEntity.getChapterId()));
-//                    Log.e("Duncan", "keyPoint:" + keyPoint);
-//                }else{
-////                    long keyPoint = computeKeytime(keyTime);
-//                    long keyPoint = computeNewKeytime(keyTime);
-//                    seekTo(keyPoint);  // AI体验课的这个方法需要重写
-//                    Log.e("Duncan", "NoliveKey:" + keyPoint);
-//                    Log.e("Duncan", "termId:" + mVideoEntity.getChapterId());
-//                }
                 long keyPoint = computeNewKeytime(keyTime);
                 seekTo(keyPoint);  // AI体验课的这个方法需要重写
             }
@@ -1184,16 +1169,12 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
 
                     }else{
                         if((playPosition  - mVideoEntity.getSciAiEvent().getLeadingStage().getValidTime()) < mVideoEntity.getSciAiEvent().getExercises().get(0).getKnowledgePoints().getValidTime()){
-                            Log.e("Duncan", "one:" + i);
                             return (mVideoEntity.getSciAiEvent().getExercises().get(0).getKnowledgePoints().getBeginTime() + (playPosition  - mVideoEntity.getSciAiEvent().getLeadingStage().getValidTime())) * 1000L;
                         }else if((playPosition  - mVideoEntity.getSciAiEvent().getLeadingStage().getValidTime() - mVideoEntity.getSciAiEvent().getExercises().get(0).getKnowledgePoints().getValidTime()) < mVideoEntity.getSciAiEvent().getExercises().get(0).getExample().get(1).getIntroduce().getValidTime()){
-                            Log.e("Duncan", "two:" + i);
                             return (mVideoEntity.getSciAiEvent().getExercises().get(0).getExample().get(1).getIntroduce().getBeginTime() + (playPosition  - mVideoEntity.getSciAiEvent().getLeadingStage().getValidTime() - mVideoEntity.getSciAiEvent().getExercises().get(0).getKnowledgePoints().getValidTime())) * 1000L;
                         }else if((playPosition  - mVideoEntity.getSciAiEvent().getLeadingStage().getValidTime() - mVideoEntity.getSciAiEvent().getExercises().get(0).getKnowledgePoints().getValidTime() - mVideoEntity.getSciAiEvent().getExercises().get(0).getExample().get(1).getIntroduce().getValidTime()) < mVideoEntity.getSciAiEvent().getExercises().get(0).getExample().get(1).getPublish().getValidTime()){
-                            Log.e("Duncan", "three:" + i);
                             return (mVideoEntity.getSciAiEvent().getExercises().get(0).getExample().get(1).getPublish().getBeginTime() + (playPosition  - mVideoEntity.getSciAiEvent().getLeadingStage().getValidTime() - mVideoEntity.getSciAiEvent().getExercises().get(0).getKnowledgePoints().getValidTime() - mVideoEntity.getSciAiEvent().getExercises().get(0).getExample().get(1).getIntroduce().getValidTime())) * 1000L;
                         }else if((playPosition  - mVideoEntity.getSciAiEvent().getLeadingStage().getValidTime() - mVideoEntity.getSciAiEvent().getExercises().get(0).getKnowledgePoints().getValidTime() - mVideoEntity.getSciAiEvent().getExercises().get(0).getExample().get(1).getIntroduce().getValidTime() - mVideoEntity.getSciAiEvent().getExercises().get(0).getExample().get(1).getPublish().getValidTime()) < mVideoEntity.getSciAiEvent().getExercises().get(0).getExample().get(1).getInterpret().getValidTime()){
-                            Log.e("Duncan", "four:" + i);
                             return (mVideoEntity.getSciAiEvent().getExercises().get(0).getExample().get(1).getInterpret().getBeginTime() + (playPosition  - mVideoEntity.getSciAiEvent().getLeadingStage().getValidTime() - mVideoEntity.getSciAiEvent().getExercises().get(0).getKnowledgePoints().getValidTime() - mVideoEntity.getSciAiEvent().getExercises().get(0).getExample().get(1).getIntroduce().getValidTime() - mVideoEntity.getSciAiEvent().getExercises().get(0).getExample().get(1).getPublish().getValidTime())) * 1000L;
                         }
 
