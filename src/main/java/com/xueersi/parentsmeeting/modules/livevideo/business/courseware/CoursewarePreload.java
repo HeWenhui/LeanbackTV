@@ -129,29 +129,36 @@ public class CoursewarePreload {
             if (0 == mSubject) {//理科
                 logger.i("下载理科");
                 subjectNum.getAndIncrement();
-                mHttpManager.getScienceCourewareInfo(liveId, new CoursewareHttpCallBack());
+                mHttpManager.getScienceCourewareInfo(liveId, new CoursewareHttpCallBack(false, "science"));
             } else if (1 == mSubject) {//英语
                 logger.i("下载英语");
                 subjectNum.getAndIncrement();
-                mHttpManager.getEnglishCourewareInfo(liveId, new CoursewareHttpCallBack());
+                mHttpManager.getEnglishCourewareInfo(liveId, new CoursewareHttpCallBack(false, "english"));
             } else if (2 == mSubject) {//语文
                 logger.i("下载语文");
                 subjectNum.getAndIncrement();
-                mHttpManager.getArtsCourewareInfo(liveId, new CoursewareHttpCallBack());
+                mHttpManager.getArtsCourewareInfo(liveId, new CoursewareHttpCallBack(false, "chs"));
             }
         } else {//下载当天所有课件资源
             logger.i("下载当天所有课件资源");
             subjectNum.getAndIncrement();
-            mHttpManager.getScienceCourewareInfo("", new CoursewareHttpCallBack());
+            mHttpManager.getScienceCourewareInfo("", new CoursewareHttpCallBack(false, "science"));
             subjectNum.getAndIncrement();
-            mHttpManager.getEnglishCourewareInfo("", new CoursewareHttpCallBack());
+            mHttpManager.getEnglishCourewareInfo("", new CoursewareHttpCallBack(false, "english"));
             subjectNum.getAndIncrement();
-            mHttpManager.getArtsCourewareInfo("", new CoursewareHttpCallBack());
+            mHttpManager.getArtsCourewareInfo("", new CoursewareHttpCallBack(false, "chs"));
         }
     }
 
 
     public class CoursewareHttpCallBack extends HttpCallBack {
+
+        private String arts;
+
+        public CoursewareHttpCallBack(boolean isShow, String arts) {
+            super(isShow);
+            this.arts = arts;
+        }
 
         @Override
         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -166,7 +173,7 @@ public class CoursewarePreload {
         public void onPmFailure(Throwable error, String msg) {
             super.onPmFailure(error, msg);
             subjectNum.getAndDecrement();
-            logger.i("paFailure");
+            logger.i("paFailure" + arts);
             performDownLoad();
         }
 
@@ -176,10 +183,10 @@ public class CoursewarePreload {
             subjectNum.getAndDecrement();
             performDownLoad();
             if (responseEntity != null) {
-                logger.i("onPmError:" + responseEntity.getJsonObject() + "  " + responseEntity.getErrorMsg());
-                if (responseEntity.getJsonObject() != null) {
-                    logger.i("onPmError:" + responseEntity.getJsonObject().toString());
-                }
+                logger.i("onPmError:" + arts + " " + responseEntity.getJsonObject() + "  " + responseEntity.getErrorMsg());
+//                if (responseEntity.getJsonObject() != null) {
+//                    logger.i("onPmError:" + responseEntity.getJsonObject().toString());
+//                }
             }
         }
     }
@@ -342,7 +349,7 @@ public class CoursewarePreload {
             }
             if (!fileIsExists(resourceSave.getAbsolutePath()) || (fileIsExists(resourceSave.getAbsolutePath()) && !equals)) {
                 DownLoadInfo resourceDownLoadInfo = DownLoadInfo.createFileInfo(ip + coursewareInfo.getResourceUrl(), mMorecachein.getAbsolutePath(), resourceName + ".temp", coursewareInfo.getMd5());
-                resourceSave.mkdirs();
+//                resourceSave.mkdirs();
 //                try {
 //                    resourceSave.createNewFile();
 //                } catch (IOException e) {
@@ -368,7 +375,7 @@ public class CoursewarePreload {
             final String templateName = MD5.md5(coursewareInfo.getTemplateUrl()) + ".zip";
             File templateSave = new File(mMorecachein, resourceName);
             if (!fileIsExists(templateSave.getAbsolutePath())) {
-                templateSave.mkdirs();
+//                templateSave.mkdirs();
                 DownLoadInfo templateDownLoadInfo = DownLoadInfo.createFileInfo(ip + coursewareInfo.getTemplateUrl(), mMorecachein.getAbsolutePath(), templateName + ".temp", "");
                 logger.d("template url path:  " + ip + coursewareInfo.getTemplateUrl() + "   file name:" + templateName + ".zip");
                 if (isIP) {
@@ -387,14 +394,6 @@ public class CoursewarePreload {
             }
         }
     }
-
-
-//    private List<DownLoadInfo> courseWareDownLoadInfos;
-//
-//    private List<ZipDownloadListener> courseWareDownListeners;
-//
-//    private List<DownLoadInfo> resourcesDownLoadInfos;
-
 
     /**
      * 下载公共资源(字体)
@@ -438,7 +437,7 @@ public class CoursewarePreload {
                 }
                 final File save = new File(mPublicCacheout, fileName);
                 if (!fileIsExists(save.getAbsolutePath())) {
-                    save.mkdirs();
+//                    save.mkdirs();
 //                    try {
 //                        save.createNewFile();
 //                    } catch (IOException e) {
@@ -466,7 +465,7 @@ public class CoursewarePreload {
                 String fileName = MD5Utils.getMD5(url);
                 final File save = new File(mPublicCacheout, fileName);
                 if (!fileIsExists(save.getPath())) {
-                    save.mkdirs();
+//                    save.mkdirs();
 //                    try {
 //                        save.createNewFile();
 //                    } catch (IOException e) {
@@ -587,7 +586,7 @@ public class CoursewarePreload {
 
         @Override
         public void onFinish() {
-            logger.i("zip download finish");
+//            logger.i("zip download finish");
         }
     }
 
@@ -669,7 +668,7 @@ public class CoursewarePreload {
 
         @Override
         public void onFinish() {
-            logger.i("no zip download finish");
+//            logger.i("no zip download finish");
         }
     }
 
@@ -678,7 +677,7 @@ public class CoursewarePreload {
 //        logger.i(strFile);
         try {
             File f = new File(strFile);
-            logger.i("" + f.getName() + " " + f.isFile() + " " + f.exists());
+            logger.i(strFile + "" + f.getName() + " " + f.isFile() + " " + f.exists());
             if (!f.exists()) {
                 return false;
             }

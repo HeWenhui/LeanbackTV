@@ -67,6 +67,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
     private EnglishH5Cache englishH5Cache;
     private String Tag = "EnglishH5CoursewareIRCBll";
     private CourseWareHttpManager courseWareHttpManager;
+    private int isArts;
 
     public EnglishH5CoursewareIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -107,7 +108,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         }
         LiveBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new LiveBaseEnglishH5CoursewareCreat();
         liveBaseEnglishH5CoursewareCreat.setLiveGetInfo(getInfo);
-        int isArts = (int) mLiveBll.getBusinessShareParam("isArts");
+        isArts = (int) mLiveBll.getBusinessShareParam("isArts");
         liveBaseEnglishH5CoursewareCreat.setArts(isArts);
         if (isArts == LiveVideoSAConfig.ART_SEC) {
             // TODO: 2018/12/5
@@ -119,7 +120,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             if (isArts == LiveVideoSAConfig.ART_CH) {
                 englishH5CoursewareBll.setLiveBll(new EnglishH5NewCoursewareImpl());
             } else {
-                englishH5CoursewareBll.setLiveBll(new EnglishH5CoursewareImpl());
+                englishH5CoursewareBll.setLiveBll(new EnglishH5NewCoursewareImpl());
             }
         }
         liveBaseEnglishH5CoursewareCreat.setAllowTeamPk(getInfo != null && "1".equals(getInfo.getIsAllowTeamPk()));
@@ -822,6 +823,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             String classId = studentLiveInfo.getClassId();
             String teamId = studentLiveInfo.getTeamId();
             String educationStage = mGetInfo.getEducationStage();
+            String local = "file:///android_asset/newcourse_result/sec/middleSchoolCourseware/index.html";
+//            StringBuilder stringBuilder = new StringBuilder(local);
             StringBuilder stringBuilder = new StringBuilder(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_RESULT);
             stringBuilder.append("?stuId=").append(mGetInfo.getStuId());
             stringBuilder.append("&liveId=").append(mGetInfo.getId());
@@ -857,20 +860,28 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
 
         @Override
         public void submitCourseWareTests(VideoQuestionLiveEntity detailInfo, int isforce, String nonce, long entranceTime, String testInfos, AbstractBusinessDataCallBack callBack) {
-            EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
-            String classId = mGetInfo.getStudentLiveInfo().getClassId();
-            String[] res = getSrcType(englishH5Entity);
-            getCourseWareHttpManager().submitCourseWareTests(mGetInfo.getStuId(), englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
-                    englishH5Entity.getReleasedPageInfos(), 0, classId, englishH5Entity.getClassTestId(), res[0], res[1], mGetInfo.getEducationStage(), nonce, testInfos, isforce, entranceTime, callBack);
+            if (isArts == LiveVideoSAConfig.ART_EN) {
+                getCourseWareHttpManager().submitMultiTest("" + testInfos, 1, isforce, callBack);
+            } else {
+                EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
+                String classId = mGetInfo.getStudentLiveInfo().getClassId();
+                String[] res = getSrcType(englishH5Entity);
+                getCourseWareHttpManager().submitCourseWareTests(mGetInfo.getStuId(), englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
+                        englishH5Entity.getReleasedPageInfos(), 0, classId, englishH5Entity.getClassTestId(), res[0], res[1], mGetInfo.getEducationStage(), nonce, testInfos, isforce, entranceTime, callBack);
+            }
         }
 
         @Override
         public void getCourseWareTests(VideoQuestionLiveEntity detailInfo, AbstractBusinessDataCallBack callBack) {
-            EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
-            String classId = mGetInfo.getStudentLiveInfo().getClassId();
-            String[] res = getSrcType(englishH5Entity);
-            getCourseWareHttpManager().getCourseWareTests(mGetInfo.getStuId(), englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
-                    englishH5Entity.getReleasedPageInfos(), 0, classId, englishH5Entity.getClassTestId(), res[0], res[1], mGetInfo.getEducationStage(), detailInfo.nonce, callBack);
+            if (isArts == LiveVideoSAConfig.ART_EN) {
+                getCourseWareHttpManager().getTestInfos(detailInfo.id, callBack);
+            } else {
+                EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
+                String classId = mGetInfo.getStudentLiveInfo().getClassId();
+                String[] res = getSrcType(englishH5Entity);
+                getCourseWareHttpManager().getCourseWareTests(mGetInfo.getStuId(), englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
+                        englishH5Entity.getReleasedPageInfos(), 0, classId, englishH5Entity.getClassTestId(), res[0], res[1], mGetInfo.getEducationStage(), detailInfo.nonce, callBack);
+            }
         }
 
         private String[] getSrcType(EnglishH5Entity englishH5Entity) {
