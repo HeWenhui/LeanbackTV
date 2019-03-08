@@ -202,7 +202,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             onUserBackPressed();
             return false;
         }
-        mLogtf.setLiveOnLineLogs(mLiveBll);
+        mLogtf.setLiveOnLineLogs(mLiveBll.getLiveLog());
         initView();
         return true;
     }
@@ -425,7 +425,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
             Toast.makeText(this, "直播类型不支持", Toast.LENGTH_SHORT).show();
             return false;
         }
-        LogToFile.auditClassLiveBll = mLiveBll;
+        LogToFile.auditClassLiveBll = mLiveBll.getLiveLog();
         mPlayStatistics = mLiveBll.getVideoListener();
         auditClassBll = new AuditClassBll(this);
         mLiveBll.setVideoAction(this);

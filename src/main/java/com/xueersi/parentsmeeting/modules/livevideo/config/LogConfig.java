@@ -12,4 +12,6 @@ public class LogConfig {
     public static String LIVE_ZIP_ERROR = "live_zip_error";
     /** 直播进程token为空 */
     public static String LIVE_TOKEN_NULL = "live_token_null";
+    /** 直播心跳日志 */
+    public static String LIVE_HEART_BEAT = "live_heartbeat";
 }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:drawable="@drawable/pc_livevideo_enteampk_benchangchengjiu_shouqi_bnt_nor" android:state_checked="true"/>
+    <item android:drawable="@drawable/pc_livevideo_enteampk_benchangchengjiu_xiala_bnt_nor" android:state_checked="false"/>
+
+</selector>

@@ -38,10 +38,15 @@ public class EnglishH5HalfBodyExperienceBll extends LiveBackBaseBll {
      **/
     private String mTermid;
     private VideoLivePlayBackEntity mRoomInitData;
+    /**
+     * 半身直播体验课 H5 域名
+     */
+    private String mHalfBodyUrl;
 
-    public EnglishH5HalfBodyExperienceBll(Activity activity, LiveBackBll liveBackBll, String termId) {
+    public EnglishH5HalfBodyExperienceBll(Activity activity, LiveBackBll liveBackBll, String termId,String halfbodyUrl) {
         super(activity, liveBackBll);
         mTermid = termId;
+        mHalfBodyUrl = halfbodyUrl;
     }
 
     @Override
@@ -176,7 +181,8 @@ public class EnglishH5HalfBodyExperienceBll extends LiveBackBaseBll {
                 e.printStackTrace();
             }
         }
-        stringBuilder.append(LiveVideoConfig.URL_HALFBODY_EXPERIENCE_LIVE_H5)
+        String url = TextUtils.isEmpty(mHalfBodyUrl)?LiveVideoConfig.URL_HALFBODY_EXPERIENCE_LIVE_H5:mHalfBodyUrl;
+        stringBuilder.append(url)
                 .append("?stuId=").append(stuId)
                 .append("&liveId=").append(mVideoEntity.getLiveId())
                 .append("&packageSource=").append(packageSource)
@@ -189,7 +195,7 @@ public class EnglishH5HalfBodyExperienceBll extends LiveBackBaseBll {
     class EnglishH5CoursewareImpl implements EnglishH5CoursewareHttp {
 
         @Override
-        public void getStuGoldCount() {
+        public void getStuGoldCount(String method) {
             //回放没有
         }
 
