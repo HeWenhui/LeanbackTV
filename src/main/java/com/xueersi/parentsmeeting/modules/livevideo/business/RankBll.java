@@ -328,6 +328,30 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
         this.mGetInfo = getInfo;
         if (mGetInfo != null) {
             isSmallEnglish = mGetInfo.getSmallEnglish();
+            if (mGetInfo.getIsOpenNewCourseWare() == 1) {
+                setEvenDriveLayout();
+            }
+        }
+    }
+
+    /**
+     * 设置连对激励系统布局
+     */
+    private void setEvenDriveLayout() {
+        if (relativeLayout == null) {
+            return;
+        }
+        LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) relativeLayout.getLayoutParams();
+        int wradio = liveVideoPoint.x4 - liveVideoPoint.x3;
+        int rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
+        if (wradio != params.width || rightMargin != params.rightMargin) {
+            //logger.e( "setVideoWidthAndHeight:screenWidth=" + screenWidth + ",width=" + width + "," + height
+            // + ",wradio=" + wradio + "," + params.width);
+            params.rightMargin = rightMargin;
+            params.width = wradio;
+//                relativeLayout.setLayoutParams(params);
+            LayoutParamsUtil.setViewLayoutParams(relativeLayout, params);
         }
     }
 

@@ -18,7 +18,6 @@ import org.json.JSONObject;
  */
 public class ItemMiddleScienceEvenPager extends ItemMiddleSciencePager<EvenDriveEntity.OtherEntity> {
 
-
     private int colorWhite = R.color.white;
 
     public ItemMiddleScienceEvenPager(Context context) {
