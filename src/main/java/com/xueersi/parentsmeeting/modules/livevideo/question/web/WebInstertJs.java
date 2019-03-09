@@ -22,6 +22,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import ren.yale.android.cachewebviewlib.utils.FileUtil;
 
@@ -41,8 +44,10 @@ public class WebInstertJs {
         logToFile = new LogToFile(context, TAG);
         this.context = context;
         logger = LiveLoggerFactory.getLogger(TAG);
-        cacheDir = LiveCacheFile.geCacheFile(context, "webviewCache");
-        FileUtil.deleteDirs(cacheDir.getPath(), false);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+        Date date = new Date();
+        final String today = dateFormat.format(date);
+        cacheDir = LiveCacheFile.geCacheFile(context, "webviewCache/" + today);
         if (!cacheDir.exists()) {
             cacheDir.mkdirs();
         }
