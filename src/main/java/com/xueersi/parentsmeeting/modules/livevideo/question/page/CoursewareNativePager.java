@@ -119,7 +119,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         this.isNewArtsCourseware = englishH5Entity.isArtsNewH5Courseware();
         LiveVideoConfig.englishH5Entity = englishH5Entity;
         this.detailInfo = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
-        if (isArts == 0) {
+        if (isArts != LiveVideoSAConfig.ART_EN) {
             this.educationstage = detailInfo.getEducationstage();
         }
 //        initWebView();
@@ -528,7 +528,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         }
         isFinish = true;
         if (loadResult) {
-            if (isArts == LiveVideoSAConfig.ART_SEC && (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage))) {
+            if (isArts != LiveVideoSAConfig.ART_EN && (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage))) {
                 wvSubjectWeb.loadUrl(jsClientSubmit);
             }
         } else {
@@ -552,7 +552,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
 
     private void submit(final int isforce, String nonce) {
         if (loadResult) {
-            if (isArts == LiveVideoSAConfig.ART_SEC && (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage))) {
+            if (isArts != LiveVideoSAConfig.ART_EN && (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage))) {
                 wvSubjectWeb.loadUrl(jsClientSubmit);
             }
         } else {

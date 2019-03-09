@@ -39,5 +39,6 @@ window.addEventListener('message', function (e) {
 
 function sendToCourseware(message, origin) {
     window.postMessage(message, origin)
+     window.xesApp && xesApp.onReceive(JSON.stringify(message));
 }
 
