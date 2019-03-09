@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.config;
 
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoChConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 
 /**
@@ -30,6 +31,9 @@ public class LiveQueHttpConfig {
     /** 课件结果页-理科线上 */
     @Deprecated
     public static String LIVE_SUBMIT_COURSEWARE_RESULT = LiveHttpConfig.LIVE_HOST + "/scistatic/middleSchoolCoursewareResultPage/app/dev/index.html";
-        public static String LIVE_GET_STU_TESTS_RESULT = LiveHttpConfig.LIVE_HOST + "/science/LiveExam/getStuTestResult";
+    /** 课件结果页-小学理科 */
+    public static String LIVE_GET_STU_TESTS_RESULT = LiveHttpConfig.LIVE_HOST + "/science/LiveExam/getStuTestResult";
+    /** 课件结果页-小学文科 */
+    public static String LIVE_GET_STU_TESTS_RESULT_CN = LiveVideoChConfig.CH_HTTP_HOST + "/LiveExam/getStuTestResult";
 //    public static String LIVE_GET_STU_TESTS_RESULT = "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example" + "/getStuTestResult";
 }

@@ -63,7 +63,10 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private String eventId = LiveVideoConfig.LIVE_ENGLISH_COURSEWARE;
     /** 理科初高中新课件平台 强制提交js */
     private String jsClientSubmit = "javascript:__CLIENT_SUBMIT__()";
+    /** 理科初高中新课件，是不是已经收卷 */
     private boolean isFinish = false;
+    /** 理科初高中新课件，是不是已经提交 */
+    private boolean isSumit = false;
     private String liveId;
     private EnglishH5Entity englishH5Entity;
     private boolean isPlayBack;
@@ -553,17 +556,19 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             getAnswerType = LiveQueConfig.GET_ANSWERTYPE_FORCE_SUBMIT;
             if (courseTipDialog != null) {
                 courseTipDialog.cancelDialog();
+                courseTipDialog = null;
             }
-            courseTipDialog = null;
-            JSONObject jsonData = new JSONObject();
-            try {
-                jsonData.put("type", CourseMessage.SEND_getAnswer);
-                JSONObject resultData = new JSONObject();
-                jsonData.put("data", resultData);
-                StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
-            } catch (JSONException e) {
-                CrashReport.postCatchedException(e);
-                mLogtf.e("submitData", e);
+            if (!isSumit) {
+                JSONObject jsonData = new JSONObject();
+                try {
+                    jsonData.put("type", CourseMessage.SEND_getAnswer);
+                    JSONObject resultData = new JSONObject();
+                    jsonData.put("data", resultData);
+                    StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+                } catch (JSONException e) {
+                    CrashReport.postCatchedException(e);
+                    mLogtf.e("submitData", e);
+                }
             }
         }
     }
@@ -574,6 +579,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 wvSubjectWeb.loadUrl(jsClientSubmit);
             }
         } else {
+            isSumit = true;
             if (isArts == LiveVideoSAConfig.ART_EN) {
                 submitEn(isforce, nonce);
             } else {
@@ -722,6 +728,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             @Override
             public void onDataFail(int errStatus, String failMsg) {
                 super.onDataFail(errStatus, failMsg);
+                isSumit = false;
                 if (errStatus == LiveHttpConfig.HTTP_ERROR_ERROR) {
                     JSONObject jsonObject1 = new JSONObject();
                     try {
@@ -796,13 +803,13 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             @Override
             public void onDataSucess(Object... objData) {
                 JSONObject jsonObject = (JSONObject) objData[0];
-                int toAnswered = jsonObject.optInt("toAnswered");
                 showScienceAnswerResult(isforce);
             }
 
             @Override
             public void onDataFail(int errStatus, String failMsg) {
                 super.onDataFail(errStatus, failMsg);
+                isSumit = false;
 //                String url = englishH5CoursewareSecHttp.getResultUrl(detailInfo, isforce, "");
 //                wvSubjectWeb.loadUrl(url);
             }
