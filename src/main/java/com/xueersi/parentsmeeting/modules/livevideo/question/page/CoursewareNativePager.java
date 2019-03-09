@@ -1092,7 +1092,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     }
 
     /**
-     * 显示理科互动题目结果页
+     * 显示 理科互动题 结果页
      *
      * @param isforce
      */
@@ -1104,7 +1104,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 @Override
                 public void onDataSucess(Object... objData) {
                     PrimaryScienceAnswerResultEntity entity = (PrimaryScienceAnswerResultEntity) objData[0];
-                    PrimaryScienceAnserResultPager primaryScienceAnserResultPager = new PrimaryScienceAnserResultPager(mContext, entity);
+                    PrimaryScienceAnserResultPager primaryScienceAnserResultPager = new PrimaryScienceAnserResultPager(mContext, entity ,onNativeResultPagerClose);
                     ((RelativeLayout) mView).addView(primaryScienceAnserResultPager.getRootView(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 }
             });
@@ -1114,4 +1114,15 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             wvSubjectWeb.loadUrl(url);
         }
     }
+
+    interface OnNativeResultPagerClose{
+        void onClose();
+    }
+
+    private OnNativeResultPagerClose onNativeResultPagerClose = new OnNativeResultPagerClose() {
+        @Override
+        public void onClose() {
+            onClose.onH5ResultClose(CoursewareNativePager.this, getBaseVideoQuestionEntity());
+        }
+    };
 }

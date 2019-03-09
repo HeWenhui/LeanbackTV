@@ -46,9 +46,12 @@ public class PrimaryScienceAnserResultPager extends LiveBasePager {
             LOTTIE_RES_ASSETS_ROOTDIR + "animation/interact-active/middle"
     };
 
-    public PrimaryScienceAnserResultPager(Context context, PrimaryScienceAnswerResultEntity enytity) {
+    CoursewareNativePager.OnNativeResultPagerClose onNativeResultPagerClose;
+
+    public PrimaryScienceAnserResultPager(Context context, PrimaryScienceAnswerResultEntity enytity, CoursewareNativePager.OnNativeResultPagerClose onNativeResultPagerClose) {
         super(context);
         this.mEnytity = enytity;
+        this.onNativeResultPagerClose = onNativeResultPagerClose;
         initData();
         initListener();
     }
@@ -57,6 +60,7 @@ public class PrimaryScienceAnserResultPager extends LiveBasePager {
     LottieAnimationView lavActiveRight;
     FastScrollableRecyclerView mRecycleView;
     TextView tvGold;
+    ImageView ivClose;
 
     @Override
     public View initView() {
@@ -65,6 +69,7 @@ public class PrimaryScienceAnserResultPager extends LiveBasePager {
         lavActiveRight = mView.findViewById(R.id.lav_livevideo_primaryscience_anwserrsult_active_right);
         mRecycleView = mView.findViewById(R.id.frv_livevideo_primaryscience_anwserrsult);
         tvGold = mView.findViewById(R.id.tv_livevideo_primaryscience_anwerresult_gold);
+        ivClose = mView.findViewById(R.id.iv_livevideo_primaryscience_anwerresult_close);
         return mView;
     }
 
@@ -80,7 +85,12 @@ public class PrimaryScienceAnserResultPager extends LiveBasePager {
 
     @Override
     public void initListener() {
-
+        ivClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onNativeResultPagerClose.onClose();
+            }
+        });
     }
 
     class AnswerResultAdapter extends RecyclerView.Adapter {
