@@ -222,7 +222,7 @@ public class NewCourseCache {
             path = s.substring(index + 3);
             index = path.indexOf("/");
             if (index != -1) {
-                path = path.substring(index + 1);
+                path = path.substring(index);
             }
         }
         String filemd5 = MD5Utils.getMD5(path);

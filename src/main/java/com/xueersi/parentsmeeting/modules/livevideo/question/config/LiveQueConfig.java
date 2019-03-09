@@ -9,6 +9,10 @@ public class LiveQueConfig {
     public static final int GET_ANSWERTYPE_SUBMIT = 3;
     /** 直播-新课件获得互动题，强制提交 */
     public static final int GET_ANSWERTYPE_FORCE_SUBMIT = 4;
+    /** 直播-新课件获得消息，来源postMessage */
+    public static final String GET_ANSWERTYPE_WHERE_MESSAGE = "postMessage";
+    /** 直播-新课件获得消息，来源addEventListener */
+    public static final String GET_ANSWERTYPE_WHERE_LISTENER = "addEventListener";
     /** 直播-新课件保存互动题 */
     public static final String LIVE_STUDY_REPORT_IMG = "live_new_course_que_save";
 

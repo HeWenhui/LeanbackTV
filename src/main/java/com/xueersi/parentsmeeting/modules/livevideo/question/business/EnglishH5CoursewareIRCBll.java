@@ -825,7 +825,12 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             String classId = studentLiveInfo.getClassId();
             String teamId = studentLiveInfo.getTeamId();
             String educationStage = mGetInfo.getEducationStage();
-            StringBuilder stringBuilder = new StringBuilder(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_RESULT_FILE);
+            StringBuilder stringBuilder;
+            if (isArts == LiveVideoSAConfig.ART_CH) {
+                stringBuilder = new StringBuilder(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_RESULT_FILE_CN);
+            } else {
+                stringBuilder = new StringBuilder(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_RESULT_FILE);
+            }
 //            StringBuilder stringBuilder = new StringBuilder(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_RESULT);
             stringBuilder.append("?stuId=").append(mGetInfo.getStuId());
             stringBuilder.append("&liveId=").append(mGetInfo.getId());

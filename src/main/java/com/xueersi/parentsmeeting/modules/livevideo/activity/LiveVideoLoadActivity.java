@@ -25,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.PreloadS
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -194,7 +195,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                             }
                         }
                     } else {
-                        String liveIds = ShareDataManager.getInstance().getString(ShareBusinessConfig.SP_PRELOAD_COURSEWARE, "", ShareDataManager.SHAREDATA_USER);
+                        String liveIds = ShareDataManager.getInstance().getString(ShareDataConfig.SP_PRELOAD_COURSEWARE, "", ShareDataManager.SHAREDATA_USER);
                         if (liveIds.contains(",")) {
                             String[] preLoadLiveId = liveIds.split(",");
                             for (String tempPreLoadLiveId : preLoadLiveId) {
