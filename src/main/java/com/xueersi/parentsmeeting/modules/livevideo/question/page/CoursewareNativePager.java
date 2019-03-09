@@ -70,23 +70,33 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private boolean isSumit = false;
     private String liveId;
     private EnglishH5Entity englishH5Entity;
+    /** 是不是回放 */
     private boolean isPlayBack;
     private EnglishH5CoursewareBll.OnH5ResultClose onClose;
     private EnglishH5CoursewareBll mEnglishH5CoursewareBll;
     private EnglishH5CoursewareSecHttp englishH5CoursewareSecHttp;
     private String url;
     private String id;
+    /** 课件类型，新课件没用 */
     private String courseware_type;
     private String nonce;
     private String isShowRanks;
+    /** 互动题打开时间 */
     private long entranceTime;
+    /** 文理英属性 */
     private int isArts;
+    /** 文理的战队pk */
     private boolean allowTeamPk;
+    /** 英语新课件 */
     private boolean isNewArtsCourseware;
     private VideoQuestionLiveEntity detailInfo;
+    /** 学年 */
     private String educationstage;
+    /** 战队pk用，金币 */
     private int mGoldNum;
+    /** 战队pk用，能量 */
     private int mEnergyNum;
+    /** 加载的布局 */
     private RelativeLayout rlSubjectLoading;
     /** 下方控制条 */
     private RelativeLayout rlCourseControl;
@@ -104,6 +114,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private Button btCourseNext;
     /** 课件提交 */
     private Button btCourseSubmit;
+    /** 新课件缓存 */
     private NewCourseCache newCourseCache;
     /** 显示下方控制布局 */
     private boolean showControl = false;
