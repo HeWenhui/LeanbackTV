@@ -31,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareSecHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.CourseMessage;
@@ -71,6 +72,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private EnglishH5Entity englishH5Entity;
     private boolean isPlayBack;
     private EnglishH5CoursewareBll.OnH5ResultClose onClose;
+    private EnglishH5CoursewareBll mEnglishH5CoursewareBll;
     private EnglishH5CoursewareSecHttp englishH5CoursewareSecHttp;
     private String url;
     private String id;
@@ -83,6 +85,8 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private boolean isNewArtsCourseware;
     private VideoQuestionLiveEntity detailInfo;
     private String educationstage;
+    private int mGoldNum;
+    private int mEnergyNum;
     private RelativeLayout rlSubjectLoading;
     /** 下方控制条 */
     private RelativeLayout rlCourseControl;
@@ -102,18 +106,23 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private Button btCourseSubmit;
     private NewCourseCache newCourseCache;
     /** 显示下方控制布局 */
-    boolean showControl = false;
+    private boolean showControl = false;
     /** 在网页中嵌入js，只嵌入一次 */
     private boolean addJs = false;
     private ArrayList<NewCourseSec.Test> tests = new ArrayList<>();
     private int currentIndex = 0;
+    /** 发送getAnswer的类型 */
     private int getAnswerType = 0;
     /** 加载结果页 */
     private boolean loadResult = false;
+    /** 确认提交的弹窗 */
     private CourseTipDialog courseTipDialog;
+    /** 保存今天互动题 */
     private String today;
+    /** 保存互动题 */
     private JSONObject quesJson;
-    PreLoad preLoad;
+    /** 课件加载 */
+    private PreLoad preLoad;
 
     public CoursewareNativePager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, boolean isPlayBack, String liveId, String id, EnglishH5Entity englishH5Entity,
                                  final String courseware_type, String nonce, EnglishH5CoursewareBll.OnH5ResultClose onClose,
@@ -167,6 +176,38 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         btCoursePre = view.findViewById(R.id.bt_livevideo_new_course_pre);
         btCourseNext = view.findViewById(R.id.bt_livevideo_new_course_next);
         btCourseSubmit = view.findViewById(R.id.bt_livevideo_new_course_submit);
+        view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            long before;
+
+            @Override
+            public void onViewAttachedToWindow(View v) {
+                before = System.currentTimeMillis();
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View v) {
+                if (mLogtf != null) {
+                    mLogtf.d("onViewDetachedFromWindow:reloadurl=" + wvSubjectWeb.getUrl() + ",,time=" + (System
+                            .currentTimeMillis() - before));
+                }
+                if (allowTeamPk) {
+                    LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum, mEnergyNum, LiveRoomH5CloseEvent
+                            .H5_TYPE_COURSE, id);
+                    if (mEnglishH5CoursewareBll != null) {
+                        event.setCloseByTeahcer(mEnglishH5CoursewareBll.isWebViewCloseByTeacher());
+                        mEnglishH5CoursewareBll.setWebViewCloseByTeacher(false);
+                    }
+                    EventBus.getDefault().post(event);
+                    mGoldNum = -1;
+                    mEnergyNum = -1;
+                }
+                if (englishH5Entity.getNewEnglishH5()) {
+                    LiveVideoConfig.isNewEnglishH5 = true;
+                } else {
+                    LiveVideoConfig.isNewEnglishH5 = false;
+                }
+            }
+        });
         return view;
     }
 
@@ -818,7 +859,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
 
     @Override
     public void setEnglishH5CoursewareBll(EnglishH5CoursewareBll englishH5CoursewareBll) {
-
+        mEnglishH5CoursewareBll = englishH5CoursewareBll;
     }
 
     @Override
@@ -1009,7 +1050,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 GifDrawable gifDrawable = new GifDrawable(mContext.getResources(), R.drawable.livevide_courseware_primary_load);
                 rlSubjectLoading.setBackground(gifDrawable);
                 gifDrawable.start();
-            } catch (IOException e) {
+            } catch (Throwable e) {
                 logger.e("PrimaryPreLoad:onStart", e);
             }
         }
@@ -1107,11 +1148,17 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         rlCourseControl.setVisibility(View.GONE);
         if (LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage)) {
             //小学理科 走原生结果页
-            englishH5CoursewareSecHttp.getStuTestResult(detailInfo, 0, new AbstractBusinessDataCallBack() {
+            englishH5CoursewareSecHttp.getStuTestResult(detailInfo, isPlayBack ? 1 : 0, new AbstractBusinessDataCallBack() {
                 @Override
                 public void onDataSucess(Object... objData) {
+                    loadResult = true;
                     PrimaryScienceAnswerResultEntity entity = (PrimaryScienceAnswerResultEntity) objData[0];
-                    PrimaryScienceAnserResultPager primaryScienceAnserResultPager = new PrimaryScienceAnserResultPager(mContext, entity ,onNativeResultPagerClose);
+                    mGoldNum = entity.getGold();
+                    if (allowTeamPk) {
+                        // TODO 战队pk能量
+                        mEnergyNum = 0;
+                    }
+                    PrimaryScienceAnserResultPager primaryScienceAnserResultPager = new PrimaryScienceAnserResultPager(mContext, entity, onNativeResultPagerClose);
                     ((RelativeLayout) mView).addView(primaryScienceAnserResultPager.getRootView(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 }
             });
@@ -1122,7 +1169,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         }
     }
 
-    interface OnNativeResultPagerClose{
+    interface OnNativeResultPagerClose {
         void onClose();
     }
 
