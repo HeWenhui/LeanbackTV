@@ -51,7 +51,7 @@ public class PrimaryScienceAnswerResultIRCBll extends LiveBaseBll {
         btnTest1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getCourseWareHttpManager().getStuTestResult("", "", "", "", "", "", "", "", "", new AbstractBusinessDataCallBack() {
+                getCourseWareHttpManager().getStuTestResult("", "", "", "", "", "", "", 0, new AbstractBusinessDataCallBack() {
                     @Override
                     public void onDataSucess(Object... objData) {
                         PrimaryScienceAnswerResultEntity entity = (PrimaryScienceAnswerResultEntity) objData[0];

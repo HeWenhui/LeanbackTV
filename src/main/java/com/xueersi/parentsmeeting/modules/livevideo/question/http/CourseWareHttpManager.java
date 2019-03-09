@@ -128,19 +128,18 @@ public class CourseWareHttpManager {
      *
      * 请求学生作答情况列表
      */
-    public void getStuTestResult(String liveId, String classId, String teamId, String stuId, String srcTypes, String testIds, String classTestId, String packageId,
-                                 String packageAttr, final AbstractBusinessDataCallBack callBack) {
+    public void getStuTestResult(String liveId, String stuId, String srcTypes, String testIds, String classTestId, String packageId, String packageAttr, int isPlayBack,
+                                 final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         liveHttpManager.setDefaultParameter(httpRequestParams);
         httpRequestParams.addBodyParam("liveId", liveId);
-        httpRequestParams.addBodyParam("classId", classId);
-        httpRequestParams.addBodyParam("teamId", teamId);
         httpRequestParams.addBodyParam("stuId", stuId);
         httpRequestParams.addBodyParam("srcTypes", srcTypes);
         httpRequestParams.addBodyParam("testIds", "" + testIds);
         httpRequestParams.addBodyParam("classTestId", "" + classTestId);
         httpRequestParams.addBodyParam("packageId", "" + packageId);
         httpRequestParams.addBodyParam("packageAttr", "" + packageAttr);
+        httpRequestParams.addBodyParam("isPlayBack", "" + isPlayBack);
         liveHttpManager.sendPost(LiveQueHttpConfig.LIVE_GET_STU_TESTS_RESULT, httpRequestParams, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {

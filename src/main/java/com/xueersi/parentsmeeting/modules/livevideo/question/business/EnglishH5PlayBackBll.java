@@ -388,13 +388,11 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
          * 学生作答情况列表
          */
         @Override
-        public void getStuTestResult(VideoQuestionLiveEntity detailInfo, int isforce, String testInfos, AbstractBusinessDataCallBack callBack) {
+        public void getStuTestResult(VideoQuestionLiveEntity detailInfo, int isPlayBack, AbstractBusinessDataCallBack callBack) {
             EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
-            String classId = liveGetInfo.getStudentLiveInfo().getClassId();
-            String teamId = liveGetInfo.getStudentLiveInfo().getTeamId();
             String[] res = getSrcType(englishH5Entity);
-            getCourseWareHttpManager().getStuTestResult(liveGetInfo.getId(), classId, teamId, liveGetInfo.getStuId(), res[0], res[1], englishH5Entity.getClassTestId(), englishH5Entity.getPackageAttr(),
-                    englishH5Entity.getReleasedPageInfos(), callBack);
+            getCourseWareHttpManager().getStuTestResult(liveGetInfo.getId(), liveGetInfo.getStuId(), res[0], res[1], englishH5Entity.getClassTestId(), englishH5Entity.getPackageId(),
+                    englishH5Entity.getPackageAttr(), isPlayBack, callBack);
         }
 
         @Override

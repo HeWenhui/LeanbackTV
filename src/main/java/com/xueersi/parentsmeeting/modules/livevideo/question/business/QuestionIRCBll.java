@@ -1170,7 +1170,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         }
 
         @Override
-        public void getStuTestResult(VideoQuestionLiveEntity detailInfo, int isforce, String testInfos, AbstractBusinessDataCallBack callBack) {
+        public void getStuTestResult(VideoQuestionLiveEntity detailInfo, int isPlayBack, AbstractBusinessDataCallBack callBack) {
 
         }
     }

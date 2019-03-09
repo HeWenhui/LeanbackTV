@@ -5,7 +5,7 @@
     android:background="@color/transparent_80">
 
     <RelativeLayout
-        android:layout_marginTop="128dp"
+        android:layout_marginTop="126dp"
         android:layout_width="445dp"
         android:layout_height="205dp"
         android:layout_centerHorizontal="true"
@@ -28,26 +28,31 @@
     <com.airbnb.lottie.LottieAnimationView
         android:visibility="gone"
         android:id="@+id/lav_livevideo_primaryscience_anwserrsult_game_right"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="667dp"
+        android:layout_height="375dp"
         android:scaleType="centerCrop"
         app:lottie_fileName="primary_science_answer_result/game-right.json"
         app:lottie_imageAssetsFolder="primary_science_answer_result/animation/game/right" />
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:visibility="gone"
-        android:id="@+id/lav_livevideo_primaryscience_anwserrsult_active_right"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scaleType="centerCrop"
-        app:lottie_fileName="primary_science_answer_result/interact-active-right.json"
-        app:lottie_imageAssetsFolder="primary_science_answer_result/animation/interact-active/right" />
+        android:layout_height="match_parent">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lav_livevideo_primaryscience_anwserrsult_active_right"
+            android:layout_width="667dp"
+            android:layout_height="375dp"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            app:lottie_fileName="primary_science_answer_result/interact-active-right.json"
+            app:lottie_imageAssetsFolder="primary_science_answer_result/animation/interact-active/right" />
+    </FrameLayout>
 
     <RelativeLayout
         android:layout_width="445dp"
-        android:layout_height="205dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="128dp">
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true">
 
         <TextView
             android:id="@+id/tv_livevideo_primaryscience_anwerresult_gold"
@@ -55,7 +60,16 @@
             android:layout_height="wrap_content"
             android:textColor="#FFEFE30F"
             android:textSize="14dp"
+            android:layout_marginTop="124dp"
             android:layout_marginLeft="278dp"/>
+
+        <ImageView
+            android:layout_alignParentRight="true"
+            android:id="@+id/iv_livevideo_primaryscience_anwerresult_close"
+            android:layout_marginTop="29dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/live_interact_primary_close"/>
 
     </RelativeLayout>
 
