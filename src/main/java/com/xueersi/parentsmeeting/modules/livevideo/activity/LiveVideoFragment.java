@@ -297,7 +297,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                 mLiveBll.addBusinessBll(videoChatIRCBll);
             }
         }
-        mLiveBll.addBusinessBll(new PrimaryScienceAnswerResultIRCBll(activity,mLiveBll));
+//        mLiveBll.addBusinessBll(new PrimaryScienceAnswerResultIRCBll(activity,mLiveBll));
         EvaluateTeacherBll evaluateTeacherBll = new EvaluateTeacherBll(activity, mLiveBll);
         evaluateTeacherBll.setLiveFragment(this);
         mLiveBll.addBusinessBll(evaluateTeacherBll);

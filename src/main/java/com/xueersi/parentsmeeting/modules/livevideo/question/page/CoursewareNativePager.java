@@ -44,10 +44,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+
+import pl.droidsonroids.gif.GifDrawable;
 
 /**
  * Created by linyuqiang on 2019/3/5.
@@ -75,16 +78,21 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private VideoQuestionLiveEntity detailInfo;
     private String educationstage;
     private RelativeLayout rlSubjectLoading;
-    private ProgressBar pgCourseProg;
+    /** 下方控制条 */
     private RelativeLayout rlCourseControl;
+    /** 倒计时 */
     private TextView tvCourseTimeText;
-    private TextView tvDataLoadingTip;
+    /** 课件接口失败刷新 */
     private ImageView ivCourseRefresh;
+    /** 课件网页刷新 */
     private ImageView iv_livevideo_subject_refresh;
+    /** 课件题目数量 */
     private TextView tvCourseNum;
-    private ImageView ivLoading;
+    /** 课件上一题 */
     private Button btCoursePre;
+    /** 课件下一题 */
     private Button btCourseNext;
+    /** 课件提交 */
     private Button btCourseSubmit;
     private NewCourseCache newCourseCache;
     /** 显示下方控制布局 */
@@ -99,11 +107,12 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private CourseTipDialog courseTipDialog;
     private String today;
     private JSONObject quesJson;
+    PreLoad preLoad;
 
     public CoursewareNativePager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, boolean isPlayBack, String liveId, String id, EnglishH5Entity englishH5Entity,
                                  final String courseware_type, String nonce, EnglishH5CoursewareBll.OnH5ResultClose onClose,
                                  String isShowRanks, int isArts, boolean allowTeamPk) {
-        super(context);
+        super(context, false);
         setBaseVideoQuestionEntity(baseVideoQuestionEntity);
         this.liveId = liveId;
         this.englishH5Entity = englishH5Entity;
@@ -122,6 +131,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         if (isArts != LiveVideoSAConfig.ART_EN) {
             this.educationstage = detailInfo.getEducationstage();
         }
+        mView = initView();
 //        initWebView();
 //        setErrorTip("H5课件加载失败，请重试");
 //        setLoadTip("H5课件正在加载，请稍候");
@@ -133,19 +143,21 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.page_livevideo_h5_courseware_native, null);
-        ivLoading = (ImageView) view.findViewById(R.id.iv_data_loading_show);
         wvSubjectWeb = view.findViewById(R.id.wv_livevideo_subject_web);
-        tvDataLoadingTip = view.findViewById(R.id.tv_data_loading_tip);
         ivCourseRefresh = view.findViewById(R.id.iv_livevideo_course_refresh);
         iv_livevideo_subject_refresh = view.findViewById(R.id.iv_livevideo_subject_refresh);
         tvCourseNum = view.findViewById(R.id.tv_livevideo_new_course_num);
         rlSubjectLoading = view.findViewById(R.id.rl_livevideo_subject_loading);
-        pgCourseProg = view.findViewById(R.id.pg_livevideo_new_course_prog);
         rlCourseControl = view.findViewById(R.id.rl_livevideo_new_course_control);
         tvCourseTimeText = view.findViewById(R.id.tv_livevideo_new_course_time_text);
         btCoursePre = view.findViewById(R.id.bt_livevideo_new_course_pre);
         btCourseNext = view.findViewById(R.id.bt_livevideo_new_course_next);
         btCourseSubmit = view.findViewById(R.id.bt_livevideo_new_course_submit);
+        if (isArts != LiveVideoSAConfig.ART_EN && (LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage))) {
+            preLoad = new PrimaryPreLoad();
+        } else {
+            preLoad = new MiddleSchool();
+        }
         return view;
     }
 
@@ -803,23 +815,13 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     protected void onProgressChanged(WebView view, int newProgress) {
         super.onProgressChanged(view, newProgress);
         if (!loadResult) {
-            pgCourseProg.setProgress(newProgress);
-            tvDataLoadingTip.setText("加载中 " + newProgress + "%");
+            preLoad.onProgressChanged(view, newProgress);
             if (newProgress == 100) {
                 rlSubjectLoading.setVisibility(View.GONE);
                 if (showControl) {
                     rlCourseControl.setVisibility(View.VISIBLE);
                 }
-                try {
-                    Drawable drawable = ivLoading.getBackground();
-                    if (drawable instanceof AnimationDrawable) {
-                        ((AnimationDrawable) drawable).stop();
-                    }
-                } catch (Exception e) {
-                    if (mLogtf != null) {
-                        mLogtf.e("onProgressChanged", e);
-                    }
-                }
+                preLoad.onStop();
             }
         }
     }
@@ -827,15 +829,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     @Override
     public void setEnglishH5CoursewareSecHttp(EnglishH5CoursewareSecHttp englishH5CoursewareSecHttp) {
         this.englishH5CoursewareSecHttp = englishH5CoursewareSecHttp;
-        try {
-            Drawable drawable = mContext.getResources().getDrawable(R.drawable.animlst_app_loading);
-            ivLoading.setBackground(drawable);
-            ((AnimationDrawable) drawable).start();
-        } catch (Exception e) {
-            if (mLogtf != null) {
-                mLogtf.e("initData", e);
-            }
-        }
+        preLoad.onStart();
         getCourseWareTests();
     }
 
@@ -946,6 +940,100 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     @Override
     public void setWebBackgroundColor(int color) {
 
+    }
+
+    /** 初中课件加载 */
+    private class MiddleSchool implements PreLoad {
+        private ImageView ivLoading;
+        private ProgressBar pgCourseProg;
+        private TextView tvDataLoadingTip;
+
+        @Override
+        public void onStart() {
+            ivLoading = mView.findViewById(R.id.iv_data_loading_show);
+            pgCourseProg = mView.findViewById(R.id.pg_livevideo_new_course_prog);
+            tvDataLoadingTip = mView.findViewById(R.id.tv_data_loading_tip);
+            logger.d("MiddleSchool:onStart");
+            try {
+                Drawable drawable = mContext.getResources().getDrawable(R.drawable.animlst_app_loading);
+                ivLoading.setBackground(drawable);
+                ((AnimationDrawable) drawable).start();
+            } catch (Exception e) {
+                if (mLogtf != null) {
+                    mLogtf.e("initData", e);
+                }
+            }
+        }
+
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            pgCourseProg.setProgress(newProgress);
+            tvDataLoadingTip.setText("加载中 " + newProgress + "%");
+        }
+
+        @Override
+        public void onStop() {
+            logger.d("MiddleSchool:onStart:ivLoading=null?" + (ivLoading == null));
+            if (ivLoading != null) {
+                try {
+                    Drawable drawable = ivLoading.getBackground();
+                    if (drawable instanceof AnimationDrawable) {
+                        ((AnimationDrawable) drawable).stop();
+                    }
+                } catch (Exception e) {
+                    if (mLogtf != null) {
+                        mLogtf.e("onProgressChanged", e);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * 小学课件加载-文理
+     */
+    private class PrimaryPreLoad implements PreLoad {
+
+        @Override
+        public void onStart() {
+            logger.d("PrimaryPreLoad:onStart");
+            try {
+                mView.findViewById(R.id.ll_livevideo_subject_loadingl_content).setVisibility(View.GONE);
+                GifDrawable gifDrawable = new GifDrawable(mContext.getResources(), R.drawable.livevide_courseware_primary_load);
+                rlSubjectLoading.setBackground(gifDrawable);
+                gifDrawable.start();
+            } catch (IOException e) {
+                logger.e("PrimaryPreLoad:onStart", e);
+            }
+        }
+
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+
+        }
+
+        @Override
+        public void onStop() {
+            logger.d("PrimaryPreLoad:onStop");
+            Drawable drawable = rlSubjectLoading.getBackground();
+            if (drawable instanceof GifDrawable) {
+                GifDrawable gifDrawable = (GifDrawable) drawable;
+                gifDrawable.stop();
+                gifDrawable.recycle();
+            }
+        }
+    }
+
+    /** 课件加载 */
+    interface PreLoad {
+        /** 课件开始加载 */
+        void onStart();
+
+        /** 课件加载中进度 */
+        void onProgressChanged(WebView view, int newProgress);
+
+        /** 课件结束加载 */
+        void onStop();
     }
 
     @Override
