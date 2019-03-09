@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -85,7 +86,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     /** 课件接口失败刷新 */
     private ImageView ivCourseRefresh;
     /** 课件网页刷新 */
-    private ImageView iv_livevideo_subject_refresh;
+    private ImageView ivWebViewRefresh;
     /** 课件题目数量 */
     private TextView tvCourseNum;
     /** 课件上一题 */
@@ -145,19 +146,22 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         View view = View.inflate(mContext, R.layout.page_livevideo_h5_courseware_native, null);
         wvSubjectWeb = view.findViewById(R.id.wv_livevideo_subject_web);
         ivCourseRefresh = view.findViewById(R.id.iv_livevideo_course_refresh);
-        iv_livevideo_subject_refresh = view.findViewById(R.id.iv_livevideo_subject_refresh);
-        tvCourseNum = view.findViewById(R.id.tv_livevideo_new_course_num);
+        ivWebViewRefresh = view.findViewById(R.id.iv_livevideo_subject_refresh);
         rlSubjectLoading = view.findViewById(R.id.rl_livevideo_subject_loading);
         rlCourseControl = view.findViewById(R.id.rl_livevideo_new_course_control);
+        if (isArts != LiveVideoSAConfig.ART_EN && (LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage))) {
+            LayoutInflater.from(mContext).inflate(R.layout.page_livevideo_h5_courseware_control_primary, rlCourseControl);
+            preLoad = new PrimaryPreLoad();
+        } else {
+            LayoutInflater.from(mContext).inflate(R.layout.page_livevideo_h5_courseware_control_middle, rlCourseControl);
+            preLoad = new MiddleSchool();
+        }
+        //下方控制条的一些布局
+        tvCourseNum = view.findViewById(R.id.tv_livevideo_new_course_num);
         tvCourseTimeText = view.findViewById(R.id.tv_livevideo_new_course_time_text);
         btCoursePre = view.findViewById(R.id.bt_livevideo_new_course_pre);
         btCourseNext = view.findViewById(R.id.bt_livevideo_new_course_next);
         btCourseSubmit = view.findViewById(R.id.bt_livevideo_new_course_submit);
-        if (isArts != LiveVideoSAConfig.ART_EN && (LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage))) {
-            preLoad = new PrimaryPreLoad();
-        } else {
-            preLoad = new MiddleSchool();
-        }
         return view;
     }
 
@@ -256,7 +260,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 getCourseWareTests();
             }
         });
-        iv_livevideo_subject_refresh.setOnClickListener(new View.OnClickListener() {
+        ivWebViewRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addJs = false;
