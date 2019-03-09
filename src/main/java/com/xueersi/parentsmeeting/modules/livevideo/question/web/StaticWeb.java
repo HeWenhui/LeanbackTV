@@ -23,6 +23,11 @@ public class StaticWeb {
         this.onMessage = onMessage;
     }
 
+    /**
+     * 接收课件消息
+     *
+     * @param jsonStr
+     */
     @JavascriptInterface
     public void postMessage(String jsonStr) {
         if (!("" + jsonStr).contains("errorInfo")) {
@@ -48,6 +53,16 @@ public class StaticWeb {
          * @param origin
          */
         void postMessage(String where, JSONObject message, String origin);
+    }
+
+    /**
+     * 调用sendToCourseware后的回执
+     *
+     * @param jsonStr
+     */
+    @JavascriptInterface
+    public void onReceive(String jsonStr) {
+        logToFile.d("onReceive:jsonStr=" + jsonStr);
     }
 
     public static void sendToCourseware(WebView wvSubjectWeb, JSONObject type, String data) {

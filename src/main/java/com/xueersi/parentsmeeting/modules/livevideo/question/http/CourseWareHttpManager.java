@@ -7,6 +7,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListDanmakuEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueHttpConfig;
@@ -49,7 +50,7 @@ public class CourseWareHttpManager {
         httpRequestParams.addBodyParam("entranceTime", "" + entranceTime);
         httpRequestParams.addBodyParam("isForce", "" + isforce);
         String url;
-        if (arts == 0) {
+        if (arts == LiveVideoSAConfig.ART_SEC) {
             url = LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE;
         } else {
             url = LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_CN;
@@ -125,7 +126,7 @@ public class CourseWareHttpManager {
 
     /**
      * Created by ZhangYuansun on 2019/3/7
-     *
+     * <p>
      * 请求学生作答情况列表
      */
     public void getStuTestResult(String liveId, String stuId, String srcTypes, String testIds, String classTestId, String packageId, String packageAttr, int isPlayBack,
