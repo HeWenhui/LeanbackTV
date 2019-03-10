@@ -49,6 +49,8 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
     private boolean isRankStart = false;
     private PkTeamEntity pkTeamEntity;
     private int reportTimes = 1;
+    /** 显示上方提示 */
+    private boolean hasAddTop = false;
     private LogToFile mLogtf;
 
     public EnTeamPkBll(Context context) {
@@ -172,8 +174,17 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
         });
     }
 
+    /**
+     * 上方提示
+     *
+     * @param method
+     */
     private void addTop(String method) {
-        mLogtf.d("addTop:myteam=" + pkTeamEntity.getMyTeam() + ",method=" + method);
+        mLogtf.d("addTop:myteam=" + pkTeamEntity.getMyTeam() + ",method=" + method + ",hasAddTop=" + hasAddTop);
+        if (!hasAddTop) {
+            hasAddTop = true;
+            return;
+        }
         final View view = LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_en_team_join, rootView, false);
         TextView tv_livevideo_en_teampk_top_name = view.findViewById(R.id.tv_livevideo_en_teampk_top_name);
         ImageView iv_livevideo_en_teampk_top_img = view.findViewById(R.id.iv_livevideo_en_teampk_top_img);
@@ -323,7 +334,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
     }
 
     @Override
-    public void onModeChange(String mode) {
+    public void onModeChange(String mode, boolean haveTeamRun) {
         hideTeam();
         this.mode = mode;
         if (LiveTopic.MODE_CLASS.equals(mode)) {
@@ -340,6 +351,15 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                         }
                     }
                 }, 2000);
+            } else {
+                if (haveTeamRun) {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            addTop("onModeChange");
+                        }
+                    });
+                }
             }
         }
     }

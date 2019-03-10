@@ -275,7 +275,7 @@ public class EnAchievePager extends LiveBasePager {
             mLogtf.d("onGetStar:opTeam=" + pkEnergy.opTeam + ",otherTotal=" + myTotal);
         }
         ViewGroup rl_livevideo_info = activity.findViewById(R.id.rl_livevideo_info);
-        if (rl_livevideo_info != null) {
+        if (rl_livevideo_info != null && !cbAchiveTitle.isChecked()) {
             final int energyCountAdd = starAndGoldEntity.getPkEnergy().me - energyCount;
             final int goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
             final int startCountAdd = starAndGoldEntity.getStarCount() - starCount;

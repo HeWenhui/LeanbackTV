@@ -28,7 +28,7 @@ public interface EnTeamPkAction {
 
     void onRankLead(EnTeamPkRankEntity enTeamPkRankEntity, String testId, int type);
 
-    void onModeChange(String mode);
+    void onModeChange(String mode, boolean haveTeamRun);
 
     void setVideoLayout(LiveVideoPoint liveVideoPoint);
 

@@ -836,12 +836,13 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
         super.onModeChange(oldMode, mode, isPresent);
         mLogtf.d("onModeChange:haveTeamRun=" + haveTeamRun);
+        boolean oldHaveTeamRun = haveTeamRun;
         if (haveTeamRun) {
             haveTeamRun = false;
             poseEvent();
         }
         if (enTeamPkAction != null) {
-            enTeamPkAction.onModeChange(mode);
+            enTeamPkAction.onModeChange(mode, oldHaveTeamRun);
         }
     }
 
