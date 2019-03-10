@@ -489,7 +489,8 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         }
                     } else {
                         if (isArts == LiveVideoSAConfig.ART_EN) {
-                            if (LiveQueConfig.EN_COURSE_TYPE_VOICE_BLANK.equals(detailInfo.voiceType) || LiveQueConfig.EN_COURSE_TYPE_VOICE_CHOICE.equals(detailInfo.voiceType)) {
+                            boolean submitH5 = submitH5();
+                            if (submitH5) {
                                 submitVoice(1, "");
                             } else {
                                 submit(1, "");
@@ -501,7 +502,8 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 } else {
                     if (tests.size() == 1) {
                         if (isArts == LiveVideoSAConfig.ART_EN) {
-                            if (LiveQueConfig.EN_COURSE_TYPE_VOICE_BLANK.equals(detailInfo.voiceType) || LiveQueConfig.EN_COURSE_TYPE_VOICE_CHOICE.equals(detailInfo.voiceType)) {
+                            boolean submitH5 = submitH5();
+                            if (submitH5) {
                                 submitVoice(0, "");
                             } else {
                                 submit(0, "");
@@ -528,6 +530,24 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 }
             }
         });
+    }
+
+
+    /**
+     * 英语提交接口是 submitH5 的
+     *
+     * @return
+     */
+    private boolean submitH5() {
+        boolean submitH5 = false;
+        if (LiveQueConfig.EN_COURSE_TYPE_VOICE_BLANK.equals(detailInfo.voiceType) || LiveQueConfig.EN_COURSE_TYPE_VOICE_CHOICE.equals(detailInfo.voiceType)) {
+            submitH5 = true;
+        } else {
+            if (LiveQueConfig.getSubmitH5Types().contains(detailInfo.type)) {
+                submitH5 = true;
+            }
+        }
+        return submitH5;
     }
 
     private void onLoadComplete(final String where, final JSONObject message) {
@@ -1083,8 +1103,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             for (int i = 0; i < tests.size(); i++) {
                 NewCourseSec.Test test = tests.get(i);
                 String testType = test.getTestType();
-                if (LiveQueConfig.EN_COURSE_TYPE_BLANK.equals(testType) || LiveQueConfig.EN_COURSE_TYPE_CHOICE.equals(testType)
-                        || LiveQueConfig.EN_COURSE_TYPE_OUT.equals(testType) || LiveQueConfig.EN_COURSE_TYPE_19.equals(testType)) {
+                if (LiveQueConfig.getShowControlTypes().contains(testType)) {
                     showControl = true;
                     break;
                 }

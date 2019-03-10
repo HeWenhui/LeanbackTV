@@ -868,7 +868,11 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 if (LiveQueConfig.EN_COURSE_TYPE_VOICE_BLANK.equals(detailInfo.voiceType) || LiveQueConfig.EN_COURSE_TYPE_VOICE_CHOICE.equals(detailInfo.voiceType)) {
                     getCourseWareHttpManager().submitH5("" + testInfos, detailInfo.num, detailInfo.id, detailInfo.voiceType, mGetInfo.getStuId(), 1, isforce, callBack);
                 } else {
-                    getCourseWareHttpManager().submitMultiTest("" + testInfos, 1, isforce, callBack);
+                    if (LiveQueConfig.getSubmitH5Types().contains(detailInfo.type)) {
+                        getCourseWareHttpManager().submitH5("" + testInfos, detailInfo.num, detailInfo.id, detailInfo.voiceType, mGetInfo.getStuId(), 1, isforce, callBack);
+                    } else {
+                        getCourseWareHttpManager().submitMultiTest("" + testInfos, 1, isforce, callBack);
+                    }
                 }
             } else {
                 EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
