@@ -1,6 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.item;
 
-import android.content.ContextWrapper;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -11,10 +10,17 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResult
 import com.xueersi.ui.adapter.RItemViewInterface;
 import com.xueersi.ui.adapter.ViewHolder;
 
+/**
+ * @author linyuqiang
+ * 语音答题结果页,多人的分数名字
+ */
 public class SpeechResultOtherItem implements RItemViewInterface<SpeechResultMember> {
-    ImageView civ_live_speech_result_member_head;
-    TextView tv_live_speech_result_member_score;
-    TextView tv_live_speech_result_member_name;
+    /** 头像 */
+    private ImageView civSpeechResultMemberHead;
+    /** 分数 */
+    private TextView tvSpeechResultMemberScore;
+    /** 名字 */
+    private TextView tvSpeechResultMemberName;
 
     @Override
     public int getItemLayoutId() {
@@ -28,16 +34,16 @@ public class SpeechResultOtherItem implements RItemViewInterface<SpeechResultMem
 
     @Override
     public void initView(ViewHolder holder, int position) {
-        civ_live_speech_result_member_head = holder.getView(R.id.civ_live_speech_result_member_head);
-        tv_live_speech_result_member_score = holder.getView(R.id.tv_live_speech_result_member_score);
-        tv_live_speech_result_member_name = holder.getView(R.id.tv_live_speech_result_member_name);
+        civSpeechResultMemberHead = holder.getView(R.id.civ_live_speech_result_member_head);
+        tvSpeechResultMemberScore = holder.getView(R.id.tv_live_speech_result_member_score);
+        tvSpeechResultMemberName = holder.getView(R.id.tv_live_speech_result_member_name);
     }
 
     @Override
     public void convert(ViewHolder holder, SpeechResultMember speechResultMember, int position) {
         ImageLoader.with(ContextManager.getContext()).load(speechResultMember.headUrl)
-                .error(R.drawable.app_livevideo_enteampk_boy_bg_img_nor).into(civ_live_speech_result_member_head);
-        tv_live_speech_result_member_score.setText("" + speechResultMember.score);
-        tv_live_speech_result_member_name.setText(speechResultMember.name);
+                .error(R.drawable.app_livevideo_enteampk_boy_bg_img_nor).into(civSpeechResultMemberHead);
+        tvSpeechResultMemberScore.setText(speechResultMember.score + "分");
+        tvSpeechResultMemberName.setText(speechResultMember.name);
     }
 }

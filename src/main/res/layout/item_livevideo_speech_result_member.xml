@@ -20,7 +20,7 @@
     </RelativeLayout>
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-        android:id="@id/tv_live_speech_result_member_name"
+        android:id="@id/tv_live_speech_result_member_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
@@ -31,7 +31,7 @@
         android:textSize="14sp" />
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-        android:id="@id/tv_live_speech_result_member_score"
+        android:id="@id/tv_live_speech_result_member_name"
         android:layout_width="52dp"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/rl_live_speech_result_member_head"
