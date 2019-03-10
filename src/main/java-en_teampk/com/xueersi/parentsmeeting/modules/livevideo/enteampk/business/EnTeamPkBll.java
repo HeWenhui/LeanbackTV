@@ -274,12 +274,15 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
 
                             @Override
                             public void onDataSucess(Object... objects) {
+                                PkTeamEntity oldPkTeamEntity = EnTeamPkBll.this.pkTeamEntity;
                                 pkTeamEntity = (PkTeamEntity) objects[0];
-                                logger.d("onRankStart:onDataSucess:Entity=" + pkTeamEntity);
+                                logger.d("onRankStart:onDataSucess:Entity=" + pkTeamEntity + ",oldPkTeamEntity=null?" + (oldPkTeamEntity == null));
                                 if (pkTeamEntity == null) {
                                     return;
                                 }
-                                addTop("onRankStart2");
+                                if (oldPkTeamEntity == null) {
+                                    addTop("onRankStart2");
+                                }
                             }
 
                             @Override
