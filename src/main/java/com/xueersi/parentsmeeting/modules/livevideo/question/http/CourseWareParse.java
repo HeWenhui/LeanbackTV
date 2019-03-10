@@ -65,6 +65,7 @@ public class CourseWareParse {
                     answer.setRightAnswer(rightAnswerArray.get(j).toString());
                     answerList.add(answer);
                 }
+                resultEntity.setIsRight(answerObject.optInt("isRight"));
             }
             return resultEntity;
         } catch (JSONException e) {

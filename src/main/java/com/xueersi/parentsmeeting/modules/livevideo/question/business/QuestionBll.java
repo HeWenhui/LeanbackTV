@@ -661,12 +661,12 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                     rlQuestionContent.removeView(baseEnglishH5CoursewarePager.getRootView());
                                 }
                             }, "0", LiveVideoSAConfig.ART_EN, false);
-//                            QuestionWebX5Pager questionWebPager = new QuestionWebX5Pager(activity, QuestionBll.this,
-//                                    videoQuestionLiveEntity, liveGetInfo.getId());
-                            questionWebPager.setLivePagerBack(QuestionBll.this);
                             if (questionHttp instanceof EnglishH5CoursewareSecHttp) {
                                 questionWebPager.setEnglishH5CoursewareSecHttp((EnglishH5CoursewareSecHttp) questionHttp);
                             }
+//                            QuestionWebX5Pager questionWebPager = new QuestionWebX5Pager(activity, QuestionBll.this,
+//                                    videoQuestionLiveEntity, liveGetInfo.getId());
+                            questionWebPager.setLivePagerBack(QuestionBll.this);
                             rlQuestionContent.addView(questionWebPager.getRootView());
                             QuestionBll.this.questionWebPager = questionWebPager;
                             setHaveWebQuestion(true);

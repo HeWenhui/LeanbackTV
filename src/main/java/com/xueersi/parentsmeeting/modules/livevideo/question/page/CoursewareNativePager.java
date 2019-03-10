@@ -4,7 +4,10 @@ import android.app.Application;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +51,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -178,7 +180,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             LayoutInflater.from(mContext).inflate(R.layout.page_livevideo_h5_courseware_control_primary, rlCourseControl);
             preLoad = new PrimaryPreLoad();
         } else {
-            LayoutInflater.from(mContext).inflate(R.layout.page_livevideo_h5_courseware_control_middle, rlCourseControl);
+            if (isArts == LiveVideoSAConfig.ART_EN) {
+                LayoutInflater.from(mContext).inflate(R.layout.page_livevideo_h5_courseware_control_middle_en, rlCourseControl);
+            } else {
+                LayoutInflater.from(mContext).inflate(R.layout.page_livevideo_h5_courseware_control_middle, rlCourseControl);
+            }
             preLoad = new MiddleSchool();
         }
         //下方控制条的一些布局
@@ -470,6 +476,10 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
 
                                 @Override
                                 public void onCommit(View view) {
+                                    if (courseTipDialog != null) {
+                                        courseTipDialog.cancelDialog();
+                                    }
+                                    courseTipDialog = null;
                                     submit(0, "");
                                 }
                             });
@@ -478,16 +488,28 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                             submit(0, "");
                         }
                     } else {
-                        submit(1, "");
+                        if (isArts == LiveVideoSAConfig.ART_EN) {
+                            if (LiveQueConfig.EN_COURSE_TYPE_VOICE_BLANK.equals(detailInfo.voiceType) || LiveQueConfig.EN_COURSE_TYPE_VOICE_CHOICE.equals(detailInfo.voiceType)) {
+                                submitVoice(1, "");
+                            } else {
+                                submit(1, "");
+                            }
+                        } else {
+                            submit(1, "");
+                        }
                     }
                 } else {
                     if (tests.size() == 1) {
                         if (isArts == LiveVideoSAConfig.ART_EN) {
                             if (LiveQueConfig.EN_COURSE_TYPE_VOICE_BLANK.equals(detailInfo.voiceType) || LiveQueConfig.EN_COURSE_TYPE_VOICE_CHOICE.equals(detailInfo.voiceType)) {
-                                submitVoice(1, "");
+                                submitVoice(0, "");
+                            } else {
+                                submit(0, "");
                             }
+                        } else {
+                            submit(0, "");
                         }
-                        setViewEnable("onAnswer1");
+//                        setViewEnable("onAnswer1");
                     } else {
                         if (getAnswerType == LiveQueConfig.GET_ANSWERTYPE_PRE) {
                             currentIndex--;
@@ -497,7 +519,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         }
                         setViewEnable("onAnswer2");
                         if (currentIndex >= 0 && currentIndex < tests.size()) {
-                            tvCourseNum.setText((currentIndex + 1) + " / " + tests.size());
+                            setNum(currentIndex + 1);
                             NewCourseSec.Test test = tests.get(currentIndex);
                             addJs = false;
                             wvSubjectWeb.loadUrl(test.getPreviewPath());
@@ -917,35 +939,90 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                             test.setUserAnswerContent(userAnswerContent);
                         }
                     }
-                    tvCourseNum.setText("1 / " + tests.size());
+                    setNum(1);
                     NewCourseSec.Test test = tests.get(0);
                     currentIndex = 0;
                     wvSubjectWeb.loadUrl(test.getPreviewPath());
-                    final long startTime;
-                    if (isPlayBack) {
-                        startTime = System.currentTimeMillis() / 1000;
-                        tvCourseTimeText.setText("0秒");
+                    //文理科正计时,英语倒计时
+                    if (isArts == LiveVideoSAConfig.ART_EN) {
+                        setTimeEn(newCourseSec);
                     } else {
-                        startTime = newCourseSec.getReleaseTime();
-                        tvCourseTimeText.setText(getTime(startTime));
+                        setTimeSec(newCourseSec);
                     }
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            tvCourseTimeText.setText(getTime(startTime));
-                            if (loadResult || mView.getParent() == null) {
-                                return;
-                            }
-                            handler.postDelayed(this, 1000);
-                        }
-                    }, 1000);
                 }
             }
 
-            private String getTime(long startTime) {
+            /**
+             * 设置文理时间
+             * @param newCourseSec
+             */
+            private void setTimeSec(NewCourseSec newCourseSec) {
+                final long startTime;
+                if (isPlayBack) {
+                    startTime = System.currentTimeMillis() / 1000;
+                    tvCourseTimeText.setText("0秒");
+                } else {
+                    startTime = newCourseSec.getReleaseTime();
+                    tvCourseTimeText.setText(getTimePositive(startTime));
+                }
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        tvCourseTimeText.setText(getTimePositive(startTime));
+                        if (loadResult || mView.getParent() == null) {
+                            return;
+                        }
+                        handler.postDelayed(this, 1000);
+                    }
+                }, 1000);
+            }
+
+            /**
+             * 设置英语时间
+             * @param newCourseSec
+             */
+            private void setTimeEn(NewCourseSec newCourseSec) {
+                //英语倒计时
+                final long releaseTime = newCourseSec.getReleaseTime() * 60;
+                final long startTime = System.currentTimeMillis() / 1000;
+                tvCourseTimeText.setText(getTimeNegative(releaseTime, startTime));
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        String timeStr = getTimeNegative(releaseTime, startTime);
+                        if (loadResult || mView.getParent() == null || timeStr == null) {
+                            return;
+                        }
+                        tvCourseTimeText.setText(timeStr);
+                        handler.postDelayed(this, 1000);
+                    }
+                }, 1000);
+            }
+
+            /**
+             * 正计时
+             * @param startTime
+             * @return
+             */
+            private String getTimePositive(long startTime) {
                 long time = System.currentTimeMillis() / 1000 - startTime;
                 long second = time % 60;
                 long minute = time / 60;
+                return minute + "分" + second + "秒";
+            }
+
+            /**
+             * 倒计时
+             * @param startTime
+             * @return
+             */
+            private String getTimeNegative(long releaseTime, long startTime) {
+                long time = System.currentTimeMillis() / 1000 - startTime;
+                long second = (releaseTime - time) % 60;
+                long minute = (releaseTime - time) / 60;
+                if (releaseTime - time < 0) {
+                    return null;
+                }
                 return minute + "分" + second + "秒";
             }
 
@@ -963,6 +1040,43 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         });
     }
 
+    /**
+     * 设置中间数字
+     *
+     * @param index
+     */
+    private void setNum(int index) {
+        if (isArts != LiveVideoSAConfig.ART_EN && (LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage))) {
+            setNumPrimary(index);
+        } else {
+            setNumMiddle(index);
+        }
+    }
+
+    /**
+     * 设置中间数字,文理小学
+     *
+     * @param index
+     */
+    private void setNumPrimary(int index) {
+        SpannableString sp = new SpannableString(index + " / " + tests.size());
+        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(0xff66cbfa);
+        sp.setSpan(foregroundColorSpan, ("" + index).length(), sp.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        tvCourseNum.setText(sp);
+    }
+
+    /**
+     * 设置中间数字,其他
+     *
+     * @param index
+     */
+    private void setNumMiddle(int index) {
+        tvCourseNum.setText(index + " / " + tests.size());
+    }
+
+    /**
+     * 设置下方控件的
+     */
     private void showControl() {
         showControl = false;
         if (isArts == LiveVideoSAConfig.ART_EN) {
@@ -1167,9 +1281,14 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     mGoldNum = entity.getGold();
                     if (allowTeamPk) {
                         // TODO 战队pk能量
-                        mEnergyNum = 0;
+                        mEnergyNum = entity.getIsRight() == 2 ? 10 : 5;
                     }
-                    PrimaryScienceAnserResultPager primaryScienceAnserResultPager = new PrimaryScienceAnserResultPager(mContext, entity, onNativeResultPagerClose);
+                    PrimaryScienceAnserResultPager primaryScienceAnserResultPager = new PrimaryScienceAnserResultPager(mContext, entity, new PrimaryScienceAnserResultPager.OnNativeResultPagerClose() {
+                        @Override
+                        public void onClose() {
+                            onClose.onH5ResultClose(CoursewareNativePager.this, getBaseVideoQuestionEntity());
+                        }
+                    });
                     ((RelativeLayout) mView).addView(primaryScienceAnserResultPager.getRootView(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                 }
             });
@@ -1180,14 +1299,4 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         }
     }
 
-    interface OnNativeResultPagerClose {
-        void onClose();
-    }
-
-    private OnNativeResultPagerClose onNativeResultPagerClose = new OnNativeResultPagerClose() {
-        @Override
-        public void onClose() {
-            onClose.onH5ResultClose(CoursewareNativePager.this, getBaseVideoQuestionEntity());
-        }
-    };
 }

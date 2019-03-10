@@ -4,6 +4,6 @@
     <!-- 圆角 -->
     <corners android:radius="20dp" /><!-- 设置圆角半径 -->
     <!-- 填充 -->
-    <solid android:color="@color/translucent_10" /><!-- 填充的颜色 -->
+    <solid android:color="#33000000" /><!-- 填充的颜色 -->
 
 </shape>

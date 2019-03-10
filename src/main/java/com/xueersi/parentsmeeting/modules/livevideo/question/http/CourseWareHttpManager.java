@@ -240,7 +240,7 @@ public class CourseWareHttpManager {
         httpRequestParams.addBodyParam("type", "" + type);
         httpRequestParams.addBodyParam("isPlayBack", "" + isPlayBack);
         httpRequestParams.addBodyParam("isSubmit", "" + isSubmit);
-        httpRequestParams.addBodyParam("stu_id", "" + stu_id);
+        httpRequestParams.addBodyParam("stuId", "" + stu_id);
         liveHttpManager.sendPost(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_VOICE_EN, httpRequestParams, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
