@@ -559,7 +559,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 synchronized (mIjkLock) {
                     if (isInitialized()) {
                         vPlayer.releaseSurface();
-                        vPlayer.stop();
+                        transferStop();
                     }
                     isPlay = false;
                 }
@@ -1185,7 +1185,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 mLogtf.d("onModeChange:isInitialized=" + isInitialized());
                 if (isInitialized()) {
                     vPlayer.releaseSurface();
-                    vPlayer.stop();
+                    transferStop();
                 }
                 isPlay = false;
                 setFirstBackgroundVisible(View.VISIBLE);
@@ -1580,7 +1580,18 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
     public void stopPlay() {
         if (isInitialized()) {
             vPlayer.releaseSurface();
+            transferStop();
+        }
+    }
+
+    /**
+     * 调用底层播放器的停止播放
+     */
+    private void transferStop() {
+        if (!MediaPlayer.isPSIJK) {
             vPlayer.stop();
+        } else {
+            vPlayer.psStop();
         }
     }
 
