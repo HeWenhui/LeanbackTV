@@ -94,7 +94,7 @@ public class LiveQueConfig {
             // 2
             SHOW_CONTROL_TYPES.add(LiveQueConfig.EN_COURSE_TYPE_CHOICE);
             // 11
-            SHOW_CONTROL_TYPES.add(LiveQueConfig.EN_COURSE_TYPE_OUT);
+//            SHOW_CONTROL_TYPES.add(LiveQueConfig.EN_COURSE_TYPE_OUT);
             // 18
             SHOW_CONTROL_TYPES.add(LiveQueConfig.EN_COURSE_TYPE_18);
             // 19

@@ -692,9 +692,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         NewCourseSec.Test test = tests.get(0);
         JSONArray userAnswerContent = test.getUserAnswerContent();
         JSONArray userAnswerArray = new JSONArray();
-        int testNum = 0;
+        int length = 0;
         if (userAnswerContent != null) {
-            testNum = userAnswerContent.length();
+            length = userAnswerContent.length();
             for (int j = 0; j < userAnswerContent.length(); j++) {
                 JSONObject userAnswer = new JSONObject();
                 try {
@@ -732,7 +732,13 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 userAnswerArray.put(userAnswer);
             }
         }
-        logger.d("submitVoice:testNum=" + testNum);
+        int testNum;
+        if (length == 0) {
+            testNum = detailInfo.id.split("_").length;
+        } else {
+            testNum = length;
+        }
+        mLogtf.d("submitVoice:testNum=" + testNum + ",length=" + length);
         detailInfo.num = testNum;
         englishH5CoursewareSecHttp.submitCourseWareTests(detailInfo, isforce, nonce, entranceTime, "" + userAnswerArray, new AbstractBusinessDataCallBack() {
             @Override
