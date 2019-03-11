@@ -720,6 +720,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     userAnswer.put("wrongnum", "" + answer.optString("wrongnum"));
                     userAnswer.put("answernums", "" + rightAnswerContent2.length());
                     userAnswer.put("isright", "" + answer.getJSONArray("isRight").optString(0));
+                    userAnswer.put("times", "" + answer.optInt("times", -1));
                 } catch (JSONException e) {
                     e.printStackTrace();
                     logger.d("submitVoice", e);
@@ -1300,7 +1301,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     mGoldNum = entity.getGold();
                     if (allowTeamPk) {
                         // TODO 战队pk能量
-                        mEnergyNum = entity.getIsRight() == 2 ? 10 : 5;
+                        mEnergyNum = entity.getEnergy();
                     }
                     PrimaryScienceAnserResultPager primaryScienceAnserResultPager = new PrimaryScienceAnserResultPager(mContext, entity, new PrimaryScienceAnserResultPager.OnNativeResultPagerClose() {
                         @Override

@@ -23,7 +23,7 @@ public class PrimaryScienceAnswerResultEntity {
      * 界面上分别对应蓝色、红色、橘色的主题色
      */
     int type;
-    int isRight;
+    int energy;
 
     List<Answer> answerList = new ArrayList<>();
 
@@ -67,12 +67,12 @@ public class PrimaryScienceAnswerResultEntity {
 
     }
 
-    public int getIsRight() {
-        return isRight;
+    public int getEnergy() {
+        return energy;
     }
 
-    public void setIsRight(int isRight) {
-        this.isRight = isRight;
+    public void setEnergy(int energy) {
+        this.energy = energy;
     }
 
     public int getGold() {
