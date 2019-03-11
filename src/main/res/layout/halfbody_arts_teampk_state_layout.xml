@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:text="对手"
-            android:textSize="12sp"
+            android:textSize="12dp"
             android:layout_marginLeft="3dp"
             android:textColor="@color/COLOR_EEF7C4"
             android:layout_toRightOf="@id/tv_teampk_pkstate_otherteam_energy"
@@ -110,7 +110,7 @@
             android:layout_width="32dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
-            android:textSize="14sp"
+            android:textSize="14dp"
             android:layout_gravity="center_vertical"
             android:text="0"
             android:gravity="center"
@@ -145,10 +145,9 @@
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="我贡献了100个能量"
             android:textColor="@color/white"
             android:layout_centerInParent="true"
-            android:textSize="14sp"
+            android:textSize="14dp"
             android:id="@id/tv_live_halfbody_energy_contribution"
             />
         
