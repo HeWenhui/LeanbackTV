@@ -122,6 +122,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private boolean showControl = false;
     /** 在网页中嵌入js，只嵌入一次 */
     private boolean addJs = false;
+    private NewCourseSec newCourseSec;
     private ArrayList<NewCourseSec.Test> tests = new ArrayList<>();
     private int currentIndex = 0;
     /** 发送getAnswer的类型 */
@@ -207,7 +208,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     mLogtf.d("onViewDetachedFromWindow:reloadurl=" + wvSubjectWeb.getUrl() + ",,time=" + (System
                             .currentTimeMillis() - before));
                 }
-                if (allowTeamPk) {
+                if (allowTeamPk && newCourseSec != null && newCourseSec.getIsAnswer() == 0) {
                     LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum, mEnergyNum, LiveRoomH5CloseEvent
                             .H5_TYPE_COURSE, id);
                     if (mEnglishH5CoursewareBll != null) {
@@ -344,6 +345,10 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
 
     @Override
     public String getUrl() {
+        if (isArts == LiveVideoSAConfig.ART_SEC || isArts == LiveVideoSAConfig.ART_CH) {
+            String queskey = ("" + englishH5Entity.getPackageId()).hashCode() + "-" + ("" + englishH5Entity.getReleasedPageInfos()).hashCode();
+            return queskey;
+        }
         return url;
     }
 
@@ -942,7 +947,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         englishH5CoursewareSecHttp.getCourseWareTests(detailInfo, new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
-                NewCourseSec newCourseSec = (NewCourseSec) objData[0];
+                newCourseSec = (NewCourseSec) objData[0];
                 logger.d("onDataSucess:newCourseSec=" + newCourseSec);
                 if (newCourseSec.getIsAnswer() == 1 && !isPlayBack) {
                     showScienceAnswerResult(0);
@@ -1300,7 +1305,6 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     PrimaryScienceAnswerResultEntity entity = (PrimaryScienceAnswerResultEntity) objData[0];
                     mGoldNum = entity.getGold();
                     if (allowTeamPk) {
-                        // TODO 战队pk能量
                         mEnergyNum = entity.getEnergy();
                     }
                     PrimaryScienceAnserResultPager primaryScienceAnserResultPager = new PrimaryScienceAnserResultPager(mContext, entity, new PrimaryScienceAnserResultPager.OnNativeResultPagerClose() {
