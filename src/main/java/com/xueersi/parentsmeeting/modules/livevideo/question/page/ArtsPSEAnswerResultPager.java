@@ -13,8 +13,12 @@ import android.os.Build;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.view.ViewTreeObserver;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.AnimationUtils;
@@ -34,12 +38,15 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsAnswerResultLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsAnswerStateLottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerResultStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.IArtsAnswerRsultDisplayer;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ArtsAnswerTextView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 文科小学英语答题结果页面
@@ -82,27 +89,22 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
     private RecyclerView recyclerView;
     private RelativeLayout rlAnswerRootLayout;
     private ImageView ivLookAnswer;
-    private AnswerResultAdapter mAdapter;
     private int mRecyclHeight;
     private AnswerResultEntity mData;
-
     private final String BG_COLOR = "#CC000000";
-
-
     /** 当前答案状态 */
     private int resultType;
 
-    private static final int RESULT_TYPE_CORRECT = 2;
-    private static final int RESULT_TYPE_PART_CORRECT = 1;
-    private static final int RESULT_TYPE_ERRRO = 0;
+    public static final int RESULT_TYPE_CORRECT = 2;
+    public static final int RESULT_TYPE_PART_CORRECT = 1;
+    public static final int RESULT_TYPE_ERRRO = 0;
     private AnswerResultStateListener mStateListener;
 
-    public ArtsPSEAnswerResultPager(Context context, AnswerResultEntity entity, AnswerResultStateListener stateListener) {
+    public ArtsPSEAnswerResultPager(Context context, AnswerResultEntity entity,AnswerResultStateListener stateListener) {
         super(context);
         mData = entity;
         this.mStateListener = stateListener;
     }
-
 
     @Override
     public View initView() {
@@ -144,33 +146,35 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
         String lottieJsonPath = null;
         String titleFilePath = null;
         String titleBgPath = null;
+        final LottieEffectInfo lottieEffectInfo;
+        logger.d("showAnswerReuslt:resultType=" + resultType);
 
-        if (resultType == RESULT_TYPE_CORRECT) {
+        if(resultType == RESULT_TYPE_CORRECT){
             lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/data.json";
             titleFilePath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/images/img_15.png";
             titleBgPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/images/img_16.png";
 
-        } else if (resultType == RESULT_TYPE_PART_CORRECT) {
+        }else if(resultType == RESULT_TYPE_PART_CORRECT){
             lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_part_correct/data.json";
             titleFilePath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_part_correct/images/img_15.png";
             titleBgPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_part_correct/images/img_16.png";
-        } else {
+        }else {
 
             lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_error/data.json";
             titleFilePath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_error/images/img_15.png";
             titleBgPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_error/images/img_16.png";
         }
-
         final ArtsAnswerStateLottieEffectInfo effectInfo = new ArtsAnswerStateLottieEffectInfo(lottieResPath,
                 lottieJsonPath, "img_14.png", "img_15.png", "img_16.png");
 
         effectInfo.setTilteFilePath(titleFilePath);
         effectInfo.setTitleBgFilePath(titleBgPath);
-        effectInfo.setCoinStr("+" + mData.getGold());
+        effectInfo.setCoinStr("+"+mData.getGold());
         animationView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext));
         animationView.setImageAssetDelegate(new ImageAssetDelegate() {
             @Override
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                logger.d("showAnswerReuslt:FileName=" + lottieImageAsset.getFileName());
                 return effectInfo.fetchBitmapFromAssets(animationView, lottieImageAsset.getFileName(),
                         lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(),
                         mContext);
@@ -205,51 +209,105 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
     }
 
 
+
+    int latestMeasuerWidth;
     /**
      * 添加 关闭 按钮
      */
     private void addCloseBtn() {
         closeBtnAdded = true;
-        ImageView closeBtn = new ImageView(mContext);
-        closeBtn.setImageResource(R.drawable.selector_live_answer_result_close);
-        closeBtn.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        int hieght = SizeUtils.Dp2Px(mContext, CLOSEBTN_HEIGHT);
-        int width = SizeUtils.Dp2Px(mContext, CLOSEBTN_WIDTH);
-
-        Point point = new Point();
-        ((Activity) mContext).getWindowManager().getDefaultDisplay().getSize(point);
-        int screenWidth = Math.min(point.x, point.y);
-        int screenHeight = Math.max(point.x, point.y);
-
-        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(width, hieght);
-        layoutParams.topMargin = (int) (screenWidth * 0.122f);
-        layoutParams.rightMargin = (int) (screenHeight * 0.180f);
-        layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        rlAnswerRootLayout.addView(closeBtn, layoutParams);
-
+        final ImageView closeBtn = mView.findViewById(R.id.iv_arts_answer_result_close_btn);
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 logger.e("========> close Btn called:");
-                hideAnswerReuslt();
+                if (mData.isVoice == 1) {
+                    if (mStateListener != null) {
+                        mStateListener.onAutoClose(ArtsPSEAnswerResultPager.this);
+                    }
+                }else {
+                    closeReusltUi();
+                }
             }
         });
 
-        ScaleAnimation scaleAnimation = (ScaleAnimation) AnimationUtils.loadAnimation(mContext, R.anim.anim_livevideo_close_btn_in);
-        scaleAnimation.setInterpolator(new SpringScaleInterpolator(0.23f));
-        closeBtn.startAnimation(scaleAnimation);
+
+
+       final ViewTreeObserver viewTreeObserver=resultAnimeView.getViewTreeObserver();
+        viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if(resultAnimeView.getMeasuredWidth() > 0  && latestMeasuerWidth != resultAnimeView.getMeasuredWidth()){
+                    latestMeasuerWidth = resultAnimeView.getMeasuredWidth();
+                    int designWidth = SizeUtils.Dp2Px(resultAnimeView.getContext(),640f);
+                    int designHeight = SizeUtils.Dp2Px(resultAnimeView.getContext(),360f);
+                    float scaleX = (latestMeasuerWidth*1.0f)/designWidth;
+                    float scaleY =  (resultAnimeView.getMeasuredHeight()*1.0f) / designHeight;
+                    float scale = Math.min(scaleX,scaleY);
+                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) closeBtn.getLayoutParams();
+                    int offset = (int) ((1.0f -scale) * SizeUtils.Dp2Px(resultAnimeView.getContext(),35f));
+                    params.rightMargin = (int) (SizeUtils.Dp2Px(resultAnimeView.getContext(),120f) *scale)-offset;
+                    params.topMargin = (int) (SizeUtils.Dp2Px(resultAnimeView.getContext(),45f)/scale) + offset;
+                    params.addRule(RelativeLayout.ALIGN_TOP,R.id.lv_arts_answer_result_pse);
+                    LayoutParamsUtil.setViewLayoutParams(closeBtn,params);
+
+                    if(closeBtn.getVisibility() != View.VISIBLE){
+                        closeBtn.setVisibility(View.VISIBLE);
+                        ScaleAnimation scaleAnimation = (ScaleAnimation) AnimationUtils.loadAnimation(mContext, R.anim.anim_livevideo_close_btn_in);
+                        scaleAnimation.setInterpolator(new SpringScaleInterpolator(0.23f));
+                        closeBtn.startAnimation(scaleAnimation);
+                    }
+                    //语音答题倒计时按钮位置
+                    if(mData.isVoice == 1){
+                        TextView tvClose = mView.findViewById(R.id.tv_arts_answer_result_pse_close);
+                        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) tvClose.getLayoutParams();
+                        layoutParams.bottomMargin = (int) (SizeUtils.Dp2Px(resultAnimeView.getContext(),85f)/scale);
+                        layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
+                        layoutParams.addRule(RelativeLayout.ALIGN_BOTTOM,R.id.lv_arts_answer_result_pse);
+                        LayoutParamsUtil.setViewLayoutParams(tvClose,layoutParams);
+                    }
+                }
+            }
+        });
+
+        if (mData.isVoice == 1){
+            final TextView tvClose = mView.findViewById(R.id.tv_arts_answer_result_pse_close);
+            tvClose.setVisibility(View.VISIBLE);
+            final AtomicInteger integer = new AtomicInteger(5);
+            setCloseText(tvClose, integer);
+            tvClose.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    int count = integer.decrementAndGet();
+                    if (count == 0) {
+                        answerListShowing = false;
+                        if (mStateListener != null) {
+                            mStateListener.onAutoClose(ArtsPSEAnswerResultPager.this);
+                        } else {
+                            ViewGroup group = (ViewGroup) mView.getParent();
+                            group.removeView(mView);
+                        }
+                    } else {
+                        setCloseText(tvClose, integer);
+                        tvClose.postDelayed(this, 1000);
+                    }
+                }
+            }, 1000);
+        }
     }
 
+    private void setCloseText(TextView textView, AtomicInteger integer) {
+        textView.setText(integer + "s后关闭");
+    }
 
     /**
      * 隐藏 答题结果
      */
-    private void hideAnswerReuslt() {
-        ivLookAnswer.setVisibility(View.VISIBLE);
-        rlAnswerRootLayout.setVisibility(View.INVISIBLE);
-        mView.setBackgroundColor(Color.TRANSPARENT);
+    private void closeReusltUi() {
+      if(mStateListener != null){
+          mStateListener.onCloseByUser();
+      }
     }
-
 
     /**
      * 显示 答题结果
@@ -260,7 +318,6 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
         mView.setBackgroundColor(Color.parseColor(BG_COLOR));
     }
 
-
     private boolean answerListShowing = false;
     private boolean closeBtnAdded = false;
 
@@ -268,7 +325,6 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
      * 展示答题详情
      */
     private void displayDetailUi() {
-
         // addCloseBtn();
         String lottieResPath = null;
         String lottieJsonPath = null;
@@ -287,7 +343,6 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
             lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_error/data.json";
         }
 
-
         final ArtsAnswerResultLottieEffectInfo effectInfo = new ArtsAnswerResultLottieEffectInfo(lottieResPath,
                 lottieJsonPath);
         resultAnimeView.useHardwareAcceleration();
@@ -305,19 +360,72 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 if (animation.getAnimatedFraction() >= FRACTION_RECYCLERVIEW_IN && !answerListShowing) {
-                    showAnswerList();
+                    if (1 == mData.isVoice) {
+                        showAnswer();
+                    } else {
+                        showAnswerList();
+                    }
                 }
-
-
                 if (animation.getAnimatedFraction() >= FRACTION_SHOW_CLOSEBTN && !closeBtnAdded) {
-
                     addCloseBtn();
                 }
-
             }
         });
     }
 
+    private void showAnswer() {
+        answerListShowing = true;
+        ViewStub vs_arts_answer_result_voice = rlAnswerRootLayout.findViewById(R.id.vs_arts_answer_result_voice);
+        logger.d("showAnswer:vs_arts_answer_result_voice=" + vs_arts_answer_result_voice);
+        if (vs_arts_answer_result_voice == null) {
+            return;
+        }
+        View view = vs_arts_answer_result_voice.inflate();
+        TextView tv_arts_answer_result_voice_my = view.findViewById(R.id.tv_arts_answer_result_voice_my);
+        TextView tv_arts_answer_result_voice_right = view.findViewById(R.id.tv_arts_answer_result_voice_right);
+//        AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(mContext, R.anim
+//                .anim_livevido_arts_answer_result_alpha_in);
+//        view.startAnimation(alphaAnimation);
+        List<AnswerResultEntity.Answer> answerList = mData.getAnswerList();
+        if (answerList.size() == 1) {
+            AnswerResultEntity.Answer answer = answerList.get(0);
+            String myAnswer = "";
+//            if (AnswerResultEntity.TEST_TYPE_2 == answer.getTestType()) {
+//                List<String> choiceList = answer.getChoiceList();
+//                if (choiceList != null) {
+//                    for (int i = 0; i < choiceList.size(); i++) {
+//                        myAnswer += choiceList.get(i);
+//                    }
+//                }
+//            } else {
+//                tv_arts_answer_result_voice_my.setVisibility(View.GONE);
+//            }
+            List<String> choiceList = answer.getChoiceList();
+            if (choiceList != null) {
+                for (int i = 0; i < choiceList.size(); i++) {
+                    myAnswer += choiceList.get(i);
+                }
+            }
+            SpannableString spannableStringBuilder = new SpannableString("你的答案：" + myAnswer);
+            if (answer.getIsRight() == 0) {
+                spannableStringBuilder.setSpan(new ForegroundColorSpan(0xFFE65453), 5, spannableStringBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            } else {
+                spannableStringBuilder.setSpan(new ForegroundColorSpan(0xFF77AF1F), 5, spannableStringBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+            tv_arts_answer_result_voice_my.setText(spannableStringBuilder);
+            String rightAnswer = "";
+            List<String> rightAnswers = answer.getRightAnswers();
+            if (rightAnswers != null) {
+                for (int i = 0; i < rightAnswers.size(); i++) {
+                    rightAnswer += rightAnswers.get(i);
+                }
+            }
+            spannableStringBuilder = new SpannableString("正确答案：" + rightAnswer);
+            spannableStringBuilder.setSpan(new ForegroundColorSpan(0xFF77AF1F), 5, spannableStringBuilder.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            tv_arts_answer_result_voice_right.setText(spannableStringBuilder);
+        }
+        mStateListener.onCompeletShow();
+    }
 
     private void showAnswerList() {
 
@@ -330,7 +438,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
 
         recyclerView.setLayoutManager(new GridLayoutManager(mContext, SPAN_COUNT, LinearLayoutManager.VERTICAL,
                 false));
-        mAdapter = new AnswerResultAdapter(mData.getAnswerList());
+        final AnswerResultAdapter mAdapter = new AnswerResultAdapter(mData.getAnswerList());
         recyclerView.setAdapter(mAdapter);
         recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
 
@@ -358,7 +466,6 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                 }
             }
         });
-
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
         Point point = new Point();
         ((Activity) mContext).getWindowManager().getDefaultDisplay().getSize(point);
@@ -371,11 +478,9 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
 
     @Override
     public void onClick(View v) {
-
         if (v.getId() == R.id.iv_arts_answer_result_answer_btn) {
             revealAnswerResult();
         }
-
     }
 
     private static class ItemHolder extends RecyclerView.ViewHolder {

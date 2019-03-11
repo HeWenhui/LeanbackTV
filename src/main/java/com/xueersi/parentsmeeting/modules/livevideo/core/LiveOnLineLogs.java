@@ -5,7 +5,12 @@ package com.xueersi.parentsmeeting.modules.livevideo.core;
  * 直播日志
  */
 public interface LiveOnLineLogs {
-    void getOnloadLogs(String TAG, final String str);
 
-    String getPrefix();
+    void getOnloadLogs(String TAG, String str);
+
+    void getOnloadLogs(String TAG, String str, Throwable e);
+
+    void saveOnloadLogs(String TAG, String str);
+
+    void saveOnloadLogs(String TAG, String str, Throwable e);
 }

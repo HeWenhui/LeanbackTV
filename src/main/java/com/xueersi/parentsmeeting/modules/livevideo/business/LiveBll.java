@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.View;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
@@ -25,11 +24,7 @@ import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.EnglishSpeekHttp;
-import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
@@ -45,30 +40,24 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveArtsHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveLogCallback;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveScienceHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnReportHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.lecadvert.business.LecAdvertHttp;
-import com.xueersi.parentsmeeting.modules.livevideo.leclearnreport.business.LecLearnReportHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
-import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseListAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSwitch;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.SpeechEvalAction;
-import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallAction;
 import com.xueersi.parentsmeeting.modules.livevideo.rollcall.business.RollCallBll;
 import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.business.SpeechFeedBackHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
-import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatHttp;
 import com.xueersi.ui.dataload.PageDataLoadEntity;
 
 import org.json.JSONException;
@@ -88,7 +77,7 @@ import okhttp3.Call;
  *
  * @author linyuqiang
  */
-public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, QuestionHttp, LiveAchievementHttp, EnglishSpeekHttp, EnglishH5CoursewareHttp, SpeechFeedBackHttp, LearnReportHttp, LecAdvertHttp, LiveOnLineLogs {
+public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, QuestionHttp, EnglishH5CoursewareHttp, SpeechFeedBackHttp, LearnReportHttp, LecAdvertHttp {
     private String TAG = "LiveBllLog";
     /** 互动题 */
     private QuestionAction mQuestionAction;
@@ -96,8 +85,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     private RollCallAction mRollCallAction;
     /** 视频事件 */
     private VideoAction mVideoAction;
-    /** 表扬榜事件 */
-    private PraiseListAction mPraiseListAction;
 
     private LiveHttpManager mHttpManager;
     private LiveHttpResponseParser mHttpResponseParser;
@@ -203,7 +190,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpManager.addBodyParam("form", "" + form);
         mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(TAG, this);
+        mLogtf = new LogToFile(context,TAG);
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         if (liveGetInfo != null) {
@@ -219,7 +206,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         mHttpManager = new LiveHttpManager(mContext);
         mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(TAG, this);
+        mLogtf = new LogToFile(context,TAG);
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
@@ -236,7 +223,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         mHttpManager = new LiveHttpManager(mContext);
         mHttpManager.addBodyParam("liveId", vSectionID);
         mHttpResponseParser = new LiveHttpResponseParser(context);
-        mLogtf = new LogToFile(TAG, this);
+        mLogtf = new LogToFile(context,TAG);
         mLogtf.clear();
         netWorkType = NetWorkHelper.getNetWorkState(context);
         if (type != LiveVideoConfig.LIVE_TYPE_LIVE) {
@@ -246,11 +233,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
 
     public void setLivePlayLog(LivePlayLog livePlayLog) {
         this.livePlayLog = livePlayLog;
-    }
-
-    @Override
-    public String getPrefix() {
-        return "OL";
     }
 
     /**
@@ -468,16 +450,16 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
 
     /**
      * 提交测试题
-     *
-     * @param liveBasePager
+     *  @param liveBasePager
      * @param videoQuestionLiveEntity
      * @param liveId
      * @param testAnswer
      * @param isRight
+     * @param isSubmit
      */
     @Override
     public void liveSubmitTestAnswer(final LiveBasePager liveBasePager, final VideoQuestionLiveEntity videoQuestionLiveEntity, String liveId, String
-            testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut) {
+            testAnswer, final boolean isVoice, boolean isRight, final QuestionSwitch.OnAnswerReslut answerReslut, String isSubmit) {
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mLogtf.d("liveSubmitTestAnswer:enstuId=" + enstuId + "," + videoQuestionLiveEntity.srcType + ",testId=" +
                 videoQuestionLiveEntity.id + ",liveId=" + liveId + ",testAnswer="
@@ -790,10 +772,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
         this.mVideoAction = videoAction;
     }
 
-    public void setPraiseListAction(PraiseListAction mPraiseListAction) {
-        this.mPraiseListAction = mPraiseListAction;
-    }
-
     /**
      * 是否是 高三 理科直播 （展示不同聊天 内容：高三理科 以 班级为单位展示,）
      *
@@ -1045,10 +1023,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
             mIRCMessage.setCallback(null);
             mIRCMessage.destory();
         }
-        if (mPraiseListAction != null) {
-            mPraiseListAction.destory();
-            mPraiseListAction = null;
-        }
         isAllowTeamPk = false;
     }
 
@@ -1181,38 +1155,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
             public void onPmError(ResponseEntity responseEntity) {
                 mLogtf.d("praiseTeacher:onPmFailure:responseEntity=" + responseEntity.getErrorMsg());
                 callBack.onPmError(responseEntity);
-            }
-        });
-    }
-
-    @Override
-    public void setStuStarCount(final long reTryTime, final String starId, final AbstractBusinessDataCallBack
-            callBack) {
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        mHttpManager.setStuStarCount(mLiveType, enstuId, mLiveId, starId, new HttpCallBack() {
-
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) {
-                callBack.onDataSucess();
-                mLogtf.d("setStuStarCount:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
-            }
-
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                callBack.onDataFail(1, msg);
-                mLogtf.d("setStuStarCount:onPmFailure:msg=" + msg);
-                postDelayedIfNotFinish(new Runnable() {
-                    @Override
-                    public void run() {
-                        setStuStarCount(reTryTime + 1000, starId, callBack);
-                    }
-                }, reTryTime);
-            }
-
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                callBack.onDataFail(2, responseEntity.getErrorMsg());
-                mLogtf.d("setStuStarCount:onPmFailure:responseEntity=" + responseEntity.getErrorMsg());
             }
         });
     }
@@ -1598,7 +1540,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     }
 
     @Override
-    public void sendSpeechEvalResult2(final String id, final String stuAnswer, final OnSpeechEval onSpeechEval) {
+    public void sendSpeechEvalResult2(final String id, final String stuAnswer, String isSubmit, final OnSpeechEval onSpeechEval) {
         String liveid = mGetInfo.getId();
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         mHttpManager.sendSpeechEvalResult2(enstuId, liveid, id, stuAnswer, new HttpCallBack(false) {
@@ -1682,7 +1624,7 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
     }
 
     @Override
-    public void getStuGoldCount() {
+    public void getStuGoldCount(String method) {
         postDelayedIfNotFinish(new Runnable() {
             @Override
             public void run() {
@@ -1708,39 +1650,6 @@ public class LiveBll extends BaseBll implements LiveAndBackDebug, IRCState, Ques
                 });
             }
         }, 500);
-    }
-
-    @Override
-    public void setTotalOpeningLength(final long reTryTime, final String duration, final String speakingNum, final
-    String speakingLen, final float x, final float y) {
-        String liveid = mGetInfo.getId();
-        String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
-        String classId = mGetInfo.getStudentLiveInfo().getClassId();
-        mHttpManager.setTotalOpeningLength(enstuId, courseId, liveid, classId, duration, speakingNum, speakingLen,
-                new HttpCallBack(false) {
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        logger.d("setTotalOpeningLength:onPmSuccess" + responseEntity.getJsonObject());
-                    }
-
-                    @Override
-                    public void onFailure(Call call, IOException e) {
-                        logger.d("setTotalOpeningLength:onFailure");
-                        super.onFailure(call, e);
-                        postDelayedIfNotFinish(new Runnable() {
-                            @Override
-                            public void run() {
-                                setTotalOpeningLength(reTryTime + 1000, duration, speakingNum, speakingLen, x, y);
-                            }
-                        }, reTryTime);
-                    }
-
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-                        logger.d("setTotalOpeningLength:onPmError" + responseEntity.getErrorMsg());
-                        super.onPmError(responseEntity);
-                    }
-                });
     }
 
     public void setNotOpeningNum() {

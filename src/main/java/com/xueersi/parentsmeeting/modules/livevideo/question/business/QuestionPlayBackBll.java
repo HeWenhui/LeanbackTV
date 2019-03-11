@@ -122,7 +122,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         int vCategory = questionEntity.getvCategory();
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_QUESTION: {
-                questionBll.onStopQuestion(questionEntity.getvQuestionType(), "");
+                questionBll.onStopQuestion("PlayBack:onQuestionEnd1", questionEntity.getvQuestionType(), "");
             }
             break;
             case LocalCourseConfig.CATEGORY_EXAM: {
@@ -132,7 +132,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             case LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE: {
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                 EventBus.getDefault().post(new LiveBackQuestionEvent(QUSTION_CLOSE, videoQuestionLiveEntity));
-                questionBll.onStopQuestion(questionEntity.getvQuestionType(), "");
+                questionBll.onStopQuestion("PlayBack:onQuestionEnd3", questionEntity.getvQuestionType(), "");
             }
             break;
         }
@@ -182,7 +182,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !"1".equals(videoQuestionLiveEntity.multiRolePlay)) {
                     logger.i("走人机start,拉取试题");
                     RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, liveBackBll, liveGetInfo);
-                    questionBll.setRolePlayMachineAction(rolePlayerBll);
+                    questionBll.setRolePlayMachineAction(rolePlayerBll, null);
 
                 }
 
@@ -265,7 +265,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                         if ("5".equals(videoQuestionLiveEntity.type)) {
                             logger.i("yzl_init new rolePlay bll");
                             RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, liveBackBll, liveGetInfo);
-                            questionBll.setRolePlayMachineAction(rolePlayerBll);
+                            questionBll.setRolePlayMachineAction(rolePlayerBll, null);
                         }
                         videoQuestionLiveEntity.setNewArtsCourseware(true);
                         videoQuestionLiveEntity.setvQuestionInsretTime(questionEntity.getvQuestionInsretTime());
@@ -295,7 +295,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
     }
 
     @Override
-    public void getStuGoldCount() {
+    public void getStuGoldCount(String method) {
 //回放没有
     }
 
@@ -313,7 +313,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
     @Override
     public void liveSubmitTestAnswer(final LiveBasePager liveBasePager, final VideoQuestionLiveEntity
             videoQuestionLiveEntity1, String mVSectionID, String testAnswer, final boolean isVoice, boolean isRight,
-                                     final QuestionSwitch.OnAnswerReslut answerReslut) {
+                                     final QuestionSwitch.OnAnswerReslut answerReslut, String isSubmit) {
         DataLoadEntity loadEntity = new DataLoadEntity(mContext);
         loadEntity.setLoadingTip(R.string.loading_tip_default);
         BaseBll.postDataLoadEvent(loadEntity.beginLoading());
@@ -486,13 +486,13 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
 
     /**
      * 发送语音评测
-     *
-     * @param id
+     *  @param id
      * @param stuAnswer
+     * @param isSubmit
      * @param onSpeechEval
      */
     @Override
-    public void sendSpeechEvalResult2(String id, String stuAnswer, final OnSpeechEval onSpeechEval) {
+    public void sendSpeechEvalResult2(String id, String stuAnswer, String isSubmit, final OnSpeechEval onSpeechEval) {
         String liveid = mVideoEntity.getLiveId();
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
         HttpCallBack httpCallBack = new HttpCallBack(false) {
@@ -525,7 +525,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
 //        if (!liveBackBll.getExperience()) {
 //            getCourseHttpManager().sendSpeechEvalResult(enstuId, liveid, id, stuAnswer, times, entranceTime,
 //                    httpCallBack);
-        getCourseHttpManager().sendSpeechEvalResult2(enstuId, liveid, id, stuAnswer, httpCallBack);
+        getCourseHttpManager().sendSpeechEvalResult2(enstuId, liveid, id, stuAnswer, httpCallBack, isSubmit);
 //    } else
 
 //    {

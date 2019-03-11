@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.pager;
+package com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.pager;
 
 import android.content.Context;
 import android.os.CountDownTimer;
@@ -16,9 +16,9 @@ import android.widget.TextView;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.lib.framework.utils.listener.OnUnDoubleClickListener;
 import com.xueersi.lib.imageloader.ImageLoader;
-import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.bussiness.IButtonOnClick;
-import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.bussiness.IShowEvaluateAction;
-import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.entity.EvaluateOptionEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.IButtonOnClick;
+import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.IShowEvaluateAction;
+import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.entity.EvaluateOptionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;

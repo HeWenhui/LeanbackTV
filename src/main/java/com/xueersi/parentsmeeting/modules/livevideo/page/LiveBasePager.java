@@ -27,6 +27,7 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
     protected LiveAndBackDebug mLiveBll;
     protected LivePagerBack livePagerBack;
     protected BaseVideoQuestionEntity baseVideoQuestionEntity;
+    protected OnPagerClose onPagerClose;
 
     public LiveBasePager(Context context) {
         super(context);
@@ -67,6 +68,10 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
 
     public void setLivePagerBack(LivePagerBack livePagerBack) {
         this.livePagerBack = livePagerBack;
+    }
+
+    public void setOnPagerClose(OnPagerClose onPagerClose) {
+        this.onPagerClose = onPagerClose;
     }
 
     public LivePagerBack getLivePagerBack() {
@@ -177,6 +182,13 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
             return true;
         }
         return false;
+    }
+
+    /**
+     * pager关闭
+     */
+    public interface OnPagerClose {
+        void onClose(LiveBasePager basePager);
     }
 
     /**
