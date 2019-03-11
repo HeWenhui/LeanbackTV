@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 public class NewCourseSec {
     private int isAnswer;
+    private int isGame;
     private long releaseTime;
     private ArrayList<Test> tests = new ArrayList<>();
 
@@ -20,6 +21,14 @@ public class NewCourseSec {
 
     public void setIsAnswer(int isAnswer) {
         this.isAnswer = isAnswer;
+    }
+
+    public int getIsGame() {
+        return isGame;
+    }
+
+    public void setIsGame(int isGame) {
+        this.isGame = isGame;
     }
 
     public long getReleaseTime() {
