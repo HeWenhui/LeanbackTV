@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.courseware;
 
 import android.content.Context;
 
-import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.network.download.DownLoadInfo;
@@ -298,7 +297,7 @@ public class CoursewarePreload {
      * @param cdns
      * @param ips
      */
-    private void exeDownLoadCourseware(List<CoursewareInfoEntity.LiveCourseware> liveCoursewares, List<String> cdns, List<String> ips) {
+    private void exeDownLoadCourseware(List<CoursewareInfoEntity.LiveCourseware> liveCoursewares, List<String> cdns, final List<String> ips) {
 
         StringBuilder liveIds = new StringBuilder("");
         for (CoursewareInfoEntity.LiveCourseware liveCourseware : liveCoursewares) {
@@ -331,7 +330,7 @@ public class CoursewarePreload {
      * @param ips
      * @param cdns
      */
-    private void downloadCourseware(File path, List<CoursewareInfoEntity.ItemCoursewareInfo> coursewareInfos, List<String> ips, List<String> cdns) {
+    private void downloadCourseware(File path, List<CoursewareInfoEntity.ItemCoursewareInfo> coursewareInfos, final List<String> ips, List<String> cdns) {
 
         final File mMorecachein = new File(path, liveId);
         if (!mMorecachein.exists()) {
@@ -419,7 +418,7 @@ public class CoursewarePreload {
      * @param ips
      * @param cdns
      */
-    private void downloadResources(List<String> resourseInfos, List<String> cdns, List<String> ips) {
+    private void downloadResources(List<String> resourseInfos, List<String> cdns, final List<String> ips) {
         final File mPublicCacheout = new File(cacheFile, mPublicCacheoutName);
         if (!mPublicCacheout.exists()) {
             mPublicCacheout.mkdirs();
@@ -541,7 +540,7 @@ public class CoursewarePreload {
         List<String> cdns;
         List<String> ips;
 
-        public ZipDownloadListener(File mMorecachein, File mMorecacheout, String fileName, List<String> ips, List<String> cdns, String url, String md5, AtomicInteger downTryCount) {
+        public ZipDownloadListener(File mMorecachein, File mMorecacheout, String fileName, final List<String> ips, List<String> cdns, String url, String md5, AtomicInteger downTryCount) {
             this.mMorecachein = mMorecachein;
             this.mMorecacheout = mMorecacheout;
             this.mFileName = fileName;
@@ -603,10 +602,13 @@ public class CoursewarePreload {
                 }
 //                DownLoader downLoader = new DownLoader(mContext, downLoadInfo);
 //                downLoader.start(new ZipDownloadListener(mMorecachein, mMorecacheout, mFileName, ips, cdns, url, md5, downTryCount));
+                ZipDownloadListener mZipDownloadListener = new ZipDownloadListener(mMorecachein, mMorecacheout, mFileName, ips, cdns, url, md5, downTryCount);
+                PreLoadDownLoaderManager.DownLoadInfoListener preLoadDownLoaderManager = new PreLoadDownLoaderManager.DownLoadInfoListener(downLoadInfo, mZipDownloadListener);
+
                 if (!isPrecise.get()) {
-                    PreLoadDownLoaderManager.addToAutoDownloadPool(new PreLoadDownLoaderManager.DownLoadInfoListener(downLoadInfo, this));
+                    PreLoadDownLoaderManager.addToAutoDownloadPool(preLoadDownLoaderManager);
                 } else {
-                    PreLoadDownLoaderManager.addUrgentInfo(new PreLoadDownLoaderManager.DownLoadInfoListener(downLoadInfo, this));
+                    PreLoadDownLoaderManager.addUrgentInfo(preLoadDownLoaderManager);
                 }
             }
 
@@ -628,7 +630,7 @@ public class CoursewarePreload {
         List<String> cdns;
         List<String> ips;
 
-        public NoZipDownloadListener(File mMorecachein, File mMorecacheout, String fileName, List<String> ips, List<String> cdns, String url, String md5, AtomicInteger downTryCount) {
+        public NoZipDownloadListener(File mMorecachein, File mMorecacheout, String fileName, final List<String> ips, List<String> cdns, String url, String md5, AtomicInteger downTryCount) {
             this.mMorecachein = mMorecachein;
             this.mMorecacheout = mMorecacheout;
             this.mFileName = fileName;
@@ -682,7 +684,8 @@ public class CoursewarePreload {
                 if (isIP) {
                     downLoadInfo.setHost(cdns.get(cdnPos.get() % cdnLength.get()).substring(index));
                 }
-                PreLoadDownLoaderManager.DownLoadInfoListener downLoadInfoListener = new PreLoadDownLoaderManager.DownLoadInfoListener(downLoadInfo, this);
+                PreLoadDownLoaderManager.DownLoadInfoListener downLoadInfoListener = new PreLoadDownLoaderManager.DownLoadInfoListener(downLoadInfo,
+                        new NoZipDownloadListener(mMorecachein, mMorecacheout, mFileName, ips, cdns, url, md5, downTryCount));
                 if (!isPrecise.get()) {
                     PreLoadDownLoaderManager.addToAutoDownloadPool(downLoadInfoListener);
                 } else {

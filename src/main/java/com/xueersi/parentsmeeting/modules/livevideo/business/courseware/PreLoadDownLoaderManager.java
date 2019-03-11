@@ -67,8 +67,9 @@ public class PreLoadDownLoaderManager {
         if (!isUrgent.get()) {
             isUrgent.set(true);
         }
+
         downLoadInfoListeners.add(downLoadInfo);
-        startAutoDownload();
+//        startAutoDownload();
     }
 
     /**
@@ -83,9 +84,15 @@ public class PreLoadDownLoaderManager {
             return;
         }
         synchronized (sLockObject) {
+
+
+            // 如果有已经在下载的任务则不下载
+            if (!TextUtils.isEmpty(sDownUrl)) {
+//                logger.i("如果有已经在下载的任务则不下载");
+                return;
+            }
             DownLoadInfo info;
             final DownloadListener realDownLoadListener;
-
             if (isUrgent.get() && downLoadInfoListeners.size() > 0) {
                 info = downLoadInfoListeners.get(0).getDownLoadInfo();
                 realDownLoadListener = downLoadInfoListeners.get(0).getListener();
@@ -104,11 +111,6 @@ public class PreLoadDownLoaderManager {
 
             if (info == null || TextUtils.isEmpty(info.getUrl())) {
                 logger.i("info or url is null");
-                return;
-            }
-            // 如果有已经在下载的任务则不下载
-            if (!TextUtils.isEmpty(sDownUrl)) {
-//                logger.i("如果有已经在下载的任务则不下载");
                 return;
             }
 
@@ -249,7 +251,7 @@ public class PreLoadDownLoaderManager {
      * 添加任务到自动下载池
      */
     private static void addDownloaderToPool(String key,
-                                            DownLoadInfoListener downLoadInfo) {
+                                           DownLoadInfoListener downLoadInfo) {
         synchronized (sLockObject) {
             if (!sAutoDownloaderPool.containsKey(key)) {
                 sAutoDownloaderPool.put(key, downLoadInfo);
