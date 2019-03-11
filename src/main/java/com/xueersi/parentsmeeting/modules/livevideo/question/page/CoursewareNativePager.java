@@ -1319,7 +1319,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     if (allowTeamPk) {
                         mEnergyNum = entity.getEnergy();
                     }
-                    PrimaryScienceAnserResultPager primaryScienceAnserResultPager = new PrimaryScienceAnserResultPager(mContext, entity, new PrimaryScienceAnserResultPager.OnNativeResultPagerClose() {
+                    PrimaryScienceAnserResultPager primaryScienceAnserResultPager = new PrimaryScienceAnserResultPager(mContext, entity, newCourseSec.getIsGame(), new PrimaryScienceAnserResultPager.OnNativeResultPagerClose() {
                         @Override
                         public void onClose() {
                             onClose.onH5ResultClose(CoursewareNativePager.this, getBaseVideoQuestionEntity());

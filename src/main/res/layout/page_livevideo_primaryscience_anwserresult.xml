@@ -9,6 +9,7 @@
         android:layout_width="445dp"
         android:layout_height="205dp"
         android:layout_centerHorizontal="true"
+        android:id="@+id/rl_livevideo_primaryscience_anwserrsult_content"
         android:background="@drawable/live_interact_primary_bg">
 
         <com.xueersi.parentsmeeting.modules.livevideo.widget.FastScrollableRecyclerView
@@ -24,15 +25,6 @@
             app:VerticalTrackDrawable="@drawable/arts_rcl_fastscroller_tracker" />
 
     </RelativeLayout>
-
-    <com.airbnb.lottie.LottieAnimationView
-        android:visibility="gone"
-        android:id="@+id/lav_livevideo_primaryscience_anwserrsult_game_right"
-        android:layout_width="667dp"
-        android:layout_height="375dp"
-        android:scaleType="centerCrop"
-        app:lottie_fileName="primary_science_answer_result/game-right.json"
-        app:lottie_imageAssetsFolder="primary_science_answer_result/animation/game/right" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -62,6 +54,16 @@
             android:textSize="14dp"
             android:layout_marginTop="122.5dp"
             android:layout_marginLeft="278dp"/>
+
+        <TextView
+            android:id="@+id/tv_livevideo_primaryscience_anwerresult_gold_game"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFFEAE22"
+            android:textSize="15dp"
+            android:layout_marginTop="280dp"
+            android:layout_marginLeft="227dp"
+            android:text="sadasda"/>
 
         <ImageView
             android:layout_alignParentRight="true"
