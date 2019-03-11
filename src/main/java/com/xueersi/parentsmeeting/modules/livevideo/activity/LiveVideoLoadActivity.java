@@ -149,11 +149,11 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         return;
                     }
                     // 语文半身直播 暂不支持观看
-                    if (isChineseHalfBodyLive(mGetInfo)) {
+                  /*  if (isChineseHalfBodyLive(mGetInfo)) {
                         XESToastUtils.showToast(LiveVideoLoadActivity.this, "语文半身直播暂不支持,请升级版本");
                         AppBll.getInstance(mContext).checkPartUpdate("语文半身直播暂不支持,请升级版本");
                         return;
-                    }
+                    }*/
 
                     String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
                     getInfos.put(stuId + "-" + vStuCourseID + "-" + vSectionID, mGetInfo);
