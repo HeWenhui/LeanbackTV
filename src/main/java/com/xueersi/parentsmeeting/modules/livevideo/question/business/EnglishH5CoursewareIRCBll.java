@@ -197,6 +197,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 videoQuestionLiveEntity.time = coursewareH5.optDouble("time");
                 videoQuestionLiveEntity.setIsVoice(coursewareH5.optString("isVoice"));
                 videoQuestionLiveEntity.type = coursewareH5.optString("ptype");
+                videoQuestionLiveEntity.setArtType(videoQuestionLiveEntity.type);
                 String status = coursewareH5.optString("status", "off");
                 if ("on".equals(status)) {
                     LiveVideoConfig.isNewArts = true;
@@ -230,6 +231,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         h5OnlineTechEntity.setId(onlineTechObj.optString("id"));
                         h5OnlineTechEntity.setPtype(onlineTechObj.optString("ptype"));
                         videoQuestionLiveEntity.type = onlineTechObj.optString("ptype");
+                        videoQuestionLiveEntity.setArtType(videoQuestionLiveEntity.type);
                         videoQuestionLiveEntity.setIsVoice(onlineTechObj.optString("isVoice"));
                         h5OnlineTechEntity.setMultiRolePlay(onlineTechObj.optString("multiRolePlay"));
                         h5OnlineTechEntity.setRoles(onlineTechObj.optString("roles"));
@@ -874,10 +876,10 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
 //                        getCourseWareHttpManager().submitMultiTest("" + testInfos, 1, isforce, callBack);
 //                    }
 //                }
-                if (LiveQueConfig.getSubmitMultiTestTypes().contains(detailInfo.type)) {
+                if (LiveQueConfig.getSubmitMultiTestTypes().contains(detailInfo.getArtType())) {
                     getCourseWareHttpManager().submitMultiTest("" + testInfos, 1, isforce, callBack);
-                }else {
-                    getCourseWareHttpManager().submitH5("" + testInfos, detailInfo.num, detailInfo.id, detailInfo.voiceType, mGetInfo.getStuId(), 1, isforce, callBack);
+                } else {
+                    getCourseWareHttpManager().submitH5("" + testInfos, detailInfo.num, detailInfo.id, detailInfo.getArtType(), mGetInfo.getStuId(), 1, isforce, callBack);
                 }
             } else {
                 EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;

@@ -310,6 +310,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         if ("1".equals(isVoice)) {
             videoQuestionLiveEntity.type = questionEntity.getVoiceQuestiontype();
         }
+        videoQuestionLiveEntity.setArtType(questionEntity.getVoiceQuestiontype());
         videoQuestionLiveEntity.assess_ref = questionEntity.getAssess_ref();
         if (questionEntity.getvCategory() == 1000) {
             List<String> testIds = new ArrayList<>();

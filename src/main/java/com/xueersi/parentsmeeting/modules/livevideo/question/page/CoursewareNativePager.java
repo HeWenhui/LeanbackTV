@@ -654,7 +654,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         }
     }
 
-    private void submit(final int isforce, String nonce) {
+    private void submit(int isforce, String nonce) {
         if (loadResult) {
             if (isArts != LiveVideoSAConfig.ART_EN && (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage))) {
                 wvSubjectWeb.loadUrl(jsClientSubmit);
@@ -662,7 +662,8 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         } else {
             isSumit = true;
             if (isArts == LiveVideoSAConfig.ART_EN) {
-                submitEn(isforce, nonce);
+                int isForce = isforce == 0 ? 1 : 2;
+                submitEn(isForce, nonce);
             } else {
                 submitSec(isforce, nonce);
             }
@@ -670,7 +671,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     }
 
     private void submitEn(final int isforce, String nonce) {
-        if (LiveQueConfig.getSubmitMultiTestTypes().contains(detailInfo.type)) {
+        if (LiveQueConfig.getSubmitMultiTestTypes().contains(detailInfo.getArtType())) {
             submitMultiTest(isforce, nonce);
         } else {
 //            if (LiveQueConfig.EN_COURSE_TYPE_VOICE_BLANK.equals(detailInfo.voiceType) || LiveQueConfig.EN_COURSE_TYPE_VOICE_CHOICE.equals(detailInfo.voiceType)) {
@@ -717,7 +718,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     userAnswer.put("rightnum", "" + answer.optString("rightnum"));
                     userAnswer.put("wrongnum", "" + answer.optString("wrongnum"));
                     userAnswer.put("answernums", "" + rightAnswerContent2.length());
-                    userAnswer.put("isright", "" + answer.getJSONArray("isRight").optString(0));
+                    String isRight = answer.getJSONArray("isRight").optString(0);
+                    if ("1".equals(isRight)) {
+                        isRight = "2";
+                    }
+                    userAnswer.put("isright", isRight);
                     userAnswer.put("times", "" + answer.optInt("times", -1));
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -952,8 +957,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     }
                     if (isArts == LiveVideoSAConfig.ART_EN) {
                         NewCourseSec.Test test = tests.get(0);
-                        if ("0".equals(detailInfo.type)) {
-                            detailInfo.type = test.getTestType();
+                        mLogtf.d("getCourseWareTests:oldtype=" + detailInfo.getArtType() + ",testType=" + test.getTestType());
+                        if ("0".equals(detailInfo.getArtType())) {
+                            detailInfo.setArtType(test.getTestType());
                         }
                     }
                     showControl();

@@ -25,6 +25,8 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     public int num;
     /** 互动题类型 */
     public String type;
+    /** 英语互动题类型,新课件,避免和type冲突 */
+    private String artType;
     /** 当type=1时为选择题，choiceType 1：单选；2：多选，num为选择题数量 */
     public String choiceType;
     /** 题目来源 */
@@ -165,6 +167,14 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     @Override
     public int getvBlankSize() {
         return num;
+    }
+
+    public String getArtType() {
+        return artType;
+    }
+
+    public void setArtType(String artType) {
+        this.artType = artType;
     }
 
     public String getUrl() {
