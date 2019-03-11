@@ -28,7 +28,7 @@ public interface QuestionAction {
     void onAnswerFailure();
 
     /** 结束互动题 */
-    void onStopQuestion(String ptype, String nonce);
+    void onStopQuestion(String method, String ptype, String nonce);
 
     /** 考试开始 */
     void onExamStart(String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity);

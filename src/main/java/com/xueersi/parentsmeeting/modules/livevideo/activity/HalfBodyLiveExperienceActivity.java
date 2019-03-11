@@ -878,7 +878,8 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         learnFeedbackBll = new HalfBodyExperienceLearnFeedbackBll(activity,liveBackBll);
         liveBackBll.addBusinessBll(learnFeedbackBll);
         liveBackBll.addBusinessBll(new HalfBodyRedPackageExperienceBll(activity, liveBackBll, mVideoEntity.getChapterId()));
-        EnglishH5HalfBodyExperienceBll englishH5ExperienceBll = new EnglishH5HalfBodyExperienceBll(activity, liveBackBll,mVideoEntity.getChapterId());
+        EnglishH5HalfBodyExperienceBll englishH5ExperienceBll = new EnglishH5HalfBodyExperienceBll(activity, liveBackBll,mVideoEntity.getChapterId(),
+                mVideoEntity.getHalfBodyH5Url());
         liveBackBll.addBusinessBll(englishH5ExperienceBll);
         liveBackBll.addBusinessBll(new NBH5ExperienceBll(activity, liveBackBll));
 
@@ -925,6 +926,10 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
                 startTime = System.currentTimeMillis();
                 firstTime = false;
             }
+
+            Long keyTime = Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() -
+                    startTime);
+            seekTo(keyTime);
             if (mTotaltime < Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000) {
                 // 03.21 提示直播已结束
                 ivTeacherNotpresent.setVisibility(View.VISIBLE);
@@ -939,9 +944,8 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
                         getDataCallBack);
                 return;
             }
-            Long keyTime = Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() -
-                    startTime);
-            seekTo(keyTime);
+
+
         }
         // 心跳时间的统计
         mHandler.removeCallbacks(mPlayDuration);

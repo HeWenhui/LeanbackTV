@@ -487,7 +487,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
     class EnglishH5CoursewareImpl implements EnglishH5CoursewareHttp {
 
         @Override
-        public void getStuGoldCount() {
+        public void getStuGoldCount(String method) {
             //回放没有
         }
 

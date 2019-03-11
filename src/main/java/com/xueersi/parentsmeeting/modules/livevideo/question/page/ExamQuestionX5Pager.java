@@ -180,6 +180,8 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
                 EventBus.getDefault().post(event);
                 mGoldNum = -1;
                 mEnergyNum = -1;
+                // TODO 影响不确定，暂时注释isNewEnglishH5_isNewEnglishH5
+//                LiveVideoConfig.isNewEnglishH5 = false;
             }
         });
 //        wvSubjectWeb.loadUrl("http://7.xesweb.sinaapp.com/test/examPaper2.html");

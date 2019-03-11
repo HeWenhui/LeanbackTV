@@ -209,6 +209,12 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                 onDestroy();
             }
         });
+        view.findViewById(R.id.iv_livevideo_subject_refresh).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                wvSubjectWeb.reload();
+            }
+        });
         return view;
     }
 
@@ -276,6 +282,12 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                 EventBus.getDefault().post(event);
                 mGoldNum = -1;
                 mEngerNum = -1;
+                // TODO 影响不确定，暂时注释isNewEnglishH5_isNewEnglishH5
+//                if (isNewArtsTest) {
+//                    LiveVideoConfig.isNewEnglishH5 = true;
+//                } else {
+//                    LiveVideoConfig.isNewEnglishH5 = false;
+//                }
             }
         });
     }
