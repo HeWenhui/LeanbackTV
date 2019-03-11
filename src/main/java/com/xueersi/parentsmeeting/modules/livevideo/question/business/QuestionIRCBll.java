@@ -291,6 +291,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             videoQuestionLiveEntity.answer = onlineTechObj.optString("answer");
                             videoQuestionLiveEntity.speechContent = onlineTechObj.optString("answer");
                             videoQuestionLiveEntity.type = onlineTechObj.optString("ptype");
+                            videoQuestionLiveEntity.setArtType(videoQuestionLiveEntity.type);
                             videoQuestionLiveEntity.num = 1;
                             if ("5".equals(videoQuestionLiveEntity.type) || "6".equals(videoQuestionLiveEntity.type)) {
                                 videoQuestionLiveEntity.setUrl(buildRolePlayUrl(getIdStr(onlineTechObj.optJSONArray("id")), videoQuestionLiveEntity.type));
@@ -569,6 +570,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 videoQuestionLiveEntity.nonce = object.optString("nonce");
                 videoQuestionLiveEntity.roles = object.optString("roles");
                 videoQuestionLiveEntity.type = object.optString("ptype");
+                videoQuestionLiveEntity.setArtType(videoQuestionLiveEntity.type);
                 videoQuestionLiveEntity.package_socurce = object.optInt("package_source");
                 videoQuestionLiveEntity.time = object.optDouble("time");
                 videoQuestionLiveEntity.multiRolePlay = object.optString("multiRolePlay");
@@ -780,7 +782,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
         mQuestionAction.setVideoLayout(liveVideoPoint);
     }
-
+    class QueIrcHttp implements QuestionHttp {
     @Override
     public void getStuGoldCount(String method) {
         UpdateAchievement updateAchievement = getInstance(UpdateAchievement.class);
@@ -1155,6 +1157,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     private int test1 = 0;
 
+    }
+
     public void getSpeechEvalAnswerTeamStatus(String testId, final AbstractBusinessDataCallBack callBack) {
         getHttpManager().getSpeechEvalAnswerTeamStatus(testId, new HttpCallBack(false) {
             @Override
@@ -1301,10 +1305,10 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         }
     }
 
-    public void getStuGoldCount() {
+    public void getStuGoldCount(String method) {
         UpdateAchievement updateAchievement = getInstance(UpdateAchievement.class);
         if (updateAchievement != null) {
-            updateAchievement.getStuGoldCount();
+            updateAchievement.getStuGoldCount("getStuGoldCount:" + method, UpdateAchievement.GET_TYPE_QUE);
         }
     }
 
