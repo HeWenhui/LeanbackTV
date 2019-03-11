@@ -661,19 +661,26 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 questionWebPager = null;
                             }
                             logger.e("====>" + "type:" + videoQuestionLiveEntity.type);
-                            EnglishH5Entity englishH5Entity = videoQuestionLiveEntity.englishH5Entity;
-                            CoursewareNativePager questionWebPager = new CoursewareNativePager(activity, videoQuestionLiveEntity, false, liveGetInfo.getId(), videoQuestionLiveEntity.id, englishH5Entity, "", "", new EnglishH5CoursewareBll.OnH5ResultClose() {
-                                @Override
-                                public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
-                                    rlQuestionContent.removeView(baseEnglishH5CoursewarePager.getRootView());
+                           //走新的课件加载
+                            if (liveGetInfo.isNewCourse()) {
+                                EnglishH5Entity englishH5Entity = videoQuestionLiveEntity.englishH5Entity;
+                                CoursewareNativePager questionWebPager = new CoursewareNativePager(activity, videoQuestionLiveEntity, false, liveGetInfo.getId(), videoQuestionLiveEntity.id, englishH5Entity, "", "", new EnglishH5CoursewareBll.OnH5ResultClose() {
+                                    @Override
+                                    public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
+                                        rlQuestionContent.removeView(baseEnglishH5CoursewarePager.getRootView());
+                                    }
+                                }, "0", LiveVideoSAConfig.ART_EN, false);
+                                if (questionHttp instanceof EnglishH5CoursewareSecHttp) {
+                                    questionWebPager.setEnglishH5CoursewareSecHttp((EnglishH5CoursewareSecHttp) questionHttp);
                                 }
-                            }, "0", LiveVideoSAConfig.ART_EN, false);
-                            if (questionHttp instanceof EnglishH5CoursewareSecHttp) {
-                                questionWebPager.setEnglishH5CoursewareSecHttp((EnglishH5CoursewareSecHttp) questionHttp);
+                                questionWebPager.setLivePagerBack(QuestionBll.this);
+                                QuestionBll.this.questionWebPager = questionWebPager;
+                            } else {
+                                QuestionWebX5Pager questionWebPager = new QuestionWebX5Pager(activity, QuestionBll.this,
+                                        videoQuestionLiveEntity, liveGetInfo.getId());
+                                questionWebPager.setLivePagerBack(QuestionBll.this);
+                                QuestionBll.this.questionWebPager = questionWebPager;
                             }
-//                            QuestionWebX5Pager questionWebPager = new QuestionWebX5Pager(activity, QuestionBll.this,
-//                                    videoQuestionLiveEntity, liveGetInfo.getId());
-                            questionWebPager.setLivePagerBack(QuestionBll.this);
                             rlQuestionContent.addView(questionWebPager.getRootView());
                             QuestionBll.this.questionWebPager = questionWebPager;
                             setHaveWebQuestion(true);
@@ -2416,7 +2423,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             }
             questionHttp.liveSubmitTestAnswer(baseVoiceAnswerPager, videoQuestionLiveEntity1, mVSectionID,
                     testAnswer, true, isRight,
-                    answerReslut,isSubmit);
+                    answerReslut, isSubmit);
         }
 
         @Override

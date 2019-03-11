@@ -11,7 +11,6 @@ import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
@@ -187,28 +186,12 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     getInfos.put(stuId + "-" + vStuCourseID + "-" + vSectionID, mGetInfo);
 //                    mGetInfo.setPattern(1);
                     bundle.putString("mode", mGetInfo.getMode());
-                    if (PreloadStaticStorage.preloadLiveId.size() != 0) {
-                        for (String itemLiveId : PreloadStaticStorage.preloadLiveId) {
-                            if (itemLiveId.equals(mGetInfo.getId())) {
-                                bundle.putBoolean("preload", true);
-                                performDownLoadPreLoad(httpManager, mGetInfo);
-                                break;
-                            }
-                        }
-                    } else {
-                        String liveIds = ShareDataManager.getInstance().getString(ShareDataConfig.SP_PRELOAD_COURSEWARE, "", ShareDataManager.SHAREDATA_USER);
-                        if (liveIds.contains(",")) {
-                            String[] preLoadLiveId = liveIds.split(",");
-                            for (String tempPreLoadLiveId : preLoadLiveId) {
-                                if (tempPreLoadLiveId.equals(mGetInfo.getId())) {
-                                    bundle.putBoolean("preload", true);
-                                    performDownLoadPreLoad(httpManager, mGetInfo);
-                                    break;
-                                }
-                            }
-                        }
-                    }
 
+                    boolean newCourse = isNewCourse(mGetInfo.getId());
+                    if (newCourse) {
+                        bundle.putBoolean("newCourse", true);
+                        performDownLoadPreLoad(httpManager, mGetInfo);
+                    }
 //                    bundle.putIntegerArrayList("preloadliveid", PreloadStaticStorage.preloadLiveId);
                     bundle.putInt("isArts", mGetInfo.getIsArts());
                     bundle.putInt("pattern", mGetInfo.getPattern());
@@ -217,7 +200,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     bundle.putBoolean("isSmallEnglish", mGetInfo.getSmallEnglish());
                     if (mGetInfo.getIsArts() == 0) {
                         bundle.putInt("allowLinkMicNew", mGetInfo.getAllowLinkMicNew());
-                    }else {
+                    } else {
                         bundle.putInt("smallEnglish", mGetInfo.getSmallEnglish() ? 1 : 0);
                     }
 //                if (mGetInfo.getPattern() == 2) {
@@ -246,6 +229,28 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 }
             });
         }
+    }
+
+    //新课件灰测
+    public boolean isNewCourse(String liveId) {
+        if (PreloadStaticStorage.preloadLiveId.size() != 0) {
+            for (String itemLiveId : PreloadStaticStorage.preloadLiveId) {
+                if (itemLiveId.equals(liveId)) {
+                    return true;
+                }
+            }
+        } else {
+            String liveIds = ShareDataManager.getInstance().getString(ShareDataConfig.SP_PRELOAD_COURSEWARE, "", ShareDataManager.SHAREDATA_USER);
+            if (liveIds.contains(",")) {
+                String[] preLoadLiveId = liveIds.split(",");
+                for (String tempPreLoadLiveId : preLoadLiveId) {
+                    if (tempPreLoadLiveId.equals(liveId)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     void gotoEnglish(final Bundle bundle) {

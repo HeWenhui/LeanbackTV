@@ -289,7 +289,8 @@ public class LiveGetInfo {
 
     //暂停点赞多长时间弹出礼物
     private int praiseAutoBarrageTime = 1;
-
+    /** 走新课件预加载 */
+    private boolean newCourse =false;
 
     // add by William on 2018/12/5  专属老师用
     public EPlanInfoBean ePlanInfo;
@@ -968,6 +969,14 @@ public class LiveGetInfo {
 
     public void setEducationStage(String educationStage) {
         this.educationStage = educationStage;
+    }
+
+    public boolean isNewCourse() {
+        return newCourse;
+    }
+
+    public void setNewCourse(boolean newCourse) {
+        this.newCourse = newCourse;
     }
 
     public static class MainTeacherInfo {

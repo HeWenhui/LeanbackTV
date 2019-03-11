@@ -386,6 +386,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
             onLiveFailure("服务器异常", null);
             return;
         }
+        mGetInfo.setNewCourse(mBaseActivity.getIntent().getBooleanExtra("newCourse", false));
         if (liveLog != null) {
             liveLog.setGetInfo(mGetInfo);
         }
