@@ -19,6 +19,8 @@ public class LiveQueConfig {
     public static final String LIVE_STUDY_REPORT_IMG = "live_new_course_que_save";
 
     public static final String SEC_COURSE_TYPE_QUE = "2";
+    /** 英语调普通互动题：选择、填空提交接口 http://wiki.xesv5.com/pages/viewpage.action?pageId=12954171 */
+    private static ArrayList<String> SUBMIT_MULTI_TEST_TYPES;
     /** 英语调用submitH5的接口类型 */
     private static ArrayList<String> SUBMIT_H5_TYPES;
     /** 英语显示下方控制条的类型 */
@@ -46,6 +48,21 @@ public class LiveQueConfig {
     public static final String EN_COURSE_TYPE_NEW_GAME = "17";
     public static final String EN_COURSE_TYPE_18 = "18";
     public static final String EN_COURSE_TYPE_19 = "19";
+
+    public static ArrayList getSubmitMultiTestTypes() {
+        if (SUBMIT_MULTI_TEST_TYPES == null) {
+            SUBMIT_MULTI_TEST_TYPES = new ArrayList<>();
+            // 1
+            SUBMIT_MULTI_TEST_TYPES.add(LiveQueConfig.EN_COURSE_TYPE_BLANK);
+            // 2
+            SUBMIT_MULTI_TEST_TYPES.add(LiveQueConfig.EN_COURSE_TYPE_CHOICE);
+            // 18
+            SUBMIT_MULTI_TEST_TYPES.add(LiveQueConfig.EN_COURSE_TYPE_18);
+            // 19
+            SUBMIT_MULTI_TEST_TYPES.add(LiveQueConfig.EN_COURSE_TYPE_19);
+        }
+        return SUBMIT_MULTI_TEST_TYPES;
+    }
 
     public static ArrayList getSubmitH5Types() {
         if (SUBMIT_H5_TYPES == null) {

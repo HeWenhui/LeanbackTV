@@ -493,29 +493,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                             submit(0, "");
                         }
                     } else {
-                        if (isArts == LiveVideoSAConfig.ART_EN) {
-                            boolean submitH5 = submitH5();
-                            if (submitH5) {
-                                submitVoice(1, "");
-                            } else {
-                                submit(1, "");
-                            }
-                        } else {
-                            submit(1, "");
-                        }
+                        submit(1, "");
                     }
                 } else {
                     if (tests.size() == 1) {
-                        if (isArts == LiveVideoSAConfig.ART_EN) {
-                            boolean submitH5 = submitH5();
-                            if (submitH5) {
-                                submitVoice(0, "");
-                            } else {
-                                submit(0, "");
-                            }
-                        } else {
-                            submit(0, "");
-                        }
+                        submit(0, "");
 //                        setViewEnable("onAnswer1");
                     } else {
                         if (getAnswerType == LiveQueConfig.GET_ANSWERTYPE_PRE) {
@@ -687,6 +669,17 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         }
     }
 
+    private void submitEn(final int isforce, String nonce) {
+        if (LiveQueConfig.getSubmitMultiTestTypes().contains(detailInfo.type)) {
+            submitMultiTest(isforce, nonce);
+        } else {
+//            if (LiveQueConfig.EN_COURSE_TYPE_VOICE_BLANK.equals(detailInfo.voiceType) || LiveQueConfig.EN_COURSE_TYPE_VOICE_CHOICE.equals(detailInfo.voiceType)) {
+//                submitVoice(isforce, nonce);
+//            }
+            submitVoice(isforce, nonce);
+        }
+    }
+
     /**
      * 英语本地上传语音题提交
      *
@@ -778,7 +771,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
      * @param isforce
      * @param nonce
      */
-    private void submitEn(final int isforce, String nonce) {
+    private void submitMultiTest(final int isforce, String nonce) {
         JSONArray answerArray = new JSONArray();
         for (int i = 0; i < tests.size(); i++) {
             NewCourseSec.Test test = tests.get(i);
@@ -956,6 +949,12 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     if (tests.isEmpty()) {
                         XESToastUtils.showToast(mContext, "互动题为空");
                         return;
+                    }
+                    if (isArts == LiveVideoSAConfig.ART_EN) {
+                        NewCourseSec.Test test = tests.get(0);
+                        if ("0".equals(detailInfo.type)) {
+                            detailInfo.type = test.getTestType();
+                        }
                     }
                     showControl();
                     if (quesJson != null) {
