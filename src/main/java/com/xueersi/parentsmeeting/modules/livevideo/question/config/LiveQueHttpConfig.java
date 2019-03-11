@@ -14,15 +14,15 @@ public class LiveQueHttpConfig {
     /** 获得课件-理科 */
     public static String LIVE_GET_COURSEWARE_TESTS_CN = LiveHttpConfig.HTTP_LIVE_CHINESE_HOST + "/LiveExam/getCourseWareTests";
     /** 获得课件-英语 http://wiki.xesv5.com/pages/viewpage.action?pageId=12954621 */
-    public static String LIVE_GET_COURSEWARE_TESTS_EN = LiveHttpConfig.HTTP_LIVE_ENGLISH_HOST + "/v2/commonTestInfo/getTestInfos";
+    public static String LIVE_GET_COURSEWARE_TESTS_EN = LiveHttpConfig.HTTP_APP_ENGLISH_HOST + "/v2/commonTestInfo/getTestInfos";
 
     /** 提交课件-理科 */
     public static String LIVE_SUBMIT_COURSEWARE = LiveHttpConfig.LIVE_HOST + "/science/LiveExam/submitCourseWareTests";
     /** 提交课件-文科 */
     public static String LIVE_SUBMIT_COURSEWARE_CN = LiveVideoConfig.HTTP_PRIMARY_CHINESE_HOST + "/LiveExam/submitCourseWareTests";
     /** 提交课件-英语 http://wiki.xesv5.com/pages/viewpage.action?pageId=12954171 */
-    public static String LIVE_SUBMIT_COURSEWARE_EN = LiveHttpConfig.HTTP_LIVE_ENGLISH_HOST + "/v2/commonTest/submitMultiTest";
-    public static String LIVE_SUBMIT_COURSEWARE_VOICE_EN = LiveHttpConfig.HTTP_LIVE_ENGLISH_HOST + "/v2/CourseH5Test/submitH5";
+    public static String LIVE_SUBMIT_COURSEWARE_EN = LiveHttpConfig.HTTP_APP_ENGLISH_HOST + "/v2/commonTest/submitMultiTest";
+    public static String LIVE_SUBMIT_COURSEWARE_VOICE_EN = LiveHttpConfig.HTTP_APP_ENGLISH_HOST + "/v2/CourseH5Test/submitH5";
 
     /** 课件结果页-理科本地 */
     public static String LIVE_SUBMIT_COURSEWARE_RESULT_FILE = "file:///android_asset/newcourse_result/sec/middleSchoolCourseware/index.html";
