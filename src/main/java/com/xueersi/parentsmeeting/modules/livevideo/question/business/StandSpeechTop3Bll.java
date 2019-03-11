@@ -10,6 +10,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayStandMachinePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssessmentWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.StandSpeechAssAutoPager;
@@ -76,7 +77,7 @@ public class StandSpeechTop3Bll implements SpeechEndAction {
                         }
                     });
                     /** 语音评测 roleplay */
-                } else if (speechAssessmentPager instanceof SpeechAssessmentWebX5Pager) {
+                } else if (speechAssessmentPager instanceof SpeechAssessmentWebX5Pager || speechAssessmentPager instanceof RolePlayStandMachinePager) {
                     questionIRCBll.getRolePlayAnswerTeamRank(num, new AbstractBusinessDataCallBack() {
                         @Override
                         public void onDataSucess(Object... objData) {

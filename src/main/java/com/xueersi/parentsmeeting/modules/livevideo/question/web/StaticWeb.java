@@ -55,6 +55,8 @@ public class StaticWeb {
         void postMessage(String where, JSONObject message, String origin);
     }
 
+    private static int CALL_TIMES = 0;
+
     /**
      * 调用sendToCourseware后的回执
      *
@@ -62,12 +64,19 @@ public class StaticWeb {
      */
     @JavascriptInterface
     public void onReceive(String jsonStr) {
-        logToFile.d("onReceive:jsonStr=" + jsonStr);
+        CALL_TIMES++;
+        logToFile.d("onReceive:jsonStr=" + jsonStr + ",times=" + CALL_TIMES);
     }
 
-    public static void sendToCourseware(WebView wvSubjectWeb, JSONObject type, String data) {
-        LogToFile logToFile = new LogToFile(wvSubjectWeb.getContext(), TAG);
-        logToFile.d("sendToCourseware:type=" + type);
+    public static void sendToCourseware(final WebView wvSubjectWeb, final JSONObject type, String data) {
+        final LogToFile logToFile = new LogToFile(wvSubjectWeb.getContext(), TAG);
+        final int old = CALL_TIMES;
         wvSubjectWeb.loadUrl("javascript:sendToCourseware(" + type + ",'" + data + "')");
+        wvSubjectWeb.post(new Runnable() {
+            @Override
+            public void run() {
+                logToFile.d("sendToCourseware:type=" + type + ",old=" + old + ",times=" + CALL_TIMES);
+            }
+        });
     }
 }

@@ -1,15 +1,22 @@
 package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import android.content.Context;
+import android.util.Log;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.LiveExperienceEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AddPersonAndTeamEnergyEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
@@ -108,7 +115,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         if (getInfo.getAllowLinkMicNew() == 1) {
             getInfo.setAllowLinkMic(false);
         }
-        if (data.has("ePlanInfo")) {
+        if (data.has("ePlanInfo")){
             try {
                 JSONObject ePlanInfo = data.getJSONObject("ePlanInfo");
                 getInfo.ePlanInfo = new LiveGetInfo.EPlanInfoBean();
@@ -225,6 +232,21 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setSmallEnglish(false);
             LiveVideoConfig.isSmallChinese = false;
         }
+//        JSONObject englishPkObj = data.optJSONObject("englishPk");
+//        if (englishPkObj != null) {
+//            LiveGetInfo.EnglishPk englishPk = getInfo.getEnglishPk();
+//            englishPk.canUsePK = englishPkObj.optInt("canUsePK");
+//            englishPk.historyScore = englishPkObj.optInt("historyScore");
+//            englishPk.isTwoLose = englishPkObj.optInt("isTwoLose");
+//            englishPk.hasGroup = englishPkObj.optInt("hasGroup");
+//        }
+//        JSONObject pkEnergyObj = data.optJSONObject("pkEnergy");
+//        if (pkEnergyObj != null) {
+//            LiveGetInfo.EnPkEnergy enpkEnergy = getInfo.getEnpkEnergy();
+//            enpkEnergy.me = pkEnergyObj.optInt("me");
+//            enpkEnergy.myTeam = pkEnergyObj.optInt("myTeam");
+//            enpkEnergy.opTeam = pkEnergyObj.optInt("opTeam");
+//        }
     }
 
     /**
@@ -326,7 +348,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setUname(data.getString("uname"));
             getInfo.setStuName(data.getString("stuName"));
             getInfo.setStuSex(data.getString("stuSex"));
-            getInfo.setStuImg(data.getString("stuImg"));
+            getInfo.setStuImg(data.optString("stuImg"));
             if (data.has("studentLiveInfo")) {
                 StudentLiveInfoEntity studentLiveInfoEntity = new StudentLiveInfoEntity();
                 JSONObject studentLiveInfo = data.getJSONObject("studentLiveInfo");
@@ -982,6 +1004,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         JSONObject total = jsonObject.optJSONObject("total");
         entity.setGoldNum(Integer.parseInt(total.optString("gold")));
         entity.setRightNum(Integer.parseInt(total.optString("isRight")));
+        entity.setEnergy(total.optInt("energy"));
         JSONArray split = jsonObject.optJSONArray("split");
         for (int i = 0; i < split.length(); i++) {
             JSONObject obj = split.optJSONObject(i);
@@ -1007,6 +1030,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         VideoResultEntity entity = new VideoResultEntity();
         JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
         entity.setGoldNum(Integer.parseInt(jsonObject.optString("gold")));
+        entity.setEnergy(jsonObject.optInt("energy"));
         entity.setTestId(jsonObject.optString("testId"));
 
         return entity;
@@ -1331,6 +1355,13 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             starAndGoldEntity.setStarCount(starObj.optInt("stuStarAmount", 0));
             JSONObject goldObj = jsonObject.getJSONObject("gold");
             starAndGoldEntity.setGoldCount(goldObj.optInt("goldAmount", 0));
+            StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
+            JSONObject pkEnergyObj = jsonObject.optJSONObject("pkEnergy");
+            if (pkEnergyObj != null) {
+                pkEnergy.me = pkEnergyObj.optInt("me");
+                pkEnergy.myTeam = pkEnergyObj.optInt("myTeam");
+                pkEnergy.opTeam = pkEnergyObj.optInt("opTeam");
+            }
         } catch (JSONException e) {
             MobAgent.httpResponseParserError(TAG, "parseStuGoldCount", e.getMessage());
             e.printStackTrace();
@@ -1971,6 +2002,93 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
         }
         return classmateEntities;
+    }
+
+    public PkTeamEntity parsegetSelfTeamInfo(ResponseEntity responseEntity, String stu_id) {
+        try {
+            PkTeamEntity pkTeamEntity = new PkTeamEntity();
+            JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+            {
+                pkTeamEntity.setPkTeamId(jsonObject.getInt("pkTeamId"));
+                pkTeamEntity.setaId(jsonObject.getInt("team_a_id"));
+                ArrayList<TeamMemberEntity> aTeamMemberEntity = pkTeamEntity.getaTeamMemberEntity();
+                JSONArray team_a_mate = jsonObject.getJSONArray("team_a_mate");
+                for (int i = 0; i < team_a_mate.length(); i++) {
+                    JSONObject jsonObject1 = team_a_mate.getJSONObject(i);
+                    TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
+                    teamMemberEntity.id = jsonObject1.optInt("stu_id");
+                    if (stu_id.equals("" + teamMemberEntity.id)) {
+                        teamMemberEntity.isMy = true;
+                        pkTeamEntity.setMyTeam(pkTeamEntity.getaId());
+                    }
+                    teamMemberEntity.name = jsonObject1.optString("stu_name");
+                    teamMemberEntity.headurl = jsonObject1.optString("stu_head");
+                    aTeamMemberEntity.add(teamMemberEntity);
+                }
+            }
+            {
+                pkTeamEntity.setbId(jsonObject.getInt("team_b_id"));
+                ArrayList<TeamMemberEntity> bTeamMemberEntity = pkTeamEntity.getbTeamMemberEntity();
+                JSONArray team_b_mate = jsonObject.getJSONArray("team_b_mate");
+                for (int i = 0; i < team_b_mate.length(); i++) {
+                    JSONObject jsonObject1 = team_b_mate.getJSONObject(i);
+                    TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
+                    teamMemberEntity.id = jsonObject1.optInt("stu_id");
+                    if (stu_id.equals("" + teamMemberEntity.id)) {
+                        teamMemberEntity.isMy = true;
+                        pkTeamEntity.setMyTeam(pkTeamEntity.getbId());
+                    }
+                    teamMemberEntity.name = jsonObject1.optString("stu_name");
+                    teamMemberEntity.headurl = jsonObject1.optString("stu_head");
+                    bTeamMemberEntity.add(teamMemberEntity);
+                }
+            }
+            return pkTeamEntity;
+        } catch (Exception e) {
+            e.printStackTrace();
+            MobAgent.httpResponseParserError(TAG, "parsegetSelfTeamInfo", e.getMessage());
+            CrashReport.postCatchedException(e);
+        }
+        return null;
+    }
+
+    public EnTeamPkRankEntity parseUpdataEnglishPkByTestId(ResponseEntity responseEntity, String stu_id) {
+        try {
+            EnTeamPkRankEntity enTeamPkRankEntity = new EnTeamPkRankEntity();
+            JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+            enTeamPkRankEntity.setNoShow(jsonObject.optInt("noShow"));
+            enTeamPkRankEntity.setMyTeamTotal(jsonObject.optInt("myTeamTotal"));
+            enTeamPkRankEntity.setMyTeamCurrent(jsonObject.optInt("myTeamCurrent"));
+            enTeamPkRankEntity.setApkTeamId(jsonObject.optInt("myPkHeadTeamId"));
+            enTeamPkRankEntity.setIsWin(jsonObject.optInt("isWin"));
+
+            enTeamPkRankEntity.setOpTeamTotal(jsonObject.optInt("opTeamTotal"));
+            enTeamPkRankEntity.setOpTeamCurrent(jsonObject.optInt("opTeamCurrent"));
+            enTeamPkRankEntity.setBpkTeamId(jsonObject.optInt("opPkHeadTeamId"));
+            ArrayList<TeamMemberEntity> memberEntities = enTeamPkRankEntity.getMemberEntities();
+            JSONArray jsonArray = jsonObject.optJSONArray("top3");
+            if (jsonArray != null) {
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject top3Obj = jsonArray.getJSONObject(i);
+                    TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
+                    teamMemberEntity.id = top3Obj.optInt("stuId");
+                    if (stu_id.equals("" + teamMemberEntity.id)) {
+                        teamMemberEntity.isMy = true;
+                    }
+                    teamMemberEntity.name = top3Obj.optString("name");
+                    teamMemberEntity.headurl = top3Obj.optString("head");
+                    teamMemberEntity.gold = top3Obj.optInt("gold");
+                    teamMemberEntity.energy = top3Obj.optInt("energy");
+                    memberEntities.add(teamMemberEntity);
+                }
+            }
+            return enTeamPkRankEntity;
+        } catch (Exception e) {
+            e.printStackTrace();
+            MobAgent.httpResponseParserError(TAG, "parseUpdataEnglishPkByTestId", e.getMessage());
+            CrashReport.postCatchedException(e);
+        }
+        return null;
     }
 
     public CoursewareInfoEntity parseCoursewareInfo (ResponseEntity responseEntity){

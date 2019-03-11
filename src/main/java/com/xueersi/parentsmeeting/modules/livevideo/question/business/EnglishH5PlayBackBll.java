@@ -310,6 +310,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         if ("1".equals(isVoice)) {
             videoQuestionLiveEntity.type = questionEntity.getVoiceQuestiontype();
         }
+        videoQuestionLiveEntity.setArtType(questionEntity.getVoiceQuestiontype());
         videoQuestionLiveEntity.assess_ref = questionEntity.getAssess_ref();
         if (questionEntity.getvCategory() == 1000) {
             List<String> testIds = new ArrayList<>();
@@ -486,7 +487,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
     class EnglishH5CoursewareImpl implements EnglishH5CoursewareHttp {
 
         @Override
-        public void getStuGoldCount() {
+        public void getStuGoldCount(String method) {
             //回放没有
         }
 

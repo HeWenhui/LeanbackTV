@@ -23,6 +23,7 @@ public class PrimaryScienceAnswerResultEntity {
      * 界面上分别对应蓝色、红色、橘色的主题色
      */
     int type;
+    int energy;
 
     List<Answer> answerList = new ArrayList<>();
 
@@ -63,6 +64,15 @@ public class PrimaryScienceAnswerResultEntity {
         public void setRight(int right) {
             this.right = right;
         }
+
+    }
+
+    public int getEnergy() {
+        return energy;
+    }
+
+    public void setEnergy(int energy) {
+        this.energy = energy;
     }
 
     public int getGold() {

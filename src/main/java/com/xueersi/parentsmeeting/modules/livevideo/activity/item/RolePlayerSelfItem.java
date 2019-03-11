@@ -208,8 +208,11 @@ public class RolePlayerSelfItem extends RolePlayerItem {
     public void updateViews(final RolePlayerEntity.RolePlayerMessage entity,
                             int position, Object objTag) {
         super.updateViews(entity, position, objTag);
-        updateUserHeadImage(civUserHead, UserBll.getInstance().getMyUserInfoEntity()
-                .getHeadImg());
+        String imgUrl = entity.getRolePlayer().getHeadImg();
+        if(TextUtils.isEmpty(imgUrl)){
+            imgUrl = UserBll.getInstance().getMyUserInfoEntity().getHeadImg();
+        }
+        updateUserHeadImage(civUserHead, imgUrl);
         rlMain.setVisibility(View.VISIBLE);
         tvMessageContent.setText(entity.getReadMsg());
         tvMessageContent.setTextColor(Color.parseColor("#333333"));

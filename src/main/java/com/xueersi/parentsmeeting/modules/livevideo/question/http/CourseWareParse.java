@@ -50,6 +50,7 @@ public class CourseWareParse {
 
             List<PrimaryScienceAnswerResultEntity.Answer> answerList = resultEntity.getAnswerList();
             JSONArray array = jsonObject.getJSONArray("answerLists");
+            int energy = 0;
             for (int i = 0; i < array.length(); i++) {
                 JSONObject answerObject = array.getJSONObject(i);
                 JSONArray myAnswerArray = answerObject.getJSONArray("stuAnswer");
@@ -65,7 +66,12 @@ public class CourseWareParse {
                     answer.setRightAnswer(rightAnswerArray.get(j).toString());
                     answerList.add(answer);
                 }
+                if (answerObject.has("isRight")) {
+                    int isRight = answerObject.getInt("isRight");
+                    energy += isRight == 2 ? 10 : 5;
+                }
             }
+            resultEntity.setEnergy(energy);
             return resultEntity;
         } catch (JSONException e) {
             e.printStackTrace();

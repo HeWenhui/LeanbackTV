@@ -93,7 +93,7 @@ public class CourseWareHttpManager {
         httpRequestParams.addBodyParam("educationStage", "" + educationStage);
         httpRequestParams.addBodyParam("nonce", "" + nonce);
         String url;
-        if (arts == 0) {
+        if (arts == LiveVideoSAConfig.ART_SEC) {
             url = LiveQueHttpConfig.LIVE_GET_COURSEWARE_TESTS;
         } else {
             url = LiveQueHttpConfig.LIVE_GET_COURSEWARE_TESTS_CN;
@@ -141,7 +141,13 @@ public class CourseWareHttpManager {
         httpRequestParams.addBodyParam("packageId", "" + packageId);
         httpRequestParams.addBodyParam("packageAttr", "" + packageAttr);
         httpRequestParams.addBodyParam("isPlayBack", "" + isPlayBack);
-        liveHttpManager.sendPost(LiveQueHttpConfig.LIVE_GET_STU_TESTS_RESULT, httpRequestParams, new HttpCallBack(false) {
+        String url;
+        if (arts == LiveVideoSAConfig.ART_SEC) {
+            url = LiveQueHttpConfig.LIVE_GET_STU_TESTS_RESULT;
+        } else {
+            url = LiveQueHttpConfig.LIVE_GET_STU_TESTS_RESULT_CN;
+        }
+        liveHttpManager.sendPost(url, httpRequestParams, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("getStuTestResult:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
@@ -234,7 +240,7 @@ public class CourseWareHttpManager {
         httpRequestParams.addBodyParam("type", "" + type);
         httpRequestParams.addBodyParam("isPlayBack", "" + isPlayBack);
         httpRequestParams.addBodyParam("isSubmit", "" + isSubmit);
-        httpRequestParams.addBodyParam("stu_id", "" + stu_id);
+        httpRequestParams.addBodyParam("stuId", "" + stu_id);
         liveHttpManager.sendPost(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_VOICE_EN, httpRequestParams, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {

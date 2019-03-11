@@ -11,9 +11,13 @@ android {
     sourceSets {
         main {
             jniLibs.srcDirs = ['libs']
+//            java.srcDirs += ['src/main/java-en_teampk']
+//            res.srcDirs += ['src/main/res-en_teampk']
+            java.srcDirs += ['src/main/java-achievement']
+            res.srcDirs += ['src/main/res-achievement']
         }
     }
-    compileSdkVersion 27
+    compileSdkVersion 26
     buildToolsVersion '27.0.3'
 }
 dependencies {
@@ -53,6 +57,9 @@ dependencies {
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.endictation)
     implementation rootProject.ext.thirdlibraries.ticker
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.agora)
+    //    implementation project(':library:agora')
+    //implementation(rootProject.ext.xeslibraries.waveform) { changing = true }
+    //implementation project(':library:waveform')
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.gifDrawable)
     //    implementation project(':library:agora')
 }

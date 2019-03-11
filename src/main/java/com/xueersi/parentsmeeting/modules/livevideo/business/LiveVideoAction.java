@@ -109,7 +109,7 @@ public class LiveVideoAction implements VideoAction {
 
 //        btnSwitchFlowRetry = mContentView.findViewById(R.id.btn_livevideo_switch_flow_retry_btn);
 
-        mLogtf = new LogToFile(mLiveBll, TAG);
+        mLogtf = new LogToFile(activity, TAG);
         updateLoadingImage();
 
         pattern = activity.getIntent().getIntExtra("pattern", 2);
@@ -177,13 +177,20 @@ public class LiveVideoAction implements VideoAction {
         }
     }
 
+    private int times = 0;
+
     public void onPlayError() {
         mHandler.post(new Runnable() {
 
             @Override
             public void run() {
-                tvLoadingHint.setText("您的手机暂时不支持播放直播");
-                mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
+                if (times > 3) {
+                    tvLoadingHint.setText("您的手机暂时不支持播放直播");
+                    mContentView.findViewById(R.id.probar_course_video_loading_tip_progress).setVisibility(View.INVISIBLE);
+                } else {
+                    rePlay(false);
+                }
+                times++;
             }
         });
     }

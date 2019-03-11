@@ -197,6 +197,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 videoQuestionLiveEntity.time = coursewareH5.optDouble("time");
                 videoQuestionLiveEntity.setIsVoice(coursewareH5.optString("isVoice"));
                 videoQuestionLiveEntity.type = coursewareH5.optString("ptype");
+                videoQuestionLiveEntity.setArtType(videoQuestionLiveEntity.type);
                 String status = coursewareH5.optString("status", "off");
                 if ("on".equals(status)) {
                     LiveVideoConfig.isNewArts = true;
@@ -230,6 +231,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         h5OnlineTechEntity.setId(onlineTechObj.optString("id"));
                         h5OnlineTechEntity.setPtype(onlineTechObj.optString("ptype"));
                         videoQuestionLiveEntity.type = onlineTechObj.optString("ptype");
+                        videoQuestionLiveEntity.setArtType(videoQuestionLiveEntity.type);
                         videoQuestionLiveEntity.setIsVoice(onlineTechObj.optString("isVoice"));
                         h5OnlineTechEntity.setMultiRolePlay(onlineTechObj.optString("multiRolePlay"));
                         h5OnlineTechEntity.setRoles(onlineTechObj.optString("roles"));
@@ -576,10 +578,10 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
     class EnglishH5CoursewareImpl implements EnglishH5CoursewareHttp {
 
         @Override
-        public void getStuGoldCount() {
+        public void getStuGoldCount(String method) {
             UpdateAchievement updateAchievement = getInstance(UpdateAchievement.class);
             if (updateAchievement != null) {
-                updateAchievement.getStuGoldCount();
+                updateAchievement.getStuGoldCount("getStuGoldCount:"+method, UpdateAchievement.GET_TYPE_QUE);
             }
         }
 
@@ -865,10 +867,19 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         @Override
         public void submitCourseWareTests(VideoQuestionLiveEntity detailInfo, int isforce, String nonce, long entranceTime, String testInfos, AbstractBusinessDataCallBack callBack) {
             if (isArts == LiveVideoSAConfig.ART_EN) {
-                if (LiveQueConfig.EN_COURSE_TYPE_VOICE_BLANK.equals(detailInfo.voiceType) || LiveQueConfig.EN_COURSE_TYPE_VOICE_CHOICE.equals(detailInfo.voiceType)) {
-                    getCourseWareHttpManager().submitH5("" + testInfos, detailInfo.num, detailInfo.id, detailInfo.voiceType, mGetInfo.getStuId(), 1, isforce, callBack);
-                } else {
+//                if (LiveQueConfig.EN_COURSE_TYPE_VOICE_BLANK.equals(detailInfo.voiceType) || LiveQueConfig.EN_COURSE_TYPE_VOICE_CHOICE.equals(detailInfo.voiceType)) {
+//                    getCourseWareHttpManager().submitH5("" + testInfos, detailInfo.num, detailInfo.id, detailInfo.voiceType, mGetInfo.getStuId(), 1, isforce, callBack);
+//                } else {
+//                    if (LiveQueConfig.getSubmitH5Types().contains(detailInfo.type)) {
+//                        getCourseWareHttpManager().submitH5("" + testInfos, detailInfo.num, detailInfo.id, detailInfo.voiceType, mGetInfo.getStuId(), 1, isforce, callBack);
+//                    } else {
+//                        getCourseWareHttpManager().submitMultiTest("" + testInfos, 1, isforce, callBack);
+//                    }
+//                }
+                if (LiveQueConfig.getSubmitMultiTestTypes().contains(detailInfo.getArtType())) {
                     getCourseWareHttpManager().submitMultiTest("" + testInfos, 1, isforce, callBack);
+                } else {
+                    getCourseWareHttpManager().submitH5("" + testInfos, detailInfo.num, detailInfo.id, detailInfo.getArtType(), mGetInfo.getStuId(), 1, isforce, callBack);
                 }
             } else {
                 EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;

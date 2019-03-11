@@ -453,7 +453,7 @@ public class AuditIRCMessage {
         try {
             String NICKKey = mConnection.connect(talkConfEntity.getHost(), Integer.parseInt(talkConfEntity.getPort()), "" + talkConfEntity.getPwd());
             //mConnection.joinChannel("#" + mChannel);
-            mLogtf.d("connect:method=" + method + ",index=" + index + ",NICKKey=" + NICKKey + ",name=" + mConnection.getName()
+            mLogtf.d("connect1:method=" + method + ",index=" + index + ",NICKKey=" + NICKKey + ",name=" + mConnection.getName()
                     + ",server=" + mConnection.getServer() + ",port=" + talkConfEntity.getPort());
         } catch (NickAlreadyInUseException e) {
             try {
@@ -461,21 +461,21 @@ public class AuditIRCMessage {
                 mConnection.setNickname("pt_" + mNickname);
                 String NICKKey = mConnection.connect(talkConfEntity.getHost(), Integer.parseInt(talkConfEntity.getPort()), "" + talkConfEntity.getPwd());
                 //mConnection.joinChannel("#" + mChannel);
-                mLogtf.d("connect2:method=" + method + ",index=" + index + ",NICKKey=" + NICKKey + ",name=" + mConnection.getName() +
+                mLogtf.d("connect2-1:method=" + method + ",index=" + index + ",NICKKey=" + NICKKey + ",name=" + mConnection.getName() +
                         ",server=" + mConnection.getServer() + ",port=" + talkConfEntity.getPort());
             } catch (NickAlreadyInUseException e1) {
-                mLogtf.e("NickAlreadyInUse2", e);
+                mLogtf.e("connect2-2", e1);
             } catch (Exception e1) {
-                mLogtf.e("NickAlreadyInUse3", e);
+                mLogtf.e("connecte2-3:method=" + method + ",name=" + mConnection.getName() + ",server=" + talkConfEntity.getHost() + "," + e.getMessage(), e);
             }
         } catch (Exception e) {
-            mLogtf.e("connecte:name=" + mConnection.getName() + ",server=" + talkConfEntity.getHost() + "," + e.getMessage(), e);
+            mLogtf.e("connecte3:name=" + mConnection.getName() + ",server=" + talkConfEntity.getHost() + "," + e.getMessage(), e);
         }
         if (!mIsDestory && !mConnection.isConnected()) {
             if (netWorkType != NetWorkHelper.NO_NETWORK && ircTalkConf != null) {
                 mNewTalkConf.remove(index);
             }
-            mLogtf.d("connect:method=" + method + ",connectError=" + connectError + ",netWorkType=" + netWorkType + ",conf=" + (ircTalkConf == null));
+            mLogtf.d("connect4:method=" + method + ",connectError=" + connectError + ",netWorkType=" + netWorkType + ",conf=" + (ircTalkConf == null));
             new Thread() {
                 public void run() {
                     try {
@@ -483,7 +483,7 @@ public class AuditIRCMessage {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                    connect("connect");
+                    connect("connect2");
                 }
             }.start();
         }
@@ -506,7 +506,7 @@ public class AuditIRCMessage {
             new Thread() {
                 @Override
                 public void run() {
-                    connect("create");
+                    connect("onDataSucess");
                 }
             }.start();
         }

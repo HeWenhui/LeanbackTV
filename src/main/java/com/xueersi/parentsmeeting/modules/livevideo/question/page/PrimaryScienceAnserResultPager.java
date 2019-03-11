@@ -46,9 +46,9 @@ public class PrimaryScienceAnserResultPager extends LiveBasePager {
             LOTTIE_RES_ASSETS_ROOTDIR + "animation/interact-active/middle"
     };
 
-    CoursewareNativePager.OnNativeResultPagerClose onNativeResultPagerClose;
+    OnNativeResultPagerClose onNativeResultPagerClose;
 
-    public PrimaryScienceAnserResultPager(Context context, PrimaryScienceAnswerResultEntity enytity, CoursewareNativePager.OnNativeResultPagerClose onNativeResultPagerClose) {
+    public PrimaryScienceAnserResultPager(Context context, PrimaryScienceAnswerResultEntity enytity, OnNativeResultPagerClose onNativeResultPagerClose) {
         super(context);
         this.mEnytity = enytity;
         this.onNativeResultPagerClose = onNativeResultPagerClose;
@@ -171,5 +171,9 @@ public class PrimaryScienceAnserResultPager extends LiveBasePager {
         lavActiveRight.useHardwareAcceleration();
         lavActiveRight.loop(true);
         lavActiveRight.playAnimation();
+    }
+
+    interface OnNativeResultPagerClose {
+        void onClose();
     }
 }

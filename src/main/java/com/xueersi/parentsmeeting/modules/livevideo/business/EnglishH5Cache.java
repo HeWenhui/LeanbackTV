@@ -499,9 +499,15 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                 }
             }
         }
+        mUrls.add("https://res17.xesimg.com/like/XiaoXueKeJian/animation/interact-active/right/img_5.png");
         for (int i = 0; i < mUrls.size(); i++) {
             final String url = i + ".zip";
-            final File save = new File(mMorecachein, url);
+            final File save;
+            if (url.contains("img_5.png")) {
+                save = new File(mMorecachein, "img_5.png");
+            } else {
+                save = new File(mMorecachein, url);
+            }
             if (!fileIsExists(save.getPath())) {
                 final File tempFile = new File(mMorecachein, url + ".temp");
                 mHttpManager.download(mUrls.get(i), tempFile.getPath(), new DownloadCallBack() {

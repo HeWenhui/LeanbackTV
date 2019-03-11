@@ -107,7 +107,9 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
                     continue;
                 }
                 File destinationTemp = new File(mOutput, entry.getName() + ".tmp");
+                long oldLength = destinationTemp.length();
                 File destination = new File(mOutput, entry.getName());
+                long oldLength2 = destination.length();
                 File parentFile = destination.getParentFile();
                 if (!parentFile.exists()) {
                     boolean mkdir = parentFile.mkdirs();
@@ -123,6 +125,8 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
                             logHashMap.put("path", "" + destination.getPath());
                             logHashMap.put("parentfile", "" + parentFile.exists());
                             logHashMap.put("extractedsize", "" + extractedSize);
+                            logHashMap.put("oldlength1", "" + oldLength);
+                            logHashMap.put("oldlength2", "" + oldLength2);
                             logHashMap.put("length1", "" + destinationTemp.length());
                             logHashMap.put("length2", "" + destination.length());
                             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_ZIP_FILE_ERROR, logHashMap.getData());
@@ -138,6 +142,8 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
                         logHashMap.put("parentfile", "" + parentFile.exists());
                         logHashMap.put("extractedsize", "" + extractedSize);
                         logHashMap.put("exception", "" + Log.getStackTraceString(e));
+                        logHashMap.put("oldlength1", "" + oldLength);
+                        logHashMap.put("oldlength2", "" + oldLength2);
                         logHashMap.put("length1", "" + destinationTemp.length());
                         logHashMap.put("length2", "" + destination.length());
                         UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_ZIP_FILE_ERROR, logHashMap.getData());
@@ -177,7 +183,8 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
         }
         try {
             StableLogHashMap logHashMap = new StableLogHashMap();
-            logHashMap.put("input", "" + mInput);
+            logHashMap.put("inputname", "" + mInput);
+            logHashMap.put("inputlength", "" + mInput.length());
             logHashMap.put("output", "" + mOutput);
             logHashMap.put("exception", "" + Log.getStackTraceString(exception));
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.LIVE_ZIP_ERROR, logHashMap.getData());
