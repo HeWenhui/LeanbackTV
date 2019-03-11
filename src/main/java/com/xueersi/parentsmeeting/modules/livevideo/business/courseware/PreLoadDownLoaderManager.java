@@ -69,7 +69,7 @@ public class PreLoadDownLoaderManager {
         }
 
         downLoadInfoListeners.add(downLoadInfo);
-//        startAutoDownload();
+        startAutoDownload();
     }
 
     /**
