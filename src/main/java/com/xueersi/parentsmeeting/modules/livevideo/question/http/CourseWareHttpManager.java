@@ -77,7 +77,7 @@ public class CourseWareHttpManager {
     }
 
     public void getCourseWareTests(String stuId, String packageId, String packageSource, String packageAttr, String releasedPageInfos, int isPlayBack, String classId, String classTestId,
-                                   String srcTypes, String testIds, String educationStage, String nonce, final AbstractBusinessDataCallBack callBack) {
+                                   String srcTypes, String testIds, String educationStage, String nonce, String isShowTeamPk, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         liveHttpManager.setDefaultParameter(httpRequestParams);
         httpRequestParams.addBodyParam("stuId", stuId);
@@ -92,6 +92,7 @@ public class CourseWareHttpManager {
         httpRequestParams.addBodyParam("testIds", "" + testIds);
         httpRequestParams.addBodyParam("educationStage", "" + educationStage);
         httpRequestParams.addBodyParam("nonce", "" + nonce);
+        httpRequestParams.addBodyParam("isShowTeamPk", "" + isShowTeamPk);
         String url;
         if (arts == LiveVideoSAConfig.ART_SEC) {
             url = LiveQueHttpConfig.LIVE_GET_COURSEWARE_TESTS;

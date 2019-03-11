@@ -899,7 +899,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 String classId = mGetInfo.getStudentLiveInfo().getClassId();
                 String[] res = getSrcType(englishH5Entity);
                 getCourseWareHttpManager().getCourseWareTests(mGetInfo.getStuId(), englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
-                        englishH5Entity.getReleasedPageInfos(), 0, classId, englishH5Entity.getClassTestId(), res[0], res[1], mGetInfo.getEducationStage(), detailInfo.nonce, callBack);
+                        englishH5Entity.getReleasedPageInfos(), 0, classId, englishH5Entity.getClassTestId(), res[0], res[1], mGetInfo.getEducationStage(), detailInfo.nonce,mGetInfo.getIsAllowTeamPk(), callBack);
             }
         }
 

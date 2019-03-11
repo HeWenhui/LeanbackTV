@@ -51,6 +51,17 @@
         android:textColor="#ffffffff"
         android:textSize="18sp" />
 
+    <!--假数据为了测试-->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="12dp"
+        android:layout_toRightOf="@id/tv_livevideo_new_course_num"
+        android:text="美超"
+        android:textColor="#ffffffff"
+        android:textSize="18sp" />
+
     <Button
         android:id="@id/bt_livevideo_new_course_pre"
         android:layout_width="84dp"

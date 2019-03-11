@@ -411,7 +411,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             String classId = liveGetInfo.getStudentLiveInfo().getClassId();
             String[] res = getSrcType(englishH5Entity);
             getCourseWareHttpManager().getCourseWareTests(liveGetInfo.getStuId(), englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
-                    englishH5Entity.getReleasedPageInfos(), 0, classId, englishH5Entity.getClassTestId(), res[0], res[1], liveGetInfo.getEducationStage(), detailInfo.nonce, callBack);
+                    englishH5Entity.getReleasedPageInfos(), 0, classId, englishH5Entity.getClassTestId(), res[0], res[1], liveGetInfo.getEducationStage(), detailInfo.nonce,"0", callBack);
         }
 
         private String[] getSrcType(EnglishH5Entity englishH5Entity) {

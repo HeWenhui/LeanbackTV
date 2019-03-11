@@ -96,9 +96,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     /** 学年 */
     private String educationstage;
     /** 战队pk用，金币 */
-    private int mGoldNum;
+    private int mGoldNum = -1;
     /** 战队pk用，能量 */
-    private int mEnergyNum;
+    private int mEnergyNum = -1;
     /** 加载的布局 */
     private RelativeLayout rlSubjectLoading;
     /** 下方控制条 */
@@ -225,6 +225,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 } else {
                     LiveVideoConfig.isNewEnglishH5 = false;
                 }
+                preLoad.onStop();
             }
         });
         return view;
@@ -867,7 +868,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             try {
                 int userAnswerStatus = 0;
                 //用户没有作答,字段不能缺
-                if (userAnswerContent == null) {
+                if (userAnswerContent == null || userAnswerContent.length() == 0) {
                     userAnswerContent = new JSONArray();
                     JSONObject jsonObject = new JSONObject();
                     JSONArray array = new JSONArray();
@@ -877,19 +878,31 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     emptyJson.put("text", "");
                     array.put(emptyJson);
                     jsonObject.put("userAnswerContent", array);
+                    jsonObject.put("rightnum", 0);
+                    jsonObject.put("wrongnum", 0);
                     userAnswerContent.put(jsonObject);
                 } else {
                     for (int j = 0; j < userAnswerContent.length(); j++) {
                         JSONObject jsonObject = userAnswerContent.getJSONObject(j);
-                        JSONArray array = jsonObject.getJSONArray("userAnswerContent");
-                        if (array.length() == 0) {
-                            array = new JSONArray();
-                            //需要填上id 和 text
-                            JSONObject emptyJson = new JSONObject();
-                            emptyJson.put("id", "");
-                            emptyJson.put("text", "");
-                            array.put(emptyJson);
-                            jsonObject.put("userAnswerContent", array);
+                        if (jsonObject.get("userAnswerContent") instanceof JSONArray) {
+                            JSONArray array = jsonObject.getJSONArray("userAnswerContent");
+                            if (array.length() == 0) {
+                                array = new JSONArray();
+                                //需要填上id 和 text
+                                JSONObject emptyJson = new JSONObject();
+                                emptyJson.put("id", "");
+                                emptyJson.put("text", "");
+                                array.put(emptyJson);
+                                jsonObject.put("userAnswerContent", array);
+                            }
+                        } else {
+                            jsonObject.put("userAnswerContent", jsonObject.get("userAnswerContent"));
+                        }
+                        if (!jsonObject.has("rightnum")) {
+                            jsonObject.put("rightnum", 0);
+                        }
+                        if (!jsonObject.has("wrongnum")) {
+                            jsonObject.put("wrongnum", 0);
                         }
                     }
                 }
