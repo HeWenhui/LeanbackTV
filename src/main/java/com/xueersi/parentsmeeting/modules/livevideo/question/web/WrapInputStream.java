@@ -1,6 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.web;
 
+import android.content.Context;
+
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
 import java.io.IOException;
@@ -14,17 +17,24 @@ public class WrapInputStream extends InputStream {
     private String TAG = "WrapInputStream";
     private InputStream inputStream;
     private Logger logger;
+    private LogToFile logToFile;
 
-    public WrapInputStream(InputStream inputStream) {
+    public WrapInputStream(Context context, InputStream inputStream) {
         this.inputStream = inputStream;
         logger = LiveLoggerFactory.getLogger(TAG);
-        logger.d("read1");
+        logToFile = new LogToFile(context, TAG);
+        logToFile.d("WrapInputStream:inputStream=" + inputStream);
     }
 
     @Override
     public int read() throws IOException {
         logger.d("read1");
-        return inputStream.read();
+        try {
+            return inputStream.read();
+        } catch (IOException e) {
+            logToFile.e("read1", e);
+            throw e;
+        }
     }
 
     @Override
@@ -36,13 +46,25 @@ public class WrapInputStream extends InputStream {
     @Override
     public int read(byte[] b, int off, int len) throws IOException {
         logger.d("read3:off=" + off + ",len=" + len);
-        return inputStream.read(b, off, len);
+        try {
+            return inputStream.read(b, off, len);
+        } catch (IOException e) {
+            logToFile.e("read3", e);
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     @Override
     public void close() throws IOException {
-        logger.d("close:class" + inputStream.getClass());
-        inputStream.close();
+        logToFile.d("close:class" + inputStream.getClass());
+        try {
+            inputStream.close();
+        } catch (IOException e) {
+            logToFile.e("close", e);
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     @Override

@@ -19,6 +19,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tencent.bugly.crashreport.CrashReport;
+import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebView;
@@ -249,7 +250,15 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         getTodayQues();
         newCourseCache = new NewCourseCache(mContext, liveId);
         addJavascriptInterface();
-        wvSubjectWeb.setWebChromeClient(new BaseCoursewareNativePager.MyWebChromeClient());
+        wvSubjectWeb.setWebChromeClient(new BaseCoursewareNativePager.MyWebChromeClient() {
+            @Override
+            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+                if (("" + consoleMessage.message()).contains("sendToCourseware")) {
+                    CrashReport.postCatchedException(new Exception());
+                }
+                return super.onConsoleMessage(consoleMessage);
+            }
+        });
         wvSubjectWeb.setWebViewClient(new CourseWebViewClient());
         wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, new StaticWeb.OnMessage() {
 

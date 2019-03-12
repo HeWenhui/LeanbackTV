@@ -26,8 +26,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import ren.yale.android.cachewebviewlib.utils.FileUtil;
-
 /**
  * Created by linyuqiang on 2019/3/5.
  * 往html中嵌入js
@@ -161,7 +159,7 @@ public class WebInstertJs {
         InputStream inputStream = null;
         try {
             inputStream = context.getAssets().open("webview_postmessage/index.js");
-            return new WrapInputStream(inputStream);
+            return new WrapInputStream(context, inputStream);
 //            return inputStream;
         } catch (IOException e) {
             e.printStackTrace();
