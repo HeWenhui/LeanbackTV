@@ -30,12 +30,21 @@
             android:name=".activity.ExperienceLiveVideoActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:screenOrientation="landscape"
+            android:process=":livevideo"
             android:windowSoftInputMode="adjustResize|stateHidden"></activity>
         <activity
             android:name=".activity.AIExperienceLiveVideoActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustResize|stateHidden"></activity>
+
+
+        <activity
+            android:name=".activity.HalfBodyLiveExperienceActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustResize|stateHidden"/>
+
 
         <activity
             android:name=".activity.LiveVideoLoadActivity"
@@ -97,6 +106,10 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:process=":livevideo"
             android:theme="@style/style_permission_compat" />
+
+        <activity
+            android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.DeviceDetectionActivity"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.RolePlayerActivity"

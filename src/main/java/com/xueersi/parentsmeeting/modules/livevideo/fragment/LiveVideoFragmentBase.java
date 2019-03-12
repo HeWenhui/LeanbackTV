@@ -113,9 +113,11 @@ public class LiveVideoFragmentBase extends Fragment {
         activity = (BaseActivity) getActivity();
         sendPlayVideoHandler.sendEmptyMessageDelayed(1, 1000);
         mIsLand.set(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE);
-        mPortVideoHeight = VideoBll.getVideoDefaultHeight(activity);
+        if (!mIsLand.get()) {
+            mPortVideoHeight = VideoBll.getVideoDefaultHeight(activity);
+        }
 //        mPortVideoHeight = (int) LiveVideoConfig.VIDEO_HEIGHT;
-        logger.d("onCreate:mPortVideoHeight=" + mPortVideoHeight);
+        logger.d("onCreate:mPortVideoHeight=" + mPortVideoHeight + ",IsLand=" + mIsLand.get());
         //showDialog(savedInstanceState);
     }
 
@@ -335,6 +337,9 @@ public class LiveVideoFragmentBase extends Fragment {
         if (mIsLand.get()) {
             lpr.height = LayoutParams.MATCH_PARENT;
         } else {
+            if (mPortVideoHeight == 0) {
+                mPortVideoHeight = VideoBll.getVideoDefaultHeight(activity);
+            }
             lpr.height = mPortVideoHeight;
             // lpr.height = VP.DEFAULT_PORT_HEIGHT;
         }

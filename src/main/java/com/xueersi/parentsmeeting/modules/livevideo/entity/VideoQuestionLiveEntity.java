@@ -77,6 +77,8 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
 
     /**语音评测独有。答案**/
     public String answer;
+    /** 年级阶段的标识 */
+    private String educationstage = "";
 
     public VideoQuestionLiveEntity() {
     }
@@ -101,17 +103,17 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("\nid=" + id);
-        builder.append("\ntime=" + time);
-        builder.append("\ngold=" + gold);
-        builder.append("\nnum=" + num);
-        builder.append("\ntype=" + type);
-        builder.append("\nchoiceType=" + choiceType);
+        builder.append("id=" + id);
+        builder.append(",time=" + time);
+        builder.append(",gold=" + gold);
+        builder.append(",num=" + num);
+        builder.append(",type=" + type);
+        builder.append(",choiceType=" + choiceType);
         if ("1".equals(isAllow42)) {
-            builder.append("\nspeechContent=" + speechContent);
+            builder.append(",speechContent=" + speechContent);
         }
         if ("1".equals(getIsVoice())) {
-            builder.append("\nquestiontype=" + questiontype);
+            builder.append(",questiontype=" + questiontype);
         }
         return builder.toString();
     }
@@ -219,5 +221,21 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
 
     public H5OnlineTechEntity getOnlineTechEntity() {
         return onlineTechEntity;
+    }
+
+    public void setLiveType(int liveType){
+        englishH5Entity.setLiveType(liveType);
+    }
+    public int getLiveType(){
+        return  englishH5Entity.getLiveType();
+    }
+
+
+    public String getEducationstage() {
+        return educationstage;
+    }
+
+    public void setEducationstage(String educationstage) {
+        this.educationstage = educationstage;
     }
 }

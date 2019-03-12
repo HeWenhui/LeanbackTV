@@ -96,7 +96,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
             onUserBackPressed();
             return false;
         }
-        mLogtf = new LogToFile(mLiveBll, TAG);
+        mLogtf = new LogToFile(activity, TAG);
         userOnline = new UserOnline(activity, liveType, mVSectionID);
         userOnline.setHttpManager(mLiveBll.getHttpManager());
         //先让播放器按照默认模式设置
@@ -122,6 +122,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
                 mediaPlayerControls.remove(mediaPlayerControl);
             }
         });
+        ProxUtil.getProxUtil().put(activity, BasePlayerFragment.class, videoFragment);
         return true;
     }
 
@@ -160,6 +161,9 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
     @Override
     protected void onUserBackPressed() {
+        if (mLiveBll == null) {
+            super.onUserBackPressed();
+        }
         boolean userBackPressed = mLiveBll.onUserBackPressed();
         if (!userBackPressed) {
             super.onUserBackPressed();
@@ -482,7 +486,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
     /**
      * 播放失败，或者完成时调用
      */
-    private void onFail(int arg1, final int arg2) {
+    protected void onFail(int arg1, final int arg2) {
         if (liveVideoAction != null) {
             liveVideoAction.onFail(arg1, arg2);
         }
@@ -576,5 +580,12 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
             }
         });
         LiveVideoConfig.isSmallChinese = false;
+    }
+
+    /** 测试notice */
+    public void testNotice(String notice) {
+        if (mLiveBll != null) {
+            mLiveBll.testNotice(notice);
+        }
     }
 }

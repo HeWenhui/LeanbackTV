@@ -91,15 +91,16 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
             if (!StringUtils.isSpace(srcType)) {
                 params.addBodyParam("srcType", srcType);
             }
-            params.addBodyParam("classId", classId);
-            params.addBodyParam("liveId", classId);
-            params.addBodyParam("testDay", testDay);
+            params.addBodyParam("classId", "" + classId);
+            params.addBodyParam("liveId", "" + classId);
+            params.addBodyParam("testDay", "" + testDay);
+            params.addBodyParam("livePlayType", "" + livePlayType);
 //        params.addBodyParam("enstuId", enStuId);
-            params.addBodyParam("testId", testId);
+            params.addBodyParam("testId", "" + testId);
             if (voice) {
-                params.addBodyParam("answer", testResult);
+                params.addBodyParam("answer", "" + testResult);
             } else {
-                params.addBodyParam("testAnswer", testResult);
+                params.addBodyParam("testAnswer", "" + testResult);
             }
             params.addBodyParam("useVoice", voice ? "1" : "0");
             params.addBodyParam("isRight", isRight ? "1" : "0");
@@ -127,7 +128,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
                                   String classId, String type, String isSubmit,
                                   double voiceTime, boolean isRight, HttpCallBack requestCallBack) {
         if (LiveVideoConfig.isNewArts) {
-            if("16".equals(type) || "15".equals(type)){
+            if ("16".equals(type) || "15".equals(type)) {
                 HttpRequestParams params = new HttpRequestParams();
                 String url = liveVideoSAConfigInner.URL_LIVE_SUBMIT_NEWARTSH5_ANSWER;
                 setDefaultParameter(params);
@@ -144,14 +145,14 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
                 params.addBodyParam("userAnswer", LiveVideoConfig.userAnswer);
                 params.addBodyParam("answer", LiveVideoConfig.answer);
                 sendPost(url, params, requestCallBack);
-            }else{
+            } else {
                 HttpRequestParams params = new HttpRequestParams();
                 String url = liveVideoSAConfigInner.URL_LIVE_SUBMIT_NEWARTS_ANSWER;
                 setDefaultParameter(params);
                 params.addBodyParam("liveId", classId);
                 params.addBodyParam("answers", testResult);
                 params.addBodyParam("isPlayBack", "2");
-                params.addBodyParam("isForce", "1");
+                params.addBodyParam("isForce", isSubmit);
                 params.addBodyParam("Cookie", AppBll.getInstance().getUserToken());
                 sendPost(url, params, requestCallBack);
             }
@@ -206,7 +207,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
      * @param operateId
      * @param requestCallBack
      */
-    public void  getLivePlayRedPacket(String enStuId, String operateId, String liveId, HttpCallBack
+    public void getLivePlayRedPacket(String enStuId, String operateId, String liveId, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
@@ -273,12 +274,13 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
 
     //语音评测2期答案提交
     public void sendSpeechEvalResult2(String enstuId, String liveId, String id, String stuAnswer, HttpCallBack
-            requestCallBack) {
+            requestCallBack, String isSubmit) {
         if (LiveVideoConfig.isNewArts) {
             HttpRequestParams params = new HttpRequestParams();
             params.addBodyParam("liveId", liveId);
             params.addBodyParam("testId", id);
             params.addBodyParam("isRejected", "1");
+            params.addBodyParam("isSubmit", ""+isSubmit);
             params.addBodyParam("answers", "" + stuAnswer);
             params.addBodyParam("type", "2");
             setDefaultParameter(params);
@@ -638,6 +640,14 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("termId", termId);
         params.addBodyParam("content", content);
         sendPost(LiveVideoConfig.URL_AUTO_LIVE_QUIT_FEED_BACK, params, requestCallBack);
+    }
+
+    public void sumbitExperienceNoviceGuide(String stuId,String termId,String subjectId,HttpCallBack requestCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("termId", termId);
+        params.addBodyParam("subjectId", subjectId);
+        sendPost(LiveVideoConfig.URL_AUTO_LIVE_NOVIC_GUIDE, params, requestCallBack);
     }
 
 }

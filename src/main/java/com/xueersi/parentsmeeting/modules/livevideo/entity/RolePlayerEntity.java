@@ -2,6 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 import com.tal.speech.speechrecognizer.PhoneScore;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -44,6 +46,7 @@ public class RolePlayerEntity {
      * 金币数
      */
     private int goldCount;
+    private int energy;
 
     /**
      * 自己最后一段话的index
@@ -73,6 +76,7 @@ public class RolePlayerEntity {
     private List<RolePlayerMessage> lstRolePlayerMessage = new ArrayList<>();
     private int resultStar;
     private double selfSpeechTime;
+    private JSONObject jsonObject;
 
     public long getCountDownSecond() {
         return countDownSecond;
@@ -141,6 +145,14 @@ public class RolePlayerEntity {
 
     public void setGoldCount(int goldCount) {
         this.goldCount = goldCount;
+    }
+
+    public int getEnergy() {
+        return energy;
+    }
+
+    public void setEnergy(int energy) {
+        this.energy = energy;
     }
 
     public int getSelfLastIndex() {
@@ -236,6 +248,14 @@ public class RolePlayerEntity {
 
     public double getSelfValidSpeechTime() {
         return selfSpeechTime;
+    }
+
+    public void setJson(JSONObject json) {
+        jsonObject = json;
+    }
+
+    public JSONObject getJson() {
+        return jsonObject;
     }
 
 
@@ -692,4 +712,5 @@ public class RolePlayerEntity {
         }
         return null;
     }
+
 }

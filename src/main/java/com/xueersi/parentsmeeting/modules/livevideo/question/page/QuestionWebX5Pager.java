@@ -50,6 +50,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import ren.yale.android.cachewebviewlib.CacheWebView;
+import ren.yale.android.cachewebviewlib.WebViewCache;
 import ren.yale.android.cachewebviewlib.utils.MD5Utils;
 
 /**
@@ -61,6 +62,8 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
     private String questionEventId = LiveVideoConfig.LIVE_H5_TEST;
     private Button btSubjectClose;
     private Button btSubjectCalljs;
+    /** 刷新次数，防止预加载文件有问题 */
+    private int refreshTimes = 0;
     private WebView wvSubjectWeb;
     private View errorView;
     private StopWebQuestion questionBll;
@@ -177,6 +180,22 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
             public void onClick(View v) {
 //                view.findViewById(R.id.rl_livevideo_subject_error).setVisibility(View.GONE);
 //                wvSubjectWeb.setVisibility(View.VISIBLE);
+                if (refreshTimes % 2 == 0) {
+                    if (wvSubjectWeb instanceof CacheWebView) {
+                        CacheWebView cacheWebView = (CacheWebView) wvSubjectWeb;
+                        cacheWebView.setCacheStrategy(WebViewCache.CacheStrategy.NORMAL);
+                        logger.d("refreshonClick:NORMAL");
+                    }
+                } else {
+                    if (wvSubjectWeb instanceof CacheWebView) {
+                        CacheWebView cacheWebView = (CacheWebView) wvSubjectWeb;
+                        cacheWebView.setCacheStrategy(WebViewCache.CacheStrategy.NO_CACHE);
+                        if (refreshTimes % 3 == 0) {
+                            cacheWebView.clearCache();
+                        }
+                        logger.d("refreshonClick:NO_CACHE");
+                    }
+                }
                 wvSubjectWeb.reload();
                 errorView.setVisibility(View.GONE);
                 mView.findViewById(R.id.rl_livevideo_subject_loading).setVisibility(View.VISIBLE);
@@ -193,6 +212,12 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
             @Override
             public void onViewDetachedFromWindow(View v) {
                 onDestroy();
+            }
+        });
+        view.findViewById(R.id.iv_livevideo_subject_refresh).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                wvSubjectWeb.reload();
             }
         });
         return view;
@@ -262,6 +287,12 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                 EventBus.getDefault().post(event);
                 mGoldNum = -1;
                 mEngerNum = -1;
+                // TODO 影响不确定，暂时注释isNewEnglishH5_isNewEnglishH5
+//                if (isNewArtsTest) {
+//                    LiveVideoConfig.isNewEnglishH5 = true;
+//                } else {
+//                    LiveVideoConfig.isNewEnglishH5 = false;
+//                }
             }
         });
     }
@@ -412,7 +443,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                         inputStream = new FileInputStream(file);
                         String extension = MimeTypeMap.getFileExtensionFromUrl(s.toLowerCase());
                         String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-                        WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", inputStream);
+                        WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "", inputStream);
                         webResourceResponse.setResponseHeaders(header);
                         logger.e("读取本地资源了old");
                         return webResourceResponse;
@@ -456,7 +487,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                         inputStream = new FileInputStream(file);
                         String extension = MimeTypeMap.getFileExtensionFromUrl(request.getUrl().toString().toLowerCase());
                         String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-                        WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "UTF-8", inputStream);
+                        WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "", inputStream);
                         HashMap map = new HashMap();
                         map.put("Access-Control-Allow-Origin", "*");
                         webResourceResponse.setResponseHeaders(map);
@@ -497,11 +528,11 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         @Override
         public void onPageStarted(WebView view, String url, Bitmap favicon) {
             this.failingUrl = null;
-            if (!url.equals(examUrl)) {
-                mLogtf.i("onPageStarted:setInitialScale");
-                int scale = ScreenUtils.getScreenWidth() * 100 / 878;
-                wvSubjectWeb.setInitialScale(scale);
-            }
+//            if (!url.equals(examUrl)) {
+//                mLogtf.i("onPageStarted:setInitialScale");
+//                int scale = ScreenUtils.getScreenWidth() * 100 / 878;
+//                wvSubjectWeb.setInitialScale(scale);
+//            }
             super.onPageStarted(view, url, favicon);
         }
 

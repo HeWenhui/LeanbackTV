@@ -16,11 +16,13 @@ import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * 文科答题统计面板
+ * 文科答题统计面板,不带能量
  *
  * @author chenkun
  * @version 1.0, 2018/8/7 上午10:36

@@ -594,12 +594,12 @@ public class WebViewCache {
                         return null;
                     }
                     resourseInputStream.setInnerInputStream(copyInputStream);
-                    encode = inputStreamUtils.getEncoding();
+//                    encode = inputStreamUtils.getEncoding();
                     CacheWebViewLog.d(encode + " " + "get encoding timecost: " + (System.currentTimeMillis() - start)
                             + "ms " + url);
                 }
-                resourseInputStream.setEncode(encode);
-                WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, encode
+//                resourseInputStream.setEncode(encode);
+                WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, ""
                         , inputStream);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     webResourceResponse.setResponseHeaders(resourseInputStream.getHttpCache().getResponseHeader());
@@ -609,11 +609,11 @@ public class WebViewCache {
 
                 Map map = getAllHttpHeaders(url);
 
-                if (httpCacheFlag != null) {
-                    encode = httpCacheFlag.getEncode();
-                }
+//                if (httpCacheFlag != null) {
+//                    encode = httpCacheFlag.getEncode();
+//                }
                 CacheWebViewLog.d(encode + " " + url);
-                WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, encode, inputStream);
+                WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "", inputStream);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     webResourceResponse.setResponseHeaders(map);
                 }

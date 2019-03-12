@@ -49,6 +49,7 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
 
         LiveBackBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new
                 LiveBackBaseEnglishH5CoursewareCreat();
+        liveBaseEnglishH5CoursewareCreat.setLiveGetInfo(liveGetInfo);
         int isArts = liveBackBll.getIsArts();
         liveBaseEnglishH5CoursewareCreat.setArts(isArts);
         liveBaseEnglishH5CoursewareCreat.setWrapOnH5ResultClose(new WrapOnH5ResultClose(activity));
@@ -130,7 +131,7 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
     class EnglishH5CoursewareImpl implements EnglishH5CoursewareHttp {
 
         @Override
-        public void getStuGoldCount() {
+        public void getStuGoldCount(String method) {
             //回放没有
         }
 

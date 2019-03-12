@@ -19,6 +19,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LecLiveVideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
@@ -45,7 +46,7 @@ import java.util.List;
  * Created by linyuqiang on 2018/7/18.
  * 讲座布局
  */
-public class LectureLiveVideoFrame extends LiveFragmentBase {
+public class LectureLiveVideoFrame extends LiveFragmentBase implements ActivityChangeLand {
     private String TAG = "LectureLiveVideoFrameLog";
     protected LiveIRCMessageBll liveIRCMessageBll;
     BaseLiveMediaControllerTop baseLiveMediaControllerTop;
@@ -55,6 +56,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
     LecLiveVideoAction lecLiveVideoAction;
     /** onPause状态不暂停视频 */
     PauseNotStopVideoIml pauseNotStopVideoIml;
+    boolean firstInitView = false;
 
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -74,6 +76,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
 
     private void initAllBll() {
         logger.d("====>initAllBll:" + bottomContent);
+        ProxUtil.getProxUtil().put(activity, ActivityChangeLand.class, this);
         mMediaController.setControllerBottom(liveMediaControllerBottom, false);
         mMediaController.setControllerTop(baseLiveMediaControllerTop);
         setMediaControllerBottomParam();
@@ -246,6 +249,14 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
     }
 
     @Override
+    public void setAutoOrientation(boolean isAutoOrientation) {
+        super.setAutoOrientation(isAutoOrientation);
+        if (videoFragment != null) {
+            videoFragment.setIsAutoOrientation(isAutoOrientation);
+        }
+    }
+
+    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
@@ -308,6 +319,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
                 for (LiveBaseBll businessBll : businessBlls) {
                     businessBll.initViewF(null, bottomContent, mIsLand, mContentView);
                 }
+                firstInitView = true;
                 logger.d("changeLandAndPort:time2=" + (System.currentTimeMillis() - before));
 //                liveMessageBll.initView(questionContent, mIsLand);
 //                //点名
@@ -359,6 +371,7 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
                 for (LiveBaseBll businessBll : businessBlls) {
                     businessBll.initViewF(null, bottomContent, mIsLand, mContentView);
                 }
+                firstInitView = true;
                 logger.d("changeLandAndPort:time4=" + (System.currentTimeMillis() - before));
 //                liveMessageBll.initView(questionContent, mIsLand);
 //                //点名
@@ -381,6 +394,15 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
                         mPopupWindows.dismiss();
                     }
                 });
+            }
+        }
+        //在后台被回收，再启动。会没有初始化view
+        if (!firstInitView) {
+            logger.d("changeLandAndPort:firstInitView=false");
+            firstInitView = true;
+            List<LiveBaseBll> businessBlls = mLiveBll.getBusinessBlls();
+            for (LiveBaseBll businessBll : businessBlls) {
+                businessBll.initViewF(null, bottomContent, mIsLand, mContentView);
             }
         }
     }
@@ -428,5 +450,12 @@ public class LectureLiveVideoFrame extends LiveFragmentBase {
 
     private void setFirstParamPort() {
         lecLiveVideoAction.setFirstParamPort();
+    }
+
+    @Override
+    public void changeLOrP() {
+        if (videoFragment != null) {
+            videoFragment.changeLOrP();
+        }
     }
 }

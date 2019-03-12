@@ -18,6 +18,7 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
@@ -29,7 +30,6 @@ import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
-import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -41,7 +41,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
-import com.xueersi.parentsmeeting.modules.livevideo.EvaluateTeacher.bussiness.EvaluateTeacherPlayBackBll;
+import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenPalyBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
@@ -64,6 +64,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.PlayErrorCodeLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveBackVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
@@ -122,8 +123,6 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     /** 从哪个页面跳转 */
     String where;
     int isArts;
-    /** 区分文理appid */
-    String appID = UmsConstants.LIVE_APP_ID_BACK;
     private LiveVideoSAConfig liveVideoSAConfig;
     boolean IS_SCIENCE;
     /** 本地视频 */
@@ -157,6 +156,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         mVideoEntity = (VideoLivePlayBackEntity) intent.getExtras().getSerializable("videoliveplayback");
         islocal = intent.getBooleanExtra("islocal", false);
         mHandler = new Handler();
+        if (mVideoEntity == null) {
+            CrashReport.postCatchedException(new Exception("" + intent.getExtras()));
+        }
         // 请求相应数据
         initData();
         initBll();
@@ -351,21 +353,18 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         liveBackVideoBll.setvPlayer(vPlayer);
         liveBackVideoBll.setSectionName(mSectionName);
         if (isArts == 1) {
-            appID = UmsConstants.ARTS_APP_ID_BACK;
             IS_SCIENCE = false;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_LIBARTS, false);
         } else if (isArts == 2) {
-            appID = UmsConstants.ARTS_APP_ID_BACK;
             IS_SCIENCE = false;
             liveVideoSAConfig = new LiveVideoSAConfig(LiveVideoConfig.HTTP_PRIMARY_CHINESE_HOST);
         } else {
-            appID = UmsConstants.LIVE_APP_ID_BACK;
             IS_SCIENCE = true;
             liveVideoSAConfig = new LiveVideoSAConfig(ShareBusinessConfig.LIVE_SCIENCE, true);
         }
-        if(mVideoEntity.isMul()){
+        if (mVideoEntity.isMul()) {
             AppConfig.isMulLiveBack = true;
-        }else{
+        } else {
             AppConfig.isMulLiveBack = false;
         }
         lectureLivePlayBackBll.setLiveVideoSAConfig(liveVideoSAConfig);
@@ -398,6 +397,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         ProxUtil.getProxUtil().put(activity, MediaControllerAction.class, this);
         ProxUtil.getProxUtil().put(activity, MediaPlayerControl.class, liveBackPlayVideoFragment);
         ProxUtil.getProxUtil().put(activity, ActivityChangeLand.class, this);
+        ProxUtil.getProxUtil().put(activity, BasePlayerFragment.class, liveBackPlayVideoFragment);
         initBusiness();
         if (islocal) {
             // 互动题播放地址
@@ -432,10 +432,12 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         pauseNotStopVideoIml = new PauseNotStopVideoIml(activity, onPauseNotStopVideo);
         addBusiness(activity);
         liveBackBll.onCreate();
+        long before = System.currentTimeMillis();
         List<LiveBackBaseBll> businessBlls = liveBackBll.getLiveBackBaseBlls();
         for (LiveBackBaseBll businessBll : businessBlls) {
             businessBll.initViewF(rlQuestionContentBottom, rlQuestionContent, mIsLand);
         }
+        logger.d("initBusiness:initViewF:time=" + (System.currentTimeMillis() - before));
     }
 
     protected void initLiveRemarkBll() {
@@ -489,6 +491,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 liveBackBll.addBusinessBll(new SpeechBulletScreenPalyBackBll(activity, liveBackBll));
                 initLiveRemarkBll();
             } else {
+                if (liveBackBll.getIsArts() == 2) {
+                    liveBackBll.addBusinessBll(new SpeechBulletScreenPalyBackBll(activity, liveBackBll));
+                }
                 Log.e("LiveBackVideoFragment", "====> initAnswerResultBll");
                 liveBackBll.addBusinessBll(new ArtsAnswerResultPlayBackBll(activity, liveBackBll));
                 if (liveBackBll.getPattern() != 2) {
@@ -641,7 +646,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
     @Override
     protected void sendPlayVideo() {
-        if (isArts == 1) {
+        if (isArts == 1 || isArts == 2) {
             // 如果观看视频时间等于或大于统计数则发送
             if (mPlayVideoTime >= mSendPlayVideoTime) {
                 String liveId = mVideoEntity.getLiveId();

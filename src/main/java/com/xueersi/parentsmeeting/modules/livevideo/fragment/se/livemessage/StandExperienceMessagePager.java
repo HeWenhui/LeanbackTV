@@ -745,17 +745,6 @@ public class StandExperienceMessagePager extends BaseLiveMessagePager implements
                 }
             });
         }
-//        SpeechEvaluatorUtils.setOnFileSuccess(new SpeechEvaluatorUtils.OnFileSuccess() {
-//            @Override
-//            public void onFileSuccess() {
-//                mSpeechFail = "模型正在启动，请稍后";
-//            }
-//
-//            @Override
-//            public void onFileFail() {
-//                mSpeechFail = "模型启动失败，请使用手动输入";
-//            }
-//        });
         dir = LiveCacheFile.geCacheFile(mContext, "livevoice");
         FileUtils.deleteDir(dir);
         if (!dir.exists()) {

@@ -261,7 +261,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="130dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="13dp"
             android:src="@drawable/iv_livevideo_star_energy_bar_background"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

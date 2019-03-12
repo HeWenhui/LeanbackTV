@@ -65,8 +65,14 @@ public class RolePlayLog {
         }
         StableLogHashMap logHashMap = new StableLogHashMap("submitmutirole");
         logHashMap.put("goldnum", "" + rolePlayerEntity.getGoldCount());
-        logHashMap.put("starnum", "" + rolePlayerEntity.getSelfRoleHead().getResultStar());
-        logHashMap.put("totalscore", "" + rolePlayerEntity.getSelfRoleHead().getSpeechScore());
+        RolePlayerEntity.RolePlayerHead head=rolePlayerEntity.getSelfRoleHead();
+        if(head!=null){
+            logHashMap.put("starnum", "" + head.getResultStar());
+            logHashMap.put("totalscore", "" + head.getSpeechScore());
+        }else {
+            logHashMap.put("starnum", "0");
+            logHashMap.put("totalscore", "0");
+        }
         logHashMap.put("speaktime", "" + rolePlayerEntity.getSelfValidSpeechTime());
         logHashMap.put("testid", "" + rolePlayerEntity.getTestId());
         logHashMap.addExY().addSno("6");

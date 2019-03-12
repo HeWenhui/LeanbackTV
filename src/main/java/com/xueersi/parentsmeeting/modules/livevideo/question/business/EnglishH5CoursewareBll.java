@@ -36,6 +36,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FullMarkListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -46,6 +47,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEve
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.CreateAnswerReslutEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.VoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -68,7 +70,7 @@ import java.util.Map;
  * Created by linyuqiang on 2017/3/25.
  * 英语h5课件业务类
  */
-public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAndBackDebug, BaseVoiceAnswerCreat.AnswerRightResultVoice, LivePagerBack, EnglishShowReg {
+public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAndBackDebug, BaseVoiceAnswerCreat.NewArtsAnswerRightResultVoice, LivePagerBack, EnglishShowReg {
     String TAG = "EnglishH5CoursewareBll";
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     String eventId = LiveVideoConfig.LIVE_ENGLISH_COURSEWARE;
@@ -80,11 +82,14 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     BaseEnglishH5CoursewarePager h5CoursewarePager;
     private BaseEnglishH5CoursewareCreat baseEnglishH5CoursewareCreat;
     private BaseEnglishH5CoursewarePager curPager;
+    /** 语音答题的布局 */
     private BaseVoiceAnswerPager voiceAnswerPager;
+    /** 语音答题结果的布局 */
+    private View resultView;
     /** 创建语音答题 */
     private BaseVoiceAnswerCreat baseVoiceAnswerCreat;
     private LogToFile logToFile;
-    RelativeLayout bottomContent;
+    private RelativeLayout bottomContent;
     /** 语音强制提交，外层 */
     private RelativeLayout rlVoiceQuestionContent;
     /** 存英语h5 */
@@ -259,7 +264,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                             voiceAnswerPager.onUserBack();
                             VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) voiceAnswerPager.getBaseVideoQuestionEntity();
                             mH5AndBool.add(videoQuestionLiveEntity.getUrl());
-                            stopVoiceAnswerPager();
+                            stopVoiceAnswerPager(null);
                         }
                     }
                 });
@@ -337,7 +342,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         if (baseVideoQuestionEntity.id.equals(videoQuestionLiveEntity.id)) {
                             return;
                         } else {
-                            stopVoiceAnswerPager();
+                            stopVoiceAnswerPager(null);
                         }
                     }
                     if (h5CoursewarePager != null) {
@@ -390,7 +395,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         delayTime = 3000;
                         isForce = 1;
                     }
-                    if (isAnaswer && !havePager) {
+                    if (isAnaswer && !havePager && resultView == null) {
                         Log.e("mqtt", "submitData" + "three");
                         onQuestionShow(null, false, "onH5Courseware:end");
                     }
@@ -415,11 +420,14 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         bottomContent.post(new Runnable() {
             @Override
             public void run() {
-                logger.e("EnglishH5CoursewareCBll:froceClose " + h5CoursewarePager + ":" + (h5CoursewarePager == curPager));
+                if(mLiveBll != null){
+                    mLiveBll.getStuGoldCount("froceClose");
+                }
                 if (h5CoursewarePager != null) {
                     h5CoursewarePager.destroy();
                     bottomContent.removeView(h5CoursewarePager.getRootView());
-                    onQuestionShow(null, false, "onBack");
+                    h5CoursewarePager = null;
+                    onQuestionShow(null, false, "froceClose");
                 }
             }
         });
@@ -482,7 +490,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 if (!isAnaswer) {
                     onQuestionShow(null, false, "onH5ResultClose");
                 }
-                mLiveBll.getStuGoldCount();
+                mLiveBll.getStuGoldCount("showH5Paper");
 
                 WebViewRequest webViewRequest = ProxUtil.getProxUtil().get(context, WebViewRequest.class);
                 if (webViewRequest != null) {
@@ -494,6 +502,9 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         h5CoursewarePager = baseEnglishH5CoursewareCreat.creat(context, videoQuestionH5Entity, onH5ResultClose,
                 mVSectionID);
         h5CoursewarePager.setEnglishH5CoursewareBll(this);
+        if (mLiveBll instanceof EnglishH5CoursewareSecHttp) {
+            h5CoursewarePager.setEnglishH5CoursewareSecHttp((EnglishH5CoursewareSecHttp) mLiveBll);
+        }
         ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup
                 .LayoutParams.MATCH_PARENT);
         bottomContent.addView(h5CoursewarePager.getRootView(), lp);
@@ -563,8 +574,9 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         bottomContent.invalidate();
     }
 
-    private void stopVoiceAnswerPager() {
+    private void stopVoiceAnswerPager(final View resultView) {
         boolean isEnd = voiceAnswerPager.isEnd();
+        this.resultView = resultView;
         voiceAnswerPager.stopPlayer();
         voiceAnswerPager.onDestroy();
         bottomContent.removeView(voiceAnswerPager.getRootView());
@@ -573,9 +585,28 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         if (audioRequest != null) {
             audioRequest.release();
         }
-        logToFile.d("stopVoiceAnswerPager:isAnaswer=" + isAnaswer);
+        logToFile.d("stopVoiceAnswerPager:isAnaswer=" + isAnaswer + ",isEnd=" + isEnd + ",resultView=" + resultView);
         if (isEnd) {
-            onQuestionShow(null, false, "stopVoiceAnswerPager");
+            if (resultView == null) {
+                onQuestionShow(null, false, "stopVoiceAnswerPager");
+            }
+        }
+        if (resultView != null) {
+            resultView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                @Override
+                public void onViewAttachedToWindow(View view) {
+                    logToFile.d("stopVoiceAnswerPager:onViewAttachedToWindow:isAnaswer=" + isAnaswer);
+                }
+
+                @Override
+                public void onViewDetachedFromWindow(View view) {
+                    logToFile.d("stopVoiceAnswerPager:onViewDetachedFromWindow:isAnaswer=" + isAnaswer);
+                    EnglishH5CoursewareBll.this.resultView = null;
+                    if (!isAnaswer) {
+                        onQuestionShow(null, false, "stopVoiceAnswerPager:resultView");
+                    }
+                }
+            });
         }
     }
 
@@ -626,6 +657,28 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
      */
     @Override
     public void initQuestionAnswerReslut(final View popupWindow_view) {
+        initQuestionAnswerReslut(popupWindow_view, true);
+    }
+
+    /**
+     * 创建互动题作答，抢红包结果提示PopupWindow
+     */
+    public void initQuestionAnswerReslut(final View popupWindow_view, boolean autodisMiss) {
+        logger.d("initQuestionAnswerReslut");
+        popupWindow_view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+            long before;
+
+            @Override
+            public void onViewAttachedToWindow(View view) {
+                before = System.currentTimeMillis();
+                logger.d("initQuestionAnswerReslut:onViewAttachedToWindow");
+            }
+
+            @Override
+            public void onViewDetachedFromWindow(View view) {
+                logToFile.d("initQuestionAnswerReslut:onViewDetachedFromWindow:time=" + (System.currentTimeMillis() - before));
+            }
+        });
         bottomContent.removeView(rlQuestionResContent);
         bottomContent.addView(rlQuestionResContent, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         rlQuestionResContent.addView(popupWindow_view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
@@ -637,7 +690,9 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 rlQuestionResContent.removeAllViews();
             }
         });
-        disMissAnswerResult();
+        if (autodisMiss) {
+            disMissAnswerResult();
+        }
     }
 
     @Override
@@ -733,6 +788,27 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     @Override
     public void umsAgentDebugPv(String eventId, StableLogHashMap stableLogHashMap) {
 
+    }
+
+    @Override
+    public View initArtsAnswerRightResultVoice(AnswerResultEntity entity) {
+        final View popupWindow_view = QuestionResultView.initArtsAnswerRightResultVoice(context, entity, new AnswerResultStateListener() {
+            @Override
+            public void onCompeletShow() {
+                disMissAnswerResult();
+            }
+
+            @Override
+            public void onAutoClose(BasePager basePager) {
+
+            }
+
+            @Override
+            public void onCloseByUser() {
+            }
+        });
+        initQuestionAnswerReslut(popupWindow_view, false);
+        return popupWindow_view;
     }
 
     public interface OnH5ResultClose {
@@ -1005,11 +1081,11 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 answers.put(answerdetail);
                 String testAnswer = "";
                 testAnswer = answers.toString();
-                if ("0".equals(isSubmit)) {
-                    isSubmit = "1";
-                } else if ("1".equals(isSubmit)) {
-                    isSubmit = "2";
-                }
+//                if ("0".equals(isSubmit)) {
+//                    isSubmit = "1";
+//                } else if ("1".equals(isSubmit)) {
+//                    isSubmit = "2";
+//                }
                 LiveVideoConfig.answer = answer;
                 // 文科新课件平台的对接
                 mLiveBll.liveSubmitTestH5Answer(videoQuestionLiveEntity1, mVSectionID, testAnswer, videoQuestionLiveEntity1.courseware_type, isSubmit, voiceTime, isRight, new OnAnswerReslut() {
@@ -1019,20 +1095,22 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         logger.d("onPutQuestionResultNewArts5");
                         logToFile.d("liveSubmitTestH5Answer:question=" + baseVideoQuestionEntity + ",pager=" + (voiceAnswerPager == null));
                         answerReslut.onAnswerReslut(baseVideoQuestionEntity, entity);
+                        View resultView = null;
                         if (entity != null) {
                             if (entity.getIsAnswer() == 1) {
                                 XESToastUtils.showToast(context, "您已经答过此题");
                             } else {
-                                baseVoiceAnswerCreat.onAnswerReslut(context, EnglishH5CoursewareBll.this, voiceAnswerPager, baseVideoQuestionEntity, entity);
+                                CreateAnswerReslutEntity createAnswerReslutEntity = baseVoiceAnswerCreat.onAnswerReslut(context, EnglishH5CoursewareBll.this, voiceAnswerPager, baseVideoQuestionEntity, entity);
+                                resultView = createAnswerReslutEntity.resultView;
                             }
                         }
                         if (voiceAnswerPager instanceof VoiceAnswerPager) {
-                            stopVoiceAnswerPager();
+                            stopVoiceAnswerPager(resultView);
                         }
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                mLiveBll.getStuGoldCount();
+                                mLiveBll.getStuGoldCount("liveSubmitTestH5Answer");
                             }
                         }, 2500);
                         // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
@@ -1091,12 +1169,12 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                             }
                         }
                         if (voiceAnswerPager instanceof VoiceAnswerPager) {
-                            stopVoiceAnswerPager();
+                            stopVoiceAnswerPager(null);
                         }
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                mLiveBll.getStuGoldCount();
+                                mLiveBll.getStuGoldCount("liveSubmitTestH5Answer");
                             }
                         }, 2500);
                         // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
@@ -1142,7 +1220,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
             boolean same = answerPager == voiceAnswerPager;
             logToFile.d("stopSpeech:answerPager=same?" + same);
             if (answerPager == voiceAnswerPager) {
-                stopVoiceAnswerPager();
+                stopVoiceAnswerPager(null);
             } else {
                 answerPager.stopPlayer();
                 answerPager.onDestroy();
@@ -1183,7 +1261,11 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
      * @param method
      */
     private void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isShow, String method) {
-        logToFile.d("onQuestionShow:isShow=" + isShow + ",method=" + method);
+        if (videoQuestionLiveEntity != null) {
+            logToFile.d("onQuestionShow:isShow=" + isShow + ",id=" + videoQuestionLiveEntity.id + ",method=" + method);
+        } else {
+            logToFile.d("onQuestionShow:isShow=" + isShow + ",method=" + method);
+        }
         for (QuestionShowAction questionShowAction : questionShowActions) {
             questionShowAction.onQuestionShow(videoQuestionLiveEntity, isShow);
         }

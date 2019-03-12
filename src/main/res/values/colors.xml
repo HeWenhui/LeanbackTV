@@ -109,4 +109,12 @@
     <color name="COLOR_28FFFFFF">#28FFFFFF</color>
     <color name="COLOR_19FFFFFF">#19FFFFFF</color>
     <color name="COLOR_202020">#202020</color>
+
+    <color name="COLOR_FFFF8036">#FFFF8036</color>
+    <color name="COLOR_FFFF6E1A">#FFFF6E1A</color>
+
+    <color name="COLOR_00000000">#00000000</color>
+    <color name="COLOR_FFFFF8F5">#FFFFF8F5</color>
+    <color name="COLOR_FF8EA6EB">#FF8EA6EB</color>
+    <color name="COLOR_FF449CEE">#FF449CEE</color>
 </resources>
