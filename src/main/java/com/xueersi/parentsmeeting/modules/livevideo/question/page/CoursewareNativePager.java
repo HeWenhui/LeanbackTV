@@ -1321,7 +1321,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
      *
      * @param isforce
      */
-    private void showScienceAnswerResult(int isforce) {
+    private void showScienceAnswerResult(final int isforce) {
         rlCourseControl.setVisibility(View.GONE);
         if (LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage)) {
             //小学理科 走原生结果页
@@ -1330,9 +1330,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 public void onDataSucess(Object... objData) {
                     loadResult = true;
                     PrimaryScienceAnswerResultEntity entity = (PrimaryScienceAnswerResultEntity) objData[0];
-                    mGoldNum = entity.getGold();
-                    if (allowTeamPk) {
-                        mEnergyNum = entity.getEnergy();
+                    if (isforce == 0) {
+                        mGoldNum = entity.getGold();
+                        if (allowTeamPk) {
+                            mEnergyNum = entity.getEnergy();
+                        }
                     }
                     PrimaryScienceAnserResultPager primaryScienceAnserResultPager = new PrimaryScienceAnserResultPager(mContext, entity, newCourseSec.getIsGame(), new PrimaryScienceAnserResultPager.OnNativeResultPagerClose() {
                         @Override

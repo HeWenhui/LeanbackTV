@@ -142,13 +142,7 @@ public class CourseWareHttpManager {
         httpRequestParams.addBodyParam("packageId", "" + packageId);
         httpRequestParams.addBodyParam("packageAttr", "" + packageAttr);
         httpRequestParams.addBodyParam("isPlayBack", "" + isPlayBack);
-        String url;
-        if (arts == LiveVideoSAConfig.ART_SEC) {
-            url = LiveQueHttpConfig.LIVE_GET_STU_TESTS_RESULT;
-        } else {
-            url = LiveQueHttpConfig.LIVE_GET_STU_TESTS_RESULT_CN;
-        }
-        liveHttpManager.sendPost(url, httpRequestParams, new HttpCallBack(false) {
+        HttpCallBack httpCallBack = new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("getStuTestResult:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
@@ -171,7 +165,15 @@ public class CourseWareHttpManager {
                 logger.d("getStuTestResult:onPmFailure:responseEntity=" + msg, error);
                 callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
             }
-        });
+        };
+        String url;
+        if (arts == LiveVideoSAConfig.ART_SEC) {
+            url = LiveQueHttpConfig.LIVE_GET_STU_TESTS_RESULT;
+            liveHttpManager.sendPost(url, httpRequestParams, httpCallBack);
+        } else {
+            url = LiveQueHttpConfig.LIVE_GET_STU_TESTS_RESULT_CN;
+            liveHttpManager.sendGet(url, httpRequestParams, httpCallBack);
+        }
     }
 
     public void getTestInfos(String testIds, final AbstractBusinessDataCallBack callBack) {
