@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
@@ -9,9 +8,7 @@ import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
-import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.parentsmeeting.module.videoplayer.entity.LiveExperienceEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
@@ -115,18 +112,17 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         if (getInfo.getAllowLinkMicNew() == 1) {
             getInfo.setAllowLinkMic(false);
         }
-        if (data.has("ePlanInfo")){
+        if (data.has("ePlanInfo")) {
             try {
                 JSONObject ePlanInfo = data.getJSONObject("ePlanInfo");
                 getInfo.ePlanInfo = new LiveGetInfo.EPlanInfoBean();
                 getInfo.ePlanInfo.ePlanId = ePlanInfo.optString("ePlanId");
                 getInfo.ePlanInfo.eTeacherId = ePlanInfo.optString("eTeacherId");
                 getInfo.ePlanInfo.eClassId = ePlanInfo.optString("eClassId");
-                if (ePlanInfo.has("fakePlanId")){
+                if (ePlanInfo.has("fakePlanId")) {
                     getInfo.ePlanInfo.fakePlanId = ePlanInfo.optString("fakePlanId");
                 }
-            }
-            catch (JSONException e) {
+            } catch (JSONException e) {
                 MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo.ePlanInfo", e.getMessage());
             }
         }
@@ -179,7 +175,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             e.printStackTrace();
         }
         if (data.has("isAllowTeamPk")) {
-            getInfo.setIsAllowTeamPk(data.optString("isAllowTeamPkNew","0"));
+            getInfo.setIsAllowTeamPk(data.optString("isAllowTeamPkNew", "0"));
         }
 
 //            LiveVideoConfig.isPrimary = true;
@@ -2091,11 +2087,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         return null;
     }
 
-    public CoursewareInfoEntity parseCoursewareInfo (ResponseEntity responseEntity){
+    public CoursewareInfoEntity parseCoursewareInfo(ResponseEntity responseEntity) {
         CoursewareInfoEntity coursewareInfoEntity = new CoursewareInfoEntity();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         List<CoursewareInfoEntity.LiveCourseware> liveCoursewares = new ArrayList<>();
-        if (data.has("list")){
+        if (data.has("list")) {
             try {
                 JSONArray liveCoursewareArray = data.getJSONArray("list");
                 for (int i = 0; i < liveCoursewareArray.length(); i++) {
@@ -2103,7 +2099,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     JSONObject liveJson = liveCoursewareArray.getJSONObject(i);
                     liveCourseware.setLiveId(liveJson.optString("liveId"));
                     liveCourseware.setStime(Long.parseLong(liveJson.optString("stime")));
-                    if (liveJson.has("infos")){
+                    if (liveJson.has("infos")) {
                         JSONArray coursewareArray = liveJson.getJSONArray("infos");
                         List<CoursewareInfoEntity.ItemCoursewareInfo> coursewareInfos = new ArrayList<>();
                         for (int j = 0; j < coursewareArray.length(); j++) {
@@ -2112,7 +2108,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                             coursewareInfo.setSourceId(coursewareJson.optString("sourceId"));
                             coursewareInfo.setPackageId(coursewareJson.optString("packageId"));
                             coursewareInfo.setPackageSource(coursewareJson.optString("packageSource"));
-                            coursewareInfo.setTemplate(coursewareJson.optInt("isTemplate") == 1?true:false);
+                            coursewareInfo.setTemplate(coursewareJson.optInt("isTemplate") == 1 ? true : false);
                             coursewareInfo.setPageId(coursewareJson.optString("pageId"));
                             coursewareInfo.setResourceUrl(coursewareJson.optString("resourceUrl"));
                             coursewareInfo.setTemplateUrl(coursewareJson.optString("templateUrl"));
@@ -2126,7 +2122,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 coursewareInfoEntity.setCoursewaresList(liveCoursewares);
 
                 JSONObject hostJson = data.getJSONObject("host");
-                if (hostJson.has("cdns")){
+                if (hostJson.has("cdns")) {
                     JSONArray cdnsArray = hostJson.getJSONArray("cdns");
                     List<String> cdns = new ArrayList<>();
                     for (int i = 0; i < cdnsArray.length(); i++) {
@@ -2134,7 +2130,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     }
                     coursewareInfoEntity.setCdns(cdns);
                 }
-                if (hostJson.has("ips")){
+                if (hostJson.has("ips")) {
                     JSONArray cdnsArray = hostJson.getJSONArray("ips");
                     List<String> ips = new ArrayList<>();
                     for (int i = 0; i < cdnsArray.length(); i++) {
@@ -2142,12 +2138,21 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     }
                     coursewareInfoEntity.setIps(ips);
                 }
-                if (data.has("resource")){
-                    JSONArray resourceArray = data.getJSONArray("resource");
+                if (data.has("resource")) {
+                    JSONObject resourceArray = data.getJSONObject("resource");
+//                    JSONArray resourceArray = data.getJSONArray("resource");
                     List<String> resources = new ArrayList<>();
-                    for (int i = 0; i < resourceArray.length(); i++) {
-                        resources.add(resourceArray.getString(i));
+//                    for (int i = 0; i < resourceArray.length(); i++) {
+                    JSONArray formulasArray = resourceArray.getJSONArray("formulas");
+                    for (int j = 0; j < formulasArray.length(); j++) {
+                        resources.add(formulasArray.getString(j));
                     }
+                    JSONArray fontsArray = resourceArray.getJSONArray("fonts");
+
+                    for (int k = 0; k < fontsArray.length(); k++) {
+                        resources.add(fontsArray.getString(k));
+                    }
+//                    }
                     coursewareInfoEntity.setResources(resources);
                 }
 //                if (data.has("loadpages")){

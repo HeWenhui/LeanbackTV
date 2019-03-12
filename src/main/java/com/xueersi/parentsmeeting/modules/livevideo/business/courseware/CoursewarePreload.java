@@ -9,6 +9,7 @@ import com.xueersi.common.network.download.DownLoadInfo;
 import com.xueersi.common.network.download.DownloadListener;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.log.LoggerFactory;
@@ -20,7 +21,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ZipExtractorTask;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ZipProg;
 
@@ -90,8 +90,8 @@ public class CoursewarePreload {
      * 删除旧的Dir
      */
     private void deleteOldDir(final File file, final String today) {
-        LiveThreadPoolExecutor executor = LiveThreadPoolExecutor.getInstance();
-        executor.execute(new Runnable() {
+//        LiveThreadPoolExecutor executor = LiveThreadPoolExecutor.getInstance();
+        executos.execute(new Runnable() {
             @Override
             public void run() {
                 for (File itemFile : file.listFiles()) {
@@ -106,7 +106,7 @@ public class CoursewarePreload {
                 hashMap.put("dir", file.getAbsolutePath());
                 hashMap.put("sno", "5");
                 hashMap.put("status", "true");
-                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.PRE_LOAD_START, hashMap.getData());
+                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
             }
         });
 
@@ -575,7 +575,7 @@ public class CoursewarePreload {
             hashMap.put("isresume", "false");
             hashMap.put("sno", "1");
             hashMap.put("liveid", itemLiveId);
-            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.PRE_LOAD_START, hashMap.getData());
+            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
         }
 
         @Override
@@ -598,7 +598,7 @@ public class CoursewarePreload {
             }
             hashMap.put("failurl", sb.toString());
             hashMap.put("liveid", itemLiveId);
-            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.PRE_LOAD_START, hashMap.getData());
+            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
 
             File tempFile = new File(folderPath, fileName);
             File file = new File(folderPath, mFileName);
@@ -614,7 +614,7 @@ public class CoursewarePreload {
                     unZipMap.put("extrainfo", mMorecacheout.getAbsolutePath());
                     unZipMap.put("sno", "3");
                     unZipMap.put("liveid", itemLiveId);
-                    UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.PRE_LOAD_START, unZipMap.getData());
+                    UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, unZipMap.getData());
                     return super.doInBackground(params);
 
                 }
@@ -631,7 +631,7 @@ public class CoursewarePreload {
                     unZipMap.put("extrainfo", mMorecacheout.getAbsolutePath());
                     unZipMap.put("sno", "3");
                     unZipMap.put("liveid", itemLiveId);
-                    UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.PRE_LOAD_START, unZipMap.getData());
+                    UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, unZipMap.getData());
                 }
             }.executeOnExecutor(executos);
 
@@ -690,7 +690,7 @@ public class CoursewarePreload {
                 }
                 hashMap.put("failurl", sb.toString());
                 hashMap.put("liveid", itemLiveId);
-                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.PRE_LOAD_START, hashMap.getData());
+                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
 
             }
 
@@ -733,7 +733,7 @@ public class CoursewarePreload {
             hashMap.put("isresume", "false");
             hashMap.put("sno", "1");
             hashMap.put("liveid", "");
-            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.PRE_LOAD_START, hashMap.getData());
+            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
         }
 
         @Override
@@ -759,7 +759,7 @@ public class CoursewarePreload {
             hashMap.put("failurl", downTryCount.get() != 0 ? sb.toString() : "");
 
             hashMap.put("liveid", "");
-            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.PRE_LOAD_START, hashMap.getData());
+            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
 
 
             File file = new File(folderPath, fileName);
@@ -818,7 +818,7 @@ public class CoursewarePreload {
                 }
                 hashMap.put("failurl", sb.toString());
                 hashMap.put("liveid", "");
-                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), LogConfig.PRE_LOAD_START, hashMap.getData());
+                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
             }
 
         }
