@@ -17,9 +17,9 @@ public class StudyCenterMainStartBroadCastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        CoursewarePreload coursewarePreload = new CoursewarePreload(context, "", -1);
+        CoursewarePreload coursewarePreload = new CoursewarePreload(context, -1);
         logger.i("receive broadcast");
         coursewarePreload.setmHttpManager(new LiveHttpManager(context));
-        coursewarePreload.getCoursewareInfo();
+        coursewarePreload.getCoursewareInfo("");
     }
 }
