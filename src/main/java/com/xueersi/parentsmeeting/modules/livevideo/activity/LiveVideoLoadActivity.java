@@ -92,9 +92,9 @@ public class LiveVideoLoadActivity extends BaseActivity {
     private void performDownLoadPreLoad(LiveHttpManager mHttpManager, LiveGetInfo getInfo) {
         String liveId = getInfo.getId();
         int mSubject = getInfo.getIsArts();
-        CoursewarePreload coursewarePreload = new CoursewarePreload(this, liveId, mSubject);
+        CoursewarePreload coursewarePreload = new CoursewarePreload(this, mSubject);
         coursewarePreload.setmHttpManager(mHttpManager);
-        coursewarePreload.getCoursewareInfo();
+        coursewarePreload.getCoursewareInfo(liveId);
 
 //        if (liveId != null && !"".equals(liveId)) {
 //

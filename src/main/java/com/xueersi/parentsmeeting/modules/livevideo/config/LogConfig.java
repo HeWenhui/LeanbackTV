@@ -14,6 +14,9 @@ public class LogConfig {
     public static String LIVE_TOKEN_NULL = "live_token_null";
     /** 直播心跳日志 */
     public static String LIVE_HEART_BEAT = "live_heartbeat";
+    /** 课件预加载 */
+    public static final String PRE_LOAD_START = "live_preload";
+
     /** 新课件平台H5课件日志  http://wiki.xesv5.com/pages/viewpage.action?pageId=17696139 */
     public static String LIVE_H5PLAT = "live_h5plat";
 
