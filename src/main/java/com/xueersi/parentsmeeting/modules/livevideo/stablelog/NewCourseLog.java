@@ -27,6 +27,7 @@ public class NewCourseLog {
         if (newCourseTestIdSec != null) {
             return newCourseTestIdSec;
         }
+        newCourseTestIdSec = "";
         try {
             EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
             String packageId = englishH5Entity.getPackageId();

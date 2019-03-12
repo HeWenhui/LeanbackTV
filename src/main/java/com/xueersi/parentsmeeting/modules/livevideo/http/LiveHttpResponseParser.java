@@ -2102,7 +2102,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     CoursewareInfoEntity.LiveCourseware liveCourseware = new CoursewareInfoEntity.LiveCourseware();
                     JSONObject liveJson = liveCoursewareArray.getJSONObject(i);
                     liveCourseware.setLiveId(liveJson.optString("liveId"));
-                    liveCourseware.setStime(Long.parseLong(liveJson.optString("stime")));
+                    liveCourseware.setStime(liveJson.optLong("stime",System.currentTimeMillis()/1000));
                     if (liveJson.has("infos")){
                         JSONArray coursewareArray = liveJson.getJSONArray("infos");
                         List<CoursewareInfoEntity.ItemCoursewareInfo> coursewareInfos = new ArrayList<>();

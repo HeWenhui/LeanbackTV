@@ -994,7 +994,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     rlCourseControl.setVisibility(View.VISIBLE);
                 }
                 preLoad.onStop();
-                NewCourseLog.sno4(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), "" + currentIndex, view.getUrl(), ispreload, "", (System.currentTimeMillis() - pagerStart));
+                String pageid = "";
+                if (currentIndex >= 0 && currentIndex < tests.size()) {
+                    pageid = tests.get(currentIndex).getId();
+                }
+                NewCourseLog.sno4(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), "" + currentIndex, view.getUrl(), ispreload, pageid, (System.currentTimeMillis() - pagerStart));
             }
         } else {
             NewCourseLog.sno8(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), ispreload, (System.currentTimeMillis() - pagerStart));
@@ -1046,7 +1050,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     int type = newCourseCache.loadCourseWareUrl(test.getPreviewPath());
                     if (type != 0) {
                         ispreload = type == 1;
-                        NewCourseLog.sno3(liveAndBackDebug,  NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), "0", test.getPreviewPath(), ispreload, "");
+                        NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), "0", test.getPreviewPath(), ispreload, test.getId());
                     } else {
                         ispreload = true;
                     }
@@ -1402,6 +1406,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         } else {
             String url = englishH5CoursewareSecHttp.getResultUrl(detailInfo, isforce, "");
             loadResult = true;
+            NewCourseLog.sno7(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), ispreload);
             wvSubjectWeb.loadUrl(url);
         }
     }
