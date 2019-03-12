@@ -894,14 +894,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     @Override
     public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
         setLogParam(eventId, mData);
-        //不分学科
-        String appid;
-        if (mData.containsKey("appid")) {
-            appid = mData.get("appid");
-        } else {
-            appid = appID;
-        }
-        UmsAgentManager.umsAgentDebug(mContext, appid, eventId, mData);
+        UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
     }
 
     @Override
@@ -947,14 +940,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         mData.put("eventid", "" + eventId);
         mData.put("teacherrole", LiveTopic.MODE_CLASS.equals(getMode()) ? "1" : "4");
         setAnalysis(analysis);
-        //不分学科
-        String appid;
-        if (mData.containsKey("appid")) {
-            appid = mData.get("appid");
-        } else {
-            appid = appID;
-        }
-        UmsAgentManager.umsAgentOtherBusiness(mContext, appid, UmsConstants.uploadSystem, mData, analysis);
+        UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadSystem, mData, analysis);
     }
 
     @Override

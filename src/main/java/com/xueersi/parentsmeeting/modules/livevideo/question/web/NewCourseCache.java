@@ -79,6 +79,10 @@ public class NewCourseCache {
                     urls.add(url1);
                 }
                 if (url2.contains(coursewarePages)) {
+                    index = url2.indexOf("&");
+                    if (index != -1) {
+                        url2 = url2.substring(0, index);
+                    }
                     urls.add(url2);
                 }
             } else {
@@ -88,6 +92,7 @@ public class NewCourseCache {
             boolean ispreload = true;
             for (int i = 0; i < urls.size(); i++) {
                 String urlChild = urls.get(i);
+                index = urlChild.indexOf(coursewarePages);
                 File file = getCourseWarePagesFileName(urlChild, index);
                 logger.d("loadCourseWareUrl:urlChild=" + urlChild + "," + file + ",exists=" + file.exists());
                 if (!file.exists()) {

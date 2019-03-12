@@ -37,6 +37,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoti
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.NewCourseLog;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 
 import org.greenrobot.eventbus.EventBus;
@@ -492,6 +493,9 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         }
                     }
                     englishH5CoursewareBll.onH5Courseware(status, videoQuestionLiveEntity);
+                    if ("on".equals(status)) {
+                        NewCourseLog.sno2(mLiveBll, NewCourseLog.getNewCourseTestIdSec(videoQuestionLiveEntity, isArts), XESCODE.MULTIPLE_H5_COURSEWARE);
+                    }
                 }
                 break;
 
@@ -525,6 +529,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         videoQuestionLiveEntity.type = object.optString("questiontype");
                         videoQuestionLiveEntity.voiceType = object.optString("ptype");
                     }
+                    NewCourseLog.sno2(mLiveBll, NewCourseLog.getNewCourseTestIdSec(videoQuestionLiveEntity, isArts), type);
                 } else {
                     if (mAnswerRankBll != null) {
                         mAnswerRankBll.setNonce(object.optString("nonce"));
