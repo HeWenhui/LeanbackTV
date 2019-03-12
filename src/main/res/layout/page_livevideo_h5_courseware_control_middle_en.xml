@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@id/iv_livevideo_new_course_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
         android:layout_centerVertical="true"
         android:layout_marginLeft="20dp"
         android:src="@drawable/livevideo_course_course_en_time" />

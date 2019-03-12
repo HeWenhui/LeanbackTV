@@ -968,6 +968,8 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 newCourseSec = (NewCourseSec) objData[0];
                 logger.d("onDataSucess:newCourseSec=" + newCourseSec);
                 if (newCourseSec.getIsAnswer() == 1 && !isPlayBack) {
+                    rlSubjectLoading.setVisibility(View.GONE);
+                    preLoad.onStop();
                     showScienceAnswerResult(0);
                 } else {
                     tests = newCourseSec.getTests();
