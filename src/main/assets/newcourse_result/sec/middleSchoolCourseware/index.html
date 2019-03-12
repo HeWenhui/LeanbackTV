@@ -20,6 +20,8 @@
         docEle.style.fontSize = props.fontSize * (clientWidth / props.width) + 'px'
       }
 
+      refreshRem()
+
       window.addEventListener(resizeEvt, function () {
         clearTimeout(refreshRem.tid)
         refreshRem.tid = setTimeout(refreshRem, 300)
@@ -35,8 +37,8 @@
       window.addEventListener('load', refreshRem, false)
     })();
   </script>
-<link href="client-bundle.css?fq-05b29c102bf241228e59" rel="stylesheet"></head>
+<link href="client-bundle.css?fq-6129b96723a914707dd7" rel="stylesheet"></head>
 <body>
   <div id="root"></div>
-<script type="text/javascript" src="manifest.js?fq-487f7b602c6543ef682e"></script><script type="text/javascript" src="vendors~client-bundle.js?fq-b1592442abe61ef3e387"></script><script type="text/javascript" src="client-bundle.js?fq-fe3fda2c86e95702e244"></script></body>
+<script type="text/javascript" src="manifest.js?fq-487f7b602c6543ef682e"></script><script type="text/javascript" src="vendors~client-bundle.js?fq-459fba52113f7076631d"></script><script type="text/javascript" src="client-bundle.js?fq-9b9503be836cf1137bb7"></script></body>
 </html>

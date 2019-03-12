@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 
 import android.app.Application;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.Spannable;
@@ -29,6 +30,8 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -46,6 +49,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScien
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.NewCourseCache;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.StaticWeb;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.WebInstertJs;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.NewCourseLog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
@@ -71,6 +75,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private boolean isFinish = false;
     /** 理科初高中新课件，是不是已经提交 */
     private boolean isSumit = false;
+    private long subMitTime;
     private String liveId;
     private EnglishH5Entity englishH5Entity;
     /** 是不是回放 */
@@ -119,6 +124,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private Button btCourseSubmit;
     /** 新课件缓存 */
     private NewCourseCache newCourseCache;
+    /** 新课件是否是预加载 */
+    private boolean ispreload;
+    private LiveAndBackDebug liveAndBackDebug;
     /** 显示下方控制布局 */
     private boolean showControl = false;
     /** 在网页中嵌入js，只嵌入一次 */
@@ -161,6 +169,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         if (isArts != LiveVideoSAConfig.ART_EN) {
             this.educationstage = detailInfo.getEducationstage();
         }
+        liveAndBackDebug = new ContextLiveAndBackDebug(context);
         mView = initView();
 //        initWebView();
 //        setErrorTip("H5课件加载失败，请重试");
@@ -663,12 +672,14 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             }
         } else {
             isSumit = true;
+            subMitTime = System.currentTimeMillis();
             if (isArts == LiveVideoSAConfig.ART_EN) {
                 int isForce = isforce == 0 ? 1 : 2;
                 submitEn(isForce, nonce);
             } else {
                 submitSec(isforce, nonce);
             }
+            NewCourseLog.sno5(liveAndBackDebug, detailInfo.id, isforce == 1, wvSubjectWeb.getUrl(), ispreload);
         }
     }
 
@@ -755,6 +766,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                onSubmitSuccess(isforce);
             }
 
             @Override
@@ -772,6 +784,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 } else {
                     XESToastUtils.showToast(mContext, "请求互动题失败，请刷新");
                 }
+                onSubmitError(isforce, failMsg);
 //                String url = englishH5CoursewareSecHttp.getResultUrl(detailInfo, isforce, "");
 //                wvSubjectWeb.loadUrl(url);
             }
@@ -829,6 +842,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                onSubmitSuccess(isforce);
             }
 
             @Override
@@ -847,6 +861,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 } else {
                     XESToastUtils.showToast(mContext, "请求互动题失败，请刷新");
                 }
+                onSubmitError(isforce, failMsg);
 //                String url = englishH5CoursewareSecHttp.getResultUrl(detailInfo, isforce, "");
 //                wvSubjectWeb.loadUrl(url);
             }
@@ -922,21 +937,39 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             public void onDataSucess(Object... objData) {
                 JSONObject jsonObject = (JSONObject) objData[0];
                 showScienceAnswerResult(isforce);
+                onSubmitSuccess(isforce);
             }
 
             @Override
             public void onDataFail(int errStatus, String failMsg) {
                 super.onDataFail(errStatus, failMsg);
                 isSumit = false;
+                onSubmitError(isforce, failMsg);
 //                String url = englishH5CoursewareSecHttp.getResultUrl(detailInfo, isforce, "");
 //                wvSubjectWeb.loadUrl(url);
             }
         });
     }
 
+    private void onSubmitSuccess(int isforce) {
+        NewCourseLog.sno6(liveAndBackDebug, detailInfo.id, true, isforce == 1, ispreload, (System.currentTimeMillis() - subMitTime), "");
+    }
+
+    private void onSubmitError(int isforce, String errorMsg) {
+        NewCourseLog.sno6(liveAndBackDebug, detailInfo.id, false, isforce == 1, ispreload, (System.currentTimeMillis() - subMitTime), errorMsg);
+    }
+
     @Override
     public void setEnglishH5CoursewareBll(EnglishH5CoursewareBll englishH5CoursewareBll) {
         mEnglishH5CoursewareBll = englishH5CoursewareBll;
+    }
+
+    private long pagerStart;
+
+    @Override
+    protected void onPageStarted(WebView view, String url, Bitmap favicon) {
+        super.onPageStarted(view, url, favicon);
+        pagerStart = System.currentTimeMillis();
     }
 
     @Override
@@ -950,6 +983,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     rlCourseControl.setVisibility(View.VISIBLE);
                 }
                 preLoad.onStop();
+                NewCourseLog.sno4(liveAndBackDebug, detailInfo.id, "" + currentIndex, view.getUrl(), ispreload, "", (System.currentTimeMillis() - pagerStart));
             }
         }
     }
@@ -996,6 +1030,13 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     NewCourseSec.Test test = tests.get(0);
                     currentIndex = 0;
                     wvSubjectWeb.loadUrl(test.getPreviewPath());
+                    int type = newCourseCache.loadCourseWareUrl(test.getPreviewPath());
+                    if (type != 0) {
+                        ispreload = type == 1;
+                        NewCourseLog.sno3(liveAndBackDebug, detailInfo.id, "0", test.getPreviewPath(), ispreload, "");
+                    } else {
+                        ispreload = true;
+                    }
                     //文理科正计时,英语倒计时
                     if (isArts == LiveVideoSAConfig.ART_EN) {
                         setTimeEn(newCourseSec);

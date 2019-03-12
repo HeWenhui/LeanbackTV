@@ -19,7 +19,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="2dp"
         android:layout_toRightOf="@id/iv_livevideo_new_course_time"
-        android:text="已用时："
+        android:text="还剩："
         android:textColor="@color/white"
         android:textSize="16sp" />
 

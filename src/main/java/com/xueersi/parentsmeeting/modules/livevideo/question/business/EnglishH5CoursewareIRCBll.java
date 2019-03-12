@@ -581,7 +581,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         public void getStuGoldCount(String method) {
             UpdateAchievement updateAchievement = getInstance(UpdateAchievement.class);
             if (updateAchievement != null) {
-                updateAchievement.getStuGoldCount("getStuGoldCount:"+method, UpdateAchievement.GET_TYPE_QUE);
+                updateAchievement.getStuGoldCount("getStuGoldCount:" + method, UpdateAchievement.GET_TYPE_QUE);
             }
         }
 
@@ -847,9 +847,19 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             stringBuilder.append("&educationStage=").append(educationStage);
             stringBuilder.append("&isShowTeamPk=").append(0);
             stringBuilder.append("&nonce=").append(nonce);
-            stringBuilder.append("&isforce=").append(isforce);
-            stringBuilder.append("&releasedPageInfos=").append(englishH5Entity.getReleasedPageInfos());
+            stringBuilder.append("&forceSubmit=").append(isforce);
+            String releasedPageInfos = englishH5Entity.getReleasedPageInfos();
+//            releasedPageInfos = releasedPageInfos.replace("\"", "%22");
+            stringBuilder.append("&releasedPageInfos=").append(releasedPageInfos);
+//            try {
+//                String resUrl = URLEncoder.encode(stringBuilder.toString(), "UTF-8");
+//                logger.d("getResultUrl:resUrl=" + resUrl);
+//                return resUrl;
+//            } catch (UnsupportedEncodingException e) {
+//                e.printStackTrace();
+//            }
             String resUrl = stringBuilder.toString();
+            logger.d("getResultUrl:resUrl=" + resUrl);
             return resUrl;
         }
 
@@ -899,7 +909,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 String classId = mGetInfo.getStudentLiveInfo().getClassId();
                 String[] res = getSrcType(englishH5Entity);
                 getCourseWareHttpManager().getCourseWareTests(mGetInfo.getStuId(), englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
-                        englishH5Entity.getReleasedPageInfos(), 0, classId, englishH5Entity.getClassTestId(), res[0], res[1], mGetInfo.getEducationStage(), detailInfo.nonce,mGetInfo.getIsAllowTeamPk(), callBack);
+                        englishH5Entity.getReleasedPageInfos(), 0, classId, englishH5Entity.getClassTestId(), res[0], res[1], mGetInfo.getEducationStage(), detailInfo.nonce, mGetInfo.getIsAllowTeamPk(), callBack);
             }
         }
 

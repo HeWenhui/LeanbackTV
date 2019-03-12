@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -67,6 +68,38 @@ public class NewCourseCache {
         header.put("Access-Control-Allow-Origin", "*");
     }
 
+    public int loadCourseWareUrl(String url) {
+        if (url.contains(coursewarePages)) {
+            ArrayList<String> urls = new ArrayList<>();
+            int index = url.indexOf("?");
+            if (index != -1) {
+                String url1 = url.substring(0, index);
+                String url2 = url.substring(index + 1, url.length());
+                if (url1.contains(coursewarePages)) {
+                    urls.add(url1);
+                }
+                if (url2.contains(coursewarePages)) {
+                    urls.add(url2);
+                }
+            } else {
+                urls.add(url);
+            }
+            logger.d("loadCourseWareUrl:url=" + urls.size());
+            boolean ispreload = true;
+            for (int i = 0; i < urls.size(); i++) {
+                String urlChild = urls.get(i);
+                File file = getCourseWarePagesFileName(urlChild, index);
+                logger.d("loadCourseWareUrl:urlChild=" + urlChild + "," + file + ",exists=" + file.exists());
+                if (!file.exists()) {
+                    ispreload = false;
+                }
+            }
+            return ispreload ? 1 : -1;
+        } else {
+            return 0;
+        }
+    }
+
     public WebResourceResponse interceptJsRequest(WebView view, String url) {
         String extension = android.webkit.MimeTypeMap.getFileExtensionFromUrl(url.toLowerCase());
         String mimeType = android.webkit.MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
@@ -109,9 +142,9 @@ public class NewCourseCache {
      */
     private File getCourseWareFile(String url) {
         File file = null;
-        int index = url.indexOf("courseware_pages");
+        int index = url.indexOf(coursewarePages);
         if (index != -1) {
-            String url2 = url.substring(index + "courseware_pages".length());
+            String url2 = url.substring(index + coursewarePages.length());
             int index2 = url2.indexOf("?");
             if (index2 != -1) {
                 url2 = url2.substring(0, index2);

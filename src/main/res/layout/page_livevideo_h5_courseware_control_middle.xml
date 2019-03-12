@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginLeft="20dp"
-        android:text="还剩："
+        android:text="已用时："
         android:textColor="@color/white"
         android:textSize="16sp" />
 
