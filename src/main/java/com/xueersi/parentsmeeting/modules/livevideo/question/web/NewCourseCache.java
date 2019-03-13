@@ -252,6 +252,12 @@ public class NewCourseCache {
     }
 
     private File getPubFileName(String s) {
+        if (s.endsWith(CoursewarePreload.FZY3JW_TTF)) {
+            File file = new File(mPublicCacheout, CoursewarePreload.FZY3JW_TTF);
+            if (file.exists()) {
+                return file;
+            }
+        }
         String path = s;
         int index = s.indexOf("://");
         if (index != -1) {

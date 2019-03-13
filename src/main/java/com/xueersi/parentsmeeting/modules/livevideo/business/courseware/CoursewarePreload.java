@@ -60,6 +60,7 @@ public class CoursewarePreload {
     File cacheFile;
     private File todayCacheDir;
     public static String mPublicCacheoutName = "publicRes";
+    public static String FZY3JW_TTF = "FZY3JW.ttf";
     public static int mDownloadThreadCount = 1;
 
     private AtomicInteger subjectNum = new AtomicInteger(0);
@@ -508,7 +509,12 @@ public class CoursewarePreload {
                     }
                 }
             } else {
-                String fileName = MD5Utils.getMD5(url);
+                String fileName;
+                if (url.endsWith(FZY3JW_TTF)) {
+                    fileName = FZY3JW_TTF;
+                } else {
+                    fileName = MD5Utils.getMD5(url);
+                }
                 final File save = new File(mPublicCacheout, fileName);
                 if (!fileIsExists(save.getPath())) {
 //                    save.mkdirs();
