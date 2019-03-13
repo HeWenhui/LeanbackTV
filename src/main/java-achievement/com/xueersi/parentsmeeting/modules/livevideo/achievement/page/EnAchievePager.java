@@ -279,9 +279,6 @@ public class EnAchievePager extends LiveBasePager {
             final int energyCountAdd = starAndGoldEntity.getPkEnergy().me - energyCount;
             final int goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
             final int startCountAdd = starAndGoldEntity.getStarCount() - starCount;
-            energyCount = starAndGoldEntity.getPkEnergy().me;
-            goldCount = starAndGoldEntity.getGoldCount();
-            starCount = starAndGoldEntity.getStarCount();
             mLogtf.d("onGetStar:energyCountAdd=" + energyCountAdd + ",goldCountAdd=" + goldCountAdd + ",startCountAdd=" + startCountAdd);
             String LOTTIE_RES_ASSETS_ROOTDIR;
             String bubbleResPath;
@@ -369,6 +366,9 @@ public class EnAchievePager extends LiveBasePager {
             tvAchiveNumFire.setText("" + starAndGoldEntity.getPkEnergy().me);
             tvAchiveNumGold.setText("" + starAndGoldEntity.getGoldCount());
         }
+        energyCount = starAndGoldEntity.getPkEnergy().me;
+        goldCount = starAndGoldEntity.getGoldCount();
+        starCount = starAndGoldEntity.getStarCount();
     }
 
     public void onStarAdd(int star, float x, float y) {

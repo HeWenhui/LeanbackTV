@@ -139,6 +139,9 @@ public class SpeechResultPager extends LiveBasePager {
             RelativeLayout.LayoutParams contentLp = (RelativeLayout.LayoutParams) rlSpeechResultContent.getLayoutParams();
             contentLp.topMargin = SizeUtils.Dp2Px(mContext, 107);
             rlSpeechResultContent.setLayoutParams(contentLp);
+            RelativeLayout.LayoutParams scoreLp = (RelativeLayout.LayoutParams) tvSpeechResultScore.getLayoutParams();
+            scoreLp.topMargin = SizeUtils.Dp2Px(mContext, 15);
+            tvSpeechResultScore.setLayoutParams(scoreLp);
         } else {
             //多人的
             ArrayList<SpeechResultMember> speechResultMembers = speechResultEntity.speechResultMembers;

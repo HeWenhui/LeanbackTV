@@ -242,13 +242,14 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //            speechResultEntity.accuracy = 22;
 //            speechResultEntity.fluency = 33;
 //            java.util.ArrayList<com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultMember> speechResultMembers = speechResultEntity.speechResultMembers;
-//            for (int i = 0; i < 2; i++) {
+//            for (int i = 0; i < 3; i++) {
 //                com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultMember speechResultMember = new com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultMember();
 //                speechResultMember.name = "测试" + i;
 //                speechResultMember.score = i;
+//                speechResultMember.isSelfRole = i == 0;
 //                speechResultMembers.add(speechResultMember);
 //            }
-//            com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechResultPager speechResultPager = new com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechResultPager(activity, mRootView, speechResultEntity,mGetInfo);
+//            com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechResultPager speechResultPager = new com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechResultPager(activity, mRootView, speechResultEntity, mGetInfo);
 //            mRootView.addView(speechResultPager.getRootView());
 //        }
     }

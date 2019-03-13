@@ -181,10 +181,10 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
      */
     private void addTop(String method) {
         mLogtf.d("addTop:myteam=" + pkTeamEntity.getMyTeam() + ",method=" + method + ",hasAddTop=" + hasAddTop);
-        if (!hasAddTop) {
-            hasAddTop = true;
+        if (hasAddTop) {
             return;
         }
+        hasAddTop = true;
         final View view = LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_en_team_join, rootView, false);
         TextView tv_livevideo_en_teampk_top_name = view.findViewById(R.id.tv_livevideo_en_teampk_top_name);
         ImageView iv_livevideo_en_teampk_top_img = view.findViewById(R.id.iv_livevideo_en_teampk_top_img);

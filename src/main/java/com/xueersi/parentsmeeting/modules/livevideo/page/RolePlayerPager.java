@@ -62,6 +62,7 @@ import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 import com.xueersi.ui.widget.CircleImageView;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -1034,6 +1035,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
                 for (int i = 0; i < lstHead.size(); i++) {
                     RolePlayerEntity.RolePlayerHead head1 = lstHead.get(i);
                     SpeechResultMember speechResultMember = new SpeechResultMember();
+                    speechResultMember.isSelfRole = head1.isSelfRole();
                     speechResultMember.name = head1.getNickName();
                     speechResultMember.score = head1.getSpeechScore();
                     speechResultMember.headUrl = head1.getHeadImg();
@@ -1041,7 +1043,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
                 }
                 SpeechResultPager resultPager = new SpeechResultPager(mContext, group, speechResultEntity, mLiveGetInfo);
                 group.addView(resultPager.getRootView());
-                RolePlayerPager.this.resultPager=resultPager;
+                RolePlayerPager.this.resultPager = resultPager;
             }
         }
 

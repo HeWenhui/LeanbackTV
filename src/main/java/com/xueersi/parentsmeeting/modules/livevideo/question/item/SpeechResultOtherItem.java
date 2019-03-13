@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.item;
 
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.lib.framework.are.ContextManager;
@@ -15,6 +16,7 @@ import com.xueersi.ui.adapter.ViewHolder;
  * 语音答题结果页,多人的分数名字
  */
 public class SpeechResultOtherItem implements RItemViewInterface<SpeechResultMember> {
+    private RelativeLayout rlSpeechResultMemberHead;
     /** 头像 */
     private ImageView civSpeechResultMemberHead;
     /** 分数 */
@@ -34,6 +36,7 @@ public class SpeechResultOtherItem implements RItemViewInterface<SpeechResultMem
 
     @Override
     public void initView(ViewHolder holder, int position) {
+        rlSpeechResultMemberHead = holder.getView(R.id.rl_live_speech_result_member_head);
         civSpeechResultMemberHead = holder.getView(R.id.civ_live_speech_result_member_head);
         tvSpeechResultMemberScore = holder.getView(R.id.tv_live_speech_result_member_score);
         tvSpeechResultMemberName = holder.getView(R.id.tv_live_speech_result_member_name);
@@ -45,5 +48,10 @@ public class SpeechResultOtherItem implements RItemViewInterface<SpeechResultMem
                 .error(R.drawable.app_livevideo_enteampk_boy_bg_img_nor).into(civSpeechResultMemberHead);
         tvSpeechResultMemberScore.setText(speechResultMember.score + "分");
         tvSpeechResultMemberName.setText(speechResultMember.name);
+        if (speechResultMember.isSelfRole) {
+            rlSpeechResultMemberHead.setBackgroundResource(R.drawable.paiming_wodetouxiang_bg_my);
+        } else {
+            rlSpeechResultMemberHead.setBackgroundResource(R.drawable.paiming_wodetouxiang_bg_other);
+        }
     }
 }

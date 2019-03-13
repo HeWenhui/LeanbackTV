@@ -37,6 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
+                android:includeFontPadding="false"
                 android:text="96分"
                 android:textColor="#fffa6000"
                 android:textSize="19sp" />
@@ -45,16 +46,17 @@
                 android:id="@id/rl_live_speech_result_head"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:layout_below="@id/tv_live_speech_result_score"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="28dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/zhanduipk_shell_window_wodetouxiang_bg">
 
                 <com.xueersi.ui.widget.CircleImageView
                     android:id="@id/civ_live_speech_result_head"
-                    android:layout_width="47dp"
-                    android:layout_height="47dp"
-                    android:layout_marginLeft="1.5dp"
-                    android:layout_marginTop="1.5dp"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginLeft="3dp"
+                    android:layout_marginTop="3dp"
                     app:border_width="0dp" />
 
             </RelativeLayout>
@@ -68,7 +70,7 @@
                 android:layout_marginRight="17dp"
                 android:layout_toLeftOf="@id/rl_live_speech_result_head"
                 android:text="流畅性"
-                android:textColor="#ff756565"
+                android:textColor="#ff8F7F80"
                 android:textSize="12sp" />
 
             <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
@@ -83,8 +85,8 @@
                 android:gravity="center"
                 android:includeFontPadding="false"
                 android:text="4"
-                android:textColor="#ff8f7f80"
-                android:textSize="12sp" />
+                android:textColor="#ff756565"
+                android:textSize="18sp" />
 
             <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                 android:id="@id/tv_live_speech_result_accuracy_lable"
@@ -95,7 +97,7 @@
                 android:layout_marginTop="10dp"
                 android:layout_toRightOf="@id/rl_live_speech_result_head"
                 android:text="准确性"
-                android:textColor="#ff756565"
+                android:textColor="#ff8F7F80"
                 android:textSize="12sp" />
 
             <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
@@ -110,8 +112,8 @@
                 android:gravity="center"
                 android:includeFontPadding="false"
                 android:text="4"
-                android:textColor="#ff8f7f80"
-                android:textSize="12sp" />
+                android:textColor="#ff756565"
+                android:textSize="18sp" />
 
         </RelativeLayout>
 
@@ -149,7 +151,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/v_live_speech_result_line"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="6dp"
             android:fadeScrollbars="false"
             android:scrollbars="none" />
 
