@@ -94,22 +94,38 @@ public class CoursewarePreload {
         executos.execute(new Runnable() {
             @Override
             public void run() {
+                logger.i("开始删除文件");
                 for (File itemFile : file.listFiles()) {
-                    if (!itemFile.isDirectory()) {
-                        if (isCoursewareDir(itemFile.getName()) && !itemFile.getName().equals(today)) {
+                    if (isCoursewareDir(itemFile.getName()) && !itemFile.getName().equals(today)) {
+                        if (!itemFile.isDirectory()) {
+                            itemFile.delete();
+                        } else {
+                            deleteFor(itemFile);
                             itemFile.delete();
                         }
                     }
                 }
+                logger.i("文件删除成功");
                 StableLogHashMap hashMap = new StableLogHashMap();
                 hashMap.put("logtype", " deleteCourseware");
                 hashMap.put("dir", file.getAbsolutePath());
                 hashMap.put("sno", "5");
                 hashMap.put("status", "true");
                 UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
+
             }
         });
+    }
 
+    private void deleteFor(final File file) {
+        for (File itemFile : file.listFiles()) {
+            if (!itemFile.isDirectory()) {
+                itemFile.delete();
+            } else {
+                deleteFor(itemFile);
+                itemFile.delete();
+            }
+        }
     }
 
     /**
@@ -135,7 +151,9 @@ public class CoursewarePreload {
         Date date = new Date();
         final String today = dateFormat.format(date);
         todayCacheDir = new File(cacheFile, today);
+
         deleteOldDir(cacheFile, today);
+
         //根据传liveid来判断 不为空或者不是""则为直播进入下载资源，否则为学习中心进入下载资源
         ipPos = new AtomicInteger(0);
         ipLength = new AtomicInteger();

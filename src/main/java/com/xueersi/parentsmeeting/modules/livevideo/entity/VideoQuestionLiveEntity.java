@@ -81,6 +81,7 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     public String answer;
     /** 年级阶段的标识 */
     private String educationstage = "";
+    private String newCourseTestIdSec = null;
 
     public VideoQuestionLiveEntity() {
     }
@@ -247,5 +248,13 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
 
     public void setEducationstage(String educationstage) {
         this.educationstage = educationstage;
+    }
+
+    public String getNewCourseTestIdSec() {
+        return newCourseTestIdSec;
+    }
+
+    public void setNewCourseTestIdSec(String newCourseTestIdSec) {
+        this.newCourseTestIdSec = newCourseTestIdSec;
     }
 }

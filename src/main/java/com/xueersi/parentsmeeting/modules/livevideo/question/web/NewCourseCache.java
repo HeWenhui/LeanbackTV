@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.web;
 
 import android.content.Context;
-import android.os.Environment;
 import android.util.Log;
 
 import com.tencent.bugly.crashreport.CrashReport;
@@ -10,7 +9,6 @@ import com.tencent.smtt.sdk.MimeTypeMap;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
@@ -79,6 +77,10 @@ public class NewCourseCache {
                     urls.add(url1);
                 }
                 if (url2.contains(coursewarePages)) {
+                    index = url2.indexOf("&");
+                    if (index != -1) {
+                        url2 = url2.substring(0, index);
+                    }
                     urls.add(url2);
                 }
             } else {
@@ -88,6 +90,7 @@ public class NewCourseCache {
             boolean ispreload = true;
             for (int i = 0; i < urls.size(); i++) {
                 String urlChild = urls.get(i);
+                index = urlChild.indexOf(coursewarePages);
                 File file = getCourseWarePagesFileName(urlChild, index);
                 logger.d("loadCourseWareUrl:urlChild=" + urlChild + "," + file + ",exists=" + file.exists());
                 if (!file.exists()) {
@@ -127,7 +130,7 @@ public class NewCourseCache {
         if (inputStream != null) {
             String extension = android.webkit.MimeTypeMap.getFileExtensionFromUrl(url.toLowerCase());
             String mimeType = android.webkit.MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-            WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "", new WrapInputStream(inputStream));
+            WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "", new WrapInputStream(view.getContext(), inputStream));
             webResourceResponse.setResponseHeaders(header);
             return webResourceResponse;
         }

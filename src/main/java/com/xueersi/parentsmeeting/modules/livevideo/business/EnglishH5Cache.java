@@ -289,7 +289,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         if (!mPublicCacheout.exists()) {
             mPublicCacheout.mkdirs();
         }
-        boolean isNewPreLoad = ((Activity) context).getIntent().getBooleanExtra("preload", false);
+        boolean isNewPreLoad = ((Activity) context).getIntent().getBooleanExtra("newCourse", false);
         // 一次多发的接口调用
         if (LiveVideoConfig.isScience || mGetInfo != null && mGetInfo.getIsArts() == 0) {
             if (!isNewPreLoad) {

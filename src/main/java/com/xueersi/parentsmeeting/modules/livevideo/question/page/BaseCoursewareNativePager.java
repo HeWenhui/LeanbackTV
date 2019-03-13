@@ -15,6 +15,7 @@ import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.base.BaseApplication;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
@@ -122,6 +123,10 @@ public class BaseCoursewareNativePager extends LiveBasePager {
                 isRequst = true;
             }
             UmsAgentUtil.webConsoleMessage(mContext, TAG, wvSubjectWeb.getUrl(), consoleMessage, isRequst);
+            if (AppConfig.DEBUG) {
+                mLogtf.debugSave("onConsoleMessage:level=" + consoleMessage.messageLevel() + ",sourceId=" + consoleMessage.sourceId()
+                        + ",lineNumber=" + consoleMessage.lineNumber() + ",message=" + consoleMessage.message());
+            }
             return super.onConsoleMessage(consoleMessage);
         }
 
