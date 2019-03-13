@@ -427,15 +427,27 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
         mStateListener.onCompeletShow();
     }
 
-    private void showAnswerList() {
 
+    private void showAnswerList() {
         answerListShowing = true;
-        logger.e("=====>showAnswerList called");
         recyclerView = mView.findViewById(R.id.rcl_arts_answer_result_detail);
         recyclerView.setVisibility(View.VISIBLE);
+        //动态设置宽度 适配虚拟按键
+        recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if(resultAnimeView.getMeasuredWidth() > 0){
+                    int expectedWidth = (int) (resultAnimeView.getMeasuredWidth() *  0.578f);
+                    if(recyclerView.getMeasuredWidth() != expectedWidth){
+                        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
+                        params.width = expectedWidth;
+                        LayoutParamsUtil.setViewLayoutParams(recyclerView,params);
+                    }
+                }
+            }
+        });
         AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(mContext, R.anim
                 .anim_livevido_arts_answer_result_alpha_in);
-
         recyclerView.setLayoutManager(new GridLayoutManager(mContext, SPAN_COUNT, LinearLayoutManager.VERTICAL,
                 false));
         final AnswerResultAdapter mAdapter = new AnswerResultAdapter(mData.getAnswerList());
