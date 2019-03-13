@@ -107,12 +107,12 @@ public class EnStandAchievePager extends LiveBasePager {
                         setEngPro(pgAchivePk.getProgress());
                     }
                 }
-//                if (AppConfig.DEBUG) {
+//                if (com.xueersi.common.config.AppConfig.DEBUG) {
 //                    Random random = new Random();
 //                    StarAndGoldEntity starAndGoldEntity = new StarAndGoldEntity();
 //                    int nextInt = random.nextInt();
-//                    int goldCount2 = goldCount;
-//                    int energyCount2 = energyCount;
+//                    int goldCount2 = goldCount + 1;
+//                    int energyCount2 = energyCount + 1;
 //                    if (nextInt % 3 == 0) {
 //                        goldCount2 += random.nextInt(20);
 //                        energyCount2 += random.nextInt(20);
@@ -212,13 +212,17 @@ public class EnStandAchievePager extends LiveBasePager {
         StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
         if (pkEnergy.myTeam > myTotal) {
             myTotal = pkEnergy.myTeam;
-            tvAchiveEnergyMy.setText("" + myTotal);
+            if (tvAchiveEnergyMy != null) {
+                tvAchiveEnergyMy.setText("" + myTotal);
+            }
         } else {
             mLogtf.d("onGetStar:myTeam=" + pkEnergy.myTeam + ",myTotal=" + myTotal);
         }
         if (pkEnergy.opTeam > otherTotal) {
             otherTotal = pkEnergy.opTeam;
-            tvAchiveEnergyOther.setText("" + otherTotal);
+            if (tvAchiveEnergyOther != null) {
+                tvAchiveEnergyOther.setText("" + otherTotal);
+            }
             mLogtf.d("onGetStar:otherTotal=" + otherTotal);
         } else {
             mLogtf.d("onGetStar:opTeam=" + pkEnergy.opTeam + ",otherTotal=" + otherTotal);
