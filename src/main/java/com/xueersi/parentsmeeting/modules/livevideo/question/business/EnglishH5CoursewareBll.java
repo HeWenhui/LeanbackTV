@@ -1107,12 +1107,26 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         if (voiceAnswerPager instanceof VoiceAnswerPager) {
                             stopVoiceAnswerPager(resultView);
                         }
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                mLiveBll.getStuGoldCount("liveSubmitTestH5Answer");
-                            }
-                        }, 2500);
+                        if (resultView == null) {
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mLiveBll.getStuGoldCount("liveSubmitTestH5Answer");
+                                }
+                            }, 2500);
+                        } else {
+                            resultView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                                @Override
+                                public void onViewAttachedToWindow(View view) {
+
+                                }
+
+                                @Override
+                                public void onViewDetachedFromWindow(View view) {
+                                    mLiveBll.getStuGoldCount("liveSubmitTestH5Answer:Detached");
+                                }
+                            });
+                        }
                         // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
                         //EventBusUtil.post(new UpdateAchievementEvent(mLiveBll.getLiveId()));
 
