@@ -51,7 +51,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * created  at 2018/11/6
  * 英语战队PK 相关业务处理
  */
-public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAction, MessageAction {
+public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, MessageAction {
     private EnTeamPkAction enTeamPkAction;
     private String unique_id;
     private boolean psOpen = false;
@@ -418,6 +418,9 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             }
                         }
                     }
+//                    if (StringUtils.isEmpty(teamMemberEntity.nickName)) {
+//                        teamMemberEntity.nickName = "s_3_" + mGetInfo.getId() + "_" + teamMemberEntity.id + "_" + teamMemberEntity.;
+//                    }
                     jsonObject.put("nick_name", "" + teamMemberEntity.nickName);
                     jsonArray.put(jsonObject);
                     logger.d("reportStuLike:praiseCount=" + teamMemberEntity.thisPraiseCount + ",old=" + oldNickName + ",new=" + teamMemberEntity.nickName);
@@ -806,7 +809,14 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     private int firstTopic = 0;
 
-    @Override
+    /**
+     * 辅导态满12人分队，教师端未开启战队分配，切换主讲分队，再用辅导切换到辅导态，会再次展示分队仪式
+     *
+     * @param liveTopic
+     * @param jsonObject
+     * @param modeChange
+     */
+    @Deprecated
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
         //退出重进不显示分队仪式
         try {
