@@ -2144,14 +2144,17 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 //                    JSONArray resourceArray = data.getJSONArray("resource");
                     List<String> resources = new ArrayList<>();
 //                    for (int i = 0; i < resourceArray.length(); i++) {
-                    JSONArray formulasArray = resourceArray.getJSONArray("formulas");
-                    for (int j = 0; j < formulasArray.length(); j++) {
-                        resources.add(formulasArray.getString(j));
+                    JSONArray formulasArray = resourceArray.optJSONArray("formulas");
+                    if (formulasArray != null) {
+                        for (int j = 0; j < formulasArray.length(); j++) {
+                            resources.add(formulasArray.getString(j));
+                        }
                     }
-                    JSONArray fontsArray = resourceArray.getJSONArray("fonts");
-
-                    for (int k = 0; k < fontsArray.length(); k++) {
-                        resources.add(fontsArray.getString(k));
+                    JSONArray fontsArray = resourceArray.optJSONArray("fonts");
+                    if (fontsArray != null) {
+                        for (int k = 0; k < fontsArray.length(); k++) {
+                            resources.add(fontsArray.getString(k));
+                        }
                     }
 //                    }
                     coursewareInfoEntity.setResources(resources);
