@@ -2175,6 +2175,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 //                    coursewareInfoEntity.setStaticSources(staticSources);
 //                }
             } catch (JSONException e) {
+                MobAgent.httpResponseParserError(TAG, "parseCoursewareInfo", e.getMessage());
                 e.printStackTrace();
             }
         }
