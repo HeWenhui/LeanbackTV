@@ -480,6 +480,14 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                                         if (answerContent.length() == 0) {
                                             needTip = true;
                                             break a;
+                                        } else {
+                                            for (int k = 0; k < answerContent.length(); k++) {
+                                                JSONObject object = answerContent.getJSONObject(k);
+                                                if (StringUtils.isEmpty(object.optString("text"))) {
+                                                    needTip = true;
+                                                    break a;
+                                                }
+                                            }
                                         }
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -822,7 +830,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         JSONArray userAnswerContent2 = answer.getJSONArray("userAnswerContent");
                         for (int k = 0; k < userAnswerContent2.length(); k++) {
                             String str = userAnswerContent2.getJSONObject(k).optString("text");
-                            if (LiveQueConfig.EN_COURSE_TYPE_BLANK.equals(test.getTestType())) {
+                            if (LiveQueConfig.EN_COURSE_TYPE_BLANK.equals(test.getTestType()) || LiveQueConfig.EN_COURSE_TYPE_18.equals(test.getTestType())) {
                                 blank.put(str);
                             } else {
                                 choice.put(str);
