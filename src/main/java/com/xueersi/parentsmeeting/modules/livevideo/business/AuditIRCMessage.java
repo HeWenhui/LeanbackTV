@@ -619,9 +619,9 @@ public class AuditIRCMessage {
                 jsonObject.put("status", "on");
                 jsonObject.put("nonce", nonce);
                 String target = "s_" + mNickname;
-                sendMessage(target, jsonObject.toString());
+                sendMessage(target, UserBll.getInstance().getMyUserInfoEntity().getPsimId(),jsonObject.toString());
                 target = "ws_" + mNickname;
-                sendMessage(target, jsonObject.toString());
+                sendMessage(target,UserBll.getInstance().getMyUserInfoEntity().getPsimId(),jsonObject.toString());
                 //旁听日志
                 StableLogHashMap logHashMap = new StableLogHashMap("sendListenCmd");
                 logHashMap.put("status", "on");
@@ -671,6 +671,12 @@ public class AuditIRCMessage {
     public void sendMessage(String target, String message) {
         List<PMDefs.PsIdEntity> entityList = new ArrayList<>();
         PMDefs.PsIdEntity psIdEntity = new PMDefs.PsIdEntity(target, "");
+        entityList.add(psIdEntity);
+        mChatClient.getPeerManager().sendPeerMessage(entityList, message, 1);
+    }
+    public void sendMessage(String target,String psid, String message) {
+        List<PMDefs.PsIdEntity> entityList = new ArrayList<>();
+        PMDefs.PsIdEntity psIdEntity = new PMDefs.PsIdEntity(target, psid);
         entityList.add(psIdEntity);
         mChatClient.getPeerManager().sendPeerMessage(entityList, message, 1);
     }
