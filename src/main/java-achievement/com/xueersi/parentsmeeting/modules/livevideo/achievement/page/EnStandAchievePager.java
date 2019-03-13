@@ -235,7 +235,7 @@ public class EnStandAchievePager extends LiveBasePager {
         final int goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
         energyCount = starAndGoldEntity.getPkEnergy().me;
         goldCount = starAndGoldEntity.getGoldCount();
-        logger.d("onGetStar:energyCountAdd=" + energyCountAdd + ",goldCountAdd=" + goldCountAdd);
+        mLogtf.d("onGetStar:energyCountAdd=" + energyCountAdd + ",goldCountAdd=" + goldCountAdd + ",visibility=" + rlAchiveStandBg.getVisibility());
         if (rlAchiveStandBg.getVisibility() == View.VISIBLE) {
             return;
         }

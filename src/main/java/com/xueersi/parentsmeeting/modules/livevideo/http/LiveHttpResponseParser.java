@@ -2031,6 +2031,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     }
                     teamMemberEntity.name = jsonObject1.optString("stu_name");
                     teamMemberEntity.headurl = jsonObject1.optString("stu_head");
+                    teamMemberEntity.setNick_name(jsonObject1.optString("nick_name"));
                     aTeamMemberEntity.add(teamMemberEntity);
                 }
             }
@@ -2048,6 +2049,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     }
                     teamMemberEntity.name = jsonObject1.optString("stu_name");
                     teamMemberEntity.headurl = jsonObject1.optString("stu_head");
+                    teamMemberEntity.setNick_name(jsonObject1.optString("nick_name"));
                     bTeamMemberEntity.add(teamMemberEntity);
                 }
             }

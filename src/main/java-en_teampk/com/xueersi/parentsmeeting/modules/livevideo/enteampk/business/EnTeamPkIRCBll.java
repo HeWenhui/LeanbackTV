@@ -418,10 +418,11 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, Message
                             }
                         }
                     }
-//                    if (StringUtils.isEmpty(teamMemberEntity.nickName)) {
-//                        teamMemberEntity.nickName = "s_3_" + mGetInfo.getId() + "_" + teamMemberEntity.id + "_" + teamMemberEntity.;
-//                    }
-                    jsonObject.put("nick_name", "" + teamMemberEntity.nickName);
+                    if (StringUtils.isEmpty(teamMemberEntity.nickName)) {
+                        jsonObject.put("nick_name", "" + teamMemberEntity.getNick_name());
+                    } else {
+                        jsonObject.put("nick_name", "" + teamMemberEntity.nickName);
+                    }
                     jsonArray.put(jsonObject);
                     logger.d("reportStuLike:praiseCount=" + teamMemberEntity.thisPraiseCount + ",old=" + oldNickName + ",new=" + teamMemberEntity.nickName);
                 } catch (JSONException e) {
@@ -947,6 +948,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, Message
                 if (sender.contains("_" + teamMemberEntity.id + "_")) {
                     isMy = true;
                     teamMemberEntity.nickName = sender;
+                    mLogtf.d("isMyTeam:sender=" + sender);
                     break;
                 }
             }
@@ -970,6 +972,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, Message
             TeamMemberEntity user = uservector.get(j);
             if (("" + sourceNick).equals(user.nickName)) {
                 uservector.remove(j);
+                mLogtf.d("onQuit:sourceNick=" + sourceNick);
                 break;
             }
         }
