@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
@@ -9,9 +8,7 @@ import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
-import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.parentsmeeting.module.videoplayer.entity.LiveExperienceEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
@@ -2142,12 +2139,21 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     }
                     coursewareInfoEntity.setIps(ips);
                 }
-                if (data.has("resource")){
-                    JSONArray resourceArray = data.getJSONArray("resource");
+                if (data.has("resource")) {
+                    JSONObject resourceArray = data.getJSONObject("resource");
+//                    JSONArray resourceArray = data.getJSONArray("resource");
                     List<String> resources = new ArrayList<>();
-                    for (int i = 0; i < resourceArray.length(); i++) {
-                        resources.add(resourceArray.getString(i));
+//                    for (int i = 0; i < resourceArray.length(); i++) {
+                    JSONArray formulasArray = resourceArray.getJSONArray("formulas");
+                    for (int j = 0; j < formulasArray.length(); j++) {
+                        resources.add(formulasArray.getString(j));
                     }
+                    JSONArray fontsArray = resourceArray.getJSONArray("fonts");
+
+                    for (int k = 0; k < fontsArray.length(); k++) {
+                        resources.add(fontsArray.getString(k));
+                    }
+//                    }
                     coursewareInfoEntity.setResources(resources);
                 }
 //                if (data.has("loadpages")){
