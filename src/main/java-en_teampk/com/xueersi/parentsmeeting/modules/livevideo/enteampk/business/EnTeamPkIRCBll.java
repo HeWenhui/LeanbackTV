@@ -51,7 +51,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * created  at 2018/11/6
  * 英语战队PK 相关业务处理
  */
-public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, MessageAction {
+public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction,TopicAction, MessageAction {
     private EnTeamPkAction enTeamPkAction;
     private String unique_id;
     private boolean psOpen = false;
@@ -90,7 +90,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, Message
         }
         unique_id = mGetInfo.getId() + "_" + mGetInfo.getStudentLiveInfo().getClassId();
         logger.d("onLiveInited:unique_id=" + unique_id);
-        EnTeamPkBll teamPkBll = new EnTeamPkBll(activity);
+        EnTeamPkBll teamPkBll = new EnTeamPkBll(activity, mGetInfo.getId());
         teamPkBll.setRootView(mRootView);
         teamPkBll.setEnTeamPkHttp(new EnTeamPkHttpImp());
         enTeamPkAction = teamPkBll;
@@ -481,7 +481,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, Message
                     mLiveBll.postEvent(EnPkTeam.class, pkTeamEntity2);
                 }
             } else {
-                if (oldHasGroup != 1) {
+                if (oldHasGroup != EnglishPk.HAS_GROUP_MAIN) {
                     haveTeamRun = true;
                 }
             }
@@ -808,8 +808,6 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, Message
                 XESCODE.ARTS_STOP_QUESTION, XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_STULIKE, XESCODE.ARTS_H5_COURSEWARE, XESCODE.CLASSBEGIN};
     }
 
-    private int firstTopic = 0;
-
     /**
      * 辅导态满12人分队，教师端未开启战队分配，切换主讲分队，再用辅导切换到辅导态，会再次展示分队仪式
      *
@@ -817,7 +815,6 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, Message
      * @param jsonObject
      * @param modeChange
      */
-    @Deprecated
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
         //退出重进不显示分队仪式
         try {
@@ -828,16 +825,14 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, Message
                 if (status) {
                     logger.d("onTopic:psOpen=" + psOpen);
                     if (!psOpen) {
-                        mLogtf.d("onTopic:firstTopic=" + firstTopic);
                         psOpen = true;
                         //firstTopic>1,说明不是退出重进
                         if (enTeamPkAction != null) {
-                            enTeamPkAction.onRankStart(firstTopic > 1);
+                            enTeamPkAction.onRankStart(false);
                         }
                     }
                 }
             }
-            firstTopic++;
         } catch (JSONException e) {
             e.printStackTrace();
         }

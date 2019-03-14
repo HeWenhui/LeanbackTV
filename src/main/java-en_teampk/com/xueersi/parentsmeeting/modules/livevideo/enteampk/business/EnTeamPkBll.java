@@ -13,9 +13,11 @@ import android.widget.TextView;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
+import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.SmallEnglishMicTipDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.config.EnTeamPkConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
@@ -53,9 +55,13 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
     private boolean hasAddTop = false;
     private LogToFile mLogtf;
 
-    public EnTeamPkBll(Context context) {
+    public EnTeamPkBll(Context context, String liveId) {
         super(context);
         mLogtf = new LogToFile(context, TAG);
+        String string = mShareDataManager.getString(ShareDataConfig.LIVE_ENPK_MY_TOP, "", ShareDataManager.SHAREDATA_USER);
+        if (liveId.equals(string)) {
+            hasAddTop = true;
+        }
     }
 
     public void setEnTeamPkHttp(EnTeamPkHttp enTeamPkHttp) {
@@ -184,6 +190,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
         if (hasAddTop) {
             return;
         }
+        mShareDataManager.put(ShareDataConfig.LIVE_ENPK_MY_TOP, getInfo.getId(), ShareDataManager.SHAREDATA_USER);
         hasAddTop = true;
         final View view = LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_en_team_join, rootView, false);
         TextView tv_livevideo_en_teampk_top_name = view.findViewById(R.id.tv_livevideo_en_teampk_top_name);

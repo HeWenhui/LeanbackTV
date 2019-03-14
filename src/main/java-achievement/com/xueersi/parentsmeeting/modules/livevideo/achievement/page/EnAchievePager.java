@@ -31,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.lottie.AchieveType1LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.lottie.AchieveType2LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.lottie.AchieveType3LottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.widget.EvhieveProgressBar;
 import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -49,7 +50,7 @@ public class EnAchievePager extends LiveBasePager {
     private ViewStub vsAchiveBottom2;
     private RelativeLayout pkView;
     private ViewGroup pkEmptyView;
-    private ProgressBar pgAchivePk;
+    private EvhieveProgressBar pgAchivePk;
     private FrameLayout flProgress;
     //    private ImageView progressImageView;
     private Activity activity;
@@ -151,6 +152,16 @@ public class EnAchievePager extends LiveBasePager {
         tvPkEnergyMy.setText("" + myTotal);
         tvPkEnergyOther = pkView.findViewById(R.id.tv_livevideo_en_achive_pk_energy_other);
         tvPkEnergyOther.setText("" + otherTotal);
+        pgAchivePk.setSizeChanged(new EvhieveProgressBar.SizeChanged() {
+            @Override
+            public void onSizeChanged(int w, int h, int oldw, int oldh) {
+                logger.d("onSizeChanged:w=" + w + ",h=" + h + ",oldw=" + oldw + ",oldh=" + oldw);
+                if (oldw != 0 && oldh != 0) {
+                    mLogtf.d("onSizeChanged:oldw=" + oldw + ",oldh=" + oldh);
+//                    setLayout();
+                }
+            }
+        });
     }
 
     public void updateEnpk(EnTeamPkRankEntity enTeamPkRankEntity) {
