@@ -62,8 +62,7 @@
             android:textColor="#FFFEAE22"
             android:textSize="15dp"
             android:layout_marginTop="280dp"
-            android:layout_marginLeft="227dp"
-            android:text="sadasda"/>
+            android:layout_marginLeft="227dp" />
 
         <ImageView
             android:layout_alignParentRight="true"
