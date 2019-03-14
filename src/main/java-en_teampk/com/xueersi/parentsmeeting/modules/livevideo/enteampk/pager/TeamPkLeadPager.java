@@ -218,17 +218,17 @@ public class TeamPkLeadPager extends LiveBasePager {
             progress = (int) ((float) (enTeamPkRankEntity.getMyTeamTotal() * 100) / (float) (total));
         }
         int closeDelay = type == TeamPkLeadPager.TEAM_TYPE_2 ? 10000 : 5000;
-        if (AppConfig.DEBUG) {
-            closeDelay = type == TeamPkLeadPager.TEAM_TYPE_2 ? 60000 : 60000;
-            ivTeampkMine.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (onClose != null) {
-                        onClose.close(TeamPkLeadPager.this);
-                    }
-                }
-            });
-        }
+//        if (AppConfig.DEBUG) {
+//            closeDelay = type == TeamPkLeadPager.TEAM_TYPE_2 ? 60000 : 60000;
+//            ivTeampkMine.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    if (onClose != null) {
+//                        onClose.close(TeamPkLeadPager.this);
+//                    }
+//                }
+//            });
+//        }
         showRank();
         final TextView tv_livevideo_en_teampk_rank_start_close = rlTeampkLeadBottom.findViewById(R.id.tv_livevideo_en_teampk_rank_start_close);
         final AtomicInteger integer = new AtomicInteger(closeDelay / 1000);

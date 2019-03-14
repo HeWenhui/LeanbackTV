@@ -420,18 +420,23 @@ public class EnAchievePager extends LiveBasePager {
 
     private void setLayoutOnDraw() {
         setLayout();
-        final ViewTreeObserver viewTreeObserver = pgAchivePk.getViewTreeObserver();
-        viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+        pgAchivePk.postDelayed(new Runnable() {
             @Override
-            public boolean onPreDraw() {
-                setLayout();
-                if (viewTreeObserver.isAlive()) {
-                    viewTreeObserver.removeOnPreDrawListener(this);
-                }
-                pgAchivePk.getViewTreeObserver().removeOnPreDrawListener(this);
-                return false;
+            public void run() {
+                final ViewTreeObserver viewTreeObserver = pgAchivePk.getViewTreeObserver();
+                viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                    @Override
+                    public boolean onPreDraw() {
+                        setLayout();
+                        if (viewTreeObserver.isAlive()) {
+                            viewTreeObserver.removeOnPreDrawListener(this);
+                        }
+                        pgAchivePk.getViewTreeObserver().removeOnPreDrawListener(this);
+                        return false;
+                    }
+                });
             }
-        });
+        },10);
     }
 
     private boolean setLayout() {

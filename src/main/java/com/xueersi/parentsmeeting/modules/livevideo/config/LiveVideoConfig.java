@@ -83,6 +83,10 @@ public class LiveVideoConfig {
      * 直播课的直播
      */
     public final static int LIVE_TYPE_LIVE = 3;
+    /**
+     * 直播课的全身直播
+     */
+    public final static int LIVE_PATTERN_2 = 2;
     /** 视频类型为站立直播体验课 */
     public static final int LIVE_TYPE_STAND_EXPERIENCE = 10000;
     /**

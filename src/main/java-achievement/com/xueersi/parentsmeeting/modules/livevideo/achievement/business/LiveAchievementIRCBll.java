@@ -25,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
@@ -111,14 +112,17 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                         });
                     }
                 });
-                AchieveQuestionShowAction enTeamPkQuestionShowAction = new AchieveQuestionShowAction();
-                QuestionShowReg questionShowReg = getInstance(QuestionShowReg.class);
-                if (questionShowReg != null) {
-                    questionShowReg.registQuestionShow(enTeamPkQuestionShowAction);
-                }
-                EnglishShowReg englishShowReg = getInstance(EnglishShowReg.class);
-                if (englishShowReg != null) {
-                    englishShowReg.registQuestionShow(enTeamPkQuestionShowAction);
+                //全身直播得仪式结束以后，请求。三分屏在互动题结束请求
+                if (mGetInfo.getPattern() != LiveVideoConfig.LIVE_PATTERN_2) {
+                    AchieveQuestionShowAction enTeamPkQuestionShowAction = new AchieveQuestionShowAction();
+                    QuestionShowReg questionShowReg = getInstance(QuestionShowReg.class);
+                    if (questionShowReg != null) {
+                        questionShowReg.registQuestionShow(enTeamPkQuestionShowAction);
+                    }
+                    EnglishShowReg englishShowReg = getInstance(EnglishShowReg.class);
+                    if (englishShowReg != null) {
+                        englishShowReg.registQuestionShow(enTeamPkQuestionShowAction);
+                    }
                 }
             }
             putInstance(UpdateAchievement.class, new UpdateAchievement() {
@@ -126,7 +130,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                 public void getStuGoldCount(Object method, int type) {
                     mLogtf.d("getStuGoldCount:method=" + method + ",type=" + type);
                     if (1 == englishPk.canUsePK) {
-                        if (type != UpdateAchievement.GET_TYPE_RED) {
+                        if (type != UpdateAchievement.GET_TYPE_RED && type != UpdateAchievement.GET_TYPE_TEAM) {
                             return;
                         }
                     }

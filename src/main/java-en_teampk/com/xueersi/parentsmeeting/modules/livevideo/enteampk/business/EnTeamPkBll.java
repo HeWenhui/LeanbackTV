@@ -15,8 +15,10 @@ import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.SmallEnglishMicTipDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.config.EnTeamPkConfig;
@@ -29,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkRankRes
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.ArrayList;
 
@@ -443,6 +446,13 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                 }
             }
             mLogtf.d("onRankLead:s=" + s);
+            //全身直播得仪式结束以后，请求本场成就
+            if (pattern == LiveVideoConfig.LIVE_PATTERN_2) {
+                UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class);
+                if (updateAchievement != null) {
+                    updateAchievement.getStuGoldCount("onRankLead", UpdateAchievement.GET_TYPE_TEAM);
+                }
+            }
         } else {
             handler.post(new Runnable() {
                 @Override
@@ -463,10 +473,27 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                         }
                     });
                     RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-                    if (pattern != 2) {
+                    if (pattern != LiveVideoConfig.LIVE_PATTERN_2) {
                         layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x3;
                     }
                     rootView.addView(teamPkLeadPager.getRootView(), layoutParams);
+                    teamPkLeadPager.getRootView().addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                        @Override
+                        public void onViewAttachedToWindow(View view) {
+
+                        }
+
+                        @Override
+                        public void onViewDetachedFromWindow(View view) {
+                            //全身直播得仪式结束以后，请求本场成就
+                            if (pattern == LiveVideoConfig.LIVE_PATTERN_2) {
+                                UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class);
+                                if (updateAchievement != null) {
+                                    updateAchievement.getStuGoldCount("onViewDetachedFromWindow", UpdateAchievement.GET_TYPE_TEAM);
+                                }
+                            }
+                        }
+                    });
                 }
             });
         }
