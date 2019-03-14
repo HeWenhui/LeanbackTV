@@ -186,6 +186,8 @@ public class CoursewarePreload {
         }
     }
 
+    /** 所有需要下载文件的总量 */
+//    private AtomicInteger documentNum = new AtomicInteger(0);
 
     public class CoursewareHttpCallBack extends HttpCallBack {
 
@@ -317,6 +319,7 @@ public class CoursewarePreload {
 
         downloadResources(resources, cdns, newIPs);
         exeDownLoadCourseware(liveCoursewares, cdns, newIPs);
+//        AppBll.getInstance().registerAppEvent(this);
 
     }
 
@@ -426,6 +429,7 @@ public class CoursewarePreload {
                 } else {
                     PreLoadDownLoaderManager.addUrgentInfo(infoListener);
                 }
+//                documentNum.getAndIncrement();
             }
             //下载模板资源
             final String templateName = MD5.md5(coursewareInfo.getTemplateUrl()) + ".zip";
@@ -497,7 +501,8 @@ public class CoursewarePreload {
 //            for (int i = 0; i < resourseInfos.size(); i++) {
         for (String url : resourseInfos) {
 //                String url = resourseInfos.get(i);
-            final AtomicInteger downTryCount = new AtomicInteger();
+//            final AtomicInteger downTryCount = new AtomicInteger();
+//            documentNum.getAndIncrement();
             if (url.endsWith(".zip")) {
                 final String fileName;
                 int index = url.lastIndexOf("/");
