@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.courseware;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.xueersi.common.business.AppBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.network.download.DownLoadInfo;
@@ -187,7 +188,7 @@ public class CoursewarePreload {
     }
 
     /** 所有需要下载文件的总量 */
-//    private AtomicInteger documentNum = new AtomicInteger(0);
+    private AtomicInteger documentNum = new AtomicInteger(0);
 
     public class CoursewareHttpCallBack extends HttpCallBack {
 
@@ -233,6 +234,7 @@ public class CoursewarePreload {
         logger.i("" + courseWareInfos.size() + " " + subjectNum.get());
         if (courseWareInfos.size() == subjectNum.get()) {
             logger.i("数据返回成功");
+            AppBll.getInstance().registerAppEvent(CoursewarePreload.this);
 //            storageLiveId();
             execDownLoad(
                     sortArrays(),
@@ -319,7 +321,6 @@ public class CoursewarePreload {
 
         downloadResources(resources, cdns, newIPs);
         exeDownLoadCourseware(liveCoursewares, cdns, newIPs);
-//        AppBll.getInstance().registerAppEvent(this);
 
     }
 
@@ -429,7 +430,7 @@ public class CoursewarePreload {
                 } else {
                     PreLoadDownLoaderManager.addUrgentInfo(infoListener);
                 }
-//                documentNum.getAndIncrement();
+                documentNum.getAndIncrement();
             }
             //下载模板资源
             final String templateName = MD5.md5(coursewareInfo.getTemplateUrl()) + ".zip";
@@ -466,6 +467,7 @@ public class CoursewarePreload {
                 } else {
                     PreLoadDownLoaderManager.addUrgentInfo(infoListener);
                 }
+                documentNum.getAndIncrement();
             }
         }
     }
@@ -502,7 +504,7 @@ public class CoursewarePreload {
         for (String url : resourseInfos) {
 //                String url = resourseInfos.get(i);
 //            final AtomicInteger downTryCount = new AtomicInteger();
-//            documentNum.getAndIncrement();
+
             if (url.endsWith(".zip")) {
                 final String fileName;
                 int index = url.lastIndexOf("/");
@@ -541,6 +543,7 @@ public class CoursewarePreload {
                     } else {
                         PreLoadDownLoaderManager.addUrgentInfo(infoListener);
                     }
+                    documentNum.getAndIncrement();
                 }
             } else {
                 String fileName;
@@ -579,6 +582,7 @@ public class CoursewarePreload {
                     } else {
                         PreLoadDownLoaderManager.addUrgentInfo(infoListener);
                     }
+                    documentNum.getAndIncrement();
                 }
             }
         }
@@ -680,6 +684,12 @@ public class CoursewarePreload {
             hashMap.put("liveid", itemLiveId);
             hashMap.put("resourcetype", resourcetype);
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
+
+            documentNum.getAndDecrement();
+
+            if (documentNum.get() == 0) {
+                AppBll.getInstance().unRegisterAppEvent(CoursewarePreload.this);
+            }
 
             File tempFile = new File(folderPath, fileName);
             File file = new File(folderPath, mFileName);
@@ -858,6 +868,11 @@ public class CoursewarePreload {
             hashMap.put("resourcetype", resourcetype);
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
 
+            documentNum.getAndDecrement();
+
+            if (documentNum.get() == 0) {
+                AppBll.getInstance().unRegisterAppEvent(CoursewarePreload.this);
+            }
 
             File file = new File(folderPath, fileName);
             file.renameTo(new File(folderPath, mFileName));
