@@ -87,7 +87,7 @@
         android:layout_centerHorizontal="true"
         android:clipChildren="false">
 
-        <com.xueersi.parentsmeeting.modules.livevideo.achievement.widget.EvhieveProgressBar
+        <ProgressBar
             android:id="@id/pg_livevideo_en_achive_pk"
             style="@style/ProgressBar_live_en_pk"
             android:layout_width="145dp"

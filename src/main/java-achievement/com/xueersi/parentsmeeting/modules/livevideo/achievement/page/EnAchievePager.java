@@ -27,14 +27,15 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.lottie.AchieveType1LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.lottie.AchieveType2LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.lottie.AchieveType3LottieEffectInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.achievement.widget.EvhieveProgressBar;
 import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
@@ -50,8 +51,9 @@ public class EnAchievePager extends LiveBasePager {
     private ViewStub vsAchiveBottom2;
     private RelativeLayout pkView;
     private ViewGroup pkEmptyView;
-    private EvhieveProgressBar pgAchivePk;
+    private ProgressBar pgAchivePk;
     private FrameLayout flProgress;
+    private ImageView progressImageView;
     //    private ImageView progressImageView;
     private Activity activity;
     private TextView tvAchiveNumStar;
@@ -152,16 +154,6 @@ public class EnAchievePager extends LiveBasePager {
         tvPkEnergyMy.setText("" + myTotal);
         tvPkEnergyOther = pkView.findViewById(R.id.tv_livevideo_en_achive_pk_energy_other);
         tvPkEnergyOther.setText("" + otherTotal);
-        pgAchivePk.setSizeChanged(new EvhieveProgressBar.SizeChanged() {
-            @Override
-            public void onSizeChanged(int w, int h, int oldw, int oldh) {
-                logger.d("onSizeChanged:w=" + w + ",h=" + h + ",oldw=" + oldw + ",oldh=" + oldw);
-                if (oldw != 0 && oldh != 0) {
-                    mLogtf.d("onSizeChanged:oldw=" + oldw + ",oldh=" + oldh);
-//                    setLayout();
-                }
-            }
-        });
     }
 
     public void updateEnpk(EnTeamPkRankEntity enTeamPkRankEntity) {
@@ -397,20 +389,13 @@ public class EnAchievePager extends LiveBasePager {
         if (rl_livevideo_info != null) {
             if (flProgress == null) {
                 flProgress = new FrameLayout(activity);
-                flProgress.setVisibility(View.INVISIBLE);
                 flProgress.setClipChildren(false);
-                ImageView progressImageView = new ImageView(activity);
+                progressImageView = new ImageView(activity);
                 BitmapDrawable bitmapDrawable = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.app_livevideo_enteampk_pkbar_fire_pic_prog);
-//                progressImageView.setImageResource(R.drawable.app_livevideo_enteampk_pkbar_fire_pic_prog);
                 progressImageView.setImageDrawable(bitmapDrawable);
-//                flProgress.setVisibility(View.INVISIBLE);
                 FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(bitmapDrawable.getIntrinsicWidth(), bitmapDrawable.getIntrinsicHeight());
-//                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(progressWidth, progressWidth);
-                layoutParams.gravity = Gravity.CENTER;
                 flProgress.addView(progressImageView, layoutParams);
-//                flProgress.addView(progressImageView);
-//                rl_livevideo_info.addView(flProgress, width, width);
-                rl_livevideo_info.addView(flProgress);
+                rl_livevideo_info.addView(flProgress, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
                 final ViewTreeObserver viewTreeObserver = pgAchivePk.getViewTreeObserver();
                 viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                     @Override
@@ -429,11 +414,13 @@ public class EnAchievePager extends LiveBasePager {
         }
     }
 
-    private int lastFlProgress = 0;
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+        setLayoutOnDraw();
+    }
 
     private void setLayoutOnDraw() {
         setLayout();
-        final ViewTreeObserver viewTreeObserver = flProgress.getViewTreeObserver();
+        final ViewTreeObserver viewTreeObserver = pgAchivePk.getViewTreeObserver();
         viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
@@ -441,7 +428,7 @@ public class EnAchievePager extends LiveBasePager {
                 if (viewTreeObserver.isAlive()) {
                     viewTreeObserver.removeOnPreDrawListener(this);
                 }
-                flProgress.getViewTreeObserver().removeOnPreDrawListener(this);
+                pgAchivePk.getViewTreeObserver().removeOnPreDrawListener(this);
                 return false;
             }
         });
@@ -450,50 +437,21 @@ public class EnAchievePager extends LiveBasePager {
     private boolean setLayout() {
         ViewGroup rl_livevideo_info = activity.findViewById(R.id.rl_livevideo_info);
         int[] loc = ViewUtil.getLoc(pgAchivePk, rl_livevideo_info);
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) flProgress.getLayoutParams();
-        int rlWidth = flProgress.getWidth();
-        ImageView progressImageView = (ImageView) flProgress.getChildAt(0);
-        BitmapDrawable bitmapDrawable = (BitmapDrawable) progressImageView.getDrawable();
-        int minWidth = bitmapDrawable.getBitmap().getWidth() * 108 / 176;
-        if (rlWidth < minWidth) {
-            rlWidth = minWidth;
-        }
-        int leftMargin = loc[0] - rlWidth / 2 + pgAchivePk.getWidth() * pgAchivePk.getProgress() / pgAchivePk.getMax();
-        int topMargin = loc[1] - (flProgress.getHeight() - pgAchivePk.getHeight()) / 2;
-        logger.d("initListener:left=" + loc[0] + ",top=" + loc[1] + ",width=" + lastFlProgress + "," + rlWidth + ",minWidth=" + minWidth);
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) progressImageView.getLayoutParams();
+        int rlWidth = progressImageView.getWidth();
+        int edge = SizeUtils.Dp2Px(mContext, 5);
+        int pgWidth = pgAchivePk.getWidth() - edge * 2;
+        int leftMargin = loc[0] + edge - rlWidth / 2 + pgWidth * pgAchivePk.getProgress() / pgAchivePk.getMax();
+        int topMargin = loc[1] - (progressImageView.getHeight() - pgAchivePk.getHeight()) / 2;
+        logger.d("initListener:left=" + loc[0] + ",top=" + loc[1] + ",rlWidth=" + rlWidth
+                + ",width=" + pgAchivePk.getWidth() + ",prog=" + pgAchivePk.getProgress() + ",leftMargin=" + leftMargin);
         if (leftMargin != lp.leftMargin || topMargin != lp.topMargin) {
             lp.leftMargin = leftMargin;
             lp.topMargin = topMargin;
-            flProgress.setLayoutParams(lp);
-            flProgress.setVisibility(View.VISIBLE);
+            progressImageView.setLayoutParams(lp);
+            progressImageView.setVisibility(View.VISIBLE);
         }
-//        if (lastFlProgress == flProgress.getWidth()) {
-//            return true;
-//        }
-//        lastFlProgress = flProgress.getWidth();
         return false;
-    }
-
-    private Bitmap createBitmap(int energyCount, int width, int height) {
-        try {
-            Bitmap drawBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(drawBitmap);
-            Paint paint = new Paint();
-            paint.setAntiAlias(true);
-            Typeface fontFace = FontCache.getTypeface(activity, "fangzhengcuyuan.ttf");
-            paint.setTypeface(fontFace);
-            paint.setTextSize(height + 5);
-            String drawText = "+" + energyCount;
-            float w = paint.measureText(drawText);
-//            paint.setColor(Color.CYAN);
-//            canvas.drawRect(0, 0, width, height, paint);
-            paint.setColor(0xff4eacf1);
-            canvas.drawText(drawText, (width - w) / 2, height, paint);
-            return drawBitmap;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
 }

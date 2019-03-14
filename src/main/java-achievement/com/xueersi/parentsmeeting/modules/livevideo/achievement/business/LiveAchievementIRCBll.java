@@ -33,6 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.business.EnPkTeam;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.SendMessageReg;
@@ -381,7 +382,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 
         @Override
         public void initAchievement(String mode) {
-            if (smallEnglish==1){
+            if (smallEnglish == 1) {
                 EnglishSpeekAction oldEnglishSpeekAction = LiveAchievementIRCBll.this.englishSpeekAction;
                 if (oldEnglishSpeekAction != null) {
                     oldEnglishSpeekAction.stop(null);
@@ -408,7 +409,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     LiveAchievementIRCBll.this.starAction = liveAchievementEngBll;
                     LiveAchievementIRCBll.this.englishSpeekAction = null;
                 }
-            }else {
+            } else {
                 EnglishSpeekAction oldEnglishSpeekAction = LiveAchievementIRCBll.this.englishSpeekAction;
                 TalLanguage talLanguage = null;
                 if (oldEnglishSpeekAction != null) {
@@ -542,6 +543,15 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     englishSpeekMode.initAchievement(mode);
                 }
             });
+        }
+    }
+
+    @Override
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+        super.setVideoLayout(liveVideoPoint);
+        if (starAction instanceof LiveAchievementEngBll) {
+            LiveAchievementEngBll engBll = (LiveAchievementEngBll) starAction;
+            engBll.setVideoLayout(liveVideoPoint);
         }
     }
 
