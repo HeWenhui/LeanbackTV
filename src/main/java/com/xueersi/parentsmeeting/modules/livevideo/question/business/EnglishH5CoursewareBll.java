@@ -800,7 +800,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
             @Override
             public void onAutoClose(BasePager basePager) {
-
+                rlQuestionResContent.removeAllViews();
             }
 
             @Override
