@@ -392,16 +392,15 @@ public class CoursewarePreload {
             boolean equals = false;
             if (fileIsExists(resourceSave.getAbsolutePath())) {
                 String filemd5 = FileUtils.getFileMD5ToString(resourceSave);
-                equals = coursewareInfo.getMd5().equalsIgnoreCase(filemd5);
+                equals = coursewareInfo.getResourceMd5().equalsIgnoreCase(filemd5);
             }
             if (!fileIsExists(resourceSave.getAbsolutePath()) || (fileIsExists(resourceSave.getAbsolutePath()) && !equals)) {
-                DownLoadInfo resourceDownLoadInfo = DownLoadInfo.createFileInfo(ip + coursewareInfo.getResourceUrl(), mMorecachein.getAbsolutePath(), resourceName + ".temp", coursewareInfo.getMd5());
-//                resourceSave.mkdirs();
-//                try {
-//                    resourceSave.createNewFile();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
+                DownLoadInfo resourceDownLoadInfo = DownLoadInfo.createFileInfo(
+                        ip + coursewareInfo.getResourceUrl(),
+                        mMorecachein.getAbsolutePath(),
+                        resourceName + ".temp",
+                        coursewareInfo.getResourceMd5());
+
                 if (isIP) {
                     resourceDownLoadInfo.setHost(cdn);
                 }
@@ -410,7 +409,17 @@ public class CoursewarePreload {
                 logger.d("courseware url path:  " + ip + coursewareInfo.getResourceUrl() + "   file name:" + resourceName + ".zip");
 //                resourceDownLoader.start(new ZipDownloadListener(mMorecachein, mMorecacheout, resourceName, ips, cdns, coursewareInfo.getResourceUrl(), coursewareInfo.getMd5(), new AtomicInteger()));
                 PreLoadDownLoaderManager.DownLoadInfoListener infoListener = new PreLoadDownLoaderManager.DownLoadInfoListener(resourceDownLoadInfo,
-                        new ZipDownloadListener(mMorecachein, mMorecacheout, resourceName, ips, cdns, coursewareInfo.getResourceUrl(), coursewareInfo.getMd5(), new AtomicInteger(0), itemLiveId));
+                        new ZipDownloadListener(
+                                mMorecachein,
+                                mMorecacheout,
+                                resourceName,
+                                ips,
+                                cdns,
+                                coursewareInfo.getResourceUrl(),
+                                coursewareInfo.getResourceMd5(),
+                                new AtomicInteger(0),
+                                itemLiveId,
+                                "1"));
 
                 if (!isPrecise.get()) {
                     PreLoadDownLoaderManager.addToAutoDownloadPool(infoListener);
@@ -423,7 +432,11 @@ public class CoursewarePreload {
             File templateSave = new File(mMorecachein, resourceName);
             if (!fileIsExists(templateSave.getAbsolutePath())) {
 //                templateSave.mkdirs();
-                DownLoadInfo templateDownLoadInfo = DownLoadInfo.createFileInfo(ip + coursewareInfo.getTemplateUrl(), mMorecachein.getAbsolutePath(), templateName + ".temp", "");
+                DownLoadInfo templateDownLoadInfo = DownLoadInfo.createFileInfo(
+                        ip + coursewareInfo.getTemplateUrl(),
+                        mMorecachein.getAbsolutePath(),
+                        templateName + ".temp",
+                        coursewareInfo.getTemplateMd5());
                 logger.d("template url path:  " + ip + coursewareInfo.getTemplateUrl() + "   file name:" + templateName + ".zip");
                 if (isIP) {
                     templateDownLoadInfo.setHost(cdn);
@@ -431,8 +444,19 @@ public class CoursewarePreload {
 //                DownLoader templateDownLoader = new DownLoader(mContext, templateDownLoadInfo);
 //                templateDownLoader.setDownloadThreadCount(mDownloadThreadCount);
 //                templateDownLoader.start(new ZipDownloadListener(mMorecachein, mMorecacheout, templateName, ips, cdns, coursewareInfo.getTemplateUrl(), coursewareInfo.getMd5(), new AtomicInteger()));
-                PreLoadDownLoaderManager.DownLoadInfoListener infoListener = new PreLoadDownLoaderManager.DownLoadInfoListener(templateDownLoadInfo,
-                        new ZipDownloadListener(mMorecachein, mMorecacheout, resourceName, ips, cdns, coursewareInfo.getTemplateUrl(), coursewareInfo.getMd5(), new AtomicInteger(0), itemLiveId));
+                PreLoadDownLoaderManager.DownLoadInfoListener infoListener = new PreLoadDownLoaderManager.DownLoadInfoListener(
+                        templateDownLoadInfo,
+                        new ZipDownloadListener(
+                                mMorecachein,
+                                mMorecacheout,
+                                resourceName,
+                                ips,
+                                cdns,
+                                coursewareInfo.getTemplateUrl(),
+                                coursewareInfo.getTemplateMd5(),
+                                new AtomicInteger(0),
+                                itemLiveId,
+                                "1"));
                 if (!isPrecise.get()) {
                     PreLoadDownLoaderManager.addToAutoDownloadPool(infoListener);
                 } else {
@@ -484,24 +508,29 @@ public class CoursewarePreload {
                 }
                 final File save = new File(mPublicCacheout, fileName);
                 if (!fileIsExists(save.getAbsolutePath())) {
-//                    save.mkdirs();
-//                    try {
-//                        save.createNewFile();
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
 //                if (!fileIsExists(save.getAbsolutePath())) {
                     logger.d("resource zip url path:  " + ip + url + "   file name:" + fileName + ".zip");
-                    DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(ip + url, mPublicCacheout.getAbsolutePath(), fileName + ".temp", "");
+                    DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(
+                            ip + url,
+                            mPublicCacheout.getAbsolutePath(),
+                            fileName + ".temp",
+                            "");
                     if (isIp) {
                         downLoadInfo.setHost(cdn);
                     }
-//                        final DownLoader downLoader = new DownLoader(mContext, downLoadInfo);
-//                        downLoader.start(new ZipDownloadListener(mPublicCacheout, mPublicCacheout, fileName, ips, cdns, url, "", downTryCount));
                     PreLoadDownLoaderManager.DownLoadInfoListener infoListener = new PreLoadDownLoaderManager.DownLoadInfoListener(
                             downLoadInfo,
-                            new ZipDownloadListener(mPublicCacheout, mPublicCacheout, fileName, ips, cdns, url, fileName, new AtomicInteger(0), ""));
+                            new ZipDownloadListener(
+                                    mPublicCacheout,
+                                    mPublicCacheout,
+                                    fileName,
+                                    ips,
+                                    cdns,
+                                    url,
+                                    fileName,
+                                    new AtomicInteger(0),
+                                    "",
+                                    "2"));
                     if (!isPrecise.get()) {
                         PreLoadDownLoaderManager.addToAutoDownloadPool(infoListener);
                     } else {
@@ -530,7 +559,16 @@ public class CoursewarePreload {
 //                        final DownLoader downLoader = new DownLoader(mContext, downLoadInfo);
                     PreLoadDownLoaderManager.DownLoadInfoListener infoListener = new PreLoadDownLoaderManager.DownLoadInfoListener(
                             downLoadInfo,
-                            new NoZipDownloadListener(mPublicCacheout, mPublicCacheout, fileName, ips, cdns, url, fileName, new AtomicInteger(0)));
+                            new NoZipDownloadListener(
+                                    mPublicCacheout,
+                                    mPublicCacheout,
+                                    fileName,
+                                    ips,
+                                    cdns,
+                                    url,
+                                    fileName,
+                                    new AtomicInteger(0),
+                                    "3"));
                     if (!isPrecise.get()) {
                         PreLoadDownLoaderManager.addToAutoDownloadPool(infoListener);
                     } else {
@@ -576,8 +614,19 @@ public class CoursewarePreload {
         List<String> cdns;
         List<String> ips;
         String itemLiveId;
+        String resourcetype;
 
-        public ZipDownloadListener(File mMorecachein, File mMorecacheout, String fileName, final List<String> ips, List<String> cdns, String url, String md5, AtomicInteger downTryCount, String itemLiveId) {
+        public ZipDownloadListener(
+                File mMorecachein,
+                File mMorecacheout,
+                String fileName,
+                final List<String> ips,
+                List<String> cdns,
+                String url,
+                String md5,
+                AtomicInteger downTryCount,
+                String itemLiveId,
+                String resourcetype) {
             this.mMorecachein = mMorecachein;
             this.mMorecacheout = mMorecacheout;
             this.mFileName = fileName;
@@ -587,6 +636,7 @@ public class CoursewarePreload {
             this.cdns = cdns;
             this.downTryCount = downTryCount;
             this.itemLiveId = itemLiveId;
+            this.resourcetype = resourcetype;
         }
 
         @Override
@@ -599,6 +649,7 @@ public class CoursewarePreload {
             hashMap.put("isresume", "false");
             hashMap.put("sno", "1");
             hashMap.put("liveid", itemLiveId);
+            hashMap.put("resourcetype", resourcetype);
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
         }
 
@@ -622,6 +673,7 @@ public class CoursewarePreload {
             }
             hashMap.put("failurl", sb.toString());
             hashMap.put("liveid", itemLiveId);
+            hashMap.put("resourcetype", resourcetype);
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
 
             File tempFile = new File(folderPath, fileName);
@@ -638,6 +690,7 @@ public class CoursewarePreload {
                     unZipMap.put("extrainfo", mMorecacheout.getAbsolutePath());
                     unZipMap.put("sno", "3");
                     unZipMap.put("liveid", itemLiveId);
+                    unZipMap.put("resourcetype", resourcetype);
                     UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, unZipMap.getData());
                     return super.doInBackground(params);
 
@@ -655,6 +708,7 @@ public class CoursewarePreload {
                     unZipMap.put("extrainfo", mMorecacheout.getAbsolutePath());
                     unZipMap.put("sno", "3");
                     unZipMap.put("liveid", itemLiveId);
+                    unZipMap.put("resourcetype", resourcetype);
                     UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, unZipMap.getData());
                 }
             }.executeOnExecutor(executos);
@@ -691,7 +745,7 @@ public class CoursewarePreload {
                 }
 //                DownLoader downLoader = new DownLoader(mContext, downLoadInfo);
 //                downLoader.start(new ZipDownloadListener(mMorecachein, mMorecacheout, mFileName, ips, cdns, url, md5, downTryCount));
-                ZipDownloadListener mZipDownloadListener = new ZipDownloadListener(mMorecachein, mMorecacheout, mFileName, ips, cdns, url, md5, downTryCount, itemLiveId);
+                ZipDownloadListener mZipDownloadListener = new ZipDownloadListener(mMorecachein, mMorecacheout, mFileName, ips, cdns, url, md5, downTryCount, itemLiveId, resourcetype);
                 PreLoadDownLoaderManager.DownLoadInfoListener preLoadDownLoaderManager = new PreLoadDownLoaderManager.DownLoadInfoListener(downLoadInfo, mZipDownloadListener);
 
                 if (!isPrecise.get()) {
@@ -714,6 +768,7 @@ public class CoursewarePreload {
                 }
                 hashMap.put("failurl", sb.toString());
                 hashMap.put("liveid", itemLiveId);
+                hashMap.put("resourcetype", resourcetype);
                 UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
 
             }
@@ -735,8 +790,18 @@ public class CoursewarePreload {
         AtomicInteger downTryCount;
         List<String> cdns;
         List<String> ips;
+        String resourcetype;
 
-        public NoZipDownloadListener(File mMorecachein, File mMorecacheout, String fileName, final List<String> ips, List<String> cdns, String url, String md5, AtomicInteger downTryCount) {
+        public NoZipDownloadListener(
+                File mMorecachein,
+                File mMorecacheout,
+                String fileName,
+                final List<String> ips,
+                List<String> cdns,
+                String url,
+                String md5,
+                AtomicInteger downTryCount,
+                String resourcetype) {
             this.mMorecachein = mMorecachein;
             this.mMorecacheout = mMorecacheout;
             this.mFileName = fileName;
@@ -745,6 +810,7 @@ public class CoursewarePreload {
             this.ips = ips;
             this.cdns = cdns;
             this.downTryCount = downTryCount;
+            this.resourcetype = resourcetype;
         }
 
         @Override
@@ -757,6 +823,7 @@ public class CoursewarePreload {
             hashMap.put("isresume", "false");
             hashMap.put("sno", "1");
             hashMap.put("liveid", "");
+            hashMap.put("resourcetype", resourcetype);
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
         }
 
@@ -783,6 +850,7 @@ public class CoursewarePreload {
             hashMap.put("failurl", downTryCount.get() != 0 ? sb.toString() : "");
 
             hashMap.put("liveid", "");
+            hashMap.put("resourcetype", resourcetype);
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
 
 
@@ -819,7 +887,7 @@ public class CoursewarePreload {
                     downLoadInfo.setHost(cdns.get(cdnPos.get() % cdnLength.get()).substring(index));
                 }
                 PreLoadDownLoaderManager.DownLoadInfoListener downLoadInfoListener = new PreLoadDownLoaderManager.DownLoadInfoListener(downLoadInfo,
-                        new NoZipDownloadListener(mMorecachein, mMorecacheout, mFileName, ips, cdns, url, md5, downTryCount));
+                        new NoZipDownloadListener(mMorecachein, mMorecacheout, mFileName, ips, cdns, url, md5, downTryCount, resourcetype));
                 if (!isPrecise.get()) {
                     PreLoadDownLoaderManager.addToAutoDownloadPool(downLoadInfoListener);
                 } else {
@@ -842,6 +910,7 @@ public class CoursewarePreload {
                 }
                 hashMap.put("failurl", sb.toString());
                 hashMap.put("liveid", "");
+                hashMap.put("resourcetype", resourcetype);
                 UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
             }
 

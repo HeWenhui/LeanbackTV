@@ -7,17 +7,17 @@ import java.util.List;
  */
 public class CoursewareInfoEntity {
 
-    /** 课件信息列表*/
+    /** 课件信息列表 */
     List<LiveCourseware> coursewareList;
-    /** cdn列表*/
+    /** cdn列表 */
     List<String> cdns;
-    /** ip列表*/
+    /** ip列表 */
     List<String> ips;
-    /** 字体公式资源*/
+    /** 字体公式资源 */
     List<String> resources;
-    /** 加载页资源*/
+    /** 加载页资源 */
     List<String> loadpages;
-    /** 静态资源*/
+    /** 静态资源 */
     List<String> staticSources;
 
     public List<LiveCourseware> getCoursewaresList() {
@@ -68,8 +68,8 @@ public class CoursewareInfoEntity {
         this.staticSources = staticSources;
     }
 
-    public static class LiveCourseware{
-        /** 课件id*/
+    public static class LiveCourseware {
+        /** 课件id */
         String liveId;
         long stime;
         List<ItemCoursewareInfo> coursewareInfos;
@@ -98,25 +98,31 @@ public class CoursewareInfoEntity {
             this.coursewareInfos = coursewareInfos;
         }
     }
+
     public static class ItemCoursewareInfo {
-        /** 页面包ID*/
+        /** 页面包ID */
         String packageId;
-        /** 页面ID*/
+        /** 页面ID */
         String pageId;
-        /** 试题ID 英语用到*/
+        /** 试题ID 英语用到 */
         String sourceId;
-        /** 页面包来源
+        /**
+         * 页面包来源
          * 英语(1:设计部本地批量上传;2:讲义生成或在线创建;3:模板改编创建;4:未来客户端课件)
-         * 理科 文科 1：为课件 2 为非课件*/
+         * 理科 文科 1：为课件 2 为非课件
+         */
         String packageSource;
-        /**是否是有模板 */
+        /** 是否是有模板 */
         boolean isTemplate;
-        /** 资源地址 （去除域名） 可通过资源地址+'/thumbnail.png'页面缩略图地址*/
+        /** 资源地址 （去除域名） 可通过资源地址+'/thumbnail.png'页面缩略图地址 */
         String resourceUrl;
         /** 模板地址 （去除域名） */
         String templateUrl;
-        /** MD5*/
-        String md5;
+        /** MD5 */
+//        String md5;
+
+        String resourceMd5;
+        String templateMd5;
 
         public String getPackageId() {
             return packageId;
@@ -174,12 +180,28 @@ public class CoursewareInfoEntity {
             this.templateUrl = templateUrl;
         }
 
-        public String getMd5() {
-            return md5;
+//        public String getMd5() {
+//            return md5;
+//        }
+//
+//        public void setMd5(String md5) {
+//            this.md5 = md5;
+//        }
+
+        public String getResourceMd5() {
+            return resourceMd5;
         }
 
-        public void setMd5(String md5) {
-            this.md5 = md5;
+        public void setResourceMd5(String resourceMd5) {
+            this.resourceMd5 = resourceMd5;
+        }
+
+        public String getTemplateMd5() {
+            return templateMd5;
+        }
+
+        public void setTemplateMd5(String templateMd5) {
+            this.templateMd5 = templateMd5;
         }
     }
 }
