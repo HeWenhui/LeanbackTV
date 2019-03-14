@@ -758,7 +758,7 @@ public class IRCMessage {
         List<PMDefs.PsIdEntity> entityList = new ArrayList<>();
         PMDefs.PsIdEntity psIdEntity = new PMDefs.PsIdEntity(target, "");
         entityList.add(psIdEntity);
-        mChatClient.getPeerManager().sendPeerMessage(entityList, message, 1);
+        mChatClient.getPeerManager().sendPeerMessage(entityList, message, 99);
     }
 
     /**
