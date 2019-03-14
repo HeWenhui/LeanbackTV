@@ -39,6 +39,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
+import static com.tal100.chatsdk.PMDefs.MessagePriority.MSG_PRIORITY_NOTICE;
+
 /**
  * IRC消息。连接IRC SDK和LiveBll，控制聊天的连接和断开
  *
@@ -264,7 +266,7 @@ public class IRCMessage {
                                     PMDefs.PsIdEntity psIdEntity = new PMDefs.PsIdEntity(sender, peerChatMessage.fromUserId.psid);
                                     List<PMDefs.PsIdEntity> psIdEntityList = new ArrayList<>();
                                     psIdEntityList.add(psIdEntity);
-                                    mChatClient.getPeerManager().sendPeerMessage(psIdEntityList, jsonObject.toString(), 99);
+                                    mChatClient.getPeerManager().sendPeerMessage(psIdEntityList, jsonObject.toString(), PMDefs.MessagePriority.MSG_PRIORITY_PRI);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -299,7 +301,7 @@ public class IRCMessage {
                         mIRCCallback.onPrivateMessage(isSelf, sender, login, hostname, target, message);
                     }
                 }
-            } else if (PMDefs.MessagePriority.MSG_PRIORITY_NOTICE == priority) {//一对一notic消息
+            } else if (MSG_PRIORITY_NOTICE == priority) {//一对一notic消息
                 target = "NOTICE";
                 boolean send = true;
                 try {
@@ -364,7 +366,7 @@ public class IRCMessage {
                     PMDefs.PsIdEntity user = new PMDefs.PsIdEntity(target, UserBll.getInstance().getMyUserInfoEntity().getPsimId());
                     List<PMDefs.PsIdEntity> userList = new ArrayList<>();
                     userList.add(user);
-                    mChatClient.getPeerManager().sendPeerMessage(userList, "T", 99);
+                    mChatClient.getPeerManager().sendPeerMessage(userList, "T", PMDefs.MessagePriority.MSG_PRIORITY_PRI);
                 }
             }
 
@@ -545,7 +547,7 @@ public class IRCMessage {
                         target = "TOPIC";
                         mLogtf.d("onTopic:channel=" + channel + ",topic=" + text);
                         onTopic(channel, text, date);
-                    } else if (PMDefs.MessagePriority.MSG_PRIORITY_NOTICE == roomChatMessage.msgPriority) {
+                    } else if (MSG_PRIORITY_NOTICE == roomChatMessage.msgPriority) {
                         target = "NOTICE";
                         boolean send = true;
                         try {
@@ -722,15 +724,15 @@ public class IRCMessage {
             if (LiveTopic.MODE_TRANING.equals(currentMode)) {
 //                mChatClient.getRoomManager().sendRoomMessage()
                 roomid.add("#" + mChannels[1]);
-                mChatClient.getRoomManager().sendRoomMessage(roomid, notice, 1);
+                mChatClient.getRoomManager().sendRoomMessage(roomid, notice, MSG_PRIORITY_NOTICE);
             }
             if (LiveTopic.MODE_CLASS.equals(currentMode)) {
                 roomid.add("#" + mChannels[0]);
-                mChatClient.getRoomManager().sendRoomMessage(roomid, notice, 1);
+                mChatClient.getRoomManager().sendRoomMessage(roomid, notice, MSG_PRIORITY_NOTICE);
             }
         } else {
             roomid.add("#" + mChannels[0]);
-            mChatClient.getRoomManager().sendRoomMessage(roomid, notice, 1);
+            mChatClient.getRoomManager().sendRoomMessage(roomid, notice, MSG_PRIORITY_NOTICE);
         }
     }
 
@@ -745,7 +747,7 @@ public class IRCMessage {
         List<PMDefs.PsIdEntity> entityList = new ArrayList<>();
         PMDefs.PsIdEntity psIdEntity = new PMDefs.PsIdEntity(target, "");
         entityList.add(psIdEntity);
-        mChatClient.getPeerManager().sendPeerMessage(entityList, notice, 1);
+        mChatClient.getPeerManager().sendPeerMessage(entityList, notice, MSG_PRIORITY_NOTICE);
     }
 
     /**
@@ -758,7 +760,7 @@ public class IRCMessage {
         List<PMDefs.PsIdEntity> entityList = new ArrayList<>();
         PMDefs.PsIdEntity psIdEntity = new PMDefs.PsIdEntity(target, "");
         entityList.add(psIdEntity);
-        mChatClient.getPeerManager().sendPeerMessage(entityList, message, 99);
+        mChatClient.getPeerManager().sendPeerMessage(entityList, message, PMDefs.MessagePriority.MSG_PRIORITY_PRI);
     }
 
     /**
@@ -776,7 +778,7 @@ public class IRCMessage {
             if (LiveTopic.MODE_TRANING.equals(currentMode)) {
 //                mConnection.sendMessage("#" + mChannels[1], message);
                 roomid.add("#" + mChannels[1]);
-                mChatClient.getRoomManager().sendRoomMessage(roomid, message, 99);
+                mChatClient.getRoomManager().sendRoomMessage(roomid, message, PMDefs.MessagePriority.MSG_PRIORITY_PRI);
                 //Loger.d("____bug 22  channel: "+mChannels[1] +"  message:  "+message);
             }
 
@@ -784,13 +786,13 @@ public class IRCMessage {
                 //Loger.d("____bug 23  channel: "+mChannels[0] +"  message:  "+message);
 //                mConnection.sendMessage("#" + mChannels[0], message);
                 roomid.add("#" + mChannels[0]);
-                mChatClient.getRoomManager().sendRoomMessage(roomid, message, 99);
+                mChatClient.getRoomManager().sendRoomMessage(roomid, message, PMDefs.MessagePriority.MSG_PRIORITY_PRI);
             }
         } else {
             // Loger.d("____bug 24  channel: "+mChannels[0] +"  message:  "+message);
 //            mConnection.sendMessage("#" + mChannels[0], message);
             roomid.add("#" + mChannels[0]);
-            mChatClient.getRoomManager().sendRoomMessage(roomid, message, 99);
+            mChatClient.getRoomManager().sendRoomMessage(roomid, message, PMDefs.MessagePriority.MSG_PRIORITY_PRI);
         }
 //        mChatClient.getRoomManager().sendRoomMessage(roomid, message, 1);
     }
