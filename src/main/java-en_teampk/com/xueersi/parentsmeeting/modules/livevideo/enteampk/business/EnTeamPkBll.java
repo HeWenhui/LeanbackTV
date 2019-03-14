@@ -59,7 +59,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
         super(context);
         mLogtf = new LogToFile(context, TAG);
         String string = mShareDataManager.getString(ShareDataConfig.LIVE_ENPK_MY_TOP, "", ShareDataManager.SHAREDATA_USER);
-        if (liveId.equals(string)) {
+        if (("" + string).contains((liveId + ","))) {
             hasAddTop = true;
         }
     }
@@ -190,7 +190,12 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
         if (hasAddTop) {
             return;
         }
-        mShareDataManager.put(ShareDataConfig.LIVE_ENPK_MY_TOP, getInfo.getId(), ShareDataManager.SHAREDATA_USER);
+        String string = mShareDataManager.getString(ShareDataConfig.LIVE_ENPK_MY_TOP, "", ShareDataManager.SHAREDATA_USER);
+        String[] liveIds = string.split(",");
+        if (liveIds.length > 6) {
+            string = "";
+        }
+        mShareDataManager.put(ShareDataConfig.LIVE_ENPK_MY_TOP, string + "" + getInfo.getId() + ",", ShareDataManager.SHAREDATA_USER);
         hasAddTop = true;
         final View view = LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_en_team_join, rootView, false);
         TextView tv_livevideo_en_teampk_top_name = view.findViewById(R.id.tv_livevideo_en_teampk_top_name);
