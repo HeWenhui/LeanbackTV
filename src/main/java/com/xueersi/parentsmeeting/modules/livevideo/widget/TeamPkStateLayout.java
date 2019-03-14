@@ -134,29 +134,7 @@ public class TeamPkStateLayout extends FrameLayout {
         });
     }
 
-    /**
-     * 理科pk二期新状态栏
-     */
-    private void addNewPkStatBar() {
-        tvState = findViewById(R.id.tv_answer_question_state);
-        tvState.setVisibility(GONE);
-        statBarRootView = View.inflate(getContext(), R.layout.team_pk_newstate_bar_layout, null);
-        ViewGroup viewGroup = (ViewGroup) ((Activity) getContext()).getWindow().getDecorView();
-        ViewGroup rootView = viewGroup.findViewById(R.id.rl_livevideo_message_root);
-        if (rootView != null) {
-            int stateBarHeight = SizeUtils.Dp2Px(getContext(), 19);
-            int gapAbovePkStateLayout = SizeUtils.Dp2Px(getContext(), 5);
-            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(this.getMeasuredWidth(), stateBarHeight);
-            int[] location = new int[2];
-            this.getLocationInWindow(location);
-            lp.topMargin = location[1] - (gapAbovePkStateLayout + stateBarHeight);
-            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            rootView.addView(statBarRootView, lp);
-            tvEnergyMyContribution = statBarRootView.findViewById(R.id.tv_teampk_pkstate_energy_mycontribution);
-            tvEnergyMyContribution.setVisibility(GONE);
-        }
 
-    }
 
 
     /**
@@ -197,6 +175,50 @@ public class TeamPkStateLayout extends FrameLayout {
             });
         }
     }
+
+
+    /**
+     * 理科pk二期新状态栏
+     */
+    private void addNewPkStatBar() {
+        tvState = findViewById(R.id.tv_answer_question_state);
+        tvState.setVisibility(GONE);
+        statBarRootView = View.inflate(getContext(), R.layout.team_pk_newstate_bar_layout, null);
+        ViewGroup viewGroup = (ViewGroup) ((Activity) getContext()).getWindow().getDecorView();
+        ViewGroup rootView = viewGroup.findViewById(R.id.rl_livevideo_message_root);
+        if (rootView != null) {
+            int stateBarHeight = SizeUtils.Dp2Px(getContext(), 19);
+            int gapAbovePkStateLayout = SizeUtils.Dp2Px(getContext(), 5);
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(this.getMeasuredWidth(), stateBarHeight);
+            int[] location = new int[2];
+            this.getLocationInWindow(location);
+            lp.topMargin = location[1] - (gapAbovePkStateLayout + stateBarHeight);
+            int rightMargin = (LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x4);
+            lp.rightMargin = rightMargin > 0 ? rightMargin : 0;
+            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            rootView.addView(statBarRootView, lp);
+            tvEnergyMyContribution = statBarRootView.findViewById(R.id.tv_teampk_pkstate_energy_mycontribution);
+            tvEnergyMyContribution.setVisibility(GONE);
+
+            //监听布局变化设置边距
+            statBarRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
+                    .OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    int rightMargin = (LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x4);
+                    RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) statBarRootView.getLayoutParams();
+                    if (lp.rightMargin != rightMargin) {
+                        lp.rightMargin = rightMargin;
+                        LayoutParamsUtil.setViewLayoutParams(statBarRootView, lp);
+                    }
+                }
+            });
+        }
+
+    }
+
+
+
 
 
     @Override
