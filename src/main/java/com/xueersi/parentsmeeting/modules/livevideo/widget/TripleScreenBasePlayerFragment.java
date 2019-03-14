@@ -147,7 +147,6 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                                     initCallBack();
                                 }
                             } else {
-
                                 mOpened.set(true);
                                 vPlayer.setVPlayerListener(vPlayerServiceListener);
                                 if (videoView != null) {
@@ -155,8 +154,12 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                                 }
                                 vPlayer.psInit(MediaPlayer.VIDEO_PLAYER_NAME, getStartPosition(), vPlayerServiceListener, mIsHWCodec);
                                 if (isChangeLine) {
-                                    vPlayer.changeLine(changeLinePos, protocol);
-                                    isChangeLine = false;
+                                    try {
+                                        vPlayer.changeLine(changeLinePos, protocol);
+                                        isChangeLine = false;
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                 } else {
                                     try {
                                         if (vPlayer.getPlayer() instanceof PSIJK) {

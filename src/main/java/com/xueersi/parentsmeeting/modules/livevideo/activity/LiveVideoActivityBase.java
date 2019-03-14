@@ -332,7 +332,11 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
                                 }
                                 vPlayer.psInit(MediaPlayer.VIDEO_PLAYER_NAME, 0, vPlayerServiceListener, mIsHWCodec);
                                 if (isChangeLine) {
-                                    vPlayer.changeLine(changeLinePos, protocol);
+                                    try {
+                                        vPlayer.changeLine(changeLinePos, protocol);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                     isChangeLine = false;
                                 } else {
                                     try {
