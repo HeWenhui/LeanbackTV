@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.http;
 
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.GroupGameTestInfosEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
 
@@ -98,6 +99,51 @@ public class CourseWareParse {
                 tests.add(test);
             }
             return newCourseSec;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+
+    /**
+     * 解析小组互动题
+     *
+     * @param responseEntity
+     * @return
+     */
+    public GroupGameTestInfosEntity parseGroupGameTestInfo(ResponseEntity responseEntity) {
+        try {
+            GroupGameTestInfosEntity groupGameTestInfos = new GroupGameTestInfosEntity();
+            JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+            groupGameTestInfos.setReleaseTime(jsonObject.optLong("releaseTime", System.currentTimeMillis()));
+            groupGameTestInfos.setTimeStamp(jsonObject.optLong("timeStamp", System.currentTimeMillis()));
+            List<GroupGameTestInfosEntity.TestInfoEntity> testInfolist = new ArrayList<>();
+            JSONArray array = jsonObject.getJSONArray("list");
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject testObj = array.getJSONObject(i);
+                GroupGameTestInfosEntity.TestInfoEntity testinfo = new GroupGameTestInfosEntity.TestInfoEntity();
+                testinfo.setTestId(testObj.getString("testId"));
+                testinfo.setTestType(testObj.getInt("testType"));
+                testinfo.setPreviewPath(testObj.getString("previewPath"));
+                testinfo.setSingleCount(testObj.getInt("singleCount"));
+                testinfo.setTotalTime(testObj.getInt("totalTime"));
+                testinfo.setStemLength(testObj.getInt("stemLength"));
+                List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = new ArrayList<>();
+                JSONArray answers = jsonObject.getJSONArray("answers");
+                for (int j = 0; j < array.length(); j++) {
+                    JSONObject answerObj = answers.getJSONObject(j);
+                    GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = new GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity();
+                    answer.setId(answerObj.getInt("id"));
+                    answer.setText(answerObj.getString("test"));
+                    answer.setSingleTime(answerObj.getInt("singleTime"));
+                    answerList.add(answer);
+                }
+                testinfo.setAnswerList(answerList);
+                testInfolist.add(testinfo);
+            }
+            groupGameTestInfos.setTestInfoList(testInfolist);
+            return groupGameTestInfos;
         } catch (JSONException e) {
             e.printStackTrace();
         }

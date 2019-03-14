@@ -127,7 +127,7 @@ public class CourseWareHttpManager {
 
     /**
      * Created by ZhangYuansun on 2019/3/7
-     * <p>
+     *
      * 请求学生作答情况列表
      */
     public void getStuTestResult(String liveId, String stuId, String srcTypes, String testIds, String classTestId, String packageId, String packageAttr, int isPlayBack,
@@ -260,6 +260,82 @@ public class CourseWareHttpManager {
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 logger.d("getTestInfos:onPmFailure:responseEntity=" + msg, error);
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
+            }
+        });
+    }
+
+    /**
+     * 小组互动 - 拉题
+     *
+     * @param testIds
+     * @param callBack
+     */
+    public void getGroupGameTestInfos(String testIds, final AbstractBusinessDataCallBack callBack) {
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+        liveHttpManager.setDefaultParameter(httpRequestParams);
+        httpRequestParams.addBodyParam("testIds", testIds);
+        String url = LiveQueHttpConfig.LIVE_GET_COURSEWARE_TESTS_EN;
+        liveHttpManager.sendPost(url, httpRequestParams, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                logger.d("getGroupGameTestInfos:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
+                NewCourseSec newCourseSec = courseWareParse.parseEn(responseEntity);
+                if (newCourseSec != null) {
+                    callBack.onDataSucess(newCourseSec);
+                } else {
+                    callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_NULL, "null");
+                }
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                logger.d("getGroupGameTestInfos:onPmError:responseEntity=" + responseEntity.getErrorMsg());
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR, responseEntity.getErrorMsg());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                logger.d("getGroupGameTestInfos:onPmFailure:responseEntity=" + msg, error);
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
+            }
+        });
+    }
+
+    /**
+     * 小组互动 - 答题
+     *
+     * @param planId
+     * @param classId
+     * @param pkTeamId
+     * @param gg_id
+     * @param answerData
+     * @param callBack
+     */
+    public void submitGroupGame(int planId, int classId, int pkTeamId, int gg_id, String answerData, final AbstractBusinessDataCallBack callBack) {
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+        liveHttpManager.setDefaultParameter(httpRequestParams);
+        httpRequestParams.addBodyParam("planId", "" + planId);
+        httpRequestParams.addBodyParam("classID", "" + classId);
+        httpRequestParams.addBodyParam("pkTeamId", "" + pkTeamId);
+        httpRequestParams.addBodyParam("gg_id", "" + "" + gg_id);
+        httpRequestParams.addBodyParam("answerData", answerData);
+        liveHttpManager.sendPost(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_EN, httpRequestParams, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                logger.d("submitGroupGame:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
+                callBack.onDataSucess(responseEntity.getJsonObject());
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                logger.d("submitGroupGame:onPmError:responseEntity=" + responseEntity.getErrorMsg());
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR, responseEntity.getErrorMsg());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                logger.d("submitGroupGame:onPmFailure:responseEntity=" + msg, error);
                 callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
             }
         });
