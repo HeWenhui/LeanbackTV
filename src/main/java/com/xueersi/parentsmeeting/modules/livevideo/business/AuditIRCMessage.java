@@ -659,7 +659,10 @@ public class AuditIRCMessage {
      * @param notice
      */
     public void sendNotice(String target, String notice) {
-        mChatClient.getRoomManager().sendRoomMessage(roomid, notice, 1);
+        List<PMDefs.PsIdEntity> entityList = new ArrayList<>();
+        PMDefs.PsIdEntity psIdEntity = new PMDefs.PsIdEntity(target, "");
+        entityList.add(psIdEntity);
+        mChatClient.getPeerManager().sendPeerMessage(entityList, notice, 1);
     }
 
     /**
@@ -672,13 +675,13 @@ public class AuditIRCMessage {
         List<PMDefs.PsIdEntity> entityList = new ArrayList<>();
         PMDefs.PsIdEntity psIdEntity = new PMDefs.PsIdEntity(target, "");
         entityList.add(psIdEntity);
-        mChatClient.getPeerManager().sendPeerMessage(entityList, message, 1);
+        mChatClient.getPeerManager().sendPeerMessage(entityList, message, 99);
     }
     public void sendMessage(String target,String psid, String message) {
         List<PMDefs.PsIdEntity> entityList = new ArrayList<>();
         PMDefs.PsIdEntity psIdEntity = new PMDefs.PsIdEntity(target, psid);
         entityList.add(psIdEntity);
-        mChatClient.getPeerManager().sendPeerMessage(entityList, message, 1);
+        mChatClient.getPeerManager().sendPeerMessage(entityList, message, 99);
     }
 
     /**
