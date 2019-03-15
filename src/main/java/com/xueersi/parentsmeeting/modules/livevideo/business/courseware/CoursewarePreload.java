@@ -751,6 +751,7 @@ public class CoursewarePreload {
                     PreLoadDownLoaderManager.addUrgentInfo(preLoadDownLoaderManager);
                 }
             } else {
+                decrementDocument();
                 StableLogHashMap hashMap = new StableLogHashMap();
                 hashMap.put("logtype", "endPreload");
                 hashMap.put("preloadid", md5);
@@ -894,6 +895,7 @@ public class CoursewarePreload {
 //                DownLoader downLoader = new DownLoader(mContext, downLoadInfo);
 //                downLoader.start(new NoZipDownloadListener(mMorecachein, mMorecacheout, mFileName, ips, cdns, url, md5, downTryCount));
             } else {
+                decrementDocument();
                 StableLogHashMap hashMap = new StableLogHashMap();
                 hashMap.put("logtype", "endPreload");
                 hashMap.put("preloadid", md5);
