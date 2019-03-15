@@ -933,10 +933,10 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
             mData.put("gradejudgment", "middle");
         }
         String[] subjectIds = mGetInfo.getSubjectIds();
-        if (studentLiveInfo != null && subjectIds.length > 0) {
+        if (subjectIds != null && subjectIds.length > 0) {
             String subject = "";
             for (int i = 0; i < subjectIds.length; i++) {
-                subject += subjectIds[0] + ",";
+                subject += subjectIds[i] + ",";
             }
             mData.put("subject", subject);
         }
