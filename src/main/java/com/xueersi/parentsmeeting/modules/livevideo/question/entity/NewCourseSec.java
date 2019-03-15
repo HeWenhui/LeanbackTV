@@ -8,7 +8,8 @@ import java.util.ArrayList;
 public class NewCourseSec {
     private int isAnswer;
     private int isGame;
-    private long releaseTime;
+    private long releaseTime;//1552621945
+    private long endTime;//1552622125
     private ArrayList<Test> tests = new ArrayList<>();
 
     public ArrayList<Test> getTests() {
@@ -37,6 +38,14 @@ public class NewCourseSec {
 
     public void setReleaseTime(long releaseTime) {
         this.releaseTime = releaseTime;
+    }
+
+    public long getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(long endTime) {
+        this.endTime = endTime;
     }
 
     public static class Test {
