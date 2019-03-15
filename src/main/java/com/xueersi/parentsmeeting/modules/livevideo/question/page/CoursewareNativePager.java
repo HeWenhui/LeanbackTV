@@ -786,14 +786,32 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     userAnswer.put("rightnum", "" + answer.optString("rightnum"));
                     userAnswer.put("wrongnum", "" + answer.optString("wrongnum"));
                     userAnswer.put("answernums", "" + rightAnswerContent2.length());
-                    String isRight = "0";
+                    int isRight = -1;
+                    JSONArray rightArray = null;
                     if (answer.opt("isRight") instanceof JSONArray) {
-                        isRight = answer.getJSONArray("isRight").optString(0);
+                        rightArray = answer.getJSONArray("isRight");
                     } else if (answer.opt("isright") instanceof JSONArray) {
-                        isRight = answer.getJSONArray("isright").optString(0);
+                        rightArray = answer.getJSONArray("isright");
                     }
-                    if ("1".equals(isRight)) {
-                        isRight = "2";
+                    if (rightArray != null) {
+                        for (int i = 0; i < rightArray.length(); i++) {
+                            int isRightInt = rightArray.optInt(i, 0);
+                            if (isRightInt == 0) {
+                                if (-1 == isRight) {
+                                    isRight = 0;
+                                } else if (2 == isRight) {
+                                    isRight = 1;
+                                }
+                            } else if (isRightInt == 1) {
+                                if (-1 == isRight) {
+                                    isRight = 2;
+                                } else if (0 == isRight) {
+                                    isRight = 1;
+                                }
+                            }
+                        }
+                    } else {
+                        isRight = 0;
                     }
                     userAnswer.put("isright", isRight);
                     userAnswer.put("times", "" + answer.optInt("times", -1));
