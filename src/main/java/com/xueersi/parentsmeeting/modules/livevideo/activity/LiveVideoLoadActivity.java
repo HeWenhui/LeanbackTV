@@ -234,27 +234,26 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
     //新课件灰测
     public boolean isNewCourse(String liveId) {
-        if (PreloadStaticStorage.preloadLiveId.size() != 0) {
-            for (String itemLiveId : PreloadStaticStorage.preloadLiveId) {
-                if (itemLiveId.equals(liveId)) {
-                    return true;
-                }
+        for (String itemLiveId : PreloadStaticStorage.preloadLiveId) {
+            if (itemLiveId.equals(liveId)) {
+                return true;
             }
-        } else {
-            String liveIds = ShareDataManager.getInstance().getString(ShareDataConfig.SP_PRELOAD_COURSEWARE, "", ShareDataManager.SHAREDATA_USER);
-            if (liveIds.contains(",")) {
-                String[] preLoadLiveId = liveIds.split(",");
-                for (String tempPreLoadLiveId : preLoadLiveId) {
-                    if (tempPreLoadLiveId.equals(liveId)) {
-                        return true;
-                    }
-                }
-            } else if (!TextUtils.isEmpty(liveIds)) {
-                if (liveIds.equals(liveId)) {
+        }
+        String liveIds = ShareDataManager.getInstance().getString(ShareDataConfig.SP_PRELOAD_COURSEWARE, "", ShareDataManager.SHAREDATA_USER);
+        if (liveIds.contains(",")) {
+            String[] preLoadLiveId = liveIds.split(",");
+            for (String tempPreLoadLiveId : preLoadLiveId) {
+                if (tempPreLoadLiveId.equals(liveId)) {
                     return true;
                 }
             }
         }
+        if (!TextUtils.isEmpty(liveIds)) {
+            if (liveIds.equals(liveId)) {
+                return true;
+            }
+        }
+
         return false;
     }
 

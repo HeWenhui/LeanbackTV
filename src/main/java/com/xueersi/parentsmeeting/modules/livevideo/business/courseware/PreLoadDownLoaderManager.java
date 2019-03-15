@@ -84,8 +84,6 @@ public class PreLoadDownLoaderManager {
             return;
         }
         synchronized (sLockObject) {
-
-
             // 如果有已经在下载的任务则不下载
             if (!TextUtils.isEmpty(sDownUrl)) {
 //                logger.i("如果有已经在下载的任务则不下载");
@@ -100,7 +98,7 @@ public class PreLoadDownLoaderManager {
             } else {
                 Iterator<Map.Entry<String, DownLoadInfoListener>> iterator = sAutoDownloaderPool.entrySet().iterator();
                 if (!iterator.hasNext()) {
-                    logger.i("no next iterator");
+                    logger.i("no next iterator Thread:" + Thread.currentThread().getName());
                     return;
                 }
                 Map.Entry<String, DownLoadInfoListener> entry = iterator.next();
@@ -208,34 +206,6 @@ public class PreLoadDownLoaderManager {
         startAutoDownload();
     }
 
-//    private static DownloadListener listener;
-
-//    public static void setDownLoadListener(DownloadListener listener) {
-//        PreLoadDownLoaderManager.listener = listener;
-//    }
-
-//    /**
-//     * 添加到自动下载池，并启动下载
-//     */
-//    public static void addToAutoDownloadPool(final DownLoadInfoListener info) {
-//        if (info == null || TextUtils.isEmpty(info.getDownLoadInfo().getUrl())) {
-//            return;
-//        }
-//        // 下载的是文件
-//        if (DownLoadInfo.DownloadType.FILE.equals(info.getDownLoadInfo().getDownloadType())) {
-//            // 文件名或文件夹为空，返回
-//            if (TextUtils.isEmpty(info.getDownLoadInfo().getFolder())
-//                    || TextUtils.isEmpty(info.getDownLoadInfo().getFileName())) {
-//                return;
-//            }
-//            // 将下载器添加到下载池
-//            DownloadPool.addDownloader(info.getDownLoadInfo().getUrl(), new DownLoader(info.getDownLoadInfo()));
-//        }
-//        addDownloaderToPool(info.getDownLoadInfo().getUrl(), info);
-//        startAutoDownload();
-//    }
-
-
     /**
      * 从自动下载池中删除任务
      */
@@ -251,7 +221,7 @@ public class PreLoadDownLoaderManager {
      * 添加任务到自动下载池
      */
     private static void addDownloaderToPool(String key,
-                                           DownLoadInfoListener downLoadInfo) {
+                                            DownLoadInfoListener downLoadInfo) {
         synchronized (sLockObject) {
             if (!sAutoDownloaderPool.containsKey(key)) {
                 sAutoDownloaderPool.put(key, downLoadInfo);
@@ -259,14 +229,4 @@ public class PreLoadDownLoaderManager {
         }
     }
 
-    public interface SuccessCallBack {
-        void onSuccess();
-
-    }
-
-    private SuccessCallBack callBack;
-
-    public void setCallBack(SuccessCallBack callBack) {
-        this.callBack = callBack;
-    }
 }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 
 import com.xueersi.common.business.AppBll;
+import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.network.download.DownLoadInfo;
@@ -12,6 +13,7 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
@@ -25,6 +27,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ZipExtractorTask;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ZipProg;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.xutils.xutils.common.util.MD5;
 
 import java.io.File;
@@ -62,8 +66,11 @@ public class CoursewarePreload {
     private File todayCacheDir;
     public static String mPublicCacheoutName = "publicRes";
     public static String FZY3JW_TTF = "FZY3JW.ttf";
-    public static int mDownloadThreadCount = 1;
+//    public static int mDownloadThreadCount = 1;
 
+    /** 所有需要下载文件的总量 */
+    private AtomicInteger documentNum = new AtomicInteger(0);
+    /** 下载的科目总数 */
     private AtomicInteger subjectNum = new AtomicInteger(0);
 
     public CoursewarePreload(Context context, int subject) {
@@ -187,8 +194,6 @@ public class CoursewarePreload {
         }
     }
 
-    /** 所有需要下载文件的总量 */
-    private AtomicInteger documentNum = new AtomicInteger(0);
 
     public class CoursewareHttpCallBack extends HttpCallBack {
 
@@ -307,17 +312,12 @@ public class CoursewarePreload {
             return;
         }
         List<String> newIPs = new LinkedList<>();
-//        if (BuildConfig.DEBUG) {
-//            newIPs.add("https://icourse.xesimg.com");
-//        }
         newIPs.addAll(cdns);
         newIPs.addAll(ips);
 
         logger.i("" + cdns.size() + " " + newIPs.size());
         cdnLength.set(cdns.size());
         ipLength.set(newIPs.size());
-
-//        resources.add("/courseware_pages/74989b568bfceaab053a8b6b297ac007/katex@0.10.1.zip");
 
         downloadResources(resources, cdns, newIPs);
         exeDownLoadCourseware(liveCoursewares, cdns, newIPs);
@@ -499,12 +499,7 @@ public class CoursewarePreload {
         int cdnIndex = 0;
         int subIndex = cdns.get(cdnIndex).indexOf("/") + 2;
         String cdn = cdns.get(cdnIndex).substring(subIndex);
-//        if (resourseInfos.size() > 0) {
-//            for (int i = 0; i < resourseInfos.size(); i++) {
         for (String url : resourseInfos) {
-//                String url = resourseInfos.get(i);
-//            final AtomicInteger downTryCount = new AtomicInteger();
-
             if (url.endsWith(".zip")) {
                 final String fileName;
                 int index = url.lastIndexOf("/");
@@ -554,17 +549,8 @@ public class CoursewarePreload {
                 }
                 final File save = new File(mPublicCacheout, fileName);
                 if (!fileIsExists(save.getPath())) {
-//                    save.mkdirs();
-//                    try {
-//                        save.createNewFile();
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                        downLoader.start(new NoZipDownloadListener(mPublicCacheout, mPublicCacheout, fileName, ips, cdns, url, "", downTryCount));
-//                }
                     logger.d("resource ttf url path:  " + ip + url + "   file name:" + fileName + ".nozip");
                     DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(ip + url, mPublicCacheout.getAbsolutePath(), fileName + ".temp", "");
-//                        final DownLoader downLoader = new DownLoader(mContext, downLoadInfo);
                     PreLoadDownLoaderManager.DownLoadInfoListener infoListener = new PreLoadDownLoaderManager.DownLoadInfoListener(
                             downLoadInfo,
                             new NoZipDownloadListener(
@@ -685,11 +671,7 @@ public class CoursewarePreload {
             hashMap.put("resourcetype", resourcetype);
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
 
-            documentNum.getAndDecrement();
-
-            if (documentNum.get() == 0) {
-                AppBll.getInstance().unRegisterAppEvent(CoursewarePreload.this);
-            }
+            decrementDocument();
 
             File tempFile = new File(folderPath, fileName);
             File file = new File(folderPath, mFileName);
@@ -868,11 +850,7 @@ public class CoursewarePreload {
             hashMap.put("resourcetype", resourcetype);
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
 
-            documentNum.getAndDecrement();
-
-            if (documentNum.get() == 0) {
-                AppBll.getInstance().unRegisterAppEvent(CoursewarePreload.this);
-            }
+            decrementDocument();
 
             File file = new File(folderPath, fileName);
             file.renameTo(new File(folderPath, mFileName));
@@ -933,7 +911,6 @@ public class CoursewarePreload {
                 hashMap.put("resourcetype", resourcetype);
                 UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
             }
-
         }
 
         @Override
@@ -951,7 +928,6 @@ public class CoursewarePreload {
             if (!f.exists()) {
                 return false;
             }
-
         } catch (Exception e) {
             return false;
         }
@@ -959,5 +935,26 @@ public class CoursewarePreload {
         return true;
     }
 
+    /**
+     * 统计所有文件是否下载完
+     */
+    private void decrementDocument() {
+        documentNum.getAndDecrement();
+//        logger.i("remaining " + documentNum.get());
+        //下载完成，则注销
+        if (documentNum.get() == 0) {
+            AppBll.getInstance().unRegisterAppEvent(this);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void onEvent(AppEvent event) {
+        if (event.getClass() == AppEvent.class) {
+            //只有处于wifi情况下才会开启自动下载
+            if (event.netWorkType == NetWorkHelper.WIFI_STATE) {
+                PreLoadDownLoaderManager.startAutoDownload();
+            }
+        }
+    }
 
 }
