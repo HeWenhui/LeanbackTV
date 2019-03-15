@@ -729,6 +729,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 int isForce = isforce == 0 ? 1 : 2;
                 submitEn(isForce, nonce);
             } else {
+                if (LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage)) {
+                    XESToastUtils.showToast(mContext, "时间到,停止作答!");
+                }
                 submitSec(isforce, nonce);
             }
             NewCourseLog.sno5(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), isforce == 1, wvSubjectWeb.getUrl(), ispreload);

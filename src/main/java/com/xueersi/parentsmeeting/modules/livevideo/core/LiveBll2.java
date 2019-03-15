@@ -926,6 +926,20 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         mData.put("courseid", mCourseId);
         mData.put("teacherid", mGetInfo.getMainTeacherId());
         mData.put("coachid", mGetInfo.getTeacherId());
+        String educationstage = mGetInfo.getEducationStage();
+        if (LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage)) {
+            mData.put("gradejudgment", "primary");
+        } else if (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage)) {
+            mData.put("gradejudgment", "middle");
+        }
+        String[] subjectIds = mGetInfo.getSubjectIds();
+        if (studentLiveInfo != null && subjectIds.length > 0) {
+            String subject = "";
+            for (int i = 0; i < subjectIds.length; i++) {
+                subject += subjectIds[0] + ",";
+            }
+            mData.put("subject", subject);
+        }
         mData.put("liveid", mLiveId);
         mData.put("livetype", "" + mLiveType);
         mData.put("eventid", "" + eventId);
