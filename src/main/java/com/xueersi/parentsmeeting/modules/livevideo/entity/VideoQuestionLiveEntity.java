@@ -21,6 +21,8 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     private static String TAG = "VideoQuestionLiveEntity";
     public double time;
     public String id;
+    /** 聊天消息notice类型 */
+    public int noticeType;
     public double gold;
     public int num;
     /** 互动题类型 */

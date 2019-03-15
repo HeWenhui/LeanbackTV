@@ -202,6 +202,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 String status = coursewareH5.optString("status", "off");
                 if ("on".equals(status)) {
                     LiveVideoConfig.isNewArts = true;
+                    videoQuestionLiveEntity.noticeType=XESCODE.ARTS_SEND_QUESTION;
                     videoQuestionLiveEntity.setNewArtsCourseware(true);
                     JSONArray idObject = coursewareH5.optJSONArray("id");
                     String idStr = getIdStr(idObject);
@@ -503,6 +504,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             case XESCODE.ARTS_H5_COURSEWARE: {
                 Loger.e(Tag, "===========>ARTS_H5_COURSEWARE");
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+                videoQuestionLiveEntity.noticeType=XESCODE.ARTS_H5_COURSEWARE;
                 videoQuestionLiveEntity.setNewArtsCourseware(true);
                 String status = object.optString("status", "off");
                 if ("on".equals(status)) {

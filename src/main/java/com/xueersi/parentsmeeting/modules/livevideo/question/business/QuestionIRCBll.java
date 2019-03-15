@@ -279,6 +279,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     if (!"{}".equals(onlineTechObj.toString())) {
                         VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                         LiveVideoConfig.isNewArts = true;
+                        videoQuestionLiveEntity.noticeType=XESCODE.ARTS_SEND_QUESTION;
                         videoQuestionLiveEntity.setNewArtsCourseware(true);
                         String status = onlineTechObj.optString("status");
                         if ("on".equals(status)) {
@@ -577,6 +578,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 videoQuestionLiveEntity.multiRolePlay = object.optString("multiRolePlay");
                 videoQuestionLiveEntity.speechContent = object.optString("answer");
                 videoQuestionLiveEntity.num = 1;
+                videoQuestionLiveEntity.noticeType=XESCODE.ARTS_SEND_QUESTION;
                 videoQuestionLiveEntity.setNewArtsCourseware(true);
                 String isVoice = object.optString("isVoice");
                 videoQuestionLiveEntity.setIsVoice(isVoice);

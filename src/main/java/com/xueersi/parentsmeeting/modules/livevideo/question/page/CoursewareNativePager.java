@@ -35,6 +35,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -1537,7 +1538,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             logHashMap.put("testsource", "" + ispreload);
             logHashMap.put("errtype", "webView");
             logHashMap.put("subtestid", "" + currentIndex);
-            logHashMap.put("testsource", "" + currentIndex);
+            if(XESCODE.ARTS_SEND_QUESTION==detailInfo.noticeType){
+                logHashMap.put("testsource", "PlatformTest");
+            }else  if(XESCODE.ARTS_H5_COURSEWARE==detailInfo.noticeType){
+                logHashMap.put("testsource", "PlatformCourseware");
+            }
             logHashMap.put("eventid", "" + LogConfig.LIVE_H5PLAT);
         }
     }
