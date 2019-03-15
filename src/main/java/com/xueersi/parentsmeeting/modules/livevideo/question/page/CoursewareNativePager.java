@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.Spannable;
@@ -62,6 +63,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import pl.droidsonroids.gif.GifDrawable;
 
@@ -146,6 +148,8 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private String today;
     /** 保存互动题 */
     private JSONObject quesJson;
+    /** 保存互动题开始时间 */
+    private long startQueTime;
     /** 课件加载 */
     private PreLoad preLoad;
 
@@ -391,6 +395,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     JSONObject todayLiveObj = todayObj.getJSONObject(liveId);
                     String queskey = getQuesKey();
                     quesJson = todayLiveObj.optJSONObject("ques-" + queskey);
+                    startQueTime = todayLiveObj.optLong("start-" + queskey);
                 }
             } catch (JSONException e) {
                 CrashReport.postCatchedException(e);
@@ -451,6 +456,27 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 ques.put("" + index, userAnswerContent);
                 todayLiveObj.put("ques-" + queskey, ques);
                 quesJson = ques;
+                mShareDataManager.put(LiveQueConfig.LIVE_STUDY_REPORT_IMG, "" + jsonObject, ShareDataManager.SHAREDATA_USER);
+            }
+        } catch (Exception e) {
+            CrashReport.postCatchedException(e);
+            mLogtf.e("saveThisQues", e);
+        }
+    }
+
+    /**
+     * 保存互动题开始时间
+     *
+     * @param startQueTime
+     */
+    private void saveThisQuesStart(long startQueTime) {
+        try {
+            String string = mShareDataManager.getString(LiveQueConfig.LIVE_STUDY_REPORT_IMG, "{}", ShareDataManager.SHAREDATA_USER);
+            JSONObject jsonObject = getTodayLive(string);
+            if (jsonObject != null) {
+                JSONObject todayLiveObj = jsonObject.getJSONObject("todaylive").getJSONObject(liveId);
+                String queskey = getQuesKey();
+                todayLiveObj.put("start-" + queskey, startQueTime);
                 mShareDataManager.put(LiveQueConfig.LIVE_STUDY_REPORT_IMG, "" + jsonObject, ShareDataManager.SHAREDATA_USER);
             }
         } catch (Exception e) {
@@ -703,6 +729,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 int isForce = isforce == 0 ? 1 : 2;
                 submitEn(isForce, nonce);
             } else {
+                if (LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage)) {
+                    XESToastUtils.showToast(mContext, "时间到,停止作答!");
+                }
                 submitSec(isforce, nonce);
             }
             NewCourseLog.sno5(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), isforce == 1, wvSubjectWeb.getUrl(), ispreload);
@@ -1049,7 +1078,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             @Override
             public void onDataSucess(Object... objData) {
                 newCourseSec = (NewCourseSec) objData[0];
-                logger.d("onDataSucess:newCourseSec=" + newCourseSec);
+                logger.d("onDataSucess:time=" + (newCourseSec.getEndTime() - newCourseSec.getReleaseTime()));
                 if (newCourseSec.getIsAnswer() == 1 && !isPlayBack) {
                     rlSubjectLoading.setVisibility(View.GONE);
                     preLoad.onStop();
@@ -1086,7 +1115,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     } else {
                         ispreload = true;
                     }
-                    //文理科正计时,英语倒计时
+                    //设置作答时间
                     if (isArts == LiveVideoSAConfig.ART_EN) {
                         setTimeEn(newCourseSec);
                     } else {
@@ -1100,6 +1129,56 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
              * @param newCourseSec
              */
             private void setTimeSec(NewCourseSec newCourseSec) {
+                if ((LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage))) {
+                    setTimeSecPrimary(newCourseSec);
+                } else {
+                    setTimeSecMiddle(newCourseSec);
+                }
+            }
+
+            /**
+             * 设置文理时间,小学倒计时
+             * @param newCourseSec
+             */
+            private void setTimeSecPrimary(NewCourseSec newCourseSec) {
+                //小学倒计时
+                final long releaseTime;
+                if (startQueTime != 0) {
+                    releaseTime = newCourseSec.getEndTime() - newCourseSec.getReleaseTime() - (System.currentTimeMillis() - startQueTime) / 1000;
+                    mLogtf.d("setTimeSecPrimary:time1=" + (newCourseSec.getEndTime() - newCourseSec.getReleaseTime()) + ",time2=" + ((System.currentTimeMillis() - startQueTime) / 1000));
+                } else {
+                    releaseTime = newCourseSec.getEndTime() - newCourseSec.getReleaseTime();
+                    saveThisQuesStart(System.currentTimeMillis());
+                }
+                final long startTime = System.currentTimeMillis() / 1000;
+                final AtomicInteger negative = new AtomicInteger(0);
+                tvCourseTimeText.setText(getTimeNegativePrimary(releaseTime, startTime, negative));
+                if (negative.get() == 1) {
+                    negative.getAndIncrement();
+                    tvCourseTimeText.setTextColor(Color.RED);
+                }
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        String timeStr = getTimeNegativePrimary(releaseTime, startTime, negative);
+                        if (loadResult || mView.getParent() == null) {
+                            return;
+                        }
+                        if (negative.get() == 1) {
+                            negative.getAndIncrement();
+                            tvCourseTimeText.setTextColor(Color.RED);
+                        }
+                        tvCourseTimeText.setText(timeStr);
+                        handler.postDelayed(this, 1000);
+                    }
+                }, 1000);
+            }
+
+            /**
+             * 设置文理时间,初中正计时
+             * @param newCourseSec
+             */
+            private void setTimeSecMiddle(NewCourseSec newCourseSec) {
                 final long startTime;
                 if (isPlayBack) {
                     startTime = System.currentTimeMillis() / 1000;
@@ -1128,11 +1207,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 //英语倒计时
                 final long releaseTime = newCourseSec.getReleaseTime() * 60;
                 final long startTime = System.currentTimeMillis() / 1000;
-                tvCourseTimeText.setText(getTimeNegative(releaseTime, startTime));
+                tvCourseTimeText.setText(getTimeNegativeEn(releaseTime, startTime));
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        String timeStr = getTimeNegative(releaseTime, startTime);
+                        String timeStr = getTimeNegativeEn(releaseTime, startTime);
                         if (loadResult || mView.getParent() == null || timeStr == null) {
                             return;
                         }
@@ -1159,7 +1238,27 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
              * @param startTime
              * @return
              */
-            private String getTimeNegative(long releaseTime, long startTime) {
+            private String getTimeNegativePrimary(long releaseTime, long startTime, AtomicInteger negative) {
+                long time = System.currentTimeMillis() / 1000 - startTime;
+                long second = (releaseTime - time) % 60;
+                long minute = (releaseTime - time) / 60;
+                if (releaseTime - time < 0) {
+                    second = (time - releaseTime) % 60;
+                    minute = (time - releaseTime) / 60;
+                    if (negative.get() == 0) {
+                        negative.getAndIncrement();
+                    }
+                    return minute + "分" + second + "秒";
+                }
+                return minute + "分" + second + "秒";
+            }
+
+            /**
+             * 倒计时
+             * @param startTime
+             * @return
+             */
+            private String getTimeNegativeEn(long releaseTime, long startTime) {
                 long time = System.currentTimeMillis() / 1000 - startTime;
                 long second = (releaseTime - time) % 60;
                 long minute = (releaseTime - time) / 60;
