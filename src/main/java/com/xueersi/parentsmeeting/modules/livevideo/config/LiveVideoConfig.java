@@ -354,6 +354,8 @@ public class LiveVideoConfig {
     public static String LIVEMULH5URLCHS;
     /** AI体验课互动题答题结果*/
     public static Boolean isAITrue = false;
+    /** AI体验课已答互动题序号*/
+    public static int aiQuestionIndex = -1;
     /** AI体验课退出时，记录当前的进度*/
     public static HashMap<String, Long> liveKey = new HashMap<>();
     public static HashMap<String, Long> curentTime = new HashMap<>();

@@ -121,7 +121,6 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
     LiveBackBll liveBackBll;
     private RelativeLayout rlLiveMessageContent;
     LiveMessageBll liveMessageBll;
-
     /**
      * 横屏聊天信息
      */
@@ -240,7 +239,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                     .getVisitTimeKey()));
 //            initOldMessage(mVideoEntity.getLiveId(),mVideoEntity.getCourseId(),timer + 2970L);
             timer = timer + 10;
-            logger.e("timer:" + timer);
+            logger.i("timer:" + timer);
             scanHandler.postDelayed(this, 10000);
 
 
@@ -465,7 +464,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
 //        }
         loadData();
 //        Toast.makeText(this,"AIAI",Toast.LENGTH_SHORT).show();
-        logger.e("=====>" + mVideoEntity.getSciAiEvent().getExercises().get(2).getExample().get(0).getExampleId());
+        logger.i("=====>" + mVideoEntity.getSciAiEvent().getExercises().get(2).getExample().get(0).getExampleId());
         return true;
     }
 
@@ -504,7 +503,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         getInfo.setStuName(stuName);
         getInfo.setNickname(UserBll.getInstance().getMyUserInfoEntity().getNickName());
         getInfo.setHeadImgPath(UserBll.getInstance().getMyUserInfoEntity().getHeadImg());
-        logger.e("====>getRoomInitData:"
+        logger.i("====>getRoomInitData:"
                 + UserBll.getInstance().getMyUserInfoEntity().getRealName() + ":"
                 + UserBll.getInstance().getMyUserInfoEntity().getNickName() + ":" +
                 UserBll.getInstance().getMyUserInfoEntity().getChatName() + ":" +
@@ -531,7 +530,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         String channel = IRC_CHANNEL_PREFIX + expChatId;
         String chatRoomUid = "s_" + mGetInfo.getLiveType() + "_"
                 + expChatId + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
-        logger.e("=====>connectChatServer:channel=" + channel + ":nickname =" +
+        logger.i("=====>connectChatServer:channel=" + channel + ":nickname =" +
                 chatRoomUid);
 
         // 获取 聊天服务器地址  的接口地址
@@ -592,7 +591,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
 
         @Override
         public void onStartConnect() {
-            logger.e("=====>onStartConnect");
+            logger.i("=====>onStartConnect");
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onStartConnect();
             }
@@ -600,7 +599,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
 
         @Override
         public void onConnect(IRCConnection connection) {
-            logger.e("=====>onConnect");
+            logger.i("=====>onConnect");
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onConnect();
             }
@@ -608,7 +607,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
 
         @Override
         public void onRegister() {
-            logger.e("=====>onRegister");
+            logger.i("=====>onRegister");
 
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onRegister();
@@ -617,7 +616,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
 
         @Override
         public void onDisconnect(IRCConnection connection, boolean isQuitting) {
-            logger.e("=====>onDisconnect");
+            logger.i("=====>onDisconnect");
 
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onDisconnect();
@@ -627,7 +626,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
 
         @Override
         public void onMessage(String target, String sender, String login, String hostname, String text) {
-            logger.e("=====>onMessage");
+            logger.i("=====>onMessage");
 
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onMessage(target, sender, login, hostname, text, "");
@@ -658,52 +657,52 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
 
         @Override
         public void onChannelInfo(String channel, int userCount, String topic) {
-            logger.e("=====>onChannelInfo");
+            logger.i("=====>onChannelInfo");
 
         }
 
         @Override
         public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String
                 notice, String channelId) {
-            logger.e("=====>onNotice");
+            logger.i("=====>onNotice");
         }
 
         @Override
         public void onTopic(String channel, String topic, String setBy, long date, boolean changed, String channelId) {
-            logger.e("=====>onTopic");
+            logger.i("=====>onTopic");
 
         }
 
         @Override
         public void onUserList(String channel, User[] users) {
-            logger.e("=====>onUserList start:" + peopleCount);
+            logger.i("=====>onUserList start:" + peopleCount);
             peopleCount.set(users.length, new Exception());
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onUserList(channel, users);
             }
-            logger.e("=====>onUserList end:" + peopleCount);
+            logger.i("=====>onUserList end:" + peopleCount);
         }
 
         @Override
         public void onJoin(String target, String sender, String login, String hostname) {
 
-            logger.e("=====>onJoin start:" + peopleCount);
+            logger.i("=====>onJoin start:" + peopleCount);
             peopleCount.set(peopleCount.get() + 1, new Exception(sender));
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onJoin(target, sender, login, hostname);
             }
-            logger.e("=====>onJoin end:" + peopleCount);
+            logger.i("=====>onJoin end:" + peopleCount);
 
         }
 
         @Override
         public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason, String channel) {
-            logger.e("=====>onQuit start:" + peopleCount);
+            logger.i("=====>onQuit start:" + peopleCount);
             peopleCount.set(peopleCount.get() - 1, new Exception(sourceNick));
             if (mLiveMessagePager != null) {
                 mLiveMessagePager.onQuit(sourceNick, sourceLogin, sourceHostname, reason);
             }
-            logger.e("=====>onQuit end:" + peopleCount);
+            logger.i("=====>onQuit end:" + peopleCount);
         }
 
         @Override
@@ -739,7 +738,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
      * 发生聊天消息
      */
     public void sendMessage(String msg, String name) {
-        logger.e("====>sendMessage:" + msg + ":" + name + ":" + mGetInfo.getStuName());
+        logger.i("====>sendMessage:" + msg + ":" + name + ":" + mGetInfo.getStuName());
         if (mLiveBll.openchat()) {
             try {
                 JSONObject jsonObject = new JSONObject();
@@ -940,7 +939,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         chatCfgServerList = getIntent().getStringArrayListExtra("roomChatCfgServerList");
         expChatId = getIntent().getStringExtra("expChatId");
         sex = getIntent().getStringExtra("sex");
-        logger.e("=========>loadData:" + chatCfgServerList);
+        logger.i("=========>loadData:" + chatCfgServerList);
         List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
         //初始化 老师开关聊天事件
         if (lstVideoQuestion != null && lstVideoQuestion.size() > 0) {
@@ -1012,8 +1011,8 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         isPlay = true;
         rePlayCount = 0;
         mTotaltime = getDuration();
-        Log.e("mqtt", "mTotaltime:" + mTotaltime);
-        Log.e("mqtt", "seekto:" + mVideoEntity.getVisitTimeKey());
+        logger.d( "mTotaltime:" + mTotaltime);
+        logger.d("seekto:" + mVideoEntity.getVisitTimeKey());
         // 03.22 统计用户进入体验播放器的时间
         StableLogHashMap logHashMap = new StableLogHashMap("enterRoom");
         logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE);
@@ -1062,12 +1061,9 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                 logger.d("time:" + mVideoEntity.getSciAiEvent().getLeadingStage().getBeginTime() * 1000 + keyTime);
                 seekTo(mVideoEntity.getSciAiEvent().getLeadingStage().getBeginTime() * 1000 + keyTime);  // AI体验课的这个方法需要重写
             } else {
-                if (TimeUtils.gennerSecond(keyTime) >= mVideoEntity.getSciAiEvent().getEndingStage().getEndTime()) {
-                    seekTo(mVideoEntity.getSciAiEvent().getEndingStage().getEndTime());
-                    resultComplete();
-                } else{
-                    long keyPoint = computeNewKeytime(keyTime);
-                    logger.d("first time:" + keyPoint);
+                long keyPoint = computeNewKeytime(keyTime);
+                logger.d("first time:" + keyPoint);
+                if (keyPoint != -1) {
                     seekTo(keyPoint);  // AI体验课的这个方法需要重写
                 }
             }
@@ -1078,45 +1074,8 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         mHandler.postDelayed(mPlayDuration, mPlayDurTime);
     }
 
-    private Long computeKeytime(long position) {
-        Log.e("Duncan", "compute:position" + position);
-        for (int i = 0; i < mVideoEntity.getSciAiEvent().getExercises().size(); i++) {
-            int playPosition = TimeUtils.gennerSecond(position);
-            if (!mVideoEntity.getSciAiEvent().getExercises().get(i).isShare()) {
-                if (LiveVideoConfig.isAITrue) {
-                    if (mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getIntroduce().getBeginTime() != 0 && (playPosition >= mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getIntroduce().getBeginTime() && playPosition <= mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getInterpret().getEndTime())) {
-                        Log.e("Duncan", "compute:one");
-                        return mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getInterpret().getEndTime() * 1000L;
-                    } else if (mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getIntroduce().getBeginTime() == 0 && (playPosition >= mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getPublish().getBeginTime() && playPosition <= mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getInterpret().getEndTime())) {
-                        Log.e("Duncan", "compute:two");
-                        return mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getInterpret().getEndTime() * 1000L;
-                    }
-                } else {
-                    if (playPosition >= mVideoEntity.getSciAiEvent().getExercises().get(i).getKnowledgePoints().getEndTime() && playPosition <= mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getInterpret().getEndTime()) {
-                        Log.e("Duncan", "compute:three:" + i);
-                        if (mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getIntroduce().getBeginTime() != 0) {
-                            return mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getIntroduce().getBeginTime() * 1000L;
-                        } else {
-                            return mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getPublish().getBeginTime() * 1000L;
-                        }
-                    }
-                }
-            } else {
-                // 公共题的处理逻辑
-                if (mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getIntroduce().getBeginTime() != 0 && (playPosition >= mVideoEntity.getSciAiEvent().getExercises().get(i).getKnowledgePoints().getEndTime() && playPosition <= mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getIntroduce().getBeginTime())) {
-                    Log.e("Duncan", "compute:four:" + i);
-                    return mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getIntroduce().getBeginTime() * 1000L;
-                } else if (mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getIntroduce().getBeginTime() == 0 && (playPosition >= mVideoEntity.getSciAiEvent().getExercises().get(i).getKnowledgePoints().getEndTime() && playPosition <= mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getPublish().getBeginTime())) {
-                    return mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getPublish().getBeginTime() * 1000L;
-                }
-            }
-        }
-        Log.e("Duncan", "Nocompute:");
-        return position;
-    }
-
     private Long computeNewKeytime(long position) {
-        Log.e("Duncan", "newcompute:position" + position);
+        logger.d( "newcompute:position" + position);
         int playPosition = TimeUtils.gennerSecond(position);
         // 落在第一部分的导语部分
         if (playPosition < mVideoEntity.getSciAiEvent().getLeadingStage().getValidTime()) {
@@ -1131,8 +1090,12 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         //减去第一部分导语时间偏移
         playPosition -= mVideoEntity.getSciAiEvent().getLeadingStage().getValidTime();
         for (int i = 0; i < mVideoEntity.getSciAiEvent().getExercises().size(); i++) {
-            VideoSpeedEntity.Exercise exercise =mVideoEntity.getSciAiEvent().getExercises().get(i);
-            if (exercise.isShare() || mVideoEntity.getSciAiEvent().getExercises().get(i - 1).isAnswerResult()) {
+            VideoSpeedEntity.Exercise exercise = mVideoEntity.getSciAiEvent().getExercises().get(i);
+            boolean isAnswerTrue = false;
+            if (i > 0) {
+                isAnswerTrue = mVideoEntity.getSciAiEvent().getExercises().get(i - 1).isAnswerResult();
+            }
+            if (exercise.isShare() || isAnswerTrue) {
                 // 改题为公共题目或上一题答对
                 total += exercise.getValidTimeForHard();
                 exampleIndex = 0;
@@ -1141,8 +1104,12 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                 total += exercise.getValidTimeForEasy();
                 exampleIndex = 1;
             }
-            if (playPosition < total) {
-                sum = total - exercise.getValidTimeForHard();
+            if (playPosition <= total) {
+                if (exampleIndex == 0) {
+                    sum = total - exercise.getValidTimeForHard();
+                } else {
+                    sum = total - exercise.getValidTimeForEasy();
+                }
                 //减去发过题的时间偏移
                 playPosition -= sum;
                 //知识点讲解时间长度
@@ -1154,24 +1121,56 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                 //答题时间长度
                 int interpretTime = exercise.getExample().get(exampleIndex).getInterpret().getValidTime();
                 //判断时间偏移是否在讲解知识点阶段
-                if (playPosition < knowledgeTime) {
-                    return (exercise.getKnowledgePoints().getBeginTime() + playPosition ) * 1000L;
+                if (playPosition <= knowledgeTime) {
+                    LiveVideoConfig.aiQuestionIndex = i - 1;
+                    LiveVideoConfig.isAITrue = isAnswerTrue;
+                    return (exercise.getKnowledgePoints().getBeginTime() + playPosition) * 1000L;
                     //判断时间偏移是否在试题阶段
-                } else if ((playPosition - knowledgeTime) < introduceTime) {
+                } else if ((playPosition - knowledgeTime) <= introduceTime) {
+                    LiveVideoConfig.aiQuestionIndex = i - 1;
+                    LiveVideoConfig.isAITrue = isAnswerTrue;
                     return (exercise.getExample().get(exampleIndex).getIntroduce().getBeginTime()
                             + (playPosition - knowledgeTime)) * 1000L;
                     //判断时间偏移是否在发题阶段
-                } else if ((playPosition - knowledgeTime - introduceTime) < publishTime) {
+                } else if ((playPosition - knowledgeTime - introduceTime) <= publishTime) {
+                    LiveVideoConfig.aiQuestionIndex = i - 1;
+                    LiveVideoConfig.isAITrue = isAnswerTrue;
                     return (exercise.getExample().get(exampleIndex).getPublish().getBeginTime()
                             + (playPosition - knowledgeTime - introduceTime)) * 1000L;
-                    //判断时间偏移是否在答题阶段
-                } else if ((playPosition - knowledgeTime - introduceTime - publishTime) < interpretTime) {
+                    //判断时间偏移是否在题目讲解阶段
+                } else if ((playPosition - knowledgeTime - introduceTime - publishTime) <= interpretTime) {
+                    LiveVideoConfig.aiQuestionIndex = i;
+                    LiveVideoConfig.isAITrue = isAnswerTrue;
                     return (exercise.getExample().get(exampleIndex).getInterpret().getBeginTime()
                             + (playPosition - knowledgeTime - introduceTime - publishTime)) * 1000L;
                 }
             }
         }
-        Log.e("Duncan", "Nonewcompute:");
+        if (playPosition > total) {
+            playPosition -= total;
+            VideoSpeedEntity.EndingStage endingStage = mVideoEntity.getSciAiEvent().getEndingStage();
+            if (endingStage.getBeginTime() != 0) {
+                if (playPosition <= endingStage.getValidTime()) {
+                    return (endingStage.getBeginTime() + playPosition) * 1000L;
+                } else {
+                    seekTo(endingStage.getEndTime() * 1000L);
+                    if (vPlayer != null) {
+                        vPlayer.releaseSurface();
+                        vPlayer.stop();
+                    }
+                    resultComplete();
+                    return -1l;
+                }
+            } else {
+                if (vPlayer != null) {
+                    vPlayer.releaseSurface();
+                    vPlayer.stop();
+                }
+                resultComplete();
+                return -1l;
+            }
+        }
+        logger.d("Nonewcompute:");
         return position;
     }
 
@@ -1349,14 +1348,19 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         scanPosition(currentPosition);
         // 扫描互动题
         scanQuestion(currentPosition);
-        Log.e("Duncan", "currentPosition:" + currentPosition + ": threadId =" + Thread.currentThread().getId());
-        Log.e("Duncan", "isAITrue:" + LiveVideoConfig.isAITrue);
-        Log.e("Duncan", "isFirst:" + firstTime);
+        logger.d( "currentPosition:" + currentPosition + ": threadId =" + Thread.currentThread().getId());
+        logger.d( "isAITrue:" + LiveVideoConfig.isAITrue);
+        logger.d("isFirst:" + firstTime);
         if (HISTROY_MSG_DISPLAY) {
             displayHistoryMsg();
         }
     }
 
+    /**
+     *
+     * @param position
+     * @description 因为seekto方法跳转不准确会跳到目标点的前一个关键帧，避免重复循环跳转每次跳转后将改时间点置为0
+     */
     private void scanPosition(long position) {
         if (!mIsLand || vPlayer == null || !vPlayer.isPlaying()) {
             // 如果不为横屏，没有正在播放，或正在显示互动题都退出扫描
@@ -1365,100 +1369,86 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         int playPosition = TimeUtils.gennerSecond(position);
         // 去除导语和第一个知识点之间的间隔
         if (playPosition == mVideoEntity.getSciAiEvent().getLeadingStage().getEndTime()) {
+            mVideoEntity.getSciAiEvent().getLeadingStage().setEndTime(0);
             seekTo(mVideoEntity.getSciAiEvent().getExercises().get(0).getKnowledgePoints().getBeginTime() * 1000);
+            return;
         }
         for (int i = 0; i < mVideoEntity.getSciAiEvent().getExercises().size(); i++) {
-            if (!mVideoEntity.getSciAiEvent().getExercises().get(i).isShare()) {
-                if (LiveVideoConfig.isAITrue) {
-                    if (mVideoEntity.getSciAiEvent().getExercises().get(i).getKnowledgePoints().getEndTime() != 0 && playPosition == mVideoEntity.getSciAiEvent().getExercises().get(i).getKnowledgePoints().getEndTime()) {
-                        if (mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getIntroduce().getBeginTime() != 0) {
-                            seekTo(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getIntroduce().getBeginTime() * 1000);
-                            logger.e("seekTo1=====>" + mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getIntroduce().getBeginTime());
-                        } else {
-                            seekTo(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getPublish().getBeginTime() * 1000);
-                            logger.e("seekTo2=====>" + mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getPublish().getBeginTime());
-                        }
-
-                    }
-                    // 重讲数据的时间间隔去除
-                    if (mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getInterpret().getEndTime() != 0 && playPosition == mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getInterpret().getEndTime()) {
-                        if ((i + 1) < mVideoEntity.getSciAiEvent().getExercises().size()) {
-                            seekTo(mVideoEntity.getSciAiEvent().getExercises().get(i + 1).getKnowledgePoints().getBeginTime() * 1000);
-                        } else {
-                            seekTo(mVideoEntity.getSciAiEvent().getEndingStage().getBeginTime() * 1000);
-                        }
-                    }
-                    if (mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getInterpret().getEndTime() != 0 && playPosition == mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getInterpret().getEndTime()) {
-                        if ((i + 1) < mVideoEntity.getSciAiEvent().getExercises().size()) {
-                            seekTo(mVideoEntity.getSciAiEvent().getExercises().get(i + 1).getKnowledgePoints().getBeginTime() * 1000);
-                        } else {
-                            seekTo(mVideoEntity.getSciAiEvent().getEndingStage().getBeginTime() * 1000);
-                        }
-                    }
-                    // 收题和讲解试题间隔去除
-                    if (mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getPublish().getEndTime() != mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getInterpret().getBeginTime() && playPosition == mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getPublish().getEndTime()) {
-                        seekTo(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getInterpret().getBeginTime() * 1000);
-                    }
-                } else {
-                    // 收题和讲解试题间隔去除
-                    if (mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getPublish().getEndTime() != mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getInterpret().getBeginTime() && playPosition == mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getPublish().getEndTime()) {
-                        seekTo(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getInterpret().getBeginTime() * 1000);
-                    }
-                    // 重讲数据的时间间隔去除
-                    if (mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getInterpret().getEndTime() != 0 && playPosition == mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getInterpret().getEndTime()) {
-                        if ((i + 1) < mVideoEntity.getSciAiEvent().getExercises().size()) {
-                            seekTo(mVideoEntity.getSciAiEvent().getExercises().get(i + 1).getKnowledgePoints().getBeginTime() * 1000);
-                        } else {
-                            seekTo(mVideoEntity.getSciAiEvent().getEndingStage().getBeginTime() * 1000);
-                        }
-                    }
-                    if (mVideoEntity.getSciAiEvent().getExercises().get(i).getKnowledgePoints().getEndTime() != 0 && playPosition == mVideoEntity.getSciAiEvent().getExercises().get(i).getKnowledgePoints().getEndTime()) {
-                        if (mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getIntroduce().getBeginTime() != 0) {
-                            seekTo(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getIntroduce().getBeginTime() * 1000);
-                            logger.e("seekTo4=====>" + mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getIntroduce().getBeginTime());
-                        } else {
-                            seekTo(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getPublish().getBeginTime() * 1000);
-                            logger.e("seekTo5=====>" + mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getPublish().getBeginTime());
-                        }
-                    } else if (mVideoEntity.getSciAiEvent().getExercises().get(i).getKnowledgePoints().getEndTime() == 0) {
-                        if (mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getIntroduce().getBeginTime() != 0) {
-                            mVideoEntity.getSciAiEvent().getExercises().get(i).getKnowledgePoints().setEndTime(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getIntroduce().getBeginTime() - 10);
-                        } else {
-                            mVideoEntity.getSciAiEvent().getExercises().get(i).getKnowledgePoints().setEndTime(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getPublish().getBeginTime() - 10);
-                        }
-                    }
-                }
-                // 答对的情况下，需要过滤掉容易题的视频片段
-                if (playPosition == mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getInterpret().getEndTime()) {
-                    if ((i + 1) < mVideoEntity.getSciAiEvent().getExercises().size()) {
-                        seekTo(mVideoEntity.getSciAiEvent().getExercises().get(i + 1).getKnowledgePoints().getBeginTime() * 1000);
-                        logger.e("seekTo6=====>" + mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(1).getInterpret().getEndTime());
-                    }
-
-                }
+            VideoSpeedEntity.Exercise exercise = mVideoEntity.getSciAiEvent().getExercises().get(i);
+            VideoSpeedEntity.Exercise.Example example;
+            //上一题答对
+            if (exercise.isShare() || LiveVideoConfig.isAITrue) {
+                example = exercise.getExample().get(0);
+                //上一题答错
             } else {
-                // 公共题的处理逻辑
-                if (mVideoEntity.getSciAiEvent().getExercises().get(i).getKnowledgePoints().getEndTime() != 0 && playPosition == mVideoEntity.getSciAiEvent().getExercises().get(i).getKnowledgePoints().getEndTime()) {
-                    if (mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getIntroduce().getBeginTime() != 0) {
-                        seekTo(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getIntroduce().getBeginTime() * 1000);
-                        logger.e("seekTo1=====>" + mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getIntroduce().getBeginTime());
-                    } else {
-                        seekTo(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getPublish().getBeginTime() * 1000);
-                        logger.e("seekTo2=====>" + mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getPublish().getBeginTime());
-                    }
-
+                example = exercise.getExample().get(1);
+            }
+            //本题知识点结束位置
+            if (exercise.getKnowledgePoints().getEndTime() != 0 && playPosition == exercise.getKnowledgePoints().getEndTime()) {
+                if (example.getIntroduce().getBeginTime() != 0) {
+                    //跳到题目介绍
+                    exercise.getKnowledgePoints().setEndTime(0);
+                    seekTo(example.getIntroduce().getBeginTime() * 1000);
+                    logger.d("seekTo1=====>" + example.getIntroduce().getBeginTime() + "i:" + i);
+                    break;
+                } else {
+                    //跳到答题阶段
+                    exercise.getKnowledgePoints().setEndTime(0);
+                    seekTo(example.getPublish().getBeginTime() * 1000);
+                    logger.d("seekTo2=====>" + example.getPublish().getBeginTime() + "i:" + i);
+                    break;
                 }
-                // 重讲数据的时间间隔去除
-                if (mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getInterpret().getEndTime() != 0 && playPosition == mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getInterpret().getEndTime()) {
-                    if ((i + 1) < mVideoEntity.getSciAiEvent().getExercises().size()) {
-                        seekTo(mVideoEntity.getSciAiEvent().getExercises().get(i + 1).getKnowledgePoints().getBeginTime() * 1000);
-                    } else {
-                        seekTo(mVideoEntity.getSciAiEvent().getEndingStage().getBeginTime() * 1000);
-                    }
-                }
+            } else if (example.getIntroduce().getEndTime() != 0 && playPosition == example.getIntroduce().getEndTime()) {
+                example.getIntroduce().setEndTime(0);
+                seekTo(example.getPublish().getBeginTime() * 1000);
+                logger.d("seekTo3=====>" + example.getPublish().getBeginTime() + "i:" + i);
+                break;
+            }
+            //试题在publish阶段完成后会改变，isAITrue的值，所以非公共题要对比两种题的位置
+            for (int j = 0; j < exercise.getExample().size(); j++) {
+                example = exercise.getExample().get(j);
+                logger.d("currentPosition index:" + LiveVideoConfig.aiQuestionIndex);
                 // 收题和讲解试题间隔去除
-                if (mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getPublish().getEndTime() != mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getInterpret().getBeginTime() && playPosition == mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getPublish().getEndTime()) {
-                    seekTo(mVideoEntity.getSciAiEvent().getExercises().get(i).getExample().get(0).getInterpret().getBeginTime() * 1000);
+                if (example.getPublish().getEndTime() != example.getInterpret().getBeginTime() && playPosition == example.getPublish().getEndTime()) {
+                    example.getPublish().setEndTime(example.getInterpret().getBeginTime());
+                    if (example.getInterpret().getBeginTime() != 0) {
+                        seekTo(example.getInterpret().getBeginTime() * 1000);
+                        logger.d("seekTo4=====>" + example.getInterpret().getBeginTime() + "i:" + i);
+                    } else {
+                        if ((i + 1) < mVideoEntity.getSciAiEvent().getExercises().size()) {
+                            if (mVideoEntity.getSciAiEvent().getExercises().get(i + 1).getKnowledgePoints().getBeginTime() != 0) {
+                                seekTo(mVideoEntity.getSciAiEvent().getExercises().get(i + 1).getKnowledgePoints().getBeginTime() * 1000);
+                                LiveVideoConfig.aiQuestionIndex = LiveVideoConfig.aiQuestionIndex + 1;
+                                logger.d("seekTo5=====>" + mVideoEntity.getSciAiEvent().getExercises().get(i + 1).getKnowledgePoints().getBeginTime() + "i:" + i);
+                            }
+                        } else {
+                            seekTo(mVideoEntity.getSciAiEvent().getEndingStage().getBeginTime() * 1000);
+                            LiveVideoConfig.aiQuestionIndex = LiveVideoConfig.aiQuestionIndex + 1;
+                            logger.d("seekTo6=====>" + mVideoEntity.getSciAiEvent().getEndingStage().getBeginTime() + "i:" + i);
+                        }
+                    }
+                }
+                if (example.getInterpret().getBeginTime() != 0 &&
+                        example.getPublish().getEndTime() == example.getInterpret().getBeginTime() &&
+                        playPosition == example.getPublish().getEndTime()) {
+                    LiveVideoConfig.aiQuestionIndex = LiveVideoConfig.aiQuestionIndex + 1;
+                }
+                if (example.getInterpret().getEndTime() != 0
+                        && playPosition == example.getInterpret().getEndTime()
+                        && LiveVideoConfig.aiQuestionIndex == i) {
+                    if ((i + 1) < mVideoEntity.getSciAiEvent().getExercises().size()) {
+                        if (mVideoEntity.getSciAiEvent().getExercises().get(i + 1).getKnowledgePoints().getBeginTime() != 0) {
+                            example.getInterpret().setEndTime(0);
+                            seekTo(mVideoEntity.getSciAiEvent().getExercises().get(i + 1).getKnowledgePoints().getBeginTime() * 1000);
+                            logger.d("seekTo7=====>" + mVideoEntity.getSciAiEvent().getExercises().get(i + 1).getKnowledgePoints().getBeginTime() + "i:" + i);
+                        }
+                    } else {
+                        for (int k = 0; k < exercise.getExample().size(); k++) {
+                            exercise.getExample().get(j).getInterpret().setEndTime(0);
+                        }
+                        seekTo(mVideoEntity.getSciAiEvent().getEndingStage().getBeginTime() * 1000);
+                        logger.d("seekTo8=====>" + mVideoEntity.getSciAiEvent().getEndingStage().getBeginTime() + "i:" + i);
+                    }
                 }
             }
         }
@@ -1509,33 +1499,33 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         if ((playPosition - lastCheckTime) >= MAX_CHECK_TIME_RANG || !isChatSateInited) {
             // isChatSateInited = false;
             boolean roomChatAvalible = recoverChatState(playPosition);
-            logger.e("=====> resetRoomChatState_:roomChatAvalible=" + roomChatAvalible + ":" +
+            logger.i("=====> resetRoomChatState_:roomChatAvalible=" + roomChatAvalible + ":" +
                     isChatSateInited);
             isChatSateInited = true;
         } else {
             if (chatEntity != null) {
-                logger.e("=====>handleChatEvent:category=" + chatEntity.getvCategory());
+                logger.i("=====>handleChatEvent:category=" + chatEntity.getvCategory());
                 //关闭聊天
                 if (LocalCourseConfig.CATEGORY_CLOSE_CHAT == chatEntity.getvCategory()) {
-                    logger.e("=====> CATEGORY_CLOSE_CHAT 11111:" + chatEntity.getvQuestionInsretTime() + ":"
+                    logger.i("=====> CATEGORY_CLOSE_CHAT 11111:" + chatEntity.getvQuestionInsretTime() + ":"
                             + playPosition);
                     if (playPosition == chatEntity.getvQuestionInsretTime()) {
-                        logger.e("=====> teahcer close chat called begin");
+                        logger.i("=====> teahcer close chat called begin");
                         mLiveMessagePager.onopenchat(false, "in-class", true);
                         mLiveBll.setChatOpen(false);
                         isRoomChatAvailable = false;
-                        logger.e("=====> teahcer close chat called end 11111");
+                        logger.i("=====> teahcer close chat called end 11111");
                     }
                 } else if (LocalCourseConfig.CATEGORY_OPEN_CHAT == chatEntity.getvCategory()) {
                     // 开启聊天
-                    logger.e("=====> CATEGORY_OPEN_CHAT  22222:" + chatEntity.getvQuestionInsretTime() +
+                    logger.i("=====> CATEGORY_OPEN_CHAT  22222:" + chatEntity.getvQuestionInsretTime() +
                             ":" + playPosition);
                     if (playPosition == chatEntity.getvQuestionInsretTime()) {
-                        logger.e("=====> teahcer open chat called begin");
+                        logger.i("=====> teahcer open chat called begin");
                         mLiveMessagePager.onopenchat(true, "in-class", true);
                         mLiveBll.setChatOpen(true);
                         isRoomChatAvailable = true;
-                        logger.e("=====> teahcer open chat called  end 111111");
+                        logger.i("=====> teahcer open chat called  end 111111");
                     }
                 }
             }
@@ -1643,7 +1633,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                 public void run() {
                     super.run();
                     mIRCMessage.destory();
-                    logger.e("=========>:mIRCMessage.destory()");
+                    logger.i("=========>:mIRCMessage.destory()");
                 }
             }.start();
         }
@@ -1652,6 +1642,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         LiveVideoConfig.curentTime.put(mVideoEntity.getChapterId(), System.currentTimeMillis());
         // 03.08待删除，方便测试临时添加的变量
         LocalCourseConfig.tempkey = "";
+        LiveVideoConfig.aiQuestionIndex = -1;
     }
 
 
