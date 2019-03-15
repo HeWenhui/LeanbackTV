@@ -27,6 +27,7 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
+import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -219,7 +220,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     mLogtf.d("onViewDetachedFromWindow:reloadurl=" + wvSubjectWeb.getUrl() + ",,time=" + (System
                             .currentTimeMillis() - before));
                 }
-                if (allowTeamPk && newCourseSec != null && newCourseSec.getIsAnswer() == 0) {
+                if (isArts == LiveVideoSAConfig.ART_EN) {
                     LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum, mEnergyNum, LiveRoomH5CloseEvent
                             .H5_TYPE_COURSE, id);
                     if (mEnglishH5CoursewareBll != null) {
@@ -227,8 +228,16 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         mEnglishH5CoursewareBll.setWebViewCloseByTeacher(false);
                     }
                     EventBus.getDefault().post(event);
-                    mGoldNum = -1;
-                    mEnergyNum = -1;
+                } else {
+                    if (allowTeamPk && newCourseSec != null && newCourseSec.getIsAnswer() == 0) {
+                        LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum, mEnergyNum, LiveRoomH5CloseEvent
+                                .H5_TYPE_COURSE, id);
+                        if (mEnglishH5CoursewareBll != null) {
+                            event.setCloseByTeahcer(mEnglishH5CoursewareBll.isWebViewCloseByTeacher());
+                            mEnglishH5CoursewareBll.setWebViewCloseByTeacher(false);
+                        }
+                        EventBus.getDefault().post(event);
+                    }
                 }
                 if (englishH5Entity.getNewEnglishH5()) {
                     LiveVideoConfig.isNewEnglishH5 = true;
@@ -748,7 +757,12 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     userAnswer.put("rightnum", "" + answer.optString("rightnum"));
                     userAnswer.put("wrongnum", "" + answer.optString("wrongnum"));
                     userAnswer.put("answernums", "" + rightAnswerContent2.length());
-                    String isRight = answer.getJSONArray("isRight").optString(0);
+                    String isRight = "0";
+                    if (answer.opt("isRight") instanceof JSONArray) {
+                        isRight = answer.getJSONArray("isRight").optString(0);
+                    } else if (answer.opt("isright") instanceof JSONArray) {
+                        isRight = answer.getJSONArray("isright").optString(0);
+                    }
                     if ("1".equals(isRight)) {
                         isRight = "2";
                     }
@@ -756,6 +770,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     userAnswer.put("times", "" + answer.optInt("times", -1));
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    MobAgent.httpResponseParserError(TAG, "submitVoice", e.getMessage());
                     logger.d("submitVoice", e);
                 }
                 userAnswerArray.put(userAnswer);
