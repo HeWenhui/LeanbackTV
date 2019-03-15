@@ -38,6 +38,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
@@ -693,6 +694,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         }
         isFinish = true;
         if (loadResult) {
+            //初中结果页是网页，需要调接口
             if (isArts != LiveVideoSAConfig.ART_EN && (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage))) {
                 wvSubjectWeb.loadUrl(jsClientSubmit);
             }
@@ -713,12 +715,16 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     CrashReport.postCatchedException(e);
                     mLogtf.e("submitData", e);
                 }
+                if (LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage)) {
+                    XESToastUtils.showToast(mContext, "时间到,停止作答!");
+                }
             }
         }
     }
 
     private void submit(int isforce, String nonce) {
         if (loadResult) {
+            //初中结果页是网页，需要调接口
             if (isArts != LiveVideoSAConfig.ART_EN && (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage))) {
                 wvSubjectWeb.loadUrl(jsClientSubmit);
             }
@@ -729,9 +735,6 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 int isForce = isforce == 0 ? 1 : 2;
                 submitEn(isForce, nonce);
             } else {
-                if (LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage)) {
-                    XESToastUtils.showToast(mContext, "时间到,停止作答!");
-                }
                 submitSec(isforce, nonce);
             }
             NewCourseLog.sno5(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), isforce == 1, wvSubjectWeb.getUrl(), ispreload);
@@ -1081,6 +1084,12 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             }
         } else {
             NewCourseLog.sno8(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), ispreload, (System.currentTimeMillis() - pagerStart));
+//            if (isFinish) {
+//                //初中结果页是网页，需要调接口
+//                if (isArts != LiveVideoSAConfig.ART_EN && (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage))) {
+//                    wvSubjectWeb.loadUrl(jsClientSubmit);
+//                }
+//            }
         }
     }
 
@@ -1520,6 +1529,16 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 return webResourceResponse;
             }
             return super.shouldInterceptRequest(view, url);
+        }
+
+        @Override
+        protected void otherMsg(StableLogHashMap logHashMap, String loadUrl) {
+            logHashMap.put("ispreload", "" + ispreload);
+            logHashMap.put("testsource", "" + ispreload);
+            logHashMap.put("errtype", "webView");
+            logHashMap.put("subtestid", "" + currentIndex);
+            logHashMap.put("testsource", "" + currentIndex);
+            logHashMap.put("eventid", "" + LogConfig.LIVE_H5PLAT);
         }
     }
 

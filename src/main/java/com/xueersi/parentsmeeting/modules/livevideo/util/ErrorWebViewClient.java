@@ -1,10 +1,12 @@
 package com.xueersi.parentsmeeting.modules.livevideo.util;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.smtt.export.external.interfaces.WebResourceError;
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 import com.xueersi.common.network.IpAddressUtil;
+import com.xueersi.common.network.TxHttpDns;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
@@ -47,46 +49,62 @@ public class ErrorWebViewClient extends WebViewClient {
         liveThreadPoolExecutor.execute(new Runnable() {
             @Override
             public void run() {
-                String url = webResourceRequest.getUrl().toString();
-                int index = url.indexOf("?");
-                if (index != -1) {
-                    url = url.substring(0, index);
-                }
-                String remoteip = "";
                 try {
-                    synchronized (urlAndIp) {
-                        remoteip = urlAndIp.get(url);
+                    String url = webResourceRequest.getUrl().toString();
+                    int index = url.indexOf("?");
+                    if (index != -1) {
+                        url = url.substring(0, index);
                     }
-                    if (StringUtils.isEmpty(remoteip)) {
-                        URL url2 = new URL(url);
-                        InetAddress inetAddress = InetAddress.getByName(url2.getHost());
-                        remoteip = inetAddress.getHostAddress();
+                    String remoteip = "";
+                    try {
                         synchronized (urlAndIp) {
-                            urlAndIp.put(url, remoteip);
+                            remoteip = urlAndIp.get(url);
                         }
-                        logger.d("onReceivedError:host=" + url2 + ",ip=" + remoteip);
+                        if (StringUtils.isEmpty(remoteip)) {
+                            URL url2 = new URL(url);
+                            InetAddress inetAddress = InetAddress.getByName(url2.getHost());
+                            remoteip = inetAddress.getHostAddress();
+                            synchronized (urlAndIp) {
+                                urlAndIp.put(url, remoteip);
+                            }
+                            logger.d("onReceivedError:host=" + url2 + ",ip=" + remoteip);
+                        }
+                    } catch (UnknownHostException e) {
+                        remoteip = "unknown";
+                        e.printStackTrace();
+                    } catch (Exception e) {
+                        remoteip = "" + e;
+                        e.printStackTrace();
                     }
-                } catch (UnknownHostException e) {
-                    remoteip = "unknown";
-                    e.printStackTrace();
-                } catch (Exception e) {
-                    remoteip = "" + e;
-                    e.printStackTrace();
-                }
-                StableLogHashMap logHashMap = new StableLogHashMap();
-                logHashMap.put("tag", TAG);
-                logHashMap.put("isformain", "" + webResourceRequest.isForMainFrame());
-                logHashMap.put("request", url);
-                logHashMap.put("weburl", "" + loadUrl);
-                logHashMap.put("errorcode", "" + webResourceError.getErrorCode());
-                logHashMap.put("description", "" + webResourceError.getDescription());
-                logHashMap.put("remoteip", "" + remoteip);
-                logHashMap.put("userip", "" + IpAddressUtil.USER_IP);
-                logHashMap.put("operator", "" + IpAddressUtil.USER_OPERATE);
+                    StableLogHashMap logHashMap = new StableLogHashMap("platLoadError");
+                    logHashMap.put("tag", TAG);
+                    logHashMap.put("status", "false");
+                    logHashMap.put("isformain", "" + webResourceRequest.isForMainFrame());
+                    logHashMap.put("loadurl", url);
+                    logHashMap.put("weburl", "" + loadUrl);
+                    logHashMap.put("errorcode", "" + webResourceError.getErrorCode());
+                    logHashMap.put("errmsg", "" + webResourceError.getDescription());
+                    logHashMap.put("remoteip", "" + remoteip);
+                    logHashMap.put("userip", "" + IpAddressUtil.USER_IP);
+                    logHashMap.put("operator", "" + IpAddressUtil.USER_OPERATE);
+                    logHashMap.put("txdns", TxHttpDns.getInstance().getTxEnterpriseDns(url));
+                    otherMsg(logHashMap, loadUrl);
 //                    Loger.d(webView.getContext(), LiveVideoConfig.LIVE_WEBVIEW_ERROR, logHashMap.getData(), true);
-                UmsAgentManager.umsAgentDebug(webView.getContext(), LiveVideoConfig.LIVE_WEBVIEW_ERROR, logHashMap.getData());
+                    String enentId = logHashMap.getData().get("eventid");
+                    if (enentId != null) {
+                        UmsAgentManager.umsAgentDebug(webView.getContext(), enentId, logHashMap.getData());
+                    } else {
+                        UmsAgentManager.umsAgentDebug(webView.getContext(), LiveVideoConfig.LIVE_WEBVIEW_ERROR, logHashMap.getData());
+                    }
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(e);
+                }
             }
         });
         super.onReceivedError(webView, webResourceRequest, webResourceError);
+    }
+
+    protected void otherMsg(StableLogHashMap logHashMap, String loadUrl) {
+
     }
 }
