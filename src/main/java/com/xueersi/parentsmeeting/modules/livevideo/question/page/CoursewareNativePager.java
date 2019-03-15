@@ -27,6 +27,7 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
+import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -756,7 +757,12 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     userAnswer.put("rightnum", "" + answer.optString("rightnum"));
                     userAnswer.put("wrongnum", "" + answer.optString("wrongnum"));
                     userAnswer.put("answernums", "" + rightAnswerContent2.length());
-                    String isRight = answer.getJSONArray("isRight").optString(0);
+                    String isRight = "0";
+                    if (answer.opt("isRight") instanceof JSONArray) {
+                        isRight = answer.getJSONArray("isRight").optString(0);
+                    } else if (answer.opt("isright") instanceof JSONArray) {
+                        isRight = answer.getJSONArray("isright").optString(0);
+                    }
                     if ("1".equals(isRight)) {
                         isRight = "2";
                     }
@@ -764,6 +770,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     userAnswer.put("times", "" + answer.optInt("times", -1));
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    MobAgent.httpResponseParserError(TAG, "submitVoice", e.getMessage());
                     logger.d("submitVoice", e);
                 }
                 userAnswerArray.put(userAnswer);
