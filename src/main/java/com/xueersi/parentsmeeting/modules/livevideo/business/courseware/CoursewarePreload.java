@@ -49,6 +49,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import ren.yale.android.cachewebviewlib.utils.MD5Utils;
 
+import static com.xueersi.parentsmeeting.modules.livevideo.business.courseware.PreLoadDownLoaderManager.debugLog;
+import static com.xueersi.parentsmeeting.modules.livevideo.business.courseware.PreLoadDownLoaderManager.debugString;
+
 
 /**
  * Created by: WangDe on 2019/2/27
@@ -371,9 +374,13 @@ public class CoursewarePreload {
         if (!mMorecachein.exists()) {
             mMorecachein.mkdirs();
         }
-        final File mMorecacheout = new File(path, itemLiveId + "child");
+        File mMorecacheout = new File(path, itemLiveId + "child");
         if (!mMorecacheout.exists()) {
             mMorecacheout.mkdirs();
+        }
+        logger.i("BBB in:" + mMorecachein.getAbsolutePath() + " out:" + mMorecacheout.getAbsolutePath());
+        if (mMorecachein.getAbsolutePath().equals(debugString)) {
+            logger.i(debugLog);
         }
         String tempIP = ips.get(0);
         String ip;
@@ -412,7 +419,7 @@ public class CoursewarePreload {
 //                resourceDownLoader.setDownloadThreadCount(mDownloadThreadCount);
                 logger.d("courseware url path:  " + ip + coursewareInfo.getResourceUrl() + "   file name:" + resourceName + ".zip");
 //                resourceDownLoader.start(new ZipDownloadListener(mMorecachein, mMorecacheout, resourceName, ips, cdns, coursewareInfo.getResourceUrl(), coursewareInfo.getMd5(), new AtomicInteger()));
-                PreLoadDownLoaderManager.DownLoadInfoListener infoListener = new PreLoadDownLoaderManager.DownLoadInfoListener(resourceDownLoadInfo,
+                PreLoadDownLoaderManager.DownLoadInfoAndListener infoListener = new PreLoadDownLoaderManager.DownLoadInfoAndListener(resourceDownLoadInfo,
                         new ZipDownloadListener(
                                 mMorecachein,
                                 mMorecacheout,
@@ -423,7 +430,8 @@ public class CoursewarePreload {
                                 coursewareInfo.getResourceMd5(),
                                 new AtomicInteger(0),
                                 itemLiveId,
-                                "1"));
+                                "1"),
+                        itemLiveId);
 
                 if (!isPrecise.get()) {
                     PreLoadDownLoaderManager.addToAutoDownloadPool(infoListener);
@@ -449,7 +457,7 @@ public class CoursewarePreload {
 //                DownLoader templateDownLoader = new DownLoader(mContext, templateDownLoadInfo);
 //                templateDownLoader.setDownloadThreadCount(mDownloadThreadCount);
 //                templateDownLoader.start(new ZipDownloadListener(mMorecachein, mMorecacheout, templateName, ips, cdns, coursewareInfo.getTemplateUrl(), coursewareInfo.getMd5(), new AtomicInteger()));
-                PreLoadDownLoaderManager.DownLoadInfoListener infoListener = new PreLoadDownLoaderManager.DownLoadInfoListener(
+                PreLoadDownLoaderManager.DownLoadInfoAndListener infoListener = new PreLoadDownLoaderManager.DownLoadInfoAndListener(
                         templateDownLoadInfo,
                         new ZipDownloadListener(
                                 mMorecachein,
@@ -461,7 +469,8 @@ public class CoursewarePreload {
                                 coursewareInfo.getTemplateMd5(),
                                 new AtomicInteger(0),
                                 itemLiveId,
-                                "1"));
+                                "1"),
+                        itemLiveId);
                 if (!isPrecise.get()) {
                     PreLoadDownLoaderManager.addToAutoDownloadPool(infoListener);
                 } else {
@@ -520,7 +529,7 @@ public class CoursewarePreload {
                     if (isIp) {
                         downLoadInfo.setHost(cdn);
                     }
-                    PreLoadDownLoaderManager.DownLoadInfoListener infoListener = new PreLoadDownLoaderManager.DownLoadInfoListener(
+                    PreLoadDownLoaderManager.DownLoadInfoAndListener infoListener = new PreLoadDownLoaderManager.DownLoadInfoAndListener(
                             downLoadInfo,
                             new ZipDownloadListener(
                                     mPublicCacheout,
@@ -532,7 +541,7 @@ public class CoursewarePreload {
                                     fileName,
                                     new AtomicInteger(0),
                                     "",
-                                    "2"));
+                                    "2"), "");
                     if (!isPrecise.get()) {
                         PreLoadDownLoaderManager.addToAutoDownloadPool(infoListener);
                     } else {
@@ -551,7 +560,7 @@ public class CoursewarePreload {
                 if (!fileIsExists(save.getPath())) {
                     logger.d("resource ttf url path:  " + ip + url + "   file name:" + fileName + ".nozip");
                     DownLoadInfo downLoadInfo = DownLoadInfo.createFileInfo(ip + url, mPublicCacheout.getAbsolutePath(), fileName + ".temp", "");
-                    PreLoadDownLoaderManager.DownLoadInfoListener infoListener = new PreLoadDownLoaderManager.DownLoadInfoListener(
+                    PreLoadDownLoaderManager.DownLoadInfoAndListener infoListener = new PreLoadDownLoaderManager.DownLoadInfoAndListener(
                             downLoadInfo,
                             new NoZipDownloadListener(
                                     mPublicCacheout,
@@ -562,7 +571,8 @@ public class CoursewarePreload {
                                     url,
                                     fileName,
                                     new AtomicInteger(0),
-                                    "3"));
+                                    "3"),
+                            "");
                     if (!isPrecise.get()) {
                         PreLoadDownLoaderManager.addToAutoDownloadPool(infoListener);
                     } else {
@@ -595,13 +605,13 @@ public class CoursewarePreload {
 
 //    private ZipExtractorTask zipExtractorTask;
 
-    Executor executos = new ThreadPoolExecutor(3, 3,
+    Executor executos = new ThreadPoolExecutor(1, 1,
             0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
 
     class ZipDownloadListener implements DownloadListener {
 
-        private File mMorecacheout;
-        private File mMorecachein;
+        public final File mMorecacheout;
+        public final File mMorecachein;
         private String mFileName;
         private String url;
         private String md5;
@@ -622,6 +632,7 @@ public class CoursewarePreload {
                 AtomicInteger downTryCount,
                 String itemLiveId,
                 String resourcetype) {
+
             this.mMorecachein = mMorecachein;
             this.mMorecacheout = mMorecacheout;
             this.mFileName = fileName;
@@ -655,7 +666,10 @@ public class CoursewarePreload {
 
         @Override
         public void onSuccess(String folderPath, String fileName) {
-            logger.d("download zip success");
+            logger.d("download zip success path:" + folderPath + " name:" + fileName + " out:" + mMorecacheout.getAbsolutePath() + " in:" + mMorecachein.getAbsolutePath());
+            if (mMorecachein.getAbsolutePath().equals(debugString)) {
+                logger.i(debugLog);
+            }
             StableLogHashMap hashMap = new StableLogHashMap();
             hashMap.put("logtype", "endPreload");
             hashMap.put("preloadid", md5);
@@ -717,7 +731,7 @@ public class CoursewarePreload {
         @Override
         public void onFail(int errorCode) {
             String oldIP = ips.get(downTryCount.get() % ipLength.get());
-            logger.d("fail url path:  " + oldIP + url + "   file name:" + mFileName + ".zip");
+            logger.d("fail url path:  " + oldIP + url + "   file name:" + mFileName + ".zip path in:" + mMorecachein.getAbsolutePath() + " out:" + mMorecacheout.getAbsolutePath());
             downTryCount.getAndIncrement();
             String tempIP = ips.get(downTryCount.get() % ipLength.get());
             String ip;
@@ -742,8 +756,18 @@ public class CoursewarePreload {
                 }
 //                DownLoader downLoader = new DownLoader(mContext, downLoadInfo);
 //                downLoader.start(new ZipDownloadListener(mMorecachein, mMorecacheout, mFileName, ips, cdns, url, md5, downTryCount));
-                ZipDownloadListener mZipDownloadListener = new ZipDownloadListener(mMorecachein, mMorecacheout, mFileName, ips, cdns, url, md5, downTryCount, itemLiveId, resourcetype);
-                PreLoadDownLoaderManager.DownLoadInfoListener preLoadDownLoaderManager = new PreLoadDownLoaderManager.DownLoadInfoListener(downLoadInfo, mZipDownloadListener);
+                ZipDownloadListener mZipDownloadListener = new ZipDownloadListener(
+                        mMorecachein,
+                        mMorecacheout,
+                        mFileName,
+                        ips,
+                        cdns,
+                        url,
+                        md5,
+                        downTryCount,
+                        itemLiveId,
+                        resourcetype);
+                PreLoadDownLoaderManager.DownLoadInfoAndListener preLoadDownLoaderManager = new PreLoadDownLoaderManager.DownLoadInfoAndListener(downLoadInfo, mZipDownloadListener, itemLiveId);
 
                 if (!isPrecise.get()) {
                     PreLoadDownLoaderManager.addToAutoDownloadPool(preLoadDownLoaderManager);
@@ -885,8 +909,19 @@ public class CoursewarePreload {
                 if (isIP) {
                     downLoadInfo.setHost(cdns.get(cdnPos.get() % cdnLength.get()).substring(index));
                 }
-                PreLoadDownLoaderManager.DownLoadInfoListener downLoadInfoListener = new PreLoadDownLoaderManager.DownLoadInfoListener(downLoadInfo,
-                        new NoZipDownloadListener(mMorecachein, mMorecacheout, mFileName, ips, cdns, url, md5, downTryCount, resourcetype));
+                PreLoadDownLoaderManager.DownLoadInfoAndListener downLoadInfoListener = new PreLoadDownLoaderManager.DownLoadInfoAndListener(
+                        downLoadInfo,
+                        new NoZipDownloadListener(
+                                mMorecachein,
+                                mMorecacheout,
+                                mFileName,
+                                ips,
+                                cdns,
+                                url,
+                                md5,
+                                downTryCount,
+                                resourcetype),
+                        "");
                 if (!isPrecise.get()) {
                     PreLoadDownLoaderManager.addToAutoDownloadPool(downLoadInfoListener);
                 } else {
