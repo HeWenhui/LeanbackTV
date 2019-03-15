@@ -2,6 +2,10 @@
     package="com.xueersi.parentsmeeting.modules.livevideo">
     <!-- 悬浮窗必加权限 -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application>
         <activity
             android:name=".activity.LivePlayBackVideoActivity"
@@ -146,7 +150,16 @@
 
         <receiver
             android:name=".broadcast.StudyCenterMainStartBroadCastReceiver"
+            android:process=":livevideo"></receiver>
+
+        <receiver
+            android:name=".broadcast.NetWorkChangeBroadCastReceiver"
             android:process=":livevideo">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+                <action android:name="android.net.wifi.STATE_CHANGE" />
+            </intent-filter>
         </receiver>
     </application>
 

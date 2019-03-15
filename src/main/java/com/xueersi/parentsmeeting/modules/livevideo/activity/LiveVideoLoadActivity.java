@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 
 import com.xueersi.common.base.BaseActivity;
 import com.xueersi.common.base.BaseBll;
@@ -247,6 +248,10 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     if (tempPreLoadLiveId.equals(liveId)) {
                         return true;
                     }
+                }
+            } else if (!TextUtils.isEmpty(liveIds)) {
+                if (liveIds.equals(liveId)) {
+                    return true;
                 }
             }
         }
