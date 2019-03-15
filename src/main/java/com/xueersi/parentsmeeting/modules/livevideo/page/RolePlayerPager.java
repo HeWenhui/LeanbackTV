@@ -1474,14 +1474,14 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
         }
     }
 
-    public void stopSpeech() {
+    public void stopSpeech(){
         if (mIse != null) {
             mIse.stop();
         }
-        mIsEnd = true;
+        mIsEnd=true;
         mReadHandler.removeMessages(GO_SPEECH);
         mReadHandler.removeMessages(READ_MESSAGE);
-        if (mEntity != null && !mEntity.isResult() && mRolePlayBll.getRoleEntry() != null) {
+        if (mEntity!=null&&!mEntity.isResult()&&mRolePlayBll.getRoleEntry()!=null) {
             if (mEntity.isNewArts()) {
                 mRolePlayBll.requestNewArtsResult();
             } else {

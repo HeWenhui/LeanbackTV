@@ -537,11 +537,11 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                         RolePlayerEntity.RolePlayerMessage upMessage = mEntity.getLstRolePlayerMessage().get
                                 (mCurrentReadIndex - 1);
                         if ((mCurrentReadIndex - 1) == mEntity.getSelfLastIndex()) {
-                            mLogtf.i("handleMessage:mCurrentReadIndex = " + mCurrentReadIndex + ",isResult=" + mEntity.isResult());
-                            if (!mEntity.isResult()) {
-                                if (mEntity.isNewArts()) {
+                            mLogtf.i("handleMessage:mCurrentReadIndex = " + mCurrentReadIndex+",isResult="+mEntity.isResult());
+                            if (!mEntity.isResult()){
+                                if(mEntity.isNewArts()){
                                     mRolePlayBll.requestNewArtsResult();
-                                } else {
+                                }else {
                                     mRolePlayBll.requestResult();
                                 }
                             }
@@ -635,8 +635,8 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
                 mCurrentReadIndex++;
                 Message temp = mReadHandler.obtainMessage();
                 temp.what = READ_MESSAGE;
-                mLogtf.i("handleMessage:maxReadTime=" + currentMessage.getMaxReadTime() + ",mIsEnd=" + mIsEnd);
-                if (currentMessage.getRolePlayer().isSelfRole() && !mIsEnd) {
+                mLogtf.i("handleMessage:maxReadTime=" + currentMessage.getMaxReadTime()+",mIsEnd="+mIsEnd);
+                if (currentMessage.getRolePlayer().isSelfRole()&&!mIsEnd) {
                     mReadHandler.sendEmptyMessageDelayed(GO_SPEECH, (currentMessage.getMaxReadTime() - 1) * 1000);
                 }
 
@@ -780,7 +780,7 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
     private void nextReadMessage() {
         mReadHandler.removeMessages(GO_SPEECH);
         mReadHandler.removeMessages(READ_MESSAGE);
-        mReadHandler.sendEmptyMessageDelayed(READ_MESSAGE, 1000);
+        mReadHandler.sendEmptyMessageDelayed(READ_MESSAGE,1000);
     }
 
     /**
@@ -793,9 +793,9 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         }
         if (!mEntity.isResult()) {
             logger.i("结束RolePlayer,结果还未提交，再次提交结果");
-            if (mEntity.isNewArts()) {
+            if(mEntity.isNewArts()){
                 mRolePlayBll.requestNewArtsResult();
-            } else {
+            }else {
                 mRolePlayBll.requestResult();
             }
 
@@ -1317,22 +1317,21 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
         }
     }
 
-    public void stopSpeech() {
-        if (mIse != null) {
-            mIse.stop();
-        }
-        mIsEnd = true;
-        mReadHandler.removeMessages(GO_SPEECH);
-        mReadHandler.removeMessages(READ_MESSAGE);
-        if (mEntity != null && !mEntity.isResult() && mRolePlayBll.getRoleEntry() != null) {
-            if (mEntity.isNewArts()) {
-                mRolePlayBll.requestNewArtsResult();
-            } else {
-                mRolePlayBll.requestResult();
-            }
-        }
-    }
-
+     public void stopSpeech(){
+         if (mIse != null) {
+             mIse.stop();
+         }
+         mIsEnd=true;
+         mReadHandler.removeMessages(GO_SPEECH);
+         mReadHandler.removeMessages(READ_MESSAGE);
+         if (mEntity!=null&&!mEntity.isResult()&&mRolePlayBll.getRoleEntry()!=null) {
+             if (mEntity.isNewArts()) {
+                 mRolePlayBll.requestNewArtsResult();
+             } else {
+                 mRolePlayBll.requestResult();
+             }
+         }
+     }
     /**
      * 关闭当前页面
      */
@@ -1442,10 +1441,10 @@ public class RolePlayMachinePager extends BaseSpeechAssessmentPager {
 
     @Override
     public void examSubmitAll() {
-        if (mRolePlayBll == null) {
+        if(mRolePlayBll==null){
             mLogtf.d("examSubmitAll:bll=0");
-        } else {
-            mLogtf.d("examSubmitAll:bll=" + mRolePlayBll.hashCode());
+        }else{
+            mLogtf.d("examSubmitAll:bll="+mRolePlayBll.hashCode());
         }
     }
 

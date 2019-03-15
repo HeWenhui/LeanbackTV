@@ -210,8 +210,11 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
     public void updateViews(final RolePlayerEntity.RolePlayerMessage entity,
                             int position, Object objTag) {
         super.updateViews(entity, position, objTag);
-        updateUserHeadImage(civUserHead, UserBll.getInstance().getMyUserInfoEntity()
-                .getHeadImg());
+        String imgUrl = entity.getRolePlayer().getHeadImg();
+        if(TextUtils.isEmpty(imgUrl)){
+            imgUrl = UserBll.getInstance().getMyUserInfoEntity().getHeadImg();
+        }
+        updateUserHeadImage(civUserHead, imgUrl);
         civUserHead.setBorderWidth(SizeUtils.Dp2Px(mContext, 0));
         civUserHead.setBorderColor(Color.WHITE);
         rlMain.setVisibility(View.VISIBLE);
