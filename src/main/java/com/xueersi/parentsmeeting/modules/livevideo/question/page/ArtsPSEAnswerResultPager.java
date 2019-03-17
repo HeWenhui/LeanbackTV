@@ -58,7 +58,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRsultDisplayer, View.OnClickListener {
 
-    private static final String LOTTIE_RES_ASSETS_ROOTDIR = "arts_answer_result/";
+    private static final String LOTTIE_RES_ASSETS_ROOTDIR = "arts_answer_result_energy/";
     /** 游戏试题类型 */
     private static final int TYPE_GAME = 12;
     private final String TAG = "ArtsPSEAnswerResultPager";
