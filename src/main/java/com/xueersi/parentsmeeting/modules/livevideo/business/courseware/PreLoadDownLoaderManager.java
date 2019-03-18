@@ -122,11 +122,11 @@ public class PreLoadDownLoaderManager {
 
             if (DownLoadInfo.DownloadType.FILE.equals(info.getDownloadType())) {
                 // 下载文件
-                CoursewarePreload.ZipDownloadListener zipDownloadListener = (CoursewarePreload.ZipDownloadListener) realDownLoadListener;
+//                CoursewarePreload.ZipDownloadListener zipDownloadListener = (CoursewarePreload.ZipDownloadListener) realDownLoadListener;
 //                logger.i("in:" + zipDownloadListener.mMorecachein.getAbsolutePath() + " out:" + zipDownloadListener.mMorecacheout.getAbsolutePath());
-                if (zipDownloadListener.mMorecachein.getAbsolutePath().equals(debugString)) {
-                    logger.i(debugLog);
-                }
+//                if (zipDownloadListener.mMorecachein.getAbsolutePath().equals(debugString)) {
+//                    logger.i(debugLog);
+//                }
                 PreloadDownloadListener downloadListener = new PreloadDownloadListener(downLoadInfoAndListener);
                 DownloadPool.getDownLoader(info).start(downloadListener);
             } else if (DownLoadInfo.DownloadType.IMG.equals(info.getDownloadType())) {
@@ -156,10 +156,10 @@ public class PreLoadDownLoaderManager {
             synchronized (sLockObject) {
                 sDownUrl = url;
             }
-            CoursewarePreload.ZipDownloadListener zipDownloadListener = (CoursewarePreload.ZipDownloadListener) downLoadInfoAndListener.getListener();
-            if (zipDownloadListener.mMorecachein.getAbsolutePath().equals(debugString)) {
-                logger.i(debugLog);
-            }
+//            CoursewarePreload.ZipDownloadListener zipDownloadListener = (CoursewarePreload.ZipDownloadListener) downLoadInfoAndListener.getListener();
+//            if (zipDownloadListener.mMorecachein.getAbsolutePath().equals(debugString)) {
+//                logger.i(debugLog);
+//            }
             if (realDownLoadListener != null) {
                 realDownLoadListener.onStart(url);
             }
@@ -175,10 +175,10 @@ public class PreLoadDownLoaderManager {
             synchronized (sLockObject) {
                 sDownUrl = null;
             }
-            CoursewarePreload.ZipDownloadListener zipDownloadListener = (CoursewarePreload.ZipDownloadListener) realDownLoadListener;
-            if (zipDownloadListener.mMorecachein.getAbsolutePath().equals(debugString)) {
-                logger.i(debugLog);
-            }
+//            CoursewarePreload.ZipDownloadListener zipDownloadListener = (CoursewarePreload.ZipDownloadListener) realDownLoadListener;
+//            if (zipDownloadListener.mMorecachein.getAbsolutePath().equals(debugString)) {
+//                logger.i(debugLog);
+//            }
             if (realDownLoadListener != null) {
                 realDownLoadListener.onFinish();
             }
@@ -191,10 +191,10 @@ public class PreLoadDownLoaderManager {
          */
         @Override
         public void onSuccess(String folderPath, String fileName) {
-            CoursewarePreload.ZipDownloadListener zipDownloadListener = (CoursewarePreload.ZipDownloadListener) realDownLoadListener;
-            if (zipDownloadListener.mMorecachein.getAbsolutePath().equals(debugString)) {
-                logger.i(debugLog);
-            }
+//            CoursewarePreload.ZipDownloadListener zipDownloadListener = (CoursewarePreload.ZipDownloadListener) realDownLoadListener;
+//            if (zipDownloadListener.mMorecachein.getAbsolutePath().equals(debugString)) {
+//                logger.i(debugLog);
+//            }
             if (realDownLoadListener != null) {
                 realDownLoadListener.onSuccess(folderPath, fileName);
             }
@@ -205,10 +205,11 @@ public class PreLoadDownLoaderManager {
          */
         @Override
         public void onFail(int errorCode) {
-            CoursewarePreload.ZipDownloadListener zipDownloadListener = (CoursewarePreload.ZipDownloadListener) realDownLoadListener;
-            if (zipDownloadListener.mMorecachein.getAbsolutePath().equals(debugString)) {
-                logger.i(debugLog);
-            }
+
+//            CoursewarePreload.ZipDownloadListener zipDownloadListener = (CoursewarePreload.ZipDownloadListener) realDownLoadListener;
+//            if (zipDownloadListener.mMorecachein.getAbsolutePath().equals(debugString)) {
+//                logger.i(debugLog);
+//            }
             logger.i(errorCode + "");
             if (realDownLoadListener != null) {
                 realDownLoadListener.onFail(errorCode);
@@ -243,9 +244,10 @@ public class PreLoadDownLoaderManager {
             DownloadPool.addDownloader(info.getDownLoadInfo().getUrl() + info.liveId, new DownLoader(info.getDownLoadInfo()));
         }
         addDownloaderToPool(info.getDownLoadInfo().getUrl() + info.liveId, info);
-        if (((CoursewarePreload.ZipDownloadListener) info.listener).mMorecachein.getAbsolutePath().equals(debugString)) {
+//        if (info.listener instanceof CoursewarePreload.ZipDownloadListener &&
+//                ((CoursewarePreload.ZipDownloadListener) info.listener).mMorecachein.getAbsolutePath().equals(debugString)) {
 //            logger.i("url:" + info.getDownLoadInfo().getUrl() + " " + debugLog);
-        }
+//        }
         startAutoDownload();
     }
 
@@ -266,16 +268,17 @@ public class PreLoadDownLoaderManager {
     private static void addDownloaderToPool(String key,
                                             DownLoadInfoAndListener downLoadInfo) {
         synchronized (sLockObject) {
-            if (((CoursewarePreload.ZipDownloadListener) downLoadInfo.listener).mMorecachein.getAbsolutePath().equals(debugString)) {
-                logger.i("key:" + key + " " + debugLog);
-            }
+//            if (downLoadInfo.listener instanceof CoursewarePreload.ZipDownloadListener &&
+//                    ((CoursewarePreload.ZipDownloadListener) downLoadInfo.listener).mMorecachein.getAbsolutePath().equals(debugString)) {
+//                logger.i("key:" + key + " " + debugLog);
+//            }
             if (!sAutoDownloaderPool.containsKey(key)) {
                 sAutoDownloaderPool.put(key, downLoadInfo);
             }
         }
     }
 
-    public static final String debugString = "/storage/emulated/0/Android/data/com.xueersi.parentsmeeting.debug/cache/webviewCache/20190315/361072/361072";
+//    public static final String debugString = "/storage/emulated/0/Android/data/com.xueersi.parentsmeeting.debug/cache/webviewCache/20190315/361072/361072";
 
-    public static final String debugLog = "debugLog";
+//    public static final String debugLog = "debugLog";
 }

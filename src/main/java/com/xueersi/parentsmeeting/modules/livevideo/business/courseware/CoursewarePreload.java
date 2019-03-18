@@ -49,9 +49,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import ren.yale.android.cachewebviewlib.utils.MD5Utils;
 
-import static com.xueersi.parentsmeeting.modules.livevideo.business.courseware.PreLoadDownLoaderManager.debugLog;
-import static com.xueersi.parentsmeeting.modules.livevideo.business.courseware.PreLoadDownLoaderManager.debugString;
-
 
 /**
  * Created by: WangDe on 2019/2/27
@@ -379,9 +376,9 @@ public class CoursewarePreload {
             mMorecacheout.mkdirs();
         }
         logger.i("BBB in:" + mMorecachein.getAbsolutePath() + " out:" + mMorecacheout.getAbsolutePath());
-        if (mMorecachein.getAbsolutePath().equals(debugString)) {
-            logger.i(debugLog);
-        }
+//        if (mMorecachein.getAbsolutePath().equals(debugString)) {
+//            logger.i(debugLog);
+//        }
         String tempIP = ips.get(0);
         String ip;
         boolean isIP = false;
@@ -667,9 +664,9 @@ public class CoursewarePreload {
         @Override
         public void onSuccess(String folderPath, String fileName) {
             logger.d("download zip success path:" + folderPath + " name:" + fileName + " out:" + mMorecacheout.getAbsolutePath() + " in:" + mMorecachein.getAbsolutePath());
-            if (mMorecachein.getAbsolutePath().equals(debugString)) {
-                logger.i(debugLog);
-            }
+//            if (mMorecachein.getAbsolutePath().equals(debugString)) {
+//                logger.i(debugLog);
+//            }
             StableLogHashMap hashMap = new StableLogHashMap();
             hashMap.put("logtype", "endPreload");
             hashMap.put("preloadid", md5);
