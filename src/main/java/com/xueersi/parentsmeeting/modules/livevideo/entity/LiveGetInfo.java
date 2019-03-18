@@ -294,6 +294,16 @@ public class LiveGetInfo {
     // add by William on 2018/12/5  专属老师用
     public EPlanInfoBean ePlanInfo;
 
+    private boolean useGoldMicroPhone;
+
+    public boolean isUseGoldMicroPhone() {
+        return useGoldMicroPhone;
+    }
+
+    public void setUseGoldMicroPhone(boolean useGoldMicroPhone) {
+        this.useGoldMicroPhone = useGoldMicroPhone;
+    }
+
     public int getPraiseAutoCutTime() {
         return praiseAutoCutTime;
     }
@@ -1357,8 +1367,8 @@ public class LiveGetInfo {
     }
 
     public static class EnPkEnergy {
-        public  int me;//: 10,
-        public  int myTeam;//":80,
-        public  int opTeam;//":100
+        public int me;//: 10,
+        public int myTeam;//":80,
+        public int opTeam;//":100
     }
 }

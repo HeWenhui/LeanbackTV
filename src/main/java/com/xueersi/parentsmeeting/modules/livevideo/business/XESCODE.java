@@ -168,7 +168,7 @@ public interface XESCODE {
     /** 开启/关闭语音弹幕 */
     int XCR_ROOM_DANMU_OPEN = 260;
 
-    /** 发送语音弹幕  */
+    /** 发送语音弹幕 */
     int XCR_ROOM_DANMU_SEND = 261;
 
     /** 语文：开启/关闭语音弹幕 */
@@ -250,4 +250,6 @@ public interface XESCODE {
         int XCR_ROOM_TEAMPK_STULIKE = 1021;//     ("1021")  //学生点赞上报
     }
 
+    /** 语文幼升小金话筒 */
+    int ARTS_GOLD_MICROPHONE = 3000;
 }

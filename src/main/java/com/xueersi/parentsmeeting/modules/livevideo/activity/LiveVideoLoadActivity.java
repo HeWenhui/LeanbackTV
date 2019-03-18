@@ -11,18 +11,15 @@ import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.toast.XesToast;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
@@ -166,7 +163,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     bundle.putBoolean("isSmallEnglish", mGetInfo.getSmallEnglish());
                     if (mGetInfo.getIsArts() == 0) {
                         bundle.putInt("allowLinkMicNew", mGetInfo.getAllowLinkMicNew());
-                    }else {
+                    } else {
                         bundle.putInt("smallEnglish", mGetInfo.getSmallEnglish() ? 1 : 0);
                     }
 //                if (mGetInfo.getPattern() == 2) {
@@ -176,6 +173,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
 //                }
                     if (1 == mGetInfo.getIsEnglish()) {
                         gotoEnglish(bundle);
+                    } else if (mGetInfo.isUseGoldMicroPhone()) {
+                        gotoHalfBodyChinese();
                     } else {
                         com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                         finish();
@@ -227,6 +226,40 @@ public class LiveVideoLoadActivity extends BaseActivity {
             com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
             finish();
         }
+    }
+
+    /**  */
+    void gotoHalfBodyChinese(final Bundle bundle) {
+        boolean have = XesPermission.checkPermission(this, new LiveActivityPermissionCallback() {
+
+                    @Override
+                    public void onFinish() {
+
+                    }
+
+                    @Override
+                    public void onDeny(String permission, int position) {
+
+                    }
+
+                    @Override
+                    public void onGuarantee(String permission, int position) {
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                                finish();
+                            }
+                        });
+                    }
+                },
+                PermissionConfig.PERMISSION_CODE_AUDIO);
+        if (have) {
+
+        }
+        com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+        finish();
     }
 
     /**
