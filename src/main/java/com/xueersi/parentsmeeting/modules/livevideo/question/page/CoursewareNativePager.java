@@ -579,6 +579,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                             setNum(currentIndex + 1);
                             NewCourseSec.Test test = tests.get(currentIndex);
                             addJs = false;
+                            NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), "0", test.getPreviewPath(), ispreload, test.getId());
                             wvSubjectWeb.loadUrl(test.getPreviewPath());
                         }
                     }
@@ -630,6 +631,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                             }
                         }
                     }
+                    String pageid = "";
+                    if (currentIndex >= 0 && currentIndex < tests.size()) {
+                        pageid = tests.get(currentIndex).getId();
+                    }
+                    NewCourseLog.sno4(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), "" + currentIndex, wvSubjectWeb.getUrl(), ispreload, pageid, (System.currentTimeMillis() - pagerStart));
                 }
                 setViewEnable("onLoadComplete");
             }
@@ -1080,11 +1086,6 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     rlCourseControl.setVisibility(View.VISIBLE);
                 }
                 preLoad.onStop();
-                String pageid = "";
-                if (currentIndex >= 0 && currentIndex < tests.size()) {
-                    pageid = tests.get(currentIndex).getId();
-                }
-                NewCourseLog.sno4(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), "" + currentIndex, view.getUrl(), ispreload, pageid, (System.currentTimeMillis() - pagerStart));
             }
         } else {
             NewCourseLog.sno8(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), ispreload, (System.currentTimeMillis() - pagerStart));
@@ -1142,10 +1143,10 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     int type = newCourseCache.loadCourseWareUrl(test.getPreviewPath());
                     if (type != 0) {
                         ispreload = type == 1;
-                        NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), "0", test.getPreviewPath(), ispreload, test.getId());
                     } else {
                         ispreload = true;
                     }
+                    NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), "0", test.getPreviewPath(), ispreload, test.getId());
                     //设置作答时间
                     if (isArts == LiveVideoSAConfig.ART_EN) {
                         setTimeEn(newCourseSec);
