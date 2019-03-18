@@ -940,6 +940,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
             }
             mData.put("subject", subject);
         }
+        mData.put("ip", "" + IpAddressUtil.USER_IP);
         mData.put("liveid", mLiveId);
         mData.put("livetype", "" + mLiveType);
         mData.put("eventid", "" + eventId);
