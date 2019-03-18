@@ -162,7 +162,7 @@ public class TeamPkContributionPager extends TeamPkBasePager {
             public void run() {
                 playMusic(R.raw.pk_contribution_starlist_bg, DEFAULT_BG_VOLUME, false);
             }
-        },700);
+        }, 700);
 
         pkPraiseLayout.setOnLineTeammates(teamPkBll.getOnlineTeamMates());
         pkPraiseLayout.setWrodList(teamPkBll.getPraiseText());
@@ -188,7 +188,7 @@ public class TeamPkContributionPager extends TeamPkBasePager {
         buildAnimInfo(effectInfo);
 
         animationView.useHardwareAcceleration(true);
-        animationView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext),LOTTIE_CACHE_KEY_RANK);
+        animationView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext), LOTTIE_CACHE_KEY_RANK);
         animationView.setImageAssetDelegate(new ImageAssetDelegate() {
             @Override
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
@@ -202,19 +202,16 @@ public class TeamPkContributionPager extends TeamPkBasePager {
             @Override
             public void run() {
                 startAutoClose();
-            }
-        },2000);
-
-        animationView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
+                //学习报告截图
                 recordHighLight();
             }
-        },3500);
+        }, 2000);
     }
 
 
-    /**记录学生 高光时刻**/
+    /**
+     * 记录学生 高光时刻
+     **/
     private void recordHighLight() {
         if (mData.getContributionStarList() != null) {
             mView.postDelayed(new Runnable() {
@@ -323,10 +320,20 @@ public class TeamPkContributionPager extends TeamPkBasePager {
 
 
     /**
+     * 是否是强制提交
+     *
+     * @return
+     */
+    private boolean isForceSubmit() {
+
+        return teamPkBll.getLatesH5CloseEvent() != null && teamPkBll.getLatesH5CloseEvent().isCloseByTeacher();
+    }
+
+    /**
      * 开始自动关闭
      */
     public void startAutoClose() {
-        timeCountDowTextView.setTimeDuration(5);
+        timeCountDowTextView.setTimeDuration(isForceSubmit()?3:5);
         timeCountDowTextView.setTimeSuffix("秒后关闭");
         timeCountDowTextView.startCountDow();
         timeCountDowTextView.setTimeCountDowListener(new TimeCountDowTextView.TimeCountDowListener() {
@@ -336,7 +343,6 @@ public class TeamPkContributionPager extends TeamPkBasePager {
             }
         });
     }
-
 
     private void closePager() {
         try {
@@ -350,9 +356,9 @@ public class TeamPkContributionPager extends TeamPkBasePager {
     }
 
     private void releasRes() {
-       if(soundPoolHelper != null){
-           soundPoolHelper.release();
-       }
+        if (soundPoolHelper != null) {
+            soundPoolHelper.release();
+        }
     }
 
     @Override
