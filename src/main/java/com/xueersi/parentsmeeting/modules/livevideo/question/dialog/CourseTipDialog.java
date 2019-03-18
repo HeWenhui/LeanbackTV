@@ -34,7 +34,7 @@ public class CourseTipDialog extends BaseAlertDialog {
             @Override
             public void onClick(View view) {
                 if (onClick != null) {
-                    onClick.onCommit(view);
+                    onClick.onCommit(CourseTipDialog.this, view);
                 }
             }
         });
@@ -42,7 +42,7 @@ public class CourseTipDialog extends BaseAlertDialog {
             @Override
             public void onClick(View view) {
                 if (onClick != null) {
-                    onClick.onCancle(view);
+                    onClick.onCancle(CourseTipDialog.this, view);
                 }
             }
         });
@@ -50,7 +50,7 @@ public class CourseTipDialog extends BaseAlertDialog {
             @Override
             public void onClick(View view) {
                 if (onClick != null) {
-                    onClick.onCancle(view);
+                    onClick.onCancle(CourseTipDialog.this, view);
                 }
             }
         });
@@ -62,8 +62,8 @@ public class CourseTipDialog extends BaseAlertDialog {
     }
 
     public interface OnClick {
-        void onCancle(View view);
+        void onCancle(CourseTipDialog dialog, View view);
 
-        void onCommit(View view);
+        void onCommit(CourseTipDialog dialog, View view);
     }
 }

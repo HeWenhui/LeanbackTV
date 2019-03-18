@@ -533,23 +533,26 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                             }
                         }
                         if (needTip) {
+                            if (courseTipDialog != null) {
+                                courseTipDialog.cancelDialog();
+                            }
                             courseTipDialog = new CourseTipDialog(mContext, (Application) mContext.getApplicationContext());
                             courseTipDialog.setOnClick(new CourseTipDialog.OnClick() {
 
                                 @Override
-                                public void onCancle(View view) {
-                                    if (courseTipDialog != null) {
-                                        courseTipDialog.cancelDialog();
+                                public void onCancle(CourseTipDialog dialog, View view) {
+                                    dialog.cancelDialog();
+                                    if (dialog == courseTipDialog) {
+                                        courseTipDialog = null;
                                     }
-                                    courseTipDialog = null;
                                 }
 
                                 @Override
-                                public void onCommit(View view) {
-                                    if (courseTipDialog != null) {
-                                        courseTipDialog.cancelDialog();
+                                public void onCommit(CourseTipDialog dialog, View view) {
+                                    dialog.cancelDialog();
+                                    if (dialog == courseTipDialog) {
+                                        courseTipDialog = null;
                                     }
-                                    courseTipDialog = null;
                                     submit(0, "");
                                 }
                             });
@@ -1538,9 +1541,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             logHashMap.put("testsource", "" + ispreload);
             logHashMap.put("errtype", "webView");
             logHashMap.put("subtestid", "" + currentIndex);
-            if(XESCODE.ARTS_SEND_QUESTION==detailInfo.noticeType){
+            if (XESCODE.ARTS_SEND_QUESTION == detailInfo.noticeType) {
                 logHashMap.put("testsource", "PlatformTest");
-            }else  if(XESCODE.ARTS_H5_COURSEWARE==detailInfo.noticeType){
+            } else if (XESCODE.ARTS_H5_COURSEWARE == detailInfo.noticeType) {
                 logHashMap.put("testsource", "PlatformCourseware");
             }
             logHashMap.put("eventid", "" + LogConfig.LIVE_H5PLAT);
