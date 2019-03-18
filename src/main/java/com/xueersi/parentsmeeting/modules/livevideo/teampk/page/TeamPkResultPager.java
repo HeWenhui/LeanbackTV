@@ -360,7 +360,7 @@ public class TeamPkResultPager extends TeamPkBasePager {
         if (mTeamPkBll != null) {
             mTeamPkBll.updatePkStateLayout(true);
         }
-        turn2ContributionPage(data,4000);
+        turn2ContributionPage(data,5000);
     }
 
     /**
