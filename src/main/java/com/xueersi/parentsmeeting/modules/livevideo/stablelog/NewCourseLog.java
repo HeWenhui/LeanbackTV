@@ -91,7 +91,7 @@ public class NewCourseLog {
         logHashMap.put("pageid", "" + pageid);
         logHashMap.put("loadtime", "" + loadtime);
         logHashMap.put("sno", "4");
-        liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
+        liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 
     /** sno5学生提交(包括强制提交) */
