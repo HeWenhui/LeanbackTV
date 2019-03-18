@@ -51,6 +51,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfi
 import com.xueersi.parentsmeeting.modules.livevideo.question.dialog.CourseTipDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.web.MiddleResult;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.NewCourseCache;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.StaticWeb;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.WebInstertJs;
@@ -1098,7 +1099,6 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 preLoad.onStop();
             }
         } else {
-            NewCourseLog.sno8(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), ispreload, (System.currentTimeMillis() - pagerStart));
 //            if (isFinish) {
 //                //初中结果页是网页，需要调接口
 //                if (isArts != LiveVideoSAConfig.ART_EN && (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage))) {
@@ -1595,6 +1595,12 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             String url = englishH5CoursewareSecHttp.getResultUrl(detailInfo, isforce, "");
             loadResult = true;
             NewCourseLog.sno7(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), ispreload);
+            wvSubjectWeb.addJavascriptInterface(new MiddleResult(mContext) {
+                @Override
+                public void onResultPageLoaded(String data) {
+                    NewCourseLog.sno8(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), ispreload, (System.currentTimeMillis() - pagerStart));
+                }
+            }, "xesApp");
             wvSubjectWeb.loadUrl(url);
         }
     }
