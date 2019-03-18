@@ -932,14 +932,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         } else if (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage)) {
             mData.put("gradejudgment", "middle");
         }
-        String[] subjectIds = mGetInfo.getSubjectIds();
-        if (subjectIds != null && subjectIds.length > 0) {
-            String subject = "";
-            for (int i = 0; i < subjectIds.length; i++) {
-                subject += subjectIds[i] + ",";
-            }
-            mData.put("subject", subject);
-        }
+        mData.put("subject", "" + mGetInfo.getSubject_digits());
         mData.put("ip", "" + IpAddressUtil.USER_IP);
         mData.put("liveid", mLiveId);
         mData.put("livetype", "" + mLiveType);
