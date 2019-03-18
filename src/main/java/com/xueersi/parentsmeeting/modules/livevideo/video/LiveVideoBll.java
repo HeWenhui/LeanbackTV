@@ -9,6 +9,7 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.module.videoplayer.LiveLogUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
@@ -37,7 +38,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import okhttp3.Call;
@@ -776,6 +779,11 @@ public class LiveVideoBll implements VPlayerListenerReg {
             mVideoAction.onPlayError(0, PlayErrorCode.PLAY_TIMEOUT_300);
             long openTimeOut = System.currentTimeMillis() - openStartTime;
             mLogtf.d("openTimeOut:progress=" + vPlayer.getBufferProgress() + ",openTimeOut=" + openTimeOut);
+
+            Map<String, String> map = new HashMap<>();
+            map.put("param", "openTimeOut");
+            UmsAgentManager.umsAgentDebug(activity, LiveLogUtils.PLAY_VIDEO_FAIL, map);
+
             liveGetPlayServer.liveGetPlayServer(false);
         }
     };

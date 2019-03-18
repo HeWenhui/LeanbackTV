@@ -543,9 +543,16 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
     /**
      * 播放失败，或者完成时调用
      * 这里主要进行业务逻辑处理，不涉及到界面展示
-     * 界面展示交给子类{@link BasePlayerFragment}
      */
     protected void onFail(int arg1, final int arg2) {
+        //
+        if (mLiveBll != null) {
+            boolean isPresent = mLiveBll.isPresent();
+            mLogtf.d("liveGetPlayServer:isPresent=" + isPresent);
+            if (!isPresent && liveVideoAction != null) {
+                liveVideoAction.onTeacherNotPresent(true);
+            }
+        }
         if (liveVideoAction != null) {
             if (!MediaPlayer.isPSIJK) {
                 liveVideoAction.onFail(arg1, arg2);

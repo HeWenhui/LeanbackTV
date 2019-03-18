@@ -579,6 +579,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
     @Override
     protected void resultFailed(final int arg1, final int arg2) {
+        judgeTeacherIsPresent();
         postDelayedIfNotFinish(new Runnable() {
 
             @Override
@@ -593,6 +594,17 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 });
             }
         }, 1200);
+    }
+
+    /** 判断老师是否在直播间 */
+    private void judgeTeacherIsPresent() {
+        boolean isPresent = mLiveBll.isPresent();
+        if (!isPresent) {//如果不在，设置当前页面为老师不在直播间
+            if (ivTeacherNotpresent.getVisibility() != View.VISIBLE) {
+                ivTeacherNotpresent.setVisibility(View.VISIBLE);
+                ivTeacherNotpresent.setBackgroundResource(R.drawable.livevideo_zw_dengdaida_bg_normal);
+            }
+        }
     }
 
     @Override
