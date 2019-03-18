@@ -31,6 +31,7 @@ import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.utils.SpeechUtils;
+import com.tal.speech.utils.SpeechEvaluatorUtils;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.sharedata.ShareDataManager;

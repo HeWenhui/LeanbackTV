@@ -445,6 +445,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             logger.d("scanQuestion:showQuestion");
             Log.e("Duncan", "showQuestion:" + position);
             showQuestion(oldQuestionEntity, showQuestion);
+            LiveVideoConfig.isAITrue = false;
         }
         for (LiveBackBaseBll businessBll : liveBackBaseBlls) {
             businessBll.onPositionChanged(playPosition);

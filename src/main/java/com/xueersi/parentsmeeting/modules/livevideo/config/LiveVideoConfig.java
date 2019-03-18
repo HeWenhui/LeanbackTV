@@ -3,6 +3,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.config;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.EnglishH5Entity;
 
+import java.util.HashMap;
+
 /**
  * 直播模块配置
  * URL前缀：接口连接地址
@@ -350,6 +352,14 @@ public class LiveVideoConfig {
     /** 一发多题的两个动态接口-语文 */
     public static String LIVEMULPRELOADCHS;
     public static String LIVEMULH5URLCHS;
+    /** AI体验课互动题答题结果*/
+    public static Boolean isAITrue = false;
+    /** AI体验课已答互动题序号*/
+    public static int aiQuestionIndex = -1;
+    /** AI体验课退出时，记录当前的进度*/
+    public static HashMap<String, Long> liveKey = new HashMap<>();
+    public static HashMap<String, Long> curentTime = new HashMap<>();
+    public static HashMap<String, Boolean> livefinish = new HashMap<>();
     /** 战队PK改版 */
     public static String tests;
     public static String ctId;
