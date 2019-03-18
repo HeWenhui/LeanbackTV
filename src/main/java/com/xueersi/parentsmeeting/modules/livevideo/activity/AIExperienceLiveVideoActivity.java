@@ -1038,9 +1038,9 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                 LiveVideoConfig.curentTime.put(mVideoEntity.getChapterId(), 0L);
             }
             // 待删除。方便测试跳转
-            if (!TextUtils.isEmpty(LocalCourseConfig.tempkey)) {
-                mVideoEntity.setVisitTimeKey(LocalCourseConfig.tempkey);
-            }
+//            if (!TextUtils.isEmpty(LocalCourseConfig.tempkey)) {
+//                mVideoEntity.setVisitTimeKey(LocalCourseConfig.tempkey);
+//            }
             if (mTotaltime < Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 || LiveVideoConfig.livefinish.get(mVideoEntity.getChapterId())) {
                 // 03.21 提示直播已结束
                 ivTeacherNotpresent.setVisibility(View.VISIBLE);
@@ -1641,7 +1641,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         LiveVideoConfig.liveKey.put(mVideoEntity.getChapterId(), currentMsg);
         LiveVideoConfig.curentTime.put(mVideoEntity.getChapterId(), System.currentTimeMillis());
         // 03.08待删除，方便测试临时添加的变量
-        LocalCourseConfig.tempkey = "";
+//        LocalCourseConfig.tempkey = "";
         LiveVideoConfig.aiQuestionIndex = -1;
     }
 
