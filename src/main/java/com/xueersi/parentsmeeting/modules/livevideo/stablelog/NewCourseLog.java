@@ -30,7 +30,7 @@ public class NewCourseLog {
         newCourseTestIdSec = "";
         try {
             EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
-            String packageId = englishH5Entity.getPackageId();
+//            String packageId = englishH5Entity.getPackageId();
             JSONArray array = new JSONArray(englishH5Entity.getReleasedPageInfos());
             int length = array.length();
             for (int i = 0; i < length; i++) {
@@ -41,7 +41,7 @@ public class NewCourseLog {
                     JSONArray value = jsonObject.getJSONArray(key);
                     String srcTypes = value.getString(0);
                     String testIds = value.getString(1);
-                    newCourseTestIdSec += packageId + "_" + srcTypes + "_" + testIds + ",";
+                    newCourseTestIdSec += key + "_" + srcTypes + "_" + testIds + ",";
                 }
             }
         } catch (JSONException e) {
