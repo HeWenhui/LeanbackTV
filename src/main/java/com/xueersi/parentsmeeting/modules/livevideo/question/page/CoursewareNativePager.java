@@ -140,6 +140,8 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private boolean addJs = false;
     /** 是不是刷新，加载完成 */
     private int isRefresh = 0;
+    /** 刷新次数 */
+    private int refreshTime = 0;
     private NewCourseSec newCourseSec;
     private ArrayList<NewCourseSec.Test> tests = new ArrayList<>();
     private int currentIndex = 0;
@@ -372,6 +374,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             public void onClick(View view) {
                 addJs = false;
                 isRefresh = 1;
+                refreshTime++;
                 wvSubjectWeb.reload();
             }
         });
@@ -644,7 +647,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     if (currentIndex >= 0 && currentIndex < tests.size()) {
                         pageid = tests.get(currentIndex).getId();
                     }
-                    NewCourseLog.sno4(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), getSubtestid(), wvSubjectWeb.getUrl(), ispreload, pageid, (System.currentTimeMillis() - pagerStart), isRefresh);
+                    NewCourseLog.sno4(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), getSubtestid(), wvSubjectWeb.getUrl(), ispreload, pageid, (System.currentTimeMillis() - pagerStart), isRefresh, refreshTime);
                     isRefresh = 0;
                 }
                 setViewEnable("onLoadComplete");

@@ -83,7 +83,7 @@ public class NewCourseLog {
     }
 
     /** sno4课件加载完成/打开页面 */
-    public static void sno4(LiveAndBackDebug liveAndBackDebug, String testid, String subtestid, String loadurl, boolean ispreload, String pageid, long loadtime, int isfresh) {
+    public static void sno4(LiveAndBackDebug liveAndBackDebug, String testid, String subtestid, String loadurl, boolean ispreload, String pageid, long loadtime, int isfresh, int refreshTime) {
         StableLogHashMap logHashMap = new StableLogHashMap("showH5Plat");
         logHashMap.put("testid", testid);
         logHashMap.put("subtestid", subtestid);
@@ -92,6 +92,7 @@ public class NewCourseLog {
         logHashMap.put("pageid", "" + pageid);
         logHashMap.put("loadtime", "" + loadtime);
         logHashMap.put("isfresh", "" + isfresh);
+        logHashMap.put("refreshTime", "" + refreshTime);
         logHashMap.put("sno", "4");
         liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
