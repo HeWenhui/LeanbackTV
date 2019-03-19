@@ -11,6 +11,7 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 
@@ -92,7 +93,12 @@ public class ErrorWebViewClient extends WebViewClient {
 //                    Loger.d(webView.getContext(), LiveVideoConfig.LIVE_WEBVIEW_ERROR, logHashMap.getData(), true);
                     String enentId = logHashMap.getData().get("eventid");
                     if (enentId != null) {
-                        UmsAgentManager.umsAgentDebug(webView.getContext(), enentId, logHashMap.getData());
+                        LiveAndBackDebug liveAndBackDebug = ProxUtil.getProxUtil().get(webView.getContext(), LiveAndBackDebug.class);
+                        if (liveAndBackDebug != null) {
+                            liveAndBackDebug.umsAgentDebugInter(enentId, logHashMap.getData());
+                        } else {
+                            UmsAgentManager.umsAgentDebug(webView.getContext(), enentId, logHashMap.getData());
+                        }
                     } else {
                         UmsAgentManager.umsAgentDebug(webView.getContext(), LiveVideoConfig.LIVE_WEBVIEW_ERROR, logHashMap.getData());
                     }

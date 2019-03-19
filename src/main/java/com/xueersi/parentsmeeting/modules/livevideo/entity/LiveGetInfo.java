@@ -251,6 +251,8 @@ public class LiveGetInfo {
     /** 是否是AI 伴侣直播间 */
     private int isAIPartner;
     private String[] subjectIds;//所有学科id
+    /** 学科，都是2 的倍数 */
+    private String subject_digits;
     /** 小学理科改版，教育阶段，区分献花 */
     private String educationStage;
     /** 直播课年级 */
@@ -961,6 +963,14 @@ public class LiveGetInfo {
 
     public String[] getSubjectIds() {
         return subjectIds;
+    }
+
+    public String getSubject_digits() {
+        return subject_digits;
+    }
+
+    public void setSubject_digits(String subject_digits) {
+        this.subject_digits = subject_digits;
     }
 
     public String getEducationStage() {

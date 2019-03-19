@@ -487,6 +487,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 String[] arrSubjIds = strSubjIds.split(",");
                 getInfo.setSubjectIds(arrSubjIds);
             }
+            getInfo.setSubject_digits(data.optString("subject_digits"));
             if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                 if (getInfo.getIsArts() == 1) {
                     parseLiveGetInfoLibarts(data, liveTopic, getInfo);
