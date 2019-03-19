@@ -121,6 +121,7 @@ public class CoursewarePreload {
                 hashMap.put("dir", file.getAbsolutePath());
                 hashMap.put("sno", "5");
                 hashMap.put("status", "true");
+                hashMap.put("ip", IpAddressUtil.USER_IP);
                 UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
 
             }
@@ -657,6 +658,7 @@ public class CoursewarePreload {
             hashMap.put("sno", "1");
             hashMap.put("liveid", itemLiveId);
             hashMap.put("resourcetype", resourcetype);
+            hashMap.put("ip", IpAddressUtil.USER_IP);
             startDownLoadTime = System.currentTimeMillis();
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
         }
@@ -695,11 +697,18 @@ public class CoursewarePreload {
 //            hashMap.put("errorcode", "");
 //            hashMap.put("liveid", itemLiveId);
 //            hashMap.put("resourcetype", resourcetype);
-
+            String tempIP = ips.get(downTryCount.get() % ipLength.get());
+            boolean isIP;
+            //拼接ip
+            if (tempIP.contains("http") || tempIP.contains("https")) {
+                isIP = false;
+            } else {
+                isIP = true;
+            }
             sendUms(LogConfig.PRE_LOAD_START,
                     "endPreload",
                     md5,
-                    IpAddressUtil.USER_IP,
+                    isIP ? "true" : "false",
                     url,
                     "",
                     String.valueOf(downLoadTime),
@@ -728,6 +737,7 @@ public class CoursewarePreload {
                     unZipMap.put("sno", "4");
                     unZipMap.put("liveid", itemLiveId);
                     unZipMap.put("resourcetype", resourcetype);
+                    unZipMap.put("ip", IpAddressUtil.USER_IP);
                     UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, unZipMap.getData());
                     return super.doInBackground(params);
 
@@ -746,6 +756,7 @@ public class CoursewarePreload {
                     unZipMap.put("sno", "4");
                     unZipMap.put("liveid", itemLiveId);
                     unZipMap.put("resourcetype", resourcetype);
+                    unZipMap.put("ip", IpAddressUtil.USER_IP);
                     UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, unZipMap.getData());
                 }
             }.executeOnExecutor(executos);
@@ -822,7 +833,7 @@ public class CoursewarePreload {
                 sendUms(LogConfig.PRE_LOAD_START,
                         "endPreload",
                         md5,
-                        IpAddressUtil.USER_IP,
+                        isIP ? "true" : "false",
                         url,
                         "",
                         String.valueOf(downLoadTime),
@@ -869,6 +880,7 @@ public class CoursewarePreload {
         hashMap.put("resourcetype", resourcetype);
         hashMap.put("failurl", failurl);
         hashMap.put("liveid", liveid);
+        hashMap.put("ip", IpAddressUtil.USER_IP);
         UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, eventId, hashMap.getData());
     }
 
@@ -917,6 +929,7 @@ public class CoursewarePreload {
             hashMap.put("sno", "1");
             hashMap.put("liveid", "");
             hashMap.put("resourcetype", resourcetype);
+            hashMap.put("ip", IpAddressUtil.USER_IP);
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
         }
 
@@ -947,11 +960,18 @@ public class CoursewarePreload {
 //            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
 
             long downLoadTime = System.currentTimeMillis() - startDonwLoadTime;
-
+            String tempIP = ips.get(downTryCount.get() % ipLength.get());
+            boolean isIP;
+            //拼接ip
+            if (tempIP.contains("http") || tempIP.contains("https")) {
+                isIP = false;
+            } else {
+                isIP = true;
+            }
             sendUms(LogConfig.PRE_LOAD_START,
                     "startPreload",
                     md5,
-                    IpAddressUtil.USER_IP,
+                    isIP ? "true" : "false",
                     url,
                     "",
                     String.valueOf(downLoadTime),
@@ -1040,7 +1060,7 @@ public class CoursewarePreload {
                 sendUms(LogConfig.PRE_LOAD_START,
                         "endPreload",
                         md5,
-                        IpAddressUtil.USER_IP,
+                        isIP ? "true" : "false",
                         url,
                         "",
                         String.valueOf(downLoadTime),
