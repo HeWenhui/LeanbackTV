@@ -20,6 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseCourseware
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.NewCourseCache;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
+import com.xueersi.ui.widget.WaveView;
 
 import java.io.File;
 import java.util.HashMap;
@@ -48,6 +49,10 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
      * 课件网页刷新
      */
     private ImageView ivWebViewRefresh;
+    /**
+     * 测评音量波形
+     */
+    private WaveView mWaveView;
 
     /**
      * 新课件缓存
@@ -84,6 +89,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         ivWebViewRefresh = view.findViewById(R.id.iv_livevideo_subject_refresh);
         rlSubjectLoading = view.findViewById(R.id.rl_livevideo_subject_loading);
         rlGroupGameControl = view.findViewById(R.id.rl_livevideo_groupgame_control);
+        mWaveView = view.findViewById(R.id.wv_livevideo_groupgame_control_wave);
         return view;
     }
 
@@ -117,29 +123,42 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
             @Override
             public void onBeginOfSpeech() {
-                logger.d("onBeginOfSpeech");
+                logger.d("onBeginOfSpeech()");
+                mWaveView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mWaveView.initialize();
+                    }
+                }, 100);
             }
 
             @Override
             public void onResult(ResultEntity resultEntity) {
-
                 if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
-                    logger.d("onEvaluatorSuccess:score=" + resultEntity.getScore());
+                    logger.d("SUCCESS: score = " + resultEntity.getScore());
+                    onRecognizeStop();
                 } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
-                    logger.d("onEvaluatorError:ErrorNo=" + resultEntity.getErrorNo() + ",isOfflineFail=" + mIse
-                            .isOfflineFail());
+                    logger.d("ERROR: ErrorNo = " + resultEntity.getErrorNo() + ", isOfflineFail =" + mIse.isOfflineFail());
+                    onRecognizeStop();
                 } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
-                    logger.d("onEvaluatorIng:result="+resultEntity.toString());
+                    if (resultEntity.getNewSenIdx() >= 0) {
+                        logger.d("EVALUATOR_ING: newSenIdx = " + resultEntity.getNewSenIdx() + ", score =" + resultEntity.getScore());
+                    }
                 }
             }
 
+
             @Override
             public void onVolumeUpdate(int volume) {
-                logger.d("onVolumeUpdate:volume=" + volume);
-                lastVolume = volume;
+                logger.d("onBeginOfSpeech(): volume = " + volume);
+                float floatVolume = (float) volume * 3 / 90;
+                mWaveView.setWaveAmplitude(floatVolume);
             }
-
         });
+    }
+
+    private void onRecognizeStop() {
+        mWaveView.setWaveAmplitude(0.0f);
     }
 
     @Override
@@ -206,4 +225,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         return null;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 }

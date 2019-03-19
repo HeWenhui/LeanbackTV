@@ -10,13 +10,16 @@ import android.widget.RelativeLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager.GroupGameMVPPager;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager.GroupGameNativePager;
 
 import java.util.HashMap;
 
-public class TestIRCBll extends LiveBaseBll {
+public class GroupGameTestBll extends LiveBaseBll {
+    GroupGameNativePager groupGameNativePager;
+    GroupGameMVPPager groupGameMVPPager;
 
-    public TestIRCBll(Activity context, LiveBll2 liveBll) {
+    public GroupGameTestBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
     }
 
@@ -33,7 +36,7 @@ public class TestIRCBll extends LiveBaseBll {
         Button btnTest1 = new Button(activity);
         btnTest1.setText("小组互动");
         Button btnTest2 = new Button(activity);
-        btnTest2.setText("");
+        btnTest2.setText("MVP单人模式");
         Button btnTest3 = new Button(activity);
         btnTest3.setText("");
         Button btnTest4 = new Button(activity);
@@ -47,13 +50,15 @@ public class TestIRCBll extends LiveBaseBll {
         btnTest1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                GroupGameNativePager groupGameNativePager = new GroupGameNativePager(mContext,mGetInfo.getStudentLiveInfo().getLearning_stage());
+                groupGameNativePager = new GroupGameNativePager(mContext, mGetInfo.getStudentLiveInfo().getLearning_stage());
                 mRootView.addView(groupGameNativePager.getRootView(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             }
         });
         btnTest2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                groupGameMVPPager = new GroupGameMVPPager(mContext);
+                mRootView.addView(groupGameMVPPager.getRootView(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             }
         });
         btnTest3.setOnClickListener(new View.OnClickListener() {
@@ -67,5 +72,13 @@ public class TestIRCBll extends LiveBaseBll {
 
             }
         });
+    }
+
+    @Override
+    public void onDestory() {
+        super.onDestory();
+        if (groupGameNativePager != null) {
+            groupGameNativePager.onDestroy();
+        }
     }
 }

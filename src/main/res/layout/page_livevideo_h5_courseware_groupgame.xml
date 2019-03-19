@@ -59,7 +59,7 @@
             style="@style/text_font18_ffffff_style"
             android:layout_width="90dp"
             android:layout_height="24dp"
-            android:layout_above="@+id/iv_livevideo_groupgame_control_waveview"
+            android:layout_above="@+id/iv_livevideo_groupgame_control_wave"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="-4dp"
             android:background="@drawable/app_zbhd_yuyin_kuang"
@@ -67,17 +67,29 @@
             android:text="Oops" />
 
         <ImageView
-            android:id="@+id/iv_livevideo_groupgame_control_waveview"
+            android:id="@+id/iv_livevideo_groupgame_control_wave"
             android:layout_width="138dp"
             android:layout_height="138dp"
             android:layout_centerInParent="true"
             android:src="@drawable/app_zbhd_yuyin" />
 
-        <com.xueersi.ui.widget.WaveView
+        <FrameLayout
+            android:id="@+id/aitalk_waveview_fl"
             android:layout_width="63dp"
             android:layout_height="44dp"
-            android:layout_centerInParent="true"></com.xueersi.ui.widget.WaveView>
+            android:layout_centerInParent="true">
 
+            <com.xueersi.ui.widget.WaveView
+                android:id="@+id/wv_livevideo_groupgame_control_wave"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center">
+
+            </com.xueersi.ui.widget.WaveView>
+
+
+        </FrameLayout>
 
     </RelativeLayout>
 
