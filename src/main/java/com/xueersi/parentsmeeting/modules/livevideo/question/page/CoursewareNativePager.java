@@ -1608,6 +1608,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
 
         @Override
         protected void otherMsg(StableLogHashMap logHashMap, String loadUrl) {
+            logHashMap.put("testid", NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts));
             logHashMap.put("ispreload", "" + ispreload);
             logHashMap.put("testsource", "" + ispreload);
             logHashMap.put("errtype", "webView");

@@ -83,7 +83,7 @@ public class ErrorWebViewClient extends WebViewClient {
                     logHashMap.put("isformain", "" + webResourceRequest.isForMainFrame());
                     logHashMap.put("loadurl", url);
                     logHashMap.put("weburl", "" + loadUrl);
-                    logHashMap.put("errorcode", "" + webResourceError.getErrorCode());
+                    logHashMap.put("errcode", "" + webResourceError.getErrorCode());
                     logHashMap.put("errmsg", "" + webResourceError.getDescription());
                     logHashMap.put("remoteip", "" + remoteip);
                     logHashMap.put("userip", "" + IpAddressUtil.USER_IP);
