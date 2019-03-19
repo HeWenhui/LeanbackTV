@@ -801,6 +801,10 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         try {
                             JSONObject answer = new JSONObject();
                             JSONArray userAnswerContent2 = new JSONArray();
+                            JSONObject userAnswerContent3 = new JSONObject();
+                            userAnswerContent3.put("id", "0");
+                            userAnswerContent3.put("text", "");
+                            userAnswerContent2.put(userAnswerContent2);
                             answer.put("userAnswerContent", userAnswerContent2);
                             JSONArray rightAnswerContent2 = new JSONArray();
                             answer.put("rightAnswerContent", rightAnswerContent2);
