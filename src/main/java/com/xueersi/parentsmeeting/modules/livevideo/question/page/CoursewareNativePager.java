@@ -157,6 +157,8 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private long startQueTime;
     /** 课件加载 */
     private PreLoad preLoad;
+    /** 课件题目数量 */
+    private int totalQuestion = -1;
 
     public CoursewareNativePager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, boolean isPlayBack, String liveId, String id, EnglishH5Entity englishH5Entity,
                                  final String courseware_type, String nonce, EnglishH5CoursewareBll.OnH5ResultClose onClose,
@@ -299,6 +301,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         onLoadComplete(where, message);
                     } else if (CourseMessage.REC_SubmitAnswer.equals(type)) {
 //                        onLoadComplete(where, message);
+                    } else if (CourseMessage.REC_QuestionStatus.equals(type)) {
+//                        onLoadComplete(where, message);
+                        onQuestionStatus(message);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -647,6 +652,15 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         });
     }
 
+    private void onQuestionStatus(JSONObject message) {
+        try {
+            JSONObject data = message.getJSONObject("data");
+            totalQuestion = data.optInt("totalQuestion", -1);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void setViewEnable(String method) {
         mLogtf.d("setViewEnable:method=" + method + ",showControl=" + showControl);
         if (showControl) {
@@ -780,6 +794,28 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         int length = 0;
         if (userAnswerContent != null) {
             length = userAnswerContent.length();
+            if (totalQuestion != -1) {
+                if (length < totalQuestion) {
+                    mLogtf.d("submitVoice:totalQuestion=" + totalQuestion + ",length=" + length + ",type=" + detailInfo.getArtType());
+                    for (int i = length; i < totalQuestion; i++) {
+                        try {
+                            JSONObject answer = new JSONObject();
+                            JSONArray userAnswerContent2 = new JSONArray();
+                            answer.put("userAnswerContent", userAnswerContent2);
+                            JSONArray rightAnswerContent2 = new JSONArray();
+                            answer.put("rightAnswerContent", rightAnswerContent2);
+                            JSONArray rightArray = new JSONArray();
+                            rightArray.put(0);
+                            answer.put("isRight", rightArray);
+                            userAnswerContent.put(answer);
+                        } catch (Exception e) {
+                            MobAgent.httpResponseParserError(TAG, "submitVoice1", e.getMessage());
+                            logger.d("submitVoice1", e);
+                        }
+                    }
+                }
+            }
+            length = userAnswerContent.length();
             for (int j = 0; j < userAnswerContent.length(); j++) {
                 JSONObject userAnswer = new JSONObject();
                 try {
@@ -804,46 +840,50 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     userAnswer.put("rightnum", "" + answer.optString("rightnum"));
                     userAnswer.put("wrongnum", "" + answer.optString("wrongnum"));
                     userAnswer.put("answernums", "" + rightAnswerContent2.length());
-                    int isRight = -1;
-                    JSONArray rightArray = null;
-                    if (answer.opt("isRight") instanceof JSONArray) {
-                        rightArray = answer.getJSONArray("isRight");
-                    } else if (answer.opt("isright") instanceof JSONArray) {
-                        rightArray = answer.getJSONArray("isright");
-                    }
-                    if (rightArray != null) {
-                        for (int i = 0; i < rightArray.length(); i++) {
-                            int isRightInt = rightArray.optInt(i, 0);
-                            if (isRightInt == 0) {
-                                if (-1 == isRight) {
-                                    isRight = 0;
-                                } else if (2 == isRight) {
-                                    isRight = 1;
-                                }
-                            } else if (isRightInt == 1) {
-                                if (-1 == isRight) {
-                                    isRight = 2;
-                                } else if (0 == isRight) {
-                                    isRight = 1;
+                    if (LiveQueConfig.EN_COURSE_TYPE_GAME.equals(detailInfo.getArtType())) {
+                        userAnswer.put("isright", 2);
+                    } else {
+                        int isRight = -1;
+                        JSONArray rightArray = null;
+                        if (answer.opt("isRight") instanceof JSONArray) {
+                            rightArray = answer.getJSONArray("isRight");
+                        } else if (answer.opt("isright") instanceof JSONArray) {
+                            rightArray = answer.getJSONArray("isright");
+                        }
+                        if (rightArray != null) {
+                            for (int i = 0; i < rightArray.length(); i++) {
+                                int isRightInt = rightArray.optInt(i, 0);
+                                if (isRightInt == 0) {
+                                    if (-1 == isRight) {
+                                        isRight = 0;
+                                    } else if (2 == isRight) {
+                                        isRight = 1;
+                                    }
+                                } else if (isRightInt == 1) {
+                                    if (-1 == isRight) {
+                                        isRight = 2;
+                                    } else if (0 == isRight) {
+                                        isRight = 1;
+                                    }
                                 }
                             }
+                        } else {
+                            isRight = 0;
                         }
-                    } else {
-                        isRight = 0;
+                        userAnswer.put("isright", isRight);
                     }
-                    userAnswer.put("isright", isRight);
                     userAnswer.put("times", "" + answer.optInt("times", -1));
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    MobAgent.httpResponseParserError(TAG, "submitVoice", e.getMessage());
-                    logger.d("submitVoice", e);
+                    MobAgent.httpResponseParserError(TAG, "submitVoice2", e.getMessage());
+                    logger.d("submitVoice2", e);
                 }
                 userAnswerArray.put(userAnswer);
             }
         }
         int testNum;
         if (length == 0) {
-            testNum = detailInfo.id.split("_").length;
+            testNum = totalQuestion;
         } else {
             testNum = length;
         }
