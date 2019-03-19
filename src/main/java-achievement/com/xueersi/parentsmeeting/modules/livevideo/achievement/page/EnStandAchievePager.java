@@ -154,7 +154,7 @@ public class EnStandAchievePager extends LiveBasePager {
         pgAchivePk.setProgress(progress);
         if (progressImageView == null) {
             progressImageView = new ImageView(activity);
-            progressImageView.setImageResource(R.drawable.livevideo_enteampk_benchangchengjiu_pkfair1_img_nor);
+            progressImageView.setImageResource(R.drawable.pc_livevideo_enteampk_pkbar_fire_pic_nor);
             progressImageView.setVisibility(View.INVISIBLE);
             pkview.addView(progressImageView);
             pgAchivePk.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
@@ -179,7 +179,7 @@ public class EnStandAchievePager extends LiveBasePager {
                     int[] loc = ViewUtil.getLoc(pgAchivePk, pkview);
                     RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) progressImageView.getLayoutParams();
                     int leftMargin = loc[0] - progressImageView.getWidth() / 2 + pgAchivePk.getWidth() * pgAchivePk.getProgress() / pgAchivePk.getMax();
-                    int topMargin = loc[1] - (progressImageView.getHeight() - pgAchivePk.getHeight()) / 2 - 18;
+                    int topMargin = loc[1] - (progressImageView.getHeight() - pgAchivePk.getHeight()) / 2;
                     logger.d("initListener:left=" + loc[0] + ",top=" + loc[1]);
                     if (lp.leftMargin != leftMargin || lp.topMargin != topMargin) {
                         lp.topMargin = topMargin;
