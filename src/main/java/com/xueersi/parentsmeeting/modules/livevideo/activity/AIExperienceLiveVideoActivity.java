@@ -1011,7 +1011,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         isPlay = true;
         rePlayCount = 0;
         mTotaltime = getDuration();
-        logger.d( "mTotaltime:" + mTotaltime);
+        logger.d("mTotaltime:" + mTotaltime);
         logger.d("seekto:" + mVideoEntity.getVisitTimeKey());
         // 03.22 统计用户进入体验播放器的时间
         StableLogHashMap logHashMap = new StableLogHashMap("enterRoom");
@@ -1075,7 +1075,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
     }
 
     private Long computeNewKeytime(long position) {
-        logger.d( "newcompute:position" + position);
+        logger.d("newcompute:position" + position);
         int playPosition = TimeUtils.gennerSecond(position);
         // 落在第一部分的导语部分
         if (playPosition < mVideoEntity.getSciAiEvent().getLeadingStage().getValidTime()) {
@@ -1348,8 +1348,8 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         scanPosition(currentPosition);
         // 扫描互动题
         scanQuestion(currentPosition);
-        logger.d( "currentPosition:" + currentPosition + ": threadId =" + Thread.currentThread().getId());
-        logger.d( "isAITrue:" + LiveVideoConfig.isAITrue);
+        logger.d("currentPosition:" + currentPosition + ": threadId =" + Thread.currentThread().getId());
+        logger.d("isAITrue:" + LiveVideoConfig.isAITrue);
         logger.d("isFirst:" + firstTime);
         if (HISTROY_MSG_DISPLAY) {
             displayHistoryMsg();
@@ -1357,7 +1357,6 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
     }
 
     /**
-     *
      * @param position
      * @description 因为seekto方法跳转不准确会跳到目标点的前一个关键帧，避免重复循环跳转每次跳转后将改时间点置为0
      */
@@ -1416,10 +1415,21 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                         logger.d("seekTo4=====>" + example.getInterpret().getBeginTime() + "i:" + i);
                     } else {
                         if ((i + 1) < mVideoEntity.getSciAiEvent().getExercises().size()) {
+                            VideoSpeedEntity.Exercise exerciseTemp = mVideoEntity.getSciAiEvent().getExercises().get(i + 1);
                             if (mVideoEntity.getSciAiEvent().getExercises().get(i + 1).getKnowledgePoints().getBeginTime() != 0) {
                                 seekTo(mVideoEntity.getSciAiEvent().getExercises().get(i + 1).getKnowledgePoints().getBeginTime() * 1000);
                                 LiveVideoConfig.aiQuestionIndex = LiveVideoConfig.aiQuestionIndex + 1;
                                 logger.d("seekTo5=====>" + mVideoEntity.getSciAiEvent().getExercises().get(i + 1).getKnowledgePoints().getBeginTime() + "i:" + i);
+                            }else {
+                                VideoSpeedEntity.Exercise.Example exampleTemp = exerciseTemp.getExample().get(0);
+                                if (!exerciseTemp.isShare() && !LiveVideoConfig.isAITrue) {
+                                    exampleTemp = exerciseTemp.getExample().get(1);
+                                }
+                                if (exampleTemp.getIntroduce().getBeginTime()!=0){
+                                    seekTo(exampleTemp.getIntroduce().getBeginTime() * 1000);
+                                } else if ( exampleTemp.getPublish().getBeginTime() != 0){
+                                    seekTo(exampleTemp.getPublish().getBeginTime() * 1000);
+                                }
                             }
                         } else {
                             seekTo(mVideoEntity.getSciAiEvent().getEndingStage().getBeginTime() * 1000);
@@ -1437,10 +1447,21 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                         && playPosition == example.getInterpret().getEndTime()
                         && LiveVideoConfig.aiQuestionIndex == i) {
                     if ((i + 1) < mVideoEntity.getSciAiEvent().getExercises().size()) {
-                        if (mVideoEntity.getSciAiEvent().getExercises().get(i + 1).getKnowledgePoints().getBeginTime() != 0) {
-                            example.getInterpret().setEndTime(0);
+                        VideoSpeedEntity.Exercise exerciseTemp = mVideoEntity.getSciAiEvent().getExercises().get(i + 1);
+                        example.getInterpret().setEndTime(0);
+                        if (exerciseTemp.getKnowledgePoints().getBeginTime() != 0) {
                             seekTo(mVideoEntity.getSciAiEvent().getExercises().get(i + 1).getKnowledgePoints().getBeginTime() * 1000);
                             logger.d("seekTo7=====>" + mVideoEntity.getSciAiEvent().getExercises().get(i + 1).getKnowledgePoints().getBeginTime() + "i:" + i);
+                        } else {
+                            VideoSpeedEntity.Exercise.Example exampleTemp = exerciseTemp.getExample().get(0);
+                            if (!exerciseTemp.isShare() && !LiveVideoConfig.isAITrue) {
+                                exampleTemp = exerciseTemp.getExample().get(1);
+                            }
+                            if (exampleTemp.getIntroduce().getBeginTime()!=0){
+                                seekTo(exampleTemp.getIntroduce().getBeginTime() * 1000);
+                            } else if ( exampleTemp.getPublish().getBeginTime() != 0){
+                                seekTo(exampleTemp.getPublish().getBeginTime() * 1000);
+                            }
                         }
                     } else {
                         for (int k = 0; k < exercise.getExample().size(); k++) {
