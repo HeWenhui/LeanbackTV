@@ -63,6 +63,7 @@ public class NewCourseLog {
         logHashMap.put("testid", testid);
         logHashMap.put("noticecode", "" + noticecode);
         logHashMap.put("sno", "2");
+        logHashMap.put("status", "true");
         liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 

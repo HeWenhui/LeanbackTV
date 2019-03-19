@@ -588,7 +588,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                             setNum(currentIndex + 1);
                             NewCourseSec.Test test = tests.get(currentIndex);
                             addJs = false;
-                            NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), "0", test.getPreviewPath(), ispreload, test.getId());
+                            NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), getSubtestid(), test.getPreviewPath(), ispreload, test.getId());
                             wvSubjectWeb.loadUrl(test.getPreviewPath());
                         }
                     }
@@ -644,7 +644,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     if (currentIndex >= 0 && currentIndex < tests.size()) {
                         pageid = tests.get(currentIndex).getId();
                     }
-                    NewCourseLog.sno4(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), "" + currentIndex, wvSubjectWeb.getUrl(), ispreload, pageid, (System.currentTimeMillis() - pagerStart), isRefresh);
+                    NewCourseLog.sno4(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), getSubtestid(), wvSubjectWeb.getUrl(), ispreload, pageid, (System.currentTimeMillis() - pagerStart), isRefresh);
                     isRefresh = 0;
                 }
                 setViewEnable("onLoadComplete");
@@ -1450,6 +1450,14 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
 
     }
 
+    /** 课件日志 */
+    private String getSubtestid() {
+        if (tests.size() == 1) {
+            return "0";
+        }
+        return "" + (currentIndex + 1);
+    }
+
     /** 初中课件加载 */
     private class MiddleSchool implements PreLoad {
         private ImageView ivLoading;
@@ -1603,7 +1611,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             logHashMap.put("ispreload", "" + ispreload);
             logHashMap.put("testsource", "" + ispreload);
             logHashMap.put("errtype", "webView");
-            logHashMap.put("subtestid", "" + currentIndex);
+            logHashMap.put("subtestid", getSubtestid());
             if (XESCODE.ARTS_SEND_QUESTION == detailInfo.noticeType) {
                 logHashMap.put("testsource", "PlatformTest");
             } else if (XESCODE.ARTS_H5_COURSEWARE == detailInfo.noticeType) {
