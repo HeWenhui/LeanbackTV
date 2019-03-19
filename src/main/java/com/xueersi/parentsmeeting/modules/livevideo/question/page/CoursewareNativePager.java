@@ -375,6 +375,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 addJs = false;
                 isRefresh = 1;
                 refreshTime++;
+                mLogtf.d("ivWebViewRefresh:refreshTime=" + refreshTime);
                 wvSubjectWeb.reload();
             }
         });
