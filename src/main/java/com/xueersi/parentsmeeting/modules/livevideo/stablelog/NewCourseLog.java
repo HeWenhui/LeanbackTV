@@ -121,7 +121,7 @@ public class NewCourseLog {
 
     /** sno7加载结果页 */
     public static void sno7(LiveAndBackDebug liveAndBackDebug, String testid, boolean ispreload) {
-        StableLogHashMap logHashMap = new StableLogHashMap("showResult");
+        StableLogHashMap logHashMap = new StableLogHashMap("showResultLoading");
         logHashMap.put("testid", testid);
         logHashMap.put("ispreload", "" + ispreload);
         logHashMap.put("sno", "7");

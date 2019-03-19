@@ -804,7 +804,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                             JSONObject userAnswerContent3 = new JSONObject();
                             userAnswerContent3.put("id", "0");
                             userAnswerContent3.put("text", "");
-                            userAnswerContent2.put(userAnswerContent2);
+                            userAnswerContent2.put(userAnswerContent3);
                             answer.put("userAnswerContent", userAnswerContent2);
                             JSONArray rightAnswerContent2 = new JSONArray();
                             answer.put("rightAnswerContent", rightAnswerContent2);
@@ -1104,7 +1104,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
      * @param isforce
      */
     private void onSubmitSuccess(int isforce) {
-        NewCourseLog.sno6(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), true, isforce == 1, ispreload, (System.currentTimeMillis() - subMitTime), "");
+        if (isArts == LiveVideoSAConfig.ART_EN) {
+            NewCourseLog.sno6(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), true, isforce == 2, ispreload, (System.currentTimeMillis() - subMitTime), "");
+        } else {
+            NewCourseLog.sno6(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), true, isforce == 1, ispreload, (System.currentTimeMillis() - subMitTime), "");
+        }
     }
 
     /**
@@ -1114,7 +1118,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
      * @param errorMsg
      */
     private void onSubmitError(int isforce, String errorMsg) {
-        NewCourseLog.sno6(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), false, isforce == 1, ispreload, (System.currentTimeMillis() - subMitTime), errorMsg);
+        if (isArts == LiveVideoSAConfig.ART_EN) {
+            NewCourseLog.sno6(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), false, isforce == 2, ispreload, (System.currentTimeMillis() - subMitTime), errorMsg);
+        } else {
+            NewCourseLog.sno6(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), false, isforce == 1, ispreload, (System.currentTimeMillis() - subMitTime), errorMsg);
+        }
     }
 
     @Override
