@@ -1208,7 +1208,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     } else {
                         ispreload = true;
                     }
-                    NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), "0", test.getPreviewPath(), ispreload, test.getId());
+                    NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), getSubtestid(), test.getPreviewPath(), ispreload, test.getId());
                     //设置作答时间
                     if (isArts == LiveVideoSAConfig.ART_EN) {
                         setTimeEn(newCourseSec);
