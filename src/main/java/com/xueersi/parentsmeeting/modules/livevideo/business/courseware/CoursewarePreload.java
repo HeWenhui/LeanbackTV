@@ -7,6 +7,7 @@ import com.xueersi.common.business.AppBll;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.network.IpAddressUtil;
 import com.xueersi.common.network.download.DownLoadInfo;
 import com.xueersi.common.network.download.DownloadListener;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -618,6 +619,8 @@ public class CoursewarePreload {
         String itemLiveId;
         String resourcetype;
 
+        private long startDownLoadTime;
+
         public ZipDownloadListener(
                 File mMorecachein,
                 File mMorecacheout,
@@ -649,10 +652,12 @@ public class CoursewarePreload {
             hashMap.put("logtype", "startPreload");
             hashMap.put("preloadid", md5);
             hashMap.put("loadurl", url);
+            hashMap.put("isresume", "");
             hashMap.put("isresume", "false");
             hashMap.put("sno", "1");
             hashMap.put("liveid", itemLiveId);
             hashMap.put("resourcetype", resourcetype);
+            startDownLoadTime = System.currentTimeMillis();
             UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
         }
 
@@ -661,26 +666,50 @@ public class CoursewarePreload {
 
         }
 
+        //日志系统
         @Override
         public void onSuccess(String folderPath, String fileName) {
             logger.d("download zip success path:" + folderPath + " name:" + fileName + " out:" + mMorecacheout.getAbsolutePath() + " in:" + mMorecachein.getAbsolutePath());
 //            if (mMorecachein.getAbsolutePath().equals(debugString)) {
 //                logger.i(debugLog);
 //            }
-            StableLogHashMap hashMap = new StableLogHashMap();
-            hashMap.put("logtype", "endPreload");
-            hashMap.put("preloadid", md5);
-            hashMap.put("loadurl", url);
-            hashMap.put("sno", "2");
-            hashMap.put("status", "true");
+//            StableLogHashMap hashMap = new StableLogHashMap();
+//            hashMap.put("logtype", "endPreload");
+//            hashMap.put("preloadid", md5);
+//            hashMap.put("isuseip", IpAddressUtil.USER_IP);
+//            hashMap.put("loadurl", url);
+//            hashMap.put("isresume", "");//是否断电续传
+            long downLoadTime = System.currentTimeMillis() - startDownLoadTime;
+//            hashMap.put("loadtime", String.valueOf(downLoadTime));
+
+//            hashMap.put("sno", "2");
+//            hashMap.put("status", "true");
             StringBuilder sb = new StringBuilder(ips.get(0));
             for (int i = 0; i < downTryCount.get() && i < ips.size(); i++) {
                 sb.append("," + ips.get(i));
             }
-            hashMap.put("failurl", sb.toString());
-            hashMap.put("liveid", itemLiveId);
-            hashMap.put("resourcetype", resourcetype);
-            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
+
+
+//            hashMap.put("failurl", sb.toString());
+
+//            hashMap.put("errorcode", "");
+//            hashMap.put("liveid", itemLiveId);
+//            hashMap.put("resourcetype", resourcetype);
+
+            sendUms(LogConfig.PRE_LOAD_START,
+                    "endPreload",
+                    md5,
+                    IpAddressUtil.USER_IP,
+                    url,
+                    "",
+                    String.valueOf(downLoadTime),
+                    "2",
+                    "true",
+                    "",
+                    resourcetype,
+                    sb.toString(),
+                    itemLiveId);
+//            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
 
             decrementDocument();
 
@@ -696,7 +725,7 @@ public class CoursewarePreload {
                     unZipMap.put("logtype", "startUnzip");
                     unZipMap.put("preloadid", md5);
                     unZipMap.put("extrainfo", mMorecacheout.getAbsolutePath());
-                    unZipMap.put("sno", "3");
+                    unZipMap.put("sno", "4");
                     unZipMap.put("liveid", itemLiveId);
                     unZipMap.put("resourcetype", resourcetype);
                     UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, unZipMap.getData());
@@ -714,7 +743,7 @@ public class CoursewarePreload {
                     unZipMap.put("status", exception == null ? "true" : "false");
 //                    }
                     unZipMap.put("extrainfo", mMorecacheout.getAbsolutePath());
-                    unZipMap.put("sno", "3");
+                    unZipMap.put("sno", "4");
                     unZipMap.put("liveid", itemLiveId);
                     unZipMap.put("resourcetype", resourcetype);
                     UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, unZipMap.getData());
@@ -773,22 +802,36 @@ public class CoursewarePreload {
                 }
             } else {
                 decrementDocument();
-                StableLogHashMap hashMap = new StableLogHashMap();
-                hashMap.put("logtype", "endPreload");
-                hashMap.put("preloadid", md5);
-                hashMap.put("loadurl", url);
+//                StableLogHashMap hashMap = new StableLogHashMap();
+//                hashMap.put("logtype", "endPreload");
+//                hashMap.put("preloadid", md5);
+//                hashMap.put("loadurl", url);
 
-                hashMap.put("sno", "2");
-                hashMap.put("status", "false");
-                hashMap.put("errorcode", String.valueOf(errorCode));
+//                hashMap.put("sno", "2");
+//                hashMap.put("status", "false");
+//                hashMap.put("errorcode", String.valueOf(errorCode));
                 StringBuilder sb = new StringBuilder(ips.get(0));
                 for (int i = 0; i < downTryCount.get() && i < ips.size(); i++) {
                     sb.append("," + ips.get(i));
                 }
-                hashMap.put("failurl", sb.toString());
-                hashMap.put("liveid", itemLiveId);
-                hashMap.put("resourcetype", resourcetype);
-                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
+//                hashMap.put("failurl", sb.toString());
+//                hashMap.put("liveid", itemLiveId);
+//                hashMap.put("resourcetype", resourcetype);
+//                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
+                long downLoadTime = System.currentTimeMillis() - startDownLoadTime;
+                sendUms(LogConfig.PRE_LOAD_START,
+                        "endPreload",
+                        md5,
+                        IpAddressUtil.USER_IP,
+                        url,
+                        "",
+                        String.valueOf(downLoadTime),
+                        "2",
+                        "false",
+                        String.valueOf(errorCode),
+                        resourcetype,
+                        sb.toString(),
+                        itemLiveId);
 
             }
 
@@ -798,6 +841,35 @@ public class CoursewarePreload {
         public void onFinish() {
 //            logger.i("zip download finish");
         }
+    }
+
+    private void sendUms(String eventId,
+                         String logtype,
+                         String preloadid,
+                         String isuseip,
+                         String loadurl,
+                         String isresume,
+                         String loadtime,
+                         String sno,
+                         String status,
+                         String errorcode,
+                         String resourcetype,
+                         String failurl,
+                         String liveid) {
+        StableLogHashMap hashMap = new StableLogHashMap();
+        hashMap.put("logtype", logtype);
+        hashMap.put("preloadid", preloadid);
+        hashMap.put("isuseip", isuseip);
+        hashMap.put("loadurl", loadurl);
+        hashMap.put("isresume", isresume);
+        hashMap.put("loadtime", loadtime);
+        hashMap.put("sno", sno);
+        hashMap.put("status", status);
+        hashMap.put("errorcode", errorcode);
+        hashMap.put("resourcetype", resourcetype);
+        hashMap.put("failurl", failurl);
+        hashMap.put("liveid", liveid);
+        UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, eventId, hashMap.getData());
     }
 
     class NoZipDownloadListener implements DownloadListener {
@@ -810,6 +882,7 @@ public class CoursewarePreload {
         List<String> cdns;
         List<String> ips;
         String resourcetype;
+        long startDonwLoadTime;
 
         public NoZipDownloadListener(
                 File mMorecachein,
@@ -830,6 +903,7 @@ public class CoursewarePreload {
             this.cdns = cdns;
             this.downTryCount = downTryCount;
             this.resourcetype = resourcetype;
+            startDonwLoadTime = System.currentTimeMillis();
         }
 
         @Override
@@ -855,22 +929,39 @@ public class CoursewarePreload {
         public void onSuccess(String folderPath, String fileName) {
             logger.d("download ttf success");
 
-            StableLogHashMap hashMap = new StableLogHashMap();
-            hashMap.put("logtype", "endPreload");
-            hashMap.put("preloadid", md5);
-            hashMap.put("loadurl", url);
-            hashMap.put("sno", "2");
-            hashMap.put("status", "true");
+//            StableLogHashMap hashMap = new StableLogHashMap();
+//            hashMap.put("logtype", "endPreload");
+//            hashMap.put("preloadid", md5);
+//            hashMap.put("loadurl", url);
+//            hashMap.put("sno", "2");
+//            hashMap.put("status", "true");
             StringBuilder sb = new StringBuilder(ips.get(0));
             for (int i = 1; i < downTryCount.get() && i < ips.size(); i++) {
                 sb.append("," + ips.get(i));
             }
 
-            hashMap.put("failurl", downTryCount.get() != 0 ? sb.toString() : "");
+//            hashMap.put("failurl", downTryCount.get() != 0 ? sb.toString() : "");
 
-            hashMap.put("liveid", "");
-            hashMap.put("resourcetype", resourcetype);
-            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
+//            hashMap.put("liveid", "");
+//            hashMap.put("resourcetype", resourcetype);
+//            UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
+
+            long downLoadTime = System.currentTimeMillis() - startDonwLoadTime;
+
+            sendUms(LogConfig.PRE_LOAD_START,
+                    "startPreload",
+                    md5,
+                    IpAddressUtil.USER_IP,
+                    url,
+                    "",
+                    String.valueOf(downLoadTime),
+                    "2",
+                    "true",
+                    "",
+                    resourcetype,
+                    downTryCount.get() != 0 ? sb.toString() : "",
+                    "");
+
 
             decrementDocument();
 
@@ -928,22 +1019,37 @@ public class CoursewarePreload {
 //                downLoader.start(new NoZipDownloadListener(mMorecachein, mMorecacheout, mFileName, ips, cdns, url, md5, downTryCount));
             } else {
                 decrementDocument();
-                StableLogHashMap hashMap = new StableLogHashMap();
-                hashMap.put("logtype", "endPreload");
-                hashMap.put("preloadid", md5);
-                hashMap.put("loadurl", url);
+//                StableLogHashMap hashMap = new StableLogHashMap();
+//                hashMap.put("logtype", "endPreload");
+//                hashMap.put("preloadid", md5);
+//                hashMap.put("loadurl", url);
 
-                hashMap.put("sno", "2");
-                hashMap.put("status", "false");
-                hashMap.put("errorcode", String.valueOf(errorCode));
+//                hashMap.put("sno", "2");
+//                hashMap.put("status", "false");
+//                hashMap.put("errorcode", String.valueOf(errorCode));
                 StringBuilder sb = new StringBuilder(ips.get(0));
                 for (int i = 0; i < downTryCount.get() && i < ips.size(); i++) {
                     sb.append("," + ips.get(i));
                 }
-                hashMap.put("failurl", sb.toString());
-                hashMap.put("liveid", "");
-                hashMap.put("resourcetype", resourcetype);
-                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
+//                hashMap.put("failurl", sb.toString());
+//                hashMap.put("liveid", "");
+//                hashMap.put("resourcetype", resourcetype);
+//                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
+
+                long downLoadTime = System.currentTimeMillis() - startDonwLoadTime;
+                sendUms(LogConfig.PRE_LOAD_START,
+                        "endPreload",
+                        md5,
+                        IpAddressUtil.USER_IP,
+                        url,
+                        "",
+                        String.valueOf(downLoadTime),
+                        "2",
+                        "false",
+                        String.valueOf(errorCode),
+                        resourcetype,
+                        sb.toString(),
+                        "");
             }
         }
 
