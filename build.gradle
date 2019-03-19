@@ -20,6 +20,11 @@ android {
     compileSdkVersion 26
     buildToolsVersion '27.0.3'
 }
+repositories {
+    flatDir {
+        dirs '../../business-base/player/libs'
+    }
+}
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     implementation (name:'pschatsdk_1.3.2',ext:'aar')
