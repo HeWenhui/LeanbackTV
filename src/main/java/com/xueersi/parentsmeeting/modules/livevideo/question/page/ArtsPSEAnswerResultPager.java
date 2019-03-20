@@ -72,8 +72,8 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
     /**
      * 关闭按钮 尺寸
      */
-    private final int CLOSEBTN_HEIGHT = 37;
-    private final int CLOSEBTN_WIDTH = 37;
+    private final int CLOSEBTN_HEIGHT = 35;
+    private final int CLOSEBTN_WIDTH = 35;
 
     /**
      * 单选题 答案 展示item  距离顶部的  距离
@@ -227,11 +227,12 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
      */
     private void addCloseBtn() {
         closeBtnAdded = true;
-        final ImageView closeBtn = mView.findViewById(R.id.iv_arts_answer_result_close_btn);
+        final ImageView closeBtn = new ImageView(mContext);
+        closeBtn.setImageResource(R.drawable.selector_live_enpk_shell_window_guanbi_btn);
+        closeBtn.setScaleType(ImageView.ScaleType.CENTER_CROP);
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logger.e("========> close Btn called:");
                 if (mData.isVoice == 1) {
                     if (mStateListener != null) {
                         mStateListener.onAutoClose(ArtsPSEAnswerResultPager.this);
@@ -256,18 +257,23 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                     float scaleY = (resultAnimeView.getMeasuredHeight() * 1.0f) / designHeight;
                     float scale = Math.min(scaleX, scaleY);
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) closeBtn.getLayoutParams();
+                    if(params == null){
+                        params = new RelativeLayout.LayoutParams(SizeUtils.Dp2Px(mContext, CLOSEBTN_WIDTH), SizeUtils.Dp2Px(mContext, CLOSEBTN_HEIGHT));
+                    }
                     int offset = (int) ((1.0f - scale) * SizeUtils.Dp2Px(resultAnimeView.getContext(), 35f));
                     params.rightMargin = (int) (SizeUtils.Dp2Px(resultAnimeView.getContext(), 120f) * scale) - offset;
                     params.topMargin = (int) (SizeUtils.Dp2Px(resultAnimeView.getContext(), 45f) / scale) + offset;
                     params.addRule(RelativeLayout.ALIGN_TOP, R.id.lv_arts_answer_result_pse);
-                    LayoutParamsUtil.setViewLayoutParams(closeBtn, params);
+                    params.addRule(RelativeLayout.ALIGN_RIGHT, R.id.lv_arts_answer_result_pse);
 
-                    if (closeBtn.getVisibility() != View.VISIBLE) {
-                        closeBtn.setVisibility(View.VISIBLE);
+                    if(closeBtn.getParent() == null){
+                        rlAnswerRootLayout.addView(closeBtn,params);
                         ScaleAnimation scaleAnimation = (ScaleAnimation) AnimationUtils.loadAnimation(mContext, R
                                 .anim.anim_livevideo_close_btn_in);
                         scaleAnimation.setInterpolator(new SpringScaleInterpolator(0.23f));
                         closeBtn.startAnimation(scaleAnimation);
+                    }else{
+                        LayoutParamsUtil.setViewLayoutParams(closeBtn, params);
                     }
                     //语音答题倒计时按钮位置
                     if (mData.isVoice == 1) {
