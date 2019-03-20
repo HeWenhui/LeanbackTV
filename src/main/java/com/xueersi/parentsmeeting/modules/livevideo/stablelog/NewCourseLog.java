@@ -48,6 +48,9 @@ public class NewCourseLog {
             Logger logger = LiveLoggerFactory.getLogger("NewCourseLog");
             logger.e("getCourseWareTests", e);
         }
+        if (newCourseTestIdSec.endsWith(",")) {
+            newCourseTestIdSec = newCourseTestIdSec.substring(0, newCourseTestIdSec.length() - 1);
+        }
         detailInfo.setNewCourseTestIdSec(newCourseTestIdSec);
         return newCourseTestIdSec;
     }
