@@ -1432,10 +1432,12 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                                 //题目讲解不为空
                                 if (exampleTemp.getIntroduce().getBeginTime()!=0){
                                     seekTo(exampleTemp.getIntroduce().getBeginTime() * 1000);
+                                    LiveVideoConfig.aiQuestionIndex = LiveVideoConfig.aiQuestionIndex + 1;
                                     logger.d("seekTo6=====>" + exampleTemp.getIntroduce().getBeginTime() + "i:" + i);
                                 //题目答题时间不为空
                                 } else if ( exampleTemp.getPublish().getBeginTime() != 0){
                                     seekTo(exampleTemp.getPublish().getBeginTime() * 1000);
+                                    LiveVideoConfig.aiQuestionIndex = LiveVideoConfig.aiQuestionIndex + 1;
                                     logger.d("seekTo7=====>" + exampleTemp.getPublish().getBeginTime() + "i:" + i);
                                 }
                             }
