@@ -862,7 +862,7 @@ public class TeamPkResultPager extends TeamPkBasePager {
     private void startTimeCountDow(int duration) {
         rlCloseBtnCotainer.setVisibility(View.VISIBLE);
         timeCountDowTextView.setTimeDuration(duration);
-        timeCountDowTextView.setTimeSuffix("秒后关闭");
+        timeCountDowTextView.setTimeSuffix("s后关闭");
         timeCountDowTextView.startCountDow();
         timeCountDowTextView.setTimeCountDowListener(null);
         timeCountDowTextView.setTimeCountDowListener(new TimeCountDowTextView.TimeCountDowListener() {

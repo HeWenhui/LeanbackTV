@@ -334,7 +334,7 @@ public class TeamPkContributionPager extends TeamPkBasePager {
      */
     public void startAutoClose() {
         timeCountDowTextView.setTimeDuration(isForceSubmit()?3:5);
-        timeCountDowTextView.setTimeSuffix("秒后关闭");
+        timeCountDowTextView.setTimeSuffix("s后关闭");
         timeCountDowTextView.startCountDow();
         timeCountDowTextView.setTimeCountDowListener(new TimeCountDowTextView.TimeCountDowListener() {
             @Override
