@@ -104,7 +104,7 @@ public class CoursewarePreload {
         executos.execute(new Runnable() {
             @Override
             public void run() {
-                logger.i("开始删除文件");
+                logger.i("start delete file");
                 for (File itemFile : file.listFiles()) {
                     if (isCoursewareDir(itemFile.getName()) && !itemFile.getName().equals(today)) {
                         if (!itemFile.isDirectory()) {
@@ -115,7 +115,7 @@ public class CoursewarePreload {
                         }
                     }
                 }
-                logger.i("文件删除成功");
+                logger.i("delete file success");
                 StableLogHashMap hashMap = new StableLogHashMap();
                 hashMap.put("logtype", " deleteCourseware");
                 hashMap.put("dir", file.getAbsolutePath());
@@ -173,20 +173,20 @@ public class CoursewarePreload {
         if (!TextUtils.isEmpty(liveId)) {
             isPrecise.set(true);
             if (0 == mSubject) {//理科
-                logger.i("下载理科");
+                logger.i("donwload science");
                 subjectNum.getAndIncrement();
                 mHttpManager.getScienceCourewareInfo(liveId, new CoursewareHttpCallBack(false, "science"));
             } else if (1 == mSubject) {//英语
-                logger.i("下载英语");
+                logger.i("download english");
                 subjectNum.getAndIncrement();
                 mHttpManager.getEnglishCourewareInfo(liveId, new CoursewareHttpCallBack(false, "english"));
             } else if (2 == mSubject) {//语文
-                logger.i("下载语文");
+                logger.i("download chs");
                 subjectNum.getAndIncrement();
                 mHttpManager.getArtsCourewareInfo(liveId, new CoursewareHttpCallBack(false, "chs"));
             }
         } else {//下载当天所有课件资源
-            logger.i("下载当天所有课件资源");
+            logger.i("donwload all subjects");
             subjectNum.getAndIncrement();
             mHttpManager.getScienceCourewareInfo("", new CoursewareHttpCallBack(false, "science"));
             subjectNum.getAndIncrement();
@@ -211,7 +211,7 @@ public class CoursewarePreload {
             CoursewareInfoEntity coursewareInfoEntity = liveHttpResponseParser.parseCoursewareInfo(responseEntity);
             logger.i(responseEntity.getJsonObject().toString());
             courseWareInfos.add(coursewareInfoEntity);
-            logger.i("接收到了数据");
+            logger.i(arts + " pmSuccess");
             performDownLoad();
         }
 
@@ -240,7 +240,7 @@ public class CoursewarePreload {
     private void performDownLoad() {
         logger.i("" + courseWareInfos.size() + " " + subjectNum.get());
         if (courseWareInfos.size() == subjectNum.get()) {
-            logger.i("数据返回成功");
+            logger.i("perform download ");
             AppBll.getInstance().registerAppEvent(CoursewarePreload.this);
 //            storageLiveId();
             execDownLoad(
@@ -290,18 +290,20 @@ public class CoursewarePreload {
         return liveCoursewares;
     }
 
-    private List<CoursewareInfoEntity.ItemCoursewareInfo> mergeList(List<CoursewareInfoEntity.LiveCourseware> coursewares) {
-        List<CoursewareInfoEntity.ItemCoursewareInfo> itemCourseware = new LinkedList<>();
-        for (CoursewareInfoEntity.LiveCourseware liveCourseware : coursewares) {
-            itemCourseware.addAll(liveCourseware.getCoursewareInfos());
-        }
-        return itemCourseware;
-    }
+//    private List<CoursewareInfoEntity.ItemCoursewareInfo> mergeList(List<CoursewareInfoEntity.LiveCourseware> coursewares) {
+//        List<CoursewareInfoEntity.ItemCoursewareInfo> itemCourseware = new LinkedList<>();
+//        for (CoursewareInfoEntity.LiveCourseware liveCourseware : coursewares) {
+//            itemCourseware.addAll(liveCourseware.getCoursewareInfos());
+//        }
+//        return itemCourseware;
+//    }
 
     private List<String> appendList(List<String> totalList, List<String> list) {
-        for (String item : list) {
-            if (!totalList.contains(item)) {
-                totalList.add(item);
+        if (totalList != null && list != null) {
+            for (String item : list) {
+                if (!totalList.contains(item)) {
+                    totalList.add(item);
+                }
             }
         }
         return totalList;
@@ -492,7 +494,7 @@ public class CoursewarePreload {
         if (!mPublicCacheout.exists()) {
             mPublicCacheout.mkdirs();
         }
-        logger.i("下载公共资源");
+        logger.i("download common resources");
         String tempIP = ips.get(0);
         String ip;
         boolean isIp = false;
