@@ -66,8 +66,9 @@
 
         <ImageView
             android:id="@id/iv_teampk_pk_state"
-            android:layout_width="216dp"
-            android:layout_height="39dp"
+            android:layout_width="218dp"
+            android:layout_height="69dp"
+            android:scaleType="centerCrop"
             android:layout_centerHorizontal="true"
             android:src="@drawable/live_teampk_state_lead"
             />
@@ -76,7 +77,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/iv_teampk_pk_state"
-            android:layout_marginTop="-6dp"
+            android:layout_marginTop="-12dp"
             android:layout_centerHorizontal="true">
 
             <LinearLayout
@@ -106,43 +107,44 @@
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_below="@id/iv_teampk_pkresult_myteam_logo"
-                        android:layout_marginLeft="40dp"
+                        android:layout_marginLeft="55dp"
                         android:layout_marginTop="10dp" />
 
                     <ImageView
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_below="@id/iv_teampk_pkresult_myteam_logo"
-                        android:layout_marginLeft="40dp"
+                        android:layout_marginLeft="55dp"
                         android:layout_marginTop="10dp"
                         android:src="@drawable/live_video_teampk_yellow_headmask" />
 
-                    <TextView
+                    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                         android:id="@id/tv_teampk_pkresult_myteacher_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignTop="@id/iv_teampk_pkresult_myteam_teacher_head"
                         android:layout_marginLeft="5dp"
-                        android:layout_marginRight="35dp"
+                        android:layout_marginRight="45dp"
                         android:layout_marginTop="7dp"
                         android:layout_toRightOf="@id/iv_teampk_pkresult_myteam_teacher_head"
                         android:ellipsize="end"
                         android:singleLine="true"
                         android:text="费启明老师费启明老师"
                         android:textColor="@color/COLOR_7D5807"
-                        android:textSize="10sp" />
+                        android:textSize="10dp" />
 
-                    <TextView
+                    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                         android:id="@id/iv_teampk_pkresult_myteam_slogan"
                         android:layout_width="match_parent"
+                        android:lineSpacingMultiplier="1.5"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/iv_teampk_pkresult_myteam_teacher_head"
                         android:layout_marginBottom="18dp"
-                        android:layout_marginLeft="35dp"
-                        android:layout_marginRight="25dp"
+                        android:layout_marginLeft="45dp"
+                        android:layout_marginRight="45dp"
                         android:layout_marginTop="5dp"
                         android:textColor="@color/COLOR_7D5807"
-                        android:textSize="11sp" />
+                        android:textSize="10dp" />
 
                 </RelativeLayout>
 
@@ -183,18 +185,18 @@
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_below="@id/iv_teampk_pkresult_otherteam_logo"
-                        android:layout_marginLeft="40dp"
+                        android:layout_marginLeft="55dp"
                         android:layout_marginTop="10dp" />
 
                     <ImageView
                         android:layout_width="25dp"
                         android:layout_height="25dp"
                         android:layout_below="@id/iv_teampk_pkresult_otherteam_logo"
-                        android:layout_marginLeft="40dp"
+                        android:layout_marginLeft="55dp"
                         android:layout_marginTop="10dp"
                         android:src="@drawable/live_video_teampk_blue_headmask" />
 
-                    <TextView
+                    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                         android:id="@id/tv_teampk_pkresult_otherteacher_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -207,19 +209,20 @@
                         android:singleLine="true"
                         android:text="冯提莫老师"
                         android:textColor="@color/COLOR_7D5807"
-                        android:textSize="10sp" />
+                        android:textSize="10dp" />
 
-                    <TextView
+                    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                         android:id="@id/iv_teampk_pkresult_otherteam_slogan"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:lineSpacingMultiplier="1.5"
                         android:layout_below="@id/iv_teampk_pkresult_otherteam_teacher_head"
                         android:layout_marginBottom="18dp"
-                        android:layout_marginLeft="35dp"
-                        android:layout_marginRight="25dp"
+                        android:layout_marginLeft="45dp"
+                        android:layout_marginRight="45dp"
                         android:layout_marginTop="5dp"
                         android:textColor="@color/COLOR_7D5807"
-                        android:textSize="11sp" />
+                        android:textSize="10dp" />
 
                 </RelativeLayout>
             </LinearLayout>
