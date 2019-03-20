@@ -154,7 +154,7 @@ public class TeamPkImprovePager extends TeamPkBasePager {
                 int top = 0;
                 int bottom = 0;
                 if (itemPosition >= spanCount) {
-                    top = SizeUtils.Dp2Px(mContext, 5);
+                    top = SizeUtils.Dp2Px(mContext, 22);
                 }
                 outRect.set(left, top, right, bottom);
             }
