@@ -7,7 +7,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="23dp"
+        android:layout_marginTop="21dp"
         android:includeFontPadding="false"
         android:text="@string/livevideo_enpk_notarget"
         android:textColor="#ffffffff"
@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_livevideo_en_achive_pk_target"
         android:layout_alignLeft="@id/pg_livevideo_en_achive_pk"
-        android:layout_marginTop="17dp"
+        android:layout_marginTop="22dp"
         android:gravity="center_vertical">
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
@@ -60,7 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_livevideo_en_achive_pk_target"
         android:layout_alignRight="@id/pg_livevideo_en_achive_pk"
-        android:layout_marginTop="17dp"
+        android:layout_marginTop="22dp"
         android:gravity="center_vertical">
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
@@ -101,7 +101,7 @@
         style="@style/ProgressBar_live_en_pk_stand"
         android:layout_width="147dp"
         android:layout_height="17dp"
-        android:layout_marginTop="3dp"
+        android:layout_marginTop="4dp"
         android:layout_below="@id/rl_livevideo_en_achive_pk_my"
         android:layout_centerHorizontal="true"
         android:max="100"
