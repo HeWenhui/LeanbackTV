@@ -1407,34 +1407,42 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
             for (int j = 0; j < exercise.getExample().size(); j++) {
                 example = exercise.getExample().get(j);
                 logger.d("currentPosition index:" + LiveVideoConfig.aiQuestionIndex);
-                // 收题和讲解试题间隔去除
+                // 做题时间到达末尾，收题和讲解试题间隔去除
                 if (example.getPublish().getEndTime() != example.getInterpret().getBeginTime() && playPosition == example.getPublish().getEndTime()) {
                     example.getPublish().setEndTime(example.getInterpret().getBeginTime());
+                    //题目讲解不为空
                     if (example.getInterpret().getBeginTime() != 0) {
                         seekTo(example.getInterpret().getBeginTime() * 1000);
                         logger.d("seekTo4=====>" + example.getInterpret().getBeginTime() + "i:" + i);
                     } else {
+                        //不是最后一题
                         if ((i + 1) < mVideoEntity.getSciAiEvent().getExercises().size()) {
                             VideoSpeedEntity.Exercise exerciseTemp = mVideoEntity.getSciAiEvent().getExercises().get(i + 1);
+                            //下一题知识点不为空
                             if (mVideoEntity.getSciAiEvent().getExercises().get(i + 1).getKnowledgePoints().getBeginTime() != 0) {
                                 seekTo(mVideoEntity.getSciAiEvent().getExercises().get(i + 1).getKnowledgePoints().getBeginTime() * 1000);
                                 LiveVideoConfig.aiQuestionIndex = LiveVideoConfig.aiQuestionIndex + 1;
                                 logger.d("seekTo5=====>" + mVideoEntity.getSciAiEvent().getExercises().get(i + 1).getKnowledgePoints().getBeginTime() + "i:" + i);
+                            //下一题知识点为空
                             }else {
                                 VideoSpeedEntity.Exercise.Example exampleTemp = exerciseTemp.getExample().get(0);
                                 if (!exerciseTemp.isShare() && !LiveVideoConfig.isAITrue) {
                                     exampleTemp = exerciseTemp.getExample().get(1);
                                 }
+                                //题目讲解不为空
                                 if (exampleTemp.getIntroduce().getBeginTime()!=0){
                                     seekTo(exampleTemp.getIntroduce().getBeginTime() * 1000);
+                                    logger.d("seekTo6=====>" + exampleTemp.getIntroduce().getBeginTime() + "i:" + i);
+                                //题目答题时间不为空
                                 } else if ( exampleTemp.getPublish().getBeginTime() != 0){
                                     seekTo(exampleTemp.getPublish().getBeginTime() * 1000);
+                                    logger.d("seekTo7=====>" + exampleTemp.getPublish().getBeginTime() + "i:" + i);
                                 }
                             }
                         } else {
                             seekTo(mVideoEntity.getSciAiEvent().getEndingStage().getBeginTime() * 1000);
                             LiveVideoConfig.aiQuestionIndex = LiveVideoConfig.aiQuestionIndex + 1;
-                            logger.d("seekTo6=====>" + mVideoEntity.getSciAiEvent().getEndingStage().getBeginTime() + "i:" + i);
+                            logger.d("seekTo8=====>" + mVideoEntity.getSciAiEvent().getEndingStage().getBeginTime() + "i:" + i);
                         }
                     }
                 }
@@ -1443,6 +1451,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                         playPosition == example.getPublish().getEndTime()) {
                     LiveVideoConfig.aiQuestionIndex = LiveVideoConfig.aiQuestionIndex + 1;
                 }
+                //题目讲解时间到达末尾
                 if (example.getInterpret().getEndTime() != 0
                         && playPosition == example.getInterpret().getEndTime()
                         && LiveVideoConfig.aiQuestionIndex == i) {
@@ -1451,7 +1460,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                         example.getInterpret().setEndTime(0);
                         if (exerciseTemp.getKnowledgePoints().getBeginTime() != 0) {
                             seekTo(mVideoEntity.getSciAiEvent().getExercises().get(i + 1).getKnowledgePoints().getBeginTime() * 1000);
-                            logger.d("seekTo7=====>" + mVideoEntity.getSciAiEvent().getExercises().get(i + 1).getKnowledgePoints().getBeginTime() + "i:" + i);
+                            logger.d("seekTo9=====>" + mVideoEntity.getSciAiEvent().getExercises().get(i + 1).getKnowledgePoints().getBeginTime() + "i:" + i);
                         } else {
                             VideoSpeedEntity.Exercise.Example exampleTemp = exerciseTemp.getExample().get(0);
                             if (!exerciseTemp.isShare() && !LiveVideoConfig.isAITrue) {
@@ -1459,8 +1468,10 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                             }
                             if (exampleTemp.getIntroduce().getBeginTime()!=0){
                                 seekTo(exampleTemp.getIntroduce().getBeginTime() * 1000);
+                                logger.d("seekTo10=====>" + exampleTemp.getIntroduce().getBeginTime() + "i:" + i);
                             } else if ( exampleTemp.getPublish().getBeginTime() != 0){
                                 seekTo(exampleTemp.getPublish().getBeginTime() * 1000);
+                                logger.d("seekTo11=====>" + exampleTemp.getPublish().getBeginTime() + "i:" + i);
                             }
                         }
                     } else {
@@ -1468,7 +1479,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                             exercise.getExample().get(j).getInterpret().setEndTime(0);
                         }
                         seekTo(mVideoEntity.getSciAiEvent().getEndingStage().getBeginTime() * 1000);
-                        logger.d("seekTo8=====>" + mVideoEntity.getSciAiEvent().getEndingStage().getBeginTime() + "i:" + i);
+                        logger.d("seekTo12=====>" + mVideoEntity.getSciAiEvent().getEndingStage().getBeginTime() + "i:" + i);
                     }
                 }
             }
