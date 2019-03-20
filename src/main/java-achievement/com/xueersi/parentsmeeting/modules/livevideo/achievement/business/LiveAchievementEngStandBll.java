@@ -33,7 +33,6 @@ public class LiveAchievementEngStandBll implements StarInteractAction, EnPkInter
     public LiveAchievementEngStandBll(Activity activity, int liveType, LiveGetInfo mLiveGetInfo, boolean mIsLand) {
         this.activity = activity;
         this.mLiveGetInfo = mLiveGetInfo;
-        mLiveGetInfo.getStarCount();
     }
 
     public void initView(RelativeLayout bottomContent, RelativeLayout mContentView) {
@@ -84,7 +83,9 @@ public class LiveAchievementEngStandBll implements StarInteractAction, EnPkInter
 
     @Override
     public void onEnglishPk() {
-
+        if (enAchievePager != null) {
+            enAchievePager.onEnglishPk();
+        }
     }
 
     @Override

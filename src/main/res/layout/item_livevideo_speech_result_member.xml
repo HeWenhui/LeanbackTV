@@ -7,8 +7,7 @@
     <RelativeLayout
         android:id="@id/rl_live_speech_result_member_head"
         android:layout_width="28dp"
-        android:layout_height="28dp"
-        android:background="@drawable/zhanduipk_shell_window_wodetouxiang_bg1">
+        android:layout_height="28dp">
 
         <com.xueersi.ui.widget.CircleImageView
             android:id="@id/civ_live_speech_result_member_head"
@@ -20,7 +19,7 @@
     </RelativeLayout>
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-        android:id="@id/tv_live_speech_result_member_name"
+        android:id="@id/tv_live_speech_result_member_score"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
@@ -31,7 +30,7 @@
         android:textSize="14sp" />
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
-        android:id="@id/tv_live_speech_result_member_score"
+        android:id="@id/tv_live_speech_result_member_name"
         android:layout_width="52dp"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/rl_live_speech_result_member_head"
@@ -41,6 +40,6 @@
         android:includeFontPadding="false"
         android:singleLine="true"
         android:text="我是小可..."
-        android:textColor="#ff756565"
+        android:textColor="#ff8F7F80"
         android:textSize="11sp" />
 </RelativeLayout>

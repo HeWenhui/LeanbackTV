@@ -25,21 +25,21 @@ import android.widget.TextView;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.lottie.AchieveType1LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.lottie.AchieveType2LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.lottie.AchieveType3LottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
-
-import java.util.Random;
 
 public class EnAchievePager extends LiveBasePager {
     private RelativeLayout parent;
@@ -53,13 +53,14 @@ public class EnAchievePager extends LiveBasePager {
     private ViewGroup pkEmptyView;
     private ProgressBar pgAchivePk;
     private FrameLayout flProgress;
+    private ImageView progressImageView;
     //    private ImageView progressImageView;
     private Activity activity;
     private TextView tvAchiveNumStar;
     private TextView tvAchiveNumGold;
     private TextView tvAchiveNumFire;
-    private TextView tv_livevideo_en_achive_pk_energy_my;
-    private TextView tv_livevideo_en_achive_pk_energy_other;
+    private TextView tvPkEnergyMy;
+    private TextView tvPkEnergyOther;
     private int starCount;
     private int goldCount;
     private int energyCount;
@@ -103,7 +104,7 @@ public class EnAchievePager extends LiveBasePager {
         tvAchiveNumFire.setText("" + enpkEnergy.me);
         LiveGetInfo.EnglishPk englishPk = mLiveGetInfo.getEnglishPk();
         View view = activity.findViewById(R.id.iv_livevideo_message_small_bg);
-        if (1 == englishPk.canUsePK && 1 == englishPk.hasGroup) {
+        if (1 == englishPk.canUsePK && EnglishPk.HAS_GROUP_MAIN == englishPk.hasGroup) {
             showPk();
         } else {
             pkEmptyView = (ViewGroup) vsAchiveBottom2.inflate();
@@ -149,10 +150,10 @@ public class EnAchievePager extends LiveBasePager {
             progress = (int) ((float) myTotal * 100 / (float) (myTotal + otherTotal));
         }
         setEngPro(progress);
-        tv_livevideo_en_achive_pk_energy_my = pkView.findViewById(R.id.tv_livevideo_en_achive_pk_energy_my);
-        tv_livevideo_en_achive_pk_energy_my.setText("" + myTotal);
-        tv_livevideo_en_achive_pk_energy_other = pkView.findViewById(R.id.tv_livevideo_en_achive_pk_energy_other);
-        tv_livevideo_en_achive_pk_energy_other.setText("" + otherTotal);
+        tvPkEnergyMy = pkView.findViewById(R.id.tv_livevideo_en_achive_pk_energy_my);
+        tvPkEnergyMy.setText("" + myTotal);
+        tvPkEnergyOther = pkView.findViewById(R.id.tv_livevideo_en_achive_pk_energy_other);
+        tvPkEnergyOther.setText("" + otherTotal);
     }
 
     public void updateEnpk(EnTeamPkRankEntity enTeamPkRankEntity) {
@@ -160,8 +161,8 @@ public class EnAchievePager extends LiveBasePager {
         int myTeamTotal = enTeamPkRankEntity.getMyTeamTotal();
         if (myTeamTotal > myTotal) {
             myTotal = myTeamTotal;
-            if (tv_livevideo_en_achive_pk_energy_my != null) {
-                tv_livevideo_en_achive_pk_energy_my.setText("" + myTeamTotal);
+            if (tvPkEnergyMy != null) {
+                tvPkEnergyMy.setText("" + myTeamTotal);
             }
         } else {
             mLogtf.d("updateEnpk:myTeamTotal=" + myTeamTotal + ",otherTotal=" + myTotal);
@@ -169,8 +170,8 @@ public class EnAchievePager extends LiveBasePager {
         int opTeamTotal = enTeamPkRankEntity.getOpTeamTotal();
         if (opTeamTotal > otherTotal) {
             otherTotal = opTeamTotal;
-            if (tv_livevideo_en_achive_pk_energy_other != null) {
-                tv_livevideo_en_achive_pk_energy_other.setText("" + opTeamTotal);
+            if (tvPkEnergyOther != null) {
+                tvPkEnergyOther.setText("" + opTeamTotal);
             }
         } else {
             mLogtf.d("updateEnpk:opTeamTotal=" + opTeamTotal + ",otherTotal=" + otherTotal);
@@ -262,28 +263,25 @@ public class EnAchievePager extends LiveBasePager {
         //本场成就设置进度
         if (pkEnergy.myTeam > myTotal) {
             myTotal = pkEnergy.myTeam;
-            if (tv_livevideo_en_achive_pk_energy_my != null) {
-                tv_livevideo_en_achive_pk_energy_my.setText("" + myTotal);
+            if (tvPkEnergyMy != null) {
+                tvPkEnergyMy.setText("" + myTotal);
             }
         } else {
             mLogtf.d("onGetStar:myTeam=" + pkEnergy.myTeam + ",myTotal=" + myTotal);
         }
         if (pkEnergy.opTeam > otherTotal) {
             otherTotal = pkEnergy.opTeam;
-            if (tv_livevideo_en_achive_pk_energy_other != null) {
-                tv_livevideo_en_achive_pk_energy_other.setText("" + otherTotal);
+            if (tvPkEnergyOther != null) {
+                tvPkEnergyOther.setText("" + otherTotal);
             }
         } else {
             mLogtf.d("onGetStar:opTeam=" + pkEnergy.opTeam + ",otherTotal=" + myTotal);
         }
         ViewGroup rl_livevideo_info = activity.findViewById(R.id.rl_livevideo_info);
-        if (rl_livevideo_info != null) {
+        if (rl_livevideo_info != null && !cbAchiveTitle.isChecked()) {
             final int energyCountAdd = starAndGoldEntity.getPkEnergy().me - energyCount;
             final int goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
             final int startCountAdd = starAndGoldEntity.getStarCount() - starCount;
-            energyCount = starAndGoldEntity.getPkEnergy().me;
-            goldCount = starAndGoldEntity.getGoldCount();
-            starCount = starAndGoldEntity.getStarCount();
             mLogtf.d("onGetStar:energyCountAdd=" + energyCountAdd + ",goldCountAdd=" + goldCountAdd + ",startCountAdd=" + startCountAdd);
             String LOTTIE_RES_ASSETS_ROOTDIR;
             String bubbleResPath;
@@ -353,14 +351,14 @@ public class EnAchievePager extends LiveBasePager {
             });
             if (pkEnergy.myTeam > myTotal) {
                 myTotal = pkEnergy.myTeam;
-                if (tv_livevideo_en_achive_pk_energy_my != null) {
-                    tv_livevideo_en_achive_pk_energy_my.setText("" + myTotal);
+                if (tvPkEnergyMy != null) {
+                    tvPkEnergyMy.setText("" + myTotal);
                 }
             }
             if (pkEnergy.opTeam > otherTotal) {
                 otherTotal = pkEnergy.opTeam;
-                if (tv_livevideo_en_achive_pk_energy_other != null) {
-                    tv_livevideo_en_achive_pk_energy_other.setText("" + otherTotal);
+                if (tvPkEnergyOther != null) {
+                    tvPkEnergyOther.setText("" + otherTotal);
                 }
             }
             if (myTotal + otherTotal != 0) {
@@ -371,6 +369,9 @@ public class EnAchievePager extends LiveBasePager {
             tvAchiveNumFire.setText("" + starAndGoldEntity.getPkEnergy().me);
             tvAchiveNumGold.setText("" + starAndGoldEntity.getGoldCount());
         }
+        energyCount = starAndGoldEntity.getPkEnergy().me;
+        goldCount = starAndGoldEntity.getGoldCount();
+        starCount = starAndGoldEntity.getStarCount();
     }
 
     public void onStarAdd(int star, float x, float y) {
@@ -388,20 +389,13 @@ public class EnAchievePager extends LiveBasePager {
         if (rl_livevideo_info != null) {
             if (flProgress == null) {
                 flProgress = new FrameLayout(activity);
-                flProgress.setVisibility(View.INVISIBLE);
                 flProgress.setClipChildren(false);
-                ImageView progressImageView = new ImageView(activity);
+                progressImageView = new ImageView(activity);
                 BitmapDrawable bitmapDrawable = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.app_livevideo_enteampk_pkbar_fire_pic_prog);
-//                progressImageView.setImageResource(R.drawable.app_livevideo_enteampk_pkbar_fire_pic_prog);
                 progressImageView.setImageDrawable(bitmapDrawable);
-//                flProgress.setVisibility(View.INVISIBLE);
                 FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(bitmapDrawable.getIntrinsicWidth(), bitmapDrawable.getIntrinsicHeight());
-//                FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(progressWidth, progressWidth);
-                layoutParams.gravity = Gravity.CENTER;
                 flProgress.addView(progressImageView, layoutParams);
-//                flProgress.addView(progressImageView);
-//                rl_livevideo_info.addView(flProgress, width, width);
-                rl_livevideo_info.addView(flProgress);
+                rl_livevideo_info.addView(flProgress, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
                 final ViewTreeObserver viewTreeObserver = pgAchivePk.getViewTreeObserver();
                 viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                     @Override
@@ -420,71 +414,49 @@ public class EnAchievePager extends LiveBasePager {
         }
     }
 
-    private int lastFlProgress = 0;
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+        setLayoutOnDraw();
+    }
 
     private void setLayoutOnDraw() {
         setLayout();
-        final ViewTreeObserver viewTreeObserver = flProgress.getViewTreeObserver();
-        viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+        pgAchivePk.postDelayed(new Runnable() {
             @Override
-            public boolean onPreDraw() {
-                setLayout();
-                if (viewTreeObserver.isAlive()) {
-                    viewTreeObserver.removeOnPreDrawListener(this);
-                }
-                flProgress.getViewTreeObserver().removeOnPreDrawListener(this);
-                return false;
+            public void run() {
+                final ViewTreeObserver viewTreeObserver = pgAchivePk.getViewTreeObserver();
+                viewTreeObserver.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                    @Override
+                    public boolean onPreDraw() {
+                        setLayout();
+                        if (viewTreeObserver.isAlive()) {
+                            viewTreeObserver.removeOnPreDrawListener(this);
+                        }
+                        pgAchivePk.getViewTreeObserver().removeOnPreDrawListener(this);
+                        return false;
+                    }
+                });
             }
-        });
+        },10);
     }
 
     private boolean setLayout() {
         ViewGroup rl_livevideo_info = activity.findViewById(R.id.rl_livevideo_info);
         int[] loc = ViewUtil.getLoc(pgAchivePk, rl_livevideo_info);
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) flProgress.getLayoutParams();
-        int rlWidth = flProgress.getWidth();
-        ImageView progressImageView = (ImageView) flProgress.getChildAt(0);
-        BitmapDrawable bitmapDrawable = (BitmapDrawable) progressImageView.getDrawable();
-        int minWidth = bitmapDrawable.getBitmap().getWidth() * 108 / 176;
-        if (rlWidth < minWidth) {
-            rlWidth = minWidth;
-        }
-        int leftMargin = loc[0] - rlWidth / 2 + pgAchivePk.getWidth() * pgAchivePk.getProgress() / pgAchivePk.getMax();
-        int topMargin = loc[1] - (flProgress.getHeight() - pgAchivePk.getHeight()) / 2;
-        logger.d("initListener:left=" + loc[0] + ",top=" + loc[1] + ",width=" + lastFlProgress + "," + rlWidth + ",minWidth=" + minWidth);
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) progressImageView.getLayoutParams();
+        int rlWidth = progressImageView.getWidth();
+        int edge = SizeUtils.Dp2Px(mContext, 5);
+        int pgWidth = pgAchivePk.getWidth() - edge * 2;
+        int leftMargin = loc[0] + edge - rlWidth / 2 + pgWidth * pgAchivePk.getProgress() / pgAchivePk.getMax();
+        int topMargin = loc[1] - (progressImageView.getHeight() - pgAchivePk.getHeight()) / 2;
+        logger.d("initListener:left=" + loc[0] + ",top=" + loc[1] + ",rlWidth=" + rlWidth
+                + ",width=" + pgAchivePk.getWidth() + ",prog=" + pgAchivePk.getProgress() + ",leftMargin=" + leftMargin);
         if (leftMargin != lp.leftMargin || topMargin != lp.topMargin) {
             lp.leftMargin = leftMargin;
             lp.topMargin = topMargin;
-            flProgress.setLayoutParams(lp);
-            flProgress.setVisibility(View.VISIBLE);
+            progressImageView.setLayoutParams(lp);
+            progressImageView.setVisibility(View.VISIBLE);
         }
-//        if (lastFlProgress == flProgress.getWidth()) {
-//            return true;
-//        }
-//        lastFlProgress = flProgress.getWidth();
         return false;
-    }
-
-    private Bitmap createBitmap(int energyCount, int width, int height) {
-        try {
-            Bitmap drawBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(drawBitmap);
-            Paint paint = new Paint();
-            paint.setAntiAlias(true);
-            Typeface fontFace = FontCache.getTypeface(activity, "fangzhengcuyuan.ttf");
-            paint.setTypeface(fontFace);
-            paint.setTextSize(height + 5);
-            String drawText = "+" + energyCount;
-            float w = paint.measureText(drawText);
-//            paint.setColor(Color.CYAN);
-//            canvas.drawRect(0, 0, width, height, paint);
-            paint.setColor(0xff4eacf1);
-            canvas.drawText(drawText, (width - w) / 2, height, paint);
-            return drawBitmap;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
     }
 
 }
