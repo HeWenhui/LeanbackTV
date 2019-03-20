@@ -2,7 +2,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <TextView
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@id/tv_livevideo_en_achive_pk_target"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -19,12 +19,14 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_livevideo_en_achive_pk_target"
         android:layout_alignLeft="@id/pg_livevideo_en_achive_pk"
-        android:layout_marginTop="23dp">
+        android:layout_marginTop="17dp"
+        android:gravity="center_vertical">
 
-        <TextView
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@id/tv_livevideo_en_achive_pk_energy_my_lable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:includeFontPadding="false"
             android:shadowColor="#b3061b40"
             android:shadowDx="0"
@@ -34,11 +36,12 @@
             android:textColor="#ffffffff"
             android:textSize="9sp" />
 
-        <TextView
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@id/tv_livevideo_en_achive_pk_energy_my"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="1dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="3dp"
             android:layout_toRightOf="@id/tv_livevideo_en_achive_pk_energy_my_lable"
             android:includeFontPadding="false"
             android:shadowColor="#cc401f06"
@@ -57,13 +60,15 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/tv_livevideo_en_achive_pk_target"
         android:layout_alignRight="@id/pg_livevideo_en_achive_pk"
-        android:layout_marginTop="23dp">
+        android:layout_marginTop="17dp"
+        android:gravity="center_vertical">
 
-        <TextView
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@id/tv_livevideo_en_achive_pk_energy_other_lable"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:includeFontPadding="false"
             android:shadowColor="#b3061b40"
             android:shadowDx="0"
@@ -73,10 +78,11 @@
             android:textColor="#ffffffff"
             android:textSize="9sp" />
 
-        <TextView
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@id/tv_livevideo_en_achive_pk_energy_other"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_marginRight="3dp"
             android:layout_toLeftOf="@id/tv_livevideo_en_achive_pk_energy_other_lable"
             android:includeFontPadding="false"
@@ -95,6 +101,7 @@
         style="@style/ProgressBar_live_en_pk_stand"
         android:layout_width="147dp"
         android:layout_height="17dp"
+        android:layout_marginTop="3dp"
         android:layout_below="@id/rl_livevideo_en_achive_pk_my"
         android:layout_centerHorizontal="true"
         android:max="100"

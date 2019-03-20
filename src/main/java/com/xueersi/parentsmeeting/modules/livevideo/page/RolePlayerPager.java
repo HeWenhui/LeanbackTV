@@ -52,6 +52,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.RolePlayConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultMember;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -60,6 +63,7 @@ import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 import com.xueersi.ui.widget.CircleImageView;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -1013,30 +1017,35 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
 //                rlResultRole3.setVisibility(View.INVISIBLE);
 //            }
             ViewGroup group = (ViewGroup) mView;
-            //初中结果页
-            RolePlayResultPager rolePlayResultPager=new RolePlayResultPager(mContext, mEntity,group);
-            group.addView(rolePlayResultPager.getRootView());
-            resultPager=rolePlayResultPager;
-            //小学结果页
-//            SpeechResultEntity speechResultEntity = new SpeechResultEntity();
-//            speechResultEntity.score = head.getSpeechScore();
-//            speechResultEntity.gold = mEntity.getGoldCount();
-//            speechResultEntity.energy = mEntity.getEnergy();
-//            speechResultEntity.fluency = head.getFluency();
-//            speechResultEntity.accuracy = head.getAccuracy();
-//            speechResultEntity.headUrl = mLiveGetInfo.getHeadImgPath();
-//            speechResultEntity.praise = mEntity.getPullDZCount();
-//            ArrayList<SpeechResultMember> speechResultMembers = speechResultEntity.speechResultMembers;
-//            for (int i = 0; i < lstHead.size(); i++) {
-//                RolePlayerEntity.RolePlayerHead head1 = lstHead.get(i);
-//                SpeechResultMember speechResultMember = new SpeechResultMember();
-//                speechResultMember.name = head1.getNickName();
-//                speechResultMember.score = head1.getSpeechScore();
-//                speechResultMember.headUrl = head1.getHeadImg();
-//                speechResultMembers.add(speechResultMember);
-//            }
-//            SpeechResultPager resultPager = new SpeechResultPager(mContext, group, speechResultEntity, mLiveGetInfo);
-//            group.addView(resultPager.getRootView());
+            if (!mLiveGetInfo.getSmallEnglish()) {
+                //初中结果页
+                RolePlayResultPager rolePlayResultPager = new RolePlayResultPager(mContext, mEntity, group);
+                group.addView(rolePlayResultPager.getRootView());
+                resultPager=rolePlayResultPager;
+            } else {
+                //小学结果页
+                SpeechResultEntity speechResultEntity = new SpeechResultEntity();
+                speechResultEntity.score = head.getSpeechScore();
+                speechResultEntity.gold = mEntity.getGoldCount();
+                speechResultEntity.energy = mEntity.getEnergy();
+                speechResultEntity.fluency = head.getFluency();
+                speechResultEntity.accuracy = head.getAccuracy();
+                speechResultEntity.headUrl = mLiveGetInfo.getHeadImgPath();
+                speechResultEntity.praise = mEntity.getPullDZCount();
+                ArrayList<SpeechResultMember> speechResultMembers = speechResultEntity.speechResultMembers;
+                for (int i = 0; i < lstHead.size(); i++) {
+                    RolePlayerEntity.RolePlayerHead head1 = lstHead.get(i);
+                    SpeechResultMember speechResultMember = new SpeechResultMember();
+                    speechResultMember.isSelfRole = head1.isSelfRole();
+                    speechResultMember.name = head1.getNickName();
+                    speechResultMember.score = head1.getSpeechScore();
+                    speechResultMember.headUrl = head1.getHeadImg();
+                    speechResultMembers.add(speechResultMember);
+                }
+                SpeechResultPager resultPager = new SpeechResultPager(mContext, group, speechResultEntity, mLiveGetInfo);
+                group.addView(resultPager.getRootView());
+                RolePlayerPager.this.resultPager = resultPager;
+            }
         }
 
         //结果弹窗5秒后消失
@@ -1065,6 +1074,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
             if(group!=null){
                 group.removeView(resultPager.getRootView());
             }
+            resultPager=null;
         }
         if (lvReadList != null) {
             lvReadList.setUnScroll(mIsListViewUnSroll);//恢复列表滑动
@@ -1235,7 +1245,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
                         nextReadMessage();
                     }
                 } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
-                    mLogtf.i("测评失败，" + resultEntity.getErrorNo() + " 不上传自己的mp3");
+                    mLogtf.i("onResult:errorNo=" + resultEntity.getErrorNo() + " 不上传自己的mp3");
                     //XESToastUtils.showToast(mContext, "测评失败");
                     //mIsEvaluatoring = false;
                     message.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH);
