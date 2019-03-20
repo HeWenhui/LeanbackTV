@@ -800,7 +800,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
             @Override
             public void onAutoClose(BasePager basePager) {
-
+                rlQuestionResContent.removeAllViews();
             }
 
             @Override
@@ -1107,12 +1107,26 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         if (voiceAnswerPager instanceof VoiceAnswerPager) {
                             stopVoiceAnswerPager(resultView);
                         }
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                mLiveBll.getStuGoldCount("liveSubmitTestH5Answer");
-                            }
-                        }, 2500);
+                        if (resultView == null) {
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mLiveBll.getStuGoldCount("liveSubmitTestH5Answer");
+                                }
+                            }, 2500);
+                        } else {
+                            resultView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                                @Override
+                                public void onViewAttachedToWindow(View view) {
+
+                                }
+
+                                @Override
+                                public void onViewDetachedFromWindow(View view) {
+                                    mLiveBll.getStuGoldCount("liveSubmitTestH5Answer:Detached");
+                                }
+                            });
+                        }
                         // TODO: 2018/6/25  代码整理完 用下面方法 更新 本场成就信息
                         //EventBusUtil.post(new UpdateAchievementEvent(mLiveBll.getLiveId()));
 
@@ -1271,4 +1285,50 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         }
     }
 
+    class SmEnAnswerRightResultVoice extends EnAnswerRightResultVoice implements BaseVoiceAnswerCreat.NewArtsAnswerRightResultVoice {
+
+        @Override
+        public View initArtsAnswerRightResultVoice(AnswerResultEntity entity) {
+            return EnglishH5CoursewareBll.this.initArtsAnswerRightResultVoice(entity);
+        }
+
+    }
+
+    class EnAnswerRightResultVoice implements BaseVoiceAnswerCreat.AnswerRightResultVoice {
+
+        @Override
+        public void initQuestionAnswerReslut(View popupWindowView) {
+            EnglishH5CoursewareBll.this.initQuestionAnswerReslut(popupWindowView);
+        }
+
+        @Override
+        public void removeQuestionAnswerReslut(View popupWindowView) {
+            EnglishH5CoursewareBll.this.removeQuestionAnswerReslut(popupWindowView);
+        }
+
+        @Override
+        public void removeBaseVoiceAnswerPager(BaseVoiceAnswerPager voiceAnswerPager) {
+            EnglishH5CoursewareBll.this.removeBaseVoiceAnswerPager(voiceAnswerPager);
+        }
+
+        @Override
+        public void initSelectAnswerRightResultVoice(VideoResultEntity entity) {
+            EnglishH5CoursewareBll.this.initSelectAnswerRightResultVoice(entity);
+        }
+
+        @Override
+        public void initFillinAnswerRightResultVoice(VideoResultEntity entity) {
+            EnglishH5CoursewareBll.this.initFillinAnswerRightResultVoice(entity);
+        }
+
+        @Override
+        public void initSelectAnswerWrongResultVoice(VideoResultEntity entity) {
+            EnglishH5CoursewareBll.this.initSelectAnswerWrongResultVoice(entity);
+        }
+
+        @Override
+        public void initFillAnswerWrongResultVoice(VideoResultEntity entity) {
+            EnglishH5CoursewareBll.this.initFillAnswerWrongResultVoice(entity);
+        }
+    }
 }

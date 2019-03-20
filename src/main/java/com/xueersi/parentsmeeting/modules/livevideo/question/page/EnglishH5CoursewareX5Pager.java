@@ -531,12 +531,6 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 logger.e("======> mulloadUrlLive:" + reloadurl);
             }
         } else {
-            if (isNewArtsCourseware) {
-                String loadUrl = url;
-                loadUrl(loadUrl);
-                reloadurl = loadUrl;
-                Loger.e(TAG, "======> newArtsH5CourseWare url:" + url);
-            } else {
                 String loadUrl = url + "?t=" + System.currentTimeMillis();
                 if (!url.isEmpty() && url.substring(url.length() - 1).equals("&")) {
                     loadUrl = url + "t=" + System.currentTimeMillis();
@@ -557,7 +551,6 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 logger.e("======> loadUrl:" + loadUrl);
                 reloadurl = loadUrl;
                 logger.e("======> loadUrlLive:" + reloadurl);
-            }
         }
         if (mLogtf != null) {
             mLogtf.d("initData:reloadurl=" + reloadurl);
@@ -669,6 +662,16 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         EventBus.getDefault().post(new ArtsAnswerResultEvent(data, ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT));
     }
 
+    /**
+     * AI体验课 课件 答题结果回调
+     */
+    @JavascriptInterface
+    public void showExperienceResult(String data) {
+        Loger.e(TAG, "======> newArtsH5CourseWare showExperienceResult:" + data);
+        parseAIData(data);
+        Loger.e(TAG, "======> LiveVideoConfig.isAITrue:" + LiveVideoConfig.isAITrue);
+    }
+
     private void parseData(String data) {
         try {
             JSONObject jsonObject = new JSONObject(data);
@@ -677,6 +680,15 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 JSONObject totalObject = dataObject.getJSONObject("total");
                 mGold = totalObject.optString("gold");
             }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void parseAIData(String data) {
+        try {
+            JSONObject jsonObject = new JSONObject(data);
+            LiveVideoConfig.isAITrue = jsonObject.optBoolean("isRight");
         } catch (JSONException e) {
             e.printStackTrace();
         }
