@@ -120,13 +120,17 @@ public class CacheWebView extends WebView {
         if (context==null||TextUtils.isEmpty(url)){
             return;
         }
-        Intent intent = new Intent(context, CachePreLoadService.class);
-        intent.putExtra(CachePreLoadService.KEY_URL,url);
-        if (headerMap!=null){
-            intent.putExtra(CachePreLoadService.KEY_URL_HEADER,headerMap);
+        try {
+            Intent intent = new Intent(context, CachePreLoadService.class);
+            intent.putExtra(CachePreLoadService.KEY_URL,url);
+            if (headerMap!=null){
+                intent.putExtra(CachePreLoadService.KEY_URL_HEADER,headerMap);
+            }
+            intent.setPackage(AppConfig.APPLICATION_ID);
+            context.startService(intent);
+        }catch (Exception e){
+
         }
-        intent.setPackage(AppConfig.APPLICATION_ID);
-        context.startService(intent);
     }
 
     public void setEnableCache(boolean enableCache){
