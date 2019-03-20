@@ -880,7 +880,8 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             bitmap.recycle();
             //画名字和金币数量
             if (havename) {
-                View layout_live_stand_red_mine1 = StandSpeechResult.resultViewName(mContext, "" + gold, fontFace, userName);
+//                View layout_live_stand_red_mine1 = StandSpeechResult.resultViewName(mContext, "" + gold, fontFace, userName);
+                View layout_live_stand_red_mine1 = StandSpeechResult.resultViewNameEnergy(mContext, userName);
                 canvas.save();
                 canvas.translate((canvasBitmap.getWidth() - layout_live_stand_red_mine1.getMeasuredWidth()) / 2, 348);
                 layout_live_stand_red_mine1.draw(canvas);
@@ -912,7 +913,8 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
         StandLiveMethod.leaderBoard(liveSoundPool);
         int score = resultEntity.getScore();
         final RelativeLayout group = (RelativeLayout) mView;
-        final View resultMine = StandSpeechResult.resultViewScore(mContext, group, gold, energy, score);
+//        final View resultMine = StandSpeechResult.resultViewScore(mContext, group, gold, energy, score);
+        final View resultMine = StandSpeechResult.resultViewScoreEnergy(mContext, group, gold, energy, score);
         resultMine.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View
                 .OnClickListener() {
             @Override

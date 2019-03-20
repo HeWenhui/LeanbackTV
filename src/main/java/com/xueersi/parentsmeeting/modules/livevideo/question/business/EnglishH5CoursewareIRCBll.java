@@ -100,7 +100,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             englishH5CoursewareBll.setBaseVoiceAnswerCreat(liveStandVoiceAnswerCreat);
         } else {
             englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(englishH5CoursewareBll.new
-                    LiveQuestionSwitchImpl(), englishH5CoursewareBll));
+                    LiveQuestionSwitchImpl(), englishH5CoursewareBll, getInfo));
         }
         LiveBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new LiveBaseEnglishH5CoursewareCreat();
         liveBaseEnglishH5CoursewareCreat.setLiveGetInfo(getInfo);

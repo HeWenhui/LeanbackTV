@@ -8,6 +8,7 @@ import android.util.LruCache;
 
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.MimeTypeMap;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.network.TxHttpDns;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -317,7 +318,7 @@ public class WebViewCache {
                 httpURLConnections.remove(httpURLConnection);
             }
         }
-        if (!isScience) {
+        if (!isScience&&!AppConfig.DEBUG) {
             dnsFailMap.put(url, true);
             Map<String, String> mData = new HashMap<>();
             mData.put("message", Log.getStackTraceString(dnsException));

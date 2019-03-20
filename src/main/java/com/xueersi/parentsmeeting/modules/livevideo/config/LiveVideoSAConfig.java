@@ -7,7 +7,13 @@ import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
  * Created by linyuqiang on 2018/2/27.
  */
 public class LiveVideoSAConfig {
-
+    //LiveGetInfoge 的isArts
+    /** 理科 */
+    public static final int ART_SEC = 0;
+    /** 英语 */
+    public static final int ART_EN = 1;
+    /** 语文 */
+    public static final int ART_CH = 2;
     String HTTP_HOST;
     public Inner inner;
 
@@ -97,7 +103,7 @@ public class LiveVideoSAConfig {
                 + "/LiveCourse/receiveGoldForPlayBack";
         /*获取体验直播课的红包*/
         public String URL_STUDY_RECEIVE_LIVE_PLAY_RED_PACKET_GOLDS = HTTP_HOST
-                + "/science/AutoLive/receiveGold" ;
+                + "/science/AutoLive/receiveGold";
         /** 用户试听 */
         @Deprecated
         public String URL_LIVE_USER_MODETIME = HTTP_HOST + "/LiveCourse/userModeTime";
