@@ -37,6 +37,7 @@ public class WebInstertJs {
     File cacheDir;
     static long saveTime;
     private LogToFile logToFile;
+    OnHttpCode onHttpCode;
 
     public WebInstertJs(Context context) {
         logToFile = new LogToFile(context, TAG);
@@ -52,6 +53,14 @@ public class WebInstertJs {
         if (saveTime == 0) {
             saveTime = System.currentTimeMillis() / 60000;
         }
+    }
+
+    public OnHttpCode getOnHttpCode() {
+        return onHttpCode;
+    }
+
+    public void setOnHttpCode(OnHttpCode onHttpCode) {
+        this.onHttpCode = onHttpCode;
     }
 
     private InputStream insertJs(String url, InputStream inputStream) throws Exception {
@@ -135,6 +144,11 @@ public class WebInstertJs {
                 InputStream inputStream = httpURLConnection.getInputStream();
                 return insertJs(url, inputStream);
 //                return null;
+            } else {
+                if (onHttpCode != null) {
+                    onHttpCode.onHttpCode(url, responseCode);
+                }
+                dnsException = new Exception("responseCode=" + responseCode);
             }
         } catch (MalformedURLException e) {
             dnsException = e;

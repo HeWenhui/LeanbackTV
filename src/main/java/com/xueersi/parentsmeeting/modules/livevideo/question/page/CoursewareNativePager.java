@@ -53,6 +53,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.MiddleResult;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.NewCourseCache;
+import com.xueersi.parentsmeeting.modules.livevideo.question.web.OnHttpCode;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.StaticWeb;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.WebInstertJs;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.NewCourseLog;
@@ -281,7 +282,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 return super.onConsoleMessage(consoleMessage);
             }
         });
-        wvSubjectWeb.setWebViewClient(new CourseWebViewClient());
+        CourseWebViewClient courseWebViewClient = new CourseWebViewClient();
+        newCourseCache.setOnHttpCode(courseWebViewClient);
+        wvSubjectWeb.setWebViewClient(courseWebViewClient);
         wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, new StaticWeb.OnMessage() {
 
             @Override
@@ -1575,7 +1578,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         return englishH5Entity;
     }
 
-    class CourseWebViewClient extends MyWebViewClient {
+    class CourseWebViewClient extends MyWebViewClient implements OnHttpCode {
 
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
@@ -1588,7 +1591,12 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     if (webResourceResponse != null) {
                         return webResourceResponse;
                     } else {
-                        view.stopLoading();
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                wvSubjectWeb.stopLoading();
+                            }
+                        });
                         XESToastUtils.showToast(mContext, "主文件加载失败，请刷新");
                     }
                 }
@@ -1598,7 +1606,12 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 if (webResourceResponse != null) {
                     return webResourceResponse;
                 } else {
-                    view.stopLoading();
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            wvSubjectWeb.stopLoading();
+                        }
+                    });
                     XESToastUtils.showToast(mContext, "通信文件加载失败，请刷新");
                 }
             }
@@ -1623,6 +1636,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 logHashMap.put("testsource", "PlatformCourseware");
             }
             logHashMap.put("eventid", "" + LogConfig.LIVE_H5PLAT);
+        }
+
+        @Override
+        public void onHttpCode(String url, int code) {
+            onReceivedHttpError(wvSubjectWeb, url, code, "");
         }
     }
 

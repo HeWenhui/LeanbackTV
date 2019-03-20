@@ -47,6 +47,7 @@ public class NewCourseCache {
     private String coursewarePages = "courseware_pages";
     private String mathJax = "MathJax";
     private String katex = "katex";
+    OnHttpCode onHttpCode;
 
     public NewCourseCache(Context mContext, String liveId) {
         logToFile = new LogToFile(mContext, TAG);
@@ -64,6 +65,15 @@ public class NewCourseCache {
         }
         header = new HashMap();
         header.put("Access-Control-Allow-Origin", "*");
+    }
+
+    public OnHttpCode getOnHttpCode() {
+        return onHttpCode;
+    }
+
+    public void setOnHttpCode(OnHttpCode onHttpCode) {
+        this.onHttpCode = onHttpCode;
+        webInstertJs.setOnHttpCode(onHttpCode);
     }
 
     public int loadCourseWareUrl(String url) {

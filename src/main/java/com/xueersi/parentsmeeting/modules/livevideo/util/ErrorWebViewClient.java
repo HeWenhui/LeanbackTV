@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.util;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.smtt.export.external.interfaces.WebResourceError;
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
+import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebView;
 import com.tencent.smtt.sdk.WebViewClient;
 import com.xueersi.common.network.IpAddressUtil;
@@ -90,7 +91,6 @@ public class ErrorWebViewClient extends WebViewClient {
                     logHashMap.put("operator", "" + IpAddressUtil.USER_OPERATE);
                     logHashMap.put("txdns", TxHttpDns.getInstance().getTxEnterpriseDns(url));
                     otherMsg(logHashMap, loadUrl);
-//                    Loger.d(webView.getContext(), LiveVideoConfig.LIVE_WEBVIEW_ERROR, logHashMap.getData(), true);
                     String enentId = logHashMap.getData().get("eventid");
                     if (enentId != null) {
                         LiveAndBackDebug liveAndBackDebug = ProxUtil.getProxUtil().get(webView.getContext(), LiveAndBackDebug.class);
@@ -108,6 +108,37 @@ public class ErrorWebViewClient extends WebViewClient {
             }
         });
         super.onReceivedError(webView, webResourceRequest, webResourceError);
+    }
+
+    @Override
+    public void onReceivedHttpError(WebView webView, WebResourceRequest webResourceRequest, WebResourceResponse webResourceResponse) {
+        logger.d("onReceivedHttpError:url=" + webResourceRequest.getUrl() + ",code=" + webResourceResponse.getStatusCode());
+        onReceivedHttpError(webView, "" + webResourceRequest.getUrl(), webResourceResponse.getStatusCode(), webResourceResponse.getReasonPhrase());
+        super.onReceivedHttpError(webView, webResourceRequest, webResourceResponse);
+    }
+
+    public void onReceivedHttpError(WebView webView, String url, int statusCode, String reasonPhrase) {
+        StableLogHashMap logHashMap = new StableLogHashMap("platLoadError");
+        logHashMap.put("tag", TAG);
+        logHashMap.put("status", "false");
+        logHashMap.put("loadurl", "" + url);
+        logHashMap.put("weburl", "" + loadUrl);
+        logHashMap.put("errcode", "" + statusCode);
+        logHashMap.put("errmsg", "" + reasonPhrase);
+        logHashMap.put("userip", "" + IpAddressUtil.USER_IP);
+        logHashMap.put("operator", "" + IpAddressUtil.USER_OPERATE);
+        otherMsg(logHashMap, loadUrl);
+        String enentId = logHashMap.getData().get("eventid");
+        if (enentId != null) {
+            LiveAndBackDebug liveAndBackDebug = ProxUtil.getProxUtil().get(webView.getContext(), LiveAndBackDebug.class);
+            if (liveAndBackDebug != null) {
+                liveAndBackDebug.umsAgentDebugInter(enentId, logHashMap.getData());
+            } else {
+                UmsAgentManager.umsAgentDebug(webView.getContext(), enentId, logHashMap.getData());
+            }
+        } else {
+            UmsAgentManager.umsAgentDebug(webView.getContext(), LiveVideoConfig.LIVE_WEBVIEW_ERROR, logHashMap.getData());
+        }
     }
 
     protected void otherMsg(StableLogHashMap logHashMap, String loadUrl) {

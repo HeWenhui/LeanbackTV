@@ -62,7 +62,7 @@ public class CacheWebView extends WebView {
 
     private void initData() {
 
-        mWebViewCache = new WebViewCache();
+        mWebViewCache = new WebViewCache(this);
         File cacheFile = new File(getContext().getCacheDir(),CACHE_NAME);
         try {
             mWebViewCache.openCache(getContext(),cacheFile.getAbsolutePath(),CACHE_SIZE);
