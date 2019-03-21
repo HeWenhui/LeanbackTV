@@ -179,7 +179,7 @@ public class EnStandAchievePager extends LiveBasePager {
                     int[] loc = ViewUtil.getLoc(pgAchivePk, rlAchiveStandBg);
                     RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) progressImageView.getLayoutParams();
                     int leftMargin = loc[0] - progressImageView.getWidth() / 2 + pgAchivePk.getWidth() * pgAchivePk.getProgress() / pgAchivePk.getMax();
-                    int topMargin = loc[1] - (progressImageView.getHeight() - pgAchivePk.getHeight()) / 2 - 9;
+                    int topMargin = loc[1] - (progressImageView.getHeight() - pgAchivePk.getHeight()) / 2;
                     logger.d("initListener1:left=" + loc[0] + ",top=" + loc[1]);
                     if (lp.leftMargin != leftMargin || lp.topMargin != topMargin) {
                         lp.topMargin = topMargin;
@@ -193,7 +193,7 @@ public class EnStandAchievePager extends LiveBasePager {
             int[] loc = ViewUtil.getLoc(pgAchivePk, rlAchiveStandBg);
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) progressImageView.getLayoutParams();
             lp.leftMargin = loc[0] - progressImageView.getWidth() / 2 + pgAchivePk.getWidth() * pgAchivePk.getProgress() / pgAchivePk.getMax();
-            lp.topMargin = loc[1] - (progressImageView.getHeight() - pgAchivePk.getHeight()) / 2 - 9;
+            lp.topMargin = loc[1] - (progressImageView.getHeight() - pgAchivePk.getHeight()) / 2;
             logger.d("initListener2:left=" + loc[0] + ",top=" + loc[1]);
             progressImageView.setLayoutParams(lp);
         }
