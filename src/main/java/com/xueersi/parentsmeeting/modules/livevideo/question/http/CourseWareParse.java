@@ -20,6 +20,7 @@ public class CourseWareParse {
             newCourseSec.setIsAnswer(jsonObject.optInt("isAnswer"));
             newCourseSec.setIsGame(jsonObject.optInt("isGame"));
             newCourseSec.setReleaseTime(jsonObject.optLong("releaseTime", System.currentTimeMillis()));
+            newCourseSec.setEndTime(jsonObject.optLong("endTime", System.currentTimeMillis()));
             ArrayList<NewCourseSec.Test> tests = newCourseSec.getTests();
             JSONArray array = jsonObject.getJSONArray("testInfos");
             for (int i = 0; i < array.length(); i++) {

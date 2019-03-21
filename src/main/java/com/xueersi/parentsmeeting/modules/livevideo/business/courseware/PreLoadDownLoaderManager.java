@@ -11,10 +11,10 @@ import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -27,43 +27,49 @@ public class PreLoadDownLoaderManager {
     /**
      * 自动下载池
      */
-    private static Map<String, DownLoadInfoListener> sAutoDownloaderPool =
-            new HashMap<>();
+    private static Map<String, DownLoadInfoAndListener> sAutoDownloaderPool =
+            new ConcurrentHashMap<>();
 
     private static AtomicBoolean isUrgent = new AtomicBoolean(false);
-    private static List<DownLoadInfoListener> downLoadInfoListeners = new CopyOnWriteArrayList<>();
+    private static List<DownLoadInfoAndListener> downLoadInfoListeners = new CopyOnWriteArrayList<>();
     /**
      * 同步锁
      */
     private static Object sLockObject = new Object();
 
-    public static class DownLoadInfoListener {
+    public static class DownLoadInfoAndListener {
         private DownLoadInfo downLoadInfo;
         private DownloadListener listener;
+        private String liveId;
 
-        public DownLoadInfoListener(DownLoadInfo downLoadInfo, DownloadListener listener) {
+        public DownLoadInfoAndListener(DownLoadInfo downLoadInfo, DownloadListener listener, String liveId) {
             this.downLoadInfo = downLoadInfo;
             this.listener = listener;
+            this.liveId = liveId;
         }
 
         public DownLoadInfo getDownLoadInfo() {
             return downLoadInfo;
         }
 
-        public void setDownLoadInfo(DownLoadInfo downLoadInfo) {
-            this.downLoadInfo = downLoadInfo;
-        }
+//        public void setDownLoadInfo(DownLoadInfo downLoadInfo) {
+//            this.downLoadInfo = downLoadInfo;
+//        }
 
         public DownloadListener getListener() {
             return listener;
         }
 
-        public void setListener(DownloadListener listener) {
-            this.listener = listener;
+//        public void setListener(DownloadListener listener) {
+//            this.listener = listener;
+//        }
+
+        public String getLiveId() {
+            return liveId;
         }
     }
 
-    public static void addUrgentInfo(DownLoadInfoListener downLoadInfo) {
+    public static void addUrgentInfo(DownLoadInfoAndListener downLoadInfo) {
         if (!isUrgent.get()) {
             isUrgent.set(true);
         }
@@ -84,29 +90,29 @@ public class PreLoadDownLoaderManager {
             return;
         }
         synchronized (sLockObject) {
-
-
             // 如果有已经在下载的任务则不下载
             if (!TextUtils.isEmpty(sDownUrl)) {
 //                logger.i("如果有已经在下载的任务则不下载");
                 return;
             }
+            DownLoadInfoAndListener downLoadInfoAndListener;
             DownLoadInfo info;
-            final DownloadListener realDownLoadListener;
+            DownloadListener realDownLoadListener;
             if (isUrgent.get() && downLoadInfoListeners.size() > 0) {
-                info = downLoadInfoListeners.get(0).getDownLoadInfo();
-                realDownLoadListener = downLoadInfoListeners.get(0).getListener();
+                downLoadInfoAndListener = downLoadInfoListeners.get(0);
+                info = downLoadInfoAndListener.getDownLoadInfo();
+                realDownLoadListener = downLoadInfoAndListener.getListener();
                 downLoadInfoListeners.remove(0);
             } else {
-                Iterator<Map.Entry<String, DownLoadInfoListener>> iterator = sAutoDownloaderPool.entrySet().iterator();
+                Iterator<Map.Entry<String, DownLoadInfoAndListener>> iterator = sAutoDownloaderPool.entrySet().iterator();
                 if (!iterator.hasNext()) {
-                    logger.i("no next iterator");
+                    logger.i("no next iterator Thread:" + Thread.currentThread().getName());
                     return;
                 }
-                Map.Entry<String, DownLoadInfoListener> entry = iterator.next();
-                DownLoadInfoListener downLoadInfoListener = entry.getValue();
-                info = downLoadInfoListener.getDownLoadInfo();
-                realDownLoadListener = downLoadInfoListener.getListener();
+                Map.Entry<String, DownLoadInfoAndListener> entry = iterator.next();
+                downLoadInfoAndListener = entry.getValue();
+                info = downLoadInfoAndListener.getDownLoadInfo();
+                realDownLoadListener = downLoadInfoAndListener.getListener();
             }
 
             if (info == null || TextUtils.isEmpty(info.getUrl())) {
@@ -116,73 +122,107 @@ public class PreLoadDownLoaderManager {
 
             if (DownLoadInfo.DownloadType.FILE.equals(info.getDownloadType())) {
                 // 下载文件
-                DownloadListener downloadListener = new DownloadListener() {
-
-                    @Override
-                    public void onStart(String url) {
-                        synchronized (sLockObject) {
-                            sDownUrl = url;
-                        }
-                        if (realDownLoadListener != null) {
-                            realDownLoadListener.onStart(url);
-                        }
-                    }
-
-                    /**
-                     * 下载完成
-                     */
-                    @Override
-                    public void onFinish() {
-                        //从下载队列中移除
-                        removeDownloaderFromPool(sDownUrl);
-                        synchronized (sLockObject) {
-                            sDownUrl = null;
-                        }
-                        if (realDownLoadListener != null) {
-                            realDownLoadListener.onFinish();
-                        }
-//                        logger.i("next auto download");
-                        startAutoDownload();
-                    }
-
-                    /**
-                     *
-                     */
-                    @Override
-                    public void onSuccess(String folderPath, String fileName) {
-                        if (realDownLoadListener != null) {
-                            realDownLoadListener.onSuccess(folderPath, fileName);
-                        }
-                    }
-
-                    /**
-                     *
-                     */
-                    @Override
-                    public void onFail(int errorCode) {
-                        logger.i(errorCode + "");
-                        if (realDownLoadListener != null) {
-                            realDownLoadListener.onFail(errorCode);
-                        }
-                    }
-
-                    @Override
-                    public void onProgressChange(long currentLength,
-                                                 long fileLength) {
-                        if (realDownLoadListener != null) {
-//                            logger.i(currentLength + " " + fileLength);
-                            realDownLoadListener.onProgressChange(currentLength, fileLength);
-                        }
-                    }
-                };
+//                CoursewarePreload.ZipDownloadListener zipDownloadListener = (CoursewarePreload.ZipDownloadListener) realDownLoadListener;
+//                logger.i("in:" + zipDownloadListener.mMorecachein.getAbsolutePath() + " out:" + zipDownloadListener.mMorecacheout.getAbsolutePath());
+//                if (zipDownloadListener.mMorecachein.getAbsolutePath().equals(debugString)) {
+//                    logger.i(debugLog);
+//                }
+                PreloadDownloadListener downloadListener = new PreloadDownloadListener(downLoadInfoAndListener);
                 DownloadPool.getDownLoader(info).start(downloadListener);
             } else if (DownLoadInfo.DownloadType.IMG.equals(info.getDownloadType())) {
                 // 下载图片
                 // @Fixme
                 //sImageManager.loadImage(info.getUrl(), null);
                 sDownUrl = null;
-                removeDownloaderFromPool(info.getUrl());
+                removeDownloaderFromPool(info.getUrl() + downLoadInfoAndListener.liveId);
                 startAutoDownload();
+            }
+        }
+    }
+
+    public static class PreloadDownloadListener implements DownloadListener {
+
+        private DownLoadInfoAndListener downLoadInfoAndListener;
+
+        private DownloadListener realDownLoadListener;
+
+        public PreloadDownloadListener(DownLoadInfoAndListener downloadListener) {
+            this.downLoadInfoAndListener = downloadListener;
+            this.realDownLoadListener = downloadListener.getListener();
+        }
+
+        @Override
+        public void onStart(String url) {
+            synchronized (sLockObject) {
+                sDownUrl = url;
+            }
+//            CoursewarePreload.ZipDownloadListener zipDownloadListener = (CoursewarePreload.ZipDownloadListener) downLoadInfoAndListener.getListener();
+//            if (zipDownloadListener.mMorecachein.getAbsolutePath().equals(debugString)) {
+//                logger.i(debugLog);
+//            }
+            if (realDownLoadListener != null) {
+                realDownLoadListener.onStart(url);
+
+            }
+        }
+
+        /**
+         * 下载完成
+         */
+        @Override
+        public void onFinish() {
+            //从下载队列中移除
+            removeDownloaderFromPool(sDownUrl + downLoadInfoAndListener.getLiveId());
+            synchronized (sLockObject) {
+                sDownUrl = null;
+            }
+//            CoursewarePreload.ZipDownloadListener zipDownloadListener = (CoursewarePreload.ZipDownloadListener) realDownLoadListener;
+//            if (zipDownloadListener.mMorecachein.getAbsolutePath().equals(debugString)) {
+//                logger.i(debugLog);
+//            }
+            if (realDownLoadListener != null) {
+                realDownLoadListener.onFinish();
+            }
+//                        logger.i("next auto download");
+            startAutoDownload();
+        }
+
+        /**
+         *
+         */
+        @Override
+        public void onSuccess(String folderPath, String fileName) {
+//            CoursewarePreload.ZipDownloadListener zipDownloadListener = (CoursewarePreload.ZipDownloadListener) realDownLoadListener;
+//            if (zipDownloadListener.mMorecachein.getAbsolutePath().equals(debugString)) {
+//                logger.i(debugLog);
+//            }
+            if (realDownLoadListener != null) {
+                realDownLoadListener.onSuccess(folderPath, fileName);
+            }
+        }
+
+        /**
+         *
+         */
+        @Override
+        public void onFail(int errorCode) {
+
+//            CoursewarePreload.ZipDownloadListener zipDownloadListener = (CoursewarePreload.ZipDownloadListener) realDownLoadListener;
+//            if (zipDownloadListener.mMorecachein.getAbsolutePath().equals(debugString)) {
+//                logger.i(debugLog);
+//            }
+            logger.i(errorCode + "");
+            if (realDownLoadListener != null) {
+                realDownLoadListener.onFail(errorCode);
+            }
+        }
+
+        @Override
+        public void onProgressChange(long currentLength,
+                                     long fileLength) {
+            if (realDownLoadListener != null) {
+//                            logger.i(currentLength + " " + fileLength);
+                realDownLoadListener.onProgressChange(currentLength, fileLength);
             }
         }
     }
@@ -190,7 +230,7 @@ public class PreLoadDownLoaderManager {
     /**
      * 添加到自动下载池，并启动下载
      */
-    public static void addToAutoDownloadPool(final DownLoadInfoListener info) {
+    public static void addToAutoDownloadPool(final DownLoadInfoAndListener info) {
         if (info == null || TextUtils.isEmpty(info.getDownLoadInfo().getUrl())) {
             return;
         }
@@ -202,39 +242,15 @@ public class PreLoadDownLoaderManager {
                 return;
             }
             // 将下载器添加到下载池
-            DownloadPool.addDownloader(info.getDownLoadInfo().getUrl(), new DownLoader(info.getDownLoadInfo()));
+            DownloadPool.addDownloader(info.getDownLoadInfo().getUrl() + info.liveId, new DownLoader(info.getDownLoadInfo()));
         }
-        addDownloaderToPool(info.getDownLoadInfo().getUrl(), info);
+        addDownloaderToPool(info.getDownLoadInfo().getUrl() + info.liveId, info);
+//        if (info.listener instanceof CoursewarePreload.ZipDownloadListener &&
+//                ((CoursewarePreload.ZipDownloadListener) info.listener).mMorecachein.getAbsolutePath().equals(debugString)) {
+//            logger.i("url:" + info.getDownLoadInfo().getUrl() + " " + debugLog);
+//        }
         startAutoDownload();
     }
-
-//    private static DownloadListener listener;
-
-//    public static void setDownLoadListener(DownloadListener listener) {
-//        PreLoadDownLoaderManager.listener = listener;
-//    }
-
-//    /**
-//     * 添加到自动下载池，并启动下载
-//     */
-//    public static void addToAutoDownloadPool(final DownLoadInfoListener info) {
-//        if (info == null || TextUtils.isEmpty(info.getDownLoadInfo().getUrl())) {
-//            return;
-//        }
-//        // 下载的是文件
-//        if (DownLoadInfo.DownloadType.FILE.equals(info.getDownLoadInfo().getDownloadType())) {
-//            // 文件名或文件夹为空，返回
-//            if (TextUtils.isEmpty(info.getDownLoadInfo().getFolder())
-//                    || TextUtils.isEmpty(info.getDownLoadInfo().getFileName())) {
-//                return;
-//            }
-//            // 将下载器添加到下载池
-//            DownloadPool.addDownloader(info.getDownLoadInfo().getUrl(), new DownLoader(info.getDownLoadInfo()));
-//        }
-//        addDownloaderToPool(info.getDownLoadInfo().getUrl(), info);
-//        startAutoDownload();
-//    }
-
 
     /**
      * 从自动下载池中删除任务
@@ -251,22 +267,19 @@ public class PreLoadDownLoaderManager {
      * 添加任务到自动下载池
      */
     private static void addDownloaderToPool(String key,
-                                           DownLoadInfoListener downLoadInfo) {
+                                            DownLoadInfoAndListener downLoadInfo) {
         synchronized (sLockObject) {
+//            if (downLoadInfo.listener instanceof CoursewarePreload.ZipDownloadListener &&
+//                    ((CoursewarePreload.ZipDownloadListener) downLoadInfo.listener).mMorecachein.getAbsolutePath().equals(debugString)) {
+//                logger.i("key:" + key + " " + debugLog);
+//            }
             if (!sAutoDownloaderPool.containsKey(key)) {
                 sAutoDownloaderPool.put(key, downLoadInfo);
             }
         }
     }
 
-    public interface SuccessCallBack {
-        void onSuccess();
+//    public static final String debugString = "/storage/emulated/0/Android/data/com.xueersi.parentsmeeting.debug/cache/webviewCache/20190315/361072/361072";
 
-    }
-
-    private SuccessCallBack callBack;
-
-    public void setCallBack(SuccessCallBack callBack) {
-        this.callBack = callBack;
-    }
+//    public static final String debugLog = "debugLog";
 }

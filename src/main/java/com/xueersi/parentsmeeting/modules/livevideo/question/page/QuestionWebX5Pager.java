@@ -30,6 +30,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
@@ -82,7 +83,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
     private String testPaperUrl;
     private String jsExamSubmitAll = "javascript:examSubmitAll()";
     private String isShowRanks;
-    private int isArts;
+    private final int isArts;
     private String stuCouId;
     private int isTeamPkRoom; //是否是 teampk 房间
     private int mGoldNum;
@@ -140,12 +141,13 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
      */
     public QuestionWebX5Pager(Context context, StopWebQuestion questionBll, VideoQuestionLiveEntity testInfo, String liveid) {
         super(context);
+        isArts = LiveVideoSAConfig.ART_EN;
         this.questionBll = questionBll;
         examUrl = testInfo.getUrl();
         isNewArtsTest = testInfo.isNewArtsH5Courseware();
         testId = testInfo.getvQuestionID();
         type = testInfo.type;
-        liveid = liveid;
+        this.liveid = liveid;
         mLogtf.i("QuestionWebX5Pager:liveid=" + liveid + ",testId=" + testId);
         cacheFile = LiveCacheFile.geCacheFile(context, "webviewCache");
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());

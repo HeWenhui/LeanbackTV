@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 
 import com.xueersi.common.base.BaseActivity;
 import com.xueersi.common.base.BaseBll;
@@ -129,14 +130,11 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     JSONObject object = (JSONObject) responseEntity.getJsonObject();
                     LiveTopic mLiveTopic = new LiveTopic();
                     LiveGetInfo mGetInfo = mHttpResponseParser.parseLiveGetInfo(object, mLiveTopic, liveType, from);
-
-
                     if (mGetInfo == null) {
                         XESToastUtils.showToast(LiveVideoLoadActivity.this, "服务器异常");
                         finish();
                         return;
                     }
-//                    performDownLoadPreLoad(httpManager, mGetInfo);
                     String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
                     getInfos.put(liveType + "-" + stuId + "-" + vSectionID, mGetInfo);
                     com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
@@ -168,8 +166,6 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     JSONObject object = (JSONObject) responseEntity.getJsonObject();
                     LiveTopic mLiveTopic = new LiveTopic();
                     LiveGetInfo mGetInfo = mHttpResponseParser.parseLiveGetInfo(object, mLiveTopic, liveType, from);
-
-
                     if (mGetInfo == null) {
                         XESToastUtils.showToast(LiveVideoLoadActivity.this, "服务器异常");
                         finish();
@@ -233,23 +229,26 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
     //新课件灰测
     public boolean isNewCourse(String liveId) {
-        if (PreloadStaticStorage.preloadLiveId.size() != 0) {
-            for (String itemLiveId : PreloadStaticStorage.preloadLiveId) {
-                if (itemLiveId.equals(liveId)) {
+        for (String itemLiveId : PreloadStaticStorage.preloadLiveId) {
+            if (itemLiveId.equals(liveId)) {
+                return true;
+            }
+        }
+        String liveIds = ShareDataManager.getInstance().getString(ShareDataConfig.SP_PRELOAD_COURSEWARE, "", ShareDataManager.SHAREDATA_USER);
+        if (liveIds.contains(",")) {
+            String[] preLoadLiveId = liveIds.split(",");
+            for (String tempPreLoadLiveId : preLoadLiveId) {
+                if (tempPreLoadLiveId.equals(liveId)) {
                     return true;
                 }
             }
-        } else {
-            String liveIds = ShareDataManager.getInstance().getString(ShareDataConfig.SP_PRELOAD_COURSEWARE, "", ShareDataManager.SHAREDATA_USER);
-            if (liveIds.contains(",")) {
-                String[] preLoadLiveId = liveIds.split(",");
-                for (String tempPreLoadLiveId : preLoadLiveId) {
-                    if (tempPreLoadLiveId.equals(liveId)) {
-                        return true;
-                    }
-                }
+        }
+        if (!TextUtils.isEmpty(liveIds)) {
+            if (liveIds.equals(liveId)) {
+                return true;
             }
         }
+
         return false;
     }
 

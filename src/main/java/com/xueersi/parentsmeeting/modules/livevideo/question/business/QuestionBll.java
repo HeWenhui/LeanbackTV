@@ -1057,13 +1057,17 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4) {
                             popupWindow_view = initAnswerRightResult(entity);
                             isSuccess = true;
+                            LiveVideoConfig.isAITrue = true;
                             // 回答错误提示
                         } else if (entity.getResultType() == QUE_RES_TYPE2) {
                             popupWindow_view = initAnswerWrongResult();
+                            initAnswerWrongResult();
+                            LiveVideoConfig.isAITrue = false;
                             // 填空题部分正确提示
                         } else if (entity.getResultType() == QUE_RES_TYPE3 || entity.getResultType() == QUE_RES_TYPE5) {
                             popupWindow_view = initAnswerPartRightResult(entity);
                             isSuccess = true;
+                            LiveVideoConfig.isAITrue = false;
                         }
                     }
                 }

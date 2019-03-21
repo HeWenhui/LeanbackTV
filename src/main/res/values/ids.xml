@@ -522,6 +522,7 @@
     <!--结果页-->
     <item name="iv_live_speech_result_title" type="id" />
     <item name="iv_live_speech_result_close" type="id" />
+    <item name="rl_live_speech_result_content" type="id" />
     <item name="tv_live_speech_result_score" type="id" />
     <item name="rl_live_speech_result_head" type="id" />
     <item name="tv_live_speech_result_accuracy_lable" type="id" />

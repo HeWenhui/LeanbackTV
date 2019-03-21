@@ -13,7 +13,7 @@
         android:background="@drawable/shape_livevideo_primaryscience_answerresult_dash_line"
         android:layerType="software" />
 
-    <TextView
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:id="@+id/tv_livevideo_primaryscience_answerresult_answer_number"
@@ -24,7 +24,7 @@
         android:textSize="10dp"
         android:text="题号" />
 
-    <TextView
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:layout_toRightOf="@+id/tv_livevideo_primaryscience_answerresult_answer_number"
@@ -37,7 +37,7 @@
         android:textSize="10dp"
         android:text="正确答案" />
 
-    <TextView
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:layout_toRightOf="@+id/tv_livevideo_primaryscience_answerresult_right_answer"

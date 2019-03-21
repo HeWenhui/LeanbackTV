@@ -127,7 +127,7 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
     };
 
 
-    private static class ItemHolder extends RecyclerView.ViewHolder {
+    private class ItemHolder extends RecyclerView.ViewHolder {
 
         private TextView tvStanderAnswer;
         private ArtsAnswerTextView tvAnswer;
@@ -157,10 +157,29 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
             }
 
             if(isSelect(data)){
-                tvStanderAnswer.setVisibility(data.getIsRight() ==2 ?View.GONE:View.VISIBLE);
-                tvStanderAnswer.setText(listToStr(data.getRightAnswers(),null));
-                tvStanderAnswerBelow.setVisibility(View.GONE);
-                tvAnswer.setTextWithIcon("你的答案:"+listToStr(data.getChoiceList(),null));
+                String myAnswerText = "你的答案:"+listToStr(data.getChoiceList(),null);
+                String standerAnswerText = listToStr(data.getRightAnswers(),null);
+                int leftMargin = SizeUtils.Dp2Px(tvStanderAnswer.getContext(),12);
+                int textIndexSpec = 0;
+
+                if(tvIndex != null){
+                    textIndexSpec = (int) tvIndex.getPaint().measureText((position + 1) + ".");
+                }
+                int requreWidth = (int) (tvAnswer.getPaint().measureText(myAnswerText)
+                        + tvAnswer.getPaint().measureText(standerAnswerText)+ leftMargin + textIndexSpec);
+                //整个item 可用空间  ，60 为左边pading 值
+                int itemAvaiableWidth = (recyclerView.getMeasuredWidth() - SizeUtils.Dp2Px(recyclerView.getContext(),60));
+                //判断是否能一行显示完整 自己答案 + 标准答案
+                if(requreWidth < itemAvaiableWidth){
+                    tvStanderAnswer.setVisibility(data.getIsRight() ==2 ?View.GONE:View.VISIBLE);
+                    tvStanderAnswer.setText(listToStr(data.getRightAnswers(),null));
+                    tvStanderAnswerBelow.setVisibility(View.GONE);
+                }else{
+                    tvStanderAnswerBelow.setVisibility(data.getIsRight() ==2 ?View.GONE:View.VISIBLE);
+                    tvStanderAnswerBelow.setText(listToStr(data.getRightAnswers(),null));
+                    tvStanderAnswer.setVisibility(View.GONE);
+                }
+                tvAnswer.setTextWithIcon(myAnswerText);
             }else{
                 tvStanderAnswer.setVisibility(View.GONE);
                 tvAnswer.setTextWithIcon(listToStr(data.getBlankList(),"、"));
@@ -200,7 +219,7 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
     }
 
 
-    private static class AnswerResultAdapter extends RecyclerView.Adapter {
+    private  class AnswerResultAdapter extends RecyclerView.Adapter {
 
         final int ITEM_TYPE_SINGLE = 1;
         final int ITEM_TYPE_MULTI = 2;

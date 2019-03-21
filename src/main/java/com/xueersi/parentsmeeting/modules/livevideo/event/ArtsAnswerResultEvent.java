@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.event;
 
 
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
 
 /**
@@ -18,6 +19,10 @@ public class ArtsAnswerResultEvent {
     private int isRight;
 
     private int mType;
+    /** 新课件互动题 */
+    private VideoQuestionLiveEntity detailInfo;
+    /** 新课件是否是预加载 */
+    private boolean ispreload;
     /** js回调 传回答案 */
     public static final int TYPE_H5_ANSWERRESULT = 1;
 
@@ -89,6 +94,21 @@ public class ArtsAnswerResultEvent {
         return false;
     }
 
+    public VideoQuestionLiveEntity getDetailInfo() {
+        return detailInfo;
+    }
+
+    public void setDetailInfo(VideoQuestionLiveEntity detailInfo) {
+        this.detailInfo = detailInfo;
+    }
+
+    public boolean isIspreload() {
+        return ispreload;
+    }
+
+    public void setIspreload(boolean ispreload) {
+        this.ispreload = ispreload;
+    }
 
     @Override
     public String toString() {

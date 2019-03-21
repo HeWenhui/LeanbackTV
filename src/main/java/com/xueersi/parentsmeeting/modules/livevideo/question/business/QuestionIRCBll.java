@@ -106,24 +106,6 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean isLand) {
         mQuestionAction.initView(bottomContent, isLand.get());
-//        if (AppConfig.DEBUG) {
-//            SpeechResultEntity speechResultEntity = new SpeechResultEntity();
-//            speechResultEntity.score = 12;
-//            speechResultEntity.enery = 2;
-//            speechResultEntity.gold = 3;
-//            speechResultEntity.praise = 10;
-//            speechResultEntity.accuracy = 22;
-//            speechResultEntity.fluency = 33;
-//            ArrayList<SpeechResultMember> speechResultMembers = speechResultEntity.speechResultMembers;
-//            for (int i = 0; i < 2; i++) {
-//                SpeechResultMember speechResultMember = new SpeechResultMember();
-//                speechResultMember.name = "测试" + i;
-//                speechResultMember.score = i;
-//                speechResultMembers.add(speechResultMember);
-//            }
-//            SpeechResultPager speechResultPager = new SpeechResultPager(activity, bottomContent, speechResultEntity);
-//            bottomContent.addView(speechResultPager.getRootView());
-//        }
 //        if (com.xueersi.common.config.AppConfig.DEBUG) {
 //            com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity answerResultEntity = new com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity();
 //            answerResultEntity.isVoice = 1;
@@ -200,13 +182,13 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         mQuestionAction.setBaseSubjectResultCreat(baseSubjectResultCreat);
         mQuestionAction.setQuestionWebCreate(new LiveQuestionWebCreate());
         if (data.getPattern() == 2) {
-            mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new LiveQuestionSwitchImpl(), mQuestionAction));
+            mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new LiveQuestionSwitchImpl(), mQuestionAction, data));
             mQuestionAction.setBaseSpeechCreat(new LiveStandSpeechCreat(this, mLiveBll, mQuestionAction));
             StandSpeechTop3Bll standSpeechTop3Bll = new StandSpeechTop3Bll(activity, this, mLiveBll);
             standSpeechTop3Bll.initView(mRootView);
             mQuestionAction.setSpeechEndAction(standSpeechTop3Bll);
         } else {
-            mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new LiveQuestionSwitchImpl(), mQuestionAction));
+            mQuestionAction.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(mQuestionAction.new LiveQuestionSwitchImpl(), mQuestionAction, data));
             mQuestionAction.setBaseSpeechCreat(new LiveSpeechCreat(mQuestionAction, data));
         }
         if (1 == data.getIsEnglish()) {
@@ -261,6 +243,25 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             QuestionWebCache webCache = new QuestionWebCache(activity);
             webCache.startCache();
         }
+//        if (com.xueersi.common.config.AppConfig.DEBUG) {
+//            com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity speechResultEntity = new com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity();
+//            speechResultEntity.score = 12;
+//            speechResultEntity.energy = 2;
+//            speechResultEntity.gold = 3;
+//            speechResultEntity.praise = 10;
+//            speechResultEntity.accuracy = 22;
+//            speechResultEntity.fluency = 33;
+//            java.util.ArrayList<com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultMember> speechResultMembers = speechResultEntity.speechResultMembers;
+//            for (int i = 0; i < 3; i++) {
+//                com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultMember speechResultMember = new com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultMember();
+//                speechResultMember.name = "测试" + i;
+//                speechResultMember.score = i;
+//                speechResultMember.isSelfRole = i == 0;
+//                speechResultMembers.add(speechResultMember);
+//            }
+//            com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechResultPager speechResultPager = new com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechResultPager(activity, mRootView, speechResultEntity, mGetInfo);
+//            mRootView.addView(speechResultPager.getRootView());
+//        }
     }
 
     @Override
@@ -279,6 +280,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     if (!"{}".equals(onlineTechObj.toString())) {
                         VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                         LiveVideoConfig.isNewArts = true;
+                        videoQuestionLiveEntity.noticeType=XESCODE.ARTS_SEND_QUESTION;
                         videoQuestionLiveEntity.setNewArtsCourseware(true);
                         String status = onlineTechObj.optString("status");
                         if ("on".equals(status)) {
@@ -577,6 +579,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 videoQuestionLiveEntity.multiRolePlay = object.optString("multiRolePlay");
                 videoQuestionLiveEntity.speechContent = object.optString("answer");
                 videoQuestionLiveEntity.num = 1;
+                videoQuestionLiveEntity.noticeType=XESCODE.ARTS_SEND_QUESTION;
                 videoQuestionLiveEntity.setNewArtsCourseware(true);
                 String isVoice = object.optString("isVoice");
                 videoQuestionLiveEntity.setIsVoice(isVoice);

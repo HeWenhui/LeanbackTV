@@ -132,6 +132,8 @@ public class LiveVideoActivityBase extends XesActivity {
         if (liveVideoFragmentBase == null) {
             liveVideoFragmentBase = getFragment();
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            // TODO
+//            fragmentTransaction.add(android.R.id.content, liveVideoFragmentBase, "liveVideo");
             fragmentTransaction.add(R.id.rl_course_video_contentview, liveVideoFragmentBase, "liveVideo");
             fragmentTransaction.commit();
         } else {

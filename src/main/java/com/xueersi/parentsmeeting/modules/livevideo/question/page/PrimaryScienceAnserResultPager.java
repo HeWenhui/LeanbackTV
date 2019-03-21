@@ -93,8 +93,15 @@ public class PrimaryScienceAnserResultPager extends LiveBasePager {
     public void initData() {
         if (isGame == 1) {
             rlContent.setVisibility(GONE);
+            ivClose.setVisibility(GONE);
             tvGoldGame.setText("+" + mEnytity.getGold());
             startGameLottieAnimation();
+            mView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    onNativeResultPagerClose.onClose();
+                }
+            },3000);
         } else {
             mAdapter = new AnswerResultAdapter(mEnytity.getAnswerList());
             mRecycleView.setLayoutManager(new GridLayoutManager(mContext, 1, LinearLayoutManager.VERTICAL, false));

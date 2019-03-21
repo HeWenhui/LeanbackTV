@@ -14,8 +14,7 @@
         android:id="@id/rl_livevideo_info"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
-        android:background="@color/COLOR_78C6FF">
+        android:layout_alignParentRight="true">
 
         <ImageView
             android:id="@id/iv_livevideo_message_small_bg"
@@ -23,7 +22,7 @@
             android:layout_height="wrap_content"
             android:scaleType="fitXY"
             android:src="@drawable/app_livevideo_enteampk_bg_img1_nor"
-            android:visibility="gone" />
+            android:visibility="visible" />
 
         <RelativeLayout
             android:id="@id/rl_livevideo_message_top"
