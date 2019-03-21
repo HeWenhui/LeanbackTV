@@ -130,14 +130,11 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     JSONObject object = (JSONObject) responseEntity.getJsonObject();
                     LiveTopic mLiveTopic = new LiveTopic();
                     LiveGetInfo mGetInfo = mHttpResponseParser.parseLiveGetInfo(object, mLiveTopic, liveType, from);
-
-
                     if (mGetInfo == null) {
                         XESToastUtils.showToast(LiveVideoLoadActivity.this, "服务器异常");
                         finish();
                         return;
                     }
-//                    performDownLoadPreLoad(httpManager, mGetInfo);
                     String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
                     getInfos.put(liveType + "-" + stuId + "-" + vSectionID, mGetInfo);
                     com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
@@ -169,8 +166,6 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     JSONObject object = (JSONObject) responseEntity.getJsonObject();
                     LiveTopic mLiveTopic = new LiveTopic();
                     LiveGetInfo mGetInfo = mHttpResponseParser.parseLiveGetInfo(object, mLiveTopic, liveType, from);
-
-
                     if (mGetInfo == null) {
                         XESToastUtils.showToast(LiveVideoLoadActivity.this, "服务器异常");
                         finish();
