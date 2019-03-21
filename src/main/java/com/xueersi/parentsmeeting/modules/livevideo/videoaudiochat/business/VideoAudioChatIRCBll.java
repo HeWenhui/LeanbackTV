@@ -8,6 +8,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -98,8 +99,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
         }
     }
 
-    private LiveStandMediaControllerBottom.OnViewChange onViewChange = new LiveStandMediaControllerBottom
-            .OnViewChange() {
+    private LiveUIStateListener onViewChange = new LiveUIStateListener() {
         @Override
         public void onViewChange(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
             videoChatAction.setControllerBottom(baseLiveMediaControllerBottom);

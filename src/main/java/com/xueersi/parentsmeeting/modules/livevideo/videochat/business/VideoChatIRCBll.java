@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
@@ -81,8 +82,7 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
         }
     }
 
-    private LiveStandMediaControllerBottom.OnViewChange onViewChange = new LiveStandMediaControllerBottom
-            .OnViewChange() {
+    private LiveUIStateListener onViewChange = new LiveUIStateListener() {
         @Override
         public void onViewChange(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
             videoChatAction.setControllerBottom(baseLiveMediaControllerBottom);
