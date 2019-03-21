@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.view.ViewStub;
 import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -41,7 +43,7 @@ public class EnStandAchievePager extends LiveBasePager {
     private TextView tvAchiveNumFire;
     private TextView tvAchiveNumStar;
     private TextView tvAchiveNumGold;
-    private RelativeLayout rlAchiveStandBg;
+    private FrameLayout rlAchiveStandBg;
     private ViewGroup pkview = null;
     private ProgressBar pgAchivePk;
     private ImageView progressImageView;
@@ -154,9 +156,10 @@ public class EnStandAchievePager extends LiveBasePager {
         pgAchivePk.setProgress(progress);
         if (progressImageView == null) {
             progressImageView = new ImageView(activity);
-            progressImageView.setImageResource(R.drawable.pc_livevideo_enteampk_pkbar_fire_pic_nor);
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.pc_livevideo_enteampk_pkbar_fire_pic_nor);
+            progressImageView.setImageDrawable(bitmapDrawable);
             progressImageView.setVisibility(View.INVISIBLE);
-            rlAchiveStandBg.addView(progressImageView);
+            rlAchiveStandBg.addView(progressImageView, bitmapDrawable.getIntrinsicWidth(), bitmapDrawable.getIntrinsicHeight());
             pgAchivePk.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 @Override
                 public boolean onPreDraw() {
@@ -177,7 +180,7 @@ public class EnStandAchievePager extends LiveBasePager {
                 public boolean onPreDraw() {
                     progressImageView.getViewTreeObserver().removeOnPreDrawListener(this);
                     int[] loc = ViewUtil.getLoc(pgAchivePk, rlAchiveStandBg);
-                    RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) progressImageView.getLayoutParams();
+                    ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) progressImageView.getLayoutParams();
                     int leftMargin = loc[0] - progressImageView.getWidth() / 2 + pgAchivePk.getWidth() * pgAchivePk.getProgress() / pgAchivePk.getMax();
                     int topMargin = loc[1] - (progressImageView.getHeight() - pgAchivePk.getHeight()) / 2;
                     logger.d("initListener1:left=" + loc[0] + ",top=" + loc[1]);
@@ -191,7 +194,7 @@ public class EnStandAchievePager extends LiveBasePager {
             });
         } else {
             int[] loc = ViewUtil.getLoc(pgAchivePk, rlAchiveStandBg);
-            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) progressImageView.getLayoutParams();
+            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) progressImageView.getLayoutParams();
             lp.leftMargin = loc[0] - progressImageView.getWidth() / 2 + pgAchivePk.getWidth() * pgAchivePk.getProgress() / pgAchivePk.getMax();
             lp.topMargin = loc[1] - (progressImageView.getHeight() - pgAchivePk.getHeight()) / 2;
             logger.d("initListener2:left=" + loc[0] + ",top=" + loc[1]);
