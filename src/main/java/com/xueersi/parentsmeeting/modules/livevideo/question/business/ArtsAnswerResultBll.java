@@ -34,11 +34,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ScoreRange;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
@@ -47,6 +49,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsPSEAnswerResultPager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.NewCourseLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -168,7 +171,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         rlAnswerResultLayout = mRootView;
     }
 
-    private void addPager() {
+    private void addPager(ArtsAnswerResultEvent event) {
         //logger.e("ArtsAnswerResultBll:addPager:" + mDsipalyer);
 
         if (mDsipalyer != null) {
@@ -186,27 +189,32 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             rlAnswerResultLayout.addView(mDsipalyer.getRootLayout(), layoutParams);
         }
-       // logger.e( "==========> ArtsAnswerResultBll addPager called:");
+        VideoQuestionLiveEntity detailInfo = event.getDetailInfo();
+        if (detailInfo != null) {
+            NewCourseLog.sno8(mLiveBll, NewCourseLog.getNewCourseTestIdSec(detailInfo, LiveVideoSAConfig.ART_EN), event.isIspreload(), 0);
+        }
+        // logger.e( "==========> ArtsAnswerResultBll addPager called:");
     }
 
     /**
      * 展示答题结果
      */
-    private void showAnswerReulst() {
+    private void showAnswerReulst(final ArtsAnswerResultEvent event) {
         mRootView.post(new Runnable() {
             @Override
             public void run() {
-                if(mGetInfo.getPattern() == 2){
+                if (mGetInfo.getPattern() == 2) {
                     showH5Result(mAnswerReulst);
                     close = false;
-                }else{
+                } else {
                     closeRemindUI();
-                    addPager();
+                    addPager(event);
                 }
 
             }
         });
     }
+
     private void showH5Result(AnswerResultEntity detail) {
         if(detail.getIsRight() == 1 || detail.getIsRight() == 2){
             String path = "live_stand_voice_my_right.json";
@@ -353,8 +361,8 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
      * @param result
      * @param resultFromVoice 是否是 本地语音答题（填空、选择）
      */
-    private void onAnswerResult(String result,boolean resultFromVoice) {
-        Log.e("AnswerResultBll","======>onAnswerResult:"+result+":"+resultFromVoice);
+    private void onAnswerResult(ArtsAnswerResultEvent event, String result, boolean resultFromVoice) {
+        Log.e("AnswerResultBll", "======>onAnswerResult:" + result + ":" + resultFromVoice);
         //boolean showAnswerResult = false;
         try {
             JSONObject jsonObject = new JSONObject(result);
@@ -454,7 +462,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     //答题结果里有填空选择 才展示 统计面板 (当前统计面UI 只支持显示 选择、填空题)
                     if (!resultFromVoice) {
                         shoulUpdateGold = true;
-                        showAnswerReulst();
+                        showAnswerReulst(event);
                     }
 
                 } else {
@@ -909,7 +917,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             if (ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT == event.getType()
                     || ArtsAnswerResultEvent.TYPE_VOICE_SELECT_BLANK == event.getType()) {
                 boolean resultFromVoice = event.getType() == ArtsAnswerResultEvent.TYPE_VOICE_SELECT_BLANK;
-                onAnswerResult(event.getDataStr(),resultFromVoice);
+                onAnswerResult(event, event.getDataStr(), resultFromVoice);
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("ArtsAnswerResult_:").append(event.getDataStr());
                 UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), "ArtsAnswerResultBll" ,stringBuilder.toString());

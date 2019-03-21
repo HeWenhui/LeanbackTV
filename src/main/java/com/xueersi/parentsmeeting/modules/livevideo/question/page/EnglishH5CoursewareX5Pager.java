@@ -33,7 +33,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseWebviewX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareSecHttp;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
@@ -131,10 +133,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         setErrorTip("H5课件加载失败，请重试");
         setLoadTip("H5课件正在加载，请稍候");
 //        cacheFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webview/");
-        cacheFile = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/parentsmeeting/webviewCache");
-        if (cacheFile == null) {
-            cacheFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webviewCache");
-        }
+        cacheFile = LiveCacheFile.geCacheFile(context, "webviewCache");
         if (!cacheFile.exists()) {
             cacheFile.mkdirs();
         }
@@ -192,7 +191,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         }
         isFinish = true;
         String commit;
-        if (isNewArtsCourseware && !"17".equals(detailInfo.type)) {
+        if (isNewArtsCourseware && !LiveQueConfig.EN_COURSE_TYPE_NEW_GAME.equals(detailInfo.type)) {
             wvSubjectWeb.loadUrl(jsArtsForceSubmit);
             commit = jsArtsForceSubmit;
             Log.e("Duncan", "js:");
