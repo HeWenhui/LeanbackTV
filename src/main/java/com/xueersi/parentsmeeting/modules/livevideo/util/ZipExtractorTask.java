@@ -52,10 +52,12 @@ public class ZipExtractorTask extends AsyncTask<Void, Integer, Exception> {
         this(new File(in), new File(out), replaceAll, null);
     }
 
+    @Override
     protected Exception doInBackground(Void... params) {
         return unzip();
     }
 
+    @Override
     protected void onPostExecute(Exception exception) {
         if (zipProg != null) {
             zipProg.onPostExecute(exception);

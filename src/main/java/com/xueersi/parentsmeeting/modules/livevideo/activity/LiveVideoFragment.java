@@ -53,6 +53,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.praiselist.presenter.PraiseL
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerRankIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.ArtsAnswerResultBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.PrimaryScienceAnswerResultIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.remark.business.LiveRemarkIRCBll;
@@ -307,6 +308,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                 mLiveBll.addBusinessBll(videoChatIRCBll);
             }
         }
+//        mLiveBll.addBusinessBll(new PrimaryScienceAnswerResultIRCBll(activity,mLiveBll));
         EvaluateTeacherBll evaluateTeacherBll = new EvaluateTeacherBll(activity, mLiveBll);
         evaluateTeacherBll.setLiveFragment(this);
         mLiveBll.addBusinessBll(evaluateTeacherBll);

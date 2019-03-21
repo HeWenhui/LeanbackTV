@@ -255,6 +255,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                             }
                             videoQuestionLiveEntity.id = getTestIdS(testIds);
                             videoQuestionLiveEntity.type = type;
+                            videoQuestionLiveEntity.setArtType(type);
                             videoQuestionLiveEntity.num = 1;
                             videoQuestionLiveEntity.setIsVoice(isVoices);
                             videoQuestionLiveEntity.assess_ref = assess;

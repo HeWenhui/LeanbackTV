@@ -14,6 +14,7 @@ public class LiveVideoSAConfig {
     public static final int ART_EN = 1;
     /** 语文 */
     public static final int ART_CH = 2;
+    private final int arts;
     String HTTP_HOST;
     public Inner inner;
 
@@ -22,12 +23,22 @@ public class LiveVideoSAConfig {
 //        HTTP_HOST = AppConfig.HTTP_HOST;
         this.IS_SCIENCE = IS_SCIENCE;
         inner = new Inner();
+        if (IS_SCIENCE) {
+            arts = ART_SEC;
+        } else {
+            arts = ART_EN;
+        }
     }
 
     public LiveVideoSAConfig(String host) {
         HTTP_HOST = host;
         IS_SCIENCE = false;
         inner = new Inner();
+        arts = ART_CH;
+    }
+
+    public int getArts() {
+        return arts;
     }
 
     /** 是不是文理 */
@@ -103,7 +114,7 @@ public class LiveVideoSAConfig {
                 + "/LiveCourse/receiveGoldForPlayBack";
         /*获取体验直播课的红包*/
         public String URL_STUDY_RECEIVE_LIVE_PLAY_RED_PACKET_GOLDS = HTTP_HOST
-                + "/science/AutoLive/receiveGold";
+                + "/science/AutoLive/receiveGold" ;
         /** 用户试听 */
         @Deprecated
         public String URL_LIVE_USER_MODETIME = HTTP_HOST + "/LiveCourse/userModeTime";
@@ -240,18 +251,17 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_STU_ONLINE_TIME = HTTP_HOST + "/LiveCourse/saveStuPlanOnlineTime";
 
 
-
-        /** 文科学生对老师评价*/
+        /** 文科学生对老师评价 */
         public String URL_LIVE_ARTS_EVALUATE_TEACHER = "https://app.arts.xueersi.com/LiveCourse/submitStuEvaluateTeacher";
-        /** 理科提交对老师评价*/
+        /** 理科提交对老师评价 */
         public String URL_LIVE_SCIENCE_EVALUATE_TEACHER = "https://laoshi.xueersi.com/science/LiveCourse/submitStuEvaluateTeacher";
-        /** 文科获得对老师评价选项*/
+        /** 文科获得对老师评价选项 */
         public String URL_LIVE_ARTS_GET_EVALUATE_OPTION = "https://app.arts.xueersi.com/LiveCourse/showEvaluationOptions";
-        /** 理科获得对老师评价选项*/
+        /** 理科获得对老师评价选项 */
         public String URL_LIVE_SCIENCE_GET_EVALUATE_OPTION = "https://laoshi.xueersi.com/science/LiveCourse/getEvaluateContent";
-        /** 小语获得对老师评价选项*/
+        /** 小语获得对老师评价选项 */
         public String URL_LIVE_CHS_GET_EVALUATE_OPTION = "https://app.chs.xueersi.com/LiveCourse/getEvaluateInfo";
-        /** 小语学生对老师评价*/
+        /** 小语学生对老师评价 */
         public String URL_LIVE_CHS_EVALUATE_TEACHER = "https://app.chs.xueersi.com/LiveCourse/submitEvaluate";
     }
 

@@ -117,6 +117,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     private boolean hasSubmit;
     private LiveVideoSAConfig liveVideoSAConfig;
     private boolean IS_SCIENCE = false;
+    private int isArts;
     private int isplayback = 0;
     private boolean isTeamPkAllowed = false;
     private boolean webViewCloseByTeacher = false;
@@ -193,6 +194,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     public void setLiveVideoSAConfig(LiveVideoSAConfig liveVideoSAConfig) {
         this.liveVideoSAConfig = liveVideoSAConfig;
         IS_SCIENCE = liveVideoSAConfig.IS_SCIENCE;
+        isArts = liveVideoSAConfig.getArts();
     }
 
     public void initData() {
@@ -317,6 +319,14 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                                 logToFile.i("onH5Courseware:English=" + h5CoursewarePager.getEnglishH5Entity());
                                 h5CoursewarePager.destroy();
                                 bottomContent.removeView(h5CoursewarePager.getRootView());
+                            }
+                        }
+                        if (isArts == LiveVideoSAConfig.ART_SEC || isArts == LiveVideoSAConfig.ART_CH) {
+                            EnglishH5Entity englishH5Entity = videoQuestionLiveEntity.englishH5Entity;
+                            String queskey = ("" + englishH5Entity.getPackageId()).hashCode() + "-" + ("" + englishH5Entity.getReleasedPageInfos()).hashCode();
+                            if (mH5AndBool.contains(queskey)) {
+                                logToFile.i("onH5Courseware:queskey=" + queskey);
+                                return;
                             }
                         }
                         showH5Paper(videoQuestionLiveEntity);
@@ -472,14 +482,16 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
             @Override
             public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
                 mH5AndBool.add(baseEnglishH5CoursewarePager.getUrl());
-                try {
-                    JSONObject object = new JSONObject();
-                    object.put("liveType", liveType);
-                    object.put("vSectionID", mVSectionID);
-                    object.put("url", videoQuestionH5Entity.getUrl());
-                    mShareDataManager.put(ENGLISH_H5, object.toString(), ShareDataManager.SHAREDATA_USER);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                if (!videoQuestionH5Entity.englishH5Entity.getNewEnglishH5()) {
+                    try {
+                        JSONObject object = new JSONObject();
+                        object.put("liveType", liveType);
+                        object.put("vSectionID", mVSectionID);
+                        object.put("url", videoQuestionH5Entity.getUrl());
+                        mShareDataManager.put(ENGLISH_H5, object.toString(), ShareDataManager.SHAREDATA_USER);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
                 baseEnglishH5CoursewarePager.destroy();
                 bottomContent.removeView(baseEnglishH5CoursewarePager.getRootView());
