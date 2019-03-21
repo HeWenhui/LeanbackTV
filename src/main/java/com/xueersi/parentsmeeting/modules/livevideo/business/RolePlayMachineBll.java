@@ -1,8 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.widget.RelativeLayout;
 
 import com.tal.speech.utils.SpeechUtils;
@@ -12,7 +10,6 @@ import com.xueersi.common.permission.PermissionItem;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -47,7 +44,10 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
     private LiveAndBackDebug mLiveBll;
 
     private final LiveGetInfo mLiveGetInfo;
-
+    /**
+     * ture 直播，false 回放
+     */
+    private boolean mIsLive;
     /**
      * 直播ID
      */
@@ -75,9 +75,9 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
      */
     private boolean isCanRolePlay = true;
 
-    public RolePlayMachineBll(Context context, RelativeLayout bottomContent, LiveAndBackDebug liveBll, LiveGetInfo liveGetInfo) {
+    public RolePlayMachineBll(Context context, RelativeLayout bottomContent, LiveAndBackDebug liveBll, LiveGetInfo liveGetInfo, boolean islive) {
         super(context, bottomContent, liveBll, liveGetInfo);
-
+        mIsLive = islive;
         this.mLiveBll = liveBll;
         this.mLiveGetInfo = liveGetInfo;
         mLiveId = mLiveGetInfo.getId();
@@ -404,7 +404,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                         ":"+rolePlayerHead.getRoleName()+":"+rolePlayerHead.getSpeechScore()
                 );
             }
-            obj.put("type", 1);
+            obj.put("type", mIsLive ? 1 : 2);
             obj.put("roler", roleName);
             JSONArray arrAnswer = new JSONArray();
             //TODO:
@@ -459,7 +459,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
 
                 @Override
                 public void onPmError(ResponseEntity responseEntity) {
-                    logger.i("onPmError: responseEntity=" + responseEntity.getErrorMsg()+ ",提交结果失败，但是要释放资源");
+                    logger.i("onPmError: responseEntity=" + responseEntity.getErrorMsg() + ",提交结果失败，但是要释放资源");
                     super.onPmError(responseEntity);
                     if (mRolePlayMachinePager != null) {
                         mRolePlayMachinePager.recoverListScrollAndCancelDZ();
@@ -479,11 +479,11 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
 
     @Override
     public void onStopQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity, String nonce) {
-        mLogtf.i( "onStopQuestion 老师收题了,断开socket,this="+hashCode());
-        if(mRolePlayMachinePager != null){
+        mLogtf.i("onStopQuestion 老师收题了,断开socket,this=" + hashCode());
+        if (mRolePlayMachinePager != null) {
             mRolePlayMachinePager.stopSpeech();
         }
-        if(mRolePlayStandMachinePager!=null){
+        if (mRolePlayStandMachinePager != null) {
             mRolePlayStandMachinePager.stopSpeech();
         }
         mHertHandler.postDelayed(new Runnable() {
@@ -491,12 +491,12 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
             public void run() {
                 closeCurPage();
             }
-        },200);
+        }, 200);
     }
 
     @Override
     public void closeCurPage() {
-        mLogtf.i( "closeCurPage:bottomContent=null?"+(mBottomContent==null)+",pager=null?"+(mRolePlayMachinePager==null)+","+(mRolePlayStandMachinePager==null));
+        mLogtf.i("closeCurPage:bottomContent=null?" + (mBottomContent == null) + ",pager=null?" + (mRolePlayMachinePager == null) + "," + (mRolePlayStandMachinePager == null));
         if (mBottomContent != null && mRolePlayMachinePager != null) {
             logger.i("onStopQuestion 关闭当前页面 ");
             //让pager自己移除
@@ -508,7 +508,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
             if (audioRequest != null) {
                 audioRequest.release();
             }
-             //这里不再请求金币
+            //这里不再请求金币
 //            UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class);
 //            if (updateAchievement != null) {
 //                updateAchievement.getStuGoldCount();
@@ -550,14 +550,17 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
 
     /**
      * 设置人机的pager
+     *
      * @param rolePlayMachinePager
      */
     public void setRolePlayMachinePager(RolePlayMachinePager rolePlayMachinePager) {
         this.mRolePlayMachinePager = rolePlayMachinePager;
 
     }
+
     /**
      * 站立式直播的人机pager
+     *
      * @param rolePlayStandMachinePager
      */
     public void setRolePlayStandMachinePager(RolePlayStandMachinePager rolePlayStandMachinePager) {
@@ -582,6 +585,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
             // }
         }
     }
+
     public void cancelStandLiveDZ() {
         RolePlayerEntity tempRolePlayerEntity = mRolePlayerEntity;
         if (tempRolePlayerEntity == null || mRolePlayStandMachinePager == null) {
