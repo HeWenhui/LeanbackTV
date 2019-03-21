@@ -116,6 +116,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="15dp"
+            android:textSize="17dp"
             android:text="可在移动端我的阿丘中打开"
             android:textColor="@color/white"
             android:visibility="invisible" />
