@@ -30,7 +30,7 @@
                 android:layout_width="50dp"
                 android:layout_height="13dp"
                 android:layout_below="@id/iv_teampk_open_box_winner_head"
-                android:layout_marginTop="-12dp"
+                android:layout_marginTop="-8dp"
                 android:src="@drawable/livevideo_alertview_luckystar_img_disable" />
 
         </RelativeLayout>
