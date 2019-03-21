@@ -45,10 +45,10 @@ public class LiveAchievementEngStandBll implements StarInteractAction, EnPkInter
         relativeLayout.setBackgroundColor(Color.TRANSPARENT);
         enAchievePager = new EnStandAchievePager(activity, relativeLayout, mLiveGetInfo);
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) enAchievePager.getRootView().getLayoutParams();
-        LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
-        lp.rightMargin += (videoPoint.screenWidth - videoPoint.x4);
-        logger.d("initView:rightMargin=" + lp.rightMargin);
-//        lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+//        LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
+//        lp.rightMargin += (videoPoint.screenWidth - videoPoint.x4);
+//        logger.d("initView:rightMargin=" + lp.rightMargin);
+////        lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         relativeLayout.addView(enAchievePager.getRootView(), lp);
     }
 
