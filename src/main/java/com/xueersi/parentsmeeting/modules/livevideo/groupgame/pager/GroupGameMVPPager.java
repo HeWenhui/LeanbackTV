@@ -5,6 +5,8 @@ import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -12,9 +14,12 @@ import android.widget.TextView;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
+import com.xueersi.common.util.FontCache;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
 
 import java.io.IOException;
 
@@ -53,11 +58,17 @@ public class GroupGameMVPPager extends LiveBasePager {
         String resPath = LOTTIE_RES_ASSETS_ROOTDIR + "images";
         String jsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "data.json";
         final LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo(resPath, jsonPath);
-        mLottieAnimationView.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(mContext));
+        mLottieAnimationView.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(mContext),"mvp");
         mLottieAnimationView.useHardwareAcceleration(true);
         ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
             @Override
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                if (lottieImageAsset.getId().equals("image_5")) {
+                    return creatGoldBitmap(10);
+                }
+                if (lottieImageAsset.getId().equals("image_6")) {
+                    return creatFireBitmap(10);
+                }
                 return bubbleEffectInfo.fetchBitmapFromAssets(
                         mLottieAnimationView,
                         lottieImageAsset.getFileName(),
@@ -69,45 +80,61 @@ public class GroupGameMVPPager extends LiveBasePager {
         };
         mLottieAnimationView.setImageAssetDelegate(imageAssetDelegate);
         mLottieAnimationView.playAnimation();
-        updateFireAndGold(mContext, mLottieAnimationView, 10, 20);
     }
 
     /**
-     * 更新lottie动画中的火焰和金币数量
-     *
-     * @param context
-     * @param lottieAnimationView
+     * 更新金币数量
      * @param fireNum
-     * @param goldNum
+     * @return
      */
-    public void updateFireAndGold(Context context, LottieAnimationView lottieAnimationView, int fireNum, int goldNum) {
-        View view = LayoutInflater.from(context).inflate(R.layout.layout_livevideo_groupgame_mvp_fireandgold, null);
-        TextView tvFire = view.findViewById(R.id.tv_livevideo_groupgame_mvp_fire);
-        tvFire.setText("" + fireNum);
-        TextView tvGold = view.findViewById(R.id.tv_livevideo_groupgame_mvp_gold);
-        tvGold.setText("" + goldNum);
-        AssetManager manager = context.getAssets();
+    public Bitmap creatGoldBitmap(int fireNum) {
         Bitmap bitmap;
         try {
-            bitmap = BitmapFactory.decodeStream(manager.open(LOTTIE_RES_ASSETS_ROOTDIR + "images/img_5.png"));
+            bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(LOTTIE_RES_ASSETS_ROOTDIR + "images/img_5.png"));
             Bitmap creatBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);
-            canvas.drawBitmap(bitmap, 0, 0, null);
 
-            int width = bitmap.getWidth();
-            int height = bitmap.getHeight();
-            int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
-            int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
-            view.measure(widthMeasureSpec, heightMeasureSpec);
-            view.layout(0, 0, width, height);
-            view.draw(canvas);
-
+            Paint paint = new Paint();
+            paint.setAntiAlias(true);
+            paint.setTextSize(bitmap.getHeight());
+            paint.setColor(0xFFFFE376);
+            Typeface fontFace = FontCache.getTypeface(mContext, "fangzhengcuyuan.ttf");
+            paint.setTypeface(fontFace);
+            canvas.drawText("+" + fireNum, 0, bitmap.getHeight(), paint);
             bitmap.recycle();
             bitmap = creatBitmap;
+            return bitmap;
         } catch (IOException e) {
-            logger.e("updateFireAndGold", e);
-            return;
+            logger.e("updateFire", e);
         }
-        lottieAnimationView.updateBitmap("image_5", bitmap);
+        return null;
+    }
+
+    /**
+     * 更新火焰数量
+     * @param fireNum
+     * @return
+     */
+    public Bitmap creatFireBitmap(int fireNum) {
+        Bitmap bitmap;
+        try {
+            bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(LOTTIE_RES_ASSETS_ROOTDIR + "images/img_6.png"));
+            Bitmap creatBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(creatBitmap);
+
+            Paint paint = new Paint();
+            paint.setAntiAlias(true);
+            paint.setTextSize(bitmap.getHeight());
+            paint.setColor(0xFFFFE376);
+            Typeface fontFace = FontCache.getTypeface(mContext, "fangzhengcuyuan.ttf");
+            paint.setTypeface(fontFace);
+            canvas.drawText("+" + fireNum, 0, bitmap.getHeight(), paint);
+            bitmap.recycle();
+            bitmap = creatBitmap;
+            return bitmap;
+        } catch (IOException e) {
+            logger.e("updateFire", e);
+        }
+        return null;
     }
 }

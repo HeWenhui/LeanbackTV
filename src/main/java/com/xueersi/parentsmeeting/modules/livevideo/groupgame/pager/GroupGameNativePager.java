@@ -10,8 +10,6 @@ import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.utils.SpeechUtils;
-import com.tencent.bugly.crashreport.CrashReport;
-import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebView;
@@ -22,11 +20,9 @@ import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareSecHttp;
-import com.xueersi.parentsmeeting.modules.livevideo.question.config.CourseMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseCoursewareNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.NewCourseCache;
-import com.xueersi.parentsmeeting.modules.livevideo.question.web.StaticWeb;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.WebInstertJs;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.ui.widget.WaveView;
@@ -291,48 +287,12 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         super.onDestroy();
     }
 
-    class CourseWebViewClient extends MyWebViewClient {
-
-        @Override
-        public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
-            String url = request.getUrl() + "";
-            if (url.contains(".html")) {
-                if (!addJs) {
-                    addJs = true;
-                    WebResourceResponse webResourceResponse = newCourseCache.interceptIndexRequest(view, url);
-                    logger.d("shouldInterceptRequest:index:url=" + url + ",response=null?" + (webResourceResponse == null));
-                    if (webResourceResponse != null) {
-                        return webResourceResponse;
-                    } else {
-                        view.stopLoading();
-                        XESToastUtils.showToast(mContext, "主文件加载失败，请刷新");
-                    }
-                }
-            } else if (WebInstertJs.indexStr().equals(url)) {
-                WebResourceResponse webResourceResponse = newCourseCache.interceptJsRequest(view, url);
-                logger.d("shouldInterceptRequest:js:url=" + url + ",response=null?" + (webResourceResponse == null));
-                if (webResourceResponse != null) {
-                    return webResourceResponse;
-                } else {
-                    view.stopLoading();
-                    XESToastUtils.showToast(mContext, "通信文件加载失败，请刷新");
-                }
-            }
-            WebResourceResponse webResourceResponse = newCourseCache.shouldInterceptRequest(view, url);
-            if (webResourceResponse != null) {
-                logger.d("shouldInterceptRequest:url=" + url);
-                return webResourceResponse;
-            }
-            return super.shouldInterceptRequest(view, url);
-        }
-    }
-
     /**
      * 语音评测 - 命中句子
      *
      * @param score
      */
-    void onHitSentence(int score) {
+    private void onHitSentence(int score) {
         mSingCount++;
         boolean isTurnPage = false;
         if (mSingCount >= 5) {
