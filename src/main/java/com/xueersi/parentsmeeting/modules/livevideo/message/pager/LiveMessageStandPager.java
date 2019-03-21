@@ -261,13 +261,13 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         tvVoiceChatCountdown = mView.findViewById(R.id.tv_livevideo_voicechat_countdown);
         rlMessageText = mView.findViewById(R.id.rl_livevideo_text_message_content);
 
-        LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
-        int rightMargin = videoPoint.screenWidth - videoPoint.x4;
-        if (rightMargin > 0) {
-            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) btMesOpen.getLayoutParams();
-            lp.rightMargin = rightMargin;
-            btMesOpen.setLayoutParams(lp);
-        }
+//        LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
+//        int rightMargin = videoPoint.screenWidth - videoPoint.x4;
+//        if (rightMargin > 0) {
+//            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) btMesOpen.getLayoutParams();
+//            lp.rightMargin = rightMargin;
+//            btMesOpen.setLayoutParams(lp);
+//        }
 //        int screenWidth = ScreenUtils.getScreenWidth();
 //        int screenHeight = ScreenUtils.getScreenHeight();
 //        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
