@@ -36,6 +36,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.tal.speech.config.SpeechConfig;
@@ -76,6 +77,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
@@ -259,7 +261,13 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         tvVoiceChatCountdown = mView.findViewById(R.id.tv_livevideo_voicechat_countdown);
         rlMessageText = mView.findViewById(R.id.rl_livevideo_text_message_content);
 
-
+        LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
+        int rightMargin = videoPoint.screenWidth - videoPoint.x4;
+        if (rightMargin > 0) {
+            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) btMesOpen.getLayoutParams();
+            lp.rightMargin = rightMargin;
+            btMesOpen.setLayoutParams(lp);
+        }
 //        int screenWidth = ScreenUtils.getScreenWidth();
 //        int screenHeight = ScreenUtils.getScreenHeight();
 //        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
