@@ -10,21 +10,31 @@ import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.utils.SpeechUtils;
+import com.tencent.bugly.crashreport.CrashReport;
+import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
+import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
+import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
+import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.EnglishH5Entity;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareSecHttp;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.CourseMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseCoursewareNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.NewCourseCache;
+import com.xueersi.parentsmeeting.modules.livevideo.question.web.StaticWeb;
+import com.xueersi.parentsmeeting.modules.livevideo.question.web.WebInstertJs;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.ui.widget.WaveView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @Date on 2019/3/15 18:31
@@ -63,6 +73,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
      */
     private boolean isPreload;
     private String learningStage;
+    private String liveId;
 
     /**
      * 语音评测
@@ -73,10 +84,22 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
      * 语音保存位置
      */
     private File saveVideoFile;
+    /**
+     * 在网页中嵌入js，只嵌入一次
+     */
+    private boolean addJs = false;
 
-    public GroupGameNativePager(Context context, String learningStage) {
+    private int mPagerIndex = 0;
+    private int mSingCount = 0;
+
+
+    static final String TEST_URL = "file:///android_asset/hot_air_balloon/index.html";
+    static final String TEST_CONTENT = "This is an apple|apple|banana|traffic";
+
+    public GroupGameNativePager(Context context, String learningStage, String liveId) {
         super(context);
         this.learningStage = learningStage;
+        this.liveId=liveId;
         initData();
         initListener();
     }
@@ -95,9 +118,46 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
     @Override
     public void initData() {
-
-
         startSpeechRecognize();
+//        newCourseCache = new NewCourseCache(mContext, liveId);
+//        addJavascriptInterface();
+//        wvSubjectWeb.setWebChromeClient(new BaseCoursewareNativePager.MyWebChromeClient() {
+//            @Override
+//            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+//                if (("" + consoleMessage.message()).contains("sendToCourseware")) {
+//                    CrashReport.postCatchedException(new Exception());
+//                }
+//                return super.onConsoleMessage(consoleMessage);
+//            }
+//        });
+//        wvSubjectWeb.setWebViewClient(new CourseWebViewClient());
+//        wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, new StaticWeb.OnMessage() {
+//
+//            @Override
+//            public void postMessage(String where, final JSONObject message, String origin) {
+//                try {
+//                    String type = message.getString("type");
+//                    if (CourseMessage.REC_close.equals(type)) {
+//                    } else if (CourseMessage.REC_submitAnswer.equals(type)) {
+//
+//                    } else if (CourseMessage.REC_answer.equals(type)) {
+//                        onAnswer(message);
+//                    } else if (CourseMessage.REC_loadComplete.equals(type)) {
+//                        onLoadComplete(where, message);
+//                    } else if (CourseMessage.REC_SubmitAnswer.equals(type)) {
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }), "xesApp");
+        wvSubjectWeb.loadUrl(TEST_URL);
+    }
+
+    private void onAnswer(JSONObject message) {
+    }
+
+    private void onLoadComplete(String where, JSONObject message) {
     }
 
     private void startSpeechRecognize() {
@@ -114,7 +174,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             mIse.prepar();
         }
         mParam.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
-        mParam.setStrEvaluator("Are you ok?|Hello world|Thank you");
+        mParam.setStrEvaluator(TEST_CONTENT);
         mParam.setLocalSavePath(saveVideoFile.getPath());
         mParam.setMultRef(false);
         mParam.setLearning_stage(learningStage);
@@ -135,14 +195,15 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             @Override
             public void onResult(ResultEntity resultEntity) {
                 if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
-                    logger.d("SUCCESS: score = " + resultEntity.getScore());
+                    logger.d("onEvaluatorSuccess(): score = " + resultEntity.getScore());
                     onRecognizeStop();
                 } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
-                    logger.d("ERROR: ErrorNo = " + resultEntity.getErrorNo() + ", isOfflineFail =" + mIse.isOfflineFail());
+                    logger.d("onEvaluatorError: ErrorNo = " + resultEntity.getErrorNo() + ", isOfflineFail =" + mIse.isOfflineFail());
                     onRecognizeStop();
                 } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
                     if (resultEntity.getNewSenIdx() >= 0) {
-                        logger.d("EVALUATOR_ING: newSenIdx = " + resultEntity.getNewSenIdx() + ", score =" + resultEntity.getScore());
+                        logger.d("onEvaluatoring: newSenIdx = " + resultEntity.getNewSenIdx() + ", score =" + resultEntity.getScore());
+                        onHitSentence(resultEntity.getScore());
                     }
                 }
             }
@@ -228,5 +289,64 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     @Override
     public void onDestroy() {
         super.onDestroy();
+    }
+
+    class CourseWebViewClient extends MyWebViewClient {
+
+        @Override
+        public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+            String url = request.getUrl() + "";
+            if (url.contains(".html")) {
+                if (!addJs) {
+                    addJs = true;
+                    WebResourceResponse webResourceResponse = newCourseCache.interceptIndexRequest(view, url);
+                    logger.d("shouldInterceptRequest:index:url=" + url + ",response=null?" + (webResourceResponse == null));
+                    if (webResourceResponse != null) {
+                        return webResourceResponse;
+                    } else {
+                        view.stopLoading();
+                        XESToastUtils.showToast(mContext, "主文件加载失败，请刷新");
+                    }
+                }
+            } else if (WebInstertJs.indexStr().equals(url)) {
+                WebResourceResponse webResourceResponse = newCourseCache.interceptJsRequest(view, url);
+                logger.d("shouldInterceptRequest:js:url=" + url + ",response=null?" + (webResourceResponse == null));
+                if (webResourceResponse != null) {
+                    return webResourceResponse;
+                } else {
+                    view.stopLoading();
+                    XESToastUtils.showToast(mContext, "通信文件加载失败，请刷新");
+                }
+            }
+            WebResourceResponse webResourceResponse = newCourseCache.shouldInterceptRequest(view, url);
+            if (webResourceResponse != null) {
+                logger.d("shouldInterceptRequest:url=" + url);
+                return webResourceResponse;
+            }
+            return super.shouldInterceptRequest(view, url);
+        }
+    }
+
+    /**
+     * 语音评测 - 命中句子
+     *
+     * @param score
+     */
+    void onHitSentence(int score) {
+        mSingCount++;
+        boolean isTurnPage = false;
+        if (mSingCount >= 5) {
+            mSingCount = 0;
+            isTurnPage = true;
+        }
+        JSONObject jsonData = new JSONObject();
+        try {
+            jsonData.put("type", "coursewareDoing");
+            jsonData.put("score", score);
+            jsonData.put("isTurnPage", isTurnPage);
+            wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -50,7 +50,7 @@ public class GroupGameTestBll extends LiveBaseBll {
         btnTest1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                groupGameNativePager = new GroupGameNativePager(mContext, mGetInfo.getStudentLiveInfo().getLearning_stage());
+                groupGameNativePager = new GroupGameNativePager(mContext, mGetInfo.getStudentLiveInfo().getLearning_stage(),mGetInfo.getId());
                 mRootView.addView(groupGameNativePager.getRootView(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             }
         });

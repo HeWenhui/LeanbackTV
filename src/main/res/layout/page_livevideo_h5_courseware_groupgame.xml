@@ -5,8 +5,7 @@
     <RelativeLayout
         android:id="@id/rl_livevideo_subject_web"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="visible">
+        android:layout_height="match_parent">
 
         <ren.yale.android.cachewebviewlib.CacheWebView
             android:id="@id/wv_livevideo_subject_web"
@@ -74,7 +73,6 @@
             android:src="@drawable/app_zbhd_yuyin" />
 
         <FrameLayout
-            android:id="@+id/aitalk_waveview_fl"
             android:layout_width="63dp"
             android:layout_height="44dp"
             android:layout_centerInParent="true">
