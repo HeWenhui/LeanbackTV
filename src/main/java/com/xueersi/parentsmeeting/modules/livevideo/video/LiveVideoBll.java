@@ -198,6 +198,11 @@ public class LiveVideoBll implements VPlayerListenerReg {
             nowProtol = MediaPlayer.VIDEO_PROTOCOL_RTMP;
             videoFragment.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
         } else {
+            if (nowProtol == MediaPlayer.VIDEO_PROTOCOL_RTMP) {
+                nowProtol = MediaPlayer.VIDEO_PROTOCOL_FLV;
+            } else {
+                nowProtol = MediaPlayer.VIDEO_PROTOCOL_RTMP;
+            }
             videoFragment.playPSVideo(mGetInfo.getChannelname(), nowProtol);
         }
     }
@@ -907,6 +912,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
             switch (arg2) {
                 case MediaErrorInfo.PSPlayerError: {
                     //播放器错误
+                    changeNextLine();
                     break;
                 }
                 case MediaErrorInfo.PSDispatchFailed: {
@@ -940,7 +946,8 @@ public class LiveVideoBll implements VPlayerListenerReg {
                 }
                 break;
                 default:
-                    //除了这四种情况，还有播放完成的情况
+                    //除了这四种情况，还有播放失败的情况
+                    changeNextLine();
                     break;
             }
         }

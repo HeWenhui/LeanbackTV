@@ -625,22 +625,27 @@ public class LiveBackVideoFragmentBase extends Fragment {
             if (mediaErrorInfo != null) {
                 switch (mediaErrorInfo.mErrorCode) {
                     case MediaErrorInfo.PSPlayerError: {
+
                         errorInfo.setText("视频播放失败[" + mediaErrorInfo.mPlayerErrorCode + " " + "],请重试");
                         break;
                     }
                     case MediaErrorInfo.PSDispatchFailed: {
+
                         errorInfo.setText("视频播放失败[" + MediaErrorInfo.PSDispatchFailed + "],请点击重试");
                         break;
                     }
                     case MediaErrorInfo.PSChannelNotExist: {
+
                         errorInfo.setText("视频播放失败[" + MediaErrorInfo.PSChannelNotExist + "],请点击重试");
                         break;
                     }
                     case MediaErrorInfo.PSServer403: {
+
                         errorInfo.setText("鉴权失败[" + MediaErrorInfo.PSServer403 + "],请点击重试");
                         break;
                     }
                     default: {
+
                         errorInfo.setText("视频播放失败 [" + arg2 + "]");
                         break;
                     }
