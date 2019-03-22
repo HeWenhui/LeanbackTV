@@ -530,6 +530,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
             return;
         }
         if (mGetInfo.getPattern() == 2) {
+            smallEnglish = 1;
             englishSpeekMode = new EnglishSpeekModeStand();
         } else if (mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY) {
             englishSpeekMode = new EnglishSpeekModHalfBody();
@@ -865,13 +866,13 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                         @Override
                         public void onPmError(ResponseEntity responseEntity) {
                             super.onPmError(responseEntity);
-                            logger.d("updateAchievement:onPmError="+responseEntity.getErrorMsg());
+                            logger.d("updateAchievement:onPmError=" + responseEntity.getErrorMsg());
                         }
 
                         @Override
                         public void onPmFailure(Throwable error, String msg) {
                             super.onPmFailure(error, msg);
-                            logger.d("updateAchievement:onPmFailure="+msg,error);
+                            logger.d("updateAchievement:onPmFailure=" + msg, error);
                         }
                     });
                 }
