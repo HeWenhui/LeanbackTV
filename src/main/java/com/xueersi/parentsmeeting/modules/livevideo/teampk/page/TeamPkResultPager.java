@@ -282,21 +282,17 @@ public class TeamPkResultPager extends TeamPkBasePager {
             public void run() {
                 playMusic(R.raw.pk_answer_result_bg, SOUND_VOLUME_BG, false);
             }
-        }, 1500);
+        }, 500);
         rlResultRootView.setVisibility(View.VISIBLE);
         rlLottieRootView.setVisibility(View.GONE);
 
         //进度条动画
-        try {
             mView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     updateProgressBar(data);
                 }
             }, 200);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         // 初始战队信息
         long myTeamTotalEnergy = data.getMyTeamEngerInfo().getTotalEnergy();
         long otherTeamTotalEnergy = data.getCompetitorEngerInfo().getTotalEnergy();
@@ -360,7 +356,7 @@ public class TeamPkResultPager extends TeamPkBasePager {
         if (mTeamPkBll != null) {
             mTeamPkBll.updatePkStateLayout(true);
         }
-        turn2ContributionPage(data,5000);
+        turn2ContributionPage(data,3000);
     }
 
     /**
@@ -474,7 +470,7 @@ public class TeamPkResultPager extends TeamPkBasePager {
             public void run() {
                 showNewProgress(data, myTeamOldEnergy);
             }
-        }, 2000);
+        }, 500);
     }
 
     private void showNewProgress(TeamEnergyAndContributionStarEntity data, long myTeamOldEnergy) {

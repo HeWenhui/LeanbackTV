@@ -347,7 +347,7 @@ public class TeamPkPraiseBll {
         ivAnswerRightEnergy.setVisibility(View.VISIBLE);
         ScaleAnimation scaleAnimation = (ScaleAnimation) AnimationUtils.
                 loadAnimation(animView.getContext(), R.anim.anim_livevido_teampk_aq_award);
-        scaleAnimation.setInterpolator(new SpringScaleInterpolator(0.23f));
+        scaleAnimation.setDuration(300);
         ivAnswerRightEnergy.startAnimation(scaleAnimation);
 
         tvAnswerRightEnergy.setVisibility(View.VISIBLE);
