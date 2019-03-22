@@ -56,7 +56,7 @@
                     android:layout_height="19dp"
                     android:layout_marginLeft="8dp"
                     android:layout_toRightOf="@id/rl_livevideo_en_achive_num_fire"
-                    android:src="@drawable/livevideo_enteampk_benchangchengjiu_star_img_nor" />
+                    android:src="@drawable/livevideo_enteampk_benchangchengjiu_star_img_nor_stand" />
 
                 <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                     android:id="@id/tv_livevideo_en_achive_num_star"
