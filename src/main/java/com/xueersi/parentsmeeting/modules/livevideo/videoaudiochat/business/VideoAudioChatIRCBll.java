@@ -24,6 +24,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoAudioChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatStatusChange;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerBottom;
 
 import org.json.JSONArray;
@@ -93,6 +94,13 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                         baseLiveMediaControllerBottom;
                 liveStandMediaControllerBottom.addOnViewChange(onViewChange);
             }
+
+            if(baseLiveMediaControllerBottom instanceof LiveHalfBodyMediaControllerBottom){
+                LiveHalfBodyMediaControllerBottom halfBodyMediaControllerBottom = (LiveHalfBodyMediaControllerBottom)
+                        baseLiveMediaControllerBottom;
+                halfBodyMediaControllerBottom.addLiveUIStateListener(onViewChange);
+            }
+
             putInstance(VideoChatEvent.class, this);
         } else {
             mLiveBll.removeBusinessBll(this);
