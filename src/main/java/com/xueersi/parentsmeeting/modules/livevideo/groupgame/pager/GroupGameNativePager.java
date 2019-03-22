@@ -10,6 +10,8 @@ import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.utils.SpeechUtils;
+import com.tencent.bugly.crashreport.CrashReport;
+import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebView;
@@ -18,12 +20,19 @@ import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareSecHttp;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.CourseMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseCoursewareNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.NewCourseCache;
+import com.xueersi.parentsmeeting.modules.livevideo.question.web.OnHttpCode;
+import com.xueersi.parentsmeeting.modules.livevideo.question.web.StaticWeb;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.WebInstertJs;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.NewCourseLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.ui.widget.WaveView;
 
@@ -67,7 +76,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     /**
      * 新课件是否是预加载
      */
-    private boolean isPreload;
+    private boolean ispreload;
     private String learningStage;
     private String liveId;
 
@@ -115,40 +124,108 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     @Override
     public void initData() {
         startSpeechRecognize();
-//        newCourseCache = new NewCourseCache(mContext, liveId);
-//        addJavascriptInterface();
-//        wvSubjectWeb.setWebChromeClient(new BaseCoursewareNativePager.MyWebChromeClient() {
-//            @Override
-//            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-//                if (("" + consoleMessage.message()).contains("sendToCourseware")) {
-//                    CrashReport.postCatchedException(new Exception());
-//                }
-//                return super.onConsoleMessage(consoleMessage);
-//            }
-//        });
-//        wvSubjectWeb.setWebViewClient(new CourseWebViewClient());
-//        wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, new StaticWeb.OnMessage() {
-//
-//            @Override
-//            public void postMessage(String where, final JSONObject message, String origin) {
-//                try {
-//                    String type = message.getString("type");
-//                    if (CourseMessage.REC_close.equals(type)) {
-//                    } else if (CourseMessage.REC_submitAnswer.equals(type)) {
-//
-//                    } else if (CourseMessage.REC_answer.equals(type)) {
-//                        onAnswer(message);
-//                    } else if (CourseMessage.REC_loadComplete.equals(type)) {
-//                        onLoadComplete(where, message);
-//                    } else if (CourseMessage.REC_SubmitAnswer.equals(type)) {
-//                    }
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }), "xesApp");
+
+        /*newCourseCache = new NewCourseCache(mContext, liveId);
+        addJavascriptInterface();
+        wvSubjectWeb.setWebChromeClient(new BaseCoursewareNativePager.MyWebChromeClient() {
+            @Override
+            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+                if (("" + consoleMessage.message()).contains("sendToCourseware")) {
+                    CrashReport.postCatchedException(new Exception());
+                }
+                return super.onConsoleMessage(consoleMessage);
+            }
+        });
+        wvSubjectWeb.setWebViewClient(new CourseWebViewClient());
+        wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, new StaticWeb.OnMessage() {
+
+            @Override
+            public void postMessage(String where, final JSONObject message, String origin) {
+                try {
+                    String type = message.getString("type");
+                    if (CourseMessage.REC_close.equals(type)) {
+                    } else if (CourseMessage.REC_submitAnswer.equals(type)) {
+
+                    } else if (CourseMessage.REC_answer.equals(type)) {
+                        onAnswer(message);
+                    } else if (CourseMessage.REC_loadComplete.equals(type)) {
+                        onLoadComplete(where, message);
+                    } else if (CourseMessage.REC_SubmitAnswer.equals(type)) {
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }), "xesApp");*/
+
         wvSubjectWeb.loadUrl(TEST_URL);
     }
+
+    /*class CourseWebViewClient extends MyWebViewClient implements OnHttpCode {
+
+        @Override
+        public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
+            String url = request.getUrl() + "";
+            if (url.contains(".html")) {
+                if (!addJs) {
+                    addJs = true;
+                    WebResourceResponse webResourceResponse = newCourseCache.interceptIndexRequest(view, url);
+                    logger.d("shouldInterceptRequest:index:url=" + url + ",response=null?" + (webResourceResponse == null));
+                    if (webResourceResponse != null) {
+                        return webResourceResponse;
+                    } else {
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                wvSubjectWeb.stopLoading();
+                            }
+                        });
+                        XESToastUtils.showToast(mContext, "主文件加载失败，请刷新");
+                    }
+                }
+            } else if (WebInstertJs.indexStr().equals(url)) {
+                WebResourceResponse webResourceResponse = newCourseCache.interceptJsRequest(view, url);
+                logger.d("shouldInterceptRequest:js:url=" + url + ",response=null?" + (webResourceResponse == null));
+                if (webResourceResponse != null) {
+                    return webResourceResponse;
+                } else {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            wvSubjectWeb.stopLoading();
+                        }
+                    });
+                    XESToastUtils.showToast(mContext, "通信文件加载失败，请刷新");
+                }
+            }
+            WebResourceResponse webResourceResponse = newCourseCache.shouldInterceptRequest(view, url);
+            if (webResourceResponse != null) {
+                logger.d("shouldInterceptRequest:url=" + url);
+                return webResourceResponse;
+            }
+            return super.shouldInterceptRequest(view, url);
+        }
+
+        @Override
+        protected void otherMsg(StableLogHashMap logHashMap, String loadUrl) {
+            logHashMap.put("testid", NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts));
+            logHashMap.put("ispreload", "" + ispreload);
+            logHashMap.put("testsource", "" + ispreload);
+            logHashMap.put("errtype", "webView");
+            logHashMap.put("subtestid", getSubtestid());
+            if (XESCODE.ARTS_SEND_QUESTION == detailInfo.noticeType) {
+                logHashMap.put("testsource", "PlatformTest");
+            } else if (XESCODE.ARTS_H5_COURSEWARE == detailInfo.noticeType) {
+                logHashMap.put("testsource", "PlatformCourseware");
+            }
+            logHashMap.put("eventid", "" + LogConfig.LIVE_H5PLAT);
+        }
+
+        @Override
+        public void onHttpCode(String url, int code) {
+            onReceivedHttpError(wvSubjectWeb, url, code, "");
+        }
+    }*/
 
     private void onAnswer(JSONObject message) {
     }
@@ -175,7 +252,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         mParam.setMultRef(false);
         mParam.setLearning_stage(learningStage);
         mIse.startRecog(mParam, new EvaluatorListener() {
-            int lastVolume = 0;
 
             @Override
             public void onBeginOfSpeech() {
@@ -194,7 +270,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     logger.d("onEvaluatorSuccess(): score = " + resultEntity.getScore());
                     onRecognizeStop();
                 } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
-                    logger.d("onEvaluatorError: ErrorNo = " + resultEntity.getErrorNo() + ", isOfflineFail =" + mIse.isOfflineFail());
+                    logger.d("onEvaluatorError: errorNo = " + resultEntity.getErrorNo() + ", isOfflineFail =" + mIse.isOfflineFail());
                     onRecognizeStop();
                 } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
                     if (resultEntity.getNewSenIdx() >= 0) {
@@ -207,7 +283,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
             @Override
             public void onVolumeUpdate(int volume) {
-                logger.d("onBeginOfSpeech(): volume = " + volume);
+                logger.d("onVolumeUpdate(): volume = " + volume);
                 float floatVolume = (float) volume * 3 / 90;
                 mWaveView.setWaveAmplitude(floatVolume);
             }

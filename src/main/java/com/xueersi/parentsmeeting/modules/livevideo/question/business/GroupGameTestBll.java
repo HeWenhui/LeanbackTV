@@ -12,6 +12,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager.GroupGameMVPPager;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager.GroupGameNativePager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
 import java.util.HashMap;
 
@@ -59,6 +60,12 @@ public class GroupGameTestBll extends LiveBaseBll {
             public void onClick(View v) {
                 groupGameMVPPager = new GroupGameMVPPager(mContext);
                 mRootView.addView(groupGameMVPPager.getRootView(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                groupGameMVPPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
+                    @Override
+                    public void onClose(LiveBasePager basePager) {
+                        mRootView.removeView(groupGameMVPPager.getRootView());
+                    }
+                });
             }
         });
         btnTest3.setOnClickListener(new View.OnClickListener() {
