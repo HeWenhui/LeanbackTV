@@ -165,6 +165,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
      * 按Home键的进度模拟
      */
     private boolean firstTime = true;
+    private boolean isFirstCompute = true;
     /**
      * 播放暂停状态的记录
      */
@@ -1079,6 +1080,9 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         int playPosition = TimeUtils.gennerSecond(position);
         // 落在第一部分的导语部分
         if (playPosition < mVideoEntity.getSciAiEvent().getLeadingStage().getValidTime()) {
+            if (isFirstCompute) {
+                isFirstCompute = false;
+            }
             return (mVideoEntity.getSciAiEvent().getLeadingStage().getBeginTime() + playPosition) * 1000L;
         }
         //有效时间和
@@ -1123,24 +1127,37 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                 //判断时间偏移是否在讲解知识点阶段
                 if (playPosition <= knowledgeTime) {
                     LiveVideoConfig.aiQuestionIndex = i - 1;
-                    LiveVideoConfig.isAITrue = isAnswerTrue;
+                    //判断是否第一次跳转
+                    if (isFirstCompute) {
+                        isFirstCompute = false;
+                        LiveVideoConfig.isAITrue = isAnswerTrue;
+                    }
                     return (exercise.getKnowledgePoints().getBeginTime() + playPosition) * 1000L;
                     //判断时间偏移是否在试题阶段
                 } else if ((playPosition - knowledgeTime) <= introduceTime) {
                     LiveVideoConfig.aiQuestionIndex = i - 1;
-                    LiveVideoConfig.isAITrue = isAnswerTrue;
+                    if (isFirstCompute) {
+                        isFirstCompute = false;
+                        LiveVideoConfig.isAITrue = isAnswerTrue;
+                    }
                     return (exercise.getExample().get(exampleIndex).getIntroduce().getBeginTime()
                             + (playPosition - knowledgeTime)) * 1000L;
                     //判断时间偏移是否在发题阶段
                 } else if ((playPosition - knowledgeTime - introduceTime) <= publishTime) {
                     LiveVideoConfig.aiQuestionIndex = i - 1;
-                    LiveVideoConfig.isAITrue = isAnswerTrue;
+                    if (isFirstCompute) {
+                        isFirstCompute = false;
+                        LiveVideoConfig.isAITrue = isAnswerTrue;
+                    }
                     return (exercise.getExample().get(exampleIndex).getPublish().getBeginTime()
                             + (playPosition - knowledgeTime - introduceTime)) * 1000L;
                     //判断时间偏移是否在题目讲解阶段
                 } else if ((playPosition - knowledgeTime - introduceTime - publishTime) <= interpretTime) {
                     LiveVideoConfig.aiQuestionIndex = i;
-                    LiveVideoConfig.isAITrue = isAnswerTrue;
+                    if (isFirstCompute) {
+                        isFirstCompute = false;
+                        LiveVideoConfig.isAITrue = isAnswerTrue;
+                    }
                     return (exercise.getExample().get(exampleIndex).getInterpret().getBeginTime()
                             + (playPosition - knowledgeTime - introduceTime - publishTime)) * 1000L;
                 }
