@@ -8,6 +8,8 @@ import android.util.LruCache;
 
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.MimeTypeMap;
+import com.xueersi.common.config.AppConfig;
+import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.network.TxHttpDns;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -59,8 +61,10 @@ public class WebViewCache {
     private boolean isScience = true;
     private Map<String, Boolean> dnsFailMap = new HashMap<String, Boolean>();
     private int dnsFail;
+    private WebView webView;
 
-    public WebViewCache() {
+    public WebViewCache(WebView webView) {
+        this.webView = webView;
         mCacheExtensionConfig = new CacheExtensionConfig();
         mEncodingDetect = new BytesEncodingDetect();
     }
@@ -295,8 +299,9 @@ public class WebViewCache {
                     return inputStream;
                 }
                 return resourseInputStream;
+            } else {
+                client.onReceivedHttpError(webView, url, responseCode, "");
             }
-
         } catch (MalformedURLException e) {
             CacheWebViewLog.d(e.toString() + " " + url, e);
             e.printStackTrace();
@@ -317,7 +322,7 @@ public class WebViewCache {
                 httpURLConnections.remove(httpURLConnection);
             }
         }
-        if (!isScience) {
+        if (!isScience&&!AppConfig.DEBUG) {
             dnsFailMap.put(url, true);
             Map<String, String> mData = new HashMap<>();
             mData.put("message", Log.getStackTraceString(dnsException));
@@ -355,7 +360,8 @@ public class WebViewCache {
         }
         return null;
     }
-    class IP{
+
+    class IP {
         private String ip;
 
         public String getIp() {
@@ -574,7 +580,7 @@ public class WebViewCache {
             inputStream = getCacheInputStream(url);
         }
         if (inputStream == null) {
-            inputStream = httpRequest(client, cacheStrategy, url,new IP());
+            inputStream = httpRequest(client, cacheStrategy, url, new IP());
         }
         String encode = "UTF-8";
         if (!TextUtils.isEmpty(encoding)) {

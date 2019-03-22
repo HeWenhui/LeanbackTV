@@ -8,8 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -28,27 +30,36 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class SpeechResultPager extends LiveBasePager {
     private ViewGroup group;
-    private ImageView iv_live_speech_result_title;
-    private ImageView iv_live_speech_result_close;
-    private TextView tv_live_speech_result_score;
-    private ImageView civ_live_speech_result_head;
-    private View v_live_speech_result_line;
-    private RecyclerView rv_live_speech_result_other;
-    private TextView tv_live_speech_result_accuracy_text;
-    private TextView tv_live_speech_result_fluency_text;
-    private TextView tv_live_speech_result_mygold;
-    private TextView tv_live_speech_result_myenergy;
-    private TextView tv_live_speech_result_mypraise;
+    private ImageView ivSpeechResultTitle;
+    private ImageView ivSpeechResultClose;
+    private TextView tvSpeechResultScore;
+    private ImageView civSpeechResultHead;
+    private View vSpeechResultLine;
+    private RecyclerView rvSpeechResultOther;
+    /** 准确度 */
+    private TextView tvSpeechResultAccuracyText;
+    /** 流畅度 */
+    private TextView tvSpeechResultFluencyText;
+    /** 金币 */
+    private TextView tvSpeechResultMyGold;
+    /** 能量 */
+    private TextView tvSpeechResultMyEnergy;
+    /** 点赞 */
+    private TextView tvSpeechResultMyPraise;
     private SpeechResultEntity speechResultEntity;
+    private View rlSpeechResultContent;
     private static int[] titleres = {R.drawable.app_livevideo_enteampk_shellwindow_nicework3_img_nor1, R.drawable.app_livevideo_enteampk_shellwindow_tryharder2_img_nor,
             R.drawable.app_livevideo_enteampk_shellwindow_nicework3_img_nor, R.drawable.app_livevideo_enteampk_shellwindow_goodjob4_img_nor,
             R.drawable.app_livevideo_enteampk_shellwindow_fantastic5_img_nor};
     private LiveGetInfo liveGetInfo;
+    /** 单人 */
+    private boolean isSingle;
 
     public SpeechResultPager(Context context, ViewGroup group, SpeechResultEntity speechResultEntity, LiveGetInfo liveGetInfo) {
         super(context, false);
         this.group = group;
         this.speechResultEntity = speechResultEntity;
+        isSingle = speechResultEntity.speechResultMembers.isEmpty();
         this.liveGetInfo = liveGetInfo;
         mView = initView();
         initData();
@@ -58,7 +69,8 @@ public class SpeechResultPager extends LiveBasePager {
     @Override
     public View initView() {
         View view = LayoutInflater.from(mContext).inflate(R.layout.page_livevideo_speech_result, group, false);
-        iv_live_speech_result_title = view.findViewById(R.id.iv_live_speech_result_title);
+        ivSpeechResultTitle = view.findViewById(R.id.iv_live_speech_result_title);
+        rlSpeechResultContent = view.findViewById(R.id.rl_live_speech_result_content);
         if (speechResultEntity.praise == -1) {
             ViewStub vs_live_speech_result_myenergy = view.findViewById(R.id.vs_live_speech_result_myenergy);
             View view1 = vs_live_speech_result_myenergy.inflate();
@@ -69,6 +81,12 @@ public class SpeechResultPager extends LiveBasePager {
                 ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) iv_live_speech_result_mygold.getLayoutParams();
                 layoutParams.leftMargin = 0;
                 iv_live_speech_result_mygold.setLayoutParams(layoutParams);
+            }
+            //单人的金币能量位置靠下
+            if (isSingle) {
+                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) view1.getLayoutParams();
+                lp.topMargin = SizeUtils.Dp2Px(mContext, 11);
+                view1.setLayoutParams(lp);
             }
         } else {
             ViewStub vs_live_speech_result_roleplay_myenergy = view.findViewById(R.id.vs_live_speech_result_roleplay_myenergy);
@@ -81,42 +99,57 @@ public class SpeechResultPager extends LiveBasePager {
                 layoutParams.leftMargin = 0;
                 iv_live_speech_result_mygold.setLayoutParams(layoutParams);
             }
-            tv_live_speech_result_mypraise = view.findViewById(R.id.tv_live_speech_result_mypraise);
+            tvSpeechResultMyPraise = view.findViewById(R.id.tv_live_speech_result_mypraise);
+            //单人的金币能量位置靠下
+            if (isSingle) {
+                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) view1.getLayoutParams();
+                lp.topMargin = SizeUtils.Dp2Px(mContext, 11);
+                view1.setLayoutParams(lp);
+            }
         }
-        iv_live_speech_result_close = view.findViewById(R.id.iv_live_speech_result_close);
-        tv_live_speech_result_score = view.findViewById(R.id.tv_live_speech_result_score);
-        civ_live_speech_result_head = view.findViewById(R.id.civ_live_speech_result_head);
-        v_live_speech_result_line = view.findViewById(R.id.v_live_speech_result_line);
-        rv_live_speech_result_other = view.findViewById(R.id.rv_live_speech_result_other);
-        tv_live_speech_result_accuracy_text = view.findViewById(R.id.tv_live_speech_result_accuracy_text);
-        tv_live_speech_result_fluency_text = view.findViewById(R.id.tv_live_speech_result_fluency_text);
-        tv_live_speech_result_mygold = view.findViewById(R.id.tv_live_speech_result_mygold);
-        tv_live_speech_result_myenergy = view.findViewById(R.id.tv_live_speech_result_myenergy);
+        ivSpeechResultClose = view.findViewById(R.id.iv_live_speech_result_close);
+        tvSpeechResultScore = view.findViewById(R.id.tv_live_speech_result_score);
+        civSpeechResultHead = view.findViewById(R.id.civ_live_speech_result_head);
+        vSpeechResultLine = view.findViewById(R.id.v_live_speech_result_line);
+        rvSpeechResultOther = view.findViewById(R.id.rv_live_speech_result_other);
+        tvSpeechResultAccuracyText = view.findViewById(R.id.tv_live_speech_result_accuracy_text);
+        tvSpeechResultFluencyText = view.findViewById(R.id.tv_live_speech_result_fluency_text);
+        tvSpeechResultMyGold = view.findViewById(R.id.tv_live_speech_result_mygold);
+        tvSpeechResultMyEnergy = view.findViewById(R.id.tv_live_speech_result_myenergy);
         return view;
     }
 
     @Override
     public void initData() {
         super.initData();
-        tv_live_speech_result_score.setText(speechResultEntity.score + "分");
-        tv_live_speech_result_accuracy_text.setText("" + speechResultEntity.accuracy);
-        tv_live_speech_result_fluency_text.setText("" + speechResultEntity.fluency);
-        tv_live_speech_result_mygold.setText("+" + speechResultEntity.gold);
-        tv_live_speech_result_myenergy.setText("+" + speechResultEntity.energy);
-        if (tv_live_speech_result_mypraise != null) {
-            tv_live_speech_result_mypraise.setText("" + speechResultEntity.praise);
+        tvSpeechResultScore.setText(speechResultEntity.score + "分");
+        tvSpeechResultAccuracyText.setText("" + speechResultEntity.accuracy);
+        tvSpeechResultFluencyText.setText("" + speechResultEntity.fluency);
+        tvSpeechResultMyGold.setText("+" + speechResultEntity.gold);
+        tvSpeechResultMyEnergy.setText("+" + speechResultEntity.energy);
+        if (tvSpeechResultMyPraise != null) {
+            tvSpeechResultMyPraise.setText("" + speechResultEntity.praise);
         }
-        ImageLoader.with(mContext).load(speechResultEntity.headUrl).error(R.drawable.app_livevideo_enteampk_boy_bg_img_nor).into(civ_live_speech_result_head);
-        ArrayList<SpeechResultMember> speechResultMembers = speechResultEntity.speechResultMembers;
-        if (speechResultMembers.isEmpty()) {
-            rv_live_speech_result_other.setVisibility(View.GONE);
-            v_live_speech_result_line.setVisibility(View.GONE);
+        ImageLoader.with(mContext).load(speechResultEntity.headUrl).error(R.drawable.app_livevideo_enteampk_boy_bg_img_nor).into(civSpeechResultHead);
+        //单人的
+        if (isSingle) {
+            rvSpeechResultOther.setVisibility(View.GONE);
+            vSpeechResultLine.setVisibility(View.GONE);
+            //单人的分数比布局的靠下一点
+            RelativeLayout.LayoutParams contentLp = (RelativeLayout.LayoutParams) rlSpeechResultContent.getLayoutParams();
+            contentLp.topMargin = SizeUtils.Dp2Px(mContext, 107);
+            rlSpeechResultContent.setLayoutParams(contentLp);
+            RelativeLayout.LayoutParams scoreLp = (RelativeLayout.LayoutParams) tvSpeechResultScore.getLayoutParams();
+            scoreLp.topMargin = SizeUtils.Dp2Px(mContext, 15);
+            tvSpeechResultScore.setLayoutParams(scoreLp);
         } else {
-            v_live_speech_result_line.setVisibility(View.VISIBLE);
-            rv_live_speech_result_other.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
+            //多人的
+            ArrayList<SpeechResultMember> speechResultMembers = speechResultEntity.speechResultMembers;
+            vSpeechResultLine.setVisibility(View.VISIBLE);
+            rvSpeechResultOther.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
             RCommonAdapter<SpeechResultMember> adapter = new RCommonAdapter<>(mContext, speechResultMembers);
             adapter.addItemViewDelegate(new SpeechResultOtherItem());
-            rv_live_speech_result_other.setAdapter(adapter);
+            rvSpeechResultOther.setAdapter(adapter);
 //            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rv_live_speech_result_other.getLayoutParams();
 //            lp.width = (int) (85 * speechResultMembers.size() * ScreenUtils.getScreenDensity());
 //            rv_live_speech_result_other.setLayoutParams(lp);
@@ -134,7 +167,7 @@ public class SpeechResultPager extends LiveBasePager {
         } else {
             progress = 5;
         }
-        iv_live_speech_result_title.setImageResource(titleres[progress - 1]);
+        ivSpeechResultTitle.setImageResource(titleres[progress - 1]);
         final TextView textView = mView.findViewById(R.id.tv_arts_answer_result_pse_close);
         textView.setVisibility(View.VISIBLE);
         final AtomicInteger integer = new AtomicInteger(5);
@@ -165,7 +198,7 @@ public class SpeechResultPager extends LiveBasePager {
     @Override
     public void initListener() {
         super.initListener();
-        iv_live_speech_result_close.setOnClickListener(new View.OnClickListener() {
+        ivSpeechResultClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (onPagerClose != null) {

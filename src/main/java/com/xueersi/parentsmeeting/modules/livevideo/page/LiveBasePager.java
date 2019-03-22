@@ -1,6 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.page;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.view.ViewParent;
 
@@ -28,6 +30,7 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
     protected LivePagerBack livePagerBack;
     protected BaseVideoQuestionEntity baseVideoQuestionEntity;
     protected OnPagerClose onPagerClose;
+    protected Handler handler = new Handler(Looper.getMainLooper());
 
     public LiveBasePager(Context context) {
         super(context);

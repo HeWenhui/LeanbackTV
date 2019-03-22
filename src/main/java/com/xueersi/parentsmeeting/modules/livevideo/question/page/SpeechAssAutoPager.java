@@ -31,6 +31,9 @@ import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.speechrecognizer.TalSpeech;
 import com.tal.speech.utils.SpeechUtils;
 import com.tencent.bugly.crashreport.CrashReport;
+import com.tal.speech.utils.SpeechUtils;
+import com.umeng.analytics.MobclickAgent;
+import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.framework.utils.file.FileUtils;
@@ -224,7 +227,7 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
     }
 
     public void setSmallEnglish(int smallEnglish) {
-//        this.smallEnglish = smallEnglish;
+        this.smallEnglish = smallEnglish;
     }
 
     @Override
@@ -747,7 +750,16 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
         } else {
             progress = 5;
         }
-        final ViewGroup group = (ViewGroup) mView;
+        final ViewGroup group;
+        //小英结果页全屏
+        if (smallEnglish == 1) {
+            group = (ViewGroup) mView.getParent();
+            if (group == null) {
+                return;
+            }
+        } else {
+            group = (ViewGroup) mView;
+        }
         SpeechResultEntity speechResultEntity = new SpeechResultEntity();
         speechResultEntity.gold = gold;
         speechResultEntity.score = score;
