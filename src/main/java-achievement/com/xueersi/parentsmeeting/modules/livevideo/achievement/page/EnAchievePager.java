@@ -419,6 +419,9 @@ public class EnAchievePager extends LiveBasePager {
     }
 
     private void setLayoutOnDraw() {
+        if (pgAchivePk == null) {
+            return;
+        }
         setLayout();
         pgAchivePk.postDelayed(new Runnable() {
             @Override
@@ -436,7 +439,7 @@ public class EnAchievePager extends LiveBasePager {
                     }
                 });
             }
-        },10);
+        }, 10);
     }
 
     private boolean setLayout() {
