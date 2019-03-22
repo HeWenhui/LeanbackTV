@@ -153,7 +153,7 @@ public class LiveVideoEnter {
 //        httpManager.liveGetInfo("", courseId, vSectionID, 0, new HttpCallBack(dataLoadEntity) {
 //            @Override
 //            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-//                LiveHttpResponseParser mHttpResponseParser = new LiveHttpResponseParser(context);
+//                LiveHttpResponseParser mHttpResponseParser = new EnTeamPkResponseParser(context);
 //                JSONObject object = (JSONObject) responseEntity.getJsonObject();
 //                LiveTopic mLiveTopic = new LiveTopic();
 //                LiveGetInfo mGetInfo = mHttpResponseParser.parseLiveGetInfo(object, mLiveTopic, LiveVideoConfig
