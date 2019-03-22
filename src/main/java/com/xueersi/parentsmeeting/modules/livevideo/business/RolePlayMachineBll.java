@@ -434,7 +434,7 @@ public class RolePlayMachineBll extends RolePlayerBll implements RolePlayMachine
                     + " obj = " + obj.toString());
 
             mRolePlayerHttpManager.requestNewArtsResult(mStuCouId, mLiveId, mRolePlayerEntity.getTestId(), roleName, obj
-                    .toString(), new HttpCallBack(false) {
+                    .toString(), mIsLive ? 1 : 2, new HttpCallBack(false) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
 
