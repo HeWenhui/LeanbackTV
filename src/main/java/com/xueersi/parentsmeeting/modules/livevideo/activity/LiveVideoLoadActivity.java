@@ -255,9 +255,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     }
                 },
                 PermissionConfig.PERMISSION_CODE_AUDIO);
-        if (have) {
 
-        }
         com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
         finish();
     }

@@ -1,6 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone;
 
 import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.view.View;
 
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -15,12 +17,8 @@ public class PhoneBll extends LiveBaseBll implements NoticeAction, GoldPhoneCont
 
     GoldPhoneContract.GoldPhoneView mGoldView;
 
-//    GoldPhoneContract.CloseTipView tipView;
-
     public PhoneBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
-
-//        tipView = new MicroPhoneCloseTipView(context, this);
     }
 
     @Override
@@ -30,9 +28,23 @@ public class PhoneBll extends LiveBaseBll implements NoticeAction, GoldPhoneCont
                 int open = data.optInt("open");
                 if (open == 1) {
                     String sign = data.optString("sign");
+                    showVolumeView();
+                    startAudioRecord();
                     getIsOnlineRecognize(sign);
+                    showGoldSettingView(isHasAudioPermission());
                 } else {
-
+                    //提示关闭语音弹幕
+                    if (mGoldView != null) {
+                        mGoldView.showCloseView();
+                        postDelayedIfNotFinish(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (mGoldView.getRootView().getParent() == mRootView) {
+                                    mRootView.removeView(mGoldView.getRootView());
+                                }
+                            }
+                        }, 700);
+                    }
                 }
                 break;
             }
@@ -40,7 +52,6 @@ public class PhoneBll extends LiveBaseBll implements NoticeAction, GoldPhoneCont
                 break;
         }
     }
-
 
     @Override
     public int[] getNoticeFilter() {
@@ -57,17 +68,32 @@ public class PhoneBll extends LiveBaseBll implements NoticeAction, GoldPhoneCont
                     isOnline = jsonObject.optInt("isGoldMicrophoneToAi");
                 }
                 if (isOnline == 1) {
-                    showOpenView();
-                    showVolumeView();
-                    checkPermmsion();
-                    startAudioRecord();
+
                 }
             }
         });
     }
 
-    private void checkPermmsion() {
+    /**
+     * 检查是否有权限
+     */
+    private void showGoldSettingView(boolean isShow) {
+        if (!isShow) {
+            mGoldView.showSettingView(true);
+        } else {
+            mGoldView.showSettingView(false);
+        }
+    }
 
+    /**
+     * 是否有语音权限
+     *
+     * @return
+     */
+    private boolean isHasAudioPermission() {
+        PackageManager pkm = mContext.getPackageManager();
+        return (PackageManager.PERMISSION_GRANTED == pkm.checkPermission("android.permission.MODIFY_AUDIO_SETTINGS", mContext.getPackageName())
+                && PackageManager.PERMISSION_GRANTED == pkm.checkPermission("android.permission.RECORD_AUDIO", mContext.getPackageName()));
     }
 
     private void showVolumeView() {
@@ -77,12 +103,7 @@ public class PhoneBll extends LiveBaseBll implements NoticeAction, GoldPhoneCont
         mRootView.addView(mGoldView.getRootView());
     }
 
-    private void showOpenView() {
-
-    }
-
     public void sendIsGoldMicroPhone(String isOpenMicrophone, String isGoldMicrophone, String sign) {
-
         getHttpManager().sendIsGoldPhone(mGetInfo.getId(),
                 isOpenMicrophone,
                 isGoldMicrophone, sign, new HttpCallBack() {
@@ -95,5 +116,12 @@ public class PhoneBll extends LiveBaseBll implements NoticeAction, GoldPhoneCont
 
     private void startAudioRecord() {
 
+    }
+
+    @Override
+    public void remove(View view) {
+        if (view.getParent() == mRootView) {
+            mRootView.removeView(view);
+        }
     }
 }

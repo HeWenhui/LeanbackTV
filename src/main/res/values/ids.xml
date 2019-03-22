@@ -1205,4 +1205,7 @@
     <item name="iv_livevideo_gold_microphone_bg" type="id" />
     <item name="iv_livevideo_gold_microphone_cancel" type="id" />
     <item name="iv_livevideo_gold_microphone_close_btn_yes" type="id" />
+    <item name="iv_livevideo_gold_microphone_setting" type="id" />
+    <item name="iv_livevideo_gold_microphone_setting_background" type="id" />
+    <item name="iv_livevideo_gold_microphone_setting_group" type="id" />
 </resources>

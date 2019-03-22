@@ -10,8 +10,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 public class MicroPhoneCloseTipView extends BasePager implements GoldPhoneContract.CloseTipView {
     private ImageView ivCloseBtnYes, ivCloseBtnNo;
 
-    private ImageView iv;
-
     private GoldPhoneContract.CloseTipPresenter presenter;
 
     public MicroPhoneCloseTipView(Context context, GoldPhoneContract.CloseTipPresenter presenter) {
@@ -28,17 +26,32 @@ public class MicroPhoneCloseTipView extends BasePager implements GoldPhoneContra
     }
 
     @Override
+    public void initListener() {
+        super.initListener();
+        ivCloseBtnNo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clickNo();
+            }
+        });
+        ivCloseBtnYes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clickYes();
+            }
+        });
+    }
+
+    @Override
     public void initData() {
 
     }
 
-    @Override
-    public void clickYes() {
+    private void clickYes() {
         presenter.removeGoldView();
     }
 
-    @Override
-    public void clickNo() {
-        presenter.removeCloseView();
+    private void clickNo() {
+        presenter.removeCloseView(mView);
     }
 }

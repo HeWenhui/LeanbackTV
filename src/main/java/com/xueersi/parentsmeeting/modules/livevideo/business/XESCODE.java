@@ -252,4 +252,6 @@ public interface XESCODE {
 
     /** 语文幼升小金话筒 */
     int ARTS_GOLD_MICROPHONE = 3000;
+    /** 语文幼升小发送语音识别消息 */
+    int ARTS_GOLD_MICROPHONE_SEND_TEACHER = 3001;
 }
