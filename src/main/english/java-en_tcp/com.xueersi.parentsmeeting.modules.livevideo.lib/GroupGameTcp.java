@@ -182,7 +182,7 @@ public class GroupGameTcp {
         WriteThread writeThread;
         InputStream inputStream;
         // 每包最小长度
-        int miniLength = TcpConstants.header * 2;
+        int miniLength = TcpConstants.header;
         int readCount = 0;
 
         ReadThread(WriteThread writeThread, InputStream inputStream) {
@@ -204,7 +204,7 @@ public class GroupGameTcp {
                             public void run() {
                                 writeThread.heart();
                             }
-                        }, 1500);
+                        }, 30000);
                     }
                 } else if (type == TcpConstants.HEAD_TYPE) {
                     if (operation == TcpConstants.HEAD_OPERATION_REC) {
@@ -213,7 +213,7 @@ public class GroupGameTcp {
                             public void run() {
                                 writeThread.heart();
                             }
-                        }, 1500);
+                        }, 30000);
                     }
                 }
             }
