@@ -1,18 +1,30 @@
 package com.xueersi.parentsmeeting.modules.livevideo.lib;
 
+/**
+ * tcp 一些常量，协议规则
+ * http://wiki.xesv5.com/pages/viewpage.action?pageId=12966243
+ */
 public class TcpConstants {
-    static short PackSize = 4;
-    static short HeaderSize = 2;
-    static short ver = 1;
-    static short VerSize = 2;
-    static short TypeSize = 2;
-    static short OperationSize = 4;
-    static short SeqIDSize = 4;
-    static short header = (short) (PackSize + HeaderSize + VerSize + TypeSize + OperationSize + SeqIDSize);
-    static short LOGIN_TYPE = 3;
-    static int LOGIN_OPERATION_SEND = 6;
-    static int LOGIN_OPERATION_REC = 7;
-    static short HEAD_TYPE = 6;
-    static int HEAD_OPERATION_SEND = 2;
-    static int HEAD_OPERATION_REC = 3;
+    private static short PackSize = 4;
+    private static short HeaderSize = 2;
+    private static short VerSize = 2;
+    static short ver = 2;
+    private static short TypeSize = 2;
+    private static short OperationSize = 4;
+    private static short SeqIDSize = 4;
+    /** 头里面时间戳长度 */
+    private static short timestamp = 8;
+    static short header = (short) (PackSize + HeaderSize + VerSize + TypeSize + OperationSize + SeqIDSize + timestamp);
+    /** 消息类型，登陆 */
+    public static short LOGIN_TYPE = 3;
+    /** 消息登陆-发送 */
+    public static int LOGIN_OPERATION_SEND = 6;
+    /** 消息登陆-回执 */
+    public static int LOGIN_OPERATION_REC = 7;
+    /** 消息类型，心跳 */
+    public static short HEAD_TYPE = 6;
+    /** 消息心跳-发送 */
+    public static int HEAD_OPERATION_SEND = 2;
+    /** 消息心跳-回执 */
+    public static int HEAD_OPERATION_REC = 3;
 }

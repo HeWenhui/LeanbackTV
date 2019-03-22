@@ -1,11 +1,12 @@
 package com.xueersi.parentsmeeting.modules.livevideo.lib;
 
+import android.os.Handler;
+import android.os.HandlerThread;
+
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
-
-import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -16,8 +17,13 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 
+/**
+ * 小组互动的tcp
+ */
 public class GroupGameTcp {
-    private Logger log = LiveLoggerFactory.getLogger("GroupGameTcp");
+    private static int CREATE_TIMES = 0;
+    private String TAG = "GroupGameTcp" + CREATE_TIMES++;
+    private Logger log = LiveLoggerFactory.getLogger(TAG);
     private ReceiveMegCallBack receiveMegCallBack;
     /** 测试用，从本地文件读 */
     private boolean readSave = false;
@@ -27,15 +33,13 @@ public class GroupGameTcp {
     private int port;
     private Socket socket;
     private int seq = 0;
-    private String stuId;
-    private String xes_rfh;
     private WriteThread writeThread;
+    private Handler sendMessageHandler;
+    private boolean isStop = false;
 
-    public GroupGameTcp(String host, int port, String stuId, String xes_rfh) {
+    public GroupGameTcp(String host, int port) {
         this.host = host;
         this.port = port;
-        this.stuId = stuId;
-        this.xes_rfh = xes_rfh;
     }
 
     public void setReceiveMegCallBack(ReceiveMegCallBack receiveMegCallBack) {
@@ -45,10 +49,17 @@ public class GroupGameTcp {
     public void start() {
         try {
             socket = new Socket(host, port);
+            log.d("start:KeepAlive=" + socket.getKeepAlive());
+            socket.setKeepAlive(true);
+            socket.setSoTimeout(130000);
             writeThread = new WriteThread(socket.getOutputStream());
-            new Thread(writeThread).start();
+            writeThread.start();
             new Thread(new ReadThread(writeThread, socket.getInputStream())).start();
-        } catch (IOException e) {
+            sendMessageHandler = new Handler(writeThread.getLooper());
+            if (receiveMegCallBack != null) {
+                receiveMegCallBack.onConnect(this);
+            }
+        } catch (Exception e) {
             e.printStackTrace();
             if (receiveMegCallBack != null) {
                 receiveMegCallBack.onDisconnect(this);
@@ -57,6 +68,7 @@ public class GroupGameTcp {
     }
 
     public void stop() {
+        isStop = true;
         log.d("stop");
         if (socket != null) {
             try {
@@ -67,49 +79,53 @@ public class GroupGameTcp {
         }
     }
 
-    public void send(short type, int operation, String body) {
-        if (writeThread != null) {
-            writeThread.send(type, operation, body);
+    public void send(final short type, final int operation, final String bodyStr) {
+        if (sendMessageHandler != null && writeThread != null) {
+            sendMessageHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (!isStop) {
+                        writeThread.send(type, operation, bodyStr);
+                    }
+                }
+            });
         }
     }
 
-    class WriteThread implements Runnable {
-        Logger log = LiveLoggerFactory.getLogger("WriteThread");
+    class WriteThread extends HandlerThread {
+        Logger log = LiveLoggerFactory.getLogger(TAG + ":WriteThread");
         OutputStream outputStream;
 
         WriteThread(OutputStream outputStream) {
+            super(TAG + ":WriteThread");
             this.outputStream = outputStream;
         }
 
-        public void run() {
-            if (!readSave) {
-                login();
-            }
-        }
+//        private void login() {
+//            try {
+//                // 包长度计算
+//                // package length = PackSize + HeaderSize + VerSize + TypeSize + OperationSize +
+//                // SeqIdSize + len（body）
+//                // 包头长度计算
+//                // header Length = PackSize + HeaderSize + VerSize + TypeSize + OperationSize +
+//                // SeqIdSize
+//                JSONObject jsonObject = new JSONObject();
+//                jsonObject.put("uid", stuId);
+//                jsonObject.put("role", "1");
+//                jsonObject.put("xes_rfh", xes_rfh);
+//                jsonObject.put("live_id", live_id);
+//                jsonObject.put("class_id", class_id);
+//                String bodyStr = jsonObject.toString();
+//                short type = TcpConstants.LOGIN_TYPE;
+//                int operation = TcpConstants.LOGIN_OPERATION_SEND;
+//                send(type, operation, bodyStr);
+//            } catch (Exception e) {
+//                // TODO Auto-generated catch block
+//                e.printStackTrace();
+//            }
+//        }
 
-        private void login() {
-            try {
-                // 包长度计算
-                // package length = PackSize + HeaderSize + VerSize + TypeSize + OperationSize +
-                // SeqIdSize + len（body）
-                // 包头长度计算
-                // header Length = PackSize + HeaderSize + VerSize + TypeSize + OperationSize +
-                // SeqIdSize
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("uid", stuId);
-                jsonObject.put("role", "1");
-                jsonObject.put("xes_rfh", xes_rfh);
-                String bodyStr = jsonObject.toString();
-                short type = TcpConstants.LOGIN_TYPE;
-                int operation = TcpConstants.LOGIN_OPERATION_SEND;
-                send(type, operation, bodyStr);
-            } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-        }
-
-        void send(short type, int operation, String bodyStr) {
+        private void send(short type, int operation, String bodyStr) {
             try {
                 // 包长度计算
                 // package length = PackSize + HeaderSize + VerSize + TypeSize + OperationSize +
@@ -118,7 +134,7 @@ public class GroupGameTcp {
                 // header Length = PackSize + HeaderSize + VerSize + TypeSize + OperationSize +
                 // SeqIdSize
                 int packageLength = TcpConstants.header + bodyStr.getBytes().length;
-                log.d("WriteThread:send:packageLength=" + packageLength);
+                log.d("WriteThread:send:type=" + type + ",operation=" + operation + ",packageLength=" + packageLength);
                 ByteBuffer b = ByteBuffer.allocate(packageLength);
                 b.putInt(packageLength);
                 b.putShort(TcpConstants.header);
@@ -126,8 +142,9 @@ public class GroupGameTcp {
                 b.putShort(type);
                 b.putInt(operation);
                 seq++;
-                log.d("login:seq=" + seq);
+                log.d("WriteThread:send:seq=" + seq);
                 b.putInt(seq);
+                b.putLong(System.currentTimeMillis());
                 if (bodyStr.length() > 0) {
                     b.put(bodyStr.getBytes());
                 }
@@ -143,7 +160,6 @@ public class GroupGameTcp {
 
         private void heart() {
             try {
-
                 // 包长度计算
                 // package length = PackSize + HeaderSize + VerSize + TypeSize + OperationSize +
                 // SeqIdSize + len（body）
@@ -162,7 +178,7 @@ public class GroupGameTcp {
     }
 
     class ReadThread implements Runnable {
-        Logger log = LiveLoggerFactory.getLogger("ReadThread");
+        Logger log = LiveLoggerFactory.getLogger(TAG + ":ReadThread");
         WriteThread writeThread;
         InputStream inputStream;
         // 每包最小长度
@@ -183,33 +199,21 @@ public class GroupGameTcp {
             if (!readSave) {
                 if (type == TcpConstants.LOGIN_TYPE) {
                     if (operation == TcpConstants.LOGIN_OPERATION_REC) {
-                        new Thread() {
+                        sendMessageHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                try {
-                                    Thread.sleep(1500);
-                                } catch (InterruptedException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
-                                }
                                 writeThread.heart();
                             }
-                        }.start();
+                        }, 1500);
                     }
                 } else if (type == TcpConstants.HEAD_TYPE) {
                     if (operation == TcpConstants.HEAD_OPERATION_REC) {
-                        new Thread() {
+                        sendMessageHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                try {
-                                    Thread.sleep(1500);
-                                } catch (InterruptedException e) {
-                                    // TODO Auto-generated catch block
-                                    e.printStackTrace();
-                                }
                                 writeThread.heart();
                             }
-                        }.start();
+                        }, 1500);
                     }
                 }
             }
@@ -312,9 +316,10 @@ public class GroupGameTcp {
                                 int oper = headBuffer.getInt();
                                 lastOper = oper;
                                 int seq = headBuffer.getInt();
+                                long recTimestamp = headBuffer.getLong();
                                 int body = pack - head;
                                 log.d("testBuffer:pack1=" + pack + ",head1=" + head + ",ver1=" + ver + ",type1="
-                                        + type + ",oper1=" + oper + ",seq1=" + seq + ",body1=" + body);
+                                        + type + ",oper1=" + oper + ",seq1=" + seq + ",recTimestamp=" + recTimestamp + ",body1=" + body);
                                 if (body == 0) {
                                     // 没有body的时候。是不是比head头大
                                     if (capacity > miniLength) {
@@ -419,6 +424,10 @@ public class GroupGameTcp {
                         e.printStackTrace();
                     }
                 }
+            }
+            isStop = true;
+            if (receiveMegCallBack != null) {
+                receiveMegCallBack.onDisconnect(GroupGameTcp.this);
             }
         }
     }
