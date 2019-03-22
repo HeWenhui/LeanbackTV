@@ -198,11 +198,12 @@ public class LiveVideoBll implements VPlayerListenerReg {
             nowProtol = MediaPlayer.VIDEO_PROTOCOL_RTMP;
             videoFragment.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
         } else {
-            if (nowProtol == MediaPlayer.VIDEO_PROTOCOL_RTMP) {
-                nowProtol = MediaPlayer.VIDEO_PROTOCOL_FLV;
-            } else {
-                nowProtol = MediaPlayer.VIDEO_PROTOCOL_RTMP;
-            }
+            //这里不能进行协议切换，因为协议切换已经在自动切换线路的时候切换好了
+//            if (nowProtol == MediaPlayer.VIDEO_PROTOCOL_RTMP) {
+//                nowProtol = MediaPlayer.VIDEO_PROTOCOL_FLV;
+//            } else {
+//                nowProtol = MediaPlayer.VIDEO_PROTOCOL_RTMP;
+//            }
             videoFragment.playPSVideo(mGetInfo.getChannelname(), nowProtol);
         }
     }
@@ -412,6 +413,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
 //        }
     }
 
+    @Deprecated
     /** 直接指定为具体线路只去播放 */
     public void playNewVideo(int pos) {
         if (!MediaPlayer.isPSIJK) {
@@ -499,6 +501,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
         return tempProtol;
     }
 
+    @Deprecated
     /** 构造url */
     private String constructUrl(int pos) {
         String url = "";
@@ -912,7 +915,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
             switch (arg2) {
                 case MediaErrorInfo.PSPlayerError: {
                     //播放器错误
-                    changeNextLine();
+                    autoChangeNextLine();
                     break;
                 }
                 case MediaErrorInfo.PSDispatchFailed: {
@@ -947,7 +950,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
                 break;
                 default:
                     //除了这四种情况，还有播放失败的情况
-                    changeNextLine();
+                    autoChangeNextLine();
                     break;
             }
         }
@@ -956,6 +959,26 @@ public class LiveVideoBll implements VPlayerListenerReg {
 //        }
     }
 
+    /**
+     * 播放失败，走自动切换线路
+     */
+    private void autoChangeNextLine() {
+        this.nowPos++;
+//        if (nowProtol == MediaPlayer.VIDEO_PROTOCOL_NO_PROTOL) {
+//            //初始化
+//            nowProtol = MediaPlayer.VIDEO_PROTOCOL_RTMP;
+////            videoFragment.playPSVideo(mGetInfo.getChannelname(), nowProtol);
+//            liveGetPlayServer.liveGetPlayServer(false);
+//            return;
+//        }
+        //当前线路小于总线路数
+        if (this.nowPos < total) {
+            videoFragment.changePlayLive(this.nowPos, nowProtol);
+        } else {
+            nowProtol = changeProtol(nowProtol);
+            videoFragment.playPSVideo(mGetInfo.getChannelname(), nowProtol);
+        }
+    }
 
     /**
      * 使用第三方视频提供商提供的调度接口获得第三方播放域名对应的包括ip地址的播放地址
