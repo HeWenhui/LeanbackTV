@@ -15,6 +15,7 @@ android {
             res.srcDirs += ['src/main/res-en_teampk']
             java.srcDirs += ['src/main/java-achievement']
             res.srcDirs += ['src/main/res-achievement']
+            java.srcDirs += ['src/main/english/java-en_tcp']
         }
     }
     compileSdkVersion 26

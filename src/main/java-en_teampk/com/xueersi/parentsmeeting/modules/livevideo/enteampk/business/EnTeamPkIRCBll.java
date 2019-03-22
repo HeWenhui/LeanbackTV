@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.business.AppBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -24,7 +25,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRank
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.event.ClassEndEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.http.EnTeamPkHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkLeadPager;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpDispatch;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -40,6 +43,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Vector;
@@ -51,7 +55,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * created  at 2018/11/6
  * 英语战队PK 相关业务处理
  */
-public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction,TopicAction, MessageAction {
+public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAction, MessageAction {
     private EnTeamPkAction enTeamPkAction;
     private String unique_id;
     private boolean psOpen = false;
@@ -70,6 +74,8 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction,TopicAct
     private ClassEndReg classEndReg;
     private boolean isEnglishPkTotalRank = false;
     private int classInt = 0;
+    private EnTeamPkHttpManager enTeamPkHttpManager;
+    private TcpDispatch tcpDispatch;
 
     public EnTeamPkIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -80,10 +86,10 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction,TopicAct
         super.onLiveInited(getInfo);
         LiveGetInfo.EnglishPk englishPk = getInfo.getEnglishPk();
         logger.d("onLiveInited:use=" + englishPk.canUsePK + ",has=" + englishPk.hasGroup);
-//        if (com.xueersi.common.config.AppConfig.DEBUG) {
-//            englishPk.canUsePK = 1;
+        if (com.xueersi.common.config.AppConfig.DEBUG) {
+            englishPk.canUsePK = 1;
 //            englishPk.hasGroup = 0;
-//        }
+        }
         if (englishPk.canUsePK == 0) {
             mLiveBll.removeBusinessBll(this);
             return;
@@ -469,6 +475,13 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction,TopicAct
         }
     }
 
+    public EnTeamPkHttpManager getEnTeamPkHttpManager() {
+        if (enTeamPkHttpManager == null) {
+            enTeamPkHttpManager = new EnTeamPkHttpManager(getHttpManager());
+        }
+        return enTeamPkHttpManager;
+    }
+
     private PkTeamEntity parsegetSelfTeamInfo(ResponseEntity responseEntity) {
         PkTeamEntity pkTeamEntity2 = getHttpResponseParser().parsegetSelfTeamInfo(responseEntity, mGetInfo.getStuId());
         if (pkTeamEntity == null && pkTeamEntity2 != null) {
@@ -485,6 +498,19 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction,TopicAct
                     haveTeamRun = true;
                 }
             }
+            getEnTeamPkHttpManager().dispatch(mGetInfo.getStuId(), new AbstractBusinessDataCallBack() {
+                @Override
+                public void onDataSucess(Object... objData) {
+                    ArrayList<InetSocketAddress> addresses = (ArrayList<InetSocketAddress>) objData[0];
+                    mLogtf.d("dispatch:size=" + addresses.size());
+                    if (addresses.size() > 0) {
+                        if (tcpDispatch == null) {
+                            tcpDispatch = new TcpDispatch(mGetInfo.getStuId(), AppBll.getInstance().getUserRfh(), mGetInfo.getId(), classInt + "");
+                            tcpDispatch.setAddresses(addresses);
+                        }
+                    }
+                }
+            });
         }
         return pkTeamEntity2;
     }
@@ -864,6 +890,10 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction,TopicAct
         }
         if (enTeamPkAction != null) {
             enTeamPkAction.destory();
+        }
+        if (tcpDispatch != null) {
+            tcpDispatch.stop();
+            tcpDispatch = null;
         }
     }
 
