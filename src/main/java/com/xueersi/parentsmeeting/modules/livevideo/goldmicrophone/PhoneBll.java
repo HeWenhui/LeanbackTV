@@ -11,12 +11,16 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 
 import org.json.JSONObject;
 
-public class PhoneBll extends LiveBaseBll implements NoticeAction {
+public class PhoneBll extends LiveBaseBll implements NoticeAction, GoldPhoneContract.GoldPhonePresenter {
 
-    GoldPhoneContract.GoldPhoneView mView;
+    GoldPhoneContract.GoldPhoneView mGoldView;
+
+//    GoldPhoneContract.CloseTipView tipView;
 
     public PhoneBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
+
+//        tipView = new MicroPhoneCloseTipView(context, this);
     }
 
     @Override
@@ -55,18 +59,22 @@ public class PhoneBll extends LiveBaseBll implements NoticeAction {
                 if (isOnline == 1) {
                     showOpenView();
                     showVolumeView();
+                    checkPermmsion();
                     startAudioRecord();
                 }
             }
         });
     }
 
-    private void showVolumeView() {
-        if (mView == null) {
-            mView = new PhoneView(mContext);
-        }
-        mRootView.addView(mView.getRootView());
+    private void checkPermmsion() {
 
+    }
+
+    private void showVolumeView() {
+        if (mGoldView == null) {
+            mGoldView = new PhoneView(mContext, this);
+        }
+        mRootView.addView(mGoldView.getRootView());
     }
 
     private void showOpenView() {
@@ -88,5 +96,4 @@ public class PhoneBll extends LiveBaseBll implements NoticeAction {
     private void startAudioRecord() {
 
     }
-
 }

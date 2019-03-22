@@ -11,6 +11,12 @@ public interface GoldPhoneContract {
 
     }
 
+    interface CloseTipPresenter {
+        void removeCloseView();
+
+        void removeGoldView();
+    }
+
     interface CloseTipView {
         void clickYes();
 
