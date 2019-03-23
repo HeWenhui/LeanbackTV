@@ -48,6 +48,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager.GroupGameMultNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.KeyBordAction;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
@@ -313,6 +314,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     public void setLiveGetInfo(LiveGetInfo liveGetInfo) {
         this.liveGetInfo = liveGetInfo;
         isTeamPkAllowed = liveGetInfo != null && "1".equals(liveGetInfo.getIsAllowTeamPk());
+        GroupGameMultNativePager groupGameMultNativePager = new GroupGameMultNativePager(activity, "", liveGetInfo);
+        bottomeContent.addView(groupGameMultNativePager.getRootView());
     }
 
     public void setIse(SpeechUtils ise) {
@@ -661,7 +664,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 questionWebPager = null;
                             }
                             logger.e("====>" + "type:" + videoQuestionLiveEntity.type);
-                           //走新的课件加载
+                            //走新的课件加载
                             if (liveGetInfo.isNewCourse()) {
                                 EnglishH5Entity englishH5Entity = videoQuestionLiveEntity.englishH5Entity;
                                 CoursewareNativePager questionWebPager = new CoursewareNativePager(activity, videoQuestionLiveEntity, false, liveGetInfo.getId(), videoQuestionLiveEntity.id, englishH5Entity, "", "", new EnglishH5CoursewareBll.OnH5ResultClose() {
