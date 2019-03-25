@@ -25,13 +25,13 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
@@ -241,12 +241,14 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         wvSubjectWeb.setWebChromeClient(new MyWebChromeClient());
         wvSubjectWeb.setWebViewClient(new MyWebViewClient());
         logger.e("=======> isNewArtsTest:" + isNewArtsTest);
+
+        WebSettings webSetting = wvSubjectWeb.getSettings();
+        webSetting.setBuiltInZoomControls(true);
+        webSetting.setJavaScriptEnabled(true);
+        wvSubjectWeb.addJavascriptInterface(this, "wx_xesapp");
+
         // 文科新课件平台 填空选择题
         if (isNewArtsTest) {
-            WebSettings webSetting = wvSubjectWeb.getSettings();
-            webSetting.setBuiltInZoomControls(true);
-            webSetting.setJavaScriptEnabled(true);
-            wvSubjectWeb.addJavascriptInterface(this, "wx_xesapp");
             logger.e("=======> loadUrl:" + examUrl);
             wvSubjectWeb.loadUrl(examUrl);
         } else {
@@ -312,6 +314,14 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         EventBus.getDefault().post(new ArtsAnswerResultEvent(data, ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT));
     }
 
+
+    /**
+     * 理科 课件 答题结果回调
+     */
+    @JavascriptInterface
+    public void onAnswerResult_LiveVideo(String data){
+        EventBus.getDefault().post(new AnswerResultEvent(data));
+    }
 
     @android.webkit.JavascriptInterface
     private void addJavascriptInterface() {

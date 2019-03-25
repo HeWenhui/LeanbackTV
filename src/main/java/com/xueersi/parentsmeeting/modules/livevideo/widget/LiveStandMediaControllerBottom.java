@@ -8,6 +8,7 @@ import android.widget.Button;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 
@@ -22,7 +23,7 @@ public class LiveStandMediaControllerBottom extends BaseLiveMediaControllerBotto
     View mainLiveView;
     String mode = LiveTopic.MODE_TRANING;
     private Button btRaiseHands;
-    ArrayList<OnViewChange> onViewChanges = new ArrayList<>();
+    ArrayList<LiveUIStateListener> onViewChanges = new ArrayList<>();
 
     public LiveStandMediaControllerBottom(Context context, LiveMediaController controller, MediaPlayerControl player) {
         super(context, controller, player);
@@ -73,18 +74,17 @@ public class LiveStandMediaControllerBottom extends BaseLiveMediaControllerBotto
      * 通知UI 状态改变
      */
     protected void noticeUIChange() {
-        for (OnViewChange onViewChange : onViewChanges) {
-            onViewChange.onViewChange(this);
+        for (LiveUIStateListener listener : onViewChanges) {
+            listener.onViewChange(this);
         }
     }
 
-    public void addOnViewChange(OnViewChange onViewChange) {
-        if (!onViewChanges.contains(onViewChange)) {
-            onViewChanges.add(onViewChange);
+    public void addOnViewChange(LiveUIStateListener listener) {
+        if (!onViewChanges.contains(listener)) {
+            onViewChanges.add(listener);
         }
     }
-
-    public interface OnViewChange {
+    /*public interface OnViewChange {
         void onViewChange(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom);
-    }
+    }*/
 }

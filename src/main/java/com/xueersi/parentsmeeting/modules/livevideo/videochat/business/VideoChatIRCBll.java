@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
@@ -13,6 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerBottom;
 
 import org.json.JSONArray;
@@ -75,14 +77,20 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
                         baseLiveMediaControllerBottom;
                 liveStandMediaControllerBottom.addOnViewChange(onViewChange);
             }
+
+            if(baseLiveMediaControllerBottom instanceof LiveHalfBodyMediaControllerBottom){
+                LiveHalfBodyMediaControllerBottom halfBodyMediaControllerBottom = (LiveHalfBodyMediaControllerBottom)
+                        baseLiveMediaControllerBottom;
+                halfBodyMediaControllerBottom.addLiveUIStateListener(onViewChange);
+            }
+
             putInstance(VideoChatEvent.class, this);
         } else {
             mLiveBll.removeBusinessBll(this);
         }
     }
 
-    private LiveStandMediaControllerBottom.OnViewChange onViewChange = new LiveStandMediaControllerBottom
-            .OnViewChange() {
+    private LiveUIStateListener onViewChange = new LiveUIStateListener() {
         @Override
         public void onViewChange(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
             videoChatAction.setControllerBottom(baseLiveMediaControllerBottom);

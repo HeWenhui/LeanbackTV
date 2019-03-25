@@ -28,6 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseWebviewX5Pager;
@@ -636,14 +637,15 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     event.setCloseByTeahcer(mEnglishH5CoursewareBll.isWebViewCloseByTeacher());
                     mEnglishH5CoursewareBll.setWebViewCloseByTeacher(false);
                 }
+                event.setScienceNewCourseWare(englishH5Entity.getNewEnglishH5());
                 EventBus.getDefault().post(event);
                 mGoldNum = -1;
                 mEnergyNum = -1;
-                if (englishH5Entity.getNewEnglishH5()) {
+              /*  if (englishH5Entity.getNewEnglishH5()) {
                     LiveVideoConfig.isNewEnglishH5 = true;
                 } else {
                     LiveVideoConfig.isNewEnglishH5 = false;
-                }
+                }*/
             }
         });
 
@@ -660,6 +662,15 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         Loger.e(TAG, "======> newArtsH5CourseWare data:" + data);
         EventBus.getDefault().post(new ArtsAnswerResultEvent(data, ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT));
     }
+
+    /**
+     * 理科 课件 答题结果回调
+     */
+    @JavascriptInterface
+    public void onAnswerResult_LiveVideo(String data){
+        EventBus.getDefault().post(new AnswerResultEvent(data));
+    }
+
 
     /**
      * AI体验课 课件 答题结果回调

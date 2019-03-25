@@ -49,7 +49,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentPkResultEntity
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAdversaryEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkStar;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkStuProgress;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.ExcellentListEntity;
@@ -597,6 +600,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             roomInfo2.setAlloteam(status.optInt("alloteam"));
             roomInfo2.setOpenbox(status.optInt("openbox"));
             roomInfo2.setAllotpkman(status.optInt("allotpkman"));
+            roomInfo2.setPKStep(status.optInt("PKStep"));
             teamPkEntity.setRoomInfo2(roomInfo2);
 
             if (status.has("link_mic")) {
@@ -2099,6 +2103,107 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             CrashReport.postCatchedException(e);
         }
         return null;
+    }
+
+    /**
+     * 解析战队pk 明星榜
+     *
+     * @param responseEntity
+     * @return
+     */
+    public List<TeamPkStar> parseTeamPkStar(ResponseEntity responseEntity) {
+        List<TeamPkStar> resultList = null;
+        try {
+            JSONObject data = (JSONObject) responseEntity.getJsonObject();
+            if (data.has("students")) {
+                resultList = new ArrayList<TeamPkStar>();
+                JSONArray jsonArray = data.optJSONArray("students");
+                if (jsonArray != null && jsonArray.length() > 0) {
+                    JSONObject jsonObject = null;
+                    TeamPkStar star = null;
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        jsonObject = (JSONObject) jsonArray.get(i);
+                        star = new TeamPkStar();
+                        star.setAvatarPath(jsonObject.optString("avatarPath"));
+                        star.setEnergy(jsonObject.optString("energy"));
+                        star.setName(jsonObject.optString("name"));
+                        star.setTeamName(jsonObject.optString("teamName"));
+                        star.setStuId(jsonObject.optString("stuId"));
+                        resultList.add(star);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resultList;
+    }
+
+
+    /**
+     * 解析战队pk 进步榜
+     *
+     * @param responseEntity
+     * @return
+     */
+    public List<TeamPkStuProgress> parseTeamPkProgressStu(ResponseEntity responseEntity) {
+        List<TeamPkStuProgress> resultList = null;
+        try {
+            JSONObject data = (JSONObject) responseEntity.getJsonObject();
+            if (data.has("students")) {
+                resultList = new ArrayList<TeamPkStuProgress>();
+                JSONArray jsonArray = data.optJSONArray("students");
+                if (jsonArray != null && jsonArray.length() > 0) {
+                    JSONObject jsonObject = null;
+                    TeamPkStuProgress star = null;
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        jsonObject = (JSONObject) jsonArray.get(i);
+                        star = new TeamPkStuProgress();
+                        star.setAvatarPath(jsonObject.optString("avatarPath"));
+                        star.setProgressScope(jsonObject.optString("progressScope"));
+                        star.setName(jsonObject.optString("name"));
+                        star.setTeamName(jsonObject.optString("teamName"));
+                        star.setStuId(jsonObject.optString("stuId"));
+                        resultList.add(star);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resultList;
+    }
+
+
+    /**
+     * 解析战队pk 战队成员信息
+     *
+     * @param responseEntity
+     * @return
+     */
+    public List<TeamMate> parseTeamMates(ResponseEntity responseEntity) {
+        List<TeamMate> result = null;
+        try {
+            JSONObject data = (JSONObject) responseEntity.getJsonObject();
+            if (data.has("students")) {
+                result = new ArrayList<TeamMate>();
+                JSONArray jsonArray = data.optJSONArray("students");
+                if (jsonArray != null && jsonArray.length() > 0) {
+                    JSONObject jsonObject = null;
+                    TeamMate teamMate = null;
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        jsonObject = (JSONObject) jsonArray.get(i);
+                        teamMate = new TeamMate();
+                        teamMate.setId(jsonObject.optString("stuId"));
+                        teamMate.setName(jsonObject.optString("name"));
+                        result.add(teamMate);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     public CoursewareInfoEntity parseCoursewareInfo(ResponseEntity responseEntity) {

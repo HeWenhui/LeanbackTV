@@ -36,6 +36,7 @@ public class TeacherPraiseBll extends LiveBaseBll implements NoticeAction {
     private View praiseRootView;
     private boolean isAnimStart;
 
+
     public TeacherPraiseBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
         mActivity = context;
@@ -141,8 +142,6 @@ public class TeacherPraiseBll extends LiveBaseBll implements NoticeAction {
         switch (type) {
             case XESCODE.TEACHER_PRAISE:
                 showTeacherPraise();
-                String nonce = data.optString("nonce", "");
-                TeamPkLog.receiveVoicePraise(mLiveBll, nonce);
                 break;
 
             default:
