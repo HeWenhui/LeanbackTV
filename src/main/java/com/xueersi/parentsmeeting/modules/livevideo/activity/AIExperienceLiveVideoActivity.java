@@ -165,6 +165,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
      * 按Home键的进度模拟
      */
     private boolean firstTime = true;
+    private boolean isFirstCompute = true;
     /**
      * 播放暂停状态的记录
      */
@@ -1057,16 +1058,16 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
             }
             Long keyTime = Long.parseLong(mVideoEntity.getVisitTimeKey()) * 1000 + (System.currentTimeMillis() -
                     startTime);
-            if (mVideoEntity.getSciAiEvent().getLeadingStage().getBeginTime() > Integer.parseInt(mVideoEntity.getVisitTimeKey()) && LiveVideoConfig.liveKey.get(mVideoEntity.getChapterId()) == 0L) {
-                logger.d("time:" + mVideoEntity.getSciAiEvent().getLeadingStage().getBeginTime() * 1000 + keyTime);
-                seekTo(mVideoEntity.getSciAiEvent().getLeadingStage().getBeginTime() * 1000 + keyTime);  // AI体验课的这个方法需要重写
-            } else {
-                long keyPoint = computeNewKeytime(keyTime);
-                logger.d("first time:" + keyPoint);
-                if (keyPoint != -1) {
-                    seekTo(keyPoint);  // AI体验课的这个方法需要重写
-                }
+//            if (mVideoEntity.getSciAiEvent().getLeadingStage().getBeginTime() > Integer.parseInt(mVideoEntity.getVisitTimeKey()) && LiveVideoConfig.liveKey.get(mVideoEntity.getChapterId()) == 0L) {
+//                logger.d("time:" + mVideoEntity.getSciAiEvent().getLeadingStage().getBeginTime() * 1000 + keyTime);
+//                seekTo(mVideoEntity.getSciAiEvent().getLeadingStage().getBeginTime() * 1000 + keyTime);  // AI体验课的这个方法需要重写
+//            } else {
+            long keyPoint = computeNewKeytime(keyTime);
+            logger.d("first time:" + keyPoint);
+            if (keyPoint != -1) {
+                seekTo(keyPoint);  // AI体验课的这个方法需要重写
             }
+//            }
             // TODO 这里需要重新判断当前应该快进到的位置：根据上一题的答题结果来跳到对应时间区间
         }
         // 心跳时间的统计
@@ -1079,6 +1080,9 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         int playPosition = TimeUtils.gennerSecond(position);
         // 落在第一部分的导语部分
         if (playPosition < mVideoEntity.getSciAiEvent().getLeadingStage().getValidTime()) {
+            if (isFirstCompute) {
+                isFirstCompute = false;
+            }
             return (mVideoEntity.getSciAiEvent().getLeadingStage().getBeginTime() + playPosition) * 1000L;
         }
         //有效时间和
@@ -1123,24 +1127,37 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                 //判断时间偏移是否在讲解知识点阶段
                 if (playPosition <= knowledgeTime) {
                     LiveVideoConfig.aiQuestionIndex = i - 1;
-                    LiveVideoConfig.isAITrue = isAnswerTrue;
+                    //判断是否第一次跳转
+                    if (isFirstCompute) {
+                        isFirstCompute = false;
+                        LiveVideoConfig.isAITrue = isAnswerTrue;
+                    }
                     return (exercise.getKnowledgePoints().getBeginTime() + playPosition) * 1000L;
                     //判断时间偏移是否在试题阶段
                 } else if ((playPosition - knowledgeTime) <= introduceTime) {
                     LiveVideoConfig.aiQuestionIndex = i - 1;
-                    LiveVideoConfig.isAITrue = isAnswerTrue;
+                    if (isFirstCompute) {
+                        isFirstCompute = false;
+                        LiveVideoConfig.isAITrue = isAnswerTrue;
+                    }
                     return (exercise.getExample().get(exampleIndex).getIntroduce().getBeginTime()
                             + (playPosition - knowledgeTime)) * 1000L;
                     //判断时间偏移是否在发题阶段
                 } else if ((playPosition - knowledgeTime - introduceTime) <= publishTime) {
                     LiveVideoConfig.aiQuestionIndex = i - 1;
-                    LiveVideoConfig.isAITrue = isAnswerTrue;
+                    if (isFirstCompute) {
+                        isFirstCompute = false;
+                        LiveVideoConfig.isAITrue = isAnswerTrue;
+                    }
                     return (exercise.getExample().get(exampleIndex).getPublish().getBeginTime()
                             + (playPosition - knowledgeTime - introduceTime)) * 1000L;
                     //判断时间偏移是否在题目讲解阶段
                 } else if ((playPosition - knowledgeTime - introduceTime - publishTime) <= interpretTime) {
                     LiveVideoConfig.aiQuestionIndex = i;
-                    LiveVideoConfig.isAITrue = isAnswerTrue;
+                    if (isFirstCompute) {
+                        isFirstCompute = false;
+                        LiveVideoConfig.isAITrue = isAnswerTrue;
+                    }
                     return (exercise.getExample().get(exampleIndex).getInterpret().getBeginTime()
                             + (playPosition - knowledgeTime - introduceTime - publishTime)) * 1000L;
                 }
@@ -1423,19 +1440,19 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                                 seekTo(mVideoEntity.getSciAiEvent().getExercises().get(i + 1).getKnowledgePoints().getBeginTime() * 1000);
                                 LiveVideoConfig.aiQuestionIndex = LiveVideoConfig.aiQuestionIndex + 1;
                                 logger.d("seekTo5=====>" + mVideoEntity.getSciAiEvent().getExercises().get(i + 1).getKnowledgePoints().getBeginTime() + "i:" + i);
-                            //下一题知识点为空
-                            }else {
+                                //下一题知识点为空
+                            } else {
                                 VideoSpeedEntity.Exercise.Example exampleTemp = exerciseTemp.getExample().get(0);
                                 if (!exerciseTemp.isShare() && !LiveVideoConfig.isAITrue) {
                                     exampleTemp = exerciseTemp.getExample().get(1);
                                 }
                                 //题目讲解不为空
-                                if (exampleTemp.getIntroduce().getBeginTime()!=0){
+                                if (exampleTemp.getIntroduce().getBeginTime() != 0) {
                                     seekTo(exampleTemp.getIntroduce().getBeginTime() * 1000);
                                     LiveVideoConfig.aiQuestionIndex = LiveVideoConfig.aiQuestionIndex + 1;
                                     logger.d("seekTo6=====>" + exampleTemp.getIntroduce().getBeginTime() + "i:" + i);
-                                //题目答题时间不为空
-                                } else if ( exampleTemp.getPublish().getBeginTime() != 0){
+                                    //题目答题时间不为空
+                                } else if (exampleTemp.getPublish().getBeginTime() != 0) {
                                     seekTo(exampleTemp.getPublish().getBeginTime() * 1000);
                                     LiveVideoConfig.aiQuestionIndex = LiveVideoConfig.aiQuestionIndex + 1;
                                     logger.d("seekTo7=====>" + exampleTemp.getPublish().getBeginTime() + "i:" + i);
@@ -1468,10 +1485,10 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                             if (!exerciseTemp.isShare() && !LiveVideoConfig.isAITrue) {
                                 exampleTemp = exerciseTemp.getExample().get(1);
                             }
-                            if (exampleTemp.getIntroduce().getBeginTime()!=0){
+                            if (exampleTemp.getIntroduce().getBeginTime() != 0) {
                                 seekTo(exampleTemp.getIntroduce().getBeginTime() * 1000);
                                 logger.d("seekTo10=====>" + exampleTemp.getIntroduce().getBeginTime() + "i:" + i);
-                            } else if ( exampleTemp.getPublish().getBeginTime() != 0){
+                            } else if (exampleTemp.getPublish().getBeginTime() != 0) {
                                 seekTo(exampleTemp.getPublish().getBeginTime() * 1000);
                                 logger.d("seekTo11=====>" + exampleTemp.getPublish().getBeginTime() + "i:" + i);
                             }
