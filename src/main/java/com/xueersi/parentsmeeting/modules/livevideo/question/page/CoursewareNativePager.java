@@ -244,6 +244,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         mEnglishH5CoursewareBll.setWebViewCloseByTeacher(false);
                     }
                     EventBus.getDefault().post(event);
+
                 } else {
                     if (allowTeamPk && newCourseSec != null) {
                         int gold = newCourseSec.getIsAnswer() == 0?mGoldNum:-1;
@@ -844,13 +845,21 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         JSONObject userAnswerContent3 = userAnswerContent2.getJSONObject(k);
                         String id = userAnswerContent3.getString("id");
                         userAnswer.put("id", id);
-                        useranswer += userAnswerContent3.optString("text") + ",";
+                        if(k < (userAnswerContent2.length()-1)){
+                            useranswer += userAnswerContent3.optString("text") + ",";
+                        }else{
+                            useranswer +=userAnswerContent3.optString("text");
+                        }
                     }
                     userAnswer.put("useranswer", useranswer);
                     String rightanswer = "";
                     for (int k = 0; k < rightAnswerContent2.length(); k++) {
                         JSONObject rightAnswerContent3 = rightAnswerContent2.getJSONObject(k);
-                        rightanswer += rightAnswerContent3.optString("text") + ",";
+                        if(k < (userAnswerContent2.length()-1)){
+                            rightanswer += rightAnswerContent3.optString("text") + ",";
+                        }else{
+                            rightanswer +=rightAnswerContent3.optString("text");
+                        }
                     }
                     userAnswer.put("answer", rightanswer);
                     userAnswer.put("type", "" + answer.optString("type"));
