@@ -21,10 +21,14 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     private static String TAG = "VideoQuestionLiveEntity";
     public double time;
     public String id;
+    /** 聊天消息notice类型 */
+    public int noticeType;
     public double gold;
     public int num;
     /** 互动题类型 */
     public String type;
+    /** 英语互动题类型,新课件,避免和type冲突 */
+    private String artType;
     /** 当type=1时为选择题，choiceType 1：单选；2：多选，num为选择题数量 */
     public String choiceType;
     /** 题目来源 */
@@ -79,6 +83,7 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     public String answer;
     /** 年级阶段的标识 */
     private String educationstage = "";
+    private String newCourseTestIdSec = null;
 
     public VideoQuestionLiveEntity() {
     }
@@ -167,6 +172,14 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
         return num;
     }
 
+    public String getArtType() {
+        return artType;
+    }
+
+    public void setArtType(String artType) {
+        this.artType = artType;
+    }
+
     public String getUrl() {
         return englishH5Entity.getUrl();
     }
@@ -237,5 +250,13 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
 
     public void setEducationstage(String educationstage) {
         this.educationstage = educationstage;
+    }
+
+    public String getNewCourseTestIdSec() {
+        return newCourseTestIdSec;
+    }
+
+    public void setNewCourseTestIdSec(String newCourseTestIdSec) {
+        this.newCourseTestIdSec = newCourseTestIdSec;
     }
 }

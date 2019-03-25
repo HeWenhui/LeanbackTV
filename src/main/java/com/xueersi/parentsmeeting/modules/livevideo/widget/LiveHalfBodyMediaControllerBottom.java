@@ -1,15 +1,17 @@
 package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+
+import java.util.ArrayList;
 
 /**
  * 半身直播 底部播放控制栏
@@ -17,11 +19,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
  * @version 1.0, 2018/10/22 下午3:59
  */
 
-public class LiveHalfBodyMediaControllerBottom extends LiveStandMediaControllerBottom {
+public class LiveHalfBodyMediaControllerBottom extends BaseLiveMediaControllerBottom {
 
     private String mode = LiveTopic.MODE_TRANING;
     private static final String TAG = "LiveHalfBodyMediaControllerBottom";
-
+    ArrayList<LiveUIStateListener> liveUIStateListeners = new ArrayList<>();
     View tranLiveView;
     View mainLiveView;
 
@@ -65,7 +67,6 @@ public class LiveHalfBodyMediaControllerBottom extends LiveStandMediaControllerB
      * @param mode
      * @param getInfo
      */
-    @Override
     public void onModeChange(String mode,LiveGetInfo getInfo){
         this.mode = mode;
        // removeAllViews();
@@ -74,6 +75,23 @@ public class LiveHalfBodyMediaControllerBottom extends LiveStandMediaControllerB
         findViewItems();
         //通知相关 UI 底部 控制栏改变
         noticeUIChange();
+    }
+
+
+
+    /**
+     * 通知UI 状态改变
+     */
+    protected void noticeUIChange() {
+        for (LiveUIStateListener listener : liveUIStateListeners) {
+            listener.onViewChange(this);
+        }
+    }
+
+    public void addLiveUIStateListener(LiveUIStateListener listener) {
+        if (!liveUIStateListeners.contains(listener)) {
+            liveUIStateListeners.add(listener);
+        }
     }
 
     @Override

@@ -66,11 +66,15 @@ public class LiveHttpManager extends BaseHttpBusiness {
         defaultKey.put(key, value);
     }
 
-    void setDefaultParameter(HttpRequestParams httpRequestParams) {
+    public void setDefaultParameter(HttpRequestParams httpRequestParams) {
         for (String key : defaultKey.keySet()) {
             String value = defaultKey.get(key);
             httpRequestParams.addBodyParam(key, value);
         }
+    }
+
+    public LiveVideoSAConfig getLiveVideoSAConfig() {
+        return liveVideoSAConfig;
     }
 
     /**
@@ -222,6 +226,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         });
         return cancelable;
     }
+
 
     class HttpURLConnectionCancelable implements Callback.Cancelable {
         HttpURLConnection connection;
@@ -926,6 +931,52 @@ public class LiveHttpManager extends BaseHttpBusiness {
     }
 
     /**
+     * 语文预加载互动题
+     *
+     * @param liveId
+     * @param requestCallBack
+     */
+    public void getArtsCourewareInfo(String liveId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        if (liveId != null && !"".equals(liveId)) {
+            params.addBodyParam("liveId", liveId);
+        }
+        requestCallBack.url = LiveVideoConfig.URL_LIVE_GET_ARTS_COURSEWARE_URL;
+        sendPost(requestCallBack.url, params, requestCallBack);
+    }
+
+    /**
+     * 英语预加载互动题
+     *
+     * @param liveId
+     * @param requestCallBack
+     */
+    public void getEnglishCourewareInfo(String liveId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        if (liveId != null && !"".equals(liveId)) {
+            params.addBodyParam("liveId", liveId);
+        }
+        requestCallBack.url = LiveVideoConfig.URL_LIVE_GET_ENGLISH_COURSEWARE_URL;
+        sendPost(requestCallBack.url, params, requestCallBack);
+    }
+
+    /**
+     * 理科预加载互动题
+     *
+     * @param liveId
+     * @param requestCallBack
+     */
+    public void getScienceCourewareInfo(String liveId, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        if (liveId != null && !"".equals(liveId)) {
+            params.addBodyParam("liveId", liveId);
+        }
+        requestCallBack.url = LiveVideoConfig.URL_LIVE_GET_SCIENCE_COURSEWARE_URL;
+//        requestCallBack.url = "https://laoshi.xueersi.com/science/LiveCourses/preLoadNewCourseWare/?liveId=355540";
+        sendPost(requestCallBack.url, params, requestCallBack);
+    }
+
+    /**
      * 获得广告信息
      */
     public void getAdOnLL(String courseId, final HttpCallBack requestCallBack) {
@@ -1365,6 +1416,21 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(liveVideoSAConfigInner.URL_TEMPK_TEAMENERGYNUMANDCONTRIBUTIONSTARMUL + "/" + liveId, params,
                 requestCallBack);
     }
+
+    /**
+     * 理科战队pk  获取战队成员信息
+     * @param classId
+     * @param teamId
+     * @param httpCallBack
+     */
+    public void getTeamMates(String classId, String teamId, HttpCallBack httpCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("teamId", teamId);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_TEAMPK_GETTEAMMATES, params,httpCallBack);
+    }
+
 
     /**
      * 获取分队信息
@@ -1919,11 +1985,44 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
 
     /**
+     * 小理战队PK 二期 获取明星榜
+     * @param liveId
+     * @param classId
+     * @param requestCallBack
+     */
+    public void getTeamPkStarStudents(String liveId,String classId,String courseId, HttpCallBack requestCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("courseId",courseId);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_TEMPK_GETSTARSTUDENTS, params, requestCallBack);
+    }
+
+
+    /**
+     * 小理战队PK 二期 获取黑马榜
+     * @param liveId
+     * @param classId
+     * @param requestCallBack
+     */
+    public void getTeamPkProgressStudent(String liveId,String classId,String courseId, HttpCallBack requestCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("courseId",courseId);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_TEMPK_GETPROGRESSSTU, params, requestCallBack);
+    }
+
+    /**
      * go-战队pk-更新用户分组
      *
      * @param requestCallBack
      */
-    public void reportStuLike(String unique_id, String stu_id, String nick_name, String teamId, String testId, String like_info, HttpCallBack requestCallBack) {
+    public void reportStuLike(String unique_id, String stu_id, String nick_name,
+                              String teamId, String testId, String like_info,
+                              HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
         params.addBodyParam("stu_id", "" + stu_id);

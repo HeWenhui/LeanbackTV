@@ -3,6 +3,11 @@ package com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone;
 import android.view.View;
 
 public interface GoldPhoneContract {
+    int ONE_GEAR_LEFT = 0;
+    int ONE_GEAR_RIGHT = 30;
+    int TWO_GEAR_RIGHT = 60;
+    int THREE_GEAR_RIGHT = 90;
+
     interface GoldPhoneView {
         View getRootView();
 
@@ -17,6 +22,11 @@ public interface GoldPhoneContract {
          * @param isVisible
          */
         void showSettingView(boolean isVisible);
+
+        /**
+         * 显示大声说界面
+         */
+        void showSpeakLoudly();
     }
 
     interface GoldPhonePresenter {

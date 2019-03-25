@@ -9,6 +9,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRank
 public interface UpdateAchievement {
     int GET_TYPE_RED = 1;
     int GET_TYPE_QUE = 2;
+    int GET_TYPE_TEAM = 3;
 
     void getStuGoldCount(Object method, int type);
 

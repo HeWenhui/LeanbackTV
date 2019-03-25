@@ -1,0 +1,80 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:layout_alignParentBottom="true"
+    android:background="#80000000">
+
+    <ImageView
+        android:id="@id/iv_livevideo_new_course_time"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:src="@drawable/livevideo_course_course_en_time" />
+
+    <TextView
+        android:id="@id/tv_livevideo_new_course_time_lable"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="2dp"
+        android:layout_toRightOf="@id/iv_livevideo_new_course_time"
+        android:text="还剩："
+        android:textColor="@color/white"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@id/tv_livevideo_new_course_time_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/tv_livevideo_new_course_time_lable"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@id/tv_livevideo_new_course_num"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textColor="#ffffffff"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@id/bt_livevideo_new_course_pre"
+        android:layout_width="84dp"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
+        android:layout_toLeftOf="@id/bt_livevideo_new_course_next"
+        android:background="@drawable/selector_livevideo_course_pre_next"
+        android:enabled="false"
+        android:text="上一题"
+        android:textColor="@color/selector_livevideo_couse_pre_next"
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@id/bt_livevideo_new_course_next"
+        android:layout_width="84dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/selector_livevideo_course_pre_next"
+        android:enabled="true"
+        android:text="下一题"
+        android:textColor="@color/selector_livevideo_couse_pre_next"
+        android:textSize="16sp" />
+
+    <Button
+        android:id="@id/bt_livevideo_new_course_submit"
+        android:layout_width="84dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/shape_livevideo_course_submit"
+        android:text="提交"
+        android:textColor="@color/white"
+        android:visibility="gone" />
+</RelativeLayout>

@@ -35,17 +35,6 @@
             android:scaleType="fitCenter"
             />
 
-        <ImageView
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_alignRight="@id/lv_arts_answer_result_pse"
-            android:layout_marginRight="120dp"
-            android:layout_marginTop="45dp"
-            android:src="@drawable/selector_live_enpk_shell_window_guanbi_btn"
-            android:id="@id/iv_arts_answer_result_close_btn"
-            android:visibility="gone"
-            />
-
         <com.xueersi.parentsmeeting.modules.livevideo.widget.FastScrollableRecyclerView
             android:id="@id/rcl_arts_answer_result_detail"
             android:layout_width="370dp"

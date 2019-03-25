@@ -24,7 +24,7 @@ public class PhoneView extends BasePager implements GoldPhoneContract.GoldPhoneV
 
     private ImageView ivSetting;
 
-    private Group settingGroup, microhpneGroup, teacherTipGroup;
+    private Group settingGroup, microhpneGroup, teacherTipGroup, speakLoudlyGroup;
     private GoldPhoneContract.CloseTipView tipView;
 
 
@@ -45,7 +45,7 @@ public class PhoneView extends BasePager implements GoldPhoneContract.GoldPhoneV
         settingGroup = view.findViewById(R.id.iv_livevideo_gold_microphone_setting_group);
         microhpneGroup = view.findViewById(R.id.group_livevideo_gold_microphone_microphone_group);
         teacherTipGroup = view.findViewById(R.id.group_livevideo_gold_microphone_teacher_tip_window);
-
+        speakLoudlyGroup = view.findViewById(R.id.iv_livevideo_gold_microphone_speak_loudly);
         view.postDelayed(microphoneShowRunnable, 700);
 
         view.postDelayed(teacherTipCloseRunnable, 1000);
@@ -200,5 +200,17 @@ public class PhoneView extends BasePager implements GoldPhoneContract.GoldPhoneV
     @Override
     public void showSettingView(boolean isVisible) {
         settingGroup.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void showSpeakLoudly() {
+        speakLoudlyGroup.setVisibility(View.VISIBLE);
+        mView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                speakLoudlyGroup.setVisibility(View.GONE);
+            }
+        }, 1500);
+
     }
 }

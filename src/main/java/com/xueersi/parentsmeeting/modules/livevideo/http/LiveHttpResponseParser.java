@@ -9,11 +9,13 @@ import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.LiveExperienceEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
@@ -22,6 +24,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.CoursewareInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.DeviceDetectionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HalfBodyLiveStudyInfo;
@@ -46,7 +49,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentPkResultEntity
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAdversaryEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkStar;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkStuProgress;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.ExcellentListEntity;
@@ -114,18 +120,17 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         if (getInfo.getAllowLinkMicNew() == 1) {
             getInfo.setAllowLinkMic(false);
         }
-        if (data.has("ePlanInfo")){
+        if (data.has("ePlanInfo")) {
             try {
                 JSONObject ePlanInfo = data.getJSONObject("ePlanInfo");
                 getInfo.ePlanInfo = new LiveGetInfo.EPlanInfoBean();
                 getInfo.ePlanInfo.ePlanId = ePlanInfo.optString("ePlanId");
                 getInfo.ePlanInfo.eTeacherId = ePlanInfo.optString("eTeacherId");
                 getInfo.ePlanInfo.eClassId = ePlanInfo.optString("eClassId");
-                if (ePlanInfo.has("fakePlanId")){
+                if (ePlanInfo.has("fakePlanId")) {
                     getInfo.ePlanInfo.fakePlanId = ePlanInfo.optString("fakePlanId");
                 }
-            }
-            catch (JSONException e) {
+            } catch (JSONException e) {
                 MobAgent.httpResponseParserError(TAG, "parseLiveGetInfo.ePlanInfo", e.getMessage());
             }
         }
@@ -178,7 +183,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             e.printStackTrace();
         }
         if (data.has("isAllowTeamPk")) {
-            getInfo.setIsAllowTeamPk(data.optString("isAllowTeamPkNew","0"));
+            getInfo.setIsAllowTeamPk(data.optString("isAllowTeamPkNew", "0"));
         }
 
 //            LiveVideoConfig.isPrimary = true;
@@ -231,21 +236,28 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setSmallEnglish(false);
             LiveVideoConfig.isSmallChinese = false;
         }
-//        JSONObject englishPkObj = data.optJSONObject("englishPk");
-//        if (englishPkObj != null) {
-//            LiveGetInfo.EnglishPk englishPk = getInfo.getEnglishPk();
-//            englishPk.canUsePK = englishPkObj.optInt("canUsePK");
-//            englishPk.historyScore = englishPkObj.optInt("historyScore");
-//            englishPk.isTwoLose = englishPkObj.optInt("isTwoLose");
-//            englishPk.hasGroup = englishPkObj.optInt("hasGroup");
-//        }
-//        JSONObject pkEnergyObj = data.optJSONObject("pkEnergy");
-//        if (pkEnergyObj != null) {
-//            LiveGetInfo.EnPkEnergy enpkEnergy = getInfo.getEnpkEnergy();
-//            enpkEnergy.me = pkEnergyObj.optInt("me");
-//            enpkEnergy.myTeam = pkEnergyObj.optInt("myTeam");
-//            enpkEnergy.opTeam = pkEnergyObj.optInt("opTeam");
-//        }
+        JSONObject englishPkObj = data.optJSONObject("englishPk");
+        if (englishPkObj != null) {
+            LiveGetInfo.EnglishPk englishPk = getInfo.getEnglishPk();
+            englishPk.canUsePK = englishPkObj.optInt("canUsePK");
+            englishPk.historyScore = englishPkObj.optInt("historyScore");
+            englishPk.isTwoLose = englishPkObj.optInt("isTwoLose");
+            int hasGroup = englishPkObj.optInt("hasGroup");
+            if (EnglishPk.HAS_GROUP_MAIN == hasGroup) {
+                if (LiveTopic.MODE_CLASS.equals(getInfo.getMode())) {
+                    englishPk.hasGroup = hasGroup;
+                } else {
+                    englishPk.hasGroup = EnglishPk.HAS_GROUP_TRAN;
+                }
+            }
+        }
+        JSONObject pkEnergyObj = data.optJSONObject("pkEnergy");
+        if (pkEnergyObj != null) {
+            LiveGetInfo.EnPkEnergy enpkEnergy = getInfo.getEnpkEnergy();
+            enpkEnergy.me = pkEnergyObj.optInt("me");
+            enpkEnergy.myTeam = pkEnergyObj.optInt("myTeam");
+            enpkEnergy.opTeam = pkEnergyObj.optInt("opTeam");
+        }
     }
 
     /**
@@ -490,10 +502,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 String[] arrSubjIds = strSubjIds.split(",");
                 getInfo.setSubjectIds(arrSubjIds);
             }
+            getInfo.setSubject_digits(data.optString("subject_digits"));
             if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
-                if (getInfo.getIsArts() == 1) {
+                if (getInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
                     parseLiveGetInfoLibarts(data, liveTopic, getInfo);
-                } else if (getInfo.getIsArts() == 2) {
+                } else if (getInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
                     parseLiveGetInfoChinese(data, liveTopic, getInfo);
                 } else {
                     parseLiveGetInfoScience(data, liveTopic, getInfo);
@@ -587,6 +600,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             roomInfo2.setAlloteam(status.optInt("alloteam"));
             roomInfo2.setOpenbox(status.optInt("openbox"));
             roomInfo2.setAllotpkman(status.optInt("allotpkman"));
+            roomInfo2.setPKStep(status.optInt("PKStep"));
             teamPkEntity.setRoomInfo2(roomInfo2);
 
             if (status.has("link_mic")) {
@@ -2039,6 +2053,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     }
                     teamMemberEntity.name = jsonObject1.optString("stu_name");
                     teamMemberEntity.headurl = jsonObject1.optString("stu_head");
+                    teamMemberEntity.setNick_name(jsonObject1.optString("nick_name"));
                     bTeamMemberEntity.add(teamMemberEntity);
                 }
             }
@@ -2088,5 +2103,202 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             CrashReport.postCatchedException(e);
         }
         return null;
+    }
+
+    /**
+     * 解析战队pk 明星榜
+     *
+     * @param responseEntity
+     * @return
+     */
+    public List<TeamPkStar> parseTeamPkStar(ResponseEntity responseEntity) {
+        List<TeamPkStar> resultList = null;
+        try {
+            JSONObject data = (JSONObject) responseEntity.getJsonObject();
+            if (data.has("students")) {
+                resultList = new ArrayList<TeamPkStar>();
+                JSONArray jsonArray = data.optJSONArray("students");
+                if (jsonArray != null && jsonArray.length() > 0) {
+                    JSONObject jsonObject = null;
+                    TeamPkStar star = null;
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        jsonObject = (JSONObject) jsonArray.get(i);
+                        star = new TeamPkStar();
+                        star.setAvatarPath(jsonObject.optString("avatarPath"));
+                        star.setEnergy(jsonObject.optString("energy"));
+                        star.setName(jsonObject.optString("name"));
+                        star.setTeamName(jsonObject.optString("teamName"));
+                        star.setStuId(jsonObject.optString("stuId"));
+                        resultList.add(star);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resultList;
+    }
+
+
+    /**
+     * 解析战队pk 进步榜
+     *
+     * @param responseEntity
+     * @return
+     */
+    public List<TeamPkStuProgress> parseTeamPkProgressStu(ResponseEntity responseEntity) {
+        List<TeamPkStuProgress> resultList = null;
+        try {
+            JSONObject data = (JSONObject) responseEntity.getJsonObject();
+            if (data.has("students")) {
+                resultList = new ArrayList<TeamPkStuProgress>();
+                JSONArray jsonArray = data.optJSONArray("students");
+                if (jsonArray != null && jsonArray.length() > 0) {
+                    JSONObject jsonObject = null;
+                    TeamPkStuProgress star = null;
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        jsonObject = (JSONObject) jsonArray.get(i);
+                        star = new TeamPkStuProgress();
+                        star.setAvatarPath(jsonObject.optString("avatarPath"));
+                        star.setProgressScope(jsonObject.optString("progressScope"));
+                        star.setName(jsonObject.optString("name"));
+                        star.setTeamName(jsonObject.optString("teamName"));
+                        star.setStuId(jsonObject.optString("stuId"));
+                        resultList.add(star);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return resultList;
+    }
+
+
+    /**
+     * 解析战队pk 战队成员信息
+     *
+     * @param responseEntity
+     * @return
+     */
+    public List<TeamMate> parseTeamMates(ResponseEntity responseEntity) {
+        List<TeamMate> result = null;
+        try {
+            JSONObject data = (JSONObject) responseEntity.getJsonObject();
+            if (data.has("students")) {
+                result = new ArrayList<TeamMate>();
+                JSONArray jsonArray = data.optJSONArray("students");
+                if (jsonArray != null && jsonArray.length() > 0) {
+                    JSONObject jsonObject = null;
+                    TeamMate teamMate = null;
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        jsonObject = (JSONObject) jsonArray.get(i);
+                        teamMate = new TeamMate();
+                        teamMate.setId(jsonObject.optString("stuId"));
+                        teamMate.setName(jsonObject.optString("name"));
+                        result.add(teamMate);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    public CoursewareInfoEntity parseCoursewareInfo(ResponseEntity responseEntity) {
+        CoursewareInfoEntity coursewareInfoEntity = new CoursewareInfoEntity();
+        JSONObject data = (JSONObject) responseEntity.getJsonObject();
+        List<CoursewareInfoEntity.LiveCourseware> liveCoursewares = new ArrayList<>();
+        if (data.has("list")) {
+            try {
+                JSONArray liveCoursewareArray = data.getJSONArray("list");
+                for (int i = 0; i < liveCoursewareArray.length(); i++) {
+                    CoursewareInfoEntity.LiveCourseware liveCourseware = new CoursewareInfoEntity.LiveCourseware();
+                    JSONObject liveJson = liveCoursewareArray.getJSONObject(i);
+                    liveCourseware.setLiveId(liveJson.optString("liveId"));
+                    liveCourseware.setStime(liveJson.optLong("stime", System.currentTimeMillis() / 1000));
+                    if (liveJson.has("infos")) {
+                        JSONArray coursewareArray = liveJson.getJSONArray("infos");
+                        List<CoursewareInfoEntity.ItemCoursewareInfo> coursewareInfos = new ArrayList<>();
+                        for (int j = 0; j < coursewareArray.length(); j++) {
+                            JSONObject coursewareJson = coursewareArray.getJSONObject(j);
+                            CoursewareInfoEntity.ItemCoursewareInfo coursewareInfo = new CoursewareInfoEntity.ItemCoursewareInfo();
+                            coursewareInfo.setSourceId(coursewareJson.optString("sourceId"));
+                            coursewareInfo.setPackageId(coursewareJson.optString("packageId"));
+                            coursewareInfo.setPackageSource(coursewareJson.optString("packageSource"));
+                            coursewareInfo.setTemplate(coursewareJson.optInt("isTemplate") == 1 ? true : false);
+                            coursewareInfo.setPageId(coursewareJson.optString("pageId"));
+                            coursewareInfo.setResourceUrl(coursewareJson.optString("resourceUrl"));
+                            coursewareInfo.setTemplateUrl(coursewareJson.optString("templateUrl"));
+//                            coursewareInfo.setMd5(coursewareJson.optString("md5"));
+                            coursewareInfo.setResourceMd5(coursewareJson.optString("resourceMd5"));
+                            coursewareInfo.setTemplateMd5(coursewareJson.optString("templateMd5"));
+                            coursewareInfos.add(coursewareInfo);
+                        }
+                        liveCourseware.setCoursewareInfos(coursewareInfos);
+                    }
+                    liveCoursewares.add(liveCourseware);
+                }
+                coursewareInfoEntity.setCoursewaresList(liveCoursewares);
+
+                JSONObject hostJson = data.getJSONObject("host");
+                if (hostJson.has("cdns")) {
+                    JSONArray cdnsArray = hostJson.getJSONArray("cdns");
+                    List<String> cdns = new ArrayList<>();
+                    for (int i = 0; i < cdnsArray.length(); i++) {
+                        cdns.add(cdnsArray.getString(i));
+                    }
+                    coursewareInfoEntity.setCdns(cdns);
+                }
+                if (hostJson.has("ips")) {
+                    JSONArray cdnsArray = hostJson.getJSONArray("ips");
+                    List<String> ips = new ArrayList<>();
+                    for (int i = 0; i < cdnsArray.length(); i++) {
+                        ips.add(cdnsArray.getString(i));
+                    }
+                    coursewareInfoEntity.setIps(ips);
+                }
+                if (data.has("resource")) {
+                    JSONObject resourceArray = data.getJSONObject("resource");
+//                    JSONArray resourceArray = data.getJSONArray("resource");
+                    List<String> resources = new ArrayList<>();
+//                    for (int i = 0; i < resourceArray.length(); i++) {
+                    JSONArray formulasArray = resourceArray.optJSONArray("formulas");
+                    if (formulasArray != null) {
+                        for (int j = 0; j < formulasArray.length(); j++) {
+                            resources.add(formulasArray.getString(j));
+                        }
+                    }
+                    JSONArray fontsArray = resourceArray.optJSONArray("fonts");
+                    if (fontsArray != null) {
+                        for (int k = 0; k < fontsArray.length(); k++) {
+                            resources.add(fontsArray.getString(k));
+                        }
+                    }
+//                    }
+                    coursewareInfoEntity.setResources(resources);
+                }
+//                if (data.has("loadpages")){
+//                    JSONArray loadpageArray = data.getJSONArray("loadpages");
+//                    List<String> loadpages = new ArrayList<>();
+//                    for (int i = 0; i < loadpageArray.length(); i++) {
+//                        loadpages.add(loadpageArray.getString(i));
+//                    }
+//                    coursewareInfoEntity.setLoadpages(loadpages);
+//                }
+//                if (data.has("staticSource")){
+//                    JSONObject staticSourceJson = data.getJSONObject("staticSource");
+//                    List<String> staticSources = new ArrayList<>();
+//                    staticSources.add(staticSourceJson.optString("V1"));
+//                    staticSources.add(staticSourceJson.optString("V2"));
+//                    coursewareInfoEntity.setStaticSources(staticSources);
+//                }
+            } catch (JSONException e) {
+                MobAgent.httpResponseParserError(TAG, "parseCoursewareInfo", e.getMessage());
+                e.printStackTrace();
+            }
+        }
+        return coursewareInfoEntity;
     }
 }

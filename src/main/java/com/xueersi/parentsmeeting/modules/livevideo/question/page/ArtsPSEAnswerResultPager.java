@@ -36,8 +36,9 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsAnswerErrorEnergyStateLottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsAnswerPartRightEnergyStateLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsAnswerResultLottieEffectInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsAnswerStateLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerResultStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.IArtsAnswerRsultDisplayer;
@@ -57,23 +58,19 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRsultDisplayer, View.OnClickListener {
 
-    private static final String LOTTIE_RES_ASSETS_ROOTDIR = "arts_answer_result/";
-    /**
-     * 游戏试题类型
-     */
+    private static final String LOTTIE_RES_ASSETS_ROOTDIR = "arts_answer_result_energy/";
+    /** 游戏试题类型 */
     private static final int TYPE_GAME = 12;
     private final String TAG = "ArtsPSEAnswerResultPager";
     protected Logger logger = LoggerFactory.getLogger("ArtsPSEAnswerResultPager");
 
-    /**
-     * 强制提交 展示答题结果 延时自动关闭
-     **/
+    /** 强制提交 展示答题结果 延时自动关闭 **/
     private final long AUTO_CLOSE_DELAY = 2000;
     /**
      * 关闭按钮 尺寸
      */
-    private final int CLOSEBTN_HEIGHT = 37;
-    private final int CLOSEBTN_WIDTH = 37;
+    private final int CLOSEBTN_HEIGHT = 35;
+    private final int CLOSEBTN_WIDTH = 35;
 
     /**
      * 单选题 答案 展示item  距离顶部的  距离
@@ -84,9 +81,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
      * 答案列表 开始展示的时间点
      */
     private static final float FRACTION_RECYCLERVIEW_IN = 0.27f;
-    /**
-     * 关闭按钮出现时间
-     */
+    /** 关闭按钮出现时间 */
     private static final float FRACTION_SHOW_CLOSEBTN = 0.18f;
     private static final int SPAN_COUNT = 1;
 
@@ -98,9 +93,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
     private int mRecyclHeight;
     private AnswerResultEntity mData;
     private final String BG_COLOR = "#CC000000";
-    /**
-     * 当前答案状态
-     */
+    /** 当前答案状态 */
     private int resultType;
 
     public static final int RESULT_TYPE_CORRECT = 2;
@@ -108,8 +101,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
     public static final int RESULT_TYPE_ERRRO = 0;
     private AnswerResultStateListener mStateListener;
 
-    public ArtsPSEAnswerResultPager(Context context, AnswerResultEntity entity, AnswerResultStateListener
-            stateListener) {
+    public ArtsPSEAnswerResultPager(Context context, AnswerResultEntity entity,AnswerResultStateListener stateListener) {
         super(context);
         mData = entity;
         this.mStateListener = stateListener;
@@ -149,42 +141,46 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
     @Override
     public void showAnswerReuslt() {
 
-        String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_public";
         resultType = mData.getIsRight();
 
         String lottieJsonPath = null;
-        String titleFilePath = null;
-        String titleBgPath = null;
         final LottieEffectInfo lottieEffectInfo;
         logger.d("showAnswerReuslt:resultType=" + resultType);
 
         if (resultType == RESULT_TYPE_CORRECT) {
+            String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/images";
             lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/data.json";
-            titleFilePath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/images/img_15.png";
-            titleBgPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/images/img_16.png";
+//            lottieResPath= LOTTIE_RES_ASSETS_ROOTDIR + "result_state_correct/images";
+            ArtsAnswerPartRightEnergyStateLottieEffectInfo effectInfo = new ArtsAnswerPartRightEnergyStateLottieEffectInfo(lottieResPath,
+                    lottieJsonPath, "img_20.png", "img_21.png");
+            effectInfo.setCoinStr("+" + mData.getGold());
+            effectInfo.setEnergyStr("+" + mData.getEnergy());
+            lottieEffectInfo = effectInfo;
 
         } else if (resultType == RESULT_TYPE_PART_CORRECT) {
+            String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_part_correct/images";
             lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_part_correct/data.json";
-            titleFilePath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_part_correct/images/img_15.png";
-            titleBgPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_part_correct/images/img_16.png";
+            ArtsAnswerPartRightEnergyStateLottieEffectInfo effectInfo = new ArtsAnswerPartRightEnergyStateLottieEffectInfo(lottieResPath,
+                    lottieJsonPath, "img_20.png", "img_21.png");
+            effectInfo.setCoinStr("+" + mData.getGold());
+            effectInfo.setEnergyStr("+" + mData.getEnergy());
+            lottieEffectInfo = effectInfo;
+
         } else {
-
+            String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_error/images";
             lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_error/data.json";
-            titleFilePath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_error/images/img_15.png";
-            titleBgPath = LOTTIE_RES_ASSETS_ROOTDIR + "result_state_error/images/img_16.png";
+            ArtsAnswerErrorEnergyStateLottieEffectInfo effectInfo = new ArtsAnswerErrorEnergyStateLottieEffectInfo(lottieResPath,
+                    lottieJsonPath, "img_20.png", "img_21.png");
+            effectInfo.setCoinStr("+" + mData.getGold());
+            effectInfo.setEnergyStr("+" + mData.getEnergy());
+            lottieEffectInfo = effectInfo;
         }
-        final ArtsAnswerStateLottieEffectInfo effectInfo = new ArtsAnswerStateLottieEffectInfo(lottieResPath,
-                lottieJsonPath, "img_14.png", "img_15.png", "img_16.png");
-
-        effectInfo.setTilteFilePath(titleFilePath);
-        effectInfo.setTitleBgFilePath(titleBgPath);
-        effectInfo.setCoinStr("+" + mData.getGold());
-        animationView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext));
+        animationView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext));
         animationView.setImageAssetDelegate(new ImageAssetDelegate() {
             @Override
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
                 logger.d("showAnswerReuslt:FileName=" + lottieImageAsset.getFileName());
-                return effectInfo.fetchBitmapFromAssets(animationView, lottieImageAsset.getFileName(),
+                return lottieEffectInfo.fetchBitmapFromAssets(animationView, lottieImageAsset.getFileName(),
                         lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(),
                         mContext);
             }
@@ -227,11 +223,12 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
      */
     private void addCloseBtn() {
         closeBtnAdded = true;
-        final ImageView closeBtn = mView.findViewById(R.id.iv_arts_answer_result_close_btn);
+        final ImageView closeBtn = new ImageView(mContext);
+        closeBtn.setImageResource(R.drawable.selector_live_enpk_shell_window_guanbi_btn);
+        closeBtn.setScaleType(ImageView.ScaleType.CENTER_CROP);
         closeBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                logger.e("========> close Btn called:");
                 if (mData.isVoice == 1) {
                     if (mStateListener != null) {
                         mStateListener.onAutoClose(ArtsPSEAnswerResultPager.this);
@@ -256,18 +253,23 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                     float scaleY = (resultAnimeView.getMeasuredHeight() * 1.0f) / designHeight;
                     float scale = Math.min(scaleX, scaleY);
                     RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) closeBtn.getLayoutParams();
+                    if(params == null){
+                        params = new RelativeLayout.LayoutParams(SizeUtils.Dp2Px(mContext, CLOSEBTN_WIDTH), SizeUtils.Dp2Px(mContext, CLOSEBTN_HEIGHT));
+                    }
                     int offset = (int) ((1.0f - scale) * SizeUtils.Dp2Px(resultAnimeView.getContext(), 35f));
                     params.rightMargin = (int) (SizeUtils.Dp2Px(resultAnimeView.getContext(), 120f) * scale) - offset;
                     params.topMargin = (int) (SizeUtils.Dp2Px(resultAnimeView.getContext(), 45f) / scale) + offset;
                     params.addRule(RelativeLayout.ALIGN_TOP, R.id.lv_arts_answer_result_pse);
-                    LayoutParamsUtil.setViewLayoutParams(closeBtn, params);
+                    params.addRule(RelativeLayout.ALIGN_RIGHT, R.id.lv_arts_answer_result_pse);
 
-                    if (closeBtn.getVisibility() != View.VISIBLE) {
-                        closeBtn.setVisibility(View.VISIBLE);
+                    if(closeBtn.getParent() == null){
+                        rlAnswerRootLayout.addView(closeBtn,params);
                         ScaleAnimation scaleAnimation = (ScaleAnimation) AnimationUtils.loadAnimation(mContext, R
                                 .anim.anim_livevideo_close_btn_in);
                         scaleAnimation.setInterpolator(new SpringScaleInterpolator(0.23f));
                         closeBtn.startAnimation(scaleAnimation);
+                    }else{
+                        LayoutParamsUtil.setViewLayoutParams(closeBtn, params);
                     }
                     //语音答题倒计时按钮位置
                     if (mData.isVoice == 1) {

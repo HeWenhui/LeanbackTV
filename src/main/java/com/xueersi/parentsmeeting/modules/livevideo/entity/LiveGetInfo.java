@@ -251,6 +251,8 @@ public class LiveGetInfo {
     /** 是否是AI 伴侣直播间 */
     private int isAIPartner;
     private String[] subjectIds;//所有学科id
+    /** 学科，都是2 的倍数 */
+    private String subject_digits;
     /** 小学理科改版，教育阶段，区分献花 */
     private String educationStage;
     /** 直播课年级 */
@@ -289,7 +291,8 @@ public class LiveGetInfo {
 
     //暂停点赞多长时间弹出礼物
     private int praiseAutoBarrageTime = 1;
-
+    /** 走新课件预加载 */
+    private boolean newCourse =false;
 
     // add by William on 2018/12/5  专属老师用
     public EPlanInfoBean ePlanInfo;
@@ -972,12 +975,28 @@ public class LiveGetInfo {
         return subjectIds;
     }
 
+    public String getSubject_digits() {
+        return subject_digits;
+    }
+
+    public void setSubject_digits(String subject_digits) {
+        this.subject_digits = subject_digits;
+    }
+
     public String getEducationStage() {
         return educationStage;
     }
 
     public void setEducationStage(String educationStage) {
         this.educationStage = educationStage;
+    }
+
+    public boolean isNewCourse() {
+        return newCourse;
+    }
+
+    public void setNewCourse(boolean newCourse) {
+        this.newCourse = newCourse;
     }
 
     public static class MainTeacherInfo {

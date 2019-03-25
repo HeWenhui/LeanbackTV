@@ -28,12 +28,15 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseWebviewX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareSecHttp;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
@@ -131,10 +134,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         setErrorTip("H5课件加载失败，请重试");
         setLoadTip("H5课件正在加载，请稍候");
 //        cacheFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webview/");
-        cacheFile = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/parentsmeeting/webviewCache");
-        if (cacheFile == null) {
-            cacheFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webviewCache");
-        }
+        cacheFile = LiveCacheFile.geCacheFile(context, "webviewCache");
         if (!cacheFile.exists()) {
             cacheFile.mkdirs();
         }
@@ -192,7 +192,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         }
         isFinish = true;
         String commit;
-        if (isNewArtsCourseware && !"17".equals(detailInfo.type)) {
+        if (isNewArtsCourseware && !LiveQueConfig.EN_COURSE_TYPE_NEW_GAME.equals(detailInfo.type)) {
             wvSubjectWeb.loadUrl(jsArtsForceSubmit);
             commit = jsArtsForceSubmit;
             Log.e("Duncan", "js:");
@@ -531,12 +531,6 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 logger.e("======> mulloadUrlLive:" + reloadurl);
             }
         } else {
-            if (isNewArtsCourseware) {
-                String loadUrl = url;
-                loadUrl(loadUrl);
-                reloadurl = loadUrl;
-                Loger.e(TAG, "======> newArtsH5CourseWare url:" + url);
-            } else {
                 String loadUrl = url + "?t=" + System.currentTimeMillis();
                 if (!url.isEmpty() && url.substring(url.length() - 1).equals("&")) {
                     loadUrl = url + "t=" + System.currentTimeMillis();
@@ -557,7 +551,6 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 logger.e("======> loadUrl:" + loadUrl);
                 reloadurl = loadUrl;
                 logger.e("======> loadUrlLive:" + reloadurl);
-            }
         }
         if (mLogtf != null) {
             mLogtf.d("initData:reloadurl=" + reloadurl);
@@ -644,14 +637,15 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     event.setCloseByTeahcer(mEnglishH5CoursewareBll.isWebViewCloseByTeacher());
                     mEnglishH5CoursewareBll.setWebViewCloseByTeacher(false);
                 }
+                event.setScienceNewCourseWare(englishH5Entity.getNewEnglishH5());
                 EventBus.getDefault().post(event);
                 mGoldNum = -1;
                 mEnergyNum = -1;
-                if (englishH5Entity.getNewEnglishH5()) {
+              /*  if (englishH5Entity.getNewEnglishH5()) {
                     LiveVideoConfig.isNewEnglishH5 = true;
                 } else {
                     LiveVideoConfig.isNewEnglishH5 = false;
-                }
+                }*/
             }
         });
 
@@ -669,6 +663,25 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         EventBus.getDefault().post(new ArtsAnswerResultEvent(data, ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT));
     }
 
+    /**
+     * 理科 课件 答题结果回调
+     */
+    @JavascriptInterface
+    public void onAnswerResult_LiveVideo(String data){
+        EventBus.getDefault().post(new AnswerResultEvent(data));
+    }
+
+
+    /**
+     * AI体验课 课件 答题结果回调
+     */
+    @JavascriptInterface
+    public void showExperienceResult(String data) {
+        Loger.e(TAG, "======> newArtsH5CourseWare showExperienceResult:" + data);
+        parseAIData(data);
+        Loger.e(TAG, "======> LiveVideoConfig.isAITrue:" + LiveVideoConfig.isAITrue);
+    }
+
     private void parseData(String data) {
         try {
             JSONObject jsonObject = new JSONObject(data);
@@ -677,6 +690,15 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 JSONObject totalObject = dataObject.getJSONObject("total");
                 mGold = totalObject.optString("gold");
             }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void parseAIData(String data) {
+        try {
+            JSONObject jsonObject = new JSONObject(data);
+            LiveVideoConfig.isAITrue = jsonObject.optBoolean("isRight");
         } catch (JSONException e) {
             e.printStackTrace();
         }

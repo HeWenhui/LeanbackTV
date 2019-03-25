@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
+import com.airbnb.lottie.utils.Utils;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
@@ -98,7 +99,8 @@ public class TeamMemberStarItem implements AdapterItemInterface<TeamMemberEntity
             rlTeampkZan.removeAllViews();
             lav_livevideo_en_teampk_zan = new LottieAnimationView(context);
             map.put(entity, lav_livevideo_en_teampk_zan);
-            rlTeampkZan.addView(lav_livevideo_en_teampk_zan);
+            float scale = Utils.dpScale() * 0.9f;
+            rlTeampkZan.addView(lav_livevideo_en_teampk_zan, (int) (162 * scale), (int) (119 * scale));
             String bubbleResPath = LOTTIE_RES_ASSETS_ROOTDIR + "/images";
             String bubbleJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "/data.json";
             LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo(bubbleResPath, bubbleJsonPath, "img_0.png") {
