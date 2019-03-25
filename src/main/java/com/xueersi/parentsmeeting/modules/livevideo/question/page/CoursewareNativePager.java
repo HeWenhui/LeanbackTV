@@ -245,8 +245,10 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     }
                     EventBus.getDefault().post(event);
                 } else {
-                    if (allowTeamPk && newCourseSec != null && newCourseSec.getIsAnswer() == 0) {
-                        LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum, mEnergyNum, LiveRoomH5CloseEvent
+                    if (allowTeamPk && newCourseSec != null) {
+                        int gold = newCourseSec.getIsAnswer() == 0?mGoldNum:-1;
+                        int energy = newCourseSec.getIsAnswer() == 0?mEnergyNum:-1;
+                        LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(gold, energy, LiveRoomH5CloseEvent
                                 .H5_TYPE_COURSE, id);
                         if (mEnglishH5CoursewareBll != null) {
                             event.setCloseByTeahcer(mEnglishH5CoursewareBll.isWebViewCloseByTeacher());
