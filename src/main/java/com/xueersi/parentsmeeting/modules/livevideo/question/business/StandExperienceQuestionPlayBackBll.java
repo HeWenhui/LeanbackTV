@@ -48,7 +48,7 @@ public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
             //语音答题
             WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, questionBll.new
                     LiveQuestionSwitchImpl());
-            questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch, questionBll));
+            questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch, questionBll, liveGetInfo));
             //语音评测
             LiveBackStandSpeechCreat liveBackStandSpeechCreat = new LiveBackStandSpeechCreat(this, liveBackBll,
                     questionBll);
@@ -59,7 +59,7 @@ public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
             //语音答题
             WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, questionBll.new
                     LiveQuestionSwitchImpl());
-            questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch, questionBll));
+            questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch, questionBll, liveGetInfo));
             //语音评测
             LiveBackSpeechCreat liveBackSpeechCreat = new LiveBackSpeechCreat(questionBll);
             liveBackSpeechCreat.setIsExperience(((StandExperienceLiveBackBll) liveBackBll).getExperience());

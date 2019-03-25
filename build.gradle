@@ -11,8 +11,8 @@ android {
     sourceSets {
         main {
             jniLibs.srcDirs = ['libs']
-//            java.srcDirs += ['src/main/java-en_teampk']
-//            res.srcDirs += ['src/main/res-en_teampk']
+            java.srcDirs += ['src/main/java-en_teampk']
+            res.srcDirs += ['src/main/res-en_teampk']
             java.srcDirs += ['src/main/java-achievement']
             res.srcDirs += ['src/main/res-achievement']
         }
@@ -60,4 +60,6 @@ dependencies {
     //    implementation project(':library:agora')
     //implementation(rootProject.ext.xeslibraries.waveform) { changing = true }
     //implementation project(':library:waveform')
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.gifDrawable)
+    //    implementation project(':library:agora')
 }

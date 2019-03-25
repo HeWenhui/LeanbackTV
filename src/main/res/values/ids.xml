@@ -295,8 +295,10 @@
     <item name="rl_livevideo_subject_web" type="id" />
     <item name="wv_livevideo_subject_web" type="id" />
     <item name="rl_livevideo_subject_loading" type="id" />
+    <item name="ll_livevideo_subject_loadingl_content" type="id" />
     <item name="rl_livevideo_subject_error" type="id" />
     <item name="iv_livevideo_subject_refresh" type="id" />
+    <item name="iv_livevideo_course_refresh" type="id" />
     <!--直播-语音评测-->
     <item name="rl_livevideo_speecteval_group" type="id" />
     <item name="rl_livevideo_speecteval_title" type="id" />
@@ -520,6 +522,7 @@
     <!--结果页-->
     <item name="iv_live_speech_result_title" type="id" />
     <item name="iv_live_speech_result_close" type="id" />
+    <item name="rl_live_speech_result_content" type="id" />
     <item name="tv_live_speech_result_score" type="id" />
     <item name="rl_live_speech_result_head" type="id" />
     <item name="tv_live_speech_result_accuracy_lable" type="id" />

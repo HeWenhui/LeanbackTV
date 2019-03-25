@@ -874,6 +874,28 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
                             if (getInfo != null) {
                                 educationStage = getInfo.getEducationStage();
                             }
+                            int goldSend = 0;
+                            if (smallChineseSendGiftPager.getWhich() == FLOWERS_SMALL) {
+                                goldSend = 10;
+                            } else if (smallChineseSendGiftPager.getWhich() == FLOWERS_MIDDLE) {
+                                goldSend = 50;
+                            } else if (smallChineseSendGiftPager.getWhich() == FLOWERS_BIG) {
+                                goldSend = 100;
+                            }
+                            if (goldNum == null) {
+                                OtherModulesEnter.requestGoldTotal(mContext);
+                            } else {
+                                try {
+                                    int goldSum = Integer.parseInt(goldNum);
+                                    if (goldSend > goldSum) {
+                                        XESToastUtils.showToast(mContext, "当前金币余额不足");
+                                        return;
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
 //                            String educationStage = getInfo.getEducationStage();
                             ircState.praiseTeacher("", smallChineseSendGiftPager.getWhich() + "",
                                     educationStage, new HttpCallBack(false) {

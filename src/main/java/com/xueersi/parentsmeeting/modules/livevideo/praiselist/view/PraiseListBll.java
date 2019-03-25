@@ -4,10 +4,7 @@ import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.xueersi.lib.framework.utils.ScreenUtils;
@@ -63,52 +60,49 @@ public class PraiseListBll implements PraiseListView {
     private PraiseListPager mPraiseListPager;
     private String nonce = "";
 
-    /**
-     * 测试代码，提测删除
-     */
-    private void test() {
-        LinearLayout llTest = new LinearLayout(activity);
-        rlPraiseListContent.addView(llTest);
-        Button btnTest1 = new Button(activity);
-        btnTest1.setText("优秀榜");
-        Button btnTest2 = new Button(activity);
-        btnTest2.setText("计算小超市榜");
-        Button btnTest3 = new Button(activity);
-        btnTest3.setText("点赞榜");
-        Button btnTest4 = new Button(activity);
-        btnTest4.setText("关闭榜单");
-        llTest.addView(btnTest1);
-        llTest.addView(btnTest2);
-        llTest.addView(btnTest3);
-        llTest.addView(btnTest4);
-        btnTest1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPresenter.getExcellentList();
-                mPresenter.getLikeProbability();
-            }
-        });
-        btnTest2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPresenter.getMiniMarketList();
-                mPresenter.getLikeProbability();
-            }
-        });
-        btnTest3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPresenter.getLikeList();
-                mPresenter.getLikeProbability();
-            }
-        });
-        btnTest4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closePraiseList();
-            }
-        });
-    }
+//    private void test() {
+//        LinearLayout llTest = new LinearLayout(activity);
+//        rlPraiseListContent.addView(llTest);
+//        Button btnTest1 = new Button(activity);
+//        btnTest1.setText("优秀榜");
+//        Button btnTest2 = new Button(activity);
+//        btnTest2.setText("计算小超市榜");
+//        Button btnTest3 = new Button(activity);
+//        btnTest3.setText("点赞榜");
+//        Button btnTest4 = new Button(activity);
+//        btnTest4.setText("关闭榜单");
+//        llTest.addView(btnTest1);
+//        llTest.addView(btnTest2);
+//        llTest.addView(btnTest3);
+//        llTest.addView(btnTest4);
+//        btnTest1.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mPresenter.getExcellentList();
+//                mPresenter.getLikeProbability();
+//            }
+//        });
+//        btnTest2.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mPresenter.getMiniMarketList();
+//                mPresenter.getLikeProbability();
+//            }
+//        });
+//        btnTest3.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                mPresenter.getLikeList();
+//                mPresenter.getLikeProbability();
+//            }
+//        });
+//        btnTest4.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                closePraiseList();
+//            }
+//        });
+//    }
 
     public PraiseListBll(Activity activity) {
         mLogtf = new LogToFile(activity, TAG);

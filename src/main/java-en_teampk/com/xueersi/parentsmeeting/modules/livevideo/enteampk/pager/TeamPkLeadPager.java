@@ -92,10 +92,10 @@ public class TeamPkLeadPager extends LiveBasePager {
         RelativeLayout.LayoutParams bottomLayoutParams = (RelativeLayout.LayoutParams) rlTeampkLeadBottom.getLayoutParams();
         if (pattern == 2) {
             view.setBackgroundResource(R.drawable.bg_livevideo_en_team_bg_16_9);
-            bottomLayoutParams.height = SizeUtils.Dp2Px(mContext, 165);
+            bottomLayoutParams.height = SizeUtils.Dp2Px(mContext, 154);
         } else {
             view.setBackgroundResource(R.drawable.bg_livevideo_en_team_bg_4_3);
-            bottomLayoutParams.height = SizeUtils.Dp2Px(mContext, 164);
+            bottomLayoutParams.height = SizeUtils.Dp2Px(mContext, 153);
         }
         rlTeampkLeadBottom.setLayoutParams(bottomLayoutParams);
         pgTeampkLead = view.findViewById(R.id.pg_livevideo_en_teampk_lead);
@@ -160,11 +160,11 @@ public class TeamPkLeadPager extends LiveBasePager {
                 group.addView(imageView, 0, lp);
                 setBg(ivTeampkMine, imageView);
             } else {
-                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width, width);
+//                RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(width, width);
 //                lp.leftMargin = SizeUtils.Dp2Px(mContext, 275);
 //                lp.topMargin = SizeUtils.Dp2Px(mContext, 17);
-                group.addView(imageView, 0, lp);
-                setBg(ivTeampkOther, imageView);
+//                group.addView(imageView, 0, lp);
+//                setBg(ivTeampkOther, imageView);
             }
         } else {
             int lastM = enTeamPkRankEntity.getMyTeamTotal() - enTeamPkRankEntity.getMyTeamCurrent();
@@ -218,17 +218,17 @@ public class TeamPkLeadPager extends LiveBasePager {
             progress = (int) ((float) (enTeamPkRankEntity.getMyTeamTotal() * 100) / (float) (total));
         }
         int closeDelay = type == TeamPkLeadPager.TEAM_TYPE_2 ? 10000 : 5000;
-        if (AppConfig.DEBUG) {
-            closeDelay = type == TeamPkLeadPager.TEAM_TYPE_2 ? 60000 : 60000;
-            ivTeampkMine.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (onClose != null) {
-                        onClose.close(TeamPkLeadPager.this);
-                    }
-                }
-            });
-        }
+//        if (AppConfig.DEBUG) {
+//            closeDelay = type == TeamPkLeadPager.TEAM_TYPE_2 ? 60000 : 60000;
+//            ivTeampkMine.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    if (onClose != null) {
+//                        onClose.close(TeamPkLeadPager.this);
+//                    }
+//                }
+//            });
+//        }
         showRank();
         final TextView tv_livevideo_en_teampk_rank_start_close = rlTeampkLeadBottom.findViewById(R.id.tv_livevideo_en_teampk_rank_start_close);
         final AtomicInteger integer = new AtomicInteger(closeDelay / 1000);
