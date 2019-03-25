@@ -823,7 +823,7 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                     + " obj = " + obj.toString());
 
             mRolePlayerHttpManager.requestNewArtsResult(mStuCouId, mLiveId, mRolePlayerEntity.getTestId(), roleName, obj
-                    .toString(), new HttpCallBack(false) {
+                    .toString(), 1, new HttpCallBack(false) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
 

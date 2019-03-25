@@ -10,6 +10,7 @@ import android.widget.Toast;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.AIExperienceLiveVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.DeviceDetectionActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideoActivity;
@@ -386,6 +387,17 @@ public class LiveVideoEnter {
         return true;
     }
 
+
+    /**
+     * 跳转到三分屏AI体验直播播放器
+     *
+     * @param context
+     * @param bundle
+     */
+    public static boolean intentToAIExperience(Activity context, Bundle bundle, String where) {
+        AIExperienceLiveVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
+        return true;
+    }
 
     /**
      * 跳转到全身直播体验课

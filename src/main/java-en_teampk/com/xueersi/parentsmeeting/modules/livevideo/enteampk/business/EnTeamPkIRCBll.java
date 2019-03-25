@@ -13,6 +13,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
@@ -50,7 +51,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * created  at 2018/11/6
  * 英语战队PK 相关业务处理
  */
-public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAction, MessageAction {
+public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction,TopicAction, MessageAction {
     private EnTeamPkAction enTeamPkAction;
     private String unique_id;
     private boolean psOpen = false;
@@ -63,6 +64,8 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private long stopQuestTime;
     private AtomicBoolean firstConnect = new AtomicBoolean(false);
     private Runnable reportStuInfoRun;
+    /** 通知了eventBus */
+    private boolean haveTeamRun = false;
     private ClassEndRec classEndRec;
     private ClassEndReg classEndReg;
     private boolean isEnglishPkTotalRank = false;
@@ -87,28 +90,9 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         }
         unique_id = mGetInfo.getId() + "_" + mGetInfo.getStudentLiveInfo().getClassId();
         logger.d("onLiveInited:unique_id=" + unique_id);
-        EnTeamPkBll teamPkBll = new EnTeamPkBll(activity);
+        EnTeamPkBll teamPkBll = new EnTeamPkBll(activity, mGetInfo.getId());
         teamPkBll.setRootView(mRootView);
         teamPkBll.setEnTeamPkHttp(new EnTeamPkHttpImp());
-        if (englishPk.hasGroup == 1) {
-            try {
-                String string = mShareDataManager.getString(ShareDataConfig.LIVE_ENPK_MY_TEAM, "{}", ShareDataManager.SHAREDATA_USER);
-                JSONObject jsonObject = new JSONObject(string);
-                if (jsonObject.has(getInfo.getId())) {
-                    ResponseEntity responseEntity = new ResponseEntity();
-                    responseEntity.setJsonObject(jsonObject.getJSONObject(getInfo.getId()));
-                    pkTeamEntity = getHttpResponseParser().parsegetSelfTeamInfo(responseEntity, mGetInfo.getStuId());
-                    logger.d("onLiveInited:pkTeamEntity=null?" + (pkTeamEntity == null));
-                    if (pkTeamEntity != null) {
-                        pkTeamEntity.setCreateWhere(PkTeamEntity.CREATE_TYPE_LOCAL);
-                    }
-                    teamPkBll.setPkTeamEntity(pkTeamEntity);
-                }
-            } catch (Exception e) {
-                pkTeamEntity = null;
-                CrashReport.postCatchedException(e);
-            }
-        }
         enTeamPkAction = teamPkBll;
         teamPkBll.onLiveInited(getInfo);
         EnTeamPkQuestionShowAction enTeamPkQuestionShowAction = new EnTeamPkQuestionShowAction();
@@ -119,6 +103,26 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         EnglishShowReg englishShowReg = getInstance(EnglishShowReg.class);
         if (englishShowReg != null) {
             englishShowReg.registQuestionShow(enTeamPkQuestionShowAction);
+        }
+        if (englishPk.hasGroup != EnglishPk.HAS_GROUP_NO) {
+            try {
+                String string = mShareDataManager.getString(ShareDataConfig.LIVE_ENPK_MY_TEAM, "{}", ShareDataManager.SHAREDATA_USER);
+                JSONObject jsonObject = new JSONObject(string);
+                if (jsonObject.has(getInfo.getId())) {
+                    ResponseEntity responseEntity = new ResponseEntity();
+                    responseEntity.setJsonObject(jsonObject.getJSONObject(getInfo.getId()));
+                    parsegetSelfTeamInfo(responseEntity);
+                    pkTeamEntity = parsegetSelfTeamInfo(responseEntity);
+                    logger.d("onLiveInited:pkTeamEntity=null?" + (pkTeamEntity == null));
+                    if (pkTeamEntity != null) {
+                        pkTeamEntity.setCreateWhere(PkTeamEntity.CREATE_TYPE_LOCAL);
+                    }
+                    teamPkBll.setPkTeamEntity(pkTeamEntity);
+                }
+            } catch (Exception e) {
+                pkTeamEntity = null;
+                CrashReport.postCatchedException(e);
+            }
         }
 //        if (com.xueersi.common.config.AppConfig.DEBUG) {
 //            java.util.Random random = new java.util.Random();
@@ -196,7 +200,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
             }
             if (enTeamPkAction != null) {
-                enTeamPkAction.onQuestionShow(questionLiveEntity, isShow);
+                enTeamPkAction.hideTeam();
             }
         }
     }
@@ -345,6 +349,11 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
         @Override
         public void getEnglishPkGroup(final AbstractBusinessDataCallBack abstractBusinessDataCallBack) {
+            mLogtf.d("getEnglishPkGroup:haveTeamRun=" + haveTeamRun);
+            if (haveTeamRun) {
+                haveTeamRun = false;
+                poseEvent();
+            }
             if (pkTeamEntity != null) {
                 abstractBusinessDataCallBack.onDataSucess(pkTeamEntity);
                 return;
@@ -409,7 +418,11 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             }
                         }
                     }
-                    jsonObject.put("nick_name", "" + teamMemberEntity.nickName);
+                    if (StringUtils.isEmpty(teamMemberEntity.nickName)) {
+                        jsonObject.put("nick_name", "" + teamMemberEntity.getNick_name());
+                    } else {
+                        jsonObject.put("nick_name", "" + teamMemberEntity.nickName);
+                    }
                     jsonArray.put(jsonObject);
                     logger.d("reportStuLike:praiseCount=" + teamMemberEntity.thisPraiseCount + ",old=" + oldNickName + ",new=" + teamMemberEntity.nickName);
                 } catch (JSONException e) {
@@ -461,13 +474,33 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         if (pkTeamEntity == null && pkTeamEntity2 != null) {
             LiveGetInfo.EnglishPk englishPk = mGetInfo.getEnglishPk();
             int oldHasGroup = englishPk.hasGroup;
-            englishPk.hasGroup = 1;
-            mLogtf.d("parsegetSelfTeamInfo:postEvent:oldHasGroup=" + oldHasGroup);
-            if (oldHasGroup == 0) {
-                mLiveBll.postEvent(EnPkTeam.class, pkTeamEntity2);
+            mLogtf.d("parsegetSelfTeamInfo:psOpen=" + psOpen + ",mode=" + mGetInfo.getMode() + ",oldHasGroup=" + oldHasGroup);
+            if (psOpen || LiveTopic.MODE_CLASS.equals(mGetInfo.getMode())) {
+                englishPk.hasGroup = EnglishPk.HAS_GROUP_MAIN;
+                if (oldHasGroup != EnglishPk.HAS_GROUP_MAIN) {
+                    mLiveBll.postEvent(EnPkTeam.class, pkTeamEntity2);
+                }
+            } else {
+                if (oldHasGroup != EnglishPk.HAS_GROUP_MAIN) {
+                    haveTeamRun = true;
+                }
             }
         }
         return pkTeamEntity2;
+    }
+
+    private void poseEvent() {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                LiveGetInfo.EnglishPk englishPk = mGetInfo.getEnglishPk();
+                int oldHasGroup = englishPk.hasGroup;
+                if (oldHasGroup != EnglishPk.HAS_GROUP_MAIN) {
+                    englishPk.hasGroup = EnglishPk.HAS_GROUP_MAIN;
+                    mLiveBll.postEvent(EnPkTeam.class, pkTeamEntity);
+                }
+            }
+        });
     }
 
     @Override
@@ -507,10 +540,10 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             case XESCODE.ARTS_STOP_QUESTION:
                 onCourseEnd();
                 break;
-            case XESCODE.STOPQUESTION: {
-                onQuestionEnd();
-            }
-            break;
+//            case XESCODE.STOPQUESTION: {
+//                onQuestionEnd();
+//            }
+//            break;
             case XESCODE.ARTS_H5_COURSEWARE:
                 String status = data.optString("status", "off");
                 if ("off".equals(status)) {
@@ -550,6 +583,11 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         mLogtf.e("CLASSBEGIN", e);
                         CrashReport.postCatchedException(e);
                     }
+                }
+                break;
+            case XESCODE.READPACAGE:
+                if (enTeamPkAction != null) {
+                    enTeamPkAction.hideTeam();
                 }
                 break;
             default:
@@ -765,13 +803,18 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     @Override
     public int[] getNoticeFilter() {
-        return new int[]{XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_OPEN, XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_RESULT, XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_GO,
-                XESCODE.STOPQUESTION, XESCODE.ARTS_STOP_QUESTION, XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_STULIKE, XESCODE.ARTS_H5_COURSEWARE, XESCODE.CLASSBEGIN};
+        // XESCODE.STOPQUESTION
+        return new int[]{XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_OPEN, XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_RESULT, XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_GO, XESCODE.READPACAGE,
+                XESCODE.ARTS_STOP_QUESTION, XESCODE.EnTeamPk.XCR_ROOM_TEAMPK_STULIKE, XESCODE.ARTS_H5_COURSEWARE, XESCODE.CLASSBEGIN};
     }
 
-    private int firstTopic = 0;
-
-    @Override
+    /**
+     * 辅导态满12人分队，教师端未开启战队分配，切换主讲分队，再用辅导切换到辅导态，会再次展示分队仪式
+     *
+     * @param liveTopic
+     * @param jsonObject
+     * @param modeChange
+     */
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
         //退出重进不显示分队仪式
         try {
@@ -782,16 +825,14 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 if (status) {
                     logger.d("onTopic:psOpen=" + psOpen);
                     if (!psOpen) {
-                        mLogtf.d("onTopic:firstTopic=" + firstTopic);
                         psOpen = true;
                         //firstTopic>1,说明不是退出重进
                         if (enTeamPkAction != null) {
-                            enTeamPkAction.onRankStart(firstTopic > 1);
+                            enTeamPkAction.onRankStart(false);
                         }
                     }
                 }
             }
-            firstTopic++;
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -800,8 +841,14 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
         super.onModeChange(oldMode, mode, isPresent);
+        mLogtf.d("onModeChange:haveTeamRun=" + haveTeamRun);
+        boolean oldHaveTeamRun = haveTeamRun;
+        if (haveTeamRun) {
+            haveTeamRun = false;
+            poseEvent();
+        }
         if (enTeamPkAction != null) {
-            enTeamPkAction.onModeChange(mode);
+            enTeamPkAction.onModeChange(mode, oldHaveTeamRun);
         }
     }
 
@@ -896,6 +943,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 if (sender.contains("_" + teamMemberEntity.id + "_")) {
                     isMy = true;
                     teamMemberEntity.nickName = sender;
+                    mLogtf.d("isMyTeam:sender=" + sender);
                     break;
                 }
             }
@@ -919,6 +967,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             TeamMemberEntity user = uservector.get(j);
             if (("" + sourceNick).equals(user.nickName)) {
                 uservector.remove(j);
+                mLogtf.d("onQuit:sourceNick=" + sourceNick);
                 break;
             }
         }

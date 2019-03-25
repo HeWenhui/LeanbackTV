@@ -32,6 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerBottom;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
@@ -125,6 +126,13 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                     liveMediaControllerBottom;
             liveStandMediaControllerBottom.addOnViewChange(onViewChange);
         }
+
+        if(liveMediaControllerBottom instanceof LiveHalfBodyMediaControllerBottom){
+            LiveHalfBodyMediaControllerBottom liveHalfBodyMediaControllerBottom = (LiveHalfBodyMediaControllerBottom)
+                    liveMediaControllerBottom;
+            liveHalfBodyMediaControllerBottom.addLiveUIStateListener(onViewChange);
+        }
+
         rl_livevideo_common_rank = (Button) liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_rank);
         if (rl_livevideo_common_rank == null) {
             return;
@@ -188,8 +196,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
         });
     }
 
-    private LiveStandMediaControllerBottom.OnViewChange onViewChange = new LiveStandMediaControllerBottom
-            .OnViewChange() {
+    private LiveUIStateListener onViewChange = new LiveUIStateListener() {
         @Override
         public void onViewChange(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
             setLiveMediaController(mMediaController, baseLiveMediaControllerBottom);

@@ -3,6 +3,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.config;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.EnglishH5Entity;
 
+import java.util.HashMap;
+
 /**
  * 直播模块配置
  * URL前缀：接口连接地址
@@ -83,6 +85,10 @@ public class LiveVideoConfig {
      * 直播课的直播
      */
     public final static int LIVE_TYPE_LIVE = 3;
+    /**
+     * 直播课的全身直播
+     */
+    public final static int LIVE_PATTERN_2 = 2;
     /** 视频类型为站立直播体验课 */
     public static final int LIVE_TYPE_STAND_EXPERIENCE = 10000;
     /**
@@ -210,9 +216,9 @@ public class LiveVideoConfig {
     public static String LIVE_PLAY_ERROR = "live_play_error";
     /** 直播-学习报告截图 */
     public static String LIVE_STUDY_REPORT_IMG = "live_study_report_img";
-    /** 直播-小英语音聊天 */
+    /** 直播-小英语音聊天*/
     public static String LIVE_VOICE_CHAT = "voicechat";
-    /** 直播-小英语音弹幕 */
+    /** 直播-小英语音弹幕*/
     public static String LIVE_VOICE_BULLET = "voicebullet";
 
     public static class ShareData {
@@ -248,7 +254,7 @@ public class LiveVideoConfig {
     public static String URL_ROLEPLAY_NEWARTS_TESTINFOS = "https://app.arts.xueersi.com/v2/MultiRolePlay/getRolePlay";
     /** 提交接口 */
     public static String URL_ROLEPLAY_RESULT = LiveVideoConfig.HTTP_HOST + "/libarts/LiveCourse/submitRolePlay";
-    /** 文科新课件平台提交接口 */
+    /** 文科新课件平台提交接口 http://wiki.xesv5.com/pages/viewpage.action?pageId=12968144 */
     public static String URL_ROLEPLAY_NEWARTS_RESULT = "https://app.arts.xueersi.com/v2/MultiRolePlay/submitRolePlay";
     /** 讲座直播获取更多课程 */
     public static String URL_LECTURELIVE_MORE_COURSE = LiveVideoConfig.HTTP_HOST + "/LiveLecture/getAdCase";
@@ -350,6 +356,14 @@ public class LiveVideoConfig {
     /** 一发多题的两个动态接口-语文 */
     public static String LIVEMULPRELOADCHS;
     public static String LIVEMULH5URLCHS;
+    /** AI体验课互动题答题结果*/
+    public static Boolean isAITrue = false;
+    /** AI体验课已答互动题序号*/
+    public static int aiQuestionIndex = -1;
+    /** AI体验课退出时，记录当前的进度*/
+    public static HashMap<String, Long> liveKey = new HashMap<>();
+    public static HashMap<String, Long> curentTime = new HashMap<>();
+    public static HashMap<String, Boolean> livefinish = new HashMap<>();
     /** 战队PK改版 */
     public static String tests;
     public static String ctId;
@@ -386,12 +400,11 @@ public class LiveVideoConfig {
 
     /** 文科新课件平台的标识 */
     public static Boolean isNewArts = false;
-    /** 全身直播的标识 */
+    /** 全身直播的标识*/
     public static Boolean isStandLive = false;
-    /** H5语音答题新增字段 */
+    /** H5语音答题新增字段*/
     public static String userAnswer;
     public static String answer;
-
     /** 学习报告精彩瞬间 */
     public interface STUDY_REPORT {
         /** 贡献之星 */
@@ -426,17 +439,31 @@ public class LiveVideoConfig {
     /**
      * 体验课类型
      */
-    public static interface ExperiencLiveType {
-        /** 半身直播体验课 */
+    public static interface ExperiencLiveType{
+        /**半身直播体验课*/
         int HALF_BODY = 1001;
-        /** 普通直播体验课 */
+        /**普通直播体验课*/
         int NORMAL = 1000;
     }
-
-    /** 半身直播体验课 试题 h5 地址 **/
+    /**半身直播体验课 试题 h5 地址**/
     public static final String URL_HALFBODY_EXPERIENCE_LIVE_H5 = "https://expclass.xueersi.com/live-rewrite/courseware-sci/index.html";
+
+    /**
+     * 文科课件预加载
+     */
+    public static String URL_LIVE_GET_ARTS_COURSEWARE_URL = "https://app.chs.xueersi.com/LiveCourses/preLoadNewCourseWare";
+    /**
+     * 英语课件预加载
+     */
+    public static String URL_LIVE_GET_ENGLISH_COURSEWARE_URL = "https://app.arts.xueersi.com/preloading/preLoading";
+    /**
+     * 理科课件预加载
+     */
+    public static String URL_LIVE_GET_SCIENCE_COURSEWARE_URL =  LiveVideoConfig.HTTP_HOST+"/science/LiveCourses/preLoadNewCourseWare";
 
     public static final String URL_GOLD_MICROPHONE_TO_AI = "http://app.chs.xueersi.com/LiveCourses/isGoldMicrophoneToAi";
 
     public static final String URL_IS_GOLD_MICROPHONE = "http://app.chs.xueersi.com/LiveCourses/setGoldMicrophoneData";
+
+
 }

@@ -90,4 +90,21 @@
         app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_gold_microphone_setting_background"
         app:layout_constraintRight_toRightOf="@id/iv_livevideo_gold_microphone_setting_background" />
 
+    <android.support.constraint.Group
+        android:id="@id/group_livevideo_gold_microphone_speak_loudly"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="iv_livevideo_gold_microphone_speak_loudly" />
+
+    <ImageView
+        android:id="@id/iv_livevideo_gold_microphone_speak_loudly"
+        android:layout_width="128dp"
+        android:layout_height="43dp"
+        android:layout_marginBottom="5dp"
+        android:src="@drawable/bg_livevideo_gold_microphone_speak_loudly"
+        app:layout_constraintBottom_toTopOf="@id/iv_livevideo_gold_microphone_bg"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_gold_microphone_bg"
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_gold_microphone_bg" />
+
+
 </android.support.constraint.ConstraintLayout>
