@@ -187,8 +187,6 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         if (isArts != LiveVideoSAConfig.ART_EN) {
             this.educationstage = detailInfo.getEducationstage();
         }
-
-        Log.e("NativePager","=====>CoursewareNativePager creat:"+detailInfo.englishH5Entity.getReleasedPageInfos());
         liveAndBackDebug = new ContextLiveAndBackDebug(context);
         mView = initView();
 //        initWebView();
