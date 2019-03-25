@@ -248,6 +248,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     if (allowTeamPk && newCourseSec != null) {
                         int gold = newCourseSec.getIsAnswer() == 0?mGoldNum:-1;
                         int energy = newCourseSec.getIsAnswer() == 0?mEnergyNum:-1;
+
                         LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(gold, energy, LiveRoomH5CloseEvent
                                 .H5_TYPE_COURSE, id);
                         if (mEnglishH5CoursewareBll != null) {
