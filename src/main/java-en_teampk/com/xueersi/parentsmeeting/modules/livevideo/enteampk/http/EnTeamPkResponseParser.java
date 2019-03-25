@@ -89,4 +89,22 @@ public class EnTeamPkResponseParser extends HttpResponseParser {
         }
         return addresses;
     }
+
+    public ArrayList<TeamMemberEntity> parseGetStuActiveTeam(ResponseEntity responseEntity) {
+        ArrayList<TeamMemberEntity> entities = new ArrayList<>();
+        try {
+            JSONArray array = (JSONArray) responseEntity.getJsonObject();
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject teamObj = array.getJSONObject(i);
+                TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
+                teamMemberEntity.id = teamObj.optInt("stu_id");
+                teamMemberEntity.name = teamObj.optString("stu_name");
+                teamMemberEntity.headurl = teamObj.optString("stu_head");
+                entities.add(teamMemberEntity);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return entities;
+    }
 }

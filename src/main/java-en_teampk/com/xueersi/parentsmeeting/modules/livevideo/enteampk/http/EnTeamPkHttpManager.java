@@ -7,6 +7,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.config.EnTeamPkHttpConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
@@ -68,6 +69,32 @@ public class EnTeamPkHttpManager {
                 } catch (Exception e) {
                     callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, e.getMessage());
                 }
+            }
+        });
+    }
+
+    public void getStuActiveTeam(String unique_id, String stu_id, final AbstractBusinessDataCallBack callBack) {
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+        httpRequestParams.addBodyParam("unique_id", unique_id);
+        httpRequestParams.addBodyParam("stu_id", stu_id);
+        liveHttpManager.sendPost(EnTeamPkHttpConfig.GET_STU_ACTIVE_TEAM + "?unique_id=" + unique_id, httpRequestParams, new HttpCallBack() {
+
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                ArrayList<TeamMemberEntity> entities = enTeamPkResponseParser.parseGetStuActiveTeam(responseEntity);
+                callBack.onDataSucess(entities);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR, responseEntity.getErrorMsg());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
             }
         });
     }

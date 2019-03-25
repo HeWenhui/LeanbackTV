@@ -167,6 +167,12 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 CrashReport.postCatchedException(e);
             }
         }
+        putInstance(GetStuActiveTeam.class, new GetStuActiveTeam() {
+            @Override
+            public void getStuActiveTeam(AbstractBusinessDataCallBack callBack) {
+                EnTeamPkIRCBll.this.getStuActiveTeam(callBack);
+            }
+        });
     }
 
     private class ClassEndRec {
@@ -275,7 +281,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     }
                     mLogtf.d("reportStuInfo:nick_name=" + nick_name + ",mode=" + mGetInfo.getMode());
                     LiveGetInfo.EnglishPk englishPk = mGetInfo.getEnglishPk();
-                    getHttpManager().reportStuInfo(mode, mGetInfo.getStuId(), mGetInfo.getStuName(), mGetInfo.getStuImg(), "" + englishPk.historyScore, "" + englishPk.isTwoLose, nick_name, unique_id, new HttpCallBack(false) {
+                    getHttpManager().reportStuInfo(mode, mGetInfo.getStuId(), mGetInfo.getStuName(), mGetInfo.getStuImg(), "" + englishPk.historyScore, "" + englishPk.isTwoLose, nick_name, unique_id, true, new HttpCallBack(false) {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) {
                             logger.d("reportStuInfo:onPmSuccess" + responseEntity.getJsonObject());
@@ -513,6 +519,20 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             });
         }
         return pkTeamEntity2;
+    }
+
+    public void getStuActiveTeam(final AbstractBusinessDataCallBack callBack) {
+        getEnTeamPkHttpManager().getStuActiveTeam(unique_id, mGetInfo.getStuId(), new AbstractBusinessDataCallBack() {
+            @Override
+            public void onDataSucess(Object... objData) {
+                callBack.onDataSucess(objData);
+            }
+
+            @Override
+            public void onDataFail(int errStatus, String failMsg) {
+                callBack.onDataFail(errStatus, failMsg);
+            }
+        });
     }
 
     private void poseEvent() {

@@ -314,8 +314,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     public void setLiveGetInfo(LiveGetInfo liveGetInfo) {
         this.liveGetInfo = liveGetInfo;
         isTeamPkAllowed = liveGetInfo != null && "1".equals(liveGetInfo.getIsAllowTeamPk());
-        GroupGameMultNativePager groupGameMultNativePager = new GroupGameMultNativePager(activity, "", liveGetInfo);
-        bottomeContent.addView(groupGameMultNativePager.getRootView());
     }
 
     public void setIse(SpeechUtils ise) {

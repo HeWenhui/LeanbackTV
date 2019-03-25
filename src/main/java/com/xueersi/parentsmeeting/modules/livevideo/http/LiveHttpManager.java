@@ -1912,9 +1912,10 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * 学生上报个人信息
      *
      * @param mode
+     * @param is_interactive
      * @param requestCallBack
      */
-    public void reportStuInfo(String mode, String stu_id, String stu_name, String stu_head, String stu_energy, String stu_lose_flag, String nick_name, String unique_id, HttpCallBack requestCallBack) {
+    public void reportStuInfo(String mode, String stu_id, String stu_name, String stu_head, String stu_energy, String stu_lose_flag, String nick_name, String unique_id, boolean is_interactive, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("mode", "" + mode);
         params.addBodyParam("stu_id", "" + stu_id);
@@ -1924,7 +1925,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("stu_lose_flag", stu_lose_flag);
         params.addBodyParam("nick_name", nick_name);
         params.addBodyParam("unique_id", unique_id);
-        params.addHeaderParam("Connection", "Close");
+        params.addBodyParam("is_interactive", "" + is_interactive);
         setDefaultParameter(params);
         sendPost(LiveVideoHttpEnConfig.URL_LIVE_REPORT_STUINFO + "?unique_id=" + unique_id, params, requestCallBack);
     }

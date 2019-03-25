@@ -18,6 +18,7 @@
     <!--英语小组互动-->
     <item name="ll_livevideo_course_item_content" type="id" />
     <item name="rl_livevideo_course_item_video" type="id" />
+    <item name="iv_livevideo_course_item_video_head" type="id" />
     <item name="rl_livevideo_course_item_name" type="id" />
     <item name="iv_livevideo_course_item_video" type="id" />
     <item name="iv_livevideo_course_item_audio" type="id" />

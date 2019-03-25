@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.lib;
 
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 
@@ -71,6 +72,11 @@ public class GroupGameTcp {
         isStop = true;
         log.d("stop");
         if (socket != null) {
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                writeThread.quitSafely();
+            } else {
+                writeThread.quit();
+            }
             try {
                 socket.close();
             } catch (IOException e) {

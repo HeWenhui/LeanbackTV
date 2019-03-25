@@ -10,6 +10,10 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="6dp">
 
+        <ImageView
+            android:id="@id/iv_livevideo_course_item_video_head"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </RelativeLayout>
 
     <TextView
@@ -23,6 +27,7 @@
         android:shadowDx="0"
         android:shadowDy="1"
         android:shadowRadius="3.0"
+        android:singleLine="true"
         android:textColor="#fffefefe"
         android:textSize="12sp" />
 
