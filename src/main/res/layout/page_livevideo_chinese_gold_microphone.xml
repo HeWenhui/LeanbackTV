@@ -4,7 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:ignore="MissingConstraints">
+    tools:ignore="MissingConstraints,NotSibling">
+
+    <android.support.constraint.Group
+        android:id="@id/group_livevideo_gold_microphone_teacher_tip_window"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="iv_gold_microphone_teacher_tip,
+        tv_gold_microphone_teacher_tip" />
 
     <ImageView
         android:id="@id/iv_gold_microphone_teacher_tip"
@@ -26,11 +33,17 @@
         app:layout_constraintRight_toRightOf="@id/iv_gold_microphone_teacher_tip"
         app:layout_constraintTop_toTopOf="@id/iv_gold_microphone_teacher_tip" />
 
+    <android.support.constraint.Group
+        android:id="@id/group_livevideo_gold_microphone_microphone_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="iv_livevideo_gold_microphone_bg" />
+
     <ImageView
         android:id="@id/iv_livevideo_gold_microphone_bg"
         android:layout_width="70dp"
         android:layout_height="63dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginBottom="15dp"
         android:src="@drawable/bg_livevideo_gold_microphone_icon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -51,6 +64,7 @@
         android:id="@id/iv_livevideo_gold_microphone_setting_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:constraint_referenced_ids="iv_livevideo_gold_microphone_setting_background,
         iv_livevideo_gold_microphone_setting"
         tools:ignore="NotSibling" />

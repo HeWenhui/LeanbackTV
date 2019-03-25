@@ -174,7 +174,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     if (1 == mGetInfo.getIsEnglish()) {
                         gotoEnglish(bundle);
                     } else if (mGetInfo.isUseGoldMicroPhone()) {
-                        gotoHalfBodyChinese();
+                        gotoHalfBodyChinese(bundle);
                     } else {
                         com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                         finish();

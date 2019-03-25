@@ -1944,6 +1944,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(LiveVideoConfig.URL_GOLD_MICROPHONE_TO_AI, params, httpCallBack);
     }
 
+    /** 是否开启了麦克风权限，以及是否是金话筒 */
     public void sendIsGoldPhone(String liveId, String isOpenMicrophone, String isGoldMicrophone, String id, HttpCallBack httpCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);

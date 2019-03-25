@@ -18,9 +18,7 @@ import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherBll;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.presenter.ChineseSpeechBulletScreenIRCBll;
@@ -32,8 +30,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoteBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
-import com.xueersi.parentsmeeting.modules.livevideo.config.AllBllConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.chpk.business.ChinesePkBll;
+import com.xueersi.parentsmeeting.modules.livevideo.config.AllBllConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -42,7 +40,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
+import com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.PhoneBll;
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnReportIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5CoursewareIRCBll;
@@ -66,7 +66,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.switchflow.SwitchRouteSucces
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.TeacherPraiseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.understand.business.UnderstandIRCBll;
-import com.xueersi.parentsmeeting.modules.livevideo.util.AssetsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
@@ -79,10 +78,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBo
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlayerFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TripleScreenBasePlayerFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.worddictation.business.WordDictationIRCBll;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
@@ -237,6 +232,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new WordDictationIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new TeacherPraiseBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new ArtsAnswerResultBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new PhoneBll(activity, mLiveBll));
             VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
             videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             videoChatIRCBll.setLiveFragmentBase(this);

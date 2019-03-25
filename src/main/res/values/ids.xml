@@ -1208,4 +1208,6 @@
     <item name="iv_livevideo_gold_microphone_setting" type="id" />
     <item name="iv_livevideo_gold_microphone_setting_background" type="id" />
     <item name="iv_livevideo_gold_microphone_setting_group" type="id" />
+    <item name="group_livevideo_gold_microphone_microphone_group" type="id" />
+    <item name="group_livevideo_gold_microphone_teacher_tip_window" type="id" />
 </resources>

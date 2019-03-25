@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clickable="false"
     tools:ignore="MissingConstraints">
 
     <ImageView
@@ -49,7 +50,6 @@
         android:src="@drawable/selector_livevideo_primary_chinese_dialog_cancel"
         app:layout_constraintLeft_toLeftOf="@id/iv_gold_microphone_close_microphone_background"
         app:layout_constraintTop_toBottomOf="@id/tv_gold_microphone_close_microphone_bottom_tip" />
-
 
     <ImageView
         android:id="@id/iv_livevideo_gold_microphone_close_btn_yes"
