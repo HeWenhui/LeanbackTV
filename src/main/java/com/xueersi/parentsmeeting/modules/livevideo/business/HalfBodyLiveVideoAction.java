@@ -378,6 +378,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
         } else {
             return R.drawable.live_halfbody_bg;
         }
+
     }
 
 
