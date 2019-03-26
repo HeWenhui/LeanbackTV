@@ -163,7 +163,7 @@ public class StandSpeechResult {
     }
 
     public static View resultViewScoreEnergy(Context mContext, ViewGroup group, int gold, int energy, int score) {
-        final View resultMine = LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_stand_speech_mine,
+        final View resultMine = LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_stand_speech_mine_energy,
                 group, false);
         TextView tv_livevideo_speecteval_result_gold = resultMine.findViewById(R.id.tv_livevideo_speecteval_result_gold);
         tv_livevideo_speecteval_result_gold.setText("+" + gold);

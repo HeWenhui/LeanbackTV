@@ -16,6 +16,7 @@ import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
+import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -54,11 +55,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayMachinePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayStandMachinePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.CreateAnswerReslutEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseLiveQuestionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseQuestionWebInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSubjectResultInter;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.CoursewareNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssAutoPager;
@@ -240,6 +243,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     private VideoQuestionLiveEntity mVideoQuestionLiveEntity;
     private boolean hasQuestion;
     private boolean hasExam;
+    private long submitTime;
     private boolean hasSubmit;
     private String stuCouId;
     private RolePlayAction rolePlayAction;
@@ -657,9 +661,26 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 questionWebPager = null;
                             }
                             logger.e("====>" + "type:" + videoQuestionLiveEntity.type);
-                            QuestionWebX5Pager questionWebPager = new QuestionWebX5Pager(activity, QuestionBll.this,
-                                    videoQuestionLiveEntity, liveGetInfo.getId());
-                            questionWebPager.setLivePagerBack(QuestionBll.this);
+                           //走新的课件加载
+                            if (liveGetInfo.isNewCourse()) {
+                                EnglishH5Entity englishH5Entity = videoQuestionLiveEntity.englishH5Entity;
+                                CoursewareNativePager questionWebPager = new CoursewareNativePager(activity, videoQuestionLiveEntity, false, liveGetInfo.getId(), videoQuestionLiveEntity.id, englishH5Entity, "", "", new EnglishH5CoursewareBll.OnH5ResultClose() {
+                                    @Override
+                                    public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
+                                        rlQuestionContent.removeView(baseEnglishH5CoursewarePager.getRootView());
+                                    }
+                                }, "0", LiveVideoSAConfig.ART_EN, false);
+                                if (questionHttp instanceof EnglishH5CoursewareSecHttp) {
+                                    questionWebPager.setEnglishH5CoursewareSecHttp((EnglishH5CoursewareSecHttp) questionHttp);
+                                }
+                                questionWebPager.setLivePagerBack(QuestionBll.this);
+                                QuestionBll.this.questionWebPager = questionWebPager;
+                            } else {
+                                QuestionWebX5Pager questionWebPager = new QuestionWebX5Pager(activity, QuestionBll.this,
+                                        videoQuestionLiveEntity, liveGetInfo.getId());
+                                questionWebPager.setLivePagerBack(QuestionBll.this);
+                                QuestionBll.this.questionWebPager = questionWebPager;
+                            }
                             rlQuestionContent.addView(questionWebPager.getRootView());
                             QuestionBll.this.questionWebPager = questionWebPager;
                             setHaveWebQuestion(true);
@@ -1036,13 +1057,17 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4) {
                             popupWindow_view = initAnswerRightResult(entity);
                             isSuccess = true;
+                            LiveVideoConfig.isAITrue = true;
                             // 回答错误提示
                         } else if (entity.getResultType() == QUE_RES_TYPE2) {
                             popupWindow_view = initAnswerWrongResult();
+                            initAnswerWrongResult();
+                            LiveVideoConfig.isAITrue = false;
                             // 填空题部分正确提示
                         } else if (entity.getResultType() == QUE_RES_TYPE3 || entity.getResultType() == QUE_RES_TYPE5) {
                             popupWindow_view = initAnswerPartRightResult(entity);
                             isSuccess = true;
+                            LiveVideoConfig.isAITrue = false;
                         }
                     }
                 }
@@ -1198,7 +1223,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 @Override
                 public void run() {
                     if (questionWebPager != null) {
-                        questionWebPager.examSubmitAll();
+                        questionWebPager.submitData();
                     }
                 }
             });
@@ -2200,6 +2225,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     }
 
     public void onSubmit(int type, boolean isForceSubmit) {
+        submitTime = System.currentTimeMillis();
         questionHttp.sendRankMessage(XESCODE.RANK_STU_MESSAGE);
         if (isForceSubmit) {
             getFullMarkList(type, 3000);

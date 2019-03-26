@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <View
+        android:id="@+id/tv_livevideo_primaryscience_answerresult_dash_line"
+        android:layout_width="wrap_content"
+        android:layout_height="1.5dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="36dp"
+        android:background="@drawable/shape_livevideo_primaryscience_answerresult_dash_line"
+        android:layerType="software" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:id="@+id/tv_livevideo_primaryscience_answerresult_answer_number"
+        android:layout_width="79dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="#FFFFE190"
+        android:textSize="10dp"
+        android:text="题号" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_toRightOf="@+id/tv_livevideo_primaryscience_answerresult_answer_number"
+        android:id="@+id/tv_livevideo_primaryscience_answerresult_right_answer"
+        android:layout_width="107dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="10dp"
+        android:text="正确答案" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_toRightOf="@+id/tv_livevideo_primaryscience_answerresult_right_answer"
+        android:textColor="@color/white"
+        android:id="@+id/tv_livevideo_primaryscience_answerresult_my_answer"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:textSize="10dp"
+        android:gravity="center"
+        android:text="你的答案" />
+
+    <RelativeLayout
+        android:layout_marginTop="7dp"
+        android:layout_toRightOf="@+id/tv_livevideo_primaryscience_answerresult_my_answer"
+        android:layout_width="105dp"
+        android:layout_height="wrap_content"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/iv_livevideo_primaryscience_answerresult_answer_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/live_interact_primary_right" />
+    </RelativeLayout>
+</RelativeLayout>
+

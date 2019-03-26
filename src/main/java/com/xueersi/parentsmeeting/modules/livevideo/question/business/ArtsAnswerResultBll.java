@@ -34,11 +34,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ScoreRange;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
@@ -47,6 +49,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsPSEAnswerResultPager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.NewCourseLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -100,15 +103,14 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     private IArtsAnswerRsultDisplayer mDsipalyer;
 
-    /**当前答题结果*/
+    /** 当前答题结果 */
     private AnswerResultEntity mAnswerReulst;
 
 
-
-    /**用户在直播间内所有非语音答题结果*/
+    /** 用户在直播间内所有非语音答题结果 */
     private List<AnswerResultEntity> mAnswerResultList = new ArrayList<>();
 
-    /**用户在当前直播间内所有语音题 答题结果*/
+    /** 用户在当前直播间内所有语音题 答题结果 */
     private List<VoiceAnswerResultEvent> mVoiceAnswerResultList = new ArrayList<>();
 
     /**
@@ -125,7 +127,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     private View praiseRootView;
     private boolean isPerfectRight;
     private HashMap<Integer, ScoreRange> mScoreRangeMap;
-    /**是否需要更新右侧金币数*/
+    /** 是否需要更新右侧金币数 */
     private boolean shoulUpdateGold;
     private boolean close = false;
 
@@ -153,12 +155,13 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
 
     /**
-     *  用于直播回放
+     * 用于直播回放
+     *
      * @param context
      * @param rootView
      */
-    public ArtsAnswerResultBll(Activity context,String liveId,int liveType,RelativeLayout rootView){
-        super(context,liveId,liveType);
+    public ArtsAnswerResultBll(Activity context, String liveId, int liveType, RelativeLayout rootView) {
+        super(context, liveId, liveType);
         mRootView = rootView;
     }
 
@@ -168,7 +171,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         rlAnswerResultLayout = mRootView;
     }
 
-    private void addPager() {
+    private void addPager(ArtsAnswerResultEvent event) {
         //logger.e("ArtsAnswerResultBll:addPager:" + mDsipalyer);
 
         if (mDsipalyer != null) {
@@ -186,29 +189,34 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             rlAnswerResultLayout.addView(mDsipalyer.getRootLayout(), layoutParams);
         }
-       // logger.e( "==========> ArtsAnswerResultBll addPager called:");
+        VideoQuestionLiveEntity detailInfo = event.getDetailInfo();
+        if (detailInfo != null) {
+            NewCourseLog.sno8(mLiveBll, NewCourseLog.getNewCourseTestIdSec(detailInfo, LiveVideoSAConfig.ART_EN), event.isIspreload(), 0);
+        }
+        // logger.e( "==========> ArtsAnswerResultBll addPager called:");
     }
 
     /**
      * 展示答题结果
      */
-    private void showAnswerReulst() {
+    private void showAnswerReulst(final ArtsAnswerResultEvent event) {
         mRootView.post(new Runnable() {
             @Override
             public void run() {
-                if(mGetInfo.getPattern() == 2){
+                if (mGetInfo.getPattern() == 2) {
                     showH5Result(mAnswerReulst);
                     close = false;
-                }else{
+                } else {
                     closeRemindUI();
-                    addPager();
+                    addPager(event);
                 }
 
             }
         });
     }
+
     private void showH5Result(AnswerResultEntity detail) {
-        if(detail.getIsRight() == 1 || detail.getIsRight() == 2){
+        if (detail.getIsRight() == 1 || detail.getIsRight() == 2) {
             String path = "live_stand_voice_my_right.json";
             LottieComposition.Factory.fromAssetFileName(mContext, path, new OnCompositionLoadedListener() {
                 @Override
@@ -228,7 +236,8 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 //                    group.addView(rlResult);
                     rlAnswerResultLayout.addView(mRlResult);
                     lottieAnimationView.playAnimation();
-                    LiveStandVoiceAnswerCreat.setRightGold(mContext, lottieAnimationView, mAnswerReulst.getGold(), mAnswerReulst.getEnergy());
+//                    LiveStandVoiceAnswerCreat.setRightGold(mContext, lottieAnimationView, mAnswerReulst.getGold(), mAnswerReulst.getEnergy());
+                    LiveStandVoiceAnswerCreat.setRightGoldEnergy(mContext, lottieAnimationView, mAnswerReulst.getGold(), mAnswerReulst.getEnergy());
                     mLiveSoundPool = LiveSoundPool.createSoundPool();
                     final LiveSoundPool.SoundPlayTask task = StandLiveMethod.voiceRight(mLiveSoundPool);
                     mRlResult.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View.OnClickListener() {
@@ -247,12 +256,12 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
                         @Override
                         public void onViewDetachedFromWindow(View v) {
-                            logger.d( "onViewDetachedFromWindow right");
+                            logger.d("onViewDetachedFromWindow right");
                             mLiveSoundPool.stop(task);
                             rlAnswerResultLayout.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if(!close){
+                                    if (!close) {
                                         StandLiveMethod.onClickVoice(mLiveSoundPool);
                                         rlAnswerResultLayout.removeView(mRlResult);
                                     }
@@ -269,7 +278,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     });
                 }
             });
-        }else{
+        } else {
             String path = "live_stand_voice_my_wrong.json";
             LottieComposition.Factory.fromAssetFileName(mContext, path, new OnCompositionLoadedListener() {
                 @Override
@@ -289,8 +298,14 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 //                    group.addView(rlResult);
                     rlAnswerResultLayout.addView(mRlResult);
                     lottieAnimationView.playAnimation();
-                    LiveStandVoiceAnswerCreat.setWrongTip(mContext,lottieAnimationView,mAnswerReulst.getAnswerList().get(0).getRightAnswers().get(0));
-//                    LiveStandVoiceAnswerCreat.setWrongTipEnpk(mContext, lottieAnimationView, mAnswerReulst.getAnswerList().get(0).getRightAnswers().get(0), mAnswerReulst.getGold(), mAnswerReulst.getEnergy());
+//                    LiveStandVoiceAnswerCreat.setWrongTip(mContext,lottieAnimationView,mAnswerReulst.getAnswerList().get(0).getRightAnswers().get(0));
+                    String standardAnswer = "";
+                    try {
+                        standardAnswer = mAnswerReulst.getAnswerList().get(0).getRightAnswers().get(0);
+                    } catch (Exception e) {
+
+                    }
+                    LiveStandVoiceAnswerCreat.setWrongTipEnergy(mContext, lottieAnimationView, standardAnswer, mAnswerReulst.getGold(), mAnswerReulst.getEnergy());
 //                    setWrongTip(mContext, lottieAnimationView, mAnswerReulst.getAnswerList().get(0).getRightAnswers().get(0) + "");
                     mLiveSoundPool = LiveSoundPool.createSoundPool();
                     final LiveSoundPool.SoundPlayTask task = StandLiveMethod.voiceRight(mLiveSoundPool);
@@ -310,12 +325,12 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
                         @Override
                         public void onViewDetachedFromWindow(View v) {
-                            logger.d( "onViewDetachedFromWindow error");
+                            logger.d("onViewDetachedFromWindow error");
                             mLiveSoundPool.stop(task);
                             rlAnswerResultLayout.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if(!close){
+                                    if (!close) {
                                         StandLiveMethod.onClickVoice(mLiveSoundPool);
                                         rlAnswerResultLayout.removeView(mRlResult);
                                     }
@@ -347,22 +362,22 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
      * 游戏类型试题
      */
     private static final int TEST_TYPE_GAME = 12;
+
     /**
-     *
      * @param result
      * @param resultFromVoice 是否是 本地语音答题（填空、选择）
      */
-    private void onAnswerResult(String result,boolean resultFromVoice) {
-        Log.e("AnswerResultBll","======>onAnswerResult:"+result+":"+resultFromVoice);
+    private void onAnswerResult(ArtsAnswerResultEvent event, String result, boolean resultFromVoice) {
+        Log.e("AnswerResultBll", "======>onAnswerResult:" + result + ":" + resultFromVoice);
         //boolean showAnswerResult = false;
         try {
             JSONObject jsonObject = new JSONObject(result);
             int stat = jsonObject.optInt("stat");
-           // logger.e("======>onAnswerResult2222:"+stat+":"+jsonObject.has("data"));
+            // logger.e("======>onAnswerResult2222:"+stat+":"+jsonObject.has("data"));
             JSONObject dataObject = null;
-            if(resultFromVoice){
+            if (resultFromVoice) {
                 dataObject = jsonObject;
-            }else{
+            } else {
                 dataObject = jsonObject.optJSONObject("data");
             }
 
@@ -387,7 +402,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                             idList.add(testIds.getString(i));
                         }
                         mAnswerReulst.setIdArray(idList);
-                        Log.e( "AnswerResultBll","=======>parseAnswerResult:" + idList.size());
+                        Log.e("AnswerResultBll", "=======>parseAnswerResult:" + idList.size());
                     }
 
                     int type = totalObject.optInt("type");
@@ -453,7 +468,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     //答题结果里有填空选择 才展示 统计面板 (当前统计面UI 只支持显示 选择、填空题)
                     if (!resultFromVoice) {
                         shoulUpdateGold = true;
-                        showAnswerReulst();
+                        showAnswerReulst(event);
                     }
 
                 } else {
@@ -471,7 +486,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     }
                     mAnswerReulst.setIsRight(dataObject.optInt("isRight"));
 
-                   // logger.e("======>:"+mAnswerReulst.getIsRight() +":"+mAnswerReulst.getIdArray());
+                    // logger.e("======>:"+mAnswerReulst.getIsRight() +":"+mAnswerReulst.getIdArray());
                     JSONArray jsonArray = dataObject.optJSONArray("result");
                     if (jsonArray != null && jsonArray.length() > 0) {
                         List<AnswerResultEntity.Answer> answerList = new ArrayList<AnswerResultEntity.Answer>();
@@ -505,6 +520,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     /**
      * 关闭作答结果页面
+     *
      * @param forceSumbmit
      */
     public void closeAnswerResult(boolean forceSumbmit) {
@@ -515,11 +531,11 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             mDsipalyer = null;
             EventBus.getDefault().post(new AnswerResultCplShowEvent("closeAnswerResult1"));
         }
-        if(mGetInfo.getPattern() == 2){
+        if (mGetInfo.getPattern() == 2) {
             EventBus.getDefault().post(new AnswerResultCplShowEvent("closeAnswerResult2"));
         }
 
-       // logger.e("=====>closeAnswerResult:" + forceSumbmit + ":" + this);
+        // logger.e("=====>closeAnswerResult:" + forceSumbmit + ":" + this);
         this.forceSumbmit = forceSumbmit;
     }
 
@@ -535,7 +551,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     };
 
     public void remindSubmit() {
-       // logger.e("======>remindSubmit:" + mArtsAnswerResultEvent + ":" + this);
+        // logger.e("======>remindSubmit:" + mArtsAnswerResultEvent + ":" + this);
         //没有答题结果页时才展示
         if (mArtsAnswerResultEvent == null) {
             rlAnswerResultLayout.post(new Runnable() {
@@ -551,7 +567,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                                 .MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                         rlAnswerResultLayout.addView(remindView, params);
                     }
-                   // remindView.setVisibility(View.VISIBLE);
+                    // remindView.setVisibility(View.VISIBLE);
                     AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.loadAnimation(mContext, R.anim
                             .anim_livevido_arts_answer_result_alpha_in);
                     remindView.startAnimation(alphaAnimation);
@@ -595,14 +611,14 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
      * 表扬答题全对
      */
     private void praiseAnswerAllRight(JSONArray ids) {
-       if(ids != null && ids.length() > 0){
-            if(mAnswerResultList != null && mAnswerResultList.size() > 0){
-                AnswerResultEntity  resultEntity = null;
+        if (ids != null && ids.length() > 0) {
+            if (mAnswerResultList != null && mAnswerResultList.size() > 0) {
+                AnswerResultEntity resultEntity = null;
                 //在所有答题结果中查找 目标答题结果
-                for (int i = (mAnswerResultList.size()-1); i >= 0; i--) {
+                for (int i = (mAnswerResultList.size() - 1); i >= 0; i--) {
                     resultEntity = mAnswerResultList.get(i);
                     boolean isTargetObj = true;
-                    if(resultEntity != null){
+                    if (resultEntity != null) {
                         String id = null;
                         // 判断 表扬id 是否包含在 答题结果id里面
                         for (int j = 0; j < ids.length(); j++) {
@@ -616,17 +632,17 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     }
 
                     //logger.e( "=======>praiseAnswerAllRight:4444444 "+isTargetObj);
-                    if(isTargetObj && resultEntity != null){
+                    if (isTargetObj && resultEntity != null) {
                         break;
                     }
                 }
                 //logger.e( "=======>praiseAnswerAllRight: targetObj="+ resultEntity);
                 // 找到目标答题结果  显示表扬
-                if(resultEntity != null && resultEntity.getIsRight() == ANSWER_RESULT_ALL_RIGHT){
+                if (resultEntity != null && resultEntity.getIsRight() == ANSWER_RESULT_ALL_RIGHT) {
                     showPraise();
                 }
             }
-       }
+        }
 
     }
 
@@ -636,37 +652,37 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
      * @param testId
      */
     private void pariseSingleAnswerRight(String testId) {
-       if(mAnswerResultList != null && mAnswerResultList.size() >0){
-           AnswerResultEntity resultEntity = null;
-           boolean objFound = false;
-           for (int i = (mAnswerResultList.size()-1); i >= 0; i--) {
-               resultEntity = mAnswerResultList.get(i);
-               if(resultEntity != null && resultEntity.getAnswerList() != null){
-                   AnswerResultEntity.Answer answer = null;
-                   for (int j = 0; j < resultEntity.getAnswerList().size(); j++) {
-                       answer = resultEntity.getAnswerList().get(j);
-                       if(testId.equals(answer.getTestId())){
-                           //logger.e("====> pariseSingleRight: find target obj");
-                           objFound = true;
-                           if(resultEntity.getResultType() == AnswerResultEntity.RESULT_TYPE_NEW_COURSE_WARE && answer.getIsRight() == 2){
-                               //logger.e("====> pariseSingleRight: new_course_ware showPraise");
-                               //新课件平台 2代表正确
-                               showPraise();
-                           }else if(resultEntity.getResultType() == AnswerResultEntity.RESULT_TYPE_OLD_COURSE_WARE && answer.getIsRight() == 1){
-                               //老课件平台 1 代表正确
-                               //logger.e("====> pariseSingleRight: old_course_ware showPraise");
-                               showPraise();
-                           }
-                           break;
-                       }
-                   }
-               }
-               if(objFound){
-                   //logger.e("====> pariseSingleRight: end_target_search");
-                   break;
-               }
-           }
-       }
+        if (mAnswerResultList != null && mAnswerResultList.size() > 0) {
+            AnswerResultEntity resultEntity = null;
+            boolean objFound = false;
+            for (int i = (mAnswerResultList.size() - 1); i >= 0; i--) {
+                resultEntity = mAnswerResultList.get(i);
+                if (resultEntity != null && resultEntity.getAnswerList() != null) {
+                    AnswerResultEntity.Answer answer = null;
+                    for (int j = 0; j < resultEntity.getAnswerList().size(); j++) {
+                        answer = resultEntity.getAnswerList().get(j);
+                        if (testId.equals(answer.getTestId())) {
+                            //logger.e("====> pariseSingleRight: find target obj");
+                            objFound = true;
+                            if (resultEntity.getResultType() == AnswerResultEntity.RESULT_TYPE_NEW_COURSE_WARE && answer.getIsRight() == 2) {
+                                //logger.e("====> pariseSingleRight: new_course_ware showPraise");
+                                //新课件平台 2代表正确
+                                showPraise();
+                            } else if (resultEntity.getResultType() == AnswerResultEntity.RESULT_TYPE_OLD_COURSE_WARE && answer.getIsRight() == 1) {
+                                //老课件平台 1 代表正确
+                                //logger.e("====> pariseSingleRight: old_course_ware showPraise");
+                                showPraise();
+                            }
+                            break;
+                        }
+                    }
+                }
+                if (objFound) {
+                    //logger.e("====> pariseSingleRight: end_target_search");
+                    break;
+                }
+            }
+        }
 
     }
 
@@ -756,7 +772,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             case XESCODE.ARTS_REMID_SUBMIT:
                 int pType = data.optInt("ptype");
                 //语文跟读不支持 提醒答题
-                if(ARTS_FOLLOW_UP != pType){
+                if (ARTS_FOLLOW_UP != pType) {
                     remindSubmit();
                 }
                 break;
@@ -764,22 +780,22 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("Arts_Praise_Answer_right:").append(data.toString());
                 UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), "ArtsAnswerResultBll" + "loadLibrary", stringBuilder.toString());
-                    String praiseType = data.optString("praiseType");
-                    if ("0".equals(praiseType)) {
-                        JSONArray ids = data.optJSONArray("id");
-                        praiseAnswerAllRight(ids);
-                    } else if ("1".equals(praiseType)) {
-                        int scoreRangeIndex = data.optInt("scoreRange");
-                        JSONArray jsonArray = data.optJSONArray("id");
-                        if (jsonArray != null) {
-                            try {
-                                String testId = jsonArray.optString(0);
-                                praiseVoiceAnswer(scoreRangeIndex, testId);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                String praiseType = data.optString("praiseType");
+                if ("0".equals(praiseType)) {
+                    JSONArray ids = data.optJSONArray("id");
+                    praiseAnswerAllRight(ids);
+                } else if ("1".equals(praiseType)) {
+                    int scoreRangeIndex = data.optInt("scoreRange");
+                    JSONArray jsonArray = data.optJSONArray("id");
+                    if (jsonArray != null) {
+                        try {
+                            String testId = jsonArray.optString(0);
+                            praiseVoiceAnswer(scoreRangeIndex, testId);
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
+                }
                 break;
             case XESCODE.ARTS_PRAISE_ANSWER_RIGHT_SINGLE:
                 String testId = data.optString("id");
@@ -799,18 +815,18 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 break;
             case XESCODE.ARTS_STOP_QUESTION:
                 mArtsAnswerResultEvent = null;
-                if(mGetInfo.getPattern() == 2){
+                if (mGetInfo.getPattern() == 2) {
                     rlAnswerResultLayout.post(new Runnable() {
                         @Override
                         public void run() {
-                            if(!close){
+                            if (!close) {
                                 rlAnswerResultLayout.removeView(mRlResult);
                             }
 
                         }
                     });
                     EventBus.getDefault().post(new AnswerResultCplShowEvent("ARTS_STOP_QUESTION"));
-                }else{
+                } else {
                     closeAnswerResult(true);
                 }
                 break;
@@ -818,18 +834,18 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 String status = data.optString("status", "off");
                 mArtsAnswerResultEvent = null;
                 if ("off".equals(status)) {
-                    if(mGetInfo.getPattern() == 2){
+                    if (mGetInfo.getPattern() == 2) {
                         rlAnswerResultLayout.post(new Runnable() {
                             @Override
                             public void run() {
-                                if(!close){
+                                if (!close) {
                                     rlAnswerResultLayout.removeView(mRlResult);
                                 }
 
                             }
                         });
                         EventBus.getDefault().post(new AnswerResultCplShowEvent("ARTS_H5_COURSEWARE"));
-                    }else{
+                    } else {
                         closeAnswerResult(true);
                     }
                 } else if ("on".equals(status)) {
@@ -842,12 +858,11 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     }
 
 
-
     /**
      * 强制关闭ptype 为12的游戏题
      */
     private void forceCloseGamePage() {
-        if(mRootView != null){
+        if (mRootView != null) {
             mRootView.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -873,13 +888,13 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             mScoreRangeMap.put(6, new ScoreRange(90, 100));
         }
         ScoreRange range = mScoreRangeMap.get(scoreRange);
-       // logger.e("====>praiseVoiceAnswer:" + range + ":" + mVoiceAnswerResultList.size());
+        // logger.e("====>praiseVoiceAnswer:" + range + ":" + mVoiceAnswerResultList.size());
         if (range != null && mVoiceAnswerResultList.size() > 0) {
             VoiceAnswerResultEvent voiceAnswerResult = null;
-            for (int i = (mVoiceAnswerResultList.size()-1); i >= 0; i--) {
+            for (int i = (mVoiceAnswerResultList.size() - 1); i >= 0; i--) {
                 voiceAnswerResult = mVoiceAnswerResultList.get(i);
-                if(voiceAnswerResult != null && testId.equals(voiceAnswerResult.getTestId())){
-                    if(voiceAnswerResult.getScore() >= range.getLow() && voiceAnswerResult.getScore() <=  range.getHigh()){
+                if (voiceAnswerResult != null && testId.equals(voiceAnswerResult.getTestId())) {
+                    if (voiceAnswerResult.getScore() >= range.getLow() && voiceAnswerResult.getScore() <= range.getHigh()) {
                         showPraise();
                     }
                     break;
@@ -894,7 +909,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         //mArtsAnswerResultEvent = null;
         closeAnswerResult(false);
         //刷新右侧 金币
-        if(mAnswerReulst != null && mAnswerReulst.getGold() > 0 && shoulUpdateGold){
+        if (mAnswerReulst != null && mAnswerReulst.getGold() > 0 && shoulUpdateGold) {
             shoulUpdateGold = false;
             upDateGold();
         }
@@ -908,23 +923,23 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             if (ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT == event.getType()
                     || ArtsAnswerResultEvent.TYPE_VOICE_SELECT_BLANK == event.getType()) {
                 boolean resultFromVoice = event.getType() == ArtsAnswerResultEvent.TYPE_VOICE_SELECT_BLANK;
-                onAnswerResult(event.getDataStr(),resultFromVoice);
+                onAnswerResult(event, event.getDataStr(), resultFromVoice);
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("ArtsAnswerResult_:").append(event.getDataStr());
-                UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), "ArtsAnswerResultBll" ,stringBuilder.toString());
+                UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), "ArtsAnswerResultBll", stringBuilder.toString());
 
             } else if (ArtsAnswerResultEvent.TYPE_ROLEPLAY_ANSWERRESULT == event.getType()) {
-                onRolePlayAnswerResult(event.getDataStr(),event.getSpeechResultEntity());
+                onRolePlayAnswerResult(event.getDataStr(), event.getSpeechResultEntity());
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("ArtsAnswerResult_rolePlay:").append(event.getDataStr());
-                UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), "ArtsAnswerResultBll"+"_ArtsAnswerResult_rolePlay",stringBuilder.toString());
-            } else if(ArtsAnswerResultEvent.TYPE_NATIVE_UPLOAD_VOICE_SELECT_BLANK == event.getType()){
+                UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), "ArtsAnswerResultBll" + "_ArtsAnswerResult_rolePlay", stringBuilder.toString());
+            } else if (ArtsAnswerResultEvent.TYPE_NATIVE_UPLOAD_VOICE_SELECT_BLANK == event.getType()) {
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("ArtsAnswerResult_native_upload_voice_selecet_blank:").append(event.getTestId())
-                .append("_isRight:").append(event.getIsRight());
-                UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), "ArtsAnswerResultBll"+
-                        "_ArtsAnswerResult_native_upload_voice_selecet_blank",stringBuilder.toString());
-                AnswerResultEntity  resultEntity = new AnswerResultEntity();
+                        .append("_isRight:").append(event.getIsRight());
+                UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), "ArtsAnswerResultBll" +
+                        "_ArtsAnswerResult_native_upload_voice_selecet_blank", stringBuilder.toString());
+                AnswerResultEntity resultEntity = new AnswerResultEntity();
                 resultEntity.setIsRight(event.getIsRight());
                 List<String> idList = new ArrayList<>();
                 idList.add(event.getTestId());
@@ -952,7 +967,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
      *
      * @param dataStr
      */
-    private void onRolePlayAnswerResult(String dataStr,SpeechResultEntity speechResultEntity) {
+    private void onRolePlayAnswerResult(String dataStr, SpeechResultEntity speechResultEntity) {
         if (!TextUtils.isEmpty(dataStr)) {
             try {
                 JSONObject jsonObject = new JSONObject(dataStr);
@@ -963,7 +978,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                         JSONObject totalObject = dataJsonObj.getJSONObject("total");
                         JSONArray idJsonArray = totalObject.optJSONArray("testIds");
                         String testId = "";//totalObject.optString("testIds");
-                        if(idJsonArray != null && idJsonArray.length() > 0){
+                        if (idJsonArray != null && idJsonArray.length() > 0) {
                             testId = idJsonArray.optString(0);
                         }
                         int type = totalObject.optInt("type");
@@ -972,8 +987,8 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                         int energy = totalObject.optInt("enery");
                         VoiceAnswerResultEvent voiceAnswerResultEvent = new VoiceAnswerResultEvent(testId, score);
                         voiceAnswerResultEvent.setType(type);
-                       // logger.e("========>onRolePlayAnswerResult:" + voiceAnswerResultEvent
-                            //    .getScore() + ":" + voiceAnswerResultEvent.getTestId());
+                        // logger.e("========>onRolePlayAnswerResult:" + voiceAnswerResultEvent
+                        //    .getScore() + ":" + voiceAnswerResultEvent.getTestId());
                         saveVoiceAnswerResult(voiceAnswerResultEvent);
                         //全身直播不弹结果页
                         if (mGetInfo.getPattern() != 2) {
@@ -1005,7 +1020,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVoiceAnswerReuslt(VoiceAnswerResultEvent event) {
-      //  logger.e( "====>onVoiceAnswerReuslt:" + event);
+        //  logger.e( "====>onVoiceAnswerReuslt:" + event);
         /*if (event != null && !event.equals(mVoiceAnswerResult)) {
             mVoiceAnswerResult = event;
         }*/
@@ -1014,10 +1029,11 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     /**
      * 缓存语音答题结果
+     *
      * @param event
      */
     private void saveVoiceAnswerResult(VoiceAnswerResultEvent event) {
-        if(!mVoiceAnswerResultList.contains(event)){
+        if (!mVoiceAnswerResultList.contains(event)) {
             mVoiceAnswerResultList.add(event);
         }
     }
@@ -1040,10 +1056,10 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     @Override
     public void onDestory() {
         super.onDestory();
-        if(mAnswerResultList!=null){
+        if (mAnswerResultList != null) {
             mAnswerResultList.clear();
         }
-        if(mVoiceAnswerResultList != null){
+        if (mVoiceAnswerResultList != null) {
             mVoiceAnswerResultList.clear();
         }
         praiseViewShowing = false;
@@ -1071,7 +1087,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             img_7Bitmap.recycle();
             img_7Bitmap = creatBitmap;
         } catch (IOException e) {
-            logger.e( "setRightGold", e);
+            logger.e("setRightGold", e);
             return;
         }
         lottieAnimationView.updateBitmap("image_22", img_7Bitmap);
@@ -1097,7 +1113,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             img_7Bitmap.recycle();
             img_7Bitmap = creatBitmap;
         } catch (IOException e) {
-            logger.e( "setRightGold", e);
+            logger.e("setRightGold", e);
             return;
         }
         lottieAnimationView.updateBitmap("image_5", img_7Bitmap);
@@ -1110,7 +1126,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                if(!close){
+                if (!close) {
                     rlAnswerResultLayout.removeView(mRlResult);
                 }
             }

@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -16,6 +17,7 @@ import com.xueersi.common.entity.FooterIconEntity;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.ActivityUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
@@ -23,6 +25,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
 
@@ -98,9 +101,29 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         manageReceivers();
-        logger.d("onActivityCreated");
-        if (onVideoCreate != null) {
-            onVideoCreate.onVideoCreate();
+        logger.d("onActivityCreated:Parent=" + videoView.getParent());
+        if (videoView.getParent() != null) {
+            if (onVideoCreate != null) {
+                onVideoCreate.onVideoCreate();
+            }
+        } else {
+            final long before = System.currentTimeMillis();
+            videoView.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                @Override
+                public void onViewAttachedToWindow(View view) {
+                    StableLogHashMap stableLogHashMap = new StableLogHashMap();
+                    stableLogHashMap.put("time", "" + (System.currentTimeMillis() - before));
+                    UmsAgentManager.umsAgentDebug(activity, "LiveBackPlayerFragment_onActivityCreated", stableLogHashMap.getData());
+                    if (onVideoCreate != null) {
+                        onVideoCreate.onVideoCreate();
+                    }
+                }
+
+                @Override
+                public void onViewDetachedFromWindow(View view) {
+
+                }
+            });
         }
     }
 

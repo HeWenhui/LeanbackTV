@@ -74,7 +74,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             //语音答题
             WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, questionBll.new
                     LiveQuestionSwitchImpl());
-            questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch, questionBll));
+            questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch, questionBll, liveGetInfo));
             //语音评测
             LiveBackStandSpeechCreat liveBackStandSpeechCreat = new LiveBackStandSpeechCreat(this, liveBackBll,
                     questionBll);
@@ -84,7 +84,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
             //语音答题
             WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, questionBll.new
                     LiveQuestionSwitchImpl());
-            questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch, questionBll));
+            questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch, questionBll, liveGetInfo));
             //语音评测
             LiveBackSpeechCreat liveBackSpeechCreat = new LiveBackSpeechCreat(questionBll);
             liveBackSpeechCreat.setSpeechEvalAction(new WrapSpeechEvalAction(activity));
@@ -181,7 +181,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
 
                 if (!TextUtils.isEmpty(videoQuestionLiveEntity.roles) && !"1".equals(videoQuestionLiveEntity.multiRolePlay)) {
                     logger.i("走人机start,拉取试题");
-                    RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, liveBackBll, liveGetInfo);
+                    RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, liveBackBll, liveGetInfo, false);
                     questionBll.setRolePlayMachineAction(rolePlayerBll, null);
 
                 }
@@ -255,6 +255,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                             }
                             videoQuestionLiveEntity.id = getTestIdS(testIds);
                             videoQuestionLiveEntity.type = type;
+                            videoQuestionLiveEntity.setArtType(type);
                             videoQuestionLiveEntity.num = 1;
                             videoQuestionLiveEntity.setIsVoice(isVoices);
                             videoQuestionLiveEntity.assess_ref = assess;
@@ -264,7 +265,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                         logger.i("yzl_showQuestion type = " + videoQuestionLiveEntity.type);
                         if ("5".equals(videoQuestionLiveEntity.type)) {
                             logger.i("yzl_init new rolePlay bll");
-                            RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, liveBackBll, liveGetInfo);
+                            RolePlayMachineBll rolePlayerBll = new RolePlayMachineBll(activity, mRootView, liveBackBll, liveGetInfo, false);
                             questionBll.setRolePlayMachineAction(rolePlayerBll, null);
                         }
                         videoQuestionLiveEntity.setNewArtsCourseware(true);
