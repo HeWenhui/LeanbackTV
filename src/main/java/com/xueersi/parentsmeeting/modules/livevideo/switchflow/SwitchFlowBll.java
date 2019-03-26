@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.MainThread;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -189,6 +190,7 @@ public class SwitchFlowBll extends LiveBaseBll implements BaseLiveMediaControlle
         });
     }
 
+    @MainThread
     private void initPager() {
         initView();
         addView();
@@ -275,7 +277,7 @@ public class SwitchFlowBll extends LiveBaseBll implements BaseLiveMediaControlle
             }
         });
     }
-
+    @MainThread
     private void initView() {
         mPager = new SwitchFlowRoutePager(mContext, false);
         mPager.init();

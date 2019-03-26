@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -12,7 +13,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -52,6 +52,8 @@ import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
 import com.xueersi.parentsmeeting.module.browser.event.BrowserEvent;
+import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSpeedEntity;
@@ -92,6 +94,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionEx
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.video.DoPSVideoHandle;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
@@ -108,8 +111,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
 /**
  * Created by David on 2018/12/24.
@@ -545,7 +546,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
             }
         }
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
-        mIRCMessage = new IRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, channel);
+        mIRCMessage = new IRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, mGetInfo, channel);
         IRCTalkConf ircTalkConf = new IRCTalkConf(this, mGetInfo, mGetInfo.getLiveType(), mHttpManager, talkConfHosts);
         //聊天连接调度失败日志
         ircTalkConf.setChatServiceError(new IRCTalkConf.ChatServiceError() {
@@ -774,9 +775,6 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         logger.i("onEvent:netWorkType=" + event.netWorkType);
         mNetWorkType = event.netWorkType;
 
-        if (mIRCMessage != null) {
-            mIRCMessage.onNetWorkChange(mNetWorkType);
-        }
     }
 
 
@@ -936,7 +934,18 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         }
 //        ProxUtil.getProxUtil().put(this, MediaControllerAction.class, this);
         ProxUtil.getProxUtil().put(this, LiveVideoActivityBase.class, this);
-        playNewVideo(Uri.parse(mWebPath), mSectionName);
+        if (!MediaPlayer.isPSIJK) {
+            playNewVideo(Uri.parse(mWebPath), mSectionName);
+        } else {
+            String videoPath;
+            String url = mWebPath;
+            if (url.contains("http") || url.contains("https")) {
+                videoPath = DoPSVideoHandle.getPSVideoPath(url);
+            } else {
+                videoPath = url;
+            }
+            playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+        }
         chatCfgServerList = getIntent().getStringArrayListExtra("roomChatCfgServerList");
         expChatId = getIntent().getStringExtra("expChatId");
         sex = getIntent().getStringExtra("sex");
@@ -1271,6 +1280,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         });
     }
 
+    @SuppressLint("WrongConstant")
     private void showPopupwinFeedback() {
         final ExperienceLearnFeedbackPager expFeedbackPager = new ExperienceLearnFeedbackPager(this, mVideoEntity,
                 getWindow(), lectureLivePlayBackBll);
@@ -1656,7 +1666,18 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
 //            if (rlQuestionContent.getChildCount() > 0) {
 //                rlQuestionContent.setVisibility(View.VISIBLE);
 //            }
-            playNewVideo(Uri.parse(mWebPath), mSectionName);
+            if (!MediaPlayer.isPSIJK) {
+                playNewVideo(Uri.parse(mWebPath), mSectionName);
+            } else {
+                String videoPath;
+                String url = mWebPath;
+                if (url.contains("http") || url.contains("https")) {
+                    videoPath = DoPSVideoHandle.getPSVideoPath(url);
+                } else {
+                    videoPath = url;
+                }
+                playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+            }
         }
         AppBll.getInstance(mBaseApplication);
     }
@@ -1711,7 +1732,18 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
     @Override
     public void onResume() {
         super.onResume();
-        playNewVideo(Uri.parse(mWebPath), mSectionName);
+        if (!MediaPlayer.isPSIJK) {
+            playNewVideo(Uri.parse(mWebPath), mSectionName);
+        } else {
+            String videoPath;
+            String url = mWebPath;
+            if (url.contains("http") || url.contains("https")) {
+                videoPath = DoPSVideoHandle.getPSVideoPath(url);
+            } else {
+                videoPath = url;
+            }
+            playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+        }
 
     }
 
@@ -1767,7 +1799,18 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         }
         if (rePlayCount < MAX_REPLAY_COUNT) {
             rePlayCount++;
-            playNewVideo(Uri.parse(mWebPath), mSectionName);
+            if (!MediaPlayer.isPSIJK) {
+                playNewVideo(Uri.parse(mWebPath), mSectionName);
+            } else {
+                String videoPath;
+                String url = mWebPath;
+                if (url.contains("http") || url.contains("https")) {
+                    videoPath = DoPSVideoHandle.getPSVideoPath(url);
+                } else {
+                    videoPath = url;
+                }
+                playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+            }
         } else {
             super.resultFailed(arg1, arg2);
         }
