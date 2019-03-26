@@ -488,7 +488,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         object.put("liveType", liveType);
                         object.put("vSectionID", mVSectionID);
                         object.put("url", videoQuestionH5Entity.getUrl());
-                        mShareDataManager.put(ENGLISH_H5, object.toString(), ShareDataManager.SHAREDATA_USER);
+                       // mShareDataManager.put(ENGLISH_H5, object.toString(), ShareDataManager.SHAREDATA_USER);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
