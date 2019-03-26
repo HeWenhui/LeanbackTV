@@ -266,7 +266,7 @@ public class GroupGameTcp {
                         fileOutputStream = new FileOutputStream(saveFile);
                     }
                 }
-                while ((length = inputStream.read(readBuffer)) != -1) {
+                while (!isStop && (length = inputStream.read(readBuffer)) != -1) {
                     log.d("testBuffer:readHead=" + readHead + ",lastBuffer=null?" + (lastBuffer == null)
                             + ",lastBody=" + lastBody + ",length=" + length);
                     if (fileOutputStream != null) {

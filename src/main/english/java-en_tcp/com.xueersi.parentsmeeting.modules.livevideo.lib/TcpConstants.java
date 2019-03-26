@@ -16,15 +16,19 @@ public class TcpConstants {
     private static short timestamp = 8;
     static short header = (short) (PackSize + HeaderSize + VerSize + TypeSize + OperationSize + SeqIDSize + timestamp);
     /** 消息类型，登陆 */
-    public static short LOGIN_TYPE = 3;
+    public final static short LOGIN_TYPE = 3;
     /** 消息登陆-发送 */
     public static int LOGIN_OPERATION_SEND = 6;
     /** 消息登陆-回执 */
     public static int LOGIN_OPERATION_REC = 7;
     /** 消息类型，心跳 */
-    public static short HEAD_TYPE = 6;
+    public final static short HEAD_TYPE = 6;
     /** 消息心跳-发送 */
     public static int HEAD_OPERATION_SEND = 2;
     /** 消息心跳-回执 */
     public static int HEAD_OPERATION_REC = 3;
+    /** 消息类型，服务器回复学生互动分组 */
+    public final static short TEAM_TYPE = 7;
+    /** 消息心跳-服务器回复学生互动分组 */
+    public final static int TEAM_OPERATION_SEND = 15;
 }
