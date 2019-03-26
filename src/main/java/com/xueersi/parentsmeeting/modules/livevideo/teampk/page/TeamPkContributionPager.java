@@ -201,11 +201,11 @@ public class TeamPkContributionPager extends TeamPkBasePager {
         animationView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                startAutoClose();
                 //学习报告截图
                 recordHighLight();
             }
         }, 2000);
+        startAutoClose();
     }
 
 
