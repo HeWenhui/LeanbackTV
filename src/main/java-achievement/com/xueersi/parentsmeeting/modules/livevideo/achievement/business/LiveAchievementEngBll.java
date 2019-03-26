@@ -13,6 +13,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.achievement.page.EnAchievePa
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.StartInteractLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
@@ -155,6 +156,12 @@ public class LiveAchievementEngBll implements StarInteractAction, EnPkInteractAc
     public void onStarAdd(int star, float x, float y) {
         if (enAchievePager != null) {
             enAchievePager.onStarAdd(star, x, y);
+        }
+    }
+
+    public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
+        if (enAchievePager != null) {
+            enAchievePager.setVideoLayout(liveVideoPoint);
         }
     }
 

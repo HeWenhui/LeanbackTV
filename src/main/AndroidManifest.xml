@@ -2,6 +2,10 @@
     package="com.xueersi.parentsmeeting.modules.livevideo">
     <!-- 悬浮窗必加权限 -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application>
         <activity
             android:name=".activity.LivePlayBackVideoActivity"
@@ -29,8 +33,13 @@
         <activity
             android:name=".activity.ExperienceLiveVideoActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:screenOrientation="landscape"
             android:process=":livevideo"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
+        <activity
+            android:name=".activity.AIExperienceLiveVideoActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustResize|stateHidden"></activity>
 
 
@@ -38,7 +47,7 @@
             android:name=".activity.HalfBodyLiveExperienceActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustResize|stateHidden"/>
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
 
         <activity
@@ -143,6 +152,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
+
+        <receiver
+            android:name=".broadcast.StudyCenterMainStartBroadCastReceiver"
+            android:process=":livevideo"></receiver>
+
     </application>
 
 </manifest>

@@ -15,7 +15,7 @@ public interface BaseQuestionWebInter {
 
     View getRootView();
 
-    void examSubmitAll();
+    void submitData();
 
     BasePager getBasePager();
 

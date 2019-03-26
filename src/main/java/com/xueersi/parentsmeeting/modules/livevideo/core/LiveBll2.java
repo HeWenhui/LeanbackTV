@@ -386,6 +386,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
             onLiveFailure("服务器异常", null);
             return;
         }
+        mGetInfo.setNewCourse(mBaseActivity.getIntent().getBooleanExtra("newCourse", false));
         if (liveLog != null) {
             liveLog.setGetInfo(mGetInfo);
         }
@@ -925,6 +926,14 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         mData.put("courseid", mCourseId);
         mData.put("teacherid", mGetInfo.getMainTeacherId());
         mData.put("coachid", mGetInfo.getTeacherId());
+        String educationstage = mGetInfo.getEducationStage();
+        if (LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage)) {
+            mData.put("gradejudgment", "primary");
+        } else if (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage)) {
+            mData.put("gradejudgment", "middle");
+        }
+        mData.put("subject", "" + mGetInfo.getSubject_digits());
+        mData.put("ip", "" + IpAddressUtil.USER_IP);
         mData.put("liveid", mLiveId);
         mData.put("livetype", "" + mLiveType);
         mData.put("eventid", "" + eventId);

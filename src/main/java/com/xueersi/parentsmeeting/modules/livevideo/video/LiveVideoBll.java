@@ -1054,49 +1054,52 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
             @Override
             public void onResponse(Call call, final Response response) throws IOException {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        int code = response.code();
-                        String r = "";
-                        try {
-                            r = response.body().string();
-                            logger.i("dns_resolve_stream:onResponse:url=" + url + ",response=" + code + "," + r);
-                            if (response.code() >= 200 && response.code() <= 300) {
-                                if ("wangsu".equals(provide)) {
+                try {
+                    final int code = response.code();
+                    final String r = response.body().string();
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                logger.i("dns_resolve_stream:onResponse:url=" + url + ",response=" + code + "," + r);
+                                if (response.code() >= 200 && response.code() <= 300) {
+                                    if ("wangsu".equals(provide)) {
 //                        rtmp://111.202.83.208/live_server/x_3_55873?wsiphost=ipdb&wsHost=livewangsu.xescdn.com
-                                    String url = r.replace("\n", "");
-                                    int index1 = url.substring(7).indexOf("/");
-                                    if (index1 != -1) {
-                                        String host = url.substring(7, 7 + index1);
-                                        playserverEntity.setIpAddress(host);
-                                    }
-                                    dataCallBack.onDataSucess(provide, url);
-                                    return;
-                                } else {
-                                    try {
-                                        JSONObject jsonObject = new JSONObject(r);
-                                        String host = jsonObject.getString("host");
-                                        JSONArray ipArray = jsonObject.optJSONArray("ips");
-                                        String ip = ipArray.getString(0);
-                                        String url = "rtmp://" + ip + "/" + host + "/" + mServer.getAppname() + "/" +
-                                                mGetInfo.getChannelname();
-                                        playserverEntity.setIpAddress(ip);
+                                        String url = r.replace("\n", "");
+                                        int index1 = url.substring(7).indexOf("/");
+                                        if (index1 != -1) {
+                                            String host = url.substring(7, 7 + index1);
+                                            playserverEntity.setIpAddress(host);
+                                        }
                                         dataCallBack.onDataSucess(provide, url);
-                                        mLogtf.d("dns_resolve_stream:ip_gslb_addr=" + playserverEntity
-                                                .getIp_gslb_addr() + ",ip=" + ip);
                                         return;
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
+                                    } else {
+                                        try {
+                                            JSONObject jsonObject = new JSONObject(r);
+                                            String host = jsonObject.getString("host");
+                                            JSONArray ipArray = jsonObject.optJSONArray("ips");
+                                            String ip = ipArray.getString(0);
+                                            String url = "rtmp://" + ip + "/" + host + "/" + mServer.getAppname() + "/" +
+                                                    mGetInfo.getChannelname();
+                                            playserverEntity.setIpAddress(ip);
+                                            dataCallBack.onDataSucess(provide, url);
+                                            mLogtf.d("dns_resolve_stream:ip_gslb_addr=" + playserverEntity
+                                                    .getIp_gslb_addr() + ",ip=" + ip);
+                                            return;
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
                                     }
                                 }
+                            } catch (Exception e) {
+                                e.printStackTrace();
                             }
-                        } catch (Exception e) {
-                            e.printStackTrace();
+                            dataCallBack.onDataFail(1, r);
                         }
-                        dataCallBack.onDataFail(1, r);
-                    }
-                });
+                    });
+                } catch (Exception e) {
+                    dataCallBack.onDataFail(1, e.getMessage());
+                }
             }
         });
     }
