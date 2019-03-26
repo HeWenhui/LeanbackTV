@@ -22,6 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.InteractiveTeam;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.event.ClassEndEvent;
@@ -78,7 +79,8 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private int classInt = 0;
     private EnTeamPkHttpManager enTeamPkHttpManager;
     private TcpDispatch tcpDispatch;
-    ArrayList<TeamMemberEntity> entities = new ArrayList<>();
+    private InteractiveTeam mInteractiveTeam;
+    private ArrayList<TeamMemberEntity> entities = new ArrayList<>();
 
     public EnTeamPkIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -538,12 +540,15 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 case TcpConstants.TEAM_TYPE: {
                     if (operation == TcpConstants.TEAM_OPERATION_SEND) {
                         try {
-                            ResponseEntity responseEntity = new ResponseEntity();
-                            responseEntity.setJsonObject(new JSONObject(msg));
-                            entities = getEnTeamPkHttpManager().parseGetStuActiveTeam(responseEntity);
-                            logger.d("onMessage:entities=" + entities.size());
+                            InteractiveTeam interactiveTeam = getEnTeamPkHttpManager().parseInteractiveTeam(new JSONObject(msg));
+                            if (interactiveTeam != null) {
+                                mInteractiveTeam = interactiveTeam;
+                                entities = interactiveTeam.getEntities();
+                                logger.d("onMessage(TEAM_TYPE):entities=" + entities.size());
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
+                            logger.d("onMessage(TEAM_TYPE)", e);
                         }
                     }
                     break;

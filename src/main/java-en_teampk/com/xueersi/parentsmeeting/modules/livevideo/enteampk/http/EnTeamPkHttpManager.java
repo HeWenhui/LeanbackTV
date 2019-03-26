@@ -7,6 +7,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.config.EnTeamPkHttpConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.InteractiveTeam;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
@@ -71,6 +72,11 @@ public class EnTeamPkHttpManager {
                 }
             }
         });
+    }
+
+    public InteractiveTeam parseInteractiveTeam(JSONObject jsonObject) {
+        InteractiveTeam interactiveTeam = enTeamPkResponseParser.parseInteractiveTeam(jsonObject);
+        return interactiveTeam;
     }
 
     public ArrayList<TeamMemberEntity> parseGetStuActiveTeam(ResponseEntity responseEntity) {
