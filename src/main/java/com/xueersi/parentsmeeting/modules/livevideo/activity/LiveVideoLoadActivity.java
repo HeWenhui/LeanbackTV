@@ -296,7 +296,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
                     @Override
                     public void onDeny(String permission, int position) {
-
+                        com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                        finish();
                     }
 
                     @Override
@@ -313,8 +314,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 },
                 PermissionConfig.PERMISSION_CODE_AUDIO);
 
-        com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-        finish();
+
     }
 
     /**

@@ -15,6 +15,7 @@ public class MicroPhoneCloseTipView extends BasePager implements GoldPhoneContra
     public MicroPhoneCloseTipView(Context context, GoldPhoneContract.CloseTipPresenter presenter) {
         super(context);
         this.presenter = presenter;
+        initListener();
     }
 
     @Override
@@ -48,10 +49,11 @@ public class MicroPhoneCloseTipView extends BasePager implements GoldPhoneContra
     }
 
     private void clickYes() {
+        presenter.removeCloseTipView(mView);
         presenter.removeGoldView();
     }
 
     private void clickNo() {
-        presenter.removeCloseView(mView);
+        presenter.removeCloseTipView(mView);
     }
 }

@@ -1253,4 +1253,7 @@
     <item name="group_livevideo_gold_microphone_teacher_tip_window" type="id" />
     <item name="iv_livevideo_gold_microphone_speak_loudly" type="id" />
     <item name="group_livevideo_gold_microphone_speak_loudly" type="id" />
+    <item name="lottie_livevideo_gold_microphone_gold_view" type="id" />
+    <item name="layout_livevideo_gold_microphone" type="id" />
+    <item name="swv_livevideo_gold_microphone_sound_wave" type="id" />
 </resources>

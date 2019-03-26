@@ -3,19 +3,22 @@ package com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.support.constraint.ConstraintLayout;
 import android.support.constraint.Group;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.permission.PermissionCallback;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
-public class PhoneView extends BasePager implements GoldPhoneContract.GoldPhoneView, GoldPhoneContract.CloseTipPresenter {
+public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldPhoneView, GoldPhoneContract.CloseTipPresenter {
 
     private GoldPhoneContract.GoldPhonePresenter mPresenter;
 
@@ -25,11 +28,14 @@ public class PhoneView extends BasePager implements GoldPhoneContract.GoldPhoneV
     private ImageView ivSetting;
 
     private Group settingGroup, microhpneGroup, teacherTipGroup, speakLoudlyGroup;
-    private GoldPhoneContract.CloseTipView tipView;
+    private GoldPhoneContract.CloseTipView closeTipView;
 
+    private LottieAnimationView lottieAnimationView;
 
-    public PhoneView(Context context, PhoneBll presenter) {
-        super(context, false);
+    private SoundWaveView swvView;
+
+    public MicroPhoneView(Context context, GoldMicroPhoneBll presenter) {
+        super(context);
         this.mPresenter = presenter;
 
 //        this.tipPresenter = presenter;
@@ -45,12 +51,9 @@ public class PhoneView extends BasePager implements GoldPhoneContract.GoldPhoneV
         settingGroup = view.findViewById(R.id.iv_livevideo_gold_microphone_setting_group);
         microhpneGroup = view.findViewById(R.id.group_livevideo_gold_microphone_microphone_group);
         teacherTipGroup = view.findViewById(R.id.group_livevideo_gold_microphone_teacher_tip_window);
-        speakLoudlyGroup = view.findViewById(R.id.iv_livevideo_gold_microphone_speak_loudly);
-        view.postDelayed(microphoneShowRunnable, 700);
-
-        view.postDelayed(teacherTipCloseRunnable, 1000);
-
-        view.postDelayed(closeBtnRunnable, 20000);
+        speakLoudlyGroup = view.findViewById(R.id.group_livevideo_gold_microphone_speak_loudly);
+        lottieAnimationView = view.findViewById(R.id.lottie_livevideo_gold_microphone_gold_view);
+        swvView = view.findViewById(R.id.swv_livevideo_gold_microphone_sound_wave);
         initListener();
 
         return view;
@@ -63,6 +66,7 @@ public class PhoneView extends BasePager implements GoldPhoneContract.GoldPhoneV
         @Override
         public void run() {
             if (teacherTipGroup != null && teacherTipGroup.getVisibility() != View.GONE) {
+                logger.i("close tip");
                 teacherTipGroup.setVisibility(View.GONE);
             }
         }
@@ -96,9 +100,11 @@ public class PhoneView extends BasePager implements GoldPhoneContract.GoldPhoneV
     @Override
     public void onDestroy() {
         super.onDestroy();
-
         mView.removeCallbacks(closeBtnRunnable);
-
+//        mView.postDelayed(microphoneShowRunnable, 700);
+//        mView.postDelayed(teacherTipCloseRunnable, 1000);
+        mView.removeCallbacks(microphoneShowRunnable);
+        mView.removeCallbacks(teacherTipCloseRunnable);
     }
 
     @Override
@@ -107,9 +113,16 @@ public class PhoneView extends BasePager implements GoldPhoneContract.GoldPhoneV
         ivClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (tipView == null) {
-                    tipView = new MicroPhoneCloseTipView(mContext, PhoneView.this);
-                    ((ViewGroup) mView).addView(tipView.getRootView());
+                ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                layoutParams.leftToLeft = R.id.layout_livevideo_gold_microphone;
+                layoutParams.rightToRight = R.id.layout_livevideo_gold_microphone;
+                layoutParams.topToTop = R.id.layout_livevideo_gold_microphone;
+                layoutParams.bottomToBottom = R.id.layout_livevideo_gold_microphone;
+                if (closeTipView == null) {
+                    closeTipView = new MicroPhoneCloseTipView(mContext, MicroPhoneView.this);
+                    ((ViewGroup) mView).addView(closeTipView.getRootView(), layoutParams);
+                } else if (closeTipView.getRootView().getParent() == null) {
+                    ((ViewGroup) mView).addView(closeTipView.getRootView(), layoutParams);
                 }
             }
         });
@@ -146,8 +159,13 @@ public class PhoneView extends BasePager implements GoldPhoneContract.GoldPhoneV
 
     }
 
+    /**
+     * 移除关闭提示弹窗的View
+     *
+     * @param view 关闭弹窗
+     */
     @Override
-    public void removeCloseView(View view) {
+    public void removeCloseTipView(View view) {
         if (view.getParent() == mView) {
             ((ViewGroup) mView).removeView(view);
         }
@@ -158,8 +176,10 @@ public class PhoneView extends BasePager implements GoldPhoneContract.GoldPhoneV
      */
     @Override
     public void removeGoldView() {
+        ivClose.setVisibility(View.GONE);
         float curY = ivMicroPhone.getTranslationY();
-        ObjectAnimator goneAnimator = ObjectAnimator.ofFloat(ivMicroPhone, "translationY", curY, -100f);
+        ObjectAnimator goneAnimator = ObjectAnimator.ofFloat(ivMicroPhone, "translationY", curY, curY + SizeUtils.Dp2Px(mContext,
+                ivMicroPhone.getHeight() + ((ConstraintLayout.LayoutParams) ivMicroPhone.getLayoutParams()).bottomMargin));
         goneAnimator.setDuration(1000);
         goneAnimator.start();
         goneAnimator.addListener(new Animator.AnimatorListener() {
@@ -211,6 +231,49 @@ public class PhoneView extends BasePager implements GoldPhoneContract.GoldPhoneV
                 speakLoudlyGroup.setVisibility(View.GONE);
             }
         }, 1500);
+    }
 
+
+    @Override
+    public void performAddView() {
+        mView.postDelayed(microphoneShowRunnable, 700);
+
+        mView.postDelayed(teacherTipCloseRunnable, 1000);
+
+        mView.postDelayed(closeBtnRunnable, 20000);
+    }
+
+    @Override
+    public void showLottieView() {
+        if (lottieAnimationView != null) {
+            lottieAnimationView.setVisibility(View.VISIBLE);
+            lottieAnimationView.playAnimation();
+            lottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
+                @Override
+                public void onAnimationStart(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    lottieAnimationView.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAnimationCancel(Animator animation) {
+
+                }
+
+                @Override
+                public void onAnimationRepeat(Animator animation) {
+
+                }
+            });
+        }
+    }
+
+    @Override
+    public void addRipple(int level) {
+        swvView.addRipple(new SoundWaveView.Circle(0, level));
     }
 }

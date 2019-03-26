@@ -4,9 +4,9 @@ import android.view.View;
 
 public interface GoldPhoneContract {
     int ONE_GEAR_LEFT = 0;
-    int ONE_GEAR_RIGHT = 30;
-    int TWO_GEAR_RIGHT = 60;
-    int THREE_GEAR_RIGHT = 90;
+    int ONE_GEAR_RIGHT = 20;
+    int TWO_GEAR_RIGHT = 50;
+    int THREE_GEAR_RIGHT = 70;
 
     interface GoldPhoneView {
         View getRootView();
@@ -27,6 +27,18 @@ public interface GoldPhoneContract {
          * 显示大声说界面
          */
         void showSpeakLoudly();
+
+        /**
+         * addView之后的一系列操作
+         */
+        void performAddView();
+
+        /**
+         * 显示金话筒的lottieView
+         */
+        void showLottieView();
+
+        void addRipple(int level);
     }
 
     interface GoldPhonePresenter {
@@ -49,7 +61,7 @@ public interface GoldPhoneContract {
          *
          * @param view 关闭弹窗
          */
-        void removeCloseView(View view);
+        void removeCloseTipView(View view);
 
         /**
          * 移除整个金话筒的页面

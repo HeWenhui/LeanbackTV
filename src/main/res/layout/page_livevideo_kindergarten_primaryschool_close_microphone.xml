@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="false"
+    android:background="@color/COLOR_99000000"
+    android:clickable="true"
     tools:ignore="MissingConstraints">
 
     <ImageView
@@ -17,7 +18,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <FangZhengCuYuanTextView
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@id/tv_gold_microphone_close_microphone_top_tip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -29,7 +30,7 @@
         app:layout_constraintRight_toRightOf="@id/iv_gold_microphone_close_microphone_background"
         app:layout_constraintTop_toTopOf="@id/iv_gold_microphone_close_microphone_background" />
 
-    <FangZhengCuYuanTextView
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@id/tv_gold_microphone_close_microphone_bottom_tip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
