@@ -82,6 +82,7 @@ public class NewCourseLog {
         logHashMap.put("loadurl", "" + loadurl);
         logHashMap.put("pageid", "" + pageid);
         logHashMap.put("sno", "3");
+        logHashMap.put("status", "true");
         liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 
@@ -96,6 +97,7 @@ public class NewCourseLog {
         logHashMap.put("loadtime", "" + loadtime);
         logHashMap.put("isfresh", "" + isfresh);
         logHashMap.put("refreshTime", "" + refreshTime);
+        logHashMap.put("status", "true");
         logHashMap.put("sno", "4");
         liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
@@ -107,6 +109,7 @@ public class NewCourseLog {
         logHashMap.put("isforce", "" + isforce);
         logHashMap.put("ispreload", "" + ispreload);
         logHashMap.put("loadurl", "" + loadurl);
+        logHashMap.put("status", "true");
         logHashMap.put("sno", "5");
         liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
@@ -130,6 +133,7 @@ public class NewCourseLog {
         logHashMap.put("testid", testid);
         logHashMap.put("ispreload", "" + ispreload);
         logHashMap.put("sno", "7");
+        logHashMap.put("status", "true");
         liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 
@@ -140,6 +144,7 @@ public class NewCourseLog {
         logHashMap.put("ispreload", "" + ispreload);
         logHashMap.put("showtime", "" + showtime);
         logHashMap.put("sno", "8");
+        logHashMap.put("status", "true");
         liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 
