@@ -1,11 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -26,6 +24,7 @@ import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.AGEventHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
@@ -52,7 +51,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.NewCourseLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -123,8 +121,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     private int mSingCount = 0;
 
     private WorkerThread mWorkerThread;
-    HashMap<String, CourseGroupItem> courseGroupItemHashMap = new HashMap<>();
-    LiveGetInfo liveGetInfo;
+    private HashMap<String, CourseGroupItem> courseGroupItemHashMap = new HashMap<>();
+    private LiveGetInfo liveGetInfo;
+    private int stuid;
     static final String TEST_URL = "file:///android_asset/hot_air_balloon/index.html";
     static final String TEST_CONTENT = "This is an apple|apple|banana|traffic";
 
@@ -133,6 +132,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         this.detailInfo = detailInfo;
         this.url = englishH5Entity.getUrl();
         this.liveGetInfo = liveGetInfo;
+        stuid = Integer.parseInt(liveGetInfo.getStuId());
         this.learningStage = liveGetInfo.getStudentLiveInfo().getLearning_stage();
         this.liveId = liveGetInfo.getId();
         initData();
@@ -152,6 +152,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
     @Override
     public void initData() {
+        AudioRequest audioRequest = ProxUtil.getProxUtil().get(mContext, AudioRequest.class);
+        if (audioRequest != null) {
+            audioRequest.request(null);
+        }
 //        startSpeechRecognize();
         GetStuActiveTeam getStuActiveTeam = ProxUtil.getProxUtil().get(mContext, GetStuActiveTeam.class);
         if (getStuActiveTeam != null) {
@@ -159,8 +163,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 @Override
                 public void onDataSucess(Object... objData) {
                     ArrayList<TeamMemberEntity> entities = (ArrayList<TeamMemberEntity>) objData[0];
-                    addTeam(entities);
-                    joinChannel();
+                    joinChannel(entities);
                 }
 
                 @Override
@@ -205,15 +208,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         wvSubjectWeb.loadUrl(TEST_URL);
     }
 
-    private void joinChannel() {
-        int stuid = Integer.parseInt(liveGetInfo.getStuId());
+    private void joinChannel(ArrayList<TeamMemberEntity> entities) {
         mWorkerThread = new WorkerThread(mContext, stuid, false, true);
         mWorkerThread.eventHandler().addEventHandler(agEventHandler);
         mWorkerThread.setEnableLocalVideo(true);
-        mWorkerThread.start();
-        mWorkerThread.waitForReady();
-        int vProfile = Constants.VIDEO_PROFILE_120P;
-        mWorkerThread.configEngine(Constants.CLIENT_ROLE_BROADCASTER, vProfile);
         mWorkerThread.setOnEngineCreate(new WorkerThread.OnEngineCreate() {
             @Override
             public void onEngineCreate(final RtcEngine mRtcEngine) {
@@ -227,9 +225,15 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 logger.d("onEngineCreate:setVideoEncoder=" + setVideoEncoder);
             }
         });
-        mWorkerThread.joinChannel("", liveId + "_11111", Integer.parseInt(liveGetInfo.getStuId()), new WorkerThread.OnJoinChannel() {
+        addTeam(entities);
+        mWorkerThread.start();
+        mWorkerThread.waitForReady();
+        int vProfile = Constants.VIDEO_PROFILE_120P;
+        mWorkerThread.configEngine(Constants.CLIENT_ROLE_BROADCASTER, vProfile);
+        mWorkerThread.joinChannel("", liveId + "_11111", stuid, new WorkerThread.OnJoinChannel() {
             @Override
             public void onJoinChannel(int joinChannel) {
+                logger.d("onJoinChannel:joinChannel=" + joinChannel);
                 startSpeechRecognize();
             }
         });
@@ -259,40 +263,66 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     private AGEventHandler agEventHandler = new AGEventHandler() {
 
         @Override
-        public void onFirstRemoteVideoDecoded(int uid, int width, int height, int elapsed) {
+        public void onFirstRemoteVideoDecoded(final int uid, int width, int height, int elapsed) {
             CourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + uid);
             logger.d("onFirstRemoteVideoDecoded:uid=" + uid + ",courseGroupItem=null?" + (courseGroupItem == null));
             if (courseGroupItem != null) {
                 doRenderRemoteUi(uid, courseGroupItem);
-            }
-        }
-
-        @Override
-        public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
-
-        }
-
-        @Override
-        public void onUserJoined(final int uid, final int elapsed) {
-            final CourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + uid);
-            if (courseGroupItem != null) {
+            } else {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
-                        courseGroupItem.onUserJoined(uid, elapsed);
+                        LayoutInflater mInflater = LayoutInflater.from(mContext);
+                        TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
+                        teamMemberEntity.id = uid;
+                        teamMemberEntity.name = "" + uid;
+                        CourseGroupItem courseGroupItem1 = new CourseGroupItem(mWorkerThread, uid, uid == stuid);
+                        View convertView = mInflater.inflate(courseGroupItem1.getLayoutResId(), ll_livevideo_course_item_content, false);
+                        courseGroupItem1.initViews(convertView);
+                        courseGroupItem1.updateViews(teamMemberEntity, courseGroupItemHashMap.size(), teamMemberEntity);
+                        courseGroupItem1.bindListener();
+                        ll_livevideo_course_item_content.addView(convertView);
+                        courseGroupItemHashMap.put(teamMemberEntity.id + "", courseGroupItem1);
+                        doRenderRemoteUi(uid, courseGroupItem1);
                     }
                 });
             }
         }
 
         @Override
-        public void onUserOffline(int uid, int reason) {
+        public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
+            logger.d("onJoinChannelSuccess:channel=" + channel + ",uid=" + uid);
 
+            if (stuid == uid) {
+                CourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + uid);
+                if (courseGroupItem != null) {
+                    preview(uid, courseGroupItem);
+                }
+            }
+        }
+
+        @Override
+        public void onUserJoined(final int uid, final int elapsed) {
+            logger.d("onUserJoined:uid=" + uid + ",elapsed=" + elapsed);
+        }
+
+        @Override
+        public void onUserOffline(final int uid, final int reason) {
+            logger.d("onUserOffline:uid=" + uid + ",reason=" + reason);
+            final CourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + uid);
+            if (courseGroupItem != null) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        courseGroupItem.onUserOffline();
+                    }
+                });
+            }
         }
 
         @Override
         public void onError(int err) {
-
+            logger.d("onError:err=" + err);
         }
 
         @Override
@@ -317,14 +347,31 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         });
     }
 
+    private void preview(final int uid, final CourseGroupItem courseGroupItem) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mWorkerThread == null) {
+                    return;
+                }
+                SurfaceView surfaceV = RtcEngine.CreateRendererView(mContext);
+                surfaceV.setZOrderOnTop(true);
+                surfaceV.setZOrderMediaOverlay(true);
+                mWorkerThread.preview(true, surfaceV, uid);
+                courseGroupItem.doRenderRemoteUi(surfaceV);
+            }
+        });
+    }
+
     private void addTeam(ArrayList<TeamMemberEntity> entities) {
         LayoutInflater mInflater = LayoutInflater.from(mContext);
         for (int i = 0; i < entities.size(); i++) {
             TeamMemberEntity teamMemberEntity = entities.get(i);
-            CourseGroupItem courseGroupItem = new CourseGroupItem(mWorkerThread);
+            CourseGroupItem courseGroupItem = new CourseGroupItem(mWorkerThread, teamMemberEntity.id, teamMemberEntity.id == stuid);
             View convertView = mInflater.inflate(courseGroupItem.getLayoutResId(), ll_livevideo_course_item_content, false);
             courseGroupItem.initViews(convertView);
             courseGroupItem.updateViews(teamMemberEntity, i, teamMemberEntity);
+            courseGroupItem.bindListener();
             ll_livevideo_course_item_content.addView(convertView);
             courseGroupItemHashMap.put(teamMemberEntity.id + "", courseGroupItem);
         }
@@ -383,8 +430,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
             @Override
             public void onVolumeUpdate(int volume) {
-                logger.d("onVolumeUpdate:volume = " + volume);
-                float floatVolume = (float) volume * 3 / 90;
+//                logger.d("onVolumeUpdate:volume = " + volume);
+//                float floatVolume = (float) volume * 3 / 90;
 
             }
 
@@ -423,7 +470,13 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
     @Override
     public void initListener() {
-
+        ivWebViewRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addJs = false;
+                wvSubjectWeb.reload();
+            }
+        });
     }
 
     /**
@@ -451,7 +504,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
     @Override
     public void destroy() {
-
+        onDestroy();
     }
 
     @Override
@@ -588,10 +641,15 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     @Override
     public void onDestroy() {
         super.onDestroy();
+        wvSubjectWeb.destroy();
         if (mIse != null) {
             mIse.cancel();
         }
         leaveChannel();
+        AudioRequest audioRequest = ProxUtil.getProxUtil().get(mContext, AudioRequest.class);
+        if (audioRequest != null) {
+            audioRequest.release();
+        }
     }
 
     /**

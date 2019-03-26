@@ -73,6 +73,11 @@ public class EnTeamPkHttpManager {
         });
     }
 
+    public ArrayList<TeamMemberEntity> parseGetStuActiveTeam(ResponseEntity responseEntity) {
+        ArrayList<TeamMemberEntity> entities = enTeamPkResponseParser.parseGetStuActiveTeam(responseEntity);
+        return entities;
+    }
+
     public void getStuActiveTeam(String unique_id, String stu_id, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         httpRequestParams.addBodyParam("unique_id", unique_id);
@@ -81,7 +86,7 @@ public class EnTeamPkHttpManager {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                ArrayList<TeamMemberEntity> entities = enTeamPkResponseParser.parseGetStuActiveTeam(responseEntity);
+                ArrayList<TeamMemberEntity> entities = parseGetStuActiveTeam(responseEntity);
                 callBack.onDataSucess(entities);
             }
 

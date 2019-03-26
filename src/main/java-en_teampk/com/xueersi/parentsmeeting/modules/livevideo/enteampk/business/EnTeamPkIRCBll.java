@@ -28,10 +28,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.event.ClassEndEvent
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.http.EnTeamPkHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkLeadPager;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpDispatch;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.lib.TcpConstants;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
@@ -76,6 +78,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private int classInt = 0;
     private EnTeamPkHttpManager enTeamPkHttpManager;
     private TcpDispatch tcpDispatch;
+    ArrayList<TeamMemberEntity> entities = new ArrayList<>();
 
     public EnTeamPkIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -86,10 +89,10 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         super.onLiveInited(getInfo);
         LiveGetInfo.EnglishPk englishPk = getInfo.getEnglishPk();
         logger.d("onLiveInited:use=" + englishPk.canUsePK + ",has=" + englishPk.hasGroup);
-        if (com.xueersi.common.config.AppConfig.DEBUG) {
-            englishPk.canUsePK = 1;
+//        if (com.xueersi.common.config.AppConfig.DEBUG) {
+//            englishPk.canUsePK = 1;
 //            englishPk.hasGroup = 0;
-        }
+//        }
         if (englishPk.canUsePK == 0) {
             mLiveBll.removeBusinessBll(this);
             return;
@@ -171,6 +174,20 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             @Override
             public void getStuActiveTeam(AbstractBusinessDataCallBack callBack) {
                 EnTeamPkIRCBll.this.getStuActiveTeam(callBack);
+            }
+        });
+        getEnTeamPkHttpManager().dispatch(mGetInfo.getStuId(), new AbstractBusinessDataCallBack() {
+            @Override
+            public void onDataSucess(Object... objData) {
+                ArrayList<InetSocketAddress> addresses = (ArrayList<InetSocketAddress>) objData[0];
+                mLogtf.d("dispatch:size=" + addresses.size());
+                if (addresses.size() > 0) {
+                    if (tcpDispatch == null) {
+                        tcpDispatch = new TcpDispatch(mGetInfo.getStuId(), AppBll.getInstance().getUserRfh(), mGetInfo.getId(), classInt + "");
+                        tcpDispatch.setAddresses(addresses);
+                        tcpDispatch.addTcpMessageAction(new TeamMessageAction());
+                    }
+                }
             }
         });
     }
@@ -504,27 +521,52 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     haveTeamRun = true;
                 }
             }
-            getEnTeamPkHttpManager().dispatch(mGetInfo.getStuId(), new AbstractBusinessDataCallBack() {
+            mHandler.postDelayed(new Runnable() {
                 @Override
-                public void onDataSucess(Object... objData) {
-                    ArrayList<InetSocketAddress> addresses = (ArrayList<InetSocketAddress>) objData[0];
-                    mLogtf.d("dispatch:size=" + addresses.size());
-                    if (addresses.size() > 0) {
-                        if (tcpDispatch == null) {
-                            tcpDispatch = new TcpDispatch(mGetInfo.getStuId(), AppBll.getInstance().getUserRfh(), mGetInfo.getId(), classInt + "");
-                            tcpDispatch.setAddresses(addresses);
-                        }
-                    }
+                public void run() {
+
                 }
-            });
+            }, 3000);
         }
         return pkTeamEntity2;
     }
 
+    private class TeamMessageAction implements TcpMessageAction {
+        @Override
+        public void onMessage(short type, int operation, String msg) {
+            switch (type) {
+                case TcpConstants.TEAM_TYPE: {
+                    if (operation == TcpConstants.TEAM_OPERATION_SEND) {
+                        try {
+                            ResponseEntity responseEntity = new ResponseEntity();
+                            responseEntity.setJsonObject(new JSONObject(msg));
+                            entities = getEnTeamPkHttpManager().parseGetStuActiveTeam(responseEntity);
+                            logger.d("onMessage:entities=" + entities.size());
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        @Override
+        public short[] getMessageFilter() {
+            return new short[]{TcpConstants.TEAM_TYPE};
+        }
+    }
+
     public void getStuActiveTeam(final AbstractBusinessDataCallBack callBack) {
+        logger.d("getStuActiveTeam:size=" + entities.size());
+        if (!entities.isEmpty()) {
+            callBack.onDataSucess(entities);
+            return;
+        }
         getEnTeamPkHttpManager().getStuActiveTeam(unique_id, mGetInfo.getStuId(), new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
+                entities = (ArrayList<TeamMemberEntity>) objData[0];
                 callBack.onDataSucess(objData);
             }
 
