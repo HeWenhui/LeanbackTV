@@ -77,10 +77,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
      */
     private RelativeLayout rlSubjectLoading;
     /**
-     * 右侧控制区
-     */
-    private RelativeLayout rlGroupGameControl;
-    /**
      * 课件接口失败刷新
      */
     private ImageView ivCourseRefresh;
@@ -150,7 +146,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         ivCourseRefresh = view.findViewById(R.id.iv_livevideo_course_refresh);
         ivWebViewRefresh = view.findViewById(R.id.iv_livevideo_subject_refresh);
         rlSubjectLoading = view.findViewById(R.id.rl_livevideo_subject_loading);
-        rlGroupGameControl = view.findViewById(R.id.rl_livevideo_groupgame_control);
         ll_livevideo_course_item_content = view.findViewById(R.id.ll_livevideo_course_item_content);
         return view;
     }
