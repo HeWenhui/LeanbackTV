@@ -141,7 +141,6 @@ public class TeamPkContributionPager extends TeamPkBasePager {
             this.energyIconInfo = energyIconInfo;
         }
 
-
         public TeamPkContribStarLottieEffectInfo.DetailInfo getAnimBgInfo() {
             return animBgInfo;
         }
