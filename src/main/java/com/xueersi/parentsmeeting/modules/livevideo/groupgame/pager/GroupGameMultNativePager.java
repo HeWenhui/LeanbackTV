@@ -218,24 +218,27 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         }), "xesApp");
         wvSubjectWeb.loadUrl(TEST_URL);
 
-//        groupSurfaceView = new GroupSurfaceView(mContext);
-//        ((ViewGroup) mView).addView(groupSurfaceView);
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                if (!isAttach()) {
-//                    return;
-//                }
-//                volume = random.nextInt(30);
-//                groupSurfaceView.onVolumeUpdate(volume);
+        groupSurfaceView = new GroupSurfaceView(mContext);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        lp.topMargin = 300;
+        lp.leftMargin = 300;
+        ((ViewGroup) mView).addView(groupSurfaceView, lp);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (!isAttach()) {
+                    return;
+                }
+                volume = random.nextInt(30);
+                groupSurfaceView.onVolumeUpdate(volume);
 //                CourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stuid);
 //                if (courseGroupItem != null) {
 //                    courseGroupItem.onVolumeUpdate(volume);
 //                }
-////                animationView.setProgress((float) volume / 30.f);
-//                handler.postDelayed(this, 200);
-//            }
-//        }, 1000);
+//                animationView.setProgress((float) volume / 30.f);
+                handler.postDelayed(this, 500);
+            }
+        }, 1000);
     }
 
     Random random = new Random();
@@ -464,11 +467,11 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             public void onVolumeUpdate(int volume) {
 //                logger.d("onVolumeUpdate:volume = " + volume);
 //                float floatVolume = (float) volume * 3 / 90;
+//                groupSurfaceView.onVolumeUpdate(volume);
                 CourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stuid);
                 if (courseGroupItem != null) {
                     courseGroupItem.onVolumeUpdate(volume);
                 }
-//                groupSurfaceView.onVolumeUpdate(volume);
             }
 
             @Override

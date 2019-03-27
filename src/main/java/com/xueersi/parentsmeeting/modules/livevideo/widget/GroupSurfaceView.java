@@ -15,6 +15,7 @@ import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.groupgame.item.CourseGroupItem;
 
 public class GroupSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
     boolean start = true;
@@ -37,8 +38,8 @@ public class GroupSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         mSurfaceHolder = getHolder();
         mSurfaceHolder.addCallback(this);
         mSurfaceHolder.setFormat(PixelFormat.TRANSLUCENT);
-        String lottieResPath = "group_game_mult_audio/images";
-        String lottieJsonPath = "group_game_mult_audio/data.json";
+        String lottieResPath = "group_game_mult/images";
+        String lottieJsonPath = "group_game_mult/data.json";
         final LottieEffectInfo lottieEffectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
         animationView = new LottieAnimationView(getContext());
         animationView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(getContext()), "group_game_mult");
@@ -84,6 +85,8 @@ public class GroupSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         }
     }
 
+    private float voiceStart = CourseGroupItem.voiceStart;
+
     class Wave implements Runnable {
         boolean isRun = false;
         int volume;
@@ -107,8 +110,8 @@ public class GroupSurfaceView extends SurfaceView implements SurfaceHolder.Callb
                     } else {
                         drawVolume = volume;
                     }
-//                    animationView.setProgress(0.5f + (float) drawVolume / 30.f);
-                    animationView.setProgress((float) drawVolume / 30.f);
+                    animationView.setProgress(voiceStart + (float) drawVolume / 30.f);
+//                    animationView.setProgress((float) drawVolume / 30.f);
                     animationView.draw(canvas);
                 } catch (Exception e) {
 
