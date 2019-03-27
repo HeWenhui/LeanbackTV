@@ -178,6 +178,11 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             public void getStuActiveTeam(AbstractBusinessDataCallBack callBack) {
                 EnTeamPkIRCBll.this.getStuActiveTeam(callBack);
             }
+
+            @Override
+            public PkTeamEntity getPkTeamEntity() {
+                return pkTeamEntity;
+            }
         });
         getEnTeamPkHttpManager().dispatch(mGetInfo.getStuId(), new AbstractBusinessDataCallBack() {
             @Override

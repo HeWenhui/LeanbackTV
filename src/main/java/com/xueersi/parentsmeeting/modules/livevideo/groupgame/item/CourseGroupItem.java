@@ -217,4 +217,7 @@ public class CourseGroupItem implements AdapterItemInterface<TeamMemberEntity> {
         }
     }
 
+    public void onScene() {
+
+    }
 }

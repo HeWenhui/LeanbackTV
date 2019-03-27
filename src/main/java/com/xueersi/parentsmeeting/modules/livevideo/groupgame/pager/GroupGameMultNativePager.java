@@ -26,6 +26,7 @@ import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.EnglishH5Entity;
+import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -38,6 +39,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.business.GetStuActiveTeam;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.InteractiveTeam;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageReg;
@@ -62,12 +64,14 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.GroupSurfaceView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Random;
 
 import io.agora.rtc.Constants;
@@ -139,6 +143,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     private int stuid;
     static final String TEST_URL = "file:///android_asset/hot_air_balloon/index.html";
     static final String TEST_CONTENT = "This is an apple|apple|banana|traffic";
+    private GetStuActiveTeam getStuActiveTeam;
     private TcpMessageReg tcpMessageReg;
     private VoiceProjectile voiceProjectile;
 
@@ -172,7 +177,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             audioRequest.request(null);
         }
 //        startSpeechRecognize();
-        GetStuActiveTeam getStuActiveTeam = ProxUtil.getProxUtil().get(mContext, GetStuActiveTeam.class);
+        getStuActiveTeam = ProxUtil.getProxUtil().get(mContext, GetStuActiveTeam.class);
+        //有战队pk，才有这种题的多人
         if (getStuActiveTeam != null) {
             getStuActiveTeam.getStuActiveTeam(new AbstractBusinessDataCallBack() {
                 @Override
@@ -187,6 +193,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     super.onDataFail(errStatus, failMsg);
                 }
             });
+            //有战队pk，才使用有tcp
             tcpMessageReg = ProxUtil.getProxUtil().get(mContext, TcpMessageReg.class);
             if (tcpMessageReg != null) {
                 voiceProjectile = new VoiceProjectile();
@@ -725,6 +732,43 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        if (tcpMessageReg != null && interactiveTeam != null) {
+            PkTeamEntity teamEntity = getStuActiveTeam.getPkTeamEntity();
+            if (teamEntity != null) {
+                try {
+                    JSONObject bodyJson = new JSONObject();
+                    bodyJson.put("type", 1);
+                    bodyJson.put("live_id", liveGetInfo.getId());
+                    LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = liveGetInfo.getStudentLiveInfo();
+                    bodyJson.put("class_id", studentLiveInfo.getClassId());
+                    bodyJson.put("test_id", detailInfo.id);
+                    bodyJson.put("uid", "" + stuid);
+                    bodyJson.put("word_id", "1");
+                    bodyJson.put("pk_team_id", teamEntity.getPkTeamId());
+                    bodyJson.put("team_type", "interactive");
+                    bodyJson.put("interactive_team_id", interactiveTeam.getInteractive_team_id());
+                    JSONArray team_mate = new JSONArray();
+                    ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
+                    for (int i = 0; i < entities.size(); i++) {
+                        TeamMemberEntity teamMemberEntity = entities.get(i);
+                        team_mate.put(teamMemberEntity.id);
+                    }
+                    bodyJson.put("team_mate", team_mate);
+                    JSONArray userData = new JSONArray();
+                    for (int i = 0; i < 1; i++) {
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("word_id", "1");
+                        jsonObject.put("score", "" + score);
+                        jsonObject.put("incry_energy", "3");
+                        userData.put(jsonObject);
+                    }
+                    bodyJson.put("userData", userData);
+                    tcpMessageReg.send(TcpConstants.Voice_Projectile_TYPE, TcpConstants.Voice_Projectile_SEND, bodyJson.toString());
+                } catch (JSONException e) {
+                    logger.d("onHitSentence", e);
+                }
+            }
+        }
     }
 
     class CourseWebViewClient extends MyWebViewClient implements OnHttpCode {
@@ -808,6 +852,69 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         @Override
         public void onMessage(short type, int operation, String msg) {
             logger.d("onMessage:type=" + type + ",operation=" + operation + ",msg=" + msg);
+            if (type == TcpConstants.Voice_Projectile_TYPE) {
+                switch (operation) {
+                    case TcpConstants.Voice_Projectile_Statis: {
+                        try {
+                            JSONObject jsonObject = new JSONObject(msg);
+                            JSONObject dataObj = jsonObject.getJSONObject("data");
+                            String word_id = dataObj.getString("word_id");
+                            String who_id = dataObj.getString("who_id");
+                            int score = dataObj.getInt("score");
+                            if (who_id.equals("" + stuid)) {
+
+                            }
+                        } catch (JSONException e) {
+                            logger.d("onMessage:Statis", e);
+                            MobAgent.httpResponseParserError(TAG, "onMessage:Statis", e.getMessage());
+                        }
+                    }
+                    break;
+                    case TcpConstants.Voice_Projectile_Scene: {
+                        try {
+                            JSONObject jsonObject = new JSONObject(msg);
+                            JSONObject dataObj = jsonObject.getJSONObject("data");
+                            String current_word = dataObj.getString("current_word");
+                            JSONObject self = dataObj.getJSONObject("self");
+                            {
+                                String stu_id = self.getString("stu_id");
+                                int total_erengy = self.getInt("total_erengy");
+                                JSONObject word_scores = self.getJSONObject("word_scores");
+                                Iterator<String> keys = word_scores.keys();
+                                while (keys.hasNext()) {
+                                    String key = keys.next();
+                                    JSONArray scoresArray = word_scores.optJSONArray(key);
+                                    if (scoresArray != null) {
+
+                                    }
+                                }
+                                CourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stu_id);
+                                if (courseGroupItem != null) {
+                                    courseGroupItem.onScene();
+                                }
+                            }
+                            JSONArray mateArray = dataObj.getJSONArray("mate");
+                            for (int i = 0; i < mateArray.length(); i++) {
+                                JSONObject mateObj = mateArray.getJSONObject(i);
+                                String stu_id = mateObj.getString("stu_id");
+                                int total_erengy = mateObj.getInt("total_erengy");
+                                JSONArray current_scoresArray = mateObj.optJSONArray("current_scores");
+                                if (current_scoresArray != null) {
+
+                                }
+                                CourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stu_id);
+                                if (courseGroupItem != null) {
+                                    courseGroupItem.onScene();
+                                }
+                            }
+                        } catch (JSONException e) {
+                            logger.d("onMessage:Scene", e);
+                            MobAgent.httpResponseParserError(TAG, "onMessage:Scene", e.getMessage());
+                        }
+                    }
+                    break;
+                }
+            }
         }
 
         @Override
