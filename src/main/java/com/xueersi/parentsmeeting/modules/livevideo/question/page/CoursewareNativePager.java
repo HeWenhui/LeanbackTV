@@ -1463,6 +1463,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     }
 
     @Override
+    public boolean isResultRecived() {
+        return loadResult;
+    }
+
+    @Override
     public void setWebBackgroundColor(int color) {
 
     }

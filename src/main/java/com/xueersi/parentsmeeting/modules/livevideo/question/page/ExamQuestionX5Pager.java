@@ -74,7 +74,8 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
     private int mGoldNum;
     private int mEnergyNum;
     private boolean allowTeamPk;
-
+    /**是否接收到或者展示过答题结果页面**/
+    private boolean isAnswerResultRecived;
     public ExamQuestionX5Pager(Context context, QuestionBll questionBll, String stuId
             , String stuName, String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity, String isShowRankList,
                                int isArts, String stuCouId, boolean allowTeamPk) {
@@ -408,6 +409,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
      */
     @JavascriptInterface
     public void onAnswerResult_LiveVideo(String data){
+        isAnswerResultRecived = true;
         EventBus.getDefault().post(new AnswerResultEvent(data));
     }
 
@@ -418,5 +420,10 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
         super.onDestroy();
         wvSubjectWeb.stopLoading();
         wvSubjectWeb.destroy();
+    }
+
+    @Override
+    public boolean isResultRecived() {
+        return isAnswerResultRecived;
     }
 }

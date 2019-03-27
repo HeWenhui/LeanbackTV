@@ -102,7 +102,8 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private boolean isNewArtsCourseware;
     private HashMap header;
     private String mGold;
-
+    /**是否接收到或者展示过答题结果页面**/
+    private boolean isAnswerResultRecived;
     @Override
     public void setEnglishH5CoursewareBll(EnglishH5CoursewareBll englishH5CoursewareBll) {
         mEnglishH5CoursewareBll = englishH5CoursewareBll;
@@ -660,6 +661,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         Loger.e("EnglishH5CourseWareX5Pager",
                 "=========>showAnswerResult_LiveVideo:" + data);
         Loger.e(TAG, "======> newArtsH5CourseWare data:" + data);
+        isAnswerResultRecived = true;
         EventBus.getDefault().post(new ArtsAnswerResultEvent(data, ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT));
     }
 
@@ -668,6 +670,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
      */
     @JavascriptInterface
     public void onAnswerResult_LiveVideo(String data){
+        isAnswerResultRecived =true;
         EventBus.getDefault().post(new AnswerResultEvent(data));
     }
 
@@ -751,6 +754,11 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
 
     public EnglishH5Entity getEnglishH5Entity() {
         return englishH5Entity;
+    }
+
+    @Override
+    public boolean isResultRecived() {
+        return isAnswerResultRecived;
     }
 
     @Override
