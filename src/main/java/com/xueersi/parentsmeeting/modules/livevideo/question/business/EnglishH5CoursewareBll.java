@@ -445,7 +445,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
      */
     private void closePageByTeamPk() {
         // Log.e("EnglishH5CoursewareBll","=======>closePageByTeamPk:"+isTeamPkAllowed);
-        if (isTeamPkAllowed && !isPageOnCloseing) {
+        if (isTeamPkAllowed && !isPageOnCloseing && h5CoursewarePager != null) {
             isPageOnCloseing = true;
             long timeDelay = h5CoursewarePager.isResultRecived()?0L:6000L;
             //Log.e("EnglishH5CoursewareBll","=======>closePageByTeamPk222:"+timeDelay);

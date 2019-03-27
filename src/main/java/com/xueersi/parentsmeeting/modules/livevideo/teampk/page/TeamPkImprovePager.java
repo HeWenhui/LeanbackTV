@@ -60,7 +60,7 @@ public class TeamPkImprovePager extends TeamPkBasePager {
     private RankAdapter mAdapter;
     private final List<TeamPkStuProgress> mData;
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "team_pk/student_improver/";
-    private final float ANIM_DISPATCH_FRACTION = 0.20f;
+    private final float ANIM_DISPATCH_FRACTION = 0.10f;
     private TeamPkPraiseLayout teamPkPraiseLayout;
 
     public TeamPkImprovePager(Context context, List<TeamPkStuProgress> data, TeamPkBll teamPkBll) {

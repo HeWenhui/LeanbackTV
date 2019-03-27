@@ -115,7 +115,7 @@ public class TeamPkStarsPager extends TeamPkBasePager {
         return view;
     }
 
-    private final float ANIM_DISPATCH_FRACTION = 0.20f;
+    private final float ANIM_DISPATCH_FRACTION = 0.10f;
     private void showAnim() {
         bgMask.setVisibility(View.VISIBLE);
         playMusic(R.raw.war_bg, DEFAULT_BG_VOLUME, true);
