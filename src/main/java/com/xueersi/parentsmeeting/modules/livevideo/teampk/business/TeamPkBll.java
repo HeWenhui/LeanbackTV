@@ -1555,7 +1555,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onScineceAnswerResutlEvent(AnswerResultEvent event) {
-        Log.e("H5CallBakc", "========>onAnswerResult_LiveVideo:" + event.toString());
+       // Log.e("H5CallBakc", "========>onAnswerResult_LiveVideo:" + event.toString());
         try {
             JSONObject jsonObject = new JSONObject(event.getData());
             String id = jsonObject.optString("id");
