@@ -282,11 +282,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
             LayoutInflater.from(mContext).inflate(R.layout.page_livevideo_h5_courseware_control_primary, rlCourseControl);
             preLoad = new PrimaryPreLoad();
         } else {
-            if (isArts == LiveVideoSAConfig.ART_EN) {
-                LayoutInflater.from(mContext).inflate(R.layout.page_livevideo_h5_courseware_control_middle_en, rlCourseControl);
-            } else {
-                LayoutInflater.from(mContext).inflate(R.layout.page_livevideo_h5_courseware_control_middle, rlCourseControl);
-            }
+            LayoutInflater.from(mContext).inflate(R.layout.page_livevideo_h5_courseware_control_middle, rlCourseControl);
             preLoad = new MiddleSchool();
         }
         //下方控制条的一些布局

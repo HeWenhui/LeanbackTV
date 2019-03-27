@@ -543,8 +543,28 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             case XESCODE.AI_SUBJECTIVE_H5_COURSEWARE:{
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                 videoQuestionLiveEntity.noticeType = XESCODE.AI_SUBJECTIVE_H5_COURSEWARE;
-                videoQuestionLiveEntity.setNewArtsCourseware(true);
-                String status = object.optString("status", "off");
+                LiveVideoConfig.isSend = object.optBoolean("open");
+                String status = LiveVideoConfig.isSend ? "on" : "off";
+                String nonce = object.optString("nonce");
+                LiveVideoConfig.nonce = nonce;
+                LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
+                String teamId = studentLiveInfo.getTeamId();
+                String classId = studentLiveInfo.getClassId();
+                EnglishH5Entity englishH5Entity = videoQuestionLiveEntity.englishH5Entity;
+                englishH5Entity.setNewEnglishH5(true);
+                try {
+                    englishH5Entity.setPackageId(object.getString("pId"));
+                    LiveVideoConfig.pSrc = object.getString("pSrc");
+                    englishH5Entity.setPackageSource(object.getString("pSrc"));
+                    englishH5Entity.setPackageAttr(object.getString("pAttr"));
+                    LiveVideoConfig.tests = object.getString("tests");
+                    englishH5Entity.setReleasedPageInfos(object.getString("tests"));
+                    LiveVideoConfig.ctId = object.getString("ctId");
+                    englishH5Entity.setClassTestId(object.getString("ctId"));
+                    videoQuestionLiveEntity.gold = object.getDouble("gold");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 englishH5CoursewareBll.onH5Courseware(status, videoQuestionLiveEntity);
                 break;
             }
