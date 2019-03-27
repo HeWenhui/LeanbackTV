@@ -56,6 +56,7 @@ import ren.yale.android.cachewebviewlib.utils.MD5Utils;
  */
 public class CoursewarePreload {
 
+
     String TAG = getClass().getSimpleName();
     Logger logger = LoggerFactory.getLogger(TAG);
     private Context mContext;
