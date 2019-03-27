@@ -165,6 +165,9 @@ public interface XESCODE {
     /** 一题多发 */
     int MULTIPLE_H5_COURSEWARE = 251;
 
+    /** 语文AI主观题*/
+    int AI_SUBJECTIVE_H5_COURSEWARE = 252;
+
     /** 开启/关闭语音弹幕 */
     int XCR_ROOM_DANMU_OPEN = 260;
 
