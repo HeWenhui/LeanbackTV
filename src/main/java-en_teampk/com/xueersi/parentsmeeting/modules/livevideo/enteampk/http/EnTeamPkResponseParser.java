@@ -48,7 +48,7 @@ public class EnTeamPkResponseParser extends HttpResponseParser {
             interactiveTeam.setClass_id(jsonObject.getString("class_id"));
             interactiveTeam.setPk_team_id(jsonObject.getString("pk_team_id"));
             interactiveTeam.setTeam_type(jsonObject.getString("team_type"));
-            interactiveTeam.setInteractive_team_id(jsonObject.getString("interactive_team_id"));
+            interactiveTeam.setInteractive_team_id(jsonObject.getInt("interactive_team_id"));
             ArrayList<TeamMemberEntity> entities = parseGetStuActiveTeam(jsonObject.getJSONArray("team_mate"));
             interactiveTeam.setEntities(entities);
             return interactiveTeam;

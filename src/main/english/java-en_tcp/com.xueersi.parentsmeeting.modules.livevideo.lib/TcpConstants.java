@@ -31,4 +31,8 @@ public class TcpConstants {
     public final static short TEAM_TYPE = 7;
     /** 消息心跳-服务器回复学生互动分组 */
     public final static int TEAM_OPERATION_SEND = 15;
+    /** 消息类型，客户端发语音炮弹数据 */
+    public final static short Voice_Projectile_TYPE = 8;
+    /** 消息类型，客户端发语音炮弹数据 */
+    public final static short Voice_Projectile_SEND = 16;
 }

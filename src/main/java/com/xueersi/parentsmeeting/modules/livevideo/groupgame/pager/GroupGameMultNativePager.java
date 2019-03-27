@@ -39,11 +39,14 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.business.GetStuActiveTeam;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.InteractiveTeam;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageAction;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageReg;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.item.CourseGroupItem;
+import com.xueersi.parentsmeeting.modules.livevideo.lib.TcpConstants;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareSecHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.CourseMessage;
@@ -136,6 +139,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     private int stuid;
     static final String TEST_URL = "file:///android_asset/hot_air_balloon/index.html";
     static final String TEST_CONTENT = "This is an apple|apple|banana|traffic";
+    private TcpMessageReg tcpMessageReg;
+    private VoiceProjectile voiceProjectile;
 
     public GroupGameMultNativePager(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity detailInfo, EnglishH5Entity englishH5Entity) {
         super(context);
@@ -182,6 +187,11 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     super.onDataFail(errStatus, failMsg);
                 }
             });
+            tcpMessageReg = ProxUtil.getProxUtil().get(mContext, TcpMessageReg.class);
+            if (tcpMessageReg != null) {
+                voiceProjectile = new VoiceProjectile();
+                tcpMessageReg.registTcpMessageAction(voiceProjectile);
+            }
         }
         newCourseCache = new NewCourseCache(mContext, liveId);
         addJavascriptInterface();
@@ -689,6 +699,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         if (audioRequest != null) {
             audioRequest.release();
         }
+        if (tcpMessageReg != null && voiceProjectile != null) {
+            tcpMessageReg.unregistTcpMessageAction(voiceProjectile);
+        }
     }
 
     /**
@@ -789,4 +802,17 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         return "0";
     }
 
+    /** 客户端发语音炮弹数据 */
+    class VoiceProjectile implements TcpMessageAction {
+
+        @Override
+        public void onMessage(short type, int operation, String msg) {
+            logger.d("onMessage:type=" + type + ",operation=" + operation + ",msg=" + msg);
+        }
+
+        @Override
+        public short[] getMessageFilter() {
+            return new short[]{TcpConstants.Voice_Projectile_TYPE};
+        }
+    }
 }
