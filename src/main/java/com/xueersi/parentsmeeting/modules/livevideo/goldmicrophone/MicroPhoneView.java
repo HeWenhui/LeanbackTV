@@ -80,12 +80,21 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
             if (microhpneGroup != null && microhpneGroup.getVisibility() != View.VISIBLE) {
                 microhpneGroup.setVisibility(View.VISIBLE);
             }
+            if (goneAnimator != null) {
+//                goneAnimator.cancel();
+                goneAnimator.reverse();
+            }
+//            ObjectAnimator showAnimator = ObjectAnimator.ofFloat(ivMicroPhone, "translationY", goldY, curY);
+//            showAnimator.setDuration(1000);
+//            showAnimator.start();
         }
     };
     Runnable microphoneCloseRunnable = new Runnable() {
         @Override
         public void run() {
-
+            if (teacherTipGroup != null && teacherTipGroup.getVisibility() != View.GONE) {
+                teacherTipGroup.setVisibility(View.GONE);
+            }
         }
     };
     Runnable closeBtnRunnable = new Runnable() {
@@ -105,6 +114,7 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
 //        mView.postDelayed(teacherTipCloseRunnable, 1000);
         mView.removeCallbacks(microphoneShowRunnable);
         mView.removeCallbacks(teacherTipCloseRunnable);
+        mView.removeCallbacks(microphoneCloseRunnable);
     }
 
     @Override
@@ -148,6 +158,9 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
 
                     @Override
                     public void onGuarantee(String permission, int position) {
+                        if (settingGroup != null && settingGroup.getVisibility() != View.GONE) {
+                            settingGroup.setVisibility(View.GONE);
+                        }
                         mPresenter.startAudioRecord();
                     }
                 },
@@ -171,15 +184,22 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
         }
     }
 
+    ObjectAnimator goneAnimator;
+
+    private boolean isActive = false;
+
     /**
      * 移除金话筒这个功能
      */
     @Override
     public void removeGoldView() {
+        isActive = false;
         ivClose.setVisibility(View.GONE);
-        float curY = ivMicroPhone.getTranslationY();
-        ObjectAnimator goneAnimator = ObjectAnimator.ofFloat(ivMicroPhone, "translationY", curY, curY + SizeUtils.Dp2Px(mContext,
-                ivMicroPhone.getHeight() + ((ConstraintLayout.LayoutParams) ivMicroPhone.getLayoutParams()).bottomMargin));
+        float curY, goldY;
+        curY = ivMicroPhone.getTranslationY();
+        goldY = curY + SizeUtils.Dp2Px(mContext,
+                ivMicroPhone.getHeight() + ((ConstraintLayout.LayoutParams) ivMicroPhone.getLayoutParams()).bottomMargin);
+        goneAnimator = ObjectAnimator.ofFloat(ivMicroPhone, "translationY", curY, goldY);
         goneAnimator.setDuration(1000);
         goneAnimator.start();
         goneAnimator.addListener(new Animator.AnimatorListener() {
@@ -190,7 +210,9 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                mPresenter.remove(mView);
+                if (!isActive) {
+                    mPresenter.remove(mView);
+                }
             }
 
             @Override
@@ -210,11 +232,21 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
      */
     @Override
     public void showCloseView() {
-        tvTipWindow.setText("老师关闭了金话筒");
-        if (teacherTipGroup != null && teacherTipGroup.getVisibility() != View.VISIBLE) {
-            teacherTipGroup.setVisibility(View.VISIBLE);
+        if (mView != null) {
+            mView.post(new Runnable() {
+                @Override
+                public void run() {
+                    tvTipWindow.setText("老师关闭了金话筒");
+                    logger.i("teacher close gold microphone");
+                    if (teacherTipGroup != null && teacherTipGroup.getVisibility() != View.VISIBLE) {
+                        teacherTipGroup.setVisibility(View.VISIBLE);
+                        mView.postDelayed(microphoneCloseRunnable, 1000);
+                    }
+                    removeGoldView();
+                }
+            });
         }
-        removeGoldView();
+
     }
 
     @Override
@@ -236,6 +268,11 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
 
     @Override
     public void performAddView() {
+        isActive = true;
+        tvTipWindow.setText("老师开启了金话筒");
+
+        teacherTipGroup.setVisibility(View.VISIBLE);
+
         mView.postDelayed(microphoneShowRunnable, 700);
 
         mView.postDelayed(teacherTipCloseRunnable, 1000);

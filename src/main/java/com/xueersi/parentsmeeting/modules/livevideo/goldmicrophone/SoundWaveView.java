@@ -138,13 +138,13 @@ public class SoundWaveView extends View {
 
             if (c.level == 1) {
 //                mPaint.setAlpha((int) (255));
-                mPaint.setColor(mContext.getResources().getColor(R.color.COLOR_F7E1A8));
+                mPaint.setColor(mContext.getResources().getColor(R.color.COLOR_99F7E1A8));
             } else if (c.level == 2) {
 //                mPaint.setAlpha((int) (0.7 * 255));
-                mPaint.setColor(mContext.getResources().getColor(R.color.COLOR_CCF7E1A8));
+                mPaint.setColor(mContext.getResources().getColor(R.color.CLOR_66F7E1A8));
             } else if (c.level == 3) {
 //                mPaint.setAlpha((int) (0.4 * 255f));
-                mPaint.setColor(mContext.getResources().getColor(R.color.COLOR_99F7E1A8));
+                mPaint.setColor(mContext.getResources().getColor(R.color.COLOR_33F7E1A8));
 //                if (c.width > 20) {
 
 //                    mPaint.setColor(Color.CYAN);

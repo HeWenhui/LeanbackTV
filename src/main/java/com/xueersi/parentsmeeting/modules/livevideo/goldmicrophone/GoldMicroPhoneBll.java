@@ -21,19 +21,21 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.BuildConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * 幼升小金话筒
@@ -91,23 +93,23 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
     /** 金话筒的时间间隔 */
     private final long LOTTIE_VIEW_INTERVAL = 2000;
     /**  */
-    private final long VOLUME_INTERVAL = 100;
+    private final long VOLUME_INTERVAL = 200;
 
     public GoldMicroPhoneBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
         dir = LiveCacheFile.geCacheFile(mContext, "gold_microphone_voice");
-        if (testUse) {
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    showMicroPhoneView();
-                    getIsOnlineRecognize(sign);
-                    boolean isHasAudioPermission = isHasAudioPermission();
-                    sendIsGoldMicroPhone(isHasAudioPermission, false, sign);
-                    showGoldSettingView(isHasAudioPermission);
-                }
-            }, 1000);
-        }
+//        if (testUse) {
+//            mHandler.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    showMicroPhoneView();
+//                    getIsOnlineRecognize(sign);
+//                    boolean isHasAudioPermission = isHasAudioPermission();
+//                    sendIsGoldMicroPhone(isHasAudioPermission, false, sign);
+//                    showGoldSettingView(isHasAudioPermission);
+//                }
+//            }, 1000);
+//        }
     }
 
     @Override
@@ -118,6 +120,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
                 sign = data.optString("sign");
                 logger.i("receive arts_gold_microphone open = " + open);
                 if (open == 1) {
+                    isStop = false;
                     showMicroPhoneView();
                     getIsOnlineRecognize(sign);
                     boolean isHasAudioPermission = isHasAudioPermission();
@@ -127,6 +130,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
                     //提示关闭语音弹幕
                     isStop = true;
                     if (mGoldView != null) {
+
                         mGoldView.showCloseView();
                     }
                     if (mAudioRecord != null) {
@@ -135,6 +139,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
                     if (mSpeechEvaluatorUtils != null) {
                         mSpeechEvaluatorUtils.cancel();
                     }
+                    logger.i(recognizeStr.toString());
                     if (isOnline == 1) {
                         sendNotice(recognizeStr.toString());
                     }
@@ -151,6 +156,18 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
         return new int[]{XESCODE.ARTS_GOLD_MICROPHONE};
     }
 
+    private void showOrhideBottom(boolean visible) {
+        if (mContext instanceof Activity) {
+            View view = ((Activity) mContext).findViewById(R.id.ll_livevideo_bottom_controller);
+            if (view != null) {
+                view.setVisibility(visible ? View.VISIBLE : View.GONE);
+            }
+            View messageView = ((Activity) mContext).findViewById(R.id.rcl_live_halfbody_msg);
+            if (messageView != null) {
+                messageView.setVisibility(visible ? View.VISIBLE : View.GONE);
+            }
+        }
+    }
 
     /**
      * 得到是否走线上识别
@@ -206,7 +223,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
      *
      * @return
      */
-    private boolean isHasAudioPermission() {
+    private synchronized boolean isHasAudioPermission() {
         PackageManager pkm = mContext.getPackageManager();
         return (PackageManager.PERMISSION_GRANTED == pkm.checkPermission("android.permission.MODIFY_AUDIO_SETTINGS", mContext.getPackageName())
                 && PackageManager.PERMISSION_GRANTED == pkm.checkPermission("android.permission.RECORD_AUDIO", mContext.getPackageName()));
@@ -227,6 +244,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
                     layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
                     mRootView.addView(mGoldView.getRootView(), layoutParams);
                     mGoldView.performAddView();
+                    showOrhideBottom(false);
                 }
             }
         });
@@ -256,6 +274,9 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
                 });
     }
 
+    //    ThreadPoolExecutor
+    private Executor executor = Executors.newFixedThreadPool(5);
+
     /**
      * 开始录音
      * 只能在工作线程里面调用
@@ -268,7 +289,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
             return;
         }
         logger.i("isOnline = " + isOnline);
-        LiveThreadPoolExecutor.getInstance().execute(new Runnable() {
+        executor.execute(new Runnable() {
             @Override
             public void run() {
                 if (isOnline != 1) {
@@ -416,7 +437,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
     }
 
     /** 语音识别出来的文字 */
-    private StringBuilder recognizeStr = new StringBuilder("zyy send a message");
+    private StringBuilder recognizeStr = new StringBuilder();
 
     /**
      * 识别成功
@@ -524,8 +545,11 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
      */
     @Override
     public void remove(View view) {
+
         if (view.getParent() == mRootView) {
+            logger.i("remove gold view");
             mRootView.removeView(view);
+
             isStop = true;
             if (mAudioRecord != null) {
                 mAudioRecord.release();
@@ -534,5 +558,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
                 mSpeechEvaluatorUtils.cancel();
             }
         }
+        showOrhideBottom(true);
+        mGoldView = null;
     }
 }

@@ -42,6 +42,18 @@
         android:layout_height="wrap_content"
         app:constraint_referenced_ids="iv_livevideo_gold_microphone_bg,swv_livevideo_gold_microphone_sound_wave" />
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@id/lottie_livevideo_gold_microphone_gold_view"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:visibility="gone"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_gold_microphone_bg"
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_gold_microphone_bg"
+        app:layout_constraintTop_toTopOf="@id/iv_livevideo_gold_microphone_bg"
+        app:lottie_fileName="gold_microphone/data.json"
+        app:lottie_imageAssetsFolder="gold_microphone/images"
+        app:lottie_loop="false" />
+
     <ImageView
         android:id="@id/iv_livevideo_gold_microphone_bg"
         android:layout_width="70dp"
@@ -112,14 +124,6 @@
         android:visibility="gone"
         app:constraint_referenced_ids="iv_livevideo_gold_microphone_speak_loudly" />
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@id/lottie_livevideo_gold_microphone_gold_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        app:lottie_fileName="gold_microphone/data.json"
-        app:lottie_imageAssetsFolder="gold_microphone/images"
-        app:lottie_loop="false" />
 
     <ImageView
         android:id="@id/iv_livevideo_gold_microphone_speak_loudly"
