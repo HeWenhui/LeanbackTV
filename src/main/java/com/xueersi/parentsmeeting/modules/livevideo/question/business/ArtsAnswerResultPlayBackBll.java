@@ -2,18 +2,9 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.app.Activity;
 import android.util.Log;
-import android.text.TextUtils;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.ScaleAnimation;
-import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent;
 
@@ -52,7 +43,7 @@ public class ArtsAnswerResultPlayBackBll extends LiveBackBaseBll {
             mAnswerResultBll.closeAnswerResult(false);
         }else if(event.getEnvetnType() == LiveBackQuestionEvent.QUSTION_CLOSE){
             if(liveGetInfo.getPattern() == 2){
-                EventBus.getDefault().post(new AnswerResultCplShowEvent());
+                EventBus.getDefault().post(new AnswerResultCplShowEvent("onLiveBackQuestionEvent"));
                 Log.e("mqtt","submitData" + "hahaha");
             }else{
                 mAnswerResultBll.closeAnswerResult(true);

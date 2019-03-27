@@ -37,6 +37,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerActi
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 
@@ -50,12 +51,11 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
- * Created by lyqai on 2018/7/17.
+ * Created by linyuqiang on 2018/7/17.
  */
-public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlaybackMediaController.OnPointClick,
-        LiveOnLineLogs {
+public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlaybackMediaController.OnPointClick {
     protected String TAG = "LiveBackBll";
-    protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
+    protected Logger logger = LiveLoggerFactory.getLogger(getClass().getSimpleName());
     protected Activity activity;
     private LiveGetInfo mGetInfo;
     LiveHttpManager mHttpManager;
@@ -232,8 +232,9 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                 }
             }
         }
-        logToFile = new LogToFile(this, TAG);
-        ProxUtil.getProxUtil().put(activity, LiveOnLineLogs.class, this);
+        liveLog = new LiveLog(activity, mLiveType, mVideoEntity.getLiveId(), getPrefix());
+        ProxUtil.getProxUtil().put(activity, LiveOnLineLogs.class, liveLog);
+        logToFile = new LogToFile(activity, TAG);
         mCourseHttpManager = new LivePlayBackHttpManager(activity);
         if (liveVideoSAConfig != null) {
             mCourseHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
@@ -247,7 +248,6 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         if (liveVideoSAConfig != null) {
             mHttpManager.setLiveVideoSAConfig(liveVideoSAConfig);
         }
-        liveLog = new LiveLog(activity, mLiveType, mVideoEntity.getLiveId(), getPrefix());
         mHttpManager.addBodyParam("liveId", mVideoEntity.getLiveId());
         if (mVideoEntity.getvLivePlayBackType() == LocalCourseConfig.LIVETYPE_RECORDED) {
             try {
@@ -445,6 +445,9 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             logger.d("scanQuestion:showQuestion");
             Log.e("Duncan", "showQuestion:" + position);
             showQuestion(oldQuestionEntity, showQuestion);
+            if (LocalCourseConfig.CATEGORY_REDPACKET != mQuestionEntity.getvCategory()){
+                LiveVideoConfig.isAITrue = false;
+            }
         }
         for (LiveBackBaseBll businessBll : liveBackBaseBlls) {
             businessBll.onPositionChanged(playPosition);
@@ -871,23 +874,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         }
     }
 
-    @Override
     public String getPrefix() {
         return "LB";
-    }
-
-    String mFileName = null;
-
-    /**
-     * 播放器异常日志
-     *
-     * @param str
-     */
-    @Override
-    public void getOnloadLogs(String TAG, String str) {
-        //不能出现空
-        if (liveLog != null) {
-            liveLog.getOnloadLogs(TAG, str);
-        }
     }
 }

@@ -1,0 +1,25 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@id/tv_arts_answer_result_voice_my"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:includeFontPadding="false"
+        android:text="你的答案：teacher"
+        android:textColor="#ff756565"
+        android:textSize="19sp" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@id/tv_arts_answer_result_voice_right"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_arts_answer_result_voice_my"
+        android:layout_marginTop="14dp"
+        android:includeFontPadding="false"
+        android:text="正确答案：teacher"
+        android:textColor="#ff756565"
+        android:textSize="19sp" />
+</RelativeLayout>

@@ -72,14 +72,7 @@ public class ArtsAnswerTextView extends TextView {
      * @param textStr
      */
     public final void setTextWithIcon(CharSequence textStr){
-         if(!TextUtils.isEmpty(textStr)){
-             setText(textStr);
-         }else{
-             if(icon != null){
-                 setWidth(icon.getWidth());
-             }
-             setText(textStr);
-         }
+        setText(textStr);
     }
 
 

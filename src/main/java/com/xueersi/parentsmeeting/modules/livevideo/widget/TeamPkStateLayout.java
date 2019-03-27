@@ -102,6 +102,7 @@ public class TeamPkStateLayout extends FrameLayout {
         } else {
             LayoutInflater.from(getContext()).inflate(R.layout.team_pk_state_layout, this);
         }
+
         pkProgressBar = findViewById(R.id.tpb_teampk_pkstate_energy_bar);
         tvMyTeamEnergy = findViewById(R.id.tv_teampk_pkstate_myteam_energy);
         tvOtherTeamEnergy = findViewById(R.id.tv_teampk_pkstate_otherteam_energy);
@@ -165,7 +166,6 @@ public class TeamPkStateLayout extends FrameLayout {
                 }
             });
         }
-
     }
 
 
@@ -301,7 +301,7 @@ public class TeamPkStateLayout extends FrameLayout {
                 tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_follow_bg);
             } else if (ratio == HALF_PROGRESS) {
 
-                if (LiveVideoConfig.isNewEnglishH5) {
+                if (LiveVideoConfig.isSmallChinese) {
                     tvState.setText("");
                     tvState.setBackgroundResource(0);
                 } else {

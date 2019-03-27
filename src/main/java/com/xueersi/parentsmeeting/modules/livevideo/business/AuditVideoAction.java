@@ -14,6 +14,7 @@ public interface AuditVideoAction extends VideoAction {
     /**
      * 学生直播开始
      */
+    @Deprecated
     void onStudentLiveStart(PlayServerEntity server);
 
     /**

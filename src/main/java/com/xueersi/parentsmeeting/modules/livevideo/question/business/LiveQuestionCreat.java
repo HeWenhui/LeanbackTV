@@ -144,7 +144,7 @@ public class LiveQuestionCreat {
                                 showQuestion.onHide(videoQuestionLiveEntity2);
                             }
                         }
-                    });
+                    }, "1");
         }
     };
 

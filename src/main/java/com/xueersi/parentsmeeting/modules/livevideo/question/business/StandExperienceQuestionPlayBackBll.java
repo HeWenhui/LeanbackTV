@@ -48,7 +48,7 @@ public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
             //语音答题
             WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, questionBll.new
                     LiveQuestionSwitchImpl());
-            questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch, questionBll));
+            questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch, questionBll, liveGetInfo));
             //语音评测
             LiveBackStandSpeechCreat liveBackStandSpeechCreat = new LiveBackStandSpeechCreat(this, liveBackBll,
                     questionBll);
@@ -59,7 +59,7 @@ public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
             //语音答题
             WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, questionBll.new
                     LiveQuestionSwitchImpl());
-            questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch, questionBll));
+            questionBll.setBaseVoiceAnswerCreat(new LiveBackVoiceAnswerCreat(wrapQuestionSwitch, questionBll, liveGetInfo));
             //语音评测
             LiveBackSpeechCreat liveBackSpeechCreat = new LiveBackSpeechCreat(questionBll);
             liveBackSpeechCreat.setIsExperience(((StandExperienceLiveBackBll) liveBackBll).getExperience());
@@ -203,13 +203,13 @@ public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
 
     /**
      * 发送语音评测
-     *
-     * @param id
+     *  @param id
      * @param stuAnswer
+     * @param isSubmit
      * @param onSpeechEval
      */
     @Override
-    public void sendSpeechEvalResult2(String id, String stuAnswer, final OnSpeechEval onSpeechEval) {
+    public void sendSpeechEvalResult2(String id, String stuAnswer, String isSubmit, final OnSpeechEval onSpeechEval) {
         String liveid = mVideoEntity.getLiveId();
         String enstuId = UserBll.getInstance().getMyUserInfoEntity().getEnstuId();
 //        getCourseHttpManager().sendSpeechEvalResult2(enstuId, liveid, id, stuAnswer,
@@ -245,7 +245,7 @@ public class StandExperienceQuestionPlayBackBll extends QuestionPlayBackBll {
     @Override
     public void liveSubmitTestAnswer(final LiveBasePager liveBasePager, final VideoQuestionLiveEntity
             videoQuestionLiveEntity1, String mVSectionID, String testAnswer, final boolean isVoice, boolean isRight,
-                                     final QuestionSwitch.OnAnswerReslut answerReslut) {
+                                     final QuestionSwitch.OnAnswerReslut answerReslut, String isSubmit) {
         DataLoadEntity loadEntity = new DataLoadEntity(mContext);
         loadEntity.setLoadingTip(R.string.loading_tip_default);
         BaseBll.postDataLoadEvent(loadEntity.beginLoading());

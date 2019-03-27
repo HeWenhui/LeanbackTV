@@ -200,6 +200,7 @@
     <item name="tv_livevideo_message_flowers_disable" type="id" />
     <item name="cb_livevideo_message_clock" type="id" />
     <item name="rl_livevideo_message_top" type="id" />
+    <item name="iv_livevideo_message_small_bg" type="id" />
     <item name="rl_livevideo_star_content" type="id" />
     <item name="rl_livevideo_english_content" type="id" />
     <item name="rl_livevideo_message_status" type="id" />
@@ -294,8 +295,10 @@
     <item name="rl_livevideo_subject_web" type="id" />
     <item name="wv_livevideo_subject_web" type="id" />
     <item name="rl_livevideo_subject_loading" type="id" />
+    <item name="ll_livevideo_subject_loadingl_content" type="id" />
     <item name="rl_livevideo_subject_error" type="id" />
     <item name="iv_livevideo_subject_refresh" type="id" />
+    <item name="iv_livevideo_course_refresh" type="id" />
     <!--直播-语音评测-->
     <item name="rl_livevideo_speecteval_group" type="id" />
     <item name="rl_livevideo_speecteval_title" type="id" />
@@ -325,6 +328,11 @@
     <item name="tv_livevideo_speecteval_error" type="id" />
     <item name="ll_livevideo_speecteval_result_mine" type="id" />
     <item name="iv_livevideo_speecteval_result_mine" type="id" />
+    <item name="tv_livevideo_speecteval_result_answer" type="id" />
+    <item name="iv_livevideo_speecteval_result_gold" type="id" />
+    <item name="tv_livevideo_speecteval_result_gold" type="id" />
+    <item name="iv_livevideo_speecteval_result_energy" type="id" />
+    <item name="tv_livevideo_speecteval_result_energy" type="id" />
     <item name="v_live_star_result_out" type="id" />
     <item name="sp_live_star_result" type="id" />
     <item name="iv_live_star_result_light" type="id" />
@@ -511,7 +519,34 @@
     <item name="vwv_livevideo_roleplayer_speech_volumewave" type="id" />
     <item name="ll_roleplayer_message_self_head_main" type="id" />
     <item name="btn_live_roleplayer_dz" type="id" />
-
+    <!--结果页-->
+    <item name="iv_live_speech_result_title" type="id" />
+    <item name="iv_live_speech_result_close" type="id" />
+    <item name="rl_live_speech_result_content" type="id" />
+    <item name="tv_live_speech_result_score" type="id" />
+    <item name="rl_live_speech_result_head" type="id" />
+    <item name="tv_live_speech_result_accuracy_lable" type="id" />
+    <item name="tv_live_speech_result_accuracy_text" type="id" />
+    <item name="tv_live_speech_result_fluency_lable" type="id" />
+    <item name="tv_live_speech_result_fluency_text" type="id" />
+    <item name="civ_live_speech_result_head" type="id" />
+    <item name="v_live_speech_result_center" type="id" />
+    <item name="vs_live_speech_result_myenergy" type="id" />
+    <item name="rl_live_speech_result_myenergy" type="id" />
+    <item name="vs_live_speech_result_roleplay_myenergy" type="id" />
+    <item name="rl_live_speech_result_roleplay_myenergy" type="id" />
+    <item name="iv_live_speech_result_myenergy" type="id" />
+    <item name="tv_live_speech_result_myenergy" type="id" />
+    <item name="iv_live_speech_result_mygold" type="id" />
+    <item name="tv_live_speech_result_mygold" type="id" />
+    <item name="iv_live_speech_result_mypraise" type="id" />
+    <item name="tv_live_speech_result_mypraise" type="id" />
+    <item name="v_live_speech_result_line" type="id" />
+    <item name="rv_live_speech_result_other" type="id" />
+    <item name="rl_live_speech_result_member_head" type="id" />
+    <item name="civ_live_speech_result_member_head" type="id" />
+    <item name="tv_live_speech_result_member_score" type="id" />
+    <item name="tv_live_speech_result_member_name" type="id" />
     <!--战队pk-->
     <item name="iv_teampk_team_select_bg" type="id" />
     <item name="rl_teampk_team_selecteing" type="id" />
@@ -785,6 +820,9 @@
     <item name="v_arts_answer_result_detail_bg" type="id" />
     <item name="tv_arts_answer_result_detail_title" type="id" />
     <item name="rcl_arts_answer_result_detail" type="id" />
+    <item name="vs_arts_answer_result_voice" type="id" />
+    <item name="tv_arts_answer_result_voice_right" type="id" />
+    <item name="tv_arts_answer_result_voice_my" type="id" />
     <item name="iv_arts_answer_result_detail_close_btn" type="id" />
     <item name="iv_arts_answer_result_state_head" type="id" />
     <item name="iv_arts_answer_result_detail_head" type="id" />
@@ -797,6 +835,7 @@
     <item name="tv_arts_answer_result_stander_answer_below" type="id" />
     <item name="tv_arts_answer_result_sumbit_toast" type="id" />
     <item name="iv_arts_answer_result_answer_btn" type="id" />
+    <item name="iv_arts_answer_result_close_btn" type="id" />
 
     <item name="tv_arts_answer_result_answer_index" type="id" />
     <item name="tvw_arts_answer_result_answer_state" type="id" />
@@ -804,6 +843,7 @@
 
     <item name="lv_arts_answer_state_pse" type="id" />
     <item name="lv_arts_answer_result_pse" type="id" />
+    <item name="tv_arts_answer_result_pse_close" type="id" />
     <item name="rcl_arts_answer_result_result" type="id" />
     <item name="v_arts_pse_answer_result_closebtn" type="id" />
     <item name="rl_arts_pse_answer_result_root" type="id" />
@@ -1147,4 +1187,37 @@
     <item name="iv_livevideo_chpk_openAwardClose" type="id" />
 
 
+    <!--英语本场成就-->
+    <item name="rl_livevideo_en_achive_back" type="id" />
+    <item name="rl_livevideo_en_achive_title" type="id" />
+    <item name="iv_livevideo_en_achive_title" type="id" />
+    <item name="cb_livevideo_en_achive_title" type="id" />
+    <item name="rl_livevideo_en_achive_content" type="id" />
+    <item name="rl_livevideo_en_achive_content_num" type="id" />
+    <item name="iv_livevideo_en_achive_num_gold" type="id" />
+    <item name="tv_livevideo_en_achive_num_gold" type="id" />
+    <item name="rl_livevideo_en_achive_num_fire" type="id" />
+    <item name="iv_livevideo_en_achive_num_fire" type="id" />
+    <item name="tv_livevideo_en_achive_num_fire" type="id" />
+    <item name="iv_livevideo_en_achive_num_star" type="id" />
+    <item name="tv_livevideo_en_achive_num_star" type="id" />
+    <item name="tv_livevideo_en_achive_num_right" type="id" />
+    <item name="tv_livevideo_en_achive_num_target" type="id" />
+    <item name="vs_livevideo_en_achive_bottom" type="id" />
+    <item name="vs_livevideo_en_achive_bottom2" type="id" />
+    <!--英语本场成就-战队pk-->
+    <item name="cb_livevideo_en_stand_achive_title" type="id" />
+    <item name="rl_livevideo_en_achive_stand_bg" type="id" />
+    <item name="rl_livevideo_en_achive_stand_content" type="id" />
+    <!--英语战队pk-->
+    <item name="tv_livevideo_en_achive_pk_target" type="id" />
+    <item name="rl_livevideo_en_achive_pk_back" type="id" />
+    <item name="rl_livevideo_en_achive_pk_my" type="id" />
+    <item name="rl_livevideo_en_achive_pk_other" type="id" />
+    <item name="tv_livevideo_en_achive_pk_energy_my_lable" type="id" />
+    <item name="tv_livevideo_en_achive_pk_energy_my" type="id" />
+    <item name="tv_livevideo_en_achive_pk_energy_other_lable" type="id" />
+    <item name="tv_livevideo_en_achive_pk_energy_other" type="id" />
+    <item name="pg_livevideo_en_achive_pk" type="id" />
+    <item name="rl_livevideo_en_achive_pk" type="id" />
 </resources>

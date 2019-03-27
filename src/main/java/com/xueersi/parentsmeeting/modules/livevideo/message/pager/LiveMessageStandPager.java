@@ -36,13 +36,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.Constants;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
+import com.tal.speech.utils.SpeechEvaluatorUtils;
+import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -50,9 +54,6 @@ import com.xueersi.common.permission.PermissionCallback;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.speech.SpeechConfig;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
-import com.xueersi.common.speech.SpeechUtils;
 import com.xueersi.component.cloud.XesCloudUploadBusiness;
 import com.xueersi.component.cloud.config.CloudDir;
 import com.xueersi.component.cloud.config.XesCloudConfig;
@@ -76,6 +77,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
@@ -259,7 +261,13 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         tvVoiceChatCountdown = mView.findViewById(R.id.tv_livevideo_voicechat_countdown);
         rlMessageText = mView.findViewById(R.id.rl_livevideo_text_message_content);
 
-
+//        LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
+//        int rightMargin = videoPoint.screenWidth - videoPoint.x4;
+//        if (rightMargin > 0) {
+//            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) btMesOpen.getLayoutParams();
+//            lp.rightMargin = rightMargin;
+//            btMesOpen.setLayoutParams(lp);
+//        }
 //        int screenWidth = ScreenUtils.getScreenWidth();
 //        int screenHeight = ScreenUtils.getScreenHeight();
 //        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) rlInfo.getLayoutParams();
@@ -743,7 +751,12 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
             mSpeechUtils.setLanguage(Constants.ASSESS_PARAM_LANGUAGE_EN);
         }
         mParam = new SpeechParamEntity();
-        mSpeechUtils.setOnFileSuccess(new SpeechEvaluatorUtils.OnFileSuccess() {
+        mSpeechUtils.prepar(new SpeechEvaluatorUtils.OnFileSuccess() {
+            @Override
+            public void onFileInit(int code) {
+
+            }
+
             @Override
             public void onFileSuccess() {
                 mSpeechFail = "模型正在启动，请稍后";

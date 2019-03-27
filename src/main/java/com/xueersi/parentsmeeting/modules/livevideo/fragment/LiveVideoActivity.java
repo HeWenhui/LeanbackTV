@@ -11,12 +11,10 @@ import android.view.inputmethod.InputMethodManager;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.http.HttpCall;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
-import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.halfbody.HalfBodyLiveVideoFragement;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 
 /**
  * 直播

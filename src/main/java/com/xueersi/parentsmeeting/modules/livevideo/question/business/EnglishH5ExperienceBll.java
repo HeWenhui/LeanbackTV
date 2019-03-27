@@ -45,7 +45,7 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
         WrapQuestionSwitch wrapQuestionSwitch = new WrapQuestionSwitch(activity, englishH5CoursewareBll.new
                 LiveQuestionSwitchImpl());
         englishH5CoursewareBll.setBaseVoiceAnswerCreat(new LiveVoiceAnswerCreat(wrapQuestionSwitch,
-                englishH5CoursewareBll));
+                englishH5CoursewareBll, liveGetInfo));
 
         LiveBackBaseEnglishH5CoursewareCreat liveBaseEnglishH5CoursewareCreat = new
                 LiveBackBaseEnglishH5CoursewareCreat();
@@ -131,7 +131,7 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
     class EnglishH5CoursewareImpl implements EnglishH5CoursewareHttp {
 
         @Override
-        public void getStuGoldCount() {
+        public void getStuGoldCount(String method) {
             //回放没有
         }
 

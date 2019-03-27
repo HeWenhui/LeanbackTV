@@ -1,0 +1,12 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/transparent_80">
+
+    <ImageView
+        android:id="@id/iv_livevideo_enpk_jieguo_pic_nor"
+        android:layout_width="429dp"
+        android:layout_height="374dp"
+        android:layout_centerInParent="true" />
+
+</RelativeLayout>

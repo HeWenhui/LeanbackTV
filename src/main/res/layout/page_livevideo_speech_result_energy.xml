@@ -1,0 +1,41 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/rl_live_speech_result_roleplay_myenergy"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:background="@drawable/zhanduipk_fantastic_huomiao_bg">
+
+    <ImageView
+        android:id="@id/iv_live_speech_result_myenergy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:src="@drawable/zhanduipk_fantastic_huomiao_pic" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@id/tv_live_speech_result_myenergy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/iv_live_speech_result_myenergy"
+        android:text="+3"
+        android:textColor="#ffff5800" />
+
+    <ImageView
+        android:id="@id/iv_live_speech_result_mygold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="24dp"
+        android:layout_toRightOf="@id/tv_live_speech_result_myenergy"
+        android:src="@drawable/zhanduipk_fantastic_jinbi_pic" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@id/tv_live_speech_result_mygold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/iv_live_speech_result_mygold"
+        android:text="+4"
+        android:textColor="#ffff5800" />
+</RelativeLayout>

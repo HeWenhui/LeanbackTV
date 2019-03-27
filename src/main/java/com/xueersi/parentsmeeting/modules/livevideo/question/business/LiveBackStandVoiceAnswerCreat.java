@@ -9,6 +9,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.CreateAnswerReslutEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 /**
@@ -16,12 +17,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
  */
 
 public class LiveBackStandVoiceAnswerCreat extends LiveStandVoiceAnswerCreat {
+
     public LiveBackStandVoiceAnswerCreat(Context context, QuestionSwitch questionSwitch, LiveAndBackDebug liveAndBackDebug) {
         super(context, questionSwitch, liveAndBackDebug);
     }
 
     @Override
-    public boolean onAnswerReslut(Context context, AnswerRightResultVoice questionBll, BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
+    public CreateAnswerReslutEntity onAnswerReslut(Context context, AnswerRightResultVoice questionBll, BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity baseVideoQuestionEntity, VideoResultEntity entity) {
         MediaPlayerControl mediaPlayerControl = ProxUtil.getProxUtil().get(context, MediaPlayerControl.class);
         if (mediaPlayerControl != null) {
             VideoQuestionLiveEntity videoQuestionLiveEntity = (VideoQuestionLiveEntity) baseVideoQuestionEntity;

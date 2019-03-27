@@ -37,11 +37,11 @@ import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
+import com.tal.speech.utils.SpeechEvaluatorUtils;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
-import com.xueersi.common.speech.SpeechEvaluatorUtils;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
@@ -481,10 +481,10 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
     public void showSpeechBullet(RelativeLayout rootView) {
         logger.i("showSpeechBullet");
         this.rootView = rootView;
-        isShowingSpeechBullet = true;
         showShortToast("老师开启了语音弹幕");
-        mWeakHandler.postDelayed(showSpeechBulletRunnable, 2000);
         initUmsAgentData();
+        closeSpeechBullet(false);
+        mWeakHandler.postDelayed(showSpeechBulletRunnable, 2000);
     }
 
     private Runnable showSpeechBulletRunnable = new Runnable() {
@@ -508,12 +508,14 @@ public class SpeechBulletScreenPager extends LiveBasePager implements ScienceSpe
             rlSpeechBulContent.setVisibility(View.VISIBLE);
             initData();
             initListener();
+            isShowingSpeechBullet = true;
         }
     };
 
     @Override
     public void closeSpeechBullet(boolean hasTip) {
         logger.i("closeSpeechBullet");
+        mWeakHandler.removeCallbacks(showSpeechBulletRunnable);
         if (hasTip) {
             //系统日志
             Map<String, String> mData = new HashMap<>();

@@ -1,48 +1,66 @@
 package com.xueersi.parentsmeeting.modules.livevideo.event;
 
 
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
+
 /**
-*文科答题结果 事件
-*@author  chekun
-*created  at 2018/9/6 14:07
-*/
+ * 文科答题结果 事件
+ *
+ * @author chekun
+ * created  at 2018/9/6 14:07
+ */
 public class ArtsAnswerResultEvent {
-   /**h5 js回调待会的原始数据*/
-   private String dataStr;
+    /** h5 js回调待会的原始数据 */
+    private String dataStr;
+    SpeechResultEntity speechResultEntity;
 
+    private String testId;
+    private int isRight;
 
-   private String testId;
-   private int isRight;
+    private int mType;
+    /** 新课件互动题 */
+    private VideoQuestionLiveEntity detailInfo;
+    /** 新课件是否是预加载 */
+    private boolean ispreload;
+    /** js回调 传回答案 */
+    public static final int TYPE_H5_ANSWERRESULT = 1;
 
-   private int mType;
-   /**js回调 传回答案*/
-   public static final int TYPE_H5_ANSWERRESULT = 1;
+    /** 本地答题 */
+    public static final int TYPE_NATIVE_ANSWERRESULT = 2;
 
-   /**本地答题*/
-   public static final int TYPE_NATIVE_ANSWERRESULT = 2;
+    /** 本地语音答题 填空 选择 */
+    public static final int TYPE_VOICE_SELECT_BLANK = 4;
 
-   /**本地语音答题 填空 选择*/
-   public static final int TYPE_VOICE_SELECT_BLANK = 4;
+    /** js回传rolePlay答题结果 */
+    public static final int TYPE_ROLEPLAY_ANSWERRESULT = 3;
 
-   /**js回传rolePlay答题结果*/
-   public static final int TYPE_ROLEPLAY_ANSWERRESULT = 3;
+    /** 本地上传语音答题 填空选择 */
+    public static final int TYPE_NATIVE_UPLOAD_VOICE_SELECT_BLANK = 5;
 
-   /**本地上传语音答题 填空选择*/
-   public static final int TYPE_NATIVE_UPLOAD_VOICE_SELECT_BLANK = 5;
     /**
-     * @param dataStr   结果数据   type 为1时  dataStr 为答案原始数据  type为2时  为试题id
-     * @param type   答题结果类型
+     * @param dataStr 结果数据   type 为1时  dataStr 为答案原始数据  type为2时  为试题id
+     * @param type    答题结果类型
      */
-   public ArtsAnswerResultEvent(String dataStr,int type){
-       this.dataStr = dataStr;
-       this.mType = type;
-   }
+    public ArtsAnswerResultEvent(String dataStr, int type) {
+        this.dataStr = dataStr;
+        this.mType = type;
+    }
+
+    public SpeechResultEntity getSpeechResultEntity() {
+        return speechResultEntity;
+    }
+
+    public void setSpeechResultEntity(SpeechResultEntity speechResultEntity) {
+        this.speechResultEntity = speechResultEntity;
+    }
+
     public String getDataStr() {
         return dataStr;
     }
 
-    public int getType(){
-       return  this.mType;
+    public int getType() {
+        return this.mType;
     }
 
     public void setTestId(String testId) {
@@ -64,18 +82,33 @@ public class ArtsAnswerResultEvent {
 
     @Override
     public boolean equals(Object obj) {
-       if(obj != null && obj == this){
-           return  true;
-       }
-       if(obj != null && obj instanceof ArtsAnswerResultEvent){
-           ArtsAnswerResultEvent target = (ArtsAnswerResultEvent)obj;
-           if(dataStr.equals(target.getDataStr()) && mType == target.getType()){
-               return  true;
-           }
+        if (obj != null && obj == this) {
+            return true;
+        }
+        if (obj != null && obj instanceof ArtsAnswerResultEvent) {
+            ArtsAnswerResultEvent target = (ArtsAnswerResultEvent) obj;
+            if (dataStr.equals(target.getDataStr()) && mType == target.getType()) {
+                return true;
+            }
         }
         return false;
     }
 
+    public VideoQuestionLiveEntity getDetailInfo() {
+        return detailInfo;
+    }
+
+    public void setDetailInfo(VideoQuestionLiveEntity detailInfo) {
+        this.detailInfo = detailInfo;
+    }
+
+    public boolean isIspreload() {
+        return ispreload;
+    }
+
+    public void setIspreload(boolean ispreload) {
+        this.ispreload = ispreload;
+    }
 
     @Override
     public String toString() {

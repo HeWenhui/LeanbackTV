@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.UserBll;
@@ -21,7 +22,7 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.SampleMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
-import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
+//import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -46,6 +47,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.SendMessageReg;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
@@ -97,7 +99,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     private LiveAutoNoticeIRCBll mLiveAutoNoticeBll;
     private LiveMessageBll mRoomAction;
     /** 星星互动 */
-    private LiveAchievementIRCBll starAction;
+//    private LiveAchievementIRCBll starAction;
+    private ArrayList<SendMessageReg.OnSendMsg> onSendMsgs = new ArrayList<>();
     private LiveHttpManager mHttpManager;
     private String mLiveId;
     private LiveHttpResponseParser mHttpResponseParser;
@@ -108,6 +111,17 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         mLiveId = liveBll.getLiveId();
         mLogtf = new LogToFile(context, TAG);
         mRoomAction = new LiveMessageBll(context, mLiveType);
+        putInstance(SendMessageReg.class, new SendMessageReg() {
+            @Override
+            public void addOnSendMsg(OnSendMsg onSendMsg) {
+                onSendMsgs.add(onSendMsg);
+            }
+
+            @Override
+            public void removeOnSendMsg(OnSendMsg onSendMsg) {
+                onSendMsgs.remove(onSendMsg);
+            }
+        });
     }
 
     @Override
@@ -118,7 +132,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         mVideoAction = getInstance(VideoAction.class);
         mHttpResponseParser = mLiveBll.getHttpResponseParser();
         mHttpManager = mLiveBll.getHttpManager();
-        starAction = getInstance(LiveAchievementIRCBll.class);
+//        starAction = getInstance(LiveAchievementIRCBll.class);
 //        mRoomAction.setQuestionBll(getInstance(QuestionBll.class));
         VideoChatStatusChange videoChatStatusChange = getInstance(VideoChatStatusChange.class);
         if (videoChatStatusChange != null) {
@@ -1142,8 +1156,12 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         jsonObject.put("to", teamId);
                     }
                     sendMessage = mLiveBll.sendMessage(jsonObject);
-                    if (starAction != null) {
-                        starAction.onSendMsg(msg);
+                    for (int i = 0; i < onSendMsgs.size(); i++) {
+                        try {
+                            onSendMsgs.get(i).onSendMsg(msg);
+                        } catch (Exception e) {
+                            CrashReport.postCatchedException(e);
+                        }
                     }
                 } catch (Exception e) {
                     // logger.e( "understand", e);
@@ -1320,6 +1338,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     public void onDestory() {
         super.onDestory();
         mRoomAction.onDestroy();
+        onSendMsgs.clear();
         EventBus.getDefault().unregister(this);
     }
 

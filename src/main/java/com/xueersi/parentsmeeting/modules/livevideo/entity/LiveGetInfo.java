@@ -218,6 +218,8 @@ public class LiveGetInfo {
      */
     private String mode = LiveTopic.MODE_TRANING;
     private TotalOpeningLength totalOpeningLength;
+    private EnglishPk englishPk = new EnglishPk();
+    private EnPkEnergy enpkEnergy = new EnPkEnergy();
     /**
      * 是否显示满分榜
      */
@@ -250,6 +252,8 @@ public class LiveGetInfo {
     /** 是否是AI 伴侣直播间 */
     private int isAIPartner;
     private String[] subjectIds;//所有学科id
+    /** 学科，都是2 的倍数 */
+    private String subject_digits;
     /** 小学理科改版，教育阶段，区分献花 */
     private String educationStage;
     /** 直播课年级 */
@@ -288,7 +292,8 @@ public class LiveGetInfo {
 
     //暂停点赞多长时间弹出礼物
     private int praiseAutoBarrageTime = 1;
-
+    /** 走新课件预加载 */
+    private boolean newCourse =false;
 
     // add by William on 2018/12/5  专属老师用
     public EPlanInfoBean ePlanInfo;
@@ -949,6 +954,22 @@ public class LiveGetInfo {
         this.totalOpeningLength = totalOpeningLength;
     }
 
+    public EnglishPk getEnglishPk() {
+        return englishPk;
+    }
+
+    public void setEnglishPk(EnglishPk englishPk) {
+        this.englishPk = englishPk;
+    }
+
+    public EnPkEnergy getEnpkEnergy() {
+        return enpkEnergy;
+    }
+
+    public void setEnpkEnergy(EnPkEnergy enpkEnergy) {
+        this.enpkEnergy = enpkEnergy;
+    }
+
     public String getMode() {
         return mode;
     }
@@ -985,12 +1006,28 @@ public class LiveGetInfo {
         return subjectIds;
     }
 
+    public String getSubject_digits() {
+        return subject_digits;
+    }
+
+    public void setSubject_digits(String subject_digits) {
+        this.subject_digits = subject_digits;
+    }
+
     public String getEducationStage() {
         return educationStage;
     }
 
     public void setEducationStage(String educationStage) {
         this.educationStage = educationStage;
+    }
+
+    public boolean isNewCourse() {
+        return newCourse;
+    }
+
+    public void setNewCourse(boolean newCourse) {
+        this.newCourse = newCourse;
     }
 
     public static class MainTeacherInfo {
@@ -1044,8 +1081,7 @@ public class LiveGetInfo {
         /**
          * 课id，加入聊天服务的房间
          */
-        private String
-                classId;
+        private String classId;
         private String shutupStatus;
         /**
          * 弹出学习报告 1弹，0不弹
@@ -1363,5 +1399,26 @@ public class LiveGetInfo {
         public String eTeacherId;
         public String eClassId;
         public String fakePlanId;
+    }
+
+    /**
+     * https://wiki.xesv5.com/pages/viewpage.action?pageId=14027645
+     */
+    public static class EnglishPk {
+        public int canUsePK;//: 1,  // 是否可以使用战队pk
+
+        // 能使用条件：英语 && 直播 && 标准课 && 不迟到 （时间在小于等于一个小时，1/3   大于一个小时，1/6） && 双优英语 带学段的
+
+        public int historyScore;//10, // 历史场次(最近三场)计算的评估值
+
+        public int isTwoLose;//1,  // 是否连输两场      0 => 正常  1 => 连输两场
+
+        public int hasGroup;//0    // 是否已经进行分组，0 => 未分组 1=> 已分组 如果该字段为1 就不用再请求go重新分组
+    }
+
+    public static class EnPkEnergy {
+        public  int me;//: 10,
+        public  int myTeam;//":80,
+        public  int opTeam;//":100
     }
 }

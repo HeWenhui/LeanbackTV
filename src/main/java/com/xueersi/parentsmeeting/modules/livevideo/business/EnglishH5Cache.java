@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -31,7 +30,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsMoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreCache;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ScienceStaticConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ZipExtractorTask;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ZipProg;
@@ -104,10 +103,7 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         bottomContent = (RelativeLayout) activity.findViewById(R.id.rl_course_video_live_question_content);
         this.liveId = mGetInfo.getId();
         this.mGetInfo = mGetInfo;
-        cacheFile = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES + "/parentsmeeting/webviewCache");
-        if (cacheFile == null) {
-            cacheFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webviewCache");
-        }
+        cacheFile = LiveCacheFile.geCacheFile(context, "webviewCache");
 //        cacheFile = new File(context.getCacheDir(), "cache/webviewCache");
         if (!cacheFile.exists()) {
             cacheFile.mkdirs();
@@ -293,16 +289,23 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
         if (!mPublicCacheout.exists()) {
             mPublicCacheout.mkdirs();
         }
+        boolean isNewPreLoad = ((Activity) context).getIntent().getBooleanExtra("newCourse", false);
         // 一次多发的接口调用
         if (LiveVideoConfig.isScience || mGetInfo != null && mGetInfo.getIsArts() == 0) {
-            ScienceMulPreDownLoad(todayLiveCacheDir);
+            if (!isNewPreLoad) {
+                ScienceMulPreDownLoad(todayLiveCacheDir);
+            }
             // TODO 理科小学
 //            scienceStatic();
         } else if (mGetInfo != null && mGetInfo.getIsArts() == 2) {
             //语文一题多发
-            chineseMulPreDownLoad(todayLiveCacheDir);
+            if (!isNewPreLoad) {
+                chineseMulPreDownLoad(todayLiveCacheDir);
+            }
         } else {
-            ArtsMulPreDownLoad(todayLiveCacheDir);
+            if (!isNewPreLoad) {
+                ArtsMulPreDownLoad(todayLiveCacheDir);
+            }
         }
     }
 
@@ -496,9 +499,15 @@ public class EnglishH5Cache implements EnglishH5CacheAction {
                 }
             }
         }
+        mUrls.add("https://res17.xesimg.com/like/XiaoXueKeJian/animation/interact-active/right/img_5.png");
         for (int i = 0; i < mUrls.size(); i++) {
             final String url = i + ".zip";
-            final File save = new File(mMorecachein, url);
+            final File save;
+            if (url.contains("img_5.png")) {
+                save = new File(mMorecachein, "img_5.png");
+            } else {
+                save = new File(mMorecachein, url);
+            }
             if (!fileIsExists(save.getPath())) {
                 final File tempFile = new File(mMorecachein, url + ".temp");
                 mHttpManager.download(mUrls.get(i), tempFile.getPath(), new DownloadCallBack() {

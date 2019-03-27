@@ -49,7 +49,7 @@ public class LiveBaseBll extends BaseBll {
         mLiveBll = liveBll;
         mLiveId = liveBll.getLiveId();
         mLiveType = liveBll.getLiveType();
-        mLogtf = new LogToFile(liveBll, TAG);
+        mLogtf = new LogToFile(context, TAG);
     }
 
     /**

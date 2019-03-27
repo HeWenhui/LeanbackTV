@@ -50,6 +50,7 @@ public class LiveVideoActivityBase extends XesActivity {
         intent.putExtra("livepid", android.os.Process.myPid());
         startService(intent);
         BuglyLog.i(TAG,"onCreate");
+//        FloatWindowManager.addView(this,new Button(this),2);
     }
 
     @Override
@@ -131,6 +132,8 @@ public class LiveVideoActivityBase extends XesActivity {
         if (liveVideoFragmentBase == null) {
             liveVideoFragmentBase = getFragment();
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+            // TODO
+//            fragmentTransaction.add(android.R.id.content, liveVideoFragmentBase, "liveVideo");
             fragmentTransaction.add(R.id.rl_course_video_contentview, liveVideoFragmentBase, "liveVideo");
             fragmentTransaction.commit();
         } else {
