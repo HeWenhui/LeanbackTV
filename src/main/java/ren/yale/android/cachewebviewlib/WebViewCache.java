@@ -8,7 +8,6 @@ import android.util.LruCache;
 
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.MimeTypeMap;
-import com.xueersi.common.config.AppConfig;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.network.TxHttpDns;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
@@ -227,7 +226,7 @@ public class WebViewCache {
         return null;
     }
 
-    public InputStream httpRequest(CacheWebViewClient client, CacheStrategy cacheStrategy, String url,IP ip) {
+    public InputStream httpRequest(CacheWebViewClient client, CacheStrategy cacheStrategy, String url, IP ip) {
         HttpURLConnection httpURLConnection = null;
         boolean isFail = false;
         Exception dnsException = new Exception();
@@ -300,6 +299,7 @@ public class WebViewCache {
                 }
                 return resourseInputStream;
             } else {
+                dnsException = new Exception("responseCode=" + responseCode);
                 client.onReceivedHttpError(webView, url, responseCode, "");
             }
         } catch (MalformedURLException e) {
@@ -322,8 +322,8 @@ public class WebViewCache {
                 httpURLConnections.remove(httpURLConnection);
             }
         }
-        if (!isScience&&!AppConfig.DEBUG) {
-            dnsFailMap.put(url, true);
+        if (true) {
+//            dnsFailMap.put(url, true);
             Map<String, String> mData = new HashMap<>();
             mData.put("message", Log.getStackTraceString(dnsException));
             mData.put("url", url);
@@ -334,29 +334,29 @@ public class WebViewCache {
             }
             mData.put("ishttpdns", (isFail || needHttpDns) ? "true" : "false");
             UmsAgentManager.umsAgentDebug(mContext, "1305801", "dns_fail", mData);
-            if (dnsFail < 3) {
-                dnsFail++;
-                InputStream inputStream = httpRequest(client, cacheStrategy, url,ip);
-                if (inputStream != null) {
-                    dnsFail = 0;
-                    mData.clear();
-                    mData.put("message", "success");
-                    mData.put("url", url);
-                    if (ip.getIp() != null){
-                        mData.put("ip",ip.getIp());
-                    }else {
-                        mData.put("ip","");
-                    }
-                    try {
-                        mData.put("host", new URL(url).getHost());
-                    } catch (MalformedURLException e1) {
-                        e1.printStackTrace();
-                    }
-                    mData.put("ishttpdns", "true");
-                    UmsAgentManager.umsAgentDebug(mContext, "1305801", "dns_fail", mData);
-                    return inputStream;
-                }
-            }
+//            if (dnsFail < 3) {
+//                dnsFail++;
+//                InputStream inputStream = httpRequest(client, cacheStrategy, url,ip);
+//                if (inputStream != null) {
+//                    dnsFail = 0;
+//                    mData.clear();
+//                    mData.put("message", "success");
+//                    mData.put("url", url);
+//                    if (ip.getIp() != null){
+//                        mData.put("ip",ip.getIp());
+//                    }else {
+//                        mData.put("ip","");
+//                    }
+//                    try {
+//                        mData.put("host", new URL(url).getHost());
+//                    } catch (MalformedURLException e1) {
+//                        e1.printStackTrace();
+//                    }
+//                    mData.put("ishttpdns", "true");
+//                    UmsAgentManager.umsAgentDebug(mContext, "1305801", "dns_fail", mData);
+//                    return inputStream;
+//                }
+//            }
         }
         return null;
     }
