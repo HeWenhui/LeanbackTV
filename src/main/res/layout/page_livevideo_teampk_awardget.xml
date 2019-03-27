@@ -152,19 +152,37 @@
 
         </LinearLayout>
 
-        <com.xueersi.parentsmeeting.modules.livevideo.widget.FastScrollableRecyclerView
-            android:id="@id/rcl_teampk_open_box_rank"
+
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@id/ll_teampk_open_box_team_coin_container"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="14dp"
-            android:overScrollMode="never"
-            android:scrollbars="none"
-            app:VerticalThumbDrawable="@drawable/teampk_rcl_fastscorller_header_selector"
-            app:VerticalTrackDrawable="@drawable/teampk_rcl_fastscroller_tracker" />
+            >
+
+            <android.support.constraint.Guideline
+                android:id="@id/gl_teampk_award_left_guide_line"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.151" />
+
+            <com.xueersi.parentsmeeting.modules.livevideo.widget.FastScrollableRecyclerView
+                android:id="@id/rcl_teampk_open_box_rank"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="14dp"
+                android:overScrollMode="never"
+                android:scrollbars="none"
+                app:layout_constraintWidth_percent="0.796"
+                app:VerticalThumbDrawable="@drawable/teampk_rcl_fastscorller_header_selector"
+                app:VerticalTrackDrawable="@drawable/teampk_rcl_fastscroller_tracker"
+                app:layout_constraintLeft_toRightOf="@id/gl_teampk_award_left_guide_line"
+                />
+        </android.support.constraint.ConstraintLayout>
+
 
     </RelativeLayout>
 
