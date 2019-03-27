@@ -37,6 +37,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.business.GetStuActiveTeam;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.InteractiveTeam;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
@@ -128,7 +129,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
     private int mPagerIndex = 0;
     private int mSingCount = 0;
-
+    private InteractiveTeam interactiveTeam;
     private WorkerThread mWorkerThread;
     private HashMap<String, CourseGroupItem> courseGroupItemHashMap = new HashMap<>();
     private LiveGetInfo liveGetInfo;
@@ -171,7 +172,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             getStuActiveTeam.getStuActiveTeam(new AbstractBusinessDataCallBack() {
                 @Override
                 public void onDataSucess(Object... objData) {
-                    ArrayList<TeamMemberEntity> entities = (ArrayList<TeamMemberEntity>) objData[0];
+                    interactiveTeam = (InteractiveTeam) objData[0];
+                    ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
                     joinChannel(entities);
                 }
 

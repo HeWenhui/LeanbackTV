@@ -596,16 +596,21 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     public void getStuActiveTeam(final AbstractBusinessDataCallBack callBack) {
-        logger.d("getStuActiveTeam:size=" + entities.size());
-        if (!entities.isEmpty()) {
-            callBack.onDataSucess(entities);
+        logger.d("getStuActiveTeam:mInteractiveTeam=null?" + (mInteractiveTeam == null));
+        if (mInteractiveTeam != null) {
+            callBack.onDataSucess(mInteractiveTeam);
             return;
         }
         getEnTeamPkHttpManager().getStuActiveTeam(unique_id, mGetInfo.getStuId(), new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
+                mInteractiveTeam = new InteractiveTeam();
+                mInteractiveTeam.setLive_id(mLiveId);
+                mInteractiveTeam.setClass_id("" + classInt);
+                mInteractiveTeam.setPk_team_id("" + pkTeamEntity.getPkTeamId());
                 entities = (ArrayList<TeamMemberEntity>) objData[0];
-                callBack.onDataSucess(objData);
+                mInteractiveTeam.setEntities(entities);
+                callBack.onDataSucess(mInteractiveTeam);
             }
 
             @Override
