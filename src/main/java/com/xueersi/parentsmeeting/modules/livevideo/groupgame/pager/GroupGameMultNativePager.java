@@ -1,13 +1,18 @@
 package com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.airbnb.lottie.ImageAssetDelegate;
+import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieImageAsset;
 import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.EvaluatorListenerWithPCM;
 import com.tal.speech.speechrecognizer.ResultEntity;
@@ -34,6 +39,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.business.GetStuActiveTeam;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.item.CourseGroupItem;
@@ -50,6 +56,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.web.WebInstertJs;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.NewCourseLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.GroupSurfaceView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -57,6 +64,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 
 import io.agora.rtc.Constants;
 import io.agora.rtc.RtcEngine;
@@ -78,6 +86,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
      * 课件接口失败刷新
      */
     private ImageView ivCourseRefresh;
+    GroupSurfaceView groupSurfaceView;
     /**
      * 课件网页刷新
      */
@@ -206,7 +215,29 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             }
         }), "xesApp");
         wvSubjectWeb.loadUrl(TEST_URL);
+
+//        groupSurfaceView = new GroupSurfaceView(mContext);
+//        ((ViewGroup) mView).addView(groupSurfaceView);
+//        handler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (!isAttach()) {
+//                    return;
+//                }
+//                volume = random.nextInt(30);
+//                groupSurfaceView.onVolumeUpdate(volume);
+//                CourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stuid);
+//                if (courseGroupItem != null) {
+//                    courseGroupItem.onVolumeUpdate(volume);
+//                }
+////                animationView.setProgress((float) volume / 30.f);
+//                handler.postDelayed(this, 200);
+//            }
+//        }, 1000);
     }
+
+    Random random = new Random();
+    int volume = 0;
 
     private void joinChannel(ArrayList<TeamMemberEntity> entities) {
         mWorkerThread = new WorkerThread(mContext, stuid, false, true);
@@ -276,7 +307,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
                         teamMemberEntity.id = uid;
                         teamMemberEntity.name = "" + uid;
-                        CourseGroupItem courseGroupItem1 = new CourseGroupItem(mWorkerThread, uid, uid == stuid);
+                        CourseGroupItem courseGroupItem1 = new CourseGroupItem(mContext, mWorkerThread, uid, uid == stuid);
                         View convertView = mInflater.inflate(courseGroupItem1.getLayoutResId(), ll_livevideo_course_item_content, false);
                         courseGroupItem1.initViews(convertView);
                         courseGroupItem1.updateViews(teamMemberEntity, courseGroupItemHashMap.size(), teamMemberEntity);
@@ -292,7 +323,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         @Override
         public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
             logger.d("onJoinChannelSuccess:channel=" + channel + ",uid=" + uid);
-
             if (stuid == uid) {
                 CourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + uid);
                 if (courseGroupItem != null) {
@@ -367,7 +397,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         LayoutInflater mInflater = LayoutInflater.from(mContext);
         for (int i = 0; i < entities.size(); i++) {
             TeamMemberEntity teamMemberEntity = entities.get(i);
-            CourseGroupItem courseGroupItem = new CourseGroupItem(mWorkerThread, teamMemberEntity.id, teamMemberEntity.id == stuid);
+            CourseGroupItem courseGroupItem = new CourseGroupItem(mContext, mWorkerThread, teamMemberEntity.id, teamMemberEntity.id == stuid);
             View convertView = mInflater.inflate(courseGroupItem.getLayoutResId(), ll_livevideo_course_item_content, false);
             courseGroupItem.initViews(convertView);
             courseGroupItem.updateViews(teamMemberEntity, i, teamMemberEntity);
@@ -432,7 +462,11 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             public void onVolumeUpdate(int volume) {
 //                logger.d("onVolumeUpdate:volume = " + volume);
 //                float floatVolume = (float) volume * 3 / 90;
-
+                CourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stuid);
+                if (courseGroupItem != null) {
+                    courseGroupItem.onVolumeUpdate(volume);
+                }
+//                groupSurfaceView.onVolumeUpdate(volume);
             }
 
             @Override

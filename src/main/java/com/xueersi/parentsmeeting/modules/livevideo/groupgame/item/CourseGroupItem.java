@@ -1,16 +1,24 @@
 package com.xueersi.parentsmeeting.modules.livevideo.groupgame.item;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.airbnb.lottie.ImageAssetDelegate;
+import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 
 import io.agora.rtc.RtcEngine;
@@ -28,8 +36,10 @@ public class CourseGroupItem implements AdapterItemInterface<TeamMemberEntity> {
     private boolean enableAudio = true;
     private boolean isMe;
     private int uid;
+    private Context mContext;
 
-    public CourseGroupItem(WorkerThread workerThread, int uid, boolean isMe) {
+    public CourseGroupItem(Context context, WorkerThread workerThread, int uid, boolean isMe) {
+        this.mContext = context;
         this.workerThread = workerThread;
         this.uid = uid;
         this.isMe = isMe;
@@ -37,6 +47,9 @@ public class CourseGroupItem implements AdapterItemInterface<TeamMemberEntity> {
 
     @Override
     public int getLayoutResId() {
+        if (isMe) {
+            return R.layout.item_livevideo_h5_courseware_group_my;
+        }
         return R.layout.item_livevideo_h5_courseware_group_people;
     }
 
@@ -98,7 +111,31 @@ public class CourseGroupItem implements AdapterItemInterface<TeamMemberEntity> {
     public void updateViews(TeamMemberEntity entity, int position, Object objTag) {
         rlCourseItemName.setText(entity.name);
         ImageLoader.with(ContextManager.getContext()).load(entity.headurl).into(ivCourseItemVideoHead);
-        ivCourseItemVideo.setImageResource(VIDEO_RES[0]);
-        ivCourseItemAudio.setImageResource(AUDIO_RES[0]);
+        if (isMe) {
+            String lottieResPath = "group_game_mult_audio/images";
+            String lottieJsonPath = "group_game_mult_audio/data.json";
+            final LottieEffectInfo lottieEffectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
+            final LottieAnimationView animationView = (LottieAnimationView) ivCourseItemAudio;
+            animationView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext), "group_game_mult");
+            animationView.setImageAssetDelegate(new ImageAssetDelegate() {
+                @Override
+                public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                    return lottieEffectInfo.fetchBitmapFromAssets(animationView, lottieImageAsset.getFileName(),
+                            lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(),
+                            mContext);
+                }
+            });
+            animationView.playAnimation();
+        } else {
+            ivCourseItemVideo.setImageResource(VIDEO_RES[0]);
+            ivCourseItemAudio.setImageResource(AUDIO_RES[0]);
+        }
     }
+
+    public void onVolumeUpdate(int volume) {
+        final LottieAnimationView animationView = (LottieAnimationView) ivCourseItemAudio;
+//        animationView.setProgress(0.5f + (float) (volume) / 30.0f);
+        animationView.setProgress((float) (volume) / 30.0f);
+    }
+
 }

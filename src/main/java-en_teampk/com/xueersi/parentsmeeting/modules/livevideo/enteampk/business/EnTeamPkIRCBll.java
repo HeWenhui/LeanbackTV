@@ -135,6 +135,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 CrashReport.postCatchedException(e);
             }
         }
+        parseTeamInter();
 //        if (com.xueersi.common.config.AppConfig.DEBUG) {
 //            java.util.Random random = new java.util.Random();
 //            EnTeamPkRankEntity enTeamPkRankEntity = new EnTeamPkRankEntity();
@@ -546,6 +547,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                                 entities = interactiveTeam.getEntities();
                                 logger.d("onMessage(TEAM_TYPE):entities=" + entities.size());
                             }
+                            saveTeamInter(msg);
                         } catch (Exception e) {
                             e.printStackTrace();
                             logger.d("onMessage(TEAM_TYPE)", e);
@@ -559,6 +561,37 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         @Override
         public short[] getMessageFilter() {
             return new short[]{TcpConstants.TEAM_TYPE};
+        }
+    }
+
+    private void parseTeamInter() {
+        try {
+            String string = mShareDataManager.getString(ShareDataConfig.LIVE_ENPK_MY_TEAM_INTER, "{}", ShareDataManager.SHAREDATA_USER);
+            JSONObject jsonObject = new JSONObject(string);
+            if (jsonObject.has(mGetInfo.getId())) {
+                JSONObject liveObj = jsonObject.getJSONObject(mGetInfo.getId());
+                InteractiveTeam interactiveTeam = getEnTeamPkHttpManager().parseInteractiveTeam(liveObj);
+                if (interactiveTeam != null) {
+                    mInteractiveTeam = interactiveTeam;
+                    entities = mInteractiveTeam.getEntities();
+                }
+            }
+        } catch (Exception e) {
+            mShareDataManager.put(ShareDataConfig.LIVE_ENPK_MY_TEAM_INTER, "{}", ShareDataManager.SHAREDATA_USER);
+            CrashReport.postCatchedException(e);
+        }
+    }
+
+    private void saveTeamInter(String msg) {
+        try {
+            String string = mShareDataManager.getString(ShareDataConfig.LIVE_ENPK_MY_TEAM_INTER, "{}", ShareDataManager.SHAREDATA_USER);
+            JSONObject jsonObject = new JSONObject(string);
+            JSONObject liveObj = new JSONObject(msg);
+            jsonObject.put(mGetInfo.getId(), liveObj);
+            mShareDataManager.put(ShareDataConfig.LIVE_ENPK_MY_TEAM_INTER, "" + jsonObject, ShareDataManager.SHAREDATA_USER);
+        } catch (Exception e) {
+            mShareDataManager.put(ShareDataConfig.LIVE_ENPK_MY_TEAM_INTER, "{}", ShareDataManager.SHAREDATA_USER);
+            CrashReport.postCatchedException(e);
         }
     }
 

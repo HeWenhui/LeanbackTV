@@ -2,8 +2,11 @@ package com.xueersi.parentsmeeting.modules.livevideo.enteampk.http;
 
 import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.logerhelper.MobAgent;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.InteractiveTeam;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,8 +17,10 @@ import java.util.ArrayList;
 
 public class EnTeamPkResponseParser extends HttpResponseParser {
     static String TAG = "EnTeamPkResponseParser";
+    Logger logger = LiveLoggerFactory.getLogger(TAG);
 
     public EnTeamPkResponseParser() {
+
     }
 
     public ArrayList<InetSocketAddress> parseTcpDispatch(ResponseEntity responseEntity) {
@@ -30,7 +35,8 @@ public class EnTeamPkResponseParser extends HttpResponseParser {
                 addresses.add(inetSocketAddress);
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            logger.e("parseTcpDispatch", e);
+            MobAgent.httpResponseParserError(TAG, "parseTcpDispatch", e.getMessage());
         }
         return addresses;
     }
@@ -43,11 +49,12 @@ public class EnTeamPkResponseParser extends HttpResponseParser {
             interactiveTeam.setPk_team_id(jsonObject.getString("pk_team_id"));
             interactiveTeam.setTeam_type(jsonObject.getString("team_type"));
             interactiveTeam.setInteractive_team_id(jsonObject.getString("interactive_team_id"));
-            ArrayList<TeamMemberEntity> entities = parseGetStuActiveTeam(jsonObject.getJSONArray(""));
+            ArrayList<TeamMemberEntity> entities = parseGetStuActiveTeam(jsonObject.getJSONArray("team_mate"));
             interactiveTeam.setEntities(entities);
             return interactiveTeam;
         } catch (JSONException e) {
-            e.printStackTrace();
+            logger.e("parseInteractiveTeam", e);
+            MobAgent.httpResponseParserError(TAG, "parseInteractiveTeam", e.getMessage());
         }
         return null;
     }
@@ -64,7 +71,8 @@ public class EnTeamPkResponseParser extends HttpResponseParser {
                 entities.add(teamMemberEntity);
             }
         } catch (JSONException e) {
-            e.printStackTrace();
+            logger.e("parseGetStuActiveTeam", e);
+            MobAgent.httpResponseParserError(TAG, "parseGetStuActiveTeam", e.getMessage());
         }
         return entities;
     }
