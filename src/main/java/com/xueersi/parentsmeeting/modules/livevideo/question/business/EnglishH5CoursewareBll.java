@@ -636,6 +636,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     private void switchVoiceAnswerPager(BaseVoiceAnswerPager voiceAnswerPager) {
         boolean isEnd = voiceAnswerPager.isEnd();
         voiceAnswerPager.stopPlayer();
+        voiceAnswerPager.onDestroy();
         bottomContent.removeView(voiceAnswerPager.getRootView());
         if (EnglishH5CoursewareBll.this.voiceAnswerPager == voiceAnswerPager) {
             EnglishH5CoursewareBll.this.voiceAnswerPager = null;
