@@ -52,6 +52,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.lib.TcpConstants;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareSecHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.CourseMessage;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseCoursewareNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
@@ -197,6 +198,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             tcpMessageReg = ProxUtil.getProxUtil().get(mContext, TcpMessageReg.class);
             if (tcpMessageReg != null) {
                 voiceProjectile = new VoiceProjectile();
+                boolean change = tcpMessageReg.setTest(LiveQueConfig.EN_COURSE_GAME_TYPE_1, detailInfo.id);
+                mLogtf.d("initData(setTest):change=" + change);
                 tcpMessageReg.registTcpMessageAction(voiceProjectile);
             }
         }
@@ -268,8 +271,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         mWorkerThread.setOnEngineCreate(new WorkerThread.OnEngineCreate() {
             @Override
             public void onEngineCreate(final RtcEngine mRtcEngine) {
-                mRtcEngine.enableAudioVolumeIndication(500, 3);
-                VideoEncoderConfiguration.VideoDimensions dimensions = VideoEncoderConfiguration.VD_320x240;
+                VideoEncoderConfiguration.VideoDimensions dimensions = new VideoEncoderConfiguration.VideoDimensions(256, 192);
                 VideoEncoderConfiguration configuration = new VideoEncoderConfiguration(dimensions,
                         VideoEncoderConfiguration.FRAME_RATE.FRAME_RATE_FPS_10,
                         VideoEncoderConfiguration.STANDARD_BITRATE,

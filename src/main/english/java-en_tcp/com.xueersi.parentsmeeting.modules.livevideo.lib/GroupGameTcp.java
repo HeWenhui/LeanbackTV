@@ -49,6 +49,7 @@ public class GroupGameTcp {
 
     public void start() {
         try {
+            isStop = false;
             socket = new Socket(host, port);
             log.d("start:KeepAlive=" + socket.getKeepAlive());
             socket.setKeepAlive(true);
@@ -431,8 +432,7 @@ public class GroupGameTcp {
                     }
                 }
             }
-            isStop = true;
-            if (receiveMegCallBack != null) {
+            if (!isStop && receiveMegCallBack != null) {
                 receiveMegCallBack.onDisconnect(GroupGameTcp.this);
             }
         }

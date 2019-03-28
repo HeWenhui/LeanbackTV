@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.GroupGameTcp;
@@ -172,6 +173,35 @@ public class TcpDispatch implements TcpMessageReg {
             }, 1000);
         }
     };
+
+    @Override
+    public boolean setTest(int testType, String testId) {
+        boolean change = false;
+        if (gt != testType) {
+            gt = testType;
+            change = true;
+        }
+        if (!TextUtils.equals(test_id, testId)) {
+            test_id = testId;
+            change = true;
+        }
+        logger.d("setTest:change=" + change);
+        if (change) {
+            liveThreadPoolExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    if (groupGameTcp != null) {
+                        groupGameTcp.stop();
+                    }
+                    InetSocketAddress inetSocketAddress = addresses.get(addressIndex++ % addresses.size());
+                    groupGameTcp = new GroupGameTcp(inetSocketAddress.getHostName(), inetSocketAddress.getPort());
+                    groupGameTcp.setReceiveMegCallBack(receiveMegCallBack);
+                    groupGameTcp.start();
+                }
+            });
+        }
+        return change;
+    }
 
     @Override
     public void send(short type, int operation, String bodyStr) {

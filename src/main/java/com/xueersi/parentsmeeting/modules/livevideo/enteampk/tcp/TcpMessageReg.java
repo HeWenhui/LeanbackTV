@@ -6,4 +6,6 @@ public interface TcpMessageReg {
     void registTcpMessageAction(TcpMessageAction tcpMessageAction);
 
     void unregistTcpMessageAction(TcpMessageAction tcpMessageAction);
+
+    boolean setTest(int testType, String testId);
 }
