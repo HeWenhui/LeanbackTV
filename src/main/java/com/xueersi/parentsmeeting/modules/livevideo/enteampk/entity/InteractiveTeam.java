@@ -8,7 +8,7 @@ public class InteractiveTeam {
     private String class_id;
     private String pk_team_id;
     private String team_type;
-    private String interactive_team_id;
+    private int interactive_team_id;
     private ArrayList<TeamMemberEntity> entities = new ArrayList<>();
 
     public String getLive_id() {
@@ -43,11 +43,11 @@ public class InteractiveTeam {
         this.team_type = team_type;
     }
 
-    public String getInteractive_team_id() {
+    public int getInteractive_team_id() {
         return interactive_team_id;
     }
 
-    public void setInteractive_team_id(String interactive_team_id) {
+    public void setInteractive_team_id(int interactive_team_id) {
         this.interactive_team_id = interactive_team_id;
     }
 

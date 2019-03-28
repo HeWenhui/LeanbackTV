@@ -50,7 +50,10 @@ public class LiveQueConfig {
     public static final String EN_COURSE_TYPE_19 = "19";
     /** 直播- Hot air ballon 或者Cleaning up */
     public static final String EN_COURSE_TYPE_24 = "24";
-
+    /** 直播-小组互动语音炮弹 */
+    public static final int EN_COURSE_GAME_TYPE_1 = 1;
+    /** 直播-小组互动Cleaning up */
+    public static final int EN_COURSE_GAME_TYPE_2 = 2;
     public static ArrayList getSubmitMultiTestTypes() {
         if (SUBMIT_MULTI_TEST_TYPES == null) {
             SUBMIT_MULTI_TEST_TYPES = new ArrayList<>();
