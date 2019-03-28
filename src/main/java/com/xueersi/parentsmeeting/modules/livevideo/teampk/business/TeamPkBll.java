@@ -1058,7 +1058,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
 
     }
 
-
     /**
      * 设置 埋点统计nonce
      */
