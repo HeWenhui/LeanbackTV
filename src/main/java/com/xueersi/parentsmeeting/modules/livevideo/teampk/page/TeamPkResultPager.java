@@ -975,7 +975,7 @@ public class TeamPkResultPager extends TeamPkBasePager {
      * @return
      */
     private boolean isForceSubmit() {
-        return mTeamPkBll.getLatesH5CloseEvent() != null && mTeamPkBll.getLatesH5CloseEvent().isCloseByTeacher();
+        return mTeamPkBll.getLatesH5CloseEvent() != null && mTeamPkBll.getLatesH5CloseEvent().isForceSubmit();
     }
 
     private void removeLottieView() {

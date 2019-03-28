@@ -326,7 +326,7 @@ public class TeamPkContributionPager extends TeamPkBasePager {
      */
     private boolean isForceSubmit() {
 
-        return teamPkBll.getLatesH5CloseEvent() != null && teamPkBll.getLatesH5CloseEvent().isCloseByTeacher();
+        return teamPkBll.getLatesH5CloseEvent() != null && teamPkBll.getLatesH5CloseEvent().isForceSubmit();
     }
 
     /**

@@ -95,6 +95,12 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
     private String type;
     /**是否接收到或者展示过答题结果页面**/
     private boolean isAnswerResultRecived;
+
+    /**
+     * 是否是强制提交
+     */
+    private boolean isForceSubmit;
+
     /**
      * 文科新课件平台 试题
      **/
@@ -285,6 +291,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                     event.setCloseByTeahcer(((QuestionBll) questionBll).isWebViewCloseByTeacher());
                     ((QuestionBll) questionBll).setWebViewCloseByTeacher(false);
                 }
+                event.setForceSubmit(isForceSubmit);
                 EventBus.getDefault().post(event);
                 mGoldNum = -1;
                 mEngerNum = -1;
@@ -365,6 +372,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 
     @Override
     public void submitData() {
+        isForceSubmit = !isAnswerResultRecived;
         Map<String, String> mData = new HashMap<>();
         mData.put("testid", "" + testId);
         mData.put("logtype", "interactTestEnd");

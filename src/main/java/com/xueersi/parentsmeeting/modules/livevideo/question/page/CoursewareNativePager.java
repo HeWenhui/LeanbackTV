@@ -164,6 +164,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     /** 课件题目数量 */
     private int totalQuestion = -1;
 
+    /**
+     * 结果页面 是否是由强制提交 产生的
+     */
+    private boolean resultGotByForceSubmit;
+
     public CoursewareNativePager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity,
                                  boolean isPlayBack, String liveId, String id, EnglishH5Entity englishH5Entity,
                                  final String courseware_type, String nonce, EnglishH5CoursewareBll.OnH5ResultClose onClose,
@@ -256,14 +261,10 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                             mEnglishH5CoursewareBll.setWebViewCloseByTeacher(false);
                         }
                         event.setScienceNewCourseWare(englishH5Entity.getNewEnglishH5());
+                        event.setForceSubmit(resultGotByForceSubmit);
                         EventBus.getDefault().post(event);
                     }
                 }
-             /*   if (englishH5Entity.getNewEnglishH5()) {
-                    LiveVideoConfig.isNewEnglishH5 = true;
-                } else {
-                    LiveVideoConfig.isNewEnglishH5 = false;
-                }*/
                 preLoad.onStop();
             }
         });
@@ -735,6 +736,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             return;
         }
         isFinish = true;
+        resultGotByForceSubmit = !loadResult;
         if (loadResult) {
             //初中结果页是网页，需要调接口
             if (isArts != LiveVideoSAConfig.ART_EN && (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage))) {
