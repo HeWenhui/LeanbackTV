@@ -8,6 +8,7 @@ import com.tal.speech.utils.SpeechEvaluatorUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
 
@@ -15,6 +16,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
  * Created by linyuqiang on 2018/4/3.
  */
 public abstract class BaseVoiceAnswerPager extends LiveBasePager {
+
+    /** 停止声音 */
+    public static String LIVE_STOP_VOLUME = BaseSpeechAssessmentPager.LIVE_STOP_VOLUME;
 
     public BaseVoiceAnswerPager(Context context) {
         super(context);
@@ -24,7 +28,7 @@ public abstract class BaseVoiceAnswerPager extends LiveBasePager {
             logger.d(TAG + ":setVolume:0");
             StableLogHashMap stableLogHashMap = new StableLogHashMap("stop");
             stableLogHashMap.put("tag", TAG);
-            umsAgentDebugSys(LogConfig.LIVE_STOP_VOLUME, stableLogHashMap);
+            umsAgentDebugSys(LIVE_STOP_VOLUME, stableLogHashMap);
         } else {
             logger.d(TAG + ":setVolume:null");
         }
@@ -57,7 +61,7 @@ public abstract class BaseVoiceAnswerPager extends LiveBasePager {
             logger.d("onDestroy:setVolume:1");
             StableLogHashMap stableLogHashMap = new StableLogHashMap("start");
             stableLogHashMap.put("tag", TAG);
-            umsAgentDebugSys(LogConfig.LIVE_STOP_VOLUME, stableLogHashMap);
+            umsAgentDebugSys(LIVE_STOP_VOLUME, stableLogHashMap);
         } else {
             logger.d("onDestroy:setVolume:null");
         }
