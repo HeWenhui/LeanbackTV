@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager;
 
 import android.content.Context;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -48,6 +49,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.sql.Time;
 
 /**
  * @Date on 2019/3/15 18:31
@@ -143,16 +145,16 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
     static final int MAX_SINGLE_COUNT = 5;
 
+    CountDownTimer mCountDownTimer;
+
     public GroupGameNativePager(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity detailInfo, EnglishH5Entity englishH5Entity) {
         super(context);
         this.liveGetInfo = liveGetInfo;
-//        this.detailInfo = detailInfo;
-//        this.url = englishH5Entity.getUrl();
+        this.detailInfo = detailInfo;
+        this.url = englishH5Entity.getUrl();
         this.stuId = Integer.parseInt(liveGetInfo.getStuId());
         this.learningStage = liveGetInfo.getStudentLiveInfo().getLearning_stage();
         this.liveId = liveGetInfo.getId();
-        initData();
-        initListener();
     }
 
     @Override
@@ -176,6 +178,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     public void initData() {
         rlGroupGameSingle.setVisibility(View.VISIBLE);
         startSpeechRecognize();
+        startTimer();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -213,7 +216,12 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 }
             }
         }), "xesApp");
-        wvSubjectWeb.loadUrl(TEST_URL);
+//        wvSubjectWeb.loadUrl(TEST_URL);
+        wvSubjectWeb.loadUrl(mGroupGameTestInfosEntity.getTestInfoList().get(0).getPreviewPath());
+    }
+
+    private void startTimer() {
+
     }
 
     class CourseWebViewClient extends MyWebViewClient implements OnHttpCode {
@@ -369,7 +377,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
     @Override
     public String getUrl() {
-        return null;
+        return this.url;
     }
 
     @Override
@@ -395,7 +403,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     @Override
     public void setEnglishH5CoursewareSecHttp(EnglishH5CoursewareSecHttp englishH5CoursewareSecHttp) {
         this.englishH5CoursewareSecHttp = englishH5CoursewareSecHttp;
-//        getCourseWareTests();
+        getCourseWareTests();
     }
 
     private void getCourseWareTests() {
@@ -404,7 +412,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             public void onDataSucess(Object... objData) {
                 logger.d("getCourseWareTests->onDataSucess()");
                 mGroupGameTestInfosEntity = (GroupGameTestInfosEntity) objData[0];
-                mWaveView.loadUrl(mGroupGameTestInfosEntity.getTestInfoList().get(0).getPreviewPath());
+                initData();
+                initListener();
             }
         });
     }

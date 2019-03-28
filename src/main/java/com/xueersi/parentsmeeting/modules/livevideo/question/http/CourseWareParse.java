@@ -131,12 +131,12 @@ public class CourseWareParse {
                 testinfo.setTotalTime(testObj.getInt("totalTime"));
                 testinfo.setStemLength(testObj.getInt("stemLength"));
                 List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = new ArrayList<>();
-                JSONArray answers = jsonObject.getJSONArray("answers");
+                JSONArray answers = testObj.getJSONArray("answers");
                 for (int j = 0; j < array.length(); j++) {
                     JSONObject answerObj = answers.getJSONObject(j);
                     GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = new GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity();
                     answer.setId(answerObj.getInt("id"));
-                    answer.setText(answerObj.getString("test"));
+                    answer.setText(answerObj.getString("text"));
                     answer.setSingleTime(answerObj.getInt("singleTime"));
                     answerList.add(answer);
                 }

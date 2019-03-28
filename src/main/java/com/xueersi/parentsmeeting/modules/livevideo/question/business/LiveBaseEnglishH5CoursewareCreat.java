@@ -10,6 +10,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager.GroupGameMultNativePager;
+import com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager.GroupGameNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ScienceStaticConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
@@ -121,7 +122,7 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
                         BaseEnglishH5CoursewarePager h5CoursewarePager;
                         String type = videoQuestionH5Entity.type;
                         if (LiveQueConfig.isTeam(type)) {
-                            GroupGameMultNativePager groupGameMultNativePager = new GroupGameMultNativePager(context, liveGetInfo, videoQuestionH5Entity, englishH5Entity);
+                            GroupGameNativePager groupGameMultNativePager = new GroupGameNativePager(context, liveGetInfo, videoQuestionH5Entity, englishH5Entity);
                             groupGameMultNativePager.setLivePagerBack(livePagerBack);
                             h5CoursewarePager = groupGameMultNativePager;
                         } else {
@@ -163,7 +164,7 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
                 } else if (isArts == LiveVideoSAConfig.ART_EN) {
                     String type = videoQuestionH5Entity.type;
                     if (LiveQueConfig.isTeam(type)) {
-                        GroupGameMultNativePager groupGameMultNativePager = new GroupGameMultNativePager(context, liveGetInfo, videoQuestionH5Entity, englishH5Entity);
+                        GroupGameNativePager groupGameMultNativePager = new GroupGameNativePager(context, liveGetInfo, videoQuestionH5Entity, englishH5Entity);
                         groupGameMultNativePager.setLivePagerBack(livePagerBack);
                         return groupGameMultNativePager;
                     }

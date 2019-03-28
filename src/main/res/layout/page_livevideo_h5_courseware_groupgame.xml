@@ -26,8 +26,8 @@
         android:id="@+id/rl_livevideo_groupgame_single"
         android:layout_width="140dp"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        android:layout_alignParentRight="true">
+        android:layout_alignParentRight="true"
+        android:visibility="gone">
 
         <!-- 火焰累积数 -->
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
