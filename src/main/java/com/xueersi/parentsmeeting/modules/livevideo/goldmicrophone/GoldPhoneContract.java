@@ -3,9 +3,16 @@ package com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone;
 import android.view.View;
 
 public interface GoldPhoneContract {
+    /** 金话筒的时间间隔 */
+    long LOTTIE_VIEW_INTERVAL = 2000;
+    /** 金话筒的音量 */
+    int GOLD_MICROPHONE_VOLUME = 35;
+    String MP3_FILE_NAME = "/gold_microphone.mp3";
+    /** 采取数据间隔 */
+    long VOLUME_INTERVAL = 200;
     int ONE_GEAR_LEFT = 0;
-    int ONE_GEAR_RIGHT = 20;
-    int TWO_GEAR_RIGHT = 50;
+    int ONE_GEAR_RIGHT = 15;
+    int TWO_GEAR_RIGHT = 30;
     int THREE_GEAR_RIGHT = 70;
 
     interface GoldPhoneView {
@@ -70,10 +77,6 @@ public interface GoldPhoneContract {
     }
 
     interface CloseTipView {
-//        void clickYes();
-
-//        void clickNo();
-
         View getRootView();
     }
 }

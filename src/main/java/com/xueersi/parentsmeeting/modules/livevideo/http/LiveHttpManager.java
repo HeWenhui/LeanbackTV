@@ -1419,6 +1419,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
     /**
      * 理科战队pk  获取战队成员信息
+     *
      * @param classId
      * @param teamId
      * @param httpCallBack
@@ -1428,7 +1429,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         setDefaultParameter(params);
-        sendPost(liveVideoSAConfigInner.URL_TEAMPK_GETTEAMMATES, params,httpCallBack);
+        sendPost(liveVideoSAConfigInner.URL_TEAMPK_GETTEAMMATES, params, httpCallBack);
     }
 
 
@@ -1986,15 +1987,16 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
     /**
      * 小理战队PK 二期 获取明星榜
+     *
      * @param liveId
      * @param classId
      * @param requestCallBack
      */
-    public void getTeamPkStarStudents(String liveId,String classId,String courseId, HttpCallBack requestCallBack){
+    public void getTeamPkStarStudents(String liveId, String classId, String courseId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("liveId", liveId);
-        params.addBodyParam("courseId",courseId);
+        params.addBodyParam("courseId", courseId);
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_TEMPK_GETSTARSTUDENTS, params, requestCallBack);
     }
@@ -2002,15 +2004,16 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
     /**
      * 小理战队PK 二期 获取黑马榜
+     *
      * @param liveId
      * @param classId
      * @param requestCallBack
      */
-    public void getTeamPkProgressStudent(String liveId,String classId,String courseId, HttpCallBack requestCallBack){
+    public void getTeamPkProgressStudent(String liveId, String classId, String courseId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("liveId", liveId);
-        params.addBodyParam("courseId",courseId);
+        params.addBodyParam("courseId", courseId);
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_TEMPK_GETPROGRESSSTU, params, requestCallBack);
     }
@@ -2040,6 +2043,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
         params.addBodyParam("liveId", liveId);
+        params.addBodyParam("id", id);
         sendPost(LiveVideoConfig.URL_GOLD_MICROPHONE_TO_AI, params, httpCallBack);
     }
 

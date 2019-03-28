@@ -36,12 +36,18 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import static com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.GoldPhoneContract.GOLD_MICROPHONE_VOLUME;
+import static com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.GoldPhoneContract.LOTTIE_VIEW_INTERVAL;
+import static com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.GoldPhoneContract.MP3_FILE_NAME;
+import static com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.GoldPhoneContract.VOLUME_INTERVAL;
 
 /**
  * 幼升小金话筒
  */
 public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, GoldPhoneContract.GoldPhonePresenter {
-    private boolean testUse = true;
+    private boolean testUse = true && BuildConfig.DEBUG;
     /**
      * 录音对象
      */
@@ -63,53 +69,31 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
      * 每次读取的字节大小
      */
     private int mBufferSize;
-    /**
-     * 原始录音数据
-     */
+    /** 原始录音数据 */
     private short[] mPCMBuffer;
-    /**
-     * 语音评测工具类
-     */
+    /** 语音评测工具类,用来走在线识别 */
     private SpeechEvaluatorUtils mSpeechEvaluatorUtils;
-
+    /** 语音识别出来的文字 */
+    private StringBuilder recognizeStr = new StringBuilder();
     GoldPhoneContract.GoldPhoneView mGoldView;
-
-    private boolean isDebug = BuildConfig.DEBUG;
+    /** 金话筒标志位 */
     private String sign;
 
-    private boolean isStop = false;
+    private AtomicBoolean isStop = new AtomicBoolean(false);
     File dir;
-
     /** 是否走在线语音测评 */
-    private int isOnline = 0;
-    /** 金话筒的音量 */
-    private int GOLD_MICROPHONE_VOLUME = 35;
-    /**
-     * 上一次lottie播放的时间
-     */
+    private AtomicBoolean isOnline = new AtomicBoolean(false);
+    /** 上一次lottie播放的时间 */
     private long lottieLastPlayTime = -1;
-
+    /** 上一次录音的时间 */
     private long lastVolumeTime = -1;
-    /** 金话筒的时间间隔 */
-    private final long LOTTIE_VIEW_INTERVAL = 2000;
-    /**  */
-    private final long VOLUME_INTERVAL = 200;
+
+    /** 是否正在录音 */
+    private AtomicBoolean isRecord = new AtomicBoolean(false);
 
     public GoldMicroPhoneBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
         dir = LiveCacheFile.geCacheFile(mContext, "gold_microphone_voice");
-//        if (testUse) {
-//            mHandler.postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    showMicroPhoneView();
-//                    getIsOnlineRecognize(sign);
-//                    boolean isHasAudioPermission = isHasAudioPermission();
-//                    sendIsGoldMicroPhone(isHasAudioPermission, false, sign);
-//                    showGoldSettingView(isHasAudioPermission);
-//                }
-//            }, 1000);
-//        }
     }
 
     @Override
@@ -120,29 +104,23 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
                 sign = data.optString("sign");
                 logger.i("receive arts_gold_microphone open = " + open);
                 if (open == 1) {
-                    isStop = false;
+                    isStop.set(false);
                     showMicroPhoneView();
                     getIsOnlineRecognize(sign);
                     boolean isHasAudioPermission = isHasAudioPermission();
                     sendIsGoldMicroPhone(isHasAudioPermission, false, sign);
                     showGoldSettingView(isHasAudioPermission);
                 } else {
-                    //提示关闭语音弹幕
-                    isStop = true;
-                    if (mGoldView != null) {
-
-                        mGoldView.showCloseView();
-                    }
-                    if (mAudioRecord != null) {
-                        mAudioRecord.release();
-                    }
-                    if (mSpeechEvaluatorUtils != null) {
-                        mSpeechEvaluatorUtils.cancel();
-                    }
-                    logger.i(recognizeStr.toString());
-                    if (isOnline == 1) {
+                    if (isOnline.get()) {
                         sendNotice(recognizeStr.toString());
                     }
+                    //提示关闭语音弹幕
+                    if (mGoldView != null) {
+                        mGoldView.showCloseView();
+                    }
+                    stopRecord();
+                    logger.i(recognizeStr.toString());
+
                 }
                 break;
             }
@@ -158,10 +136,12 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
 
     private void showOrhideBottom(boolean visible) {
         if (mContext instanceof Activity) {
+            //隐藏底部控制栏
             View view = ((Activity) mContext).findViewById(R.id.ll_livevideo_bottom_controller);
             if (view != null) {
                 view.setVisibility(visible ? View.VISIBLE : View.GONE);
             }
+            //隐藏半身直播右侧的聊天消息区
             View messageView = ((Activity) mContext).findViewById(R.id.rcl_live_halfbody_msg);
             if (messageView != null) {
                 messageView.setVisibility(visible ? View.VISIBLE : View.GONE);
@@ -180,7 +160,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 if (responseEntity.getJsonObject() instanceof JSONObject) {
                     JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-                    isOnline = jsonObject.optInt("isGoldMicrophoneToAi");
+                    isOnline.set(jsonObject.optInt("isGoldMicrophoneToAi") == 0 ? false : true);
                     startAudioRecord();
                 }
             }
@@ -188,14 +168,14 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
-                isOnline = 0;
+                isOnline.set(false);
                 startAudioRecord();
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
-                isOnline = 0;
+                isOnline.set(false);
                 startAudioRecord();
             }
         });
@@ -204,15 +184,11 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
     /**
      * 显示权限View
      */
-    private void showGoldSettingView(final boolean isShow) {
+    private void showGoldSettingView(final boolean hasPermission) {
         mRootView.post(new Runnable() {
             @Override
             public void run() {
-                if (!isShow) {
-                    mGoldView.showSettingView(true);
-                } else {
-                    mGoldView.showSettingView(false);
-                }
+                mGoldView.showSettingView(!hasPermission);
             }
         });
 
@@ -274,8 +250,8 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
                 });
     }
 
-    //    ThreadPoolExecutor
-    private Executor executor = Executors.newFixedThreadPool(5);
+    // ThreadPoolExecutor
+    private Executor executor = Executors.newFixedThreadPool(2);
 
     /**
      * 开始录音
@@ -285,14 +261,17 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
     @Override
     public void startAudioRecord() {
         boolean isHasAudioPermission = isHasAudioPermission();
-        if (!isHasAudioPermission) {
+        if (!isHasAudioPermission || isRecord.get()) {
             return;
         }
         logger.i("isOnline = " + isOnline);
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                if (isOnline != 1) {
+//                if (isRecord.get()) {
+//                    return;
+//                }
+                if (!isOnline.get()) {
                     //不走在线，判断下声音大小就可以了
                     mBufferSize = AudioRecord.getMinBufferSize(DEFAULT_SAMPLING_RATE,
                             DEFAULT_CHANNEL_CONFIG, DEFAULT_AUDIO_FORMAT.getAudioFormat());
@@ -300,63 +279,74 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
                             DEFAULT_SAMPLING_RATE, DEFAULT_CHANNEL_CONFIG, DEFAULT_AUDIO_FORMAT.getAudioFormat(),
                             mBufferSize);
                     mPCMBuffer = new short[mBufferSize];
-                    mAudioRecord.startRecording();
-                    while (!isStop) {
-                        if (mAudioRecord != null) {
+                    try {
+                        mAudioRecord.startRecording();
+                        isRecord.set(true);
+                        while (!isStop.get()) {
+//                        if (mAudioRecord != null) {
                             int readSize = mAudioRecord.read(mPCMBuffer, 0, mBufferSize);
                             int volume = calculateRealVolume(mPCMBuffer, readSize);
                             logger.i("volume = " + volume);
                             performVolume(volume);
+//                        }
                         }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        logger.i("当前有应用正在使用录音功能，请关掉后再重试");
+
                     }
                 } else {
                     if (mSpeechEvaluatorUtils == null) {
                         mSpeechEvaluatorUtils = new SpeechEvaluatorUtils(false);
                     }
                     File dir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/liveSpeech/");
-                    String path = dir.getPath() + "/gold_microphone.mp3";
+                    String path = dir.getPath() + MP3_FILE_NAME;
                     if (!dir.exists()) {
                         dir.mkdirs();
                     }
-                    mSpeechEvaluatorUtils.startOnlineRecognize(path, SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
-                            new EvaluatorListener() {
-                                @Override
-                                public void onBeginOfSpeech() {
-                                }
-
-                                @Override
-                                public void onResult(ResultEntity resultEntity) {
-                                    logger.i("voice search____" + resultEntity.getErrorNo() + resultEntity.getCurString() + resultEntity.getStatus());
-                                    if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
-                                        if (resultEntity.getErrorNo() > 0) {
-                                            recognizeError(resultEntity.getErrorNo());
-                                        } else {
-                                            recognizeSuccess(resultEntity.getCurString(), true);
-                                        }
-                                    } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
-                                        recognizeError(resultEntity.getErrorNo());
-                                    } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
-                                        recognizeSuccess(resultEntity.getCurString(), false);
-                                    }
-                                }
-
-                                @Override
-                                public void onVolumeUpdate(int volume) {
-                                    logger.i(String.valueOf(volume));
-                                    performVolume(volume);
-                                }
-                            });
+                    mSpeechEvaluatorUtils.startOnlineRecognize(
+                            path,
+                            SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
+                            evaluatorListener);
+                    isRecord.set(true);
                 }
             }
         });
     }
 
+    private EvaluatorListener evaluatorListener = new EvaluatorListener() {
+        @Override
+        public void onBeginOfSpeech() {
+        }
+
+        @Override
+        public void onResult(ResultEntity resultEntity) {
+            logger.i("voice search____" + resultEntity.getErrorNo() + resultEntity.getCurString() + resultEntity.getStatus());
+            if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
+                if (resultEntity.getErrorNo() > 0) {
+                    recognizeError(resultEntity.getErrorNo());
+                } else {
+                    recognizeSuccess(resultEntity.getCurString(), true);
+                }
+            } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
+                recognizeError(resultEntity.getErrorNo());
+            } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
+                recognizeSuccess(resultEntity.getCurString(), false);
+            }
+        }
+
+        @Override
+        public void onVolumeUpdate(int volume) {
+            logger.i(String.valueOf(volume));
+            performVolume(volume);
+        }
+    };
+
     @Override
     public void onDestory() {
         super.onDestory();
-        isStop = true;
+        stopRecord();
     }
-
 
     /**
      * 解决音量大小
@@ -379,31 +369,25 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
                 sendIsGoldMicroPhone(true, true, sign);
             }
             lottieLastPlayTime = nowTime;
-
         }
         if (nowTime - lastVolumeTime > VOLUME_INTERVAL) {
             ///1挡位
             int gear = 0;
             if (volume < GoldPhoneContract.ONE_GEAR_RIGHT && volume > GoldPhoneContract.ONE_GEAR_LEFT) {
                 gear = 1;
-
             } else if (volume > GoldPhoneContract.ONE_GEAR_RIGHT && volume < GoldPhoneContract.TWO_GEAR_RIGHT) {
                 //2档
                 gear = 2;
-
             } else if (volume > GoldPhoneContract.TWO_GEAR_RIGHT) {
                 //3档
                 gear = 3;
-
             }
-
             if (gear != 0) {
                 mGoldView.addRipple(gear);
                 logger.i("add Ripple level = " + gear);
                 lastVolumeTime = nowTime;
             }
         }
-
     }
 
     //识别失败，当前网络不可用，或者大点声说
@@ -413,7 +397,6 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
 //        if () {
         if (errNum == ResultCode.NO_AUTHORITY) {
 //            setStatus(NOPERMISSION);
-
         } else {
             if (errNum == ResultCode.WEBSOCKET_TIME_OUT || errNum == ResultCode.NETWORK_FAIL || errNum == ResultCode.WEBSOCKET_CONN_REFUSE) {
                 XESToastUtils.showToast(mContext, "当前网络不可用，请检查网络连接");
@@ -435,9 +418,6 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
 //
 //        }
     }
-
-    /** 语音识别出来的文字 */
-    private StringBuilder recognizeStr = new StringBuilder();
 
     /**
      * 识别成功
@@ -464,6 +444,12 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
                 recognizeStr.append(content);
 //                tvTitle.setText(content);
                 logger.i("====voice content" + content);
+            }
+            if (isFinish && isRecord.get()) {
+                mSpeechEvaluatorUtils.startOnlineRecognize(
+                        dir.getPath() + MP3_FILE_NAME,
+                        SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
+                        evaluatorListener);
             }
             // tvTitle.setText("说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什");
             //if(tvTitle.getLineCount()>2){
@@ -530,10 +516,8 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
             }
             if (LiveTopic.MODE_CLASS.equals(mLiveBll.getMode())) {
                 mLiveBll.sendNotice(mLiveBll.getMainTeacherStr(), jsonObject);
-//                mLiveBll.sendMessage(jsonObject);
             } else {
                 mLiveBll.sendNotice(mLiveBll.getCounTeacherStr(), jsonObject);
-//                mLiveBll.sendMessage(jsonObject);
             }
         }
     }
@@ -545,20 +529,24 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
      */
     @Override
     public void remove(View view) {
-
         if (view.getParent() == mRootView) {
             logger.i("remove gold view");
             mRootView.removeView(view);
-
-            isStop = true;
-            if (mAudioRecord != null) {
-                mAudioRecord.release();
-            }
-            if (mSpeechEvaluatorUtils != null) {
-                mSpeechEvaluatorUtils.cancel();
-            }
+            stopRecord();
         }
         showOrhideBottom(true);
         mGoldView = null;
+    }
+
+    private void stopRecord() {
+        if (mAudioRecord != null && isRecord.get()) {
+            mAudioRecord.release();
+            isRecord.set(false);
+        }
+        if (mSpeechEvaluatorUtils != null && isRecord.get()) {
+            mSpeechEvaluatorUtils.cancel();
+            isRecord.set(false);
+        }
+        isStop.set(true);
     }
 }

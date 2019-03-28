@@ -63,7 +63,6 @@ public class SoundWaveView extends View {
 //        }
 //        mPaint.setStrokeCap(Paint.Cap.ROUND);
 //        mPaint.setAntiAlias(true);
-        // 添加第一个圆圈
         mRipples = new CopyOnWriteArrayList<>();
 //        Circle c = new Circle(0, 3);
 //        mRipples.add(c);
@@ -187,12 +186,12 @@ public class SoundWaveView extends View {
             // 当圆超出View的宽度后删除
             if (c.width + innerRadius > (mWidth / 2 - innerRadius) / 3 * c.level + innerRadius) {
                 mRipples.remove(0);
-
             } else {
                 // 修改这个值控制速度
                 c.width += mSpeed * c.level;
 //            }
             }
+
             // 里面添加圆
 //        if (mRipples.size() > 0) {
 //            // 控制第二个圆出来的间距
