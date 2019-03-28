@@ -22,6 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ScienceAnswerResult;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAnswerRightLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
 
 import org.json.JSONArray;
@@ -87,7 +88,7 @@ public class TeamPkPraiseBll {
     /**
      * 能量动画开始时间点
      */
-    private static final float ENERGY_ANIM_ENTER_FRACTION = 0.45f;
+    private static final float ENERGY_ANIM_ENTER_FRACTION = 0.37f;
     private boolean energyAnimRuning;
     private Handler mHandler;
 
@@ -320,7 +321,10 @@ public class TeamPkPraiseBll {
         String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "anwser_right/images";
         String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "anwser_right/data.json";
 
-        final LottieEffectInfo effectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
+        final TeamPkAnswerRightLottieEffectInfo effectInfo = new TeamPkAnswerRightLottieEffectInfo(lottieResPath,
+                lottieJsonPath,"img_5.png");
+        animView.useHardwareAcceleration(true);
+        effectInfo.setEnergyNum("+"+mEnergyNum);
         animView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(animView.getContext()), LOTTIE_JSON_ANSWERRIGHT);
         animView.setImageAssetDelegate(new ImageAssetDelegate() {
             @Override
@@ -336,35 +340,11 @@ public class TeamPkPraiseBll {
             public void onAnimationUpdate(ValueAnimator animation) {
                 if (animation.getAnimatedFraction() > ENERGY_ANIM_ENTER_FRACTION && !energyAnimRuning) {
                     energyAnimRuning = true;
-                    playEnergyEnterAnim();
+                    closeTeacherPriase();
                 }
             }
         });
-
     }
-
-    private void playEnergyEnterAnim() {
-        ivAnswerRightEnergy.setVisibility(View.VISIBLE);
-        ScaleAnimation scaleAnimation = (ScaleAnimation) AnimationUtils.
-                loadAnimation(animView.getContext(), R.anim.anim_livevido_teampk_aq_award);
-        scaleAnimation.setDuration(300);
-        ivAnswerRightEnergy.startAnimation(scaleAnimation);
-
-        tvAnswerRightEnergy.setVisibility(View.VISIBLE);
-        AnimationSet animationSet = (AnimationSet) AnimationUtils.
-                loadAnimation(animView.getContext(), R.anim.anim_livevideo_teampk_energy_in);
-
-        tvAnswerRightEnergy.startAnimation(animationSet);
-        tvAnswerRightEnergy.setText("+" + mEnergyNum);
-        tvAnswerRightEnergy.startAnimation(animationSet);
-        tvAnswerRightEnergy.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                closeTeacherPriase();
-            }
-        }, animationSet.getDuration() + 2000);
-    }
-
 
     private void startAnim() {
         animView.useHardwareAcceleration(true);

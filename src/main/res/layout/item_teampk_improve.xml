@@ -6,7 +6,7 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_centerVertical="true"
        >
 
         <RelativeLayout
@@ -31,7 +31,7 @@
                 android:layout_width="50dp"
                 android:layout_height="13dp"
                 android:layout_below="@id/iv_teampk_stars_head"
-                android:layout_marginTop="-12dp"
+                android:layout_marginTop="-8dp"
                 android:src="@drawable/live_teampk_super_improver"
                 android:visibility="invisible"
                 />

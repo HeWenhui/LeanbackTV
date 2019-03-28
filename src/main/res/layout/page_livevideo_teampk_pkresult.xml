@@ -33,7 +33,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="3dp"
                 android:textColor="@color/white"
-                android:textSize="20sp"
+                android:textSize="20dp"
                 android:textStyle="bold" />
 
             <com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView
@@ -43,7 +43,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="3dp"
                 android:textColor="@color/white"
-                android:textSize="20sp"
+                android:textSize="20dp"
                 android:textStyle="bold" />
 
             <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar
@@ -245,7 +245,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:textColor="@color/white"
-                android:textSize="20sp" />
+                android:textSize="20dp" />
 
             <com.xueersi.parentsmeeting.modules.livevideo.widget.SmoothAddNumTextView
                 android:id="@id/tv_teampk_otherteam_energy"
@@ -254,7 +254,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="20dp"
                 android:textColor="@color/white"
-                android:textSize="20sp"
+                android:textSize="20dp"
                 android:textStyle="bold" />
 
             <TextView
@@ -265,7 +265,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_toRightOf="@id/tv_teampk_myteam_energy"
                 android:text="+15"
-                android:textSize="15sp"
+                android:textSize="15dp"
                 android:textStyle="bold"
                 android:visibility="gone" />
 

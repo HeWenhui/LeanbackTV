@@ -702,7 +702,11 @@
 
     <item name="rl_teampk_lucy_header_container" type="id" />
     <item name="gl_teampk_starts_top_guide_line" type="id"/>
+    <item name="gl_teampk_starts_left_guide_line" type="id"/>
     <item name="gl_teampk_starts_bottom_guide_line" type="id"/>
+    <item name="gl_teampk_praisebtn_right_guide_line" type="id"/>
+    <item name="gl_teampk_award_left_guide_line" type="id"/>
+
 
 
     <item name="iv_teampk_open_box_winner_head" type="id" />
