@@ -26,6 +26,7 @@
         android:id="@+id/rl_livevideo_groupgame_single"
         android:layout_width="140dp"
         android:layout_height="match_parent"
+        android:visibility="gone"
         android:layout_alignParentRight="true">
 
         <!-- 火焰累积数 -->
@@ -104,19 +105,11 @@
             android:layout_marginBottom="5dp"
             android:background="@drawable/app_zbhd_yuyin">
 
-            <FrameLayout
-                android:layout_width="63dp"
-                android:layout_height="44dp"
-                android:layout_gravity="center">
-
-                <com.xueersi.ui.widget.WaveView
-                    android:id="@+id/wv_livevideo_groupgame_single_wave"
-                    android:layout_width="138dp"
-                    android:layout_height="138dp"
-                    android:layout_centerInParent="true"
-                    android:layout_gravity="center" />
-
-            </FrameLayout>
+            <com.xueersi.ui.widget.WaveView
+                android:id="@+id/wv_livevideo_groupgame_single_wave"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center" />
 
         </FrameLayout>
 

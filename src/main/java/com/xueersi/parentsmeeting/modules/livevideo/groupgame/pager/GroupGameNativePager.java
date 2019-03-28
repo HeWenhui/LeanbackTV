@@ -17,17 +17,23 @@ import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebView;
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.GroupGameTestInfosEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareSecHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.CourseMessage;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseCoursewareNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.NewCourseCache;
@@ -95,8 +101,24 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
      * 新课件是否是预加载
      */
     private boolean ispreload;
+    /**
+     * 文理英属性
+     */
+    private int isArts = LiveVideoSAConfig.ART_EN;
+    /**
+     * 是不是回放
+     */
+    private boolean isPlayBack = false;
+
+    private EnglishH5CoursewareSecHttp englishH5CoursewareSecHttp;
+    private GroupGameTestInfosEntity mGroupGameTestInfosEntity;
+
+    private LiveGetInfo liveGetInfo;
+    private VideoQuestionLiveEntity detailInfo;
+    private String url;
     private String learningStage;
     private String liveId;
+    private int stuId;
 
     /**
      * 语音评测
@@ -112,17 +134,23 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
      */
     private boolean addJs = false;
 
-    private int mPagerIndex = 0;
-    private int mSingCount = 0;
+    private int pageNum = 0;
+    private int singleCount = 0;
 
 
     static final String TEST_URL = "file:///android_asset/hot_air_balloon/index.html";
     static final String TEST_CONTENT = "This is an apple|apple|banana|traffic";
 
-    public GroupGameNativePager(Context context, String learningStage, String liveId) {
+    static final int MAX_SINGLE_COUNT = 5;
+
+    public GroupGameNativePager(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity detailInfo, EnglishH5Entity englishH5Entity) {
         super(context);
-        this.learningStage = learningStage;
-        this.liveId = liveId;
+        this.liveGetInfo = liveGetInfo;
+//        this.detailInfo = detailInfo;
+//        this.url = englishH5Entity.getUrl();
+        this.stuId = Integer.parseInt(liveGetInfo.getStuId());
+        this.learningStage = liveGetInfo.getStudentLiveInfo().getLearning_stage();
+        this.liveId = liveGetInfo.getId();
         initData();
         initListener();
     }
@@ -146,8 +174,14 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
     @Override
     public void initData() {
+        rlGroupGameSingle.setVisibility(View.VISIBLE);
         startSpeechRecognize();
-
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mWaveView.initialize();
+            }
+        }, 1000);
         newCourseCache = new NewCourseCache(mContext, liveId);
         addJavascriptInterface();
         wvSubjectWeb.setWebChromeClient(new BaseCoursewareNativePager.MyWebChromeClient() {
@@ -161,7 +195,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         });
         wvSubjectWeb.setWebViewClient(new CourseWebViewClient());
         wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, new StaticWeb.OnMessage() {
-
             @Override
             public void postMessage(String where, final JSONObject message, String origin) {
                 try {
@@ -180,7 +213,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 }
             }
         }), "xesApp");
-
         wvSubjectWeb.loadUrl(TEST_URL);
     }
 
@@ -244,6 +276,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     }
 
     private void onLoadComplete(String where, JSONObject message) {
+
     }
 
     private void startSpeechRecognize() {
@@ -271,12 +304,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             @Override
             public void onBeginOfSpeech() {
                 logger.d("onBeginOfSpeech()");
-                mWaveView.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mWaveView.initialize();
-                    }
-                }, 1000);
             }
 
             @Override
@@ -299,7 +326,12 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             @Override
             public void onVolumeUpdate(int volume) {
                 logger.d("onVolumeUpdate(): volume = " + volume);
-                float floatVolume = (float) volume * 3 / 90;
+                float floatVolume;
+                if (volume > 10) {
+                    floatVolume = (float) (volume * 3) / 90.0f;
+                } else {
+                    floatVolume = 0.3f;
+                }
                 mWaveView.setWaveAmplitude(floatVolume);
             }
         });
@@ -310,7 +342,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    XESToastUtils.showToast(mContext, "评测完成");
+                    XESToastUtils.showToast(mContext, "评测结束");
                     startSpeechRecognize();
                 }
             }, 1000);
@@ -362,10 +394,21 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
     @Override
     public void setEnglishH5CoursewareSecHttp(EnglishH5CoursewareSecHttp englishH5CoursewareSecHttp) {
-
+        this.englishH5CoursewareSecHttp = englishH5CoursewareSecHttp;
+//        getCourseWareTests();
     }
 
-    @Override
+    private void getCourseWareTests() {
+        englishH5CoursewareSecHttp.getCourseWareTests(detailInfo, new AbstractBusinessDataCallBack() {
+            @Override
+            public void onDataSucess(Object... objData) {
+                logger.d("getCourseWareTests->onDataSucess()");
+                mGroupGameTestInfosEntity = (GroupGameTestInfosEntity) objData[0];
+                mWaveView.loadUrl(mGroupGameTestInfosEntity.getTestInfoList().get(0).getPreviewPath());
+            }
+        });
+    }
+
     public BasePager getBasePager() {
         return null;
     }
@@ -389,17 +432,28 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     }
 
     /**
-     * 语音评测 - 命中句子
+     * android调JS方法：翻页
+     *
+     * @param pageNum
+     */
+    private void turnPage(int pageNum) {
+        JSONObject jsonData = new JSONObject();
+        try {
+            jsonData.put("type", "coursewareOnloading");
+            jsonData.put("pageNpum", 3);
+            wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * android调JS方法：上传评分数据
      *
      * @param score
+     * @param isTurnPage
      */
-    private void onHitSentence(int score) {
-        mSingCount++;
-        boolean isTurnPage = false;
-        if (mSingCount >= 5) {
-            mSingCount = 0;
-            isTurnPage = true;
-        }
+    private void uploadScore(int score, boolean isTurnPage) {
         JSONObject jsonData = new JSONObject();
         try {
             jsonData.put("type", "coursewareDoing");
@@ -408,6 +462,27 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * 语音评测 - 命中句子
+     *
+     * @param score
+     */
+    private void onHitSentence(int score) {
+        if (score >= 70) {
+            singleCount++;
+            onFireAdd(10 / MAX_SINGLE_COUNT);
+            if (singleCount >= MAX_SINGLE_COUNT) {
+                singleCount = 0;
+                uploadScore(score, true);
+            } else {
+                uploadScore(score, false);
+            }
+        } else {
+            onOops();
+            uploadScore(score, false);
         }
     }
 
