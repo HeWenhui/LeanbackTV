@@ -19,5 +19,7 @@ public class LogConfig {
 
     /** 新课件平台H5课件日志  http://wiki.xesv5.com/pages/viewpage.action?pageId=17696139 */
     public static String LIVE_H5PLAT = "live_h5plat";
+    /** 停止声音 */
+    public static String LIVE_STOP_VOLUME = "live_stop_volume";
 
 }

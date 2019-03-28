@@ -6,6 +6,8 @@ import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.tal.speech.utils.SpeechEvaluatorUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
 
@@ -20,6 +22,9 @@ public abstract class BaseVoiceAnswerPager extends LiveBasePager {
         if (videoFragment != null) {
             videoFragment.setVolume(0, 0);
             logger.d(TAG + ":setVolume:0");
+            StableLogHashMap stableLogHashMap = new StableLogHashMap("stop");
+            stableLogHashMap.put("tag", TAG);
+            umsAgentDebugSys(LogConfig.LIVE_STOP_VOLUME, stableLogHashMap);
         } else {
             logger.d(TAG + ":setVolume:null");
         }
@@ -50,6 +55,9 @@ public abstract class BaseVoiceAnswerPager extends LiveBasePager {
         if (videoFragment != null) {
             videoFragment.setVolume(VP.DEFAULT_STEREO_VOLUME, VP.DEFAULT_STEREO_VOLUME);
             logger.d("onDestroy:setVolume:1");
+            StableLogHashMap stableLogHashMap = new StableLogHashMap("start");
+            stableLogHashMap.put("tag", TAG);
+            umsAgentDebugSys(LogConfig.LIVE_STOP_VOLUME, stableLogHashMap);
         } else {
             logger.d("onDestroy:setVolume:null");
         }
