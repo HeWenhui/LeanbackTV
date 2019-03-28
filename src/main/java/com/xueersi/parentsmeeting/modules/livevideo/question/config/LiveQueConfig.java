@@ -48,6 +48,8 @@ public class LiveQueConfig {
     public static final String EN_COURSE_TYPE_NEW_GAME = "17";
     public static final String EN_COURSE_TYPE_18 = "18";
     public static final String EN_COURSE_TYPE_19 = "19";
+    /** 直播- voice cannon */
+    public static final String EN_COURSE_TYPE_22 = "22";
     /** 直播- Hot air ballon 或者Cleaning up */
     public static final String EN_COURSE_TYPE_23 = "23";
     /** 直播- Hot air ballon 或者Cleaning up */
@@ -112,7 +114,7 @@ public class LiveQueConfig {
     }
 
     public static boolean isTeam(String type) {
-        if (LiveQueConfig.EN_COURSE_TYPE_23.equals(type) || LiveQueConfig.EN_COURSE_TYPE_24.equals(type)) {
+        if (LiveQueConfig.EN_COURSE_TYPE_22.equals(type) || LiveQueConfig.EN_COURSE_TYPE_23.equals(type) || LiveQueConfig.EN_COURSE_TYPE_24.equals(type)) {
             return true;
         }
         return false;

@@ -1,12 +1,16 @@
 package com.xueersi.parentsmeeting.modules.livevideo.enteampk.business;
 
 import android.app.Activity;
+import android.view.ViewTreeObserver;
+import android.widget.RelativeLayout;
 
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
@@ -38,6 +42,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.lib.TcpConstants;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -192,6 +197,36 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 if (addresses.size() > 0) {
                     connect(addresses);
                 }
+            }
+        });
+    }
+
+    @Override
+    public void initView(final RelativeLayout bottomContent, AtomicBoolean mIsLand) {
+        super.initView(bottomContent, mIsLand);
+        bottomContent.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                boolean have = XesPermission.checkPermission(activity, new LiveActivityPermissionCallback() {
+
+                    @Override
+                    public void onFinish() {
+
+                    }
+
+                    @Override
+                    public void onDeny(String permission, int position) {
+
+                    }
+
+                    @Override
+                    public void onGuarantee(String permission, int position) {
+
+                    }
+                }, PermissionConfig.PERMISSION_CODE_CAMERA);
+                logger.d("initView:have=" + have);
+                bottomContent.getViewTreeObserver().removeOnPreDrawListener(this);
+                return false;
             }
         });
     }
