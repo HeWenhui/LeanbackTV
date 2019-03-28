@@ -36,7 +36,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.151" />
+        app:layout_constraintGuide_percent="0.128" />
 
 
     <com.xueersi.parentsmeeting.modules.livevideo.widget.FastScrollableRecyclerView
@@ -51,7 +51,7 @@
         app:VerticalThumbDrawable="@drawable/teampk_rcl_fastscorller_header_selector"
         app:VerticalTrackDrawable="@drawable/teampk_rcl_fastscroller_tracker"
         app:layout_constraintHeight_percent=".614"
-        app:layout_constraintWidth_percent="0.796"
+        app:layout_constraintWidth_percent="0.825"
         app:layout_constraintTop_toTopOf="@id/gl_teampk_starts_top_guide_line"
         app:layout_constraintLeft_toRightOf="@id/gl_teampk_starts_left_guide_line"
         />
