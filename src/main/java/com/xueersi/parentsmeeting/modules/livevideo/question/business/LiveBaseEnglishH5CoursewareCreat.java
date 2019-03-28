@@ -119,7 +119,8 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
                     if (videoQuestionH5Entity.isNewArtsH5Courseware() && !LiveQueConfig.EN_COURSE_TYPE_NEW_GAME.equals(videoQuestionH5Entity.type)) {
                         long before = System.currentTimeMillis();
                         BaseEnglishH5CoursewarePager h5CoursewarePager;
-                        if (LiveQueConfig.EN_COURSE_TYPE_24.equals(videoQuestionH5Entity.type)) {
+                        String type = videoQuestionH5Entity.type;
+                        if (LiveQueConfig.isTeam(type)) {
                             GroupGameMultNativePager groupGameMultNativePager = new GroupGameMultNativePager(context, liveGetInfo, videoQuestionH5Entity, englishH5Entity);
                             groupGameMultNativePager.setLivePagerBack(livePagerBack);
                             h5CoursewarePager = groupGameMultNativePager;
@@ -160,7 +161,8 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
                         englishH5Entity.setDynamicurl("https://live.xueersi.com/science/LiveExam/getCourseWareTestHtml");
                     }
                 } else if (isArts == LiveVideoSAConfig.ART_EN) {
-                    if (LiveQueConfig.EN_COURSE_TYPE_24.equals(videoQuestionH5Entity.type)) {
+                    String type = videoQuestionH5Entity.type;
+                    if (LiveQueConfig.isTeam(type)) {
                         GroupGameMultNativePager groupGameMultNativePager = new GroupGameMultNativePager(context, liveGetInfo, videoQuestionH5Entity, englishH5Entity);
                         groupGameMultNativePager.setLivePagerBack(livePagerBack);
                         return groupGameMultNativePager;
