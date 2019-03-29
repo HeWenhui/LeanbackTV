@@ -264,8 +264,9 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     private Runnable turnPageRunnable = new Runnable() {
         @Override
         public void run() {
-            turnPage(++pageNum);
             saveUserAnswer(0);
+            pageNum++;
+            turnPage(pageNum);
         }
     };
 
