@@ -94,11 +94,19 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      * 战队PK rootView
      */
     private RelativeLayout rlTeamPkContent;
+
+    /**
+     * 展示飞星动画等顶层UI 父布局
+     **/
+    private RelativeLayout rlTopLayerContent;
+
     private LiveHttpManager mHttpManager;
     private LiveGetInfo roomInitInfo;
     private LiveHttpResponseParser mHttpResponseParser;
     private TeamPkTeamInfoEntity teamInfoEntity;
     private TeamPkBasePager mFocusPager;
+
+    private TeamPkBasePager mTopLayerPager;
 
     private static final String OPEN_STATE_OPEN = "1";
 
@@ -192,8 +200,11 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.
                 LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         ((RelativeLayout) mRootView).addView(rlTeamPkContent, params);
+        rlTopLayerContent = new RelativeLayout(mActivity);
+        mRootView.addView(rlTopLayerContent, params);
+
         showPkStateLayout();
-        registLayotListener();
+        registLayoutListener();
     }
 
     @Override
@@ -716,7 +727,8 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     public void showAnswerQuestionAward(int goldNum, int energyNum, String id) {
         TeamPkAqResultPager aqAwardPager = new TeamPkAqResultPager(mActivity,
                 TeamPkAqResultPager.AWARD_TYPE_QUESTION, this);
-        addPager(aqAwardPager);
+       // addPager(aqAwardPager);
+        addTopLayerPager(aqAwardPager);
         aqAwardPager.setData(goldNum, energyNum);
         TeamPkLog.showAddPower(mLiveBll, id, energyNum + "");
     }
@@ -744,7 +756,8 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                 });
         TeamPkAqResultPager aqAwardPager = new TeamPkAqResultPager(mActivity, TeamPkAqResultPager.AWARD_TYPE_VOTE,
                 this);
-        addPager(aqAwardPager);
+        //addPager(aqAwardPager);
+        addTopLayerPager(aqAwardPager);
         aqAwardPager.setData(0, addEnergy);
         TeamPkLog.showAddPower(mLiveBll, voteId, addEnergy + "");
     }
@@ -769,6 +782,24 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         boolean result = isHalfBodyLiveRoom() && mTeacherMode != null && mTeacherMode.equals(LiveTopic.MODE_CLASS);
         return result;
     }
+
+
+    /**
+     * 添加顶层 UI
+     */
+    private void addTopLayerPager(TeamPkBasePager pager) {
+        if (mTopLayerPager != null) {
+            mTopLayerPager.onDestroy();
+        }
+        rlTopLayerContent.removeAllViews();
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        int rightMargin = getRightMargin();
+        params.rightMargin = rightMargin;
+        rlTopLayerContent.addView(pager.getRootView(), params);
+        mTopLayerPager = pager;
+    }
+
 
     private void addPager(TeamPkBasePager aqAwardPager) {
         if (mFocusPager != null) {
@@ -800,11 +831,18 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         mFocusPager = pager;
     }
 
-    private void registLayotListener() {
+    private void registLayoutListener() {
+        registContentLayerLayoutListener();
+        registTopLayerLayoutListener();
+    }
+
+    /**
+     * 注册普通内容 展示容器  layout 监听
+     */
+    private void registContentLayerLayoutListener() {
         rlTeamPkContent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-
                 if (!isFullScreenMode()) {
                     if (mFocusPager != null && !mFocusPager.isFullScreenMode()) {
                         int rightMargin = LiveVideoPoint.getInstance().getRightMargin();
@@ -813,6 +851,29 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                         if (rightMargin != params.rightMargin) {
                             params.rightMargin = rightMargin;
                             LayoutParamsUtil.setViewLayoutParams(mFocusPager.getRootView(), params);
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * 注册 TopLayer layout 监听
+     */
+    private void registTopLayerLayoutListener() {
+        rlTopLayerContent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener
+                () {
+            @Override
+            public void onGlobalLayout() {
+                if (!isFullScreenMode()) {
+                    if (mTopLayerPager != null && !mTopLayerPager.isFullScreenMode()) {
+                        int rightMargin = LiveVideoPoint.getInstance().getRightMargin();
+                        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mTopLayerPager.getRootView()
+                                .getLayoutParams();
+                        if (rightMargin != params.rightMargin) {
+                            params.rightMargin = rightMargin;
+                            LayoutParamsUtil.setViewLayoutParams(mTopLayerPager.getRootView(), params);
                         }
                     }
                 }
@@ -829,6 +890,11 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         if (mFocusPager != null) {
             mFocusPager.onStop();
         }
+
+        if(mTopLayerPager != null){
+            mTopLayerPager.onStop();
+        }
+
         logger.e("======>onStop");
     }
 
@@ -841,11 +907,12 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
 
     @Override
     public void onResume() {
-
         if (mFocusPager != null) {
             mFocusPager.onResume();
         }
-
+        if(mTopLayerPager != null){
+            mTopLayerPager.onResume();
+        }
         logger.e("======>onResume");
     }
 
@@ -858,8 +925,12 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
             mFocusPager.onDestroy();
             mFocusPager = null;
         }
+        if (mTopLayerPager != null) {
+            mTopLayerPager.onDestroy();
+            mTopLayerPager = null;
+        }
         isTopicHandled = false;
-        if(mPraiseBll != null){
+        if (mPraiseBll != null) {
             mPraiseBll.releas();
         }
         EventBus.getDefault().unregister(this);
@@ -1059,6 +1130,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
 
     }
 
+
     /**
      * 设置 埋点统计nonce
      */
@@ -1091,7 +1163,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
             XESCODE.SENDQUESTION,
             XESCODE.EXAM_START
     };
-
 
 
     @Override
@@ -1204,7 +1275,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     }
                     mPraiseBll.onPraise(sourceNick, target, data, type);
                     break;
-
                 default:
                     break;
             }
@@ -1249,7 +1319,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
 
                 if (!isTopicHandled() && alloteamStateCode == 1) {
                     setTopicHandled(true);
-                    if(!teamSelectByNotice){
+                    if (!teamSelectByNotice) {
                         showTeamSelecting();
                     }
                     logger.e("====>onTopic showTeamSelecting:");
@@ -1554,8 +1624,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onScineceAnswerResutlEvent(AnswerResultEvent event) {
-        logger.e("====>H5CallBakc:" + event.toString());
-
+        logger.e("========>onAnswerResult_LiveVideo:" + event.toString());
         try {
             JSONObject jsonObject = new JSONObject(event.getData());
             String id = jsonObject.optString("id");
