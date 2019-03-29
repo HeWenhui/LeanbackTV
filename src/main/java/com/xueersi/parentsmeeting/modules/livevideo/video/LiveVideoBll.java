@@ -912,6 +912,14 @@ public class LiveVideoBll implements VPlayerListenerReg {
         if (!MediaPlayer.isPSIJK) {
             liveGetPlayServer.liveGetPlayServer(false);
         } else {
+            liveThreadPoolExecutor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    if (!mLiveBll.isPresent() && mVideoAction != null) {
+                        mVideoAction.onTeacherNotPresent(true);
+                    }
+                }
+            });
             switch (arg2) {
                 case MediaErrorInfo.PSPlayerError: {
                     //播放器错误
@@ -921,11 +929,13 @@ public class LiveVideoBll implements VPlayerListenerReg {
                 case MediaErrorInfo.PSDispatchFailed: {
                     //调度失败，建议重新访问playLive或者playVod频道不存在
                     //调度失败，延迟1s再次访问调度
+
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
 //                            playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
-                            liveGetPlayServer.liveGetPlayServer(false);
+//                            liveGetPlayServer.liveGetPlayServer(false);
+                            psRePlay(false);
                         }
                     }, 1000);
 
@@ -940,12 +950,14 @@ public class LiveVideoBll implements VPlayerListenerReg {
                 case MediaErrorInfo.PSServer403: {
                     //防盗链鉴权失败，需要重新访问playLive或者playVod
 //                    playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
-                    liveGetPlayServer.liveGetPlayServer(false);
+//                    liveGetPlayServer.liveGetPlayServer(false);
+                    psRePlay(false);
                 }
                 break;
                 case MediaErrorInfo.PLAY_COMPLETE: {
 //                    playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
-                    liveGetPlayServer.liveGetPlayServer(false);
+//                    liveGetPlayServer.liveGetPlayServer(false);
+                    psRePlay(false);
                 }
                 break;
                 default:
