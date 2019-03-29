@@ -148,9 +148,9 @@ public class GroupGameTcp {
                 b.putShort(TcpConstants.ver);
                 b.putShort(type);
                 b.putInt(operation);
+                b.putInt(seq);
                 seq++;
                 log.d("WriteThread:send:seq=" + seq);
-                b.putInt(seq);
                 b.putLong(System.currentTimeMillis());
                 if (bodyStr.length() > 0) {
                     b.put(bodyStr.getBytes());

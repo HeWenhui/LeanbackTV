@@ -186,20 +186,20 @@ public class TcpDispatch implements TcpMessageReg {
             change = true;
         }
         logger.d("setTest:change=" + change);
-        if (change) {
-            liveThreadPoolExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    if (groupGameTcp != null) {
-                        groupGameTcp.stop();
-                    }
-                    InetSocketAddress inetSocketAddress = addresses.get(addressIndex++ % addresses.size());
-                    groupGameTcp = new GroupGameTcp(inetSocketAddress.getHostName(), inetSocketAddress.getPort());
-                    groupGameTcp.setReceiveMegCallBack(receiveMegCallBack);
-                    groupGameTcp.start();
-                }
-            });
-        }
+//        if (change) {
+//            liveThreadPoolExecutor.execute(new Runnable() {
+//                @Override
+//                public void run() {
+//                    if (groupGameTcp != null) {
+//                        groupGameTcp.stop();
+//                    }
+//                    InetSocketAddress inetSocketAddress = addresses.get(addressIndex++ % addresses.size());
+//                    groupGameTcp = new GroupGameTcp(inetSocketAddress.getHostName(), inetSocketAddress.getPort());
+//                    groupGameTcp.setReceiveMegCallBack(receiveMegCallBack);
+//                    groupGameTcp.start();
+//                }
+//            });
+//        }
         return change;
     }
 
