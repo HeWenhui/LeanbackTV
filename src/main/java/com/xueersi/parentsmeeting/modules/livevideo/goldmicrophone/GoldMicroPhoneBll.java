@@ -74,15 +74,18 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
     /** 语音评测工具类,用来走在线识别 */
     private SpeechEvaluatorUtils mSpeechEvaluatorUtils;
     /** 语音识别出来的文字 */
-    private StringBuilder recognizeStr = new StringBuilder();
+    private String recognizeStr = new String();
+    private StringBuilder ansStr = new StringBuilder();
     GoldPhoneContract.GoldPhoneView mGoldView;
     /** 金话筒标志位 */
     private String sign;
-
+    /** 录音是否结束，用来 */
     private AtomicBoolean isStop = new AtomicBoolean(false);
     File dir;
     /** 是否走在线语音测评 */
     private AtomicBoolean isOnline = new AtomicBoolean(false);
+    //是否含有脏词
+//    private AtomicBoolean hasSensitiveWords = new AtomicBoolean(false);
     /** 上一次lottie播放的时间 */
     private long lottieLastPlayTime = -1;
     /** 上一次录音的时间 */
@@ -105,21 +108,25 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
                 logger.i("receive arts_gold_microphone open = " + open);
                 if (open == 1) {
                     isStop.set(false);
+
                     showMicroPhoneView();
                     getIsOnlineRecognize(sign);
                     boolean isHasAudioPermission = isHasAudioPermission();
                     sendIsGoldMicroPhone(isHasAudioPermission, false, sign);
                     showGoldSettingView(isHasAudioPermission);
                 } else {
-                    if (isOnline.get()) {
-                        sendNotice(recognizeStr.toString());
+                    if (isOnline.get() && !isStop.get()) {
+                        logger.i("Content:" + ansStr + recognizeStr);
+                        sendNotice(ansStr.append(recognizeStr).toString());
                     }
+                    recognizeStr = new String();
+                    ansStr = new StringBuilder();
                     //提示关闭语音弹幕
                     if (mGoldView != null) {
                         mGoldView.showCloseView();
                     }
                     stopRecord();
-                    logger.i(recognizeStr.toString());
+                    logger.i(recognizeStr);
 
                 }
                 break;
@@ -321,7 +328,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
 
         @Override
         public void onResult(ResultEntity resultEntity) {
-            logger.i("voice search____" + resultEntity.getErrorNo() + resultEntity.getCurString() + resultEntity.getStatus());
+            logger.i("voice search____code:" + resultEntity.getErrorNo() + " curString:" + resultEntity.getCurString() + " status:" + resultEntity.getStatus());
             if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
                 if (resultEntity.getErrorNo() > 0) {
                     recognizeError(resultEntity.getErrorNo());
@@ -354,6 +361,9 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
      * @param volume
      */
     private void performVolume(int volume) {
+        if (mGoldView == null || mRootView == null) {
+            return;
+        }
         long nowTime = System.currentTimeMillis();
         if (nowTime - lottieLastPlayTime > LOTTIE_VIEW_INTERVAL && volume > GOLD_MICROPHONE_VOLUME) {
             mRootView.post(new Runnable() {
@@ -409,6 +419,15 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
             });
 //            setStatus(RECERROR);
         }
+        if (isRecord.get()) {
+            ansStr.append(recognizeStr);
+            recognizeStr = "";
+            logger.i(" isRecord = " + isRecord.get());
+            mSpeechEvaluatorUtils.startOnlineRecognize(
+                    dir.getPath() + MP3_FILE_NAME,
+                    SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
+                    evaluatorListener);
+        }
 //        } else {
 //            try {
 //                recognizeSuccess(str2json(tvTitle.getText().toString()), true);
@@ -430,22 +449,17 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
             JSONObject jsonObject = new JSONObject(str);
             String content = jsonObject.optString("nbest");
             JSONArray array = jsonObject.optJSONArray("sensitiveWords");
-            if (array != null && array.length() > 0) {
-                for (int i = array.length() - 1; i >= 0; i--) {
-                    StringBuilder star = new StringBuilder();
-                    for (int j = 0; j < array.getString(i).length(); j++) {
-                        star.append("*");
-                    }
-                    content = content.replaceAll(array.getString(i), star.toString());
-                }
-            }
             content = content.replaceAll("。", "");
             if (!TextUtils.isEmpty(content)) {
-                recognizeStr.append(content);
+                recognizeStr = content;
 //                tvTitle.setText(content);
                 logger.i("====voice content" + content);
             }
             if (isFinish && isRecord.get()) {
+                ansStr.append(recognizeStr);
+                recognizeStr = "";
+                logger.i("isFinish = " + isFinish + " isRecord = " + isRecord.get());
+                logger.i("restart evaluator");
                 mSpeechEvaluatorUtils.startOnlineRecognize(
                         dir.getPath() + MP3_FILE_NAME,
                         SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
@@ -510,15 +524,16 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
 //            jsonObject.put("to", uid);
                 jsonObject.put("msg", msg);
                 jsonObject.put("id", mGetInfo.getStuId());
-                jsonObject.put("name", mGetInfo.getName());
+                jsonObject.put("name", mGetInfo.getStuName());
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             if (LiveTopic.MODE_CLASS.equals(mLiveBll.getMode())) {
                 mLiveBll.sendNotice(mLiveBll.getMainTeacherStr(), jsonObject);
-            } else {
-                mLiveBll.sendNotice(mLiveBll.getCounTeacherStr(), jsonObject);
             }
+//            else {
+//                mLiveBll.sendNotice(mLiveBll.getCounTeacherStr(), jsonObject);
+//            }
         }
     }
 
@@ -534,6 +549,8 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
             mRootView.removeView(view);
             stopRecord();
         }
+        recognizeStr = "";
+        ansStr = new StringBuilder();
         showOrhideBottom(true);
         mGoldView = null;
     }
@@ -548,5 +565,15 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
             isRecord.set(false);
         }
         isStop.set(true);
+    }
+
+    @Override
+    public void onModeChange(String oldMode, String mode, boolean isPresent) {
+        super.onModeChange(oldMode, mode, isPresent);
+        if (!LiveTopic.MODE_CLASS.equals(mode)) {
+            if (mGoldView instanceof GoldPhoneContract.CloseTipPresenter) {
+                ((GoldPhoneContract.CloseTipPresenter) mGoldView).removeGoldView();
+            }
+        }
     }
 }
