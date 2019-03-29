@@ -38,8 +38,8 @@ public class CourseGroupItem implements AdapterItemInterface<TeamMemberEntity> {
     private int uid;
     private Context mContext;
     private int progress = 0;
-    public static int voiceStartFrame = 13;
-    public static int voiceMaxFrame = 21;
+    public static int voiceStartFrame = 14;
+    public static int voiceMaxFrame = 0;
 
     public CourseGroupItem(Context context, WorkerThread workerThread, int uid, boolean isMe) {
         this.mContext = context;
@@ -211,6 +211,9 @@ public class CourseGroupItem implements AdapterItemInterface<TeamMemberEntity> {
             handler.postDelayed(startRun, 10);
         } else {
             progRun.animationView = animationView;
+            if (voiceMaxFrame == 0) {
+                voiceMaxFrame = (int) animationView.getMaxFrame();
+            }
             progress = (int) (voiceStartFrame + (float) (volume * voiceMaxFrame) / 30.0f);
             progRun.stopProgress = progress;
             handler.postDelayed(progRun, 30);

@@ -154,6 +154,7 @@ public class TcpDispatch implements TcpMessageReg {
         @Override
         public void onDisconnect(GroupGameTcp oldGroupGameTcp) {
             oldGroupGameTcp.stop();
+            final int seq = oldGroupGameTcp.getSeq();
             if (isStop) {
                 return;
             }
@@ -165,6 +166,7 @@ public class TcpDispatch implements TcpMessageReg {
                         public void run() {
                             InetSocketAddress inetSocketAddress = addresses.get(addressIndex++ % addresses.size());
                             groupGameTcp = new GroupGameTcp(inetSocketAddress.getHostName(), inetSocketAddress.getPort());
+                            groupGameTcp.setSeq(seq);
                             groupGameTcp.setReceiveMegCallBack(receiveMegCallBack);
                             groupGameTcp.start();
                         }

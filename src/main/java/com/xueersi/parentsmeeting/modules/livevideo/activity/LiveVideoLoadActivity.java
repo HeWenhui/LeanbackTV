@@ -183,7 +183,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
 //                    mGetInfo.setPattern(1);
                     bundle.putString("mode", mGetInfo.getMode());
 
-                    boolean newCourse = isNewCourse(mGetInfo.getId());
+                    boolean newCourse = isNewCourse(mGetInfo.getId());newCourse=true;
                     if (newCourse) {
                         bundle.putBoolean("newCourse", true);
                         performDownLoadPreLoad(httpManager, mGetInfo);

@@ -33,6 +33,7 @@ public class GroupGameTcp {
     private String host;
     private int port;
     private Socket socket;
+    /** 消息序号 */
     private int seq = 0;
     private WriteThread writeThread;
     private Handler sendMessageHandler;
@@ -45,6 +46,14 @@ public class GroupGameTcp {
 
     public void setReceiveMegCallBack(ReceiveMegCallBack receiveMegCallBack) {
         this.receiveMegCallBack = receiveMegCallBack;
+    }
+
+    public void setSeq(int seq) {
+        this.seq = seq;
+    }
+
+    public int getSeq() {
+        return seq;
     }
 
     public void start() {
