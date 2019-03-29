@@ -50,6 +50,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.GroupGameTestInfosEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.item.CourseGroupItem;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.TcpConstants;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
@@ -76,6 +77,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 
 import io.agora.rtc.Constants;
@@ -116,8 +118,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     private int isArts = LiveVideoSAConfig.ART_EN;
     /** 是不是回放 */
     private boolean isPlayBack = false;
-    private NewCourseSec newCourseSec;
-    ArrayList<NewCourseSec.Test> tests = new ArrayList<>();
+    //    private NewCourseSec newCourseSec;
+    private GroupGameTestInfosEntity mGroupGameTestInfosEntity;
+    private List<GroupGameTestInfosEntity.TestInfoEntity> tests = new ArrayList<>();
     private int currentIndex = 0;
     /**
      * 新课件是否是预加载
@@ -148,7 +151,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     private LiveGetInfo liveGetInfo;
     private int stuid;
     static final String TEST_URL = "file:///android_asset/hot_air_balloon/index.html";
-    static final String TEST_CONTENT = "This is an apple|apple|banana|traffic";
+    private String TEST_CONTENT = "";
     private GetStuActiveTeam getStuActiveTeam;
     private TcpMessageReg tcpMessageReg;
     private VoiceProjectile voiceProjectile;
@@ -270,7 +273,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             @Override
             public void onJoinChannel(int joinChannel) {
                 logger.d("onJoinChannel:joinChannel=" + joinChannel);
-                startSpeechRecognize();
             }
         });
     }
@@ -416,6 +418,23 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     }
 
     private void onLoadComplete(String where, JSONObject message) {
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    JSONObject resultData = new JSONObject();
+                    resultData.put("type", "coursewareOnloading");
+                    resultData.put("pageNum", 0);
+                    resultData.put("restTime", 10);
+                    resultData.put("currentRight", 1);
+                    resultData.put("isSingle", "false");
+                    StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
+                } catch (Exception e) {
+
+                }
+                startSpeechRecognize();
+            }
+        });
     }
 
     private void startSpeechRecognize() {
@@ -566,21 +585,25 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         englishH5CoursewareSecHttp.getCourseWareTests(detailInfo, new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
-                newCourseSec = (NewCourseSec) objData[0];
-                logger.d("onDataSucess:time=" + (newCourseSec.getEndTime() - newCourseSec.getReleaseTime()));
-                tests = newCourseSec.getTests();
+                mGroupGameTestInfosEntity = (GroupGameTestInfosEntity) objData[0];
+                tests = mGroupGameTestInfosEntity.getTestInfoList();
                 if (tests.isEmpty()) {
                     XESToastUtils.showToast(mContext, "互动题为空");
                     return;
                 }
-                if (isArts == LiveVideoSAConfig.ART_EN) {
-                    NewCourseSec.Test test = tests.get(0);
-                    mLogtf.d("getCourseWareTests:oldtype=" + detailInfo.getArtType() + ",testType=" + test.getTestType());
-                    if (StringUtils.isEmpty(detailInfo.getArtType()) || "0".equals(detailInfo.getArtType())) {
-                        detailInfo.setArtType(test.getTestType());
+                for (int i = 0; i < tests.size(); i++) {
+                    GroupGameTestInfosEntity.TestInfoEntity test = tests.get(i);
+                    List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = test.getAnswerList();
+                    for (int j = 0; j < answerList.size(); j++) {
+                        GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = answerList.get(j);
+                        TEST_CONTENT += answersEntity.getText() + "|";
                     }
                 }
-                NewCourseSec.Test test = tests.get(0);
+                if (TEST_CONTENT.endsWith("|")) {
+                    TEST_CONTENT = TEST_CONTENT.substring(0, TEST_CONTENT.length() - 1);
+                }
+                logger.d("onDataSucess:TEST_CONTENT=" + TEST_CONTENT);
+                GroupGameTestInfosEntity.TestInfoEntity test = tests.get(0);
                 currentIndex = 0;
                 wvSubjectWeb.loadUrl(test.getPreviewPath());
                 int type = newCourseCache.loadCourseWareUrl(test.getPreviewPath());
@@ -589,33 +612,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 } else {
                     ispreload = true;
                 }
-                NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), getSubtestid(), test.getPreviewPath(), ispreload, test.getId());
-                //设置作答时间
-                if (isArts == LiveVideoSAConfig.ART_EN) {
-                    setTimeEn(newCourseSec);
-                }
-            }
-
-            /**
-             * 设置英语时间
-             * @param newCourseSec
-             */
-            private void setTimeEn(NewCourseSec newCourseSec) {
-                //英语倒计时
-//                final long releaseTime = newCourseSec.getReleaseTime() * 60;
-//                final long startTime = System.currentTimeMillis() / 1000;
-//                tvCourseTimeText.setText(getTimeNegativeEn(releaseTime, startTime));
-//                handler.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        String timeStr = getTimeNegativeEn(releaseTime, startTime);
-//                        if (loadResult || mView.getParent() == null || timeStr == null) {
-//                            return;
-//                        }
-//                        tvCourseTimeText.setText(timeStr);
-//                        handler.postDelayed(this, 1000);
-//                    }
-//                }, 1000);
+                NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), getSubtestid(), test.getPreviewPath(), ispreload, test.getTestId());
             }
 
             /**

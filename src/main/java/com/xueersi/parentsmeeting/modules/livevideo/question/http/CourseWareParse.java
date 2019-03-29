@@ -132,7 +132,7 @@ public class CourseWareParse {
                 testinfo.setStemLength(testObj.getInt("stemLength"));
                 List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = new ArrayList<>();
                 JSONArray answers = testObj.getJSONArray("answers");
-                for (int j = 0; j < array.length(); j++) {
+                for (int j = 0; j < answers.length(); j++) {
                     JSONObject answerObj = answers.getJSONObject(j);
                     GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = new GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity();
                     answer.setId(answerObj.getInt("id"));
