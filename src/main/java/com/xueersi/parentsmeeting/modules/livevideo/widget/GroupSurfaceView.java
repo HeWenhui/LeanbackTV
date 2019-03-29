@@ -85,7 +85,7 @@ public class GroupSurfaceView extends SurfaceView implements SurfaceHolder.Callb
         }
     }
 
-    private float voiceStart = CourseGroupItem.voiceStart;
+    private float voiceStart = 13.5f / 22f;
 
     class Wave implements Runnable {
         boolean isRun = false;

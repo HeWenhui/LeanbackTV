@@ -29,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
@@ -347,6 +348,10 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
     }
 
     protected EnglishH5CoursewareHttp getHttp() {
+        int isArts = liveBackBll.getIsArts();
+        if (isArts == LiveVideoSAConfig.ART_EN) {
+            return new EnglishH5CoursewareSecImpl();
+        }
         return new EnglishH5CoursewareImpl();
     }
 
@@ -358,6 +363,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
     }
 
     class EnglishH5CoursewareSecImpl extends EnglishH5CoursewareImpl implements EnglishH5CoursewareSecHttp {
+
         @Override
         public String getResultUrl(VideoQuestionLiveEntity detailInfo, int isforce, String nonce) {
             LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = liveGetInfo.getStudentLiveInfo();
@@ -412,11 +418,17 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
 
         @Override
         public void getCourseWareTests(VideoQuestionLiveEntity detailInfo, AbstractBusinessDataCallBack callBack) {
-            EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
-            String classId = liveGetInfo.getStudentLiveInfo().getClassId();
-            String[] res = getSrcType(englishH5Entity);
-            getCourseWareHttpManager().getCourseWareTests(liveGetInfo.getStuId(), englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
-                    englishH5Entity.getReleasedPageInfos(), 0, classId, englishH5Entity.getClassTestId(), res[0], res[1], liveGetInfo.getEducationStage(), detailInfo.nonce,"0", callBack);
+            if (liveBackBll.getIsArts() == LiveVideoSAConfig.ART_EN) {
+                if (LiveQueConfig.isTeam(detailInfo.type)) {
+                    getCourseWareHttpManager().getGroupGameTestInfos(detailInfo.id, callBack);
+                } else {
+                    EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
+                    String classId = liveGetInfo.getStudentLiveInfo().getClassId();
+                    String[] res = getSrcType(englishH5Entity);
+                    getCourseWareHttpManager().getCourseWareTests(liveGetInfo.getStuId(), englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
+                            englishH5Entity.getReleasedPageInfos(), 0, classId, englishH5Entity.getClassTestId(), res[0], res[1], liveGetInfo.getEducationStage(), detailInfo.nonce, "0", callBack);
+                }
+            }
         }
 
         private String[] getSrcType(EnglishH5Entity englishH5Entity) {

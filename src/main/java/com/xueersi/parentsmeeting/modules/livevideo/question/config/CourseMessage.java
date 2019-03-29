@@ -7,6 +7,9 @@ public class CourseMessage {
     public static final String REC_loadComplete = "loadComplete";
     public static final String REC_SubmitAnswer = "submitAnswer";
     public static final String REC_QuestionStatus = "questionStatus";
+    public static final String REC_CoursewareDoing = "coursewareDoing";
     public static final String SEND_lookAnswerStatus = "lookAnswerStatus";
     public static final String SEND_getAnswer = "getAnswer";
+    public static final String SEND_CoursewareDoing = "coursewareDoing";
+    public static final String SEND_CoursewareOnloading = "coursewareOnloading";
 }

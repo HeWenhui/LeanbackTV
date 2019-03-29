@@ -92,8 +92,8 @@ public class EnTeamPkHttpManager {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                ArrayList<TeamMemberEntity> entities = parseGetStuActiveTeam(responseEntity);
-                callBack.onDataSucess(entities);
+                InteractiveTeam interactiveTeam = parseInteractiveTeam((JSONObject) responseEntity.getJsonObject());
+                callBack.onDataSucess(interactiveTeam, responseEntity.getJsonObject());
             }
 
             @Override

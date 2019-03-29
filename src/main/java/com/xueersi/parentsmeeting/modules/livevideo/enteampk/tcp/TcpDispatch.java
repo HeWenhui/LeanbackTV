@@ -154,6 +154,7 @@ public class TcpDispatch implements TcpMessageReg {
         @Override
         public void onDisconnect(GroupGameTcp oldGroupGameTcp) {
             oldGroupGameTcp.stop();
+            final int seq = oldGroupGameTcp.getSeq();
             if (isStop) {
                 return;
             }
@@ -165,6 +166,7 @@ public class TcpDispatch implements TcpMessageReg {
                         public void run() {
                             InetSocketAddress inetSocketAddress = addresses.get(addressIndex++ % addresses.size());
                             groupGameTcp = new GroupGameTcp(inetSocketAddress.getHostName(), inetSocketAddress.getPort());
+                            groupGameTcp.setSeq(seq);
                             groupGameTcp.setReceiveMegCallBack(receiveMegCallBack);
                             groupGameTcp.start();
                         }
@@ -185,21 +187,21 @@ public class TcpDispatch implements TcpMessageReg {
             test_id = testId;
             change = true;
         }
-        logger.d("setTest:change=" + change);
-        if (change) {
-            liveThreadPoolExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    if (groupGameTcp != null) {
-                        groupGameTcp.stop();
-                    }
-                    InetSocketAddress inetSocketAddress = addresses.get(addressIndex++ % addresses.size());
-                    groupGameTcp = new GroupGameTcp(inetSocketAddress.getHostName(), inetSocketAddress.getPort());
-                    groupGameTcp.setReceiveMegCallBack(receiveMegCallBack);
-                    groupGameTcp.start();
-                }
-            });
-        }
+        logger.d("setTest：testType=" + testType + ",testId=" + testId + ",change=" + change);
+//        if (change) {
+//            liveThreadPoolExecutor.execute(new Runnable() {
+//                @Override
+//                public void run() {
+//                    if (groupGameTcp != null) {
+//                        groupGameTcp.stop();
+//                    }
+//                    InetSocketAddress inetSocketAddress = addresses.get(addressIndex++ % addresses.size());
+//                    groupGameTcp = new GroupGameTcp(inetSocketAddress.getHostName(), inetSocketAddress.getPort());
+//                    groupGameTcp.setReceiveMegCallBack(receiveMegCallBack);
+//                    groupGameTcp.start();
+//                }
+//            });
+//        }
         return change;
     }
 

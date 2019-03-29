@@ -37,8 +37,9 @@ public class CourseGroupItem implements AdapterItemInterface<TeamMemberEntity> {
     private boolean isMe;
     private int uid;
     private Context mContext;
-    private float progress = 0f;
-    public static float voiceStart = 13.5f / 22f;
+    private int progress = 0;
+    public static int voiceStartFrame = 14;
+    public static int voiceMaxFrame = 0;
 
     public CourseGroupItem(Context context, WorkerThread workerThread, int uid, boolean isMe) {
         this.mContext = context;
@@ -102,8 +103,8 @@ public class CourseGroupItem implements AdapterItemInterface<TeamMemberEntity> {
                             rtcEngine.disableAudio();
                             final LottieAnimationView animationView = (LottieAnimationView) ivCourseItemAudio;
                             stopRun.animationView = animationView;
-                            stopRun.startProgress = voiceStart;
-                            startRun.startProgress = 0.0f;
+                            stopRun.startProgress = voiceStartFrame;
+                            startRun.startProgress = 0;
                             handler.removeCallbacks(startRun);
                             handler.removeCallbacks(progRun);
                             if (progress > 0) {
@@ -148,53 +149,53 @@ public class CourseGroupItem implements AdapterItemInterface<TeamMemberEntity> {
     private ProgRun progRun = new ProgRun();
 
     class StartRun implements Runnable {
-        private float startProgress = 0f;
+        private int startProgress = 0;
         LottieAnimationView animationView;
 
         @Override
         public void run() {
-            if (startProgress < voiceStart) {
-                startProgress += 0.1f;
+            if (startProgress < voiceStartFrame) {
+                startProgress += 1;
                 progress = startProgress;
-                animationView.setProgress(startProgress);
+                animationView.setFrame(startProgress);
                 handler.postDelayed(this, 10);
             }
         }
     }
 
     class StopRun implements Runnable {
-        private float startProgress = voiceStart;
+        private int startProgress = voiceStartFrame;
         LottieAnimationView animationView;
 
         @Override
         public void run() {
-            if (startProgress >= 0f) {
-                startProgress -= 0.1f;
+            if (startProgress >= 0) {
+                startProgress -= 1;
                 progress = startProgress;
-                animationView.setProgress(startProgress);
+                animationView.setFrame(startProgress);
                 handler.postDelayed(this, 10);
             }
         }
     }
 
     class ProgRun implements Runnable {
-        private float startProgress = voiceStart;
-        private float stopProgress = 0f;
+        private int startProgress = voiceStartFrame;
+        private int stopProgress = 0;
         LottieAnimationView animationView;
 
         @Override
         public void run() {
-            float progress;
+            int progress;
             if (startProgress > stopProgress) {
-                startProgress -= 0.1f;
+                startProgress -= 1;
                 progress = startProgress;
             } else if (startProgress < stopProgress) {
-                startProgress += 0.1f;
+                startProgress += 1;
                 progress = startProgress;
             } else {
                 return;
             }
-            animationView.setProgress(progress);
+            animationView.setFrame(progress);
             handler.postDelayed(this, 100);
         }
     }
@@ -204,16 +205,18 @@ public class CourseGroupItem implements AdapterItemInterface<TeamMemberEntity> {
             return;
         }
         final LottieAnimationView animationView = (LottieAnimationView) ivCourseItemAudio;
-        if (progress < voiceStart) {
+        if (progress < voiceStartFrame) {
             startRun.animationView = animationView;
             handler.removeCallbacks(stopRun);
             handler.postDelayed(startRun, 10);
         } else {
             progRun.animationView = animationView;
-            progress = voiceStart + (float) (volume) / 30.0f;
+            if (voiceMaxFrame == 0) {
+                voiceMaxFrame = (int) animationView.getMaxFrame();
+            }
+            progress = (int) (voiceStartFrame + (float) (volume * voiceMaxFrame) / 30.0f);
             progRun.stopProgress = progress;
             handler.postDelayed(progRun, 30);
-//        animationView.setProgress((float) (volume) / 30.0f);
         }
     }
 
