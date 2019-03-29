@@ -11,6 +11,10 @@ public interface EnglishH5CoursewareSecHttp extends EnglishH5CoursewareHttp {
 
     void submitCourseWareTests(VideoQuestionLiveEntity detailInfo, int isforce, String nonce, long entranceTime, String testInfos, AbstractBusinessDataCallBack callBack);
 
+    void submitGroupGame(VideoQuestionLiveEntity detailInfo, int gameMode, int voiceTime, int pkTeamId, int gameGroupId,
+                         int starNum, int energy, int gold, int videoLengthTime, int micLengthTime, int acceptVideoLengthTime, int acceptMicLengthTime,
+                         String answerData, AbstractBusinessDataCallBack callBack);
+
     String getResultUrl(VideoQuestionLiveEntity detailInfo, int isforce, String nonce);
 
     void getStuTestResult(VideoQuestionLiveEntity detailInfo, int isPlayBack, AbstractBusinessDataCallBack callBack);

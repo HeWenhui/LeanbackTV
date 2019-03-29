@@ -53,21 +53,21 @@ public class GroupGameTestBll extends LiveBaseBll {
         btnTest1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                groupGameNativePager = new GroupGameNativePager(mContext, mGetInfo,new VideoQuestionLiveEntity(),new EnglishH5Entity());
-                mRootView.addView(groupGameNativePager.getRootView(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+//                groupGameNativePager = new GroupGameNativePager(mContext, mGetInfo,new VideoQuestionLiveEntity(),new EnglishH5Entity());
+//                mRootView.addView(groupGameNativePager.getRootView(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             }
         });
         btnTest2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                groupGameMVPPager = new GroupGameMVPPager(mContext);
-                mRootView.addView(groupGameMVPPager.getRootView(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-                groupGameMVPPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
-                    @Override
-                    public void onClose(LiveBasePager basePager) {
-                        mRootView.removeView(groupGameMVPPager.getRootView());
-                    }
-                });
+//                groupGameMVPPager = new GroupGameMVPPager(mContext);
+//                mRootView.addView(groupGameMVPPager.getRootView(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+//                groupGameMVPPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
+//                    @Override
+//                    public void onClose(LiveBasePager basePager) {
+//                        mRootView.removeView(groupGameMVPPager.getRootView());
+//                    }
+//                });
             }
         });
         btnTest3.setOnClickListener(new View.OnClickListener() {

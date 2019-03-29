@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -45,8 +46,26 @@ public class GroupGameMVPPager extends LiveBasePager {
      */
     private ImageView ivClose;
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "en_group_game/";
-    public GroupGameMVPPager(Context context) {
+
+    public GroupGameMVPPager(Context context, OnPagerClose onPagerClose) {
         super(context);
+        this.onPagerClose = onPagerClose;
+        initData();
+        initListener();
+    }
+
+    private int fireNum = 0;
+    private int goldNum = 0;
+    private String name;
+    private String headUrl;
+
+    public GroupGameMVPPager(Context context, OnPagerClose onPagerClose, int fireNum, int goldNum, String name, String headUrl) {
+        super(context);
+        this.onPagerClose = onPagerClose;
+        this.fireNum = fireNum;
+        this.goldNum = goldNum;
+        this.name = name;
+        this.headUrl = headUrl;
         initData();
         initListener();
     }
@@ -65,9 +84,6 @@ public class GroupGameMVPPager extends LiveBasePager {
 
     @Override
     public void initData() {
-        tvTime.setTimeDuration(3);
-        tvTime.setTimeSuffix("s");
-        tvTime.startCountDow();
         startLottieAnimation();
     }
 
@@ -98,13 +114,13 @@ public class GroupGameMVPPager extends LiveBasePager {
             @Override
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
                 if (lottieImageAsset.getId().equals("image_5")) {
-                    return creatGoldBitmap(5);
+                    return creatGoldBitmap(fireNum);
                 }
                 if (lottieImageAsset.getId().equals("image_6")) {
-                    return creatFireBitmap(10);
+                    return creatFireBitmap(goldNum);
                 }
                 if (lottieImageAsset.getId().equals("image_10")) {
-                    return creatNameBitmap("张远荪");
+                    return creatNameBitmap(name);
                 }
                 return bubbleEffectInfo.fetchBitmapFromAssets(
                         mLottieAnimationView,
@@ -116,6 +132,29 @@ public class GroupGameMVPPager extends LiveBasePager {
             }
         };
         mLottieAnimationView.setImageAssetDelegate(imageAssetDelegate);
+        mLottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                tvTime.setTimeDuration(3);
+                tvTime.setTimeSuffix("s");
+                tvTime.startCountDow();
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
         mLottieAnimationView.playAnimation();
     }
 

@@ -406,6 +406,11 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         }
 
         @Override
+        public void submitGroupGame(VideoQuestionLiveEntity detailInfo, int gameMode, int voiceTime, int pkTeamId, int gameGroupId, int starNum, int energy, int gold, int videoLengthTime, int micLengthTime, int acceptVideoLengthTime, int acceptMicLengthTime, String answerData, AbstractBusinessDataCallBack callBack) {
+
+        }
+
+        @Override
         public void getCourseWareTests(VideoQuestionLiveEntity detailInfo, AbstractBusinessDataCallBack callBack) {
             EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
             String classId = liveGetInfo.getStudentLiveInfo().getClassId();

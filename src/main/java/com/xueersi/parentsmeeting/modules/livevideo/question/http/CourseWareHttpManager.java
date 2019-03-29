@@ -306,22 +306,28 @@ public class CourseWareHttpManager {
     /**
      * 小组互动 - 答题
      *
-     * @param planId
-     * @param classId
-     * @param pkTeamId
-     * @param gg_id
-     * @param answerData
-     * @param callBack
      */
-    public void submitGroupGame(int planId, int classId, int pkTeamId, int gg_id, String answerData, final AbstractBusinessDataCallBack callBack) {
+    public void submitGroupGame(String testId, String type, int gameMode, int voiceTime, int isPlayBack, int pkTeamId, int gameGroupId,
+                                int starNum, int energy, int gold, int videoLengthTime, int micLengthTime, int acceptVideoLengthTime, int acceptMicLengthTime,
+                                String answerData, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         liveHttpManager.setDefaultParameter(httpRequestParams);
-        httpRequestParams.addBodyParam("planId", "" + planId);
-        httpRequestParams.addBodyParam("classID", "" + classId);
+        httpRequestParams.addBodyParam("testId", "" + testId);
+        httpRequestParams.addBodyParam("type",type);
+        httpRequestParams.addBodyParam("gameMode", "" + gameMode);
+        httpRequestParams.addBodyParam("voiceTime", "" + voiceTime);
+        httpRequestParams.addBodyParam("isPlayBack", "" + isPlayBack);
         httpRequestParams.addBodyParam("pkTeamId", "" + pkTeamId);
-        httpRequestParams.addBodyParam("gg_id", "" + "" + gg_id);
+        httpRequestParams.addBodyParam("gameGroupId", "" + gameGroupId);
+        httpRequestParams.addBodyParam("starNum", "" + starNum);
+        httpRequestParams.addBodyParam("energy", "" + energy);
+        httpRequestParams.addBodyParam("gold", "" + gold);
+        httpRequestParams.addBodyParam("videoLengthTime", "" + videoLengthTime);
+        httpRequestParams.addBodyParam("micLengthTime", "" + micLengthTime);
+        httpRequestParams.addBodyParam("acceptVideoLengthTime", "" + acceptVideoLengthTime);
+        httpRequestParams.addBodyParam("acceptMicLengthTime", "" + acceptMicLengthTime);
         httpRequestParams.addBodyParam("answerData", answerData);
-        liveHttpManager.sendPost(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_EN, httpRequestParams, new HttpCallBack(false) {
+        liveHttpManager.sendPost(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_GROUPGAME_EN, httpRequestParams, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("submitGroupGame:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
