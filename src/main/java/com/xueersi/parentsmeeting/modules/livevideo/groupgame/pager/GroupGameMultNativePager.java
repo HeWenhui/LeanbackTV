@@ -26,6 +26,7 @@ import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -53,6 +54,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.GroupGameTestInfosEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.item.CourseGroupItem;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.TcpConstants;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareSecHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.CourseMessage;
@@ -559,6 +561,17 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             public void onClick(View view) {
                 addJs = false;
                 wvSubjectWeb.reload();
+                if (AppConfig.DEBUG && interactiveTeam != null) {
+                    ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
+                    GroupGameMVPMultPager groupGameMVPMultPager = new GroupGameMVPMultPager(mContext, entities);
+                    ((ViewGroup) mView).addView(groupGameMVPMultPager.getRootView());
+                    groupGameMVPMultPager.setOnPagerClose(new OnPagerClose() {
+                        @Override
+                        public void onClose(LiveBasePager basePager) {
+                            ((ViewGroup) mView).removeView(basePager.getRootView());
+                        }
+                    });
+                }
             }
         });
     }

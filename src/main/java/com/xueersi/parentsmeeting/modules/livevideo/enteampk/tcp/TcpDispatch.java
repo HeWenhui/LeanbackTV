@@ -187,7 +187,7 @@ public class TcpDispatch implements TcpMessageReg {
             test_id = testId;
             change = true;
         }
-        logger.d("setTest:change=" + change);
+        logger.d("setTest：testType=" + testType + ",testId=" + testId + ",change=" + change);
 //        if (change) {
 //            liveThreadPoolExecutor.execute(new Runnable() {
 //                @Override
