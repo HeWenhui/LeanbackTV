@@ -187,11 +187,14 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
                 iconResId = R.drawable.icon_live_wrong;
             } else if (data.getIsRight() == RESULT_TYPE_PART_CORRECT) {
                 iconResId = R.drawable.icon_live_prart_correct;
+                color = getColor(R.color.COLOR_5DA741);
             } else if (data.getIsRight() == RESULT_TYPE_CORRECT) {
+                color = getColor(R.color.COLOR_5DA741);
                 iconResId = R.drawable.icon_live_correct;
             }
             if (iconResId != 0 && !TextUtils.isEmpty(myAnswerText) ) {
                 ivAnswerIcon.setBackgroundResource(iconResId);
+                color = getColor(R.color.COLOR_5DA741);
                 ivAnswerIcon.setVisibility(View.VISIBLE);
             } else {
                 ivAnswerIcon.setVisibility(View.INVISIBLE);
@@ -199,7 +202,7 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
 
             SpannableStringBuilder stringBuilder = new SpannableStringBuilder("你的答案:");
             SpannableString span = null;
-            if (TextUtils.isEmpty(myAnswerText)) {
+            if (TextUtils.isEmpty(myAnswerText) || "空".equals(myAnswerText)) {
                 myAnswerText = "空";
                 color = getColor(R.color.COLOR_333333);
             }
@@ -233,15 +236,17 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
                 for (int i = 0; i < data.size(); i++) {
                     String answer = data.get(i);
                     if (TextUtils.isEmpty(answer)) {
-                        //answer = "空";
+                        answer = "空";
                     } else {
                         isAllSpace = false;
                     }
-                    if (i < (data.size() - 1) && spiltStr != null) {
-                        stringBuilder.append(answer).append(spiltStr);
-                    } else {
-                        stringBuilder.append(answer);
+                    if ( i != 0 && !TextUtils.isEmpty(spiltStr)){
+                        stringBuilder.append(spiltStr);
                     }
+                    stringBuilder.append(answer);
+                }
+                if (isAllSpace) {
+                    return  "空";
                 }
             }
             return stringBuilder.toString();

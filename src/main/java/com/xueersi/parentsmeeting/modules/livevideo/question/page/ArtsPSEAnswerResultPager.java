@@ -602,6 +602,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                 iconResId = R.drawable.icon_livevideo_result_answer_right;
             } else if (data.getIsRight() == STATE_CODE_PARTRIGHT) {
                 iconResId = R.drawable.icon_livevideo_result_answer_half_right;
+                color = getColor(R.color.COLOR_726665);
             } else if (data.getIsRight() == STATE_CODE_WRONG) {
                 iconResId = R.drawable.icon_livevideo_result_answer_wrong;
                 color = getColor(R.color.COLOR_D45E58);
@@ -611,6 +612,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
             if (iconResId != 0 && !TextUtils.isEmpty(myAnswerText) ) {
                 ivAnswerIcon.setBackgroundResource(iconResId);
                 ivAnswerIcon.setVisibility(View.VISIBLE);
+                color = getColor(R.color.COLOR_5DA741);
             } else {
                 ivAnswerIcon.setVisibility(View.INVISIBLE);
             }
@@ -618,7 +620,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
 
             SpannableStringBuilder stringBuilder = new SpannableStringBuilder("你的答案:");
             SpannableString span = null;
-            if (TextUtils.isEmpty(myAnswerText)) {
+            if (TextUtils.isEmpty(myAnswerText) || "空".equals(myAnswerText)) {
                 myAnswerText = "空";
                 color = getColor(R.color.COLOR_726665);
             }
@@ -646,16 +648,25 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
         private String listToStr(List<String> data, String splitStr) {
             StringBuilder stringBuilder = new StringBuilder();
             if (data != null) {
+                boolean isAllSpace = true;
                 for (int i = 0; i < data.size(); i++) {
-                    if (i < (data.size() - 1) && splitStr != null) {
-                        stringBuilder.append(data.get(i)).append(splitStr);
+                    String answer = data.get(i);
+                    if (TextUtils.isEmpty(answer)) {
+                        answer = "空";
                     } else {
-                        stringBuilder.append(data.get(i));
+                        isAllSpace = false;
                     }
+                    if ( i != 0 && !TextUtils.isEmpty(splitStr)){
+                        stringBuilder.append(splitStr);
+                    }
+                    stringBuilder.append(answer);
+                }
+                if (isAllSpace) {
+                    return  "空";
                 }
             }
-
             return stringBuilder.toString();
+
         }
     }
 
