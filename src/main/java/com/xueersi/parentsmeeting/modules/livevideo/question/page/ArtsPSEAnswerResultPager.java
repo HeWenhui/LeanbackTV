@@ -578,6 +578,14 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
         }
 
         public void bindData(AnswerResultEntity.Answer data, int position) {
+            if (mData.isVoice == 1) {
+                if (data.getIsRight() == 0) {
+                    data.setIsRight(STATE_CODE_RIGHT);
+                } else {
+                    data.setIsRight(STATE_CODE_WRONG);
+                }
+            }
+
             if (mData.getAnswerList().size() > 1) {
                 tvIndex.setText((position + 1) + ".");
                 tvIndex.setVisibility(View.VISIBLE);
@@ -598,7 +606,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
             int iconResId = 0;
             int color = getColor(R.color.COLOR_726665);
             if (data.getIsRight() == STATE_CODE_RIGHT) {
-                getColor(R.color.COLOR_84AD3D);
+                color=    getColor(R.color.COLOR_84AD3D);
                 iconResId = R.drawable.icon_livevideo_result_answer_right;
             } else if (data.getIsRight() == STATE_CODE_PARTRIGHT) {
                 iconResId = R.drawable.icon_livevideo_result_answer_half_right;
