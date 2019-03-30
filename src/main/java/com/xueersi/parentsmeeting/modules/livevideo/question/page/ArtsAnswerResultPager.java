@@ -187,24 +187,19 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
                 iconResId = R.drawable.icon_live_wrong;
             } else if (data.getIsRight() == RESULT_TYPE_PART_CORRECT) {
                 iconResId = R.drawable.icon_live_prart_correct;
-                color = getColor(R.color.COLOR_5DA741);
+                color = getColor(R.color.COLOR_333333);
             } else if (data.getIsRight() == RESULT_TYPE_CORRECT) {
                 color = getColor(R.color.COLOR_5DA741);
                 iconResId = R.drawable.icon_live_correct;
             }
             if (iconResId != 0 && !TextUtils.isEmpty(myAnswerText) ) {
                 ivAnswerIcon.setBackgroundResource(iconResId);
-                color = getColor(R.color.COLOR_5DA741);
-                ivAnswerIcon.setVisibility(View.VISIBLE);
-            } else {
-                ivAnswerIcon.setVisibility(View.INVISIBLE);
             }
 
             SpannableStringBuilder stringBuilder = new SpannableStringBuilder("你的答案:");
             SpannableString span = null;
             if (TextUtils.isEmpty(myAnswerText) || "空".equals(myAnswerText)) {
                 myAnswerText = "空";
-                color = getColor(R.color.COLOR_E34949);
             }
             span = new SpannableString(myAnswerText);
             span.setSpan(new ForegroundColorSpan(color), 0, span.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
@@ -404,14 +399,16 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
 
     @Override
     public void showAnswerReuslt() {
+
+        mView.setBackgroundColor(Color.parseColor(BG_COLOR));
+        // 测试代码
+        mReusltType = mData.getIsRight();
+
         if (!isGameResult()) {
             disPlayDetailUI();
             return;
         }
 
-        mView.setBackgroundColor(Color.parseColor(BG_COLOR));
-        // 测试代码
-        mReusltType = mData.getIsRight();
         resultStateRootView.setVisibility(View.VISIBLE);
         resultDetailRootView.setVisibility(View.GONE);
 
