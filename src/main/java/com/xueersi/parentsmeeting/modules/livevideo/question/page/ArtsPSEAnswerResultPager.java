@@ -624,12 +624,9 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                 }
             }
 
-            if (!TextUtils.equals(String.valueOf(ivAnswerIcon.getTag(R.id.iv_arts_answer_result_item_muti_icon)),String.valueOf(iconResId))) {
-                ivAnswerIcon.setTag(R.id.iv_arts_answer_result_item_muti_icon,null);
-                ImageLoader.with(mContext).load(iconResId).diskCacheStrategy(DiskCacheStrategy.NONE).into(ivAnswerIcon);
-                ivAnswerIcon.setTag(R.id.iv_arts_answer_result_item_muti_icon,iconResId);
+            ImageLoader.with(mContext).load(iconResId).diskCacheStrategy(DiskCacheStrategy.NONE).into(ivAnswerIcon);
 
-            }
+
 
             SpannableStringBuilder stringBuilder = new SpannableStringBuilder("你的答案:");
             SpannableString span = null;

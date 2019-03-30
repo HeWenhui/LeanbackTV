@@ -192,7 +192,7 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
                 color = getColor(R.color.COLOR_5DA741);
                 iconResId = R.drawable.icon_live_correct;
             }
-            if (iconResId != 0 && !TextUtils.isEmpty(myAnswerText) ) {
+            if (iconResId != 0) {
                 ivAnswerIcon.setBackgroundResource(iconResId);
             }
 
