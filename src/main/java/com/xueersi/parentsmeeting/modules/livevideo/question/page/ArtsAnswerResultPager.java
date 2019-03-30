@@ -204,7 +204,7 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
             SpannableString span = null;
             if (TextUtils.isEmpty(myAnswerText) || "空".equals(myAnswerText)) {
                 myAnswerText = "空";
-                color = getColor(R.color.COLOR_333333);
+                color = getColor(R.color.COLOR_E34949);
             }
             span = new SpannableString(myAnswerText);
             span.setSpan(new ForegroundColorSpan(color), 0, span.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
