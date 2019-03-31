@@ -264,4 +264,32 @@ public class CourseWareHttpManager {
             }
         });
     }
+    /**
+     * 提交语文AI主观题答案
+     * @param params
+     * @param requestCallBack
+     */
+    public void submitChineseAISubjectiveAnswer(String params, String testId,final AbstractBusinessDataCallBack callBack){
+        String url ="";
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+        httpRequestParams.addBodyParam(testId,params);
+        liveHttpManager.sendPost(url, httpRequestParams, new HttpCallBack() {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                logger.d("submitChiAIH5:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
+                callBack.onDataSucess(responseEntity.getJsonObject());
+            }
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                logger.d("submitChiAIH5:onPmError:responseEntity=" + responseEntity.getErrorMsg());
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR, responseEntity.getErrorMsg());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                logger.d("submitChiAIH5:onPmFailure:responseEntity=" + msg, error);
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
+            }
+        });
+    }
 }

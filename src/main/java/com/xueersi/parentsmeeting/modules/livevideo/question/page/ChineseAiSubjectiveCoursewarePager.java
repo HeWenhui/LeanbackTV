@@ -26,6 +26,7 @@ import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.common.business.UserBll;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.logerhelper.MobAgent;
@@ -305,7 +306,8 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                     mLogtf.d("onViewDetachedFromWindow:reloadurl=" + wvSubjectWeb.getUrl() + ",,time=" + (System
                             .currentTimeMillis() - before));
                 }
-                if (isArts == LiveVideoSAConfig.ART_EN) {
+
+                if (allowTeamPk && newCourseSec != null && newCourseSec.getIsAnswer() == 0) {
                     LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum, mEnergyNum, LiveRoomH5CloseEvent
                             .H5_TYPE_COURSE, id);
                     if (mEnglishH5CoursewareBll != null) {
@@ -313,17 +315,8 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                         mEnglishH5CoursewareBll.setWebViewCloseByTeacher(false);
                     }
                     EventBus.getDefault().post(event);
-                } else {
-                    if (allowTeamPk && newCourseSec != null && newCourseSec.getIsAnswer() == 0) {
-                        LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum, mEnergyNum, LiveRoomH5CloseEvent
-                                .H5_TYPE_COURSE, id);
-                        if (mEnglishH5CoursewareBll != null) {
-                            event.setCloseByTeahcer(mEnglishH5CoursewareBll.isWebViewCloseByTeacher());
-                            mEnglishH5CoursewareBll.setWebViewCloseByTeacher(false);
-                        }
-                        EventBus.getDefault().post(event);
-                    }
                 }
+
                 if (englishH5Entity.getNewEnglishH5()) {
                     LiveVideoConfig.isNewEnglishH5 = true;
                 } else {
@@ -353,7 +346,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 return super.onConsoleMessage(consoleMessage);
             }
         });
-        ChineseAiSubjectiveCoursewarePager.CourseWebViewClient courseWebViewClient = new ChineseAiSubjectiveCoursewarePager.CourseWebViewClient();
+        CourseWebViewClient courseWebViewClient = new CourseWebViewClient();
         newCourseCache.setOnHttpCode(courseWebViewClient);
         wvSubjectWeb.setWebViewClient(courseWebViewClient);
         wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, new StaticWeb.OnMessage() {
@@ -574,9 +567,16 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
             public void run() {
                 NewCourseSec.Test oldTest = tests.get(currentIndex);
                 try {
-                    JSONArray userAnswerContent = message.getJSONArray("data");
-                    oldTest.setUserAnswerContent(userAnswerContent);
-                    saveThisQues(currentIndex, userAnswerContent);
+                    JSONArray data = message.getJSONArray("data");
+                    if (data != null && data.length() > 0) {
+                        JSONArray userAnswerContent = data.getJSONObject(0).optJSONArray("userAnswerContent");
+                        JSONArray rightAnswerContent = data.getJSONObject(0).optJSONArray("rightAnswerContent");
+                        String maxScore = data.getJSONObject(0).getString("maxScore");
+                        oldTest.setUserAnswerContent(userAnswerContent);
+                        oldTest.setRightAnswerContent(rightAnswerContent);
+                        oldTest.setMaxScore(maxScore);
+                    }
+                    saveThisQues(currentIndex, data);
                 } catch (Exception e) {
                     CrashReport.postCatchedException(e);
                 }
@@ -667,24 +667,6 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 }
             }
         });
-    }
-
-
-    /**
-     * 英语提交接口是 submitH5 的
-     *
-     * @return
-     */
-    private boolean submitH5() {
-        boolean submitH5 = false;
-        if (LiveQueConfig.EN_COURSE_TYPE_VOICE_BLANK.equals(detailInfo.voiceType) || LiveQueConfig.EN_COURSE_TYPE_VOICE_CHOICE.equals(detailInfo.voiceType)) {
-            submitH5 = true;
-        } else {
-            if (LiveQueConfig.getSubmitH5Types().contains(detailInfo.type)) {
-                submitH5 = true;
-            }
-        }
-        return submitH5;
     }
 
     private void onLoadComplete(final String where, final JSONObject message) {
@@ -824,281 +806,26 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
     }
 
     private void submit(int isforce, String nonce) {
-        if (loadResult) {
-            //初中结果页是网页，需要调接口
-            if (isArts != LiveVideoSAConfig.ART_EN && (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage))) {
-                wvSubjectWeb.loadUrl(jsClientSubmit);
-            }
-        } else {
-            isSumit = true;
-            subMitTime = System.currentTimeMillis();
-            if (isArts == LiveVideoSAConfig.ART_EN) {
-                int isForce = isforce == 0 ? 1 : 2;
-                submitEn(isForce, nonce);
-            } else {
-                submitSec(isforce, nonce);
-            }
-            NewCourseLog.sno5(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), isforce == 1, wvSubjectWeb.getUrl(), ispreload);
-        }
-    }
-
-    private void submitEn(final int isforce, String nonce) {
-        if (LiveQueConfig.getSubmitMultiTestTypes().contains(detailInfo.getArtType())) {
-            submitMultiTest(isforce, nonce);
-        } else {
-//            if (LiveQueConfig.EN_COURSE_TYPE_VOICE_BLANK.equals(detailInfo.voiceType) || LiveQueConfig.EN_COURSE_TYPE_VOICE_CHOICE.equals(detailInfo.voiceType)) {
-//                submitVoice(isforce, nonce);
-//            }
-            submitVoice(isforce, nonce);
-        }
+        isSumit = true;
+        subMitTime = System.currentTimeMillis();
+        submitSec(isforce, nonce);
+        NewCourseLog.sno5(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), isforce == 1, wvSubjectWeb.getUrl(), ispreload);
     }
 
     /**
-     * 英语本地上传语音题提交
-     *
-     * @param isforce
-     * @param nonce
-     */
-    private void submitVoice(final int isforce, String nonce) {
-        NewCourseSec.Test test = tests.get(0);
-        JSONArray userAnswerContent = test.getUserAnswerContent();
-        JSONArray userAnswerArray = new JSONArray();
-        int length = 0;
-        if (userAnswerContent != null) {
-            length = userAnswerContent.length();
-            if (totalQuestion != -1) {
-                if (length < totalQuestion) {
-                    mLogtf.d("submitVoice:totalQuestion=" + totalQuestion + ",length=" + length + ",type=" + detailInfo.getArtType());
-                    for (int i = length; i < totalQuestion; i++) {
-                        try {
-                            JSONObject answer = new JSONObject();
-                            JSONArray userAnswerContent2 = new JSONArray();
-                            JSONObject userAnswerContent3 = new JSONObject();
-                            userAnswerContent3.put("id", "0");
-                            userAnswerContent3.put("text", "");
-                            userAnswerContent2.put(userAnswerContent3);
-                            answer.put("userAnswerContent", userAnswerContent2);
-                            JSONArray rightAnswerContent2 = new JSONArray();
-                            answer.put("rightAnswerContent", rightAnswerContent2);
-                            JSONArray rightArray = new JSONArray();
-                            rightArray.put(0);
-                            answer.put("isRight", rightArray);
-                            userAnswerContent.put(answer);
-                        } catch (Exception e) {
-                            MobAgent.httpResponseParserError(TAG, "submitVoice1", e.getMessage());
-                            logger.d("submitVoice1", e);
-                        }
-                    }
-                }
-            }
-            length = userAnswerContent.length();
-            for (int j = 0; j < userAnswerContent.length(); j++) {
-                JSONObject userAnswer = new JSONObject();
-                try {
-                    JSONObject answer = userAnswerContent.getJSONObject(j);
-                    JSONArray userAnswerContent2 = answer.getJSONArray("userAnswerContent");
-                    JSONArray rightAnswerContent2 = answer.getJSONArray("rightAnswerContent");
-                    String useranswer = "";
-                    for (int k = 0; k < userAnswerContent2.length(); k++) {
-                        JSONObject userAnswerContent3 = userAnswerContent2.getJSONObject(k);
-                        String id = userAnswerContent3.getString("id");
-                        userAnswer.put("id", id);
-                        useranswer += userAnswerContent3.optString("text") + ",";
-                    }
-                    userAnswer.put("useranswer", useranswer);
-                    String rightanswer = "";
-                    for (int k = 0; k < rightAnswerContent2.length(); k++) {
-                        JSONObject rightAnswerContent3 = rightAnswerContent2.getJSONObject(k);
-                        rightanswer += rightAnswerContent3.optString("text") + ",";
-                    }
-                    userAnswer.put("answer", rightanswer);
-                    userAnswer.put("type", "" + answer.optString("type"));
-                    userAnswer.put("rightnum", "" + answer.optString("rightnum"));
-                    userAnswer.put("wrongnum", "" + answer.optString("wrongnum"));
-                    userAnswer.put("answernums", "" + rightAnswerContent2.length());
-                    if (LiveQueConfig.EN_COURSE_TYPE_GAME.equals(detailInfo.getArtType())) {
-                        userAnswer.put("isright", 2);
-                    } else {
-                        int isRight = -1;
-                        JSONArray rightArray = null;
-                        if (answer.opt("isRight") instanceof JSONArray) {
-                            rightArray = answer.getJSONArray("isRight");
-                        } else if (answer.opt("isright") instanceof JSONArray) {
-                            rightArray = answer.getJSONArray("isright");
-                        }
-                        if (rightArray != null) {
-                            for (int i = 0; i < rightArray.length(); i++) {
-                                int isRightInt = rightArray.optInt(i, 0);
-                                if (isRightInt == 0) {
-                                    if (-1 == isRight) {
-                                        isRight = 0;
-                                    } else if (2 == isRight) {
-                                        isRight = 1;
-                                    }
-                                } else if (isRightInt == 1) {
-                                    if (-1 == isRight) {
-                                        isRight = 2;
-                                    } else if (0 == isRight) {
-                                        isRight = 1;
-                                    }
-                                }
-                            }
-                        } else {
-                            isRight = 0;
-                        }
-                        userAnswer.put("isright", isRight);
-                    }
-                    userAnswer.put("times", "" + answer.optInt("times", -1));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    MobAgent.httpResponseParserError(TAG, "submitVoice2", e.getMessage());
-                    logger.d("submitVoice2", e);
-                }
-                userAnswerArray.put(userAnswer);
-            }
-        }
-        int testNum;
-        if (length == 0) {
-            testNum = totalQuestion;
-        } else {
-            testNum = length;
-        }
-        mLogtf.d("submitVoice:testNum=" + testNum + ",length=" + length);
-        detailInfo.num = testNum;
-        englishH5CoursewareSecHttp.submitCourseWareTests(detailInfo, isforce, nonce, entranceTime, "" + userAnswerArray, new AbstractBusinessDataCallBack() {
-            @Override
-            public void onDataSucess(Object... objData) {
-                JSONObject jsonObject = (JSONObject) objData[0];
-                rlCourseControl.setVisibility(View.GONE);
-                loadResult = true;
-                JSONObject jsonObject1 = new JSONObject();
-                try {
-                    jsonObject1.put("stat", 1);
-                    jsonObject1.put("data", jsonObject);
-                    ArtsAnswerResultEvent artsAnswerResultEvent = new ArtsAnswerResultEvent(jsonObject1 + "", ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT);
-                    artsAnswerResultEvent.setDetailInfo(detailInfo);
-                    artsAnswerResultEvent.setIspreload(ispreload);
-                    EventBus.getDefault().post(artsAnswerResultEvent);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                onSubmitSuccess(isforce);
-            }
-
-            @Override
-            public void onDataFail(int errStatus, String failMsg) {
-                super.onDataFail(errStatus, failMsg);
-                if (errStatus == LiveHttpConfig.HTTP_ERROR_ERROR) {
-                    JSONObject jsonObject1 = new JSONObject();
-                    try {
-                        jsonObject1.put("stat", 0);
-                        jsonObject1.put("msg", failMsg);
-                        EventBus.getDefault().post(new ArtsAnswerResultEvent(jsonObject1 + "", ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    XESToastUtils.showToast(mContext, "请求互动题失败，请刷新");
-                }
-                onSubmitError(isforce, failMsg);
-//                String url = englishH5CoursewareSecHttp.getResultUrl(detailInfo, isforce, "");
-//                wvSubjectWeb.loadUrl(url);
-            }
-        });
-    }
-
-    /**
-     * 普通英语题提交
-     *
-     * @param isforce
-     * @param nonce
-     */
-    private void submitMultiTest(final int isforce, String nonce) {
-        JSONArray answerArray = new JSONArray();
-        for (int i = 0; i < tests.size(); i++) {
-            NewCourseSec.Test test = tests.get(i);
-            JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.put("testId", "" + test.getId());
-                JSONArray blank = new JSONArray();
-                JSONArray choice = new JSONArray();
-                JSONArray userAnswerContent = test.getUserAnswerContent();
-                if (userAnswerContent != null) {
-                    for (int j = 0; j < userAnswerContent.length(); j++) {
-                        JSONObject answer = userAnswerContent.getJSONObject(j);
-                        JSONArray userAnswerContent2 = answer.getJSONArray("userAnswerContent");
-                        for (int k = 0; k < userAnswerContent2.length(); k++) {
-                            String str = userAnswerContent2.getJSONObject(k).optString("text");
-                            if (LiveQueConfig.EN_COURSE_TYPE_BLANK.equals(test.getTestType()) || LiveQueConfig.EN_COURSE_TYPE_18.equals(test.getTestType())) {
-                                blank.put(str);
-                            } else {
-                                choice.put(str);
-                            }
-                        }
-                    }
-                }
-                jsonObject.put("blank", blank);
-                jsonObject.put("choice", choice);
-                answerArray.put(jsonObject);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        englishH5CoursewareSecHttp.submitCourseWareTests(detailInfo, isforce, nonce, entranceTime, "" + answerArray, new AbstractBusinessDataCallBack() {
-            @Override
-            public void onDataSucess(Object... objData) {
-                JSONObject jsonObject = (JSONObject) objData[0];
-                rlCourseControl.setVisibility(View.GONE);
-                loadResult = true;
-                JSONObject jsonObject1 = new JSONObject();
-                try {
-                    jsonObject1.put("stat", 1);
-                    jsonObject1.put("data", jsonObject);
-                    ArtsAnswerResultEvent artsAnswerResultEvent = new ArtsAnswerResultEvent(jsonObject1 + "", ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT);
-                    artsAnswerResultEvent.setDetailInfo(detailInfo);
-                    artsAnswerResultEvent.setIspreload(ispreload);
-                    EventBus.getDefault().post(artsAnswerResultEvent);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                onSubmitSuccess(isforce);
-            }
-
-            @Override
-            public void onDataFail(int errStatus, String failMsg) {
-                super.onDataFail(errStatus, failMsg);
-                isSumit = false;
-                if (errStatus == LiveHttpConfig.HTTP_ERROR_ERROR) {
-                    JSONObject jsonObject1 = new JSONObject();
-                    try {
-                        jsonObject1.put("stat", 0);
-                        jsonObject1.put("msg", failMsg);
-                        EventBus.getDefault().post(new ArtsAnswerResultEvent(jsonObject1 + "", ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    XESToastUtils.showToast(mContext, "请求互动题失败，请刷新");
-                }
-                onSubmitError(isforce, failMsg);
-//                String url = englishH5CoursewareSecHttp.getResultUrl(detailInfo, isforce, "");
-//                wvSubjectWeb.loadUrl(url);
-            }
-        });
-    }
-
-    /**
-     * 普通理科文科题提交
+     * 提交
      *
      * @param isforce
      * @param nonce
      */
     private void submitSec(final int isforce, String nonce) {
         final JSONObject testInfos = new JSONObject();
+        JSONObject dataJson = new JSONObject();
         for (int i = 0; i < tests.size(); i++) {
             NewCourseSec.Test test = tests.get(i);
-            JSONObject json = test.getJson();
+            dataJson = test.getJson();
             JSONArray userAnswerContent = test.getUserAnswerContent();
+            JSONArray rightAnswerContent = test.getRightAnswerContent();
             try {
                 int userAnswerStatus = 0;
                 //用户没有作答,字段不能缺
@@ -1108,54 +835,49 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                     JSONArray array = new JSONArray();
                     //需要填上id 和 text
                     JSONObject emptyJson = new JSONObject();
-                    emptyJson.put("id", "");
+                    emptyJson.put("index", "");
                     emptyJson.put("text", "");
+                    emptyJson.put("score", "");
+                    emptyJson.put("scoreKey", "");
                     array.put(emptyJson);
                     jsonObject.put("userAnswerContent", array);
-                    jsonObject.put("rightnum", 0);
-                    jsonObject.put("wrongnum", 0);
                     userAnswerContent.put(jsonObject);
-                } else {
-                    for (int j = 0; j < userAnswerContent.length(); j++) {
-                        JSONObject jsonObject = userAnswerContent.getJSONObject(j);
-                        if (jsonObject.get("userAnswerContent") instanceof JSONArray) {
-                            JSONArray array = jsonObject.getJSONArray("userAnswerContent");
-                            if (array.length() == 0) {
-                                array = new JSONArray();
-                                //需要填上id 和 text
-                                JSONObject emptyJson = new JSONObject();
-                                emptyJson.put("id", "");
-                                emptyJson.put("text", "");
-                                array.put(emptyJson);
-                                jsonObject.put("userAnswerContent", array);
-                            }
-                        } else {
-                            jsonObject.put("userAnswerContent", jsonObject.get("userAnswerContent"));
-                        }
-                        if (!jsonObject.has("rightnum")) {
-                            jsonObject.put("rightnum", 0);
-                        }
-                        if (!jsonObject.has("wrongnum")) {
-                            jsonObject.put("wrongnum", 0);
-                        }
-                    }
                 }
-                json.put("index", i);
-                json.put("hasAnswer", 0);
-                json.put("userAnswerStatus", userAnswerStatus);
-                json.put("endTime", System.currentTimeMillis() / 1000);
-                json.put("userAnswerContent", userAnswerContent);
-                testInfos.put(test.getId(), json);
+                if (rightAnswerContent == null || rightAnswerContent.length() == 0) {
+                    rightAnswerContent = new JSONArray();
+                    JSONObject jsonObject = new JSONObject();
+                    JSONArray array = new JSONArray();
+                    //需要填上id 和 text
+                    JSONObject emptyJson = new JSONObject();
+                    emptyJson.put("text", "");
+                    emptyJson.put("score", "");
+                    emptyJson.put("scoreKey", "");
+                    array.put(emptyJson);
+                    jsonObject.put("userAnswerContent", array);
+                    rightAnswerContent.put(jsonObject);
+                }
+                dataJson.put("testid", test.getId());
+                dataJson.put("userid", englishH5Entity.getStuId());
+                dataJson.put("hasAnswer", isforce);
+                dataJson.put("liveId", liveId);
+                dataJson.put("gradeType", UserBll.getInstance().getMyUserInfoEntity().getGradeCode());
+                dataJson.put("deviceid", 8);
+                dataJson.put("totalScore", "");
+                dataJson.put("maxScore", test.getMaxScore());
+                dataJson.put("lostReason", "");
+                dataJson.put("rightAnswerContent", rightAnswerContent);
+                dataJson.put("userAnswerContent", userAnswerContent);
+                testInfos.put(test.getId(), dataJson);
             } catch (JSONException e) {
                 CrashReport.postCatchedException(e);
                 mLogtf.e("submit", e);
             }
         }
-        englishH5CoursewareSecHttp.submitCourseWareTests(detailInfo, isforce, nonce, entranceTime, testInfos.toString(), new AbstractBusinessDataCallBack() {
+        englishH5CoursewareSecHttp.submitCourseWareTests(detailInfo, isforce, nonce, entranceTime, dataJson.toString(), new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
                 JSONObject jsonObject = (JSONObject) objData[0];
-                showScienceAnswerResult(isforce);
+                showScienceAnswerResult(isforce, jsonObject);
                 onSubmitSuccess(isforce);
             }
 
@@ -1248,7 +970,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 if (newCourseSec.getIsAnswer() == 1 && !isPlayBack) {
                     rlSubjectLoading.setVisibility(View.GONE);
                     preLoad.onStop();
-                    showScienceAnswerResult(0);
+//                    showScienceAnswerResult(0);
                 } else {
                     tests = newCourseSec.getTests();
                     if (tests.isEmpty()) {
@@ -1282,11 +1004,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                     }
                     NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), getSubtestid(), test.getPreviewPath(), ispreload, test.getId());
                     //设置作答时间
-                    if (isArts == LiveVideoSAConfig.ART_EN) {
-                        setTimeEn(newCourseSec);
-                    } else {
-                        setTimeSec(newCourseSec);
-                    }
+                    setTimeSec(newCourseSec);
                 }
             }
 
@@ -1366,28 +1084,6 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
             }
 
             /**
-             * 设置英语时间
-             * @param newCourseSec
-             */
-            private void setTimeEn(NewCourseSec newCourseSec) {
-                //英语倒计时
-                final long releaseTime = newCourseSec.getReleaseTime() * 60;
-                final long startTime = System.currentTimeMillis() / 1000;
-                tvCourseTimeText.setText(getTimeNegativeEn(releaseTime, startTime));
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        String timeStr = getTimeNegativeEn(releaseTime, startTime);
-                        if (loadResult || mView.getParent() == null || timeStr == null) {
-                            return;
-                        }
-                        tvCourseTimeText.setText(timeStr);
-                        handler.postDelayed(this, 1000);
-                    }
-                }, 1000);
-            }
-
-            /**
              * 正计时
              * @param startTime
              * @return
@@ -1415,21 +1111,6 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                         negative.getAndIncrement();
                     }
                     return minute + "分" + second + "秒";
-                }
-                return minute + "分" + second + "秒";
-            }
-
-            /**
-             * 倒计时
-             * @param startTime
-             * @return
-             */
-            private String getTimeNegativeEn(long releaseTime, long startTime) {
-                long time = System.currentTimeMillis() / 1000 - startTime;
-                long second = (releaseTime - time) % 60;
-                long minute = (releaseTime - time) / 60;
-                if (releaseTime - time < 0) {
-                    return null;
                 }
                 return minute + "分" + second + "秒";
             }
@@ -1487,19 +1168,8 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
      */
     private void showControl() {
         showControl = false;
-        if (isArts == LiveVideoSAConfig.ART_EN) {
-            for (int i = 0; i < tests.size(); i++) {
-                NewCourseSec.Test test = tests.get(i);
-                String testType = test.getTestType();
-                if (LiveQueConfig.getShowControlTypes().contains(testType)) {
-                    showControl = true;
-                    break;
-                }
-            }
-        } else {
-            if (LiveQueConfig.SEC_COURSE_TYPE_QUE.equals(englishH5Entity.getPackageSource())) {
-                showControl = true;
-            }
+        if (LiveQueConfig.SEC_COURSE_TYPE_QUE.equals(englishH5Entity.getPackageSource())) {
+            showControl = true;
         }
         if (showControl) {
             if (tests.size() == 1) {
@@ -1726,8 +1396,9 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
      *
      * @param isforce
      */
-    private void showScienceAnswerResult(final int isforce) {
+    private void showScienceAnswerResult(final int isforce, JSONObject data) {
         rlCourseControl.setVisibility(View.GONE);
+
         if (LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage)) {
             //小学理科 走原生结果页
             englishH5CoursewareSecHttp.getStuTestResult(detailInfo, isPlayBack ? 1 : 0, new AbstractBusinessDataCallBack() {
