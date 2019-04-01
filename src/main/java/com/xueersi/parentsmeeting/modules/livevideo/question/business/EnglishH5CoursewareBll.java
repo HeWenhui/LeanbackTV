@@ -329,6 +329,12 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                                 return;
                             }
                         }
+                        //小学不显示语文AI主观题
+                        if((LiveVideoConfig.EDUCATION_STAGE_1.equals(videoQuestionLiveEntity.getEducationstage())
+                                || LiveVideoConfig.EDUCATION_STAGE_2.equals(videoQuestionLiveEntity.getEducationstage()))
+                                && "26".equals(videoQuestionLiveEntity.englishH5Entity.getPackageAttr())){
+                            return;
+                        }
                         showH5Paper(videoQuestionLiveEntity);
                         return;
                     }

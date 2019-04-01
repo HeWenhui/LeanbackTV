@@ -109,7 +109,7 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
                     //语文
                     if (englishH5Entity.getNewEnglishH5()) {
                         //语文AI主观题
-                        if ("27".equals(videoQuestionH5Entity.englishH5Entity.getPackageAttr())) {
+                        if ("26".equals(videoQuestionH5Entity.englishH5Entity.getPackageAttr())) {
                             ChineseAiSubjectiveCoursewarePager h5CoursewarePager = new ChineseAiSubjectiveCoursewarePager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
                                     videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, mAnswerRankBll == null ? "0"
                                     : mAnswerRankBll.getIsShow(), isArts, allowTeamPk);
