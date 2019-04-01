@@ -92,8 +92,17 @@ public class EnTeamPkHttpManager {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                InteractiveTeam interactiveTeam = parseInteractiveTeam((JSONObject) responseEntity.getJsonObject());
-                callBack.onDataSucess(interactiveTeam, responseEntity.getJsonObject());
+                Object object = responseEntity.getJsonObject();
+                if (object instanceof JSONObject) {
+                    InteractiveTeam interactiveTeam = parseInteractiveTeam((JSONObject) responseEntity.getJsonObject());
+                    callBack.onDataSucess(interactiveTeam, responseEntity.getJsonObject());
+                } else {
+                    callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_NULL, "");
+//                    InteractiveTeam interactiveTeam = new InteractiveTeam();
+//                    ArrayList<TeamMemberEntity> entities = parseGetStuActiveTeam(responseEntity);
+//                    interactiveTeam.setEntities(entities);
+//                    callBack.onDataSucess(interactiveTeam, responseEntity.getJsonObject());
+                }
             }
 
             @Override

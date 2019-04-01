@@ -656,14 +656,13 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         getEnTeamPkHttpManager().getStuActiveTeam(unique_id, mGetInfo.getStuId(), new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
-                mInteractiveTeam = (InteractiveTeam) objData[0];
-//                mInteractiveTeam.setLive_id(mLiveId);
-//                mInteractiveTeam.setClass_id("" + classInt);
-//                mInteractiveTeam.setPk_team_id("" + pkTeamEntity.getPkTeamId());
-                entities = mInteractiveTeam.getEntities();
-                callBack.onDataSucess(mInteractiveTeam);
-                String msg = "" + objData[1];
-                saveTeamInter(msg);
+                final Object object = objData[1];
+                if (object instanceof JSONObject) {
+                    mInteractiveTeam = (InteractiveTeam) objData[0];
+                    entities = mInteractiveTeam.getEntities();
+                    String msg = "" + object;
+                    saveTeamInter(msg);
+                }
             }
 
             @Override
