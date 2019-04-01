@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager;
 
+import android.Manifest;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
@@ -24,6 +25,8 @@ import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.EnglishH5Entity;
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -42,6 +45,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.web.NewCourseCache;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.OnHttpCode;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.StaticWeb;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.WebInstertJs;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.ui.widget.WaveView;
 
@@ -157,8 +161,9 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     private JSONArray userAnswer = new JSONArray();
     private int rightNum = 0;
 
-    public GroupGameNativePager(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity detailInfo, EnglishH5Entity englishH5Entity, EnglishH5CoursewareBll.OnH5ResultClose onClose) {
+    public GroupGameNativePager(Context context, boolean isPlayBack, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity detailInfo, EnglishH5Entity englishH5Entity, EnglishH5CoursewareBll.OnH5ResultClose onClose) {
         super(context);
+        this.isPlayBack = isPlayBack;
         this.liveGetInfo = liveGetInfo;
         this.detailInfo = detailInfo;
         this.url = englishH5Entity.getUrl();
@@ -204,7 +209,39 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             }
         }
         startTimer();
-        startSpeechRecognize();
+        boolean hasAudidoPermission = XesPermission.hasSelfPermission(mContext, Manifest.permission.RECORD_AUDIO); //
+        // 检查用户麦克风权限
+        if (hasAudidoPermission) {
+            startSpeechRecognize();
+        } else {
+            //如果没有麦克风权限，申请麦克风权限
+            XesPermission.checkPermissionNoAlert(mContext, new LiveActivityPermissionCallback() {
+                /**
+                 * 结束
+                 */
+                @Override
+                public void onFinish() {
+                    logger.i("onFinish()");
+                }
+
+                /**
+                 * 用户拒绝某个权限
+                 */
+                @Override
+                public void onDeny(String permission, int position) {
+                    logger.i("onDeny()");
+                }
+
+                /**
+                 * 用户允许某个权限
+                 */
+                @Override
+                public void onGuarantee(String permission, int position) {
+                    logger.i("onGuarantee()");
+                    startSpeechRecognize();
+                }
+            }, PermissionConfig.PERMISSION_CODE_AUDIO);
+        }
     }
 
     private void initWebView() {
@@ -310,7 +347,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             public void onClose(LiveBasePager basePager) {
                 onClose.onH5ResultClose(GroupGameNativePager.this, getBaseVideoQuestionEntity());
             }
-        }, fireNum, starNum, liveGetInfo.getStuName(), liveGetInfo.getHeadImgPath());
+        }, fireNum, goldNum, liveGetInfo.getStuName(), liveGetInfo.getHeadImgPath());
         ((RelativeLayout) mView).addView(groupGameMVPPager.getRootView(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
 
     }
@@ -444,7 +481,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    XESToastUtils.showToast(mContext, "评测结束");
+//                    XESToastUtils.showToast(mContext, "评测结束");
                     startSpeechRecognize();
                 }
             }, 300);
@@ -659,8 +696,13 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 saveUserAnswer(1);
                 singleCount = 0;
                 pageNum++;
-                fireNum += Math.ceil(10.0d / (double) (mGroupGameTestInfosEntity.getTestInfoList().get(0).getAnswerList().size()));
-                goldNum = 2;
+                if (isPlayBack) {
+                    goldNum = 1;
+                    fireNum = 0;
+                } else {
+                    goldNum = 2;
+                    fireNum += Math.ceil(10.0d / (double) (mGroupGameTestInfosEntity.getTestInfoList().get(0).getAnswerList().size()));
+                }
                 starNum += calculateStar();
                 logger.d("fireNum = " + fireNum + ", goldNum = " + goldNum + ", starNum = " + starNum);
                 uploadScore(score, true);

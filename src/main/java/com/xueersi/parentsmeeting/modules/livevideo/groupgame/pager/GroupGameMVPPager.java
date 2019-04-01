@@ -85,6 +85,9 @@ public class GroupGameMVPPager extends LiveBasePager {
     @Override
     public void initData() {
         startLottieAnimation();
+        tvTime.setTimeDuration(3);
+        tvTime.setTimeSuffix("s");
+        tvTime.startCountDow();
     }
 
     @Override
@@ -114,10 +117,10 @@ public class GroupGameMVPPager extends LiveBasePager {
             @Override
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
                 if (lottieImageAsset.getId().equals("image_5")) {
-                    return creatGoldBitmap(fireNum);
+                    return creatGoldBitmap(goldNum);
                 }
                 if (lottieImageAsset.getId().equals("image_6")) {
-                    return creatFireBitmap(goldNum);
+                    return creatFireBitmap(fireNum);
                 }
                 if (lottieImageAsset.getId().equals("image_10")) {
                     return creatNameBitmap(name);
@@ -140,9 +143,7 @@ public class GroupGameMVPPager extends LiveBasePager {
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                tvTime.setTimeDuration(3);
-                tvTime.setTimeSuffix("s");
-                tvTime.startCountDow();
+
             }
 
             @Override

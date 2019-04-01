@@ -70,7 +70,7 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
         } else if (isArts == LiveVideoSAConfig.ART_EN){
             String type = videoQuestionH5Entity.type;
             if (LiveQueConfig.isTeam(type)) {
-                GroupGameNativePager groupGameMultNativePager = new GroupGameNativePager(context, liveGetInfo, videoQuestionH5Entity, englishH5Entity,onH5ResultClose);
+                GroupGameNativePager groupGameMultNativePager = new GroupGameNativePager(context, true, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
                 groupGameMultNativePager.setLivePagerBack(livePagerBack);
                 return groupGameMultNativePager;
             }
