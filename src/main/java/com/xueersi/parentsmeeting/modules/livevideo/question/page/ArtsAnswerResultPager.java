@@ -197,7 +197,7 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
                 ivAnswerIcon.setVisibility(View.VISIBLE);
                 iconResId = R.drawable.icon_live_correct;
             } else {
-                ivAnswerIcon.setVisibility(View.GONE);
+                ivAnswerIcon.setVisibility(View.INVISIBLE);
                 color = getColor(R.color.COLOR_333333);
             }
             if (iconResId != 0) {

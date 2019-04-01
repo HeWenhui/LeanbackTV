@@ -631,7 +631,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
 
                 } else {
                     color = getColor(R.color.COLOR_84AD3D);
-                    ivAnswerIcon.setVisibility(View.GONE);
+                    ivAnswerIcon.setVisibility(View.INVISIBLE);
                 }
             }
             if (iconResId !=0) {
