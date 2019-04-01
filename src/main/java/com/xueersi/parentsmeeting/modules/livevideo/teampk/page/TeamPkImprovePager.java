@@ -34,6 +34,7 @@ import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkStuProgress;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCutImage;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
@@ -97,6 +98,13 @@ public class TeamPkImprovePager extends TeamPkBasePager {
             }
         });
         teamPkPraiseLayout = view.findViewById(R.id.pk_praise_layout);
+        teamPkPraiseLayout.setPriaseStateListener(new TeamPkPraiseLayout.PraiseStateListener() {
+            @Override
+            public void onFinish(int clickCount) {
+                TeamPkLog.sendPkStarThumbCount(mPkBll.getLiveBll(),"1",mPkBll.getNonce(),clickCount);
+
+            }
+        });
         return view;
     }
 

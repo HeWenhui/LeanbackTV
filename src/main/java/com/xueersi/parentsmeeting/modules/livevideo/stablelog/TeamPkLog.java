@@ -324,4 +324,130 @@ public class TeamPkLog {
             liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
         }
     }
+
+
+    /**
+     *贡献之星点赞数 交互日志
+     * @param liveAndBackDebug
+     * @param noce
+     * @param count  点赞次数
+     */
+    public static void sendContrbuteStarThumbCount(LiveAndBackDebug liveAndBackDebug,String nonce, int count){
+        if (UPLOAD_OPEN && liveAndBackDebug != null) {
+            StableLogHashMap logHashMap = new StableLogHashMap("sendContrbuteStarThumbCount");
+            logHashMap.addSno("19");
+            logHashMap.addStable("2");
+            logHashMap.put("thumbCounts", count+"");
+            logHashMap.addNonce(TextUtils.isEmpty(nonce) ? "" : nonce);
+            liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
+        }
+    }
+
+
+    /**
+     * 学生端展示一键表扬动画  展现日志
+     * @param nonce
+     * @param praiseType 0: 单倍表扬 1：双倍能量表扬
+     */
+    public static void showPkPraise(LiveAndBackDebug liveAndBackDebug,String nonce,String praiseType){
+        if (UPLOAD_OPEN && liveAndBackDebug != null) {
+            StableLogHashMap logHashMap = new StableLogHashMap("showPkPraise");
+            logHashMap.addSno("21");
+            logHashMap.addStable("1");
+            logHashMap.addExY();
+            logHashMap.put("praiseType", praiseType);
+            logHashMap.addNonce(TextUtils.isEmpty(nonce) ? "" : nonce);
+            liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
+        }
+    }
+
+
+    /**
+     * 学生端展示战队表扬动画
+     * @param liveAndBackDebug
+     * @param nonce
+     * @param praiseType   1/2/3...9 战队表扬类型
+     */
+    public static void showPkTeamPraise(LiveAndBackDebug liveAndBackDebug,String nonce,String praiseType){
+        if (UPLOAD_OPEN && liveAndBackDebug != null) {
+            StableLogHashMap logHashMap = new StableLogHashMap("showPkTeamPraise");
+            logHashMap.addSno("23");
+            logHashMap.addStable("1");
+            logHashMap.put("praiseType", praiseType);
+            logHashMap.addNonce(TextUtils.isEmpty(nonce) ? "" : nonce);
+            liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
+        }
+    }
+
+
+    /**
+     * 学生端收到超级明星/进步黑马榜单指令
+     * @param liveAndBackDebug
+     * @param nonce
+     * @param listType  榜单类型：0：超级明星， 1：进步黑马
+     */
+    public static void receivePkStarList(LiveAndBackDebug liveAndBackDebug,String nonce,String listType){
+        if (UPLOAD_OPEN && liveAndBackDebug != null) {
+            StableLogHashMap logHashMap = new StableLogHashMap("receivePkStarList");
+            logHashMap.addSno("25");
+            logHashMap.addStable("1");
+            logHashMap.put("listType", listType);
+            logHashMap.addNonce(TextUtils.isEmpty(nonce) ? "" : nonce);
+            liveAndBackDebug.umsAgentDebugSys(eventId, logHashMap.getData());
+        }
+    }
+
+
+    /**
+     * 学生端展示明星/黑马榜
+     * @param liveAndBackDebug
+     * @param nonce
+     * @param listType  榜单类型：0：超级明星， 1：进步黑马
+     */
+    public static void showPkStarList(LiveAndBackDebug liveAndBackDebug,String nonce,String listType){
+        if (UPLOAD_OPEN && liveAndBackDebug != null) {
+            StableLogHashMap logHashMap = new StableLogHashMap("showPkStarList");
+            logHashMap.addSno("26");
+            logHashMap.addStable("2");
+            logHashMap.put("listType", listType);
+            logHashMap.addNonce(TextUtils.isEmpty(nonce) ? "" : nonce);
+            liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
+        }
+    }
+
+
+    /**
+     * 学生端发送超级明星/黑马榜单点赞数
+     * @param liveAndBackDebug
+     * @param listType    榜单类型 0：超级明星， 1：进步黑马
+     * @param nonce
+     * @param count      点赞次数
+     */
+    public static void sendPkStarThumbCount(LiveAndBackDebug liveAndBackDebug,String listType,String nonce,int count){
+        if (UPLOAD_OPEN && liveAndBackDebug != null) {
+            StableLogHashMap logHashMap = new StableLogHashMap("sendPkStarThumbCount");
+            logHashMap.addSno("27");
+            logHashMap.addStable("2");
+            logHashMap.put("listType", listType);
+            logHashMap.put("thumbCount",count+"");
+            logHashMap.addNonce(TextUtils.isEmpty(nonce) ? "" : nonce);
+            liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
+        }
+    }
+
+
+    /**
+     * 学生端收到PK结束Toast
+     * @param liveAndBackDebug
+     * @param nonce
+     */
+    public static void showPkFinished(LiveAndBackDebug liveAndBackDebug,String nonce){
+        if (UPLOAD_OPEN && liveAndBackDebug != null) {
+            StableLogHashMap logHashMap = new StableLogHashMap("showPkFinished");
+            logHashMap.addSno("29");
+            logHashMap.addStable("0");
+            logHashMap.addNonce(TextUtils.isEmpty(nonce) ? "" : nonce);
+            liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
+        }
+    }
 }
