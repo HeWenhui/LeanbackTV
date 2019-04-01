@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.route.ReflexCenter;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity;
 
@@ -24,14 +25,16 @@ public class OtherModulesEnter {
 
 
     public static void requestGoldTotal(Context mContext) {
-        ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.personals.PersonalsEnter",
-                "requestGoldTotal", new Class[]{Context.class}, new Object[]{mContext});
+        if (!AppConfig.DEBUG) {
+            //        ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.personals.PersonalsEnter",
+//                "requestGoldTotal", new Class[]{Context.class}, new Object[]{mContext});
+        }
     }
 
     // 04.09 跳转订单支付页面
-    public static void intentToOrderConfirmActivity(Activity activity, String courseIds, Integer productType, String whereFrom){
+    public static void intentToOrderConfirmActivity(Activity activity, String courseIds, Integer productType, String whereFrom) {
         ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.xesmall.XesMallEnter",
-                "intentToOrderConfirmActivity", new Class[]{Context.class, String.class,Integer.TYPE,String.class}, new Object[]{activity, courseIds,productType,whereFrom});
+                "intentToOrderConfirmActivity", new Class[]{Context.class, String.class, Integer.TYPE, String.class}, new Object[]{activity, courseIds, productType, whereFrom});
     }
 
 

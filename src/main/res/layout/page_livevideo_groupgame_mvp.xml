@@ -2,13 +2,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/lav_livevideo_groupgame_mvp"
+        android:layout_alignTop="@id/lav_livevideo_groupgame_mvp"
+        android:layout_alignRight="@id/lav_livevideo_groupgame_mvp"
+        android:layout_alignBottom="@id/lav_livevideo_groupgame_mvp"
+        android:src="@drawable/livevideo_group_game_mvp_bg" />
+
     <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lav_livevideo_groupgame_mvp"
+        android:id="@id/lav_livevideo_groupgame_mvp"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
     <ImageView
-        android:id="@+id/iv_livevideo_groupgame_mvp_close"
+        android:id="@id/iv_livevideo_groupgame_mvp_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
@@ -20,12 +29,12 @@
         android:id="@+id/tv_livevideo_groupgame_mvp_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/iv_livevideo_groupgame_mvp_close"
-        android:layout_alignBottom="@+id/iv_livevideo_groupgame_mvp_close"
+        android:layout_alignTop="@id/iv_livevideo_groupgame_mvp_close"
+        android:layout_alignBottom="@id/iv_livevideo_groupgame_mvp_close"
         android:layout_marginRight="8dp"
-        android:layout_toLeftOf="@+id/iv_livevideo_groupgame_mvp_close"
+        android:layout_toLeftOf="@id/iv_livevideo_groupgame_mvp_close"
         android:gravity="center"
-        android:textSize="18dp"
-        android:textColor="#FFFFFFFF"/>
+        android:textColor="#FFFFFFFF"
+        android:textSize="18dp" />
 
 </RelativeLayout>
