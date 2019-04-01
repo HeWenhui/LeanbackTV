@@ -15,6 +15,10 @@ public class TcpConstants {
     /** 头里面时间戳长度 */
     private static short timestamp = 8;
     static short header = (short) (PackSize + HeaderSize + VerSize + TypeSize + OperationSize + SeqIDSize + timestamp);
+    /** 消息类型，回执 */
+    public final static short REPLAY_TYPE = 0;
+    /** 消息类型，回执 */
+    public final static short REPLAY_REC = 2501;
     /** 消息类型，登陆 */
     public final static short LOGIN_TYPE = 3;
     /** 消息登陆-发送 */

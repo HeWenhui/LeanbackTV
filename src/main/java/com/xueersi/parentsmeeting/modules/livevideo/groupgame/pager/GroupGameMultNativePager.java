@@ -53,6 +53,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.GroupGameTestInfosEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.item.CourseGroupItem;
+import com.xueersi.parentsmeeting.modules.livevideo.lib.SendCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.TcpConstants;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
@@ -871,7 +872,29 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         userData.put(jsonObject);
                     }
                     bodyJson.put("userData", userData);
-                    tcpMessageReg.send(TcpConstants.Voice_Projectile_TYPE, TcpConstants.Voice_Projectile_SEND, bodyJson.toString());
+                    tcpMessageReg.send(TcpConstants.Voice_Projectile_TYPE, TcpConstants.Voice_Projectile_SEND, bodyJson.toString(), new SendCallBack() {
+                        String TAG = "SendCallBack:";
+
+                        @Override
+                        public void onNoOpen() {
+                            logger.d(TAG + "onNoOpen");
+                        }
+
+                        @Override
+                        public void onStart(int seq) {
+                            logger.d(TAG + "onStart:seq=" + seq);
+                        }
+
+                        @Override
+                        public void onReceiveMeg(short type, int operation, int seq, String msg) {
+                            logger.d(TAG + "onReceiveMeg:seq=" + seq);
+                        }
+
+                        @Override
+                        public void onTimeOut() {
+                            logger.d(TAG + "onTimeOut");
+                        }
+                    });
                 } catch (JSONException e) {
                     logger.d("onHitSentence", e);
                 }

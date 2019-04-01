@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.GroupGameTcp;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.ReceiveMegCallBack;
+import com.xueersi.parentsmeeting.modules.livevideo.lib.SendCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.TcpConstants;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
@@ -209,6 +210,17 @@ public class TcpDispatch implements TcpMessageReg {
     public void send(short type, int operation, String bodyStr) {
         if (groupGameTcp != null) {
             groupGameTcp.send(type, operation, bodyStr);
+        }
+    }
+
+    @Override
+    public void send(short type, int operation, String bodyStr, SendCallBack sendCallBack) {
+        if (groupGameTcp != null) {
+            groupGameTcp.send(type, operation, bodyStr, sendCallBack);
+        } else {
+            if (sendCallBack != null) {
+                sendCallBack.onNoOpen();
+            }
         }
     }
 
