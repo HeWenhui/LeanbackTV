@@ -63,6 +63,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfi
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseCoursewareNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.web.GroupCourseCache;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.NewCourseCache;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.OnHttpCode;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.StaticWeb;
@@ -113,7 +114,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     /**
      * 新课件缓存
      */
-    private NewCourseCache newCourseCache;
+    private GroupCourseCache newCourseCache;
     /** 新课件是否是预加载 */
     private boolean ispreload;
     private LiveAndBackDebug liveAndBackDebug;
@@ -217,7 +218,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 tcpMessageReg.registTcpMessageAction(voiceProjectile);
             }
         }
-        newCourseCache = new NewCourseCache(mContext, liveId);
+        newCourseCache = new GroupCourseCache(mContext, liveId);
         addJavascriptInterface();
         wvSubjectWeb.setWebChromeClient(new BaseCoursewareNativePager.MyWebChromeClient() {
             @Override
