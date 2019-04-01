@@ -421,7 +421,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         mData.put("liveid", getInfo.getId());
         mData.put("volume", mVolume+"");
         mData.put("where","initData");
-        umsAgentDebugSys(LiveVideoConfig.LIVE_VOICE_CHAT, mData);
+        umsAgentDebugSys(LiveVideoConfig.LIVE_VOICE_VOLUME, mData);
         speechUtils.prepar(new SpeechEvaluatorUtils.OnFileSuccess() {
             @Override
             public void onFileInit(int code) {
@@ -640,7 +640,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                 mData.put("liveid", getInfo.getId());
                 mData.put("volume", mVolume+"");
                 mData.put("where","mesopen");
-                umsAgentDebugSys(LiveVideoConfig.LIVE_VOICE_CHAT, mData);
+                umsAgentDebugSys(LiveVideoConfig.LIVE_VOICE_VOLUME, mData);
                 if (isShowSpeechRecog) {
                     btnMessageSwitch.setVisibility(View.VISIBLE);
                     liveMediaControllerBottom.onChildViewClick(v);
@@ -1980,7 +1980,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             mData.put("liveid", getInfo.getId());
             mData.put("volume", mVolume+"");
             mData.put("where","onDestroy");
-            umsAgentDebugSys(LiveVideoConfig.LIVE_VOICE_CHAT, mData);
+            umsAgentDebugSys(LiveVideoConfig.LIVE_VOICE_VOLUME, mData);
         }
         Map<String, String> mData = new HashMap<>();
         mData.put("userid", getInfo.getStuId());
@@ -2107,7 +2107,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         mData.put("liveid", getInfo.getId());
         mData.put("volume", v+"");
         mData.put("where","startEvaluator");
-        umsAgentDebugSys(LiveVideoConfig.LIVE_VOICE_CHAT, mData);
+        umsAgentDebugSys(LiveVideoConfig.LIVE_VOICE_VOLUME, mData);
     }
 
     public void stopEvaluator() {
@@ -2123,7 +2123,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             mData.put("liveid", getInfo.getId());
             mData.put("volume", mVolume+"");
             mData.put("where","stopEvaluator");
-            umsAgentDebugSys(LiveVideoConfig.LIVE_VOICE_CHAT, mData);
+            umsAgentDebugSys(LiveVideoConfig.LIVE_VOICE_VOLUME, mData);
         }
         isSpeekDone = true;
         isRecogSpeeking = false;
