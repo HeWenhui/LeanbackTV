@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.CountDownTimer;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -652,8 +651,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             rightNum++;
 //            onFireAdd(10 / MAX_SINGLE_COUNT);
             if (singleCount >= MAX_SINGLE_COUNT) {
-                singleCount = 0;
                 saveUserAnswer(1);
+                singleCount = 0;
                 pageNum++;
                 fireNum += Math.ceil(10.0d / (double) (mGroupGameTestInfosEntity.getTestInfoList().get(0).getAnswerList().size()));
                 goldNum = 2;
