@@ -364,7 +364,7 @@ public class TeamPkPraiseLayout extends FrameLayout {
 
 
     private void playClickSound() {
-        soundPoolHelper.playMusic(R.raw.like_btn_click, MUSIC_VOLUME_RATIO_FRONT, false);
+        soundPoolHelper.playMusic(R.raw.pk_pkpraise_click, MUSIC_VOLUME_RATIO_FRONT, false);
     }
 
     private class LiveMsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
