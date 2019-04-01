@@ -45,7 +45,7 @@ public class GroupGameMVPPager extends LiveBasePager {
      * 关闭按钮
      */
     private ImageView ivClose;
-    private static final String LOTTIE_RES_ASSETS_ROOTDIR = "en_group_game/";
+    private static final String LOTTIE_RES_ASSETS_ROOTDIR = "group_game_one/";
 
     public GroupGameMVPPager(Context context, OnPagerClose onPagerClose) {
         super(context);
@@ -56,8 +56,8 @@ public class GroupGameMVPPager extends LiveBasePager {
 
     private int fireNum = 0;
     private int goldNum = 0;
-    private String name;
-    private String headUrl;
+    private String name = "";
+    private String headUrl = "";
 
     public GroupGameMVPPager(Context context, OnPagerClose onPagerClose, int fireNum, int goldNum, String name, String headUrl) {
         super(context);
