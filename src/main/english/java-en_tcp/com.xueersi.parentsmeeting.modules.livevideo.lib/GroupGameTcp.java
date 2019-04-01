@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.lib;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.SparseArray;
 
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.log.logger.Logger;
@@ -38,6 +39,7 @@ public class GroupGameTcp {
     private WriteThread writeThread;
     private Handler sendMessageHandler;
     private boolean isStop = false;
+    private SparseArray<SendCallBack> callBackSparseArray = new SparseArray<>();
 
     public GroupGameTcp(String host, int port) {
         this.host = host;
@@ -92,6 +94,34 @@ public class GroupGameTcp {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public void send(final short type, final int operation, final String bodyStr, final SendCallBack sendCallBack) {
+        if (sendMessageHandler != null && writeThread != null) {
+            sendMessageHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (!isStop) {
+                        final int finalSeq = seq;
+                        if (sendCallBack != null) {
+                            sendCallBack.onStart(finalSeq);
+                            callBackSparseArray.put(finalSeq, sendCallBack);
+                            sendMessageHandler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    SendCallBack callBack = callBackSparseArray.get(finalSeq);
+                                    if (callBack != null) {
+                                        callBackSparseArray.remove(finalSeq);
+                                        callBack.onTimeOut();
+                                    }
+                                }
+                            }, 5000);
+                        }
+                        writeThread.send(type, operation, bodyStr);
+                    }
+                }
+            });
         }
     }
 
@@ -206,7 +236,7 @@ public class GroupGameTcp {
             this.inputStream = inputStream;
         }
 
-        private void onReceiveMeg(short type, int operation, String msg) {
+        private void onReceiveMeg(short type, int operation, int seq, String msg) {
             log.d("onReceiveMeg:type=" + type + ",operation=" + operation + ",msg=" + msg);
 //			if (readCount > 10) {
 //				return;
@@ -233,6 +263,16 @@ public class GroupGameTcp {
                     }
                 }
             }
+            if (type == TcpConstants.REPLAY_TYPE) {
+                if (operation == TcpConstants.REPLAY_REC) {
+                    SendCallBack callBack = callBackSparseArray.get(seq);
+                    if (callBack != null) {
+                        callBackSparseArray.remove(seq);
+                        callBack.onReceiveMeg(type, operation, seq, msg);
+                    }
+                    return;
+                }
+            }
             if (receiveMegCallBack != null) {
                 receiveMegCallBack.onReceiveMeg(type, operation, msg);
             }
@@ -253,6 +293,7 @@ public class GroupGameTcp {
             int lastBody = 0;
             short lastType = 0;
             int lastOper = 0;
+            int lastSeq = 0;
             boolean readHead = false;
             // 上一次的缓存
             ByteBuffer lastBuffer = null;
@@ -332,6 +373,7 @@ public class GroupGameTcp {
                                 int oper = headBuffer.getInt();
                                 lastOper = oper;
                                 int seq = headBuffer.getInt();
+                                lastSeq = seq;
                                 long recTimestamp = headBuffer.getLong();
                                 int body = pack - head;
                                 log.d("testBuffer:pack1=" + pack + ",head1=" + head + ",ver1=" + ver + ",type1="
@@ -349,7 +391,7 @@ public class GroupGameTcp {
                                     } else {
                                         tiao = false;
                                     }
-                                    onReceiveMeg(type, oper, "");
+                                    onReceiveMeg(type, oper, seq, "");
                                     lastBody = 0;
                                     readHead = false;
                                 } else {
@@ -359,7 +401,7 @@ public class GroupGameTcp {
                                         bodyBuffer.get(dst);
                                         String msg = new String(dst);
                                         log.d("testBuffer:body:length2=" + dst.length + ",msg=" + msg);
-                                        onReceiveMeg(lastType, lastOper, msg);
+                                        onReceiveMeg(lastType, lastOper, seq, msg);
                                         readHead = false;
                                         if (capacity > pack) {
                                             lastBuffer = ByteBuffer.allocate(capacity - pack);
@@ -395,7 +437,7 @@ public class GroupGameTcp {
                                 bodyBuffer.get(dst);
                                 String msg = new String(dst);
                                 log.d("testBuffer:length2=" + dst.length + ",msg=" + msg);
-                                onReceiveMeg(lastType, lastOper, msg);
+                                onReceiveMeg(lastType, lastOper, lastSeq, msg);
                                 readHead = false;
                                 if (capacity > lastBody) {
                                     lastBuffer = ByteBuffer.allocate(capacity - lastBody);
