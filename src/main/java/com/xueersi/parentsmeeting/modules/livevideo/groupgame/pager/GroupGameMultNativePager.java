@@ -561,18 +561,22 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             public void onClick(View view) {
                 addJs = false;
                 wvSubjectWeb.reload();
-                if (AppConfig.DEBUG && interactiveTeam != null) {
+                ArrayList<TeamMemberEntity> entities = new ArrayList<>();
+                if (interactiveTeam != null) {
+                    entities = interactiveTeam.getEntities();
+                }
+                if (AppConfig.DEBUG) {
                     String[] heads = {"https://gss0.bdstatic.com/94o3dSag_xI4khGkpoWK1HF6hhy/baike/c0%3Dbaike80%2C5%2C5%2C80%2C26/sign=107d95c34134970a537e187df4a3baad/a8014c086e061d95b2d56ad47bf40ad163d9ca4f.jpg",
                             "https://gss0.bdstatic.com/-4o3dSag_xI4khGkpoWK1HF6hhy/baike/crop%3D24%2C0%2C851%2C562%3Bc0%3Dbaike92%2C5%2C5%2C92%2C30/sign=031be2a37f3e6709aa4f1fbf06f5ab11/fd039245d688d43f23098f767d1ed21b0ff43b95.jpg"};
-                    ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
-                    if (entities.size() < 2) {
-                        TeamMemberEntity myTeamMemberEntity = entities.get(0);
-                        myTeamMemberEntity.gold = 11;
-                        myTeamMemberEntity.energy = 12;
-                        for (int i = 0; i < 1; i++) {
+                    int count = 2;
+                    if (entities.size() < count) {
+//                        TeamMemberEntity myTeamMemberEntity = entities.get(0);
+//                        myTeamMemberEntity.gold = 11;
+//                        myTeamMemberEntity.energy = 12;
+                        for (int i = 0; i < count; i++) {
                             TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
                             teamMemberEntity.id = i;
-                            teamMemberEntity.name = "测试" + i;
+                            teamMemberEntity.name = "测试测试" + i;
                             teamMemberEntity.headurl = heads[i];
                             teamMemberEntity.gold = (i + 2) * 10 + 1;
                             teamMemberEntity.energy = (i + 2) * 10 + 2;

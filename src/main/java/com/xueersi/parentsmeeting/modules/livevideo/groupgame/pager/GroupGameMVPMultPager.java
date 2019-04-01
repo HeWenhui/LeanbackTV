@@ -10,6 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -23,6 +24,7 @@ import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
@@ -73,7 +75,21 @@ public class GroupGameMVPMultPager extends LiveBasePager {
         mLottieAnimationView = view.findViewById(R.id.lav_livevideo_groupgame_mvp);
         tvTime = view.findViewById(R.id.tv_livevideo_groupgame_mvp_time);
         ivClose = view.findViewById(R.id.iv_livevideo_groupgame_mvp_close);
-
+        ImageView iv_livevideo_groupgame_mvp_bg = view.findViewById(R.id.iv_livevideo_groupgame_mvp_bg);
+        {
+            LiveVideoPoint instance = LiveVideoPoint.getInstance();
+            int[] newWidthHeight = instance.getNewWidthHeight();
+            int newWidth = newWidthHeight[0];
+            int newHeight = newWidthHeight[1];
+            ViewGroup.LayoutParams lp = mLottieAnimationView.getLayoutParams();
+            lp.width = newWidth;
+            lp.height = newHeight;
+            mLottieAnimationView.setLayoutParams(lp);
+            lp = iv_livevideo_groupgame_mvp_bg.getLayoutParams();
+            lp.width = newWidth;
+            lp.height = newHeight;
+            iv_livevideo_groupgame_mvp_bg.setLayoutParams(lp);
+        }
         Typeface fontFace = FontCache.getTypeface(mContext, "fangzhengcuyuan.ttf");
         tvTime.setTypeface(fontFace);
         return view;
@@ -125,13 +141,13 @@ public class GroupGameMVPMultPager extends LiveBasePager {
         ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
             @Override
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
-                if (lottieImageAsset.getId().equals("image_5")) {
+                if (lottieImageAsset.getId().equals("image_6")) {
                     return creatGoldBitmap(teamMemberEntityOne.gold, lottieImageAsset.getFileName());
                 }
                 if (lottieImageAsset.getId().equals("image_5")) {
                     return creatFireBitmap(teamMemberEntityOne.energy, lottieImageAsset.getFileName());
                 }
-                if (lottieImageAsset.getId().equals("image_6")) {
+                if (lottieImageAsset.getId().equals("image_10")) {
                     return creatNameBitmap(teamMemberEntityOne.name, lottieImageAsset.getFileName());
                 }
                 if (lottieImageAsset.getId().equals("image_2")) {

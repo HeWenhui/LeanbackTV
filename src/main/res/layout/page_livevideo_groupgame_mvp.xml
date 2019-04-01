@@ -2,19 +2,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/lav_livevideo_groupgame_mvp"
-        android:layout_alignTop="@id/lav_livevideo_groupgame_mvp"
-        android:layout_alignRight="@id/lav_livevideo_groupgame_mvp"
-        android:layout_alignBottom="@id/lav_livevideo_groupgame_mvp"
-        android:src="@drawable/livevideo_group_game_mvp_bg" />
-
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@id/lav_livevideo_groupgame_mvp"
+    <FrameLayout
+        android:id="@id/rl_livevideo_groupgame_mvp_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@id/iv_livevideo_groupgame_mvp_bg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:src="@drawable/livevideo_group_game_mvp_bg" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@id/lav_livevideo_groupgame_mvp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom" />
+
+    </FrameLayout>
 
     <ImageView
         android:id="@id/iv_livevideo_groupgame_mvp_close"
