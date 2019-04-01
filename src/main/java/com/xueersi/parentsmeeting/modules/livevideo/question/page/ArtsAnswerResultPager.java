@@ -51,9 +51,9 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
     private static final int SPAN_COUNT = 1;
 
 
-    private static final int RESULT_TYPE_CORRECT = 2;
-    private static final int RESULT_TYPE_PART_CORRECT = 1;
-    private static final int RESULT_TYPE_ERRRO = 0;
+    public static final int RESULT_TYPE_CORRECT = 2;
+    public static final int RESULT_TYPE_PART_CORRECT = 1;
+    public static final int RESULT_TYPE_ERRRO = 0;
 
     private int mReusltType;
     private ImageView ivResultBtn;
@@ -184,19 +184,27 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
             int color = getColor(R.color.COLOR_5DA741);
             if (data.getIsRight() == RESULT_TYPE_ERRRO) {
                 color = getColor(R.color.COLOR_E34949);
+                ivAnswerIcon.setVisibility(View.VISIBLE);
+
                 iconResId = R.drawable.icon_live_wrong;
             } else if (data.getIsRight() == RESULT_TYPE_PART_CORRECT) {
                 iconResId = R.drawable.icon_live_prart_correct;
                 color = getColor(R.color.COLOR_333333);
+                ivAnswerIcon.setVisibility(View.VISIBLE);
+
             } else if (data.getIsRight() == RESULT_TYPE_CORRECT) {
                 color = getColor(R.color.COLOR_5DA741);
+                ivAnswerIcon.setVisibility(View.VISIBLE);
                 iconResId = R.drawable.icon_live_correct;
+            } else {
+                ivAnswerIcon.setVisibility(View.GONE);
+                color = getColor(R.color.COLOR_333333);
             }
             if (iconResId != 0) {
                 ivAnswerIcon.setBackgroundResource(iconResId);
             }
 
-            SpannableStringBuilder stringBuilder = new SpannableStringBuilder("你的答案:");
+            SpannableStringBuilder stringBuilder = new SpannableStringBuilder("你的答案：");
             SpannableString span = null;
             if (TextUtils.isEmpty(myAnswerText) || "空".equals(myAnswerText)) {
                 myAnswerText = "空";
@@ -207,7 +215,7 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
 
 
             tvUserAnswer.setText(stringBuilder);
-            tvRightAnswer.setText("正确答案:" + standerAnswerText);
+            tvRightAnswer.setText("正确答案：" + standerAnswerText);
 
 
         }

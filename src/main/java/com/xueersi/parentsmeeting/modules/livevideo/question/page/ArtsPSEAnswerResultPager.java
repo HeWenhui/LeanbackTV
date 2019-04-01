@@ -606,29 +606,41 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                 if (data.getIsRight() == 0) {
                     iconResId = R.drawable.icon_livevideo_result_answer_wrong;
                     color = getColor(R.color.COLOR_D45E58);
+                    ivAnswerIcon.setVisibility(View.VISIBLE);
+
                 } else {
                     color = getColor(R.color.COLOR_84AD3D);
                     iconResId = R.drawable.icon_livevideo_result_answer_right;
+                    ivAnswerIcon.setVisibility(View.VISIBLE);
                 }
 
             }  else {
                 if (data.getIsRight() == STATE_CODE_RIGHT) {
                     color = getColor(R.color.COLOR_84AD3D);
+                    ivAnswerIcon.setVisibility(View.VISIBLE);
                     iconResId = R.drawable.icon_livevideo_result_answer_right;
                 } else if (data.getIsRight() == STATE_CODE_PARTRIGHT) {
                     iconResId = R.drawable.icon_livevideo_result_answer_half_right;
                     color = getColor(R.color.COLOR_726665);
-                } else {
+                    ivAnswerIcon.setVisibility(View.VISIBLE);
+
+                } else  if (data.getIsRight() == STATE_CODE_WRONG) {
                     iconResId = R.drawable.icon_livevideo_result_answer_wrong;
                     color = getColor(R.color.COLOR_D45E58);
+                    ivAnswerIcon.setVisibility(View.VISIBLE);
+
+                } else {
+                    color = getColor(R.color.COLOR_84AD3D);
+                    ivAnswerIcon.setVisibility(View.GONE);
                 }
             }
+            if (iconResId !=0) {
+                ImageLoader.with(mContext).load(iconResId).diskCacheStrategy(DiskCacheStrategy.NONE).into(ivAnswerIcon);
+            }
 
-            ImageLoader.with(mContext).load(iconResId).diskCacheStrategy(DiskCacheStrategy.NONE).into(ivAnswerIcon);
 
 
-
-            SpannableStringBuilder stringBuilder = new SpannableStringBuilder("你的答案:");
+            SpannableStringBuilder stringBuilder = new SpannableStringBuilder("你的答案：");
             SpannableString span = null;
             if (TextUtils.isEmpty(myAnswerText) || "空".equals(myAnswerText)) {
                 myAnswerText = "空";
@@ -639,7 +651,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
 
 
             tvUserAnswer.setText(stringBuilder);
-            tvRightAnswer.setText("正确答案:" + standerAnswerText);
+            tvRightAnswer.setText("正确答案：" + standerAnswerText);
         }
 
 
