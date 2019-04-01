@@ -9,11 +9,11 @@ public interface GoldPhoneContract {
     int GOLD_MICROPHONE_VOLUME = 15;
     String MP3_FILE_NAME = "/gold_microphone.mp3";
     /** 采取数据间隔 */
-    long VOLUME_INTERVAL = 200;
+    long VOLUME_INTERVAL = 150;
     int ONE_GEAR_LEFT = 0;
-    int ONE_GEAR_RIGHT = 15;
-    int TWO_GEAR_RIGHT = 30;
-    int THREE_GEAR_RIGHT = 70;
+    int ONE_GEAR_RIGHT = 10;
+    int TWO_GEAR_RIGHT = 20;
+    int THREE_GEAR_RIGHT = 30;
 
     interface GoldPhoneView {
         View getRootView();

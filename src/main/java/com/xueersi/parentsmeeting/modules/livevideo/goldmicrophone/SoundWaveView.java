@@ -67,6 +67,9 @@ public class SoundWaveView extends View {
 //        Circle c = new Circle(0, 3);
 //        mRipples.add(c);
         mDensity = SizeUtils.Dp2Px(mContext, mDensity);
+        oneRadius = (int) ((mWidth / 2 - innerRadius) * 1.0 / 3 + innerRadius);
+        twoRadius = (int) ((mWidth / 2 - innerRadius) * 1.0 / 3 * 2 + innerRadius);
+        threeRadius = (int) ((mWidth / 2 - innerRadius) * 1.0 / 3 * 3 + innerRadius);
         // 设置View的圆为半透明
 //        setBackgroundColor(Color.TRANSPARENT);
     }
@@ -108,7 +111,7 @@ public class SoundWaveView extends View {
         setMeasuredDimension((int) mWidth, (int) mHeight);
     }
 
-    private final int oneRadius = 50, twoRadius = 50, threeRadius = 50;
+    private int oneRadius, twoRadius, threeRadius;
 
     private final int oneSpeed = 5, twoSpeed = 10, threeSpeed = 15;
     private int innerRadius;
@@ -180,6 +183,7 @@ public class SoundWaveView extends View {
 //                }
 
             }
+
             if (c.level != 0) {
                 canvas.drawArc(rectF, 0, 360, false, mPaint);
             }

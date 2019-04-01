@@ -195,7 +195,9 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
         mRootView.post(new Runnable() {
             @Override
             public void run() {
-                mGoldView.showSettingView(!hasPermission);
+                if (mGoldView != null) {
+                    mGoldView.showSettingView(!hasPermission);
+                }
             }
         });
 
@@ -278,7 +280,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
 //                if (isRecord.get()) {
 //                    return;
 //                }
-                if (!isOnline.get()) {
+                if (false) {
                     //不走在线，判断下声音大小就可以了
                     mBufferSize = AudioRecord.getMinBufferSize(DEFAULT_SAMPLING_RATE,
                             DEFAULT_CHANNEL_CONFIG, DEFAULT_AUDIO_FORMAT.getAudioFormat());
@@ -291,7 +293,9 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
                         isRecord.set(true);
                         while (!isStop.get()) {
 //                        if (mAudioRecord != null) {
+                            logger.i("read1:" + mBufferSize);
                             int readSize = mAudioRecord.read(mPCMBuffer, 0, mBufferSize);
+                            logger.i("read2:" + readSize);
                             int volume = calculateRealVolume(mPCMBuffer, readSize);
                             logger.i("volume = " + volume);
                             performVolume(volume);
@@ -344,8 +348,8 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
 
         @Override
         public void onVolumeUpdate(int volume) {
-            logger.i(String.valueOf(volume));
-            performVolume(volume);
+            logger.i("volume = " + String.valueOf(volume));
+//            performVolume(volume);
         }
     };
 
@@ -382,8 +386,8 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
         }
         if (nowTime - lastVolumeTime > VOLUME_INTERVAL) {
             ///1挡位
-            int gear = 0;
-            if (volume < GoldPhoneContract.ONE_GEAR_RIGHT && volume > GoldPhoneContract.ONE_GEAR_LEFT) {
+            int gear = 1;
+            if (volume < GoldPhoneContract.ONE_GEAR_RIGHT && volume >= GoldPhoneContract.ONE_GEAR_LEFT) {
                 gear = 1;
             } else if (volume > GoldPhoneContract.ONE_GEAR_RIGHT && volume < GoldPhoneContract.TWO_GEAR_RIGHT) {
                 //2档
@@ -568,12 +572,23 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
     }
 
     @Override
-    public void onModeChange(String oldMode, String mode, boolean isPresent) {
+    public void onModeChange(final String oldMode, final String mode, final boolean isPresent) {
         super.onModeChange(oldMode, mode, isPresent);
-        if (!LiveTopic.MODE_CLASS.equals(mode)) {
-            if (mGoldView instanceof GoldPhoneContract.CloseTipPresenter) {
-                ((GoldPhoneContract.CloseTipPresenter) mGoldView).removeGoldView();
-            }
+        logger.i("调用了modeChang方法");
+        if (mGoldView != null) {
+            mGoldView.getRootView().post(new Runnable() {
+                @Override
+                public void run() {
+//                    Toast.makeText(mContext, "oldMode = " + oldMode + " mode = " + mode + " isPresent = " + isPresent, Toast.LENGTH_SHORT).show();
+//        logger.i();
+                    if (!LiveTopic.MODE_CLASS.equals(mode)) {
+                        if (mGoldView instanceof GoldPhoneContract.CloseTipPresenter) {
+                            ((GoldPhoneContract.CloseTipPresenter) mGoldView).removeGoldView();
+                        }
+                    }
+                }
+            });
+
         }
     }
 }
