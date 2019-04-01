@@ -278,7 +278,12 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             for (int i = 0; i < allScoreList.size(); i++) {
                 sum += allScoreList.get(i);
             }
-            int averageScore = sum / allScoreList.size();
+            int averageScore;
+            if (allScoreList.size() != 0) {
+                averageScore = sum / allScoreList.size();
+            } else {
+                averageScore = 0;
+            }
             answerData.put("averageScore", averageScore);
             answerData.put("userAnswer", userAnswer.toString());
         } catch (JSONException e) {
