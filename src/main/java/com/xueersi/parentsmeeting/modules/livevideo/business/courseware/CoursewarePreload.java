@@ -105,7 +105,7 @@ public class CoursewarePreload {
             @Override
             public void run() {
                 logger.i("start delete file");
-                if (file == null) {
+                if (file == null || file.listFiles() == null) {
                     return;
                 }
                 for (File itemFile : file.listFiles()) {
@@ -132,6 +132,9 @@ public class CoursewarePreload {
     }
 
     private void deleteFor(final File file) {
+        if (file == null || file.listFiles() == null) {
+            return;
+        }
         for (File itemFile : file.listFiles()) {
             if (!itemFile.isDirectory()) {
                 itemFile.delete();
