@@ -105,6 +105,9 @@ public class CoursewarePreload {
             @Override
             public void run() {
                 logger.i("start delete file");
+                if (file == null) {
+                    return;
+                }
                 for (File itemFile : file.listFiles()) {
                     if (isCoursewareDir(itemFile.getName()) && !itemFile.getName().equals(today)) {
                         if (!itemFile.isDirectory()) {
