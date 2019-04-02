@@ -252,4 +252,8 @@ public class SoundWaveView extends View {
         mRipples.add(circle);
         postInvalidate();
     }
+
+    public List<Circle> getRipples() {
+        return mRipples;
+    }
 }

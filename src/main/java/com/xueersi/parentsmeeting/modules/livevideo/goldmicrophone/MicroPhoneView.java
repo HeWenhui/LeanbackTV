@@ -18,6 +18,8 @@ import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
+import java.util.List;
+
 public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldPhoneView, GoldPhoneContract.CloseTipPresenter {
 
     private GoldPhoneContract.GoldPhonePresenter mPresenter;
@@ -312,5 +314,10 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
     @Override
     public void addRipple(int level) {
         swvView.addRipple(new SoundWaveView.Circle(0, level));
+    }
+
+    @Override
+    public List<SoundWaveView.Circle> getRipples() {
+        return swvView.getRipples();
     }
 }

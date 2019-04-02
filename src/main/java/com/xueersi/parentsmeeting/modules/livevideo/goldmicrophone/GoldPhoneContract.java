@@ -2,6 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone;
 
 import android.view.View;
 
+import java.util.List;
+
 public interface GoldPhoneContract {
     /** 金话筒的时间间隔 */
     long LOTTIE_VIEW_INTERVAL = 2000;
@@ -14,7 +16,7 @@ public interface GoldPhoneContract {
     int ONE_GEAR_RIGHT = 10;
     int TWO_GEAR_RIGHT = 20;
     int THREE_GEAR_RIGHT = 30;
-    int GOLD_ONE_LEVEL_INTEVAL = 400;
+    int GOLD_ONE_LEVEL_INTEVAL = 500;
 
     interface GoldPhoneView {
         View getRootView();
@@ -47,6 +49,8 @@ public interface GoldPhoneContract {
         void showLottieView();
 
         void addRipple(int level);
+
+        List<SoundWaveView.Circle> getRipples();
     }
 
     interface GoldPhonePresenter {

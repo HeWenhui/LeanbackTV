@@ -35,6 +35,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -112,11 +113,24 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
                     public void run() {
                         logger.i("cancel onLine,take offLine");
                         mSpeechEvaluatorUtils.cancel();
-                        offLineRecord();
+                        if (mRootView != null) {
+                            mRootView.postDelayed(ru, 500);
+                        }
                     }
                 });
 
             }
+        }
+    };
+    private Runnable ru = new Runnable() {
+        @Override
+        public void run() {
+            executor.execute(new Runnable() {
+                @Override
+                public void run() {
+                    offLineRecord();
+                }
+            });
         }
     };
 
@@ -339,7 +353,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
                 int readSize = mAudioRecord.read(mPCMBuffer, 0, mBufferSize);
 //                logger.i("read2:" + readSize);
                 int volume = calculateRealVolume(mPCMBuffer, readSize);
-                logger.i("volume = " + volume);
+                logger.i("offline volume = " + volume);
                 performVolume(volume);
 //                        }
             }
@@ -398,7 +412,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
 
         @Override
         public void onVolumeUpdate(int volume) {
-            logger.i("volume = " + String.valueOf(volume));
+            logger.i("online volume = " + String.valueOf(volume));
             performVolume(volume);
         }
     };
@@ -439,8 +453,10 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
             int gear = 1;
             if (volume < GoldPhoneContract.ONE_GEAR_RIGHT
                     && volume >= GoldPhoneContract.ONE_GEAR_LEFT) {
+                List<SoundWaveView.Circle> list = mGoldView.getRipples();
                 if (((nowTime - lastOneLevelTime > GoldPhoneContract.GOLD_ONE_LEVEL_INTEVAL)
-                        || (lastVolumeTime > lastOneLevelTime))) {
+                        || (lastVolumeTime > lastOneLevelTime) && list.size() == 0)
+                ) {
                     gear = 1;
                     lastOneLevelTime = nowTime;
                     mGoldView.addRipple(gear);
@@ -598,7 +614,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
             double amplitude = sum / readSize;
             int volume = (int) Math.sqrt(amplitude);
             volume = (volume * 30 / 10000);
-            logger.i("volume :" + volume);
+            logger.i("calculate volume :" + volume);
             return volume;
         }
         return 0;
