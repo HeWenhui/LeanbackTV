@@ -37,8 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        android:background="@color/transparent_80"
-        android:visibility="gone">
+        android:background="@color/transparent_80">
 
         <LinearLayout
             android:id="@id/ll_livevideo_subject_loadingl_content"

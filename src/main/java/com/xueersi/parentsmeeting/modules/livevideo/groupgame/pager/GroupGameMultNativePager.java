@@ -2,13 +2,17 @@ package com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
@@ -161,6 +165,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     private GetStuActiveTeam getStuActiveTeam;
     private TcpMessageReg tcpMessageReg;
     private VoiceProjectile voiceProjectile;
+    PreLoad preLoad;
 
     public GroupGameMultNativePager(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity detailInfo, EnglishH5Entity englishH5Entity) {
         super(context);
@@ -171,6 +176,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         this.learningStage = liveGetInfo.getStudentLiveInfo().getLearning_stage();
         this.liveId = liveGetInfo.getId();
         liveAndBackDebug = new ContextLiveAndBackDebug(context);
+        preLoad = new MiddleSchool();
         initData();
         initListener();
     }
@@ -429,6 +435,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         handler.post(new Runnable() {
             @Override
             public void run() {
+                preLoad.onStop();
                 try {
                     JSONObject resultData = new JSONObject();
                     resultData.put("type", CourseMessage.SEND_CoursewareOnloading);
@@ -640,12 +647,90 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     }
 
     @Override
+    protected void onProgressChanged(WebView view, int newProgress) {
+        preLoad.onProgressChanged(view, newProgress);
+    }
+
+    /**
+     * 课件加载
+     */
+    interface PreLoad {
+        /**
+         * 课件开始加载
+         */
+        void onStart();
+
+        /**
+         * 课件加载中进度
+         */
+        void onProgressChanged(WebView view, int newProgress);
+
+        /**
+         * 课件结束加载
+         */
+        void onStop();
+    }
+
+
+    /**
+     * 初中课件加载
+     */
+    private class MiddleSchool implements PreLoad {
+        private ImageView ivLoading;
+        private ProgressBar pgCourseProg;
+        private TextView tvDataLoadingTip;
+
+        @Override
+        public void onStart() {
+            ivLoading = mView.findViewById(R.id.iv_data_loading_show);
+            pgCourseProg = mView.findViewById(R.id.pg_livevideo_new_course_prog);
+            tvDataLoadingTip = mView.findViewById(R.id.tv_data_loading_tip);
+            logger.d("MiddleSchool:onStart");
+            try {
+                Drawable drawable = mContext.getResources().getDrawable(R.drawable.animlst_app_loading);
+                ivLoading.setBackground(drawable);
+                ((AnimationDrawable) drawable).start();
+            } catch (Exception e) {
+                if (mLogtf != null) {
+                    mLogtf.e("onStart", e);
+                }
+            }
+        }
+
+        @Override
+        public void onProgressChanged(WebView view, int newProgress) {
+            logger.d("MiddleSchool:onProgressChanged:newProgress" + newProgress);
+            pgCourseProg.setProgress(newProgress);
+            tvDataLoadingTip.setText("加载中 " + newProgress + "%");
+        }
+
+        @Override
+        public void onStop() {
+            logger.d("MiddleSchool:onStart:ivLoading=null?" + (ivLoading == null));
+            rlSubjectLoading.setVisibility(View.GONE);
+            if (ivLoading != null) {
+                try {
+                    Drawable drawable = ivLoading.getBackground();
+                    if (drawable instanceof AnimationDrawable) {
+                        ((AnimationDrawable) drawable).stop();
+                    }
+                } catch (Exception e) {
+                    if (mLogtf != null) {
+                        mLogtf.e("onStop", e);
+                    }
+                }
+            }
+        }
+    }
+
+    @Override
     public void setEnglishH5CoursewareSecHttp(EnglishH5CoursewareSecHttp englishH5CoursewareSecHttp) {
         this.englishH5CoursewareSecHttp = englishH5CoursewareSecHttp;
         getCourseWareTests();
     }
 
     private void getCourseWareTests() {
+        preLoad.onStart();
         englishH5CoursewareSecHttp.getCourseWareTests(detailInfo, new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
@@ -704,6 +789,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 }
                 ivCourseRefresh.setVisibility(View.VISIBLE);
                 logger.d("onDataFail:errStatus=" + errStatus + ",failMsg=" + failMsg);
+                preLoad.onStop();
             }
         });
     }

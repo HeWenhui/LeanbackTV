@@ -1981,6 +1981,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         ArtsExtLiveInfo info = new ArtsExtLiveInfo();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         info.setNewCourseWarePlatform(data.optString("newCourseWarePlatform"));
+        info.setGroupGmaeCourseWare(data.optBoolean("isGroupGmaeCourseWare"));
         return info;
     }
 
