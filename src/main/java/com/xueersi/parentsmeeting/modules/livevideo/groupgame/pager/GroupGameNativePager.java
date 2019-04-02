@@ -30,6 +30,7 @@ import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -304,15 +305,22 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     };
 
     private void showResultPager() {
+        ArrayList<TeamMemberEntity> entities = new ArrayList<>();
+        TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
+        teamMemberEntity.name = liveGetInfo.getStuName();
+        teamMemberEntity.headurl = liveGetInfo.getHeadImgPath();
+        teamMemberEntity.gold = goldNum;
+        teamMemberEntity.energy = fireNum;
+        entities.add(teamMemberEntity);
         //显示结果页面
-        GroupGameMVPPager groupGameMVPPager = new GroupGameMVPPager(mContext, new GroupGameNativePager.OnPagerClose() {
+        GroupGameMVPMultPager groupGameMVPMultPager = new GroupGameMVPMultPager(mContext, entities);
+        groupGameMVPMultPager.setOnPagerClose(new OnPagerClose() {
             @Override
             public void onClose(LiveBasePager basePager) {
-                onClose.onH5ResultClose(GroupGameNativePager.this, getBaseVideoQuestionEntity());
+                onClose.onH5ResultClose(GroupGameNativePager.this, detailInfo);
             }
-        }, fireNum, goldNum, liveGetInfo.getStuName(), liveGetInfo.getHeadImgPath());
-        ((RelativeLayout) mView).addView(groupGameMVPPager.getRootView(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-
+        });
+        ((ViewGroup) mView).addView(groupGameMVPMultPager.getRootView());
     }
     class CourseWebViewClient extends MyWebViewClient implements OnHttpCode {
         @Override
