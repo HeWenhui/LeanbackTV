@@ -501,6 +501,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
             getInfo.setSubject_digits(data.optString("subject_digits"));
             if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
+                getInfo.setIsNewProject(data.optInt("isNewProject", 0));
                 if (getInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
                     parseLiveGetInfoLibarts(data, liveTopic, getInfo);
                 } else if (getInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {
@@ -1981,6 +1982,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         ArtsExtLiveInfo info = new ArtsExtLiveInfo();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         info.setNewCourseWarePlatform(data.optString("newCourseWarePlatform"));
+        info.setGroupGmaeCourseWare(data.optBoolean("isGroupGmaeCourseWare"));
         return info;
     }
 

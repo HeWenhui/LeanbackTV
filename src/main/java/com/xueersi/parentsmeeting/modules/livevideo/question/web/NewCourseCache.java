@@ -32,24 +32,25 @@ import ren.yale.android.cachewebviewlib.utils.MD5Utils;
  */
 public class NewCourseCache {
     private String eventId = "NewCourseCache_cache";
-    private String TAG = "NewCourseCache";
+    protected String TAG = getClass().getSimpleName();
     protected Logger logger = LiveLoggerFactory.getLogger(TAG);
     LogToFile logToFile;
-    private Context mContext;
+    protected Context mContext;
     private File cacheFile;
     private File mMorecacheout;
     /**
      * 公共资源
      */
     private File mPublicCacheout;
-    private HashMap header;
-    private WebInstertJs webInstertJs;
-    private String coursewarePages = "courseware_pages";
-    private String mathJax = "MathJax";
-    private String katex = "katex";
+    protected HashMap header;
+    protected WebInstertJs webInstertJs;
+    protected String coursewarePages = "courseware_pages";
+    protected String mathJax = "MathJax";
+    protected String katex = "katex";
     OnHttpCode onHttpCode;
 
     public NewCourseCache(Context mContext, String liveId) {
+        this.mContext = mContext;
         logToFile = new LogToFile(mContext, TAG);
         webInstertJs = new WebInstertJs(mContext);
         cacheFile = LiveCacheFile.geCacheFile(mContext, "webviewCache");

@@ -220,6 +220,8 @@ public class LiveVideoConfig {
     public static String LIVE_VOICE_CHAT = "voicechat";
     /** 直播-小英语音弹幕*/
     public static String LIVE_VOICE_BULLET = "voicebullet";
+    /** 直播-小英语音聊天*/
+    public static String LIVE_VOICE_VOLUME = "live_smallenglish_volume";
 
     public static class ShareData {
 

@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -63,6 +64,13 @@ public class CourseGroupItem implements AdapterItemInterface<TeamMemberEntity> {
         rlCourseItemName = root.findViewById(R.id.rl_livevideo_course_item_name);
         ivCourseItemVideo = root.findViewById(R.id.iv_livevideo_course_item_video);
         ivCourseItemAudio = root.findViewById(R.id.iv_livevideo_course_item_audio);
+        if (uid == -1) {
+            ImageView imageView = new ImageView(root.getContext());
+            imageView.setImageResource(R.drawable.pc_zbhd_shipingkuang_ufo);
+            ((ViewGroup) root).addView(imageView);
+        } else {
+            root.setBackgroundResource(R.drawable.app_zbhd_shipingkuang);
+        }
     }
 
     public void doRenderRemoteUi(SurfaceView surfaceV) {
@@ -76,47 +84,49 @@ public class CourseGroupItem implements AdapterItemInterface<TeamMemberEntity> {
 
     @Override
     public void bindListener() {
-        ivCourseItemVideo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RtcEngine rtcEngine = workerThread.getRtcEngine();
-                if (rtcEngine != null) {
-                    enableVideo = !enableVideo;
-                    if (isMe) {
-                        rtcEngine.enableLocalVideo(enableVideo);
-                    } else {
-                        rtcEngine.muteRemoteVideoStream(uid, enableVideo);
-                    }
-                }
-            }
-        });
-        ivCourseItemAudio.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RtcEngine rtcEngine = workerThread.getRtcEngine();
-                if (rtcEngine != null) {
-                    enableAudio = !enableAudio;
-                    if (isMe) {
-                        if (enableAudio) {
-                            rtcEngine.enableAudio();
+        if (uid != -1) {
+            ivCourseItemVideo.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    RtcEngine rtcEngine = workerThread.getRtcEngine();
+                    if (rtcEngine != null) {
+                        enableVideo = !enableVideo;
+                        if (isMe) {
+                            rtcEngine.enableLocalVideo(enableVideo);
                         } else {
-                            rtcEngine.disableAudio();
-                            final LottieAnimationView animationView = (LottieAnimationView) ivCourseItemAudio;
-                            stopRun.animationView = animationView;
-                            stopRun.startProgress = voiceStartFrame;
-                            startRun.startProgress = 0;
-                            handler.removeCallbacks(startRun);
-                            handler.removeCallbacks(progRun);
-                            if (progress > 0) {
-                                handler.postDelayed(stopRun, 10);
-                            }
+                            rtcEngine.muteRemoteVideoStream(uid, enableVideo);
                         }
-                    } else {
-                        rtcEngine.muteRemoteAudioStream(uid, enableAudio);
                     }
                 }
-            }
-        });
+            });
+            ivCourseItemAudio.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    RtcEngine rtcEngine = workerThread.getRtcEngine();
+                    if (rtcEngine != null) {
+                        enableAudio = !enableAudio;
+                        if (isMe) {
+                            if (enableAudio) {
+                                rtcEngine.enableAudio();
+                            } else {
+                                rtcEngine.disableAudio();
+                                final LottieAnimationView animationView = (LottieAnimationView) ivCourseItemAudio;
+                                stopRun.animationView = animationView;
+                                stopRun.startProgress = voiceStartFrame;
+                                startRun.startProgress = 0;
+                                handler.removeCallbacks(startRun);
+                                handler.removeCallbacks(progRun);
+                                if (progress > 0) {
+                                    handler.postDelayed(stopRun, 10);
+                                }
+                            }
+                        } else {
+                            rtcEngine.muteRemoteAudioStream(uid, enableAudio);
+                        }
+                    }
+                }
+            });
+        }
     }
 
     @Override

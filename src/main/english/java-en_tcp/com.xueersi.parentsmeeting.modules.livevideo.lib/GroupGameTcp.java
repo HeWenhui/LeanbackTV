@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.lib;
 import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.util.SparseArray;
 
 import com.xueersi.lib.framework.are.ContextManager;
@@ -38,6 +39,7 @@ public class GroupGameTcp {
     private int seq = 0;
     private WriteThread writeThread;
     private Handler sendMessageHandler;
+    private Handler mainHandler = new Handler(Looper.getMainLooper());
     private boolean isStop = false;
     private SparseArray<SendCallBack> callBackSparseArray = new SparseArray<>();
 
@@ -107,7 +109,7 @@ public class GroupGameTcp {
                         if (sendCallBack != null) {
                             sendCallBack.onStart(finalSeq);
                             callBackSparseArray.put(finalSeq, sendCallBack);
-                            sendMessageHandler.postDelayed(new Runnable() {
+                            mainHandler.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
                                     SendCallBack callBack = callBackSparseArray.get(finalSeq);

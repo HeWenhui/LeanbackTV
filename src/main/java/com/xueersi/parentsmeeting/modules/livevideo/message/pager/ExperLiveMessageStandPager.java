@@ -239,7 +239,7 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
 
     @Override
     public View initView() {
-        mView = View.inflate(mContext, R.layout.page_livevideo_message_stand, null);
+        mView = View.inflate(mContext, R.layout.page_livevideo_stand_experience_livemessage_pager, null);
         tvMessageCount = (TextView) mView.findViewById(R.id.tv_livevideo_message_count);
         ivMessageOnline = (ImageView) mView.findViewById(R.id.iv_livevideo_message_online);
         lvMessage = (ListView) mView.findViewById(R.id.lv_livevideo_message);
@@ -309,8 +309,11 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
         isNotExpericence = isVisible;
         btnVoiceMesOpen.setVisibility(View.GONE);
         if (mView != null) {
-            mView.findViewById(R.id.cl_stand_experience_temp_gold_star).setVisibility(isVisible ? View.VISIBLE : View
-                    .GONE);
+            View view = mView.findViewById(R.id.cl_stand_experience_temp_gold_star);
+            if (view != null) {
+                view.setVisibility(isVisible ? View.VISIBLE : View
+                        .GONE);
+            }
         }
 
     }

@@ -141,17 +141,17 @@ public class GroupGameMVPMultPager extends LiveBasePager {
         ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
             @Override
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
-                if (lottieImageAsset.getId().equals("image_6")) {
+                if (lottieImageAsset.getId().equals("image_4")) {
                     return creatGoldBitmap(teamMemberEntityOne.gold, lottieImageAsset.getFileName());
                 }
-                if (lottieImageAsset.getId().equals("image_5")) {
+                if (lottieImageAsset.getId().equals("image_3")) {
                     return creatFireBitmap(teamMemberEntityOne.energy, lottieImageAsset.getFileName());
                 }
-                if (lottieImageAsset.getId().equals("image_10")) {
+                if (lottieImageAsset.getId().equals("image_8")) {
                     return creatNameBitmap(teamMemberEntityOne.name, lottieImageAsset.getFileName());
                 }
-                if (lottieImageAsset.getId().equals("image_2")) {
-                    Bitmap headBitmap = headBitHashMap.get("image_2");
+                if (lottieImageAsset.getId().equals("image_0")) {
+                    Bitmap headBitmap = headBitHashMap.get(lottieImageAsset.getId());
                     if (headBitmap != null) {
                         return headBitmap;
                     }
@@ -167,12 +167,12 @@ public class GroupGameMVPMultPager extends LiveBasePager {
         };
         mLottieAnimationView.setImageAssetDelegate(imageAssetDelegate);
         mLottieAnimationView.playAnimation();
-        setHead(teamMemberEntityOne.headurl, "image_2");
+        setHead(teamMemberEntityOne.headurl, "image_0");
     }
 
     private void startLottieAnimationTwo() {
-        final TeamMemberEntity teamMemberEntityOne = entities.get(0);
-        final TeamMemberEntity teamMemberEntityTwo = entities.get(1);
+        final TeamMemberEntity teamMemberEntityOne = entities.get(1);
+        final TeamMemberEntity teamMemberEntityTwo = entities.get(0);
         String resPath = LOTTIE_RES_ASSETS_ROOTDIR + "images";
         String jsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "data.json";
         final LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo(resPath, jsonPath);
@@ -183,17 +183,17 @@ public class GroupGameMVPMultPager extends LiveBasePager {
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
                 {
                     //第一个人的
-                    if (lottieImageAsset.getId().equals("image_3")) {
+                    if (lottieImageAsset.getId().equals("image_1")) {
                         return creatGoldBitmap(teamMemberEntityOne.gold, lottieImageAsset.getFileName());
                     }
-                    if (lottieImageAsset.getId().equals("image_4")) {
+                    if (lottieImageAsset.getId().equals("image_2")) {
                         return creatFireBitmap(teamMemberEntityOne.energy, lottieImageAsset.getFileName());
                     }
-                    if (lottieImageAsset.getId().equals("image_11")) {
+                    if (lottieImageAsset.getId().equals("image_9")) {
                         return creatNameBitmap(teamMemberEntityOne.name, lottieImageAsset.getFileName());
                     }
-                    if (lottieImageAsset.getId().equals("image_8")) {
-                        Bitmap headBitmap = headBitHashMap.get("image_8");
+                    if (lottieImageAsset.getId().equals("image_6")) {
+                        Bitmap headBitmap = headBitHashMap.get(lottieImageAsset.getId());
                         if (headBitmap != null) {
                             return headBitmap;
                         }
@@ -201,17 +201,17 @@ public class GroupGameMVPMultPager extends LiveBasePager {
                 }
                 {
                     //第二个人的
-                    if (lottieImageAsset.getId().equals("image_17")) {
+                    if (lottieImageAsset.getId().equals("image_13")) {
                         return creatGoldBitmap(teamMemberEntityTwo.gold, lottieImageAsset.getFileName());
                     }
-                    if (lottieImageAsset.getId().equals("image_18")) {
+                    if (lottieImageAsset.getId().equals("image_14")) {
                         return creatFireBitmap(teamMemberEntityTwo.energy, lottieImageAsset.getFileName());
                     }
-                    if (lottieImageAsset.getId().equals("image_24")) {
+                    if (lottieImageAsset.getId().equals("image_20")) {
                         return creatNameBitmap(teamMemberEntityTwo.name, lottieImageAsset.getFileName());
                     }
-                    if (lottieImageAsset.getId().equals("image_22")) {
-                        Bitmap headBitmap = headBitHashMap.get("image_22");
+                    if (lottieImageAsset.getId().equals("image_18")) {
+                        Bitmap headBitmap = headBitHashMap.get(lottieImageAsset.getId());
                         if (headBitmap != null) {
                             return headBitmap;
                         }
@@ -228,14 +228,14 @@ public class GroupGameMVPMultPager extends LiveBasePager {
         };
         mLottieAnimationView.setImageAssetDelegate(imageAssetDelegate);
         mLottieAnimationView.playAnimation();
-        setHead(teamMemberEntityOne.headurl, "image_8");
-        setHead(teamMemberEntityTwo.headurl, "image_22");
+        setHead(teamMemberEntityOne.headurl, "image_6");
+        setHead(teamMemberEntityTwo.headurl, "image_18");
     }
 
     private void startLottieAnimationThree() {
-        final TeamMemberEntity teamMemberEntityOne = entities.get(0);
+        final TeamMemberEntity teamMemberEntityOne = entities.get(2);
         final TeamMemberEntity teamMemberEntityTwo = entities.get(1);
-        final TeamMemberEntity teamMemberEntityThree = entities.get(2);
+        final TeamMemberEntity teamMemberEntityThree = entities.get(0);
         String resPath = LOTTIE_RES_ASSETS_ROOTDIR + "images";
         String jsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "data.json";
         final LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo(resPath, jsonPath);
@@ -246,17 +246,17 @@ public class GroupGameMVPMultPager extends LiveBasePager {
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
                 {
                     //第一个人的
-                    if (lottieImageAsset.getId().equals("image_5")) {
+                    if (lottieImageAsset.getId().equals("image_4")) {
                         return creatGoldBitmap(teamMemberEntityOne.gold, lottieImageAsset.getFileName());
                     }
-                    if (lottieImageAsset.getId().equals("image_6")) {
+                    if (lottieImageAsset.getId().equals("image_3")) {
                         return creatFireBitmap(teamMemberEntityOne.energy, lottieImageAsset.getFileName());
                     }
-                    if (lottieImageAsset.getId().equals("image_10")) {
+                    if (lottieImageAsset.getId().equals("image_8")) {
                         return creatNameBitmap(teamMemberEntityOne.name, lottieImageAsset.getFileName());
                     }
                     if (lottieImageAsset.getId().equals("image_0")) {
-                        Bitmap headBitmap = headBitHashMap.get("image_0");
+                        Bitmap headBitmap = headBitHashMap.get(lottieImageAsset.getId());
                         if (headBitmap != null) {
                             return headBitmap;
                         }
@@ -264,17 +264,17 @@ public class GroupGameMVPMultPager extends LiveBasePager {
                 }
                 {
                     //第二个人的
-                    if (lottieImageAsset.getId().equals("image_26")) {
+                    if (lottieImageAsset.getId().equals("image_23")) {
                         return creatGoldBitmap(teamMemberEntityTwo.gold, lottieImageAsset.getFileName());
                     }
-                    if (lottieImageAsset.getId().equals("image_27")) {
+                    if (lottieImageAsset.getId().equals("image_22")) {
                         return creatFireBitmap(teamMemberEntityTwo.energy, lottieImageAsset.getFileName());
                     }
-                    if (lottieImageAsset.getId().equals("image_28")) {
+                    if (lottieImageAsset.getId().equals("image_24")) {
                         return creatNameBitmap(teamMemberEntityTwo.name, lottieImageAsset.getFileName());
                     }
-                    if (lottieImageAsset.getId().equals("image_23")) {
-                        Bitmap headBitmap = headBitHashMap.get("image_23");
+                    if (lottieImageAsset.getId().equals("image_19")) {
+                        Bitmap headBitmap = headBitHashMap.get(lottieImageAsset.getId());
                         if (headBitmap != null) {
                             return headBitmap;
                         }
@@ -282,17 +282,17 @@ public class GroupGameMVPMultPager extends LiveBasePager {
                 }
                 {
                     //第三个人的
-                    if (lottieImageAsset.getId().equals("image_44")) {
+                    if (lottieImageAsset.getId().equals("image_38")) {
                         return creatGoldBitmap(teamMemberEntityThree.gold, lottieImageAsset.getFileName());
                     }
-                    if (lottieImageAsset.getId().equals("image_45")) {
+                    if (lottieImageAsset.getId().equals("image_39")) {
                         return creatFireBitmap(teamMemberEntityThree.energy, lottieImageAsset.getFileName());
                     }
-                    if (lottieImageAsset.getId().equals("image_46")) {
+                    if (lottieImageAsset.getId().equals("image_40")) {
                         return creatNameBitmap(teamMemberEntityThree.name, lottieImageAsset.getFileName());
                     }
-                    if (lottieImageAsset.getId().equals("image_39")) {
-                        Bitmap headBitmap = headBitHashMap.get("image_39");
+                    if (lottieImageAsset.getId().equals("image_35")) {
+                        Bitmap headBitmap = headBitHashMap.get(lottieImageAsset.getId());
                         if (headBitmap != null) {
                             return headBitmap;
                         }
@@ -310,8 +310,8 @@ public class GroupGameMVPMultPager extends LiveBasePager {
         mLottieAnimationView.setImageAssetDelegate(imageAssetDelegate);
         mLottieAnimationView.playAnimation();
         setHead(teamMemberEntityOne.headurl, "image_0");
-        setHead(teamMemberEntityTwo.headurl, "image_23");
-        setHead(teamMemberEntityThree.headurl, "image_39");
+        setHead(teamMemberEntityTwo.headurl, "image_19");
+        setHead(teamMemberEntityThree.headurl, "image_35");
     }
 
     private void setHead(final String headurl, final String lottieId) {

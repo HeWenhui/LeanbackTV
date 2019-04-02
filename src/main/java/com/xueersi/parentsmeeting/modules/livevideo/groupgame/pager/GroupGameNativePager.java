@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5C
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.CourseMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseCoursewareNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.web.GroupCourseCache;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.NewCourseCache;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.OnHttpCode;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.StaticWeb;
@@ -247,7 +248,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     }
 
     private void initWebView() {
-        newCourseCache = new NewCourseCache(mContext, liveId);
+        newCourseCache = new GroupCourseCache(mContext, liveId);
         addJavascriptInterface();
         wvSubjectWeb.setWebChromeClient(new BaseCoursewareNativePager.MyWebChromeClient() {
             @Override
