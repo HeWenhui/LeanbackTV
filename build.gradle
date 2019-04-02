@@ -23,7 +23,7 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    implementation (name:'pschatsdk_1.3.2',ext:'aar')
+//    implementation (name:'pschatsdk_1.3.2',ext:'aar')
     compile 'org.java-websocket:Java-WebSocket:1.3.4'
     //glide库
     implementation rootProject.ext.thirdlibraries.glide
@@ -47,6 +47,7 @@ dependencies {
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.share)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.browser)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.xeslottie)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.pschatsdk)
     implementation rootProject.ext.thirdlibraries.arouterapi
     implementation rootProject.ext.thirdlibraries.appcompat
     implementation rootProject.ext.thirdlibraries.recyclerview
