@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager;
 
 import android.animation.Animator;
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -10,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,13 +17,12 @@ import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.util.FontCache;
-import com.xueersi.lib.framework.utils.SizeUtils;
+import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePlayBackMessageEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountDowTextView;
-import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
 
 import java.io.IOException;
 
@@ -76,7 +75,21 @@ public class GroupGameMVPPager extends LiveBasePager {
         mLottieAnimationView = view.findViewById(R.id.lav_livevideo_groupgame_mvp);
         tvTime = view.findViewById(R.id.tv_livevideo_groupgame_mvp_time);
         ivClose = view.findViewById(R.id.iv_livevideo_groupgame_mvp_close);
-
+        ImageView iv_livevideo_groupgame_mvp_bg = view.findViewById(R.id.iv_livevideo_groupgame_mvp_bg);
+        {
+            LiveVideoPoint instance = LiveVideoPoint.getInstance();
+            int[] newWidthHeight = instance.getNewWidthHeight();
+            int newWidth = newWidthHeight[0];
+            int newHeight = newWidthHeight[1];
+            ViewGroup.LayoutParams lp = mLottieAnimationView.getLayoutParams();
+            lp.width = newWidth;
+            lp.height = newHeight;
+            mLottieAnimationView.setLayoutParams(lp);
+            lp = iv_livevideo_groupgame_mvp_bg.getLayoutParams();
+            lp.width = newWidth;
+            lp.height = newHeight;
+            iv_livevideo_groupgame_mvp_bg.setLayoutParams(lp);
+        }
         Typeface fontFace = FontCache.getTypeface(mContext, "fangzhengcuyuan.ttf");
         tvTime.setTypeface(fontFace);
         return view;
@@ -117,13 +130,13 @@ public class GroupGameMVPPager extends LiveBasePager {
             @Override
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
                 if (lottieImageAsset.getId().equals("image_5")) {
-                    return creatGoldBitmap(goldNum);
+                    return creatGoldBitmap(goldNum, lottieImageAsset.getFileName());
                 }
                 if (lottieImageAsset.getId().equals("image_6")) {
-                    return creatFireBitmap(fireNum);
+                    return creatFireBitmap(fireNum, lottieImageAsset.getFileName());
                 }
                 if (lottieImageAsset.getId().equals("image_10")) {
-                    return creatNameBitmap(name);
+                    return creatNameBitmap(name, lottieImageAsset.getFileName());
                 }
                 return bubbleEffectInfo.fetchBitmapFromAssets(
                         mLottieAnimationView,
@@ -164,10 +177,10 @@ public class GroupGameMVPPager extends LiveBasePager {
      * @param fireNum
      * @return
      */
-    public Bitmap creatGoldBitmap(int fireNum) {
+    public Bitmap creatGoldBitmap(int fireNum, String lottieId) {
         Bitmap bitmap;
         try {
-            bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(LOTTIE_RES_ASSETS_ROOTDIR + "images/img_5.png"));
+            bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(LOTTIE_RES_ASSETS_ROOTDIR + "images/" + lottieId));
             Bitmap creatBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);
 
@@ -192,10 +205,10 @@ public class GroupGameMVPPager extends LiveBasePager {
      * @param fireNum
      * @return
      */
-    public Bitmap creatFireBitmap(int fireNum) {
+    public Bitmap creatFireBitmap(int fireNum, String lottieId) {
         Bitmap bitmap;
         try {
-            bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(LOTTIE_RES_ASSETS_ROOTDIR + "images/img_6.png"));
+            bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(LOTTIE_RES_ASSETS_ROOTDIR + "images/" + lottieId));
             Bitmap creatBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);
 
@@ -221,21 +234,35 @@ public class GroupGameMVPPager extends LiveBasePager {
      * @param name
      * @return
      */
-    public Bitmap creatNameBitmap(String name) {
+    public Bitmap creatNameBitmap(String name, String lottieId) {
         Bitmap bitmap;
         try {
-            bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(LOTTIE_RES_ASSETS_ROOTDIR + "images/img_10.png"));
-            Bitmap creatBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
+            bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(LOTTIE_RES_ASSETS_ROOTDIR + "images/" + lottieId));
+            int width = bitmap.getWidth();
+            int height = bitmap.getHeight();
+            Bitmap creatBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);
-
-            Paint paint = new Paint();
-            paint.setAntiAlias(true);
-            paint.setTextSize(bitmap.getHeight());
-            paint.setColor(0xFFFFF4EB);
-            Typeface fontFace = FontCache.getTypeface(mContext, "fangzhengcuyuan.ttf");
-            paint.setTypeface(fontFace);
-            float width = paint.measureText(name);
-            canvas.drawText(name, (bitmap.getWidth() - width) / 2, bitmap.getHeight(), paint);
+            View view = LayoutInflater.from(mContext).inflate(R.layout.layout_en_groupgame_mvp_name, null);
+            TextView tvCourseMvpName = view.findViewById(R.id.tv_livevideo_course_mvp_name);
+            tvCourseMvpName.setText(name);
+            float size = height * 8.0f / 10.0f / ScreenUtils.getScreenDensity();
+            logger.d("creatNameBitmap:size=" + size);
+            tvCourseMvpName.setTextSize(size);
+//            tvCourseMvpName.setTextSize(15);
+            int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
+            int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
+            view.measure(widthMeasureSpec, heightMeasureSpec);
+            view.layout(0, 0, width, height);
+            view.draw(canvas);
+//            paint.setAntiAlias(true);
+//            float textSize = bitmap.getHeight() * 8.5f / 10f;
+//            paint.setTextSize(textSize);
+//            paint.setColor(0xFFFFF4EB);
+//            Typeface fontFace = FontCache.getTypeface(mContext, "fangzhengcuyuan.ttf");
+//            paint.setTypeface(fontFace);
+//            float width = paint.measureText(name);
+////            canvas.drawText(name, 0, bitmap.getHeight() - (bitmap.getHeight() - textSize) / 2, paint);
+//            canvas.drawText(name, 0, bitmap.getHeight(), paint);
             bitmap.recycle();
             bitmap = creatBitmap;
             return bitmap;
