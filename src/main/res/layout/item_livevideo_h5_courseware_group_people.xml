@@ -57,11 +57,13 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@id/rl_livevideo_course_item_ctrl"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_below="@id/rl_livevideo_course_item_video"
         android:layout_alignParentRight="true"
-        android:layout_marginRight="6dp">
+        android:layout_marginRight="6dp"
+        android:visibility="gone">
 
         <ImageView
             android:id="@id/iv_livevideo_course_item_audio"
@@ -80,4 +82,18 @@
             android:src="@drawable/livevide_course_group_video_no" />
     </RelativeLayout>
 
+    <TextView
+        android:id="@id/tv_livevideo_course_item_load"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rl_livevideo_course_item_video"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="6dp"
+        android:background="@drawable/app_zbhd_shipingwenzidi"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:text="获取中"
+        android:textColor="@color/white"
+        android:textSize="11sp" />
 </RelativeLayout>

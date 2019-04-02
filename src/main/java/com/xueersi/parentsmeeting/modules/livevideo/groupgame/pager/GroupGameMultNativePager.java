@@ -28,6 +28,8 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.logerhelper.MobAgent;
+import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -119,6 +121,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     //    private NewCourseSec newCourseSec;
     private GroupGameTestInfosEntity mGroupGameTestInfosEntity;
     private List<GroupGameTestInfosEntity.TestInfoEntity> tests = new ArrayList<>();
+    /** 每个题是作答次数 */
+    private HashMap<String, Integer> integerHashMap = new HashMap<>();
     private int currentIndex = 0;
     private int currentAnswerIndex = 0;
     private boolean gameOver = false;
@@ -243,7 +247,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         onAnswer(message);
                     } else if (CourseMessage.REC_loadComplete.equals(type)) {
                         onLoadComplete(where, message);
-                    } else if (CourseMessage.REC_SubmitAnswer.equals(type)) {
                     } else if (CourseMessage.REC_CoursewareDoing.equals(type)) {
                         onCoursewareDoing(where, message);
                     }
@@ -315,24 +318,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             logger.d("onFirstRemoteVideoDecoded:uid=" + uid + ",courseGroupItem=null?" + (courseGroupItem == null));
             if (courseGroupItem != null) {
                 doRenderRemoteUi(uid, courseGroupItem);
-            } else {
-                handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        LayoutInflater mInflater = LayoutInflater.from(mContext);
-                        TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
-                        teamMemberEntity.id = uid;
-                        teamMemberEntity.name = "" + uid;
-                        CourseGroupItem courseGroupItem1 = new CourseGroupItem(mContext, mWorkerThread, uid, uid == stuid);
-                        View convertView = mInflater.inflate(courseGroupItem1.getLayoutResId(), llCourseItemContent, false);
-                        courseGroupItem1.initViews(convertView);
-                        courseGroupItem1.updateViews(teamMemberEntity, courseGroupItemHashMap.size(), teamMemberEntity);
-                        courseGroupItem1.bindListener();
-                        llCourseItemContent.addView(convertView);
-                        courseGroupItemHashMap.put(teamMemberEntity.id + "", courseGroupItem1);
-                        doRenderRemoteUi(uid, courseGroupItem1);
-                    }
-                });
             }
         }
 
@@ -431,6 +416,24 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 courseGroupItem.updateViews(teamMemberEntity, i, teamMemberEntity);
                 courseGroupItem.bindListener();
                 llCourseItemContent.addView(convertView, 0);
+            }
+        }
+        int screenHeight = ScreenUtils.getScreenHeight();
+        int totalHeight = SizeUtils.Dp2Px(mContext, 125) * 3;
+        if (screenHeight < totalHeight) {
+            int small = (totalHeight - screenHeight) / 3;
+            logger.d("addTeam:screenHeight=" + screenHeight + "," + totalHeight + ",small=" + small);
+            for (int i = 0; i < llCourseItemContent.getChildCount(); i++) {
+                View child = llCourseItemContent.getChildAt(i);
+                ViewGroup.LayoutParams lp = child.getLayoutParams();
+                lp.height = screenHeight / 3;
+                child.setLayoutParams(lp);
+                View videoView = child.findViewById(R.id.rl_livevideo_course_item_video);
+                if (videoView != null) {
+                    ViewGroup.LayoutParams videolp = videoView.getLayoutParams();
+                    videolp.height = videolp.height - small;
+                    videoView.setLayoutParams(videolp);
+                }
             }
         }
     }
@@ -587,7 +590,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     }
                     String[] heads = {"https://gss0.bdstatic.com/94o3dSag_xI4khGkpoWK1HF6hhy/baike/c0%3Dbaike80%2C5%2C5%2C80%2C26/sign=107d95c34134970a537e187df4a3baad/a8014c086e061d95b2d56ad47bf40ad163d9ca4f.jpg",
                             "https://gss0.bdstatic.com/-4o3dSag_xI4khGkpoWK1HF6hhy/baike/crop%3D24%2C0%2C851%2C562%3Bc0%3Dbaike92%2C5%2C5%2C92%2C30/sign=031be2a37f3e6709aa4f1fbf06f5ab11/fd039245d688d43f23098f767d1ed21b0ff43b95.jpg"};
-                    int count = 1;
+                    int count = 2;
                     if (entities.size() < count) {
 //                        TeamMemberEntity myTeamMemberEntity = entities.get(0);
 //                        myTeamMemberEntity.gold = 11;
@@ -953,84 +956,87 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         if (gameOver) {
             return;
         }
+        if (tcpMessageReg == null || interactiveTeam == null) {
+            //理论不存在
+            return;
+        }
         mSingCount++;
-        boolean isTurnPage = true;
-        if (mSingCount >= 5) {
+        ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
+        GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
+        List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = testInfoEntity.getAnswerList();
+        boolean isTurnPage = false;
+        int maxSingCount = testInfoEntity.getSingleCount();
+        if (mSingCount >= maxSingCount) {
             mSingCount = 0;
             isTurnPage = true;
         }
-        JSONObject jsonData = new JSONObject();
-        try {
-            jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
-            jsonData.put("score", score);
-            jsonData.put("isTurnPage", isTurnPage);
-            wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        if (tcpMessageReg != null && interactiveTeam != null) {
-            PkTeamEntity teamEntity = getStuActiveTeam.getPkTeamEntity();
-            if (teamEntity != null) {
-                try {
-                    JSONObject bodyJson = new JSONObject();
-                    bodyJson.put("type", LiveQueConfig.EN_COURSE_GAME_TYPE_1);
-                    bodyJson.put("live_id", liveGetInfo.getId());
-                    LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = liveGetInfo.getStudentLiveInfo();
-                    bodyJson.put("class_id", studentLiveInfo.getClassId());
-                    bodyJson.put("test_id", detailInfo.id);
-                    GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
-                    List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = testInfoEntity.getAnswerList();
+//        try {
+//            JSONObject jsonData = new JSONObject();
+//            jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
+//            jsonData.put("score", score);
+//            jsonData.put("isTurnPage", isTurnPage);
+//            wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
+        PkTeamEntity teamEntity = getStuActiveTeam.getPkTeamEntity();
+        if (teamEntity != null) {
+            try {
+                JSONObject bodyJson = new JSONObject();
+                bodyJson.put("type", LiveQueConfig.EN_COURSE_GAME_TYPE_1);
+                bodyJson.put("live_id", liveGetInfo.getId());
+                LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = liveGetInfo.getStudentLiveInfo();
+                bodyJson.put("class_id", studentLiveInfo.getClassId());
+                bodyJson.put("test_id", detailInfo.id);
 //                    if (currentAnswerIndex > answerList.size()) {
 //                        return;
 //                    }
-                    GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = answerList.get(currentAnswerIndex);
-                    bodyJson.put("uid", "" + stuid);
-                    bodyJson.put("word_id", "" + answersEntity.getId());
-                    bodyJson.put("pk_team_id", teamEntity.getPkTeamId());
-                    bodyJson.put("team_type", "interactive");
-                    bodyJson.put("interactive_team_id", interactiveTeam.getInteractive_team_id());
-                    JSONArray team_mate = new JSONArray();
-                    ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
-                    for (int i = 0; i < entities.size(); i++) {
-                        TeamMemberEntity teamMemberEntity = entities.get(i);
-                        team_mate.put("" + teamMemberEntity.id);
-                    }
-                    bodyJson.put("team_mate", team_mate);
-                    JSONArray userData = new JSONArray();
-                    for (int i = 0; i < 1; i++) {
-                        JSONObject jsonObject = new JSONObject();
-                        jsonObject.put("word_id", "" + answersEntity.getId());
-                        jsonObject.put("score", "" + score);
-                        jsonObject.put("incry_energy", 3);
-                        userData.put(jsonObject);
-                    }
-                    bodyJson.put("userData", userData);
-                    tcpMessageReg.send(TcpConstants.Voice_Projectile_TYPE, TcpConstants.Voice_Projectile_SEND, bodyJson.toString(), new SendCallBack() {
-                        String TAG = "SendCallBack:";
-
-                        @Override
-                        public void onNoOpen() {
-                            logger.d(TAG + "onNoOpen");
-                        }
-
-                        @Override
-                        public void onStart(int seq) {
-                            logger.d(TAG + "onStart:seq=" + seq);
-                        }
-
-                        @Override
-                        public void onReceiveMeg(short type, int operation, int seq, String msg) {
-                            logger.d(TAG + "onReceiveMeg:seq=" + seq);
-                        }
-
-                        @Override
-                        public void onTimeOut() {
-                            logger.d(TAG + "onTimeOut");
-                        }
-                    });
-                } catch (JSONException e) {
-                    logger.d("onHitSentence", e);
+                bodyJson.put("uid", "" + stuid);
+                GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = answerList.get(currentAnswerIndex);
+                bodyJson.put("word_id", "" + answersEntity.getId());
+                bodyJson.put("pk_team_id", teamEntity.getPkTeamId());
+                bodyJson.put("team_type", "interactive");
+                bodyJson.put("interactive_team_id", interactiveTeam.getInteractive_team_id());
+                JSONArray team_mate = new JSONArray();
+                for (int i = 0; i < entities.size(); i++) {
+                    TeamMemberEntity teamMemberEntity = entities.get(i);
+                    team_mate.put("" + teamMemberEntity.id);
                 }
+                bodyJson.put("team_mate", team_mate);
+                JSONArray userData = new JSONArray();
+                for (int i = 0; i < 1; i++) {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("word_id", "" + answersEntity.getId());
+                    jsonObject.put("score", "" + score);
+                    jsonObject.put("incry_energy", 3);
+                    userData.put(jsonObject);
+                }
+                bodyJson.put("userData", userData);
+                tcpMessageReg.send(TcpConstants.Voice_Projectile_TYPE, TcpConstants.Voice_Projectile_SEND, bodyJson.toString(), new SendCallBack() {
+                    String TAG = "SendCallBack:";
+
+                    @Override
+                    public void onNoOpen() {
+                        logger.d(TAG + "onNoOpen");
+                    }
+
+                    @Override
+                    public void onStart(int seq) {
+                        logger.d(TAG + "onStart:seq=" + seq);
+                    }
+
+                    @Override
+                    public void onReceiveMeg(short type, int operation, int seq, String msg) {
+                        logger.d(TAG + "onReceiveMeg:seq=" + seq);
+                    }
+
+                    @Override
+                    public void onTimeOut() {
+                        logger.d(TAG + "onTimeOut");
+                    }
+                });
+            } catch (JSONException e) {
+                logger.d("onHitSentence", e);
             }
         }
     }
@@ -1052,6 +1058,28 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             int score = dataObj.getInt("score");
                             if (who_id.equals("" + stuid)) {
 
+                            }
+                            Integer integer = integerHashMap.get(word_id);
+                            if (integer == null) {
+                                integer = 1;
+                            } else {
+                                integer++;
+                            }
+                            integerHashMap.put(word_id, integer);
+                            {
+                                GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
+                                int maxSingCount = testInfoEntity.getSingleCount();
+                                if (integer >= maxSingCount) {
+                                    JSONObject jsonData = new JSONObject();
+                                    try {
+                                        jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
+                                        jsonData.put("score", score);
+                                        jsonData.put("isTurnPage", true);
+                                        wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
                             }
                         } catch (JSONException e) {
                             logger.d("onMessage:Statis", e);
