@@ -1,7 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="140dp"
-    android:layout_height="125dp"
-    android:background="@drawable/app_zbhd_shipingkuang">
+    android:layout_height="125dp">
 
     <RelativeLayout
         android:id="@id/rl_livevideo_course_item_video"

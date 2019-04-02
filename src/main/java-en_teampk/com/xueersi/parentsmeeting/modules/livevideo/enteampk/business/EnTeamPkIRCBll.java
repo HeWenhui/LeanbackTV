@@ -96,10 +96,10 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         super.onLiveInited(getInfo);
         LiveGetInfo.EnglishPk englishPk = getInfo.getEnglishPk();
         logger.d("onLiveInited:use=" + englishPk.canUsePK + ",has=" + englishPk.hasGroup);
-        if (com.xueersi.common.config.AppConfig.DEBUG) {
-            englishPk.canUsePK = 1;
-            englishPk.hasGroup = 0;
-        }
+//        if (com.xueersi.common.config.AppConfig.DEBUG) {
+//            englishPk.canUsePK = 1;
+//            englishPk.hasGroup = 0;
+//        }
         if (englishPk.canUsePK == 0) {
             mLiveBll.removeBusinessBll(this);
             return;
@@ -178,17 +178,6 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 CrashReport.postCatchedException(e);
             }
         }
-        putInstance(GetStuActiveTeam.class, new GetStuActiveTeam() {
-            @Override
-            public void getStuActiveTeam(AbstractBusinessDataCallBack callBack) {
-                EnTeamPkIRCBll.this.getStuActiveTeam(callBack);
-            }
-
-            @Override
-            public PkTeamEntity getPkTeamEntity() {
-                return pkTeamEntity;
-            }
-        });
         getEnTeamPkHttpManager().dispatch(mGetInfo.getStuId(), new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
@@ -579,9 +568,26 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             if (tcpDispatch != null) {
                 tcpDispatch.setPid(pkTeamEntity2.getPkTeamId());
             }
+            if (getStuActiveTeam == null) {
+                getStuActiveTeam = new GetStuActiveTeam() {
+                    @Override
+                    public InteractiveTeam getStuActiveTeam(AbstractBusinessDataCallBack callBack) {
+                        EnTeamPkIRCBll.this.getStuActiveTeam(callBack);
+                        return mInteractiveTeam;
+                    }
+
+                    @Override
+                    public PkTeamEntity getPkTeamEntity() {
+                        return pkTeamEntity;
+                    }
+                };
+                putInstance(GetStuActiveTeam.class, getStuActiveTeam);
+            }
         }
         return pkTeamEntity2;
     }
+
+    GetStuActiveTeam getStuActiveTeam = null;
 
     private class TeamMessageAction implements TcpMessageAction {
         @Override
@@ -650,7 +656,9 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     public void getStuActiveTeam(final AbstractBusinessDataCallBack callBack) {
         logger.d("getStuActiveTeam:mInteractiveTeam=null?" + (mInteractiveTeam == null));
         if (mInteractiveTeam != null) {
-            callBack.onDataSucess(mInteractiveTeam);
+            if (callBack != null) {
+                callBack.onDataSucess(mInteractiveTeam);
+            }
             return;
         }
         getEnTeamPkHttpManager().getStuActiveTeam(unique_id, mGetInfo.getStuId(), new AbstractBusinessDataCallBack() {
@@ -660,6 +668,9 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 if (object instanceof JSONObject) {
                     mInteractiveTeam = (InteractiveTeam) objData[0];
                     entities = mInteractiveTeam.getEntities();
+                    if (callBack != null) {
+                        callBack.onDataSucess(mInteractiveTeam);
+                    }
                     String msg = "" + object;
                     saveTeamInter(msg);
                 }
@@ -667,7 +678,9 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
             @Override
             public void onDataFail(int errStatus, String failMsg) {
-                callBack.onDataFail(errStatus, failMsg);
+                if (callBack != null) {
+                    callBack.onDataFail(errStatus, failMsg);
+                }
             }
         });
     }

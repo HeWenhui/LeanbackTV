@@ -52,7 +52,7 @@ public class LiveQueConfig {
     public static final String EN_COURSE_TYPE_22 = "22";
     /** 直播- Hot air ballon 或者Cleaning up */
     public static final String EN_COURSE_TYPE_23 = "23";
-    /** 直播- Hot air ballon 或者Cleaning up */
+    /** 直播- 热气球 */
     public static final String EN_COURSE_TYPE_24 = "24";
     /** 直播-小组互动语音炮弹 */
     public static final int EN_COURSE_GAME_TYPE_1 = 1;
