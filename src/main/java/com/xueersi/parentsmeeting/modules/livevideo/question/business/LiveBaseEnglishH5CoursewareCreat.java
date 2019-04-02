@@ -124,7 +124,7 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
                         long before = System.currentTimeMillis();
                         BaseEnglishH5CoursewarePager h5CoursewarePager;
                         String type = videoQuestionH5Entity.type;
-                        if (LiveQueConfig.isTeam(type)) {
+                        if (LiveQueConfig.isGroupGame(type)) {
                             h5CoursewarePager = createGame(context, videoQuestionH5Entity, onH5ResultClose);
                         } else {
                             CoursewareNativePager coursewareNativePager = new CoursewareNativePager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
@@ -164,7 +164,7 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
                     }
                 } else if (isArts == LiveVideoSAConfig.ART_EN) {
                     String type = videoQuestionH5Entity.type;
-                    if (LiveQueConfig.isTeam(type)) {
+                    if (LiveQueConfig.isGroupGame(type)) {
                         BaseEnglishH5CoursewarePager h5CoursewarePager = createGame(context, videoQuestionH5Entity, onH5ResultClose);
                         return h5CoursewarePager;
                     }
@@ -189,7 +189,7 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
     private BaseEnglishH5CoursewarePager createGame(Context context, VideoQuestionLiveEntity videoQuestionH5Entity, EnglishH5CoursewareBll.OnH5ResultClose onH5ResultClose) {
         String type = videoQuestionH5Entity.type;
         EnglishH5Entity englishH5Entity = videoQuestionH5Entity.englishH5Entity;
-        if (LiveQueConfig.EN_COURSE_TYPE_24.equals(type)) {
+        if (LiveQueConfig.EN_COURSE_TYPE_HOT_AIR_BALLON.equals(type)) {
             GroupGameNativePager groupGameMultNativePager = new GroupGameNativePager(context, false, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
             groupGameMultNativePager.setLivePagerBack(livePagerBack);
             return groupGameMultNativePager;

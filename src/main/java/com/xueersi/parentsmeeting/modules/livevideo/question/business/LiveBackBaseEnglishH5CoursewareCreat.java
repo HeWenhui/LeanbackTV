@@ -69,7 +69,7 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
             englishH5Entity.setDynamicurl("https://live.chs.xueersi.com/LiveExam/getCourseWareTestHtml");
         } else if (isArts == LiveVideoSAConfig.ART_EN){
             String type = videoQuestionH5Entity.type;
-            if (LiveQueConfig.isTeam(type)) {
+            if (LiveQueConfig.isGroupGame(type)) {
                 GroupGameNativePager groupGameMultNativePager = new GroupGameNativePager(context, true, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
                 groupGameMultNativePager.setLivePagerBack(livePagerBack);
                 return groupGameMultNativePager;

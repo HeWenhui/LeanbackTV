@@ -39,6 +39,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareSecHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.CourseMessage;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseCoursewareNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.GroupCourseCache;
@@ -117,6 +118,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
     private EnglishH5CoursewareSecHttp englishH5CoursewareSecHttp;
     private GroupGameTestInfosEntity mGroupGameTestInfosEntity;
+    private GroupGameTestInfosEntity.TestInfoEntity mTestInfoEntity;
+    private List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> mAnswersList;
 
     private LiveGetInfo liveGetInfo;
     private VideoQuestionLiveEntity detailInfo;
@@ -205,9 +208,9 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             }
         }, 300);
 
-        for (int i = 0; i < mGroupGameTestInfosEntity.getTestInfoList().get(0).getAnswerList().size(); i++) {
-            content += mGroupGameTestInfosEntity.getTestInfoList().get(0).getAnswerList().get(i).getText();
-            if (i != mGroupGameTestInfosEntity.getTestInfoList().get(0).getAnswerList().size() - 1) {
+        for (int i = 0; i < mAnswersList.size(); i++) {
+            content += mAnswersList.get(i).getText();
+            if (i != mAnswersList.size() - 1) {
                 content += "|";
             }
         }
@@ -265,15 +268,10 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             public void postMessage(String where, final JSONObject message, String origin) {
                 try {
                     String type = message.getString("type");
-                    if (CourseMessage.REC_close.equals(type)) {
-
-                    } else if (CourseMessage.REC_submitAnswer.equals(type)) {
-
-                    } else if (CourseMessage.REC_answer.equals(type)) {
-
-                    } else if (CourseMessage.REC_loadComplete.equals(type)) {
+                    if (CourseMessage.REC_loadComplete.equals(type)) {
                         onLoadComplete(where, message);
-                    } else if (CourseMessage.REC_SubmitAnswer.equals(type)) {
+                    } else if (CourseMessage.REC_CoursewareDoing.equals(type)) {
+                        onCoursewareDoing(where, message);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -288,11 +286,11 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         singleScoreList.clear();
         singleVoiceTime = 0;
         singleCount = 0;
-        if (pageNum >= mGroupGameTestInfosEntity.getTestInfoList().get(0).getAnswerList().size()) {
+        if (pageNum >= mAnswersList.size()) {
             submitData();
             showResultPager();
         } else {
-            handler.postDelayed(turnPageRunnable, (mGroupGameTestInfosEntity.getTestInfoList().get(0).getAnswerList().get(pageNum).getSingleTime() + 1) * 1000);
+            handler.postDelayed(turnPageRunnable, (mAnswersList.get(pageNum).getSingleTime() + 1) * 1000);
 
         }
     }
@@ -384,10 +382,27 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             @Override
             public void run() {
                 preLoad.onStop();
+                if (detailInfo.type.equals(LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON)) {
+                    try {
+                        JSONObject resultData = new JSONObject();
+                        resultData.put("type", CourseMessage.SEND_CoursewareOnloading);
+                        resultData.put("pageNum", 0);
+                        resultData.put("restTime", mAnswersList.get(0).getSingleTime());
+                        resultData.put("currentRight", 0);
+                        resultData.put("isSingle", true);
+                        StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
                 initData();
                 initListener();
             }
         });
+    }
+
+    private void onCoursewareDoing(String where, JSONObject message) {
+        logger.d("onCoursewareDoing");
     }
 
     private void startSpeechRecognize() {
@@ -499,7 +514,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         try {
             answerData.put("tryTimes", allScoreList.size());
             answerData.put("rightNum", "" + rightNum);
-            answerData.put("total", mGroupGameTestInfosEntity.getTestInfoList().get(0).getAnswerList().size());
+            answerData.put("total", mAnswersList.size());
             int sum = 0;
             for (int i = 0; i < allScoreList.size(); i++) {
                 sum += allScoreList.get(i);
@@ -515,9 +530,9 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         }
         logger.d("submitData: answerData = " + answerData.toString());
         starNum = calculateStarByScore(averageScore);
-        fireNum = (int) Math.ceil(10d * successTimes / (double) (mGroupGameTestInfosEntity.getTestInfoList().get(0).getAnswerList().size()));
+        fireNum = (int) Math.ceil(10d * successTimes / (double) (mAnswersList.size()));
         logger.d("submitData: fireNum = " + fireNum + ", goldNum = " + goldNum + ", starNum = " + starNum);
-        englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 0, singleVoiceTime, 0, 0, starNum, fireNum, goldNum, 0, 0, 0, 0, answerData.toString(), new AbstractBusinessDataCallBack() {
+        englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 0, voiceTime, 0, 0, starNum, fireNum, goldNum, 0, 0, 0, 0, answerData.toString(), new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
                 logger.d("submitGroupGame -> onDataSucess : objData=" + objData[0].toString());
@@ -554,6 +569,15 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             public void onDataSucess(Object... objData) {
                 logger.d("getCourseWareTests -> onDataSucess()");
                 mGroupGameTestInfosEntity = (GroupGameTestInfosEntity) objData[0];
+                if (mGroupGameTestInfosEntity.getTestInfoList() == null || mGroupGameTestInfosEntity.getTestInfoList().size() == 0) {
+                    return;
+                }
+                mTestInfoEntity = mGroupGameTestInfosEntity.getTestInfoList().get(0);
+                if (mTestInfoEntity.getAnswerList() == null || mTestInfoEntity.getAnswerList().size() == 0) {
+                    return;
+                }
+                mAnswersList = mTestInfoEntity.getAnswerList();
+                MAX_SINGLE_COUNT = mTestInfoEntity.getSingleCount();
                 initWebView();
             }
 
@@ -727,7 +751,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     private void saveUserAnswer(int isRight) {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("text", mGroupGameTestInfosEntity.getTestInfoList().get(0).getAnswerList().get(pageNum).getText());
+            jsonObject.put("text", mAnswersList.get(pageNum).getText());
             JSONArray scoreArray = new JSONArray();
             for (int i = 0; i < singleScoreList.size(); i++) {
                 scoreArray.put(singleScoreList.get(i));
