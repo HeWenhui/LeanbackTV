@@ -292,7 +292,9 @@ public class LiveGetInfo {
     //暂停点赞多长时间弹出礼物
     private int praiseAutoBarrageTime = 1;
     /** 走新课件预加载 */
-    private boolean newCourse =false;
+    private boolean newCourse = false;
+    /** 走新课件预加载,接口返回 */
+    private int isNewProject = 0;
 
     // add by William on 2018/12/5  专属老师用
     public EPlanInfoBean ePlanInfo;
@@ -989,6 +991,14 @@ public class LiveGetInfo {
         this.newCourse = newCourse;
     }
 
+    public int getIsNewProject() {
+        return isNewProject;
+    }
+
+    public void setIsNewProject(int isNewProject) {
+        this.isNewProject = isNewProject;
+    }
+
     public static class MainTeacherInfo {
         String teacherId;//"teacherId":"1434",
         String teacherName; //"teacherName":"小琪老师",
@@ -1376,8 +1386,8 @@ public class LiveGetInfo {
     }
 
     public static class EnPkEnergy {
-        public  int me;//: 10,
-        public  int myTeam;//":80,
-        public  int opTeam;//":100
+        public int me;//: 10,
+        public int myTeam;//":80,
+        public int opTeam;//":100
     }
 }

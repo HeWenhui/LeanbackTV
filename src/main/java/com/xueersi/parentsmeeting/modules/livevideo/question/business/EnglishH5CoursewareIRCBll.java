@@ -494,7 +494,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         }
                     }
                     englishH5CoursewareBll.onH5Courseware(status, videoQuestionLiveEntity);
-                    if ("on".equals(status)) {
+                    if ("on".equals(status) && mGetInfo.isNewCourse()) {
                         NewCourseLog.sno2(mLiveBll, NewCourseLog.getNewCourseTestIdSec(videoQuestionLiveEntity, isArts), XESCODE.MULTIPLE_H5_COURSEWARE);
                     }
                 }
@@ -531,7 +531,9 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         videoQuestionLiveEntity.type = object.optString("questiontype");
                         videoQuestionLiveEntity.voiceType = object.optString("ptype");
                     }
-                    NewCourseLog.sno2(mLiveBll, NewCourseLog.getNewCourseTestIdSec(videoQuestionLiveEntity, isArts), type);
+                    if (mGetInfo.isNewCourse()) {
+                        NewCourseLog.sno2(mLiveBll, NewCourseLog.getNewCourseTestIdSec(videoQuestionLiveEntity, isArts), type);
+                    }
                 } else {
                     if (mAnswerRankBll != null) {
                         mAnswerRankBll.setNonce(object.optString("nonce"));
