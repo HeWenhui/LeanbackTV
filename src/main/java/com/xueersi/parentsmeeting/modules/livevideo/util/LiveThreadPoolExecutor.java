@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
  * 直播线程池
  */
 public class LiveThreadPoolExecutor {
-    protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
+    protected Logger logger = LiveLoggerFactory.getLogger(this.getClass().getSimpleName());
     private static LiveThreadPoolExecutor liveThreadPoolExecutor;
 
     public static LiveThreadPoolExecutor getInstance() {
@@ -31,7 +31,7 @@ public class LiveThreadPoolExecutor {
 
     private LiveThreadPoolExecutor() {
         pingPool = new ThreadPoolExecutor(3, 4,
-                0L, TimeUnit.MILLISECONDS,
+                30L, TimeUnit.SECONDS,
                 new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
 
             @Override
@@ -39,24 +39,25 @@ public class LiveThreadPoolExecutor {
                 Thread thread = new Thread(r, "Live-Pool-" + r) {
                     @Override
                     public synchronized void start() {
-                        logger.d( "newThread:start");
+                        logger.d("newThread:start:id=" + getId());
                         super.start();
                     }
                 };
-                logger.d( "newThread:r=" + r);
+                logger.d("newThread:r=" + r);
                 return thread;
             }
         }, new RejectedExecutionHandler() {
             @Override
             public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-
+                logger.d("rejectedExecution:r=" + r);
             }
         });
+        pingPool.allowCoreThreadTimeOut(true);
     }
 
     public void execute(Runnable command) {
         if (pingPool == null) {
-            logger.d( "execute:r=" + command);
+            logger.d("execute:r=" + command);
             return;
         }
         pingPool.execute(command);
