@@ -3,13 +3,11 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment.se.examination;
 import android.app.Activity;
 import android.widget.RelativeLayout;
 
-import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.IExperiencePresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceEventBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.learnfeedback.StandExperienceLearnFeedbackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 public class StandExperienceEvaluationBll extends
         StandExperienceEventBaseBll implements IExperiencePresenter {
@@ -33,7 +31,7 @@ public class StandExperienceEvaluationBll extends
      */
     @Override
     public void showWindow() {
-        if (mView != null) {
+        if (mView != null && mRootView != null) {
 //            if (!TextUtils.isEmpty(mVideoEntity.getExamUrl())) {
 //                String url = mVideoEntity.getExamUrl() + "#/index?nowLevel=" + "&liveId=" + mVideoEntity.getLiveId() +
 //                        "&gradeId=" + mVideoEntity.getGradId() + "&subjectId=" + mVideoEntity.getSubjectId() +
@@ -44,7 +42,7 @@ public class StandExperienceEvaluationBll extends
 //            activityChangeLand.changeLOrP();
             logger.i("旋转屏幕");
             mView.showWebView(mVideoEntity.getExamUrl());
-            if(mView.getRootView().getParent()==null) {
+            if (mView.getRootView().getParent() == null) {
                 mRootView.addView(mView.getRootView(), RelativeLayout.LayoutParams
                         .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
             }
