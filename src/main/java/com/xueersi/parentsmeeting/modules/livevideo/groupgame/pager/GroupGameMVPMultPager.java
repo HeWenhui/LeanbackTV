@@ -114,7 +114,7 @@ public class GroupGameMVPMultPager extends LiveBasePager {
         tvTime.setTimeCountDowListener(new TimeCountDowTextView.TimeCountDowListener() {
             @Override
             public void onFinish() {
-//                ivClose.performClick();
+                ivClose.performClick();
             }
 
         });
