@@ -32,6 +32,10 @@ public class CourseGroupItem implements AdapterItemInterface<TeamMemberEntity> {
     private TextView rlCourseItemName;
     private ImageView ivCourseItemVideo;
     private ImageView ivCourseItemAudio;
+    /** 用户下方的控制 */
+    private RelativeLayout rlCourseItemCtrl;
+    /** 用户下方的加载中 */
+    private TextView tvCourseItemLoad;
     private WorkerThread workerThread;
     private boolean enableVideo = true;
     private boolean enableAudio = true;
@@ -70,16 +74,28 @@ public class CourseGroupItem implements AdapterItemInterface<TeamMemberEntity> {
             ((ViewGroup) root).addView(imageView);
         } else {
             root.setBackgroundResource(R.drawable.app_zbhd_shipingkuang);
+            if (!isMe) {
+                rlCourseItemCtrl = root.findViewById(R.id.rl_livevideo_course_item_ctrl);
+                tvCourseItemLoad = root.findViewById(R.id.tv_livevideo_course_item_load);
+            }
         }
     }
 
     public void doRenderRemoteUi(SurfaceView surfaceV) {
         ivCourseItemVideoHead.setVisibility(View.GONE);
         rlCourseItemVideo.addView(surfaceV, 0);
+        if (!isMe) {
+            rlCourseItemCtrl.setVisibility(View.VISIBLE);
+            tvCourseItemLoad.setVisibility(View.GONE);
+        }
     }
 
     public void onUserOffline() {
         ivCourseItemVideoHead.setVisibility(View.VISIBLE);
+        if (!isMe) {
+            rlCourseItemCtrl.setVisibility(View.GONE);
+            tvCourseItemLoad.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
