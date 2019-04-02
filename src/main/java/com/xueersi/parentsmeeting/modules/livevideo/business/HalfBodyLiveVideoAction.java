@@ -24,6 +24,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VideoLoadingImgView;
 
@@ -150,6 +151,11 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
     private void initLoadingView() {
         if (ivVodeoLoading != null) {
             if (mGetInfo != null && mGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE) {
+                //语文loading 居中显示
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) ivVodeoLoading.getLayoutParams();
+                params.topMargin = 0;
+                params.addRule(RelativeLayout.CENTER_IN_PARENT);
+                LayoutParamsUtil.setViewLayoutParams(ivVodeoLoading,params);
                 ivVodeoLoading.setImageResource(R.drawable.anim_live_video_loading_arts);
             } else {
                 ivVodeoLoading.setImageResource(R.drawable.anim_live_video_loading);
@@ -378,7 +384,6 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
         } else {
             return R.drawable.live_halfbody_bg;
         }
-
     }
 
 
