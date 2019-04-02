@@ -14,12 +14,16 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.xueersi.lib.framework.utils.SizeUtils;
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class SoundWaveView extends View {
+    private Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
+
     public SoundWaveView(Context context) {
         this(context, null);
     }
@@ -121,7 +125,8 @@ public class SoundWaveView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        for (Circle c : mRipples) {
+        for (int i = 0; i < mRipples.size(); i++) {
+            Circle c = mRipples.get(i);
 //            canvas.drawCircle(mWidth / 2, mHeight / 2, c.width - mPaint.getStrokeWidth(), mPaint);
 //            logger.i(TAG, "onMeasure: top" + getTop() + " left" + getLeft() + " bottom" + getBottom() + " right" + getRight());
 //            double ss = Math.sqrt(2) / 2.0 * c.width;
@@ -138,15 +143,15 @@ public class SoundWaveView extends View {
 
             mPaint.setStyle(Paint.Style.STROKE);
 
-            if (c.level == 1) {
+//            if (c.level == 1) {
 //                mPaint.setAlpha((int) (255));
-                mPaint.setColor(mContext.getResources().getColor(R.color.COLOR_99F7E1A8));
-            } else if (c.level == 2) {
+//                mPaint.setColor(mContext.getResources().getColor(R.color.COLOR_99F7E1A8));
+//            } else if (c.level == 2) {
 //                mPaint.setAlpha((int) (0.7 * 255));
-                mPaint.setColor(mContext.getResources().getColor(R.color.CLOR_66F7E1A8));
-            } else if (c.level == 3) {
+//                mPaint.setColor(mContext.getResources().getColor(R.color.CLOR_66F7E1A8));
+//            } else if (c.level == 3) {
 //                mPaint.setAlpha((int) (0.4 * 255f));
-                mPaint.setColor(mContext.getResources().getColor(R.color.COLOR_33F7E1A8));
+//                mPaint.setColor(mContext.getResources().getColor(R.color.COLOR_33F7E1A8));
 //                if (c.width > 20) {
 
 //                    mPaint.setColor(Color.CYAN);
@@ -182,19 +187,38 @@ public class SoundWaveView extends View {
 //                    canvas.drawArc(rectF, 0, 360, false, threePaint);
 //                }
 
-            }
+//            }
 
-            if (c.level != 0) {
-                canvas.drawArc(rectF, 0, 360, false, mPaint);
-            }
+            logger.i("width:" + (c.width + innerRadius));
             // 当圆超出View的宽度后删除
-            if (c.width + innerRadius > (mWidth / 2 - innerRadius) / 3 * c.level + innerRadius) {
+            if (c.width + innerRadius > (mWidth / 2 - innerRadius) / 3 * c.level + innerRadius + SizeUtils.Dp2Px(mContext, 6) / c.level) {
                 mRipples.remove(0);
+                i--;
             } else {
                 // 修改这个值控制速度
-                c.width += mSpeed * c.level;
+
+                if (c.width + innerRadius < (mWidth / 2 - innerRadius) / 3 + innerRadius + SizeUtils.Dp2Px(mContext, 6)) {
+                    logger.i("a.level:" + c.level + " " + ((mWidth / 2 - innerRadius) / 3 + innerRadius + SizeUtils.Dp2Px(mContext, 6)));
+                    mPaint.setColor(mContext.getResources().getColor(R.color.COLOR_99F7E1A8));
+                } else if (c.width + innerRadius < (mWidth / 2 - innerRadius) / 3 * 2 + innerRadius + SizeUtils.Dp2Px(mContext, 6) / 2) {
+                    logger.i("b.level:" + c.level + " " + (((mWidth / 2 - innerRadius) / 3 * 2 + innerRadius + SizeUtils.Dp2Px(mContext, 6) / 2)));
+                    mPaint.setColor(mContext.getResources().getColor(R.color.CLOR_66F7E1A8));
+                } else {
+                    logger.i("c.level:" + c.level + " " + (c.width + innerRadius));
+                    mPaint.setColor(mContext.getResources().getColor(R.color.COLOR_33F7E1A8));
+                }
+                if (c.level == 1) {
+                    c.width += 2;
+
+                } else {
+                    c.width += mSpeed * c.level;
+                }
+                if (c.level != 0) {
+                    canvas.drawArc(rectF, 0, 360, false, mPaint);
+                }
 //            }
             }
+
 
             // 里面添加圆
 //        if (mRipples.size() > 0) {
@@ -203,7 +227,9 @@ public class SoundWaveView extends View {
 //                mRipples.add(new Circle(0, (add++) % 3 + 1));
 //            }
         }
-
+        if (mRipples.size() == 0) {
+            mRipples.add(new Circle(0, 1));
+        }
         invalidate();
         canvas.save();
         canvas.restore();
