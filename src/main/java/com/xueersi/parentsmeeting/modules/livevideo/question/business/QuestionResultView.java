@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsPSEAnswerResultPager;
@@ -24,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity.QUE_RES_TYPE1;
+import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity.QUE_RES_TYPE2;
 import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity.QUE_RES_TYPE4;
 
 /**
@@ -156,13 +158,24 @@ public class QuestionResultView {
             userAnswer.add(entity.getStandardAnswer());
             answer.setRightAnswers(userAnswer);
         }
-        if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4) {
-            resultEntity.setResultType(ArtsAnswerResultPager.RESULT_TYPE_CORRECT);
-            answer.setIsRight(ArtsAnswerResultPager.RESULT_TYPE_CORRECT);
+        // 如果是文科平台
+        if (LiveVideoConfig.isNewArts) {
+            if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE2) {
+                resultEntity.setResultType(ArtsAnswerResultPager.RESULT_TYPE_CORRECT);
+                answer.setIsRight(ArtsAnswerResultPager.RESULT_TYPE_CORRECT);
+            } else {
+                resultEntity.setResultType(ArtsAnswerResultPager.RESULT_TYPE_ERRRO);
+                answer.setIsRight(ArtsAnswerResultPager.RESULT_TYPE_ERRRO);
+            }
         } else {
-            resultEntity.setResultType(ArtsAnswerResultPager.RESULT_TYPE_ERRRO);
-            answer.setIsRight(ArtsAnswerResultPager.RESULT_TYPE_ERRRO);
+            if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4) {
+                resultEntity.setResultType(ArtsAnswerResultPager.RESULT_TYPE_CORRECT);
+                answer.setIsRight(ArtsAnswerResultPager.RESULT_TYPE_CORRECT);
+            } else {
+                resultEntity.setResultType(ArtsAnswerResultPager.RESULT_TYPE_ERRRO);
+                answer.setIsRight(ArtsAnswerResultPager.RESULT_TYPE_ERRRO);
 
+            }
         }
 
         List<AnswerResultEntity.Answer> answerList = new ArrayList<>();
