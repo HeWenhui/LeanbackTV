@@ -39,6 +39,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamSelectLottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.InputEffectTextView;
@@ -1016,6 +1017,7 @@ public class TeamPkTeamSelectPager extends TeamPkBasePager implements View.OnCli
     public void onClick(View v) {
         if (v.getId() == R.id.iv_teampk_btn_ok) {
             upLoadStudentReady();
+            TeamPkLog.sendReady(mPKBll.getLiveBll());
         }
     }
 
