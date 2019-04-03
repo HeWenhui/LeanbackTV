@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.res.ResourcesCompat;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -344,13 +343,11 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
                         if (now < mGetInfo.getsTime()) {
                             // 设置马上开始上课背景图
                             ivTecherState.setVisibility(View.VISIBLE);
-                            Log.e("HalfBodyAction", "======>setTeacherNotpresent 1111");
                             ivTecherState.setImageResource(getClassBeforStateImg());
                             view.setBackground(activity.getResources().getDrawable(getClassBeforeBg()));
                         } else {
                             // 设置老师不在直播间背景图
                             ivTecherState.setVisibility(View.VISIBLE);
-                            Log.e("HalfBodyAction", "======>setTeacherNotpresent 22222");
                             ivTecherState.setImageResource(getTeachNotpresentStateImg());
                             view.setBackground(activity.getResources().getDrawable(getNoTeacherBg()));
                         }
@@ -393,10 +390,8 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
     private int getTeachNotpresentStateImg() {
 
         if (mGetInfo != null && mGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE) {
-            Log.e("HalfBodyAction","=======>getTeachNotpresentStateImg ch");
             return R.drawable.live_halfbody_teacher_notpresent_state_arts;
         } else {
-            Log.e("HalfBodyAction","=======>getTeachNotpresentStateImg sc");
             return R.drawable.live_halfbody_teacher_notpresent_state;
 
         }
@@ -459,14 +454,12 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
     public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
         super.onLiveStart(server, cacheData, modechange);
         showVedioLoading(View.VISIBLE);
-        // Log.e("loadingView","========>onLiveStart:");
     }
 
     private View bufferView;
 
     private void showVedioLoading(final int visible) {
         if (View.VISIBLE == visible) {
-            Log.e("HalfBodyAction", "======>showVedioLoading1111");
             ivTecherState.setVisibility(View.INVISIBLE);
         }
 
@@ -474,7 +467,6 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
             mHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    logger.e("======>showVedioLoading:" + visible);
                     if (bufferView == null) {
                         bufferView = mContentView.findViewById(R.id.probar_course_video_loading_tip_progress);
                     }
@@ -498,14 +490,12 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
     public void onLiveDontAllow(String msg) {
         super.onLiveDontAllow(msg);
         showVedioLoading(View.INVISIBLE);
-        Log.e("HalfBodyAction", "======>onLiveDontAllow");
     }
 
     @Override
     public void onPlayError() {
         super.onPlayError();
         showVedioLoading(View.INVISIBLE);
-        Log.e("HalfBodyAction", "======>onPlayError");
 
     }
 
@@ -513,7 +503,6 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
     public void onPlayError(int errorCode, PlayErrorCode playErrorCode) {
         super.onPlayError(errorCode, playErrorCode);
         showVedioLoading(View.INVISIBLE);
-        Log.e("HalfBodyAction", "======>onPlayError2222");
 
     }
 
@@ -521,7 +510,6 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
     public void playComplete() {
         super.playComplete();
         showVedioLoading(View.INVISIBLE);
-        Log.e("HalfBodyAction", "======>playComplete");
 
     }
 
@@ -529,7 +517,6 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
     public void onFail(int arg1, int arg2) {
         super.onFail(arg1, arg2);
         showVedioLoading(View.INVISIBLE);
-        Log.e("HalfBodyAction", "======>onFail");
 
     }
 
@@ -537,7 +524,6 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
     public void onLiveError(ResponseEntity responseEntity) {
         super.onLiveError(responseEntity);
         showVedioLoading(View.INVISIBLE);
-        Log.e("HalfBodyAction", "======>onLiveError");
 
     }
 
@@ -550,7 +536,6 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
     @Override
     public void onClassTimoOut() {
         showVedioLoading(View.INVISIBLE);
-        Log.e("HalfBodyAction", "======>onClassTimoOut");
         super.onClassTimoOut();
     }
 }
