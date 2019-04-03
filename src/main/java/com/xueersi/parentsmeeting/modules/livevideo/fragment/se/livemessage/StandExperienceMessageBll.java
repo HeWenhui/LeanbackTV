@@ -114,7 +114,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
     private IIRCMessage mIRCMessage;
     private final String IRC_CHANNEL_PREFIX = "4L";
     /** 是否使用新IRC SDK*/
-    private boolean isNewIRC = true;
+    private boolean isNewIRC = false;
 
     @Override
     public void onCreate(VideoLivePlayBackEntity mVideoEntity,

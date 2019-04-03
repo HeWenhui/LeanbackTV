@@ -217,7 +217,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     private static final long SHOW_QUIT_DIALOG_THRESHOLD = 1500000;
     private ExperienceQuitFeedbackBll experienceQuitFeedbackBll;
     /** 是否使用新IRC*/
-    private boolean isNewIRC = true;
+    private boolean isNewIRC = false;
     private IIRCMessage mIRCMessage;
     private final String IRC_CHANNEL_PREFIX = "4L";
 

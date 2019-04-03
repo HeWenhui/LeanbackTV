@@ -104,7 +104,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     private LiveUidRx liveUidRx;
     private LiveLog liveLog;
     /** 是否使用新IRC SDK*/
-    private boolean isNewIRC = true;
+    private boolean isNewIRC = false;
 
     /**
      * 直播的
