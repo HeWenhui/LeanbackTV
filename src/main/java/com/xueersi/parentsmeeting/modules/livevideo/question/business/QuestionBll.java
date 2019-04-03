@@ -2100,6 +2100,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     private void switchVoiceAnswerPager(BaseVoiceAnswerPager voiceAnswerPager) {
         voiceAnswerPager.stopPlayer();
+        voiceAnswerPager.onDestroy();
         rlQuestionContent.removeView(voiceAnswerPager.getRootView());
         AudioRequest audioRequest = ProxUtil.getProxUtil().get(activity, AudioRequest.class);
         if (audioRequest != null) {

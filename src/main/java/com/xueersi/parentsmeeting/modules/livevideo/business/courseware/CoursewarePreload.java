@@ -742,7 +742,7 @@ public class CoursewarePreload {
                     unZipMap.put("logtype", "startUnzip");
                     unZipMap.put("preloadid", md5);
                     unZipMap.put("extrainfo", mMorecacheout.getAbsolutePath());
-                    unZipMap.put("sno", "4");
+                    unZipMap.put("sno", "3");
                     unZipMap.put("liveid", itemLiveId);
                     unZipMap.put("resourcetype", resourcetype);
                     unZipMap.put("ip", IpAddressUtil.USER_IP);
