@@ -48,7 +48,7 @@ public class SoundWaveView extends View {
         mDensity = tya.getInt(R.styleable.RingView_cDensity, 10);
         mIsFill = tya.getBoolean(R.styleable.RingView_cIsFill, false);
         mIsAlpha = tya.getBoolean(R.styleable.RingView_cIsAlpha, false);
-        innerRadius = SizeUtils.Dp2Px(getContext(), tya.getInteger(R.styleable.RingView_cInnerRaidus, 35));
+        innerRadius = SizeUtils.Dp2Px(getContext(), tya.getInteger(R.styleable.RingView_cInnerRaidus, 45));
         tya.recycle();
 
         init();
@@ -196,19 +196,36 @@ public class SoundWaveView extends View {
                 i--;
             } else {
                 // 修改这个值控制速度
+                oneRadius = (mWidth / 2 - innerRadius) / 3 + innerRadius + SizeUtils.Dp2Px(mContext, 6);
+                twoRadius = (mWidth / 2 - innerRadius) / 3 * 2 + innerRadius + SizeUtils.Dp2Px(mContext, 6) / 2;
 
-                if (c.width + innerRadius < (mWidth / 2 - innerRadius) / 3 + innerRadius + SizeUtils.Dp2Px(mContext, 6)) {
-                    logger.i("a.level:" + c.level + " " + ((mWidth / 2 - innerRadius) / 3 + innerRadius + SizeUtils.Dp2Px(mContext, 6)));
-                    mPaint.setColor(mContext.getResources().getColor(R.color.COLOR_99F7E1A8));
-                } else if (c.width + innerRadius < (mWidth / 2 - innerRadius) / 3 * 2 + innerRadius + SizeUtils.Dp2Px(mContext, 6) / 2) {
-                    logger.i("b.level:" + c.level + " " + (((mWidth / 2 - innerRadius) / 3 * 2 + innerRadius + SizeUtils.Dp2Px(mContext, 6) / 2)));
-                    mPaint.setColor(mContext.getResources().getColor(R.color.CLOR_66F7E1A8));
+                mPaint.setColor(mContext.getResources().getColor(R.color.COLOR_66F7E1A8));
+                if (c.level == 1) {
+                    int ik = (c.width + innerRadius);
+                    int jk = ((mWidth / 2 - innerRadius) / 3 + innerRadius + SizeUtils.Dp2Px(mContext, 6));
+                    logger.i("a.level:" + c.level + " " + " w.width=" + ik + (c.width) * 1.0 / (oneRadius - innerRadius));
+//                    mPaint.setColor(mContext.getResources().getColor(R.color.COLOR_99F7E1A8));
+                    int alpha = (int) (255 * (1.0 - (c.width) * 1.0 / (oneRadius - innerRadius + SizeUtils.Dp2Px(mContext, 6) / c.level)));
+                    logger.i("a alpha:" + alpha);
+
+                    mPaint.setAlpha(alpha);
+                } else if (c.level == 2) {
+                    int ik = (c.width + innerRadius);
+                    int jk = (((mWidth / 2 - innerRadius) / 3 * 2 + innerRadius + SizeUtils.Dp2Px(mContext, 6) / 2));
+                    logger.i("b.level:" + c.level + " " + " w.width=" + ik + " " + jk + (ik * 1.0 / jk));
+//                    mPaint.setColor(mContext.getResources().getColor(R.color.CLOR_66F7E1A8));
+                    int alpha = (int) (255 * (1.0 - (c.width) * 1.0 / (twoRadius - innerRadius + SizeUtils.Dp2Px(mContext, 6) / c.level)));
+                    logger.i("b alpha:" + alpha);
+                    mPaint.setAlpha(alpha);
                 } else {
                     logger.i("c.level:" + c.level + " " + (c.width + innerRadius));
-                    mPaint.setColor(mContext.getResources().getColor(R.color.COLOR_33F7E1A8));
+                    int alpha = (int) (255 * (1.0 - (c.width) * 1.0 / (mWidth / 2 - innerRadius + SizeUtils.Dp2Px(mContext, 6) / c.level)));
+                    logger.i("c alpha:" + alpha);
+                    mPaint.setAlpha(alpha);
+//                    mPaint.setColor(mContext.getResources().getColor(R.color.COLOR_33F7E1A8));
                 }
                 if (c.level == 1) {
-                    c.width += 2;
+                    c.width += 1;
 
                 } else {
                     c.width += mSpeed * c.level;

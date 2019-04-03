@@ -16,8 +16,9 @@ public interface GoldPhoneContract {
     int ONE_GEAR_RIGHT = 10;
     int TWO_GEAR_RIGHT = 20;
     int THREE_GEAR_RIGHT = 30;
-    int GOLD_ONE_LEVEL_INTEVAL = 500;
-
+    int GOLD_ONE_LEVEL_INTEVAL = 1000;
+    int GOLD_TWO_LEVEL_INTEVAL = 300;
+    int GOLD_THREE_LEVEL_INTEVAL = 200;
     interface GoldPhoneView {
         View getRootView();
 

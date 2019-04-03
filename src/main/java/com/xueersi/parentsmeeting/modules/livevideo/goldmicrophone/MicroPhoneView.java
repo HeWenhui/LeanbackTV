@@ -4,7 +4,9 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.support.constraint.ConstraintLayout;
+import android.support.constraint.ConstraintSet;
 import android.support.constraint.Group;
+import android.transition.TransitionManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -36,6 +38,8 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
 
     private SoundWaveView swvView;
 
+    private ConstraintLayout rootLayout;
+
     public MicroPhoneView(Context context, GoldMicroPhoneBll presenter) {
         super(context);
         this.mPresenter = presenter;
@@ -46,6 +50,7 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.page_livevideo_chinese_gold_microphone, null);
+        rootLayout = view.findViewById(R.id.layout_livevideo_gold_microphone);
         ivClose = view.findViewById(R.id.iv_livevideo_gold_microphone_cancel);
         tvTipWindow = view.findViewById(R.id.tv_gold_microphone_teacher_tip);
         ivMicroPhone = view.findViewById(R.id.iv_livevideo_gold_microphone_bg);
@@ -74,6 +79,10 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
         }
     };
     /**
+     * 出场动画
+     */
+    private ObjectAnimator openAnimator;
+    /**
      * 显示金话筒View
      */
     Runnable microphoneShowRunnable = new Runnable() {
@@ -81,11 +90,26 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
         public void run() {
             if (microhpneGroup != null && microhpneGroup.getVisibility() != View.VISIBLE) {
                 microhpneGroup.setVisibility(View.VISIBLE);
+                swvView.setVisibility(View.VISIBLE);
             }
-            if (goneAnimator != null) {
+            ConstraintSet constraintSet = new ConstraintSet();
+
+            constraintSet.clone(rootLayout);
+            constraintSet.load(mContext, R.layout.page_livevideo_chinese_gold_microphone_start);
+            TransitionManager.beginDelayedTransition(rootLayout);
+            constraintSet.applyTo(rootLayout);
+//            if (openAnimator == null) {
+//                float curY = -100;
+//                float goldY = ivMicroPhone.getY();
+//                openAnimator = ObjectAnimator.ofFloat(ivMicroPhone, "translationY", curY, goldY);
+//                openAnimator.setDuration(1000);
+//                openAnimator.start();
+//            }
+
+//            if (goneAnimator != null) {
 //                goneAnimator.cancel();
-                goneAnimator.reverse();
-            }
+//                goneAnimator.reverse();
+//            }
 //            ObjectAnimator showAnimator = ObjectAnimator.ofFloat(ivMicroPhone, "translationY", goldY, curY);
 //            showAnimator.setDuration(1000);
 //            showAnimator.start();
@@ -186,6 +210,9 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
         }
     }
 
+    /**
+     * 消失动画
+     */
     ObjectAnimator goneAnimator;
 
     private boolean isActive = false;
@@ -202,6 +229,7 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
         goldY = curY + SizeUtils.Dp2Px(mContext,
                 ivMicroPhone.getHeight() + ((ConstraintLayout.LayoutParams) ivMicroPhone.getLayoutParams()).bottomMargin);
         goneAnimator = ObjectAnimator.ofFloat(ivMicroPhone, "translationY", curY, goldY);
+        swvView.setVisibility(View.GONE);
         goneAnimator.setDuration(1000);
         goneAnimator.start();
         goneAnimator.addListener(new Animator.AnimatorListener() {

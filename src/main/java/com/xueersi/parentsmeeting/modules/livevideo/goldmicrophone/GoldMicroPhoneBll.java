@@ -95,7 +95,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
     /** 上一次录音的时间 */
     private long lastVolumeTime = -1;
 
-    private long lastOneLevelTime = -1;
+    private long lastOneLevelTime = -1, lastTwoLevelTime = -1, lastThreeLevelTime = -1;
     /** 是否正在录音 */
     private AtomicBoolean isRecord = new AtomicBoolean(false);
 
@@ -354,7 +354,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
 //                logger.i("read2:" + readSize);
                 int volume = calculateRealVolume(mPCMBuffer, readSize);
                 logger.i("offline volume = " + volume);
-                performVolume(volume);
+                performVolume(volume, false);
 //                        }
             }
         } catch (Exception e) {
@@ -413,7 +413,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
         @Override
         public void onVolumeUpdate(int volume) {
             logger.i("online volume = " + String.valueOf(volume));
-            performVolume(volume);
+            performVolume(volume, true);
         }
     };
 
@@ -428,7 +428,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
      *
      * @param volume
      */
-    private synchronized void performVolume(int volume) {
+    private synchronized void performVolume(int volume, boolean isOnline) {
         if (mGoldView == null || mRootView == null) {
             return;
         }
@@ -454,29 +454,52 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
             if (volume < GoldPhoneContract.ONE_GEAR_RIGHT
                     && volume >= GoldPhoneContract.ONE_GEAR_LEFT) {
                 List<SoundWaveView.Circle> list = mGoldView.getRipples();
-                if (((nowTime - lastOneLevelTime > GoldPhoneContract.GOLD_ONE_LEVEL_INTEVAL)
+                if (!isOnline && ((nowTime - lastOneLevelTime > GoldPhoneContract.GOLD_ONE_LEVEL_INTEVAL)
                         || (lastVolumeTime > lastOneLevelTime) && list.size() == 0)
                 ) {
                     gear = 1;
                     lastOneLevelTime = nowTime;
                     mGoldView.addRipple(gear);
                     logger.i("add Ripple level = " + gear);
+                } else if (isOnline) {
+                    gear = 1;
+                    lastOneLevelTime = nowTime;
+                    mGoldView.addRipple(gear);
+                    logger.i("add Ripple level = " + gear);
                 }
-            } else if (volume > GoldPhoneContract.ONE_GEAR_RIGHT && volume < GoldPhoneContract.TWO_GEAR_RIGHT) {
+            } else if (volume > GoldPhoneContract.ONE_GEAR_RIGHT
+                    && volume < GoldPhoneContract.TWO_GEAR_RIGHT
+            ) {
                 //2档
-                gear = 2;
-                lastVolumeTime = nowTime;
-                mGoldView.addRipple(gear);
-                logger.i("add Ripple level = " + gear);
+                if (!isOnline && nowTime - lastTwoLevelTime > GoldPhoneContract.GOLD_TWO_LEVEL_INTEVAL) {
+                    gear = 2;
+                    lastTwoLevelTime = nowTime;
+                    lastVolumeTime = nowTime;
+                    mGoldView.addRipple(gear);
+                    logger.i("add Ripple level = " + gear);
+                } else if (isOnline) {
+                    gear = 2;
+                    lastTwoLevelTime = nowTime;
+                    lastVolumeTime = nowTime;
+                    mGoldView.addRipple(gear);
+                    logger.i("add Ripple level = " + gear);
+                }
             } else {
-                //3档
-                gear = 3;
-                lastVolumeTime = nowTime;
-                mGoldView.addRipple(gear);
-                logger.i("add Ripple level = " + gear);
+                if (!isOnline && nowTime - lastTwoLevelTime > GoldPhoneContract.GOLD_THREE_LEVEL_INTEVAL) {
+                    //3档
+                    gear = 3;
+                    lastThreeLevelTime = nowTime;
+                    lastVolumeTime = nowTime;
+                    mGoldView.addRipple(gear);
+                    logger.i("add Ripple level = " + gear);
+                } else if (isOnline) {
+                    gear = 3;
+                    lastThreeLevelTime = nowTime;
+                    lastVolumeTime = nowTime;
+                    mGoldView.addRipple(gear);
+                    logger.i("add Ripple level = " + gear);
+                }
             }
-
-
         }
     }
 
