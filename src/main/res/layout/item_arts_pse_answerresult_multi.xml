@@ -17,7 +17,7 @@
             android:layout_width="20dp"
             android:layout_height="20dp"
             android:layout_marginLeft="30dp"
-            android:layout_marginRight="11dp" />
+            android:layout_marginRight="5dp" />
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@id/tv_arts_answer_result_item_muti_index"
@@ -38,6 +38,7 @@
         android:layout_height="wrap_content"
         android:text=""
         android:textColor="#726665"
+        android:lineSpacingExtra="3dp"
         android:textSize="16sp" />
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
@@ -47,6 +48,7 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/ll_arts_answer_result_item_muti_user_answer_info"
         android:text=""
+        android:lineSpacingExtra="3dp"
         android:textColor="#726665"
         android:textSize="16sp"
         android:visibility="visible" />

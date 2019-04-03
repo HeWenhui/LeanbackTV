@@ -25,6 +25,7 @@ import android.widget.RelativeLayout;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
+import com.alibaba.fastjson.JSON;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.common.base.BasePager;
@@ -184,6 +185,8 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             rlAnswerResultLayout.addView(mDsipalyer.getRootLayout(), layoutParams);
         } else {
+            UmsAgentManager.umsAgentDebug(mContext,"createViceResultView_result",JSON.toJSONString(mAnswerResultList));
+
             mDsipalyer = new ArtsAnswerResultPager(mContext, mAnswerReulst, this);
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
                     (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);

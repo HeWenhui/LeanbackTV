@@ -577,6 +577,10 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
 
         ImageView ivAnswerIcon;
 
+        @Override
+        public int getItemLayoutId() {
+            return R.layout.item_arts_pse_answerresult_multi;
+        }
 
 
         public void bindData(AnswerResultEntity.Answer data, int position) {
@@ -690,10 +694,6 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
 
         }
 
-        @Override
-        public int getItemLayoutId() {
-            return R.layout.item_arts_pse_answerresult_multi;
-        }
 
         @Override
         public boolean isShowView(AnswerResultEntity.Answer item, int position) {

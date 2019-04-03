@@ -13,7 +13,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -143,6 +145,7 @@ public class QuestionResultView {
      * @return
      */
     private static View createViceResultView(Context context, VideoResultEntity entity){
+        UmsAgentManager.umsAgentDebug(context,"createViceResultView_result1",JSON.toJSONString(entity));
         AnswerResultEntity resultEntity  = new AnswerResultEntity();
         resultEntity.setGold(entity.getGoldNum());
         AnswerResultEntity.Answer  answer = new AnswerResultEntity.Answer();
@@ -161,18 +164,18 @@ public class QuestionResultView {
         // 如果是文科平台
         if (LiveVideoConfig.isNewArts) {
             if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE2) {
-                resultEntity.setResultType(ArtsAnswerResultPager.RESULT_TYPE_CORRECT);
+                resultEntity.setIsRight(ArtsAnswerResultPager.RESULT_TYPE_CORRECT);
                 answer.setIsRight(ArtsAnswerResultPager.RESULT_TYPE_CORRECT);
             } else {
-                resultEntity.setResultType(ArtsAnswerResultPager.RESULT_TYPE_ERRRO);
+                resultEntity.setIsRight(ArtsAnswerResultPager.RESULT_TYPE_ERRRO);
                 answer.setIsRight(ArtsAnswerResultPager.RESULT_TYPE_ERRRO);
             }
         } else {
             if (entity.getResultType() == QUE_RES_TYPE1 || entity.getResultType() == QUE_RES_TYPE4) {
-                resultEntity.setResultType(ArtsAnswerResultPager.RESULT_TYPE_CORRECT);
+                resultEntity.setIsRight(ArtsAnswerResultPager.RESULT_TYPE_CORRECT);
                 answer.setIsRight(ArtsAnswerResultPager.RESULT_TYPE_CORRECT);
             } else {
-                resultEntity.setResultType(ArtsAnswerResultPager.RESULT_TYPE_ERRRO);
+                resultEntity.setIsRight(ArtsAnswerResultPager.RESULT_TYPE_ERRRO);
                 answer.setIsRight(ArtsAnswerResultPager.RESULT_TYPE_ERRRO);
 
             }
