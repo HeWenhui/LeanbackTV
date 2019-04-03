@@ -29,7 +29,6 @@ import com.xueersi.lib.framework.utils.AppUtils;
 import com.xueersi.lib.framework.utils.DeviceUtils;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
@@ -418,7 +417,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         xescdnLog2(defaultKey, dataJson, false);
     }
 
-    private void send(String method, long dur) {
+    private void send(String method, int code, long dur) {
         logger.d("send:method=" + method + ",framesPsTen=" + framesPsTen.size() + ",tid=" + tid);
         framesPsTen.clear();
 //        if (StringUtils.isEmpty(tid)) {
@@ -449,7 +448,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
             } else {
                 dataJson.put("node", "xrs_back");
             }
-            dataJson.put("code", 0);
+            dataJson.put("code", code);
             dataJson.put("msg", "Success");
             dataJson.put("method", activity.getClass().getSimpleName() + "-" + method);
             long bufferduration = dur;
@@ -498,7 +497,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         handler.removeMessages(1);
         if (!isDestory) {
             if (mUri != null) {
-                send("onPause", dur);
+                send("onPause", 0, dur);
             }
         }
     }
@@ -630,12 +629,12 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     public void stopPlay() {
         isHavePause = true;
         handler.removeMessages(1);
-        send("stopPlay", 0);
+        send("stopPlay", 0, 0);
     }
 
     public void onBufferTimeOut() {
         handler.removeMessages(1);
-        send("onBufferTimeOut", 0);
+        send("onBufferTimeOut", 15, 0);
     }
 
     @Override
@@ -1383,7 +1382,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
     public void onPlaybackComplete() {
         super.onPlaybackComplete();
         handler.removeMessages(1);
-        send("onPlaybackComplete", 0);
+        send("onPlaybackComplete", 0, 0);
         sip = "";
     }
 
@@ -1400,7 +1399,7 @@ public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
         handler.removeMessages(1);
         if (!isPause) {
             if (mUri != null) {
-                send("destory", 0);
+                send("destory", 0, 0);
             }
         }
         ldNetTraceClient.destory();
