@@ -3,16 +3,11 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -49,8 +44,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.config.CourseMessag
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.dialog.CourseTipDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
-import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.question.web.MiddleResult;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.NewCourseCache;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.OnHttpCode;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.StaticWeb;
@@ -66,7 +59,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import pl.droidsonroids.gif.GifDrawable;
 
@@ -828,10 +820,11 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
      * @param nonce
      */
     private void submitAnswer(final int isforce, String nonce) {
-        final JSONObject testInfos = new JSONObject();
+//        final JSONObject testInfos = new JSONObject();
         JSONObject dataJson = new JSONObject();
-        for (int i = 0; i < tests.size(); i++) {
-            NewCourseSec.Test test = tests.get(i);
+//        for (int i = 0; i < tests.size(); i++) {
+        if (!tests.isEmpty()) {
+            NewCourseSec.Test test = tests.get(0);
             dataJson = test.getJson();
             JSONArray userAnswerContent = test.getUserAnswerContent();
             JSONArray rightAnswerContent = test.getRightAnswerContent();
@@ -871,24 +864,26 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 dataJson.put("liveId", liveId);
                 dataJson.put("gradeType", UserBll.getInstance().getMyUserInfoEntity().getGradeCode());
                 dataJson.put("deviceid", 8);
-                dataJson.put("totalScore", "");
+                dataJson.put("totalScore", 0);
                 dataJson.put("maxScore", test.getMaxScore());
                 dataJson.put("lostReason", "");
                 dataJson.put("rightAnswerContent", rightAnswerContent);
                 dataJson.put("userAnswerContent", userAnswerContent);
-                testInfos.put(test.getId(), dataJson);
+//                testInfos.put(test.getId(), dataJson);
             } catch (JSONException e) {
                 CrashReport.postCatchedException(e);
                 mLogtf.e("submit", e);
             }
         }
+//        }
+        final JSONObject finalDataJson = dataJson;
         englishH5CoursewareSecHttp.submitCourseWareTests(detailInfo, isforce, nonce, entranceTime,
                 dataJson.toString(), new AbstractBusinessDataCallBack() {
                     @Override
                     public void onDataSucess(Object... objData) {
                         JSONObject jsonObject = (JSONObject) objData[0];
-//                        JSONObject data = jsonObject.optJSONObject()
-                        showScienceAnswerResult(isforce, jsonObject);
+                        JSONObject data = jsonObject.optJSONObject(finalDataJson.optString("testid"));
+                        showAnswerResult(isforce, data);
                         onSubmitSuccess(isforce);
                     }
 
@@ -982,7 +977,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 if (newCourseSec.getIsAnswer() == 1 && !isPlayBack) {
                     rlSubjectLoading.setVisibility(View.GONE);
                     preLoad.onStop();
-//                    showScienceAnswerResult(0);
+//                    showAnswerResult(0);
                 } else {
                     tests = newCourseSec.getTests();
                     if (tests.isEmpty()) {
@@ -1404,7 +1399,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
      *
      * @param isforce
      */
-    private void showScienceAnswerResult(final int isforce, JSONObject data) {
+    private void showAnswerResult(final int isforce, JSONObject data) {
         rlCourseControl.setVisibility(View.GONE);
 
         double totalScore = data.optDouble("totalScore",0);

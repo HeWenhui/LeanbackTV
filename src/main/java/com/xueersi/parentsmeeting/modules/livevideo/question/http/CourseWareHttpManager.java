@@ -273,7 +273,7 @@ public class CourseWareHttpManager {
         String url ="";
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         httpRequestParams.addBodyParam(testId,params);
-        liveHttpManager.sendPost(url, httpRequestParams, new HttpCallBack() {
+        liveHttpManager.sendPost(url, httpRequestParams, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 logger.d("submitChiAIH5:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
