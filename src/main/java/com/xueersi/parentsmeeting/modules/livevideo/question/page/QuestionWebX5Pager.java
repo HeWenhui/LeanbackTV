@@ -22,6 +22,7 @@ import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
@@ -329,7 +330,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
             CacheWebView cacheWebView = (CacheWebView) wvSubjectWeb;
             // TODO: 2018/12/5  
             if (isArts == 0) {
-                cacheWebView.getWebViewCache().setNeedHttpDns(true);
+                cacheWebView.getWebViewCache().setNeedHttpDns(!AppConfig.DEBUG);
             } else {
                 cacheWebView.getWebViewCache().setNeedHttpDns(false);
             }
