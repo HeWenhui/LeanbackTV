@@ -49,4 +49,6 @@ public class TcpConstants {
     public final static int CLEAN_UP_SEND = 16;
     /** 消息类型，服务器clean up回复 */
     public final static int CLEAN_UP_REC = 18;
+    /** 消息类型，服务器clean up 恢复现场 */
+    public final static int CLEAN_UP_SECN = 17;
 }
