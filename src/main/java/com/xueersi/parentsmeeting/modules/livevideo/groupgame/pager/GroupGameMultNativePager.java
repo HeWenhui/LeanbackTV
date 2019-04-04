@@ -25,7 +25,6 @@ import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BasePager;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.lib.framework.utils.ScreenUtils;
@@ -198,9 +197,16 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         if (audioRequest != null) {
             audioRequest.request(null);
         }
+        //网页消息
+        StaticWeb.OnMessage onMessage;
+        if (LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(gameType)) {
+            onMessage = new CleanUpOnMessage();
+        } else {
+            onMessage = new VoiceCannonOnMessage();
+        }
 //        startSpeechRecognize();
         getStuActiveTeam = ProxUtil.getProxUtil().get(mContext, GetStuActiveTeam.class);
-        //有战队pk，才有这种题的多人
+        //有战队pk，才有这种题的多人.目前不会发生了
         if (getStuActiveTeam != null) {
             getStuActiveTeam.getStuActiveTeam(new AbstractBusinessDataCallBack() {
                 @Override
@@ -219,10 +225,16 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             tcpMessageReg = ProxUtil.getProxUtil().get(mContext, TcpMessageReg.class);
             if (tcpMessageReg != null) {
                 if (LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(gameType)) {
-                    tcpMessageAction = new CleanUp();
+                    CleanUpOnMessage cleanUpOnMessage = (CleanUpOnMessage) onMessage;
+                    CleanUpTcpMessage cleanUpTcpMessage = new CleanUpTcpMessage();
+                    cleanUpTcpMessage.cleanUpOnMessage = cleanUpOnMessage;
+                    tcpMessageAction = cleanUpTcpMessage;
                     evaluatorIng = new CleanEvaluatorIng();
                 } else {
-                    tcpMessageAction = new VoiceProjectile();
+                    VoiceCannonOnMessage voiceCannnon = (VoiceCannonOnMessage) onMessage;
+                    VoiceProjectile voiceProjectile = new VoiceProjectile();
+                    voiceProjectile.voiceCannonOnMessage = voiceCannnon;
+                    tcpMessageAction = voiceProjectile;
                     evaluatorIng = new VoiceCannnon();
                 }
                 boolean change = tcpMessageReg.setTest(LiveQueConfig.EN_COURSE_GAME_TYPE_1, detailInfo.id);
@@ -242,26 +254,130 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             }
         });
         wvSubjectWeb.setWebViewClient(new CourseWebViewClient());
-        wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, new StaticWeb.OnMessage() {
 
-            @Override
-            public void postMessage(String where, final JSONObject message, String origin) {
-                try {
-                    String type = message.getString("type");
-                    logger.d("postMessage:type=" + type + ",message=" + message);
-                    if (CourseMessage.REC_answer.equals(type)) {
-                        onAnswer(message);
-                    } else if (CourseMessage.REC_loadComplete.equals(type)) {
-                        onLoadComplete(where, message);
-                    } else if (CourseMessage.REC_CoursewareDoing.equals(type)) {
-                        onCoursewareDoing(where, message);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }), "xesApp");
+        wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, onMessage), "xesApp");
 //        wvSubjectWeb.loadUrl(TEST_URL);
+    }
+
+    /**
+     * 语音炮弹的网页消息
+     */
+    class VoiceCannonOnMessage implements StaticWeb.OnMessage {
+
+        @Override
+        public void postMessage(String where, final JSONObject message, String origin) {
+            try {
+                String type = message.getString("type");
+                logger.d("postMessage:type=" + type + ",message=" + message);
+                if (CourseMessage.REC_answer.equals(type)) {
+                    onAnswer(message);
+                } else if (CourseMessage.REC_loadComplete.equals(type)) {
+                    onLoadComplete(where, message);
+                } else if (CourseMessage.REC_CoursewareDoing.equals(type)) {
+                    onCoursewareDoing(where, message);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        private void onLoadComplete(String where, JSONObject message) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    preLoad.onStop();
+                    coursewareOnloading(currentAnswerIndex);
+                    if (!gameOver) {
+                        startSpeechRecognize();
+                    }
+                }
+            });
+        }
+
+        private void coursewareOnloading(final int pageNum) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        JSONObject resultData = new JSONObject();
+                        resultData.put("type", CourseMessage.SEND_CoursewareOnloading);
+                        resultData.put("pageNum", pageNum);
+                        resultData.put("restTime", 10000);
+                        resultData.put("currentRight", 0);
+                        resultData.put("isSingle", false);
+                        StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
+                    } catch (Exception e) {
+                        logger.d("onLoadComplete2", e);
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * cleanup的网页消息
+     */
+    class CleanUpOnMessage implements StaticWeb.OnMessage {
+
+        @Override
+        public void postMessage(String where, final JSONObject message, String origin) {
+            try {
+                String type = message.getString("type");
+                logger.d("postMessage:type=" + type + ",message=" + message);
+                if (CourseMessage.REC_answer.equals(type)) {
+                    onAnswer(message);
+                } else if (CourseMessage.REC_loadComplete.equals(type)) {
+                    onLoadComplete(where, message);
+                } else if (CourseMessage.REC_CoursewareDoing.equals(type)) {
+                    onCoursewareDoing(where, message);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        private void onLoadComplete(String where, JSONObject message) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    preLoad.onStop();
+                    try {
+                        JSONObject resultData = new JSONObject();
+                        resultData.put("type", CourseMessage.SEND_CoursewareOnloading);
+                        resultData.put("pageNum", currentAnswerIndex);
+                        resultData.put("restTime", 10000);
+                        JSONArray studentInfo = new JSONArray();
+                        ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
+                        for (int i = 0; i < entities.size(); i++) {
+                            TeamMemberEntity teamMemberEntity = entities.get(i);
+                            JSONObject student = new JSONObject();
+                            student.put("studentNum", 3 - i);
+                            student.put("name", teamMemberEntity.name);
+//                            student.put("avatar", teamMemberEntity.headurl);
+                            student.put("avatar", "http://xesfile.oss-cn-beijing.aliyuncs.com/nrcpb/cjtsg5ybb0000ywow5xr4ne1j.png");
+                            {
+                                JSONObject rankInfo = new JSONObject();
+                                rankInfo.put("grading", 1);
+                                rankInfo.put("star", 1);
+                                student.put("rankInfo", rankInfo);
+                            }
+                            {
+                                JSONArray rightItem = new JSONArray();
+                                student.put("rightItem", rightItem);
+                            }
+                            studentInfo.put(student);
+                        }
+                        resultData.put("studentInfo", studentInfo);
+                        StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
+                    } catch (Exception e) {
+                        logger.d("onLoadComplete1", e);
+                    }
+                    if (!gameOver) {
+                        startSpeechRecognize();
+                    }
+                }
+            });
+        }
     }
 
     private void joinChannel(ArrayList<TeamMemberEntity> entities) {
@@ -445,63 +561,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     }
 
     private void onAnswer(JSONObject message) {
-    }
-
-    private void onLoadComplete(String where, JSONObject message) {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                preLoad.onStop();
-                if (LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(gameType)) {
-                    try {
-                        JSONObject resultData = new JSONObject();
-                        resultData.put("type", CourseMessage.SEND_CoursewareOnloading);
-                        resultData.put("pageNum", currentAnswerIndex);
-                        resultData.put("restTime", 10000);
-                        JSONArray studentInfo = new JSONArray();
-                        ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
-                        for (int i = 0; i < entities.size(); i++) {
-                            TeamMemberEntity teamMemberEntity = entities.get(i);
-                            JSONObject student = new JSONObject();
-                            student.put("studentNum", 3 - i);
-                            student.put("name", teamMemberEntity.name);
-//                            student.put("avatar", teamMemberEntity.headurl);
-                            student.put("avatar", "http://xesfile.oss-cn-beijing.aliyuncs.com/nrcpb/cjtsg5ybb0000ywow5xr4ne1j.png");
-                            {
-                                JSONObject rankInfo = new JSONObject();
-                                rankInfo.put("grading", 1);
-                                rankInfo.put("star", 1);
-                                student.put("rankInfo", rankInfo);
-                            }
-                            {
-                                JSONArray rightItem = new JSONArray();
-                                student.put("rightItem", rightItem);
-                            }
-                            studentInfo.put(student);
-                        }
-                        resultData.put("studentInfo", studentInfo);
-                        StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
-                    } catch (Exception e) {
-                        logger.d("onLoadComplete1", e);
-                    }
-                } else {
-                    try {
-                        JSONObject resultData = new JSONObject();
-                        resultData.put("type", CourseMessage.SEND_CoursewareOnloading);
-                        resultData.put("pageNum", currentAnswerIndex);
-                        resultData.put("restTime", 10000);
-                        resultData.put("currentRight", 0);
-                        resultData.put("isSingle", false);
-                        StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
-                    } catch (Exception e) {
-                        logger.d("onLoadComplete2", e);
-                    }
-                }
-                if (!gameOver) {
-                    startSpeechRecognize();
-                }
-            }
-        });
     }
 
     private void onCoursewareDoing(String where, final JSONObject message) {
@@ -1170,6 +1229,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
     /** 客户端发语音炮弹数据,服务端返回 */
     class VoiceProjectile implements TcpMessageAction {
+        VoiceCannonOnMessage voiceCannonOnMessage;
 
         @Override
         public void onMessage(short type, int operation, String msg) {
@@ -1237,8 +1297,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         try {
                             JSONObject jsonObject = new JSONObject(msg);
                             JSONObject dataObj = jsonObject.getJSONObject("data");
-                            String current_word = dataObj.getString("current_word");
+                            int current_word = dataObj.getInt("current_word");
                             JSONObject self = dataObj.getJSONObject("self");
+                            voiceCannonOnMessage.coursewareOnloading(current_word);
                             {
                                 String stu_id = self.getString("stu_id");
                                 int total_erengy = self.getInt("total_erengy");
@@ -1287,7 +1348,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     }
 
     /** 客户端发CleanUp.服务端返回 */
-    class CleanUp implements TcpMessageAction {
+    class CleanUpTcpMessage implements TcpMessageAction {
+        CleanUpOnMessage cleanUpOnMessage;
 
         @Override
         public void onMessage(short type, int operation, String msg) {
