@@ -10,7 +10,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.GroupGameTestInfosEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListDanmakuEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
@@ -128,7 +128,7 @@ public class CourseWareHttpManager {
 
     /**
      * Created by ZhangYuansun on 2019/3/7
-     *
+     * <p>
      * 请求学生作答情况列表
      */
     public void getStuTestResult(String liveId, String stuId, String srcTypes, String testIds, String classTestId, String packageId, String packageAttr, int isPlayBack,
@@ -270,9 +270,10 @@ public class CourseWareHttpManager {
      * 小组互动 - 拉题
      *
      * @param testIds
+     * @param type
      * @param callBack
      */
-    public void getGroupGameTestInfos(String testIds, final AbstractBusinessDataCallBack callBack) {
+    public void getGroupGameTestInfos(String testIds, final String type, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         liveHttpManager.setDefaultParameter(httpRequestParams);
         httpRequestParams.addBodyParam("testIds", testIds);
@@ -281,7 +282,12 @@ public class CourseWareHttpManager {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("getGroupGameTestInfos:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
-                GroupGameTestInfosEntity entity = courseWareParse.parseGroupGameTestInfo(responseEntity);
+                GroupGameTestInfosEntity entity;
+                if (LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(type)) {
+                    entity = courseWareParse.parseCleanUpTestInfo(responseEntity);
+                } else {
+                    entity = courseWareParse.parseGroupGameTestInfo(responseEntity);
+                }
                 if (entity != null) {
                     callBack.onDataSucess(entity);
                 } else {
@@ -305,7 +311,6 @@ public class CourseWareHttpManager {
 
     /**
      * 小组互动 - 答题
-     *
      */
     public void submitGroupGame(String testId, String type, int gameMode, int voiceTime, int isPlayBack, int pkTeamId, int gameGroupId,
                                 int starNum, int energy, int gold, int videoLengthTime, int micLengthTime, int acceptVideoLengthTime, int acceptMicLengthTime,
@@ -313,7 +318,7 @@ public class CourseWareHttpManager {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         liveHttpManager.setDefaultParameter(httpRequestParams);
         httpRequestParams.addBodyParam("testId", "" + testId);
-        httpRequestParams.addBodyParam("type",type);
+        httpRequestParams.addBodyParam("type", type);
         httpRequestParams.addBodyParam("gameMode", "" + gameMode);
         httpRequestParams.addBodyParam("voiceTime", "" + voiceTime);
         httpRequestParams.addBodyParam("isPlayBack", "" + isPlayBack);
