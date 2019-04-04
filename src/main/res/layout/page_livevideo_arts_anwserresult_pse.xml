@@ -56,7 +56,7 @@
             <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                 android:id="@id/tv_live_speech_result_myenergy"
                 android:textSize="14sp"
-                android:textColor="#EB642B"
+                android:textColor="#FF824B"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="" />
@@ -75,7 +75,7 @@
                 android:text=""
                 android:layout_marginRight="20dp"
                 android:textSize="14sp"
-                android:textColor="#EB642B" />
+                android:textColor="#FF824B" />
 
         </LinearLayout>
         <com.xueersi.parentsmeeting.modules.livevideo.widget.FastScrollableRecyclerView

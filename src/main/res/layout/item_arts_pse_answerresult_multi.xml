@@ -23,6 +23,7 @@
             android:id="@id/tv_arts_answer_result_item_muti_index"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:minWidth="15dp"
             android:text=""
             android:textColor="#726665"
             android:textSize="16sp" />
@@ -44,6 +45,7 @@
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@id/tv_arts_answer_result_item_muti_right_answer"
         android:layout_width="wrap_content"
+        android:layout_marginTop="5dp"
         android:layout_below="@id/tv_arts_answer_result_item_muti_user_answer"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/ll_arts_answer_result_item_muti_user_answer_info"

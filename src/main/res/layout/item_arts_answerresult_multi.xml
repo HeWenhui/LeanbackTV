@@ -25,6 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/iv_middle_answer_result_item_muti_right_answer"
             android:text=""
+            android:minWidth="15dp"
             android:textColor="#726665"
             android:textSize="17sp" />
     </LinearLayout>
@@ -36,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@id/ll_middle_answer_result_item_muti_user_answer_info"
-        android:text=""
+        android:text="11"
         android:textColor="@color/COLOR_333333"
         android:textSize="17sp"
         android:visibility="visible" />
@@ -47,10 +48,15 @@
         android:id="@id/tv_middle_answer_result_item_muti_right_answer"
         android:layout_width="wrap_content"
         android:layout_marginLeft="5dp"
+        android:layout_marginTop="3dp"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/ll_middle_answer_result_item_muti_user_answer_info"
         android:text=""
         android:textColor="@color/COLOR_333333"
         android:textSize="17sp"
         android:visibility="visible" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="10dp"/>
+
 </RelativeLayout>
