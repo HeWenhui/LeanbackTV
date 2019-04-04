@@ -420,7 +420,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         public void getCourseWareTests(VideoQuestionLiveEntity detailInfo, AbstractBusinessDataCallBack callBack) {
             if (liveBackBll.getIsArts() == LiveVideoSAConfig.ART_EN) {
                 if (LiveQueConfig.isGroupGame(detailInfo.type)) {
-                    getCourseWareHttpManager().getGroupGameTestInfos(detailInfo.id, callBack);
+                    getCourseWareHttpManager().getGroupGameTestInfos(detailInfo.id, detailInfo.type, callBack);
                 } else {
                     EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
                     String classId = liveGetInfo.getStudentLiveInfo().getClassId();

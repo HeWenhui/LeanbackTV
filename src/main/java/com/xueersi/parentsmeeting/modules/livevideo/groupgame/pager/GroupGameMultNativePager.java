@@ -928,7 +928,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 }
                 ivCourseRefresh.setVisibility(View.VISIBLE);
                 logger.d("onDataFail:errStatus=" + errStatus + ",failMsg=" + failMsg);
-                preLoad.onStop();
+//                preLoad.onStop();
             }
         });
     }
