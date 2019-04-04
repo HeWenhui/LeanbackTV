@@ -34,10 +34,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.http.EnTeamPkHttpMa
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkLeadPager;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpDispatch;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageAction;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageReg;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.lib.SendCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.TcpConstants;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
@@ -233,6 +235,11 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             tcpDispatch = new TcpDispatch(mContext, mGetInfo.getStuId(), AppBll.getInstance().getUserRfh(), mGetInfo.getId(), classInt + "", -1, pid, iid, "");
             tcpDispatch.setAddresses(addresses);
             tcpDispatch.registTcpMessageAction(new TeamMessageAction());
+            for (int i = 0; i < onTcpRegs.size(); i++) {
+                TcpMessageReg.OnTcpReg onTcpReg = onTcpRegs.get(i);
+                onTcpReg.onReg();
+            }
+            onTcpRegs.clear();
         }
     }
 
@@ -583,11 +590,63 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 };
                 putInstance(GetStuActiveTeam.class, getStuActiveTeam);
             }
+            if (tcpMessageReg == null) {
+                tcpMessageReg = new TcpMessageReg() {
+
+                    @Override
+                    public void onConnet(OnTcpReg onTcpReg) {
+                        if (tcpDispatch != null) {
+                            onTcpReg.onReg();
+                        } else {
+                            onTcpRegs.add(onTcpReg);
+                        }
+                    }
+
+                    @Override
+                    public void send(short type, int operation, String bodyStr) {
+                        if (tcpDispatch != null) {
+                            tcpDispatch.send(type, operation, bodyStr);
+                        }
+                    }
+
+                    @Override
+                    public void send(short type, int operation, String bodyStr, SendCallBack sendCallBack) {
+                        if (tcpDispatch != null) {
+                            tcpDispatch.send(type, operation, bodyStr, sendCallBack);
+                        }
+                    }
+
+                    @Override
+                    public void registTcpMessageAction(TcpMessageAction tcpMessageAction) {
+                        if (tcpDispatch != null) {
+                            tcpDispatch.registTcpMessageAction(tcpMessageAction);
+                        }
+                    }
+
+                    @Override
+                    public void unregistTcpMessageAction(TcpMessageAction tcpMessageAction) {
+                        if (tcpDispatch != null) {
+                            tcpDispatch.unregistTcpMessageAction(tcpMessageAction);
+                        }
+                    }
+
+                    @Override
+                    public boolean setTest(int testType, String testId) {
+                        if (tcpDispatch != null) {
+                            return tcpDispatch.setTest(testType, testId);
+                        }
+                        return false;
+                    }
+                };
+                ProxUtil.getProxUtil().put(mContext, TcpMessageReg.class, tcpMessageReg);
+            }
         }
         return pkTeamEntity2;
     }
 
-    GetStuActiveTeam getStuActiveTeam = null;
+    private GetStuActiveTeam getStuActiveTeam = null;
+    private TcpMessageReg tcpMessageReg;
+    private ArrayList<TcpMessageReg.OnTcpReg> onTcpRegs = new ArrayList<>();
 
     private class TeamMessageAction implements TcpMessageAction {
         @Override

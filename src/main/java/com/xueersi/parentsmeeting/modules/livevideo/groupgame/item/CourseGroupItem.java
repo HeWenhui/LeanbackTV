@@ -29,6 +29,7 @@ public class CourseGroupItem implements AdapterItemInterface<TeamMemberEntity> {
     static int[] AUDIO_RES = {R.drawable.livevide_course_group_audio_no, R.drawable.livevide_course_group_audio_dis, R.drawable.livevide_course_group_audio_enable};
     private RelativeLayout rlCourseItemVideo;
     private ImageView ivCourseItemVideoHead;
+    private TextView tvCourseItemFire;
     private TextView rlCourseItemName;
     private ImageView ivCourseItemVideo;
     private ImageView ivCourseItemAudio;
@@ -42,12 +43,14 @@ public class CourseGroupItem implements AdapterItemInterface<TeamMemberEntity> {
     private boolean isMe;
     private int uid;
     private Context mContext;
+    private TeamMemberEntity entity;
     private int progress = 0;
     public static int voiceStartFrame = 14;
     public static int voiceMaxFrame = 0;
 
-    public CourseGroupItem(Context context, WorkerThread workerThread, int uid, boolean isMe) {
+    public CourseGroupItem(Context context, TeamMemberEntity entity, WorkerThread workerThread, int uid, boolean isMe) {
         this.mContext = context;
+        this.entity = entity;
         this.workerThread = workerThread;
         this.uid = uid;
         this.isMe = isMe;
@@ -68,6 +71,7 @@ public class CourseGroupItem implements AdapterItemInterface<TeamMemberEntity> {
         rlCourseItemName = root.findViewById(R.id.rl_livevideo_course_item_name);
         ivCourseItemVideo = root.findViewById(R.id.iv_livevideo_course_item_video);
         ivCourseItemAudio = root.findViewById(R.id.iv_livevideo_course_item_audio);
+        tvCourseItemFire = root.findViewById(R.id.tv_livevideo_course_item_fire);
         if (uid == -1) {
             ImageView imageView = new ImageView(root.getContext());
             imageView.setImageResource(R.drawable.pc_zbhd_shipingkuang_ufo);
@@ -145,9 +149,14 @@ public class CourseGroupItem implements AdapterItemInterface<TeamMemberEntity> {
         }
     }
 
+    public TeamMemberEntity getEntity() {
+        return entity;
+    }
+
     @Override
     public void updateViews(TeamMemberEntity entity, int position, Object objTag) {
         rlCourseItemName.setText(entity.name);
+        tvCourseItemFire.setText("" + entity.energy);
         ImageLoader.with(ContextManager.getContext()).load(entity.headurl).into(ivCourseItemVideoHead);
         if (isMe) {
             String lottieResPath = "group_game_mult/images";
@@ -247,6 +256,6 @@ public class CourseGroupItem implements AdapterItemInterface<TeamMemberEntity> {
     }
 
     public void onScene() {
-
+        tvCourseItemFire.setText("" + entity.energy);
     }
 }

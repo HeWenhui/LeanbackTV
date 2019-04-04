@@ -10,6 +10,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.business.GetStuActiveTeam;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.InteractiveTeam;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageReg;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager.GroupGameMultNativePager;
@@ -203,7 +204,7 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
             h5CoursewarePager = groupGameMultNativePager;
         } else {
             InteractiveTeam interactiveTeam = getStuActiveTeam.getStuActiveTeam(null);
-            //还没有小组
+            //还没有小组,或者没有tcp
             if (interactiveTeam == null) {
                 GroupGameNativePager groupGameMultNativePager = new GroupGameNativePager(context, false, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
                 groupGameMultNativePager.setLivePagerBack(livePagerBack);

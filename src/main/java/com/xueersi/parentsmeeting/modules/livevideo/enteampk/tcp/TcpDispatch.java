@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 /** tcp调度 */
-public class TcpDispatch implements TcpMessageReg {
+public class TcpDispatch {
     private Logger logger = LiveLoggerFactory.getLogger("TcpDispatch");
     private ArrayList<InetSocketAddress> addresses = new ArrayList<>();
     private GroupGameTcp groupGameTcp;
@@ -58,7 +58,6 @@ public class TcpDispatch implements TcpMessageReg {
         this.pid = pid;
         this.iid = iid;
         this.test_id = test_id;
-        ProxUtil.getProxUtil().put(context, TcpMessageReg.class, this);
     }
 
     public int getGt() {
@@ -177,7 +176,6 @@ public class TcpDispatch implements TcpMessageReg {
         }
     };
 
-    @Override
     public boolean setTest(int testType, String testId) {
         boolean change = false;
         if (gt != testType) {
@@ -206,14 +204,12 @@ public class TcpDispatch implements TcpMessageReg {
         return change;
     }
 
-    @Override
     public void send(short type, int operation, String bodyStr) {
         if (groupGameTcp != null) {
             groupGameTcp.send(type, operation, bodyStr);
         }
     }
 
-    @Override
     public void send(short type, int operation, String bodyStr, SendCallBack sendCallBack) {
         if (groupGameTcp != null) {
             groupGameTcp.send(type, operation, bodyStr, sendCallBack);
@@ -224,7 +220,6 @@ public class TcpDispatch implements TcpMessageReg {
         }
     }
 
-    @Override
     public void registTcpMessageAction(TcpMessageAction tcpMessageAction) {
         short[] messageFilter = tcpMessageAction.getMessageFilter();
         if (messageFilter != null && messageFilter.length > 0) {
@@ -240,7 +235,6 @@ public class TcpDispatch implements TcpMessageReg {
         }
     }
 
-    @Override
     public void unregistTcpMessageAction(TcpMessageAction tcpMessageAction) {
         short[] messageFilter = tcpMessageAction.getMessageFilter();
         if (messageFilter != null && messageFilter.length > 0) {
