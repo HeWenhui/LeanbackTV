@@ -20,6 +20,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsPSEAnswerResultPager;
 
@@ -149,6 +150,8 @@ public class QuestionResultView {
         AnswerResultEntity resultEntity  = new AnswerResultEntity();
         resultEntity.setGold(entity.getGoldNum());
         AnswerResultEntity.Answer  answer = new AnswerResultEntity.Answer();
+        resultEntity.setEnergy(entity.getEnergy());
+        resultEntity.isVoice = 1;
         // 用户答案
         if (!TextUtils.isEmpty(entity.getYourAnswer())) {
             List<String> userAnswer = new ArrayList<>();
@@ -184,25 +187,49 @@ public class QuestionResultView {
         List<AnswerResultEntity.Answer> answerList = new ArrayList<>();
         answerList.add(answer);
         resultEntity.setAnswerList(answerList);
+        if (entity.isPreEnglish()) {
+            ArtsPSEAnswerResultPager mDsipalyer = new ArtsPSEAnswerResultPager(context, resultEntity, new
+                    AnswerResultStateListener() {
+                        @Override
+                        public void onCompeletShow() {
 
-        ArtsAnswerResultPager    mDsipalyer = new ArtsAnswerResultPager(context, resultEntity, new
-                AnswerResultStateListener() {
-            @Override
-            public void onCompeletShow() {
+                        }
 
-            }
+                        @Override
+                        public void onAutoClose(BasePager basePager) {
 
-            @Override
-            public void onAutoClose(BasePager basePager) {
+                        }
 
-            }
+                        @Override
+                        public void onCloseByUser() {
 
-            @Override
-            public void onCloseByUser() {
+                        }
+                    });
+            return mDsipalyer.getRootView();
+        } else {
 
-            }
-        });
-        return mDsipalyer.getRootView();
+            ArtsAnswerResultPager mDsipalyer = new ArtsAnswerResultPager(context, resultEntity, new
+                    AnswerResultStateListener() {
+                        @Override
+                        public void onCompeletShow() {
+
+                        }
+
+                        @Override
+                        public void onAutoClose(BasePager basePager) {
+
+                        }
+
+                        @Override
+                        public void onCloseByUser() {
+
+                        }
+                    });
+            return mDsipalyer.getRootView();
+        }
+    }
+    private void initPseResultEnttiy(){
+
     }
 
 
