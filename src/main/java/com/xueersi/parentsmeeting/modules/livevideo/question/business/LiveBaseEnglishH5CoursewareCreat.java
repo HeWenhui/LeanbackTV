@@ -204,9 +204,8 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
             h5CoursewarePager = groupGameMultNativePager;
         } else {
             InteractiveTeam interactiveTeam = getStuActiveTeam.getStuActiveTeam(null);
-            TcpMessageReg tcpMessageReg = ProxUtil.getProxUtil().get(context, TcpMessageReg.class);
             //还没有小组,或者没有tcp
-            if (interactiveTeam == null || tcpMessageReg == null) {
+            if (interactiveTeam == null) {
                 GroupGameNativePager groupGameMultNativePager = new GroupGameNativePager(context, false, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
                 groupGameMultNativePager.setLivePagerBack(livePagerBack);
                 h5CoursewarePager = groupGameMultNativePager;
