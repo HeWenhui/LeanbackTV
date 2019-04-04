@@ -32,6 +32,8 @@ public class CourseGroupItem implements AdapterItemInterface<TeamMemberEntity> {
     private TextView tvCourseItemFire;
     private TextView rlCourseItemName;
     private ImageView ivCourseItemVideo;
+    /** 自己头像禁用 */
+    private ImageView ivCourseItemVideoDis;
     private ImageView ivCourseItemAudio;
     /** 用户下方的控制 */
     private RelativeLayout rlCourseItemCtrl;
@@ -70,6 +72,7 @@ public class CourseGroupItem implements AdapterItemInterface<TeamMemberEntity> {
         ivCourseItemVideoHead = root.findViewById(R.id.iv_livevideo_course_item_video_head);
         rlCourseItemName = root.findViewById(R.id.rl_livevideo_course_item_name);
         ivCourseItemVideo = root.findViewById(R.id.iv_livevideo_course_item_video);
+        ivCourseItemVideoDis = root.findViewById(R.id.iv_livevideo_course_item_audio_dis);
         ivCourseItemAudio = root.findViewById(R.id.iv_livevideo_course_item_audio);
         tvCourseItemFire = root.findViewById(R.id.tv_livevideo_course_item_fire);
         if (uid == -1) {
@@ -127,6 +130,7 @@ public class CourseGroupItem implements AdapterItemInterface<TeamMemberEntity> {
                         enableAudio = !enableAudio;
                         if (isMe) {
                             if (enableAudio) {
+                                ivCourseItemVideoDis.setVisibility(View.GONE);
                                 rtcEngine.enableAudio();
                             } else {
                                 rtcEngine.disableAudio();
@@ -139,6 +143,12 @@ public class CourseGroupItem implements AdapterItemInterface<TeamMemberEntity> {
                                 if (progress > 0) {
                                     handler.postDelayed(stopRun, 10);
                                 }
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        ivCourseItemVideoDis.setVisibility(View.VISIBLE);
+                                    }
+                                },1000);
                             }
                         } else {
                             rtcEngine.muteRemoteAudioStream(uid, enableAudio);
@@ -173,8 +183,8 @@ public class CourseGroupItem implements AdapterItemInterface<TeamMemberEntity> {
                 }
             });
         } else {
-            ivCourseItemVideo.setImageResource(VIDEO_RES[0]);
-            ivCourseItemAudio.setImageResource(AUDIO_RES[0]);
+            ivCourseItemVideo.setImageResource(VIDEO_RES[2]);
+            ivCourseItemAudio.setImageResource(AUDIO_RES[2]);
         }
     }
 
@@ -252,6 +262,24 @@ public class CourseGroupItem implements AdapterItemInterface<TeamMemberEntity> {
             progress = (int) (voiceStartFrame + (float) (volume * voiceMaxFrame) / 30.0f);
             progRun.stopProgress = progress;
             handler.postDelayed(progRun, 30);
+        }
+    }
+
+    public void onOtherDis(int type, boolean enable) {
+        if (type == 1) {
+            if (enable) {
+                ivCourseItemVideo.setImageResource(VIDEO_RES[2]);
+            } else {
+                ivCourseItemVideo.setImageResource(VIDEO_RES[0]);
+            }
+            ivCourseItemVideo.setEnabled(enable);
+        } else if (type == 2) {
+            if (enable) {
+                ivCourseItemAudio.setImageResource(AUDIO_RES[2]);
+            } else {
+                ivCourseItemAudio.setImageResource(AUDIO_RES[0]);
+            }
+            ivCourseItemAudio.setEnabled(enable);
         }
     }
 

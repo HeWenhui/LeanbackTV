@@ -51,7 +51,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.GroupGameTestInfosEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.groupgame.item.BaseCourseGroupItem;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.item.CourseGroupItem;
+import com.xueersi.parentsmeeting.modules.livevideo.groupgame.item.CourseGroupMyItem;
+import com.xueersi.parentsmeeting.modules.livevideo.groupgame.item.CourseGroupNoItem;
+import com.xueersi.parentsmeeting.modules.livevideo.groupgame.item.CourseGroupOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.SendCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.TcpConstants;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
@@ -151,7 +155,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     private int mSingCount = 0;
     private InteractiveTeam interactiveTeam;
     private WorkerThread mWorkerThread;
-    private HashMap<String, CourseGroupItem> courseGroupItemHashMap = new HashMap<>();
+    private HashMap<String, BaseCourseGroupItem> courseGroupItemHashMap = new HashMap<>();
     private LiveGetInfo liveGetInfo;
     private int stuid;
     static final String TEST_URL = "file:///android_asset/hot_air_balloon/index.html";
@@ -304,10 +308,11 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 @Override
                 public void run() {
                     try {
+                        GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
                         JSONObject resultData = new JSONObject();
                         resultData.put("type", CourseMessage.SEND_CoursewareOnloading);
                         resultData.put("pageNum", pageNum);
-                        resultData.put("restTime", 10000);
+                        resultData.put("restTime", testInfoEntity.getTotalTime());
                         resultData.put("currentRight", 0);
                         resultData.put("isSingle", false);
                         StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
@@ -347,10 +352,11 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 public void run() {
                     preLoad.onStop();
                     try {
+                        GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
                         JSONObject resultData = new JSONObject();
                         resultData.put("type", CourseMessage.SEND_CoursewareOnloading);
                         resultData.put("pageNum", currentAnswerIndex);
-                        resultData.put("restTime", 10000);
+                        resultData.put("restTime", testInfoEntity.getTotalTime());
                         JSONArray studentInfo = new JSONArray();
                         ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
                         for (int i = 0; i < entities.size(); i++) {
@@ -441,7 +447,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
         @Override
         public void onFirstRemoteVideoDecoded(final int uid, int width, int height, int elapsed) {
-            CourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + uid);
+            BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + uid);
             logger.d("onFirstRemoteVideoDecoded:uid=" + uid + ",courseGroupItem=null?" + (courseGroupItem == null));
             if (courseGroupItem != null) {
                 doRenderRemoteUi(uid, courseGroupItem);
@@ -452,7 +458,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
             logger.d("onJoinChannelSuccess:channel=" + channel + ",uid=" + uid);
             if (stuid == uid) {
-                CourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + uid);
+                BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + uid);
                 if (courseGroupItem != null) {
                     preview(uid, courseGroupItem);
                 }
@@ -467,7 +473,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         @Override
         public void onUserOffline(final int uid, final int reason) {
             logger.d("onUserOffline:uid=" + uid + ",reason=" + reason);
-            final CourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + uid);
+            final BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + uid);
             if (courseGroupItem != null) {
                 handler.post(new Runnable() {
                     @Override
@@ -489,7 +495,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         }
     };
 
-    private void doRenderRemoteUi(final int uid, final CourseGroupItem courseGroupItem) {
+    private void doRenderRemoteUi(final int uid, final BaseCourseGroupItem courseGroupItem) {
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -505,7 +511,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         });
     }
 
-    private void preview(final int uid, final CourseGroupItem courseGroupItem) {
+    private void preview(final int uid, final BaseCourseGroupItem courseGroupItem) {
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -525,19 +531,26 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         LayoutInflater mInflater = LayoutInflater.from(mContext);
         for (int i = 0; i < entities.size(); i++) {
             TeamMemberEntity teamMemberEntity = entities.get(i);
-            CourseGroupItem courseGroupItem = new CourseGroupItem(mContext, teamMemberEntity, mWorkerThread, teamMemberEntity.id, teamMemberEntity.id == stuid);
-            View convertView = mInflater.inflate(courseGroupItem.getLayoutResId(), llCourseItemContent, false);
-            courseGroupItem.initViews(convertView);
-            courseGroupItem.updateViews(teamMemberEntity, i, teamMemberEntity);
-            courseGroupItem.bindListener();
+            BaseCourseGroupItem baseCourseGroupItem;
+            if (teamMemberEntity.id == stuid) {
+                CourseGroupMyItem courseGroupItem = new CourseGroupMyItem(mContext, teamMemberEntity, mWorkerThread, teamMemberEntity.id);
+                baseCourseGroupItem = courseGroupItem;
+            } else {
+                CourseGroupOtherItem courseGroupItem = new CourseGroupOtherItem(mContext, teamMemberEntity, mWorkerThread, teamMemberEntity.id);
+                baseCourseGroupItem = courseGroupItem;
+            }
+            View convertView = mInflater.inflate(baseCourseGroupItem.getLayoutResId(), llCourseItemContent, false);
+            baseCourseGroupItem.initViews(convertView);
+            baseCourseGroupItem.updateViews(teamMemberEntity, i, teamMemberEntity);
+            baseCourseGroupItem.bindListener();
             llCourseItemContent.addView(convertView);
-            courseGroupItemHashMap.put(teamMemberEntity.id + "", courseGroupItem);
+            courseGroupItemHashMap.put(teamMemberEntity.id + "", baseCourseGroupItem);
         }
         if (entities.size() < 3) {
             for (int i = entities.size(); i < 3; i++) {
                 TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
                 teamMemberEntity.id = -1;
-                CourseGroupItem courseGroupItem = new CourseGroupItem(mContext, teamMemberEntity, mWorkerThread, teamMemberEntity.id, teamMemberEntity.id == stuid);
+                CourseGroupNoItem courseGroupItem = new CourseGroupNoItem(mContext, teamMemberEntity, mWorkerThread, teamMemberEntity.id);
                 View convertView = mInflater.inflate(courseGroupItem.getLayoutResId(), llCourseItemContent, false);
                 courseGroupItem.initViews(convertView);
                 courseGroupItem.updateViews(teamMemberEntity, i, teamMemberEntity);
@@ -643,7 +656,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 //                logger.d("onVolumeUpdate:volume = " + volume);
 //                float floatVolume = (float) volume * 3 / 90;
 //                groupSurfaceView.onVolumeUpdate(volume);
-                CourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stuid);
+                BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stuid);
                 if (courseGroupItem != null) {
                     courseGroupItem.onVolumeUpdate(volume);
                 }
@@ -1331,7 +1344,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                         integerHashMap.put(key, integer);
                                     }
                                 }
-                                final CourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stu_id);
+                                final BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stu_id);
                                 if (courseGroupItem != null) {
                                     handler.post(new Runnable() {
                                         @Override

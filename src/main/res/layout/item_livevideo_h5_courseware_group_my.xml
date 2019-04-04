@@ -73,6 +73,14 @@
             android:src="@drawable/livevide_course_group_audio_no" />
 
         <ImageView
+            android:id="@id/iv_livevideo_course_item_audio_dis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/iv_livevideo_course_item_video"
+            android:src="@drawable/livevide_course_group_audio_enable" />
+
+        <ImageView
             android:id="@id/iv_livevideo_course_item_video"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
