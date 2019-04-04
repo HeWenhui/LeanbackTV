@@ -154,6 +154,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     private int rightNum = 0;
     private long singleVoiceTime = 0;
     private long voiceTime = 0;
+    private long existingVoiceTime;
     private int successTimes = 0;
     private List<Integer> singleScoreList = new ArrayList<>();
     private List<Integer> allScoreList = new ArrayList<>();
@@ -211,7 +212,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         allScoreList.clear();
         answerData = new JSONObject();
         userAnswer = new JSONArray();
-
 
         wvSubjectWeb.setVisibility(View.VISIBLE);
         rlGroupGameSingle.setVisibility(View.VISIBLE);
@@ -470,10 +470,10 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             public void onResult(ResultEntity resultEntity) {
                 if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
                     logger.d("onEvaluatorSuccess(): score = " + resultEntity.getScore());
-                    onRecognizeStop();
+                    onRecognizeStop(resultEntity);
                 } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
                     logger.d("onEvaluatorError: errorNo = " + resultEntity.getErrorNo() + ", isOfflineFail =" + mIse.isOfflineFail());
-                    onRecognizeStop();
+                    onRecognizeStop(resultEntity);
                 } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
                     if (resultEntity.getNewSenIdx() >= 0 && resultEntity.getNewSenIdx() == pageNum) {
                         logger.d("onEvaluatoring: newSenIdx = " + resultEntity.getNewSenIdx() + ", score =" + resultEntity.getScore());
@@ -496,7 +496,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         });
     }
 
-    private void onRecognizeStop() {
+    private void onRecognizeStop(ResultEntity resultEntity) {
+        existingVoiceTime = (long) (resultEntity.getSpeechDuration() * 1000);
         if (isAttach()) {
             handler.postDelayed(new Runnable() {
                 @Override
@@ -565,7 +566,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         starNum = calculateStarByScore(averageScore);
         fireNum = (int) Math.ceil(10d * successTimes / (double) (mAnswersList.size()));
         logger.d("submitData: fireNum = " + fireNum + ", goldNum = " + goldNum + ", starNum = " + starNum);
-        englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 0, (int) voiceTime, 0, 0, starNum, fireNum, goldNum, 0, 0, 0, 0, answerData.toString(), new AbstractBusinessDataCallBack() {
+        englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 0, (int) voiceTime, 0, 0, starNum, fireNum, goldNum, 0, (int) voiceTime, 0, 0, answerData.toString(), new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
                 logger.d("submitGroupGame -> onDataSucess : objData=" + objData[0].toString());
@@ -723,7 +724,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         pageNum++;
         JSONObject resultData = new JSONObject();
         try {
-            resultData.put("type", "coursewareOnloading");
+            resultData.put("type", CourseMessage.SEND_CoursewareOnloading);
             resultData.put("pageNum", pageNum);
             StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
             restartTimer();
@@ -741,7 +742,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     private void uploadScore(int score, boolean isTurnPage) {
         JSONObject jsonData = new JSONObject();
         try {
-            jsonData.put("type", "coursewareDoing");
+            jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
             //答对题目学生序号（1/2/3）  单人模式只有2号学生
             jsonData.put("studentNum", 2);
             jsonData.put("score", score);
@@ -764,6 +765,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         logger.d("onHitSentence: score = " + score + ", speechDuration = " + speechDuration);
         singleScoreList.add(score);
         allScoreList.add(score);
+        this.voiceTime = existingVoiceTime + (long) (speechDuration * 1000);
         if (score >= 70) {
             singleCount++;
             rightNum++;
@@ -791,7 +793,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             successTimes++;
         }
         long singleVoiceTime = System.currentTimeMillis() - this.singleVoiceTime;
-        this.voiceTime += singleVoiceTime;
         JSONObject jsonObject = new JSONObject();
         try {
 
