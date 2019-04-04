@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -315,6 +316,12 @@ public class GroupGameMVPMultPager extends LiveBasePager {
     }
 
     private void setHead(final String headurl, final String lottieId) {
+        if (mContext instanceof Activity) {
+            Activity activity = (Activity) mContext;
+            if (activity.isFinishing()) {
+                return;
+            }
+        }
         ImageLoader.with(mContext).load(headurl).asCircle().asBitmap(new SingleConfig.BitmapListener() {
             @Override
             public void onSuccess(Drawable drawable) {

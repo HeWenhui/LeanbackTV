@@ -23,6 +23,7 @@
     <item name="rl_livevideo_course_item_ctrl" type="id" />
     <item name="iv_livevideo_course_item_video" type="id" />
     <item name="iv_livevideo_course_item_audio" type="id" />
+    <item name="iv_livevideo_course_item_audio_dis" type="id" />
     <item name="tv_livevideo_course_item_load" type="id" />
     <item name="iv_livevideo_course_item_fire" type="id" />
     <item name="tv_livevideo_course_item_fire" type="id" />
