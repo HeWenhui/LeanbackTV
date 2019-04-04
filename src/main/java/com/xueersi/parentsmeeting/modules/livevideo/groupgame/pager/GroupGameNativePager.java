@@ -116,6 +116,10 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
      * 是不是回放
      */
     private boolean isPlayBack = false;
+    /**
+     * 拉取课件接口成功
+     */
+    private boolean fetchCoursewareSuccess = false;
 
     private EnglishH5CoursewareSecHttp englishH5CoursewareSecHttp;
     private GroupGameTestInfosEntity mGroupGameTestInfosEntity;
@@ -544,6 +548,9 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
     @Override
     public void submitData() {
+        if (!fetchCoursewareSuccess) {
+            return;
+        }
         int averageScore = 0;
         try {
             answerData.put("tryTimes", allScoreList.size());
@@ -605,12 +612,15 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 logger.d("getCourseWareTests -> onDataSucess()");
                 mGroupGameTestInfosEntity = (GroupGameTestInfosEntity) objData[0];
                 if (mGroupGameTestInfosEntity.getTestInfoList() == null || mGroupGameTestInfosEntity.getTestInfoList().size() == 0) {
+                    XESToastUtils.showToast(mContext, "互动题为空");
                     return;
                 }
                 mTestInfoEntity = mGroupGameTestInfosEntity.getTestInfoList().get(0);
                 if (mTestInfoEntity.getAnswerList() == null || mTestInfoEntity.getAnswerList().size() == 0) {
+                    XESToastUtils.showToast(mContext, "互动题为空");
                     return;
                 }
+                fetchCoursewareSuccess = true;
                 mAnswersList = mTestInfoEntity.getAnswerList();
                 MAX_SINGLE_COUNT = mTestInfoEntity.getSingleCount();
                 initWebView();
