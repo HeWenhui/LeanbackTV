@@ -309,7 +309,10 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
             if (getRootView() != null && getRootView().getParent() != null) {
                 ((ViewGroup) getRootView().getParent()).removeView(getRootView());
             }
-            mStateListenr.onCompeletShow();
+            if (mStateListenr != null) {
+
+                mStateListenr.onCompeletShow();
+            }
             return;
         }
 
@@ -384,7 +387,10 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
         } else {
             mAdapter.notifyDataSetChanged();
         }
-        mStateListenr.onCompeletShow();
+        if (mStateListenr != null) {
+
+            mStateListenr.onCompeletShow();
+        }
     }
 
     private boolean isGameResult() {

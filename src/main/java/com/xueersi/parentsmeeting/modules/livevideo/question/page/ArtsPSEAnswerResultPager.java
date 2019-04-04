@@ -238,7 +238,9 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                     if (getRootView() != null && getRootView().getParent() != null) {
                         ((ViewGroup) getRootView().getParent()).removeView(getRootView());
                     }
-                    mStateListener.onCompeletShow();
+                    if (mStateListener != null) {
+                        mStateListener.onCompeletShow();
+                    }
 
             }
         });
@@ -490,7 +492,10 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                     Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             tv_arts_answer_result_voice_right.setText(spannableStringBuilder);
         }
-        mStateListener.onCompeletShow();
+        if (mStateListener != null) {
+
+            mStateListener.onCompeletShow();
+        }
     }
 
 
@@ -554,7 +559,10 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
       //  params.topMargin = (int) (realY * 0.30);
       //  recyclerView.setLayoutParams(params);
         recyclerView.startAnimation(alphaAnimation);
-        mStateListener.onCompeletShow();
+        if (mStateListener != null) {
+
+            mStateListener.onCompeletShow();
+        }
     }
 
     @Override

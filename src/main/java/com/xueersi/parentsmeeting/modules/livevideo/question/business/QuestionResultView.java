@@ -187,49 +187,14 @@ public class QuestionResultView {
         List<AnswerResultEntity.Answer> answerList = new ArrayList<>();
         answerList.add(answer);
         resultEntity.setAnswerList(answerList);
+
         if (entity.isPreEnglish()) {
-            ArtsPSEAnswerResultPager mDsipalyer = new ArtsPSEAnswerResultPager(context, resultEntity, new
-                    AnswerResultStateListener() {
-                        @Override
-                        public void onCompeletShow() {
-
-                        }
-
-                        @Override
-                        public void onAutoClose(BasePager basePager) {
-
-                        }
-
-                        @Override
-                        public void onCloseByUser() {
-
-                        }
-                    });
+            ArtsPSEAnswerResultPager mDsipalyer = new ArtsPSEAnswerResultPager(context, resultEntity, null);
             return mDsipalyer.getRootView();
         } else {
-
-            ArtsAnswerResultPager mDsipalyer = new ArtsAnswerResultPager(context, resultEntity, new
-                    AnswerResultStateListener() {
-                        @Override
-                        public void onCompeletShow() {
-
-                        }
-
-                        @Override
-                        public void onAutoClose(BasePager basePager) {
-
-                        }
-
-                        @Override
-                        public void onCloseByUser() {
-
-                        }
-                    });
+            ArtsAnswerResultPager mDsipalyer = new ArtsAnswerResultPager(context, resultEntity, null);
             return mDsipalyer.getRootView();
         }
-    }
-    private void initPseResultEnttiy(){
-
     }
 
 
