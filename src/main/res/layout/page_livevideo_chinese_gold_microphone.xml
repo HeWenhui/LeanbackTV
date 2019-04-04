@@ -47,7 +47,8 @@
         android:layout_width="120dp"
         android:layout_height="120dp"
         android:layout_marginLeft="20dp"
-        app:layout_constraintBottom_toBottomOf="@id/iv_livevideo_gold_microphone_bg"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_gold_microphone_bg"
         app:layout_constraintRight_toRightOf="@id/iv_livevideo_gold_microphone_bg"
         app:lottie_fileName="gold_microphone/data.json"
@@ -58,11 +59,11 @@
         android:id="@id/iv_livevideo_gold_microphone_bg"
         android:layout_width="70dp"
         android:layout_height="63dp"
-        android:layout_marginBottom="15dp"
+        android:layout_marginTop="15dp"
         android:src="@drawable/bg_livevideo_gold_microphone_icon"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="parent" />
 
     <com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.SoundWaveView
         android:id="@id/swv_livevideo_gold_microphone_sound_wave"
@@ -70,7 +71,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         app:cInnerRaidus="31"
-        app:cSpeed="2"
+        app:cSpeed="1"
         app:layout_constraintBottom_toBottomOf="@id/iv_livevideo_gold_microphone_bg"
         app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_gold_microphone_bg"
         app:layout_constraintRight_toRightOf="@id/iv_livevideo_gold_microphone_bg"

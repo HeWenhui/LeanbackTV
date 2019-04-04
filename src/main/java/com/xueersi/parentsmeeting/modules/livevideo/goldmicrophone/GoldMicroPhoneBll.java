@@ -333,6 +333,14 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
         });
     }
 
+    @Override
+    public void stopAudioRecord() {
+        if (mSpeechEvaluatorUtils != null) {
+            mSpeechEvaluatorUtils.cancel();
+        }
+        stopRecord();
+    }
+
     /**
      * 离线记录
      */
@@ -429,7 +437,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
      * @param volume
      */
     private synchronized void performVolume(int volume, boolean isOnline) {
-        if (mGoldView == null || mRootView == null) {
+        if (mGoldView == null || mRootView == null || isStop.get()) {
             return;
         }
         long nowTime = System.currentTimeMillis();
@@ -454,51 +462,54 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
             if (volume < GoldPhoneContract.ONE_GEAR_RIGHT
                     && volume >= GoldPhoneContract.ONE_GEAR_LEFT) {
                 List<SoundWaveView.Circle> list = mGoldView.getRipples();
-                if (!isOnline && ((nowTime - lastOneLevelTime > GoldPhoneContract.GOLD_ONE_LEVEL_INTEVAL)
+                if (((nowTime - lastOneLevelTime > GoldPhoneContract.GOLD_ONE_LEVEL_INTEVAL)
                         || (lastVolumeTime > lastOneLevelTime) && list.size() == 0)
                 ) {
                     gear = 1;
                     lastOneLevelTime = nowTime;
                     mGoldView.addRipple(gear);
                     logger.i("add Ripple level = " + gear);
-                } else if (isOnline) {
-                    gear = 1;
-                    lastOneLevelTime = nowTime;
-                    mGoldView.addRipple(gear);
-                    logger.i("add Ripple level = " + gear);
                 }
+//                else if (isOnline) {
+//                    gear = 1;
+//                    lastOneLevelTime = nowTime;
+//                    mGoldView.addRipple(gear);
+//                    logger.i("add Ripple level = " + gear);
+//                }
             } else if (volume > GoldPhoneContract.ONE_GEAR_RIGHT
                     && volume < GoldPhoneContract.TWO_GEAR_RIGHT
             ) {
                 //2档
-                if (!isOnline && nowTime - lastTwoLevelTime > GoldPhoneContract.GOLD_TWO_LEVEL_INTEVAL) {
-                    gear = 2;
-                    lastTwoLevelTime = nowTime;
-                    lastVolumeTime = nowTime;
-                    mGoldView.addRipple(gear);
-                    logger.i("add Ripple level = " + gear);
-                } else if (isOnline) {
+                if (nowTime - lastTwoLevelTime > GoldPhoneContract.GOLD_TWO_LEVEL_INTEVAL) {
                     gear = 2;
                     lastTwoLevelTime = nowTime;
                     lastVolumeTime = nowTime;
                     mGoldView.addRipple(gear);
                     logger.i("add Ripple level = " + gear);
                 }
+//                else if (isOnline) {
+//                    gear = 2;
+//                    lastTwoLevelTime = nowTime;
+//                    lastVolumeTime = nowTime;
+//                    mGoldView.addRipple(gear);
+//                    logger.i("add Ripple level = " + gear);
+//                }
             } else {
-                if (!isOnline && nowTime - lastTwoLevelTime > GoldPhoneContract.GOLD_THREE_LEVEL_INTEVAL) {
+                if (nowTime - lastTwoLevelTime > GoldPhoneContract.GOLD_THREE_LEVEL_INTEVAL) {
                     //3档
                     gear = 3;
                     lastThreeLevelTime = nowTime;
                     lastVolumeTime = nowTime;
                     mGoldView.addRipple(gear);
                     logger.i("add Ripple level = " + gear);
-                } else if (isOnline) {
-                    gear = 3;
-                    lastThreeLevelTime = nowTime;
-                    lastVolumeTime = nowTime;
-                    mGoldView.addRipple(gear);
-                    logger.i("add Ripple level = " + gear);
                 }
+//                else if (isOnline) {
+//                    gear = 3;
+//                    lastThreeLevelTime = nowTime;
+//                    lastVolumeTime = nowTime;
+//                    mGoldView.addRipple(gear);
+//                    logger.i("add Ripple level = " + gear);
+//                }
             }
         }
     }
@@ -506,9 +517,6 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
     //识别失败，当前网络不可用，或者大点声说
     private void recognizeError(int errNum) {
         logger.i("voice search____error:" + errNum);
-
-//        if () {
-
         if (errNum == ResultCode.NO_AUTHORITY) {
 //            setStatus(NOPERMISSION);
             if (isRecord.get()) {

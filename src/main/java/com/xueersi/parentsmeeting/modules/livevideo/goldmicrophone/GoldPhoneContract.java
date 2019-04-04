@@ -19,6 +19,7 @@ public interface GoldPhoneContract {
     int GOLD_ONE_LEVEL_INTEVAL = 1000;
     int GOLD_TWO_LEVEL_INTEVAL = 300;
     int GOLD_THREE_LEVEL_INTEVAL = 200;
+
     interface GoldPhoneView {
         View getRootView();
 
@@ -66,6 +67,8 @@ public interface GoldPhoneContract {
          * 开启录音
          */
         void startAudioRecord();
+
+        void stopAudioRecord();
     }
 
     interface CloseTipPresenter {

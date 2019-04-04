@@ -125,6 +125,9 @@ public class SoundWaveView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        if (isClear) {
+            return;
+        }
         for (int i = 0; i < mRipples.size(); i++) {
             Circle c = mRipples.get(i);
 //            canvas.drawCircle(mWidth / 2, mHeight / 2, c.width - mPaint.getStrokeWidth(), mPaint);
@@ -226,7 +229,6 @@ public class SoundWaveView extends View {
                 }
                 if (c.level == 1) {
                     c.width += 1;
-
                 } else {
                     c.width += mSpeed * c.level;
                 }
@@ -267,10 +269,18 @@ public class SoundWaveView extends View {
 
     public void addRipple(Circle circle) {
         mRipples.add(circle);
+        isClear = false;
         postInvalidate();
     }
 
     public List<Circle> getRipples() {
         return mRipples;
+    }
+
+    private boolean isClear = false;
+
+    public void clear() {
+        mRipples.clear();
+        isClear = true;
     }
 }

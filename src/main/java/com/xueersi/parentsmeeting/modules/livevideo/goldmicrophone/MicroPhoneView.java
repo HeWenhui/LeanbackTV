@@ -49,6 +49,7 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
 
     @Override
     public View initView() {
+
         View view = View.inflate(mContext, R.layout.page_livevideo_chinese_gold_microphone, null);
         rootLayout = view.findViewById(R.id.layout_livevideo_gold_microphone);
         ivClose = view.findViewById(R.id.iv_livevideo_gold_microphone_cancel);
@@ -229,9 +230,12 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
         goldY = curY + SizeUtils.Dp2Px(mContext,
                 ivMicroPhone.getHeight() + ((ConstraintLayout.LayoutParams) ivMicroPhone.getLayoutParams()).bottomMargin);
         goneAnimator = ObjectAnimator.ofFloat(ivMicroPhone, "translationY", curY, goldY);
+        logger.i("swvView set View.GONE");
+        swvView.clear();
         swvView.setVisibility(View.GONE);
         goneAnimator.setDuration(1000);
         goneAnimator.start();
+
         goneAnimator.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
