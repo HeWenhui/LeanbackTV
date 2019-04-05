@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * cleanup统计
+ * 语音炮弹统计
  */
-public class CleanUpEntity {
+public class VidooCannonEntity {
     public int id;
     public TeamMemberEntity teamMemberEntity;
     /** 正确答题 */

@@ -51,4 +51,11 @@ public class TcpConstants {
     public final static int CLEAN_UP_REC = 18;
     /** 消息类型，服务器clean up 恢复现场 */
     public final static int CLEAN_UP_SECN = 17;
+
+    /** 消息类型，客户端发摄像头、麦克风转发数据 */
+    public final static short AUDIO_TYPE = 11;
+    /** 消息类型，客户端发摄像头、麦克风转发数据 */
+    public final static short AUDIO_SEND = 16;
+    /** 消息类型，服务器端发送摄像头、麦克风数据 */
+    public final static short AUDIO_REC = 18;
 }

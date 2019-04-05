@@ -100,7 +100,8 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         logger.d("onLiveInited:use=" + englishPk.canUsePK + ",has=" + englishPk.hasGroup);
 //        if (com.xueersi.common.config.AppConfig.DEBUG) {
 //            englishPk.canUsePK = 1;
-//            englishPk.hasGroup = 0;
+//            englishPk.isTwoLose = 1;
+////            englishPk.hasGroup = 0;
 //        }
         if (englishPk.canUsePK == 0) {
             mLiveBll.removeBusinessBll(this);
@@ -589,6 +590,25 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     }
                 };
                 putInstance(GetStuActiveTeam.class, getStuActiveTeam);
+                getEnTeamPkHttpManager().reportInteractiveInfo(mGetInfo.getStuId(), unique_id, true, new HttpCallBack() {
+
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) {
+                        logger.d("reportInteractiveInfo:onPmSuccess:json=" + responseEntity.getJsonObject());
+                    }
+
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        super.onPmFailure(error, msg);
+                        logger.d("reportInteractiveInfo:onPmFailure:msg=" + msg);
+                    }
+
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        super.onPmError(responseEntity);
+                        logger.d("reportInteractiveInfo:onPmError:msg=" + responseEntity.getErrorMsg());
+                    }
+                });
             }
             if (tcpMessageReg == null) {
                 tcpMessageReg = new TcpMessageReg() {
