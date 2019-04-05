@@ -72,7 +72,7 @@ public class GroupGameTestInfosEntity {
         /**
          * 答题时间限制
          */
-        private String answerLimitTime;
+        private int answerLimitTime;
         /**
          * 单题次数
          */
@@ -110,11 +110,11 @@ public class GroupGameTestInfosEntity {
             this.previewPath = previewPath;
         }
 
-        public String getAnswerLimitTime() {
+        public int getAnswerLimitTime() {
             return answerLimitTime;
         }
 
-        public void setAnswerLimitTime(String answerLimitTime) {
+        public void setAnswerLimitTime(int answerLimitTime) {
             this.answerLimitTime = answerLimitTime;
         }
 

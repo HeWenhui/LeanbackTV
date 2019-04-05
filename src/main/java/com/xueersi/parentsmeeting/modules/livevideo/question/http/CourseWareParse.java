@@ -165,6 +165,7 @@ public class CourseWareParse {
                 testinfo.setTestId(testObj.getString("testId"));
                 testinfo.setTestType(testObj.getInt("testType"));
                 testinfo.setPreviewPath(testObj.getString("previewPath"));
+                testinfo.setAnswerLimitTime(testObj.getInt("answerLimitTime"));
 //                testinfo.setSingleCount(testObj.getInt("singleCount"));
                 testinfo.setTotalTime(testObj.getInt("totalTime"));
                 testinfo.setStemLength(testObj.getInt("stemLength"));

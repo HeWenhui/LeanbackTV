@@ -35,6 +35,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEn
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.groupgame.action.SingleModeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.GroupGameTestInfosEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
@@ -120,6 +121,10 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
      * 拉取课件接口成功
      */
     private boolean fetchCoursewareSuccess = false;
+    /**
+     * 游戏结束
+     */
+    private boolean gameOver = false;
 
     private EnglishH5CoursewareSecHttp englishH5CoursewareSecHttp;
     private GroupGameTestInfosEntity mGroupGameTestInfosEntity;
@@ -130,9 +135,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     private VideoQuestionLiveEntity detailInfo;
     private EnglishH5Entity englishH5Entity;
     private String url;
-    private String learningStage;
     private String liveId;
-    private int stuId;
+    private String learningStage;
     private EnglishH5CoursewareBll.OnH5ResultClose onClose;
     /**
      * 语音评测
@@ -149,7 +153,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     private boolean addJs = false;
 
     private PreLoad preLoad;
-    private String content = "";
+    private SingleModeAction singleModeAction;
+    private StringBuilder content = new StringBuilder();
     private int pageNum = 0;
     private int fireNum = 0;
     private int goldNum = 0;
@@ -165,8 +170,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     private JSONObject answerData = new JSONObject();
     private JSONArray userAnswer = new JSONArray();
 
-    private static int MAX_SINGLE_COUNT = 5;
-
     public GroupGameNativePager(Context context, boolean isPlayBack, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity detailInfo, EnglishH5Entity englishH5Entity, EnglishH5CoursewareBll.OnH5ResultClose onClose) {
         super(context);
         this.isPlayBack = isPlayBack;
@@ -174,12 +177,15 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         this.detailInfo = detailInfo;
         this.englishH5Entity = englishH5Entity;
         this.url = englishH5Entity.getUrl();
-        if (liveGetInfo.getStuId() != null) {
-            this.stuId = Integer.parseInt(liveGetInfo.getStuId());
-        }
-        this.learningStage = liveGetInfo.getStudentLiveInfo().getLearning_stage();
         this.liveId = liveGetInfo.getId();
+        this.learningStage = liveGetInfo.getStudentLiveInfo().getLearning_stage();
         this.onClose = onClose;
+        preLoad = new MiddleSchoolPreLoad();
+        if (LiveQueConfig.EN_COURSE_TYPE_HOT_AIR_BALLON.equals(detailInfo.type) || LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(detailInfo.type)) {
+            singleModeAction = new HotAirBallonAction();
+        } else if ((LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(detailInfo.type))) {
+            singleModeAction = new CleanUpAction();
+        }
     }
 
     @Override
@@ -196,13 +202,31 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         tvFireAdd = view.findViewById(R.id.tv_livevideo_groupgame_single_fire_add);
         tvOops = view.findViewById(R.id.tv_livevideo_groupgame_single_oops);
         mWaveView = view.findViewById(R.id.wv_livevideo_groupgame_single_wave);
-        preLoad = new MiddleSchool();
+        initListener();
         return view;
     }
 
     @Override
+    public void initListener() {
+        ivCourseRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ivCourseRefresh.setVisibility(View.GONE);
+                getCourseWareTests();
+            }
+        });
+        ivWebViewRefresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addJs = false;
+                mWaveView.stop();
+                wvSubjectWeb.reload();
+            }
+        });
+    }
+
+    @Override
     public void initData() {
-        content = "";
         pageNum = 0;
         fireNum = 0;
         goldNum = 0;
@@ -217,22 +241,17 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         answerData = new JSONObject();
         userAnswer = new JSONArray();
 
+        ivWebViewRefresh.setVisibility(View.VISIBLE);
         wvSubjectWeb.setVisibility(View.VISIBLE);
         rlGroupGameSingle.setVisibility(View.VISIBLE);
+
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 mWaveView.initialize();
             }
         }, 300);
-
-        for (int i = 0; i < mAnswersList.size(); i++) {
-            content += mAnswersList.get(i).getText();
-            if (i != mAnswersList.size() - 1) {
-                content += "|";
-            }
-        }
-        restartTimer();
+        singleModeAction.startTimer();
         boolean hasAudidoPermission = XesPermission.hasSelfPermission(mContext, Manifest.permission.RECORD_AUDIO); //
         // 检查用户麦克风权限
         if (hasAudidoPermission) {
@@ -268,25 +287,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         }
     }
 
-    @Override
-    public void initListener() {
-        ivCourseRefresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ivCourseRefresh.setVisibility(View.GONE);
-                getCourseWareTests();
-            }
-        });
-        ivWebViewRefresh.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addJs = false;
-                mWaveView.stop();
-                wvSubjectWeb.reload();
-            }
-        });
-    }
-
     private void initWebView() {
         newCourseCache = new GroupCourseCache(mContext, liveId);
         addJavascriptInterface();
@@ -317,28 +317,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         }), "xesApp");
         wvSubjectWeb.loadUrl(mGroupGameTestInfosEntity.getTestInfoList().get(0).getPreviewPath());
     }
-
-    private void restartTimer() {
-        handler.removeCallbacks(turnPageRunnable);
-        singleScoreList.clear();
-        singleVoiceTime = System.currentTimeMillis();
-        singleCount = 0;
-        if (pageNum >= mAnswersList.size()) {
-            submitData();
-            showResultPager();
-        } else {
-            handler.postDelayed(turnPageRunnable, (mAnswersList.get(pageNum).getSingleTime() + 1) * 1000);
-
-        }
-    }
-
-    private Runnable turnPageRunnable = new Runnable() {
-        @Override
-        public void run() {
-            saveUserAnswer(0);
-            turnPage();
-        }
-    };
 
     private void showResultPager() {
         ArrayList<TeamMemberEntity> entities = new ArrayList<>();
@@ -419,21 +397,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             @Override
             public void run() {
                 preLoad.onStop();
-                if (detailInfo.type.equals(LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON)) {
-                    try {
-                        JSONObject resultData = new JSONObject();
-                        resultData.put("type", CourseMessage.SEND_CoursewareOnloading);
-                        resultData.put("pageNum", 0);
-                        resultData.put("restTime", mAnswersList.get(0).getSingleTime());
-                        resultData.put("currentRight", 0);
-                        resultData.put("isSingle", true);
-                        StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
+                singleModeAction.onLoadComplete();
                 initData();
-                initListener();
             }
         });
     }
@@ -457,7 +422,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         }
         mParam.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
         mParam.setLang(com.tal.speech.speechrecognizer.Constants.ASSESS_PARAM_LANGUAGE_EN);
-        mParam.setStrEvaluator(content);
+        mParam.setStrEvaluator(content.toString());
         mParam.setLocalSavePath(saveVideoFile.getPath());
         mParam.setMultRef(false);
         mParam.setLearning_stage(learningStage);
@@ -479,9 +444,9 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     logger.d("onEvaluatorError: errorNo = " + resultEntity.getErrorNo() + ", isOfflineFail =" + mIse.isOfflineFail());
                     onRecognizeStop(resultEntity);
                 } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
-                    if (resultEntity.getNewSenIdx() >= 0 && resultEntity.getNewSenIdx() == pageNum) {
-                        logger.d("onEvaluatoring: newSenIdx = " + resultEntity.getNewSenIdx() + ", score =" + resultEntity.getScore());
-                        onHitSentence(resultEntity.getScore(), resultEntity.getSpeechDuration());
+                    logger.d("onEvaluatoring: newSenIdx = " + resultEntity.getNewSenIdx() + ", score =" + resultEntity.getScore());
+                    if (resultEntity.getNewSenIdx() >= 0) {
+                        singleModeAction.onHitSentence(resultEntity);
                     }
                 }
             }
@@ -501,8 +466,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     }
 
     private void onRecognizeStop(ResultEntity resultEntity) {
-        existingVoiceTime = (long) (resultEntity.getSpeechDuration() * 1000);
-        if (isAttach()) {
+        existingVoiceTime += (long) (resultEntity.getSpeechDuration() * 1000);
+        if (isAttach() && !gameOver) {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -587,6 +552,22 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         });
     }
 
+    private int calculateStarByScore(int averageScore) {
+        int num;
+        if (averageScore < 40) {
+            num = 1;
+        } else if (averageScore < 60) {
+            num = 2;
+        } else if (averageScore < 75) {
+            num = 3;
+        } else if (averageScore < 90) {
+            num = 4;
+        } else {
+            num = 5;
+        }
+        return num;
+    }
+
     @Override
     public void setEnglishH5CoursewareBll(EnglishH5CoursewareBll englishH5CoursewareBll) {
 
@@ -620,9 +601,15 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     XESToastUtils.showToast(mContext, "互动题为空");
                     return;
                 }
-                fetchCoursewareSuccess = true;
                 mAnswersList = mTestInfoEntity.getAnswerList();
-                MAX_SINGLE_COUNT = mTestInfoEntity.getSingleCount();
+                //构建要识别的句子
+                for (int i = 0; i < mAnswersList.size(); i++) {
+                    content.append(mAnswersList.get(i).getText());
+                    if (i != mAnswersList.size() - 1) {
+                        content.append("|");
+                    }
+                }
+                fetchCoursewareSuccess = true;
                 initWebView();
             }
 
@@ -631,9 +618,9 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 logger.d("getCourseWareTests -> onDataFail() : errStatus = " + errStatus + ", failMsg = " + failMsg);
                 super.onDataFail(errStatus, failMsg);
                 if (errStatus == LiveHttpConfig.HTTP_ERROR_ERROR) {
-                    XESToastUtils.showToast(mContext, failMsg + ",请刷新");
+                    XESToastUtils.showToast(mContext, failMsg);
                 } else {
-                    XESToastUtils.showToast(mContext, "请求互动题失败，请刷新");
+                    XESToastUtils.showToast(mContext, "出了点意外，请稍后试试");
                 }
                 ivCourseRefresh.setVisibility(View.VISIBLE);
             }
@@ -678,7 +665,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     /**
      * 初中课件加载
      */
-    private class MiddleSchool implements PreLoad {
+    private class MiddleSchoolPreLoad implements PreLoad {
         private ImageView ivLoading;
         private ProgressBar pgCourseProg;
         private TextView tvDataLoadingTip;
@@ -737,64 +724,9 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             resultData.put("type", CourseMessage.SEND_CoursewareOnloading);
             resultData.put("pageNum", pageNum);
             StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
-            restartTimer();
+            singleModeAction.startTimer();
         } catch (JSONException e) {
             e.printStackTrace();
-        }
-    }
-
-    /**
-     * android调JS方法：上传评分数据
-     *
-     * @param score
-     * @param isTurnPage
-     */
-    private void uploadScore(int score, boolean isTurnPage) {
-        JSONObject jsonData = new JSONObject();
-        try {
-            jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
-            //答对题目学生序号（1/2/3）  单人模式只有2号学生
-            jsonData.put("studentNum", 2);
-            jsonData.put("score", score);
-            jsonData.put("isTurnPage", isTurnPage);
-            wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
-            if (isTurnPage) {
-                pageNum++;
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 语音评测 - 命中句子
-     *
-     * @param score
-     */
-    private void onHitSentence(int score, double speechDuration) {
-        logger.d("onHitSentence: score = " + score + ", speechDuration = " + speechDuration);
-        singleScoreList.add(score);
-        allScoreList.add(score);
-        this.voiceTime = existingVoiceTime + (long) (speechDuration * 1000);
-        if (score >= 70) {
-            singleCount++;
-            rightNum++;
-//            onFireAdd(10 / MAX_SINGLE_COUNT);
-            if (singleCount >= MAX_SINGLE_COUNT) {
-                saveUserAnswer(1);
-                if (isPlayBack) {
-                    goldNum = 1;
-                } else {
-                    goldNum = 2;
-                }
-                uploadScore(score, true);
-                restartTimer();
-            } else {
-                uploadScore(score, false);
-            }
-        } else {
-//            onOops();
-            uploadScore(score, false);
         }
     }
 
@@ -818,22 +750,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             e.printStackTrace();
         }
         userAnswer.put(jsonObject);
-    }
-
-    private int calculateStarByScore(int averageScore) {
-        int num;
-        if (averageScore < 40) {
-            num = 1;
-        } else if (averageScore < 60) {
-            num = 2;
-        } else if (averageScore < 75) {
-            num = 3;
-        } else if (averageScore < 90) {
-            num = 4;
-        } else {
-            num = 5;
-        }
-        return num;
     }
 
     /**
@@ -863,5 +779,194 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 tvOops.setVisibility(View.GONE);
             }
         }, 2000);
+    }
+
+    /**
+     * 热气球交互
+     */
+    class HotAirBallonAction implements SingleModeAction {
+
+        private Runnable turnPageRunnable = new Runnable() {
+            @Override
+            public void run() {
+                saveUserAnswer(0);
+                turnPage();
+            }
+        };
+
+        @Override
+        public void startTimer() {
+            handler.removeCallbacks(turnPageRunnable);
+            singleScoreList.clear();
+            singleVoiceTime = System.currentTimeMillis();
+            singleCount = 0;
+            if (pageNum >= mAnswersList.size()) {
+                gameOver = true;
+                if (mIse != null) {
+                    mIse.cancel();
+                }
+                submitData();
+                showResultPager();
+            } else {
+                int time = mAnswersList.get(pageNum).getSingleTime() + 1;
+                handler.postDelayed(turnPageRunnable, time * 1000);
+            }
+        }
+
+        @Override
+        public void onLoadComplete() {
+            if (detailInfo.type.equals(LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON)) {
+                try {
+                    JSONObject resultData = new JSONObject();
+                    resultData.put("type", CourseMessage.SEND_CoursewareOnloading);
+                    resultData.put("pageNum", 0);
+                    resultData.put("restTime", mAnswersList.get(0).getSingleTime());
+                    resultData.put("currentRight", 0);
+                    resultData.put("isSingle", true);
+                    StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        @Override
+        public void onHitSentence(ResultEntity resultEntity) {
+            int newSenIndex = resultEntity.getNewSenIdx();
+            int score = resultEntity.getScore();
+            double speechDuration = resultEntity.getSpeechDuration();
+            if (!(newSenIndex == pageNum)) {
+                return;
+            }
+            logger.d("onHitSentence: score = " + score + ", speechDuration = " + speechDuration);
+            singleScoreList.add(score);
+            allScoreList.add(score);
+            voiceTime = existingVoiceTime + (long) (speechDuration * 1000);
+            if (score >= 70) {
+                singleCount++;
+                rightNum++;
+                if (singleCount >= mTestInfoEntity.getSingleCount()) {
+                    saveUserAnswer(1);
+                    if (isPlayBack) {
+                        goldNum = 1;
+                    } else {
+                        goldNum = 2;
+                    }
+                    uploadScore(newSenIndex, score, true);
+                    startTimer();
+                } else {
+                    uploadScore(newSenIndex, score, false);
+                }
+            } else {
+                uploadScore(newSenIndex, score, false);
+            }
+        }
+
+        @Override
+        public void uploadScore(int newSenIndex, int score, boolean isTurnPage) {
+            JSONObject jsonData = new JSONObject();
+            try {
+                jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
+                //答对题目学生序号（1/2/3）  单人模式只有2号学生
+                jsonData.put("studentNum", 2);
+                jsonData.put("score", score);
+                jsonData.put("isTurnPage", isTurnPage);
+                wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
+                if (isTurnPage) {
+                    pageNum++;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * 抢水果交互
+     */
+    class CleanUpAction implements SingleModeAction {
+
+        @Override
+        public void startTimer() {
+            int time = mTestInfoEntity.getAnswerLimitTime() + 1;
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    gameOver = true;
+                    if (mIse != null) {
+                        mIse.cancel();
+                    }
+                    submitData();
+                    showResultPager();
+                }
+            }, time * 1000);
+        }
+
+        @Override
+        public void onLoadComplete() {
+            JSONObject resultData = new JSONObject();
+            try {
+                resultData.put("type", CourseMessage.SEND_CoursewareOnloading);
+                resultData.put("pageNum", 0);
+                resultData.put("restTime", mTestInfoEntity.getAnswerLimitTime());
+                JSONArray studentInfo = new JSONArray();
+                JSONObject student = new JSONObject();
+                student.put("studentNum", 1);
+                student.put("name", liveGetInfo.getStuName());
+                student.put("avatar", liveGetInfo.getHeadImgPath());
+
+                JSONObject rankInfo = new JSONObject();
+                rankInfo.put("grading", 0);
+                rankInfo.put("star", 0);
+                student.put("rankInfo", rankInfo);
+
+                JSONArray rightItem = new JSONArray();
+                student.put("rightItem", rightItem);
+
+                studentInfo.put(student);
+                resultData.put("studentInfo", studentInfo);
+                StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
+            } catch (Exception e) {
+                logger.d("onLoadComplete", e);
+            }
+        }
+
+        @Override
+        public void onHitSentence(ResultEntity resultEntity) {
+            int newSenIndex = resultEntity.getNewSenIdx();
+            int score = resultEntity.getScore();
+            double speechDuration = resultEntity.getSpeechDuration();
+            if (newSenIndex < 0 || score < 70) {
+                return;
+            }
+            logger.d("onHitSentence: score = " + score + ", speechDuration = " + speechDuration);
+            allScoreList.add(score);
+            voiceTime = existingVoiceTime + (long) (speechDuration * 1000);
+            if (isPlayBack) {
+                goldNum = 1;
+            } else {
+                goldNum = 2;
+            }
+            uploadScore(newSenIndex, score, false);
+        }
+
+        @Override
+        public void uploadScore(int newSenIndex, int score, boolean isTurnPage) {
+            JSONObject jsonData = new JSONObject();
+            try {
+                jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
+                jsonData.put("studentNum", 1);
+
+                JSONObject rightItem = new JSONObject();
+                rightItem.put("rightId", newSenIndex);
+                rightItem.put("getFireCount", 3);
+                jsonData.put("rightItem", rightItem);
+
+                jsonData.put("combo", 0);
+                wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
+            } catch (Exception e) {
+                logger.d("uploadScore", e);
+            }
+        }
     }
 }
