@@ -82,7 +82,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 import io.agora.rtc.Constants;
 import io.agora.rtc.RtcEngine;
@@ -232,49 +231,33 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 for (int i = 0; i < entities.size(); i++) {
                     TeamMemberEntity teamMemberEntity = entities.get(i);
                     CleanUpEntity cleanUpEntity = new CleanUpEntity();
-                    if (cleanUpEntities.containsKey("" + teamMemberEntity.id)) {
-                        cleanUpEntity = cleanUpEntities.get("" + teamMemberEntity.id);
-                    } else {
-                        cleanUpEntities.put("" + teamMemberEntity.id, cleanUpEntity);
-                    }
                     cleanUpEntity.teamMemberEntity = teamMemberEntity;
+                    cleanUpEntities.put("" + teamMemberEntity.id, cleanUpEntity);
                 }
             } else {
                 for (int i = 0; i < entities.size(); i++) {
                     TeamMemberEntity teamMemberEntity = entities.get(i);
                     VidooCannonEntity vidooCannonEntity = new VidooCannonEntity();
-                    if (vidooCannonEntities.containsKey("" + teamMemberEntity.id)) {
-                        vidooCannonEntity = vidooCannonEntities.get("" + teamMemberEntity.id);
-                    } else {
-                        vidooCannonEntities.put("" + teamMemberEntity.id, vidooCannonEntity);
-                    }
                     vidooCannonEntity.teamMemberEntity = teamMemberEntity;
+                    vidooCannonEntities.put("" + teamMemberEntity.id, vidooCannonEntity);
                 }
             }
             //有战队pk，才使用有tcp
             tcpMessageReg = ProxUtil.getProxUtil().get(mContext, TcpMessageReg.class);
             if (tcpMessageReg != null) {
-                tcpMessageReg.onConnet(new TcpMessageReg.OnTcpReg() {
-                    @Override
-                    public void onReg() {
-                        if (LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(gameType)) {
-                            CleanUpOnMessage cleanUpOnMessage = (CleanUpOnMessage) onMessage;
-                            CleanUpTcpMessage cleanUpTcpMessage = new CleanUpTcpMessage();
-                            cleanUpTcpMessage.cleanUpOnMessage = cleanUpOnMessage;
-                            tcpMessageAction = cleanUpTcpMessage;
-                            evaluatorIng = new CleanEvaluatorIng();
-                        } else {
-                            VoiceCannonOnMessage voiceCannnon = (VoiceCannonOnMessage) onMessage;
-                            VoiceProjectile voiceProjectile = new VoiceProjectile();
-                            voiceProjectile.voiceCannonOnMessage = voiceCannnon;
-                            tcpMessageAction = voiceProjectile;
-                            evaluatorIng = new VoiceCannnon();
-                        }
-                        boolean change = tcpMessageReg.setTest(LiveQueConfig.EN_COURSE_GAME_TYPE_1, detailInfo.id);
-                        mLogtf.d("initData(setTest):change=" + change);
-                        tcpMessageReg.registTcpMessageAction(tcpMessageAction);
-                    }
-                });
+                if (LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(gameType)) {
+                    CleanUpOnMessage cleanUpOnMessage = (CleanUpOnMessage) onMessage;
+                    CleanUpTcpMessage cleanUpTcpMessage = new CleanUpTcpMessage();
+                    cleanUpTcpMessage.cleanUpOnMessage = cleanUpOnMessage;
+                    tcpMessageAction = cleanUpTcpMessage;
+                    evaluatorIng = new CleanEvaluatorIng();
+                } else {
+                    VoiceCannonOnMessage voiceCannnon = (VoiceCannonOnMessage) onMessage;
+                    VoiceProjectile voiceProjectile = new VoiceProjectile();
+                    voiceProjectile.voiceCannonOnMessage = voiceCannnon;
+                    tcpMessageAction = voiceProjectile;
+                    evaluatorIng = new VoiceCannnon();
+                }
             }
             joinChannel(entities);
         }
@@ -384,54 +367,58 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 @Override
                 public void run() {
                     preLoad.onStop();
-                    try {
-                        GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
-                        JSONObject resultData = new JSONObject();
-                        resultData.put("type", CourseMessage.SEND_CoursewareOnloading);
-                        resultData.put("pageNum", currentAnswerIndex);
-                        resultData.put("restTime", testInfoEntity.getTotalTime());
-                        JSONArray studentInfo = new JSONArray();
-                        ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
-                        for (int i = 0; i < entities.size(); i++) {
-                            TeamMemberEntity teamMemberEntity = entities.get(i);
-                            JSONObject student = new JSONObject();
-                            student.put("studentNum", 3 - i);
-                            student.put("name", teamMemberEntity.name);
-//                            student.put("avatar", teamMemberEntity.headurl);
-                            student.put("avatar", "http://xesfile.oss-cn-beijing.aliyuncs.com/nrcpb/cjtsg5ybb0000ywow5xr4ne1j.png");
-                            {
-                                JSONObject rankInfo = new JSONObject();
-                                rankInfo.put("grading", 1);
-                                rankInfo.put("star", 1);
-                                student.put("rankInfo", rankInfo);
-                            }
-                            {
-                                JSONArray rightItem = new JSONArray();
-                                CleanUpEntity cleanUpEntity = cleanUpEntities.get("" + teamMemberEntity.id);
-                                if (cleanUpEntity != null) {
-                                    List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = cleanUpEntity.rightAnswerList;
-                                    for (int j = 0; j < answerList.size(); j++) {
-                                        GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = answerList.get(j);
-                                        JSONObject rightObj = new JSONObject();
-                                        rightObj.put("rightId", "" + answersEntity.getId());
-                                        rightObj.put("getFireCount", "" + answersEntity.getGetFireCount());
-                                        rightItem.put(rightObj);
-                                    }
-                                }
-                                student.put("rightItem", rightItem);
-                            }
-                            studentInfo.put(student);
-                        }
-                        resultData.put("studentInfo", studentInfo);
-                        StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
-                    } catch (Exception e) {
-                        logger.d("onLoadComplete1", e);
-                    }
+                    onScene();
                     if (!gameOver) {
                         startSpeechRecognize();
                     }
                 }
             });
+        }
+
+        private void onScene() {
+            try {
+                GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
+                JSONObject resultData = new JSONObject();
+                resultData.put("type", CourseMessage.SEND_CoursewareOnloading);
+                resultData.put("pageNum", currentAnswerIndex);
+                resultData.put("restTime", testInfoEntity.getTotalTime());
+                JSONArray studentInfo = new JSONArray();
+                ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
+                for (int i = 0; i < entities.size(); i++) {
+                    TeamMemberEntity teamMemberEntity = entities.get(i);
+                    JSONObject student = new JSONObject();
+                    student.put("studentNum", 3 - i);
+                    student.put("name", teamMemberEntity.name);
+//                            student.put("avatar", teamMemberEntity.headurl);
+                    student.put("avatar", "http://xesfile.oss-cn-beijing.aliyuncs.com/nrcpb/cjtsg5ybb0000ywow5xr4ne1j.png");
+                    {
+                        JSONObject rankInfo = new JSONObject();
+                        rankInfo.put("grading", 1);
+                        rankInfo.put("star", 1);
+                        student.put("rankInfo", rankInfo);
+                    }
+                    {
+                        JSONArray rightItem = new JSONArray();
+                        CleanUpEntity cleanUpEntity = cleanUpEntities.get("" + teamMemberEntity.id);
+                        if (cleanUpEntity != null) {
+                            List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = cleanUpEntity.rightAnswerList;
+                            for (int j = 0; j < answerList.size(); j++) {
+                                GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = answerList.get(j);
+                                JSONObject rightObj = new JSONObject();
+                                rightObj.put("rightId", answersEntity.getId());
+                                rightObj.put("getFireCount", answersEntity.getGetFireCount());
+                                rightItem.put(rightObj);
+                            }
+                        }
+                        student.put("rightItem", rightItem);
+                    }
+                    studentInfo.put(student);
+                }
+                resultData.put("studentInfo", studentInfo);
+                StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
+            } catch (Exception e) {
+                logger.d("onScene", e);
+            }
         }
     }
 
@@ -976,7 +963,21 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 } else {
                     ispreload = true;
                 }
+                connectTcp();
                 NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), getSubtestid(), test.getPreviewPath(), ispreload, test.getTestId());
+            }
+
+            private void connectTcp() {
+                if (tcpMessageReg != null) {
+                    tcpMessageReg.onConnet(new TcpMessageReg.OnTcpReg() {
+                        @Override
+                        public void onReg() {
+                            boolean change = tcpMessageReg.setTest(LiveQueConfig.EN_COURSE_GAME_TYPE_1, detailInfo.id);
+                            mLogtf.d("connectTcp(setTest):change=" + change);
+                            tcpMessageReg.registTcpMessageAction(tcpMessageAction);
+                        }
+                    });
+                }
             }
 
             /**
@@ -1242,6 +1243,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
     private void createSpeechContent(String method) {
         speechContent = "";
+        if (allAnswerList.isEmpty()) {
+            gameOver = true;
+            return;
+        }
         for (int j = 0; j < allAnswerList.size(); j++) {
             GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = allAnswerList.get(j);
             speechContent += answersEntity.getText() + "|";
@@ -1268,21 +1273,24 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     return;
                 }
                 GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity removeAnswersEntity = allAnswerList.get(newSenIdx);
-                allAnswerList.remove(removeAnswersEntity);
-                cleanUpEntity.rightAnswerList.add(removeAnswersEntity);
-                createSpeechContent("CleanEvaluatorIng");
-                JSONObject jsonData = new JSONObject();
-                jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
-                jsonData.put("studentNum", 3);
                 {
-                    JSONObject rightItem = new JSONObject();
-                    Random random = new Random();
-                    rightItem.put("rightId", removeAnswersEntity.getId());
-                    rightItem.put("getFireCount", 3);
-                    jsonData.put("rightItem", rightItem);
+                    //传入网页。现在通过tcp传
+//                    allAnswerList.remove(removeAnswersEntity);
+//                    cleanUpEntity.rightAnswerList.add(removeAnswersEntity);
+//                    createSpeechContent("CleanEvaluatorIng");
+//                    JSONObject jsonData = new JSONObject();
+//                    jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
+//                    jsonData.put("studentNum", 3);
+//                    {
+//                        JSONObject rightItem = new JSONObject();
+//                        Random random = new Random();
+//                        rightItem.put("rightId", removeAnswersEntity.getId());
+//                        rightItem.put("getFireCount", 3);
+//                        jsonData.put("rightItem", rightItem);
+//                    }
+//                    jsonData.put("combo", 0);
+//                    wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
                 }
-                jsonData.put("combo", 0);
-                wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
                 PkTeamEntity teamEntity = getStuActiveTeam.getPkTeamEntity();
                 if (teamEntity != null) {
                     JSONObject bodyJson = new JSONObject();
@@ -1295,7 +1303,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 //                        return;
 //                    }
                     bodyJson.put("uid", "" + stuid);
-                    bodyJson.put("word", "banana");
+                    bodyJson.put("word", "" + removeAnswersEntity.getText());
                     bodyJson.put("pk_team_id", teamEntity.getPkTeamId());
                     bodyJson.put("team_type", "interactive");
                     bodyJson.put("interactive_team_id", interactiveTeam.getInteractive_team_id());
@@ -1529,6 +1537,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                                     }
                                                 }
                                             }
+                                            createSpeechContent("CLEAN_UP_REC");
                                             JSONObject jsonData = new JSONObject();
                                             jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
                                             jsonData.put("studentNum", 3);
@@ -1558,15 +1567,43 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             for (int i = 0; i < dataAray.length(); i++) {
                                 JSONObject stuObj = dataAray.getJSONObject(i);
                                 String stu_id = stuObj.getString("stu_id");
-                                String total_energy = stuObj.getString("total_energy");
+                                CleanUpEntity cleanUpEntity = cleanUpEntities.get(stu_id);
+                                int total_energy = stuObj.getInt("total_energy");
+                                if (cleanUpEntity != null) {
+                                    cleanUpEntity.teamMemberEntity.energy = total_energy;
+                                }
                                 JSONArray rob_wordsArray = stuObj.getJSONArray("rob_words");
                                 for (int j = 0; j < rob_wordsArray.length(); j++) {
                                     JSONObject rob_wordObj = rob_wordsArray.getJSONObject(j);
-                                    String word_id = rob_wordObj.getString("word_id");
-                                    String word_text = rob_wordObj.getString("word_text");
-                                    String scores = rob_wordObj.getString("scores");
+                                    int word_id = rob_wordObj.getInt("word_id");
+//                                    String word_text = rob_wordObj.getString("word_text");
+//                                    String scores = rob_wordObj.getString("scores");
+                                    int incr_energy = rob_wordObj.optInt("incr_energy");
+                                    for (int k = 0; k < allAnswerList.size(); k++) {
+                                        GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = allAnswerList.get(k);
+                                        if (answer.getId() == word_id) {
+                                            allAnswerList.remove(answer);
+                                            answer.setGetFireCount(incr_energy);
+                                            if (cleanUpEntity != null) {
+                                                cleanUpEntity.rightAnswerList.add(answer);
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
+                                if (cleanUpEntity == null) {
+                                    logger.d("CLEAN_UP_SECN:stu_id=" + stu_id);
+                                } else {
+                                    logger.d("CLEAN_UP_SECN:stu_id=" + stu_id + ",right=" + cleanUpEntity.rightAnswerList.size());
                                 }
                             }
+                            createSpeechContent("CLEAN_UP_SECN");
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    cleanUpOnMessage.onScene();
+                                }
+                            });
                         } catch (Exception e) {
                             logger.d("onMessage:CLEAN_UP_SECN", e);
                         }
