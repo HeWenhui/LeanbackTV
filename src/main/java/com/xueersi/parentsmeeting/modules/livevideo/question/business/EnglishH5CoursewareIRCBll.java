@@ -917,7 +917,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         public void getCourseWareTests(VideoQuestionLiveEntity detailInfo, AbstractBusinessDataCallBack callBack) {
             if (isArts == LiveVideoSAConfig.ART_EN) {
                 if (LiveQueConfig.isGroupGame(detailInfo.type)) {
-                    getCourseWareHttpManager().getGroupGameTestInfos(detailInfo.id, detailInfo.type, callBack);
+                    getCourseWareHttpManager().getGroupGameTestInfos(detailInfo.id, mGetInfo.getStuId(), detailInfo.type, callBack);
                 } else {
                     getCourseWareHttpManager().getTestInfos(detailInfo.id, callBack);
                 }

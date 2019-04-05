@@ -273,10 +273,11 @@ public class CourseWareHttpManager {
      * @param type
      * @param callBack
      */
-    public void getGroupGameTestInfos(String testIds, final String type, final AbstractBusinessDataCallBack callBack) {
+    public void getGroupGameTestInfos(String testIds, String stuId, final String type, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         liveHttpManager.setDefaultParameter(httpRequestParams);
         httpRequestParams.addBodyParam("testIds", testIds);
+        httpRequestParams.addBodyParam("stuId", stuId);
         String url = LiveQueHttpConfig.LIVE_GET_COURSEWARE_TESTS_EN;
         liveHttpManager.sendPost(url, httpRequestParams, new HttpCallBack(false) {
             @Override
