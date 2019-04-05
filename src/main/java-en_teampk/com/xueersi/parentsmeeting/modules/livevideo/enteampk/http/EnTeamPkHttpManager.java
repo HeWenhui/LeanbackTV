@@ -6,6 +6,7 @@ import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoHttpEnConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.config.EnTeamPkHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.InteractiveTeam;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
@@ -30,6 +31,21 @@ public class EnTeamPkHttpManager {
     public EnTeamPkHttpManager(LiveHttpManager liveHttpManager) {
         this.liveHttpManager = liveHttpManager;
         enTeamPkResponseParser = new EnTeamPkResponseParser();
+    }
+
+    /**
+     * 学生上报个人信息
+     *
+     * @param is_interactive
+     * @param requestCallBack
+     */
+    public void reportInteractiveInfo(String stu_id, String unique_id, boolean is_interactive, HttpCallBack requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("stu_id", "" + stu_id);
+        params.addBodyParam("unique_id", unique_id);
+        params.addBodyParam("is_interactive", "" + is_interactive);
+        liveHttpManager.setDefaultParameter(params);
+        liveHttpManager.sendPost(LiveVideoHttpEnConfig.URL_LIVE_REPORT_InteractiveInfo + "?unique_id=" + unique_id, params, requestCallBack);
     }
 
     public void dispatch(String userId, final AbstractBusinessDataCallBack callBack) {

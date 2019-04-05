@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageReg;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 
 import io.agora.rtc.RtcEngine;
@@ -29,12 +30,17 @@ public abstract class BaseCourseGroupItem implements AdapterItemInterface<TeamMe
     protected TeamMemberEntity entity;
     public static int voiceStartFrame = 14;
     public static int voiceMaxFrame = 0;
+    protected OnVideoAudioClick onVideoAudioClick;
 
     public BaseCourseGroupItem(Context context, TeamMemberEntity entity, WorkerThread workerThread, int uid) {
         this.mContext = context;
         this.entity = entity;
         this.workerThread = workerThread;
         this.uid = uid;
+    }
+
+    public void setOnVideoAudioClick(OnVideoAudioClick onVideoAudioClick) {
+        this.onVideoAudioClick = onVideoAudioClick;
     }
 
     @Override
@@ -77,5 +83,11 @@ public abstract class BaseCourseGroupItem implements AdapterItemInterface<TeamMe
 
     public void onScene() {
         tvCourseItemFire.setText("" + entity.energy);
+    }
+
+    public interface OnVideoAudioClick {
+        void onVideoClick(boolean enable);
+
+        void onAudioClick(boolean enable);
     }
 }

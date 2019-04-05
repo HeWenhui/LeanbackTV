@@ -61,6 +61,9 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
                 if (rtcEngine != null) {
                     enableVideo = !enableVideo;
                     rtcEngine.enableLocalVideo(enableVideo);
+                    if (onVideoAudioClick != null) {
+                        onVideoAudioClick.onVideoClick(enableVideo);
+                    }
                 }
             }
         });
@@ -90,6 +93,9 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
                                 ivCourseItemVideoDis.setVisibility(View.VISIBLE);
                             }
                         }, 1000);
+                    }
+                    if (onVideoAudioClick != null) {
+                        onVideoAudioClick.onAudioClick(enableAudio);
                     }
                 }
             }

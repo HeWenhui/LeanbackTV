@@ -176,6 +176,10 @@ public class GroupGameTestInfosEntity {
              * 单题作答时长
              */
             private int singleTime;
+            /**
+             * 能量值
+             */
+            private int getFireCount;
 
             public int getId() {
                 return id;
@@ -200,6 +204,15 @@ public class GroupGameTestInfosEntity {
             public void setSingleTime(int singleTime) {
                 this.singleTime = singleTime;
             }
+
+            public int getGetFireCount() {
+                return getFireCount;
+            }
+
+            public void setGetFireCount(int getFireCount) {
+                this.getFireCount = getFireCount;
+            }
+
         }
     }
 }

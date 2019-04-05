@@ -75,7 +75,7 @@ public class GroupGameTcp {
                 receiveMegCallBack.onConnect(this);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.d("start:e=" + e.getMessage());
             if (receiveMegCallBack != null) {
                 receiveMegCallBack.onDisconnect(this);
             }

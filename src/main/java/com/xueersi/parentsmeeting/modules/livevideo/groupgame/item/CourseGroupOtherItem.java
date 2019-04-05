@@ -71,6 +71,9 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
                 if (rtcEngine != null) {
                     enableVideo = !enableVideo;
                     rtcEngine.muteRemoteVideoStream(uid, enableVideo);
+                    if (onVideoAudioClick != null) {
+                        onVideoAudioClick.onVideoClick(enableVideo);
+                    }
                 }
             }
         });
@@ -81,6 +84,9 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
                 if (rtcEngine != null) {
                     enableAudio = !enableAudio;
                     rtcEngine.muteRemoteAudioStream(uid, enableAudio);
+                    if (onVideoAudioClick != null) {
+                        onVideoAudioClick.onAudioClick(enableAudio);
+                    }
                 }
             }
         });
