@@ -14,7 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.WeakHandler;
 
 public class SmallEnglishRedPackagePager extends BasePager implements Handler.Callback {

@@ -55,7 +55,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEnt
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSpeedEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IRCCallback;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IRCMessage;

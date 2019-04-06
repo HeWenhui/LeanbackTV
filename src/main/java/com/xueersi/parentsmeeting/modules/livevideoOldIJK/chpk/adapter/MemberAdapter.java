@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.xueersi.lib.imageloader.ImageLoader;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 
 /**

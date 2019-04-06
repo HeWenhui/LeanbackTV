@@ -9,7 +9,7 @@ import android.webkit.JavascriptInterface;
 import com.tencent.smtt.sdk.WebSettings;
 import com.xueersi.parentsmeeting.module.browser.business.XesWebViewCookieUtils;
 import com.xueersi.parentsmeeting.module.browser.provider.WebFunctionProvider;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.IExperiencePresenter;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.BaseWebviewX5Pager;
 

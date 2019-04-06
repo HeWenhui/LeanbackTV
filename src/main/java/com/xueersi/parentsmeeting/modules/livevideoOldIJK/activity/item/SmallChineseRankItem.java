@@ -2,7 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.item;
 
 import android.view.View;
 
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
 import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
 import com.xueersi.ui.adapter.AdapterItemInterface;

@@ -3,7 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.page;
 import android.content.Context;
 import android.view.View;
 
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.nbh5courseware.pager.BaseNbH5CoursewarePager;
 
 /**

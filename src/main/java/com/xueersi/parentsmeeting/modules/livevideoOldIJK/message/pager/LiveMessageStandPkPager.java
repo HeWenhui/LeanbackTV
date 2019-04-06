@@ -34,7 +34,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.RegexUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.item.FlowerItem;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
@@ -49,7 +49,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.LiveM
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.item.StandLiveMessOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.item.StandLiveMessSysItem;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.QuestionStatic;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveSoundPool;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.StandLiveMethod;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;

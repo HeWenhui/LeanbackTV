@@ -12,7 +12,7 @@ import android.view.SurfaceView;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 import java.io.File;
 

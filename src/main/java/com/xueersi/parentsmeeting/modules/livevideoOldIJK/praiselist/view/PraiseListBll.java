@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.xueersi.lib.framework.utils.ScreenUtils;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.WeakHandler;
@@ -17,10 +17,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.contract.PraiseListPresenter;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.contract.PraiseListView;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.entity.ExcellentListEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.entity.LikeListEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.entity.MinimarketListEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.entity.PraiseListDanmakuEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.ExcellentListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.MinimarketListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListDanmakuEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.page.PraiseListPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 

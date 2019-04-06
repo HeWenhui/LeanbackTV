@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.IExperiencePresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.RoundProgressBar;

@@ -24,7 +24,7 @@ import android.widget.TextView;
 
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.lib.framework.utils.ScreenUtils;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.item.VoteAdapter;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveBll2;

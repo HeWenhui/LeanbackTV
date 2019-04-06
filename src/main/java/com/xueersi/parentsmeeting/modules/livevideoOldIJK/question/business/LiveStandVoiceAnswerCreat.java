@@ -27,7 +27,7 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -37,7 +37,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.BaseVoiceAnswerPa
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.entity.CreateAnswerReslutEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.VoiceAnswerStandPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.VoiceAnswerStandLog;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveSoundPool;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.StandLiveMethod;
 

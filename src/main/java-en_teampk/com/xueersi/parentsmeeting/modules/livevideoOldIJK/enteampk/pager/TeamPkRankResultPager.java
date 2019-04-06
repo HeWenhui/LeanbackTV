@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.config.EnTeamPkConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.entity.PkTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.entity.TeamMemberEntity;

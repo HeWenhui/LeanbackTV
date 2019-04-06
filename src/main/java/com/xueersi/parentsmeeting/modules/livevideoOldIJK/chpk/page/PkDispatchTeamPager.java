@@ -11,7 +11,7 @@ import android.widget.ImageView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.xueersi.common.base.BasePager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.chpk.business.ChinesePkBll;
 
 import java.io.BufferedReader;

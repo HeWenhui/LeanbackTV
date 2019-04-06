@@ -48,7 +48,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
@@ -62,7 +62,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.SpeechStandL
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.GlideDrawableUtil;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveCacheFile;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveSoundPool;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.StandLiveMethod;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.TextStrokeUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;

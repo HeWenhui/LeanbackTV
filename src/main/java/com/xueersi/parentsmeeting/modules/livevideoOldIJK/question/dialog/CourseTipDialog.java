@@ -5,7 +5,7 @@ import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
 
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.ui.dialog.BaseAlertDialog;
 
 public class CourseTipDialog extends BaseAlertDialog {

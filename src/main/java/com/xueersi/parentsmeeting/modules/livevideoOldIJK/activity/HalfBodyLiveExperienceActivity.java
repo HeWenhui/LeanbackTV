@@ -50,7 +50,7 @@ import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
 import com.xueersi.parentsmeeting.module.browser.event.BrowserEvent;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IRCCallback;

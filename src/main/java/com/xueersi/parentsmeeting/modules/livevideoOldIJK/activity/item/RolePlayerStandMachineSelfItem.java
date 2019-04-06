@@ -22,7 +22,7 @@ import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.AudioPlayerManager;
 import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.PlayerCallback;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;

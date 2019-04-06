@@ -43,7 +43,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.item.RolePlayerStandMachineOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.item.RolePlayerStandMachineSelfItem;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.RolePlayMachineBll;
@@ -59,7 +59,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.BaseSpee
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.view.StandSpeechResult;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.GlideDrawableUtil;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveCacheFile;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveSoundPool;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.StandLiveMethod;
 import com.xueersi.parentsmeeting.modules.livevideo.view.CustomUnScorllListView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;

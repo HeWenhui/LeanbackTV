@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.xueersi.parentsmeeting.module.videoplayer.entity.LiveExperienceEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
 
 import java.util.ArrayList;

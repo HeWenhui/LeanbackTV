@@ -34,7 +34,7 @@ import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.framework.utils.file.FileUtils;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;

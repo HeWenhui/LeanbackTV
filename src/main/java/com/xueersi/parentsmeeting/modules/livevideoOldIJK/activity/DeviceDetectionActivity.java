@@ -11,7 +11,7 @@ import com.tencent.cos.xml.utils.StringUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.XesActivity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.irc.DeviceDetectionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.DeviceDetectionEntity;
 import com.xueersi.ui.dataload.DataErrorManager;

@@ -57,7 +57,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoActivity;
 import com.xueersi.parentsmeeting.module.videoplayer.widget.LivePlaybackMediaController;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.dialog.RedPacketAlertDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecturePeopleEntity;

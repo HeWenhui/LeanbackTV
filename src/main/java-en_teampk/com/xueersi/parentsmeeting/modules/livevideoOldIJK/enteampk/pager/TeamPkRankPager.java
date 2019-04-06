@@ -12,7 +12,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.config.EnTeamPkConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.entity.EnTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.entity.PkTeamEntity;

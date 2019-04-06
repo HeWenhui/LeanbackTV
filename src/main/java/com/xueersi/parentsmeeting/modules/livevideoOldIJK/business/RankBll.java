@@ -20,7 +20,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.item.RankItem;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.RankPage.SmallChineseRankPager;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;

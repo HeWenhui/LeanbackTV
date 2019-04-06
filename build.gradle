@@ -45,6 +45,7 @@ dependencies {
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.share)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.browser)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.xeslottie)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.pschatsdk)
     implementation rootProject.ext.thirdlibraries.arouterapi
     implementation rootProject.ext.thirdlibraries.appcompat
     implementation rootProject.ext.thirdlibraries.recyclerview

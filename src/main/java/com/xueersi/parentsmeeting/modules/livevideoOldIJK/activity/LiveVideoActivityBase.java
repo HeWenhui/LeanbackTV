@@ -49,9 +49,9 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack.VPlayerListener;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LayoutParamsUtil;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.video.LivePlayLog;
+import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
 import com.xueersi.ui.dataload.DataLoadManager;
 
 import org.greenrobot.eventbus.EventBus;

@@ -16,7 +16,7 @@ import android.widget.TextView;
 import android.widget.ViewFlipper;
 
 import com.xueersi.lib.framework.utils.SizeUtils;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 import java.util.ArrayList;
 import java.util.List;

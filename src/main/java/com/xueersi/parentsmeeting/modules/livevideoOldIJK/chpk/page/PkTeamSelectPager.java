@@ -31,7 +31,7 @@ import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.chpk.adapter.MemberAdapter;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.chpk.adapter.TeamAdapter;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.chpk.business.ChinesePkBll;

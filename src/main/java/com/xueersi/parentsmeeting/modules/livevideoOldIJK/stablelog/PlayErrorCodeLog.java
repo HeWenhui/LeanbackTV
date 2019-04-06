@@ -5,7 +5,7 @@ import android.text.TextUtils;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.video.PlayErrorCode;
+import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 
 /**
  * Created by linyuqiang on 2018/9/8.

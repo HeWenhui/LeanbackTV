@@ -5,7 +5,7 @@ import android.graphics.Color;
 import android.view.View;
 
 import com.xueersi.common.base.BasePager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 
 /**

@@ -12,7 +12,7 @@ import android.text.style.ImageSpan;
 
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.log.Loger;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 

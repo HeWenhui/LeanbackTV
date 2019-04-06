@@ -30,7 +30,7 @@ import com.xueersi.common.util.FontCache;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
@@ -50,7 +50,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.entity.Speech
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.ArtsAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.ArtsPSEAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.NewCourseLog;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveSoundPool;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.SpeechResultPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.StandLiveMethod;

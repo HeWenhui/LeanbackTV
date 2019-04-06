@@ -10,7 +10,7 @@ import android.webkit.CookieManager;
 import android.widget.TextView;
 
 import com.xueersi.common.event.MiniEvent;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.lecadvert.business.LecAdvertPagerClose;
 

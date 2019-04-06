@@ -24,7 +24,7 @@ import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.ControllerTopInter;
 import com.xueersi.parentsmeeting.module.videoplayer.media.FractionalTouchDelegate;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 /**
  * 直播播放器控制栏顶部区域

@@ -2,7 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 import android.annotation.SuppressLint;
 
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.widget.expressionView.entity.ExpressionAllInfoEntity;
 import com.xueersi.parentsmeeting.widget.expressionView.entity.ExpressionInfoEntity;
 import com.xueersi.parentsmeeting.widget.expressionView.manager.ExPressionEditDataInter;

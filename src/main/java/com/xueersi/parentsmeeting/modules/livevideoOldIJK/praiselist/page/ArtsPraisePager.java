@@ -41,7 +41,7 @@ import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.lib.log.Loger;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsPraiseLottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsRraiseEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.business.ArtsPraiseListBll;

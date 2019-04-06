@@ -35,7 +35,7 @@ import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.item.RolePlayerMachineOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.item.RolePlayerSelfItem;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.RolePlayMachineBll;

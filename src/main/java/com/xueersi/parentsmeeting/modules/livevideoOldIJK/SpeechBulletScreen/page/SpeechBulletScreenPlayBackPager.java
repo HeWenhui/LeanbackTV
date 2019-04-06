@@ -20,7 +20,7 @@ import android.view.View;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 

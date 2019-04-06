@@ -9,7 +9,7 @@ import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.speechfeedback.page.SpeechCollectivePager;
 
 @Route(path = "/livevideo/praise")

@@ -13,7 +13,7 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.xueersi.common.util.FontCache;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 
 /**

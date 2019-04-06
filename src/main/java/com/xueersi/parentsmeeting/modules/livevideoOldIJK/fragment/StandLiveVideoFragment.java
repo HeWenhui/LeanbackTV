@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.StandLiveVideoAction;

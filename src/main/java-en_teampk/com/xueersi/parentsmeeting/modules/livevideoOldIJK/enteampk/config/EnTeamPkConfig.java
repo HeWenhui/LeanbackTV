@@ -1,6 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.config;
 
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 public class EnTeamPkConfig {
     public static int[] TEAM_RES = new int[]{R.drawable.livevideo_enteampk_benchangzhanduifenzu_01sweetheartkate_pic_normal,

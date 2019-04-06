@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RecommondCourseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoBannerBuyCourseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;

@@ -33,7 +33,7 @@ import android.widget.TextView;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.listener.OnUnDoubleClickListener;
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.dialog.ImageHintDialog;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.experience.bussiness.IPagerControl;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;

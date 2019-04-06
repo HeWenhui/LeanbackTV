@@ -11,7 +11,7 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.RoomAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XesAtomicInteger;

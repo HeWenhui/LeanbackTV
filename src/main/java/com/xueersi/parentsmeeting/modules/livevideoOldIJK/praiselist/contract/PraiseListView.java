@@ -2,11 +2,11 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.contract;
 
 import android.widget.RelativeLayout;
 
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.entity.ExcellentListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.ExcellentListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.entity.LikeListEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.entity.MinimarketListEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.entity.PraiseListDanmakuEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.MinimarketListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListDanmakuEntity;
 
 import java.util.ArrayList;
 

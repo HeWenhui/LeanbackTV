@@ -13,7 +13,7 @@ import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.lib.log.FileLogger;
 import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.service.LiveService;
 import com.xueersi.ui.dataload.DataLoadManager;

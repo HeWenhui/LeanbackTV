@@ -24,7 +24,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.achievement.lottie.AchieveType1LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.achievement.lottie.AchieveType2LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.achievement.lottie.AchieveType3LottieEffectInfo;

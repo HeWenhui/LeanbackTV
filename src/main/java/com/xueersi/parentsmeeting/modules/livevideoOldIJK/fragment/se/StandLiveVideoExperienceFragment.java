@@ -39,7 +39,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBaseBll;
@@ -61,7 +61,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.Stan
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.StandExperienceQuestionPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.PlayErrorCodeLog;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.video.PlayErrorCode;
+import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.EventBus;

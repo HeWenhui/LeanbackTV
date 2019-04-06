@@ -41,7 +41,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.SpeechBulletScreen.business.SpeechBulletScreenPalyBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LectureLivePlayBackBll;
@@ -63,7 +63,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.remark.business.LiveRe
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.PlayErrorCodeLog;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.video.LiveBackVideoBll;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.video.PlayErrorCode;
+import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;

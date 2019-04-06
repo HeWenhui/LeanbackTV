@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.xueersi.common.base.BaseApplication;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.ui.dialog.BaseAlertDialog;
 
 /**

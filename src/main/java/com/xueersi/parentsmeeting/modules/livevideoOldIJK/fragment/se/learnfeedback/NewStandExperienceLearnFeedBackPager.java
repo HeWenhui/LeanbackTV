@@ -14,7 +14,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.LiveExperienceEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.se.widget.GestureScrollEditText;
 import com.xueersi.parentsmeeting.modules.livevideo.se.widget.ItemLearnFeedbackPageSelectLayout;
 

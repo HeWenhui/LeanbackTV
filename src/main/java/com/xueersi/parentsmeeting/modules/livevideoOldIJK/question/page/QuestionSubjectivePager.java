@@ -16,7 +16,7 @@ import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.entity.AnswerEntity;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.QuesReslutEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.event.PlaybackVideoEvent;

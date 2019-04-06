@@ -24,7 +24,7 @@ import com.xueersi.common.base.XesActivity;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.lib.framework.utils.string.RegexUtils;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.adapter.QuestionRateAdapter;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.adapter.QuestionRateDetailAdapter;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.adapter.VoiceQuestionDetailAdapter;

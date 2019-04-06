@@ -6,7 +6,7 @@ import android.widget.TextView;
 
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.imageloader.ImageLoader;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.entity.SpeechResultMember;
 import com.xueersi.ui.adapter.RItemViewInterface;
 import com.xueersi.ui.adapter.ViewHolder;

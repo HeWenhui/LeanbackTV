@@ -23,7 +23,7 @@ import com.xueersi.common.base.XesActivity;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;

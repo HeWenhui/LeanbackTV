@@ -23,7 +23,7 @@ import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.framework.utils.SizeUtils;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.chpk.business.ChinesePkBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;

@@ -20,7 +20,7 @@ import com.airbnb.lottie.utils.Utils;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.pager.TeamPkLeadPager;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;

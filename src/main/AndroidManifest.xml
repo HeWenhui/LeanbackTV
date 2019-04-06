@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.xueersi.parentsmeeting.modules.livevideoOldIJK">
+    package="com.xueersi.parentsmeeting.modules.livevideo">
     <!-- 悬浮窗必加权限 -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

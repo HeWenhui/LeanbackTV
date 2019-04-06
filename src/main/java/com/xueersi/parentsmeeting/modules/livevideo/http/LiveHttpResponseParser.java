@@ -49,12 +49,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContribu
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAdversaryEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.entity.ExcellentListEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.entity.LikeListEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.entity.LikeProbabilityEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.entity.MinimarketListEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.entity.PraiseListStudentEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.entity.PraiseListTeamEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.ExcellentListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeProbabilityEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.MinimarketListEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListStudentEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.entity.ScienceStaticConfig;
 
 import org.json.JSONArray;

@@ -20,7 +20,7 @@ import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.bussiness.EvaluateTeacherBll;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.SpeechBulletScreen.business.SpeechBulletScreenIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.SpeechBulletScreen.presenter.ChineseSpeechBulletScreenIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.SpeechBulletScreen.presenter.EnglishSpeechBulletIRCBll;
@@ -67,7 +67,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.business.TeamPk
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.understand.business.UnderstandIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.video.PlayErrorCode;
+import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.videoaudiochat.business.VideoAudioChatIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.videochat.business.VideoChatIRCBll;

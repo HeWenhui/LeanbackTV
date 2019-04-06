@@ -17,7 +17,7 @@ import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoLoadActivity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LecLiveVideoAction;
@@ -35,7 +35,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.Ques
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.redpackage.business.RedPackageIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.understand.business.UnderstandIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.video.PlayErrorCode;
+import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;

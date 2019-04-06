@@ -5,7 +5,7 @@ import android.view.ViewGroup;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackStandMediaController;
