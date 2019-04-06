@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Zhang Yuansun on 2018/1/2.

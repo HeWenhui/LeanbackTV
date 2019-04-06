@@ -12,6 +12,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.VoiceBarrageMsgEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.SpeechBulletScreen.page.SpeechBulletScreenPlayBackPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBll;

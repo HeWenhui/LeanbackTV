@@ -22,10 +22,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoChConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoHttpEnConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.notice.business.LiveAutoNoticeBll;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.DNSUtil;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveThreadPoolExecutor;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.video.URLDNS;
+import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
+import com.xueersi.parentsmeeting.modules.livevideo.util.DNSUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
+import com.xueersi.parentsmeeting.modules.livevideo.video.URLDNS;
 
 import org.xutils.xutils.common.Callback;
 import org.xutils.xutils.common.Callback.CancelledException;

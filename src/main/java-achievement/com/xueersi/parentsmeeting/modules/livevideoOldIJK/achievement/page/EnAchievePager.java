@@ -29,7 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.achievement.lottie.Ach
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.achievement.lottie.AchieveType2LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.achievement.lottie.AchieveType3LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.entity.EnTeamPkRankEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;

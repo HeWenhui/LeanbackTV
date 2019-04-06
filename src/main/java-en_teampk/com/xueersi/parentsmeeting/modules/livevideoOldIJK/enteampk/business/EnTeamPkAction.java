@@ -1,8 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.business;
 
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.entity.EnTeamPkRankEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.entity.PkTeamEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.entity.TeamMemberEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 

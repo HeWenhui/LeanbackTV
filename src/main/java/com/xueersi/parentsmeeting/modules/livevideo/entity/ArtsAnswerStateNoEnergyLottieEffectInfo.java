@@ -1,6 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -13,6 +15,9 @@ import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * 文科答题统计面板

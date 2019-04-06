@@ -23,9 +23,9 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.TeamPkLog;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.business.TeamPkBll;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 
 /**
  * 战队pk  右侧状态栏

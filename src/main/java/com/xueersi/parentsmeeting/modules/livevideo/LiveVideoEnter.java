@@ -10,13 +10,13 @@ import android.widget.Toast;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.AIExperienceLiveVideoActivity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.AuditClassLiveActivity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.DeviceDetectionActivity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.ExperienceLiveVideoActivity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.HalfBodyLiveExperienceActivity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LectureLivePlayBackVideoActivity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoLoadActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.AIExperienceLiveVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.DeviceDetectionActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.HalfBodyLiveExperienceActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLivePlayBackVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 
@@ -360,7 +360,7 @@ public class LiveVideoEnter {
             context.startActivity(intent);
             return false;
         }
-        com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LivePlaybackVideoActivity.intentTo(context, bundle,
+        com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo(context, bundle,
                 where, VIDEO_REQUEST);
         return true;
     }
@@ -408,7 +408,7 @@ public class LiveVideoEnter {
      * @return
      */
     public static boolean intentToStandExperience(Activity activity, Bundle bundle, String where) {
-        com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LivePlaybackVideoActivity.intentTo(activity, bundle,
+        com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo(activity, bundle,
                 where, VIDEO_REQUEST);
         return true;
     }

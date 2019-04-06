@@ -1,7 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.entity.ScienceStaticConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ScienceStaticConfig;
 
 import java.util.ArrayList;
 import java.util.List;

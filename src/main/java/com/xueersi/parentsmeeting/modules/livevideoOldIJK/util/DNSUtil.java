@@ -4,7 +4,7 @@ import android.os.SystemClock;
 
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.video.URLDNS;
+import com.xueersi.parentsmeeting.modules.livevideo.video.URLDNS;
 
 import java.net.InetAddress;
 import java.net.MalformedURLException;

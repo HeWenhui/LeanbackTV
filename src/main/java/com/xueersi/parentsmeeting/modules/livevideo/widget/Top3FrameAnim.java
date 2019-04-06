@@ -21,11 +21,11 @@ import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.GlideDrawableUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.StandLiveMethod;
+import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 
 import java.io.IOException;
 import java.io.InputStream;

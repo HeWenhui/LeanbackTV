@@ -14,7 +14,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.PaintTextUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.PaintTextUtil;
 
 import java.io.IOException;
 

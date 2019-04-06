@@ -14,8 +14,8 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.config.EnTeamPkConfig;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.entity.EnTeamEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.entity.PkTeamEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.item.EnTeamItem;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 import com.xueersi.ui.adapter.AdapterItemInterface;

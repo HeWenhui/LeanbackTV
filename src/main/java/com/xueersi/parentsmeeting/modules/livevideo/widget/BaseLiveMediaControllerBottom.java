@@ -19,7 +19,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.switchflow.SwitchFlowView;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.ArrayList;
 

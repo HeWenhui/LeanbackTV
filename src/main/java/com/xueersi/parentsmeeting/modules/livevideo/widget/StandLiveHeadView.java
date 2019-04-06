@@ -20,9 +20,9 @@ import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.GlideDrawableUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
 
 import java.io.IOException;
 

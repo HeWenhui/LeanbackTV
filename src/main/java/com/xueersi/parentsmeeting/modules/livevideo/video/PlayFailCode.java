@@ -10,7 +10,7 @@ public class PlayFailCode {
     public static PlayFailCode PlayFailCode10 = new PlayFailCode(10, "Failed to resolve hostname");
     public static PlayFailCode PlayFailCode15 = new PlayFailCode(15, "Connection timed out");
     public static PlayFailCode PlayFailCode20 = new PlayFailCode(20, "Server Error");
-    public int code;
+    int code;
     String tip;
 
     PlayFailCode(int code, String tip) {

@@ -5,8 +5,8 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.xueersi.common.route.ReflexCenter;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.AuditClassLiveActivity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.AuditClassRoomActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassRoomActivity;
 
 /**
  * Created by lyqai on 2017/10/9.
@@ -19,6 +19,12 @@ public class OtherModulesEnter {
     }
 
     public static void intentToAuditClassActivity(AuditClassLiveActivity auditClassLiveActivity, String mVSectionID, String stuCouId, Bundle bundle) {
+//        ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.pschat.ChatEnter",
+//                "intentToAuditClassActivity", new Class[]{Activity.class, String.class, String.class, Bundle.class}, new Object[]{auditClassLiveActivity, mVSectionID, stuCouId, bundle});
+        AuditClassRoomActivity.intentTo(auditClassLiveActivity, mVSectionID, stuCouId, bundle);
+    }
+
+    public static void intentToAuditClassActivity(com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.AuditClassLiveActivity auditClassLiveActivity, String mVSectionID, String stuCouId, Bundle bundle) {
 //        ReflexCenter.invokeMethodWithParams("com.xueersi.parentsmeeting.modules.pschat.ChatEnter",
 //                "intentToAuditClassActivity", new Class[]{Activity.class, String.class, String.class, Bundle.class}, new Object[]{auditClassLiveActivity, mVSectionID, stuCouId, bundle});
         AuditClassRoomActivity.intentTo(auditClassLiveActivity, mVSectionID, stuCouId, bundle);

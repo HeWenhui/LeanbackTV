@@ -168,7 +168,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLogtf.i("other loading");
             liveVideoPlayFragment.setLoadingAnimation(TripleScreenBasePlayerFragment.TRIPLE_SCREEN_MIDDLE_LOADING);
         }
-        liveVideoPlayFragment.overrideCallBack();
+        liveVideoPlayFragment.overrideHandlerCallBack();
     }
 
     @Override

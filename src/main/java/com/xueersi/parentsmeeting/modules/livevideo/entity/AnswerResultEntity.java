@@ -6,6 +6,8 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity.QUE_RES_TYPE1;
+
 /**
  * 文科 答题结果
  *

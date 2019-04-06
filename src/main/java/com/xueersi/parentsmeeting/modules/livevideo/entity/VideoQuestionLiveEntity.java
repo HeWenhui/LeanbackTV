@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
 import com.xueersi.common.entity.AnswerEntity;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 
 import java.util.ArrayList;
 import java.util.List;

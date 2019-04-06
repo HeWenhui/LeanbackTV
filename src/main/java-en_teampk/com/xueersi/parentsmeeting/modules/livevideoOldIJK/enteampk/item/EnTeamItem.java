@@ -4,7 +4,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.entity.EnTeamEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamEntity;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 
 public class EnTeamItem implements AdapterItemInterface<EnTeamEntity> {

@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.StandLiveMethod;
+import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 
 /**
  * Created by lyqai on 2018/4/5.

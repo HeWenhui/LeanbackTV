@@ -1,7 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.business;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.entity.TeamMemberEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 
 import java.util.ArrayList;
 

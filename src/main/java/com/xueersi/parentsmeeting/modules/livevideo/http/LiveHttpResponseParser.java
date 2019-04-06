@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
@@ -9,13 +10,15 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.module.videoplayer.entity.LiveExperienceEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.entity.EnTeamPkRankEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.entity.PkTeamEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.entity.TeamMemberEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AddPersonAndTeamEnergyEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
@@ -55,7 +58,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeProbab
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.MinimarketListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListStudentEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListTeamEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.entity.ScienceStaticConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ScienceStaticConfig;
 
 import org.json.JSONArray;
 import org.json.JSONException;

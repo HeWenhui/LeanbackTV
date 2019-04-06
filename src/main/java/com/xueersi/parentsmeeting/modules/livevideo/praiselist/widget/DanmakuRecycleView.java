@@ -6,6 +6,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 
+import com.xueersi.parentsmeeting.modules.livevideo.widget.MsgItemAnimator;
+
 /**
  * 半身直播聊天面板
  *
