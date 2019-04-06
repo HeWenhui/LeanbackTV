@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -10,7 +11,7 @@ import java.util.List;
  */
 public class VidooCannonEntity {
     public int id;
+    public int rightNum;
     public TeamMemberEntity teamMemberEntity;
-    /** 正确答题 */
-    public List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> rightAnswerList = new ArrayList<>();
+    public HashMap<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity, ArrayList<Integer>> wordScore = new HashMap<>();
 }

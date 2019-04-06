@@ -25,6 +25,7 @@ import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.lib.framework.utils.ScreenUtils;
@@ -59,6 +60,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.groupgame.item.CourseGroupNo
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.item.CourseGroupOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.SendCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.TcpConstants;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareSecHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.CourseMessage;
@@ -82,6 +84,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import io.agora.rtc.Constants;
 import io.agora.rtc.RtcEngine;
@@ -162,12 +165,12 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     private String speechContent = "";
     /** 总的答题 */
     public List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> allAnswerList = new ArrayList<>();
+    private List<Integer> allScoreList = new ArrayList<>();
     private GetStuActiveTeam getStuActiveTeam;
     private TcpMessageReg tcpMessageReg;
     private TcpMessageAction tcpMessageAction;
     private EvaluatorIng evaluatorIng;
     private PreLoad preLoad;
-    private JSONObject answerData = new JSONObject();
     private JSONArray userAnswer = new JSONArray();
     private int rightNum = 0;
 
@@ -375,6 +378,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         }
 
         private void onScene(String method) {
+            mLogtf.d("onScene:method=" + method + ",currentAnswerIndex=" + currentAnswerIndex);
             try {
                 GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
                 JSONObject resultData = new JSONObject();
@@ -620,7 +624,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 courseGroupItem.initViews(convertView);
                 courseGroupItem.updateViews(teamMemberEntity, i, teamMemberEntity);
                 courseGroupItem.bindListener();
-                llCourseItemContent.addView(convertView, 0);
+                llCourseItemContent.addView(convertView);
             }
         }
         int screenHeight = ScreenUtils.getScreenHeight();
@@ -647,20 +651,24 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     }
 
     private void onCoursewareDoing(String where, final JSONObject message) {
-        boolean isTurnPage = message.optBoolean("isTurnPage");
-        if (isTurnPage) {
-            currentAnswerIndex++;
-        }
-        GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
-        List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = testInfoEntity.getAnswerList();
-        if (currentAnswerIndex >= answerList.size() - 1) {
-            logger.d("onCoursewareDoing:gameOver");
+        if (LiveQueConfig.GET_ANSWERTYPE_WHERE_MESSAGE.equals(where)) {
+            boolean isTurnPage = message.optBoolean("isTurnPage");
+            if (isTurnPage) {
+                currentAnswerIndex++;
+            }
+            GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
+            List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = testInfoEntity.getAnswerList();
+            if (currentAnswerIndex >= answerList.size() - 1) {
+                logger.d("onCoursewareDoing:gameOver");
 //            gameOver = true;
 //            if (mIse != null) {
 //                mIse.cancel();
 //            }
+            }
+            mLogtf.d("onCoursewareDoing:isTurnPage=" + isTurnPage + ",currentAnswerIndex=" + currentAnswerIndex + ",gameOver=" + gameOver);
+        } else {
+            logger.e("onCoursewareDoing:where=" + where);
         }
-        mLogtf.d("onCoursewareDoing:isTurnPage=" + isTurnPage + ",currentAnswerIndex=" + currentAnswerIndex + ",gameOver=" + gameOver);
     }
 
     private void startSpeechRecognize() {
@@ -1010,39 +1018,86 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     }
 
     private void submit() {
-//        try {
-//            answerData.put("tryTimes", allScoreList.size());
-//            answerData.put("rightNum", "" + rightNum);
-//            answerData.put("total", mGroupGameTestInfosEntity.getTestInfoList().get(0).getAnswerList().size());
-//            int sum = 0;
-//            for (int i = 0; i < allScoreList.size(); i++) {
-//                sum += allScoreList.get(i);
-//            }
-//            int averageScore;
-//            if (allScoreList.size() != 0) {
-//                averageScore = sum / allScoreList.size();
-//            } else {
-//                averageScore = 0;
-//            }
-//            answerData.put("averageScore", averageScore);
-//            answerData.put("userAnswer", userAnswer.toString());
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
+        int voiceTime = 0;
+        int starNum = 0;
+        int energy = 0;
+        int gold = 1;
+        //视频开启时长，单位：毫秒
+        int videoLengthTime = 0;
+        //麦克开启时长，单位：毫秒
+        int micLengthTime = 0;
+        //收他人视频开启时长，单位：毫秒
+        int acceptVideoLengthTime = 0;
+        //接收他人麦克开启时长，单位：毫秒
+        int acceptMicLengthTime = 0;
         PkTeamEntity teamEntity = getStuActiveTeam.getPkTeamEntity();
         int gameGroupId = interactiveTeam.getInteractive_team_id();
-        englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 1, 0, teamEntity.getPkTeamId(), gameGroupId, 1, 1, 1, 0, 0, 0, 0, answerData.toString(), new AbstractBusinessDataCallBack() {
-            @Override
-            public void onDataSucess(Object... objData) {
-                logger.d("submitGroupGame->onDataSucess:objData=" + objData.toString());
+        JSONObject answerData = new JSONObject();
+        try {
+            answerData.put("tryTimes", allScoreList.size());
+            JSONArray userAnswer = new JSONArray();
+            VidooCannonEntity vidooCannonEntity = vidooCannonEntities.get("" + stuid);
+            if (vidooCannonEntity != null) {
+                answerData.put("rightNum", vidooCannonEntity.rightNum);
+                HashMap<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity, ArrayList<Integer>> wordScore = vidooCannonEntity.wordScore;
+                Set<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> keySet = wordScore.keySet();
+                for (GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity : keySet) {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("text", answersEntity.getText());
+                    ArrayList<Integer> arrayList = wordScore.get(answersEntity);
+                    String scores = "";
+                    for (int j = 0; j < arrayList.size(); j++) {
+                        scores += arrayList.get(j);
+                        if (j < arrayList.size() - 1) {
+                            scores += ",";
+                        }
+                    }
+                    jsonObject.put("scores", scores);
+                    jsonObject.put("voiceTime", 1);
+                    jsonObject.put("isRight", 1);
+                }
+            } else {
+                answerData.put("rightNum", 0);
             }
+            answerData.put("averageScore", 1);
+            answerData.put("userAnswer", userAnswer);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 1, voiceTime, teamEntity.getPkTeamId(), gameGroupId, starNum, energy, gold,
+                videoLengthTime, micLengthTime
+                , acceptVideoLengthTime, acceptMicLengthTime, answerData.toString(), new AbstractBusinessDataCallBack() {
+                    @Override
+                    public void onDataSucess(Object... objData) {
+                        logger.d("submitGroupGame->onDataSucess:objData=" + objData);
+                        ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
+                        GroupGameMVPMultPager groupGameMVPMultPager = new GroupGameMVPMultPager(mContext, entities);
+                        ((ViewGroup) mView).addView(groupGameMVPMultPager.getRootView());
+                        groupGameMVPMultPager.setOnPagerClose(new OnPagerClose() {
+                            @Override
+                            public void onClose(LiveBasePager basePager) {
+                                ((ViewGroup) mView).removeView(basePager.getRootView());
+                            }
+                        });
+                    }
 
-            @Override
-            public void onDataFail(int errStatus, String failMsg) {
-                super.onDataFail(errStatus, failMsg);
-                logger.d("submitGroupGame->onDataFail:" + failMsg);
-            }
-        });
+                    @Override
+                    public void onDataFail(int errStatus, String failMsg) {
+                        super.onDataFail(errStatus, failMsg);
+                        logger.d("submitGroupGame->onDataFail:" + failMsg);
+                        if (AppConfig.DEBUG) {
+                            ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
+                            GroupGameMVPMultPager groupGameMVPMultPager = new GroupGameMVPMultPager(mContext, entities);
+                            ((ViewGroup) mView).addView(groupGameMVPMultPager.getRootView());
+                            groupGameMVPMultPager.setOnPagerClose(new OnPagerClose() {
+                                @Override
+                                public void onClose(LiveBasePager basePager) {
+                                    ((ViewGroup) mView).removeView(basePager.getRootView());
+                                }
+                            });
+                        }
+                    }
+                });
     }
 
     @Override
@@ -1159,12 +1214,35 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         void onResult(ResultEntity resultEntity);
     }
 
+    private void createSpeechContent(String method) {
+        speechContent = "";
+        if (allAnswerList.isEmpty()) {
+            gameOver = true;
+            if (mIse != null) {
+                mIse.cancel();
+            }
+            XESToastUtils.showToast(mContext, "游戏结束");
+            logger.d("createSpeechContent:method=" + method + ",gameOver");
+            submit();
+            return;
+        }
+        for (int j = 0; j < allAnswerList.size(); j++) {
+            GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = allAnswerList.get(j);
+            speechContent += answersEntity.getText() + "|";
+        }
+        if (speechContent.endsWith("|")) {
+            speechContent = speechContent.substring(0, speechContent.length() - 1);
+        }
+        logger.d("createSpeechContent:method=" + method + ",speechContent=" + speechContent);
+    }
+
     private class VoiceCannnon implements EvaluatorIng {
 
         @Override
         public void onResult(ResultEntity resultEntity) {
             int score = resultEntity.getScore();
             mSingCount++;
+            allScoreList.add(score);
             ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
             try {
                 {
@@ -1188,7 +1266,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 //                        return;
 //                    }
                     bodyJson.put("uid", "" + stuid);
-                    GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = allAnswerList.get(currentAnswerIndex);
+                    GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
+                    GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = testInfoEntity.getAnswerList().get(currentAnswerIndex);
                     bodyJson.put("word_id", "" + answersEntity.getId());
                     bodyJson.put("pk_team_id", teamEntity.getPkTeamId());
                     bodyJson.put("team_type", "interactive");
@@ -1234,31 +1313,13 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         }
     }
 
-    private void createSpeechContent(String method) {
-        speechContent = "";
-        if (allAnswerList.isEmpty()) {
-            gameOver = true;
-            if (mIse != null) {
-                mIse.cancel();
-            }
-            return;
-        }
-        for (int j = 0; j < allAnswerList.size(); j++) {
-            GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = allAnswerList.get(j);
-            speechContent += answersEntity.getText() + "|";
-        }
-        if (speechContent.endsWith("|")) {
-            speechContent = speechContent.substring(0, speechContent.length() - 1);
-        }
-        logger.d("createSpeechContent:method=" + method + ",speechContent=" + speechContent);
-    }
-
     private class CleanEvaluatorIng implements EvaluatorIng {
 
         @Override
         public void onResult(ResultEntity resultEntity) {
             try {
                 int score = resultEntity.getScore();
+                allScoreList.add(score);
                 mSingCount++;
                 ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
                 CleanUpEntity cleanUpEntity = cleanUpEntities.get("" + stuid);
@@ -1363,21 +1424,35 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             } else {
                                 integer++;
                             }
+                            GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
                             VidooCannonEntity vidooCannonEntity = vidooCannonEntities.get("" + who_id);
                             if (vidooCannonEntity != null) {
                                 for (int i = 0; i < allAnswerList.size(); i++) {
                                     GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = allAnswerList.get(i);
                                     if (answer.getId() == word_id) {
                                         answer.setGetFireCount(3);
-                                        List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> rightAnswerList = vidooCannonEntity.rightAnswerList;
-                                        rightAnswerList.add(answer);
+                                        vidooCannonEntity.rightNum++;
+                                        break;
+                                    }
+                                }
+                                List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = testInfoEntity.getAnswerList();
+                                for (int i = 0; i < answerList.size(); i++) {
+                                    GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = answerList.get(i);
+                                    if (answer.getId() == word_id) {
+                                        HashMap<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity, ArrayList<Integer>> wordScore = vidooCannonEntity.wordScore;
+                                        ArrayList<Integer> allScore = new ArrayList<>();
+                                        if (wordScore.containsKey(answer)) {
+                                            allScore = wordScore.get(answer);
+                                        } else {
+                                            wordScore.put(answer, allScore);
+                                        }
+                                        allScore.add(score);
                                         break;
                                     }
                                 }
                             }
                             wordCount.put("" + word_id, integer);
                             {
-                                GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
                                 int maxSingCount = testInfoEntity.getSingleCount();
                                 final boolean isTurnPage;
                                 if (integer >= maxSingCount) {
@@ -1395,11 +1470,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                 createSpeechContent("Voice_Projectile_TYPE");
                                 int studentNum = -1;
                                 ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
-                                int start = 4 - entities.size();
                                 for (int i = 0; i < entities.size(); i++) {
                                     TeamMemberEntity teamMemberEntity = entities.get(i);
                                     if (who_id == teamMemberEntity.id) {
-                                        studentNum = start + i;
+                                        studentNum = 1 + i;
                                         break;
                                     }
                                 }
@@ -1432,8 +1506,13 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         try {
                             JSONObject jsonObject = new JSONObject(msg);
                             int current_word = jsonObject.optInt("current_word", currentAnswerIndex);
+                            GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
+                            List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = testInfoEntity.getAnswerList();
+                            for (int i = 0; i < current_word; i++) {
+                                GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = answerList.get(i);
+                                allAnswerList.remove(answersEntity);
+                            }
                             wordCount.clear();
-                            boolean isAdd = false;
                             JSONArray mateArray = jsonObject.optJSONArray("stu_data");
                             if (mateArray != null) {
                                 for (int i = 0; i < mateArray.length(); i++) {
@@ -1442,26 +1521,35 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                     final int total_energy = mateObj.getInt("total_energy");
                                     JSONObject word_scores = mateObj.optJSONObject("word_scores");
                                     if (word_scores != null) {
+                                        int rightNum = 0;
+                                        VidooCannonEntity vidooCannonEntity = vidooCannonEntities.get("" + stu_id);
                                         Iterator<String> keys = word_scores.keys();
                                         while (keys.hasNext()) {
                                             String key = keys.next();
-                                            int oldCount = 0;
+                                            int wordId = Integer.parseInt(key);
                                             Integer integer = wordCount.get(key);
                                             if (integer == null) {
                                                 integer = 0;
-                                            } else {
-                                                oldCount = integer;
+                                            }
+                                            ArrayList<Integer> allScore = new ArrayList<>();
+                                            if (vidooCannonEntity != null) {
+                                                for (int j = 0; j < answerList.size(); j++) {
+                                                    GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = answerList.get(j);
+                                                    if (answer.getId() == wordId) {
+                                                        HashMap<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity, ArrayList<Integer>> wordScore = vidooCannonEntity.wordScore;
+                                                        wordScore.put(answer, allScore);
+                                                        break;
+                                                    }
+                                                }
                                             }
                                             JSONArray word_score = word_scores.getJSONArray(key);
                                             for (int j = 0; j < word_score.length(); j++) {
-                                                String score = word_score.getString(j);
+                                                int score = word_score.getInt(j);
+                                                allScore.add(score);
+                                                rightNum++;
                                                 integer++;
                                             }
-                                            if (oldCount != integer) {
-                                                isAdd = true;
-                                            }
                                             wordCount.put(key, integer);
-                                            GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
                                             int maxSingCount = testInfoEntity.getSingleCount();
                                             logger.d("Projectile_Scene:integer=" + integer + ",maxSingCount=" + maxSingCount);
                                             if (integer >= maxSingCount) {
@@ -1473,6 +1561,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                                     }
                                                 }
                                             }
+                                        }
+                                        if (vidooCannonEntity != null) {
+                                            vidooCannonEntity.rightNum = rightNum;
                                         }
                                     }
                                     final BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stu_id);
@@ -1524,52 +1615,41 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             String word = jsonObject.getString("word");
                             final int who_id = jsonObject.getInt("who_id");
                             final int incr_energy = jsonObject.getInt("incr_energy");
-                            int studentNum = -1;
-                            ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
-                            for (int i = entities.size() - 1; i >= 0; i--) {
-                                TeamMemberEntity teamMemberEntity = entities.get(i);
-                                if (who_id == teamMemberEntity.id) {
-                                    studentNum = 3 - i;
-                                    break;
-                                }
-                            }
-                            if (studentNum != -1) {
-                                handler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            CleanUpEntity cleanUpEntity = cleanUpEntities.get("" + who_id);
-                                            if (cleanUpEntity != null) {
-                                                //把用户的信息恢复
-                                                for (int i = 0; i < allAnswerList.size(); i++) {
-                                                    GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = allAnswerList.get(i);
-                                                    if (answer.getId() == word_id) {
-                                                        allAnswerList.remove(i);
-                                                        answer.setGetFireCount(incr_energy);
-                                                        List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> rightAnswerList = cleanUpEntity.rightAnswerList;
-                                                        rightAnswerList.add(answer);
-                                                        break;
-                                                    }
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    try {
+                                        CleanUpEntity cleanUpEntity = cleanUpEntities.get("" + who_id);
+                                        if (cleanUpEntity != null) {
+                                            //把用户的信息恢复
+                                            for (int i = 0; i < allAnswerList.size(); i++) {
+                                                GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = allAnswerList.get(i);
+                                                if (answer.getId() == word_id) {
+                                                    allAnswerList.remove(i);
+                                                    answer.setGetFireCount(incr_energy);
+                                                    List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> rightAnswerList = cleanUpEntity.rightAnswerList;
+                                                    rightAnswerList.add(answer);
+                                                    break;
                                                 }
                                             }
-                                            createSpeechContent("CLEAN_UP_REC");
-                                            JSONObject jsonData = new JSONObject();
-                                            jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
-                                            jsonData.put("studentNum", 3);
-                                            {
-                                                JSONObject rightItem = new JSONObject();
-                                                rightItem.put("rightId", word_id);
-                                                rightItem.put("getFireCount", incr_energy);
-                                                jsonData.put("rightItem", rightItem);
-                                            }
-                                            jsonData.put("combo", 0);
-                                            wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
-                                        } catch (Exception e) {
-                                            logger.d("onMessage:CLEAN_UP_REC:postMessage", e);
                                         }
+                                        createSpeechContent("CLEAN_UP_REC");
+                                        JSONObject jsonData = new JSONObject();
+                                        jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
+                                        jsonData.put("studentNum", 3);
+                                        {
+                                            JSONObject rightItem = new JSONObject();
+                                            rightItem.put("rightId", word_id);
+                                            rightItem.put("getFireCount", incr_energy);
+                                            jsonData.put("rightItem", rightItem);
+                                        }
+                                        jsonData.put("combo", 0);
+                                        wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
+                                    } catch (Exception e) {
+                                        logger.d("onMessage:CLEAN_UP_REC:postMessage", e);
                                     }
-                                });
-                            }
+                                }
+                            });
                         } catch (JSONException e) {
                             logger.d("onMessage:CLEAN_UP_REC", e);
                         }

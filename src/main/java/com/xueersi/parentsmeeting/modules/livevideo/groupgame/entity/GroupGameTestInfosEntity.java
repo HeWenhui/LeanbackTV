@@ -213,6 +213,10 @@ public class GroupGameTestInfosEntity {
                 this.getFireCount = getFireCount;
             }
 
+            @Override
+            public String toString() {
+                return "id=" + id + ",text=" + text;
+            }
         }
     }
 }
