@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
@@ -653,9 +654,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     private void onCoursewareDoing(String where, final JSONObject message) {
         if (LiveQueConfig.GET_ANSWERTYPE_WHERE_MESSAGE.equals(where)) {
             boolean isTurnPage = message.optBoolean("isTurnPage");
-            if (isTurnPage) {
-                currentAnswerIndex++;
-            }
+//            if (isTurnPage) {
+//                currentAnswerIndex++;
+//            }
             GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
             List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = testInfoEntity.getAnswerList();
             if (currentAnswerIndex >= answerList.size() - 1) {
@@ -1254,6 +1255,17 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 //                    jsonData.put("isTurnPage", false);
 //                    wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
                 }
+                int newSenIdx = resultEntity.getNewSenIdx();
+                if (newSenIdx < 0 || newSenIdx >= allAnswerList.size()) {
+                    return;
+                }
+                GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity removeAnswersEntity = allAnswerList.get(newSenIdx);
+                GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
+                GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = testInfoEntity.getAnswerList().get(currentAnswerIndex);
+                logger.d("onResult:answersEntity=" + answersEntity.getText() + "," + removeAnswersEntity.getText());
+                if (!TextUtils.equals(answersEntity.getText(), removeAnswersEntity.getText())) {
+                    return;
+                }
                 PkTeamEntity teamEntity = getStuActiveTeam.getPkTeamEntity();
                 if (teamEntity != null) {
                     JSONObject bodyJson = new JSONObject();
@@ -1266,8 +1278,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 //                        return;
 //                    }
                     bodyJson.put("uid", "" + stuid);
-                    GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
-                    GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = testInfoEntity.getAnswerList().get(currentAnswerIndex);
                     bodyJson.put("word_id", "" + answersEntity.getId());
                     bodyJson.put("pk_team_id", teamEntity.getPkTeamId());
                     bodyJson.put("team_type", "interactive");
@@ -1461,6 +1471,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                         GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = allAnswerList.get(allAns);
                                         if (answer.getId() == word_id) {
                                             allAnswerList.remove(allAns);
+                                            logger.d("Voice_Projectile_TYPE:currentAnswerIndex=" + currentAnswerIndex);
+                                            currentAnswerIndex++;
                                             break;
                                         }
                                     }
