@@ -86,7 +86,7 @@
 //import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTextureView;
 //import com.xueersi.common.business.UserBll;
 //import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.SimpleVPlayerListener;
-//import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.VPlayerListener;
+//import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack.VPlayerListener;
 //import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 //import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 //import com.xueersi.common.sharedata.ShareDataManager;

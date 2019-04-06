@@ -40,7 +40,7 @@
 //import com.xueersi.lib.imageloader.ImageLoader;
 //import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 //import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.SimpleVPlayerListener;
-//import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.VPlayerListener;
+//import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack.VPlayerListener;
 //import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 //import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 //import com.xueersi.parentsmeeting.modules.livevideo.R;

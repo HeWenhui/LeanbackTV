@@ -1,6 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.activity;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -20,7 +19,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseCacheData;
@@ -30,18 +28,18 @@ import com.xueersi.common.entity.FooterIconEntity;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobEnumUtil;
-import com.xueersi.parentsmeeting.module.videoplayer.media.CenterLayout;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.parentsmeeting.module.videoplayer.media.CenterLayout;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerListener;
-import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.SimpleVPlayerListener;
-import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.VPlayerListener;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack.VPlayerListener;
 import com.xueersi.parentsmeeting.module.videoplayer.media.XESVideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -245,6 +243,11 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         xv_livevideo_student.onCreate();
         xv_livevideo_student.setZOrderOnTop(true);
         xv_livevideo_student.setVPlayerListener(new VPlayerListener() {
+
+            @Override
+            public void getPSServerList(int cur, int total, boolean modeChange) {
+
+            }
 
             @Override
             public void onHWRenderFailed() {
@@ -626,7 +629,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         return mPlayListener;
     }
 
-    private VPlayerListener mPlayListener = new SimpleVPlayerListener() {
+    private VPlayerListener mPlayListener = new VPlayerCallBack.SimpleVPlayerListener() {
 
         @Override
         public void onPlaying(long currentPosition, long duration) {

@@ -46,7 +46,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
-import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.VPlayerListener;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack.VPlayerListener;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -1080,6 +1080,11 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
 
     /** 播放器核心服务监听 */
     protected VPlayerListener vPlayerServiceListener = new VPlayerListener() {
+
+        @Override
+        public void getPSServerList(int cur, int total, boolean modeChange) {
+
+        }
 
         /** 硬解码失败 */
         @Override

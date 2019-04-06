@@ -32,6 +32,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCTalkConf;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
@@ -71,7 +72,7 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
  * Created by linyuqiang on 2018/9/4.
  * 直播播放日志
  */
-public class LivePlayLog extends PlayerService.SimpleVPlayerListener {
+public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
 
     private static String TAG = "LivePlayLog";
     private Logger logger = LoggerFactory.getLogger(TAG);
