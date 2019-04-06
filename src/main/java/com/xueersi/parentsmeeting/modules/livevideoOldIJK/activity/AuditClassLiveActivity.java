@@ -41,7 +41,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack.VPlayerListener;
 import com.xueersi.parentsmeeting.module.videoplayer.media.XESVideoView;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.OtherModulesEnter;
+import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.AuditClassAction;

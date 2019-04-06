@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideoOldIJK;
+package com.xueersi.parentsmeeting.modules.livevideo;
 
 import android.app.Activity;
 import android.content.Context;

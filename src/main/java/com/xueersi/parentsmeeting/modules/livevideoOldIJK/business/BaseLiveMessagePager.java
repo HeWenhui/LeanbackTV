@@ -31,7 +31,7 @@ import com.xueersi.common.config.AppConfig;
 import com.xueersi.lib.framework.utils.string.ConstUtils;
 import com.xueersi.lib.framework.utils.string.RegexUtils;
 import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.OtherModulesEnter;
+import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveExPressionEditData;

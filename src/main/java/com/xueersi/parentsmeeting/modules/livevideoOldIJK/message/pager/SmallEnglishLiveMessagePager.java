@@ -75,7 +75,7 @@ import com.xueersi.lib.framework.utils.listener.OnUnDoubleClickListener;
 import com.xueersi.lib.framework.utils.string.RegexUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.OtherModulesEnter;
+import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.item.CommonWordChsItem;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.AudioRequest;
