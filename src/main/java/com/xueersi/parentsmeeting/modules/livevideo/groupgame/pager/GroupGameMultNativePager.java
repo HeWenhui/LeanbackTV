@@ -1427,8 +1427,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
                             VidooCannonEntity vidooCannonEntity = vidooCannonEntities.get("" + who_id);
                             if (vidooCannonEntity != null) {
-                                for (int i = 0; i < allAnswerList.size(); i++) {
-                                    GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = allAnswerList.get(i);
+                                for (int allAns = 0; allAns < allAnswerList.size(); allAns++) {
+                                    GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = allAnswerList.get(allAns);
                                     if (answer.getId() == word_id) {
                                         answer.setGetFireCount(3);
                                         vidooCannonEntity.rightNum++;
@@ -1436,8 +1436,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                     }
                                 }
                                 List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = testInfoEntity.getAnswerList();
-                                for (int i = 0; i < answerList.size(); i++) {
-                                    GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = answerList.get(i);
+                                for (int ansIndex = 0; ansIndex < answerList.size(); ansIndex++) {
+                                    GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = answerList.get(ansIndex);
                                     if (answer.getId() == word_id) {
                                         HashMap<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity, ArrayList<Integer>> wordScore = vidooCannonEntity.wordScore;
                                         ArrayList<Integer> allScore = new ArrayList<>();
@@ -1457,10 +1457,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                 final boolean isTurnPage;
                                 if (integer >= maxSingCount) {
                                     isTurnPage = true;
-                                    for (int i = 0; i < allAnswerList.size(); i++) {
-                                        GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = allAnswerList.get(i);
+                                    for (int allAns = 0; allAns < allAnswerList.size(); allAns++) {
+                                        GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = allAnswerList.get(allAns);
                                         if (answer.getId() == word_id) {
-                                            allAnswerList.remove(i);
+                                            allAnswerList.remove(allAns);
                                             break;
                                         }
                                     }
@@ -1470,10 +1470,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                 createSpeechContent("Voice_Projectile_TYPE");
                                 int studentNum = -1;
                                 ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
-                                for (int i = 0; i < entities.size(); i++) {
-                                    TeamMemberEntity teamMemberEntity = entities.get(i);
+                                for (int entityIndex = 0; entityIndex < entities.size(); entityIndex++) {
+                                    TeamMemberEntity teamMemberEntity = entities.get(entityIndex);
                                     if (who_id == teamMemberEntity.id) {
-                                        studentNum = 1 + i;
+                                        studentNum = 1 + entityIndex;
                                         break;
                                     }
                                 }
@@ -1543,8 +1543,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                                 }
                                             }
                                             JSONArray word_score = word_scores.getJSONArray(key);
-                                            for (int j = 0; j < word_score.length(); j++) {
-                                                int score = word_score.getInt(j);
+                                            for (int wordIndex = 0; wordIndex < word_score.length(); wordIndex++) {
+                                                int score = word_score.getInt(wordIndex);
                                                 allScore.add(score);
                                                 rightNum++;
                                                 integer++;
@@ -1553,10 +1553,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                             int maxSingCount = testInfoEntity.getSingleCount();
                                             logger.d("Projectile_Scene:integer=" + integer + ",maxSingCount=" + maxSingCount);
                                             if (integer >= maxSingCount) {
-                                                for (int j = 0; j < allAnswerList.size(); j++) {
-                                                    GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = allAnswerList.get(i);
-                                                    if (answer.getId() == Integer.parseInt(key)) {
-                                                        allAnswerList.remove(i);
+                                                for (int allAns = 0; allAns < allAnswerList.size(); allAns++) {
+                                                    GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = allAnswerList.get(allAns);
+                                                    if (answer.getId() == wordId) {
+                                                        allAnswerList.remove(allAns);
                                                         break;
                                                     }
                                                 }
