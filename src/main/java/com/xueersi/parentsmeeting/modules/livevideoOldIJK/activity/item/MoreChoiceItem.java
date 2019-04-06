@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.xueersi.common.event.MiniEvent;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.MoreChoice;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 
 import org.greenrobot.eventbus.EventBus;

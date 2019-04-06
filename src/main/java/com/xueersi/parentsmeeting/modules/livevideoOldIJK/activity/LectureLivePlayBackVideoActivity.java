@@ -60,10 +60,10 @@ import com.xueersi.parentsmeeting.module.videoplayer.widget.LivePlaybackMediaCon
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.dialog.RedPacketAlertDialog;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LecturePeopleEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveMessageGroupEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LivePlayBackMessageEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LecturePeopleEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageGroupEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePlayBackMessageEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.PutQuestion;

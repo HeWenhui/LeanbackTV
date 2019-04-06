@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FrameAnimation;

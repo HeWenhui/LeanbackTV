@@ -1,7 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.event;
 
 
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 
 /**
 * 直播回放  试题消息

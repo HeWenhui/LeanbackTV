@@ -44,11 +44,11 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.item.RolePlay
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.agora.WorkerThread;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.RolePlayConfig;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.RolePlayerEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.RolePlayConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.entity.SpeechResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.entity.SpeechResultMember;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.SpeechResultPager;

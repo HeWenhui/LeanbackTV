@@ -26,12 +26,12 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.RegMediaPlaye
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.UserOnline;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.WeakHandler;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveBll2;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.PlayServerEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveThreadPoolExecutor;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.video.LiveVideoBll;

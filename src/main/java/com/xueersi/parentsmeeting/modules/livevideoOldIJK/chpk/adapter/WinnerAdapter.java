@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.ClassChestEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
 
 import java.util.List;
 

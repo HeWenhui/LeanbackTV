@@ -1,6 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.business;
 
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 
 import java.util.Map;
 

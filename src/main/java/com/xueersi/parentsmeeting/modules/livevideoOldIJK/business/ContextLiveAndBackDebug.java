@@ -2,7 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.business;
 
 import android.content.Context;
 
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 
 import java.util.Map;

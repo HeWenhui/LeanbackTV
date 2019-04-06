@@ -18,10 +18,10 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.pager.
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveBll2;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;

@@ -14,8 +14,8 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.StandExperienceLiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 
 public class StandExperienceEnglishH5PlayBackBll extends EnglishH5PlayBackBll {
 

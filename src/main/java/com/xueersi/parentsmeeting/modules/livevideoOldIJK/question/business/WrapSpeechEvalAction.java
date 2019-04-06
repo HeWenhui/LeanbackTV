@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 

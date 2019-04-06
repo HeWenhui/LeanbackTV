@@ -24,10 +24,10 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.EnglishH5Cach
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveVideoSAConfig;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.event.LiveBackQuestionEvent;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.config.LiveQueHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.http.CourseWareHttpManager;

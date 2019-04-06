@@ -20,7 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.bussin
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.bussiness.IShowEvaluateAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.entity.EvaluateOptionEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 
 import java.util.Collections;

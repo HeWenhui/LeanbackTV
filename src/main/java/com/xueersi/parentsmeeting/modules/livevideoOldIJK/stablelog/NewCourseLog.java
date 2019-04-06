@@ -3,10 +3,10 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveVideoSAConfig;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LogConfig;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.StableLogHashMap;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveLoggerFactory;
 
 import org.json.JSONArray;

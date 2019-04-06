@@ -9,7 +9,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import java.util.HashMap;

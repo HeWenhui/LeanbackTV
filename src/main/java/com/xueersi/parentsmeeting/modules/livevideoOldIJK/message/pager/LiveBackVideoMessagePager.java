@@ -7,7 +7,7 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 
 /**
  * 这个是小英回放，在聊天区加上MMD皮肤

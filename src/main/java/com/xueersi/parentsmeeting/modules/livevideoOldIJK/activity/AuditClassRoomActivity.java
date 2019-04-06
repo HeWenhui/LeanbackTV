@@ -29,8 +29,8 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.adapter.QuestionRateAd
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.adapter.QuestionRateDetailAdapter;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.adapter.VoiceQuestionDetailAdapter;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.AuditClassRoomBll;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.AuditClassRoomEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.UserScoreEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.AuditClassRoomEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.UserScoreEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.view.AuditClassRoomProgressView;
 import com.xueersi.ui.dataload.DataErrorManager;
 import com.xueersi.ui.dataload.DataLoadEntity;

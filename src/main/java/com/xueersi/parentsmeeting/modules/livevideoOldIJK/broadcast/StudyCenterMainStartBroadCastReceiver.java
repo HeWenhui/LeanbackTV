@@ -7,7 +7,7 @@ import android.content.Intent;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.courseware.CoursewarePreload;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 
 /**
  * 学习中心启动广播

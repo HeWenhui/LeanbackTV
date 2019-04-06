@@ -7,7 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 
 import com.xueersi.common.util.FontCache;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 
 public class AchieveLottieEffectInfo extends LottieEffectInfo {
     protected Activity activity;

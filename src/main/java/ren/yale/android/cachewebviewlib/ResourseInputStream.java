@@ -6,7 +6,7 @@ import android.webkit.MimeTypeMap;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveLoggerFactory;
 
 import java.io.ByteArrayInputStream;

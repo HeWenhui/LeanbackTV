@@ -39,12 +39,12 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.dialog.SmallEnglishMic
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.VideoChatAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.VideoChatInter;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.dialog.MicTipDialog;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.dialog.RaiseHandDialog;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.ClassmateEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.VideoChatLog;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveActivityPermissionCallback;

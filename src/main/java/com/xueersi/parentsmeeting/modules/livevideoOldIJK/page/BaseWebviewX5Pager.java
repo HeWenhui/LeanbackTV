@@ -20,8 +20,8 @@ import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ErrorWebViewClient;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 

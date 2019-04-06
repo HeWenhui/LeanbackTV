@@ -7,7 +7,7 @@ import android.widget.RelativeLayout;
 import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.AnswerResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.entity.CreateAnswerReslutEntity;
 

@@ -6,7 +6,7 @@ import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.learnreport.business.LecLearnReportBll;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LearnReportEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
 
 /**
  * @author linyuqiang 学习报告

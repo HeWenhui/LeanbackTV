@@ -3,9 +3,9 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business;
 import android.app.Activity;
 
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.RankUserEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.BaseExamQuestionInter;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.ExamQuestionX5Pager;
 

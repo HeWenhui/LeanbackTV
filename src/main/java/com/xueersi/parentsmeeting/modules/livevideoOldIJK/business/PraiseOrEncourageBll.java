@@ -6,7 +6,7 @@ import android.os.Message;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LivePublicPraisePager;
 
 import org.json.JSONObject;

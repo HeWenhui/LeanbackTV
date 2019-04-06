@@ -28,12 +28,12 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.achievement.lottie.AchieveType1LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.achievement.lottie.AchieveType2LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.achievement.lottie.AchieveType3LottieEffectInfo;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.EnglishPk;
+import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.entity.EnTeamPkRankEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LottieEffectInfo;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.StarAndGoldEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ViewUtil;
 

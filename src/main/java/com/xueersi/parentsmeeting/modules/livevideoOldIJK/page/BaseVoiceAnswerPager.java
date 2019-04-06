@@ -5,7 +5,7 @@ import android.content.Context;
 import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;

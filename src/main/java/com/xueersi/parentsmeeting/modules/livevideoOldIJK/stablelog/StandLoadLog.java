@@ -4,8 +4,8 @@ import android.util.Log;
 
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 
 import java.io.File;
 

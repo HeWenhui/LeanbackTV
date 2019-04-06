@@ -12,8 +12,8 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.WeakHandler;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LearnReportEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.leclearnreport.business.LecLearnReportHttp;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LecLearnReportPager;
 

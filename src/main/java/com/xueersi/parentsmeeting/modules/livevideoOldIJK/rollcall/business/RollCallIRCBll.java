@@ -9,10 +9,10 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.NoticeAction;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.ClassSignEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.ClassmateEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 
 import org.json.JSONException;
 import org.json.JSONObject;

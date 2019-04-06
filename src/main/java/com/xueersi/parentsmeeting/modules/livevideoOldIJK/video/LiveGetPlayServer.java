@@ -15,11 +15,11 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.ActivityStati
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveBll2;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.PlayServerEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.http.LiveHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveThreadPoolExecutor;
 
 import org.json.JSONException;

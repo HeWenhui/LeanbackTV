@@ -17,9 +17,9 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.EnglishPk;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.ShareDataConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.dialog.SmallEnglishMicTipDialog;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.config.EnTeamPkConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.entity.EnTeamPkRankEntity;
@@ -28,9 +28,9 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.entity.TeamMe
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.pager.TeamPkLeadPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.pager.TeamPkRankPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.pager.TeamPkRankResultPager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 
 import java.util.ArrayList;

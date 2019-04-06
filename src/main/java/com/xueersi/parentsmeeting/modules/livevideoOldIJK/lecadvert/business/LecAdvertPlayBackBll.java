@@ -17,9 +17,9 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LecAdvertEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.MoreChoice;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LecAdvertPager;
 
 import org.json.JSONObject;

@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.TeamPkTeamInfoEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 
 /**
  * Created by lenovo on 2019/1/25.

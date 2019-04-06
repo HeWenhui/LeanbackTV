@@ -8,7 +8,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LivePagerBack;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.BaseLiveQuestionPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.QuestionFillInBlankLivePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.QuestionFillInBlankPortLivePager;

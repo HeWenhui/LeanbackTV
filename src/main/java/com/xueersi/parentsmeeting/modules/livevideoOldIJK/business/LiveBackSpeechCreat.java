@@ -5,8 +5,8 @@ import android.text.TextUtils;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LivePagerBack;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.RolePlayMachinePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.BaseSpeechCreat;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.SpeechEvalAction;

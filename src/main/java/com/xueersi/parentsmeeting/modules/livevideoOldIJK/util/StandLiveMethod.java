@@ -1,7 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.util;
 
 import com.xueersi.common.base.BaseApplication;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.StandLiveConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
 
 /**
  * @author linyuqiang

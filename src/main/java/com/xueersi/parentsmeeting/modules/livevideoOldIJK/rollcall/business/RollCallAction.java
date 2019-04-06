@@ -1,8 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.rollcall.business;
 
 import com.xueersi.common.http.HttpCallBack;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.ClassSignEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.ClassmateEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 
 /**
  * @author linyuqiang

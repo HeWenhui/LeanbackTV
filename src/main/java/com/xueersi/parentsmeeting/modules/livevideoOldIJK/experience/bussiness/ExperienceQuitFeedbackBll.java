@@ -17,14 +17,14 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoActi
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.experience.pager.ExperienceQuitFeedbackPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.IExperiencePresenter;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.examination.IStandExperienceEvaluationContract;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.examination.StandExperienceEvaluationPager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.http.LivePlayBackHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 
 import java.util.HashMap;

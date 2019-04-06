@@ -9,7 +9,7 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.QuestionShowAction;
 
 public class StandExperienceUnderstandPager<T extends IStandExperienceUnderstandContract.IUnderStandPresenter> extends BasePager

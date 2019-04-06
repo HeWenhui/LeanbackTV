@@ -12,11 +12,11 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.log.Loger;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.AuditRoomConfig;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.AuditClassRoomEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveCourseEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.http.AuditClassRoomHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.http.AuditClassRoomHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.config.AuditRoomConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.AuditClassRoomEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveCourseEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.http.AuditClassRoomHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.http.AuditClassRoomHttpResponseParser;
 import com.xueersi.ui.dataload.DataLoadEntity;
 
 import org.json.JSONException;

@@ -17,8 +17,8 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.ExperienceLiv
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.HalfBodyLiveExperienceActivity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LectureLivePlayBackVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoLoadActivity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 
 import org.json.JSONObject;
 

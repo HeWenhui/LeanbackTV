@@ -12,7 +12,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.WeakHandler;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LecAdvertEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LecAdvertPager;
 
 import java.util.concurrent.atomic.AtomicBoolean;

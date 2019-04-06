@@ -45,8 +45,8 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LectureLivePl
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.PauseNotStopVideoIml;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.experience.bussiness.ExperienceQuitFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveBackVideoFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.MediaControllerAction;
@@ -56,7 +56,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.livemessag
 import com.xueersi.parentsmeeting.modules.livevideo.se.widget.StandLiveVideoExperienceMediaController;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.recommodcourse.StandExperienceRecommondBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.understand.StandExperienceUnderstandBll;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.StandExperienceEnglishH5PlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.StandExperienceQuestionPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.PlayErrorCodeLog;

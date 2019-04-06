@@ -1,6 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.lecadvert.business;
 
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LecAdvertEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 
 /**
  * Created by lyqai on 2018/1/15.

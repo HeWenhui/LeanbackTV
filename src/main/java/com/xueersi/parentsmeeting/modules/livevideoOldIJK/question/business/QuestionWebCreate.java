@@ -2,8 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business;
 
 import android.content.Context;
 
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.BaseQuestionWebInter;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.QuestionWebX5Pager;
 

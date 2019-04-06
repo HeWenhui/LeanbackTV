@@ -28,11 +28,11 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDe
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.agora.AGEventHandler;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.agora.WorkerThread;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.ClassmateEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LottieEffectInfo;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.VideoAudioChatLog;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.videoaudiochat.business.AgoraVideoChatInter;

@@ -1,6 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.achievement.business;
 
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.StarAndGoldEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 
 import java.util.ArrayList;
 

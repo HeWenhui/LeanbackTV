@@ -21,7 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.config.EnTeam
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.item.TeamMemberStarItem;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 
 import java.util.ArrayList;

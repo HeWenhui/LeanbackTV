@@ -23,10 +23,10 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.ActivityChang
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LecLiveVideoAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.PauseNotStopVideoIml;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveBll2;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.lecadvert.business.LecAdvertIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.leclearnreport.business.LecLearnReportIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.LiveIRCMessageBll;

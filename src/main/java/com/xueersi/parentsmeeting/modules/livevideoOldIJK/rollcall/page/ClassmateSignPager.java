@@ -11,7 +11,7 @@ import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.item.ClassmateItem;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.ClassmateEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ScrollLinearLayout;
 
 import java.util.ArrayList;

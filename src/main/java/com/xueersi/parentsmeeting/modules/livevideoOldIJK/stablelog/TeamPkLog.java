@@ -3,8 +3,8 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog;
 import android.text.TextUtils;
 
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 
 /**
  * 战队pk 数据统计

@@ -1,6 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.buycourse;
 
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.ExperienceResult;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
 
 public interface IBuyCourseContract {
 

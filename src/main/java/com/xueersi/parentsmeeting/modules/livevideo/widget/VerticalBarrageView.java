@@ -20,7 +20,7 @@ import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.PraiseMessageEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.PraiseMessageEntity;
 
 import java.util.List;
 import java.util.TreeSet;

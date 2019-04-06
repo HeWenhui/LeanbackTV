@@ -6,7 +6,7 @@ import android.widget.RelativeLayout;
 import com.tal.speech.language.TalLanguage;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.AudioRequest;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 

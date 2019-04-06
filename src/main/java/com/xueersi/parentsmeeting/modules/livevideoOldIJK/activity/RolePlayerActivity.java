@@ -26,8 +26,8 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.RolePlayerBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.agora.WorkerThread;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.RolePlayerEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.RolePlayerPager;
 
 import java.io.File;

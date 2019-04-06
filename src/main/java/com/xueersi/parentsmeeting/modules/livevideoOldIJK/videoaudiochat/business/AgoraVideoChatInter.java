@@ -2,7 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.videoaudiochat.busine
 
 import android.view.View;
 
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.ClassmateEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 
 import java.util.ArrayList;
 

@@ -10,7 +10,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.StandLiveVideoAction;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerBottom;
 
 /**

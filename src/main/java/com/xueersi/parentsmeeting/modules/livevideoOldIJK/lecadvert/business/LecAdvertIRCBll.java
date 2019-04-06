@@ -11,7 +11,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.NoticeAction;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LecAdvertEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 
 import org.json.JSONObject;
 

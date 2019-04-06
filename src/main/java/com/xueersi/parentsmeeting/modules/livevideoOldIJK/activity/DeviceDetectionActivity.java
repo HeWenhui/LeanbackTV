@@ -13,7 +13,7 @@ import com.xueersi.common.base.XesActivity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.irc.DeviceDetectionBll;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.DeviceDetectionEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.DeviceDetectionEntity;
 import com.xueersi.ui.dataload.DataErrorManager;
 import com.xueersi.ui.dataload.DataLoadEntity;
 import com.xueersi.ui.widget.AppTitleBar;

@@ -2,7 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog;
 
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 
 import java.util.HashMap;
 import java.util.Map;

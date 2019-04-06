@@ -21,7 +21,7 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveMessageEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.GlideDrawableUtil;
 
 import java.io.IOException;

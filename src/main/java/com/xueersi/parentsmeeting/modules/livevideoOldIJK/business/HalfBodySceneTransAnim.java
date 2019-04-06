@@ -11,9 +11,9 @@ import android.widget.ImageView;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.HalfBodyLiveConfig;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 
 /**
 *半身直播 主/辅 讲切流转场动画

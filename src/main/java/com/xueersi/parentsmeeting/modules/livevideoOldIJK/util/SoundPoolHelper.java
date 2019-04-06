@@ -8,7 +8,7 @@ import android.os.Build;
 
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.SoundInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.SoundInfo;
 
 import java.util.ArrayList;
 import java.util.HashMap;

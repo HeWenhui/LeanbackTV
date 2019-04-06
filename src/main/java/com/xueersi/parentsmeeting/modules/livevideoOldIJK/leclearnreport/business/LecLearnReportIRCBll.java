@@ -12,8 +12,8 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.TopicAction;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LearnReportEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.learnreport.business.LecLearnReportBll;
 
 import org.json.JSONObject;

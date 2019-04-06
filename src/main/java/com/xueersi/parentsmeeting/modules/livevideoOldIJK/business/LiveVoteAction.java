@@ -1,6 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.business;
 
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 
 /**
  * Created by lyqai on 2017/12/27.

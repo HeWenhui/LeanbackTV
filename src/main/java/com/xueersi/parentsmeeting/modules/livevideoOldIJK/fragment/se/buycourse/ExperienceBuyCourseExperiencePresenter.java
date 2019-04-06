@@ -11,7 +11,7 @@ import com.xueersi.lib.framework.utils.JsonUtil;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.IExperiencePresenter;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.StandExperienceLiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.ExperienceResult;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.StandExperienceEventBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.learnfeedback.StandExperienceLearnFeedbackBll;
 

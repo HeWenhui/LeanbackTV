@@ -6,11 +6,11 @@ import android.widget.RelativeLayout;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.TopicAction;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.worddictation.entity.WordStatisticInfo;
 
 import org.json.JSONObject;

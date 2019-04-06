@@ -24,7 +24,7 @@ import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.RedPackageStandLog;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.GlideDrawableUtil;

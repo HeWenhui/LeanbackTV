@@ -3,7 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.contract;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.entity.ExcellentListEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.entity.LikeListEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.entity.MinimarketListEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.entity.PraiseListDanmakuEntity;

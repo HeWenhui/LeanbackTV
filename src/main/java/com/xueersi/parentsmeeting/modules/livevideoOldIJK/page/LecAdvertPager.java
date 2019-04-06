@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.xueersi.common.event.MiniEvent;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LecAdvertEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LecAdvertEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.lecadvert.business.LecAdvertPagerClose;
 
 import org.greenrobot.eventbus.EventBus;

@@ -18,7 +18,7 @@ import com.xueersi.common.base.BaseApplication;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.TeamEnergyAndContributionStarEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
 
 /**
  * Created by lenovo on 2019/1/28.

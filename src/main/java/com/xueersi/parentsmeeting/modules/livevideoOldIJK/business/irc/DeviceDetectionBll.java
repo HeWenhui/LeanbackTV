@@ -6,9 +6,9 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.DeviceDetectionEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.http.LiveHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.DeviceDetectionEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.ui.dataload.DataLoadEntity;
 
 /**

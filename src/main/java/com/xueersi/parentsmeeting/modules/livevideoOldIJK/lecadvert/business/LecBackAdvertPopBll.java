@@ -34,9 +34,9 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.ActivityChang
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.PauseNotStopVideoInter;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.WeakHandler;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.MoreChoice;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FloatWindowManager;
 import com.xueersi.ui.adapter.AdapterItemInterface;

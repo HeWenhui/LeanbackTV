@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.IExperiencePresenter;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.http.LivePlayBackHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 
 import java.util.ArrayList;

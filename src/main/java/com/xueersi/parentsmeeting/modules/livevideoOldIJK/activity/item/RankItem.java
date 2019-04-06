@@ -4,7 +4,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.RankEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 
 /**

@@ -1,7 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.config;
 
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveHttpConfig;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveVideoChConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoChConfig;
 
 /**
  * linyuqiang

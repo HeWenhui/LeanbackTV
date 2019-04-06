@@ -13,7 +13,7 @@ import com.airbnb.lottie.OnCompositionLoadedListener;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveMessageEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveHeadView;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 

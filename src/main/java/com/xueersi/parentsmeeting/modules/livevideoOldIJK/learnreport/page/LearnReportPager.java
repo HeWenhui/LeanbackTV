@@ -16,7 +16,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LearnReportEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.learnreport.business.LearnReportBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.learnreport.business.LearnReportHttp;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;

@@ -73,9 +73,9 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.SpeechBulletScreen.Con
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.achievement.page.EnglishSpeekPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.WeakHandler;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.dialog.SmallEnglishMicTipDialog;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveCacheFile;

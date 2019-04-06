@@ -3,7 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page;
 import android.view.View;
 
 import com.xueersi.common.base.BasePager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 
 /**
  * @author linyuqiang

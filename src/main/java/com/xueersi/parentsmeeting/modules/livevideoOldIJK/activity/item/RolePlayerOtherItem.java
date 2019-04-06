@@ -22,7 +22,7 @@ import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.PlayerCallback;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.RolePlayerBll;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.RolePlayerEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.RolePlayerEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.RolePlayLog;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView;

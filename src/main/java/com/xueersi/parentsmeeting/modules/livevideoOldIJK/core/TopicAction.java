@@ -1,6 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.core;
 
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 
 import org.json.JSONObject;
 

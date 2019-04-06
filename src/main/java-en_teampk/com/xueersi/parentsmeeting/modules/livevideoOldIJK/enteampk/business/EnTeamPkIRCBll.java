@@ -13,8 +13,8 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IRCConnection
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.irc.jibble.pircbot.User;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.EnglishPk;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.ShareDataConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
+import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveEventBus;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.MessageAction;
@@ -25,10 +25,10 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.entity.PkTeam
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.event.ClassEndEvent;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.pager.TeamPkLeadPager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.QuestionShowReg;

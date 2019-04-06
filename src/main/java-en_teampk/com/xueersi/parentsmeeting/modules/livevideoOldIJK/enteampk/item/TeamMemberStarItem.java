@@ -23,7 +23,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.pager.TeamPkLeadPager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveLoggerFactory;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 

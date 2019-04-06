@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.xueersi.lib.framework.utils.listener.OnUnDoubleClickListener;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 
 /**
  * Created by：WangDe on 2018/11/27 15:58

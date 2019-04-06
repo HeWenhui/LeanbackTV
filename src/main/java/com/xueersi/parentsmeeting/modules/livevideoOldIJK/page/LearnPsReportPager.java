@@ -17,7 +17,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LearnPsReportBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.dialog.PsLearnReportTipDialog;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LearnReportEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.learnreport.business.LearnReportHttp;
 import com.xueersi.ui.widget.RatingBar;
 

@@ -13,9 +13,9 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.experience.pager.ExperienceGuidePager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.http.LivePlayBackHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 
 import java.util.HashMap;
 

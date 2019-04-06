@@ -12,7 +12,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.StandExperienceEventBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.StandExperienceLiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.http.LivePlayBackHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.QuestionShowReg;
 

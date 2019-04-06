@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.UserScoreEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.UserScoreEntity;
 
 import java.util.List;
 

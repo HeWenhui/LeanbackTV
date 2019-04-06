@@ -8,7 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.PsState;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.PsState;
 
 import java.util.List;
 

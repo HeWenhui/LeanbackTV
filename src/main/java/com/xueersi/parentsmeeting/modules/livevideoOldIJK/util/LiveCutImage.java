@@ -5,7 +5,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.view.View;
 
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

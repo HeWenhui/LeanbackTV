@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.AnswerResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.ArtsPSEAnswerResultPager;
 
 /**

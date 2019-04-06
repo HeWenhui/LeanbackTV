@@ -17,7 +17,7 @@ import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LayoutParamsUtil;
 import com.xueersi.ui.adapter.XsBaseAdapter;

@@ -3,7 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.SpeechBulletScreen.Co
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.http.HttpCallBack;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 
 public interface ScienceSpeechBullletContract {
 

@@ -13,7 +13,7 @@ import com.xueersi.common.http.HttpCall;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.ActivityStatic;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.HalfBodyLiveConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.halfbody.HalfBodyLiveVideoFragement;
 
 /**

@@ -1,6 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.courseware;
 
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.CoursewareInfoEntity.LiveCourseware;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.CoursewareInfoEntity.LiveCourseware;
 
 import java.util.List;
 

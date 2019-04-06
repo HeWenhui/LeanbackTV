@@ -10,8 +10,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.HalfBodyLiveStudyInfo;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.StudyInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.HalfBodyLiveStudyInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StudyInfo;
 
 /**
  * 半身直播  家长旁听 业务bll

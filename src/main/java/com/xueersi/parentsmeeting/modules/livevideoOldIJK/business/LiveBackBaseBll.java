@@ -12,11 +12,11 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.http.LivePlayBackHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.http.LivePlayBackHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 
 import java.util.HashMap;

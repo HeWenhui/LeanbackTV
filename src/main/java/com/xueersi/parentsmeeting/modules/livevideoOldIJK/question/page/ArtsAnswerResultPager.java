@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.AnswerResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.AnswerResultStateListener;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.IArtsAnswerRsultDisplayer;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ArtsAnswerTextView;

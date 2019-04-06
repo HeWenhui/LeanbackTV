@@ -3,8 +3,8 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business;
 import android.app.Activity;
 
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LivePagerBack;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.BaseExamQuestionInter;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.ExamQuestionX5PlaybackPager;
 

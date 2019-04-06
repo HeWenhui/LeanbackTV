@@ -10,8 +10,8 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.achievement.page.EnStandAchievePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.entity.EnTeamPkRankEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.StarAndGoldEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveLoggerFactory;
 
 import java.util.ArrayList;

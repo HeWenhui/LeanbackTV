@@ -48,11 +48,11 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LectureLivePl
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.PauseNotStopVideoIml;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveVideoSAConfig;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.bussiness.EvaluateTeacherPlayBackBll;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.LiveMessageBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.nbh5courseware.business.NBH5PlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.ArtsAnswerResultPlayBackBll;

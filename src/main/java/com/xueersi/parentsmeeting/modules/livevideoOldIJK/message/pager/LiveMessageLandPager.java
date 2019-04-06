@@ -41,9 +41,9 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.item.FlowerIt
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.irc.jibble.pircbot.User;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.FlowerEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveMessageEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.QuestionBll;

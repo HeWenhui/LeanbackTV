@@ -15,7 +15,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.WeakHandler;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.GoldTeamStatus;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.RedPackageAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.redpackage.pager.RedPackagePage;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.RedPackageStandLog;

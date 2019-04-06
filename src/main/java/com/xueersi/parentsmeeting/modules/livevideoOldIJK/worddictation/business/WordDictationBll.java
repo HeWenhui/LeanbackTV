@@ -18,8 +18,8 @@ import com.xueersi.parentsmeeting.modules.endictation.entity.DictationConfig;
 import com.xueersi.parentsmeeting.modules.endictation.entity.DictationQuery;
 import com.xueersi.parentsmeeting.modules.endictation.entity.RecognizeFlow;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.worddictation.entity.WordStatisticInfo;
 
 /**
