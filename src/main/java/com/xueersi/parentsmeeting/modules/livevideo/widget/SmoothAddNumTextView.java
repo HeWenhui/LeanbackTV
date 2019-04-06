@@ -8,7 +8,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 
 import com.xueersi.common.util.FontCache;
-import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
 
 /**
  * 平滑递增 数字展示器

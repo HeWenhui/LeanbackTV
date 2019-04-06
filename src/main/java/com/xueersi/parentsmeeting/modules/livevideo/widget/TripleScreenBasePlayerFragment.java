@@ -15,9 +15,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.logerhelper.XesMobAgent;
-import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.WeakHandler;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.LiveVideoConfig;
 
 /**
  * 三分屏直播的基础播放Fragment，这里主要作用是现实自定义的加载中

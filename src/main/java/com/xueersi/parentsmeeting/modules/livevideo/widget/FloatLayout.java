@@ -10,9 +10,9 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
-import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.R;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LecVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LivePlaybackVideoActivity;
 
 /**
  * Author:xishuang

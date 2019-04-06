@@ -1,12 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.praiselist.widget;
 
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
-import android.os.Handler;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorCompat;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.view.ViewGroup;
 
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseItemAnimator;
