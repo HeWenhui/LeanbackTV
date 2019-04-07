@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.teampk.business;
 
 import android.app.Activity;
-import android.graphics.Rect;
 import android.os.Build;
 import android.text.TextUtils;
 import android.view.View;
@@ -12,7 +11,6 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -626,7 +624,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
         pkStateRootView = viewGroup.findViewById(R.id.tpkL_teampk_pkstate_root);
         if (pkStateRootView != null) {
             pkStateRootView.setVisibility(View.VISIBLE);
-            pkStateRootView.setTeamPkBll(this);
+//            pkStateRootView.setTeamPkBll(this);
             // 设置当前pk 状态,兼容 半身直播 主辅导态来回切换
             if (mCurrentPkState != null) {
                 pkStateRootView.bindData(mCurrentPkState.getStuLiveGold(),
