@@ -74,8 +74,8 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.videochat.business.Vid
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlayerFragment;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.TripleScreenBasePlayerFragment;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LivePlayerFragment;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.TripleScreenBasePlayerFragment;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.worddictation.business.WordDictationIRCBll;
 
 import java.lang.reflect.Constructor;

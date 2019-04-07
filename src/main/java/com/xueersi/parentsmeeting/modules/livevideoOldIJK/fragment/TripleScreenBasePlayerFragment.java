@@ -260,7 +260,7 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
     };
 
     /** 重写这个CallBack */
-    public void overrideCallBack() {
+    public void overrideHandlerCallBack() {
         if (LiveVideoConfig.isSmallChinese || LiveVideoConfig.isPrimary || isSmallEnglish) {
             vPlayerHandler = new WeakHandler(callback);
         }
