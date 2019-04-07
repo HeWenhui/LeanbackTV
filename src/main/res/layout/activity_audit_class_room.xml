@@ -1,0 +1,500 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:arc="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <include layout="@layout/include_app_title_main" />
+
+    <RelativeLayout
+        android:id="@id/rl_audit_class_room_main_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ScrollView
+            android:id="@id/sv_audit_class_room_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <RelativeLayout
+                android:id="@id/rl_audit_class_room_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:paddingBottom="20dp">
+
+                <View
+                    android:id="@id/v_audit_class_room_left_line"
+                    android:layout_width="1px"
+                    android:layout_height="match_parent"
+                    android:layout_above="@id/v_audit_class_room_bottom_line"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginLeft="27dp"
+                    android:layout_marginTop="30dp"
+                    android:background="@color/COLOR_DCDCDC" />
+
+                <LinearLayout
+                    android:id="@id/ll_audit_class_room_check_in_time_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="12dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="30dp"
+                        android:background="@drawable/ic_audit_class_room_check_in_time"
+                        android:scaleType="fitXY" />
+
+                    <TextView
+                        style="@style/text_font16_333333_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="30dp"
+                        android:drawablePadding="10dp"
+                        android:gravity="center_vertical"
+                        android:text="签到时间" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@id/ll_audit_class_room_check_in_time_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/ll_audit_class_room_check_in_time_title"
+                    android:layout_marginLeft="28dp"
+                    android:background="@color/COLOR_F9F9F9"
+                    android:gravity="center"
+                    android:visibility="gone">
+
+
+                    <TextView
+                        android:id="@id/tv_audit_class_room_check_in_hour"
+                        style="@style/textfont25_20abff_style"
+                        android:layout_width="20dp"
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/shape_dcdcdc_stroke_solid_white_radius3"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:text="" />
+
+                    <TextView
+                        android:id="@id/tv_audit_class_room_check_in_minute"
+                        style="@style/textfont25_20abff_style"
+                        android:layout_width="20dp"
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginLeft="3dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/shape_dcdcdc_stroke_solid_white_radius3"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:text="" />
+
+                    <TextView
+                        style="@style/text_font16_20abff_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="3dp"
+                        android:includeFontPadding="false"
+                        android:text=":" />
+
+                    <TextView
+                        android:id="@id/tv_audit_class_room_check_in_second"
+                        style="@style/textfont25_20abff_style"
+                        android:layout_width="20dp"
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginLeft="3dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/shape_dcdcdc_stroke_solid_white_radius3"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:text="" />
+
+                    <TextView
+                        android:id="@id/tv_audit_class_room_check_in_second_end"
+                        style="@style/textfont25_20abff_style"
+                        android:layout_width="20dp"
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginLeft="3dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/shape_dcdcdc_stroke_solid_white_radius3"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:text="" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@id/ll_audit_class_room_pre_test_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/ll_audit_class_room_check_in_time_content"
+                    android:layout_marginLeft="12dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="30dp"
+                        android:background="@drawable/ic_audit_class_room_pre_test"
+                        android:scaleType="fitXY" />
+
+                    <TextView
+                        style="@style/text_font16_333333_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="30dp"
+                        android:drawablePadding="10dp"
+                        android:gravity="center_vertical"
+                        android:text="课前测正确率" />
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@id/rl_audit_class_room_pre_test_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="110dp"
+                    android:layout_below="@id/ll_audit_class_room_pre_test_title"
+                    android:layout_marginLeft="28dp"
+                    android:background="@color/COLOR_F9F9F9"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <com.xueersi.parentsmeeting.modules.livevideo.view.AuditClassRoomProgressView
+                        android:id="@id/arcpview_audit_class_room_pre_test_content"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_centerInParent="true"
+                        arc:audit_arc_bg_color="@color/COLOR_DCDCDC"
+                        arc:audit_arc_fg_color="@color/COLOR_F2725E"
+                        arc:audit_arc_height="70dp"
+                        arc:audit_arc_pro_max="100"
+                        arc:audit_arc_stroke_width="2dp"
+                        arc:audit_arc_width="70dp" />
+
+                    <TextView
+                        android:id="@id/tv_audit_class_room_pre_test_rank"
+                        style="@style/textfont10_a0a0a0_style"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_centerInParent="true"
+                        android:gravity="center" />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@id/ll_audit_class_room_interactive_ranking_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rl_audit_class_room_pre_test_content"
+                    android:layout_marginLeft="12dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="30dp"
+                        android:background="@drawable/ic_audit_class_room_interactive_ranking"
+                        android:scaleType="fitXY" />
+
+                    <TextView
+                        style="@style/text_font16_333333_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="30dp"
+                        android:drawablePadding="10dp"
+                        android:gravity="center_vertical"
+                        android:text="互动题排名" />
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@id/ll_audit_class_room_interactive_ranking_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/ll_audit_class_room_interactive_ranking_title"
+                    android:layout_marginLeft="28dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@id/tv_audit_class_room_my_rate"
+                        style="@style/text_font11_a0a0a0_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/bg_ranking_selected"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:paddingBottom="5dp"
+                        android:text="" />
+
+                    <TextView
+                        android:id="@id/tv_audit_class_room_team_rate"
+                        style="@style/text_font11_a0a0a0_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/bg_ranking_un_selected"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:paddingBottom="5dp" />
+
+                    <TextView
+                        android:id="@id/tv_audit_class_room_class_rate"
+                        style="@style/text_font11_a0a0a0_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/bg_ranking_un_selected"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:paddingBottom="5dp" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@id/rl_audit_class_room_interactive_ranking_result_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/ll_audit_class_room_interactive_ranking_content"
+                    android:layout_marginLeft="28dp"
+                    android:background="@color/COLOR_F9F9F9"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@id/tv_audit_class_room_interactive_ranking_hint"
+                        style="@style/text_font14_a0a0a0_style"
+                        android:layout_width="78dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginTop="20dp"
+                        android:gravity="center"
+                        android:text="排名" />
+
+                    <TextView
+                        android:id="@id/tv_audit_class_room_interactive_ranking_name_hint"
+                        style="@style/text_font14_a0a0a0_style"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_toLeftOf="@id/tv_audit_class_room_interactive_right_hint"
+                        android:layout_toRightOf="@id/tv_audit_class_room_interactive_ranking_hint"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical"
+                        android:singleLine="true"
+                        android:text="学员" />
+
+                    <TextView
+                        android:id="@id/tv_audit_class_room_interactive_right_hint"
+                        style="@style/text_font14_a0a0a0_style"
+                        android:layout_width="104dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginBottom="16dp"
+                        android:layout_marginRight="12dp"
+                        android:layout_marginTop="20dp"
+                        android:gravity="center"
+                        android:text="互动题正确率" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@id/ll_audit_class_room_interactive_ranking_result_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rl_audit_class_room_interactive_ranking_result_title"
+                    android:layout_marginLeft="28dp"
+                    android:background="@color/COLOR_F9F9F9"
+                    android:visibility="gone">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@id/rv_audit_class_room_interactive_ranking_result_content"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="14dp"
+                        android:background="@color/COLOR_F9F9F9" />
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@id/ll_audit_class_room_right_wrong_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/ll_audit_class_room_interactive_ranking_result_content"
+                    android:layout_marginLeft="12dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="30dp"
+                        android:background="@drawable/ic_audit_class_room_right_wrong"
+                        android:scaleType="fitXY" />
+
+                    <TextView
+                        style="@style/text_font16_333333_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="30dp"
+                        android:drawablePadding="10dp"
+                        android:gravity="center_vertical"
+                        android:text="互动题对错情况" />
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:id="@id/rl_audit_class_room_right_wrong_press_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="110dp"
+                    android:layout_below="@id/ll_audit_class_room_right_wrong_title"
+                    android:layout_marginLeft="28dp"
+                    android:background="@color/COLOR_F9F9F9"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <com.xueersi.parentsmeeting.modules.livevideo.view.AuditClassRoomProgressView
+                        android:id="@id/arcpview_rl_audit_class_room_right_wrong_press_content"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_centerInParent="true"
+                        arc:audit_arc_bg_color="@color/COLOR_DCDCDC"
+                        arc:audit_arc_fg_color="@color/COLOR_6AC00B"
+                        arc:audit_arc_height="70dp"
+                        arc:audit_arc_pro_max="100"
+                        arc:audit_arc_stroke_width="2dp"
+                        arc:audit_arc_width="70dp" />
+
+                    <TextView
+                        android:id="@id/tv_audit_class_room_right_wrong_press_content"
+                        style="@style/textfont10_a0a0a0_style"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_centerInParent="true"
+                        android:gravity="center" />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@id/ll_audit_class_room_right_wrong_question_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/rl_audit_class_room_right_wrong_press_content"
+                    android:layout_marginLeft="28dp"
+                    android:background="@color/COLOR_F9F9F9"
+                    android:visibility="gone">
+
+                    <com.xueersi.ui.widget.AutohGridview
+                        android:id="@id/gv_audit_class_room_right_wrong_question_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:background="@color/COLOR_F9F9F9"
+                        android:listSelector="#00000000"
+                        android:numColumns="5"
+                        android:verticalSpacing="0dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@id/ll_audit_class_room_voice_question_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/ll_audit_class_room_right_wrong_question_content"
+                    android:layout_marginLeft="12dp"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="30dp"
+                        android:background="@drawable/ic_audit_class_room_voice_question_results"
+                        android:scaleType="fitXY" />
+
+                    <TextView
+                        style="@style/text_font16_333333_style"
+                        android:layout_width="wrap_content"
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="30dp"
+                        android:drawablePadding="10dp"
+                        android:gravity="center_vertical"
+                        android:text="语音测试成绩" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@id/ll_audit_class_room_voice_question_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/ll_audit_class_room_voice_question_title"
+                    android:layout_marginLeft="28dp"
+                    android:background="@color/COLOR_F9F9F9"
+                    android:visibility="gone">
+
+                    <com.xueersi.ui.widget.AutohGridview
+                        android:id="@id/gv_audit_class_room_voice_question_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="20dp"
+                        android:layout_marginTop="20dp"
+                        android:background="@color/COLOR_F9F9F9"
+                        android:listSelector="#00000000"
+                        android:numColumns="3"
+                        android:verticalSpacing="10dp" />
+                </LinearLayout>
+
+                <View
+                    android:id="@id/v_audit_class_room_bottom_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_below="@id/ll_audit_class_room_voice_question_content" />
+            </RelativeLayout>
+
+        </ScrollView>
+
+        <TextView
+            android:id="@id/tv_audit_class_room_no_content_hint"
+            style="@style/text_font16_a0a0a0_style"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="12dp"
+            android:visibility="gone"
+            android:layout_marginRight="12dp"
+            android:gravity="center"
+            android:text="只有听直播才会有学习数据喔！" />
+
+    </RelativeLayout>
+</LinearLayout>

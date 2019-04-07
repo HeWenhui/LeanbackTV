@@ -615,9 +615,6 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         mLiveAutoNoticeBll.setSrcType(videoQuestionLiveEntity.srcType);
                     }
                 }
-                if (mGetInfo.isNewCourse()) {
-                    NewCourseLog.sno2(mLiveBll, NewCourseLog.getNewCourseTestIdSec(videoQuestionLiveEntity, mGetInfo.getIsArts()), XESCODE.ARTS_SEND_QUESTION);
-                }
                 break;
             }
             case XESCODE.STOPQUESTION:
