@@ -28,6 +28,8 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
     private boolean enableVideo = true;
     private boolean enableAudio = true;
     private int progress = 0;
+    public static int voiceStartFrame = 14;
+    public static int voiceMaxFrame = 0;
 
     public CourseGroupMyItem(Context context, TeamMemberEntity entity, WorkerThread workerThread, int uid) {
         super(context, entity, workerThread, uid);
@@ -78,6 +80,11 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
                     if (enableAudio) {
                         ivCourseItemVideoDis.setVisibility(View.GONE);
                         rtcEngine.enableAudio();
+                        if (enableAudio) {
+                            ivCourseItemVideo.setImageResource(AUDIO_RES[2]);
+                        } else {
+                            ivCourseItemVideo.setImageResource(AUDIO_RES[1]);
+                        }
                     } else {
                         rtcEngine.disableAudio();
                         final LottieAnimationView animationView = (LottieAnimationView) ivCourseItemAudio;

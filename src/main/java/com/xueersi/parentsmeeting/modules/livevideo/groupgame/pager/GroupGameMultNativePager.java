@@ -52,6 +52,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageReg;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.groupgame.config.GroupGameConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.CleanUpEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.GroupGameTestInfosEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.VidooCannonEntity;
@@ -164,12 +165,15 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     private HashMap<String, CleanUpEntity> cleanUpEntities = new HashMap<>();
     private HashMap<String, VidooCannonEntity> vidooCannonEntities = new HashMap<>();
     private String speechContent = "";
-    /** 总的答题 */
-    public List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> allAnswerList = new ArrayList<>();
+    /** 总的答题，语音炮弹是够数移除。clean up是移除然后增加到用户信息里 */
+    private List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> allAnswerList = new ArrayList<>();
     private List<Integer> allScoreList = new ArrayList<>();
     private GetStuActiveTeam getStuActiveTeam;
     private TcpMessageReg tcpMessageReg;
+    /** 接收游戏的消息 */
     private TcpMessageAction tcpMessageAction;
+    /** 接收用户禁用音视频的消息 */
+    private TeamVideoAudioMessage teamVideoAudioMessage;
     private EvaluatorIng evaluatorIng;
     private PreLoad preLoad;
     private JSONArray userAnswer = new JSONArray();
@@ -579,12 +583,16 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             baseCourseGroupItem.setOnVideoAudioClick(new BaseCourseGroupItem.OnVideoAudioClick() {
                 @Override
                 public void onVideoClick(boolean enable) {
+                    if (teamVideoAudioMessage == null) {
+                        teamVideoAudioMessage = new TeamVideoAudioMessage();
+                        tcpMessageReg.registTcpMessageAction(tcpMessageAction);
+                    }
                     try {
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("live_id", liveId);
                         jsonObject.put("team_mate", team_mate);
                         JSONObject data = new JSONObject();
-                        data.put("type", 1);
+                        data.put("type", GroupGameConfig.OPERATION_VIDEO);
                         data.put("enable", enable ? 0 : 1);
                         jsonObject.put("data", data);
                         tcpMessageReg.send(TcpConstants.AUDIO_TYPE, TcpConstants.AUDIO_SEND, jsonObject.toString());
@@ -595,12 +603,16 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
                 @Override
                 public void onAudioClick(boolean enable) {
+                    if (teamVideoAudioMessage == null) {
+                        teamVideoAudioMessage = new TeamVideoAudioMessage();
+                        tcpMessageReg.registTcpMessageAction(tcpMessageAction);
+                    }
                     try {
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("live_id", liveId);
                         jsonObject.put("team_mate", team_mate);
                         JSONObject data = new JSONObject();
-                        data.put("type", 2);
+                        data.put("type", GroupGameConfig.OPERATION_AUDIO);
                         data.put("enable", enable ? 0 : 1);
                         jsonObject.put("data", data);
                         tcpMessageReg.send(TcpConstants.AUDIO_TYPE, TcpConstants.AUDIO_SEND, jsonObject.toString());
@@ -1128,8 +1140,13 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         if (audioRequest != null) {
             audioRequest.release();
         }
-        if (tcpMessageReg != null && tcpMessageAction != null) {
-            tcpMessageReg.unregistTcpMessageAction(tcpMessageAction);
+        if (tcpMessageReg != null) {
+            if (tcpMessageAction != null) {
+                tcpMessageReg.unregistTcpMessageAction(tcpMessageAction);
+            }
+            if (teamVideoAudioMessage != null) {
+                tcpMessageReg.unregistTcpMessageAction(teamVideoAudioMessage);
+            }
         }
     }
 
@@ -1435,7 +1452,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             JSONObject jsonObject = new JSONObject(msg);
                             JSONObject dataObj = jsonObject.getJSONObject("data");
                             int word_id = dataObj.getInt("word_id");
-                            int who_id = dataObj.getInt("who_id");
+                            final int who_id = dataObj.getInt("who_id");
                             final int score = dataObj.getInt("score");
                             Integer integer = wordCount.get("" + word_id);
                             if (integer == null) {
@@ -1449,8 +1466,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                 for (int allAns = 0; allAns < allAnswerList.size(); allAns++) {
                                     GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = allAnswerList.get(allAns);
                                     if (answer.getId() == word_id) {
-                                        answer.setGetFireCount(3);
                                         vidooCannonEntity.rightNum++;
+                                        //一个单词一个能量
+                                        vidooCannonEntity.teamMemberEntity.energy++;
                                         break;
                                     }
                                 }
@@ -1512,6 +1530,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                                 wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
                                             } catch (JSONException e) {
                                                 e.printStackTrace();
+                                            }
+                                            BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + who_id);
+                                            if (courseGroupItem != null) {
+                                                courseGroupItem.onScene();
                                             }
                                         }
                                     });
@@ -1732,6 +1754,45 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         @Override
         public short[] getMessageFilter() {
             return new short[]{TcpConstants.CLEAN_UP_TYPE};
+        }
+    }
+
+    /**
+     * 接收用户禁用音视频的消息
+     */
+    class TeamVideoAudioMessage implements TcpMessageAction {
+
+        @Override
+        public void onMessage(short type, int operation, String msg) {
+            if (TcpConstants.AUDIO_TYPE == type) {
+                switch (operation) {
+                    case TcpConstants.AUDIO_REC: {
+                        try {
+                            JSONObject jsonObject = new JSONObject(msg);
+                            String id = jsonObject.getString("id");
+                            final BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + id);
+                            if (courseGroupItem != null) {
+                                final int opertype = jsonObject.getInt("type");
+                                final boolean enable = jsonObject.getInt("enable") == 1;
+                                handler.post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        courseGroupItem.onOtherDis(opertype, enable);
+                                    }
+                                });
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        @Override
+        public short[] getMessageFilter() {
+            return new short[]{TcpConstants.AUDIO_TYPE};
         }
     }
 }

@@ -7,10 +7,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageReg;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 
 import io.agora.rtc.RtcEngine;
@@ -28,9 +30,8 @@ public abstract class BaseCourseGroupItem implements AdapterItemInterface<TeamMe
     protected int uid;
     protected Context mContext;
     protected TeamMemberEntity entity;
-    public static int voiceStartFrame = 14;
-    public static int voiceMaxFrame = 0;
     protected OnVideoAudioClick onVideoAudioClick;
+    protected Logger logger = LiveLoggerFactory.getLogger(getClass().getSimpleName());
 
     public BaseCourseGroupItem(Context context, TeamMemberEntity entity, WorkerThread workerThread, int uid) {
         this.mContext = context;
@@ -77,6 +78,12 @@ public abstract class BaseCourseGroupItem implements AdapterItemInterface<TeamMe
 
     }
 
+    /**
+     * 收到音视频关闭指令
+     *
+     * @param type   类型
+     * @param enable 可操作
+     */
     public void onOtherDis(int type, boolean enable) {
 
     }
