@@ -1075,6 +1075,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             JSONArray userAnswer = new JSONArray();
             VidooCannonEntity vidooCannonEntity = vidooCannonEntities.get("" + stuid);
             if (vidooCannonEntity != null) {
+                energy = vidooCannonEntity.rightNum + 5;
                 answerData.put("rightNum", vidooCannonEntity.rightNum);
                 HashMap<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity, ArrayList<Integer>> wordScore = vidooCannonEntity.wordScore;
                 Set<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> keySet = wordScore.keySet();
@@ -1171,6 +1172,13 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             if (teamVideoAudioMessage != null) {
                 tcpMessageReg.unregistTcpMessageAction(teamVideoAudioMessage);
             }
+        }
+        Set<String> keySet = courseGroupItemHashMap.keySet();
+        for (String key : keySet) {
+            BaseCourseGroupItem baseCourseGroupItem = courseGroupItemHashMap.get(key);
+            long videoTime = baseCourseGroupItem.getVideoTime();
+            long audioTime = baseCourseGroupItem.getAudioTime();
+            logger.d("onDestroy:key=" + key + ",videoTime=" + videoTime + ",audioTime=" + audioTime);
         }
     }
 

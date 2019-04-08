@@ -40,14 +40,14 @@ public class CourseGroupNoItem extends BaseCourseGroupItem {
     }
 
     public void doRenderRemoteUi(SurfaceView surfaceV) {
-        ivCourseItemVideoHead.setVisibility(View.GONE);
+        rl_livevideo_course_item_video_head.setVisibility(View.GONE);
         rlCourseItemVideo.addView(surfaceV, 0);
         rlCourseItemCtrl.setVisibility(View.VISIBLE);
         tvCourseItemLoad.setVisibility(View.GONE);
     }
 
     public void onUserOffline() {
-        ivCourseItemVideoHead.setVisibility(View.VISIBLE);
+        rl_livevideo_course_item_video_head.setVisibility(View.VISIBLE);
         rlCourseItemCtrl.setVisibility(View.GONE);
         tvCourseItemLoad.setVisibility(View.VISIBLE);
     }

@@ -21,6 +21,7 @@ public abstract class BaseCourseGroupItem implements AdapterItemInterface<TeamMe
     static int[] VIDEO_RES = {R.drawable.livevide_course_group_video_no, R.drawable.livevide_course_group_video_dis, R.drawable.livevide_course_group_video_enable};
     static int[] AUDIO_RES = {R.drawable.livevide_course_group_audio_no, R.drawable.livevide_course_group_audio_dis, R.drawable.livevide_course_group_audio_enable};
     protected RelativeLayout rlCourseItemVideo;
+    protected RelativeLayout rl_livevideo_course_item_video_head;
     protected ImageView ivCourseItemVideoHead;
     protected TextView tvCourseItemFire;
     protected TextView rlCourseItemName;
@@ -52,6 +53,7 @@ public abstract class BaseCourseGroupItem implements AdapterItemInterface<TeamMe
     @Override
     public void initViews(View root) {
         rlCourseItemVideo = root.findViewById(R.id.rl_livevideo_course_item_video);
+        rl_livevideo_course_item_video_head = root.findViewById(R.id.rl_livevideo_course_item_video_head);
         ivCourseItemVideoHead = root.findViewById(R.id.iv_livevideo_course_item_video_head);
         rlCourseItemName = root.findViewById(R.id.rl_livevideo_course_item_name);
         ivCourseItemVideo = root.findViewById(R.id.iv_livevideo_course_item_video);
@@ -63,16 +65,8 @@ public abstract class BaseCourseGroupItem implements AdapterItemInterface<TeamMe
         return videoTime;
     }
 
-    public void setVideoTime(long videoTime) {
-        this.videoTime = videoTime;
-    }
-
     public long getAudioTime() {
         return audioTime;
-    }
-
-    public void setAudioTime(long audioTime) {
-        this.audioTime = audioTime;
     }
 
     public abstract void doRenderRemoteUi(SurfaceView surfaceV);

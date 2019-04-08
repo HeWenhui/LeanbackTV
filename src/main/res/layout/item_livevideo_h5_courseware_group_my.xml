@@ -18,10 +18,18 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="4dp" />
 
-        <ImageView
-            android:id="@id/iv_livevideo_course_item_video_head"
+        <RelativeLayout
+            android:id="@id/rl_livevideo_course_item_video_head"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:background="@color/white">
+
+            <ImageView
+                android:id="@id/iv_livevideo_course_item_video_head"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </RelativeLayout>
+
     </RelativeLayout>
 
     <TextView
@@ -86,7 +94,8 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/iv_livevideo_course_item_video"
-            android:src="@drawable/livevide_course_group_audio_enable" />
+            android:src="@drawable/livevide_course_group_audio_enable"
+            android:visibility="gone" />
 
         <ImageView
             android:id="@id/iv_livevideo_course_item_video"

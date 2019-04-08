@@ -20,6 +20,7 @@
     <item name="rl_livevideo_course_item_video" type="id" />
     <item name="rl_livevideo_course_item_video_tip" type="id" />
     <item name="tv_livevideo_course_item_video_energy" type="id" />
+    <item name="rl_livevideo_course_item_video_head" type="id" />
     <item name="iv_livevideo_course_item_video_head" type="id" />
     <item name="rl_livevideo_course_item_name" type="id" />
     <item name="rl_livevideo_course_item_ctrl" type="id" />

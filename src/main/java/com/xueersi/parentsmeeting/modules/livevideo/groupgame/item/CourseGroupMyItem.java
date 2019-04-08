@@ -35,10 +35,14 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
     public static int voiceStartFrame = 14;
     public static int voiceMaxFrame = 0;
     private int oldEnergy;
+    private long videoStartTime;
+    private long audioStartTime;
 
     public CourseGroupMyItem(Context context, TeamMemberEntity entity, WorkerThread workerThread, int uid) {
         super(context, entity, workerThread, uid);
         oldEnergy = entity.energy;
+        videoStartTime = System.currentTimeMillis();
+        audioStartTime = System.currentTimeMillis();
     }
 
     @Override
@@ -55,12 +59,12 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
     }
 
     public void doRenderRemoteUi(SurfaceView surfaceV) {
-        ivCourseItemVideoHead.setVisibility(View.GONE);
+        rl_livevideo_course_item_video_head.setVisibility(View.GONE);
         rlCourseItemVideo.addView(surfaceV, 0);
     }
 
     public void onUserOffline() {
-        ivCourseItemVideoHead.setVisibility(View.VISIBLE);
+        rl_livevideo_course_item_video_head.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -73,9 +77,13 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
                     enableVideo = !enableVideo;
                     rtcEngine.enableLocalVideo(enableVideo);
                     if (enableVideo) {
+                        rl_livevideo_course_item_video_head.setVisibility(View.GONE);
+                        videoStartTime = System.currentTimeMillis();
                         ivCourseItemVideo.setImageResource(VIDEO_RES[2]);
                     } else {
+                        rl_livevideo_course_item_video_head.setVisibility(View.VISIBLE);
                         ivCourseItemVideo.setImageResource(VIDEO_RES[1]);
+                        videoTime += (System.currentTimeMillis() - videoStartTime);
                     }
                     if (onVideoAudioClick != null) {
                         onVideoAudioClick.onVideoClick(enableVideo);
@@ -92,12 +100,10 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
                     if (enableAudio) {
                         ivCourseItemVideoDis.setVisibility(View.GONE);
                         rtcEngine.enableAudio();
-                        if (enableAudio) {
-                            ivCourseItemAudio.setImageResource(AUDIO_RES[2]);
-                        } else {
-                            ivCourseItemAudio.setImageResource(AUDIO_RES[1]);
-                        }
+                        ivCourseItemAudio.setImageResource(AUDIO_RES[2]);
+                        audioStartTime = System.currentTimeMillis();
                     } else {
+                        audioTime += (System.currentTimeMillis() - audioStartTime);
                         rtcEngine.disableAudio();
                         final LottieAnimationView animationView = (LottieAnimationView) ivCourseItemAudio;
                         stopRun.animationView = animationView;
@@ -111,8 +117,8 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                ivCourseItemVideoDis.setImageResource(AUDIO_RES[1]);
-                                ivCourseItemVideoDis.setVisibility(View.VISIBLE);
+//                                ivCourseItemVideoDis.setImageResource(AUDIO_RES[1]);
+//                                ivCourseItemVideoDis.setVisibility(View.VISIBLE);
                             }
                         }, 1000);
                     }
@@ -129,6 +135,26 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
     }
 
     @Override
+    public long getVideoTime() {
+        long oldVideoTime = videoTime;
+        if (enableVideo) {
+            videoTime += (System.currentTimeMillis() - videoStartTime);
+        }
+        logger.d("getVideoTime:oldVideoTime=" + oldVideoTime + ",videoTime=" + videoTime);
+        return super.getVideoTime();
+    }
+
+    @Override
+    public long getAudioTime() {
+        long oldAudioTime = audioTime;
+        if (enableAudio) {
+            audioTime += (System.currentTimeMillis() - audioStartTime);
+        }
+        logger.d("getAudioTime:oldAudioTime=" + oldAudioTime + ",audioTime=" + audioTime);
+        return super.getAudioTime();
+    }
+
+    @Override
     public void updateViews(TeamMemberEntity entity, int position, Object objTag) {
         rlCourseItemName.setText(entity.name);
         tvCourseItemFire.setText("" + entity.energy);
@@ -141,6 +167,11 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
         animationView.setImageAssetDelegate(new ImageAssetDelegate() {
             @Override
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                if (lottieImageAsset.getId().equals("image_7")) {
+                    return lottieEffectInfo.fetchBitmapFromAssets(animationView, "img_6.png",
+                            "image_6", 26, 26,
+                            mContext);
+                }
                 return lottieEffectInfo.fetchBitmapFromAssets(animationView, lottieImageAsset.getFileName(),
                         lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(),
                         mContext);
@@ -216,9 +247,9 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
         if (!enableAudio) {
             return;
         }
-        if (ivCourseItemVideoDis.getVisibility() != View.GONE) {
-            ivCourseItemVideoDis.setVisibility(View.GONE);
-        }
+//        if (ivCourseItemVideoDis.getVisibility() != View.GONE) {
+//            ivCourseItemVideoDis.setVisibility(View.GONE);
+//        }
         final LottieAnimationView animationView = (LottieAnimationView) ivCourseItemAudio;
         if (progress < voiceStartFrame) {
             startRun.animationView = animationView;

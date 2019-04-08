@@ -76,6 +76,12 @@ public class MyEngineEventHandler {
         }
 
         @Override
+        public void onFirstRemoteAudioFrame(int uid, int elapsed) {
+            super.onFirstRemoteAudioFrame(uid, elapsed);
+            logger.d("onFirstRemoteAudioFrame:uid=" + uid + ",elapsed=" + elapsed);
+        }
+
+        @Override
         public void onFirstLocalVideoFrame(int width, int height, int elapsed) {
             logger.d("onFirstLocalVideoFrame " + width + " " + height + " " + elapsed);
         }
@@ -108,6 +114,10 @@ public class MyEngineEventHandler {
         @Override
         public void onUserMuteAudio(int uid, boolean muted) {
             logger.d("onUserMuteAudio:uid=" + uid + ",muted=" + muted);
+        }
+
+        public void onUserEnableLocalVideo(int uid, boolean enabled) {
+            logger.d("onUserEnableLocalVideo:uid=" + uid + ",enabled=" + enabled);
         }
 
         @Override
