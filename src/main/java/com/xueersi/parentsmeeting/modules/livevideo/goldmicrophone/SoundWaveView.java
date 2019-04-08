@@ -41,20 +41,11 @@ public class SoundWaveView extends View {
 
     public SoundWaveView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        // 获取用户配置属性
-        TypedArray tya = context.obtainStyledAttributes(attrs, R.styleable.RingView);
-        mColor = tya.getColor(R.styleable.RingView_cColor, Color.BLUE);
-        mSpeed = tya.getInt(R.styleable.RingView_cSpeed, 1);
-        mDensity = tya.getInt(R.styleable.RingView_cDensity, 10);
-        mIsFill = tya.getBoolean(R.styleable.RingView_cIsFill, false);
-        mIsAlpha = tya.getBoolean(R.styleable.RingView_cIsAlpha, false);
-        innerRadius = SizeUtils.Dp2Px(getContext(), tya.getInteger(R.styleable.RingView_cInnerRaidus, 45));
-        tya.recycle();
-
-        init();
+        init(attrs);
     }
 
-    private void init() {
+    private void init(AttributeSet attrs) {
+        initView(attrs);
         mContext = getContext();
         // 设置画笔样式
         mPaint = new Paint();
@@ -81,6 +72,19 @@ public class SoundWaveView extends View {
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public SoundWaveView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        init(attrs);
+    }
+
+    private void initView(AttributeSet attrs) {
+        // 获取用户配置属性
+        TypedArray tya = getContext().obtainStyledAttributes(attrs, R.styleable.RingView);
+        mColor = tya.getColor(R.styleable.RingView_cColor, Color.BLUE);
+        mSpeed = tya.getInt(R.styleable.RingView_cSpeed, 1);
+        mDensity = tya.getInt(R.styleable.RingView_cDensity, 10);
+        mIsFill = tya.getBoolean(R.styleable.RingView_cIsFill, false);
+        mIsAlpha = tya.getBoolean(R.styleable.RingView_cIsAlpha, false);
+        innerRadius = SizeUtils.Dp2Px(getContext(), tya.getInteger(R.styleable.RingView_cInnerRaidus, 45));
+        tya.recycle();
     }
 
     private int mWidth, mHeight;
@@ -125,7 +129,7 @@ public class SoundWaveView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (isClear) {
+        if (!isStart || isClear) {
             return;
         }
         for (int i = 0; i < mRipples.size(); i++) {
@@ -278,6 +282,12 @@ public class SoundWaveView extends View {
     }
 
     private boolean isClear = false;
+
+    private boolean isStart = false;
+
+    public void setStart(boolean start) {
+        isStart = start;
+    }
 
     public void clear() {
         mRipples.clear();

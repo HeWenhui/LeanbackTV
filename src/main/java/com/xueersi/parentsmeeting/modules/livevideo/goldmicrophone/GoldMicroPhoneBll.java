@@ -383,6 +383,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
      * 在线记录
      */
     private void onLineRecord() {
+        SpeechConfig.setStatus(SpeechConfig.SPEECH_CHS_MICROPHONE);
         if (mSpeechEvaluatorUtils == null) {
             mSpeechEvaluatorUtils = new SpeechEvaluatorUtils(false);
         }
@@ -391,7 +392,6 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        SpeechConfig.setStatus(SpeechConfig.SPEECH_CHS_MICROPHONE);
         mSpeechEvaluatorUtils.startOnlineRecognize(
                 path,
                 SpeechEvaluatorUtils.RECOGNIZE_CHINESE,

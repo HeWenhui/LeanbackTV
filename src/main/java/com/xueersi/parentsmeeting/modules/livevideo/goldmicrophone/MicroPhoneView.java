@@ -3,9 +3,13 @@ package com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
 import android.support.constraint.ConstraintSet;
 import android.support.constraint.Group;
+import android.transition.AutoTransition;
+import android.transition.Transition;
 import android.transition.TransitionManager;
 import android.view.View;
 import android.view.ViewGroup;
@@ -87,17 +91,51 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
      * 显示金话筒View
      */
     Runnable microphoneShowRunnable = new Runnable() {
+        @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         @Override
         public void run() {
             if (microhpneGroup != null && microhpneGroup.getVisibility() != View.VISIBLE) {
                 microhpneGroup.setVisibility(View.VISIBLE);
-                swvView.setVisibility(View.VISIBLE);
+//                swvView.setVisibility(View.VISIBLE);
+                swvView.setVisibility(View.GONE);
             }
             ConstraintSet constraintSet = new ConstraintSet();
 
             constraintSet.clone(rootLayout);
             constraintSet.load(mContext, R.layout.page_livevideo_chinese_gold_microphone_start);
-            TransitionManager.beginDelayedTransition(rootLayout);
+            Transition transition = new AutoTransition();
+            transition.addListener(new Transition.TransitionListener() {
+                @Override
+                public void onTransitionStart(Transition transition) {
+                    logger.i("animator start");
+                    swvView.setVisibility(View.GONE);
+                    swvView.setStart(false);
+                }
+
+                @Override
+                public void onTransitionEnd(Transition transition) {
+                    logger.i("animator end");
+                    swvView.setVisibility(View.VISIBLE);
+                    swvView.setStart(true);
+                }
+
+                @Override
+                public void onTransitionCancel(Transition transition) {
+
+                }
+
+                @Override
+                public void onTransitionPause(Transition transition) {
+
+                }
+
+                @Override
+                public void onTransitionResume(Transition transition) {
+
+                }
+            });
+            TransitionManager.beginDelayedTransition(rootLayout, transition);
+
             constraintSet.applyTo(rootLayout);
 //            if (openAnimator == null) {
 //                float curY = -100;
@@ -307,7 +345,7 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
 
         teacherTipGroup.setVisibility(View.VISIBLE);
 
-        mView.postDelayed(microphoneShowRunnable, 700);
+        mView.post(microphoneShowRunnable);
 
         mView.postDelayed(teacherTipCloseRunnable, 1000);
 
