@@ -23,6 +23,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ScienceAnswerResult;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAnswerRightLottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
 
 import org.json.JSONArray;
@@ -104,6 +105,15 @@ public class TeamPkPraiseBll {
     private static class PraiseInfo {
         private int praiseType;
         private Object data;
+        private String nonce;
+
+        public void setNonce(String nonce) {
+            this.nonce = nonce;
+        }
+
+        public String getNonce() {
+            return nonce;
+        }
 
         public int getPraiseType() {
             return praiseType;
@@ -127,6 +137,7 @@ public class TeamPkPraiseBll {
      */
     private List<PraiseInfo> praiseInfoList = new ArrayList<>();
 
+
     /**
      * @param sourceNick
      * @param target
@@ -140,6 +151,7 @@ public class TeamPkPraiseBll {
                 if (isMyTeam(data)) {
                     PraiseInfo info = new PraiseInfo();
                     info.setPraiseType(XESCODE.TEAM_PK_TEACHER_PRAISE);
+                    info.setNonce(data.optString("nonce",""));
                     info.setData(praiseType);
                     cachePraiseInfo(info);
                 }
@@ -147,6 +159,7 @@ public class TeamPkPraiseBll {
             case XESCODE.TEAM_PK_PARISE_ANWSER_RIGHT:
                 boolean isDouble = data.optInt("isDouble", 0) == 1;
                 PraiseInfo info = new PraiseInfo();
+                info.setNonce(data.optString("nonce",""));
                 info.setPraiseType(XESCODE.TEAM_PK_PARISE_ANWSER_RIGHT);
                 info.setData(isDouble);
                 cachePraiseInfo(info);
@@ -183,6 +196,7 @@ public class TeamPkPraiseBll {
                 case XESCODE.TEAM_PK_TEACHER_PRAISE:
                     int praiseType = (int) info.getData();
                     if (praiseType > BADGE_LOW_BOUND && praiseType < BADGE_UP_BOUND) {
+                        TeamPkLog.showPkTeamPraise(mPkBll.getLiveBll(),info.getNonce(),praiseType+"");
                         showBadge(praiseType);
                     } else {
                         consumPraiseInfo(getNextPraiseInfo());
@@ -195,9 +209,11 @@ public class TeamPkPraiseBll {
                         if (isDouble) {
                             if (mPkBll.getLatesH5CloseEvent() != null && mPkBll.getLatesH5CloseEvent().getmEnergyNum
                                     () > 0) {
+                                TeamPkLog.showPkPraise(mPkBll.getLiveBll(),info.getNonce(),"1");
                                 showAnswerRightPraise(mPkBll.getLatesH5CloseEvent().getmEnergyNum());
                             }
                         } else {
+                            TeamPkLog.showPkPraise(mPkBll.getLiveBll(),info.getNonce(),"0");
                             showPraise();
                         }
                     } else {

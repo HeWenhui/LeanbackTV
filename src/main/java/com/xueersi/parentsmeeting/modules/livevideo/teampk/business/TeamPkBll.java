@@ -1137,7 +1137,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         this.nonce = nonce;
     }
 
-    private String getNonce() {
+    public String getNonce() {
         return TextUtils.isEmpty(nonce) ? "" : nonce;
     }
 
@@ -1240,18 +1240,25 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     break;
                 case XESCODE.TEAM_PK_BLACK_RANK_LIST:
                     //closeStarts();
+                    nonce = data.optString("nonce");
+                    TeamPkLog.receivePkStarList(mLiveBll,nonce,"1");
                     closeCurrentPager();
+                    setNonce(nonce);
                     getProgressStudent();
                     break;
 
                 case XESCODE.TEAM_PK_STAR_RANK_LIST:
                     //关闭 幸运星页面
                     //closeClassChest();
+                    nonce = data.optString("nonce","");
+                    TeamPkLog.receivePkStarList(mLiveBll,nonce,"0");
                     closeCurrentPager();
+                    setNonce(nonce);
                     getStusStars();
                     break;
 
                 case XESCODE.TEAM_PK_PK_END:
+                    TeamPkLog.showPkFinished(mLiveBll,data.optString("nonce",""));
                     showPkEndToast();
                     break;
                 case XESCODE.TEACHER_PRAISE:
@@ -1375,6 +1382,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                         List<TeamPkStar> data = mHttpResponseParser.parseTeamPkStar(responseEntity);
                         if (data != null && data.size() > 0) {
                             showStars(data);
+                            TeamPkLog.showPkStarList(mLiveBll,getNonce(),"0");
                             if (TextUtils.isEmpty(mTeamName)) {
                                 mTeamName = data.get(0).getTeamName();
                             }
@@ -1424,6 +1432,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                         List<TeamPkStuProgress> data = mHttpResponseParser.parseTeamPkProgressStu(responseEntity);
                         if (data != null && data.size() > 0) {
                             showStuProgressList(data);
+                            TeamPkLog.showPkStarList(mLiveBll,getNonce(),"1");
                             if (TextUtils.isEmpty(mTeamName)) {
                                 mTeamName = data.get(0).getTeamName();
                             }
