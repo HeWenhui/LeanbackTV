@@ -182,7 +182,6 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
         actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
         int screenWidth = (r.right - r.left);
         //ivTecherState.setVisibility(View.INVISIBLE);
-        //logger.e("=====>showMainTeacherUI called:" + mInited);
         if (!mInited) {
             //主讲模式去掉外层的RelativeLayout换回FrameLayout
             ViewGroup group = (ViewGroup) rlFirstBackgroundView.getParent();
