@@ -507,6 +507,15 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         @Override
         public void onUserJoined(final int uid, final int elapsed) {
             logger.d("onUserJoined:uid=" + uid + ",elapsed=" + elapsed);
+            final BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + uid);
+            if (courseGroupItem != null) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        courseGroupItem.onUserJoined();
+                    }
+                });
+            }
         }
 
         @Override
@@ -571,29 +580,26 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         LayoutInflater mInflater = LayoutInflater.from(mContext);
         for (int i = 0; i < entities.size(); i++) {
             TeamMemberEntity teamMemberEntity = entities.get(i);
-            team_mate.put("" + teamMemberEntity.id);
             BaseCourseGroupItem baseCourseGroupItem;
             if (teamMemberEntity.id == stuid) {
                 CourseGroupMyItem courseGroupItem = new CourseGroupMyItem(mContext, teamMemberEntity, mWorkerThread, teamMemberEntity.id);
                 baseCourseGroupItem = courseGroupItem;
             } else {
+                team_mate.put("" + teamMemberEntity.id);
                 CourseGroupOtherItem courseGroupItem = new CourseGroupOtherItem(mContext, teamMemberEntity, mWorkerThread, teamMemberEntity.id);
                 baseCourseGroupItem = courseGroupItem;
             }
             baseCourseGroupItem.setOnVideoAudioClick(new BaseCourseGroupItem.OnVideoAudioClick() {
                 @Override
                 public void onVideoClick(boolean enable) {
-                    if (teamVideoAudioMessage == null) {
-                        teamVideoAudioMessage = new TeamVideoAudioMessage();
-                        tcpMessageReg.registTcpMessageAction(tcpMessageAction);
-                    }
                     try {
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("live_id", liveId);
                         jsonObject.put("team_mate", team_mate);
                         JSONObject data = new JSONObject();
+                        data.put("id", "" + stuid);
                         data.put("type", GroupGameConfig.OPERATION_VIDEO);
-                        data.put("enable", enable ? 0 : 1);
+                        data.put("enable", enable ? 1 : 0);
                         jsonObject.put("data", data);
                         tcpMessageReg.send(TcpConstants.AUDIO_TYPE, TcpConstants.AUDIO_SEND, jsonObject.toString());
                     } catch (JSONException e) {
@@ -603,17 +609,14 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
                 @Override
                 public void onAudioClick(boolean enable) {
-                    if (teamVideoAudioMessage == null) {
-                        teamVideoAudioMessage = new TeamVideoAudioMessage();
-                        tcpMessageReg.registTcpMessageAction(tcpMessageAction);
-                    }
                     try {
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("live_id", liveId);
                         jsonObject.put("team_mate", team_mate);
                         JSONObject data = new JSONObject();
+                        data.put("id", "" + stuid);
                         data.put("type", GroupGameConfig.OPERATION_AUDIO);
-                        data.put("enable", enable ? 0 : 1);
+                        data.put("enable", enable ? 1 : 0);
                         jsonObject.put("data", data);
                         tcpMessageReg.send(TcpConstants.AUDIO_TYPE, TcpConstants.AUDIO_SEND, jsonObject.toString());
                     } catch (JSONException e) {
@@ -704,6 +707,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         mParam.setMultRef(false);
         mParam.setPcm(true);
         mParam.setLearning_stage(learningStage);
+        mParam.setVad_max_sec("60");
+        mParam.setVad_pause_sec("60");
         mIse.startRecog(mParam, new EvaluatorListenerWithPCM() {
             int lastVolume = 0;
 
@@ -989,14 +994,33 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
             private void connectTcp() {
                 if (tcpMessageReg != null) {
-                    tcpMessageReg.onConnet(new TcpMessageReg.OnTcpReg() {
+                    tcpMessageReg.registTcpMessageAction(tcpMessageAction);
+                    if (teamVideoAudioMessage == null) {
+                        teamVideoAudioMessage = new TeamVideoAudioMessage();
+                        tcpMessageReg.registTcpMessageAction(teamVideoAudioMessage);
+                    }
+                    tcpMessageReg.onConnect(new TcpMessageReg.OnTcpConnect() {
                         @Override
-                        public void onReg() {
-                            boolean change = tcpMessageReg.setTest(LiveQueConfig.EN_COURSE_GAME_TYPE_1, detailInfo.id);
-                            mLogtf.d("connectTcp(setTest):change=" + change);
-                            tcpMessageReg.registTcpMessageAction(tcpMessageAction);
+                        public void onTcpConnect() {
+                            sendTest("onTcpConnect");
                         }
                     });
+                }
+            }
+
+            private void sendTest(String method) {
+                logger.d("sendTest:method=" + method);
+                try {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("live_id", liveId);
+                    jsonObject.put("class_id", liveGetInfo.getStudentLiveInfo().getClassId());
+                    jsonObject.put("iid", interactiveTeam.getInteractive_team_id());
+                    jsonObject.put("test_id", detailInfo.id);
+                    PkTeamEntity teamEntity = getStuActiveTeam.getPkTeamEntity();
+                    jsonObject.put("pid", teamEntity.getPkTeamId());
+                    tcpMessageReg.send(TcpConstants.GROUP_GAME_TYPE, TcpConstants.GROUP_GAME_SEND, jsonObject.toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
 
@@ -1227,6 +1251,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
     private void createSpeechContent(String method) {
         speechContent = "";
+        if (gameOver) {
+            return;
+        }
         if (allAnswerList.isEmpty()) {
             gameOver = true;
             if (mIse != null) {
@@ -1260,7 +1287,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         public void onResult(ResultEntity resultEntity) {
             int score = resultEntity.getScore();
             allScoreList.add(score);
-            if (score < 70) {
+            if (score < 10) {
                 BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stuid);
                 if (courseGroupItem != null) {
                     courseGroupItem.onOpps();
@@ -1631,6 +1658,11 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                 }
                             }
                             createSpeechContent("Voice_Projectile_Scene");
+                            if (!allAnswerList.isEmpty()) {
+                                current_word = answerList.size() - allAnswerList.size();
+                            } else {
+                                current_word = answerList.size() - 1;
+                            }
                             currentAnswerIndex = current_word;
                             voiceCannonOnMessage.coursewareOnloading(current_word);
                         } catch (Exception e) {
@@ -1791,6 +1823,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            logger.d("AUDIO_TYPE:onMessage:e=" + e.getMessage());
                         }
                     }
                     break;

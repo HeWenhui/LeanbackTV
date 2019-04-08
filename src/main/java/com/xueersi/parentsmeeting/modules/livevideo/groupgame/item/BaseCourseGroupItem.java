@@ -32,6 +32,8 @@ public abstract class BaseCourseGroupItem implements AdapterItemInterface<TeamMe
     protected TeamMemberEntity entity;
     protected OnVideoAudioClick onVideoAudioClick;
     protected Logger logger = LiveLoggerFactory.getLogger(getClass().getSimpleName());
+    protected long videoTime = 0;
+    protected long audioTime = 0;
 
     public BaseCourseGroupItem(Context context, TeamMemberEntity entity, WorkerThread workerThread, int uid) {
         this.mContext = context;
@@ -57,7 +59,26 @@ public abstract class BaseCourseGroupItem implements AdapterItemInterface<TeamMe
         tvCourseItemFire = root.findViewById(R.id.tv_livevideo_course_item_fire);
     }
 
+    public long getVideoTime() {
+        return videoTime;
+    }
+
+    public void setVideoTime(long videoTime) {
+        this.videoTime = videoTime;
+    }
+
+    public long getAudioTime() {
+        return audioTime;
+    }
+
+    public void setAudioTime(long audioTime) {
+        this.audioTime = audioTime;
+    }
+
     public abstract void doRenderRemoteUi(SurfaceView surfaceV);
+
+    public void onUserJoined() {
+    }
 
     public abstract void onUserOffline();
 

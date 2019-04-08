@@ -3,7 +3,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.SendCallBack;
 
 public interface TcpMessageReg {
-    void onConnet(OnTcpReg onTcpReg);
+
+    void onConnect(OnTcpConnect onTcpConnect);
 
     void send(final short type, final int operation, final String bodyStr);
 
@@ -13,9 +14,14 @@ public interface TcpMessageReg {
 
     void unregistTcpMessageAction(TcpMessageAction tcpMessageAction);
 
+    @Deprecated
     boolean setTest(int testType, String testId);
 
     interface OnTcpReg {
         void onReg();
+    }
+
+    interface OnTcpConnect {
+        void onTcpConnect();
     }
 }

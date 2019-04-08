@@ -55,7 +55,12 @@ public class TcpConstants {
     /** 消息类型，客户端发摄像头、麦克风转发数据 */
     public final static short AUDIO_TYPE = 11;
     /** 消息类型，客户端发摄像头、麦克风转发数据 */
-    public final static short AUDIO_SEND = 16;
+    public final static int AUDIO_SEND = 16;
     /** 消息类型，服务器端发送摄像头、麦克风数据 */
-    public final static short AUDIO_REC = 18;
+    public final static int AUDIO_REC = 18;
+
+    /** 消息类型，客户端断线获取游戏离线数据包 */
+    public final static short GROUP_GAME_TYPE = 12;
+    /** 消息类型，客户端断线获取游戏离线数据包： */
+    public final static int GROUP_GAME_SEND = 16;
 }

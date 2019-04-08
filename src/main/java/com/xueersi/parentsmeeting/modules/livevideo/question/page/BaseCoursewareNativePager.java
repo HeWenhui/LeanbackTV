@@ -117,16 +117,16 @@ public class BaseCoursewareNativePager extends LiveBasePager {
 
         @Override
         public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-//            ConsoleMessage.MessageLevel mLevel = consoleMessage.messageLevel();
-//            boolean isRequst = false;
-//            if (mLevel == ConsoleMessage.MessageLevel.ERROR || mLevel == ConsoleMessage.MessageLevel.WARNING) {
-//                isRequst = true;
-//            }
-//            UmsAgentUtil.webConsoleMessage(mContext, TAG, wvSubjectWeb.getUrl(), consoleMessage, isRequst);
-//            if (AppConfig.DEBUG) {
-//                mLogtf.debugSave("onConsoleMessage:level=" + consoleMessage.messageLevel() + ",sourceId=" + consoleMessage.sourceId()
-//                        + ",lineNumber=" + consoleMessage.lineNumber() + ",message=" + consoleMessage.message());
-//            }
+            ConsoleMessage.MessageLevel mLevel = consoleMessage.messageLevel();
+            boolean isRequst = false;
+            if (mLevel == ConsoleMessage.MessageLevel.ERROR || mLevel == ConsoleMessage.MessageLevel.WARNING) {
+                isRequst = true;
+            }
+            UmsAgentUtil.webConsoleMessage(mContext, TAG, wvSubjectWeb.getUrl(), consoleMessage, isRequst);
+            if (AppConfig.DEBUG) {
+                mLogtf.debugSave("onConsoleMessage:level=" + consoleMessage.messageLevel() + ",sourceId=" + consoleMessage.sourceId()
+                        + ",lineNumber=" + consoleMessage.lineNumber() + ",message=" + consoleMessage.message());
+            }
             return super.onConsoleMessage(consoleMessage);
         }
 

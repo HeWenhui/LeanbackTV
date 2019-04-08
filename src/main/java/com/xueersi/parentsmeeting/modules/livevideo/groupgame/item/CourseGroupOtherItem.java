@@ -53,6 +53,11 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
         tvCourseItemLoad.setVisibility(View.GONE);
     }
 
+    @Override
+    public void onUserJoined() {
+        super.onUserJoined();
+    }
+
     public void onUserOffline() {
         ivCourseItemVideoHead.setVisibility(View.VISIBLE);
         rlCourseItemCtrl.setVisibility(View.GONE);
@@ -73,9 +78,9 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
                         ivCourseItemVideo.setImageResource(VIDEO_RES[1]);
                     }
                     rtcEngine.muteRemoteVideoStream(uid, enableVideo);
-                    if (onVideoAudioClick != null) {
-                        onVideoAudioClick.onVideoClick(enableVideo);
-                    }
+//                    if (onVideoAudioClick != null) {
+//                        onVideoAudioClick.onVideoClick(enableVideo);
+//                    }
                 }
             }
         });
@@ -86,9 +91,9 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
                 if (rtcEngine != null) {
                     enableAudio = !enableAudio;
                     rtcEngine.muteRemoteAudioStream(uid, enableAudio);
-                    if (onVideoAudioClick != null) {
-                        onVideoAudioClick.onAudioClick(enableAudio);
-                    }
+//                    if (onVideoAudioClick != null) {
+//                        onVideoAudioClick.onAudioClick(enableAudio);
+//                    }
                 }
             }
         });

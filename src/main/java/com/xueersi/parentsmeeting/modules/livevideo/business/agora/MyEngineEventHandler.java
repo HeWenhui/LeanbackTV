@@ -102,6 +102,12 @@ public class MyEngineEventHandler {
 
         @Override
         public void onUserMuteVideo(int uid, boolean muted) {
+            logger.d("onUserMuteVideo:uid=" + uid + ",muted=" + muted);
+        }
+
+        @Override
+        public void onUserMuteAudio(int uid, boolean muted) {
+            logger.d("onUserMuteAudio:uid=" + uid + ",muted=" + muted);
         }
 
         @Override

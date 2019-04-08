@@ -36,17 +36,22 @@ public class TcpDispatch {
     private boolean isStop = false;
     private LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
     private Map<Short, List<TcpMessageAction>> mMessageActionMap = new HashMap<>();
+    private ArrayList<TcpMessageReg.OnTcpConnect> onTcpConnects = new ArrayList<>();
     /**
      * 当时进行的游戏类型，便于断线恢复
      * 1:语音炮弹
      * 2:cleaning up
      */
+    @Deprecated
     private int gt = -1;
     /** 战队pk分组ID */
+    @Deprecated
     private int pid = -1;
     /** 小组互动分组ID */
+    @Deprecated
     private int iid = -1;
     /** 试题ID */
+    @Deprecated
     private String test_id;
 
     public TcpDispatch(Context context, String stuId, String xes_rfh, String live_id, String class_id, int gt, int pid, int iid, String test_id) {
@@ -80,6 +85,7 @@ public class TcpDispatch {
         return pid;
     }
 
+    @Deprecated
     public void setPid(int pid) {
         this.pid = pid;
     }
@@ -90,6 +96,10 @@ public class TcpDispatch {
 
     public void setTest_id(String test_id) {
         this.test_id = test_id;
+    }
+
+    public void setOnTcpConnects(ArrayList<TcpMessageReg.OnTcpConnect> onTcpConnects) {
+        this.onTcpConnects = onTcpConnects;
     }
 
     public void setAddresses(ArrayList<InetSocketAddress> addresses) {
@@ -120,16 +130,19 @@ public class TcpDispatch {
                 jsonObject.put("xes_rfh", xes_rfh);
                 jsonObject.put("live_id", live_id);
                 jsonObject.put("class_id", class_id);
-                jsonObject.put("gt", gt);
-                jsonObject.put("pid", pid);
-                jsonObject.put("iid", iid);
-                jsonObject.put("test_id", test_id);
+//                jsonObject.put("gt", gt);
+//                jsonObject.put("pid", pid);
+//                jsonObject.put("iid", iid);
+//                jsonObject.put("test_id", test_id);
                 String bodyStr = jsonObject.toString();
                 short type = TcpConstants.LOGIN_TYPE;
                 int operation = TcpConstants.LOGIN_OPERATION_SEND;
                 groupGameTcp.send(type, operation, bodyStr);
             } catch (Exception e) {
 
+            }
+            for (int i = 0; i < onTcpConnects.size(); i++) {
+                onTcpConnects.get(i).onTcpConnect();
             }
         }
 

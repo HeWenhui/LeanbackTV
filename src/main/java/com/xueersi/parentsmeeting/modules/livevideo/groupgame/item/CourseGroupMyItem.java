@@ -93,9 +93,9 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
                         ivCourseItemVideoDis.setVisibility(View.GONE);
                         rtcEngine.enableAudio();
                         if (enableAudio) {
-                            ivCourseItemVideo.setImageResource(AUDIO_RES[2]);
+                            ivCourseItemAudio.setImageResource(AUDIO_RES[2]);
                         } else {
-                            ivCourseItemVideo.setImageResource(AUDIO_RES[1]);
+                            ivCourseItemAudio.setImageResource(AUDIO_RES[1]);
                         }
                     } else {
                         rtcEngine.disableAudio();
@@ -111,7 +111,7 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                ivCourseItemVideoDis.setImageResource(VIDEO_RES[1]);
+                                ivCourseItemVideoDis.setImageResource(AUDIO_RES[1]);
                                 ivCourseItemVideoDis.setVisibility(View.VISIBLE);
                             }
                         }, 1000);
