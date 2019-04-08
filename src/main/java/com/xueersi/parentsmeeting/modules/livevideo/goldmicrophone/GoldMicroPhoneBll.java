@@ -17,6 +17,7 @@ import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.PCMFormat;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
+import com.tal.speech.speechrecognizer.SpeechConfig;
 import com.tal.speech.utils.SpeechEvaluatorUtils;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -390,10 +391,11 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
         if (!dir.exists()) {
             dir.mkdirs();
         }
+        SpeechConfig.setStatus(SpeechConfig.SPEECH_CHS_MICROPHONE);
         mSpeechEvaluatorUtils.startOnlineRecognize(
                 path,
                 SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
-                evaluatorListener);
+                evaluatorListener, false);
         isRecord.set(true);
     }
 
