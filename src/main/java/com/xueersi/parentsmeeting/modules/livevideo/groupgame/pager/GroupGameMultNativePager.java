@@ -167,7 +167,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     private String speechContent = "";
     /** 总的答题，语音炮弹是够数移除。clean up是移除然后增加到用户信息里 */
     private List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> allAnswerList = new ArrayList<>();
-    private List<Integer> allScoreList = new ArrayList<>();
+    private List<ResultEntity> allScoreList = new ArrayList<>();
     private GetStuActiveTeam getStuActiveTeam;
     private TcpMessageReg tcpMessageReg;
     /** 接收游戏的消息 */
@@ -1058,7 +1058,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         int voiceTime = 0;
         int starNum = 0;
         int energy = 0;
-        int gold = 1;
+        int gold = 0;
         //视频开启时长，单位：毫秒
         int videoLengthTime = 0;
         //麦克开启时长，单位：毫秒
@@ -1069,6 +1069,45 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         int acceptMicLengthTime = 0;
         PkTeamEntity teamEntity = getStuActiveTeam.getPkTeamEntity();
         int gameGroupId = interactiveTeam.getInteractive_team_id();
+        //遍历作答正确，取最大的金币为3
+        Set<String> canKeySet = vidooCannonEntities.keySet();
+        VidooCannonEntity maxVidooCannonEntity = null;
+        int maxRight = 0;
+        for (String userId : canKeySet) {
+            VidooCannonEntity vidooCannonEntity = vidooCannonEntities.get("" + userId);
+            int rightNum = vidooCannonEntity.rightNum;
+            if (rightNum > 0) {
+                vidooCannonEntity.teamMemberEntity.gold = 2;
+            }
+            if (rightNum > maxRight) {
+                maxRight = rightNum;
+                maxVidooCannonEntity = vidooCannonEntity;
+            }
+        }
+        if (maxVidooCannonEntity != null) {
+            logger.d("submit:userId=" + maxVidooCannonEntity.teamMemberEntity.id + ",rightNum=" + maxVidooCannonEntity.rightNum);
+            maxVidooCannonEntity.teamMemberEntity.gold = 3;
+        }
+        //遍历用户item。计算时间
+        Set<String> itemKeySet = courseGroupItemHashMap.keySet();
+        for (String userId : itemKeySet) {
+            BaseCourseGroupItem baseCourseGroupItem = courseGroupItemHashMap.get(userId);
+            if (userId.equals("" + stuid)) {
+                videoLengthTime = (int) baseCourseGroupItem.getVideoTime();
+                micLengthTime = (int) baseCourseGroupItem.getAudioTime();
+                gold = baseCourseGroupItem.getEntity().gold;
+            } else {
+                long videoTime = baseCourseGroupItem.getVideoTime();
+                long audioTime = baseCourseGroupItem.getAudioTime();
+                acceptVideoLengthTime += videoTime;
+                acceptMicLengthTime += audioTime;
+                logger.d("submit:userId=" + userId + ",videoTime=" + videoTime + ",audioTime=" + audioTime);
+            }
+        }
+        for (int i = 0; i < allScoreList.size(); i++) {
+            ResultEntity resultEntity = allScoreList.get(i);
+            voiceTime += resultEntity.getSpeechDuration() * 1000;
+        }
         JSONObject answerData = new JSONObject();
         try {
             answerData.put("tryTimes", allScoreList.size());
@@ -1176,6 +1215,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         Set<String> keySet = courseGroupItemHashMap.keySet();
         for (String key : keySet) {
             BaseCourseGroupItem baseCourseGroupItem = courseGroupItemHashMap.get(key);
+            baseCourseGroupItem.onDestory();
             long videoTime = baseCourseGroupItem.getVideoTime();
             long audioTime = baseCourseGroupItem.getAudioTime();
             logger.d("onDestroy:key=" + key + ",videoTime=" + videoTime + ",audioTime=" + audioTime);
@@ -1294,7 +1334,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         @Override
         public void onResult(ResultEntity resultEntity) {
             int score = resultEntity.getScore();
-            allScoreList.add(score);
+            allScoreList.add(resultEntity);
             if (score < 10) {
                 BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stuid);
                 if (courseGroupItem != null) {
@@ -1395,7 +1435,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         public void onResult(ResultEntity resultEntity) {
             try {
                 int score = resultEntity.getScore();
-                allScoreList.add(score);
+                allScoreList.add(resultEntity);
                 if (score < 70) {
                     return;
                 }

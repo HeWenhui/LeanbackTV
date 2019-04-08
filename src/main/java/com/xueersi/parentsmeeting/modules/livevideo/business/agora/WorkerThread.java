@@ -344,6 +344,10 @@ public class WorkerThread extends Thread {
         return mRtcEngine;
     }
 
+    public void execute(Runnable runnable) {
+        mWorkerHandler.post(runnable);
+    }
+
     /**
      * call this method to exit
      * should ONLY call this method when this thread is running

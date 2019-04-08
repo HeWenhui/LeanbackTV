@@ -111,6 +111,10 @@ public abstract class BaseCourseGroupItem implements AdapterItemInterface<TeamMe
         tvCourseItemFire.setText("" + entity.energy);
     }
 
+    public void onDestory() {
+
+    }
+
     public interface OnVideoAudioClick {
         void onVideoClick(boolean enable);
 

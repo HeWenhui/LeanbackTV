@@ -73,7 +73,7 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
         ivCourseItemVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RtcEngine rtcEngine = workerThread.getRtcEngine();
+                final RtcEngine rtcEngine = workerThread.getRtcEngine();
                 if (rtcEngine != null) {
                     enableVideo = !enableVideo;
                     if (enableVideo) {
@@ -83,7 +83,12 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
                         ivCourseItemVideo.setImageResource(VIDEO_RES[1]);
                         rl_livevideo_course_item_video_head.setVisibility(View.VISIBLE);
                     }
-                    rtcEngine.muteRemoteVideoStream(uid, enableVideo);
+                    workerThread.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            rtcEngine.muteRemoteVideoStream(uid, enableVideo);
+                        }
+                    });
 //                    if (onVideoAudioClick != null) {
 //                        onVideoAudioClick.onVideoClick(enableVideo);
 //                    }
@@ -93,10 +98,15 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
         ivCourseItemAudio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RtcEngine rtcEngine = workerThread.getRtcEngine();
+                final RtcEngine rtcEngine = workerThread.getRtcEngine();
                 if (rtcEngine != null) {
                     enableAudio = !enableAudio;
-                    rtcEngine.muteRemoteAudioStream(uid, enableAudio);
+                    workerThread.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            rtcEngine.muteRemoteAudioStream(uid, enableAudio);
+                        }
+                    });
 //                    if (onVideoAudioClick != null) {
 //                        onVideoAudioClick.onAudioClick(enableAudio);
 //                    }

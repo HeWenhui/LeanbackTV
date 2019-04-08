@@ -2,6 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.groupgame.item;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
@@ -23,6 +25,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 
+import java.io.IOException;
+
 import io.agora.rtc.RtcEngine;
 
 public class CourseGroupMyItem extends BaseCourseGroupItem {
@@ -37,6 +41,10 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
     private int oldEnergy;
     private long videoStartTime;
     private long audioStartTime;
+    private Bitmap bitmap6;
+    private Bitmap bitmap7;
+    private Bitmap bitmap8;
+    private Bitmap bitmap9;
 
     public CourseGroupMyItem(Context context, TeamMemberEntity entity, WorkerThread workerThread, int uid) {
         super(context, entity, workerThread, uid);
@@ -72,10 +80,15 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
         ivCourseItemVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RtcEngine rtcEngine = workerThread.getRtcEngine();
+                final RtcEngine rtcEngine = workerThread.getRtcEngine();
                 if (rtcEngine != null) {
                     enableVideo = !enableVideo;
-                    rtcEngine.enableLocalVideo(enableVideo);
+                    workerThread.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            rtcEngine.enableLocalVideo(enableVideo);
+                        }
+                    });
                     if (enableVideo) {
                         rl_livevideo_course_item_video_head.setVisibility(View.GONE);
                         videoStartTime = System.currentTimeMillis();
@@ -94,18 +107,31 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
         ivCourseItemAudio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RtcEngine rtcEngine = workerThread.getRtcEngine();
+                final RtcEngine rtcEngine = workerThread.getRtcEngine();
                 if (rtcEngine != null) {
                     enableAudio = !enableAudio;
+                    final LottieAnimationView animationView = (LottieAnimationView) ivCourseItemAudio;
                     if (enableAudio) {
                         ivCourseItemVideoDis.setVisibility(View.GONE);
-                        rtcEngine.enableAudio();
-                        ivCourseItemAudio.setImageResource(AUDIO_RES[2]);
+                        workerThread.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                rtcEngine.enableAudio();
+                            }
+                        });
+//                        ivCourseItemAudio.setImageResource(AUDIO_RES[2]);
                         audioStartTime = System.currentTimeMillis();
+                        Bitmap bitmap1 = animationView.updateBitmap("image_7", bitmap6);
+                        Bitmap bitmap2 = animationView.updateBitmap("image_9", bitmap8);
+                        logger.d("enableAudio(true):bitmap1=null?" + (bitmap1 == null) + ",bitmap2=null?" + (bitmap2 == null));
                     } else {
                         audioTime += (System.currentTimeMillis() - audioStartTime);
-                        rtcEngine.disableAudio();
-                        final LottieAnimationView animationView = (LottieAnimationView) ivCourseItemAudio;
+                        workerThread.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                rtcEngine.disableAudio();
+                            }
+                        });
                         stopRun.animationView = animationView;
                         stopRun.startProgress = voiceStartFrame;
                         startRun.startProgress = 0;
@@ -121,6 +147,9 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
 //                                ivCourseItemVideoDis.setVisibility(View.VISIBLE);
                             }
                         }, 1000);
+                        Bitmap bitmap1 = animationView.updateBitmap("image_7", bitmap7);
+                        Bitmap bitmap2 = animationView.updateBitmap("image_9", bitmap9);
+                        logger.d("enableAudio(false):bitmap1=null?" + (bitmap1 == null) + ",bitmap2=null?" + (bitmap2 == null));
                     }
                     if (onVideoAudioClick != null) {
                         onVideoAudioClick.onAudioClick(enableAudio);
@@ -161,17 +190,46 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
         ImageLoader.with(ContextManager.getContext()).load(entity.headurl).into(ivCourseItemVideoHead);
         String lottieResPath = "group_game_mult/images";
         String lottieJsonPath = "group_game_mult/data.json";
+        try {
+            bitmap7 = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_7.png"));
+            Bitmap bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_6.png"));
+            Bitmap creatBitmap = Bitmap.createBitmap(bitmap7.getWidth(), bitmap7.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(creatBitmap);
+            canvas.drawBitmap(bitmap, (bitmap7.getWidth() - bitmap.getWidth()) / 2, (bitmap7.getHeight() - bitmap.getHeight()) / 2, null);
+            bitmap.recycle();
+            bitmap6 = creatBitmap;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            bitmap8 = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_8.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            bitmap9 = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_9.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         final LottieEffectInfo lottieEffectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
         final LottieAnimationView animationView = (LottieAnimationView) ivCourseItemAudio;
         animationView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext), "group_game_mult");
         animationView.setImageAssetDelegate(new ImageAssetDelegate() {
             @Override
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
-                if (lottieImageAsset.getId().equals("image_7")) {
-                    return lottieEffectInfo.fetchBitmapFromAssets(animationView, "img_6.png",
-                            "image_6", 26, 26,
-                            mContext);
-                }
+                logger.d("fetchBitmap:id=" + lottieImageAsset.getId());
+//                if (lottieImageAsset.getId().equals("image_7")) {
+//                    return bitmap6;
+//                }
+//                if (lottieImageAsset.getId().equals("image_9")) {
+//                    return bitmap8;
+//                }
+//                if (lottieImageAsset.getId().equals("image_6")) {
+//                    return bitmap7;
+//                }
+//                if (lottieImageAsset.getId().equals("image_8")) {
+//                    return bitmap9;
+//                }
                 return lottieEffectInfo.fetchBitmapFromAssets(animationView, lottieImageAsset.getFileName(),
                         lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(),
                         mContext);
@@ -183,6 +241,22 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
         } else {
             ivCourseItemVideo.setEnabled(false);
             ivCourseItemVideo.setImageResource(VIDEO_RES[0]);
+        }
+    }
+
+    @Override
+    public void onDestory() {
+        if (bitmap6 != null) {
+            bitmap6.recycle();
+        }
+        if (bitmap7 != null) {
+            bitmap7.recycle();
+        }
+        if (bitmap8 != null) {
+            bitmap8.recycle();
+        }
+        if (bitmap9 != null) {
+            bitmap9.recycle();
         }
     }
 
