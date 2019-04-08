@@ -11,6 +11,8 @@ import android.widget.ImageView;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -90,6 +92,7 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
+                                ivCourseItemVideoDis.setImageResource(VIDEO_RES[1]);
                                 ivCourseItemVideoDis.setVisibility(View.VISIBLE);
                             }
                         }, 1000);
@@ -124,6 +127,13 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
                         mContext);
             }
         });
+        boolean have = XesPermission.checkPermission(mContext, PermissionConfig.PERMISSION_CODE_CAMERA);
+        if (have) {
+            ivCourseItemVideo.setImageResource(VIDEO_RES[2]);
+        } else {
+            ivCourseItemVideo.setEnabled(false);
+            ivCourseItemVideo.setImageResource(VIDEO_RES[0]);
+        }
     }
 
     private Handler handler = new Handler(Looper.getMainLooper());

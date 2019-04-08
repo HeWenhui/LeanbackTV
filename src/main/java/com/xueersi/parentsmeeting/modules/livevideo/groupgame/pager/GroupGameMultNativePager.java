@@ -1208,13 +1208,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         return "0";
     }
 
-    /**
-     * 语音评测 - 命中句子
-     */
-    interface EvaluatorIng {
-        void onResult(ResultEntity resultEntity);
-    }
-
     private void createSpeechContent(String method) {
         speechContent = "";
         if (allAnswerList.isEmpty()) {
@@ -1237,13 +1230,23 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         logger.d("createSpeechContent:method=" + method + ",speechContent=" + speechContent);
     }
 
+    /**
+     * 语音评测 - 命中句子
+     */
+    interface EvaluatorIng {
+        void onResult(ResultEntity resultEntity);
+    }
+
     private class VoiceCannnon implements EvaluatorIng {
 
         @Override
         public void onResult(ResultEntity resultEntity) {
             int score = resultEntity.getScore();
-            mSingCount++;
             allScoreList.add(score);
+            if (score < 70) {
+                return;
+            }
+            mSingCount++;
             ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
             try {
                 {
@@ -1323,6 +1326,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         }
     }
 
+    /**
+     *
+     */
     private class CleanEvaluatorIng implements EvaluatorIng {
 
         @Override
@@ -1330,6 +1336,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             try {
                 int score = resultEntity.getScore();
                 allScoreList.add(score);
+                if (score < 70) {
+                    return;
+                }
                 mSingCount++;
                 ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
                 CleanUpEntity cleanUpEntity = cleanUpEntities.get("" + stuid);
