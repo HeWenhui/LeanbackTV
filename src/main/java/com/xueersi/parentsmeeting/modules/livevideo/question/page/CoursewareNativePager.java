@@ -199,6 +199,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
 //        setLoadTip("H5课件正在加载，请稍候");
 //        cacheFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webview/");
         entranceTime = System.currentTimeMillis() / 1000;
+        try {
+            NewCourseLog.sno2(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType);
+        } catch (Exception e) {
+            CrashReport.postCatchedException(e);
+        }
         initData();
     }
 
