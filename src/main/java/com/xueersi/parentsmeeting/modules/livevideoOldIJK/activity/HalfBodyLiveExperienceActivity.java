@@ -53,6 +53,8 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.EnglishH5Cache;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IConnectService;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IRCCallback;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IRCMessage;
@@ -62,6 +64,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDe
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBll;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.NewIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XesAtomicInteger;
@@ -210,6 +213,11 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
      * 接口返回的直播类型  1:普通三分屏  2：全身直播   6：半身直播
      */
     private int mPattern;
+
+    private IIRCMessage mIRCMessage;
+    private final String IRC_CHANNEL_PREFIX = "4L";
+    /** 是否使用新IRC SDK*/
+    private boolean isNewIRC = false;
 
 
     /**
@@ -461,11 +469,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         return getInfo;
     }
 
-
-    private IRCMessage mIRCMessage;
-    private final String IRC_CHANNEL_PREFIX = "4L";
-
-
     /**
      * 连接 聊天服务器
      */
@@ -480,57 +483,63 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
                 + expChatId + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
         logger.e("=====>connectChatServer:channel=" + channel + ":nickname =" +
                 chatRoomUid);
-
-        // 获取 聊天服务器地址  的接口地址
-        ArrayList<TalkConfHost> talkConfHosts = new ArrayList<>();
-        TalkConfHost confHost = null;
-        if (chatCfgServerList != null && chatCfgServerList.size() > 0) {
-            for (int i = 0; i < chatCfgServerList.size(); i++) {
-                confHost = new TalkConfHost();
-                confHost.setHost(chatCfgServerList.get(i));
-                talkConfHosts.add(confHost);
-            }
-        }
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
-        mIRCMessage = new IRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, channel);
-        IRCTalkConf ircTalkConf = new IRCTalkConf(this, mGetInfo, mGetInfo.getLiveType(), mHttpManager, talkConfHosts);
-        //聊天连接调度失败日志
-        ircTalkConf.setChatServiceError(new IRCTalkConf.ChatServiceError() {
-            @Override
-            public void getChatUrlFailure(String url, String errMsg,
-                                          String ip) {
-                Map<String, String> mData = new HashMap<>();
-                mData.put("os", "Android");
-                mData.put("logtype", "Error");
-                mData.put("currenttime", String.valueOf(System.currentTimeMillis()));
-                mData.put("url", url);
-                mData.put("ip", ip);
-                mData.put("errmsg", errMsg);
-                mData.put("liveid", mVideoEntity.getLiveId() == null ? "" : mVideoEntity.getLiveId());
-                mData.put("orderid", mVideoEntity.getChapterId());
-                ums.umsAgentDebugSys(LiveVideoConfig.LIVE_CHAT_GSLB, mData);
+        if (isNewIRC){
+
+            mIRCMessage = new NewIRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, mGetInfo, channel);
+
+        } else{
+            // 获取 聊天服务器地址  的接口地址
+            ArrayList<TalkConfHost> talkConfHosts = new ArrayList<>();
+            TalkConfHost confHost = null;
+            if (chatCfgServerList != null && chatCfgServerList.size() > 0) {
+                for (int i = 0; i < chatCfgServerList.size(); i++) {
+                    confHost = new TalkConfHost();
+                    confHost.setHost(chatCfgServerList.get(i));
+                    talkConfHosts.add(confHost);
+                }
             }
-        });
-        mIRCMessage.setIrcTalkConf(ircTalkConf);
+            IRCTalkConf ircTalkConf = new IRCTalkConf(this, mGetInfo, mGetInfo.getLiveType(), mHttpManager, talkConfHosts);
+            //聊天连接调度失败日志
+            ircTalkConf.setChatServiceError(new IRCTalkConf.ChatServiceError() {
+                @Override
+                public void getChatUrlFailure(String url, String errMsg,
+                                              String ip) {
+                    Map<String, String> mData = new HashMap<>();
+                    mData.put("os", "Android");
+                    mData.put("logtype", "Error");
+                    mData.put("currenttime", String.valueOf(System.currentTimeMillis()));
+                    mData.put("url", url);
+                    mData.put("ip", ip);
+                    mData.put("errmsg", errMsg);
+                    mData.put("liveid", mVideoEntity.getLiveId() == null ? "" : mVideoEntity.getLiveId());
+                    mData.put("orderid", mVideoEntity.getChapterId());
+                    ums.umsAgentDebugSys(LiveVideoConfig.LIVE_CHAT_GSLB, mData);
+                }
+            });
+            mIRCMessage = new IRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, channel);
+
+            mIRCMessage.setIrcTalkConf(ircTalkConf);
+            //聊天服务器连接失败
+            mIRCMessage.setConnectService(new IConnectService() {
+                @Override
+                public void connectChatServiceError(String serverIp, String
+                        serverPort, String errMsg, String ip) {
+                    Map<String, String> mData = new HashMap<>();
+                    mData.put("os", "Android");
+                    mData.put("logtype", "Error");
+                    mData.put("currenttime", String.valueOf(System.currentTimeMillis()));
+                    mData.put("serverip", serverIp);
+                    mData.put("serverport", serverPort);
+                    mData.put("errmsg", errMsg);
+                    mData.put("ip", ip);
+                    mData.put("liveid", mVideoEntity.getLiveId() == null ? "" : mVideoEntity.getLiveId());
+                    mData.put("orderid", mVideoEntity.getChapterId());
+                    ums.umsAgentDebugSys(LiveVideoConfig.EXPERIENCE_MESSAGE_CONNECT_ERROR, mData);
+                }
+            });
+        }
         mIRCMessage.setCallback(mIRCcallback);
-        //聊天服务器连接失败
-        mIRCMessage.setConnectService(new IRCMessage.ConnectService() {
-            @Override
-            public void connectChatServiceError(String serverIp, String
-                    serverPort, String errMsg, String ip) {
-                Map<String, String> mData = new HashMap<>();
-                mData.put("os", "Android");
-                mData.put("logtype", "Error");
-                mData.put("currenttime", String.valueOf(System.currentTimeMillis()));
-                mData.put("serverip", serverIp);
-                mData.put("serverport", serverPort);
-                mData.put("errmsg", errMsg);
-                mData.put("ip", ip);
-                mData.put("liveid", mVideoEntity.getLiveId() == null ? "" : mVideoEntity.getLiveId());
-                mData.put("orderid", mVideoEntity.getChapterId());
-                ums.umsAgentDebugSys(LiveVideoConfig.EXPERIENCE_MESSAGE_CONNECT_ERROR, mData);
-            }
-        });
         mIRCMessage.create();
 
     }

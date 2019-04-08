@@ -71,7 +71,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
     private LiveHttpManager mHttpManager;
     private LiveVideoSAConfig liveVideoSAConfig;
     private LiveHttpResponseParser mHttpResponseParser;
-    private AuditIRCMessage mIRCMessage;
+    private IAuditIRCMessage mIRCMessage;
     private String courseId;
     private String mLiveId;
     private String mStuCouId;
@@ -126,6 +126,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
     private LiveGetPlayServer liveGetPlayServer;
     private LiveLog liveLog;
     private boolean isHalfBodyLive = false;
+    private boolean isNewIRC = false;
 
     public AuditClassLiveBll(Context context, String vStuCourseID, String courseId, String vSectionID, int form) {
         super(context);
@@ -609,9 +610,13 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         s += ",liveType=" + mLiveType + ",channel=" + channel;
         String nickname = mGetInfo.getLiveType() + "_"
                 + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
-        mIRCMessage = new AuditIRCMessage(netWorkType, channel, mGetInfo.getStuName(), nickname, this);
-        IRCTalkConf ircTalkConf = new IRCTalkConf(mContext, mGetInfo, mLiveType, mHttpManager, mGetInfo.getNewTalkConfHosts());
-        mIRCMessage.setIrcTalkConf(ircTalkConf);
+        if (isNewIRC){
+            mIRCMessage = new NewAuditIRCMessage(mContext,mGetInfo,netWorkType, channel, mGetInfo.getStuName(), nickname, this);
+        } else {
+            mIRCMessage = new AuditIRCMessage(netWorkType,channel, mGetInfo.getStuName(), nickname, this);
+            IRCTalkConf ircTalkConf = new IRCTalkConf(mContext, mGetInfo, mLiveType, mHttpManager, mGetInfo.getNewTalkConfHosts());
+            mIRCMessage.setIrcTalkConf(ircTalkConf);
+        }
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();
         // logger.d( s);

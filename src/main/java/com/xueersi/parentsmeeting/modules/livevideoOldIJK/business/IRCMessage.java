@@ -13,7 +13,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.irc.jibble.pi
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo.NewTalkConfEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveThreadPoolExecutor;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,7 +28,7 @@ import java.util.Vector;
  *
  * @author linyuqiang
  */
-public class IRCMessage {
+public class IRCMessage implements IIRCMessage {
     private String TAG = "IRCMessage";
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     private IRCConnection mConnection;
@@ -70,6 +70,7 @@ public class IRCMessage {
      *
      * @return
      */
+    @Override
     public boolean isConnected() {
         return mConnection != null && mConnection.isConnected();
     }
@@ -79,6 +80,7 @@ public class IRCMessage {
      *
      * @return
      */
+    @Override
     public boolean onUserList() {
         return onUserList && mConnection != null && mConnection.isConnected();
     }
@@ -88,6 +90,7 @@ public class IRCMessage {
      *
      * @param netWorkType
      */
+    @Override
     public void onNetWorkChange(int netWorkType) {
         this.netWorkType = netWorkType;
         if (netWorkType != NetWorkHelper.NO_NETWORK) {
@@ -109,7 +112,7 @@ public class IRCMessage {
 
     /** 自己发的消息，如果没发送出去，暂时保存下来 */
     Vector<String> privMsg = new Vector<>();
-
+    @Override
     public void create() {
         mConnection = new IRCConnection(privMsg);
         mConnection.setCallback(new IRCCallback() {
@@ -564,6 +567,7 @@ public class IRCMessage {
      *
      * @return
      */
+    @Override
     public String getConnectNickname() {
         if (mConnection.isConnected()) {
             return mConnection.getName();
@@ -576,6 +580,7 @@ public class IRCMessage {
      *
      * @return
      */
+    @Override
     public String getNickname() {
         return mNickname;
     }
@@ -595,7 +600,7 @@ public class IRCMessage {
             });
         }
     };
-
+    @Override
     public void setIrcTalkConf(IRCTalkConf ircTalkConf) {
         this.ircTalkConf = ircTalkConf;
     }
@@ -605,6 +610,7 @@ public class IRCMessage {
      *
      * @param notice
      */
+    @Override
     public void sendNotice(String notice) {
         // 如果是专属老师
         if (mChannels.length>1 && currentMode!=null ){
@@ -626,6 +632,7 @@ public class IRCMessage {
      * @param target 目标
      * @param notice
      */
+    @Override
     public void sendNotice(String target, String notice) {
         mConnection.sendNotice(target, notice);
     }
@@ -636,6 +643,7 @@ public class IRCMessage {
      * @param target  目标
      * @param message 信息
      */
+    @Override
     public void sendMessage(String target, String message) {
         mConnection.sendMessage(target, message);
     }
@@ -645,6 +653,7 @@ public class IRCMessage {
      *
      * @param message 信息
      */
+    @Override
     public void sendMessage(String message) {
         if (mChannels.length>1 && currentMode!=null){
             if (LiveTopic.MODE_TRANING.equals(currentMode)){
@@ -665,6 +674,7 @@ public class IRCMessage {
     /**
      * 播放器销毁
      */
+    @Override
     public void destory() {
         mIsDestory = true;
         mHandler.removeCallbacks(mPingRunnable);
@@ -681,7 +691,7 @@ public class IRCMessage {
             ircTalkConf.destory();
         }
     }
-
+    @Override
     public void setCallback(IRCCallback ircCallback) {
         this.mIRCCallback = ircCallback;
     }
@@ -770,12 +780,14 @@ public class IRCMessage {
                 String ip);
     }
 
-    private ConnectService connectService;
+    private IConnectService connectService;
 
-    public void setConnectService(ConnectService connectService) {
+    @Override
+    public void setConnectService(IConnectService connectService) {
         this.connectService = connectService;
     }
 
+    @Override
     public void modeChange(String mode){
         // 专属切主讲时，断开专属聊天室
       //  Loger.d("___bug  mode change:  "+mode);
