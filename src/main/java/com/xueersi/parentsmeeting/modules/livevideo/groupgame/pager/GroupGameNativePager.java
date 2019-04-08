@@ -161,12 +161,11 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     private int starNum = 0;
     private int singleCount = 0;
     private int rightNum = 0;
-    private long singleVoiceTime = 0;
+    private long presentTime = 0;
     private long voiceTime = 0;
-    private long existingVoiceTime;
+    private long existingVoiceTime = 0;
     private int successTimes = 0;
-    private List<Integer> singleScoreList = new ArrayList<>();
-    private List<Integer> allScoreList = new ArrayList<>();
+    private List<List<Integer>> scoreMatrix = new ArrayList<>();
     private JSONObject answerData = new JSONObject();
     private JSONArray userAnswer = new JSONArray();
 
@@ -233,11 +232,13 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         starNum = 0;
         singleCount = 0;
         rightNum = 0;
-        singleVoiceTime = 0;
+        presentTime = 0;
         voiceTime = 0;
         successTimes = 0;
-        singleScoreList.clear();
-        allScoreList.clear();
+        scoreMatrix.clear();
+        for (int i = 0; i < mAnswersList.size(); i++) {
+            scoreMatrix.add(i, new ArrayList<Integer>());
+        }
         answerData = new JSONObject();
         userAnswer = new JSONArray();
 
@@ -252,13 +253,13 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             }
         }, 300);
         singleModeAction.startTimer();
-        boolean hasAudidoPermission = XesPermission.hasSelfPermission(mContext, Manifest.permission.RECORD_AUDIO); //
+        boolean hasAudidoPermission = XesPermission.hasSelfPermission(mContext, Manifest.permission.RECORD_AUDIO);
         // 检查用户麦克风权限
         if (hasAudidoPermission) {
             startSpeechRecognize();
         } else {
             //如果没有麦克风权限，申请麦克风权限
-            XesPermission.checkPermissionNoAlert(mContext, new LiveActivityPermissionCallback() {
+            XesPermission.checkPermission(mContext, new LiveActivityPermissionCallback() {
                 /**
                  * 结束
                  */
@@ -517,27 +518,30 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             return;
         }
         int averageScore = 0;
+        int tryTimes = 0;
+        int sum = 0;
+        for (List<Integer> list : scoreMatrix) {
+            tryTimes += list.size();
+            for (Integer score : list) {
+                sum += score;
+            }
+        }
+        if (tryTimes != 0) {
+            averageScore = sum / tryTimes;
+        }
         try {
-            answerData.put("tryTimes", allScoreList.size());
+            answerData.put("tryTimes", tryTimes);
             answerData.put("rightNum", "" + rightNum);
             answerData.put("total", mAnswersList.size());
-            int sum = 0;
-            for (int i = 0; i < allScoreList.size(); i++) {
-                sum += allScoreList.get(i);
-            }
 
-            if (allScoreList.size() != 0) {
-                averageScore = sum / allScoreList.size();
-            }
             answerData.put("averageScore", averageScore);
             answerData.put("userAnswer", userAnswer);
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        logger.d("submitData: answerData = " + answerData.toString());
         starNum = calculateStarByScore(averageScore);
         fireNum = (int) Math.ceil(10d * successTimes / (double) (mAnswersList.size()));
-        logger.d("submitData: fireNum = " + fireNum + ", goldNum = " + goldNum + ", starNum = " + starNum);
+        logger.d("submitData: answerData = " + answerData.toString() + ", submitData: fireNum = " + fireNum + ", goldNum = " + goldNum + ", starNum = " + starNum);
         englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 0, (int) voiceTime, 0, 0, starNum, fireNum, goldNum, 0, (int) voiceTime, 0, 0, answerData.toString(), new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
@@ -714,45 +718,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     }
 
     /**
-     * android调JS方法：翻页
-     *
-     */
-    private void turnPage() {
-        pageNum++;
-        JSONObject resultData = new JSONObject();
-        try {
-            resultData.put("type", CourseMessage.SEND_CoursewareOnloading);
-            resultData.put("pageNum", pageNum);
-            StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
-            singleModeAction.startTimer();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void saveUserAnswer(int isRight) {
-        if (isRight == 1) {
-            successTimes++;
-        }
-        long singleVoiceTime = System.currentTimeMillis() - this.singleVoiceTime;
-        JSONObject jsonObject = new JSONObject();
-        try {
-
-            jsonObject.put("text", mAnswersList.get(pageNum).getText());
-            JSONArray scoreArray = new JSONArray();
-            for (int i = 0; i < singleScoreList.size(); i++) {
-                scoreArray.put(singleScoreList.get(i));
-            }
-            jsonObject.put("scores", scoreArray.toString().substring(1, scoreArray.toString().length() - 1));
-            jsonObject.put("voiceTime", (int) singleVoiceTime);
-            jsonObject.put("isRight", isRight);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        userAnswer.put(jsonObject);
-    }
-
-    /**
      * 评测成功 - 火焰+N
      *
      * @param fireNum
@@ -786,19 +751,10 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
      */
     class HotAirBallonAction implements SingleModeAction {
 
-        private Runnable turnPageRunnable = new Runnable() {
-            @Override
-            public void run() {
-                saveUserAnswer(0);
-                turnPage();
-            }
-        };
-
         @Override
         public void startTimer() {
             handler.removeCallbacks(turnPageRunnable);
-            singleScoreList.clear();
-            singleVoiceTime = System.currentTimeMillis();
+            presentTime = System.currentTimeMillis();
             singleCount = 0;
             if (pageNum >= mAnswersList.size()) {
                 gameOver = true;
@@ -835,12 +791,11 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             int newSenIndex = resultEntity.getNewSenIdx();
             int score = resultEntity.getScore();
             double speechDuration = resultEntity.getSpeechDuration();
-            if (!(newSenIndex == pageNum)) {
+            if (newSenIndex != pageNum) {
                 return;
             }
             logger.d("onHitSentence: score = " + score + ", speechDuration = " + speechDuration);
-            singleScoreList.add(score);
-            allScoreList.add(score);
+            scoreMatrix.get(pageNum).add(score);
             voiceTime = existingVoiceTime + (long) (speechDuration * 1000);
             if (score >= 70) {
                 singleCount++;
@@ -852,18 +807,62 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     } else {
                         goldNum = 2;
                     }
-                    uploadScore(newSenIndex, score, true);
+                    uploadScore(score, true);
                     startTimer();
                 } else {
-                    uploadScore(newSenIndex, score, false);
+                    uploadScore(score, false);
                 }
             } else {
-                uploadScore(newSenIndex, score, false);
+                uploadScore(score, false);
             }
         }
 
-        @Override
-        public void uploadScore(int newSenIndex, int score, boolean isTurnPage) {
+        private Runnable turnPageRunnable = new Runnable() {
+            @Override
+            public void run() {
+                saveUserAnswer(0);
+                turnPage();
+            }
+        };
+
+        /**
+         * android调JS方法：翻页
+         */
+        private void turnPage() {
+            pageNum++;
+            JSONObject resultData = new JSONObject();
+            try {
+                resultData.put("type", CourseMessage.SEND_CoursewareOnloading);
+                resultData.put("pageNum", pageNum);
+                StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
+                singleModeAction.startTimer();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        private void saveUserAnswer(int isRight) {
+            if (isRight == 1) {
+                successTimes++;
+            }
+            presentTime = System.currentTimeMillis() - presentTime;
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("text", mAnswersList.get(pageNum).getText());
+                JSONArray scoreArray = new JSONArray();
+                for (int i = 0; i < scoreMatrix.get(pageNum).size(); i++) {
+                    scoreArray.put(scoreMatrix.get(pageNum).get(i));
+                }
+                jsonObject.put("scores", scoreArray.toString().substring(1, scoreArray.toString().length() - 1));
+                jsonObject.put("voiceTime", (int) presentTime);
+                jsonObject.put("isRight", isRight);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            userAnswer.put(jsonObject);
+        }
+
+        public void uploadScore(int score, boolean isTurnPage) {
             JSONObject jsonData = new JSONObject();
             try {
                 jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
@@ -888,18 +887,10 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
         @Override
         public void startTimer() {
+            presentTime = System.currentTimeMillis();
             int time = mTestInfoEntity.getAnswerLimitTime() + 1;
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    gameOver = true;
-                    if (mIse != null) {
-                        mIse.cancel();
-                    }
-                    submitData();
-                    showResultPager();
-                }
-            }, time * 1000);
+            handler.removeCallbacks(stopTimerRunnable);
+            handler.postDelayed(stopTimerRunnable, time * 1000);
         }
 
         @Override
@@ -936,22 +927,64 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             int newSenIndex = resultEntity.getNewSenIdx();
             int score = resultEntity.getScore();
             double speechDuration = resultEntity.getSpeechDuration();
-            if (newSenIndex < 0 || score < 70) {
+            if (newSenIndex < 0) {
                 return;
             }
+            scoreMatrix.get(newSenIndex).add(score);
             logger.d("onHitSentence: score = " + score + ", speechDuration = " + speechDuration);
-            allScoreList.add(score);
-            voiceTime = existingVoiceTime + (long) (speechDuration * 1000);
-            if (isPlayBack) {
-                goldNum = 1;
-            } else {
-                goldNum = 2;
+            if (score >= 70) {
+                rightNum++;
+                voiceTime = existingVoiceTime + (long) (speechDuration * 1000);
+                if (isPlayBack) {
+                    goldNum = 1;
+                } else {
+                    goldNum = 2;
+                }
+                uploadScore(newSenIndex);
             }
-            uploadScore(newSenIndex, score, false);
         }
 
-        @Override
-        public void uploadScore(int newSenIndex, int score, boolean isTurnPage) {
+        private Runnable stopTimerRunnable = new Runnable() {
+            @Override
+            public void run() {
+                gameOver = true;
+                if (mIse != null) {
+                    mIse.cancel();
+                }
+                saveUserAnswer();
+                submitData();
+                showResultPager();
+            }
+        };
+
+        private void saveUserAnswer() {
+            presentTime = System.currentTimeMillis() - presentTime;
+            for (int i = 0; i < scoreMatrix.size(); i++) {
+                JSONObject jsonObject = new JSONObject();
+                int isRight = 0;
+                List<Integer> scoreList = scoreMatrix.get(i);
+                try {
+                    jsonObject.put("text", mAnswersList.get(i).getText());
+                    JSONArray scoreArray = new JSONArray();
+                    for (int j = 0; j < scoreList.size(); j++) {
+                        scoreArray.put(scoreList.get(j));
+                        if (scoreList.get(j) >= 70) {
+                            isRight = 1;
+                            successTimes++;
+                        }
+                    }
+                    jsonObject.put("scores", scoreArray.toString().substring(1, scoreArray.toString().length() - 1));
+                    jsonObject.put("voiceTime", (int) presentTime);
+                    jsonObject.put("isRight", isRight);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                userAnswer.put(jsonObject);
+            }
+        }
+
+
+        public void uploadScore(int newSenIndex) {
             JSONObject jsonData = new JSONObject();
             try {
                 jsonData.put("type", CourseMessage.SEND_CoursewareDoing);

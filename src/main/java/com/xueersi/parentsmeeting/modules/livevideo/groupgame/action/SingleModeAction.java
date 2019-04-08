@@ -11,5 +11,4 @@ public interface SingleModeAction {
     void startTimer();
     void onLoadComplete();
     void onHitSentence(ResultEntity resultEntity);
-    void uploadScore(int newSenIndex, int score, boolean isTurnPage);
 }
