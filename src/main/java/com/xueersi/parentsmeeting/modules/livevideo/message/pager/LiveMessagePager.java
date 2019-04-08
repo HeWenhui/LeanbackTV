@@ -44,6 +44,7 @@ import android.widget.TextView;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -530,6 +531,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             @Override
             public void onClick(@NonNull View widget) {
                 //弹出排行榜
+                UmsAgentManager.umsAgentCustomerBusiness(mContext,mContext.getResources().getString(R.string.livevideo_1713001));
                 if (liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_rank) != null) {
                     liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_rank).performClick();
                 }
@@ -1823,6 +1825,9 @@ public class LiveMessagePager extends BaseLiveMessagePager {
      * @param highestRightNum 当前最高连对数
      */
     public void setEvenText(String nowEvenNum, String highestRightNum) {
+        if (tvNowEvenNum == null || tvHighestEvenNum == null) {
+            return;
+        }
         if (nowEvenNum.equals("0") || nowEvenNum.equals("1")) {
             tvNowEvenNum.setText("连对 -");
         } else {
