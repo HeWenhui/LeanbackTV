@@ -331,7 +331,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         resultData.put("pageNum", pageNum);
                         resultData.put("restTime", testInfoEntity.getTotalTime());
                         Integer integer = wordCount.get("" + pageNum);
-                        logger.d("coursewareOnloading:pageNum=" + pageNum + ",integer=" + integer);
+                        mLogtf.d("coursewareOnloading:pageNum=" + pageNum + ",integer=" + integer);
                         if (integer == null) {
                             resultData.put("currentRight", 0);
                         } else {
@@ -571,7 +571,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         LayoutInflater mInflater = LayoutInflater.from(mContext);
         for (int i = 0; i < entities.size(); i++) {
             TeamMemberEntity teamMemberEntity = entities.get(i);
-            team_mate.put(teamMemberEntity.id);
+            team_mate.put("" + teamMemberEntity.id);
             BaseCourseGroupItem baseCourseGroupItem;
             if (teamMemberEntity.id == stuid) {
                 CourseGroupMyItem courseGroupItem = new CourseGroupMyItem(mContext, teamMemberEntity, mWorkerThread, teamMemberEntity.id);
@@ -1261,6 +1261,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             int score = resultEntity.getScore();
             allScoreList.add(score);
             if (score < 70) {
+                BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stuid);
+                if (courseGroupItem != null) {
+                    courseGroupItem.onOpps();
+                }
                 return;
             }
             mSingCount++;
@@ -1284,6 +1288,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = testInfoEntity.getAnswerList().get(currentAnswerIndex);
                 logger.d("onResult:answersEntity=" + answersEntity.getText() + "," + removeAnswersEntity.getText());
                 if (!TextUtils.equals(answersEntity.getText(), removeAnswersEntity.getText())) {
+                    BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stuid);
+                    if (courseGroupItem != null) {
+                        courseGroupItem.onOpps();
+                    }
                     return;
                 }
                 PkTeamEntity teamEntity = getStuActiveTeam.getPkTeamEntity();

@@ -88,6 +88,10 @@ public abstract class BaseCourseGroupItem implements AdapterItemInterface<TeamMe
 
     }
 
+    public void onOpps() {
+
+    }
+
     public void onScene() {
         tvCourseItemFire.setText("" + entity.energy);
     }

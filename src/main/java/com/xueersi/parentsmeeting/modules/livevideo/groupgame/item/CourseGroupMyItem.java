@@ -4,9 +4,12 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
@@ -25,14 +28,17 @@ import io.agora.rtc.RtcEngine;
 public class CourseGroupMyItem extends BaseCourseGroupItem {
     /** 自己头像禁用 */
     private ImageView ivCourseItemVideoDis;
+    private RelativeLayout rlVideoTip;
     private boolean enableVideo = true;
     private boolean enableAudio = true;
     private int progress = 0;
     public static int voiceStartFrame = 14;
     public static int voiceMaxFrame = 0;
+    private int oldEnergy;
 
     public CourseGroupMyItem(Context context, TeamMemberEntity entity, WorkerThread workerThread, int uid) {
         super(context, entity, workerThread, uid);
+        oldEnergy = entity.energy;
     }
 
     @Override
@@ -45,6 +51,7 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
         super.initViews(root);
         root.setBackgroundResource(R.drawable.app_zbhd_shipingkuang);
         ivCourseItemVideoDis = root.findViewById(R.id.iv_livevideo_course_item_audio_dis);
+        rlVideoTip = root.findViewById(R.id.rl_livevideo_course_item_video_tip);
     }
 
     public void doRenderRemoteUi(SurfaceView surfaceV) {
@@ -65,6 +72,11 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
                 if (rtcEngine != null) {
                     enableVideo = !enableVideo;
                     rtcEngine.enableLocalVideo(enableVideo);
+                    if (enableVideo) {
+                        ivCourseItemVideo.setImageResource(VIDEO_RES[2]);
+                    } else {
+                        ivCourseItemVideo.setImageResource(VIDEO_RES[1]);
+                    }
                     if (onVideoAudioClick != null) {
                         onVideoAudioClick.onVideoClick(enableVideo);
                     }
@@ -227,7 +239,33 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
 
     }
 
+    @Override
+    public void onOpps() {
+        final View view = LayoutInflater.from(mContext).inflate(R.layout.item_livevideo_h5_courseware_group_tip_opps, rlVideoTip, false);
+        TextView tv_livevideo_course_item_video_energy = view.findViewById(R.id.tv_livevideo_course_item_video_energy);
+        rlVideoTip.addView(view);
+        tv_livevideo_course_item_video_energy.setText("Oops");
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                rlVideoTip.removeView(view);
+            }
+        }, 1000);
+    }
+
     public void onScene() {
+        final View view = LayoutInflater.from(mContext).inflate(R.layout.item_livevideo_h5_courseware_group_tip_energy, rlVideoTip, false);
+//        rlVideoTip.setVisibility(View.VISIBLE);
+        TextView tv_livevideo_course_item_video_energy = view.findViewById(R.id.tv_livevideo_course_item_video_energy);
+        rlVideoTip.addView(view);
+        tv_livevideo_course_item_video_energy.setText("+" + (entity.energy - oldEnergy));
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                rlVideoTip.removeView(view);
+            }
+        }, 1000);
         tvCourseItemFire.setText("" + entity.energy);
+        oldEnergy = entity.energy;
     }
 }
