@@ -208,6 +208,8 @@ public class LiveVideoConfig {
     public static String SP_LIVEVIDEO_CLIENT_LOG = "sp_livevideo_clientLog";
     /** 直播网页加载失败 */
     public static String LIVE_WEBVIEW_ERROR = "live_webview_error";
+    /** 直播预加载启动 */
+    public static String LIVE_PRESERVICE_START = "live_preservice_start";
     /** 直播网页弹窗 */
     public static String LIVE_WEBVIEW_JS_ALERT = "live_webview_js_alert";
     /** 直播语音弹幕 */
