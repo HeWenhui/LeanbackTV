@@ -104,6 +104,11 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
                 final RtcEngine rtcEngine = workerThread.getRtcEngine();
                 if (rtcEngine != null) {
                     enableAudio = !enableAudio;
+                    if (enableAudio) {
+                        ivCourseItemAudio.setImageResource(AUDIO_RES[2]);
+                    } else {
+                        ivCourseItemAudio.setImageResource(AUDIO_RES[1]);
+                    }
                     workerThread.execute(new Runnable() {
                         @Override
                         public void run() {

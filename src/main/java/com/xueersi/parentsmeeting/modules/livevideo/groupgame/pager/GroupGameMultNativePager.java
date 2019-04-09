@@ -317,7 +317,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     GroupGameTestInfosEntity.TestInfoEntity test = tests.get(0);
                     List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = test.getAnswerList();
                     if (pagerNum < answerList.size()) {
-                        GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = answerList.remove(pagerNum);
+                        GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = answerList.get(pagerNum);
                         remove = allAnswerList.remove(answersEntity);
                         if (remove) {
                             currentAnswerIndex++;
