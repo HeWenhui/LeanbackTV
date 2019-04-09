@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
@@ -10,9 +9,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
-import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.parentsmeeting.module.videoplayer.entity.LiveExperienceEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -1982,7 +1979,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         ArtsExtLiveInfo info = new ArtsExtLiveInfo();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         info.setNewCourseWarePlatform(data.optString("newCourseWarePlatform"));
-        info.setGroupGmaeCourseWare(data.optBoolean("isGroupGmaeCourseWare"));
+        info.setIsGroupGameCourseWare(data.optInt("isGroupGameCourseWare", -1));
         return info;
     }
 
