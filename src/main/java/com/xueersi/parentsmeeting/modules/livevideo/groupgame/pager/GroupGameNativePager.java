@@ -151,6 +151,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
      * 在网页中嵌入js，只嵌入一次
      */
     private boolean addJs = false;
+    private boolean isSubmit = false;
 
     private PreLoad preLoad;
     private SingleModeAction singleModeAction;
@@ -518,7 +519,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
     @Override
     public void submitData() {
-        if (!fetchCoursewareSuccess) {
+        if (!fetchCoursewareSuccess || isSubmit) {
             return;
         }
         int averageScore = 0;
@@ -552,10 +553,11 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             }
         }
         logger.d("submitData: answerData = " + answerData.toString() + ", submitData: fireNum = " + fireNum + ", goldNum = " + goldNum + ", starNum = " + starNum);
+        isSubmit = true;
         englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 0, (int) voiceTime, 0, 0, starNum, fireNum, goldNum, 0, (int) voiceTime, 0, 0, answerData.toString(), new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
-                logger.d("submitGroupGame -> onDataSucess : objData=" + objData[0].toString());
+                logger.d("submitGroupGame -> onDataSucess");
             }
 
             @Override
@@ -971,6 +973,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 if (mIse != null) {
                     mIse.cancel();
                 }
+                saveUserAnswer();
                 submitData();
                 showResultPager();
             }
