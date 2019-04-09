@@ -244,8 +244,8 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     EventBus.getDefault().post(event);
                 } else {
                     if (allowTeamPk && newCourseSec != null) {
-                        int gold = newCourseSec.getIsAnswer() == 0?mGoldNum:-1;
-                        int energy = newCourseSec.getIsAnswer() == 0?mEnergyNum:-1;
+                        int gold = newCourseSec.getIsAnswer() == 0 ? mGoldNum : -1;
+                        int energy = newCourseSec.getIsAnswer() == 0 ? mEnergyNum : -1;
                         LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(gold, energy, LiveRoomH5CloseEvent
                                 .H5_TYPE_COURSE, id);
                         if (mEnglishH5CoursewareBll != null) {
@@ -840,20 +840,20 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         JSONObject userAnswerContent3 = userAnswerContent2.getJSONObject(k);
                         String id = userAnswerContent3.getString("id");
                         userAnswer.put("id", id);
-                        if(k < (userAnswerContent2.length()-1)){
+                        if (k < (userAnswerContent2.length() - 1)) {
                             useranswer += userAnswerContent3.optString("text") + ",";
-                        }else{
-                            useranswer +=userAnswerContent3.optString("text");
+                        } else {
+                            useranswer += userAnswerContent3.optString("text");
                         }
                     }
                     userAnswer.put("useranswer", useranswer);
                     String rightanswer = "";
                     for (int k = 0; k < rightAnswerContent2.length(); k++) {
                         JSONObject rightAnswerContent3 = rightAnswerContent2.getJSONObject(k);
-                        if(k < (userAnswerContent2.length()-1)){
+                        if (k < (userAnswerContent2.length() - 1)) {
                             rightanswer += rightAnswerContent3.optString("text") + ",";
-                        }else{
-                            rightanswer +=rightAnswerContent3.optString("text");
+                        } else {
+                            rightanswer += rightAnswerContent3.optString("text");
                         }
                     }
                     userAnswer.put("answer", rightanswer);
@@ -1206,6 +1206,8 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         if (StringUtils.isEmpty(detailInfo.getArtType()) || "0".equals(detailInfo.getArtType())) {
                             detailInfo.setArtType(test.getTestType());
                         }
+                    } else if (isArts == LiveVideoSAConfig.ART_SEC) {
+                        newCourseCache.add(newCourseCache.new FutureCourse());
                     }
                     showControl();
                     if (quesJson != null) {
