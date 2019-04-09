@@ -20,6 +20,10 @@ public class GroupGameTestInfosEntity {
      */
     private long releaseTime;
     /**
+     * 教师发题的时间戳时间
+     */
+    private long operateTimeStamp;
+    /**
      * 拉题时间戳
      */
     private long timeStamp;
@@ -31,6 +35,14 @@ public class GroupGameTestInfosEntity {
 
     public void setReleaseTime(long releaseTime) {
         this.releaseTime = releaseTime;
+    }
+
+    public long getOperateTimeStamp() {
+        return operateTimeStamp;
+    }
+
+    public void setOperateTimeStamp(long operateTimeStamp) {
+        this.operateTimeStamp = operateTimeStamp;
     }
 
     public long getTimeStamp() {
