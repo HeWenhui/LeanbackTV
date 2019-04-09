@@ -445,7 +445,10 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     logger.d("onEvaluatorError: errorNo = " + resultEntity.getErrorNo() + ", isOfflineFail =" + mIse.isOfflineFail());
                     onRecognizeStop(resultEntity);
                 } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
-                    logger.d("onEvaluatoring: newSenIdx = " + resultEntity.getNewSenIdx() + ", score =" + resultEntity.getScore());
+//                    logger.d("onEvaluatoring: newSenIdx = " + resultEntity.getNewSenIdx() + ", score =" + resultEntity.getScore());
+                    if (gameOver) {
+                        return;
+                    }
                     if (resultEntity.getNewSenIdx() >= 0) {
                         singleModeAction.onHitSentence(resultEntity);
                     }
@@ -467,7 +470,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     }
 
     private void onRecognizeStop(ResultEntity resultEntity) {
-        existingVoiceTime += (long) (resultEntity.getSpeechDuration() * 1000);
+        existingVoiceTime = voiceTime;
         if (isAttach() && !gameOver) {
             handler.postDelayed(new Runnable() {
                 @Override
@@ -510,6 +513,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         }
         wvSubjectWeb.destroy();
         mWaveView.destroy();
+        singleModeAction.onDestory();
     }
 
     @Override
@@ -540,7 +544,12 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             e.printStackTrace();
         }
         starNum = calculateStarByScore(averageScore);
-        fireNum = (int) Math.ceil(10d * successTimes / (double) (mAnswersList.size()));
+        if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(detailInfo.type)) {
+            fireNum = successTimes;
+        } else {
+            fireNum = (int) Math.ceil(10d * successTimes / (double) (mAnswersList.size()));
+        }
+
         logger.d("submitData: answerData = " + answerData.toString() + ", submitData: fireNum = " + fireNum + ", goldNum = " + goldNum + ", starNum = " + starNum);
         englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 0, (int) voiceTime, 0, 0, starNum, fireNum, goldNum, 0, (int) voiceTime, 0, 0, answerData.toString(), new AbstractBusinessDataCallBack() {
             @Override
@@ -794,7 +803,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             if (newSenIndex != pageNum) {
                 return;
             }
-            logger.d("onHitSentence: score = " + score + ", speechDuration = " + speechDuration);
+            logger.d("onHitSentence: newSenIndex = " + newSenIndex + ", score = " + score + ", speechDuration = " + speechDuration);
             scoreMatrix.get(pageNum).add(score);
             voiceTime = existingVoiceTime + (long) (speechDuration * 1000);
             if (score >= 70) {
@@ -815,6 +824,11 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             } else {
                 uploadScore(score, false);
             }
+        }
+
+        @Override
+        public void onDestory() {
+            handler.removeCallbacks(turnPageRunnable);
         }
 
         private Runnable turnPageRunnable = new Runnable() {
@@ -930,8 +944,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             if (newSenIndex < 0) {
                 return;
             }
+            logger.d("onHitSentence: newSenIndex = " + newSenIndex + ", score = " + score + ", speechDuration = " + speechDuration);
             scoreMatrix.get(newSenIndex).add(score);
-            logger.d("onHitSentence: score = " + score + ", speechDuration = " + speechDuration);
             if (score >= 70) {
                 rightNum++;
                 voiceTime = existingVoiceTime + (long) (speechDuration * 1000);
@@ -944,6 +958,11 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             }
         }
 
+        @Override
+        public void onDestory() {
+            handler.removeCallbacks(stopTimerRunnable);
+        }
+
         private Runnable stopTimerRunnable = new Runnable() {
             @Override
             public void run() {
@@ -951,7 +970,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 if (mIse != null) {
                     mIse.cancel();
                 }
-                saveUserAnswer();
                 submitData();
                 showResultPager();
             }
@@ -982,7 +1000,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 userAnswer.put(jsonObject);
             }
         }
-
 
         public void uploadScore(int newSenIndex) {
             JSONObject jsonData = new JSONObject();
