@@ -2487,7 +2487,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 public void run() {
                     logger.e("=======>forceClose 2222:" + curQuestionView);
                     if (questionHttp != null) {
-                        questionHttp.getStuGoldCount("forceClose");
+                        questionHttp.getStuGoldCount("forceClose:"+method);
                     }
                     if (questionWebPager != null) {
                         rlQuestionContent.removeView(questionWebPager.getRootView());

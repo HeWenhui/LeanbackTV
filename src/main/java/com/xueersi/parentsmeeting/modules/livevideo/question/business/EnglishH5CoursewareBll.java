@@ -426,18 +426,18 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     /**
      * 强制关闭webview
      **/
-    public void froceClose() {
+    public void froceClose(final String method) {
         bottomContent.post(new Runnable() {
             @Override
             public void run() {
                 if(mLiveBll != null){
-                    mLiveBll.getStuGoldCount("froceClose");
+                    mLiveBll.getStuGoldCount("forceClose:"+method);
                 }
                 if (h5CoursewarePager != null) {
                     h5CoursewarePager.destroy();
                     bottomContent.removeView(h5CoursewarePager.getRootView());
                     h5CoursewarePager = null;
-                    onQuestionShow(null, false, "froceClose");
+                    onQuestionShow(null, false, "forceClose:"+method);
                 }
             }
         });
@@ -1277,7 +1277,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onArtsResultCmplShow(AnswerResultCplShowEvent event) {
         Loger.e("EnglishH5CoursewareBll:onArtsResultCmplShow ");
-        froceClose();
+        froceClose(event.getMethod());
     }
 
     /**
