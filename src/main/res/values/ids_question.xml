@@ -16,6 +16,7 @@
     <item name="tv_livevideo_new_course_commit_ok" type="id" />
     <item name="tv_livevideo_new_course_commit_continue" type="id" />
     <!--英语小组互动-->
+    <item name="tv_livevideo_course_item_my_tip" type="id" />
     <item name="ll_livevideo_course_item_content" type="id" />
     <item name="rl_livevideo_course_item_video" type="id" />
     <item name="rl_livevideo_course_item_video_tip" type="id" />

@@ -8,12 +8,10 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.lottie.ImageAssetDelegate;
@@ -33,6 +31,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountDowTextView;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 
 /**
@@ -58,7 +58,9 @@ public class GroupGameMVPMultPager extends LiveBasePager {
 
     public GroupGameMVPMultPager(Context context, ArrayList<TeamMemberEntity> entities) {
         super(context);
-        this.entities = entities;
+        this.entities = new ArrayList<>();
+        this.entities.addAll(entities);
+        Collections.sort(this.entities, comparator);
         if (entities.size() == 1) {
             LOTTIE_RES_ASSETS_ROOTDIR = "group_game_one/";
         } else if (entities.size() == 2) {
@@ -69,6 +71,17 @@ public class GroupGameMVPMultPager extends LiveBasePager {
         initData();
         initListener();
     }
+
+    private Comparator<TeamMemberEntity> comparator = new Comparator<TeamMemberEntity>() {
+        @Override
+        public int compare(TeamMemberEntity o1, TeamMemberEntity o2) {
+            int com = o1.gold - o2.gold;
+            if (com == 0 && (o2.isMy || o1.isMy)) {
+                return -1;
+            }
+            return com;
+        }
+    };
 
     @Override
     public View initView() {

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -113,6 +114,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
      * 课件网页刷新
      */
     private ImageView ivWebViewRefresh;
+    private TextView tv_livevideo_course_item_my_tip;
     private LinearLayout llCourseItemContent;
     private EnglishH5CoursewareSecHttp englishH5CoursewareSecHttp;
     private String url;
@@ -209,6 +211,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         ivWebViewRefresh = view.findViewById(R.id.iv_livevideo_subject_refresh);
         rlSubjectLoading = view.findViewById(R.id.rl_livevideo_subject_loading);
         llCourseItemContent = view.findViewById(R.id.ll_livevideo_course_item_content);
+        tv_livevideo_course_item_my_tip = view.findViewById(R.id.tv_livevideo_course_item_my_tip);
         return view;
     }
 
@@ -595,14 +598,17 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     }
 
     private void addTeam(final ArrayList<TeamMemberEntity> entities) {
+        //发送麦克风消息给其他成员
         final JSONArray team_mate = new JSONArray();
         LayoutInflater mInflater = LayoutInflater.from(mContext);
+        int myIndex = 0;
         for (int i = 0; i < entities.size(); i++) {
             TeamMemberEntity teamMemberEntity = entities.get(i);
             BaseCourseGroupItem baseCourseGroupItem;
             if (teamMemberEntity.id == stuid) {
                 CourseGroupMyItem courseGroupItem = new CourseGroupMyItem(mContext, teamMemberEntity, mWorkerThread, teamMemberEntity.id);
                 baseCourseGroupItem = courseGroupItem;
+                myIndex = i;
             } else {
                 team_mate.put("" + teamMemberEntity.id);
                 CourseGroupOtherItem courseGroupItem = new CourseGroupOtherItem(mContext, teamMemberEntity, mWorkerThread, teamMemberEntity.id);
@@ -662,6 +668,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 llCourseItemContent.addView(convertView);
             }
         }
+        //如果小于最小值
         int screenHeight = ScreenUtils.getScreenHeight();
         int totalHeight = SizeUtils.Dp2Px(mContext, 125) * 3;
         if (screenHeight < totalHeight) {
@@ -680,6 +687,19 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 }
             }
         }
+        final int finalMyIndex = myIndex;
+        tv_livevideo_course_item_my_tip.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                //声音小的提示
+                View myView = llCourseItemContent.getChildAt(finalMyIndex);
+                RelativeLayout.LayoutParams tipLp = (RelativeLayout.LayoutParams) tv_livevideo_course_item_my_tip.getLayoutParams();
+                tipLp.topMargin = llCourseItemContent.getTop() + myView.getTop() + myView.getHeight() / 2 - tv_livevideo_course_item_my_tip.getHeight() / 2;
+                tv_livevideo_course_item_my_tip.setLayoutParams(tipLp);
+                tv_livevideo_course_item_my_tip.getViewTreeObserver().removeOnPreDrawListener(this);
+                return false;
+            }
+        });
     }
 
     private void onAnswer(JSONObject message) {
@@ -736,7 +756,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             @Override
             public void onBeginOfSpeech() {
                 logger.d("onBeginOfSpeech()");
-
             }
 
             @Override
@@ -747,6 +766,13 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
                     logger.d("onEvaluatorError: ErrorNo = " + resultEntity.getErrorNo() + ", isOfflineFail =" + mIse.isOfflineFail());
                     onRecognizeStop();
+                    tv_livevideo_course_item_my_tip.setVisibility(View.VISIBLE);
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            tv_livevideo_course_item_my_tip.setVisibility(View.GONE);
+                        }
+                    }, 1000);
                 } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
                     if (resultEntity.getNewSenIdx() >= 0) {
                         logger.d("onEvaluatoring: newSenIdx = " + resultEntity.getNewSenIdx() + ", score =" + resultEntity.getScore());
