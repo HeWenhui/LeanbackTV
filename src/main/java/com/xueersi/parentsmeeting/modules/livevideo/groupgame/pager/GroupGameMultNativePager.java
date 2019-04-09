@@ -311,13 +311,21 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             try {
                 jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
                 jsonData.put("isTurnPage", true);
+                boolean remove = false;
                 wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
                 if (!allAnswerList.isEmpty()) {
-                    allAnswerList.remove(allAnswerList.get(0));
-                    currentAnswerIndex++;
-                    createSpeechContent("TurnRun");
+                    GroupGameTestInfosEntity.TestInfoEntity test = tests.get(0);
+                    List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = test.getAnswerList();
+                    if (pagerNum < answerList.size()) {
+                        GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = answerList.remove(pagerNum);
+                        remove = allAnswerList.remove(answersEntity);
+                        if (remove) {
+                            currentAnswerIndex++;
+                            createSpeechContent("TurnRun");
+                        }
+                    }
                 }
-                mLogtf.d("TurnRun:pagerNum=" + pagerNum + ",currentAnswerIndex=" + currentAnswerIndex);
+                mLogtf.d("TurnRun:pagerNum=" + pagerNum + ",currentAnswerIndex=" + currentAnswerIndex + ",remove=" + remove);
             } catch (Exception e) {
                 e.printStackTrace();
                 CrashReport.postCatchedException(e);
@@ -1208,7 +1216,13 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         });
     }
 
+    boolean submit = false;
+
     private void submit() {
+        if (submit) {
+            return;
+        }
+        submit = true;
         int voiceTime = 0;
         int starNum = 0;
         int energy = 0;
@@ -1270,7 +1284,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             float totalScore = 0;
             int totalCount = 0;
             if (vidooCannonEntity != null && !tests.isEmpty()) {
-                energy = vidooCannonEntity.rightNum + 5;
+                if (vidooCannonEntity.teamMemberEntity.energy != 0) {
+                    vidooCannonEntity.teamMemberEntity.energy += 5;
+                    energy = vidooCannonEntity.teamMemberEntity.energy;
+                }
                 answerData.put("rightNum", vidooCannonEntity.rightNum);
                 GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
                 List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = testInfoEntity.getAnswerList();
