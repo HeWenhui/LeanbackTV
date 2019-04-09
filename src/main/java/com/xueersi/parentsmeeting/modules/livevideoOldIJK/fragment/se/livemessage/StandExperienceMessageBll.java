@@ -12,6 +12,7 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
@@ -113,7 +114,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
     private IIRCMessage mIRCMessage;
     private final String IRC_CHANNEL_PREFIX = "4L";
     /** 是否使用新IRC SDK*/
-    private boolean isNewIRC = false;
+//    private boolean isNewIRC = false;
 
     @Override
     public void onCreate(VideoLivePlayBackEntity mVideoEntity,
@@ -182,7 +183,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
         logger.i("=====>connectChatServer:channel=" + channel + ":nickname =" +
                 chatRoomUid);
         mNetWorkType = NetWorkHelper.getNetWorkState(mContext);
-        if (isNewIRC){
+        if (MediaPlayer.isPSIJK){
             mIRCMessage = new NewIRCMessage(mContext, mNetWorkType, liveGetInfo.getStuName(), chatRoomUid, liveGetInfo, channel);
         } else{
             chatCfgServerList = mVideoEntity.getRoomChatCfgServerList();

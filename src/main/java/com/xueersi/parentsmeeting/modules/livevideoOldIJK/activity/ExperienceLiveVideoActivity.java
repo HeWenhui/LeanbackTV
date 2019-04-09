@@ -51,10 +51,26 @@ import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
 import com.xueersi.parentsmeeting.module.browser.event.BrowserEvent;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ExPerienceLiveMessage;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.RoundProgressBar;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IConnectService;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IRCCallback;
@@ -71,20 +87,9 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XesAtomicInteger;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.irc.jibble.pircbot.User;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ExPerienceLiveMessage;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.experience.bussiness.ExperienceGuideBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.experience.bussiness.ExperienceQuitFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.experience.bussiness.IPlayStatus;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.pager.LiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.ExperienceLearnFeedbackPager;
@@ -95,10 +100,6 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.Ques
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.redpackage.business.RedPackageExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.RoundProgressBar;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -215,8 +216,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     /** 显示弹窗阈值 课程开始25min内进入课程的退出时显示弹窗 */
     private static final long SHOW_QUIT_DIALOG_THRESHOLD = 1500000;
     private ExperienceQuitFeedbackBll experienceQuitFeedbackBll;
-    /** 是否使用新IRC*/
-    private boolean isNewIRC = false;
+    /** 是否使用新IRC */
+//    private boolean isNewIRC = false;
     private IIRCMessage mIRCMessage;
     private final String IRC_CHANNEL_PREFIX = "4L";
 
@@ -532,10 +533,10 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         logger.i("=====>connectChatServer:channel=" + channel + ":nickname =" +
                 chatRoomUid);
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
-        if (isNewIRC){
+        if (MediaPlayer.isPSIJK) {
             mIRCMessage = new NewIRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, mGetInfo, channel);
 
-        } else{
+        } else {
             // 获取 聊天服务器地址  的接口地址
             ArrayList<TalkConfHost> talkConfHosts = new ArrayList<>();
             TalkConfHost confHost = null;
@@ -873,7 +874,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                         ViewGroup.LayoutParams lp = videoView.getLayoutParams();
                         LiveVideoPoint.initLiveVideoPoint((Activity) mContext, LiveVideoPoint.getInstance(), lp);
                         setFirstParam(lp);
-                        if(mLiveMessagePager != null){
+                        if (mLiveMessagePager != null) {
                             mLiveMessagePager.setVideoLayout(LiveVideoPoint.getInstance());
                         }
 //                        mLiveMessagePager.setVideoWidthAndHeight(lp.width, lp.height);
@@ -963,10 +964,10 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         liveBackBll.addBusinessBll(new RedPackageExperienceBll(activity, liveBackBll, mVideoEntity.getChapterId()));
         liveBackBll.addBusinessBll(new EnglishH5ExperienceBll(activity, liveBackBll));
         liveBackBll.addBusinessBll(new NBH5ExperienceBll(activity, liveBackBll));
-        experienceQuitFeedbackBll = new ExperienceQuitFeedbackBll(activity,liveBackBll,false);
+        experienceQuitFeedbackBll = new ExperienceQuitFeedbackBll(activity, liveBackBll, false);
         experienceQuitFeedbackBll.setLiveVideo(this);
         liveBackBll.addBusinessBll(experienceQuitFeedbackBll);
-        ExperienceGuideBll experienceGuideBll = new ExperienceGuideBll(this,liveBackBll);
+        ExperienceGuideBll experienceGuideBll = new ExperienceGuideBll(this, liveBackBll);
         liveBackBll.addBusinessBll(experienceGuideBll);
         mPlayStatus = experienceGuideBll;
         liveBackBll.onCreate();
@@ -1051,7 +1052,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
                 vPlayer.releaseSurface();
                 vPlayer.stop();
-                if (experienceQuitFeedbackBll != null){
+                if (experienceQuitFeedbackBll != null) {
                     experienceQuitFeedbackBll.playComplete();
                 }
                 // 测试体验课播放器的结果页面
@@ -1073,7 +1074,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
 //                    seekTo(0);
 //                }
 //            }
-            if (mPlayStatus != null && isInitialized()){
+            if (mPlayStatus != null && isInitialized()) {
                 mPlayStatus.onPlaySuccess(vPlayer);
             }
         }
@@ -1254,7 +1255,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         currentMsg = currentPosition;
         // 扫描互动题
         scanQuestion(currentPosition);
-        logger.i( "currentPosition:" + currentPosition + ": threadId =" + Thread.currentThread().getId());
+        logger.i("currentPosition:" + currentPosition + ": threadId =" + Thread.currentThread().getId());
         if (HISTROY_MSG_DISPLAY) {
             displayHistoryMsg();
         }
@@ -1395,7 +1396,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         if (scanRunnable != null) {
             scanRunnable.exit();
         }
-        if (experienceQuitFeedbackBll != null){
+        if (experienceQuitFeedbackBll != null) {
             experienceQuitFeedbackBll.playComplete();
         }
         mHandler.removeCallbacks(mPlayDuration);
@@ -1443,6 +1444,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 }
             }.start();
         }
+//        System.exit(0);
     }
 
 

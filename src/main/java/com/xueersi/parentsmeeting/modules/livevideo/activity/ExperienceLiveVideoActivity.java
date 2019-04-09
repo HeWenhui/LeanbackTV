@@ -216,8 +216,8 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     /** 显示弹窗阈值 课程开始25min内进入课程的退出时显示弹窗 */
     private static final long SHOW_QUIT_DIALOG_THRESHOLD = 1500000;
     private ExperienceQuitFeedbackBll experienceQuitFeedbackBll;
-    /** 是否使用新IRC*/
-    private boolean isNewIRC = false;
+    /** 是否使用新IRC */
+//    private boolean isNewIRC = false;
     private IIRCMessage mIRCMessage;
     private final String IRC_CHANNEL_PREFIX = "4L";
 
@@ -534,10 +534,10 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
         logger.i("=====>connectChatServer:channel=" + channel + ":nickname =" +
                 chatRoomUid);
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
-        if (isNewIRC){
+        if (MediaPlayer.isPSIJK) {
             mIRCMessage = new NewIRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, mGetInfo, channel);
 
-        } else{
+        } else {
             // 获取 聊天服务器地址  的接口地址
             ArrayList<TalkConfHost> talkConfHosts = new ArrayList<>();
             TalkConfHost confHost = null;
@@ -1469,7 +1469,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 }
             }.start();
         }
-
+//        System.exit(0);
     }
 
 

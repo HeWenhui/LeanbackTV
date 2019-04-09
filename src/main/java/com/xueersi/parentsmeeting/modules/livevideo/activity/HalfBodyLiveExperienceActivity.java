@@ -233,7 +233,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
     private IIRCMessage mIRCMessage;
     private final String IRC_CHANNEL_PREFIX = "4L";
     /** 是否使用新IRC SDK*/
-    private boolean isNewIRC = false;
+//    private boolean isNewIRC = false;
 
 
     /**
@@ -501,7 +501,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         logger.i("=====>connectChatServer:channel=" + channel + ":nickname =" +
                 chatRoomUid);
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
-        if (isNewIRC){
+        if (MediaPlayer.isPSIJK){
 
             mIRCMessage = new NewIRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, mGetInfo, channel);
 

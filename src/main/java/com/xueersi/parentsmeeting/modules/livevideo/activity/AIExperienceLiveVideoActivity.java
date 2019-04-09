@@ -224,7 +224,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
     private IIRCMessage mIRCMessage;
     private final String IRC_CHANNEL_PREFIX = "4L";
     /** 是否使用新IRC SDK*/
-    private boolean isNewIRC = false;
+//    private boolean isNewIRC = false;
 
     // 定时获取聊天记录的任务
     class ScanRunnable implements Runnable {
@@ -538,7 +538,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         logger.i("=====>connectChatServer:channel=" + channel + ":nickname =" +
                 chatRoomUid);
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
-        if (isNewIRC) {
+        if (MediaPlayer.isPSIJK) {
             mIRCMessage = new NewIRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, mGetInfo, channel);
         } else {
             // 获取 聊天服务器地址  的接口地址

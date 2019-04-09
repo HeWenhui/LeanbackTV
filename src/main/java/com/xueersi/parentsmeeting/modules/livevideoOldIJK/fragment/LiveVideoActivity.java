@@ -11,9 +11,9 @@ import android.view.inputmethod.InputMethodManager;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.http.HttpCall;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.ActivityStatic;
-import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.halfbody.HalfBodyLiveVideoFragement;
 
 /**
@@ -56,6 +56,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
     public void onDestroy() {
         AppBll.getInstance().unRegisterAppEvent(this);
         super.onDestroy();
+//        System.exit(0);
     }
 
     @Override

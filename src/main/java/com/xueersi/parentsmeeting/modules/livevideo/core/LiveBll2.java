@@ -23,6 +23,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCCallback;
@@ -103,8 +104,8 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     private static String Tag = "LiveBll2";
     private LiveUidRx liveUidRx;
     private LiveLog liveLog;
-    /** 是否使用新IRC SDK*/
-    private boolean isNewIRC = false;
+    /** 是否使用新IRC SDK */
+//    private boolean isNewIRC = false;
 
     /**
      * 直播的
@@ -457,7 +458,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 mHttpManager.addBodyParam("courseId", mCourseId);
             }
             channel = mGetInfo.getId() + "-" + studentLiveInfo.getClassId();
-            if (mGetInfo.ePlanInfo != null){
+            if (mGetInfo.ePlanInfo != null) {
                 eChannel = mGetInfo.ePlanInfo.ePlanId + "-" + mGetInfo.ePlanInfo.eClassId;
             }
         }
@@ -465,24 +466,24 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         s += ",liveType=" + mLiveType + ",channel=" + channel;
         String nickname = "s_" + mGetInfo.getLiveType() + "_"
                 + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
-        if (isNewIRC){
-            if (TextUtils.isEmpty(eChannel) || LiveTopic.MODE_CLASS.equals(getMode())){
-                mIRCMessage = new NewIRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname,mGetInfo, channel);
-            }else {
-                mIRCMessage = new NewIRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname,mGetInfo, channel,eChannel);
+        if (MediaPlayer.isPSIJK) {
+            if (TextUtils.isEmpty(eChannel) || LiveTopic.MODE_CLASS.equals(getMode())) {
+                mIRCMessage = new NewIRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, mGetInfo, channel);
+            } else {
+                mIRCMessage = new NewIRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, mGetInfo, channel, eChannel);
             }
-        } else{
-            if (TextUtils.isEmpty(eChannel) || LiveTopic.MODE_CLASS.equals(getMode())){
+        } else {
+            if (TextUtils.isEmpty(eChannel) || LiveTopic.MODE_CLASS.equals(getMode())) {
                 mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, channel);
-            }else {
-                mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, channel,eChannel);
+            } else {
+                mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, channel, eChannel);
             }
             IRCTalkConf ircTalkConf = new IRCTalkConf(mContext, getInfo, mLiveType, mHttpManager, getInfo.getNewTalkConfHosts());
             mIRCMessage.setIrcTalkConf(ircTalkConf);
         }
 
         //mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, (TextUtils.isEmpty(eChannel)|| LiveTopic.MODE_CLASS.equals(getMode()))?channel:channel,eChannel);
-        if (mGetInfo!=null && mGetInfo.ePlanInfo!=null){
+        if (mGetInfo != null && mGetInfo.ePlanInfo != null) {
             mIRCMessage.modeChange(mGetInfo.getMode());
         }
 
@@ -625,7 +626,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 switch (mtype) {
                     case XESCODE.MODECHANGE:
                         String mode = object.getString("mode");
-                        if (mode!=null && mIRCMessage!=null && mGetInfo!=null && mGetInfo.ePlanInfo!=null){
+                        if (mode != null && mIRCMessage != null && mGetInfo != null && mGetInfo.ePlanInfo != null) {
                             mIRCMessage.modeChange(mode);
                         }
                         if (!(mLiveTopic.getMode().equals(mode))) {
@@ -685,13 +686,13 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                     if (!(mLiveTopic.getMode().equals(liveTopic.getMode()))) {
                         String oldMode = mLiveTopic.getMode();
                         mLiveTopic.setMode(liveTopic.getMode());
-                       // Loger.d("___channel: "+channel+"  mode: "+liveTopic.getMode()+"  topic:  "+topicstr);
+                        // Loger.d("___channel: "+channel+"  mode: "+liveTopic.getMode()+"  topic:  "+topicstr);
                         mGetInfo.setMode(liveTopic.getMode());
                         boolean isPresent = isPresent(mLiveTopic.getMode());
                         if (mVideoAction != null) {
                             mVideoAction.onModeChange(mLiveTopic.getMode(), isPresent);
                         }
-                        if (mIRCMessage!=null){
+                        if (mIRCMessage != null) {
                             mIRCMessage.modeChange(mLiveTopic.getMode());
                         }
                         liveVideoBll.onModeChange(mLiveTopic.getMode(), isPresent);
@@ -712,7 +713,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
 
                     mLiveTopic.setMode(liveTopic.getMode());
                     Loger.setDebug(true);
-                  //  Loger.d("___channel: "+channel+"  mode: "+liveTopic.getMode()+"  topic:  "+topicstr);
+                    //  Loger.d("___channel: "+channel+"  mode: "+liveTopic.getMode()+"  topic:  "+topicstr);
                     mGetInfo.setMode(liveTopic.getMode());
                 }
                 if (mTopicActions != null && mTopicActions.size() > 0) {
@@ -1215,6 +1216,6 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
 
     /** 测试notice */
     public void testNotice(String notice) {
-        mIRCcallback.onNotice("", "", "", "", notice,"");
+        mIRCcallback.onNotice("", "", "", "", notice, "");
     }
 }

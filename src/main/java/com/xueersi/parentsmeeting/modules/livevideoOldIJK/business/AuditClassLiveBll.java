@@ -20,6 +20,7 @@ import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
@@ -126,7 +127,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
     private LiveGetPlayServer liveGetPlayServer;
     private LiveLog liveLog;
     private boolean isHalfBodyLive = false;
-    private boolean isNewIRC = false;
+//    private boolean isNewIRC = false;
 
     public AuditClassLiveBll(Context context, String vStuCourseID, String courseId, String vSectionID, int form) {
         super(context);
@@ -610,7 +611,7 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
         s += ",liveType=" + mLiveType + ",channel=" + channel;
         String nickname = mGetInfo.getLiveType() + "_"
                 + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
-        if (isNewIRC){
+        if (MediaPlayer.isPSIJK){
             mIRCMessage = new NewAuditIRCMessage(mContext,mGetInfo,netWorkType, channel, mGetInfo.getStuName(), nickname, this);
         } else {
             mIRCMessage = new AuditIRCMessage(netWorkType,channel, mGetInfo.getStuName(), nickname, this);

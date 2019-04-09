@@ -23,6 +23,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IRCCallback;
@@ -104,7 +105,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     private LiveUidRx liveUidRx;
     private LiveLog liveLog;
     /** 是否使用新IRC SDK*/
-    private boolean isNewIRC = false;
+//    private boolean isNewIRC = false;
 
     /**
      * 直播的
@@ -465,7 +466,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         s += ",liveType=" + mLiveType + ",channel=" + channel;
         String nickname = "s_" + mGetInfo.getLiveType() + "_"
                 + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
-        if (isNewIRC){
+        if (MediaPlayer.isPSIJK){
             if (TextUtils.isEmpty(eChannel) || LiveTopic.MODE_CLASS.equals(getMode())){
                 mIRCMessage = new NewIRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname,mGetInfo, channel);
             }else {
