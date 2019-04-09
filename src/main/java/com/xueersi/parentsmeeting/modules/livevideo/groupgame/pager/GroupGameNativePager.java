@@ -162,10 +162,11 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     private int starNum = 0;
     private int singleCount = 0;
     private int rightNum = 0;
-    private long presentTime = 0;
     private long voiceTime = 0;
     private long existingVoiceTime = 0;
     private int successTimes = 0;
+    private long presentTime = 0;
+    private List<Long> presentTimeList = new ArrayList<>();
     private List<List<Integer>> scoreMatrix = new ArrayList<>();
     private JSONObject answerData = new JSONObject();
     private JSONArray userAnswer = new JSONArray();
@@ -233,9 +234,10 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         starNum = 0;
         singleCount = 0;
         rightNum = 0;
-        presentTime = 0;
         voiceTime = 0;
         successTimes = 0;
+        presentTime = 0;
+        presentTimeList.clear();
         scoreMatrix.clear();
         for (int i = 0; i < mAnswersList.size(); i++) {
             scoreMatrix.add(i, new ArrayList<Integer>());
@@ -522,6 +524,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         if (!fetchCoursewareSuccess || isSubmit) {
             return;
         }
+        singleModeAction.saveUserAnser();
         int averageScore = 0;
         int tryTimes = 0;
         int sum = 0;
@@ -564,6 +567,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             public void onDataFail(int errStatus, String failMsg) {
                 super.onDataFail(errStatus, failMsg);
                 logger.d("submitGroupGame -> onDataFail:" + failMsg);
+                XESToastUtils.showToast(mContext, failMsg);
             }
         });
     }
@@ -813,7 +817,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 singleCount++;
                 rightNum++;
                 if (singleCount >= mTestInfoEntity.getSingleCount()) {
-                    saveUserAnswer(1);
                     if (isPlayBack) {
                         goldNum = 1;
                     } else {
@@ -834,10 +837,36 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             handler.removeCallbacks(turnPageRunnable);
         }
 
+        @Override
+        public void saveUserAnser() {
+            for (int i = 0; i < pageNum; i++) {
+                JSONObject jsonObject = new JSONObject();
+                int isRight = 0;
+                int singCount = 0;
+                List<Integer> scoreList = scoreMatrix.get(i);
+                try {
+                    jsonObject.put("text", mAnswersList.get(i).getText());
+                    JSONArray scoreArray = new JSONArray();
+                    for (int j = 0; j < scoreList.size(); j++) {
+                        scoreArray.put(scoreList.get(j));
+                        singCount++;
+                    }
+                    if (singCount >= 5) {
+                        isRight = 1;
+                    }
+                    jsonObject.put("scores", scoreArray.toString().substring(1, scoreArray.toString().length() - 1));
+                    jsonObject.put("voiceTime", (int) ((long) presentTimeList.get(i)));
+                    jsonObject.put("isRight", isRight);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                userAnswer.put(jsonObject);
+            }
+        }
+
         private Runnable turnPageRunnable = new Runnable() {
             @Override
             public void run() {
-                saveUserAnswer(0);
                 turnPage();
             }
         };
@@ -847,6 +876,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
          */
         private void turnPage() {
             pageNum++;
+            presentTime = System.currentTimeMillis() - presentTime;
+            presentTimeList.add(presentTime);
             JSONObject resultData = new JSONObject();
             try {
                 resultData.put("type", CourseMessage.SEND_CoursewareOnloading);
@@ -858,26 +889,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             }
         }
 
-        private void saveUserAnswer(int isRight) {
-            if (isRight == 1) {
-                successTimes++;
-            }
-            presentTime = System.currentTimeMillis() - presentTime;
-            JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.put("text", mAnswersList.get(pageNum).getText());
-                JSONArray scoreArray = new JSONArray();
-                for (int i = 0; i < scoreMatrix.get(pageNum).size(); i++) {
-                    scoreArray.put(scoreMatrix.get(pageNum).get(i));
-                }
-                jsonObject.put("scores", scoreArray.toString().substring(1, scoreArray.toString().length() - 1));
-                jsonObject.put("voiceTime", (int) presentTime);
-                jsonObject.put("isRight", isRight);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            userAnswer.put(jsonObject);
-        }
 
         public void uploadScore(int score, boolean isTurnPage) {
             JSONObject jsonData = new JSONObject();
@@ -890,6 +901,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
                 if (isTurnPage) {
                     pageNum++;
+                    presentTime = System.currentTimeMillis() - presentTime;
+                    presentTimeList.add(presentTime);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -966,20 +979,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             handler.removeCallbacks(stopTimerRunnable);
         }
 
-        private Runnable stopTimerRunnable = new Runnable() {
-            @Override
-            public void run() {
-                gameOver = true;
-                if (mIse != null) {
-                    mIse.cancel();
-                }
-                saveUserAnswer();
-                submitData();
-                showResultPager();
-            }
-        };
-
-        private void saveUserAnswer() {
+        @Override
+        public void saveUserAnser() {
             presentTime = System.currentTimeMillis() - presentTime;
             for (int i = 0; i < scoreMatrix.size(); i++) {
                 JSONObject jsonObject = new JSONObject();
@@ -1004,6 +1005,18 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 userAnswer.put(jsonObject);
             }
         }
+
+        private Runnable stopTimerRunnable = new Runnable() {
+            @Override
+            public void run() {
+                gameOver = true;
+                if (mIse != null) {
+                    mIse.cancel();
+                }
+                submitData();
+                showResultPager();
+            }
+        };
 
         public void uploadScore(int newSenIndex) {
             JSONObject jsonData = new JSONObject();

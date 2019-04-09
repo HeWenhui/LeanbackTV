@@ -12,4 +12,5 @@ public interface SingleModeAction {
     void onLoadComplete();
     void onHitSentence(ResultEntity resultEntity);
     void onDestory();
+    void saveUserAnser();
 }
