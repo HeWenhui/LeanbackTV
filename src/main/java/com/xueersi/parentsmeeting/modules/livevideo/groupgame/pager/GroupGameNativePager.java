@@ -544,12 +544,13 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             e.printStackTrace();
         }
         starNum = calculateStarByScore(averageScore);
-        if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(detailInfo.type)) {
-            fireNum = successTimes;
-        } else {
-            fireNum = (int) Math.ceil(10d * successTimes / (double) (mAnswersList.size()));
+        if (!isPlayBack) {
+            if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(detailInfo.type)) {
+                fireNum = rightNum;
+            } else {
+                fireNum = (int) Math.ceil(10d * successTimes / (double) (mAnswersList.size()));
+            }
         }
-
         logger.d("submitData: answerData = " + answerData.toString() + ", submitData: fireNum = " + fireNum + ", goldNum = " + goldNum + ", starNum = " + starNum);
         englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 0, (int) voiceTime, 0, 0, starNum, fireNum, goldNum, 0, (int) voiceTime, 0, 0, answerData.toString(), new AbstractBusinessDataCallBack() {
             @Override
