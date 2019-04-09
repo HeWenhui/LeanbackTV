@@ -430,10 +430,10 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         bottomContent.post(new Runnable() {
             @Override
             public void run() {
-                if(mLiveBll != null){
-                    mLiveBll.getStuGoldCount("forceClose:"+method);
-                }
                 if (h5CoursewarePager != null) {
+                    if(mLiveBll != null){
+                        mLiveBll.getStuGoldCount("forceClose:"+method);
+                    }
                     h5CoursewarePager.destroy();
                     bottomContent.removeView(h5CoursewarePager.getRootView());
                     h5CoursewarePager = null;
