@@ -35,6 +35,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkLeadPag
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpDispatch;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageReg;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -181,16 +182,28 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 CrashReport.postCatchedException(e);
             }
         }
-        getEnTeamPkHttpManager().dispatch(mGetInfo.getStuId(), new AbstractBusinessDataCallBack() {
-            @Override
-            public void onDataSucess(Object... objData) {
-                ArrayList<InetSocketAddress> addresses = (ArrayList<InetSocketAddress>) objData[0];
-                mLogtf.d("dispatch:size=" + addresses.size());
-                if (addresses.size() > 0) {
-                    connect(addresses);
+    }
+
+    @Override
+    public void onArtsExtLiveInited(LiveGetInfo getInfo) {
+        ArtsExtLiveInfo artsExtLiveInfo = getInfo.getArtsExtLiveInfo();
+        int isGroupGmaeCourseWare = artsExtLiveInfo.getIsGroupGameCourseWare();
+        logger.d("onArtsExtLiveInited:isGroupGmaeCourseWare=" + isGroupGmaeCourseWare);
+        if (isGroupGmaeCourseWare == 1) {
+            getEnTeamPkHttpManager().dispatch(mGetInfo.getStuId(), new AbstractBusinessDataCallBack() {
+                @Override
+                public void onDataSucess(Object... objData) {
+                    ArrayList<InetSocketAddress> addresses = (ArrayList<InetSocketAddress>) objData[0];
+                    mLogtf.d("dispatch:size=" + addresses.size());
+                    if (addresses.size() > 0) {
+                        connect(addresses);
+                    }
                 }
+            });
+            if (pkTeamEntity != null) {
+                startTeam("onArtsExtLiveInited");
             }
-        });
+        }
     }
 
     @Override
@@ -572,91 +585,102 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 //            if (tcpDispatch != null) {
 //                tcpDispatch.setPid(pkTeamEntity2.getPkTeamId());
 //            }
-            if (getStuActiveTeam == null) {
-                getStuActiveTeam = new GetStuActiveTeam() {
-                    @Override
-                    public InteractiveTeam getStuActiveTeam(AbstractBusinessDataCallBack callBack) {
-                        EnTeamPkIRCBll.this.getStuActiveTeam(callBack);
-                        return mInteractiveTeam;
-                    }
-
-                    @Override
-                    public PkTeamEntity getPkTeamEntity() {
-                        return pkTeamEntity;
-                    }
-                };
-                putInstance(GetStuActiveTeam.class, getStuActiveTeam);
-                getEnTeamPkHttpManager().reportInteractiveInfo(mGetInfo.getStuId(), unique_id, true, new HttpCallBack() {
-
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) {
-                        logger.d("reportInteractiveInfo:onPmSuccess:json=" + responseEntity.getJsonObject());
-                    }
-
-                    @Override
-                    public void onPmFailure(Throwable error, String msg) {
-                        super.onPmFailure(error, msg);
-                        logger.d("reportInteractiveInfo:onPmFailure:msg=" + msg);
-                    }
-
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-                        super.onPmError(responseEntity);
-                        logger.d("reportInteractiveInfo:onPmError:msg=" + responseEntity.getErrorMsg());
-                    }
-                });
-            }
-            if (tcpMessageReg == null) {
-                tcpMessageReg = new TcpMessageReg() {
-
-                    @Override
-                    public void onConnect(OnTcpConnect onTcpConnect) {
-                        if (tcpDispatch != null) {
-                            onTcpConnect.onTcpConnect();
-                        }
-                        onTcpConnects.add(onTcpConnect);
-                    }
-
-                    @Override
-                    public void send(short type, int operation, String bodyStr) {
-                        if (tcpDispatch != null) {
-                            tcpDispatch.send(type, operation, bodyStr);
-                        }
-                    }
-
-                    @Override
-                    public void send(short type, int operation, String bodyStr, SendCallBack sendCallBack) {
-                        if (tcpDispatch != null) {
-                            tcpDispatch.send(type, operation, bodyStr, sendCallBack);
-                        }
-                    }
-
-                    @Override
-                    public void registTcpMessageAction(TcpMessageAction tcpMessageAction) {
-                        if (tcpDispatch != null) {
-                            tcpDispatch.registTcpMessageAction(tcpMessageAction);
-                        }
-                    }
-
-                    @Override
-                    public void unregistTcpMessageAction(TcpMessageAction tcpMessageAction) {
-                        if (tcpDispatch != null) {
-                            tcpDispatch.unregistTcpMessageAction(tcpMessageAction);
-                        }
-                    }
-
-                    @Override
-                    public boolean setTest(int testType, String testId) {
-                        if (tcpDispatch != null) {
-                            return tcpDispatch.setTest(testType, testId);
-                        }
-                        return false;
-                    }
-                };
-                ProxUtil.getProxUtil().put(mContext, TcpMessageReg.class, tcpMessageReg);
+            ArtsExtLiveInfo artsExtLiveInfo = mGetInfo.getArtsExtLiveInfo();
+            if (artsExtLiveInfo != null) {
+                int isGroupGmaeCourseWare = artsExtLiveInfo.getIsGroupGameCourseWare();
+                if (isGroupGmaeCourseWare == 1) {
+                    startTeam("parsegetSelfTeamInfo");
+                }
             }
         }
         return pkTeamEntity2;
+    }
+
+    private void startTeam(String method) {
+        logger.d("startTeam:method=" + method + ",Team=null?" + (getStuActiveTeam == null));
+        if (getStuActiveTeam == null) {
+            getStuActiveTeam = new GetStuActiveTeam() {
+                @Override
+                public InteractiveTeam getStuActiveTeam(AbstractBusinessDataCallBack callBack) {
+                    EnTeamPkIRCBll.this.getStuActiveTeam(callBack);
+                    return mInteractiveTeam;
+                }
+
+                @Override
+                public PkTeamEntity getPkTeamEntity() {
+                    return pkTeamEntity;
+                }
+            };
+            putInstance(GetStuActiveTeam.class, getStuActiveTeam);
+            getEnTeamPkHttpManager().reportInteractiveInfo(mGetInfo.getStuId(), unique_id, true, new HttpCallBack() {
+
+                @Override
+                public void onPmSuccess(ResponseEntity responseEntity) {
+                    logger.d("reportInteractiveInfo:onPmSuccess:json=" + responseEntity.getJsonObject());
+                }
+
+                @Override
+                public void onPmFailure(Throwable error, String msg) {
+                    super.onPmFailure(error, msg);
+                    logger.d("reportInteractiveInfo:onPmFailure:msg=" + msg);
+                }
+
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    super.onPmError(responseEntity);
+                    logger.d("reportInteractiveInfo:onPmError:msg=" + responseEntity.getErrorMsg());
+                }
+            });
+        }
+        if (tcpMessageReg == null) {
+            tcpMessageReg = new TcpMessageReg() {
+
+                @Override
+                public void onConnect(OnTcpConnect onTcpConnect) {
+                    if (tcpDispatch != null) {
+                        onTcpConnect.onTcpConnect();
+                    }
+                    onTcpConnects.add(onTcpConnect);
+                }
+
+                @Override
+                public void send(short type, int operation, String bodyStr) {
+                    if (tcpDispatch != null) {
+                        tcpDispatch.send(type, operation, bodyStr);
+                    }
+                }
+
+                @Override
+                public void send(short type, int operation, String bodyStr, SendCallBack sendCallBack) {
+                    if (tcpDispatch != null) {
+                        tcpDispatch.send(type, operation, bodyStr, sendCallBack);
+                    }
+                }
+
+                @Override
+                public void registTcpMessageAction(TcpMessageAction tcpMessageAction) {
+                    if (tcpDispatch != null) {
+                        tcpDispatch.registTcpMessageAction(tcpMessageAction);
+                    }
+                }
+
+                @Override
+                public void unregistTcpMessageAction(TcpMessageAction tcpMessageAction) {
+                    if (tcpDispatch != null) {
+                        tcpDispatch.unregistTcpMessageAction(tcpMessageAction);
+                    }
+                }
+
+                @Override
+                public boolean setTest(int testType, String testId) {
+                    if (tcpDispatch != null) {
+                        return tcpDispatch.setTest(testType, testId);
+                    }
+                    return false;
+                }
+            };
+            ProxUtil.getProxUtil().put(mContext, TcpMessageReg.class, tcpMessageReg);
+        }
     }
 
     private GetStuActiveTeam getStuActiveTeam = null;
