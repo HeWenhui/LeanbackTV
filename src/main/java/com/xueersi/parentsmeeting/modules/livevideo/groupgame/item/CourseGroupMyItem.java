@@ -41,10 +41,16 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
     private int oldEnergy;
     private long videoStartTime;
     private long audioStartTime;
+    private String lottieResPath = "group_game_mult/images";
+    private String lottieJsonPath = "group_game_mult/data.json";
     private Bitmap bitmap6;
     private Bitmap bitmap7;
+    private Bitmap bitmap7Small;
     private Bitmap bitmap8;
     private Bitmap bitmap9;
+    LottieEffectInfo lottieEffectInfo;
+    OpenImageAssetDelegate openImageAssetDelegate;
+    CloseImageAssetDelegate closeImageAssetDelegate;
 
     public CourseGroupMyItem(Context context, TeamMemberEntity entity, WorkerThread workerThread, int uid) {
         super(context, entity, workerThread, uid);
@@ -121,9 +127,10 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
                         });
 //                        ivCourseItemAudio.setImageResource(AUDIO_RES[2]);
                         audioStartTime = System.currentTimeMillis();
-                        Bitmap bitmap1 = animationView.updateBitmap("image_7", bitmap6);
-                        Bitmap bitmap2 = animationView.updateBitmap("image_9", bitmap8);
-                        logger.d("enableAudio(true):bitmap1=null?" + (bitmap1 == null) + ",bitmap2=null?" + (bitmap2 == null));
+//                        Bitmap bitmap1 = animationView.updateBitmap("image_7", bitmap6);
+//                        Bitmap bitmap2 = animationView.updateBitmap("image_9", bitmap8);
+//                        logger.d("enableAudio(true):bitmap1=null?" + (bitmap1 == null) + ",bitmap2=null?" + (bitmap2 == null));
+                        createOpen(animationView);
                     } else {
                         audioTime += (System.currentTimeMillis() - audioStartTime);
                         workerThread.execute(new Runnable() {
@@ -135,6 +142,8 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
                         stopRun.animationView = animationView;
                         stopRun.startProgress = voiceStartFrame;
                         startRun.startProgress = 0;
+                        createBitmap7Small();
+                        createClose(animationView);
                         handler.removeCallbacks(startRun);
                         handler.removeCallbacks(progRun);
                         if (progress > 0) {
@@ -147,9 +156,9 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
 //                                ivCourseItemVideoDis.setVisibility(View.VISIBLE);
                             }
                         }, 1000);
-                        Bitmap bitmap1 = animationView.updateBitmap("image_7", bitmap7);
-                        Bitmap bitmap2 = animationView.updateBitmap("image_9", bitmap9);
-                        logger.d("enableAudio(false):bitmap1=null?" + (bitmap1 == null) + ",bitmap2=null?" + (bitmap2 == null));
+//                        Bitmap bitmap1 = animationView.updateBitmap("image_7", bitmap7);
+//                        Bitmap bitmap2 = animationView.updateBitmap("image_9", bitmap9);
+//                        logger.d("enableAudio(false):bitmap1=null?" + (bitmap1 == null) + ",bitmap2=null?" + (bitmap2 == null));
                     }
                     if (onVideoAudioClick != null) {
                         onVideoAudioClick.onAudioClick(enableAudio);
@@ -188,8 +197,6 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
         rlCourseItemName.setText(entity.name);
         tvCourseItemFire.setText("" + entity.energy);
         ImageLoader.with(ContextManager.getContext()).load(entity.headurl).into(ivCourseItemVideoHead);
-        String lottieResPath = "group_game_mult/images";
-        String lottieJsonPath = "group_game_mult/data.json";
         try {
             bitmap7 = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_7.png"));
             Bitmap bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_6.png"));
@@ -201,6 +208,7 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        createBitmap7Small();
         try {
             bitmap8 = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_8.png"));
         } catch (IOException e) {
@@ -211,36 +219,92 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        final LottieEffectInfo lottieEffectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
+        lottieEffectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
         final LottieAnimationView animationView = (LottieAnimationView) ivCourseItemAudio;
-        animationView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext), "group_game_mult");
-        animationView.setImageAssetDelegate(new ImageAssetDelegate() {
-            @Override
-            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
-                logger.d("fetchBitmap:id=" + lottieImageAsset.getId());
-//                if (lottieImageAsset.getId().equals("image_7")) {
-//                    return bitmap6;
-//                }
-//                if (lottieImageAsset.getId().equals("image_9")) {
-//                    return bitmap8;
-//                }
-//                if (lottieImageAsset.getId().equals("image_6")) {
-//                    return bitmap7;
-//                }
-//                if (lottieImageAsset.getId().equals("image_8")) {
-//                    return bitmap9;
-//                }
-                return lottieEffectInfo.fetchBitmapFromAssets(animationView, lottieImageAsset.getFileName(),
-                        lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(),
-                        mContext);
-            }
-        });
+        createOpen(animationView);
         boolean have = XesPermission.checkPermission(mContext, PermissionConfig.PERMISSION_CODE_CAMERA);
         if (have) {
             ivCourseItemVideo.setImageResource(VIDEO_RES[2]);
         } else {
             ivCourseItemVideo.setEnabled(false);
             ivCourseItemVideo.setImageResource(VIDEO_RES[0]);
+        }
+    }
+
+    private void createBitmap7Small() {
+        try {
+            Bitmap bitmap6 = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_6.png"));
+            Bitmap bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_7.png"));
+            Bitmap creatBitmap = Bitmap.createBitmap(bitmap6.getWidth(), bitmap6.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(creatBitmap);
+            canvas.drawBitmap(bitmap, (bitmap6.getWidth() - bitmap.getWidth()) / 2, (bitmap6.getHeight() - bitmap.getHeight()) / 2, null);
+            bitmap.recycle();
+            bitmap6.recycle();
+            bitmap7Small = creatBitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void createOpen(LottieAnimationView animationView) {
+        animationView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext), "group_game_mult_open");
+        openImageAssetDelegate = new OpenImageAssetDelegate(animationView, lottieEffectInfo);
+        closeImageAssetDelegate = new CloseImageAssetDelegate(animationView, lottieEffectInfo);
+        animationView.setImageAssetDelegate(openImageAssetDelegate);
+    }
+
+    private void createClose(LottieAnimationView animationView) {
+        animationView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext), "group_game_mult_close");
+        openImageAssetDelegate = new OpenImageAssetDelegate(animationView, lottieEffectInfo);
+        closeImageAssetDelegate = new CloseImageAssetDelegate(animationView, lottieEffectInfo);
+        animationView.setImageAssetDelegate(closeImageAssetDelegate);
+    }
+
+    class OpenImageAssetDelegate implements ImageAssetDelegate {
+        LottieAnimationView animationView;
+        LottieEffectInfo lottieEffectInfo;
+
+        public OpenImageAssetDelegate(LottieAnimationView animationView, LottieEffectInfo lottieEffectInfo) {
+            this.animationView = animationView;
+            this.lottieEffectInfo = lottieEffectInfo;
+        }
+
+        @Override
+        public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+            logger.d("Open:fetchBitmap:id=" + lottieImageAsset.getId());
+            if (lottieImageAsset.getId().equals("image_7")) {
+                return bitmap6;
+            }
+            if (lottieImageAsset.getId().equals("image_9")) {
+                return bitmap8;
+            }
+            return lottieEffectInfo.fetchBitmapFromAssets(animationView, lottieImageAsset.getFileName(),
+                    lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(),
+                    mContext);
+        }
+    }
+
+    class CloseImageAssetDelegate implements ImageAssetDelegate {
+        LottieAnimationView animationView;
+        LottieEffectInfo lottieEffectInfo;
+
+        public CloseImageAssetDelegate(LottieAnimationView animationView, LottieEffectInfo lottieEffectInfo) {
+            this.animationView = animationView;
+            this.lottieEffectInfo = lottieEffectInfo;
+        }
+
+        @Override
+        public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+            logger.d("Close:fetchBitmap:id=" + lottieImageAsset.getId());
+            if (lottieImageAsset.getId().equals("image_6")) {
+                return bitmap7Small;
+            }
+            if (lottieImageAsset.getId().equals("image_8")) {
+                return bitmap9;
+            }
+            return lottieEffectInfo.fetchBitmapFromAssets(animationView, lottieImageAsset.getFileName(),
+                    lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(),
+                    mContext);
         }
     }
 

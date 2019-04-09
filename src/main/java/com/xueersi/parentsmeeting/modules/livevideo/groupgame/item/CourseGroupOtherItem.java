@@ -59,12 +59,15 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
         if (audioTime == 0) {
             audioStartTime = System.currentTimeMillis();
         }
+        tvCourseItemLoad.setText("获取中");
+        tvCourseItemLoad.setVisibility(View.VISIBLE);
     }
 
     public void onUserOffline() {
         onLine = false;
         rl_livevideo_course_item_video_head.setVisibility(View.VISIBLE);
         rlCourseItemCtrl.setVisibility(View.GONE);
+        tvCourseItemLoad.setText("已离线");
         tvCourseItemLoad.setVisibility(View.VISIBLE);
     }
 

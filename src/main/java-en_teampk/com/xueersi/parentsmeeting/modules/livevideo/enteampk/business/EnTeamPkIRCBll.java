@@ -234,13 +234,9 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 iid = mInteractiveTeam.getInteractive_team_id();
             }
             tcpDispatch = new TcpDispatch(mContext, mGetInfo.getStuId(), AppBll.getInstance().getUserRfh(), mGetInfo.getId(), classInt + "", -1, pid, iid, "");
+            tcpDispatch.setOnTcpConnects(onTcpConnects);
             tcpDispatch.setAddresses(addresses);
             tcpDispatch.registTcpMessageAction(new TeamMessageAction());
-            for (int i = 0; i < onTcpRegs.size(); i++) {
-                TcpMessageReg.OnTcpReg onTcpReg = onTcpRegs.get(i);
-                onTcpReg.onReg();
-            }
-            onTcpRegs.clear();
         }
     }
 
@@ -573,9 +569,9 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     haveTeamRun = true;
                 }
             }
-            if (tcpDispatch != null) {
-                tcpDispatch.setPid(pkTeamEntity2.getPkTeamId());
-            }
+//            if (tcpDispatch != null) {
+//                tcpDispatch.setPid(pkTeamEntity2.getPkTeamId());
+//            }
             if (getStuActiveTeam == null) {
                 getStuActiveTeam = new GetStuActiveTeam() {
                     @Override
@@ -614,12 +610,11 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 tcpMessageReg = new TcpMessageReg() {
 
                     @Override
-                    public void onConnet(OnTcpReg onTcpReg) {
+                    public void onConnect(OnTcpConnect onTcpConnect) {
                         if (tcpDispatch != null) {
-                            onTcpReg.onReg();
-                        } else {
-                            onTcpRegs.add(onTcpReg);
+                            onTcpConnect.onTcpConnect();
                         }
+                        onTcpConnects.add(onTcpConnect);
                     }
 
                     @Override
@@ -666,7 +661,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     private GetStuActiveTeam getStuActiveTeam = null;
     private TcpMessageReg tcpMessageReg;
-    private ArrayList<TcpMessageReg.OnTcpReg> onTcpRegs = new ArrayList<>();
+    private ArrayList<TcpMessageReg.OnTcpConnect> onTcpConnects = new ArrayList<>();
 
     private class TeamMessageAction implements TcpMessageAction {
         @Override
@@ -1140,6 +1135,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         if (enTeamPkAction != null) {
             enTeamPkAction.destory();
         }
+        onTcpConnects.clear();
         if (tcpDispatch != null) {
             tcpDispatch.stop();
             tcpDispatch = null;

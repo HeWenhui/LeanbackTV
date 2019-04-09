@@ -101,7 +101,7 @@
         android:background="@drawable/app_zbhd_shipingwenzidi"
         android:gravity="center"
         android:includeFontPadding="false"
-        android:text="获取中"
+        android:text="已离线"
         android:textColor="@color/white"
         android:textSize="11sp" />
 </RelativeLayout>

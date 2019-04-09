@@ -1220,6 +1220,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             long audioTime = baseCourseGroupItem.getAudioTime();
             logger.d("onDestroy:key=" + key + ",videoTime=" + videoTime + ",audioTime=" + audioTime);
         }
+        courseGroupItemHashMap.clear();
     }
 
     class CourseWebViewClient extends MyWebViewClient implements OnHttpCode {
