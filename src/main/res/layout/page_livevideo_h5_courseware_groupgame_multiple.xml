@@ -22,6 +22,16 @@
 
     </RelativeLayout>
 
+    <TextView
+        android:id="@id/tv_livevideo_course_item_my_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/ll_livevideo_course_item_content"
+        android:text="没听清，请大声点哦"
+        android:textColor="@color/white"
+        android:textSize="14sp"
+        android:visibility="invisible" />
+
     <LinearLayout
         android:id="@id/ll_livevideo_course_item_content"
         android:layout_width="140dp"

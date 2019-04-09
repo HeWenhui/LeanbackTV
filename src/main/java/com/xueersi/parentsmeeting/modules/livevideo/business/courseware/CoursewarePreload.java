@@ -616,6 +616,7 @@ public class CoursewarePreload {
 
 //    private ZipExtractorTask zipExtractorTask;
 
+    // TODO 没有释放核心线程
     Executor executos = new ThreadPoolExecutor(1, 1,
             0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
 

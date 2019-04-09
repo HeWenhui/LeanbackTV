@@ -210,7 +210,7 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
                 groupGameMultNativePager.setLivePagerBack(livePagerBack);
                 h5CoursewarePager = groupGameMultNativePager;
             } else {
-                GroupGameMultNativePager groupGameMultNativePager = new GroupGameMultNativePager(context, liveGetInfo, videoQuestionH5Entity, englishH5Entity);
+                GroupGameMultNativePager groupGameMultNativePager = new GroupGameMultNativePager(context, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
                 groupGameMultNativePager.setLivePagerBack(livePagerBack);
                 h5CoursewarePager = groupGameMultNativePager;
             }
