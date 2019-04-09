@@ -1269,7 +1269,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             VidooCannonEntity vidooCannonEntity = vidooCannonEntities.get("" + stuid);
             float totalScore = 0;
             int totalCount = 0;
-            if (vidooCannonEntity != null) {
+            if (vidooCannonEntity != null && !tests.isEmpty()) {
                 energy = vidooCannonEntity.rightNum + 5;
                 answerData.put("rightNum", vidooCannonEntity.rightNum);
                 GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
@@ -1311,12 +1311,12 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         if (pageTime < 0) {
                             pageTime = 0;
                         }
+                        logger.d("submit:pageTime=" + pageTime);
                         jsonObject.put("voiceTime", pageTime);
                     } else {
                         jsonObject.put("voiceTime", 0);
                     }
                     jsonObject.put("scores", scores);
-
                     userAnswer.put(jsonObject);
                 }
             } else {
