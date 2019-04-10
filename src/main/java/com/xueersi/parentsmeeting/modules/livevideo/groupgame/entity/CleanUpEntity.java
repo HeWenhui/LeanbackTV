@@ -15,5 +15,5 @@ public class CleanUpEntity {
     /** 正确答题 */
     public List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> rightAnswerList = new ArrayList<>();
     /** 正确答题,分数 */
-    public HashMap<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity, Integer> wordScore = new HashMap<>();
+    public HashMap<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity, ScoreEnergy> wordScore = new HashMap<>();
 }

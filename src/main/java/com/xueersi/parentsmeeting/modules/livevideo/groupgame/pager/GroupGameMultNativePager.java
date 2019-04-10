@@ -58,6 +58,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.groupgame.config.GroupGameCo
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.CleanUpEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.GroupGameTestInfosEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.PagerShowTime;
+import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.ScoreEnergy;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.VidooCannonEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.item.BaseCourseGroupItem;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.item.CourseGroupMyItem;
@@ -1204,7 +1205,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 int startPager = 0;
                 for (int i = 0; i < allAnswerList.size(); i++) {
                     GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = allAnswerList.get(i);
-                    if (LiveQueConfig.EN_COURSE_TYPE_HOT_AIR_BALLON.equals(gameType)) {
+                    if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(gameType)) {
                         PagerShowTime pagerShowTime = new PagerShowTime();
                         voicePagerShowTimeHashMap.put(answersEntity.getId(), pagerShowTime);
                     }
@@ -1298,24 +1299,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         int acceptMicLengthTime = 0;
         PkTeamEntity teamEntity = getStuActiveTeam.getPkTeamEntity();
         int gameGroupId = interactiveTeam.getInteractive_team_id();
-        {
-            //遍历用户item。计算时间
-            Set<String> itemKeySet = courseGroupItemHashMap.keySet();
-            for (String userId : itemKeySet) {
-                BaseCourseGroupItem baseCourseGroupItem = courseGroupItemHashMap.get(userId);
-                if (userId.equals("" + stuid)) {
-                    videoLengthTime = (int) baseCourseGroupItem.getVideoTime();
-                    micLengthTime = (int) baseCourseGroupItem.getAudioTime();
-                    gold = baseCourseGroupItem.getEntity().gold;
-                } else {
-                    long videoTime = baseCourseGroupItem.getVideoTime();
-                    long audioTime = baseCourseGroupItem.getAudioTime();
-                    acceptVideoLengthTime += videoTime;
-                    acceptMicLengthTime += audioTime;
-                    logger.d("submit:userId=" + userId + ",videoTime=" + videoTime + ",audioTime=" + audioTime);
-                }
-            }
-        }
         {
             for (int i = 0; i < allScoreList.size(); i++) {
                 ResultEntity resultEntity = allScoreList.get(i);
@@ -1442,22 +1425,23 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 float totalScore = 0;
                 int totalCount = 0;
                 if (cleanUpEntity != null && !tests.isEmpty()) {
-                    if (cleanUpEntity.teamMemberEntity.energy != 0) {
-                        cleanUpEntity.teamMemberEntity.energy += 5;
-                        energy = cleanUpEntity.teamMemberEntity.energy;
-                    }
+//                    if (cleanUpEntity.teamMemberEntity.energy != 0) {
+//                        cleanUpEntity.teamMemberEntity.energy += 5;
+//                        energy = cleanUpEntity.teamMemberEntity.energy;
+//                    }
                     answerData.put("rightNum", cleanUpEntity.rightAnswerList.size());
-                    HashMap<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity, Integer> wordScore = cleanUpEntity.wordScore;
+                    HashMap<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity, ScoreEnergy> wordScore = cleanUpEntity.wordScore;
                     for (int ansIndex = 0; ansIndex < answerList.size(); ansIndex++) {
                         JSONObject jsonObject = new JSONObject();
                         GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = answerList.get(ansIndex);
                         jsonObject.put("text", answer.getText());
                         String scores = "";
-                        Integer score = wordScore.get(answer);
-                        if (score != null) {
-                            totalScore += score;
+                        ScoreEnergy scoreEnergy = wordScore.get(answer);
+                        if (scoreEnergy != null) {
+                            totalScore += scoreEnergy.scores;
                             totalCount++;
-                            scores = "" + scores;
+                            scores = "" + scoreEnergy.scores;
+                            energy += scoreEnergy.energy;
                             jsonObject.put("isRight", 1);
                         } else {
                             jsonObject.put("isRight", 0);
@@ -1465,6 +1449,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         jsonObject.put("voiceTime", 0);
                         jsonObject.put("scores", scores);
                         userAnswer.put(jsonObject);
+                    }
+                    if (energy != 0) {
+                        cleanUpEntity.teamMemberEntity.energy = energy + 5;
                     }
                 } else {
                     answerData.put("rightNum", 0);
@@ -1478,6 +1465,24 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             } catch (Exception e) {
                 CrashReport.postCatchedException(e);
                 logger.d("submit", e);
+            }
+        }
+        {
+            //遍历用户item。计算时间
+            Set<String> itemKeySet = courseGroupItemHashMap.keySet();
+            for (String userId : itemKeySet) {
+                BaseCourseGroupItem baseCourseGroupItem = courseGroupItemHashMap.get(userId);
+                if (userId.equals("" + stuid)) {
+                    videoLengthTime = (int) baseCourseGroupItem.getVideoTime();
+                    micLengthTime = (int) baseCourseGroupItem.getAudioTime();
+                    gold = baseCourseGroupItem.getEntity().gold;
+                } else {
+                    long videoTime = baseCourseGroupItem.getVideoTime();
+                    long audioTime = baseCourseGroupItem.getAudioTime();
+                    acceptVideoLengthTime += videoTime;
+                    acceptMicLengthTime += audioTime;
+                    logger.d("submit:userId=" + userId + ",videoTime=" + videoTime + ",audioTime=" + audioTime);
+                }
             }
         }
         englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 1, voiceTime, teamEntity.getPkTeamId(), gameGroupId, starNum, energy, gold,
@@ -2090,6 +2095,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             String word = jsonObject.getString("word");
                             final int who_id = jsonObject.getInt("who_id");
                             final int incr_energy = jsonObject.getInt("incr_energy");
+                            final int scores = jsonObject.optInt("scores");
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
@@ -2103,6 +2109,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                                     allAnswerList.remove(i);
                                                     answer.setGetFireCount(incr_energy);
                                                     List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> rightAnswerList = cleanUpEntity.rightAnswerList;
+                                                    cleanUpEntity.wordScore.put(answer, new ScoreEnergy(scores, incr_energy));
                                                     rightAnswerList.add(answer);
                                                     break;
                                                 }
@@ -2156,7 +2163,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                             answer.setGetFireCount(incr_energy);
                                             if (cleanUpEntity != null) {
                                                 cleanUpEntity.rightAnswerList.add(answer);
-                                                cleanUpEntity.wordScore.put(answer, scores);
+                                                cleanUpEntity.wordScore.put(answer, new ScoreEnergy(scores, incr_energy));
                                             }
                                             break;
                                         }
