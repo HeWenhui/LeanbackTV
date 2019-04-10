@@ -1310,6 +1310,74 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         JSONObject answerData = new JSONObject();
         if (LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(gameType)) {
             //遍历作答正确，取最大的金币为3
+            Set<String> canKeySet = cleanUpEntities.keySet();
+            CleanUpEntity maxCleanUpEntity = null;
+            int maxRight = 0;
+            for (String userId : canKeySet) {
+                CleanUpEntity cleanUpEntity = cleanUpEntities.get("" + userId);
+                int rightNum = cleanUpEntity.rightAnswerList.size();
+                if (rightNum > 0) {
+                    cleanUpEntity.teamMemberEntity.gold = 2;
+                }
+                if (rightNum > maxRight) {
+                    maxRight = rightNum;
+                    maxCleanUpEntity = cleanUpEntity;
+                }
+            }
+            if (maxCleanUpEntity != null) {
+                logger.d("submit:userId=" + maxCleanUpEntity.teamMemberEntity.id + ",rightNum=" + maxCleanUpEntity.rightAnswerList.size());
+                maxCleanUpEntity.teamMemberEntity.gold = 3;
+            }
+            try {
+                answerData.put("tryTimes", allScoreList.size());
+                JSONArray userAnswer = new JSONArray();
+                CleanUpEntity cleanUpEntity = cleanUpEntities.get("" + stuid);
+                float totalScore = 0;
+                int totalCount = 0;
+                if (cleanUpEntity != null && !tests.isEmpty()) {
+//                    if (cleanUpEntity.teamMemberEntity.energy != 0) {
+//                        cleanUpEntity.teamMemberEntity.energy += 5;
+//                        energy = cleanUpEntity.teamMemberEntity.energy;
+//                    }
+                    answerData.put("rightNum", cleanUpEntity.rightAnswerList.size());
+                    HashMap<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity, ScoreEnergy> wordScore = cleanUpEntity.wordScore;
+                    for (int ansIndex = 0; ansIndex < answerList.size(); ansIndex++) {
+                        JSONObject jsonObject = new JSONObject();
+                        GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = answerList.get(ansIndex);
+                        jsonObject.put("text", answer.getText());
+                        String scores = "";
+                        ScoreEnergy scoreEnergy = wordScore.get(answer);
+                        if (scoreEnergy != null) {
+                            totalScore += scoreEnergy.scores;
+                            totalCount++;
+                            scores = "" + scoreEnergy.scores;
+                            energy += scoreEnergy.energy;
+                            jsonObject.put("isRight", 1);
+                        } else {
+                            jsonObject.put("isRight", 0);
+                        }
+                        jsonObject.put("voiceTime", 0);
+                        jsonObject.put("scores", scores);
+                        userAnswer.put(jsonObject);
+                    }
+                    if (energy != 0) {
+                        cleanUpEntity.teamMemberEntity.energy = energy + 5;
+                    }
+                } else {
+                    answerData.put("rightNum", 0);
+                }
+                if (totalCount == 0) {
+                    answerData.put("averageScore", 0);
+                } else {
+                    answerData.put("averageScore", totalScore / totalCount);
+                }
+                answerData.put("userAnswer", userAnswer);
+            } catch (Exception e) {
+                CrashReport.postCatchedException(e);
+                logger.d("submit", e);
+            }
+        } else {
+            //遍历作答正确，取最大的金币为3
             Set<String> canKeySet = vidooCannonEntities.keySet();
             VidooCannonEntity maxVidooCannonEntity = null;
             int maxRight = 0;
@@ -1395,74 +1463,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 }
                 answerData.put("userAnswer", userAnswer);
             } catch (JSONException e) {
-                CrashReport.postCatchedException(e);
-                logger.d("submit", e);
-            }
-        } else {
-            //遍历作答正确，取最大的金币为3
-            Set<String> canKeySet = cleanUpEntities.keySet();
-            CleanUpEntity maxCleanUpEntity = null;
-            int maxRight = 0;
-            for (String userId : canKeySet) {
-                CleanUpEntity cleanUpEntity = cleanUpEntities.get("" + userId);
-                int rightNum = cleanUpEntity.rightAnswerList.size();
-                if (rightNum > 0) {
-                    cleanUpEntity.teamMemberEntity.gold = 2;
-                }
-                if (rightNum > maxRight) {
-                    maxRight = rightNum;
-                    maxCleanUpEntity = cleanUpEntity;
-                }
-            }
-            if (maxCleanUpEntity != null) {
-                logger.d("submit:userId=" + maxCleanUpEntity.teamMemberEntity.id + ",rightNum=" + maxCleanUpEntity.rightAnswerList.size());
-                maxCleanUpEntity.teamMemberEntity.gold = 3;
-            }
-            try {
-                answerData.put("tryTimes", allScoreList.size());
-                JSONArray userAnswer = new JSONArray();
-                CleanUpEntity cleanUpEntity = cleanUpEntities.get("" + stuid);
-                float totalScore = 0;
-                int totalCount = 0;
-                if (cleanUpEntity != null && !tests.isEmpty()) {
-//                    if (cleanUpEntity.teamMemberEntity.energy != 0) {
-//                        cleanUpEntity.teamMemberEntity.energy += 5;
-//                        energy = cleanUpEntity.teamMemberEntity.energy;
-//                    }
-                    answerData.put("rightNum", cleanUpEntity.rightAnswerList.size());
-                    HashMap<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity, ScoreEnergy> wordScore = cleanUpEntity.wordScore;
-                    for (int ansIndex = 0; ansIndex < answerList.size(); ansIndex++) {
-                        JSONObject jsonObject = new JSONObject();
-                        GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = answerList.get(ansIndex);
-                        jsonObject.put("text", answer.getText());
-                        String scores = "";
-                        ScoreEnergy scoreEnergy = wordScore.get(answer);
-                        if (scoreEnergy != null) {
-                            totalScore += scoreEnergy.scores;
-                            totalCount++;
-                            scores = "" + scoreEnergy.scores;
-                            energy += scoreEnergy.energy;
-                            jsonObject.put("isRight", 1);
-                        } else {
-                            jsonObject.put("isRight", 0);
-                        }
-                        jsonObject.put("voiceTime", 0);
-                        jsonObject.put("scores", scores);
-                        userAnswer.put(jsonObject);
-                    }
-                    if (energy != 0) {
-                        cleanUpEntity.teamMemberEntity.energy = energy + 5;
-                    }
-                } else {
-                    answerData.put("rightNum", 0);
-                }
-                if (totalCount == 0) {
-                    answerData.put("averageScore", 0);
-                } else {
-                    answerData.put("averageScore", totalScore / totalCount);
-                }
-                answerData.put("userAnswer", userAnswer);
-            } catch (Exception e) {
                 CrashReport.postCatchedException(e);
                 logger.d("submit", e);
             }
