@@ -245,6 +245,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
         }
         if (visible == View.GONE) {
             ivTeacherNotpresent.setVisibility(View.GONE);
+            ivTecherState.setVisibility(View.INVISIBLE);
             //showVedioLoading(visible);
             if (ivVodeoLoading != null) {
                 ivVodeoLoading.setVisibility(View.INVISIBLE);
@@ -460,9 +461,6 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
     private View bufferView;
 
     private void showVedioLoading(final int visible) {
-        if (View.VISIBLE == visible) {
-            ivTecherState.setVisibility(View.INVISIBLE);
-        }
 
         if (LiveTopic.MODE_CLASS.equals(mode) && ivVodeoLoading != null && visible != ivVodeoLoading.getVisibility()) {
             mHandler.post(new Runnable() {
@@ -477,6 +475,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
                     }
                     ivVodeoLoading.setVisibility(visible);
                     if (View.VISIBLE == visible) {
+                        ivTecherState.setVisibility(View.INVISIBLE);
                         ivTeacherNotpresent.setBackground(ResourcesCompat.getDrawable(activity.getResources(),
                                 getLoadingBg(), null));
                     } else {
