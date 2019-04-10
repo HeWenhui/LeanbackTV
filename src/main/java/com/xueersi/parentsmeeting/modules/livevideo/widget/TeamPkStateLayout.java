@@ -96,11 +96,11 @@ public class TeamPkStateLayout extends FrameLayout {
 
 
     protected void initView() {
-        if (LiveVideoConfig.isPrimary) {
-            LayoutInflater.from(getContext()).inflate(R.layout.team_pspk_state_layout, this);
-        } else if (LiveVideoConfig.isSmallChinese) {
+        if (LiveVideoConfig.isSmallChinese) {
             LayoutInflater.from(getContext()).inflate(R.layout.chinese_pk_state_layout, this);
-        } else {
+        } else if (LiveVideoConfig.isPrimary) {
+            LayoutInflater.from(getContext()).inflate(R.layout.team_pspk_state_layout, this);
+        }   else {
             LayoutInflater.from(getContext()).inflate(R.layout.team_pk_state_layout, this);
         }
 

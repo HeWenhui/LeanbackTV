@@ -360,13 +360,15 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
                 return;
             }
             Drawable dwTeacherNotpresen = null;
-            if (LiveVideoConfig.isPrimary) {
-                dwTeacherNotpresen = ResourcesCompat.getDrawable(activity.getResources(), R.drawable
-                        .livevideo_zw_dengdaida_bg_psnormal, null);
-            } else if (LiveVideoConfig.isSmallChinese) {
+            if (LiveVideoConfig.isSmallChinese) {
+
                 dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable.
                         livevideo_small_chinese_zw_dengdaida_bg_psnormal);
-            } else {
+
+            } else if (LiveVideoConfig.isPrimary) {
+                dwTeacherNotpresen = ResourcesCompat.getDrawable(activity.getResources(), R.drawable
+                        .livevideo_zw_dengdaida_bg_psnormal, null);
+            }  else {
                 dwTeacherNotpresen = ResourcesCompat.getDrawable(activity.getResources(), R.drawable
                         .livevideo_zw_dengdaida_bg_normal, null);
             }

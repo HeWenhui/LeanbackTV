@@ -316,16 +316,16 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 
         long before = System.currentTimeMillis();
         if (!isSmallEnglish) {
-            if (LiveVideoConfig.isPrimary) {
-                LivePsMessagePager liveMessagePager = new LivePsMessagePager(activity, this, null,
-                        baseLiveMediaControllerBottom, liveMessageLandEntities, null);
-                mLiveMessagePager = liveMessagePager;
-            } else if (LiveVideoConfig.isSmallChinese) {//如果是语文
+            if (LiveVideoConfig.isSmallChinese) {//如果是语文
                 SmallChineseLiveMessagePager chineseLiveMessagePager = new SmallChineseLiveMessagePager(activity, this, null, baseLiveMediaControllerBottom
                         , liveMessageLandEntities, liveMessagePortEntities);
                 mLiveMessagePager = chineseLiveMessagePager;
 
-            } else {
+            } else if (LiveVideoConfig.isPrimary) {
+                LivePsMessagePager liveMessagePager = new LivePsMessagePager(activity, this, null,
+                        baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+                mLiveMessagePager = liveMessagePager;
+            }   else {
                 LiveMessagePager liveMessagePager = new LiveMessagePager(activity, this, null,
                         baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;
