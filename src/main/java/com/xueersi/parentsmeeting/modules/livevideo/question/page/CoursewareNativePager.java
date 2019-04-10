@@ -192,6 +192,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
 //        setLoadTip("H5课件正在加载，请稍候");
 //        cacheFile = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/webview/");
         entranceTime = System.currentTimeMillis() / 1000;
+        try {
+            NewCourseLog.sno2(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), detailInfo.noticeType);
+        } catch (Exception e) {
+            CrashReport.postCatchedException(e);
+        }
         initData();
     }
 
@@ -243,8 +248,10 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     }
                     EventBus.getDefault().post(event);
                 } else {
-                    if (allowTeamPk && newCourseSec != null && newCourseSec.getIsAnswer() == 0) {
-                        LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum, mEnergyNum, LiveRoomH5CloseEvent
+                    if (allowTeamPk && newCourseSec != null) {
+                        int gold = newCourseSec.getIsAnswer() == 0?mGoldNum:-1;
+                        int energy = newCourseSec.getIsAnswer() == 0?mEnergyNum:-1;
+                        LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(gold, energy, LiveRoomH5CloseEvent
                                 .H5_TYPE_COURSE, id);
                         if (mEnglishH5CoursewareBll != null) {
                             event.setCloseByTeahcer(mEnglishH5CoursewareBll.isWebViewCloseByTeacher());
@@ -838,13 +845,21 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         JSONObject userAnswerContent3 = userAnswerContent2.getJSONObject(k);
                         String id = userAnswerContent3.getString("id");
                         userAnswer.put("id", id);
-                        useranswer += userAnswerContent3.optString("text") + ",";
+                        if(k < (userAnswerContent2.length()-1)){
+                            useranswer += userAnswerContent3.optString("text") + ",";
+                        }else{
+                            useranswer +=userAnswerContent3.optString("text");
+                        }
                     }
                     userAnswer.put("useranswer", useranswer);
                     String rightanswer = "";
                     for (int k = 0; k < rightAnswerContent2.length(); k++) {
                         JSONObject rightAnswerContent3 = rightAnswerContent2.getJSONObject(k);
-                        rightanswer += rightAnswerContent3.optString("text") + ",";
+                        if(k < (userAnswerContent2.length()-1)){
+                            rightanswer += rightAnswerContent3.optString("text") + ",";
+                        }else{
+                            rightanswer +=rightAnswerContent3.optString("text");
+                        }
                     }
                     userAnswer.put("answer", rightanswer);
                     userAnswer.put("type", "" + answer.optString("type"));

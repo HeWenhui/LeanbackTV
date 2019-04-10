@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_right_grey_line"
+    android:gravity="center_vertical">
+
+
+        <TextView
+            android:id="@id/tv_item_audit_class_room_voice_question_score"
+            style="@style/text_font11_a0a0a0_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@id/tv_item_audit_class_room_voice_question_index"
+            style="@style/text_font11_333333_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tv_item_audit_class_room_voice_question_score"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="5dp"
+            android:gravity="center" />
+
+</RelativeLayout>

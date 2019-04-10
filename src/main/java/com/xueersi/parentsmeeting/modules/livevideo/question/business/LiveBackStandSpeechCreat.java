@@ -12,7 +12,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayStandMachinePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssessmentWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.StandSpeechAssAutoPager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.RolePlayStandLog;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.SpeechStandLog;
 
 /**
@@ -71,10 +73,20 @@ public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
     public BaseSpeechAssessmentPager createRolePlay(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity
             videoQuestionLiveEntity, String testId,
                                                     SpeechEvalAction speechEvalAction, String stuCouId, RolePlayMachineBll rolePlayMachineBll) {
-        RolePlayStandMachinePager rolePlayerPager  = new RolePlayStandMachinePager(context,
-                videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
-                false, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack,rolePlayMachineBll, liveGetInfo);
-        return rolePlayerPager;
+        if (!isExperience) {
+            RolePlayStandMachinePager rolePlayerPager = new RolePlayStandMachinePager(context,
+                    videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
+                    false, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack, rolePlayMachineBll, liveGetInfo);
+            return rolePlayerPager;
+        } else {
+            SpeechAssessmentWebX5Pager speechAssessmentPager = new SpeechAssessmentWebX5Pager(context,
+                    videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
+                    false, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack);
+            speechAssessmentPager.setStandingLive(true);
+            speechAssessmentPager.setIsExperience(isExperience);
+            RolePlayStandLog.sno3(liveAndBackDebug, testId);
+            return speechAssessmentPager;
+        }
     }
 
     @Override
@@ -95,9 +107,9 @@ public class LiveBackStandSpeechCreat implements BaseSpeechCreat {
 //        speechAssessmentPager.setStandingLive(true);
 //        RolePlayStandLog.sno3(liveAndBackDebug, testId);
 //        return speechAssessmentPager;
-        RolePlayStandMachinePager rolePlayerPager  = new RolePlayStandMachinePager(context,
+        RolePlayStandMachinePager rolePlayerPager = new RolePlayStandMachinePager(context,
                 videoQuestionLiveEntity, liveGetInfo.getId(), testId, liveGetInfo.getStuId(),
-                false, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack,rolePlayMachineBll, liveGetInfo);
+                false, videoQuestionLiveEntity.nonce, speechEvalAction, stuCouId, false, livePagerBack, rolePlayMachineBll, liveGetInfo);
         return rolePlayerPager;
     }
 
