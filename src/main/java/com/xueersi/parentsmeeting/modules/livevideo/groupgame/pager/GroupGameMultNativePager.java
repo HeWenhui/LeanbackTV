@@ -1223,7 +1223,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 //                    lastTime = 10000;
 //                }
                 //小于0直接结束
-                mLogtf.d("getCourseWareTests:lastTime=" + lastTime + ",nowPlayTime=" + nowPlayTime);
+                mLogtf.d("getCourseWareTests:total=" + test.getTotalTime() + ",nowPlayTime=" + nowPlayTime);
                 if (lastTime < 0) {
                     test.setTotalTime(0);
                     allAnswerList.clear();
@@ -1924,6 +1924,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             int word_id = dataObj.getInt("word_id");
                             final int who_id = dataObj.getInt("who_id");
                             final int score = dataObj.getInt("score");
+                            int current_word = jsonObject.optInt("current_word", currentAnswerIndex);
                             Integer integer = wordCount.get("" + word_id);
                             if (integer == null) {
                                 integer = 1;
@@ -1974,7 +1975,16 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                         }
                                     }
                                 } else {
-                                    isTurnPage = false;
+                                    if (current_word > currentAnswerIndex) {
+                                        if (!allAnswerList.isEmpty()) {
+                                            allAnswerList.remove(0);
+                                            isTurnPage = true;
+                                        } else {
+                                            isTurnPage = false;
+                                        }
+                                    } else {
+                                        isTurnPage = false;
+                                    }
                                 }
                                 createSpeechContent("Voice_Projectile_TYPE");
                                 int studentNum = -1;

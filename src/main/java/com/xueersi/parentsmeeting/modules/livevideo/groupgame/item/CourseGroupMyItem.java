@@ -233,6 +233,9 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
 
     private void createBitmap7Small() {
         try {
+            if (bitmap7Small != null && !bitmap7Small.isRecycled()) {
+                return;
+            }
             Bitmap bitmap6 = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_6.png"));
             Bitmap bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_7.png"));
             Bitmap creatBitmap = Bitmap.createBitmap(bitmap6.getWidth(), bitmap6.getHeight(), Bitmap.Config.ARGB_8888);
