@@ -322,7 +322,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         remove = allAnswerList.remove(answersEntity);
                         if (remove) {
                             currentAnswerIndex++;
-                            createSpeechContent("TurnRun");
+                            createSpeechContent("VoiceCannonTurnRun");
                         }
                     }
                 }
@@ -493,25 +493,13 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
         @Override
         public void run() {
-            JSONObject jsonData = new JSONObject();
             try {
-                jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
-                jsonData.put("isTurnPage", true);
-                boolean remove = false;
-                wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
-                if (!allAnswerList.isEmpty()) {
-                    GroupGameTestInfosEntity.TestInfoEntity test = tests.get(0);
-                    List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = test.getAnswerList();
-                    if (pagerNum < answerList.size()) {
-                        GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = answerList.get(pagerNum);
-                        remove = allAnswerList.remove(answersEntity);
-                        if (remove) {
-                            currentAnswerIndex++;
-                            createSpeechContent("TurnRun");
-                        }
-                    }
+                int oldSize = allAnswerList.size();
+                if (oldSize != 0) {
+                    allAnswerList.clear();
+                    createSpeechContent("CleanUpTurnRun");
                 }
-                mLogtf.d("CleanUpTurnRun:pagerNum=" + pagerNum + ",currentAnswerIndex=" + currentAnswerIndex + ",remove=" + remove);
+                mLogtf.d("CleanUpTurnRun:pagerNum=" + pagerNum + ",oldSize=" + oldSize);
             } catch (Exception e) {
                 e.printStackTrace();
                 CrashReport.postCatchedException(e);
@@ -550,7 +538,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 if (cleanUpTurnRun == null) {
                     int time = test.getTotalTime() + 1;
                     cleanUpTurnRun = new CleanUpTurnRun(0, time);
-                    handler.postDelayed(cleanUpTurnRun, time);
+                    handler.postDelayed(cleanUpTurnRun, (time + 5) * 1000);
                 }
             }
             PagerShowTime pagerShowTime = cleanUpPagerShowTimeHashMap.get(0);
@@ -1832,36 +1820,24 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 int score = resultEntity.getScore();
                 allScoreList.add(resultEntity);
                 if (score < minscore) {
+                    BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stuid);
+                    if (courseGroupItem != null) {
+                        courseGroupItem.onOpps();
+                    }
                     return;
                 }
                 mSingCount++;
                 ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
-                CleanUpEntity cleanUpEntity = cleanUpEntities.get("" + stuid);
-
                 int newSenIdx = resultEntity.getNewSenIdx();
                 mLogtf.d("CleanEvaluatorIng:newSenIdx=" + newSenIdx + ",size" + allAnswerList.size() + ",speechContent=" + speechContent);
                 if (newSenIdx < 0 || newSenIdx >= speechAnswerList.size()) {
+                    BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stuid);
+                    if (courseGroupItem != null) {
+                        courseGroupItem.onOpps();
+                    }
                     return;
                 }
                 GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity removeAnswersEntity = speechAnswerList.get(newSenIdx);
-                {
-                    //传入网页。现在通过tcp传
-//                    allAnswerList.remove(removeAnswersEntity);
-//                    cleanUpEntity.rightAnswerList.add(removeAnswersEntity);
-//                    createSpeechContent("CleanEvaluatorIng");
-//                    JSONObject jsonData = new JSONObject();
-//                    jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
-//                    jsonData.put("studentNum", 3);
-//                    {
-//                        JSONObject rightItem = new JSONObject();
-//                        Random random = new Random();
-//                        rightItem.put("rightId", removeAnswersEntity.getId());
-//                        rightItem.put("getFireCount", 3);
-//                        jsonData.put("rightItem", rightItem);
-//                    }
-//                    jsonData.put("combo", 0);
-//                    wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
-                }
                 PkTeamEntity teamEntity = getStuActiveTeam.getPkTeamEntity();
                 if (teamEntity != null) {
                     JSONObject bodyJson = new JSONObject();
