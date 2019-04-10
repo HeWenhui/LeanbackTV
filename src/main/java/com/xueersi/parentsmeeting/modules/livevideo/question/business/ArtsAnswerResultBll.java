@@ -25,7 +25,12 @@ import android.widget.RelativeLayout;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
+import com.xueersi.common.business.UserBll;
+import com.xueersi.common.entity.EnglishH5Entity;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
@@ -38,6 +43,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.CoursewareInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ScoreRange;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -45,10 +51,15 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEve
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.VoiceAnswerResultEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ChineseAISubjectResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsPSEAnswerResultPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.ChiAnswerResultPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.ChineseAiSubjectiveCoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.NewCourseLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechResultPager;
@@ -66,6 +77,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -103,14 +115,20 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     private IArtsAnswerRsultDisplayer mDsipalyer;
 
-    /** 当前答题结果 */
+    /**
+     * 当前答题结果
+     */
     private AnswerResultEntity mAnswerReulst;
 
 
-    /** 用户在直播间内所有非语音答题结果 */
+    /**
+     * 用户在直播间内所有非语音答题结果
+     */
     private List<AnswerResultEntity> mAnswerResultList = new ArrayList<>();
 
-    /** 用户在当前直播间内所有语音题 答题结果 */
+    /**
+     * 用户在当前直播间内所有语音题 答题结果
+     */
     private List<VoiceAnswerResultEvent> mVoiceAnswerResultList = new ArrayList<>();
 
     /**
@@ -127,7 +145,9 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     private View praiseRootView;
     private boolean isPerfectRight;
     private HashMap<Integer, ScoreRange> mScoreRangeMap;
-    /** 是否需要更新右侧金币数 */
+    /**
+     * 是否需要更新右侧金币数
+     */
     private boolean shoulUpdateGold;
     private boolean close = false;
 
@@ -515,6 +535,140 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
         }
     }
 
+    private void onChiAIAnswerResult(final ArtsAnswerResultEvent event, String result) {
+        final HashMap<String, String> testInfos = new HashMap<>();
+        try {
+            JSONObject jsonObject = new JSONObject(result);
+            JSONObject dataObject = jsonObject.optJSONObject("data");
+            JSONArray userAnswerContent = new JSONArray();
+            JSONArray rightAnswerContent = new JSONArray();
+            int maxScore = 0;
+            if (dataObject != null) {
+                if (dataObject.has("userAnswerContent")) {
+                    userAnswerContent = dataObject.getJSONArray("userAnswerContent");
+                }
+                if (dataObject.has("rightAnswerContent")) {
+                    rightAnswerContent = dataObject.getJSONArray("rightAnswerContent");
+                }
+                maxScore = dataObject.optInt("maxScore");
+            }
+            if (userAnswerContent == null || userAnswerContent.length() == 0) {
+                userAnswerContent = new JSONArray();
+                JSONObject userAnswerObject = new JSONObject();
+                JSONArray array = new JSONArray();
+                //需要填上id 和 text
+                JSONObject emptyJson = new JSONObject();
+                emptyJson.put("index", "");
+                emptyJson.put("text", "");
+                emptyJson.put("score", "");
+                emptyJson.put("scoreKey", "");
+                array.put(emptyJson);
+                userAnswerObject.put("userAnswerContent", array);
+                userAnswerContent.put(userAnswerObject);
+            }
+            if (rightAnswerContent == null || rightAnswerContent.length() == 0) {
+                rightAnswerContent = new JSONArray();
+                JSONObject rightAnswerObject = new JSONObject();
+                JSONArray array = new JSONArray();
+                //需要填上id 和 text
+                JSONObject emptyJson = new JSONObject();
+                emptyJson.put("text", "");
+                emptyJson.put("score", "");
+                emptyJson.put("scoreKey", "");
+                array.put(emptyJson);
+                rightAnswerObject.put("rightAnswerContent", array);
+                rightAnswerContent.put(rightAnswerObject);
+            }
+            JSONObject dataJson = new JSONObject();
+            dataJson.put("testid", event.getTestId());
+            dataJson.put("userid", mGetInfo.getStuId());
+            dataJson.put("hasAnswer", event.getIsforce());
+            dataJson.put("liveId", mGetInfo.getId());
+            dataJson.put("gradeType", UserBll.getInstance().getMyUserInfoEntity().getGradeCode());
+            dataJson.put("deviceid", 8);
+            dataJson.put("totalScore", 0);
+            dataJson.put("maxScore", maxScore);
+            dataJson.put("lostReason", "");
+            dataJson.put("rightAnswerContent", rightAnswerContent);
+            dataJson.put("userAnswerContent", userAnswerContent);
+            testInfos.put(event.getTestId(), dataJson.toString());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        LiveHttpManager mLiveHttpManager = new LiveHttpManager(mContext);
+
+        mLiveHttpManager.submitChineseAISubjectiveAnswer(testInfos, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                final CourseWareHttpManager manager = new CourseWareHttpManager(getHttpManager());
+                VideoQuestionLiveEntity entity = event.getDetailInfo();
+                final EnglishH5Entity englishH5Entity = entity.englishH5Entity;
+                String classId = mGetInfo.getStudentLiveInfo().getClassId();
+                final String[] res = getSrcType(englishH5Entity);
+                manager.submitCourseWareTests(mGetInfo.getStuId(), englishH5Entity.getPackageId(),
+                        englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
+                        englishH5Entity.getReleasedPageInfos(), event.isPlayBack() ? 1 : 0, classId,
+                        englishH5Entity.getClassTestId(), res[0], res[1], mGetInfo.getEducationStage(),
+                        "", responseEntity.getJsonObject().toString(), event.getIsforce(),
+                        event.getEntranceTime(), new AbstractBusinessDataCallBack() {
+                            @Override
+                            public void onDataSucess(Object... objData) {
+                                manager.getStuChiAITestResult(mGetInfo.getId(), mGetInfo.getStuId(),
+                                        res[0], res[1], englishH5Entity.getClassTestId(),
+                                        englishH5Entity.getPackageId(),
+                                        englishH5Entity.getPackageAttr(), event.isPlayBack() ? 1 : 0,
+                                        new AbstractBusinessDataCallBack() {
+                                            @Override
+                                            public void onDataSucess(Object... objData) {
+                                                ChineseAISubjectResultEntity resultEntity = (ChineseAISubjectResultEntity) objData[0];
+                                                ChiAnswerResultPager answerResultPager = new ChiAnswerResultPager(mContext, resultEntity, ArtsAnswerResultBll.this);
+                                                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
+                                                        (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                                                rlAnswerResultLayout.addView(answerResultPager.getRootLayout(), layoutParams);
+                                                if (event.getDetailInfo() != null) {
+                                                    NewCourseLog.sno8(mLiveBll, NewCourseLog.getNewCourseTestIdSec(event.getDetailInfo(), LiveVideoSAConfig.ART_CH), event.isIspreload(), 0);
+                                                }
+                                            }
+                                        });
+                            }
+                        });
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+            }
+        });
+    }
+
+    private String[] getSrcType(EnglishH5Entity englishH5Entity) {
+        String[] res = new String[2];
+        String srcTypes = "";
+        String testIds = "";
+        try {
+            JSONArray array = new JSONArray(englishH5Entity.getReleasedPageInfos());
+            int length = array.length();
+            for (int i = 0; i < length; i++) {
+                JSONObject jsonObject = array.getJSONObject(i);
+                Iterator<String> keys = jsonObject.keys();
+                while (keys.hasNext()) {
+                    String key = keys.next();
+                    JSONArray value = jsonObject.getJSONArray(key);
+                    srcTypes += value.getString(0);
+                    testIds += value.getString(1);
+                    if (i != length - 1) {
+                        srcTypes += ",";
+                        testIds += ",";
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            logger.e("getCourseWareTests", e);
+        }
+        res[0] = srcTypes;
+        res[1] = testIds;
+        return res;
+    }
 
     private boolean forceSumbmit;
 
@@ -946,6 +1100,11 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 resultEntity.setIdArray(idList);
                 resultEntity.setResultType(AnswerResultEntity.RESULT_TYPE_NEW_COURSE_WARE);
                 mAnswerResultList.add(resultEntity);
+            } else if (ArtsAnswerResultEvent.TYPE_AI_CHINESE_ANSWERRESULT == event.getType()) {
+                onChiAIAnswerResult(event,event.getDataStr());
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("ArtsAnswerResult_Chinese_AI_Subjective:").append(event.getDataStr());
+                UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), "ArtsAnswerResultBll", stringBuilder.toString());
             }
         }
     }

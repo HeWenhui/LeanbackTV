@@ -117,4 +117,8 @@
     <color name="COLOR_FFFFF8F5">#FFFFF8F5</color>
     <color name="COLOR_FF8EA6EB">#FF8EA6EB</color>
     <color name="COLOR_FF449CEE">#FF449CEE</color>
+
+    <color name="COLOR_5DA741">#FF5DA741</color>
+    <color name="COLOR_E34949">#FFE34949</color>
+
 </resources>

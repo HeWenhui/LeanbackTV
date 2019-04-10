@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.http;
 
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ChineseAISubjectResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
 
@@ -79,6 +80,46 @@ public class CourseWareParse {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public ChineseAISubjectResultEntity paresChiAIStuTestResult(ResponseEntity responseEntity){
+        ChineseAISubjectResultEntity resultEntity = new ChineseAISubjectResultEntity();
+        try {
+            JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+            resultEntity.setType(jsonObject.getInt("type"));
+            resultEntity.setGold(jsonObject.getInt("gold"));
+            resultEntity.setEnergy(jsonObject.getInt("energy"));
+            resultEntity.setTotalScore(jsonObject.getDouble("totalScore"));
+            resultEntity.setTestType(jsonObject.getString("testType"));
+            resultEntity.setIsRight(jsonObject.getInt("isRight"));
+            resultEntity.setIsAnswered(jsonObject.getInt("isAnswered"));
+            resultEntity.setReviseGold(jsonObject.getInt("reviseGold"));
+            JSONObject answerLists = jsonObject.getJSONObject("answerLists");
+
+            JSONArray stuAnswerArray = answerLists.getJSONArray("stuAnswer");
+            List<ChineseAISubjectResultEntity.StuAnswer> stuAnswers = new ArrayList<>();
+            for (int i = 0; i < stuAnswerArray.length(); i++) {
+                JSONObject answerJson = stuAnswerArray.getJSONObject(i);
+                ChineseAISubjectResultEntity.StuAnswer stuAnswer = new ChineseAISubjectResultEntity.StuAnswer();
+                stuAnswer.setAnswer(answerJson.getString("answer"));
+                stuAnswer.setScoreKey(answerJson.getString("soreKey"));
+                stuAnswer.setRight(answerJson.getInt("right"));
+                stuAnswers.add(stuAnswer);
+            }
+            resultEntity.setStuAnswers(stuAnswers);
+
+            JSONArray rightAnswerArray = answerLists.getJSONArray("rightAnswer");
+            List<String> rightAnswers = new ArrayList<>();
+            for (int i = 0; i < rightAnswerArray.length(); i++) {
+                rightAnswers.add(rightAnswerArray.getString(i));
+            }
+            resultEntity.setRightAnswers(rightAnswers);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return resultEntity;
     }
 
     public NewCourseSec parseEn(ResponseEntity responseEntity) {

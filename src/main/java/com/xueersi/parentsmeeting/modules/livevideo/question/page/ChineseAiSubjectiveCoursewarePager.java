@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -24,6 +25,8 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -38,12 +41,16 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerResultStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareSecHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.CourseMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.dialog.CourseTipDialog;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ChineseAISubjectResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
+import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.NewCourseCache;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.OnHttpCode;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.StaticWeb;
@@ -58,6 +65,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
 import pl.droidsonroids.gif.GifDrawable;
@@ -228,6 +236,8 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
      * 课件题目数量
      */
     private int totalQuestion = -1;
+
+    private CourseWareHttpManager courseWareHttpManager;
 
     public ChineseAiSubjectiveCoursewarePager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity,
                                               boolean isPlayBack, String liveId, String id,
@@ -819,10 +829,10 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
      * @param isforce
      * @param nonce
      */
-    private void submitAnswer(final int isforce, String nonce) {
-//        final JSONObject testInfos = new JSONObject();
+    private void submitAnswer(final int isforce, final String nonce) {
+        final HashMap<String,String> testInfos = new HashMap<>();
         JSONObject dataJson = new JSONObject();
-//        for (int i = 0; i < tests.size(); i++) {
+        for (int i = 0; i < tests.size(); i++) {
         if (!tests.isEmpty()) {
             NewCourseSec.Test test = tests.get(0);
             dataJson = test.getJson();
@@ -865,37 +875,50 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 dataJson.put("gradeType", UserBll.getInstance().getMyUserInfoEntity().getGradeCode());
                 dataJson.put("deviceid", 8);
                 dataJson.put("totalScore", 0);
-                dataJson.put("maxScore", test.getMaxScore());
+                dataJson.put("maxScore", Integer.parseInt(test.getMaxScore()));
                 dataJson.put("lostReason", "");
                 dataJson.put("rightAnswerContent", rightAnswerContent);
                 dataJson.put("userAnswerContent", userAnswerContent);
-//                testInfos.put(test.getId(), dataJson);
+                testInfos.put(test.getId(), dataJson.toString());
             } catch (JSONException e) {
                 CrashReport.postCatchedException(e);
                 mLogtf.e("submit", e);
             }
         }
-//        }
-        final JSONObject finalDataJson = dataJson;
-        englishH5CoursewareSecHttp.submitCourseWareTests(detailInfo, isforce, nonce, entranceTime,
-                dataJson.toString(), new AbstractBusinessDataCallBack() {
-                    @Override
-                    public void onDataSucess(Object... objData) {
-                        JSONObject jsonObject = (JSONObject) objData[0];
-                        JSONObject data = jsonObject.optJSONObject(finalDataJson.optString("testid"));
-                        showAnswerResult(isforce, data);
-                        onSubmitSuccess(isforce);
-                    }
+        }
+        LiveHttpManager mLiveHttpManager = new LiveHttpManager(mContext);
 
-                    @Override
-                    public void onDataFail(int errStatus, String failMsg) {
-                        super.onDataFail(errStatus, failMsg);
-                        isSumit = false;
-                        onSubmitError(isforce, failMsg);
+        mLiveHttpManager.submitChineseAISubjectiveAnswer(testInfos, new HttpCallBack(false) {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                englishH5CoursewareSecHttp.submitCourseWareTests(detailInfo, isforce, nonce, entranceTime,
+                        responseEntity.getJsonObject().toString(), new AbstractBusinessDataCallBack() {
+                            @Override
+                            public void onDataSucess(Object... objData) {
+                                JSONObject jsonObject = (JSONObject) objData[0];
+                                showAnswerResult(isforce, jsonObject);
+                                onSubmitSuccess(isforce);
+                            }
+
+                            @Override
+                            public void onDataFail(int errStatus, String failMsg) {
+                                super.onDataFail(errStatus, failMsg);
+                                isSumit = false;
+                                onSubmitError(isforce, failMsg);
 //                String url = englishH5CoursewareSecHttp.getResultUrl(detailInfo, isforce, "");
 //                wvSubjectWeb.loadUrl(url);
-                    }
-                });
+                            }
+                        });
+
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+                isSumit = false;
+                onSubmitError(isforce, msg);
+            }
+        });
     }
 
     /**
@@ -1401,53 +1424,43 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
      */
     private void showAnswerResult(final int isforce, JSONObject data) {
         rlCourseControl.setVisibility(View.GONE);
+        if (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage)) {
+            englishH5CoursewareSecHttp.getStuTestResult(detailInfo, isPlayBack ? 1 : 0,
+                    new AbstractBusinessDataCallBack() {
 
-        double totalScore = data.optDouble("totalScore",0);
-        double maxScore = data.optDouble("maxScore",0);
-        String lostReason = data.optString("lostReason");
-//        if (LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage)) {
-//            //小学理科 走原生结果页
-//            englishH5CoursewareSecHttp.getStuTestResult(detailInfo, isPlayBack ? 1 : 0,
-//                    new AbstractBusinessDataCallBack() {
-//                        @Override
-//                        public void onDataSucess(Object... objData) {
-//                            loadResult = true;
-//                            PrimaryScienceAnswerResultEntity entity = (PrimaryScienceAnswerResultEntity) objData[0];
-//                            if (isforce == 0) {
-//                                mGoldNum = entity.getGold();
-//                                if (allowTeamPk) {
-//                                    mEnergyNum = entity.getEnergy();
-//                                }
-//                            }
-//                            PrimaryScienceAnserResultPager primaryScienceAnserResultPager =
-//                                    new PrimaryScienceAnserResultPager(mContext, entity, newCourseSec.getIsGame(),
-//                                            new PrimaryScienceAnserResultPager.OnNativeResultPagerClose() {
-//                                                @Override
-//                                                public void onClose() {
-//                                                    onClose.onH5ResultClose(ChineseAiSubjectiveCoursewarePager.this,
-//                                                            getBaseVideoQuestionEntity());
-//                                                }
-//                                            });
-//                            ((RelativeLayout) mView).addView(primaryScienceAnserResultPager.getRootView(),
-//                                    new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-//                                            ViewGroup.LayoutParams.MATCH_PARENT));
-//                            NewCourseLog.sno8(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts),
-//                                    ispreload, 0);
-//                        }
-//                    });
-//        } else {
-//            String url = englishH5CoursewareSecHttp.getResultUrl(detailInfo, isforce, "");
-//            loadResult = true;
-//            NewCourseLog.sno7(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), ispreload);
-//            wvSubjectWeb.addJavascriptInterface(new MiddleResult(mContext) {
-//                @Override
-//                public void onResultPageLoaded(String data) {
-//                    NewCourseLog.sno8(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts),
-//                            ispreload, (System.currentTimeMillis() - pagerStart));
-//                }
-//            }, "xesApp");
-//            wvSubjectWeb.loadUrl(url);
-//        }
+                        @Override
+                        public void onDataSucess(Object... objData) {
+                            loadResult = true;
+                            ChineseAISubjectResultEntity resultEntity = (ChineseAISubjectResultEntity) objData[0];
+                            if (isforce == 0) {
+                                mGoldNum = resultEntity.getGold();
+                                if (allowTeamPk) {
+                                    mEnergyNum = resultEntity.getEnergy();
+                                }
+                            }
+                            ChiAnswerResultPager answerResultPager = new ChiAnswerResultPager(mContext, resultEntity, new AnswerResultStateListener() {
+                                @Override
+                                public void onCompeletShow() {
+
+                                }
+
+                                @Override
+                                public void onAutoClose(BasePager basePager) {
+                                }
+
+                                @Override
+                                public void onCloseByUser() {
+                                    onClose.onH5ResultClose(ChineseAiSubjectiveCoursewarePager.this,getBaseVideoQuestionEntity());
+                                }
+                            });
+                            ((RelativeLayout) mView).addView(answerResultPager.getRootView(),
+                                    new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                                            ViewGroup.LayoutParams.MATCH_PARENT));
+                            NewCourseLog.sno8(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts),
+                                    ispreload, 0);
+                        }
+                    });
+        }
     }
 
 }

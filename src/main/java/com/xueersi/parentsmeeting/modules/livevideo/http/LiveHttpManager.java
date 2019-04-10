@@ -7,17 +7,22 @@ import android.os.Looper;
 
 import com.alibaba.android.arouter.utils.TextUtils;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.http.CommonRequestCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.DeviceUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoChConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoHttpEnConfig;
@@ -567,6 +572,22 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("userAnswer", LiveVideoConfig.userAnswer);
         params.addBodyParam("answer", LiveVideoConfig.answer);
         sendPost(url, params, requestCallBack);
+    }
+
+    /**
+     * 提交语文AI主观题答案
+     * @param params
+     * @param requestCallBack
+     */
+    public void submitChineseAISubjectiveAnswer(HashMap<String,String> data,final HttpCallBack callBack){
+
+        String url ="http://192.168.34.127:12010";
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+        for(String key:data.keySet())
+        {
+            httpRequestParams.addBodyParam(key,data.get(key));
+        }
+        sendPost(url, httpRequestParams, callBack);
     }
 
 
