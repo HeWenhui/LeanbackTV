@@ -567,7 +567,10 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             public void onDataFail(int errStatus, String failMsg) {
                 super.onDataFail(errStatus, failMsg);
                 logger.d("submitGroupGame -> onDataFail:" + failMsg);
-                XESToastUtils.showToast(mContext, failMsg);
+                isSubmit = false;
+                if (errStatus == LiveHttpConfig.HTTP_ERROR_ERROR) {
+                    XESToastUtils.showToast(mContext, failMsg);
+                }
             }
         });
     }
@@ -890,7 +893,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         }
 
 
-        public void uploadScore(int score, boolean isTurnPage) {
+        private void uploadScore(int score, boolean isTurnPage) {
             JSONObject jsonData = new JSONObject();
             try {
                 jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
@@ -1018,7 +1021,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             }
         };
 
-        public void uploadScore(int newSenIndex) {
+        private void uploadScore(int newSenIndex) {
             JSONObject jsonData = new JSONObject();
             try {
                 jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
@@ -1026,7 +1029,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
                 JSONObject rightItem = new JSONObject();
                 rightItem.put("rightId", newSenIndex);
-                rightItem.put("getFireCount", 3);
+                rightItem.put("getFireCount", 2);
                 jsonData.put("rightItem", rightItem);
 
                 jsonData.put("combo", 0);
