@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import android.view.ViewStub;
 import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -23,9 +25,7 @@ import android.widget.TextView;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.util.FontCache;
-import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -33,8 +33,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
-
-import java.util.Random;
 
 public class EnStandAchievePager extends LiveBasePager {
     private RelativeLayout parent;
@@ -45,12 +43,12 @@ public class EnStandAchievePager extends LiveBasePager {
     private TextView tvAchiveNumFire;
     private TextView tvAchiveNumStar;
     private TextView tvAchiveNumGold;
-    private RelativeLayout rlAchiveStandBg;
+    private FrameLayout rlAchiveStandBg;
     private ViewGroup pkview = null;
     private ProgressBar pgAchivePk;
     private ImageView progressImageView;
-    private TextView tv_livevideo_en_achive_pk_energy_my;
-    private TextView tv_livevideo_en_achive_pk_energy_other;
+    private TextView tvAchiveEnergyMy;
+    private TextView tvAchiveEnergyOther;
     private CheckBox cbAchiveTitle;
     private int starCount;
     private int goldCount;
@@ -95,19 +93,9 @@ public class EnStandAchievePager extends LiveBasePager {
         tvAchiveNumFire.setText("" + enpkEnergy.me);
         LiveGetInfo.EnglishPk englishPk = mLiveGetInfo.getEnglishPk();
         if (1 == englishPk.canUsePK) {
-            pkview = (ViewGroup) vsAchiveBottom.inflate();
-            pgAchivePk = pkview.findViewById(R.id.pg_livevideo_en_achive_pk);
-            tv_livevideo_en_achive_pk_energy_my = pkview.findViewById(R.id.tv_livevideo_en_achive_pk_energy_my);
-            tv_livevideo_en_achive_pk_energy_other = pkview.findViewById(R.id.tv_livevideo_en_achive_pk_energy_other);
             myTotal = enpkEnergy.myTeam;
             otherTotal = enpkEnergy.opTeam;
-            tv_livevideo_en_achive_pk_energy_my.setText("" + myTotal);
-            tv_livevideo_en_achive_pk_energy_other.setText("" + otherTotal);
-            int progress = 50;
-            if (myTotal + otherTotal != 0) {
-                progress = myTotal * 100 / (myTotal + otherTotal);
-            }
-            setEngPro(progress);
+            setEnpkView();
         } else {
             vsAchiveBottom2.inflate();
         }
@@ -121,12 +109,12 @@ public class EnStandAchievePager extends LiveBasePager {
                         setEngPro(pgAchivePk.getProgress());
                     }
                 }
-//                if (AppConfig.DEBUG) {
+//                if (com.xueersi.common.config.AppConfig.DEBUG) {
 //                    Random random = new Random();
 //                    StarAndGoldEntity starAndGoldEntity = new StarAndGoldEntity();
 //                    int nextInt = random.nextInt();
-//                    int goldCount2 = goldCount;
-//                    int energyCount2 = energyCount;
+//                    int goldCount2 = goldCount + 1;
+//                    int energyCount2 = energyCount + 1;
 //                    if (nextInt % 3 == 0) {
 //                        goldCount2 += random.nextInt(20);
 //                        energyCount2 += random.nextInt(20);
@@ -146,6 +134,21 @@ public class EnStandAchievePager extends LiveBasePager {
         });
     }
 
+    private void setEnpkView() {
+        pkview = (ViewGroup) vsAchiveBottom.inflate();
+        pgAchivePk = pkview.findViewById(R.id.pg_livevideo_en_achive_pk);
+        tvAchiveEnergyMy = pkview.findViewById(R.id.tv_livevideo_en_achive_pk_energy_my);
+        tvAchiveEnergyOther = pkview.findViewById(R.id.tv_livevideo_en_achive_pk_energy_other);
+
+        tvAchiveEnergyMy.setText("" + myTotal);
+        tvAchiveEnergyOther.setText("" + otherTotal);
+        int progress = 50;
+        if (myTotal + otherTotal != 0) {
+            progress = myTotal * 100 / (myTotal + otherTotal);
+        }
+        setEngPro(progress);
+    }
+
     private void setEngPro(int progress) {
         if (pgAchivePk == null) {
             return;
@@ -153,9 +156,10 @@ public class EnStandAchievePager extends LiveBasePager {
         pgAchivePk.setProgress(progress);
         if (progressImageView == null) {
             progressImageView = new ImageView(activity);
-            progressImageView.setImageResource(R.drawable.livevideo_enteampk_benchangchengjiu_pkfair1_img_nor);
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.pc_livevideo_enteampk_pkbar_fire_pic_nor);
+            progressImageView.setImageDrawable(bitmapDrawable);
             progressImageView.setVisibility(View.INVISIBLE);
-            pkview.addView(progressImageView);
+            rlAchiveStandBg.addView(progressImageView, bitmapDrawable.getIntrinsicWidth(), bitmapDrawable.getIntrinsicHeight());
             pgAchivePk.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 @Override
                 public boolean onPreDraw() {
@@ -175,11 +179,11 @@ public class EnStandAchievePager extends LiveBasePager {
                 @Override
                 public boolean onPreDraw() {
                     progressImageView.getViewTreeObserver().removeOnPreDrawListener(this);
-                    int[] loc = ViewUtil.getLoc(pgAchivePk, pkview);
-                    RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) progressImageView.getLayoutParams();
+                    int[] loc = ViewUtil.getLoc(pgAchivePk, rlAchiveStandBg);
+                    ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) progressImageView.getLayoutParams();
                     int leftMargin = loc[0] - progressImageView.getWidth() / 2 + pgAchivePk.getWidth() * pgAchivePk.getProgress() / pgAchivePk.getMax();
-                    int topMargin = loc[1] - (progressImageView.getHeight() - pgAchivePk.getHeight()) / 2 - 18;
-                    logger.d("initListener:left=" + loc[0] + ",top=" + loc[1]);
+                    int topMargin = loc[1] - (progressImageView.getHeight() - pgAchivePk.getHeight()) / 2;
+                    logger.d("initListener1:left=" + loc[0] + ",top=" + loc[1]);
                     if (lp.leftMargin != leftMargin || lp.topMargin != topMargin) {
                         lp.topMargin = topMargin;
                         lp.leftMargin = leftMargin;
@@ -189,11 +193,11 @@ public class EnStandAchievePager extends LiveBasePager {
                 }
             });
         } else {
-            int[] loc = ViewUtil.getLoc(pgAchivePk, pkview);
-            RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) progressImageView.getLayoutParams();
+            int[] loc = ViewUtil.getLoc(pgAchivePk, rlAchiveStandBg);
+            ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) progressImageView.getLayoutParams();
             lp.leftMargin = loc[0] - progressImageView.getWidth() / 2 + pgAchivePk.getWidth() * pgAchivePk.getProgress() / pgAchivePk.getMax();
-            lp.topMargin = loc[1] - (progressImageView.getHeight() - pgAchivePk.getHeight()) / 2 - 18;
-            logger.d("initListener:left=" + loc[0] + ",top=" + loc[1]);
+            lp.topMargin = loc[1] - (progressImageView.getHeight() - pgAchivePk.getHeight()) / 2;
+            logger.d("initListener2:left=" + loc[0] + ",top=" + loc[1]);
             progressImageView.setLayoutParams(lp);
         }
         progressImageView.setVisibility(View.VISIBLE);
@@ -211,13 +215,17 @@ public class EnStandAchievePager extends LiveBasePager {
         StarAndGoldEntity.PkEnergy pkEnergy = starAndGoldEntity.getPkEnergy();
         if (pkEnergy.myTeam > myTotal) {
             myTotal = pkEnergy.myTeam;
-            tv_livevideo_en_achive_pk_energy_my.setText("" + myTotal);
+            if (tvAchiveEnergyMy != null) {
+                tvAchiveEnergyMy.setText("" + myTotal);
+            }
         } else {
             mLogtf.d("onGetStar:myTeam=" + pkEnergy.myTeam + ",myTotal=" + myTotal);
         }
         if (pkEnergy.opTeam > otherTotal) {
             otherTotal = pkEnergy.opTeam;
-            tv_livevideo_en_achive_pk_energy_other.setText("" + otherTotal);
+            if (tvAchiveEnergyOther != null) {
+                tvAchiveEnergyOther.setText("" + otherTotal);
+            }
             mLogtf.d("onGetStar:otherTotal=" + otherTotal);
         } else {
             mLogtf.d("onGetStar:opTeam=" + pkEnergy.opTeam + ",otherTotal=" + otherTotal);
@@ -230,7 +238,7 @@ public class EnStandAchievePager extends LiveBasePager {
         final int goldCountAdd = starAndGoldEntity.getGoldCount() - goldCount;
         energyCount = starAndGoldEntity.getPkEnergy().me;
         goldCount = starAndGoldEntity.getGoldCount();
-        logger.d("onGetStar:energyCountAdd=" + energyCountAdd + ",goldCountAdd=" + goldCountAdd);
+        mLogtf.d("onGetStar:energyCountAdd=" + energyCountAdd + ",goldCountAdd=" + goldCountAdd + ",visibility=" + rlAchiveStandBg.getVisibility());
         if (rlAchiveStandBg.getVisibility() == View.VISIBLE) {
             return;
         }
@@ -298,7 +306,7 @@ public class EnStandAchievePager extends LiveBasePager {
         lottieAnimationView.setImageAssetDelegate(imageAssetDelegate);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        lp.addRule(RelativeLayout.BELOW, cbAchiveTitle.getId());
+        lp.topMargin = cbAchiveTitle.getHeight() * 144 / 189;
         final ViewGroup viewGroup = (ViewGroup) mView;
         viewGroup.addView(lottieAnimationView, lp);
         lottieAnimationView.playAnimation();
@@ -334,14 +342,14 @@ public class EnStandAchievePager extends LiveBasePager {
         int myTeamTotal = enTeamPkRankEntity.getMyTeamTotal();
         if (myTeamTotal > myTotal) {
             myTotal = myTeamTotal;
-            tv_livevideo_en_achive_pk_energy_my.setText("" + myTotal);
+            tvAchiveEnergyMy.setText("" + myTotal);
         } else {
             mLogtf.d("updateEnpk:myTeamTotal=" + myTeamTotal + ",myTotal=" + myTotal);
         }
         int opTeamTotal = enTeamPkRankEntity.getOpTeamTotal();
         if (opTeamTotal > otherTotal) {
             otherTotal = opTeamTotal;
-            tv_livevideo_en_achive_pk_energy_other.setText("" + otherTotal);
+            tvAchiveEnergyOther.setText("" + otherTotal);
             mLogtf.d("updateEnpk:otherTotal=" + otherTotal);
         } else {
             mLogtf.d("updateEnpk:opTeamTotal=" + opTeamTotal + ",otherTotal=" + otherTotal);
@@ -372,5 +380,12 @@ public class EnStandAchievePager extends LiveBasePager {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void onEnglishPk() {
+        mLogtf.d("onEnglishPk:pkview=null?" + (pkview == null));
+        if (pkview == null) {
+            setEnpkView();
+        }
     }
 }

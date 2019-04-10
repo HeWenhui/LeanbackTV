@@ -5,27 +5,28 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 
 import com.xueersi.common.base.BaseActivity;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.toast.XesToast;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
+import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.PreloadStaticStorage;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -89,6 +90,27 @@ public class LiveVideoLoadActivity extends BaseActivity {
         super.onDestroy();
     }
 
+    private void performDownLoadPreLoad(LiveHttpManager mHttpManager, LiveGetInfo getInfo) {
+        String liveId = getInfo.getId();
+        int mSubject = getInfo.getIsArts();
+        CoursewarePreload coursewarePreload = new CoursewarePreload(this, mSubject);
+        coursewarePreload.setmHttpManager(mHttpManager);
+        coursewarePreload.getCoursewareInfo(liveId);
+
+//        if (liveId != null && !"".equals(liveId)) {
+//
+//            if (0 == mSubject) {//理科
+//                logger.i("下载理科");
+//                mHttpManager.getScienceCourewareInfo(liveId, new CoursewarePreload.CoursewareHttpCallBack());
+//            } else if (1 == mSubject) {//英语
+//                logger.i("下载英语");
+//                mHttpManager.getEnglishCourewareInfo(liveId, new CoursewarePreload.CoursewareHttpCallBack());
+//            } else if (2 == mSubject) {//语文
+//                logger.i("下载语文");
+//                mHttpManager.getArtsCourewareInfo(liveId, new CoursewarePreload.CoursewareHttpCallBack());
+//            }
+//        }
+    }
 
     private void initData() {
         Intent intent = getIntent();
@@ -98,7 +120,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
         final int from = intent.getIntExtra("", 0);
         DataLoadEntity dataLoadEntity = new DataLoadEntity(this);
         BaseBll.postDataLoadEvent(dataLoadEntity.beginLoading());
-        LiveHttpManager httpManager = new LiveHttpManager(this);
+        final LiveHttpManager httpManager = new LiveHttpManager(this);
+
         if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
             httpManager.liveLectureGetInfo("", vSectionID, new HttpCallBack(dataLoadEntity) {
                 @Override
@@ -159,6 +182,14 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     getInfos.put(stuId + "-" + vStuCourseID + "-" + vSectionID, mGetInfo);
 //                    mGetInfo.setPattern(1);
                     bundle.putString("mode", mGetInfo.getMode());
+
+                    int isNewProject = mGetInfo.getIsNewProject();
+                    boolean newCourse = (isNewProject == 1) || isNewCourse(mGetInfo.getId());
+                    if (newCourse) {
+                        bundle.putBoolean("newCourse", true);
+                        performDownLoadPreLoad(httpManager, mGetInfo);
+                    }
+//                    bundle.putIntegerArrayList("preloadliveid", PreloadStaticStorage.preloadLiveId);
                     bundle.putInt("isArts", mGetInfo.getIsArts());
                     bundle.putInt("pattern", mGetInfo.getPattern());
                     bundle.putBoolean("isPrimary", LiveVideoConfig.isPrimary);
@@ -166,7 +197,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     bundle.putBoolean("isSmallEnglish", mGetInfo.getSmallEnglish());
                     if (mGetInfo.getIsArts() == 0) {
                         bundle.putInt("allowLinkMicNew", mGetInfo.getAllowLinkMicNew());
-                    }else {
+                    } else {
                         bundle.putInt("smallEnglish", mGetInfo.getSmallEnglish() ? 1 : 0);
                     }
 //                if (mGetInfo.getPattern() == 2) {
@@ -195,6 +226,31 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 }
             });
         }
+    }
+
+    //新课件灰测
+    public boolean isNewCourse(String liveId) {
+        for (String itemLiveId : PreloadStaticStorage.preloadLiveId) {
+            if (itemLiveId.equals(liveId)) {
+                return true;
+            }
+        }
+        String liveIds = ShareDataManager.getInstance().getString(ShareDataConfig.SP_PRELOAD_COURSEWARE, "", ShareDataManager.SHAREDATA_USER);
+        if (liveIds.contains(",")) {
+            String[] preLoadLiveId = liveIds.split(",");
+            for (String tempPreLoadLiveId : preLoadLiveId) {
+                if (tempPreLoadLiveId.equals(liveId)) {
+                    return true;
+                }
+            }
+        }
+        if (!TextUtils.isEmpty(liveIds)) {
+            if (liveIds.equals(liveId)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     void gotoEnglish(final Bundle bundle) {

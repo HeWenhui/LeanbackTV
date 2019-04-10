@@ -13,8 +13,13 @@ import android.widget.TextView;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.dialog.SmallEnglishMicTipDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.config.EnTeamPkConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
@@ -26,7 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkRankRes
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import java.util.ArrayList;
 
@@ -49,11 +54,17 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
     private boolean isRankStart = false;
     private PkTeamEntity pkTeamEntity;
     private int reportTimes = 1;
+    /** 显示上方提示 */
+    private boolean hasAddTop = false;
     private LogToFile mLogtf;
 
-    public EnTeamPkBll(Context context) {
+    public EnTeamPkBll(Context context, String liveId) {
         super(context);
         mLogtf = new LogToFile(context, TAG);
+        String string = mShareDataManager.getString(ShareDataConfig.LIVE_ENPK_MY_TOP, "", ShareDataManager.SHAREDATA_USER);
+        if (("" + string).contains((liveId + ","))) {
+            hasAddTop = true;
+        }
     }
 
     public void setEnTeamPkHttp(EnTeamPkHttp enTeamPkHttp) {
@@ -106,7 +117,7 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
         mode = getInfo.getMode();
         englishPk = getInfo.getEnglishPk();
         if (pkTeamEntity == null) {
-            if (englishPk.hasGroup == 0) {
+            if (englishPk.hasGroup == EnglishPk.HAS_GROUP_NO) {
                 reportStuInfo();
             } else {
                 getEnglishPkGroup();
@@ -116,8 +127,8 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
     }
 
     @Override
-    public void onQuestionShow(VideoQuestionLiveEntity questionLiveEntity, boolean isShow) {
-        if (isShow && teamPkLeadPager != null) {
+    public void hideTeam() {
+        if (teamPkLeadPager != null) {
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -172,8 +183,23 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
         });
     }
 
+    /**
+     * 上方提示
+     *
+     * @param method
+     */
     private void addTop(String method) {
-        mLogtf.d("addTop:myteam=" + pkTeamEntity.getMyTeam() + ",method=" + method);
+        mLogtf.d("addTop:myteam=" + pkTeamEntity.getMyTeam() + ",method=" + method + ",hasAddTop=" + hasAddTop);
+        if (hasAddTop) {
+            return;
+        }
+        String string = mShareDataManager.getString(ShareDataConfig.LIVE_ENPK_MY_TOP, "", ShareDataManager.SHAREDATA_USER);
+        String[] liveIds = string.split(",");
+        if (liveIds.length > 6) {
+            string = "";
+        }
+        mShareDataManager.put(ShareDataConfig.LIVE_ENPK_MY_TOP, string + "" + getInfo.getId() + ",", ShareDataManager.SHAREDATA_USER);
+        hasAddTop = true;
         final View view = LayoutInflater.from(mContext).inflate(R.layout.layout_livevideo_en_team_join, rootView, false);
         TextView tv_livevideo_en_teampk_top_name = view.findViewById(R.id.tv_livevideo_en_teampk_top_name);
         ImageView iv_livevideo_en_teampk_top_img = view.findViewById(R.id.iv_livevideo_en_teampk_top_img);
@@ -274,12 +300,15 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
 
                             @Override
                             public void onDataSucess(Object... objects) {
+                                PkTeamEntity oldPkTeamEntity = EnTeamPkBll.this.pkTeamEntity;
                                 pkTeamEntity = (PkTeamEntity) objects[0];
-                                logger.d("onRankStart:onDataSucess:Entity=" + pkTeamEntity);
+                                logger.d("onRankStart:onDataSucess:Entity=" + pkTeamEntity + ",oldPkTeamEntity=null?" + (oldPkTeamEntity == null));
                                 if (pkTeamEntity == null) {
                                     return;
                                 }
-                                addTop("onRankStart2");
+                                if (oldPkTeamEntity == null) {
+                                    addTop("onRankStart2");
+                                }
                             }
 
                             @Override
@@ -320,7 +349,8 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
     }
 
     @Override
-    public void onModeChange(String mode) {
+    public void onModeChange(String mode, boolean haveTeamRun) {
+        hideTeam();
         this.mode = mode;
         if (LiveTopic.MODE_CLASS.equals(mode)) {
             teamEnd = true;
@@ -336,6 +366,15 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                         }
                     }
                 }, 2000);
+            } else {
+                if (haveTeamRun) {
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            addTop("onModeChange");
+                        }
+                    });
+                }
             }
         }
     }
@@ -407,6 +446,13 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                 }
             }
             mLogtf.d("onRankLead:s=" + s);
+            //全身直播得仪式结束以后，请求本场成就
+            if (pattern == LiveVideoConfig.LIVE_PATTERN_2) {
+                UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class);
+                if (updateAchievement != null) {
+                    updateAchievement.getStuGoldCount("onRankLead", UpdateAchievement.GET_TYPE_TEAM);
+                }
+            }
         } else {
             handler.post(new Runnable() {
                 @Override
@@ -427,10 +473,27 @@ public class EnTeamPkBll extends BaseBll implements EnTeamPkAction, EnglishPkUpd
                         }
                     });
                     RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-                    if (pattern != 2) {
+                    if (pattern != LiveVideoConfig.LIVE_PATTERN_2) {
                         layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x3;
                     }
                     rootView.addView(teamPkLeadPager.getRootView(), layoutParams);
+                    teamPkLeadPager.getRootView().addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+                        @Override
+                        public void onViewAttachedToWindow(View view) {
+
+                        }
+
+                        @Override
+                        public void onViewDetachedFromWindow(View view) {
+                            //全身直播得仪式结束以后，请求本场成就
+                            if (pattern == LiveVideoConfig.LIVE_PATTERN_2) {
+                                UpdateAchievement updateAchievement = ProxUtil.getProxUtil().get(mContext, UpdateAchievement.class);
+                                if (updateAchievement != null) {
+                                    updateAchievement.getStuGoldCount("onViewDetachedFromWindow", UpdateAchievement.GET_TYPE_TEAM);
+                                }
+                            }
+                        }
+                    });
                 }
             });
         }

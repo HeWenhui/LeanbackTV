@@ -160,7 +160,8 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
 //                    group.addView(rlResult);
                     questionBll.initQuestionAnswerReslut(rlResult);
                     lottieAnimationView.playAnimation();
-                    setRightGold(context, lottieAnimationView, entity.getGoldNum(), entity.getEnergy());
+//                    setRightGold(context, lottieAnimationView, entity.getGoldNum(), entity.getEnergy());
+                    setRightGoldEnergy(context, lottieAnimationView, entity.getGoldNum(), entity.getEnergy());
                     final LiveSoundPool liveSoundPool = LiveSoundPool.createSoundPool();
                     final LiveSoundPool.SoundPlayTask task = StandLiveMethod.voiceRight(liveSoundPool);
                     rlResult.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View.OnClickListener() {
@@ -237,8 +238,8 @@ public class LiveStandVoiceAnswerCreat implements BaseVoiceAnswerCreat {
 //                    final ViewGroup group = (ViewGroup) baseVoiceAnswerPager.getRootView();
 //                    group.addView(rlResult);
                     questionBll.initQuestionAnswerReslut(rlResult);
-//                    setWrongTipEnpk(context, lottieAnimationView, entity.getStandardAnswer(), entity.getGoldNum(), entity.getEnergy());
-                    setWrongTip(context, lottieAnimationView, entity.getStandardAnswer());
+                    setWrongTipEnergy(context, lottieAnimationView, entity.getStandardAnswer(), entity.getGoldNum(), entity.getEnergy());
+//                    setWrongTip(context, lottieAnimationView, entity.getStandardAnswer());
                     final LiveSoundPool liveSoundPool = LiveSoundPool.createSoundPool();
                     final LiveSoundPool.SoundPlayTask task = StandLiveMethod.voiceWrong(liveSoundPool);
                     rlResult.findViewById(R.id.iv_livevideo_speecteval_result_close).setOnClickListener(new View.OnClickListener() {
