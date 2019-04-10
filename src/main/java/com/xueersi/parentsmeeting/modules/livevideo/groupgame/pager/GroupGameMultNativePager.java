@@ -574,7 +574,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 for (int i = 0; i < entities.size(); i++) {
                     TeamMemberEntity teamMemberEntity = entities.get(i);
                     JSONObject student = new JSONObject();
-                    student.put("studentNum", 3 - i);
+                    student.put("studentNum", i + 1);
                     student.put("name", teamMemberEntity.name);
                     student.put("avatar", teamMemberEntity.headurl);
 //                    student.put("avatar", "http://xesfile.oss-cn-beijing.aliyuncs.com/nrcpb/cjtsg5ybb0000ywow5xr4ne1j.png");
@@ -765,14 +765,13 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         //发送麦克风消息给其他成员
         final JSONArray team_mate = new JSONArray();
         LayoutInflater mInflater = LayoutInflater.from(mContext);
-        int myIndex = 0;
+        View myView = null;
         for (int i = 0; i < entities.size(); i++) {
             TeamMemberEntity teamMemberEntity = entities.get(i);
             BaseCourseGroupItem baseCourseGroupItem;
             if (teamMemberEntity.id == stuid) {
                 CourseGroupMyItem courseGroupItem = new CourseGroupMyItem(mContext, teamMemberEntity, mWorkerThread, teamMemberEntity.id);
                 baseCourseGroupItem = courseGroupItem;
-                myIndex = i;
             } else {
                 team_mate.put("" + teamMemberEntity.id);
                 CourseGroupOtherItem courseGroupItem = new CourseGroupOtherItem(mContext, teamMemberEntity, mWorkerThread, teamMemberEntity.id);
@@ -818,6 +817,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             baseCourseGroupItem.updateViews(teamMemberEntity, i, teamMemberEntity);
             baseCourseGroupItem.bindListener();
             llCourseItemContent.addView(convertView);
+            if (teamMemberEntity.id == stuid) {
+                myView = convertView;
+            }
             courseGroupItemHashMap.put(teamMemberEntity.id + "", baseCourseGroupItem);
         }
         if (entities.size() < 3) {
@@ -829,7 +831,12 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 courseGroupItem.initViews(convertView);
                 courseGroupItem.updateViews(teamMemberEntity, i, teamMemberEntity);
                 courseGroupItem.bindListener();
-                llCourseItemContent.addView(convertView);
+                //语音炮弹往下排，其他往上排
+                if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(gameType)) {
+                    llCourseItemContent.addView(convertView);
+                } else {
+                    llCourseItemContent.addView(convertView, 0);
+                }
             }
         }
         //如果小于最小值
@@ -851,19 +858,27 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 }
             }
         }
-        final int finalMyIndex = myIndex;
-        tv_livevideo_course_item_my_tip.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                //声音小的提示
-                View myView = llCourseItemContent.getChildAt(finalMyIndex);
-                RelativeLayout.LayoutParams tipLp = (RelativeLayout.LayoutParams) tv_livevideo_course_item_my_tip.getLayoutParams();
-                tipLp.topMargin = llCourseItemContent.getTop() + myView.getTop() + myView.getHeight() / 2 - tv_livevideo_course_item_my_tip.getHeight() / 2;
-                tv_livevideo_course_item_my_tip.setLayoutParams(tipLp);
-                tv_livevideo_course_item_my_tip.getViewTreeObserver().removeOnPreDrawListener(this);
-                return false;
+
+        final View finalMyView = myView;
+        if (finalMyView != null) {
+            //除了语音大炮。都把自己放右下角
+            if (!LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(gameType)) {
+                llCourseItemContent.removeView(myView);
+                llCourseItemContent.addView(myView);
             }
-        });
+            tv_livevideo_course_item_my_tip.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    //声音小的提示
+                    View myView = finalMyView;
+                    RelativeLayout.LayoutParams tipLp = (RelativeLayout.LayoutParams) tv_livevideo_course_item_my_tip.getLayoutParams();
+                    tipLp.topMargin = llCourseItemContent.getTop() + myView.getTop() + myView.getHeight() / 2 - tv_livevideo_course_item_my_tip.getHeight() / 2;
+                    tv_livevideo_course_item_my_tip.setLayoutParams(tipLp);
+                    tv_livevideo_course_item_my_tip.getViewTreeObserver().removeOnPreDrawListener(this);
+                    return false;
+                }
+            });
+        }
     }
 
     private void onAnswer(JSONObject message) {
@@ -2140,9 +2155,18 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                             }
                                         }
                                         createSpeechContent("CLEAN_UP_REC");
+                                        int studentNum = -1;
+                                        ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
+                                        for (int entityIndex = 0; entityIndex < entities.size(); entityIndex++) {
+                                            TeamMemberEntity teamMemberEntity = entities.get(entityIndex);
+                                            if (who_id == teamMemberEntity.id) {
+                                                studentNum = 1 + entityIndex;
+                                                break;
+                                            }
+                                        }
                                         JSONObject jsonData = new JSONObject();
                                         jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
-                                        jsonData.put("studentNum", 3);
+                                        jsonData.put("studentNum", studentNum);
                                         {
                                             JSONObject rightItem = new JSONObject();
                                             rightItem.put("rightId", word_id);
