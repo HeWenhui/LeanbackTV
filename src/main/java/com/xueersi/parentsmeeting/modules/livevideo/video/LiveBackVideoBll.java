@@ -131,7 +131,7 @@ public class LiveBackVideoBll {
      * 播放新的视频
      */
     public void playNewVideo() {
-        if (!MediaPlayer.isPSIJK) {
+        if (!MediaPlayer.getIsNewIJK()) {
             if (index < 0) {
                 index = 0;
             }

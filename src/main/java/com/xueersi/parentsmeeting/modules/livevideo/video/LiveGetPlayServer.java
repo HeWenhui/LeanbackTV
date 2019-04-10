@@ -168,7 +168,7 @@ public class LiveGetPlayServer {
             mGetPlayServerCancle = null;
         }
         final URLDNS urldns = new URLDNS();
-        if (!MediaPlayer.isPSIJK) {
+        if (!MediaPlayer.getIsNewIJK()) {
             mGetPlayServerCancle = mHttpManager.liveGetPlayServer(urldns, serverurl, new CommonRequestCallBack<String>() {
 
                 @Override

@@ -138,7 +138,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     }
                     String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
                     getInfos.put(liveType + "-" + stuId + "-" + vSectionID, mGetInfo);
-                    if (MediaPlayer.isPSIJK) {
+                    if (MediaPlayer.getIsNewIJK()) {
                         com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                     } else {
                         com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
@@ -213,7 +213,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     if (1 == mGetInfo.getIsEnglish()) {
                         gotoEnglish(bundle);
                     } else {
-                        if (MediaPlayer.isPSIJK) {
+                        if (MediaPlayer.getIsNewIJK()) {
                             com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                         } else {
                             com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
@@ -281,7 +281,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                if (MediaPlayer.isPSIJK) {
+                                if (MediaPlayer.getIsNewIJK()) {
                                     com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                                 } else {
                                     com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
@@ -293,7 +293,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 },
                 PermissionConfig.PERMISSION_CODE_AUDIO);
         if (have) {
-            if (MediaPlayer.isPSIJK) {
+            if (MediaPlayer.getIsNewIJK()) {
                 com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
             } else {
                 com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
@@ -317,7 +317,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 ShareDataManager.SHAREDATA_USER)) {
 
             Intent intent;
-            if (MediaPlayer.isPSIJK) {
+            if (MediaPlayer.getIsNewIJK()) {
                 intent = new Intent(context, DeviceDetectionActivity.class);
             } else {
                 intent = new Intent(context, com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.DeviceDetectionActivity.class);
@@ -327,7 +327,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
         }
 
         Intent intent;
-        if (MediaPlayer.isPSIJK) {
+        if (MediaPlayer.getIsNewIJK()) {
             intent = new Intent(context, LiveVideoLoadActivity.class);
         } else {
             intent = new Intent(context, com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoLoadActivity.class);

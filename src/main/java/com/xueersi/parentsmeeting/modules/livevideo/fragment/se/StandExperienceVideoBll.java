@@ -151,7 +151,7 @@ public class StandExperienceVideoBll {
     }
 
     public void playNewVideo() {
-        if (!MediaPlayer.isPSIJK) {
+        if (!MediaPlayer.getIsNewIJK()) {
             index = index < 0 ? 0 : index;
             String url = mWebPaths.get(index++ % mWebPaths.size());
             logger.d("playNewVideo:url=" + url);

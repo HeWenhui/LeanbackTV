@@ -183,7 +183,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
         logger.i("=====>connectChatServer:channel=" + channel + ":nickname =" +
                 chatRoomUid);
         mNetWorkType = NetWorkHelper.getNetWorkState(mContext);
-        if (MediaPlayer.isPSIJK){
+        if (MediaPlayer.getIsNewIJK()){
             mIRCMessage = new NewIRCMessage(mContext, mNetWorkType, liveGetInfo.getStuName(), chatRoomUid, liveGetInfo, channel);
         } else{
             chatCfgServerList = mVideoEntity.getRoomChatCfgServerList();

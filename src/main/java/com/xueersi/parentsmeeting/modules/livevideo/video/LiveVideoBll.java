@@ -232,7 +232,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
      * @param modechange
      */
     public void rePlay(boolean modechange) {
-//        if (!MediaPlayer.isPSIJK) {
+//        if (!MediaPlayer.getIsNewIJK()) {
         if (livePlayLog != null) {
             livePlayLog.onReplay();
         }
@@ -416,7 +416,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
     @Deprecated
     /** 直接指定为具体线路只去播放 */
     public void playNewVideo(int pos) {
-        if (!MediaPlayer.isPSIJK) {
+        if (!MediaPlayer.getIsNewIJK()) {
             String url = constructUrl(pos);
             logger.i("加载的url = " + url);
             if (url != null) {
@@ -829,7 +829,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
                     vPlayerListener1.onBufferTimeOutRun();
                 }
             }
-            if (!MediaPlayer.isPSIJK) {
+            if (!MediaPlayer.getIsNewIJK()) {
                 liveGetPlayServer.liveGetPlayServer(false);
             } else {
 //                changeLine(nowPos + 1);
@@ -909,7 +909,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
                 }
             }
         }
-        if (!MediaPlayer.isPSIJK) {
+        if (!MediaPlayer.getIsNewIJK()) {
             liveGetPlayServer.liveGetPlayServer(false);
         } else {
             liveThreadPoolExecutor.execute(new Runnable() {

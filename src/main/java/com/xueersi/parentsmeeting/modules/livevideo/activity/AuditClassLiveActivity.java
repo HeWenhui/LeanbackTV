@@ -559,7 +559,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 synchronized (mIjkLock) {
                     if (isInitialized()) {
                         vPlayer.releaseSurface();
-                        if (MediaPlayer.isPSIJK) {
+                        if (MediaPlayer.getIsNewIJK()) {
                             transferStop();
                         } else {
                             vPlayer.stop();
@@ -583,7 +583,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
 
     @Override
     protected void resultFailed(final int arg1, final int arg2) {
-        if (MediaPlayer.isPSIJK) {
+        if (MediaPlayer.getIsNewIJK()) {
             judgeTeacherIsPresent();
         }
         postDelayedIfNotFinish(new Runnable() {
@@ -1033,7 +1033,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
      */
     @Override
     public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
-//        if (!MediaPlayer.isPSIJK) {
+//        if (!MediaPlayer.getIsNewIJK()) {
         mServer = server;
 //        } else {
 
@@ -1471,7 +1471,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         msg += ",url=" + stringBuilder;
         mLogtf.d(msg);
         logger.i("url = " + url);
-        if (!MediaPlayer.isPSIJK) {
+        if (!MediaPlayer.getIsNewIJK()) {
             playNewVideo(Uri.parse(stringBuilder.toString()), mGetInfo.getName());
         } else {
             if (nowProtol == MediaPlayer.VIDEO_PROTOCOL_RTMP || nowProtol == MediaPlayer.VIDEO_PROTOCOL_FLV) {
@@ -1606,7 +1606,7 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
      * 调用底层播放器的停止播放
      */
     private void transferStop() {
-        if (!MediaPlayer.isPSIJK) {
+        if (!MediaPlayer.getIsNewIJK()) {
             vPlayer.stop();
         } else {
             vPlayer.psStop();

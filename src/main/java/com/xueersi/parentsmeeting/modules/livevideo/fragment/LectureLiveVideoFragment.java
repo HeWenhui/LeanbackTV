@@ -233,7 +233,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
                             mHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (!MediaPlayer.isPSIJK) {
+                                    if (!MediaPlayer.getIsNewIJK()) {
                                         rePlay(false);
                                     } else {
                                         psRePlay(false);
