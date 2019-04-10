@@ -116,7 +116,7 @@ public class LiveVideoEnter {
         bundle.putString("vSectionID", vSectionID);
         bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LIVE);
         bundle.putInt(ENTER_ROOM_FROM, from);
-        if (MediaPlayer.isPSIJK) {
+        if (MediaPlayer.getIsNewIJK()) {
             LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
         } else {
             com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
@@ -144,7 +144,7 @@ public class LiveVideoEnter {
         bundle.putString("vSectionID", vSectionID);
         bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LIVE);
         bundle.putInt(ENTER_ROOM_FROM, from);
-        if (MediaPlayer.isPSIJK) {
+        if (MediaPlayer.getIsNewIJK()) {
             LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
         } else {
             com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
@@ -218,7 +218,7 @@ public class LiveVideoEnter {
             context.startActivity(intent);
             return false;
         }
-        if (MediaPlayer.isPSIJK) {
+        if (MediaPlayer.getIsNewIJK()) {
             AuditClassLiveActivity.intentTo(context, stuCouId, vSectionID);
         } else {
             com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.AuditClassLiveActivity.intentTo(context, stuCouId, vSectionID);
@@ -244,7 +244,7 @@ public class LiveVideoEnter {
         bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_LECTURE);
         bundle.putInt(ENTER_ROOM_FROM, from);
 //        LectureLiveVideoActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
-        if (MediaPlayer.isPSIJK) {
+        if (MediaPlayer.getIsNewIJK()) {
             LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
         } else {
             com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
@@ -275,7 +275,7 @@ public class LiveVideoEnter {
         bundle.putString("currentDutyId", currentDutyId);
         bundle.putInt("type", LiveVideoConfig.LIVE_TYPE_TUTORIAL);
         bundle.putInt(ENTER_ROOM_FROM, from);
-        if (MediaPlayer.isPSIJK) {
+        if (MediaPlayer.getIsNewIJK()) {
             LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
         } else {
             com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoLoadActivity.intentTo(context, bundle, LiveVideoBusinessConfig.LIVE_REQUEST_CODE);
@@ -298,7 +298,7 @@ public class LiveVideoEnter {
                 ShareDataManager.SHAREDATA_USER)) {
 
             Intent intent;
-            if (MediaPlayer.isPSIJK) {
+            if (MediaPlayer.getIsNewIJK()) {
                 intent = new Intent(context, DeviceDetectionActivity.class);
             } else {
                 intent = new Intent(context, com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.DeviceDetectionActivity.class);
@@ -307,7 +307,7 @@ public class LiveVideoEnter {
             return intent;
         }
         Intent intent;
-        if (MediaPlayer.isPSIJK) {
+        if (MediaPlayer.getIsNewIJK()) {
             intent = new Intent(context, LiveVideoLoadActivity.class);
         } else {
             intent = new Intent(context, com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoLoadActivity.class);
@@ -336,7 +336,7 @@ public class LiveVideoEnter {
             return null;
         }
         Intent intent;
-        if (MediaPlayer.isPSIJK) {
+        if (MediaPlayer.getIsNewIJK()) {
             intent = new Intent(context, LiveVideoLoadActivity.class);
         } else {
             intent = new Intent(context, com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoLoadActivity.class);
@@ -363,7 +363,7 @@ public class LiveVideoEnter {
         }
 
         Intent intent;
-        if (MediaPlayer.isPSIJK) {
+        if (MediaPlayer.getIsNewIJK()) {
             intent = new Intent(context, LiveVideoLoadActivity.class);
         } else {
             intent = new Intent(context, com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoLoadActivity.class);
@@ -401,7 +401,7 @@ public class LiveVideoEnter {
                         .SP_APP_DEVICE_NOTICE, false,
                 ShareDataManager.SHAREDATA_USER)) {
             Intent intent;
-            if (MediaPlayer.isPSIJK) {
+            if (MediaPlayer.getIsNewIJK()) {
                 intent = new Intent(context, DeviceDetectionActivity.class);
             } else {
                 intent = new Intent(context, com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.DeviceDetectionActivity.class);
@@ -409,7 +409,7 @@ public class LiveVideoEnter {
             context.startActivity(intent);
             return false;
         }
-        if (MediaPlayer.isPSIJK) {
+        if (MediaPlayer.getIsNewIJK()) {
             com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity.intentTo(context, bundle,
                     where, VIDEO_REQUEST);
         } else {
@@ -426,7 +426,7 @@ public class LiveVideoEnter {
      * @param bundle
      */
     public static boolean intentToExperience(Activity context, Bundle bundle, String where) {
-        if (MediaPlayer.isPSIJK) {
+        if (MediaPlayer.getIsNewIJK()) {
             ExperienceLiveVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
         } else {
             com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.ExperienceLiveVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
@@ -442,7 +442,7 @@ public class LiveVideoEnter {
      * @param bundle
      */
     public static boolean intentToHalfBodyExperience(Activity context, Bundle bundle, String where) {
-        if (MediaPlayer.isPSIJK) {
+        if (MediaPlayer.getIsNewIJK()) {
             HalfBodyLiveExperienceActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
         } else {
             com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.HalfBodyLiveExperienceActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
@@ -458,7 +458,7 @@ public class LiveVideoEnter {
      * @param bundle
      */
     public static boolean intentToAIExperience(Activity context, Bundle bundle, String where) {
-        if (MediaPlayer.isPSIJK) {
+        if (MediaPlayer.getIsNewIJK()) {
             AIExperienceLiveVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
         } else {
             com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.AIExperienceLiveVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
@@ -475,7 +475,7 @@ public class LiveVideoEnter {
      * @return
      */
     public static boolean intentToStandExperience(Activity activity, Bundle bundle, String where) {
-        if (MediaPlayer.isPSIJK) {
+        if (MediaPlayer.getIsNewIJK()) {
             LivePlaybackVideoActivity.intentTo(activity, bundle,
                     where, VIDEO_REQUEST);
         } else {
@@ -493,7 +493,7 @@ public class LiveVideoEnter {
      * @param bundle
      */
     public static void intentToLectureLivePlayBackVideo(Activity context, Bundle bundle, String where) {
-        if (MediaPlayer.isPSIJK) {
+        if (MediaPlayer.getIsNewIJK()) {
             LectureLivePlayBackVideoActivity.intentTo(context, bundle, where);
         } else {
             com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LectureLivePlayBackVideoActivity.intentTo(context, bundle, where);

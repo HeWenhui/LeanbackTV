@@ -5,7 +5,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
 
 public class AllBllConfig {
     public static String getEnTeamPkIRCBllClassPath() {
-        if (MediaPlayer.isPSIJK) {
+        if (MediaPlayer.getIsNewIJK()) {
             return "com.xueersi.parentsmeeting.modules.livevideo.enteampk.business.EnTeamPkIRCBll";
         } else {
             return "com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.business.EnTeamPkIRCBll";
@@ -13,7 +13,7 @@ public class AllBllConfig {
     }
 
     public static String getLiveAchievementIRCBllClassPath() {
-        if (MediaPlayer.isPSIJK) {
+        if (MediaPlayer.getIsNewIJK()) {
             return "com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll";
         } else {
             return "com.xueersi.parentsmeeting.modules.livevideoOldIJK.achievement.business.LiveAchievementIRCBll";

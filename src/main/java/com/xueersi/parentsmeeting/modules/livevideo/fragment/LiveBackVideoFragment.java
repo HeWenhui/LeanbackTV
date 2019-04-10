@@ -287,7 +287,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         TextView errorInfo = videoBackgroundRefresh.findViewById(com.xueersi.parentsmeeting.base.R.id
                 .tv_course_video_errorinfo);
         videoBackgroundRefresh.findViewById(R.id.tv_course_video_errortip).setVisibility(View.GONE);
-        if (MediaPlayer.isPSIJK) {
+        if (MediaPlayer.getIsNewIJK()) {
             MediaErrorInfo mediaErrorInfo = liveBackPlayVideoFragment.getMediaErrorInfo();
             errorInfo.setVisibility(View.VISIBLE);
 

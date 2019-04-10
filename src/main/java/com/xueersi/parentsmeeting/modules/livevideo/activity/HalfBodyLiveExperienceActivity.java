@@ -501,7 +501,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         logger.i("=====>connectChatServer:channel=" + channel + ":nickname =" +
                 chatRoomUid);
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
-        if (MediaPlayer.isPSIJK){
+        if (MediaPlayer.getIsNewIJK()){
 
             mIRCMessage = new NewIRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, mGetInfo, channel);
 
@@ -864,7 +864,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
             businessBll.initViewF(null, rlQuestionContent, new AtomicBoolean(mIsLand));
         }
         ProxUtil.getProxUtil().put(this, LiveVideoActivityBase.class, this);
-        if (!MediaPlayer.isPSIJK) {
+        if (!MediaPlayer.getIsNewIJK()) {
             playNewVideo(Uri.parse(mWebPath), mSectionName);
         } else {
 //            playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_MP4);
@@ -1242,7 +1242,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
     protected void onRefresh() {
         if (AppBll.getInstance(this).isNetWorkAlert()) {
             videoBackgroundRefresh.setVisibility(View.GONE);
-            if (!MediaPlayer.isPSIJK) {
+            if (!MediaPlayer.getIsNewIJK()) {
                 playNewVideo(Uri.parse(mWebPath), mSectionName);
             } else {
 //                playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_MP4);
@@ -1298,7 +1298,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
     @Override
     public void onResume() {
         super.onResume();
-        if (!MediaPlayer.isPSIJK) {
+        if (!MediaPlayer.getIsNewIJK()) {
             playNewVideo(Uri.parse(mWebPath), mSectionName);
         } else {
 //            playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_MP4);
@@ -1366,7 +1366,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         }
         if (rePlayCount < MAX_REPLAY_COUNT) {
             rePlayCount++;
-            if (!MediaPlayer.isPSIJK) {
+            if (!MediaPlayer.getIsNewIJK()) {
                 playNewVideo(Uri.parse(mWebPath), mSectionName);
             } else {
 //                playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_MP4);

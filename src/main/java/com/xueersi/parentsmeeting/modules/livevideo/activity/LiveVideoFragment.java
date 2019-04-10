@@ -410,7 +410,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                         switchFlowStatus = LiveVideoAction.SWITCH_FLOW_RELOAD;
                         isSwitchUpload = true;
                         //1.重新加载,显示加载中
-                        if (!MediaPlayer.isPSIJK) {
+                        if (!MediaPlayer.getIsNewIJK()) {
                             rePlay(false);
                         }
 //                        else {
@@ -464,7 +464,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                 if (switchFlowStatus == LiveVideoAction.SWITCH_FLOW_RELOAD) {
                     mLogtf.i("click again btn,SWITCH_FLOW_RELOAD");
                     //1.重新加载,显示加载中
-                    if (!MediaPlayer.isPSIJK) {
+                    if (!MediaPlayer.getIsNewIJK()) {
                         rePlay(false);
                     } else {
                         psRePlay(false);
@@ -475,14 +475,14 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                     }
                 } else if (switchFlowStatus == LiveVideoAction.SWITCH_FLOW_ROUTE_SWITCH) {
                     mLogtf.i("click again btn,SWITCH_FLOW_ROUTE_SWITCH");
-                    if (!MediaPlayer.isPSIJK) {
+                    if (!MediaPlayer.getIsNewIJK()) {
                         rePlay(false);
                     } else {
                         changeLine(userEyePos - 1);
                     }
                 } else {
                     mLogtf.i("click again btn,other");
-                    if (!MediaPlayer.isPSIJK) {
+                    if (!MediaPlayer.getIsNewIJK()) {
                         rePlay(false);
                     } else {
                         psRePlay(false);
@@ -722,7 +722,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                             mHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if (!MediaPlayer.isPSIJK) {
+                                    if (!MediaPlayer.getIsNewIJK()) {
                                         rePlay(false);
                                     } else {
                                         psRePlay(false);

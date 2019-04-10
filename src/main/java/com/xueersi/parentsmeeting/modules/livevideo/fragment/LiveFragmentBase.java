@@ -468,7 +468,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
      */
     @Override
     public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
-        if (!MediaPlayer.isPSIJK) {
+        if (!MediaPlayer.getIsNewIJK()) {
             if (liveVideoAction == null) {
                 return;
             }
@@ -554,7 +554,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
             }
         }
         if (liveVideoAction != null) {
-            if (!MediaPlayer.isPSIJK) {
+            if (!MediaPlayer.getIsNewIJK()) {
                 liveVideoAction.onFail(arg1, arg2);
             } else {
                 MediaErrorInfo mediaErrorInfo = videoFragment.getMediaErrorInfo();

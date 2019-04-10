@@ -537,7 +537,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         logger.i("=====>connectChatServer:channel=" + channel + ":nickname =" +
                 chatRoomUid);
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
-        if (MediaPlayer.isPSIJK){
+        if (MediaPlayer.getIsNewIJK()){
             mIRCMessage = new NewIRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, mGetInfo, channel);
         } else {
             // 获取 聊天服务器地址  的接口地址

@@ -271,9 +271,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     public LiveGetInfo parseLiveGetInfo(JSONObject data, LiveTopic liveTopic, int liveType, int from) {
         try {
             LiveGetInfo getInfo = new LiveGetInfo(liveTopic);
-            MediaPlayer.isPSIJK = "1".equals(data.optString("isNewSDK")) && "1".equals(data.optString("isNewIRC"));
+//            MediaPlayer.getIsNewIJK() = "1".equals(data.optString("isNewSDK")) && "1".equals(data.optString("isNewIRC"));
             MediaPlayer.setIsNewIJK("1".equals(data.optString("isNewSDK")) && "1".equals(data.optString("isNewIRC")));
-//            MediaPlayer.isPSIJK = true;
+//            MediaPlayer.getIsNewIJK() = true;
 
             //解析getInfo之前，先把之前用来判断状态的静态变量置空
             setStaticStatusNull();

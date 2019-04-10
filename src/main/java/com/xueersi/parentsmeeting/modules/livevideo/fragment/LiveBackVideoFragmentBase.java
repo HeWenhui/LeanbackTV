@@ -620,7 +620,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
         updateRefreshImage();
         TextView errorInfo = (TextView) videoBackgroundRefresh.findViewById(com.xueersi.parentsmeeting.module.player
                 .R.id.tv_course_video_errorinfo);
-        if (MediaPlayer.isPSIJK) {
+        if (MediaPlayer.getIsNewIJK()) {
             MediaErrorInfo mediaErrorInfo = liveBackPlayVideoFragment.getMediaErrorInfo();
             if (mediaErrorInfo != null) {
                 switch (mediaErrorInfo.mErrorCode) {

@@ -645,7 +645,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         TextView errorInfo = videoBackgroundRefresh.findViewById(com.xueersi.parentsmeeting.base.R.id
                 .tv_course_video_errorinfo);
         videoBackgroundRefresh.findViewById(R.id.tv_course_video_errortip).setVisibility(View.GONE);
-        if (MediaPlayer.isPSIJK) {
+        if (MediaPlayer.getIsNewIJK()) {
             MediaErrorInfo mediaErrorInfo = liveBackPlayVideoFragment.getMediaErrorInfo();
             errorInfo.setVisibility(View.VISIBLE);
             if (mediaErrorInfo != null) {
@@ -778,7 +778,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
         //播放失败后，禅师MAX_REPLAY_COUNT次
         if (rePlayCount < MAX_REPLAY_COUNT) {
             rePlayCount++;
-            if (!MediaPlayer.isPSIJK) {
+            if (!MediaPlayer.getIsNewIJK()) {
                 liveBackVideoBll.playNewVideo(Uri.parse(mWebPath), mSectionName);
             } else {
                 changeLine();

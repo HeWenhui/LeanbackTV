@@ -195,7 +195,7 @@ public class SwitchFlowBll extends LiveBaseBll implements BaseLiveMediaControlle
         initView();
         addView();
 
-        if (!MediaPlayer.isPSIJK) {
+        if (!MediaPlayer.getIsNewIJK()) {
             if (listRoute == null) {
                 logger.i("listRoute为null");
             } else {

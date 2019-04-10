@@ -312,7 +312,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
                     // 准备开始播放指定视频
                     synchronized (mOpenLock) {
                         if (!mOpened.get() && vPlayer != null) {
-                            if (!MediaPlayer.isPSIJK) {
+                            if (!MediaPlayer.getIsNewIJK()) {
                                 mOpened.set(true);
                                 vPlayer.setVPlayerListener(vPlayerServiceListener);
                                 if (vPlayer.isInitialized()) {
@@ -753,7 +753,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         } else {
             if (mCloseComplete) {
                 // 如果当前没有初始化，并且是已经播放完毕的状态则重新打开播放
-                if (!MediaPlayer.isPSIJK) {
+                if (!MediaPlayer.getIsNewIJK()) {
                     playNewVideo();
                 } else {
 //                    String videoPath;
@@ -1005,7 +1005,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     @Deprecated
     protected void playNewVideo(Uri uri, String displayName) {
         //
-        if (!MediaPlayer.isPSIJK) {
+        if (!MediaPlayer.getIsNewIJK()) {
             if (isInitialized()) {
                 vPlayer.release();
                 vPlayer.releaseContext();

@@ -14,7 +14,7 @@ import java.util.HashMap;
  */
 public class LiveVideoConfig {
     //是否使用PSIJK
-//    public static final boolean isPSIJK = true;
+//    public static final boolean getIsNewIJK() = true;
     // private static final String TEST_HOST="https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example";
 
     public static String HTTP_HOST = "https://laoshi.xueersi.com";

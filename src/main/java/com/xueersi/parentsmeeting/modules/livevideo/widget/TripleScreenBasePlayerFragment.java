@@ -132,7 +132,7 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                     // 准备开始播放指定视频
                     synchronized (mOpenLock) {
                         if (!mOpened.get() && vPlayer != null) {
-                            if (!MediaPlayer.isPSIJK) {
+                            if (!MediaPlayer.getIsNewIJK()) {
                                 mOpened.set(true);
                                 vPlayer.setVPlayerListener(vPlayerServiceListener);
                                 if (vPlayer.isInitialized()) {

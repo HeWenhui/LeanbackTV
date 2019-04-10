@@ -538,7 +538,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         logger.i("=====>connectChatServer:channel=" + channel + ":nickname =" +
                 chatRoomUid);
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
-        if (MediaPlayer.isPSIJK) {
+        if (MediaPlayer.getIsNewIJK()) {
             mIRCMessage = new NewIRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, mGetInfo, channel);
         } else {
             // 获取 聊天服务器地址  的接口地址
@@ -945,7 +945,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         }
 //        ProxUtil.getProxUtil().put(this, MediaControllerAction.class, this);
         ProxUtil.getProxUtil().put(this, LiveVideoActivityBase.class, this);
-        if (!MediaPlayer.isPSIJK) {
+        if (!MediaPlayer.getIsNewIJK()) {
             playNewVideo(Uri.parse(mWebPath), mSectionName);
         } else {
             String videoPath;
@@ -1677,7 +1677,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
 //            if (rlQuestionContent.getChildCount() > 0) {
 //                rlQuestionContent.setVisibility(View.VISIBLE);
 //            }
-            if (!MediaPlayer.isPSIJK) {
+            if (!MediaPlayer.getIsNewIJK()) {
                 playNewVideo(Uri.parse(mWebPath), mSectionName);
             } else {
                 String videoPath;
@@ -1743,7 +1743,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
     @Override
     public void onResume() {
         super.onResume();
-        if (!MediaPlayer.isPSIJK) {
+        if (!MediaPlayer.getIsNewIJK()) {
             playNewVideo(Uri.parse(mWebPath), mSectionName);
         } else {
             String videoPath;
@@ -1810,7 +1810,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         }
         if (rePlayCount < MAX_REPLAY_COUNT) {
             rePlayCount++;
-            if (!MediaPlayer.isPSIJK) {
+            if (!MediaPlayer.getIsNewIJK()) {
                 playNewVideo(Uri.parse(mWebPath), mSectionName);
             } else {
                 String videoPath;
