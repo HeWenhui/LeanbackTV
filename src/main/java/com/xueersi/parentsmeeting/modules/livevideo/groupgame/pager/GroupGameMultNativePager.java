@@ -53,6 +53,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageReg;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.groupgame.action.MultModeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.config.GroupGameConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.CleanUpEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.GroupGameTestInfosEntity;
@@ -172,15 +173,20 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     private List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> allAnswerList = new ArrayList<>();
     /** 评测时候的语音 */
     private List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> speechAnswerList = new ArrayList<>();
-    /** 页面展示时间 */
-    private HashMap<Integer, PagerShowTime> pagerShowTimeHashMap = new HashMap<>();
+    /** 语音炮弹页面展示时间 */
+    private HashMap<Integer, PagerShowTime> voicePagerShowTimeHashMap = new HashMap<>();
+    /** cleanUp页面展示时间 */
+    private HashMap<Integer, PagerShowTime> cleanUpPagerShowTimeHashMap = new HashMap<>();
     private List<ResultEntity> allScoreList = new ArrayList<>();
+    /** 最小分数 */
+    private int minscore = 10;
     private GetStuActiveTeam getStuActiveTeam;
     private TcpMessageReg tcpMessageReg;
     /** 接收游戏的消息 */
     private TcpMessageAction tcpMessageAction;
     /** 接收用户禁用音视频的消息 */
     private TeamVideoAudioMessage teamVideoAudioMessage;
+    private MultModeAction multModeAction;
     private EvaluatorIng evaluatorIng;
     private PreLoad preLoad;
     private JSONArray userAnswer = new JSONArray();
@@ -222,11 +228,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             audioRequest.request(null);
         }
         //网页消息
-        final StaticWeb.OnMessage onMessage;
         if (LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(gameType)) {
-            onMessage = new CleanUpOnMessage();
+            multModeAction = new CleanUpOnMessage();
         } else {
-            onMessage = new VoiceCannonOnMessage();
+            multModeAction = new VoiceCannonOnMessage();
         }
 //        startSpeechRecognize();
         getStuActiveTeam = ProxUtil.getProxUtil().get(mContext, GetStuActiveTeam.class);
@@ -263,13 +268,13 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             tcpMessageReg = ProxUtil.getProxUtil().get(mContext, TcpMessageReg.class);
             if (tcpMessageReg != null) {
                 if (LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(gameType)) {
-                    CleanUpOnMessage cleanUpOnMessage = (CleanUpOnMessage) onMessage;
+                    CleanUpOnMessage cleanUpOnMessage = (CleanUpOnMessage) multModeAction;
                     CleanUpTcpMessage cleanUpTcpMessage = new CleanUpTcpMessage();
                     cleanUpTcpMessage.cleanUpOnMessage = cleanUpOnMessage;
                     tcpMessageAction = cleanUpTcpMessage;
                     evaluatorIng = new CleanEvaluatorIng();
                 } else {
-                    VoiceCannonOnMessage voiceCannnon = (VoiceCannonOnMessage) onMessage;
+                    VoiceCannonOnMessage voiceCannnon = (VoiceCannonOnMessage) multModeAction;
                     VoiceProjectile voiceProjectile = new VoiceProjectile();
                     voiceProjectile.voiceCannonOnMessage = voiceCannnon;
                     tcpMessageAction = voiceProjectile;
@@ -291,18 +296,18 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         });
         wvSubjectWeb.setWebViewClient(new CourseWebViewClient());
 
-        wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, onMessage), "xesApp");
+        wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, multModeAction), "xesApp");
 //        wvSubjectWeb.loadUrl(TEST_URL);
     }
 
-    class TurnRun implements Runnable {
+    private class VoiceCannonTurnRun implements Runnable {
         int pagerNum;
         int time;
 
-        public TurnRun(int pagerNum, int time) {
+        public VoiceCannonTurnRun(int pagerNum, int time) {
             this.pagerNum = pagerNum;
             this.time = time;
-            logger.d("TurnRun:pagerNum=" + pagerNum + ",time=" + time);
+            logger.d("VoiceCannonTurnRun:pagerNum=" + pagerNum + ",time=" + time);
         }
 
         @Override
@@ -325,7 +330,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         }
                     }
                 }
-                mLogtf.d("TurnRun:pagerNum=" + pagerNum + ",currentAnswerIndex=" + currentAnswerIndex + ",remove=" + remove);
+                mLogtf.d("VoiceCannonTurnRun:pagerNum=" + pagerNum + ",currentAnswerIndex=" + currentAnswerIndex + ",remove=" + remove);
             } catch (Exception e) {
                 e.printStackTrace();
                 CrashReport.postCatchedException(e);
@@ -336,8 +341,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     /**
      * 语音炮弹的网页消息
      */
-    class VoiceCannonOnMessage implements StaticWeb.OnMessage {
-        TurnRun turnRun;
+    class VoiceCannonOnMessage implements MultModeAction {
+        VoiceCannonTurnRun turnRun;
 
         @Override
         public void postMessage(String where, final JSONObject message, String origin) {
@@ -361,13 +366,13 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 GroupGameTestInfosEntity.TestInfoEntity test = tests.get(0);
                 int time = test.getAnswerList().get(currentAnswerIndex).getSingleTime() + 1;
                 if (turnRun == null) {
-                    turnRun = new TurnRun(currentAnswerIndex, time);
+                    turnRun = new VoiceCannonTurnRun(currentAnswerIndex, time);
                     handler.postDelayed(turnRun, time * 1000);
                 } else {
                     logger.d("onLoadComplete:pagerNum=" + turnRun.pagerNum + "" + currentAnswerIndex);
                     if (turnRun.pagerNum != currentAnswerIndex) {
                         handler.removeCallbacks(turnRun);
-                        turnRun = new TurnRun(currentAnswerIndex, time);
+                        turnRun = new VoiceCannonTurnRun(currentAnswerIndex, time);
                         handler.postDelayed(turnRun, time * 1000);
                     }
                 }
@@ -375,14 +380,14 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 CrashReport.postCatchedException(e);
             }
             //当前页
-            PagerShowTime pagerShowTime = pagerShowTimeHashMap.get(currentAnswerIndex);
+            PagerShowTime pagerShowTime = voicePagerShowTimeHashMap.get(currentAnswerIndex);
             if (pagerShowTime != null) {
                 if (pagerShowTime.start == 0) {
                     pagerShowTime.start = System.currentTimeMillis();
                 }
             }
             //上一页
-            pagerShowTime = pagerShowTimeHashMap.get(currentAnswerIndex - 1);
+            pagerShowTime = voicePagerShowTimeHashMap.get(currentAnswerIndex - 1);
             if (pagerShowTime != null) {
                 pagerShowTime.end = System.currentTimeMillis();
             }
@@ -404,14 +409,14 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 if (isTurnPage) {
                     try {
                         //当前页
-                        PagerShowTime pagerShowTime = pagerShowTimeHashMap.get(currentAnswerIndex);
+                        PagerShowTime pagerShowTime = voicePagerShowTimeHashMap.get(currentAnswerIndex);
                         if (pagerShowTime != null) {
                             if (pagerShowTime.start == 0) {
                                 pagerShowTime.start = System.currentTimeMillis();
                             }
                         }
                         //上一页
-                        pagerShowTime = pagerShowTimeHashMap.get(currentAnswerIndex - 1);
+                        pagerShowTime = voicePagerShowTimeHashMap.get(currentAnswerIndex - 1);
                         if (pagerShowTime != null) {
                             pagerShowTime.end = System.currentTimeMillis();
                         }
@@ -421,13 +426,13 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         }
                         int time = test.getAnswerList().get(currentAnswerIndex).getSingleTime() + 1;
                         if (turnRun == null) {
-                            turnRun = new TurnRun(currentAnswerIndex, time);
+                            turnRun = new VoiceCannonTurnRun(currentAnswerIndex, time);
                             handler.postDelayed(turnRun, time * 1000);
                         } else {
                             logger.d("onLoadComplete:pagerNum=" + turnRun.pagerNum + "" + currentAnswerIndex);
                             if (turnRun.pagerNum != currentAnswerIndex) {
                                 handler.removeCallbacks(turnRun);
-                                turnRun = new TurnRun(currentAnswerIndex, time);
+                                turnRun = new VoiceCannonTurnRun(currentAnswerIndex, time);
                                 handler.postDelayed(turnRun, time * 1000);
                             }
                         }
@@ -465,12 +470,58 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 }
             });
         }
+
+        @Override
+        public void onDestory() {
+            if (turnRun != null) {
+                handler.removeCallbacks(turnRun);
+            }
+        }
+    }
+
+    private class CleanUpTurnRun implements Runnable {
+        int pagerNum;
+        int time;
+
+        public CleanUpTurnRun(int pagerNum, int time) {
+            this.pagerNum = pagerNum;
+            this.time = time;
+            logger.d("CleanUpTurnRun:pagerNum=" + pagerNum + ",time=" + time);
+        }
+
+        @Override
+        public void run() {
+            JSONObject jsonData = new JSONObject();
+            try {
+                jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
+                jsonData.put("isTurnPage", true);
+                boolean remove = false;
+                wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
+                if (!allAnswerList.isEmpty()) {
+                    GroupGameTestInfosEntity.TestInfoEntity test = tests.get(0);
+                    List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = test.getAnswerList();
+                    if (pagerNum < answerList.size()) {
+                        GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = answerList.get(pagerNum);
+                        remove = allAnswerList.remove(answersEntity);
+                        if (remove) {
+                            currentAnswerIndex++;
+                            createSpeechContent("TurnRun");
+                        }
+                    }
+                }
+                mLogtf.d("CleanUpTurnRun:pagerNum=" + pagerNum + ",currentAnswerIndex=" + currentAnswerIndex + ",remove=" + remove);
+            } catch (Exception e) {
+                e.printStackTrace();
+                CrashReport.postCatchedException(e);
+            }
+        }
     }
 
     /**
      * cleanup的网页消息
      */
-    class CleanUpOnMessage implements StaticWeb.OnMessage {
+    class CleanUpOnMessage implements MultModeAction {
+        CleanUpTurnRun cleanUpTurnRun;
 
         @Override
         public void postMessage(String where, final JSONObject message, String origin) {
@@ -490,6 +541,18 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         }
 
         private void onLoadComplete(String where, JSONObject message) {
+            if (cleanUpTurnRun == null) {
+                GroupGameTestInfosEntity.TestInfoEntity test = tests.get(0);
+                int time = test.getTotalTime() + 1;
+                cleanUpTurnRun = new CleanUpTurnRun(0, time);
+                handler.postDelayed(cleanUpTurnRun, time);
+            }
+            PagerShowTime pagerShowTime = cleanUpPagerShowTimeHashMap.get(0);
+            if (pagerShowTime != null) {
+                if (pagerShowTime.start == 0) {
+                    pagerShowTime.start = System.currentTimeMillis();
+                }
+            }
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -517,8 +580,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     JSONObject student = new JSONObject();
                     student.put("studentNum", 3 - i);
                     student.put("name", teamMemberEntity.name);
-//                            student.put("avatar", teamMemberEntity.headurl);
-                    student.put("avatar", "http://xesfile.oss-cn-beijing.aliyuncs.com/nrcpb/cjtsg5ybb0000ywow5xr4ne1j.png");
+                    student.put("avatar", teamMemberEntity.headurl);
+//                    student.put("avatar", "http://xesfile.oss-cn-beijing.aliyuncs.com/nrcpb/cjtsg5ybb0000ywow5xr4ne1j.png");
                     {
                         JSONObject rankInfo = new JSONObject();
                         rankInfo.put("grading", 1);
@@ -546,6 +609,13 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
             } catch (Exception e) {
                 logger.d("onScene", e);
+            }
+        }
+
+        @Override
+        public void onDestory() {
+            if (cleanUpTurnRun != null) {
+                handler.removeCallbacks(cleanUpTurnRun);
             }
         }
     }
@@ -1134,12 +1204,18 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 int startPager = 0;
                 for (int i = 0; i < allAnswerList.size(); i++) {
                     GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = allAnswerList.get(i);
-                    PagerShowTime pagerShowTime = new PagerShowTime();
-                    pagerShowTimeHashMap.put(answersEntity.getId(), pagerShowTime);
+                    if (LiveQueConfig.EN_COURSE_TYPE_HOT_AIR_BALLON.equals(gameType)) {
+                        PagerShowTime pagerShowTime = new PagerShowTime();
+                        voicePagerShowTimeHashMap.put(answersEntity.getId(), pagerShowTime);
+                    }
                     playTime += answersEntity.getSingleTime();
                     if (lastTime < playTime) {
                         startPager = i;
                     }
+                }
+                if (LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(gameType)) {
+                    PagerShowTime pagerShowTime = new PagerShowTime();
+                    voicePagerShowTimeHashMap.put(0, pagerShowTime);
                 }
                 logger.d("getCourseWareTests:lastTime=" + lastTime + ",playTime=" + playTime + ",startPager=" + startPager);
                 createSpeechContent("getCourseWareTests");
@@ -1186,21 +1262,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 }
             }
 
-            /**
-             * 倒计时
-             * @param startTime
-             * @return
-             */
-            private String getTimeNegativeEn(long releaseTime, long startTime) {
-                long time = System.currentTimeMillis() / 1000 - startTime;
-                long second = (releaseTime - time) % 60;
-                long minute = (releaseTime - time) / 60;
-                if (releaseTime - time < 0) {
-                    return null;
-                }
-                return minute + "分" + second + "秒";
-            }
-
             @Override
             public void onDataFail(int errStatus, String failMsg) {
                 super.onDataFail(errStatus, failMsg);
@@ -1237,116 +1298,187 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         int acceptMicLengthTime = 0;
         PkTeamEntity teamEntity = getStuActiveTeam.getPkTeamEntity();
         int gameGroupId = interactiveTeam.getInteractive_team_id();
-        //遍历作答正确，取最大的金币为3
-        Set<String> canKeySet = vidooCannonEntities.keySet();
-        VidooCannonEntity maxVidooCannonEntity = null;
-        int maxRight = 0;
-        for (String userId : canKeySet) {
-            VidooCannonEntity vidooCannonEntity = vidooCannonEntities.get("" + userId);
-            int rightNum = vidooCannonEntity.rightNum;
-            if (rightNum > 0) {
-                vidooCannonEntity.teamMemberEntity.gold = 2;
-            }
-            if (rightNum > maxRight) {
-                maxRight = rightNum;
-                maxVidooCannonEntity = vidooCannonEntity;
-            }
-        }
-        if (maxVidooCannonEntity != null) {
-            logger.d("submit:userId=" + maxVidooCannonEntity.teamMemberEntity.id + ",rightNum=" + maxVidooCannonEntity.rightNum);
-            maxVidooCannonEntity.teamMemberEntity.gold = 3;
-        }
-        //遍历用户item。计算时间
-        Set<String> itemKeySet = courseGroupItemHashMap.keySet();
-        for (String userId : itemKeySet) {
-            BaseCourseGroupItem baseCourseGroupItem = courseGroupItemHashMap.get(userId);
-            if (userId.equals("" + stuid)) {
-                videoLengthTime = (int) baseCourseGroupItem.getVideoTime();
-                micLengthTime = (int) baseCourseGroupItem.getAudioTime();
-                gold = baseCourseGroupItem.getEntity().gold;
-            } else {
-                long videoTime = baseCourseGroupItem.getVideoTime();
-                long audioTime = baseCourseGroupItem.getAudioTime();
-                acceptVideoLengthTime += videoTime;
-                acceptMicLengthTime += audioTime;
-                logger.d("submit:userId=" + userId + ",videoTime=" + videoTime + ",audioTime=" + audioTime);
+        {
+            //遍历用户item。计算时间
+            Set<String> itemKeySet = courseGroupItemHashMap.keySet();
+            for (String userId : itemKeySet) {
+                BaseCourseGroupItem baseCourseGroupItem = courseGroupItemHashMap.get(userId);
+                if (userId.equals("" + stuid)) {
+                    videoLengthTime = (int) baseCourseGroupItem.getVideoTime();
+                    micLengthTime = (int) baseCourseGroupItem.getAudioTime();
+                    gold = baseCourseGroupItem.getEntity().gold;
+                } else {
+                    long videoTime = baseCourseGroupItem.getVideoTime();
+                    long audioTime = baseCourseGroupItem.getAudioTime();
+                    acceptVideoLengthTime += videoTime;
+                    acceptMicLengthTime += audioTime;
+                    logger.d("submit:userId=" + userId + ",videoTime=" + videoTime + ",audioTime=" + audioTime);
+                }
             }
         }
-        for (int i = 0; i < allScoreList.size(); i++) {
-            ResultEntity resultEntity = allScoreList.get(i);
-            voiceTime += resultEntity.getSpeechDuration() * 1000;
+        {
+            for (int i = 0; i < allScoreList.size(); i++) {
+                ResultEntity resultEntity = allScoreList.get(i);
+                voiceTime += resultEntity.getSpeechDuration() * 1000;
+            }
         }
+        GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
+        List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = testInfoEntity.getAnswerList();
         JSONObject answerData = new JSONObject();
-        try {
-            answerData.put("tryTimes", allScoreList.size());
-            JSONArray userAnswer = new JSONArray();
-            VidooCannonEntity vidooCannonEntity = vidooCannonEntities.get("" + stuid);
-            float totalScore = 0;
-            int totalCount = 0;
-            if (vidooCannonEntity != null && !tests.isEmpty()) {
-                if (vidooCannonEntity.teamMemberEntity.energy != 0) {
-                    vidooCannonEntity.teamMemberEntity.energy += 5;
-                    energy = vidooCannonEntity.teamMemberEntity.energy;
+        if (LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(gameType)) {
+            //遍历作答正确，取最大的金币为3
+            Set<String> canKeySet = vidooCannonEntities.keySet();
+            VidooCannonEntity maxVidooCannonEntity = null;
+            int maxRight = 0;
+            for (String userId : canKeySet) {
+                VidooCannonEntity vidooCannonEntity = vidooCannonEntities.get("" + userId);
+                int rightNum = vidooCannonEntity.rightNum;
+                if (rightNum > 0) {
+                    vidooCannonEntity.teamMemberEntity.gold = 2;
                 }
-                answerData.put("rightNum", vidooCannonEntity.rightNum);
-                GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
-                List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = testInfoEntity.getAnswerList();
-                HashMap<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity, ArrayList<Integer>> wordScore = vidooCannonEntity.wordScore;
-                for (int ansIndex = 0; ansIndex < answerList.size(); ansIndex++) {
-                    JSONObject jsonObject = new JSONObject();
-                    GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = answerList.get(ansIndex);
-                    jsonObject.put("text", answer.getText());
-                    ArrayList<Integer> arrayList = wordScore.get(answer);
-                    String scores = "";
-                    if (arrayList != null) {
-                        for (int arrIndex = 0; arrIndex < arrayList.size(); arrIndex++) {
-                            Integer soc = arrayList.get(arrIndex);
-                            scores += soc;
-                            if (arrIndex < arrayList.size() - 1) {
-                                scores += ",";
+                if (rightNum > maxRight) {
+                    maxRight = rightNum;
+                    maxVidooCannonEntity = vidooCannonEntity;
+                }
+            }
+            if (maxVidooCannonEntity != null) {
+                logger.d("submit:userId=" + maxVidooCannonEntity.teamMemberEntity.id + ",rightNum=" + maxVidooCannonEntity.rightNum);
+                maxVidooCannonEntity.teamMemberEntity.gold = 3;
+            }
+            try {
+                answerData.put("tryTimes", allScoreList.size());
+                JSONArray userAnswer = new JSONArray();
+                VidooCannonEntity vidooCannonEntity = vidooCannonEntities.get("" + stuid);
+                float totalScore = 0;
+                int totalCount = 0;
+                if (vidooCannonEntity != null && !tests.isEmpty()) {
+                    if (vidooCannonEntity.teamMemberEntity.energy != 0) {
+                        vidooCannonEntity.teamMemberEntity.energy += 5;
+                        energy = vidooCannonEntity.teamMemberEntity.energy;
+                    }
+                    answerData.put("rightNum", vidooCannonEntity.rightNum);
+                    HashMap<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity, ArrayList<Integer>> wordScore = vidooCannonEntity.wordScore;
+                    for (int ansIndex = 0; ansIndex < answerList.size(); ansIndex++) {
+                        JSONObject jsonObject = new JSONObject();
+                        GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = answerList.get(ansIndex);
+                        jsonObject.put("text", answer.getText());
+                        ArrayList<Integer> arrayList = wordScore.get(answer);
+                        String scores = "";
+                        if (arrayList != null) {
+                            for (int arrIndex = 0; arrIndex < arrayList.size(); arrIndex++) {
+                                Integer soc = arrayList.get(arrIndex);
+                                scores += soc;
+                                if (arrIndex < arrayList.size() - 1) {
+                                    scores += ",";
+                                }
+                                try {
+                                    totalScore += soc;
+                                } catch (Exception e) {
+                                    CrashReport.postCatchedException(e);
+                                }
+                                totalCount++;
                             }
-                            try {
-                                totalScore += soc;
-                            } catch (Exception e) {
-                                CrashReport.postCatchedException(e);
+                            jsonObject.put("isRight", 1);
+                        } else {
+                            jsonObject.put("isRight", 0);
+                        }
+                        PagerShowTime pagerShowTime = voicePagerShowTimeHashMap.get(answer.getId());
+                        if (pagerShowTime != null) {
+                            if (pagerShowTime.start == 0) {
+                                pagerShowTime.start = System.currentTimeMillis();
                             }
+                            if (pagerShowTime.end == 0) {
+                                pagerShowTime.end = System.currentTimeMillis();
+                            }
+                            long pageTime = pagerShowTime.end - pagerShowTime.start;
+                            if (pageTime < 0) {
+                                pageTime = 0;
+                            }
+                            logger.d("submit:pageTime=" + pageTime);
+                            jsonObject.put("voiceTime", pageTime);
+                        } else {
+                            jsonObject.put("voiceTime", 0);
+                        }
+                        jsonObject.put("scores", scores);
+                        userAnswer.put(jsonObject);
+                    }
+                } else {
+                    answerData.put("rightNum", 0);
+                }
+                if (totalCount == 0) {
+                    answerData.put("averageScore", 0);
+                } else {
+                    answerData.put("averageScore", totalScore / totalCount);
+                }
+                answerData.put("userAnswer", userAnswer);
+            } catch (JSONException e) {
+                CrashReport.postCatchedException(e);
+                logger.d("submit", e);
+            }
+        } else {
+            //遍历作答正确，取最大的金币为3
+            Set<String> canKeySet = cleanUpEntities.keySet();
+            CleanUpEntity maxCleanUpEntity = null;
+            int maxRight = 0;
+            for (String userId : canKeySet) {
+                CleanUpEntity cleanUpEntity = cleanUpEntities.get("" + userId);
+                int rightNum = cleanUpEntity.rightAnswerList.size();
+                if (rightNum > 0) {
+                    cleanUpEntity.teamMemberEntity.gold = 2;
+                }
+                if (rightNum > maxRight) {
+                    maxRight = rightNum;
+                    maxCleanUpEntity = cleanUpEntity;
+                }
+            }
+            if (maxCleanUpEntity != null) {
+                logger.d("submit:userId=" + maxCleanUpEntity.teamMemberEntity.id + ",rightNum=" + maxCleanUpEntity.rightAnswerList.size());
+                maxCleanUpEntity.teamMemberEntity.gold = 3;
+            }
+            try {
+                answerData.put("tryTimes", allScoreList.size());
+                JSONArray userAnswer = new JSONArray();
+                CleanUpEntity cleanUpEntity = cleanUpEntities.get("" + stuid);
+                float totalScore = 0;
+                int totalCount = 0;
+                if (cleanUpEntity != null && !tests.isEmpty()) {
+                    if (cleanUpEntity.teamMemberEntity.energy != 0) {
+                        cleanUpEntity.teamMemberEntity.energy += 5;
+                        energy = cleanUpEntity.teamMemberEntity.energy;
+                    }
+                    answerData.put("rightNum", cleanUpEntity.rightAnswerList.size());
+                    HashMap<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity, Integer> wordScore = cleanUpEntity.wordScore;
+                    for (int ansIndex = 0; ansIndex < answerList.size(); ansIndex++) {
+                        JSONObject jsonObject = new JSONObject();
+                        GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = answerList.get(ansIndex);
+                        jsonObject.put("text", answer.getText());
+                        String scores = "";
+                        Integer score = wordScore.get(answer);
+                        if (score != null) {
+                            totalScore += score;
                             totalCount++;
+                            scores = "" + scores;
+                            jsonObject.put("isRight", 1);
+                        } else {
+                            jsonObject.put("isRight", 0);
                         }
-                        jsonObject.put("isRight", 1);
-                    } else {
-                        jsonObject.put("isRight", 0);
-                    }
-                    PagerShowTime pagerShowTime = pagerShowTimeHashMap.get(answer.getId());
-                    if (pagerShowTime != null) {
-                        if (pagerShowTime.start == 0) {
-                            pagerShowTime.start = System.currentTimeMillis();
-                        }
-                        if (pagerShowTime.end == 0) {
-                            pagerShowTime.end = System.currentTimeMillis();
-                        }
-                        long pageTime = pagerShowTime.end - pagerShowTime.start;
-                        if (pageTime < 0) {
-                            pageTime = 0;
-                        }
-                        logger.d("submit:pageTime=" + pageTime);
-                        jsonObject.put("voiceTime", pageTime);
-                    } else {
                         jsonObject.put("voiceTime", 0);
+                        jsonObject.put("scores", scores);
+                        userAnswer.put(jsonObject);
                     }
-                    jsonObject.put("scores", scores);
-                    userAnswer.put(jsonObject);
+                } else {
+                    answerData.put("rightNum", 0);
                 }
-            } else {
-                answerData.put("rightNum", 0);
+                if (totalCount == 0) {
+                    answerData.put("averageScore", 0);
+                } else {
+                    answerData.put("averageScore", totalScore / totalCount);
+                }
+                answerData.put("userAnswer", userAnswer);
+            } catch (Exception e) {
+                CrashReport.postCatchedException(e);
+                logger.d("submit", e);
             }
-            if (totalCount == 0) {
-                answerData.put("averageScore", 0);
-            } else {
-                answerData.put("averageScore", totalScore / totalCount);
-            }
-            answerData.put("userAnswer", userAnswer);
-        } catch (JSONException e) {
-            logger.d("submit", e);
         }
         englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 1, voiceTime, teamEntity.getPkTeamId(), gameGroupId, starNum, energy, gold,
                 videoLengthTime, micLengthTime
@@ -1405,6 +1537,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     public void onDestroy() {
         super.onDestroy();
         wvSubjectWeb.destroy();
+        multModeAction.onDestory();
         if (mIse != null) {
             mIse.cancel();
         }
@@ -1545,7 +1678,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         public void onResult(ResultEntity resultEntity) {
             int score = resultEntity.getScore();
             allScoreList.add(resultEntity);
-            if (score < 10) {
+            if (score < minscore) {
                 BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stuid);
                 if (courseGroupItem != null) {
                     courseGroupItem.onOpps();
@@ -1646,7 +1779,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             try {
                 int score = resultEntity.getScore();
                 allScoreList.add(resultEntity);
-                if (score < 70) {
+                if (score < minscore) {
                     return;
                 }
                 mSingCount++;
@@ -1655,10 +1788,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
                 int newSenIdx = resultEntity.getNewSenIdx();
                 logger.d("CleanEvaluatorIng:newSenIdx=" + newSenIdx + ",size" + allAnswerList.size() + ",speechContent=" + speechContent);
-                if (newSenIdx < 0 || newSenIdx >= allAnswerList.size()) {
+                if (newSenIdx < 0 || newSenIdx >= speechAnswerList.size()) {
                     return;
                 }
-                GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity removeAnswersEntity = allAnswerList.get(newSenIdx);
+                GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity removeAnswersEntity = speechAnswerList.get(newSenIdx);
                 {
                     //传入网页。现在通过tcp传
 //                    allAnswerList.remove(removeAnswersEntity);
@@ -2014,7 +2147,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                     JSONObject rob_wordObj = rob_wordsArray.getJSONObject(j);
                                     int word_id = rob_wordObj.getInt("word_id");
 //                                    String word_text = rob_wordObj.getString("word_text");
-//                                    String scores = rob_wordObj.getString("scores");
+                                    int scores = rob_wordObj.optInt("scores");
                                     int incr_energy = rob_wordObj.optInt("incr_energy");
                                     for (int k = 0; k < allAnswerList.size(); k++) {
                                         GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = allAnswerList.get(k);
@@ -2023,6 +2156,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                             answer.setGetFireCount(incr_energy);
                                             if (cleanUpEntity != null) {
                                                 cleanUpEntity.rightAnswerList.add(answer);
+                                                cleanUpEntity.wordScore.put(answer, scores);
                                             }
                                             break;
                                         }
