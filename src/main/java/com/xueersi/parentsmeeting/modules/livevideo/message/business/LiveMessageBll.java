@@ -239,7 +239,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         HalfBodyLiveMessagePager liveMessagePager = null;
 
         //根据不同的直播类型创建不同皮肤
-        if (getInfo != null && getInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE) {
+        if (getInfo != null && getInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
             // 语文
             liveMessagePager = new HalfBodyArtsLiveMsgPager(activity, this,
                     null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);

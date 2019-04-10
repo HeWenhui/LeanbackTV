@@ -151,7 +151,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
      */
     private void initLoadingView() {
         if (ivVodeoLoading != null) {
-            if (mGetInfo != null && mGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE) {
+            if (mGetInfo != null && mGetInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
                 //语文loading 居中显示
                 RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) ivVodeoLoading.getLayoutParams();
                 params.topMargin = 0;
@@ -218,7 +218,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
 
         Drawable dwTeacherNotPresent = ResourcesCompat.getDrawable(activity.getResources(), getLoadingBg(), null);
         rlFirstBackgroundView.setBackground(dwTeacherNotPresent);
-        if (mGetInfo != null && mGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE) {
+        if (mGetInfo != null && mGetInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
             tvLoadingHint.setTextColor(Color.WHITE);
         } else {
             tvLoadingHint.setTextColor(Color.parseColor("#3B9699"));
@@ -376,7 +376,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
 
     private int getClassBeforStateImg() {
 
-        if (mGetInfo != null && mGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE) {
+        if (mGetInfo != null && mGetInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
             return R.drawable.live_halfbody_class_before_state_arts;
 
         } else {
@@ -388,7 +388,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
 
     private int getTeachNotpresentStateImg() {
 
-        if (mGetInfo != null && mGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE) {
+        if (mGetInfo != null && mGetInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
             return R.drawable.live_halfbody_teacher_notpresent_state_arts;
         } else {
             return R.drawable.live_halfbody_teacher_notpresent_state;
@@ -408,7 +408,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
      * @return
      */
     private int getLoadingBg() {
-        if (mGetInfo != null && mGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE) {
+        if (mGetInfo != null && mGetInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
             return R.drawable.live_halfbody_bg_arts;
         } else {
             return R.drawable.live_halfbody_bg;
@@ -422,7 +422,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
      * @return
      */
     private int getNoTeacherBg() {
-        if (mGetInfo != null && mGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE) {
+        if (mGetInfo != null && mGetInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
             return R.drawable.live_halfbody_bg_arts;
         } else {
             return R.drawable.live_halfbody_bg;
@@ -436,7 +436,7 @@ public class HalfBodyLiveVideoAction extends LiveVideoAction {
      */
     private int getClassBeforeBg() {
 
-        if (mGetInfo != null && mGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE) {
+        if (mGetInfo != null && mGetInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
             return R.drawable.live_halfbody_bg_arts;
         } else {
             return R.drawable.live_halfbody_bg;

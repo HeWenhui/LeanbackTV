@@ -7,7 +7,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.config;
 public class LiveVideoChConfig {
     static String CH_HTTP_HOST = "https://app.chs.xueersi.com";
     static String CH_HTTP_HOST_HALF = "https://laoshi.xueersi.com/science";
-    static String CH_LIVE_HTTP_HOST = "https://live.chs.xueersi.com";
+   public static String CH_LIVE_HTTP_HOST = "https://live.chs.xueersi.com";
 
     /**
      * 获取分队信息
