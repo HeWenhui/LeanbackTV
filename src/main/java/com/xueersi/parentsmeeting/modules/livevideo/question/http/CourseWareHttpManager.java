@@ -313,11 +313,12 @@ public class CourseWareHttpManager {
     /**
      * 小组互动 - 答题
      */
-    public void submitGroupGame(String testId, String type, int gameMode, int voiceTime, int isPlayBack, int pkTeamId, int gameGroupId,
+    public void submitGroupGame(String classId, String testId, String type, int gameMode, int voiceTime, int isPlayBack, int pkTeamId, int gameGroupId,
                                 int starNum, int energy, int gold, int videoLengthTime, int micLengthTime, int acceptVideoLengthTime, int acceptMicLengthTime,
                                 String answerData, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         liveHttpManager.setDefaultParameter(httpRequestParams);
+        httpRequestParams.addBodyParam("classId", "" + classId);
         httpRequestParams.addBodyParam("testId", "" + testId);
         httpRequestParams.addBodyParam("type", type);
         httpRequestParams.addBodyParam("gameMode", "" + gameMode);

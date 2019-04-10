@@ -413,7 +413,8 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
 
         @Override
         public void submitGroupGame(VideoQuestionLiveEntity detailInfo, int gameMode, int voiceTime, int pkTeamId, int gameGroupId, int starNum, int energy, int gold, int videoLengthTime, int micLengthTime, int acceptVideoLengthTime, int acceptMicLengthTime, String answerData, AbstractBusinessDataCallBack callBack) {
-
+            String classId = liveGetInfo.getStudentLiveInfo().getClassId();
+            getCourseWareHttpManager().submitGroupGame(classId, detailInfo.id, detailInfo.type, gameMode, voiceTime, 2, pkTeamId, gameGroupId, starNum, energy, gold, videoLengthTime, micLengthTime, acceptVideoLengthTime, acceptMicLengthTime, answerData, callBack);
         }
 
         @Override
