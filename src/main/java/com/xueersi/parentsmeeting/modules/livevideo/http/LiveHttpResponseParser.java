@@ -272,6 +272,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         try {
             LiveGetInfo getInfo = new LiveGetInfo(liveTopic);
             MediaPlayer.isPSIJK = "1".equals(data.optString("isNewSDK")) && "1".equals(data.optString("isNewIRC"));
+            MediaPlayer.setIsNewIJK("1".equals(data.optString("isNewSDK")) && "1".equals(data.optString("isNewIRC")));
 //            MediaPlayer.isPSIJK = true;
 
             //解析getInfo之前，先把之前用来判断状态的静态变量置空
