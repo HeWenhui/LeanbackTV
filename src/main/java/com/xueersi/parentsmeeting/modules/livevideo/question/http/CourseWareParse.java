@@ -120,6 +120,7 @@ public class CourseWareParse {
             groupGameTestInfos.setReleaseTime(jsonObject.optLong("releaseTime", System.currentTimeMillis()));
             groupGameTestInfos.setOperateTimeStamp(jsonObject.optLong("operateTimeStamp", System.currentTimeMillis()));
             groupGameTestInfos.setTimeStamp(jsonObject.optLong("timeStamp", System.currentTimeMillis()));
+            groupGameTestInfos.setAnswered(jsonObject.optBoolean("isAnswered"));
             List<GroupGameTestInfosEntity.TestInfoEntity> testInfolist = new ArrayList<>();
             JSONArray array = jsonObject.getJSONArray("list");
             for (int i = 0; i < array.length(); i++) {
@@ -159,6 +160,7 @@ public class CourseWareParse {
             groupGameTestInfos.setReleaseTime(jsonObject.optLong("releaseTime", System.currentTimeMillis()));
             groupGameTestInfos.setOperateTimeStamp(jsonObject.optLong("operateTimeStamp", System.currentTimeMillis()));
             groupGameTestInfos.setTimeStamp(jsonObject.optLong("timeStamp", System.currentTimeMillis()));
+            groupGameTestInfos.setAnswered(jsonObject.optBoolean("isAnswered"));
             List<GroupGameTestInfosEntity.TestInfoEntity> testInfolist = new ArrayList<>();
             JSONArray array = jsonObject.getJSONArray("list");
             for (int i = 0; i < array.length(); i++) {

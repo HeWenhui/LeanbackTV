@@ -27,6 +27,10 @@ public class GroupGameTestInfosEntity {
      * 拉题时间戳
      */
     private long timeStamp;
+    /**
+     * 是否已作答
+     */
+    private boolean isAnswered;
     private List<TestInfoEntity> testInfoList;
 
     public long getReleaseTime() {
@@ -51,6 +55,14 @@ public class GroupGameTestInfosEntity {
 
     public void setTimeStamp(long timeStamp) {
         this.timeStamp = timeStamp;
+    }
+
+    public boolean isAnswered() {
+        return isAnswered;
+    }
+
+    public void setAnswered(boolean answered) {
+        isAnswered = answered;
     }
 
     public List<TestInfoEntity> getTestInfoList() {

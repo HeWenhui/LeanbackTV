@@ -358,18 +358,22 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         }
 
         private void onLoadComplete(String where, JSONObject message) {
+            final GroupGameTestInfosEntity.TestInfoEntity test = tests.get(0);
             try {
-                GroupGameTestInfosEntity.TestInfoEntity test = tests.get(0);
-                int time = test.getAnswerList().get(currentAnswerIndex).getSingleTime() + 1;
-                if (turnRun == null) {
-                    turnRun = new VoiceCannonTurnRun(currentAnswerIndex, time);
-                    handler.postDelayed(turnRun, time * 1000);
-                } else {
-                    logger.d("onLoadComplete:pagerNum=" + turnRun.pagerNum + "" + currentAnswerIndex);
-                    if (turnRun.pagerNum != currentAnswerIndex) {
-                        handler.removeCallbacks(turnRun);
+                mLogtf.d("onLoadComplete:totaltime=" + test.getTotalTime());
+                //时间没结束,才倒计时
+                if (test.getTotalTime() > 0) {
+                    int time = test.getAnswerList().get(currentAnswerIndex).getSingleTime() + 1;
+                    if (turnRun == null) {
                         turnRun = new VoiceCannonTurnRun(currentAnswerIndex, time);
                         handler.postDelayed(turnRun, time * 1000);
+                    } else {
+                        logger.d("onLoadComplete:pagerNum=" + turnRun.pagerNum + "" + currentAnswerIndex);
+                        if (turnRun.pagerNum != currentAnswerIndex) {
+                            handler.removeCallbacks(turnRun);
+                            turnRun = new VoiceCannonTurnRun(currentAnswerIndex, time);
+                            handler.postDelayed(turnRun, time * 1000);
+                        }
                     }
                 }
             } catch (Exception e) {
@@ -391,7 +395,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 @Override
                 public void run() {
                     preLoad.onStop();
-                    coursewareOnloading(currentAnswerIndex);
+                    if (test.getTotalTime() > 0) {
+                        coursewareOnloading(currentAnswerIndex);
+                    }
                     if (!gameOver) {
                         startSpeechRecognize();
                     }
@@ -447,9 +453,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 public void run() {
                     try {
                         GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
-                        if (testInfoEntity.getTotalTime() <= 0) {
-                            return;
-                        }
                         JSONObject resultData = new JSONObject();
                         resultData.put("type", CourseMessage.SEND_CoursewareOnloading);
                         resultData.put("pageNum", pageNum);
@@ -540,11 +543,15 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         }
 
         private void onLoadComplete(String where, JSONObject message) {
-            if (cleanUpTurnRun == null) {
-                GroupGameTestInfosEntity.TestInfoEntity test = tests.get(0);
-                int time = test.getTotalTime() + 1;
-                cleanUpTurnRun = new CleanUpTurnRun(0, time);
-                handler.postDelayed(cleanUpTurnRun, time);
+            final GroupGameTestInfosEntity.TestInfoEntity test = tests.get(0);
+            mLogtf.d("onLoadComplete:totalTime=" + test.getTotalTime());
+            //时间没结束,才倒计时
+            if (test.getTotalTime() > 0) {
+                if (cleanUpTurnRun == null) {
+                    int time = test.getTotalTime() + 1;
+                    cleanUpTurnRun = new CleanUpTurnRun(0, time);
+                    handler.postDelayed(cleanUpTurnRun, time);
+                }
             }
             PagerShowTime pagerShowTime = cleanUpPagerShowTimeHashMap.get(0);
             if (pagerShowTime != null) {
@@ -556,7 +563,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 @Override
                 public void run() {
                     preLoad.onStop();
-                    onScene("onLoadComplete");
+                    if (test.getTotalTime() > 0) {
+                        onScene("onLoadComplete");
+                    }
                     if (!gameOver) {
                         startSpeechRecognize();
                     }
@@ -1184,6 +1193,11 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             @Override
             public void onDataSucess(Object... objData) {
                 mGroupGameTestInfosEntity = (GroupGameTestInfosEntity) objData[0];
+                if (mGroupGameTestInfosEntity.isAnswered()) {
+                    XESToastUtils.showToast(mContext, "你已作答过此题");
+                    onClose.onH5ResultClose(GroupGameMultNativePager.this, detailInfo);
+                    return;
+                }
                 tests = mGroupGameTestInfosEntity.getTestInfoList();
                 if (tests.isEmpty()) {
                     XESToastUtils.showToast(mContext, "互动题为空");
@@ -1201,6 +1215,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 }
                 // 剩余时间
                 long lastTime = test.getTotalTime() - nowPlayTime;
+//                if (AppConfig.DEBUG) {
+//                    nowPlayTime = 0;
+//                    lastTime = 10000;
+//                }
                 //小于0直接结束
                 mLogtf.d("getCourseWareTests:lastTime=" + lastTime + ",nowPlayTime=" + nowPlayTime);
                 if (lastTime < 0) {
@@ -2124,7 +2142,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             String word = jsonObject.getString("word");
                             final int who_id = jsonObject.getInt("who_id");
                             final int incr_energy = jsonObject.getInt("incr_energy");
-                            final int scores = jsonObject.optInt("scores");
+                            final int scores = jsonObject.optInt("word_score");
+                            final int continue_rob = jsonObject.getInt("continue_rob");
                             handler.post(new Runnable() {
                                 @Override
                                 public void run() {
@@ -2154,7 +2173,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                             rightItem.put("getFireCount", incr_energy);
                                             jsonData.put("rightItem", rightItem);
                                         }
-                                        jsonData.put("combo", 0);
+                                        jsonData.put("combo", continue_rob);
                                         wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
                                     } catch (Exception e) {
                                         logger.d("onMessage:CLEAN_UP_REC:postMessage", e);
