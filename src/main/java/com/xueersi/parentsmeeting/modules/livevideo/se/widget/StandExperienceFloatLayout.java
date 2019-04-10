@@ -11,7 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LivePlaybackVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity;
 
 public class StandExperienceFloatLayout extends FrameLayout {
     private final WindowManager mWindowManager;
