@@ -75,8 +75,7 @@
 
         <activity
             android:name="com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.AuditClassRoomActivity"
-            android:screenOrientation="portrait">
-        </activity>
+            android:screenOrientation="portrait"></activity>
 
         <activity
             android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassRoomActivity"
@@ -287,9 +286,13 @@
             android:name="com.xueersi.parentsmeeting.modules.livevideoOldIJK.broadcast.StudyCenterMainStartBroadCastReceiver"
             android:process=":livevideo"></receiver>
 
-        <receiver
-            android:name="com.xueersi.parentsmeeting.modules.livevideo.broadcast.StudyCenterMainStartBroadCastReceiver"
-            android:process=":livevideo"></receiver>
+        <!--<receiver-->
+        <!--android:name="com.xueersi.parentsmeeting.modules.livevideo.broadcast.StudyCenterMainStartBroadCastReceiver"-->
+        <!--android:process=":livevideo"></receiver>-->
+
+        <service
+            android:name="com.xueersi.parentsmeeting.modules.livevideo.broadcast.StudyCenterMainStartService"
+            android:process=":livevideo" />
     </application>
 
 </manifest>
