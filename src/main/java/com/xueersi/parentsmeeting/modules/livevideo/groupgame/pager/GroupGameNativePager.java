@@ -59,7 +59,10 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 
 /**
  * @Date on 2019/3/15 18:31
@@ -220,8 +223,10 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             @Override
             public void onClick(View view) {
                 addJs = false;
+                rlGroupGameSingle.setVisibility(View.GONE);
                 mWaveView.stop();
                 wvSubjectWeb.reload();
+                singleModeAction.onDestory();
             }
         });
     }
@@ -340,6 +345,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         });
         ((ViewGroup) mView).addView(groupGameMVPMultPager.getRootView());
     }
+
     class CourseWebViewClient extends MyWebViewClient implements OnHttpCode {
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView view, WebResourceRequest request) {
@@ -541,7 +547,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             answerData.put("tryTimes", tryTimes);
             answerData.put("rightNum", "" + rightNum);
             answerData.put("total", mAnswersList.size());
-
             answerData.put("averageScore", averageScore);
             answerData.put("userAnswer", userAnswer);
         } catch (JSONException e) {
@@ -550,6 +555,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         starNum = calculateStarByScore(averageScore);
         if (!isPlayBack) {
             if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(detailInfo.type)) {
+                fireNum = rightNum;
+            } else if (LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(detailInfo.type)) {
                 fireNum = rightNum;
             } else {
                 fireNum = (int) Math.ceil(10d * successTimes / (double) (mAnswersList.size()));
@@ -561,6 +568,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             @Override
             public void onDataSucess(Object... objData) {
                 logger.d("submitGroupGame -> onDataSucess");
+                showResultPager();
             }
 
             @Override
@@ -571,6 +579,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 if (errStatus == LiveHttpConfig.HTTP_ERROR_ERROR) {
                     XESToastUtils.showToast(mContext, failMsg);
                 }
+                onClose.onH5ResultClose(GroupGameNativePager.this, detailInfo);
             }
         });
     }
@@ -643,7 +652,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 if (errStatus == LiveHttpConfig.HTTP_ERROR_ERROR) {
                     XESToastUtils.showToast(mContext, failMsg);
                 } else {
-                    XESToastUtils.showToast(mContext, "出了点意外，请稍后试试");
+                    XESToastUtils.showToast(mContext, "请求互动题失败，请刷新");
                 }
                 ivCourseRefresh.setVisibility(View.VISIBLE);
             }
@@ -781,7 +790,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     mIse.cancel();
                 }
                 submitData();
-                showResultPager();
             } else {
                 int time = mAnswersList.get(pageNum).getSingleTime() + 1;
                 handler.postDelayed(turnPageRunnable, time * 1000);
@@ -918,6 +926,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
      */
     class CleanUpAction implements SingleModeAction {
 
+        HashMap<String, Queue<Integer>> unfinishedfruitIds = new HashMap<>();
+
         @Override
         public void startTimer() {
             presentTime = System.currentTimeMillis();
@@ -953,6 +963,17 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             } catch (Exception e) {
                 logger.d("onLoadComplete", e);
             }
+            for (int i = 0; i < mAnswersList.size(); i++) {
+                String text = mAnswersList.get(i).getText();
+                Queue<Integer> idHashset;
+                if (!unfinishedfruitIds.containsKey(text)) {
+                    idHashset = new LinkedList<>();
+                } else {
+                    idHashset = unfinishedfruitIds.get(text);
+                }
+                idHashset.offer(i);
+                unfinishedfruitIds.put(text, idHashset);
+            }
         }
 
         @Override
@@ -964,16 +985,22 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 return;
             }
             logger.d("onHitSentence: newSenIndex = " + newSenIndex + ", score = " + score + ", speechDuration = " + speechDuration);
-            scoreMatrix.get(newSenIndex).add(score);
-            if (score >= 70) {
-                rightNum++;
-                voiceTime = existingVoiceTime + (long) (speechDuration * 1000);
-                if (isPlayBack) {
-                    goldNum = 1;
-                } else {
-                    goldNum = 2;
+            String text = mAnswersList.get(newSenIndex).getText();
+            Queue<Integer> queue = unfinishedfruitIds.get(text);
+            if (!queue.isEmpty()) {
+                int id = queue.peek();
+                scoreMatrix.get(id).add(score);
+                if (score >= 70) {
+                    queue.poll();
+                    rightNum++;
+                    voiceTime = existingVoiceTime + (long) (speechDuration * 1000);
+                    if (isPlayBack) {
+                        goldNum = 1;
+                    } else {
+                        goldNum = 2;
+                    }
+                    uploadScore(id);
                 }
-                uploadScore(newSenIndex);
             }
         }
 
@@ -1017,7 +1044,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     mIse.cancel();
                 }
                 submitData();
-                showResultPager();
             }
         };
 
