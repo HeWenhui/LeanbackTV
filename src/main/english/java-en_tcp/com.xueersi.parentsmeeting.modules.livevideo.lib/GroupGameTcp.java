@@ -6,6 +6,7 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.util.SparseArray;
 
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
@@ -46,6 +47,9 @@ public class GroupGameTcp {
     public GroupGameTcp(String host, int port) {
         this.host = host;
         this.port = port;
+//        if (AppConfig.DEBUG) {
+//            saveRead = true;
+//        }
     }
 
     public void setReceiveMegCallBack(ReceiveMegCallBack receiveMegCallBack) {
@@ -295,6 +299,7 @@ public class GroupGameTcp {
             int lastBody = 0;
             short lastType = 0;
             int lastOper = 0;
+            // 上一次的序列号
             int lastSeq = 0;
             boolean readHead = false;
             // 上一次的缓存
@@ -308,15 +313,23 @@ public class GroupGameTcp {
                     if (!saveDir.exists()) {
                         saveDir.mkdirs();
                     }
-                    File saveFile = new File(saveDir, "read");
+                    File saveFile = new File(saveDir, "read_" + System.currentTimeMillis());
                     log.d("testBuffer:saveFile=" + saveFile.length());
                     if (readSave) {
-                        fileInputStream = new FileInputStream(saveFile);
-                        inputStream = fileInputStream;
+                        try {
+                            fileInputStream = new FileInputStream(saveFile);
+                            inputStream = fileInputStream;
+                        } catch (Exception e) {
+                            log.d("testBuffer:Input.e=" + e);
+                        }
                         saveRead = false;
                     }
                     if (saveRead) {
-                        fileOutputStream = new FileOutputStream(saveFile);
+                        try {
+                            fileOutputStream = new FileOutputStream(saveFile);
+                        } catch (Exception e) {
+                            log.d("testBuffer:Output.e=" + e);
+                        }
                     }
                 }
                 while (!isStop && (length = inputStream.read(readBuffer)) != -1) {

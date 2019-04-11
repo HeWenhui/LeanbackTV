@@ -74,7 +74,7 @@ public class CourseGroupNoItem extends BaseCourseGroupItem {
 
     }
 
-    public void onScene() {
+    public void onScene(String method) {
 
     }
 }

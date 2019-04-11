@@ -19,6 +19,7 @@ import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
@@ -44,7 +45,7 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
     private String lottieResPath = "group_game_mult/images";
     private String lottieJsonPath = "group_game_mult/data.json";
     private Bitmap bitmap6;
-    private Bitmap bitmap7;
+    //    private Bitmap bitmap7;
     private Bitmap bitmap7Small;
     private Bitmap bitmap8;
     private Bitmap bitmap9;
@@ -142,7 +143,6 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
                         stopRun.animationView = animationView;
                         stopRun.startProgress = voiceStartFrame;
                         startRun.startProgress = 0;
-                        createBitmap7Small();
                         createClose(animationView);
                         handler.removeCallbacks(startRun);
                         handler.removeCallbacks(progRun);
@@ -159,6 +159,7 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
 //                        Bitmap bitmap1 = animationView.updateBitmap("image_7", bitmap7);
 //                        Bitmap bitmap2 = animationView.updateBitmap("image_9", bitmap9);
 //                        logger.d("enableAudio(false):bitmap1=null?" + (bitmap1 == null) + ",bitmap2=null?" + (bitmap2 == null));
+                        XESToastUtils.showToast(mContext, "小伙伴听不到你的声音啦，但不影响答题哦");
                     }
                     if (onVideoAudioClick != null) {
                         onVideoAudioClick.onAudioClick(enableAudio);
@@ -197,28 +198,10 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
         rlCourseItemName.setText(entity.name);
         tvCourseItemFire.setText("" + entity.energy);
         ImageLoader.with(ContextManager.getContext()).load(entity.headurl).into(ivCourseItemVideoHead);
-        try {
-            bitmap7 = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_7.png"));
-            Bitmap bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_6.png"));
-            Bitmap creatBitmap = Bitmap.createBitmap(bitmap7.getWidth(), bitmap7.getHeight(), Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(creatBitmap);
-            canvas.drawBitmap(bitmap, (bitmap7.getWidth() - bitmap.getWidth()) / 2, (bitmap7.getHeight() - bitmap.getHeight()) / 2, null);
-            bitmap.recycle();
-            bitmap6 = creatBitmap;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        createBitmap6();
         createBitmap7Small();
-        try {
-            bitmap8 = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_8.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            bitmap9 = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_9.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        createBitmap8();
+        createBitmap9();
         lottieEffectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
         final LottieAnimationView animationView = (LottieAnimationView) ivCourseItemAudio;
         createOpen(animationView);
@@ -231,8 +214,29 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
         }
     }
 
+    private void createBitmap6() {
+        try {
+            if (bitmap6 != null && !bitmap6.isRecycled()) {
+                return;
+            }
+            Bitmap bitmap7 = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_7.png"));
+            Bitmap bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_6.png"));
+            Bitmap creatBitmap = Bitmap.createBitmap(bitmap7.getWidth(), bitmap7.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(creatBitmap);
+            canvas.drawBitmap(bitmap, (bitmap7.getWidth() - bitmap.getWidth()) / 2, (bitmap7.getHeight() - bitmap.getHeight()) / 2, null);
+            bitmap.recycle();
+            bitmap7.recycle();
+            bitmap6 = creatBitmap;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void createBitmap7Small() {
         try {
+            if (bitmap7Small != null && !bitmap7Small.isRecycled()) {
+                return;
+            }
             Bitmap bitmap6 = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_6.png"));
             Bitmap bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_7.png"));
             Bitmap creatBitmap = Bitmap.createBitmap(bitmap6.getWidth(), bitmap6.getHeight(), Bitmap.Config.ARGB_8888);
@@ -246,16 +250,40 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
         }
     }
 
+    private void createBitmap8() {
+        if (bitmap8 != null && !bitmap8.isRecycled()) {
+            return;
+        }
+        try {
+            bitmap8 = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_8.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void createBitmap9() {
+        if (bitmap9 != null && !bitmap9.isRecycled()) {
+            return;
+        }
+        try {
+            bitmap9 = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_9.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void createOpen(LottieAnimationView animationView) {
+        createBitmap6();
+        createBitmap8();
         animationView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext), "group_game_mult_open");
         openImageAssetDelegate = new OpenImageAssetDelegate(animationView, lottieEffectInfo);
-        closeImageAssetDelegate = new CloseImageAssetDelegate(animationView, lottieEffectInfo);
         animationView.setImageAssetDelegate(openImageAssetDelegate);
     }
 
     private void createClose(LottieAnimationView animationView) {
+        createBitmap7Small();
+        createBitmap9();
         animationView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext), "group_game_mult_close");
-        openImageAssetDelegate = new OpenImageAssetDelegate(animationView, lottieEffectInfo);
         closeImageAssetDelegate = new CloseImageAssetDelegate(animationView, lottieEffectInfo);
         animationView.setImageAssetDelegate(closeImageAssetDelegate);
     }
@@ -313,8 +341,8 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
         if (bitmap6 != null) {
             bitmap6.recycle();
         }
-        if (bitmap7 != null) {
-            bitmap7.recycle();
+        if (bitmap7Small != null) {
+            bitmap7Small.recycle();
         }
         if (bitmap8 != null) {
             bitmap8.recycle();
@@ -422,18 +450,22 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
         }, 1000);
     }
 
-    public void onScene() {
-        final View view = LayoutInflater.from(mContext).inflate(R.layout.item_livevideo_h5_courseware_group_tip_energy, rlVideoTip, false);
+    public void onScene(String method) {
+        //和旧的不相等，才会提示
+        mLogtf.d("onScene:method=" + method + "," + oldEnergy + ",energy=" + entity.energy);
+        if (entity.energy - oldEnergy != 0) {
+            final View view = LayoutInflater.from(mContext).inflate(R.layout.item_livevideo_h5_courseware_group_tip_energy, rlVideoTip, false);
+            TextView tv_livevideo_course_item_video_energy = view.findViewById(R.id.tv_livevideo_course_item_video_energy);
+            rlVideoTip.addView(view);
+            tv_livevideo_course_item_video_energy.setText("+" + (entity.energy - oldEnergy));
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    rlVideoTip.removeView(view);
+                }
+            }, 1000);
+        }
 //        rlVideoTip.setVisibility(View.VISIBLE);
-        TextView tv_livevideo_course_item_video_energy = view.findViewById(R.id.tv_livevideo_course_item_video_energy);
-        rlVideoTip.addView(view);
-        tv_livevideo_course_item_video_energy.setText("+" + (entity.energy - oldEnergy));
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                rlVideoTip.removeView(view);
-            }
-        }, 1000);
         tvCourseItemFire.setText("" + entity.energy);
         oldEnergy = entity.energy;
     }

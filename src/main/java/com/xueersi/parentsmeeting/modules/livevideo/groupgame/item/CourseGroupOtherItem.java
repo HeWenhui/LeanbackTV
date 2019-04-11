@@ -196,7 +196,7 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
         }
     }
 
-    public void onScene() {
+    public void onScene(String method) {
         tvCourseItemFire.setText("" + entity.energy);
     }
 }
