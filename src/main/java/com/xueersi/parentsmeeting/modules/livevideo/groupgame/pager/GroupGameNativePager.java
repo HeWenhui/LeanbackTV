@@ -223,8 +223,10 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             @Override
             public void onClick(View view) {
                 addJs = false;
+                rlGroupGameSingle.setVisibility(View.GONE);
                 mWaveView.stop();
                 wvSubjectWeb.reload();
+                singleModeAction.onDestory();
             }
         });
     }
@@ -555,7 +557,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(detailInfo.type)) {
                 fireNum = rightNum;
             } else if (LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(detailInfo.type)) {
-                fireNum = rightNum * 2;
+                fireNum = rightNum;
             } else {
                 fireNum = (int) Math.ceil(10d * successTimes / (double) (mAnswersList.size()));
             }
@@ -650,7 +652,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 if (errStatus == LiveHttpConfig.HTTP_ERROR_ERROR) {
                     XESToastUtils.showToast(mContext, failMsg);
                 } else {
-                    XESToastUtils.showToast(mContext, "出了点意外，请稍后试试");
+                    XESToastUtils.showToast(mContext, "请求互动题失败，请刷新");
                 }
                 ivCourseRefresh.setVisibility(View.VISIBLE);
             }
@@ -985,10 +987,11 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             logger.d("onHitSentence: newSenIndex = " + newSenIndex + ", score = " + score + ", speechDuration = " + speechDuration);
             String text = mAnswersList.get(newSenIndex).getText();
             Queue<Integer> queue = unfinishedfruitIds.get(text);
-            if (queue.poll() != null) {
-                int id = queue.poll();
+            if (!queue.isEmpty()) {
+                int id = queue.peek();
                 scoreMatrix.get(id).add(score);
                 if (score >= 70) {
+                    queue.poll();
                     rightNum++;
                     voiceTime = existingVoiceTime + (long) (speechDuration * 1000);
                     if (isPlayBack) {
