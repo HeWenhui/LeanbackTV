@@ -196,18 +196,7 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
         rlCourseItemName.setText(entity.name);
         tvCourseItemFire.setText("" + entity.energy);
         ImageLoader.with(ContextManager.getContext()).load(entity.headurl).into(ivCourseItemVideoHead);
-        try {
-            Bitmap bitmap7 = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_7.png"));
-            Bitmap bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_6.png"));
-            Bitmap creatBitmap = Bitmap.createBitmap(bitmap7.getWidth(), bitmap7.getHeight(), Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(creatBitmap);
-            canvas.drawBitmap(bitmap, (bitmap7.getWidth() - bitmap.getWidth()) / 2, (bitmap7.getHeight() - bitmap.getHeight()) / 2, null);
-            bitmap.recycle();
-            bitmap7.recycle();
-            bitmap6 = creatBitmap;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        createBitmap6();
         createBitmap7Small();
         createBitmap8();
         createBitmap9();
@@ -220,6 +209,24 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
         } else {
             ivCourseItemVideo.setEnabled(false);
             ivCourseItemVideo.setImageResource(VIDEO_RES[0]);
+        }
+    }
+
+    private void createBitmap6() {
+        try {
+            if (bitmap6 != null && !bitmap6.isRecycled()) {
+                return;
+            }
+            Bitmap bitmap7 = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_7.png"));
+            Bitmap bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_6.png"));
+            Bitmap creatBitmap = Bitmap.createBitmap(bitmap7.getWidth(), bitmap7.getHeight(), Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(creatBitmap);
+            canvas.drawBitmap(bitmap, (bitmap7.getWidth() - bitmap.getWidth()) / 2, (bitmap7.getHeight() - bitmap.getHeight()) / 2, null);
+            bitmap.recycle();
+            bitmap7.recycle();
+            bitmap6 = creatBitmap;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -264,18 +271,17 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
     }
 
     private void createOpen(LottieAnimationView animationView) {
+        createBitmap6();
         createBitmap8();
-        createBitmap9();
         animationView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext), "group_game_mult_open");
         openImageAssetDelegate = new OpenImageAssetDelegate(animationView, lottieEffectInfo);
-        closeImageAssetDelegate = new CloseImageAssetDelegate(animationView, lottieEffectInfo);
         animationView.setImageAssetDelegate(openImageAssetDelegate);
     }
 
     private void createClose(LottieAnimationView animationView) {
         createBitmap7Small();
+        createBitmap9();
         animationView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext), "group_game_mult_close");
-        openImageAssetDelegate = new OpenImageAssetDelegate(animationView, lottieEffectInfo);
         closeImageAssetDelegate = new CloseImageAssetDelegate(animationView, lottieEffectInfo);
         animationView.setImageAssetDelegate(closeImageAssetDelegate);
     }
@@ -332,6 +338,9 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
     public void onDestory() {
         if (bitmap6 != null) {
             bitmap6.recycle();
+        }
+        if (bitmap7Small != null) {
+            bitmap7Small.recycle();
         }
         if (bitmap8 != null) {
             bitmap8.recycle();
