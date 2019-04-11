@@ -1374,8 +1374,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             if (size != 0) {
                 averageScore = sum / size;
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             CrashReport.postCatchedException(e);
+            logger.d("submit", e);
         }
         GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
         List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = testInfoEntity.getAnswerList();
