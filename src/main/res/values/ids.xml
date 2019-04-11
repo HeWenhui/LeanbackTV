@@ -841,6 +841,9 @@
     <item name="tv_arts_answer_result_answer_index" type="id" />
     <item name="tvw_arts_answer_result_answer_state" type="id" />
 
+    <item name="iv_arts_answer_result_item_muti_icon" type="id" />
+
+
 
     <item name="lv_arts_answer_state_pse" type="id" />
     <item name="lv_arts_answer_result_pse" type="id" />
@@ -850,6 +853,12 @@
     <item name="rl_arts_pse_answer_result_root" type="id" />
 
     <item name="iv_arts_pse_teacher_praise" type="id" />
+
+
+    <item name="tv_arts_answer_reslult_fire_count" type="id" />
+    <item name="tv_arts_answer_reslult_gold_count" type="id" />
+
+    <item name="ll_arts_answer_reslult_reward_info" type="id" />
 
     <!--半身直播-->
     <item name="iv_livevideo_halfbody_connect_state" type="id"/>
@@ -1198,4 +1207,26 @@
     <item name="tv_livevideo_en_achive_pk_energy_other" type="id" />
     <item name="pg_livevideo_en_achive_pk" type="id" />
     <item name="rl_livevideo_en_achive_pk" type="id" />
+
+
+    <item name="ll_arts_answer_result_item_muti_user_answer_info" type="id" />
+    <item name="tv_arts_answer_result_item_muti_user_answer_hint" type="id" />
+    <item name="tv_arts_answer_result_item_muti_user_answer" type="id" />
+    <item name="tv_arts_answer_result_item_muti_right_answer_hint" type="id" />
+    <item name="tv_arts_answer_result_item_muti_right_answer" type="id" />
+    <item name="tv_arts_answer_result_item_muti_index" type="id" />
+
+
+    <item name="ll_arts_normal_answer_result_gold_info" type="id" />
+    <item name="tv_arts_normal_answer_result_gold_count" type="id" />
+
+
+    <item name="iv_middle_answer_result_item_muti_right_answer" type="id" />
+    <item name="ll_middle_answer_result_item_muti_user_answer_info" type="id" />
+    <item name="tv_middle_answer_result_item_muti_user_answer_hint" type="id" />
+    <item name="tv_middle_answer_result_item_muti_user_answer" type="id" />
+    <item name="tv_middle_answer_result_item_muti_right_answer_hint" type="id" />
+    <item name="tv_middle_answer_result_item_muti_right_answer" type="id" />
+    <item name="tv_middle_answer_result_item_muti_index" type="id" />
+
 </resources>
