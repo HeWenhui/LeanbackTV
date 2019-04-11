@@ -242,6 +242,9 @@ public class LiveGetInfo {
     /** 全身直播语音答题和评测小组排名请求时间 */
     private String requestTime;
 
+    /**语文，英语是否使用皮肤**/
+    private int useSkin;
+
     /**
      * 是否是 teampk 直播间
      * 1 :是pk 直播间  0 :非pk直播间
@@ -292,7 +295,9 @@ public class LiveGetInfo {
     //暂停点赞多长时间弹出礼物
     private int praiseAutoBarrageTime = 1;
     /** 走新课件预加载 */
-    private boolean newCourse =false;
+    private boolean newCourse = false;
+    /** 走新课件预加载,接口返回 */
+    private int isNewProject = 0;
 
     // add by William on 2018/12/5  专属老师用
     public EPlanInfoBean ePlanInfo;
@@ -614,6 +619,14 @@ public class LiveGetInfo {
 
     public String getUname() {
         return uname;
+    }
+
+    public void setUseSkin(int useSkin) {
+        this.useSkin = useSkin;
+    }
+
+    public int getUseSkin() {
+        return useSkin;
     }
 
     /**
@@ -997,6 +1010,14 @@ public class LiveGetInfo {
 
     public void setNewCourse(boolean newCourse) {
         this.newCourse = newCourse;
+    }
+
+    public int getIsNewProject() {
+        return isNewProject;
+    }
+
+    public void setIsNewProject(int isNewProject) {
+        this.isNewProject = isNewProject;
     }
 
     public static class MainTeacherInfo {

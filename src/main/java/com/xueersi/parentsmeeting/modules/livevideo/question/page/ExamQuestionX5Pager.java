@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
@@ -74,6 +73,12 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
     private int mGoldNum;
     private int mEnergyNum;
     private boolean allowTeamPk;
+    /**是否接收到或者展示过答题结果页面**/
+    private boolean isAnswerResultRecived;
+    /**
+     * 答题结果是否是 由强制提交 得到的
+     */
+    private boolean resultGotByForceSubmit;
 
     public ExamQuestionX5Pager(Context context, QuestionBll questionBll, String stuId
             , String stuName, String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity, String isShowRankList,
@@ -185,6 +190,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
                     event.setCloseByTeahcer(((QuestionBll) questionBll).isWebViewCloseByTeacher());
                     ((QuestionBll) questionBll).setWebViewCloseByTeacher(false);
                 }
+                event.setForceSubmit(resultGotByForceSubmit);
                 EventBus.getDefault().post(event);
                 mGoldNum = -1;
                 mEnergyNum = -1;
@@ -234,6 +240,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
     @Override
     public void examSubmitAll() {
 //        wvSubjectWeb.loadUrl(String.format("javascript:examSubmitAll(" + code + ")"));
+        resultGotByForceSubmit = !isAnswerResultRecived;
         isEnd = true;
         wvSubjectWeb.loadUrl(jsExamSubmitAll);
         Map<String, String> mData = new HashMap<>();
@@ -408,6 +415,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
      */
     @JavascriptInterface
     public void onAnswerResult_LiveVideo(String data){
+        isAnswerResultRecived = true;
         EventBus.getDefault().post(new AnswerResultEvent(data));
     }
 
@@ -418,5 +426,10 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
         super.onDestroy();
         wvSubjectWeb.stopLoading();
         wvSubjectWeb.destroy();
+    }
+
+    @Override
+    public boolean isResultRecived() {
+        return isAnswerResultRecived;
     }
 }

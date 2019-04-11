@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -102,6 +101,12 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private boolean isNewArtsCourseware;
     private HashMap header;
     private String mGold;
+    /**是否接收到或者展示过答题结果页面**/
+    private boolean isAnswerResultRecived;
+    /**
+     * 答题结果是否是 由强制提交得到的
+     */
+    private boolean resultGotByForceSubmit;
 
     @Override
     public void setEnglishH5CoursewareBll(EnglishH5CoursewareBll englishH5CoursewareBll) {
@@ -190,6 +195,8 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         if (isFinish) {
             return;
         }
+        // 调用此方法 时判断是否已经 收到过 作答结果
+        resultGotByForceSubmit = !isAnswerResultRecived;
         isFinish = true;
         String commit;
         if (isNewArtsCourseware && !LiveQueConfig.EN_COURSE_TYPE_NEW_GAME.equals(detailInfo.type)) {
@@ -638,6 +645,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     mEnglishH5CoursewareBll.setWebViewCloseByTeacher(false);
                 }
                 event.setScienceNewCourseWare(englishH5Entity.getNewEnglishH5());
+                event.setForceSubmit(resultGotByForceSubmit);
                 EventBus.getDefault().post(event);
                 mGoldNum = -1;
                 mEnergyNum = -1;
@@ -660,6 +668,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         Loger.e("EnglishH5CourseWareX5Pager",
                 "=========>showAnswerResult_LiveVideo:" + data);
         Loger.e(TAG, "======> newArtsH5CourseWare data:" + data);
+        isAnswerResultRecived = true;
         EventBus.getDefault().post(new ArtsAnswerResultEvent(data, ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT));
     }
 
@@ -668,6 +677,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
      */
     @JavascriptInterface
     public void onAnswerResult_LiveVideo(String data){
+        isAnswerResultRecived =true;
         EventBus.getDefault().post(new AnswerResultEvent(data));
     }
 
@@ -751,6 +761,11 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
 
     public EnglishH5Entity getEnglishH5Entity() {
         return englishH5Entity;
+    }
+
+    @Override
+    public boolean isResultRecived() {
+        return isAnswerResultRecived;
     }
 
     @Override

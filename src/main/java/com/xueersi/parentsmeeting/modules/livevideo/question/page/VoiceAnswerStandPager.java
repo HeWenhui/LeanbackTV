@@ -490,7 +490,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
 
                         @Override
                         public void onAnimationEnd() {
-                            boolean switchQuestion = switchQuestion("");
+                            boolean switchQuestion = switchQuestion("onAnimationEnd");
                             if (!switchQuestion) {
                                 ivVoiceansSwitch.setClickable(true);
                             }

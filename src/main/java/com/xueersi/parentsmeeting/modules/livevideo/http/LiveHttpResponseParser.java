@@ -100,6 +100,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         //小英萌萌哒皮肤专用
         if (data.has("useSkin")) {
             getInfo.setSmallEnglish((String.valueOf(data.optString("useSkin"))).equals("1"));
+            getInfo.setUseSkin(data.optInt("useSkin",0));
             LiveVideoConfig.isSmallChinese = String.valueOf(data.optString("useSkin")).equals("2");
         } else {
             getInfo.setSmallEnglish(false);
@@ -194,6 +195,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         //小英萌萌哒皮肤专用
         if (data.has("useSkin")) {
             getInfo.setSmallEnglish((String.valueOf(data.optString("useSkin"))).equals("1"));
+            getInfo.setUseSkin(data.optInt("useSkin",0));
             LiveVideoConfig.isSmallChinese = String.valueOf(data.optString("useSkin")).equals("2");
         } else {
             getInfo.setSmallEnglish(false);
@@ -231,6 +233,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         //小英萌萌哒皮肤专用
         if (data.has("useSkin")) {
             getInfo.setSmallEnglish((String.valueOf(data.optString("useSkin"))).equals("1"));
+            getInfo.setUseSkin(data.optInt("useSkin",0));
             LiveVideoConfig.isSmallChinese = String.valueOf(data.optString("useSkin")).equals("2");
         } else {
             getInfo.setSmallEnglish(false);
@@ -504,6 +507,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
             getInfo.setSubject_digits(data.optString("subject_digits"));
             if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
+                getInfo.setIsNewProject(data.optInt("isNewProject", 0));
                 if (getInfo.getIsArts() == LiveVideoSAConfig.ART_EN) {
                     parseLiveGetInfoLibarts(data, liveTopic, getInfo);
                 } else if (getInfo.getIsArts() == LiveVideoSAConfig.ART_CH) {

@@ -37,6 +37,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkStar;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCutImage;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -112,10 +113,16 @@ public class TeamPkStarsPager extends TeamPkBasePager {
             }
         });
         teamPkPraiseLayout = view.findViewById(R.id.pk_praise_layout);
+        teamPkPraiseLayout.setPriaseStateListener(new TeamPkPraiseLayout.PraiseStateListener() {
+            @Override
+            public void onFinish(int clickCount) {
+                TeamPkLog.sendPkStarThumbCount(mPkBll.getLiveBll(),"0",mPkBll.getNonce(),clickCount);
+            }
+        });
         return view;
     }
 
-    private final float ANIM_DISPATCH_FRACTION = 0.20f;
+    private final float ANIM_DISPATCH_FRACTION = 0.10f;
     private void showAnim() {
         bgMask.setVisibility(View.VISIBLE);
         playMusic(R.raw.war_bg, DEFAULT_BG_VOLUME, true);

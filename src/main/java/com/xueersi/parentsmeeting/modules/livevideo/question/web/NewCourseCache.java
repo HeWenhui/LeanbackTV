@@ -47,9 +47,10 @@ public class NewCourseCache {
     private String coursewarePages = "courseware_pages";
     private String mathJax = "MathJax";
     private String katex = "katex";
-    OnHttpCode onHttpCode;
+    private OnHttpCode onHttpCode;
 
     public NewCourseCache(Context mContext, String liveId) {
+        this.mContext = mContext;
         logToFile = new LogToFile(mContext, TAG);
         webInstertJs = new WebInstertJs(mContext);
         cacheFile = LiveCacheFile.geCacheFile(mContext, "webviewCache");

@@ -96,6 +96,12 @@ public class TeamPkPraiseLayout extends FrameLayout {
      */
     private static final float MUSIC_VOLUME_RATIO_FRONT = 0.8f;
     private SoundPoolHelper soundPoolHelper;
+    private PraiseStateListener mStateListener;
+
+    /**
+     * 一个点击了多少次
+     */
+    private int mTotalClickCount;
 
     private static final String LOTTIE_CACHE_KEY_PRAISE_LOOP = "priase_loop";
     private static final String LOTTIE_CACHE_KEY_PRAISE_CLICK = "priase_click";
@@ -123,6 +129,7 @@ public class TeamPkPraiseLayout extends FrameLayout {
         ivPraise.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                mTotalClickCount++;
                 if ((System.currentTimeMillis() - lastClickTime) > CLIK_AVAILABLE_TIME) {
                     playClickAnim();
                     generateMsg();
@@ -199,6 +206,10 @@ public class TeamPkPraiseLayout extends FrameLayout {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         releaseRes();
+        if(mStateListener != null){
+            mStateListener.onFinish(mTotalClickCount);
+            mStateListener = null;
+        }
     }
 
     private void releaseRes() {
@@ -287,7 +298,6 @@ public class TeamPkPraiseLayout extends FrameLayout {
 
 
 
-
     private void playClickAnim() {
         playClickSound();
         loopAnimationView.setVisibility(GONE);
@@ -354,7 +364,7 @@ public class TeamPkPraiseLayout extends FrameLayout {
 
 
     private void playClickSound() {
-        soundPoolHelper.playMusic(R.raw.like_btn_click, MUSIC_VOLUME_RATIO_FRONT, false);
+        soundPoolHelper.playMusic(R.raw.pk_pkpraise_click, MUSIC_VOLUME_RATIO_FRONT, false);
     }
 
     private class LiveMsgAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -382,5 +392,20 @@ public class TeamPkPraiseLayout extends FrameLayout {
         }
     }
 
+    /**
+     * 设置点赞状态监听
+     * @param listener
+     */
+    public void setPriaseStateListener(PraiseStateListener listener){
+        this.mStateListener = listener;
+    }
 
+
+    public interface PraiseStateListener {
+        /**
+         * 点赞结束
+         * @param clickCount
+         */
+        void onFinish(int clickCount);
+    }
 }

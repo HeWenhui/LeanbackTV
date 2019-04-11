@@ -23,6 +23,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkContribStarLottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportAction;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -98,6 +99,13 @@ public class TeamPkContributionPager extends TeamPkBasePager {
         });
         timeCountDowTextView = view.findViewById(R.id.tv_teampk_contribution_time);
         pkPraiseLayout = view.findViewById(R.id.pk_praise_layout);
+
+        pkPraiseLayout.setPriaseStateListener(new TeamPkPraiseLayout.PraiseStateListener() {
+            @Override
+            public void onFinish(int clickCount) {
+                TeamPkLog.sendContrbuteStarThumbCount(teamPkBll.getLiveBll(),teamPkBll.getNonce(),clickCount);
+            }
+        });
         return view;
     }
 
@@ -150,6 +158,7 @@ public class TeamPkContributionPager extends TeamPkBasePager {
         }
     }
 
+
     private List<AnimInfo> animInfos;
 
 
@@ -201,11 +210,11 @@ public class TeamPkContributionPager extends TeamPkBasePager {
         animationView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                startAutoClose();
                 //学习报告截图
                 recordHighLight();
             }
         }, 2000);
+        startAutoClose();
     }
 
 
@@ -326,7 +335,7 @@ public class TeamPkContributionPager extends TeamPkBasePager {
      */
     private boolean isForceSubmit() {
 
-        return teamPkBll.getLatesH5CloseEvent() != null && teamPkBll.getLatesH5CloseEvent().isCloseByTeacher();
+        return teamPkBll.getLatesH5CloseEvent() != null && teamPkBll.getLatesH5CloseEvent().isForceSubmit();
     }
 
     /**

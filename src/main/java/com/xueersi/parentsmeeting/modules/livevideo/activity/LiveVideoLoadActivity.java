@@ -182,7 +182,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
 //                    mGetInfo.setPattern(1);
                     bundle.putString("mode", mGetInfo.getMode());
 
-                    boolean newCourse = isNewCourse(mGetInfo.getId());
+                    int isNewProject = mGetInfo.getIsNewProject();
+                    boolean newCourse = (isNewProject == 1) || isNewCourse(mGetInfo.getId());
                     if (newCourse) {
                         bundle.putBoolean("newCourse", true);
                         performDownLoadPreLoad(httpManager, mGetInfo);
@@ -193,6 +194,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     bundle.putBoolean("isPrimary", LiveVideoConfig.isPrimary);
                     bundle.putBoolean("isSmallChinese", LiveVideoConfig.isSmallChinese);
                     bundle.putBoolean("isSmallEnglish", mGetInfo.getSmallEnglish());
+                    bundle.putInt("useSkin", mGetInfo.getUseSkin());
+
                     if (mGetInfo.getIsArts() == 0) {
                         bundle.putInt("allowLinkMicNew", mGetInfo.getAllowLinkMicNew());
                     } else {

@@ -34,6 +34,7 @@ import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkStuProgress;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCutImage;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
@@ -60,7 +61,7 @@ public class TeamPkImprovePager extends TeamPkBasePager {
     private RankAdapter mAdapter;
     private final List<TeamPkStuProgress> mData;
     private static final String LOTTIE_RES_ASSETS_ROOTDIR = "team_pk/student_improver/";
-    private final float ANIM_DISPATCH_FRACTION = 0.20f;
+    private final float ANIM_DISPATCH_FRACTION = 0.10f;
     private TeamPkPraiseLayout teamPkPraiseLayout;
 
     public TeamPkImprovePager(Context context, List<TeamPkStuProgress> data, TeamPkBll teamPkBll) {
@@ -97,6 +98,13 @@ public class TeamPkImprovePager extends TeamPkBasePager {
             }
         });
         teamPkPraiseLayout = view.findViewById(R.id.pk_praise_layout);
+        teamPkPraiseLayout.setPriaseStateListener(new TeamPkPraiseLayout.PraiseStateListener() {
+            @Override
+            public void onFinish(int clickCount) {
+                TeamPkLog.sendPkStarThumbCount(mPkBll.getLiveBll(),"1",mPkBll.getNonce(),clickCount);
+
+            }
+        });
         return view;
     }
 

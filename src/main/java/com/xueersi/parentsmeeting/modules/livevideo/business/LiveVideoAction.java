@@ -410,16 +410,16 @@ public class LiveVideoAction implements VideoAction {
                 } else {
                     ivTeacherNotpresent.setVisibility(View.VISIBLE);
                     if (dwTeacherNotpresen == null) {
-                        if (LiveVideoConfig.isPrimary) {
+                        if (LiveVideoConfig.isSmallChinese) {
+                            dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable.
+                                    livevideo_small_chinese_zw_dengdaida_bg_psnormal);
+                        } else if (LiveVideoConfig.isPrimary) {
                             dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable
                                     .livevideo_zw_dengdaida_bg_psnormal);
                         } else if (mGetInfo != null && mGetInfo.getSmallEnglish()) {//如果是小学英语
                             dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable
                                     .livevideo_small_english_zw_dengdaida_bg_psnormal);
-                        } else if (LiveVideoConfig.isSmallChinese) {
-                            dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable.
-                                    livevideo_small_chinese_zw_dengdaida_bg_psnormal);
-                        } else {
+                        }  else {
                             dwTeacherNotpresen = activity.getResources().getDrawable(R.drawable
                                     .livevideo_zw_dengdaida_bg_normal);
                         }

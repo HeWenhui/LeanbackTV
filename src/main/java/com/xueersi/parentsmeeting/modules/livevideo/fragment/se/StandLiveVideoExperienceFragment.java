@@ -670,7 +670,6 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
                 }
             }
         }
-
         super.onPause();
     }
 

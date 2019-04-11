@@ -7,12 +7,12 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application>
-        <activity
-            android:name=".activity.LivePlayBackVideoActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:launchMode="singleTask"
-            android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
+        <!--<activity-->
+        <!--android:name=".activity.LivePlayBackVideoActivity"-->
+        <!--android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"-->
+        <!--android:launchMode="singleTask"-->
+        <!--android:screenOrientation="landscape"-->
+        <!--android:windowSoftInputMode="adjustResize|stateHidden"></activity>-->
         <activity
             android:name="com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
@@ -41,7 +41,9 @@
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustResize|stateHidden"></activity>
-
+        <activity
+            android:name=".activity.AuditClassRoomActivity"
+            android:screenOrientation="portrait"></activity>
 
         <activity
             android:name=".activity.HalfBodyLiveExperienceActivity"
@@ -157,6 +159,9 @@
             android:name=".broadcast.StudyCenterMainStartBroadCastReceiver"
             android:process=":livevideo"></receiver>
 
+        <service
+            android:name="com.xueersi.parentsmeeting.modules.livevideo.broadcast.StudyCenterMainStartService"
+            android:process=":livevideo" />
     </application>
 
 </manifest>

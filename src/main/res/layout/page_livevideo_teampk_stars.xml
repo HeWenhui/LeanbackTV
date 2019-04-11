@@ -30,10 +30,16 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_percent="0.274" />
 
+    <android.support.constraint.Guideline
+        android:id="@id/gl_teampk_starts_left_guide_line"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.128" />
 
     <com.xueersi.parentsmeeting.modules.livevideo.widget.FastScrollableRecyclerView
         android:id="@id/rcl_teampk_starts_list"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_below="@id/ll_teampk_open_box_team_coin_container"
         android:layout_marginLeft="12dp"
@@ -43,7 +49,10 @@
         app:VerticalThumbDrawable="@drawable/teampk_rcl_fastscorller_header_selector"
         app:VerticalTrackDrawable="@drawable/teampk_rcl_fastscroller_tracker"
         app:layout_constraintHeight_percent=".614"
-        app:layout_constraintTop_toTopOf="@id/gl_teampk_starts_top_guide_line" />
+        app:layout_constraintWidth_percent="0.825"
+        app:layout_constraintTop_toTopOf="@id/gl_teampk_starts_top_guide_line"
+        app:layout_constraintLeft_toRightOf="@id/gl_teampk_starts_left_guide_line"
+        />
 
     <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkPraiseLayout
         android:id="@id/pk_praise_layout"
