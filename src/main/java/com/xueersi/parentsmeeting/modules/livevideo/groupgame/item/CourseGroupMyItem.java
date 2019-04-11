@@ -44,7 +44,7 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
     private String lottieResPath = "group_game_mult/images";
     private String lottieJsonPath = "group_game_mult/data.json";
     private Bitmap bitmap6;
-    private Bitmap bitmap7;
+    //    private Bitmap bitmap7;
     private Bitmap bitmap7Small;
     private Bitmap bitmap8;
     private Bitmap bitmap9;
@@ -142,7 +142,6 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
                         stopRun.animationView = animationView;
                         stopRun.startProgress = voiceStartFrame;
                         startRun.startProgress = 0;
-                        createBitmap7Small();
                         createClose(animationView);
                         handler.removeCallbacks(startRun);
                         handler.removeCallbacks(progRun);
@@ -198,27 +197,20 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
         tvCourseItemFire.setText("" + entity.energy);
         ImageLoader.with(ContextManager.getContext()).load(entity.headurl).into(ivCourseItemVideoHead);
         try {
-            bitmap7 = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_7.png"));
+            Bitmap bitmap7 = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_7.png"));
             Bitmap bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_6.png"));
             Bitmap creatBitmap = Bitmap.createBitmap(bitmap7.getWidth(), bitmap7.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);
             canvas.drawBitmap(bitmap, (bitmap7.getWidth() - bitmap.getWidth()) / 2, (bitmap7.getHeight() - bitmap.getHeight()) / 2, null);
             bitmap.recycle();
+            bitmap7.recycle();
             bitmap6 = creatBitmap;
         } catch (Exception e) {
             e.printStackTrace();
         }
         createBitmap7Small();
-        try {
-            bitmap8 = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_8.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            bitmap9 = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_9.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        createBitmap8();
+        createBitmap9();
         lottieEffectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
         final LottieAnimationView animationView = (LottieAnimationView) ivCourseItemAudio;
         createOpen(animationView);
@@ -249,7 +241,31 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
         }
     }
 
+    private void createBitmap8() {
+        if (bitmap8 != null && !bitmap8.isRecycled()) {
+            return;
+        }
+        try {
+            bitmap8 = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_8.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void createBitmap9() {
+        if (bitmap9 != null && !bitmap9.isRecycled()) {
+            return;
+        }
+        try {
+            bitmap9 = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_9.png"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void createOpen(LottieAnimationView animationView) {
+        createBitmap8();
+        createBitmap9();
         animationView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext), "group_game_mult_open");
         openImageAssetDelegate = new OpenImageAssetDelegate(animationView, lottieEffectInfo);
         closeImageAssetDelegate = new CloseImageAssetDelegate(animationView, lottieEffectInfo);
@@ -257,6 +273,7 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
     }
 
     private void createClose(LottieAnimationView animationView) {
+        createBitmap7Small();
         animationView.setAnimationFromJson(lottieEffectInfo.getJsonStrFromAssets(mContext), "group_game_mult_close");
         openImageAssetDelegate = new OpenImageAssetDelegate(animationView, lottieEffectInfo);
         closeImageAssetDelegate = new CloseImageAssetDelegate(animationView, lottieEffectInfo);
@@ -315,9 +332,6 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
     public void onDestory() {
         if (bitmap6 != null) {
             bitmap6.recycle();
-        }
-        if (bitmap7 != null) {
-            bitmap7.recycle();
         }
         if (bitmap8 != null) {
             bitmap8.recycle();
