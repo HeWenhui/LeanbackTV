@@ -9,15 +9,14 @@ import android.widget.TextView;
 
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageReg;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 
-import io.agora.rtc.RtcEngine;
-
 public abstract class BaseCourseGroupItem implements AdapterItemInterface<TeamMemberEntity> {
+    protected String TAG = getClass().getSimpleName();
     static int[] VIDEO_RES = {R.drawable.livevide_course_group_video_no, R.drawable.livevide_course_group_video_dis, R.drawable.livevide_course_group_video_enable};
     static int[] AUDIO_RES = {R.drawable.livevide_course_group_audio_no, R.drawable.livevide_course_group_audio_dis, R.drawable.livevide_course_group_audio_enable};
     protected RelativeLayout rlCourseItemVideo;
@@ -32,15 +31,17 @@ public abstract class BaseCourseGroupItem implements AdapterItemInterface<TeamMe
     protected Context mContext;
     protected TeamMemberEntity entity;
     protected OnVideoAudioClick onVideoAudioClick;
-    protected Logger logger = LiveLoggerFactory.getLogger(getClass().getSimpleName());
+    protected Logger logger = LiveLoggerFactory.getLogger(TAG);
     protected long videoTime = 0;
     protected long audioTime = 0;
+    protected LogToFile mLogtf;
 
     public BaseCourseGroupItem(Context context, TeamMemberEntity entity, WorkerThread workerThread, int uid) {
         this.mContext = context;
         this.entity = entity;
         this.workerThread = workerThread;
         this.uid = uid;
+        mLogtf = new LogToFile(context, TAG);
     }
 
     public void setOnVideoAudioClick(OnVideoAudioClick onVideoAudioClick) {
@@ -107,7 +108,7 @@ public abstract class BaseCourseGroupItem implements AdapterItemInterface<TeamMe
 
     }
 
-    public void onScene() {
+    public void onScene(String method) {
         tvCourseItemFire.setText("" + entity.energy);
     }
 

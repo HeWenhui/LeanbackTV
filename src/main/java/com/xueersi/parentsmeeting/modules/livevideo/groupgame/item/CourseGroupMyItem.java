@@ -19,6 +19,7 @@ import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
@@ -158,6 +159,7 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
 //                        Bitmap bitmap1 = animationView.updateBitmap("image_7", bitmap7);
 //                        Bitmap bitmap2 = animationView.updateBitmap("image_9", bitmap9);
 //                        logger.d("enableAudio(false):bitmap1=null?" + (bitmap1 == null) + ",bitmap2=null?" + (bitmap2 == null));
+                        XESToastUtils.showToast(mContext, "小伙伴听不到你的声音啦，但不影响答题哦");
                     }
                     if (onVideoAudioClick != null) {
                         onVideoAudioClick.onAudioClick(enableAudio);
@@ -448,18 +450,22 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
         }, 1000);
     }
 
-    public void onScene() {
-        final View view = LayoutInflater.from(mContext).inflate(R.layout.item_livevideo_h5_courseware_group_tip_energy, rlVideoTip, false);
+    public void onScene(String method) {
+        //和旧的不相等，才会提示
+        mLogtf.d("onScene:method=" + method + "," + oldEnergy + ",energy=" + entity.energy);
+        if (entity.energy - oldEnergy != 0) {
+            final View view = LayoutInflater.from(mContext).inflate(R.layout.item_livevideo_h5_courseware_group_tip_energy, rlVideoTip, false);
+            TextView tv_livevideo_course_item_video_energy = view.findViewById(R.id.tv_livevideo_course_item_video_energy);
+            rlVideoTip.addView(view);
+            tv_livevideo_course_item_video_energy.setText("+" + (entity.energy - oldEnergy));
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    rlVideoTip.removeView(view);
+                }
+            }, 1000);
+        }
 //        rlVideoTip.setVisibility(View.VISIBLE);
-        TextView tv_livevideo_course_item_video_energy = view.findViewById(R.id.tv_livevideo_course_item_video_energy);
-        rlVideoTip.addView(view);
-        tv_livevideo_course_item_video_energy.setText("+" + (entity.energy - oldEnergy));
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                rlVideoTip.removeView(view);
-            }
-        }, 1000);
         tvCourseItemFire.setText("" + entity.energy);
         oldEnergy = entity.energy;
     }

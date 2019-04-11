@@ -249,6 +249,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             if (LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(gameType)) {
                 for (int i = 0; i < entities.size(); i++) {
                     TeamMemberEntity teamMemberEntity = entities.get(i);
+                    //老师发新题后，视频窗右上角的火焰应该从0开始计数
+                    teamMemberEntity.energy = 0;
                     CleanUpEntity cleanUpEntity = new CleanUpEntity();
                     cleanUpEntity.teamMemberEntity = teamMemberEntity;
                     cleanUpEntities.put("" + teamMemberEntity.id, cleanUpEntity);
@@ -256,6 +258,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             } else {
                 for (int i = 0; i < entities.size(); i++) {
                     TeamMemberEntity teamMemberEntity = entities.get(i);
+                    //老师发新题后，视频窗右上角的火焰应该从0开始计数
+                    teamMemberEntity.energy = 0;
                     VidooCannonEntity vidooCannonEntity = new VidooCannonEntity();
                     vidooCannonEntity.teamMemberEntity = teamMemberEntity;
                     vidooCannonEntities.put("" + teamMemberEntity.id, vidooCannonEntity);
@@ -2045,7 +2049,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                             }
                                             BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + who_id);
                                             if (courseGroupItem != null) {
-                                                courseGroupItem.onScene();
+                                                courseGroupItem.onScene("Voice_Projectile_Statis");
                                             }
                                         }
                                     });
@@ -2128,7 +2132,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                             public void run() {
                                                 TeamMemberEntity entity = courseGroupItem.getEntity();
                                                 entity.energy = total_energy;
-                                                courseGroupItem.onScene();
+                                                courseGroupItem.onScene("Voice_Projectile_Scene");
                                             }
                                         });
                                     }
@@ -2224,7 +2228,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                     BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + who_id);
                                     if (courseGroupItem != null) {
                                         courseGroupItem.getEntity().energy += incr_energy;
-                                        courseGroupItem.onScene();
+                                        courseGroupItem.onScene("CLEAN_UP_REC");
                                     }
                                 }
                             });
@@ -2278,7 +2282,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                     handler.post(new Runnable() {
                                         @Override
                                         public void run() {
-                                            courseGroupItem.onScene();
+                                            courseGroupItem.onScene("CLEAN_UP_SECN");
                                         }
                                     });
                                 }
