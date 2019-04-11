@@ -17,6 +17,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,6 +51,8 @@ public class NewCourseCache {
     protected String XESlides = "XESlides";
     protected String mathJax = "MathJax";
     protected String katex = "katex";
+    /** 初高中连对，取本地图片 */
+    private String zhongXueKeJian = "ZhongXueKeJian";
     OnHttpCode onHttpCode;
     private ArrayList<InterceptRequest> interceptRequests = new ArrayList<>();
 
@@ -313,6 +316,28 @@ public class NewCourseCache {
         String filemd5 = MD5Utils.getMD5(path);
         File file = new File(mPublicCacheout, filemd5);
         return file;
+    }
+
+    public WebResourceResponse interceptZhongXueKeJian(String url) {
+        int index2 = url.indexOf(zhongXueKeJian);
+        if (index2 != -1) {
+            if (url.contains("animations") || url.contains("assets")) {
+                String fileSub = url.substring(index2 + zhongXueKeJian.length());
+                try {
+                    String fileName = "newcourse_result/sec/middleSchoolCourseware" + fileSub;
+                    InputStream inputStream = mContext.getAssets().open(fileName);
+                    String extension = MimeTypeMap.getFileExtensionFromUrl(url.toLowerCase());
+                    String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+                    WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "", new WrapInputStream(mContext, inputStream));
+                    webResourceResponse.setResponseHeaders(header);
+                    logger.d("interceptZhongXueKeJian:fileName=" + fileName);
+                    return webResourceResponse;
+                } catch (IOException e) {
+                    logger.d("interceptZhongXueKeJian:fileSub=" + fileSub);
+                }
+            }
+        }
+        return null;
     }
 
     /**
