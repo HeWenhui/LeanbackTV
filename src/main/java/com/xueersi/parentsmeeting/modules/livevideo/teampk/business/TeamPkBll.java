@@ -664,7 +664,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         pkStateRootView = viewGroup.findViewById(R.id.tpkL_teampk_pkstate_root);
         if (pkStateRootView != null) {
             pkStateRootView.setVisibility(View.VISIBLE);
-            pkStateRootView.setTeamPkBll(this);
+           // pkStateRootView.setTeamPkBll(this);
             // 设置当前pk 状态,兼容 半身直播 主辅导态来回切换
             if (mCurrentPkState != null) {
                 pkStateRootView.bindData(mCurrentPkState.getStuLiveGold(),
