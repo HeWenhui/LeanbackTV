@@ -1366,12 +1366,12 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         int gameGroupId = interactiveTeam.getInteractive_team_id();
         try {
             int size = allScoreList.size();
-            for (int i = 0; i < size; i++) {
-                ResultEntity resultEntity = allScoreList.get(i);
-                voiceTime += resultEntity.getSpeechDuration() * 1000;
-                sum += resultEntity.getScore();
-            }
             if (size != 0) {
+                for (int i = 0; i < size; i++) {
+                    ResultEntity resultEntity = allScoreList.get(i);
+                    voiceTime += resultEntity.getSpeechDuration() * 1000;
+                    sum += resultEntity.getScore();
+                }
                 averageScore = sum / size;
             }
         } catch (Exception e) {
