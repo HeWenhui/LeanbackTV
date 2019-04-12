@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Handler;
+import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -76,14 +77,17 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
      * 标记当前对话是不是准备开始
      */
     boolean mIsWaittingNormal;
+    private final Handler mReadHandler;
+    private int mPosition;
 
     /**
      * 测评
      */
     //private TextView tvSpeechTip;
-    public RolePlayerStandMachineSelfItem(Context context, RolePlayerBll bll) {
+    public RolePlayerStandMachineSelfItem(Context context, RolePlayerBll bll,Handler handler) {
         super(context, bll);
         liveAndBackDebug = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
+        mReadHandler = handler;
     }
 
     @Override
@@ -155,6 +159,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
         if (selfVoiceAnimationDrawable != null && !selfVoiceAnimationDrawable.isRunning()) {
             selfVoiceAnimationDrawable.start();
         }
+        sendCurItemIndex();
         //播放
         mAudioPlayerManager = AudioPlayerManager.get(ContextManager.getApplication());
         mAudioPlayerManager.start(mEntity.getWebVoiceUrl(), new PlayerCallback() {
@@ -206,10 +211,21 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
 
     }
 
+    private void sendCurItemIndex() {
+        if(mReadHandler != null){
+            Message message = new Message();
+            message.what = RolePlayerEntity.RolePlayerMessageStatus.CUR_PLAYING_ITEM_INDEX;
+            message.obj = mPosition;
+            mReadHandler.sendMessage(message);
+        }
+    }
+
+
     @Override
     public void updateViews(final RolePlayerEntity.RolePlayerMessage entity,
                             int position, Object objTag) {
         super.updateViews(entity, position, objTag);
+        mPosition = position;
         String imgUrl = entity.getRolePlayer().getHeadImg();
         if(TextUtils.isEmpty(imgUrl)){
             imgUrl = UserBll.getInstance().getMyUserInfoEntity().getHeadImg();
@@ -277,6 +293,11 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
                 tvCountTime.setText("");
                 tvCountTime.setVisibility(View.INVISIBLE);
                 showSpeechStar();
+                if(mAudioPlayerManager != null){
+                    mAudioPlayerManager.stop();
+                    mAudioPlayerManager.release();
+                    mAudioPlayerManager = null;
+                }
                 //speechPhoneScore();
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH:

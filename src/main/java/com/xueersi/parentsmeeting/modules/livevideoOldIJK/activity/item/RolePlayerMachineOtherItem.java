@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.AudioPlayerManager;
 import com.xueersi.parentsmeeting.module.audio.safeaudioplayer.PlayerCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -30,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CountDownHeadImageView;
 
 public class RolePlayerMachineOtherItem extends RolePlayerItem {
+
     private final LiveAndBackDebug mLiveBll;//只为记录日志用
     /**
      * 头像
@@ -75,6 +77,8 @@ public class RolePlayerMachineOtherItem extends RolePlayerItem {
      */
     private boolean mIsPlaying = false;
     Handler mReadHandler ;
+    private int mPostion;
+
     public RolePlayerMachineOtherItem(Context context, RolePlayerBll rolePlayerBll,Handler readHandler) {
         super(context, rolePlayerBll);
         mLiveBll = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
@@ -163,14 +167,15 @@ public class RolePlayerMachineOtherItem extends RolePlayerItem {
         }else {
             //通过点击对话播放的
             if(mAudioPlayerManager != null){
-                logger.i("先停掉正在播放的音频，优先播放现在的");
+                logger.i("先停掉f正在播放的音频，优先播放现在的");
                 mAudioPlayerManager.stop();
                 mAudioPlayerManager.release();
                 mAudioPlayerManager = null;
             }
 
-        }
 
+        }
+        sendCurItemIndex();
         mAudioPlayerManager = AudioPlayerManager.get(ContextManager.getApplication());
         //播放
         mAudioPlayerManager.start(mEntity.getWebVoiceUrl(), new PlayerCallback() {
@@ -217,6 +222,15 @@ public class RolePlayerMachineOtherItem extends RolePlayerItem {
         });
     }
 
+    private void sendCurItemIndex() {
+        if(mReadHandler != null){
+            Message message = new Message();
+            message.what = RolePlayerEntity.RolePlayerMessageStatus.CUR_PLAYING_ITEM_INDEX;
+            message.obj = mPostion;
+            mReadHandler.sendMessage(message);
+        }
+    }
+
     /**
      * 开始播放机器音频，改变对话样式
      */
@@ -258,14 +272,17 @@ public class RolePlayerMachineOtherItem extends RolePlayerItem {
      * 机器播完之后，通知跳到下一条
      */
     private void nextMsg() {
-        Message temp = mReadHandler.obtainMessage();
-        temp.what = RolePlayMachinePager.READ_MESSAGE;
-        mReadHandler.sendMessage(temp);
+        if(mReadHandler != null){
+            Message temp = mReadHandler.obtainMessage();
+            temp.what = RolePlayMachinePager.READ_MESSAGE;
+            mReadHandler.sendMessage(temp);
+        }
     }
 
     @Override
     public void updateViews(RolePlayerEntity.RolePlayerMessage entity, int position, Object objTag) {
         super.updateViews(entity, position, objTag);
+        mPostion = position;
         logger.i( "updateViews entity = " + entity.getWebVoiceUrl());
         mEntity = entity;
 
