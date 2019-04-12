@@ -3,7 +3,11 @@ package com.xueersi.parentsmeeting.modules.livevideo.entity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.Rect;
 
 import com.airbnb.lottie.LottieAnimationView;
 
@@ -22,9 +26,18 @@ import java.util.List;
  */
 public class LottieEffectInfo {
 
-    private String imgDir;//文件夹位置
-    private String jsonFilePath; // json文件路径;
-    private List<String> targetFileName; // 需要动态生成的 图片名称
+    /**
+     * 文件夹位置
+     **/
+    private String imgDir;
+    /**
+     * json文件路径
+     **/
+    private String jsonFilePath;
+    /**
+     * 需要动态生成的 图片名称
+     **/
+    private List<String> targetFileName;
 
     public String getImgDir() {
         return imgDir;
@@ -36,19 +49,62 @@ public class LottieEffectInfo {
         this.targetFileName = Arrays.asList(targetFileNames);
     }
 
-    public void setTargetFileFilter(String[] targetFileNames){
+    public void setTargetFileFilter(String[] targetFileNames) {
         this.targetFileName = Arrays.asList(targetFileNames);
     }
 
-    public Bitmap fetchBitmap(LottieAnimationView animationView,String fileName,
+    public Bitmap fetchBitmap(LottieAnimationView animationView, String fileName,
                               String bitmapId, int width, int height) {
         Bitmap resultBitMap = null;
         if (targetFileName != null && targetFileName.contains(fileName)) {
-            return fetchTargetBitMap(animationView,fileName, bitmapId,width, height);
+            return fetchTargetBitMap(animationView, fileName, bitmapId, width, height);
+        } else {
+            resultBitMap = getBitMap(fileName);
+        }
+        return resultBitMap;
+    }
+
+    protected Bitmap getBitMap(String fileName) {
+        Bitmap resultBitMap = null;
+        InputStream in = null;
+        try {
+            in = new FileInputStream(imgDir + File.separator + fileName);
+            resultBitMap = BitmapFactory.decodeStream(in);
+            in.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return resultBitMap;
+    }
+
+
+    /**
+     * 从asset 中 获取lottie所需要的图片
+     *
+     * @param fileName
+     * @param width
+     * @param height
+     * @param context
+     * @return
+     */
+    public Bitmap fetchBitmapFromAssets(LottieAnimationView animationView,
+                                        String fileName, String bitmapId, int width,
+                                        int height, Context context) {
+        Bitmap resultBitMap = null;
+        if (targetFileName != null && targetFileName.contains(fileName)) {
+            return fetchTargetBitMap(animationView, fileName, bitmapId, width, height);
         } else {
             InputStream in = null;
             try {
-                in = new FileInputStream(imgDir + File.separator + fileName);
+                in = context.getAssets().open(imgDir + File.separator + fileName);
                 resultBitMap = BitmapFactory.decodeStream(in);
                 in.close();
             } catch (Exception e) {
@@ -68,43 +124,36 @@ public class LottieEffectInfo {
 
 
     /**
-     *  从asset 中 获取lottie所需要的图片
+     * 从assets文件夹中获取图片资源
      * @param fileName
-     * @param width
-     * @param height
      * @param context
      * @return
      */
-    public Bitmap fetchBitmapFromAssets(LottieAnimationView animationView,
-                                        String fileName,String bitmapId,int width,
-                                        int height,Context context){
+    protected Bitmap getBitMapFromAssets(String fileName, Context context) {
         Bitmap resultBitMap = null;
-        if (targetFileName != null && targetFileName.contains(fileName)) {
-            return fetchTargetBitMap(animationView,fileName, bitmapId,width, height);
-        } else {
-            InputStream in = null;
-            try {
-                in = context.getAssets().open(imgDir+File.separator+fileName);
-                resultBitMap = BitmapFactory.decodeStream(in);
-                in.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                if (in != null) {
-                    try {
-                        in.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+        InputStream in = null;
+        try {
+            in = context.getAssets().open(imgDir + File.separator + fileName);
+            resultBitMap = BitmapFactory.decodeStream(in);
+            in.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
         }
-        return  resultBitMap;
+        return resultBitMap;
     }
 
 
     /**
      * 获取 json 文件字符串内容
+     *
      * @return
      */
     public String getJsonStr() {
@@ -138,10 +187,11 @@ public class LottieEffectInfo {
 
     /**
      * 从assets 中获取 json
+     *
      * @param context
      * @return
      */
-    public String getJsonStrFromAssets(Context context){
+    public String getJsonStrFromAssets(Context context) {
         String jsonStr = null;
         BufferedReader reader = null;
         try {
@@ -166,10 +216,8 @@ public class LottieEffectInfo {
                 }
             }
         }
-        return  jsonStr;
+        return jsonStr;
     }
-
-
 
 
     /**
@@ -180,7 +228,7 @@ public class LottieEffectInfo {
      * @param height
      * @return
      */
-    public Bitmap fetchTargetBitMap(LottieAnimationView animationView,String fileName,
+    public Bitmap fetchTargetBitMap(LottieAnimationView animationView, String fileName,
                                     String bitmapId, int width, int height) {
         return null;
     }
@@ -192,6 +240,26 @@ public class LottieEffectInfo {
         matrix.postScale(scaleRatio, scaleRatio);
         result = Bitmap.createBitmap(input, 0, 0,
                 input.getWidth(), input.getHeight(), matrix, true);
+        return result;
+    }
+
+
+    public static Bitmap circleBitmap(Bitmap input, int radius) {
+        Bitmap result = null;
+        try {
+            result = Bitmap.createBitmap(radius * 2, radius * 2, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(result);
+            Rect src = new Rect(0, 0, input.getWidth(), input.getHeight());
+            Rect dst = new Rect(0, 0, radius * 2, radius * 2);
+            Path path = new Path();
+            path.addCircle(radius, radius, radius, Path.Direction.CCW);
+            canvas.clipPath(path);
+            Paint paint = new Paint();
+            paint.setFlags(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+            canvas.drawBitmap(input, src, dst, paint);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return result;
     }
 

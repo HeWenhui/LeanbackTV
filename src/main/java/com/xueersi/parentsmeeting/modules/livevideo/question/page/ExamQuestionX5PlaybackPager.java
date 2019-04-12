@@ -284,4 +284,9 @@ public class ExamQuestionX5PlaybackPager extends LiveBasePager implements BaseEx
         wvSubjectWeb.destroy();
     }
 
+    @Override
+    public boolean isResultRecived() {
+        return false;
+    }
+
 }

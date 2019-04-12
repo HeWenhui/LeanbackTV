@@ -227,6 +227,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         return cancelable;
     }
 
+
     class HttpURLConnectionCancelable implements Callback.Cancelable {
         HttpURLConnection connection;
         boolean isCancel;
@@ -1453,6 +1454,21 @@ public class LiveHttpManager extends BaseHttpBusiness {
     }
 
     /**
+     * 理科战队pk  获取战队成员信息
+     * @param classId
+     * @param teamId
+     * @param httpCallBack
+     */
+    public void getTeamMates(String classId, String teamId, HttpCallBack httpCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("teamId", teamId);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_TEAMPK_GETTEAMMATES, params,httpCallBack);
+    }
+
+
+    /**
      * 获取分队信息
      *
      * @param classId
@@ -2005,11 +2021,44 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
 
     /**
+     * 小理战队PK 二期 获取明星榜
+     * @param liveId
+     * @param classId
+     * @param requestCallBack
+     */
+    public void getTeamPkStarStudents(String liveId,String classId,String courseId, HttpCallBack requestCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("courseId",courseId);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_TEMPK_GETSTARSTUDENTS, params, requestCallBack);
+    }
+
+
+    /**
+     * 小理战队PK 二期 获取黑马榜
+     * @param liveId
+     * @param classId
+     * @param requestCallBack
+     */
+    public void getTeamPkProgressStudent(String liveId,String classId,String courseId, HttpCallBack requestCallBack){
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("courseId",courseId);
+        setDefaultParameter(params);
+        sendPost(liveVideoSAConfigInner.URL_TEMPK_GETPROGRESSSTU, params, requestCallBack);
+    }
+
+    /**
      * go-战队pk-更新用户分组
      *
      * @param requestCallBack
      */
-    public void reportStuLike(String unique_id, String stu_id, String nick_name, String teamId, String testId, String like_info, HttpCallBack requestCallBack) {
+    public void reportStuLike(String unique_id, String stu_id, String nick_name,
+                              String teamId, String testId, String like_info,
+                              HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
         params.addBodyParam("stu_id", "" + stu_id);
