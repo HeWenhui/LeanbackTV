@@ -666,7 +666,7 @@ public class NewIRCMessage implements IIRCMessage {
         if (myUserInfoEntity.getAreaCode() != null){
             liveInfo.location = myUserInfoEntity.getAreaCode();
         }else {
-            liveInfo.location = "";
+            liveInfo.username = mNickname;
         }
         mChatClient.setLiveInfo(liveInfo);
         //登陆 code: 0 成功， 1 参数错误，11 未初始化，17 已登录，18 正在登陆

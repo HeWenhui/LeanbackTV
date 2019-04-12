@@ -579,7 +579,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         if (mLiveInfo.getStuName() != null) {
             liveInfo.username = mLiveInfo.getStuName();
         } else {
-            liveInfo.username = "";
+            liveInfo.username = mNickname;
         }
         if(mLiveInfo.getStudentLiveInfo() != null && mLiveInfo.getStudentLiveInfo().getClassId() != null){
             liveInfo.classId = mLiveInfo.getStudentLiveInfo().getClassId();

@@ -570,6 +570,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage{
         String appid = myUserInfoEntity.getPsAppId();
         //irc sdk初始化  code: 0 成功 ，1 参数错误 ， 19 已初始化
         int initcode = mChatClient.init(mContext.getApplicationContext(), myUserInfoEntity.getPsAppId(), myUserInfoEntity.getPsAppClientKey(), workSpaceDir.getAbsolutePath());
+        logger.i("psAppId:" + myUserInfoEntity.getPsAppId()+" PsAppClientKey:"+myUserInfoEntity.getPsAppClientKey()+" workspace:"+workSpaceDir.getAbsolutePath());
         logger.i("irc sdk initcode: " + initcode);
         //设置直播信息
         liveInfo = new PMDefs.LiveInfo();
@@ -584,7 +585,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage{
         if(mLiveInfo.getStudentLiveInfo() != null && mLiveInfo.getStudentLiveInfo().getClassId() != null){
             liveInfo.classId = mLiveInfo.getStudentLiveInfo().getClassId();
         }else {
-            liveInfo.classId = "";
+            liveInfo.username = mNickname;
         }
         liveInfo.businessId = "1";
         if (myUserInfoEntity.getAreaCode() != null){

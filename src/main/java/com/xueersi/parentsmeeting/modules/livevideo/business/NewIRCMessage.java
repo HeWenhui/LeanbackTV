@@ -124,6 +124,7 @@ public class NewIRCMessage implements IIRCMessage {
                 }
                 for (int i = 0; i < mChannels.length; i++) {
                     roomid.add("#" + mChannels[i]);
+                    logger.i("#" + mChannels[i]);
                 }
                 mChatClient.getRoomManager().joinChatRooms(roomid);
             } else if (PMDefs.ResultCode.Result_NicknameAlreadyExist == loginResp.code) {
@@ -646,6 +647,7 @@ public class NewIRCMessage implements IIRCMessage {
         String appid = myUserInfoEntity.getPsAppId();
         //irc sdk初始化  code: 0 成功 ，1 参数错误 ， 19 已初始化
         int initcode = mChatClient.init(mContext.getApplicationContext(), myUserInfoEntity.getPsAppId(), myUserInfoEntity.getPsAppClientKey(), workSpaceDir.getAbsolutePath());
+        logger.i("psAppId:" + myUserInfoEntity.getPsAppId()+" PsAppClientKey:"+myUserInfoEntity.getPsAppClientKey()+" workspace:"+workSpaceDir.getAbsolutePath());
         logger.i("irc sdk initcode: " + initcode);
         //设置直播信息
         liveInfo = new PMDefs.LiveInfo();
@@ -655,7 +657,7 @@ public class NewIRCMessage implements IIRCMessage {
         if (mLiveInfo.getStuName() != null) {
             liveInfo.username = mLiveInfo.getStuName();
         } else {
-            liveInfo.username = "";
+            liveInfo.username = mNickname;
         }
         if (mLiveInfo.getStudentLiveInfo() != null && mLiveInfo.getStudentLiveInfo().getClassId() != null) {
             liveInfo.classId = mLiveInfo.getStudentLiveInfo().getClassId();
