@@ -31,7 +31,7 @@ import static com.tal100.chatsdk.PMDefs.MessagePriority.MSG_PRIORITY_NOTICE;
  *
  * @author linyuqiang
  */
-public class NewIRCMessage implements IIRCMessage{
+public class NewIRCMessage implements IIRCMessage {
     private String TAG = "IRCMessage";
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     private int mConnectCount = 0, mDisconnectCount = 0;
@@ -71,6 +71,7 @@ public class NewIRCMessage implements IIRCMessage{
     private List<String> roomid;
     private PMDefs.LiveInfo liveInfo;
     private boolean isConnected;
+    private boolean isFirstLogin = true;
 
     public NewIRCMessage(Context context, int netWorkType, String login, String nickname, LiveGetInfo liveInfo, String... channel) {
         this.netWorkType = netWorkType;
@@ -116,7 +117,8 @@ public class NewIRCMessage implements IIRCMessage{
             logger.i("ircsdk login code:" + loginResp.code);
             logger.i("ircsdk login info:" + loginResp.info);
             String target = mNickname;
-            if (PMDefs.ResultCode.Result_Success == loginResp.code) {
+            if (PMDefs.ResultCode.Result_Success == loginResp.code && isFirstLogin) {
+                isFirstLogin = false;
                 if (roomid == null) {
                     roomid = new ArrayList<>();
                 }
@@ -805,7 +807,7 @@ public class NewIRCMessage implements IIRCMessage{
         if (mChatClient != null) {
             logger.i("ircsdk ondestory");
             mChatClient.logout("relogin");
-            if (roomid != null && !roomid.isEmpty()){
+            if (roomid != null && !roomid.isEmpty()) {
                 mChatClient.getRoomManager().leaveChatRooms(roomid);
             }
             mChatClient.unInit();
@@ -827,7 +829,7 @@ public class NewIRCMessage implements IIRCMessage{
 
 
     @Override
-    public void setConnectService(IConnectService connectService){
+    public void setConnectService(IConnectService connectService) {
     }
 
     //模式切换
