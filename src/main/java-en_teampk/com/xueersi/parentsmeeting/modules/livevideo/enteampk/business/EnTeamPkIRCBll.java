@@ -612,25 +612,27 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
             };
             putInstance(GetStuActiveTeam.class, getStuActiveTeam);
-            getEnTeamPkHttpManager().reportInteractiveInfo(mGetInfo.getStuId(), unique_id, true, new HttpCallBack() {
+            if (mInteractiveTeam == null) {
+                getEnTeamPkHttpManager().reportInteractiveInfo(mGetInfo.getStuId(), unique_id, true, new HttpCallBack() {
 
-                @Override
-                public void onPmSuccess(ResponseEntity responseEntity) {
-                    logger.d("reportInteractiveInfo:onPmSuccess:json=" + responseEntity.getJsonObject());
-                }
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) {
+                        logger.d("reportInteractiveInfo:onPmSuccess:json=" + responseEntity.getJsonObject());
+                    }
 
-                @Override
-                public void onPmFailure(Throwable error, String msg) {
-                    super.onPmFailure(error, msg);
-                    logger.d("reportInteractiveInfo:onPmFailure:msg=" + msg);
-                }
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        super.onPmFailure(error, msg);
+                        logger.d("reportInteractiveInfo:onPmFailure:msg=" + msg);
+                    }
 
-                @Override
-                public void onPmError(ResponseEntity responseEntity) {
-                    super.onPmError(responseEntity);
-                    logger.d("reportInteractiveInfo:onPmError:msg=" + responseEntity.getErrorMsg());
-                }
-            });
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        super.onPmError(responseEntity);
+                        logger.d("reportInteractiveInfo:onPmError:msg=" + responseEntity.getErrorMsg());
+                    }
+                });
+            }
         }
         if (tcpMessageReg == null) {
             tcpMessageReg = new TcpMessageReg() {
