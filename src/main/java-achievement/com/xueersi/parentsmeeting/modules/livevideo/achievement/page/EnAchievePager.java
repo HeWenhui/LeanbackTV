@@ -12,6 +12,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.view.ViewStub;
 import android.view.ViewTreeObserver;
 import android.widget.CheckBox;
@@ -137,6 +138,11 @@ public class EnAchievePager extends LiveBasePager {
 
     private void showPk() {
         LiveGetInfo.EnPkEnergy enpkEnergy = mLiveGetInfo.getEnpkEnergy();
+        ViewParent viewParent = vsAchiveBottom.getParent();
+        if (viewParent == null) {
+            mLogtf.d("showPk:pkView=null?" + (pkView == null));
+            return;
+        }
         View view = vsAchiveBottom.inflate();
         if (view == null) {
             return;

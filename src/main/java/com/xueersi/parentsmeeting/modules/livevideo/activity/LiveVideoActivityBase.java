@@ -633,13 +633,13 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         if (!mCreated)
             return;
         if (isInitialized()) {
+            if (livePlayLog != null) {
+                livePlayLog.onPause(0);
+            }
             if (vPlayer != null && vPlayer.isPlaying()) {
                 // 暂停播放
                 stopPlayer();
             }
-        }
-        if (livePlayLog != null) {
-            livePlayLog.onPause(0);
         }
     }
 

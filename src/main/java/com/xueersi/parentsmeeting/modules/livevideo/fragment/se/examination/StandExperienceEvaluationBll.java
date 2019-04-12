@@ -31,9 +31,18 @@ public class StandExperienceEvaluationBll extends
      */
     @Override
     public void showWindow() {
-        if (mView != null) {
+        if (mView != null && mRootView != null) {
+//            if (!TextUtils.isEmpty(mVideoEntity.getExamUrl())) {
+//                String url = mVideoEntity.getExamUrl() + "#/index?nowLevel=" + "&liveId=" + mVideoEntity.getLiveId() +
+//                        "&gradeId=" + mVideoEntity.getGradId() + "&subjectId=" + mVideoEntity.getSubjectId() +
+//                        "&teacherId=" + mVideoEntity.getTeacherId() + "&orderId=" + mVideoEntity.getChapterId() +
+//                        "&userId=" + UserBll.getInstance().getMyUserInfoEntity().getStuId();
+
+//            ActivityChangeLand activityChangeLand = ProxUtil.getProxUtil().get(activity, ActivityChangeLand.class);
+//            activityChangeLand.changeLOrP();
+            logger.i("旋转屏幕");
             mView.showWebView(mVideoEntity.getExamUrl());
-            if (mView.getRootView().getParent() == null) {
+            if(mView.getRootView().getParent()==null) {
                 mRootView.addView(mView.getRootView(), RelativeLayout.LayoutParams
                         .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
             }

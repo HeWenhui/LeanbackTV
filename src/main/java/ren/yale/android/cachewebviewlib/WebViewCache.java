@@ -230,6 +230,7 @@ public class WebViewCache {
         HttpURLConnection httpURLConnection = null;
         boolean isFail = false;
         Exception dnsException = new Exception();
+        String errorStr = null;
         try {
             URL oldUrl = new URL(url);
             if (dnsFailMap.containsKey(oldUrl.getHost())) {
@@ -299,6 +300,7 @@ public class WebViewCache {
                 }
                 return resourseInputStream;
             } else {
+                errorStr = "responseCode=" + responseCode;
                 dnsException = new Exception("responseCode=" + responseCode);
                 client.onReceivedHttpError(webView, url, responseCode, "");
             }
@@ -307,6 +309,7 @@ public class WebViewCache {
             e.printStackTrace();
         } catch (UnknownHostException e) {
             CacheWebViewLog.d(e.toString() + " " + url, e);
+            errorStr = "UnknownHostException";
             dnsException = e;
             e.printStackTrace();
         } catch (IOException e) {
@@ -325,8 +328,14 @@ public class WebViewCache {
         if (true) {
 //            dnsFailMap.put(url, true);
             Map<String, String> mData = new HashMap<>();
-            mData.put("message", Log.getStackTraceString(dnsException));
+            if (errorStr != null) {
+                mData.put("message", errorStr);
+            } else {
+                mData.put("message", Log.getStackTraceString(dnsException));
+            }
             mData.put("url", url);
+            mData.put("isScience", "" + isScience);
+            mData.put("needHttpDns", "" + needHttpDns);
             try {
                 mData.put("host", new URL(url).getHost());
             } catch (MalformedURLException e1) {
