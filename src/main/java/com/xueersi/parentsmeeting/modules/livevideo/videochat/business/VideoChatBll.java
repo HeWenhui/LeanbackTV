@@ -490,6 +490,9 @@ public class VideoChatBll implements VideoChatAction {
         btRaiseHands = liveMediaControllerBottom.findViewById(R.id.bt_livevideo_voicechat_raise_hands);
         btRaiseHands.setAlpha(0.4f);
         btRaiseHands.setOnClickListener(btRaiseHandsListener);
+        if(getInfo != null){
+            btRaiseHands.setVisibility(getInfo.isAllowLinkMic()?View.VISIBLE:View.GONE);
+        }
         if (oldBtRaiseHands != null) {
             logger.d("setControllerBottom:old=" + oldBtRaiseHands.hashCode() + "," + btRaiseHands.hashCode());
         }
