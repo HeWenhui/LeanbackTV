@@ -30,6 +30,10 @@ public class LiveMessageEntity {
     public static final int MESSAGE_TIP = 3;
     //献花
     public static final int MESSAGE_FLOWERS = 4;
+    //连对激励系统的点赞
+    public static final int EVEN_DRIVE_LIKE = 5;
+    //连对激励系统学报
+    public static final int EVEN_DRIVE_REPORT = 6;
 
     public LiveMessageEntity(String sender, int type, CharSequence text) {
         this.sender = sender;

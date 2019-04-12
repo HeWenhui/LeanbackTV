@@ -10,6 +10,7 @@ public class MyRankEntity {
     private String myId;
     private ArrayList<RankEntity> rankEntities = new ArrayList<>();
 
+
     public String getMyId() {
         return myId;
     }
@@ -21,4 +22,5 @@ public class MyRankEntity {
     public ArrayList<RankEntity> getRankEntities() {
         return rankEntities;
     }
+
 }

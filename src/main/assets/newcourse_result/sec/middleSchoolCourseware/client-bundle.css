@@ -64,6 +64,20 @@
 }
 }
 
+
+.animation[data-v-4156337a] {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 2000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
 html, body, .result-root {
   width: 100%;
   height: 100%;

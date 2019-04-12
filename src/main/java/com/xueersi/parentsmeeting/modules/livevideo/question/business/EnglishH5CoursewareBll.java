@@ -33,6 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WebViewRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
@@ -244,6 +245,9 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                                 if (webViewRequest != null) {
                                     webViewRequest.releaseWebView();
                                 }
+                                if (isMiddleScience()) {
+                                    EventBus.getDefault().post(new EvenDriveEvent(EvenDriveEvent.CLOSE_H5));
+                                }
                             }
                         }
                     });
@@ -280,6 +284,18 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 }
             }
         }
+    }
+
+    /**
+     * 是否是中学理科
+     *
+     * @return
+     */
+    private boolean isMiddleScience() {
+        return mGetInfo.getIsArts() == 0
+                && !LiveVideoConfig.isPrimary
+                && !LiveVideoConfig.isSmallChinese
+                && !mGetInfo.getSmallEnglish();
     }
 
     public boolean onBack() {
@@ -480,6 +496,9 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         OnH5ResultClose onH5ResultClose = new OnH5ResultClose() {
             @Override
             public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
+
+                EventBus.getDefault().post(new EvenDriveEvent(EvenDriveEvent.CLOSE_H5));
+
                 mH5AndBool.add(baseEnglishH5CoursewarePager.getUrl());
                 if (!videoQuestionH5Entity.englishH5Entity.getNewEnglishH5()) {
                     saveH5AnswerRecord(videoQuestionH5Entity.getUrl());

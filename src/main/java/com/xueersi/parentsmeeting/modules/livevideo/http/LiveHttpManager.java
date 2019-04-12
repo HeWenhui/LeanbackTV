@@ -402,6 +402,42 @@ public class LiveHttpManager extends BaseHttpBusiness {
     }
 
     /**
+     * 中学数学，连对激励系统
+     * 获取连对榜单
+     *
+     * @param url
+     * @param classId      班级id
+     * @param planId       场次id
+     * @param teamId       小组ID
+     * @param httpCallBack
+     */
+    public void getEvenLikeData(String url, String classId, String planId, String teamId, HttpCallBack httpCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("planId", planId);
+        params.addBodyParam("teamId", teamId);
+        sendPost(url, params, httpCallBack);
+    }
+
+    /**
+     * 中学激励系统接口，用来更新聊天界面的最高连对和当前连对
+     *
+     * @param classId
+     * @param liveId
+     * @param teamId
+     * @param stuId
+     * @param httpCallBack
+     */
+    public void getEvenPairInfo(String classId, String liveId, String teamId, String stuId, HttpCallBack httpCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", classId);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("teamId", teamId);
+        params.addBodyParam("stuId", stuId);
+        sendPost(LiveVideoConfig.EVEN_DRIVE_PAIR_INFO, params, httpCallBack);
+    }
+
+    /**
      * 提交测试题
      *
      * @param type            视频类型
@@ -2031,5 +2067,43 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("test_id", "" + testId);
         params.addBodyParam("like_info", "" + like_info);
         sendPost(LiveVideoHttpEnConfig.URL_LIVE_REPORT_STULIKE + "?unique_id=" + unique_id, params, requestCallBack);
+    }
+
+    /**
+     * 中学激励系统学生点赞
+     *
+     * @param url
+     * @param classId   班级id
+     * @param planId    场次id
+     * @param teamId    小组ID
+     * @param listFlag  榜单标识（1：排行榜 2：连对榜）
+     * @param bePraised 被点赞的ID
+     */
+    public void sendEvenDriveLike(String url, String classId, String planId, String teamId, String listFlag, String bePraised, HttpCallBack callBack) {
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+        httpRequestParams.addBodyParam("classId", classId);
+        httpRequestParams.addBodyParam("planId", planId);
+        httpRequestParams.addBodyParam("teamId", teamId);
+        httpRequestParams.addBodyParam("listFlag", listFlag);
+        httpRequestParams.addBodyParam("bePraised", bePraised);
+        sendPost(url, httpRequestParams, callBack);
+    }
+
+    /**
+     * 学报接口地址
+     *
+     * @param url
+     * @param classId 班级id
+     * @param liveId  场次id
+     * @param teamId  小组ID
+     * @param stuId   学生ID
+     */
+    public void getJournalUrl(String url, String classId, String liveId, String teamId, String stuId, HttpCallBack callBack) {
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+        httpRequestParams.addBodyParam("classId", classId);
+        httpRequestParams.addBodyParam("liveId", liveId);
+        httpRequestParams.addBodyParam("teamId", teamId);
+        httpRequestParams.addBodyParam("stuId", stuId);
+        sendPost(url, httpRequestParams, callBack);
     }
 }

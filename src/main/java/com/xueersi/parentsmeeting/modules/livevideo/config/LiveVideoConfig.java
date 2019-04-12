@@ -92,6 +92,18 @@ public class LiveVideoConfig {
     /** 视频类型为站立直播体验课 */
     public static final int LIVE_TYPE_STAND_EXPERIENCE = 10000;
     /**
+     * 中学激励系统获取当前连对和最高连对
+     */
+    public static final String EVEN_DRIVE_PAIR_INFO = "https://live.xueersi.com/science/Stimulation/getEvenPairInfo";
+    /**
+     * 中学激励系统获取连对榜单
+     */
+    public static final String EVEN_DRIVE_PAIR_LIST = "https://live.xueersi.com/science/Stimulation/evenPairList";
+    /** 中学激励系统学报接口地址 */
+    public static final String EVEN_DRIVE_STYDU_REPORT = "https://live.xueersi.com/science/Stimulation/getJournal";
+    /** 中学激励系统点赞地址 */
+    public static final String EVEN_DRIVE_LIKE = "https://live.xueersi.com/science/Stimulation/thumbsUp";
+    /**
      * 语音评测地址
      */
     public static String SPEECH_URL = "https://live.xueersi.com/LivePlayBack/speechEvalResult/";

@@ -22,6 +22,7 @@ import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
@@ -36,6 +37,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.web.NewCourseCache;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
@@ -106,6 +108,8 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
      **/
     private boolean isNewArtsTest;
     private HashMap header;
+    /** 新课件缓存 */
+    private NewCourseCache newCourseCache;
 
     public QuestionWebX5Pager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity, StopWebQuestion questionBll, String testPaperUrl,
                               String stuId, String stuName, String liveid, String testId,
@@ -230,7 +234,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 
     @Override
     public void initData() {
-
+        newCourseCache = new NewCourseCache(mContext, liveid);
         btSubjectClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -355,7 +359,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
             CacheWebView cacheWebView = (CacheWebView) wvSubjectWeb;
             // TODO: 2018/12/5  
             if (isArts == 0) {
-                cacheWebView.getWebViewCache().setNeedHttpDns(true);
+                cacheWebView.getWebViewCache().setNeedHttpDns(!AppConfig.DEBUG);
             } else {
                 cacheWebView.getWebViewCache().setNeedHttpDns(false);
             }
@@ -520,6 +524,11 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
+                }
+            } else {
+                WebResourceResponse webResourceResponse = newCourseCache.interceptZhongXueKeJian("" + request.getUrl());
+                if (webResourceResponse != null) {
+                    return webResourceResponse;
                 }
             }
             logger.e("没有本地资源就去网络请求咯咯咯new");

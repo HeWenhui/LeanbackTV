@@ -173,6 +173,7 @@ public interface XESCODE {
     int TEAM_PK_TEACHER_PRAISE = 305;
 
     /** 一题多发 */
+    /** 一题多发 收题发题都是251 TODO */
     int MULTIPLE_H5_COURSEWARE = 251;
 
     /** 开启/关闭语音弹幕 */
@@ -214,6 +215,13 @@ public interface XESCODE {
         int STU_RAISE_HAND = 283;
         /** 点赞 */
         int PRAISE_STU = 286;
+    }
+
+    interface EvenDrive {
+        /** 学生之间私发点赞消息 */
+        int PRAISE_PRIVATE_STUDENT = 299;
+        /** 教师广播发送学报消息 */
+        int BROADCAST_STUDY_REPORT = 300;
     }
 
     /** 文科表扬榜  开始notice */

@@ -4,7 +4,6 @@ import android.view.View;
 
 public interface IStandExperienceEvaluationContract {
     interface IEvaluationPresenter {
-
     }
 
     interface IEvaluationView {
