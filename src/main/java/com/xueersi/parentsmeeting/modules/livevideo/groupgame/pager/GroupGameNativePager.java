@@ -643,10 +643,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                         content.append("|");
                     }
                 }
-                MAX_SINGLE_COUNT = mTestInfoEntity.getSingleCount();
-                if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(detailInfo.type)) {
-                    MAX_SINGLE_COUNT = (int) Math.ceil((double) MAX_SINGLE_COUNT / 3d);
-                }
                 fetchCoursewareSuccess = true;
                 initWebView();
             }
@@ -795,7 +791,12 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 if (mIse != null) {
                     mIse.cancel();
                 }
-                submitData();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        submitData();
+                    }
+                }, 1000);
             } else {
                 int time = mAnswersList.get(pageNum).getSingleTime() + 1;
                 handler.postDelayed(turnPageRunnable, time * 1000);
@@ -804,6 +805,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
         @Override
         public void onLoadComplete() {
+            MAX_SINGLE_COUNT = mTestInfoEntity.getSingleCount();
             if (detailInfo.type.equals(LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON)) {
                 try {
                     JSONObject resultData = new JSONObject();
@@ -816,6 +818,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                //语音炮弹单人模式，完成次数减为1/3
+                MAX_SINGLE_COUNT = (int) Math.ceil((double) MAX_SINGLE_COUNT / 3d);
             }
         }
 
