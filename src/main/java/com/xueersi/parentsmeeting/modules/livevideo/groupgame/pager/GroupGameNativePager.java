@@ -176,7 +176,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
     private static int MAX_SINGLE_COUNT;
 
-    public GroupGameNativePager(Context context, boolean isPlayBack, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity detailInfo, EnglishH5Entity englishH5Entity, EnglishH5CoursewareBll.OnH5ResultClose onClose) {
+    public GroupGameNativePager(Context context, boolean isPlayBack, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity
+            detailInfo, EnglishH5Entity englishH5Entity, EnglishH5CoursewareBll.OnH5ResultClose onClose) {
         super(context);
         this.isPlayBack = isPlayBack;
         this.liveGetInfo = liveGetInfo;
@@ -187,7 +188,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         this.learningStage = liveGetInfo.getStudentLiveInfo().getLearning_stage();
         this.onClose = onClose;
         preLoad = new MiddleSchoolPreLoad();
-        if (LiveQueConfig.EN_COURSE_TYPE_HOT_AIR_BALLON.equals(detailInfo.type) || LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(detailInfo.type)) {
+        if (LiveQueConfig.EN_COURSE_TYPE_HOT_AIR_BALLON.equals(detailInfo.type) || LiveQueConfig
+                .EN_COURSE_TYPE_VOICE_CANNON.equals(detailInfo.type)) {
             singleModeAction = new HotAirBallonAction();
         } else if ((LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(detailInfo.type))) {
             singleModeAction = new CleanUpAction();
@@ -356,7 +358,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 if (!addJs) {
                     addJs = true;
                     WebResourceResponse webResourceResponse = newCourseCache.interceptIndexRequest(view, url);
-//                    logger.d("shouldInterceptRequest:index:url=" + url + ",response=null?" + (webResourceResponse == null));
                     if (webResourceResponse != null) {
                         return webResourceResponse;
                     } else {
@@ -371,7 +372,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 }
             } else if (WebInstertJs.indexStr().equals(url)) {
                 WebResourceResponse webResourceResponse = newCourseCache.interceptJsRequest(view, url);
-//                logger.d("shouldInterceptRequest:js:url=" + url + ",response=null?" + (webResourceResponse == null));
                 if (webResourceResponse != null) {
                     return webResourceResponse;
                 } else {
@@ -453,10 +453,10 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     logger.d("onEvaluatorSuccess(): score = " + resultEntity.getScore());
                     onRecognizeStop(resultEntity);
                 } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
-                    logger.d("onEvaluatorError: errorNo = " + resultEntity.getErrorNo() + ", isOfflineFail =" + mIse.isOfflineFail());
+                    logger.d("onEvaluatorError: errorNo = " + resultEntity.getErrorNo() + ", isOfflineFail =" + mIse
+                            .isOfflineFail());
                     onRecognizeStop(resultEntity);
                 } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
-//                    logger.d("onEvaluatoring: newSenIdx = " + resultEntity.getNewSenIdx() + ", score =" + resultEntity.getScore());
                     if (gameOver) {
                         return;
                     }
@@ -468,7 +468,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
             @Override
             public void onVolumeUpdate(int volume) {
-//                logger.d("onVolumeUpdate(): volume = " + volume);
                 float floatVolume;
                 if (volume > 10) {
                     floatVolume = (float) (volume * 3) / 90.0f;
@@ -486,7 +485,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-//                    XESToastUtils.showToast(mContext, "评测结束");
                     startSpeechRecognize();
                 }
             }, 300);
@@ -564,26 +562,28 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 fireNum = (int) Math.ceil(10d * successTimes / (double) (mAnswersList.size()));
             }
         }
-        logger.d("submitData: answerData = " + answerData.toString() + ", submitData: fireNum = " + fireNum + ", goldNum = " + goldNum + ", starNum = " + starNum);
+        logger.d("submitData: answerData = " + answerData.toString() + ", submitData: fireNum = " + fireNum + ", " +
+                "goldNum = " + goldNum + ", starNum = " + starNum);
         isSubmit = true;
-        englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 0, (int) voiceTime, 0, 0, starNum, fireNum, goldNum, 0, (int) voiceTime, 0, 0, answerData.toString(), new AbstractBusinessDataCallBack() {
-            @Override
-            public void onDataSucess(Object... objData) {
-                logger.d("submitGroupGame -> onDataSucess");
-                showResultPager();
-            }
+        englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 0, (int) voiceTime, 0, 0, starNum, fireNum, goldNum,
+                0, (int) voiceTime, 0, 0, answerData.toString(), new AbstractBusinessDataCallBack() {
+                    @Override
+                    public void onDataSucess(Object... objData) {
+                        logger.d("submitGroupGame -> onDataSucess");
+                        showResultPager();
+                    }
 
-            @Override
-            public void onDataFail(int errStatus, String failMsg) {
-                super.onDataFail(errStatus, failMsg);
-                logger.d("submitGroupGame -> onDataFail:" + failMsg);
-                isSubmit = false;
-                if (errStatus == LiveHttpConfig.HTTP_ERROR_ERROR) {
-                    XESToastUtils.showToast(mContext, failMsg);
-                }
-                onClose.onH5ResultClose(GroupGameNativePager.this, detailInfo);
-            }
-        });
+                    @Override
+                    public void onDataFail(int errStatus, String failMsg) {
+                        super.onDataFail(errStatus, failMsg);
+                        logger.d("submitGroupGame -> onDataFail:" + failMsg);
+                        isSubmit = false;
+                        if (errStatus == LiveHttpConfig.HTTP_ERROR_ERROR) {
+                            XESToastUtils.showToast(mContext, failMsg);
+                        }
+                        onClose.onH5ResultClose(GroupGameNativePager.this, detailInfo);
+                    }
+                });
     }
 
     private int calculateStarByScore(int averageScore) {
@@ -626,7 +626,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             public void onDataSucess(Object... objData) {
                 logger.d("getCourseWareTests -> onDataSucess()");
                 mGroupGameTestInfosEntity = (GroupGameTestInfosEntity) objData[0];
-                if (mGroupGameTestInfosEntity.getTestInfoList() == null || mGroupGameTestInfosEntity.getTestInfoList().size() == 0) {
+                if (mGroupGameTestInfosEntity.getTestInfoList() == null || mGroupGameTestInfosEntity.getTestInfoList
+                        ().size() == 0) {
                     XESToastUtils.showToast(mContext, "互动题为空");
                     return;
                 }
@@ -831,7 +832,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             if (newSenIndex != pageNum) {
                 return;
             }
-            logger.d("onHitSentence: newSenIndex = " + newSenIndex + ", score = " + score + ", speechDuration = " + speechDuration);
+            logger.d("onHitSentence: newSenIndex = " + newSenIndex + ", score = " + score + ", speechDuration = " +
+                    speechDuration);
             scoreMatrix.get(pageNum).add(score);
             voiceTime = existingVoiceTime + (long) (speechDuration * 1000);
             if (score >= 70) {
@@ -996,7 +998,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             if (newSenIndex < 0) {
                 return;
             }
-            logger.d("onHitSentence: newSenIndex = " + newSenIndex + ", score = " + score + ", speechDuration = " + speechDuration);
+            logger.d("onHitSentence: newSenIndex = " + newSenIndex + ", score = " + score + ", speechDuration = " +
+                    speechDuration);
             String text = mAnswersList.get(newSenIndex).getText();
             Queue<Integer> queue = unfinishedfruitIds.get(text);
             if (!queue.isEmpty()) {
