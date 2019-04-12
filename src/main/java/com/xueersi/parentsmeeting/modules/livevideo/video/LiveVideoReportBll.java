@@ -13,6 +13,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -74,11 +75,11 @@ public class LiveVideoReportBll {
         this.mHttpManager = mHttpManager;
     }
 
-    public PlayerService.SimpleVPlayerListener getVideoListener() {
+    public VPlayerCallBack.SimpleVPlayerListener getVideoListener() {
         return mVideoListener;
     }
 
-    private PlayerService.SimpleVPlayerListener mVideoListener = new PlayerService.SimpleVPlayerListener() {
+    private VPlayerCallBack.SimpleVPlayerListener mVideoListener = new VPlayerCallBack.SimpleVPlayerListener() {
         long bufferStartTime;
         boolean isOpenSuccess = false;
 

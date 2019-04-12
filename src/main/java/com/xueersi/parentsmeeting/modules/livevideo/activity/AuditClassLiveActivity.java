@@ -39,8 +39,8 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerListener;
-import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.SimpleVPlayerListener;
-import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.VPlayerListener;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack.SimpleVPlayerListener;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack.VPlayerListener;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.XESVideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
@@ -245,6 +245,11 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
         xv_livevideo_student.onCreate();
         xv_livevideo_student.setZOrderOnTop(true);
         xv_livevideo_student.setVPlayerListener(new VPlayerListener() {
+
+            @Override
+            public void getPSServerList(int cur, int total, boolean modeChange) {
+
+            }
 
             @Override
             public void onHWRenderFailed() {

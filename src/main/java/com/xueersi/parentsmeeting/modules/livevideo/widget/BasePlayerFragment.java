@@ -29,6 +29,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
@@ -460,7 +461,12 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         return 0L;
     }
 
-    protected PlayerService.VPlayerListener vPlayerServiceListener = new PlayerService.VPlayerListener() {
+    protected VPlayerCallBack.VPlayerListener vPlayerServiceListener = new VPlayerCallBack.VPlayerListener() {
+
+        @Override
+        public void getPSServerList(int cur, int total, boolean modeChange) {
+
+        }
 
         /** 硬解码失败 */
         @Override
@@ -469,7 +475,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                 vPlayerHandler.sendEmptyMessage(HW_FAILED);
                 vPlayerHandler.sendEmptyMessageDelayed(HW_FAILED, 200); // 确保使用软解码初始化成功？？？
             }
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onHWRenderFailed();
             }
@@ -479,7 +485,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         @Override
         public void onOpenStart() {
             vPlayerHandler.sendEmptyMessage(OPEN_START);
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onOpenStart();
             }
@@ -494,7 +500,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             } else {
                 release();
             }
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onOpenSuccess();
             }
@@ -507,7 +513,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         @Override
         public void onOpenFailed(int arg1, int arg2) {
             vPlayerHandler.sendMessage(vPlayerHandler.obtainMessage(OPEN_FAILED, arg1, arg2));
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onOpenFailed(arg1, arg2);
             }
@@ -521,7 +527,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             if (vPlayer != null) {
                 vPlayer.stopListenPlaying();
             }
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onBufferStart();
             }
@@ -537,7 +543,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             if (vPlayer != null) {
                 vPlayer.startListenPlaying();
             }
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onBufferComplete();
             }
@@ -546,7 +552,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         @Override
         public void onSeekComplete() {
             vPlayerHandler.sendEmptyMessage(SEEK_COMPLETE);
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onSeekComplete();
             }
@@ -556,7 +562,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         @Override
         public void onPlaybackComplete() {
             playComplete();
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onPlaybackComplete();
             }
@@ -566,7 +572,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         @Override
         public void onCloseStart() {
             vPlayerHandler.sendEmptyMessage(CLOSE_START);
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onCloseStart();
             }
@@ -576,7 +582,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         @Override
         public void onCloseComplete() {
             vPlayerHandler.sendEmptyMessage(CLOSE_COMPLETE);
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onCloseComplete();
             }
@@ -588,7 +594,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             if (videoView != null) {
                 setVideoLayout();
             }
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onVideoSizeChanged(width, height);
             }
@@ -597,7 +603,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         /** 下载进度 */
         @Override
         public void onDownloadRateChanged(int kbPerSec) {
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onDownloadRateChanged(kbPerSec);
             }
@@ -611,7 +617,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             msg.obj = arrLong;
             msg.what = ON_PLAYING_POSITION;
             vPlayerHandler.sendMessage(msg);
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onPlaying(currentPosition, duration);
             }
@@ -621,7 +627,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         @Override
         public void onPlayError() {
             BasePlayerFragment.this.onPlayError();
-            PlayerService.VPlayerListener wrapListener = getWrapListener();
+            VPlayerCallBack.VPlayerListener wrapListener = getWrapListener();
             if (wrapListener != null) {
                 wrapListener.onPlayError();
             }
@@ -874,7 +880,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         }
     }
 
-    protected PlayerService.VPlayerListener getWrapListener() {
+    protected VPlayerCallBack.VPlayerListener getWrapListener() {
         return null;
     }
 
