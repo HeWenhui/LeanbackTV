@@ -67,13 +67,21 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     Logger logger = LoggerFactory.getLogger("LiveBll2");
-    /** 需处理 topic 业务集合 */
+    /**
+     * 需处理 topic 业务集合
+     */
     private List<TopicAction> mTopicActions = new ArrayList<>();
-    /** 需处理 notice 的业务集合 */
+    /**
+     * 需处理 notice 的业务集合
+     */
     private Map<Integer, List<NoticeAction>> mNoticeActionMap = new HashMap<>();
-    /** 需处理 全量 消息的 业务集合 */
+    /**
+     * 需处理 全量 消息的 业务集合
+     */
     private List<MessageAction> mMessageActions = new ArrayList<>();
-    /** 所有业务bll 集合 */
+    /**
+     * 所有业务bll 集合
+     */
     private List<LiveBaseBll> businessBlls = new ArrayList<>();
     private Handler mHandler = new Handler(Looper.getMainLooper());
     private AllLiveBasePagerIml allLiveBasePagerIml;
@@ -84,17 +92,25 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     private String mCourseId;
     private LiveGetInfo mGetInfo;
     private LiveVideoSAConfig liveVideoSAConfig;
-    /** 区分文理appid */
+    /**
+     * 区分文理appid
+     */
     String appID = UmsConstants.LIVE_APP_ID;
     private LiveHttpManager mHttpManager;
-    /** 学生课程id */
+    /**
+     * 学生课程id
+     */
     private String mStuCouId;
     private int mForm;
     private LiveHttpResponseParser mHttpResponseParser;
-    /** 网络类型 */
+    /**
+     * 网络类型
+     */
     private int netWorkType;
     private final LiveTopic mLiveTopic;
-    /** 校准系统时间 */
+    /**
+     * 校准系统时间
+     */
     private long sysTimeOffset;
     private final String ROOM_MIDDLE = "L";
     private IIRCMessage mIRCMessage;
@@ -383,7 +399,9 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         }
     }
 
-    /** 获取getInfo成功 */
+    /**
+     * 获取getInfo成功
+     */
     private void onGetInfoSuccess(LiveGetInfo getInfo) {
         logger.e("=======>onGetInfoSuccess");
         this.mGetInfo = getInfo;
@@ -458,7 +476,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 mHttpManager.addBodyParam("courseId", mCourseId);
             }
             channel = mGetInfo.getId() + "-" + studentLiveInfo.getClassId();
-            if (mGetInfo.ePlanInfo != null){
+            if (mGetInfo.ePlanInfo != null) {
                 eChannel = mGetInfo.ePlanInfo.ePlanId + "-" + mGetInfo.ePlanInfo.eClassId;
             }
         }
@@ -466,24 +484,24 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         s += ",liveType=" + mLiveType + ",channel=" + channel;
         String nickname = "s_" + mGetInfo.getLiveType() + "_"
                 + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
-        if (MediaPlayer.getIsNewIJK()){
-            if (TextUtils.isEmpty(eChannel) || LiveTopic.MODE_CLASS.equals(getMode())){
-                mIRCMessage = new NewIRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname,mGetInfo, channel);
-            }else {
-                mIRCMessage = new NewIRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname,mGetInfo, channel,eChannel);
+        if (MediaPlayer.getIsNewIJK()) {
+            if (TextUtils.isEmpty(eChannel) || LiveTopic.MODE_CLASS.equals(getMode())) {
+                mIRCMessage = new NewIRCMessage( mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, mGetInfo, this, channel);
+            } else {
+                mIRCMessage = new NewIRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, mGetInfo, this, channel, eChannel);
             }
-        } else{
-            if (TextUtils.isEmpty(eChannel) || LiveTopic.MODE_CLASS.equals(getMode())){
+        } else {
+            if (TextUtils.isEmpty(eChannel) || LiveTopic.MODE_CLASS.equals(getMode())) {
                 mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, channel);
-            }else {
-                mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, channel,eChannel);
+            } else {
+                mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, channel, eChannel);
             }
             IRCTalkConf ircTalkConf = new IRCTalkConf(mContext, getInfo, mLiveType, mHttpManager, getInfo.getNewTalkConfHosts());
             mIRCMessage.setIrcTalkConf(ircTalkConf);
         }
 
         //mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, (TextUtils.isEmpty(eChannel)|| LiveTopic.MODE_CLASS.equals(getMode()))?channel:channel,eChannel);
-        if (mGetInfo!=null && mGetInfo.ePlanInfo!=null){
+        if (mGetInfo != null && mGetInfo.ePlanInfo != null) {
             mIRCMessage.modeChange(mGetInfo.getMode());
         }
 
@@ -626,7 +644,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 switch (mtype) {
                     case XESCODE.MODECHANGE:
                         String mode = object.getString("mode");
-                        if (mode!=null && mIRCMessage!=null && mGetInfo!=null && mGetInfo.ePlanInfo!=null){
+                        if (mode != null && mIRCMessage != null && mGetInfo != null && mGetInfo.ePlanInfo != null) {
                             mIRCMessage.modeChange(mode);
                         }
                         if (!(mLiveTopic.getMode().equals(mode))) {
@@ -686,13 +704,13 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                     if (!(mLiveTopic.getMode().equals(liveTopic.getMode()))) {
                         String oldMode = mLiveTopic.getMode();
                         mLiveTopic.setMode(liveTopic.getMode());
-                       // Loger.d("___channel: "+channel+"  mode: "+liveTopic.getMode()+"  topic:  "+topicstr);
+                        // Loger.d("___channel: "+channel+"  mode: "+liveTopic.getMode()+"  topic:  "+topicstr);
                         mGetInfo.setMode(liveTopic.getMode());
                         boolean isPresent = isPresent(mLiveTopic.getMode());
                         if (mVideoAction != null) {
                             mVideoAction.onModeChange(mLiveTopic.getMode(), isPresent);
                         }
-                        if (mIRCMessage!=null){
+                        if (mIRCMessage != null) {
                             mIRCMessage.modeChange(mLiveTopic.getMode());
                         }
                         liveVideoBll.onModeChange(mLiveTopic.getMode(), isPresent);
@@ -713,7 +731,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
 
                     mLiveTopic.setMode(liveTopic.getMode());
                     Loger.setDebug(true);
-                  //  Loger.d("___channel: "+channel+"  mode: "+liveTopic.getMode()+"  topic:  "+topicstr);
+                    //  Loger.d("___channel: "+channel+"  mode: "+liveTopic.getMode()+"  topic:  "+topicstr);
                     mGetInfo.setMode(liveTopic.getMode());
                 }
                 if (mTopicActions != null && mTopicActions.size() > 0) {
@@ -1148,12 +1166,16 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         return liveVideoSAConfig;
     }
 
-    /** 当前状态，老师是不是在直播间 */
+    /**
+     * 当前状态，老师是不是在直播间
+     */
     public boolean isPresent() {
         return isPresent(mLiveTopic.getMode());
     }
 
-    /** 直播间内模块间 数据共享池 */
+    /**
+     * 直播间内模块间 数据共享池
+     */
     private HashMap<String, Object> businessShareParamMap = new HashMap<String, Object>();
 
     /**
@@ -1214,8 +1236,10 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         }
     }
 
-    /** 测试notice */
+    /**
+     * 测试notice
+     */
     public void testNotice(String notice) {
-        mIRCcallback.onNotice("", "", "", "", notice,"");
+        mIRCcallback.onNotice("", "", "", "", notice, "");
     }
 }

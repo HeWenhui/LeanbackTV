@@ -572,6 +572,25 @@ public class NewAuditIRCMessage implements IAuditIRCMessage{
         int initcode = mChatClient.init(mContext.getApplicationContext(), myUserInfoEntity.getPsAppId(), myUserInfoEntity.getPsAppClientKey(), workSpaceDir.getAbsolutePath());
         logger.i("psAppId:" + myUserInfoEntity.getPsAppId()+" PsAppClientKey:"+myUserInfoEntity.getPsAppClientKey()+" workspace:"+workSpaceDir.getAbsolutePath());
         logger.i("irc sdk initcode: " + initcode);
+        if (PMDefs.ResultCode.Result_Success != initcode){
+            StableLogHashMap logHashMap = new StableLogHashMap("IRCMessage");
+            logHashMap.put("initcode", ""+initcode);
+            logHashMap.put("nickname", mNickname);
+            logHashMap.put("PsAppId", myUserInfoEntity.getPsAppId());
+            logHashMap.put("PsAppClientKey",myUserInfoEntity.getPsAppClientKey());
+            logHashMap.put("workspace",workSpaceDir.getAbsolutePath());
+            logHashMap.put("time",""+System.currentTimeMillis());
+            logHashMap.put("userid",UserBll.getInstance().getMyUserInfoEntity().getStuId());
+            logHashMap.put("where","NewAuditIRCMessage");
+            logHashMap.put("liveId",mLiveInfo.getId());
+            liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());
+            if (!workSpaceDir.exists()){
+                workSpaceDir.mkdirs();
+            }
+            logger.i("psAppId:" + myUserInfoEntity.getPsAppId()+" PsAppClientKey:"+myUserInfoEntity.getPsAppClientKey()+" workspace:"+workSpaceDir.getAbsolutePath());
+            initcode = mChatClient.init(mContext.getApplicationContext(), myUserInfoEntity.getPsAppId(), myUserInfoEntity.getPsAppClientKey(), workSpaceDir.getAbsolutePath());
+            logger.i("irc sdk initagain initcode: " + initcode);
+        }
         //设置直播信息
         liveInfo = new PMDefs.LiveInfo();
         liveInfo.nickname = "p_" + mNickname;

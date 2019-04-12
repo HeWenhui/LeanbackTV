@@ -206,17 +206,23 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
     private List<VideoQuestionEntity> roomChatEvent;
 
     private PopupWindow mFeedbackWindow;
-    /** 视频地址列表 */
+    /**
+     * 视频地址列表
+     */
     private List<String> mVideoPaths = new ArrayList<>();
 
     private int rePlayCount = 0;
 
     private static final int MAX_REPLAY_COUNT = 4;
 
-    /** 显示弹窗阈值 课程开始25min内进入课程的退出时显示弹窗 */
+    /**
+     * 显示弹窗阈值 课程开始25min内进入课程的退出时显示弹窗
+     */
     private static final long SHOW_QUIT_DIALOG_THRESHOLD = 1500000;
     private ExperienceQuitFeedbackBll experienceQuitFeedbackBll;
-    /** 是否使用新IRC */
+    /**
+     * 是否使用新IRC
+     */
 //    private boolean isNewIRC = false;
     private IIRCMessage mIRCMessage;
     private final String IRC_CHANNEL_PREFIX = "4L";
@@ -534,7 +540,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 chatRoomUid);
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
         if (MediaPlayer.getIsNewIJK()) {
-            mIRCMessage = new NewIRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, mGetInfo, channel);
+            mIRCMessage = new NewIRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, mGetInfo, ums, channel);
 
         } else {
             // 获取 聊天服务器地址  的接口地址
