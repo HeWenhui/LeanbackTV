@@ -514,7 +514,7 @@ public class VideoChatBll implements VideoChatAction {
 
         @Override
         public void onGiveup() {
-            btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_pshands);
+            btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands);
             raisehand = false;
             videoChatHttp.giveupMicro(from);
             raiseHandDialog.cancelDialog();
@@ -610,7 +610,7 @@ public class VideoChatBll implements VideoChatAction {
                         startRecord(room, "");
                     } else {
                         if (LiveVideoConfig.isPrimary) {
-                            btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_pshands);
+                            btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands);
                         } else {
                             btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands);
                         }
@@ -830,7 +830,7 @@ public class VideoChatBll implements VideoChatAction {
                                     isSuccess = false;
 //                                    btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands);
                                     if (LiveVideoConfig.isPrimary) {
-                                        btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_pshands);
+                                        btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands);
                                     } else {
                                         btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands);
                                     }
@@ -856,7 +856,7 @@ public class VideoChatBll implements VideoChatAction {
                         btRaiseHands.setAlpha(0.4f);
 //                        btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands);
                         if (LiveVideoConfig.isPrimary) {
-                            btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_pshands);
+                            btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands);
                         } else {
                             btRaiseHands.setBackgroundResource(R.drawable.bg_livevideo_voicechat_raise_hands);
                         }
