@@ -75,7 +75,6 @@ import okhttp3.Call;
  */
 public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction, MessageAction {
 
-
     public static final String TEAMPK_URL_FIFTE = "http://addenergyandgold.com/";
     /**
      * 开宝箱类型 班级宝箱列表
