@@ -1232,7 +1232,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 }
                 // 剩余时间
                 long lastTime = test.getTotalTime() - nowPlayTime;
-//                if (AppConfig.DEBUG) {
+//                if (com.xueersi.common.config.AppConfig.DEBUG) {
 //                    nowPlayTime = 0;
 //                    lastTime = 10000;
 //                }
@@ -1402,14 +1402,11 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 maxCleanUpEntity.teamMemberEntity.gold = 3;
             }
             try {
-                answerData.put("tryTimes", allScoreList.size());
+                int tryTimes = allScoreList.size();
+                answerData.put("tryTimes", tryTimes);
                 JSONArray userAnswer = new JSONArray();
                 CleanUpEntity cleanUpEntity = cleanUpEntities.get("" + stuid);
                 if (cleanUpEntity != null && !tests.isEmpty()) {
-//                    if (cleanUpEntity.teamMemberEntity.energy != 0) {
-//                        cleanUpEntity.teamMemberEntity.energy += 5;
-//                        energy = cleanUpEntity.teamMemberEntity.energy;
-//                    }
                     answerData.put("rightNum", cleanUpEntity.rightAnswerList.size());
                     HashMap<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity, ScoreEnergy> wordScore = cleanUpEntity.wordScore;
                     for (int ansIndex = 0; ansIndex < answerList.size(); ansIndex++) {
@@ -1429,8 +1426,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         jsonObject.put("scores", scores);
                         userAnswer.put(jsonObject);
                     }
-                    if (energy != 0) {
+                    //有作答痕迹，能量加5
+                    if (tryTimes > 0) {
                         cleanUpEntity.teamMemberEntity.energy = energy + 5;
+                        energy = cleanUpEntity.teamMemberEntity.energy;
                     }
                 } else {
                     answerData.put("rightNum", 0);
@@ -1468,10 +1467,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 float totalScore = 0;
                 int totalCount = 0;
                 if (vidooCannonEntity != null && !tests.isEmpty()) {
-                    if (vidooCannonEntity.teamMemberEntity.energy != 0) {
-                        vidooCannonEntity.teamMemberEntity.energy += 5;
-                        energy = vidooCannonEntity.teamMemberEntity.energy;
-                    }
+                    energy = vidooCannonEntity.rightNum;
                     answerData.put("rightNum", vidooCannonEntity.rightNum);
                     HashMap<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity, ArrayList<Integer>> wordScore = vidooCannonEntity.wordScore;
                     for (int ansIndex = 0; ansIndex < answerList.size(); ansIndex++) {
@@ -1558,7 +1554,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         } else if (averageScore < 101) {
             starNum = 5;
         }
-        mLogtf.d("submit:averageScore=" + averageScore + ",starNum=" + starNum);
+        mLogtf.d("submit:averageScore=" + averageScore + ",starNum=" + starNum + ",energy=" + energy);
         englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 1, voiceTime, teamEntity.getPkTeamId(), gameGroupId, starNum, energy, gold,
                 videoLengthTime, micLengthTime
                 , acceptVideoLengthTime, acceptMicLengthTime, answerData.toString(), new AbstractBusinessDataCallBack() {

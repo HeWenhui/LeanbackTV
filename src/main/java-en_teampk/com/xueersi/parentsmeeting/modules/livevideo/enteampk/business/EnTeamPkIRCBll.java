@@ -209,31 +209,6 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void initView(final RelativeLayout bottomContent, AtomicBoolean mIsLand) {
         super.initView(bottomContent, mIsLand);
-        bottomContent.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                boolean have = XesPermission.checkPermission(activity, new LiveActivityPermissionCallback() {
-
-                    @Override
-                    public void onFinish() {
-
-                    }
-
-                    @Override
-                    public void onDeny(String permission, int position) {
-
-                    }
-
-                    @Override
-                    public void onGuarantee(String permission, int position) {
-
-                    }
-                }, PermissionConfig.PERMISSION_CODE_CAMERA);
-                logger.d("initView:have=" + have);
-                bottomContent.getViewTreeObserver().removeOnPreDrawListener(this);
-                return false;
-            }
-        });
     }
 
     private void connect(ArrayList<InetSocketAddress> addresses) {
@@ -612,23 +587,50 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
             };
             putInstance(GetStuActiveTeam.class, getStuActiveTeam);
-            getEnTeamPkHttpManager().reportInteractiveInfo(mGetInfo.getStuId(), unique_id, true, new HttpCallBack() {
+            if (mInteractiveTeam == null) {
+                getEnTeamPkHttpManager().reportInteractiveInfo(mGetInfo.getStuId(), unique_id, true, new HttpCallBack() {
 
-                @Override
-                public void onPmSuccess(ResponseEntity responseEntity) {
-                    logger.d("reportInteractiveInfo:onPmSuccess:json=" + responseEntity.getJsonObject());
-                }
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) {
+                        logger.d("reportInteractiveInfo:onPmSuccess:json=" + responseEntity.getJsonObject());
+                    }
 
-                @Override
-                public void onPmFailure(Throwable error, String msg) {
-                    super.onPmFailure(error, msg);
-                    logger.d("reportInteractiveInfo:onPmFailure:msg=" + msg);
-                }
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        super.onPmFailure(error, msg);
+                        logger.d("reportInteractiveInfo:onPmFailure:msg=" + msg);
+                    }
 
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        super.onPmError(responseEntity);
+                        logger.d("reportInteractiveInfo:onPmError:msg=" + responseEntity.getErrorMsg());
+                    }
+                });
+            }
+            mRootView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
                 @Override
-                public void onPmError(ResponseEntity responseEntity) {
-                    super.onPmError(responseEntity);
-                    logger.d("reportInteractiveInfo:onPmError:msg=" + responseEntity.getErrorMsg());
+                public boolean onPreDraw() {
+                    boolean have = XesPermission.checkPermission(activity, new LiveActivityPermissionCallback() {
+
+                        @Override
+                        public void onFinish() {
+
+                        }
+
+                        @Override
+                        public void onDeny(String permission, int position) {
+
+                        }
+
+                        @Override
+                        public void onGuarantee(String permission, int position) {
+
+                        }
+                    }, PermissionConfig.PERMISSION_CODE_CAMERA);
+                    logger.d("initView:have=" + have);
+                    mRootView.getViewTreeObserver().removeOnPreDrawListener(this);
+                    return false;
                 }
             });
         }
