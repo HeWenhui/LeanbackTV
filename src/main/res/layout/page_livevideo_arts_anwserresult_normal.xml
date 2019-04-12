@@ -112,22 +112,21 @@
             android:layout_centerHorizontal="true"
             android:background="@drawable/bg_live_video_answer_result_pannel_gold_info"
             android:layout_marginTop="10dp"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:orientation="horizontal"
             android:visibility="visible">
 
             <ImageView
                 android:visibility="visible"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_marginLeft="13dp"
+                android:layout_width="20dp"
+                android:layout_marginTop="1dp"
+                android:layout_height="20dp"
                 android:src="@drawable/zhanduipk_fantastic_jinbi_pic" />
 
             <TextView
                 android:id="@id/tv_arts_normal_answer_result_gold_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="20dp"
                 android:text=""
                 android:textColor="#FB8925"
                 android:textSize="14sp" />
