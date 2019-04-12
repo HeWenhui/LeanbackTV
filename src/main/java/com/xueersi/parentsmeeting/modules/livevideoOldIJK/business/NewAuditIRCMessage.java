@@ -576,14 +576,22 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         liveInfo.nickname = "p_" + mNickname;
         liveInfo.realname = myUserInfoEntity.getRealName();
         liveInfo.liveId = mLiveInfo.getId();
-        liveInfo.username = mLiveInfo.getStuName();
+        if (mLiveInfo.getStuName() != null) {
+            liveInfo.username = mLiveInfo.getStuName();
+        } else {
+            liveInfo.username = "";
+        }
         if(mLiveInfo.getStudentLiveInfo() != null && mLiveInfo.getStudentLiveInfo().getClassId() != null){
             liveInfo.classId = mLiveInfo.getStudentLiveInfo().getClassId();
         }else {
             liveInfo.classId = "";
         }
         liveInfo.businessId = "1";
-        liveInfo.location = myUserInfoEntity.getAreaCode();
+        if (myUserInfoEntity.getAreaCode() != null){
+            liveInfo.location = myUserInfoEntity.getAreaCode();
+        }else {
+            liveInfo.location = "";
+        }
         mChatClient.setLiveInfo(liveInfo);
         //登陆 code: 0 成功， 1 参数错误，11 未初始化，17 已登录，18 正在登陆
         int logincode = mChatClient.login(myUserInfoEntity.getPsimId(), myUserInfoEntity.getPsimPwd());
