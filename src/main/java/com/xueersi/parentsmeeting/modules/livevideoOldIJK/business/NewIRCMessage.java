@@ -71,6 +71,7 @@ public class NewIRCMessage implements IIRCMessage {
     private List<String> roomid;
     private PMDefs.LiveInfo liveInfo;
     private boolean isConnected;
+    private boolean isFirstLogin = true;
 
     public NewIRCMessage(Context context, int netWorkType, String login, String nickname, LiveGetInfo liveInfo, String... channel) {
         this.netWorkType = netWorkType;
@@ -116,7 +117,8 @@ public class NewIRCMessage implements IIRCMessage {
             logger.i("ircsdk login code:" + loginResp.code);
             logger.i("ircsdk login info:" + loginResp.info);
             String target = mNickname;
-            if (PMDefs.ResultCode.Result_Success == loginResp.code) {
+            if (PMDefs.ResultCode.Result_Success == loginResp.code && isFirstLogin) {
+                isFirstLogin = false;
                 if (roomid == null) {
                     roomid = new ArrayList<>();
                 }

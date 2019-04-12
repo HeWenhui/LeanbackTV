@@ -84,6 +84,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage{
     private List<String> roomid;
     private PMDefs.LiveInfo liveInfo;
     private boolean isConnected;
+    private boolean isFirstLogin = true;
 
     public NewAuditIRCMessage(Context context, LiveGetInfo liveInfo, int netWorkType, String channel, String login, String nickname, LiveAndBackDebug liveAndBackDebug) {
         this.netWorkType = netWorkType;
@@ -120,7 +121,8 @@ public class NewAuditIRCMessage implements IAuditIRCMessage{
 
             logger.i("ircsdk login code:" + loginResp.code);
             logger.i("ircsdk login info:" + loginResp.info);
-            if (PMDefs.ResultCode.Result_Success == loginResp.code) {
+            if (PMDefs.ResultCode.Result_Success == loginResp.code && isFirstLogin) {
+                isFirstLogin = false;
                 if (roomid == null) {
                     roomid = new ArrayList<>();
                 }
