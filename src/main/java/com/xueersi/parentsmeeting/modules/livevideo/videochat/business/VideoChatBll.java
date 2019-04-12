@@ -484,6 +484,7 @@ public class VideoChatBll implements VideoChatAction {
         }
     };
 
+
     public void setControllerBottom(final BaseLiveMediaControllerBottom liveMediaControllerBottom) {
         this.baseLiveMediaControllerBottom = liveMediaControllerBottom;
         Button oldBtRaiseHands = btRaiseHands;
