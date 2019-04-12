@@ -6,6 +6,7 @@ import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener;
@@ -149,7 +150,11 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
 
     @Override
     public void rePlay(boolean b) {
-        liveFragmentBase.rePlay(b);
+        if (!MediaPlayer.getIsNewIJK()) {
+            liveFragmentBase.rePlay(b);
+        } else {
+            liveFragmentBase.changeNowLine();
+        }
     }
 
     @Override

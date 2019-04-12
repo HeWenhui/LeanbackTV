@@ -74,31 +74,49 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, NoticeAction, TopicAction {
     private final String TAG = "LiveIRCMessageBll";
     Logger loger = LoggerFactory.getLogger(TAG);
-    /** 主讲老师前缀 */
+    /**
+     * 主讲老师前缀
+     */
     public static final String TEACHER_PREFIX = "t_";
-    /** 辅导老师前缀 */
+    /**
+     * 辅导老师前缀
+     */
     public static String COUNTTEACHER_PREFIX = "f_";
 
     private int mLiveType;
     private LogToFile mLogtf;
     final Object lock = new Object();
-    /** 是不是有分组 */
+    /**
+     * 是不是有分组
+     */
     private boolean haveTeam = false;
     private long blockTime;
     private LiveTopic mLiveTopic = new LiveTopic();
-    /** 主讲老师 */
+    /**
+     * 主讲老师
+     */
     private Teacher mMainTeacher;
-    /** 主讲教师名字 */
+    /**
+     * 主讲教师名字
+     */
     private String mMainTeacherStr = null;
-    /** 辅导教师 */
+    /**
+     * 辅导教师
+     */
     private Teacher mCounteacher;
-    /** 辅导教师IRC */
+    /**
+     * 辅导教师IRC
+     */
     private String mCounTeacherStr = null;
     private VideoAction mVideoAction;
-    /** 智能私信业务 */
+    /**
+     * 智能私信业务
+     */
     private LiveAutoNoticeIRCBll mLiveAutoNoticeBll;
     private LiveMessageBll mRoomAction;
-    /** 星星互动 */
+    /**
+     * 星星互动
+     */
 //    private LiveAchievementIRCBll starAction;
     private ArrayList<SendMessageReg.OnSendMsg> onSendMsgs = new ArrayList<>();
     private LiveHttpManager mHttpManager;
@@ -381,7 +399,9 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         }
     }
 
-    /** 是不是自己组的人 */
+    /**
+     * 是不是自己组的人
+     */
     private boolean isMyTeam(String sender) {
         boolean isMyTeam = true;
         ArrayList<String> teamStuIds = mGetInfo.getTeamStuIds();
@@ -547,7 +567,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     boolean disable = object.getBoolean("disable");
                     //s_3_13827_11022_1
                     String id = object.getString("id");
-                    if (("" + id).contains(mLiveBll.getNickname())) {
+                    if (("" + id).endsWith(mLiveBll.getNickname()) || mLiveBll.getNickname().endsWith("" + id)) {
                         mLiveTopic.setDisable(disable);
                         if (mRoomAction != null) {
                             mRoomAction.onDisable(disable, true);
@@ -977,7 +997,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         List<String> disableSpeaking = liveTopic.getDisableSpeaking();
         boolean forbidSendMsg = false;
         for (String id : disableSpeaking) {
-            if (("" + id).contains(mLiveBll.getNickname())) {
+            if (("" + id).endsWith(mLiveBll.getNickname()) || mLiveBll.getNickname().endsWith("" + id)) {
                 forbidSendMsg = true;
             }
         }

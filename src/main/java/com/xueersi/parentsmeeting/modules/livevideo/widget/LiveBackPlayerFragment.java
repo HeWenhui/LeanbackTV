@@ -59,6 +59,37 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
         this.onVideoCreate = onVideoCreate;
     }
 
+    /**
+     * 播放PS视频
+     */
+//    public void playPSVod() {
+//        if (vPlayer != null) {
+//            vPlayer.release();
+//            vPlayer.psStop();
+//        }
+//        mDisplayName = "";
+//        mIsHWCodec = false;
+////        mFromStart = false;
+//        mStartPos = 0;
+//        mIsEnd = false;
+////        mUri = uri;
+////        mDisplayName = displayName;
+//        if (viewRoot != null) {
+//            viewRoot.invalidate();
+//        }
+//        if (mOpened != null) {
+//            mOpened.set(false);
+//        }
+//
+//        vPlayerHandler.sendEmptyMessage(OPEN_FILE);
+//    }
+
+    /**
+     * 切换播放地址
+     */
+//    public void changLine() {
+
+//    }
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

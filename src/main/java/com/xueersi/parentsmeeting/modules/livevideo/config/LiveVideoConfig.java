@@ -13,7 +13,8 @@ import java.util.HashMap;
  * Created by Administrator on 2017/3/31.
  */
 public class LiveVideoConfig {
-
+    //是否使用PSIJK
+//    public static final boolean getIsNewIJK() = true;
     // private static final String TEST_HOST="https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example";
 
     public static String HTTP_HOST = "https://laoshi.xueersi.com";
@@ -78,7 +79,7 @@ public class LiveVideoConfig {
      */
     public final static int LIVE_TYPE_TUTORIAL = 1;
     /**
-     * 公开直播
+     * 公开直播，讲座
      */
     public final static int LIVE_TYPE_LECTURE = 2;
     /**

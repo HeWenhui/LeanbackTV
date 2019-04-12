@@ -21,6 +21,7 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.PreloadStaticStorage;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
@@ -137,7 +138,11 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     }
                     String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
                     getInfos.put(liveType + "-" + stuId + "-" + vSectionID, mGetInfo);
-                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                    if (MediaPlayer.getIsNewIJK()) {
+                        com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                    } else {
+                        com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LecVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                    }
                     finish();
                 }
 
@@ -208,7 +213,11 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     if (1 == mGetInfo.getIsEnglish()) {
                         gotoEnglish(bundle);
                     } else {
-                        com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                        if (MediaPlayer.getIsNewIJK()) {
+                            com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                        } else {
+                            com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                        }
                         finish();
                     }
                 }
@@ -272,7 +281,11 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                                if (MediaPlayer.getIsNewIJK()) {
+                                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                                } else {
+                                    com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                                }
                                 finish();
                             }
                         });
@@ -280,7 +293,11 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 },
                 PermissionConfig.PERMISSION_CODE_AUDIO);
         if (have) {
-            com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+            if (MediaPlayer.getIsNewIJK()) {
+                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+            } else {
+                com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+            }
             finish();
         }
     }
@@ -298,12 +315,23 @@ public class LiveVideoLoadActivity extends BaseActivity {
         if (ShareDataManager.getInstance().getBoolean(ShareBusinessConfig
                         .SP_APP_DEVICE_NOTICE, false,
                 ShareDataManager.SHAREDATA_USER)) {
-            Intent intent = new Intent(context, DeviceDetectionActivity.class);
+
+            Intent intent;
+            if (MediaPlayer.getIsNewIJK()) {
+                intent = new Intent(context, DeviceDetectionActivity.class);
+            } else {
+                intent = new Intent(context, com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.DeviceDetectionActivity.class);
+            }
             context.startActivity(intent);
             return;
         }
 
-        Intent intent = new Intent(context, LiveVideoLoadActivity.class);
+        Intent intent;
+        if (MediaPlayer.getIsNewIJK()) {
+            intent = new Intent(context, LiveVideoLoadActivity.class);
+        } else {
+            intent = new Intent(context, com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoLoadActivity.class);
+        }
         intent.putExtras(bundle);
         context.startActivityForResult(intent, requestCode);
         context.overridePendingTransition(0, 0);

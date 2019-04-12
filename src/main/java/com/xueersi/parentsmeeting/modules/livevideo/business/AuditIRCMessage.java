@@ -25,7 +25,7 @@ import java.util.Vector;
  *
  * @author linyuqiang
  */
-public class AuditIRCMessage {
+public class AuditIRCMessage implements IAuditIRCMessage{
     private String TAG = "AuditIRCMessage";
     protected Logger logger = LoggerFactory.getLogger(TAG);
     String eventid = LiveVideoConfig.LIVE_LISTEN;
@@ -70,10 +70,12 @@ public class AuditIRCMessage {
      *
      * @return
      */
+    @Override
     public boolean isConnected() {
         return mConnection != null && mConnection.isConnected();
     }
 
+    @Override
     public void onNetWorkChange(int netWorkType) {
         this.netWorkType = netWorkType;
         if (netWorkType != NetWorkHelper.NO_NETWORK) {
@@ -95,6 +97,7 @@ public class AuditIRCMessage {
 
     Vector<String> privMsg = new Vector<>();
 
+    @Override
     public void create() {
         mConnection = new IRCConnection(privMsg);
         mConnection.setCallback(new IRCCallback() {
@@ -381,6 +384,7 @@ public class AuditIRCMessage {
         }
     }
 
+    @Override
     public void startVideo() {
         logger.i("startVideo:childName=" + childName);
 //        childName = null;
@@ -489,6 +493,7 @@ public class AuditIRCMessage {
         }
     }
 
+    @Override
     public String getNickname() {
         if (mConnection.isConnected()) {
             return mConnection.getName();
@@ -512,6 +517,7 @@ public class AuditIRCMessage {
         }
     };
 
+    @Override
     public void setIrcTalkConf(IRCTalkConf ircTalkConf) {
         this.ircTalkConf = ircTalkConf;
     }
@@ -519,18 +525,10 @@ public class AuditIRCMessage {
     /**
      * 发通知
      *
-     * @param notice
-     */
-//    public void sendNotice(String notice) {
-//        mConnection.sendNotice("#" + mChannel, notice);
-//    }
-
-    /**
-     * 发通知
-     *
      * @param target 目标
      * @param notice
      */
+    @Override
     public void sendNotice(String target, String notice) {
         mConnection.sendNotice(target, notice);
     }
@@ -541,8 +539,14 @@ public class AuditIRCMessage {
      * @param target  目标
      * @param message 信息
      */
+    @Override
     public void sendMessage(String target, String message) {
         mConnection.sendMessage(target, message);
+    }
+
+    @Override
+    public void sendMessage(String target, String psid, String message) {
+
     }
 
     /**
@@ -555,6 +559,7 @@ public class AuditIRCMessage {
 //    }
 
     /** 播放器销毁 */
+    @Override
     public void destory() {
         mIsDestory = true;
         mHandler.removeCallbacks(startVideoRun);
@@ -589,6 +594,7 @@ public class AuditIRCMessage {
         }
     }
 
+    @Override
     public void setCallback(AuditIRCCallback ircCallback) {
         this.mIRCCallback = ircCallback;
     }

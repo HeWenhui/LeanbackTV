@@ -39,8 +39,8 @@
 //import com.xueersi.lib.framework.utils.string.StringUtils;
 //import com.xueersi.lib.imageloader.ImageLoader;
 //import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
-//import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack.SimpleVPlayerListener;
-//import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack.VPlayerListener;
+//import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.SimpleVPlayerListener;
+//import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.VPlayerListener;
 //import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 //import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 //import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -80,7 +80,7 @@
 //import java.util.ArrayList;
 //import java.util.List;
 //
-//import tv.danmaku.ijk.media.player.AvformatOpenInputError;
+//import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
 //
 ///**
 // * 直播

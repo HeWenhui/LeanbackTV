@@ -9,18 +9,18 @@ import android.os.Bundle;
  */
 
 public class LecVideoActivity extends LiveVideoActivity {
-    LectureLiveVideoFrame lectureLiveVideoFrame;
+    LectureLiveVideoFragment lectureLiveVideoFragment;
 
     @Override
     protected LiveVideoFragmentBase getFragment() {
-        lectureLiveVideoFrame = new LectureLiveVideoFrame();
-        return lectureLiveVideoFrame;
+        lectureLiveVideoFragment = new LectureLiveVideoFragment();
+        return lectureLiveVideoFragment;
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        lectureLiveVideoFrame.onNewIntent(intent);
+        lectureLiveVideoFragment.onNewIntent(intent);
     }
 
 

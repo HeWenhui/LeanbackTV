@@ -7,12 +7,20 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application>
+        <!--<activity-->
+            <!--android:name=".activity.LivePlayBackVideoActivity"-->
+            <!--android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"-->
+            <!--android:launchMode="singleTask"-->
+            <!--android:screenOrientation="landscape"-->
+            <!--android:windowSoftInputMode="adjustResize|stateHidden"></activity>-->
+
         <activity
-            android:name=".activity.LivePlayBackVideoActivity"
+            android:name="com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LivePlaybackVideoActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:launchMode="singleTask"
+            android:process=":livevideo"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name="com.xueersi.parentsmeeting.modules.livevideo.fragment.LivePlaybackVideoActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
@@ -20,55 +28,109 @@
             android:process=":livevideo"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustResize|stateHidden" />
+
+        <!--<activity-->
+            <!--android:name=".activity.LiveStandPlayBackVideoActivity"-->
+            <!--android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"-->
+            <!--android:screenOrientation="landscape"-->
+            <!--android:windowSoftInputMode="adjustResize|stateHidden"></activity>-->
+
         <activity
-            android:name=".activity.LiveStandPlayBackVideoActivity"
+            android:name="com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LectureLivePlayBackVideoActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustResize|stateHidden"></activity>
+
         <activity
-            android:name=".activity.LectureLivePlayBackVideoActivity"
+            android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLivePlayBackVideoActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustResize|stateHidden"></activity>
+
         <activity
-            android:name=".activity.ExperienceLiveVideoActivity"
+            android:name="com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.ExperienceLiveVideoActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:process=":livevideo"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustResize|stateHidden"></activity>
+
         <activity
-            android:name=".activity.AIExperienceLiveVideoActivity"
+            android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideoActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:process=":livevideo"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
+
+        <activity
+            android:name="com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.AIExperienceLiveVideoActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustResize|stateHidden"></activity>
+
         <activity
-            android:name=".activity.AuditClassRoomActivity"
+            android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.AIExperienceLiveVideoActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
+
+        <activity
+            android:name="com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.AuditClassRoomActivity"
+            android:screenOrientation="portrait"></activity>
+
+        <activity
+            android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassRoomActivity"
             android:screenOrientation="portrait">
         </activity>
 
         <activity
-            android:name=".activity.HalfBodyLiveExperienceActivity"
+            android:name="com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.HalfBodyLiveExperienceActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustResize|stateHidden" />
 
+        <activity
+            android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.HalfBodyLiveExperienceActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustResize|stateHidden" />
 
         <activity
-            android:name=".activity.LiveVideoLoadActivity"
+            android:name="com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoLoadActivity"
             android:process=":livevideo"
             android:screenOrientation="portrait"
             android:theme="@style/style_live_compat"
             android:windowSoftInputMode="adjustUnspecified|stateHidden"></activity>
 
         <activity
-            android:name=".activity.LiveVideoActivity"
+            android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity"
+            android:process=":livevideo"
+            android:screenOrientation="portrait"
+            android:theme="@style/style_live_compat"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden"></activity>
+
+        <!--<activity-->
+            <!--android:name=".activity.LiveVideoActivity"-->
+            <!--android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"-->
+            <!--android:process=":livevideo"-->
+            <!--android:screenOrientation="landscape"-->
+            <!--android:windowSoftInputMode="adjustUnspecified|stateHidden"></activity>-->
+
+        <activity
+            android:name="com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:process=":livevideo"
             android:screenOrientation="landscape"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden"></activity>
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
 
         <activity
             android:name="com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:process=":livevideo"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+
+        <activity
+            android:name="com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivityBase"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:process=":livevideo"
             android:screenOrientation="landscape"
@@ -82,32 +144,54 @@
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
 
         <activity
+            android:name="com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LecVideoActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:launchMode="singleTask"
+            android:process=":livevideo"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+
+        <activity
             android:name="com.xueersi.parentsmeeting.modules.livevideo.fragment.LecVideoActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:launchMode="singleTask"
             android:process=":livevideo"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+
+        <!--<activity-->
+            <!--android:name=".activity.StandLiveVideoActivity"-->
+            <!--android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"-->
+            <!--android:screenOrientation="landscape"-->
+            <!--android:windowSoftInputMode="adjustUnspecified|stateHidden"></activity>-->
         <activity
-            android:name=".activity.StandLiveVideoActivity"
+            android:name="com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.AuditClassLiveActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustUnspecified|stateHidden"></activity>
+
         <activity
-            android:name=".activity.AuditClassLiveActivity"
+            android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustUnspecified|stateHidden"></activity>
+
 
         <!--半身直播家长旁听-->
 
 
+        <!--<activity-->
+            <!--android:name=".activity.LectureLiveVideoActivity"-->
+            <!--android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"-->
+            <!--android:launchMode="singleTask"-->
+            <!--android:screenOrientation="portrait"-->
+            <!--android:windowSoftInputMode="adjustUnspecified|stateHidden" />-->
         <activity
-            android:name=".activity.LectureLiveVideoActivity"
-            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
-            android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+            android:name="com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LivePermissionActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:process=":livevideo"
+            android:theme="@style/style_permission_compat" />
+
         <activity
             android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.LivePermissionActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
@@ -115,8 +199,19 @@
             android:theme="@style/style_permission_compat" />
 
         <activity
+            android:name="com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.DeviceDetectionActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.DeviceDetectionActivity"
             android:screenOrientation="portrait" />
+
+        <activity
+            android:name="com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.RolePlayerActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:process=":livevideo"
+            android:screenOrientation="landscape"
+            android:theme="@style/style_permission_compat" />
 
         <activity
             android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.RolePlayerActivity"
@@ -126,15 +221,35 @@
             android:theme="@style/style_permission_compat" />
 
         <activity
-            android:name=".activity.PraiseTestActivity"
+            android:name="com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.PraiseTestActivity"
+            android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustUnspecified|stateHidden" />
+
+        <activity
+            android:name="com.xueersi.parentsmeeting.modules.livevideo.activity.PraiseTestActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|keyboard|keyboardHidden|navigation"
             android:launchMode="singleTask"
             android:screenOrientation="landscape"
             android:windowSoftInputMode="adjustUnspecified|stateHidden" />
 
         <service
+            android:name="com.xueersi.parentsmeeting.modules.livevideoOldIJK.service.LiveService"
+            android:process=":livedaemon" />
+
+        <service
             android:name="com.xueersi.parentsmeeting.modules.livevideo.service.LiveService"
             android:process=":livedaemon" />
+
+        <receiver
+            android:name="com.xueersi.parentsmeeting.modules.livevideoOldIJK.broadcast.LiveShutdownReceiver"
+            android:process=":livedaemon">
+            <intent-filter>
+                <action android:name="android.intent.action.ACTION_SHUTDOWN" />
+            </intent-filter>
+        </receiver>
+
         <receiver
             android:name="com.xueersi.parentsmeeting.modules.livevideo.broadcast.LiveShutdownReceiver"
             android:process=":livedaemon">
@@ -142,12 +257,13 @@
                 <action android:name="android.intent.action.ACTION_SHUTDOWN" />
             </intent-filter>
         </receiver>
+
         <service
             android:name="ren.yale.android.cachewebviewlib.CachePreLoadService"
             android:process=":livevideo" />
 
         <receiver
-            android:name=".fragment.se.OrderPaySuccessBroadCastReceiver"
+            android:name="com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.OrderPaySuccessBroadCastReceiver"
             android:process=":livevideo">
             <intent-filter>
                 <action android:name="${applicationId}.XesPaySuccess" />
@@ -157,8 +273,22 @@
         </receiver>
 
         <receiver
-            android:name=".broadcast.StudyCenterMainStartBroadCastReceiver"
+            android:name="com.xueersi.parentsmeeting.modules.livevideo.fragment.se.OrderPaySuccessBroadCastReceiver"
+            android:process=":livevideo">
+            <intent-filter>
+                <action android:name="${applicationId}.XesPaySuccess" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name="com.xueersi.parentsmeeting.modules.livevideoOldIJK.broadcast.StudyCenterMainStartBroadCastReceiver"
             android:process=":livevideo"></receiver>
+
+        <!--<receiver-->
+        <!--android:name="com.xueersi.parentsmeeting.modules.livevideo.broadcast.StudyCenterMainStartBroadCastReceiver"-->
+        <!--android:process=":livevideo"></receiver>-->
 
         <service
             android:name="com.xueersi.parentsmeeting.modules.livevideo.broadcast.StudyCenterMainStartService"

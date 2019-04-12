@@ -14,10 +14,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.xueersi.common.business.AppBll;
+import com.xueersi.common.business.UserBll;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
+import com.xueersi.parentsmeeting.module.videoplayer.ps.PSIJK;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+
+import java.io.IOException;
 
 /**
  * 三分屏直播的基础播放Fragment，这里主要作用是现实自定义的加载中
@@ -126,17 +132,48 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
                     // 准备开始播放指定视频
                     synchronized (mOpenLock) {
                         if (!mOpened.get() && vPlayer != null) {
-                            mOpened.set(true);
-                            vPlayer.setVPlayerListener(vPlayerServiceListener);
-                            if (vPlayer.isInitialized()) {
-                                mUri = vPlayer.getUri();
-                            }
+                            if (!MediaPlayer.getIsNewIJK()) {
+                                mOpened.set(true);
+                                vPlayer.setVPlayerListener(vPlayerServiceListener);
+                                if (vPlayer.isInitialized()) {
+                                    mUri = vPlayer.getUri();
+                                }
 
-                            if (videoView != null) {
-                                vPlayer.setDisplay(videoView.getHolder());
-                            }
-                            if (mUri != null) {
-                                vPlayer.initialize(mUri, video, getStartPosition(), vPlayerServiceListener, mIsHWCodec);
+                                if (videoView != null) {
+                                    vPlayer.setDisplay(videoView.getHolder());
+                                }
+                                if (mUri != null) {
+                                    vPlayer.initialize(mUri, video, getStartPosition(), vPlayerServiceListener, mIsHWCodec);
+                                    initCallBack();
+                                }
+                            } else {
+                                mOpened.set(true);
+                                vPlayer.setVPlayerListener(vPlayerServiceListener);
+                                if (videoView != null) {
+                                    vPlayer.setDisplay(videoView.getHolder());
+                                }
+                                vPlayer.psInit(MediaPlayer.VIDEO_PLAYER_NAME, getStartPosition(), vPlayerServiceListener, mIsHWCodec);
+                                if (isChangeLine) {
+                                    try {
+                                        vPlayer.changeLine(changeLinePos, protocol);
+                                        isChangeLine = false;
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                } else {
+                                    try {
+                                        if (vPlayer.getPlayer() instanceof PSIJK) {
+                                            vPlayer.getPlayer().setUserInfo(AppBll.getInstance().getAppInfoEntity().getChildName(), UserBll.getInstance().getMyUserInfoEntity().getStuId());
+                                        }
+                                        vPlayer.playPSVideo(streamId, protocol);
+                                    } catch (IOException e) {
+                                        vPlayerHandler.sendEmptyMessage(OPEN_FAILED);
+                                        e.printStackTrace();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                                initCallBack();
                             }
                         }
                     }
@@ -259,8 +296,13 @@ public class TripleScreenBasePlayerFragment extends BasePlayerFragment {
         }
     };
 
-    /** 重写这个CallBack */
-    public void overrideCallBack() {
+    /** 重写回调 */
+    private void initCallBack() {
+
+    }
+
+    /** 重写这个Handler.CallBack */
+    public void overrideHandlerCallBack() {
         if (LiveVideoConfig.isSmallChinese || LiveVideoConfig.isPrimary || isSmallEnglish) {
             vPlayerHandler = new WeakHandler(callback);
         }

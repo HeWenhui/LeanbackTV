@@ -1,6 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.video;
 
-import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 
 /**
