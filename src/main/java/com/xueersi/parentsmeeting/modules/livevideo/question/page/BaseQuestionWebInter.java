@@ -21,6 +21,12 @@ public interface BaseQuestionWebInter {
 
     void onDestroy();
 
+    /**
+     * 是否展示过答题结果页面
+     * @return
+     */
+    boolean isResultRecived();
+
     interface StopWebQuestion {
         void stopWebQuestion(BasePager pager, String testId, BaseVideoQuestionEntity baseVideoQuestionEntity);
     }

@@ -1,66 +1,67 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
     <RelativeLayout
+        android:id="@id/rl_answer_question_award_root"
         android:layout_width="210dp"
         android:layout_height="60dp"
-        android:background="@drawable/shape_livevideo_teampk_aq_result_bg"
         android:layout_centerInParent="true"
-        android:id="@id/rl_answer_question_award_root"
+        android:background="@drawable/shape_livevideo_teampk_aq_result_bg"
         android:visibility="invisible">
 
         <ImageView
+            android:id="@id/iv_answer_question_energy"
             android:layout_width="20dp"
             android:layout_height="27dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="25dp"
-            android:src="@drawable/livevideo_tool_energy_img_disable"
-            android:id="@id/iv_answer_question_energy" />
+            android:src="@drawable/livevideo_tool_energy_img_disable" />
 
         <TextView
+            android:id="@id/tv_answer_question_energy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@id/tv_answer_question_energy"
-            android:layout_toRightOf="@id/iv_answer_question_energy"
-            android:textStyle="bold"
-            android:text="+10"
-            android:textSize="15sp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="5dp"
-            android:textColor="@color/COLOR_000000" />
+            android:layout_toRightOf="@id/iv_answer_question_energy"
+            android:text="+10"
+            android:textColor="@color/COLOR_000000"
+            android:textSize="15sp"
+            android:textStyle="bold" />
 
 
         <TextView
+            android:id="@id/tv_answer_question_coin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@id/tv_answer_question_coin"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="25dp"
-            android:textStyle="bold"
-            android:text="+10"
-            android:textSize="15sp"
             android:layout_centerVertical="true"
-            android:textColor="@color/COLOR_000000" />
+            android:layout_marginRight="25dp"
+            android:text="+10"
+            android:textColor="@color/COLOR_000000"
+            android:textSize="15sp"
+            android:textStyle="bold" />
 
         <ImageView
+            android:id="@id/iv_answer_question_coin"
             android:layout_width="23dp"
             android:layout_height="23dp"
-            android:src="@drawable/livevideo_tool_gold_img_disable"
             android:layout_centerVertical="true"
-            android:layout_toLeftOf="@id/tv_answer_question_coin"
             android:layout_marginRight="5dp"
-            android:id="@id/iv_answer_question_coin" />
+            android:layout_toLeftOf="@id/tv_answer_question_coin"
+            android:src="@drawable/livevideo_tool_gold_img_disable" />
 
     </RelativeLayout>
 
 
     <RelativeLayout
+        android:id="@id/rl_vote_award_root"
         android:layout_width="210dp"
         android:layout_height="60dp"
-        android:background="@drawable/shape_livevideo_teampk_aq_result_bg"
         android:layout_centerInParent="true"
-        android:id="@id/rl_vote_award_root"
+        android:background="@drawable/shape_livevideo_teampk_aq_result_bg"
         android:visibility="invisible">
 
         <RelativeLayout
@@ -69,23 +70,23 @@
             android:layout_centerInParent="true">
 
             <ImageView
+                android:id="@id/iv_vote_award_energy"
                 android:layout_width="20dp"
                 android:layout_height="27dp"
                 android:layout_centerVertical="true"
-                android:src="@drawable/livevideo_tool_energy_img_disable"
-                android:id="@id/iv_vote_award_energy" />
+                android:src="@drawable/livevideo_tool_energy_img_disable" />
 
             <TextView
+                android:id="@id/tv_vote_award_energy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@id/tv_vote_award_energy"
-                android:layout_toRightOf="@id/iv_vote_award_energy"
-                android:textStyle="bold"
-                android:text="+10"
-                android:textSize="15sp"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="5dp"
-                android:textColor="@color/COLOR_000000" />
+                android:layout_toRightOf="@id/iv_vote_award_energy"
+                android:text="+10"
+                android:textColor="@color/COLOR_000000"
+                android:textSize="15sp"
+                android:textStyle="bold" />
         </RelativeLayout>
 
     </RelativeLayout>

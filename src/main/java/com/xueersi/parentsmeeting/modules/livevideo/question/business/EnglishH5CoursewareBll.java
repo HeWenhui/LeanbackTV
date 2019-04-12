@@ -119,6 +119,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     private boolean IS_SCIENCE = false;
     private int isArts;
     private int isplayback = 0;
+
     private boolean isTeamPkAllowed = false;
     private boolean webViewCloseByTeacher = false;
     private String mUrl;
@@ -299,10 +300,6 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     }
 
 
-    public void setTeamPkAllowed(boolean teamPkAllowed) {
-        isTeamPkAllowed = teamPkAllowed;
-    }
-
     @Override
     public void onH5Courseware(final String status, final VideoQuestionLiveEntity videoQuestionLiveEntity) {
 //        logToFile.i("onH5Courseware:url=" + url + ",status=" + status);
@@ -448,8 +445,10 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
      */
     private void closePageByTeamPk() {
         // Log.e("EnglishH5CoursewareBll","=======>closePageByTeamPk:"+isTeamPkAllowed);
-        if (isTeamPkAllowed && !isPageOnCloseing) {
+        if (isTeamPkAllowed && !isPageOnCloseing && h5CoursewarePager != null) {
             isPageOnCloseing = true;
+            long timeDelay = h5CoursewarePager.isResultRecived()?0L:6000L;
+            //Log.e("EnglishH5CoursewareBll","=======>closePageByTeamPk222:"+timeDelay);
             bottomContent.postDelayed(new Runnable() {
                 @Override
                 public void run() {
@@ -459,7 +458,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                     }
                     isPageOnCloseing = false;
                 }
-            }, 6000);
+            }, timeDelay);
         }
     }
 
@@ -483,15 +482,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
             public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
                 mH5AndBool.add(baseEnglishH5CoursewarePager.getUrl());
                 if (!videoQuestionH5Entity.englishH5Entity.getNewEnglishH5()) {
-                    try {
-                        JSONObject object = new JSONObject();
-                        object.put("liveType", liveType);
-                        object.put("vSectionID", mVSectionID);
-                        object.put("url", videoQuestionH5Entity.getUrl());
-                        mShareDataManager.put(ENGLISH_H5, object.toString(), ShareDataManager.SHAREDATA_USER);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    saveH5AnswerRecord(videoQuestionH5Entity.getUrl());
                 }
                 baseEnglishH5CoursewarePager.destroy();
                 bottomContent.removeView(baseEnglishH5CoursewarePager.getRootView());
@@ -523,6 +514,26 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         WebViewRequest webViewRequest = ProxUtil.getProxUtil().get(context, WebViewRequest.class);
         if (webViewRequest != null) {
             webViewRequest.requestWebView();
+        }
+    }
+
+
+    /**
+     * 持久化保存已作答过的试题地址
+     * @param url
+     */
+    private void saveH5AnswerRecord(String url){
+        //非 理科、语文pk直播间  才保存 作答过的Url
+        if(!isTeamPkAllowed){
+            try {
+                JSONObject object = new JSONObject();
+                object.put("liveType", liveType);
+                object.put("vSectionID", mVSectionID);
+                object.put("url",url);
+                mShareDataManager.put(ENGLISH_H5, object.toString(), ShareDataManager.SHAREDATA_USER);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 
@@ -1152,15 +1163,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         //EventBusUtil.post(new UpdateAchievementEvent(mLiveBll.getLiveId()));
 
                         mH5AndBool.add(videoQuestionLiveEntity1.getUrl());
-                        try {
-                            JSONObject object = new JSONObject();
-                            object.put("liveType", liveType);
-                            object.put("vSectionID", mVSectionID);
-                            object.put("url", videoQuestionLiveEntity1.getUrl());
-                            mShareDataManager.put(ENGLISH_H5, object.toString(), ShareDataManager.SHAREDATA_USER);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        saveH5AnswerRecord(videoQuestionLiveEntity1.getUrl());
                     }
 
                     @Override
@@ -1216,15 +1219,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         //EventBusUtil.post(new UpdateAchievementEvent(mLiveBll.getLiveId()));
 
                         mH5AndBool.add(videoQuestionLiveEntity1.getUrl());
-                        try {
-                            JSONObject object = new JSONObject();
-                            object.put("liveType", liveType);
-                            object.put("vSectionID", mVSectionID);
-                            object.put("url", videoQuestionLiveEntity1.getUrl());
-                            mShareDataManager.put(ENGLISH_H5, object.toString(), ShareDataManager.SHAREDATA_USER);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                        saveH5AnswerRecord(videoQuestionLiveEntity1.getUrl());
                     }
 
                     @Override

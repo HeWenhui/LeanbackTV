@@ -465,4 +465,5 @@ public class LiveVideoConfig {
      */
     public static String URL_LIVE_GET_SCIENCE_COURSEWARE_URL =  LiveVideoConfig.HTTP_HOST+"/science/LiveCourses/preLoadNewCourseWare";
 
+
 }
