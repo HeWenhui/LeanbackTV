@@ -174,6 +174,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     private JSONObject answerData = new JSONObject();
     private JSONArray userAnswer = new JSONArray();
 
+    private static int MAX_SINGLE_COUNT;
+
     public GroupGameNativePager(Context context, boolean isPlayBack, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity detailInfo, EnglishH5Entity englishH5Entity, EnglishH5CoursewareBll.OnH5ResultClose onClose) {
         super(context);
         this.isPlayBack = isPlayBack;
@@ -641,6 +643,10 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                         content.append("|");
                     }
                 }
+                MAX_SINGLE_COUNT = mTestInfoEntity.getSingleCount();
+                if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(detailInfo.type)) {
+                    MAX_SINGLE_COUNT = (int) Math.ceil((double) MAX_SINGLE_COUNT / 3d);
+                }
                 fetchCoursewareSuccess = true;
                 initWebView();
             }
@@ -827,7 +833,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             if (score >= 70) {
                 singleCount++;
                 rightNum++;
-                if (singleCount >= mTestInfoEntity.getSingleCount()) {
+                if (singleCount >= MAX_SINGLE_COUNT) {
                     if (isPlayBack) {
                         goldNum = 1;
                     } else {
@@ -862,8 +868,9 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                         scoreArray.put(scoreList.get(j));
                         singCount++;
                     }
-                    if (singCount >= 5) {
+                    if (singCount >= MAX_SINGLE_COUNT) {
                         isRight = 1;
+                        successTimes++;
                     }
                     jsonObject.put("scores", scoreArray.toString().substring(1, scoreArray.toString().length() - 1));
                     jsonObject.put("voiceTime", (int) ((long) presentTimeList.get(i)));
@@ -893,6 +900,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             try {
                 resultData.put("type", CourseMessage.SEND_CoursewareOnloading);
                 resultData.put("pageNum", pageNum);
+                resultData.put("isSingle", true);
                 StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
                 singleModeAction.startTimer();
             } catch (JSONException e) {
@@ -1055,9 +1063,12 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
                 JSONObject rightItem = new JSONObject();
                 rightItem.put("rightId", newSenIndex);
-                rightItem.put("getFireCount", 2);
+                if (isPlayBack) {
+                    rightItem.put("getFireCount", 0);
+                } else {
+                    rightItem.put("getFireCount", 1);
+                }
                 jsonData.put("rightItem", rightItem);
-
                 jsonData.put("combo", 0);
                 wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
             } catch (Exception e) {
