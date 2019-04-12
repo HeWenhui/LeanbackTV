@@ -1361,16 +1361,25 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         //接收他人麦克开启时长，单位：毫秒
         int acceptMicLengthTime = 0;
         PkTeamEntity teamEntity = getStuActiveTeam.getPkTeamEntity();
+        float averageScore = 0;
+        int sum = 0;
         int gameGroupId = interactiveTeam.getInteractive_team_id();
-        {
-            for (int i = 0; i < allScoreList.size(); i++) {
-                ResultEntity resultEntity = allScoreList.get(i);
-                voiceTime += resultEntity.getSpeechDuration() * 1000;
+        try {
+            int size = allScoreList.size();
+            if (size != 0) {
+                for (int i = 0; i < size; i++) {
+                    ResultEntity resultEntity = allScoreList.get(i);
+                    voiceTime += resultEntity.getSpeechDuration() * 1000;
+                    sum += resultEntity.getScore();
+                }
+                averageScore = sum / size;
             }
+        } catch (Exception e) {
+            CrashReport.postCatchedException(e);
+            logger.d("submit", e);
         }
         GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
         List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = testInfoEntity.getAnswerList();
-        float averageScore = 0;
         JSONObject answerData = new JSONObject();
         if (LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(gameType)) {
             //遍历作答正确，取最大的金币为3
@@ -1396,8 +1405,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 answerData.put("tryTimes", allScoreList.size());
                 JSONArray userAnswer = new JSONArray();
                 CleanUpEntity cleanUpEntity = cleanUpEntities.get("" + stuid);
-                float totalScore = 0;
-                int totalCount = 0;
                 if (cleanUpEntity != null && !tests.isEmpty()) {
 //                    if (cleanUpEntity.teamMemberEntity.energy != 0) {
 //                        cleanUpEntity.teamMemberEntity.energy += 5;
@@ -1412,8 +1419,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         String scores = "";
                         ScoreEnergy scoreEnergy = wordScore.get(answer);
                         if (scoreEnergy != null) {
-                            totalScore += scoreEnergy.scores;
-                            totalCount++;
                             scores = "" + scoreEnergy.scores;
                             energy += scoreEnergy.energy;
                             jsonObject.put("isRight", 1);
@@ -1430,12 +1435,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 } else {
                     answerData.put("rightNum", 0);
                 }
-                if (totalCount == 0) {
-                    answerData.put("averageScore", 0);
-                } else {
-                    averageScore = totalScore / totalCount;
-                    answerData.put("averageScore", averageScore);
-                }
+                answerData.put("averageScore", averageScore);
                 answerData.put("userAnswer", userAnswer);
             } catch (Exception e) {
                 CrashReport.postCatchedException(e);
@@ -1522,12 +1522,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 } else {
                     answerData.put("rightNum", 0);
                 }
-                if (totalCount == 0) {
-                    answerData.put("averageScore", 0);
-                } else {
-                    averageScore = totalScore / totalCount;
-                    answerData.put("averageScore", averageScore);
-                }
+                answerData.put("averageScore", averageScore);
                 answerData.put("userAnswer", userAnswer);
             } catch (JSONException e) {
                 CrashReport.postCatchedException(e);
@@ -1552,11 +1547,15 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 }
             }
         }
-        if (averageScore >= 60 && averageScore < 75) {
+        if (averageScore < 40) {
+            starNum = 1;
+        } else if (averageScore < 60) {
+            starNum = 2;
+        } else if (averageScore < 75) {
             starNum = 3;
         } else if (averageScore < 90) {
             starNum = 4;
-        } else if (averageScore < 100) {
+        } else if (averageScore < 101) {
             starNum = 5;
         }
         mLogtf.d("submit:averageScore=" + averageScore + ",starNum=" + starNum);
