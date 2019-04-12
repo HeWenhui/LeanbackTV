@@ -34,8 +34,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ViewUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
 
 public class EnAchievePager extends LiveBasePager {
     private RelativeLayout parent;

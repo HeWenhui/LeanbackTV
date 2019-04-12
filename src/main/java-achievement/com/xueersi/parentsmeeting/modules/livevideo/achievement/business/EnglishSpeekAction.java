@@ -1,7 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.achievement.business;
 
 import com.tal.speech.language.TalLanguage;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.AudioRequest;
+import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 
 /**
  * Created by lyqyuqiang on 2017/11/8.

@@ -13,8 +13,8 @@ import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveLoggerFactory;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ViewUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 
 public class TeamMemberItem implements AdapterItemInterface<TeamMemberEntity> {

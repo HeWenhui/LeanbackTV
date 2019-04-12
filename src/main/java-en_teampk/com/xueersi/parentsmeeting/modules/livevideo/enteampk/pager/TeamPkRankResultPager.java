@@ -18,7 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.config.EnTeamPkConf
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.item.TeamMemberItem;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 

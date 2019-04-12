@@ -12,7 +12,7 @@ import com.xueersi.common.entity.MyUserInfoEntity;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.speakerrecognition.SpeakerRecognitionerInterface;
 
 import java.io.IOException;
