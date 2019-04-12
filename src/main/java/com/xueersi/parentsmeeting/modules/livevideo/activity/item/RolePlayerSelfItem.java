@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Handler;
+import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -83,8 +84,13 @@ public class RolePlayerSelfItem extends RolePlayerItem {
      * 测评
      */
     //private TextView tvSpeechTip;
-    public RolePlayerSelfItem(Context context, RolePlayerBll bll) {
+
+    private final Handler mReadHandler;
+    private int mPosition;
+
+    public RolePlayerSelfItem(Context context, RolePlayerBll bll,Handler handler) {
         super(context, bll);
+        mReadHandler = handler;
         liveAndBackDebug = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
     }
 
@@ -156,6 +162,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
         if (selfVoiceAnimationDrawable != null && !selfVoiceAnimationDrawable.isRunning()) {
             selfVoiceAnimationDrawable.start();
         }
+        sendCurItemIndex();
         //播放
         mAudioPlayerManager = AudioPlayerManager.get(ContextManager.getApplication());
         mAudioPlayerManager.start(mEntity.getWebVoiceUrl(), new PlayerCallback() {
@@ -208,6 +215,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
     public void updateViews(final RolePlayerEntity.RolePlayerMessage entity,
                             int position, Object objTag) {
         super.updateViews(entity, position, objTag);
+        mPosition = position;
         String imgUrl = entity.getRolePlayer().getHeadImg();
         if(TextUtils.isEmpty(imgUrl)){
             imgUrl = UserBll.getInstance().getMyUserInfoEntity().getHeadImg();
@@ -274,6 +282,7 @@ public class RolePlayerSelfItem extends RolePlayerItem {
                 tvCountTime.setVisibility(View.INVISIBLE);
                 showSpeechStar();
                 speechPhoneScore();
+                relasePlayer();
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.END_SPEECH:
                 logger.i( "测评有得分刚结束");
@@ -316,6 +325,21 @@ public class RolePlayerSelfItem extends RolePlayerItem {
         }
 
 
+    }
+    private void sendCurItemIndex() {
+        if(mReadHandler != null){
+            Message message = new Message();
+            message.what = RolePlayerEntity.RolePlayerMessageStatus.CUR_PLAYING_ITEM_INDEX;
+            message.obj = mPosition;
+            mReadHandler.sendMessage(message);
+        }
+    }
+    private void relasePlayer() {
+        if(mAudioPlayerManager != null){
+            mAudioPlayerManager.stop();
+            mAudioPlayerManager.release();
+            mAudioPlayerManager = null;
+        }
     }
 
     /**
