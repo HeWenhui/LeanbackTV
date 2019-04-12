@@ -209,31 +209,6 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void initView(final RelativeLayout bottomContent, AtomicBoolean mIsLand) {
         super.initView(bottomContent, mIsLand);
-        bottomContent.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                boolean have = XesPermission.checkPermission(activity, new LiveActivityPermissionCallback() {
-
-                    @Override
-                    public void onFinish() {
-
-                    }
-
-                    @Override
-                    public void onDeny(String permission, int position) {
-
-                    }
-
-                    @Override
-                    public void onGuarantee(String permission, int position) {
-
-                    }
-                }, PermissionConfig.PERMISSION_CODE_CAMERA);
-                logger.d("initView:have=" + have);
-                bottomContent.getViewTreeObserver().removeOnPreDrawListener(this);
-                return false;
-            }
-        });
     }
 
     private void connect(ArrayList<InetSocketAddress> addresses) {
@@ -633,6 +608,31 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     }
                 });
             }
+            mRootView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    boolean have = XesPermission.checkPermission(activity, new LiveActivityPermissionCallback() {
+
+                        @Override
+                        public void onFinish() {
+
+                        }
+
+                        @Override
+                        public void onDeny(String permission, int position) {
+
+                        }
+
+                        @Override
+                        public void onGuarantee(String permission, int position) {
+
+                        }
+                    }, PermissionConfig.PERMISSION_CODE_CAMERA);
+                    logger.d("initView:have=" + have);
+                    mRootView.getViewTreeObserver().removeOnPreDrawListener(this);
+                    return false;
+                }
+            });
         }
         if (tcpMessageReg == null) {
             tcpMessageReg = new TcpMessageReg() {

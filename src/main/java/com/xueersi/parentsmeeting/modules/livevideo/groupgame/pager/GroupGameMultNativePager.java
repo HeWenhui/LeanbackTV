@@ -1232,7 +1232,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 }
                 // 剩余时间
                 long lastTime = test.getTotalTime() - nowPlayTime;
-//                if (AppConfig.DEBUG) {
+//                if (com.xueersi.common.config.AppConfig.DEBUG) {
 //                    nowPlayTime = 0;
 //                    lastTime = 10000;
 //                }
