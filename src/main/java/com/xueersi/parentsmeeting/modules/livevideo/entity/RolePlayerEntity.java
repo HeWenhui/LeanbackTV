@@ -697,6 +697,11 @@ public class RolePlayerEntity {
          * 对话结束后，停止刷新界面
          */
         public static final int STOP_UPDATE = -1;
+
+        /**
+         * 通知当前正在播放音频的索引，方便，退出界面的时候，关闭音频
+         */
+        public static final int CUR_PLAYING_ITEM_INDEX = 500;
     }
 
     /**
