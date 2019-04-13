@@ -148,7 +148,11 @@ public class LiveBackVideoBll {
             } else {
                 videoPath = url;
             }
-            liveBackPlayVideoFragment.playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+            if (!islocal) {
+                liveBackPlayVideoFragment.playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+            } else {
+                liveBackPlayVideoFragment.playPSVideo(videoPath, (int) getStartPosition());
+            }
         }
     }
 

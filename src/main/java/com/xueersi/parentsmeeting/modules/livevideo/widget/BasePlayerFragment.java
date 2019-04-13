@@ -544,7 +544,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
      * @param url      文件路径
      * @param startPos 启播时间，暂不支持； V1.2会支持该功能
      */
-    protected void playPSFile(String url, int startPos) {
+    public void playPSFile(String url, int startPos) {
         this.url = url;
         mStartPos = startPos;
         liveType = PLAY_TUTORIAL;
