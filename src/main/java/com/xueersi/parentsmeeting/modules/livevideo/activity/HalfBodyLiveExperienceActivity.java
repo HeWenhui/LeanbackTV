@@ -501,11 +501,11 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         logger.i("=====>connectChatServer:channel=" + channel + ":nickname =" +
                 chatRoomUid);
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
-        if (MediaPlayer.getIsNewIJK()){
+        if (MediaPlayer.getIsNewIJK()) {
 
-            mIRCMessage = new NewIRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, mGetInfo, channel);
+            mIRCMessage = new NewIRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, mGetInfo, ums, channel);
 
-        } else{
+        } else {
             // 获取 聊天服务器地址  的接口地址
             ArrayList<TalkConfHost> talkConfHosts = new ArrayList<>();
             TalkConfHost confHost = null;
@@ -902,7 +902,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         learnFeedbackBll = new HalfBodyExperienceLearnFeedbackBll(activity, liveBackBll);
         liveBackBll.addBusinessBll(learnFeedbackBll);
         liveBackBll.addBusinessBll(new HalfBodyRedPackageExperienceBll(activity, liveBackBll, mVideoEntity.getChapterId()));
-        EnglishH5HalfBodyExperienceBll englishH5ExperienceBll = new EnglishH5HalfBodyExperienceBll(activity, liveBackBll,mVideoEntity.getChapterId(),
+        EnglishH5HalfBodyExperienceBll englishH5ExperienceBll = new EnglishH5HalfBodyExperienceBll(activity, liveBackBll, mVideoEntity.getChapterId(),
                 mVideoEntity.getHalfBodyH5Url());
         liveBackBll.addBusinessBll(englishH5ExperienceBll);
         liveBackBll.addBusinessBll(new NBH5ExperienceBll(activity, liveBackBll));

@@ -110,10 +110,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
 /**
-*半身直播体验课
-*@author chekun
-*created  at 2019/1/1 11:12
-*/
+ * 半身直播体验课
+ *
+ * @author chekun
+ * created  at 2019/1/1 11:12
+ */
 public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implements BaseLiveMediaControllerBottom
         .MediaChildViewClick {
     QuestionBll questionBll;
@@ -485,11 +486,11 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
         logger.e("=====>connectChatServer:channel=" + channel + ":nickname =" +
                 chatRoomUid);
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
-        if (MediaPlayer.getIsNewIJK()){
+        if (MediaPlayer.getIsNewIJK()) {
 
-            mIRCMessage = new NewIRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, mGetInfo, channel);
+            mIRCMessage = new NewIRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, mGetInfo, ums, channel);
 
-        } else{
+        } else {
             // 获取 聊天服务器地址  的接口地址
             ArrayList<TalkConfHost> talkConfHosts = new ArrayList<>();
             TalkConfHost confHost = null;
@@ -871,10 +872,10 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
 
     private void addBusiness(Activity activity) {
         liveBackBll.addBusinessBll(new QuestionExperienceBll(activity, liveBackBll));
-        learnFeedbackBll = new HalfBodyExperienceLearnFeedbackBll(activity,liveBackBll);
+        learnFeedbackBll = new HalfBodyExperienceLearnFeedbackBll(activity, liveBackBll);
         liveBackBll.addBusinessBll(learnFeedbackBll);
         liveBackBll.addBusinessBll(new HalfBodyRedPackageExperienceBll(activity, liveBackBll, mVideoEntity.getChapterId()));
-        EnglishH5HalfBodyExperienceBll englishH5ExperienceBll = new EnglishH5HalfBodyExperienceBll(activity, liveBackBll,mVideoEntity.getChapterId(),
+        EnglishH5HalfBodyExperienceBll englishH5ExperienceBll = new EnglishH5HalfBodyExperienceBll(activity, liveBackBll, mVideoEntity.getChapterId(),
                 mVideoEntity.getHalfBodyH5Url());
         liveBackBll.addBusinessBll(englishH5ExperienceBll);
         liveBackBll.addBusinessBll(new NBH5ExperienceBll(activity, liveBackBll));
@@ -1090,7 +1091,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
     }
 
     /**
-     *   03.13 根据播放的进度获取互动题
+     * 03.13 根据播放的进度获取互动题
      */
     @Override
     protected void playingPosition(long currentPosition, long duration) {

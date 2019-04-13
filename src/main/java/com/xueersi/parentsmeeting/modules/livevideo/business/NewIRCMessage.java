@@ -16,6 +16,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -72,13 +73,16 @@ public class NewIRCMessage implements IIRCMessage {
     private PMDefs.LiveInfo liveInfo;
     private boolean isConnected;
     private boolean isFirstLogin = true;
+    LiveAndBackDebug liveAndBackDebug;
+    private String eventid = "IRCMessage";
 
-    public NewIRCMessage(Context context, int netWorkType, String login, String nickname, LiveGetInfo liveInfo, String... channel) {
+    public NewIRCMessage(Context context, int netWorkType, String login, String nickname, LiveGetInfo liveInfo ,LiveAndBackDebug liveAndBackDebug,  String... channel) {
         this.netWorkType = netWorkType;
         this.mChannels = channel;
         this.mNickname = nickname;
         this.mContext = context;
         this.mLiveInfo = liveInfo;
+        this.liveAndBackDebug = liveAndBackDebug;
         mLogtf = new LogToFile(context, TAG);
         mLogtf.clear();
         mLogtf.d("IRCMessage:channel=" + channel + ",login=" + login + ",nickname=" + nickname);
@@ -124,6 +128,7 @@ public class NewIRCMessage implements IIRCMessage {
                 }
                 for (int i = 0; i < mChannels.length; i++) {
                     roomid.add("#" + mChannels[i]);
+                    logger.i("#" + mChannels[i]);
                 }
                 mChatClient.getRoomManager().joinChatRooms(roomid);
             } else if (PMDefs.ResultCode.Result_NicknameAlreadyExist == loginResp.code) {
@@ -646,7 +651,29 @@ public class NewIRCMessage implements IIRCMessage {
         String appid = myUserInfoEntity.getPsAppId();
         //irc sdk初始化  code: 0 成功 ，1 参数错误 ， 19 已初始化
         int initcode = mChatClient.init(mContext.getApplicationContext(), myUserInfoEntity.getPsAppId(), myUserInfoEntity.getPsAppClientKey(), workSpaceDir.getAbsolutePath());
+        logger.i("psAppId:" + myUserInfoEntity.getPsAppId()+" PsAppClientKey:"+myUserInfoEntity.getPsAppClientKey()+" workspace:"+workSpaceDir.getAbsolutePath());
         logger.i("irc sdk initcode: " + initcode);
+        if (PMDefs.ResultCode.Result_Success != initcode){
+            if (liveAndBackDebug != null){
+                StableLogHashMap logHashMap = new StableLogHashMap("IRCMessage");
+                logHashMap.put("initcode", ""+initcode);
+                logHashMap.put("nickname", mNickname);
+                logHashMap.put("PsAppId", myUserInfoEntity.getPsAppId());
+                logHashMap.put("PsAppClientKey",myUserInfoEntity.getPsAppClientKey());
+                logHashMap.put("workspace",workSpaceDir.getAbsolutePath());
+                logHashMap.put("time",""+System.currentTimeMillis());
+                logHashMap.put("userid",UserBll.getInstance().getMyUserInfoEntity().getStuId());
+                logHashMap.put("where","NewIRCMessage");
+                logHashMap.put("liveId",mLiveInfo.getId());
+                liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());
+            }
+            if (!workSpaceDir.exists()){
+                workSpaceDir.mkdirs();
+            }
+            logger.i("psAppId:" + myUserInfoEntity.getPsAppId()+" PsAppClientKey:"+myUserInfoEntity.getPsAppClientKey()+" workspace:"+workSpaceDir.getAbsolutePath());
+            initcode = mChatClient.init(mContext.getApplicationContext(), myUserInfoEntity.getPsAppId(), myUserInfoEntity.getPsAppClientKey(), workSpaceDir.getAbsolutePath());
+            logger.i("irc sdk initagain initcode: " + initcode);
+        }
         //设置直播信息
         liveInfo = new PMDefs.LiveInfo();
         liveInfo.nickname = mNickname;
@@ -655,7 +682,7 @@ public class NewIRCMessage implements IIRCMessage {
         if (mLiveInfo.getStuName() != null) {
             liveInfo.username = mLiveInfo.getStuName();
         } else {
-            liveInfo.username = "";
+            liveInfo.username = mNickname;
         }
         if (mLiveInfo.getStudentLiveInfo() != null && mLiveInfo.getStudentLiveInfo().getClassId() != null) {
             liveInfo.classId = mLiveInfo.getStudentLiveInfo().getClassId();
