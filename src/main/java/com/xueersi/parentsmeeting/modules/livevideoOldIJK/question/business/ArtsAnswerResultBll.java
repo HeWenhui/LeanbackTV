@@ -25,6 +25,7 @@ import android.widget.RelativeLayout;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
+import com.alibaba.fastjson.JSON;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.common.base.BasePager;
@@ -41,12 +42,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ScoreRange;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.event.AnswerResultCplShowEvent;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.event.ArtsAnswerResultEvent;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.event.LiveRoomH5CloseEvent;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.event.VoiceAnswerResultEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.VoiceAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.entity.SpeechResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.ArtsAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.ArtsPSEAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.NewCourseLog;
@@ -184,6 +185,8 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                     (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             rlAnswerResultLayout.addView(mDsipalyer.getRootLayout(), layoutParams);
         } else {
+            UmsAgentManager.umsAgentDebug(mContext,"createViceResultView_result", JSON.toJSONString(mAnswerResultList));
+
             mDsipalyer = new ArtsAnswerResultPager(mContext, mAnswerReulst, this);
             RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
                     (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -967,7 +970,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
      *
      * @param dataStr
      */
-    private void onRolePlayAnswerResult(String dataStr, SpeechResultEntity speechResultEntity) {
+    private void onRolePlayAnswerResult(String dataStr, com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity speechResultEntity) {
         if (!TextUtils.isEmpty(dataStr)) {
             try {
                 JSONObject jsonObject = new JSONObject(dataStr);

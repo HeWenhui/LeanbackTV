@@ -1,30 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="57dp">
+    android:layout_height="53dp">
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true">
+        android:layout_centerVertical="true">
 
-        <ImageView
+        <RelativeLayout
+            android:id="@id/rl_teampk_lucy_header_container"
             android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:id="@id/iv_teampk_open_box_winner_head" />
+            android:layout_height="wrap_content">
 
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/live_video_teampk_headmask" />
+            <ImageView
+                android:id="@id/iv_teampk_open_box_winner_head"
+                android:layout_width="43dp"
+                android:layout_height="43dp"
+                android:layout_centerHorizontal="true" />
 
-        <ImageView
-            android:layout_width="48dp"
-            android:layout_height="13dp"
-            android:src="@drawable/livevideo_alertview_luckystar_img_disable"
-            android:layout_below="@id/iv_teampk_open_box_winner_head"
-            android:layout_marginTop="-12dp"
-            android:id="@id/iv_teampk_open_box_lucky_guy" />
+            <ImageView
+                android:layout_width="43dp"
+                android:layout_height="43dp"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/livevideo_teampk_header_cover" />
+
+            <ImageView
+                android:id="@id/iv_teampk_open_box_lucky_guy"
+                android:layout_width="50dp"
+                android:layout_height="13dp"
+                android:layout_below="@id/iv_teampk_open_box_winner_head"
+                android:layout_marginTop="-8dp"
+                android:src="@drawable/livevideo_alertview_luckystar_img_disable" />
+
+        </RelativeLayout>
+
 
         <TextView
             android:layout_width="wrap_content"
@@ -36,10 +46,10 @@
             android:id="@id/tv_teampk_open_box_winner_name"
             android:text="宋珂珂宋珂珂宋珂珂"
             android:textSize="14sp"
-            android:layout_alignTop="@id/iv_teampk_open_box_winner_head"
+            android:layout_alignTop="@id/rl_teampk_lucy_header_container"
             android:layout_marginTop="6dp"
-            android:layout_toRightOf="@id/iv_teampk_open_box_winner_head"
-            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@id/rl_teampk_lucy_header_container"
+            android:layout_marginLeft="7dp"
             android:singleLine="true" />
 
         <TextView

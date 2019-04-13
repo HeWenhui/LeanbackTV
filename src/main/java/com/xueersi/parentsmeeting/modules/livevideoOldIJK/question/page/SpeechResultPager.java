@@ -16,8 +16,8 @@ import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.entity.SpeechResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.entity.SpeechResultMember;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultMember;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.item.SpeechResultOtherItem;
 import com.xueersi.ui.adapter.RCommonAdapter;
 

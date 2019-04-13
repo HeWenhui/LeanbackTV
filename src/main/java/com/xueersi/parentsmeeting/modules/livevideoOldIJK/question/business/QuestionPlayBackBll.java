@@ -28,7 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.event.LiveBackQuestionEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 import com.xueersi.ui.dataload.DataLoadEntity;
@@ -42,8 +42,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import static com.xueersi.parentsmeeting.modules.livevideoOldIJK.event.LiveBackQuestionEvent.QUSTIONS_SHOW;
-import static com.xueersi.parentsmeeting.modules.livevideoOldIJK.event.LiveBackQuestionEvent.QUSTION_CLOSE;
+import static com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent.QUSTIONS_SHOW;
+import static com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent.QUSTION_CLOSE;
 
 /**
  * Created by linyuqiang on 2018/7/17.

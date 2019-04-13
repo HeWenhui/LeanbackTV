@@ -1,5 +1,5 @@
 /*
-package com.xueersi.parentsmeeting.modules.livevideo.manager;
+package com.xueersi.parentsmeeting.modules.livevideoOldIJK.manager;
 
 import android.content.Context;
 import android.net.Uri;

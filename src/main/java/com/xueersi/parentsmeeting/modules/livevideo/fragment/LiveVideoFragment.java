@@ -38,7 +38,7 @@
 //import com.xueersi.lib.framework.utils.ScreenUtils;
 //import com.xueersi.lib.framework.utils.XESToastUtils;
 //import com.xueersi.lib.imageloader.ImageLoader;
-//import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.VPlayerListener;
+//import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack.VPlayerListener;
 //import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 //import com.xueersi.parentsmeeting.modules.livevideo.LiveVideoEnter;
 //import com.xueersi.parentsmeeting.modules.livevideo.R;

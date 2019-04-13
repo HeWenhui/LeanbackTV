@@ -141,8 +141,6 @@ public class TeacherPraiseBll extends LiveBaseBll implements NoticeAction {
         switch (type) {
             case XESCODE.TEACHER_PRAISE:
                 showTeacherPraise();
-                String nonce = data.optString("nonce", "");
-                TeamPkLog.receiveVoicePraise(mLiveBll, nonce);
                 break;
 
             default:

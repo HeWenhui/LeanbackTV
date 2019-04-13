@@ -33,8 +33,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentPkResultEntity
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAdversaryEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.event.LiveRoomH5CloseEvent;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.event.NativeVoteRusltulCloseEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.NativeVoteRusltulCloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.redpackage.entity.RedPackageEvent;
@@ -92,6 +92,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
 
     private boolean isWin;
 
+    private  boolean newCourseWare;
     private TeamPkStateLayout pkStateRootView;
     /**
      * 直播间内答题 H5 答题结果页面关闭事件队列
@@ -597,14 +598,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     }
 
 
-    public void onDestroy() {
-        if (mFocusPager != null) {
-            mFocusPager.onDestroy();
-            mFocusPager = null;
-        }
-        isTopicHandled = false;
-        EventBus.getDefault().unregister(this);
-    }
+
 
     /**
      * activity stop
@@ -639,6 +633,12 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     public void onDestory() {
         super.onDestory();
         logger.e("======>onDestory");
+        if (mFocusPager != null) {
+            mFocusPager.onDestroy();
+            mFocusPager = null;
+        }
+        isTopicHandled = false;
+        EventBus.getDefault().unregister(this);
     }
 
 
@@ -674,7 +674,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRoomH5CloseEvent(final LiveRoomH5CloseEvent event) {
         logger.e("=======>:onRoomH5CloseEvent:" + event.getId() + ":" + event.getmGoldNum() + ":" + event.getmEnergyNum() + ":" + event.isCloseByTeacher());
-
+        newCourseWare = event.isScienceNewCourseWare();
         if (event.getH5Type() == LiveRoomH5CloseEvent.H5_TYPE_EXAM) {
             savedTestPlan = event.getId();
             savedTestId = "";
@@ -1082,7 +1082,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
      */
     private void getEnergyNumAndContributionStar() {
 
-        if (LiveVideoConfig.isNewEnglishH5) {
+        if (newCourseWare) {
 
             HttpCallBack callback = new HttpCallBack() {
                 @Override

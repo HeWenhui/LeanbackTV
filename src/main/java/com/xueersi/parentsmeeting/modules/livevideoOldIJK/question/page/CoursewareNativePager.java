@@ -33,6 +33,7 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.ContextLiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
@@ -42,8 +43,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.event.ArtsAnswerResultEvent;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.event.LiveRoomH5CloseEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.EnglishH5CoursewareSecHttp;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.config.CourseMessage;
@@ -163,7 +164,13 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     /** 课件题目数量 */
     private int totalQuestion = -1;
 
-    public CoursewareNativePager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity, boolean isPlayBack, String liveId, String id, EnglishH5Entity englishH5Entity,
+    /**
+     * 结果页面 是否是由强制提交 产生的
+     */
+    private boolean resultGotByForceSubmit;
+
+    public CoursewareNativePager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity,
+                                 boolean isPlayBack, String liveId, String id, EnglishH5Entity englishH5Entity,
                                  final String courseware_type, String nonce, EnglishH5CoursewareBll.OnH5ResultClose onClose,
                                  String isShowRanks, int isArts, boolean allowTeamPk) {
         super(context, false);
@@ -257,13 +264,10 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                             event.setCloseByTeahcer(mEnglishH5CoursewareBll.isWebViewCloseByTeacher());
                             mEnglishH5CoursewareBll.setWebViewCloseByTeacher(false);
                         }
+                        event.setScienceNewCourseWare(englishH5Entity.getNewEnglishH5());
+                        event.setForceSubmit(resultGotByForceSubmit);
                         EventBus.getDefault().post(event);
                     }
-                }
-                if (englishH5Entity.getNewEnglishH5()) {
-                    LiveVideoConfig.isNewEnglishH5 = true;
-                } else {
-                    LiveVideoConfig.isNewEnglishH5 = false;
                 }
                 preLoad.onStop();
             }
@@ -736,6 +740,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             return;
         }
         isFinish = true;
+        resultGotByForceSubmit = !loadResult;
         if (loadResult) {
             //初中结果页是网页，需要调接口
             if (isArts != LiveVideoSAConfig.ART_EN && (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage))) {
@@ -1211,6 +1216,8 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         if (StringUtils.isEmpty(detailInfo.getArtType()) || "0".equals(detailInfo.getArtType())) {
                             detailInfo.setArtType(test.getTestType());
                         }
+                    } else if (isArts == LiveVideoSAConfig.ART_SEC) {
+                        newCourseCache.add(newCourseCache.new FutureCourse());
                     }
                     showControl();
                     if (quesJson != null) {
@@ -1447,7 +1454,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 }
             }
         } else {
-            if (LiveQueConfig.SEC_COURSE_TYPE_QUE.equals(englishH5Entity.getPackageSource())) {
+            if (LiveQueConfig.SEC_COURSE_TYPE_QUE.equals(englishH5Entity.getPackageSource()) || LiveQueConfig.SEC_COURSE_TYPE_FUTURE.equals(englishH5Entity.getPackageSource())) {
                 showControl = true;
             }
         }
@@ -1465,6 +1472,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     @Override
     public BasePager getBasePager() {
         return this;
+    }
+
+    @Override
+    public boolean isResultRecived() {
+        return loadResult;
     }
 
     @Override
@@ -1679,6 +1691,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                             mEnergyNum = entity.getEnergy();
                         }
                     }
+                    // 对外暴露答题结果
+                    broadCastAnswerRestult(entity);
+
                     PrimaryScienceAnserResultPager primaryScienceAnserResultPager = new PrimaryScienceAnserResultPager(mContext, entity, newCourseSec.getIsGame(), new PrimaryScienceAnserResultPager.OnNativeResultPagerClose() {
                         @Override
                         public void onClose() {
@@ -1703,4 +1718,22 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         }
     }
 
+    /**
+     *  对外广播 答题结果
+     * @param entity
+     */
+    private void broadCastAnswerRestult(PrimaryScienceAnswerResultEntity entity) {
+        try {
+            if(detailInfo != null && detailInfo.englishH5Entity != null){
+                JSONObject answerReuslt = new JSONObject();
+                answerReuslt.put("isRight",entity.getType());
+                answerReuslt.put("goldNum",mGoldNum);
+                answerReuslt.put("energyNum",mEnergyNum);
+                answerReuslt.put("id",detailInfo.englishH5Entity.getReleasedPageInfos());
+                EventBus.getDefault().post(new AnswerResultEvent(answerReuslt.toString()));
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
 }
