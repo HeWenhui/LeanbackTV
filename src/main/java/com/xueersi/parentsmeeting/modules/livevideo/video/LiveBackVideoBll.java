@@ -151,7 +151,7 @@ public class LiveBackVideoBll {
             if (!islocal) {
                 liveBackPlayVideoFragment.playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
             } else {
-                liveBackPlayVideoFragment.playPSVideo(videoPath, (int) getStartPosition());
+                liveBackPlayVideoFragment.playPSFile(videoPath, (int) getStartPosition());
             }
         }
     }
