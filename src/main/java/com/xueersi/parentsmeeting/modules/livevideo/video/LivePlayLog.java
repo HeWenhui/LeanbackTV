@@ -77,116 +77,70 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
     private static String TAG = "LivePlayLog";
     private Logger logger = LoggerFactory.getLogger(TAG);
     private PlayerService vPlayer;
-    /**
-     * 每秒帧数-10秒统计
-     */
+    /** 每秒帧数-10秒统计 */
     private ArrayList<Float> framesPsTen = new ArrayList<Float>();
-    /**
-     * 第一次播放的帧数
-     */
+    /** 第一次播放的帧数 */
     private long fistDisaplyCount = 0;
-    /**
-     * 上一次播放的帧数
-     */
+    /** 上一次播放的帧数 */
     private long lastDisaplyCount = 0;
     private float videofps = 12.0f;
-    /**
-     * 帧数10秒统计,开始时间
-     */
+    /** 帧数10秒统计,开始时间 */
     private long frame10Start;
     private long lastTrafficStatisticByteCount;
     private long trafficStatisticByteCount;
-    /**
-     * 视频是不是再缓冲
-     */
+    /** 视频是不是再缓冲 */
     private boolean isBuffer = false;
-    /**
-     * 视频是不是暂停
-     */
+    /** 视频是不是暂停 */
     private boolean isPause = false;
-    /**
-     * 视频是不是暂停
-     */
+    /** 视频是不是暂停 */
     private boolean isHavePause = false;
-    /**
-     * 视频是不是销毁
-     */
+    /** 视频是不是销毁 */
     private boolean isDestory = false;
-    /**
-     * 缓冲开始时间
-     */
+    /** 缓冲开始时间 */
     private long bufferTime = 0;
-    /**
-     * 缓冲类型
-     */
+    /** 缓冲类型 */
     private int bufType = 0;
     private boolean isSeek = false;
     private Activity activity;
     private PlayServerEntity.PlayserverEntity lastPlayserverEntity;
     private BaseHttpBusiness baseHttpBusiness;
-    /**
-     * 视频开始播放时间
-     */
+    /** 视频开始播放时间 */
     private long openStart;
-    /**
-     * 视频播放成功时间
-     */
+    /** 视频播放成功时间 */
     private long openSuccess;
-    /**
-     * 视频播放成功时间
-     */
+    /** 视频播放成功时间 */
     private boolean isOpenSuccess;
-    /**
-     * 心跳时间
-     */
+    /** 心跳时间 */
     private long lastHeartTime = 0;
-    /**
-     * 直播云平台日志统计
-     */
+    /** 直播云平台日志统计 */
     private String logurl = LiveVideoConfig.URL_CDN_LOG;
-    /**
-     * 直播云平台日志统计-多个的位置
-     */
+    /** 直播云平台日志统计-多个的位置 */
     int logIndex = 0;
-    /**
-     * 直播云平台日志统计-多个
-     */
+    /** 直播云平台日志统计-多个 */
     private String[] logurls = {LiveVideoConfig.URL_CDN_LOG, LiveVideoConfig.URL_CDN_LOG1, LiveVideoConfig.URL_CDN_LOG2};
     private String userId;
     private String psId;
-    /**
-     * 当前播放的视频地址
-     */
+    /** 当前播放的视频地址 */
     private Uri mUri;
     private String mUriHost = "";
     static HashMap<Uri, String> sipMap = new HashMap<>();
     private String sip;
     private String versionName;
-    /**
-     * cpu名字
-     */
+    /** cpu名字 */
     private String cpuName;
-    /**
-     * 可用内存大小
-     */
+    /** 可用内存大小 */
     private String memsize;
     private String channelname = "";
     private int heartCount;
     private LDNetTraceClient ldNetTraceClient;
-    /**
-     * 一个地址5分钟传一次
-     */
+    /** 一个地址5分钟传一次 */
     private HashMap<String, Long> urlTrace = new HashMap<>();
     private LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
-    /**
-     * 保存日志路径
-     */
+    /** 保存日志路径 */
     private File saveLogDir;
     private File saveLogDirDebug;
     private boolean isLive = true;
-    /**
-     * 下载完成
-     */
+    /** 下载完成 */
     private boolean isDownCom = false;
     private DecimalFormat df = new DecimalFormat("######0.00");
     private int logVersion = 1;
@@ -204,13 +158,9 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
     private PlayBufferEntity bufferStartEntity = new PlayBufferEntity();
 
 
-    /**
-     * 文件
-     */
+    /** 文件 */
     private File liveLog920;
-    /**
-     * 日志上传类型
-     */
+    /** 日志上传类型 */
     private String LIVE_920_TYPE = "";
 
     static {
