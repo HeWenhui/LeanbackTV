@@ -64,7 +64,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LecturePeopleEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageGroupEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePlayBackMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.event.PlaybackVideoEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.PutQuestion;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.BaseExamQuestionInter;

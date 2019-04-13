@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,10 +12,21 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.ArtsAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.ArtsPSEAnswerResultPager;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity.QUE_RES_TYPE1;
+import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity.QUE_RES_TYPE2;
+import static com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity.QUE_RES_TYPE4;
 
 /**
  * Created by lyqai on 2017/12/19.
@@ -131,7 +143,7 @@ public class QuestionResultView {
      * @return
      */
     private static View createViceResultView(Context context, VideoResultEntity entity){
-        UmsAgentManager.umsAgentDebug(context,"createViceResultView_result1",JSON.toJSONString(entity));
+        UmsAgentManager.umsAgentDebug(context,"createViceResultView_result1", JSON.toJSONString(entity));
         AnswerResultEntity resultEntity  = new AnswerResultEntity();
         resultEntity.setGold(entity.getGoldNum());
         AnswerResultEntity.Answer  answer = new AnswerResultEntity.Answer();

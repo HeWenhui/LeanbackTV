@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.config;
+package com.xueersi.parentsmeeting.modules.livevideoOldIJK.config;
 
 /**
 *理科战队pk 常量定义

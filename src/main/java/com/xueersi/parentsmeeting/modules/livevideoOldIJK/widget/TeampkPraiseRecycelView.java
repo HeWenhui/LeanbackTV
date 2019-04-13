@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.widget;
+package com.xueersi.parentsmeeting.modules.livevideoOldIJK.widget;
 
 import android.content.Context;
 import android.support.annotation.Nullable;

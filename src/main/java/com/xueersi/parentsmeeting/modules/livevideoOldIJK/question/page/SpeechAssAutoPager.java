@@ -39,13 +39,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.event.ArtsAnswerResultEvent;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.event.VoiceAnswerResultEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.VoiceAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.OnSpeechEval;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.SpeechEvalAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.entity.EngForceSubmit;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.entity.SpeechResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.SpeechResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 

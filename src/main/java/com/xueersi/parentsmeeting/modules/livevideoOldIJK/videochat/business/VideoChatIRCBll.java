@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.videochat.business;
 import android.app.Activity;
 
 import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveBll2;
@@ -88,7 +89,7 @@ public class VideoChatIRCBll extends LiveBaseBll implements VideoChatEvent, Noti
         }
     }
 
-    private LiveUIStateListener onViewChange = new LiveUIStateListener() {
+    private com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener onViewChange = new com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener() {
         @Override
         public void onViewChange(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
             videoChatAction.setControllerBottom(baseLiveMediaControllerBottom);

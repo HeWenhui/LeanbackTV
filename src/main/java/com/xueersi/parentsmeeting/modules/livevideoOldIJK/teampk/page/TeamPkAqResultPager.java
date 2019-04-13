@@ -29,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.widget.BezierEvaluator;
 
 
 /**

@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.widget;
+package com.xueersi.parentsmeeting.modules.livevideoOldIJK.widget;
 
 import android.animation.TypeEvaluator;
 import android.graphics.Point;

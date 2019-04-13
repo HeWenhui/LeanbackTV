@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.teampk.page;
+package com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.page;
 
 import android.content.Context;
 import android.os.Build;
@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
 
 /**

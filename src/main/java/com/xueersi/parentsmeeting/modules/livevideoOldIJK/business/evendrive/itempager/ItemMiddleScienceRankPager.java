@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.itempager;
+package com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.evendrive.itempager;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

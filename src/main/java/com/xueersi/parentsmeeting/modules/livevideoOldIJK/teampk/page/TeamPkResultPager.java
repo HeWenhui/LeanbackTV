@@ -39,8 +39,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentPkResultEntity
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAdversaryEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkResultLottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.TeamPkConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.studyreport.business.StudyReportAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.business.TeamPkBll;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveCutImage;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ContributionLayoutManager;

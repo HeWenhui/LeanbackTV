@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.adapter;
+package com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.evendrive.adapter;
 
 import android.content.Context;
 import android.view.View;

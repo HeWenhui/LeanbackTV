@@ -30,7 +30,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageGroupEntit
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LivePlayBackMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.SpeechEvalEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.event.PlaybackVideoEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.OnSpeechEval;

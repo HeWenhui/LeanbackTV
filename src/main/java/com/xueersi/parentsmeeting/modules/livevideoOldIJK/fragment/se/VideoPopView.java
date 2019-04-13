@@ -14,7 +14,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.PauseNotStopVideoInter;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.event.StandExperienceRecommondCourseEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.StandExperienceRecommondCourseEvent;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FloatLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FloatWindowManager;

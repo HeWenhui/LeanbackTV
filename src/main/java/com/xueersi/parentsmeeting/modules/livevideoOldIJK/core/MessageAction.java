@@ -6,7 +6,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.irc.jibble.pi
 
 /**
 * 直播间 除（notice,topic 外的全量消息）
-*@author chekun
+*@author chekunonMediaViewClick
 *created  at 2018/6/20 10:08
 */
 public interface MessageAction {

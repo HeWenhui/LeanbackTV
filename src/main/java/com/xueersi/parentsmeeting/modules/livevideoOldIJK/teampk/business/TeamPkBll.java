@@ -9,14 +9,25 @@ import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.BasePager;
+import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ScienceAnswerResult;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkStar;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkStuProgress;
+import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.config.TeamPkConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
@@ -28,15 +39,20 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentPkResultEntity
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAdversaryEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.event.LiveRoomH5CloseEvent;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.event.NativeVoteRusltulCloseEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.NativeVoteRusltulCloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.redpackage.entity.RedPackageEvent;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.page.TeamPkAqResultPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.page.TeamPkAwardPager;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.page.TeamPkBasePager;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.page.TeamPkContributionPager;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.page.TeamPkEndPager;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.page.TeamPkImprovePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.page.TeamPkResultPager;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.page.TeamPkStarsPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.page.TeamPkTeamSelectPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.page.TeamPkTeamSelectingPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LayoutParamsUtil;
@@ -649,7 +665,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         pkStateRootView = viewGroup.findViewById(R.id.tpkL_teampk_pkstate_root);
         if (pkStateRootView != null) {
             pkStateRootView.setVisibility(View.VISIBLE);
-            pkStateRootView.setTeamPkBll(this);
+           // pkStateRootView.setTeamPkBll(this);
             // 设置当前pk 状态,兼容 半身直播 主辅导态来回切换
             if (mCurrentPkState != null) {
                 pkStateRootView.bindData(mCurrentPkState.getStuLiveGold(),

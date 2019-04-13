@@ -6,8 +6,10 @@ import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveUIStateListener;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -105,7 +107,7 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
         }
     }
 
-    private LiveUIStateListener onViewChange = new LiveUIStateListener() {
+    private com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener onViewChange = new com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener() {
         @Override
         public void onViewChange(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
             videoChatAction.setControllerBottom(baseLiveMediaControllerBottom);

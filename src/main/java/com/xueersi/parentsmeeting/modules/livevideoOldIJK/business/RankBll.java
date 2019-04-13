@@ -21,7 +21,6 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -32,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaCont
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.item.RankItem;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.RankPage.SmallChineseRankPager;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.NoticeAction;
@@ -40,6 +40,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -253,7 +254,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                 });
     }
 
-    private LiveUIStateListener onViewChange = new LiveUIStateListener(){
+    private com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener onViewChange = new com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener(){
         @Override
         public void onViewChange(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
             setLiveMediaController(mMediaController, baseLiveMediaControllerBottom);
@@ -490,9 +491,9 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
         } else {
             //中学连对激励系统
             if (mGetInfo.getIsOpenNewCourseWare() == 1) {
-                scienceEvenDrivePager = new com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.MiddleScienceEvenDrivePager(mContext);
+                scienceEvenDrivePager = new com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.evendrive.MiddleScienceEvenDrivePager(mContext);
 
-                scienceEvenDrivePager.setiNotice(new com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.itempager.ItemMiddleSciencePager.INotice() {
+                scienceEvenDrivePager.setiNotice(new com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.evendrive.itempager.ItemMiddleSciencePager.INotice() {
                     @Override
                     public void sendNotice(JSONObject jsonObject, String targetName) {
                         try {
@@ -549,16 +550,16 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                 final TextView tv_livevideo_rank_groups = (TextView) relativeLayout.findViewById(R.id
                         .tv_livevideo_rank_groups);
 
-            final View v_livevideo_rank_groups = relativeLayout.findViewById(R.id.v_livevideo_rank_groups);
-            //班级
-            View rl_livevideo_rank_class = relativeLayout.findViewById(R.id.rl_livevideo_rank_class);
-            final TextView tv_livevideo_rank_class = (TextView) relativeLayout.findViewById(R.id
-                    .tv_livevideo_rank_class);
-            final View v_livevideo_rank_class = relativeLayout.findViewById(R.id.v_livevideo_rank_class);
-            //下面标题中间的字
-            final TextView tv_livevideo_rank_subtitle_mid = (TextView) relativeLayout.findViewById(R.id
-                    .tv_livevideo_rank_subtitle_mid);
-            lv_livevideo_rank_list = relativeLayout.findViewById(R.id.lv_livevideo_rank_list);
+                final View v_livevideo_rank_groups = relativeLayout.findViewById(R.id.v_livevideo_rank_groups);
+                //班级
+                View rl_livevideo_rank_class = relativeLayout.findViewById(R.id.rl_livevideo_rank_class);
+                final TextView tv_livevideo_rank_class = (TextView) relativeLayout.findViewById(R.id
+                        .tv_livevideo_rank_class);
+                final View v_livevideo_rank_class = relativeLayout.findViewById(R.id.v_livevideo_rank_class);
+                //下面标题中间的字
+                final TextView tv_livevideo_rank_subtitle_mid = (TextView) relativeLayout.findViewById(R.id
+                        .tv_livevideo_rank_subtitle_mid);
+                lv_livevideo_rank_list = relativeLayout.findViewById(R.id.lv_livevideo_rank_list);
 //        ArrayList<RankEntity> rankEntities = new ArrayList<>();
 //        for (int i = 0; i < 10; i++) {
 //            RankEntity rankEntity = new RankEntity();
@@ -567,100 +568,101 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
 //            rankEntity.setRate((100 - i) + "%");
 //            rankEntities.add(rankEntity);
 //        }
-            final int COLOR_F13232 = activity.getResources().getColor(R.color.COLOR_F13232);
-            final int white = activity.getResources().getColor(R.color.white);
-            final int slider = activity.getResources().getColor(R.color.COLOR_SLIDER);
-            rl_livevideo_rank_mygroup.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    index = 1;
-                    tv_livevideo_rank_subtitle_mid.setText("学员");
-                    v_livevideo_rank_mygroup.setVisibility(View.VISIBLE);
-                    if (LiveVideoConfig.isPrimary) {
-                        tv_livevideo_rank_mygroup.setTextColor(slider);
-                    } else {
-                        tv_livevideo_rank_mygroup.setTextColor(COLOR_F13232);
-                    }
-                    v_livevideo_rank_groups.setVisibility(View.GONE);
-                    tv_livevideo_rank_groups.setTextColor(white);
-                    v_livevideo_rank_class.setVisibility(View.GONE);
-                    tv_livevideo_rank_class.setTextColor(white);
-                    if (allRankEntity == null) {
-                        return;
-                    }
-                    ArrayList<RankEntity> rankEntities = allRankEntity.getMyRankEntityMyTeam().getRankEntities();
-                    lv_livevideo_rank_list.setAdapter(new CommonAdapter<RankEntity>(rankEntities) {
-                        @Override
-                        public AdapterItemInterface<RankEntity> getItemView(Object type) {
-                            return new RankItem(colorYellow, colorWhite, isSmallEnglish);
+                final int COLOR_F13232 = activity.getResources().getColor(R.color.COLOR_F13232);
+                final int white = activity.getResources().getColor(R.color.white);
+                final int slider = activity.getResources().getColor(R.color.COLOR_SLIDER);
+                rl_livevideo_rank_mygroup.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        index = 1;
+                        tv_livevideo_rank_subtitle_mid.setText("学员");
+                        v_livevideo_rank_mygroup.setVisibility(View.VISIBLE);
+                        if (LiveVideoConfig.isPrimary) {
+                            tv_livevideo_rank_mygroup.setTextColor(slider);
+                        } else {
+                            tv_livevideo_rank_mygroup.setTextColor(COLOR_F13232);
                         }
-                    });
-                }
-            });
-            rl_livevideo_rank_groups.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    index = 2;
-                    tv_livevideo_rank_subtitle_mid.setText("组别");
-                    v_livevideo_rank_mygroup.setVisibility(View.GONE);
-                    tv_livevideo_rank_mygroup.setTextColor(white);
-                    v_livevideo_rank_groups.setVisibility(View.VISIBLE);
-                    if (LiveVideoConfig.isPrimary) {
-                        tv_livevideo_rank_groups.setTextColor(slider);
-                    } else {
-                        tv_livevideo_rank_groups.setTextColor(COLOR_F13232);
-                    }
-                    v_livevideo_rank_class.setVisibility(View.GONE);
-                    tv_livevideo_rank_class.setTextColor(white);
-                    if (allRankEntity == null) {
-                        return;
-                    }
-                    ArrayList<RankEntity> rankEntities = allRankEntity.getMyRankEntityTeams().getRankEntities();
-                    lv_livevideo_rank_list.setAdapter(new CommonAdapter<RankEntity>(rankEntities) {
-                        @Override
-                        public AdapterItemInterface<RankEntity> getItemView(Object type) {
-                            return new RankItem(colorYellow, colorWhite, isSmallEnglish);
+                        v_livevideo_rank_groups.setVisibility(View.GONE);
+                        tv_livevideo_rank_groups.setTextColor(white);
+                        v_livevideo_rank_class.setVisibility(View.GONE);
+                        tv_livevideo_rank_class.setTextColor(white);
+                        if (allRankEntity == null) {
+                            return;
                         }
-                    });
-                }
-            });
-            rl_livevideo_rank_class.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    index = 3;
-                    tv_livevideo_rank_subtitle_mid.setText("班级");
-                    v_livevideo_rank_mygroup.setVisibility(View.GONE);
-                    tv_livevideo_rank_mygroup.setTextColor(white);
-                    v_livevideo_rank_groups.setVisibility(View.GONE);
-                    tv_livevideo_rank_groups.setTextColor(white);
-                    v_livevideo_rank_class.setVisibility(View.VISIBLE);
-                    if (LiveVideoConfig.isPrimary) {
-                        tv_livevideo_rank_class.setTextColor(slider);
-                    } else {
-                        tv_livevideo_rank_class.setTextColor(COLOR_F13232);
+                        ArrayList<RankEntity> rankEntities = allRankEntity.getMyRankEntityMyTeam().getRankEntities();
+                        lv_livevideo_rank_list.setAdapter(new CommonAdapter<RankEntity>(rankEntities) {
+                            @Override
+                            public AdapterItemInterface<RankEntity> getItemView(Object type) {
+                                return new RankItem(colorYellow, colorWhite, isSmallEnglish);
+                            }
+                        });
                     }
-                    if (allRankEntity == null) {
-                        return;
-                    }
-                    ArrayList<RankEntity> rankEntities = allRankEntity.getMyRankEntityClass().getRankEntities();
-                    lv_livevideo_rank_list.setAdapter(new CommonAdapter<RankEntity>(rankEntities) {
-                        @Override
-                        public AdapterItemInterface<RankEntity> getItemView(Object type) {
-                            return new RankItem(colorYellow, colorWhite, isSmallEnglish);
+                });
+                rl_livevideo_rank_groups.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        index = 2;
+                        tv_livevideo_rank_subtitle_mid.setText("组别");
+                        v_livevideo_rank_mygroup.setVisibility(View.GONE);
+                        tv_livevideo_rank_mygroup.setTextColor(white);
+                        v_livevideo_rank_groups.setVisibility(View.VISIBLE);
+                        if (LiveVideoConfig.isPrimary) {
+                            tv_livevideo_rank_groups.setTextColor(slider);
+                        } else {
+                            tv_livevideo_rank_groups.setTextColor(COLOR_F13232);
                         }
-                    });
-                }
-            });
-        }
-        //把该布局加到排行榜的右边
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.MATCH_PARENT);
+                        v_livevideo_rank_class.setVisibility(View.GONE);
+                        tv_livevideo_rank_class.setTextColor(white);
+                        if (allRankEntity == null) {
+                            return;
+                        }
+                        ArrayList<RankEntity> rankEntities = allRankEntity.getMyRankEntityTeams().getRankEntities();
+                        lv_livevideo_rank_list.setAdapter(new CommonAdapter<RankEntity>(rankEntities) {
+                            @Override
+                            public AdapterItemInterface<RankEntity> getItemView(Object type) {
+                                return new RankItem(colorYellow, colorWhite, isSmallEnglish);
+                            }
+                        });
+                    }
+                });
+                rl_livevideo_rank_class.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        index = 3;
+                        tv_livevideo_rank_subtitle_mid.setText("班级");
+                        v_livevideo_rank_mygroup.setVisibility(View.GONE);
+                        tv_livevideo_rank_mygroup.setTextColor(white);
+                        v_livevideo_rank_groups.setVisibility(View.GONE);
+                        tv_livevideo_rank_groups.setTextColor(white);
+                        v_livevideo_rank_class.setVisibility(View.VISIBLE);
+                        if (LiveVideoConfig.isPrimary) {
+                            tv_livevideo_rank_class.setTextColor(slider);
+                        } else {
+                            tv_livevideo_rank_class.setTextColor(COLOR_F13232);
+                        }
+                        if (allRankEntity == null) {
+                            return;
+                        }
+                        ArrayList<RankEntity> rankEntities = allRankEntity.getMyRankEntityClass().getRankEntities();
+                        lv_livevideo_rank_list.setAdapter(new CommonAdapter<RankEntity>(rankEntities) {
+                            @Override
+                            public AdapterItemInterface<RankEntity> getItemView(Object type) {
+                                return new RankItem(colorYellow, colorWhite, isSmallEnglish);
+                            }
+                        });
+                    }
+                });
+            }
+            //把该布局加到排行榜的右边
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                    RelativeLayout.LayoutParams.MATCH_PARENT);
 //        relativeLayout.setBackgroundColor(liveVideoActivity.getResources().getColor(R.color.translucent_black));
-        lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        int index = bottomContent.indexOfChild(tempView);
-        bottomContent.removeViewInLayout(tempView);
-        bottomContent.addView(relativeLayout, index, lp);
-        setVideoLayout();
+            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            int index = bottomContent.indexOfChild(tempView);
+            bottomContent.removeViewInLayout(tempView);
+            bottomContent.addView(relativeLayout, index, lp);
+            setVideoLayout();
+        }
     }
 
     private static String findUserId(String user) {

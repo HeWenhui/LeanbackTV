@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.teampk.business;
+package com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.business;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -23,7 +23,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ScienceAnswerResult;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAnswerRightLottieEffectInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
 
 import org.json.JSONArray;

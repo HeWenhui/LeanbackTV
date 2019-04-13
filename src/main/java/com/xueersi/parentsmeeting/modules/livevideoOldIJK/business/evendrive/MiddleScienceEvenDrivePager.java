@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.business.evendrive;
+package com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.evendrive;
 
 import android.content.Context;
 import android.support.constraint.ConstraintLayout;
@@ -9,13 +9,14 @@ import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.itempager.ItemMiddleScienceEvenPager;
-import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.itempager.ItemMiddleScienceGroupsPager;
-import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.itempager.ItemMiddleSciencePager;
-import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.itempager.ItemMiddleScienceRankPager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.MyRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.evendrive.itempager.ItemMiddleScienceEvenPager;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.evendrive.itempager.ItemMiddleScienceGroupsPager;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.evendrive.itempager.ItemMiddleSciencePager;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.evendrive.itempager.ItemMiddleScienceRankPager;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 import com.xueersi.ui.adapter.RCommonAdapter;

@@ -3,6 +3,9 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.util;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.Rect;
 import android.view.View;
 
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;

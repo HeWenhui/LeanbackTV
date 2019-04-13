@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.teampk.page;
+package com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.page;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
@@ -34,8 +34,8 @@ import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkStuProgress;
-import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
-import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.TeamPkLog;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCutImage;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamMemberGridlayoutManager;

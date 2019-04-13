@@ -18,7 +18,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RecommondCourseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoBannerBuyCourseEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.event.StandExperienceRecommondCourseEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.StandExperienceRecommondCourseEvent;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.StandExperienceEventBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.VideoPopView;

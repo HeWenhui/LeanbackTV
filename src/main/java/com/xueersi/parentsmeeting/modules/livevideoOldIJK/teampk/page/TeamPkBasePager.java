@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.teampk.page;
+package com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.page;
 
 import android.content.Context;
 import android.view.View;
