@@ -22,7 +22,6 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.SampleMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
-//import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -66,6 +65,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+//import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
 
 /**
  * Created by lyqai on 2018/6/26.
@@ -717,6 +718,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             }
             case XESCODE.SENDQUESTION: {
                 mRoomAction.onOpenVoiceNotic(true, "SENDQUESTION");
+                isMiddleScienceH5Open = true;
                 break;
             }
             case XESCODE.STOPQUESTION: {
@@ -733,6 +735,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 //                                mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
 //                            }
 //                        });
+                isMiddleScienceH5Open = false;
+                endTime = System.currentTimeMillis();
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {

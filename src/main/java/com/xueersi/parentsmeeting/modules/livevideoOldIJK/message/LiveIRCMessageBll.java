@@ -22,37 +22,36 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController.SampleMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
-//import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IRCConnection;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.RegMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.NoticeAction;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.TopicAction;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.LiveMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IRCConnection;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.RegMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.MessageAction;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.MoreChoice;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.NoticeAction;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.TopicAction;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.SendMessageReg;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.QuestionShowReg;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.videochat.business.VideoChatStatusChange;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.ui.dataload.PageDataLoadEntity;
 
 import org.greenrobot.eventbus.EventBus;
@@ -66,6 +65,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+//import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
 
 /**
  * Created by lyqai on 2018/6/26.
@@ -696,6 +697,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 break;
             }
             case XESCODE.SENDQUESTION: {
+                isMiddleScienceH5Open = true;
                 mRoomAction.onOpenVoiceNotic(true, "SENDQUESTION");
                 break;
             }
@@ -713,6 +715,8 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 //                                mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
 //                            }
 //                        });
+                isMiddleScienceH5Open = false;
+                endTime = System.currentTimeMillis();
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
