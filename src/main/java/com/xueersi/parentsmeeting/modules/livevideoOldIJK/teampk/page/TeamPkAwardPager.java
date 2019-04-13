@@ -73,9 +73,9 @@ import okhttp3.Call;
  * @author chekun
  * created  at 2018/4/17 16:21
  */
-public class TeamPkAwardPager extends BasePager {
+public class TeamPkAwardPager extends TeamPkBasePager {
     private static final String TAG = "TeamPkAwardPager";
-    Logger loger= LoggerFactory.getLogger(TAG);
+    Logger loger = LoggerFactory.getLogger(TAG);
     private CoinAwardDisplayer cadTeamCoin;
     /**
      * 战队获得 ai 碎片
@@ -83,7 +83,7 @@ public class TeamPkAwardPager extends BasePager {
     private CoinAwardDisplayer cadTeamPatch;
 
     private LottieAnimationView lottieAnimationView;
-    private TeamPkRecyclerView recyclerView;
+    private RecyclerView recyclerView;
     /**
      * lottie 可点击区域
      */
@@ -127,6 +127,7 @@ public class TeamPkAwardPager extends BasePager {
     private LinearLayout llAipatnerAwardRoot;
     private LinearLayout llTeamCoinContainer;
     private int spanCount;
+    private StudentChestEntity studentChestEntity;
 
 
     public TeamPkAwardPager(Context context, TeamPkBll pkBll) {
@@ -238,6 +239,8 @@ public class TeamPkAwardPager extends BasePager {
         lottieAnimationView.addAnimatorListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
+                //展示 获奖详情
+                showAwardDetail();
                 // 播放开宝箱音效
                 playMusic(R.raw.box_open, DEFAULT_FRONT_VOLUME, false);
                 //开启背景循环动效
@@ -362,7 +365,7 @@ public class TeamPkAwardPager extends BasePager {
         if (data == null) {
             return;
         }
-
+        ivClose.setVisibility(View.VISIBLE);
         rlLuckyStartRoot.setVisibility(View.VISIBLE);
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) rlLuckyStartRoot.getLayoutParams();
         Point point = new Point();
@@ -431,6 +434,19 @@ public class TeamPkAwardPager extends BasePager {
                 if (studyReportAction != null) {
                     studyReportAction.cutImage(LiveVideoConfig.STUDY_REPORT.TYPE_PK_GOLD, mView, false, false);
                 }
+            }
+        }, 5000);
+
+        //半身直播自动关闭
+        if (teamPKBll.isHalfBodyLiveRoom()) {
+            autoClose();
+        }
+    }
+
+    private void autoClose() {
+        recyclerView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
                 closeAwardPager();
             }
         }, TIME_DELAY_AUTO_FINISH);
@@ -598,14 +614,12 @@ public class TeamPkAwardPager extends BasePager {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                         lottieAnimationView.setClickable(true);
+                        studentChestEntity = teamPKBll.getmHttpResponseParser().parseStuChest(responseEntity);
                         //播放动画
                         String lottieResPath = lottieResDir + "_open/images";
                         String lottieJsonPath = lottieResDir + "_open/data.json";
                         startOpenBoxAnim(lottieResPath, lottieJsonPath);
-
-                        StudentChestEntity studentChestEntity = teamPKBll.getmHttpResponseParser().parseStuChest
-                                (responseEntity);
-                        String strUnGetGoldState = "0";
+                     /*   String strUnGetGoldState = "0";
                         if (strUnGetGoldState.equals(studentChestEntity.getIsGet())) {
                             showAwardDetail(studentChestEntity);
                         } else {
@@ -624,7 +638,7 @@ public class TeamPkAwardPager extends BasePager {
                         if (teamPKBll != null) {
                             TeamPkLog.openTreasureBox(teamPKBll.getLiveBll(), studentChestEntity.getGold() + "",
                                     nonce, true);
-                        }
+                        }*/
                     }
 
                     @Override
@@ -650,6 +664,70 @@ public class TeamPkAwardPager extends BasePager {
                     }
                 });
     }
+
+
+    /**
+     * 展示奖励详情
+     */
+    private void showAwardDetail() {
+        if (studentChestEntity != null) {
+            String strUnGetGoldState = "0";
+            if (strUnGetGoldState.equals(studentChestEntity.getIsGet())) {
+                //展示 获得金币数
+                int gold = studentChestEntity.getGold();
+                int patch = studentChestEntity.getChipNum();
+                ivOpenState.setVisibility(View.GONE);
+                Animation alphaAnimation = AnimationUtils.loadAnimation(mContext, R.anim
+                        .anim_livevideo_teampk_open_box_coin_in);
+                if (teamPKBll.isAIPartner()) {
+                    cadMyCoin.setVisibility(View.GONE);
+                    llAipatnerAwardRoot.setVisibility(View.VISIBLE);
+                    // 展示碎片信息
+                    TextView tvPatch = llAipatnerAwardRoot.findViewById(R.id.tv_teampk_aipartner_award_patch);
+                    TextView tvPatchName = llAipatnerAwardRoot.findViewById(R.id.tv_teampk_aipartner_award_patchname);
+
+                    // 显示 碎片图片
+                    ImageView ivPatch = llAipatnerAwardRoot.findViewById(R.id.iv_teampk_aipatner_chip);
+                    ImageLoader.with(BaseApplication.getContext()).load(studentChestEntity.getChipUrl()).into(ivPatch);
+
+                    tvPatch.setVisibility(View.VISIBLE);
+                    TextView tvRemind = llAipatnerAwardRoot.findViewById(R.id.tv_teampk_aipartner_award_remind);
+                    tvRemind.setVisibility(View.VISIBLE);
+                    tvPatch.setText("+" + patch);
+                    tvPatchName.setText("（" + studentChestEntity.getChipName() + "）");
+                    // 展示金币信息
+                    TextView tvCoin = llAipatnerAwardRoot.findViewById(R.id.tv_teampk_aipartner_award_coin);
+                    tvCoin.setVisibility(View.VISIBLE);
+                    tvCoin.setText("+" + gold);
+                    llAipatnerAwardRoot.startAnimation(alphaAnimation);
+                } else {
+                    cadMyCoin.setVisibility(View.VISIBLE);
+                    llAipatnerAwardRoot.setVisibility(View.GONE);
+                    cadMyCoin.setAwardInfo(R.drawable.livevideo_alertview_tosmoke_img_disable, gold,
+                            R.drawable.livevideo_alertview_goldwenzi_img_disable);
+                    cadMyCoin.startAnimation(alphaAnimation);
+                }
+            } else {
+                //已开过宝箱
+                Point point = new Point();
+                ((Activity) mContext).getWindowManager().getDefaultDisplay().getSize(point);
+                int realY = Math.min(point.x, point.y);
+                int topMargin = (int) (realY * 0.8f);
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) ivOpenState
+                        .getLayoutParams();
+                layoutParams.topMargin = topMargin;
+                ivOpenState.setVisibility(View.VISIBLE);
+                ivOpenState.setImageResource(R.drawable.livevideo_alertview_kaiguo_img_disable);
+                ivOpenState.setLayoutParams(layoutParams);
+            }
+            updatePkStateLayout();
+            if (teamPKBll != null) {
+                TeamPkLog.openTreasureBox(teamPKBll.getLiveBll(), studentChestEntity.getGold() + "",
+                        nonce, true);
+            }
+        }
+    }
+
 
     private void showAwardDetail(StudentChestEntity studentChestEntity) {
         //展示 获得金币数

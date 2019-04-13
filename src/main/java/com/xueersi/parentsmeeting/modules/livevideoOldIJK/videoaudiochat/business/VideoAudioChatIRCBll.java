@@ -92,14 +92,20 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                         baseLiveMediaControllerBottom;
                 liveStandMediaControllerBottom.addOnViewChange(onViewChange);
             }
+
+            if(baseLiveMediaControllerBottom instanceof LiveHalfBodyMediaControllerBottom){
+                LiveHalfBodyMediaControllerBottom halfBodyMediaControllerBottom = (LiveHalfBodyMediaControllerBottom)
+                        baseLiveMediaControllerBottom;
+                halfBodyMediaControllerBottom.addLiveUIStateListener(onViewChange);
+            }
+
             putInstance(VideoChatEvent.class, this);
         } else {
             mLiveBll.removeBusinessBll(this);
         }
     }
 
-    private LiveStandMediaControllerBottom.OnViewChange onViewChange = new LiveStandMediaControllerBottom
-            .OnViewChange() {
+    private LiveUIStateListener onViewChange = new LiveUIStateListener() {
         @Override
         public void onViewChange(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
             videoChatAction.setControllerBottom(baseLiveMediaControllerBottom);

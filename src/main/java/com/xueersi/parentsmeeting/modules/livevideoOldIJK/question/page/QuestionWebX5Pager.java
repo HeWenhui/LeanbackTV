@@ -91,11 +91,21 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
     private File mMorecacheout;
     private File cacheFile;
     private String type;
+    /**是否接收到或者展示过答题结果页面**/
+    private boolean isAnswerResultRecived;
+
+    /**
+     * 是否是强制提交
+     */
+    private boolean isForceSubmit;
+
     /**
      * 文科新课件平台 试题
      **/
     private boolean isNewArtsTest;
     private HashMap header;
+    /** 新课件缓存 */
+    private NewCourseCache newCourseCache;
 
     public QuestionWebX5Pager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity, StopWebQuestion questionBll, String testPaperUrl,
                               String stuId, String stuName, String liveid, String testId,
@@ -220,7 +230,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 
     @Override
     public void initData() {
-
+        newCourseCache = new NewCourseCache(mContext, liveid);
         btSubjectClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -239,12 +249,14 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         wvSubjectWeb.setWebChromeClient(new MyWebChromeClient());
         wvSubjectWeb.setWebViewClient(new MyWebViewClient());
         logger.e("=======> isNewArtsTest:" + isNewArtsTest);
+
+        WebSettings webSetting = wvSubjectWeb.getSettings();
+        webSetting.setBuiltInZoomControls(true);
+        webSetting.setJavaScriptEnabled(true);
+        wvSubjectWeb.addJavascriptInterface(this, "wx_xesapp");
+
         // 文科新课件平台 填空选择题
         if (isNewArtsTest) {
-            WebSettings webSetting = wvSubjectWeb.getSettings();
-            webSetting.setBuiltInZoomControls(true);
-            webSetting.setJavaScriptEnabled(true);
-            wvSubjectWeb.addJavascriptInterface(this, "wx_xesapp");
             logger.e("=======> loadUrl:" + examUrl);
             wvSubjectWeb.loadUrl(examUrl);
         } else {
@@ -279,6 +291,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                     event.setCloseByTeahcer(((QuestionBll) questionBll).isWebViewCloseByTeacher());
                     ((QuestionBll) questionBll).setWebViewCloseByTeacher(false);
                 }
+                event.setForceSubmit(isForceSubmit);
                 EventBus.getDefault().post(event);
                 mGoldNum = -1;
                 mEngerNum = -1;
@@ -300,6 +313,10 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         }
     }
 
+    @Override
+    public boolean isResultRecived() {
+        return isAnswerResultRecived;
+    }
 
     /**
      * 文科 课件 答题结果回调
@@ -307,9 +324,19 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
     @JavascriptInterface
     public void showAnswerResult_LiveVideo(String data) {
         logger.e("=========>showAnswerResult_LiveVideo:" + data);
+        isAnswerResultRecived = true;
         EventBus.getDefault().post(new ArtsAnswerResultEvent(data, ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT));
     }
 
+
+    /**
+     * 理科 课件 答题结果回调
+     */
+    @JavascriptInterface
+    public void onAnswerResult_LiveVideo(String data){
+        isAnswerResultRecived = true;
+        EventBus.getDefault().post(new AnswerResultEvent(data));
+    }
 
     @android.webkit.JavascriptInterface
     private void addJavascriptInterface() {
@@ -327,7 +354,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
             CacheWebView cacheWebView = (CacheWebView) wvSubjectWeb;
             // TODO: 2018/12/5  
             if (isArts == 0) {
-                cacheWebView.getWebViewCache().setNeedHttpDns(true);
+                cacheWebView.getWebViewCache().setNeedHttpDns(!AppConfig.DEBUG);
             } else {
                 cacheWebView.getWebViewCache().setNeedHttpDns(false);
             }
@@ -344,6 +371,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 
     @Override
     public void submitData() {
+        isForceSubmit = !isAnswerResultRecived;
         Map<String, String> mData = new HashMap<>();
         mData.put("testid", "" + testId);
         mData.put("logtype", "interactTestEnd");
@@ -491,6 +519,11 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
+                }
+            } else {
+                WebResourceResponse webResourceResponse = newCourseCache.interceptZhongXueKeJian("" + request.getUrl());
+                if (webResourceResponse != null) {
+                    return webResourceResponse;
                 }
             }
             logger.e("没有本地资源就去网络请求咯咯咯new");

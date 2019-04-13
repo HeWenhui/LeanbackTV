@@ -734,6 +734,18 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         }
     }
 
+    /**
+     * 设置连对num
+     *
+     * @param nowEvenNum      当前连对数
+     * @param highestRightNum 最高连对数
+     */
+    public void setEvenNum(String nowEvenNum, String highestRightNum) {
+        if (mLiveMessagePager instanceof LiveMessagePager) {
+            ((LiveMessagePager) mLiveMessagePager).setEvenText(nowEvenNum, highestRightNum);
+        }
+    }
+
     @Override
     public void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isShow) {
         isAnaswer = isShow ? 1 : 0;

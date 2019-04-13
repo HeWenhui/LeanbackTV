@@ -35,6 +35,7 @@ public class ExperienceBuyCourseExperiencePresenter extends StandExperienceEvent
 
     @Override
     public void showNextWindow() {
+        //强制转换前判断，防止别人误用liveBackBll。
         if (liveBackBll instanceof StandExperienceLiveBackBll) {
             // 不采用这种方式，在展示下一个View前可能会有业务逻辑去处理所以交给LiveBackBll去处理。
 //            (new StandExperienceLearnFeedbackBll(activity, (StandExperienceLiveBackBll) liveBackBll)).showWindow();
@@ -44,6 +45,8 @@ public class ExperienceBuyCourseExperiencePresenter extends StandExperienceEvent
                             liveBackBaseBll);
                 }
             }
+            //不推荐采用这种方式，在展示下一个View前可能会有业务逻辑去处理，该业务逻辑属于上层，应该由LiveBackBll处理，所以交给LiveBackBll去处理。
+            //(new StandExperienceLearnFeedbackBll(activity, (StandExperienceLiveBackBll) liveBackBll)).showWindow();
         }
     }
 

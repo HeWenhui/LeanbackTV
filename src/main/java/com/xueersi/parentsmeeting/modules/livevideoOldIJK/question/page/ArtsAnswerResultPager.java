@@ -7,10 +7,16 @@ import android.os.Build;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
@@ -20,6 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.AnswerResultStateListener;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.IArtsAnswerRsultDisplayer;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.ArtsAnswerTextView;
+import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
 
 import java.util.List;
 
@@ -43,9 +50,9 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
     private static final int SPAN_COUNT = 1;
 
 
-    private static final int RESULT_TYPE_CORRECT = 2;
-    private static final int RESULT_TYPE_PART_CORRECT = 1;
-    private static final int RESULT_TYPE_ERRRO = 0;
+    public static final int RESULT_TYPE_CORRECT = 2;
+    public static final int RESULT_TYPE_PART_CORRECT = 1;
+    public static final int RESULT_TYPE_ERRRO = 0;
 
     private int mReusltType;
     private ImageView ivResultBtn;
@@ -56,6 +63,12 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
     private static final String BG_COLOR = "#CC000000";
     private AnswerResultEntity mData;
     private final AnswerResultStateListener mStateListenr;
+
+    /** 金币数量 */
+    TextView tvGoldCount;
+
+    /** 奖励布局 */
+    LinearLayout llRewardInfo;
 
     public ArtsAnswerResultPager(Context context, AnswerResultEntity data, AnswerResultStateListener listener) {
         super(context);
@@ -70,7 +83,8 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
         resultStateRootView = view.findViewById(R.id.rl_arts_answer_result_state);
         resultDetailRootView = view.findViewById(R.id.rl_arts_answer_result_resultdetail);
         ivResultBtn = view.findViewById(R.id.iv_arts_answer_result_answer_btn);
-
+        tvGoldCount = view.findViewById(R.id.tv_arts_normal_answer_result_gold_count);
+        llRewardInfo = view.findViewById(R.id.ll_arts_normal_answer_result_gold_info);
         ivResultBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,67 +143,81 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
 
     private class ItemHolder extends RecyclerView.ViewHolder {
 
-        private TextView tvStanderAnswer;
-        private ArtsAnswerTextView tvAnswer;
-        private TextView tvStanderAnswerBelow;
+
+        private TextView tvRightAnswer;
+        private TextView tvUserAnswer;
+
         private TextView tvIndex;
+
+        ImageView ivAnswerIcon;
 
 
         public ItemHolder(View itemView) {
             super(itemView);
-            tvStanderAnswer = itemView.findViewById(R.id.tv_arts_answer_result_stander_answer);
-            tvAnswer = itemView.findViewById(R.id.tv_arts_answer_result_answer);
-            tvStanderAnswerBelow = itemView.findViewById(R.id.tv_arts_answer_result_stander_answer_below);
-            tvIndex = itemView.findViewById(R.id.tv_arts_answer_result_answer_index);
+            tvUserAnswer = itemView.findViewById(R.id.tv_middle_answer_result_item_muti_user_answer);
+
+            tvRightAnswer = itemView.findViewById(R.id.tv_middle_answer_result_item_muti_right_answer);
+
+            ivAnswerIcon = itemView.findViewById(R.id.iv_middle_answer_result_item_muti_right_answer);
+            tvIndex = itemView.findViewById(R.id.tv_middle_answer_result_item_muti_index);
         }
 
-        public void bindData(AnswerResultEntity.Answer data,int position) {
-            if (tvIndex != null) {
+        public void bindData(AnswerResultEntity.Answer data, int position) {
+            if (mData.getAnswerList().size() > 1) {
                 tvIndex.setText((position + 1) + ".");
+                tvIndex.setVisibility(View.VISIBLE);
+            } else {
+                tvIndex.setVisibility(View.GONE);
+            }
+            String myAnswerText = "";
+            String standerAnswerText = "";
+
+            if (isSelect(data)) {
+                myAnswerText = listToStr(data.getChoiceList(), null);
+                standerAnswerText = listToStr(data.getRightAnswers(), null);
+            } else {
+                myAnswerText = listToStr(data.getBlankList(), "、");
+                standerAnswerText = listToStr(data.getRightAnswers(), "、");
+
             }
             int iconResId = 0;
-            if(data.getIsRight() == RESULT_TYPE_ERRRO){
+            int color = getColor(R.color.COLOR_5DA741);
+            if (data.getIsRight() == RESULT_TYPE_ERRRO) {
+                color = getColor(R.color.COLOR_E34949);
+                ivAnswerIcon.setVisibility(View.VISIBLE);
+
                 iconResId = R.drawable.icon_live_wrong;
-            }else if(data.getIsRight() == RESULT_TYPE_PART_CORRECT){
+            } else if (data.getIsRight() == RESULT_TYPE_PART_CORRECT) {
                 iconResId = R.drawable.icon_live_prart_correct;
-            }else if(data.getIsRight() == RESULT_TYPE_CORRECT){
+                color = getColor(R.color.COLOR_333333);
+                ivAnswerIcon.setVisibility(View.VISIBLE);
+
+            } else if (data.getIsRight() == RESULT_TYPE_CORRECT) {
+                color = getColor(R.color.COLOR_5DA741);
+                ivAnswerIcon.setVisibility(View.VISIBLE);
                 iconResId = R.drawable.icon_live_correct;
+            } else {
+                ivAnswerIcon.setVisibility(View.INVISIBLE);
+                color = getColor(R.color.COLOR_333333);
+            }
+            if (iconResId != 0) {
+                ivAnswerIcon.setBackgroundResource(iconResId);
             }
 
-            if(isSelect(data)){
-                String myAnswerText = "你的答案:"+listToStr(data.getChoiceList(),null);
-                String standerAnswerText = listToStr(data.getRightAnswers(),null);
-                int leftMargin = SizeUtils.Dp2Px(tvStanderAnswer.getContext(),12);
-                int textIndexSpec = 0;
-
-                if(tvIndex != null){
-                    textIndexSpec = (int) tvIndex.getPaint().measureText((position + 1) + ".");
-                }
-                int requreWidth = (int) (tvAnswer.getPaint().measureText(myAnswerText)
-                        + tvAnswer.getPaint().measureText(standerAnswerText)+ leftMargin + textIndexSpec);
-                //整个item 可用空间  ，60 为左边pading 值
-                int itemAvaiableWidth = (recyclerView.getMeasuredWidth() - SizeUtils.Dp2Px(recyclerView.getContext(),60));
-                //判断是否能一行显示完整 自己答案 + 标准答案
-                if(requreWidth < itemAvaiableWidth){
-                    tvStanderAnswer.setVisibility(data.getIsRight() ==2 ?View.GONE:View.VISIBLE);
-                    tvStanderAnswer.setText(listToStr(data.getRightAnswers(),null));
-                    tvStanderAnswerBelow.setVisibility(View.GONE);
-                }else{
-                    tvStanderAnswerBelow.setVisibility(data.getIsRight() ==2 ?View.GONE:View.VISIBLE);
-                    tvStanderAnswerBelow.setText(listToStr(data.getRightAnswers(),null));
-                    tvStanderAnswer.setVisibility(View.GONE);
-                }
-                tvAnswer.setTextWithIcon(myAnswerText);
-            }else{
-                tvStanderAnswer.setVisibility(View.GONE);
-                tvAnswer.setTextWithIcon(listToStr(data.getBlankList(),"、"));
-                tvStanderAnswerBelow.setVisibility(data.getIsRight() ==2?View.GONE:View.VISIBLE);
-                tvStanderAnswerBelow.setText(listToStr(data.getRightAnswers(),"、"));
+            SpannableStringBuilder stringBuilder = new SpannableStringBuilder("你的答案：");
+            SpannableString span = null;
+            if (TextUtils.isEmpty(myAnswerText) || "空".equals(myAnswerText)) {
+                myAnswerText = "空";
             }
+            span = new SpannableString(myAnswerText);
+            span.setSpan(new ForegroundColorSpan(color), 0, span.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            stringBuilder.append(span);
 
-            if(iconResId != 0){
-                tvAnswer.setIconResId(iconResId);
-            }
+
+            tvUserAnswer.setText(stringBuilder);
+            tvRightAnswer.setText("正确答案：" + standerAnswerText);
+
+
         }
 
         /**是否是填空题*/
@@ -203,21 +231,33 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
          * @param spiltStr
          * @return
          */
-        private String listToStr (List<String> data,String spiltStr){
+        private String listToStr(List<String> data, String spiltStr) {
             StringBuilder stringBuilder = new StringBuilder();
-            if(data != null){
+            if (data != null) {
+                boolean isAllSpace = true;
                 for (int i = 0; i < data.size(); i++) {
-                    if(i < (data.size() -1) && spiltStr != null){
-                        stringBuilder.append(data.get(i)).append(spiltStr);
-                    }else{
-                        stringBuilder.append(data.get(i));
+                    String answer = data.get(i);
+                    if (TextUtils.isEmpty(answer)) {
+                        answer = "空";
+                    } else {
+                        isAllSpace = false;
                     }
+                    if ( i != 0 && !TextUtils.isEmpty(spiltStr)){
+                        stringBuilder.append(spiltStr);
+                    }
+                    stringBuilder.append(answer);
+                }
+                if (isAllSpace) {
+                    return  "空";
                 }
             }
-            return  stringBuilder.toString();
+            return stringBuilder.toString();
         }
     }
 
+    private int getColor(int corlorId) {
+        return mContext.getResources().getColor(corlorId);
+    }
 
     private  class AnswerResultAdapter extends RecyclerView.Adapter {
 
@@ -238,11 +278,7 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-            if (ITEM_TYPE_SINGLE == viewType) {
-                return new ItemHolder(View.inflate(parent.getContext(), R.layout.item_arts_answerresult_single, null));
-            } else {
-                return new ItemHolder(View.inflate(parent.getContext(), R.layout.item_arts_answerresult_multi, null));
-            }
+            return new ItemHolder(View.inflate(parent.getContext(), R.layout.item_arts_answerresult_multi, null));
 
         }
 
@@ -271,9 +307,17 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
             if(getRootView() != null && getRootView().getParent() != null){
                 ((ViewGroup)getRootView().getParent()).removeView(getRootView());
             }
-            mStateListenr.onCompeletShow();
+            if (mStateListenr != null) {
+
+                mStateListenr.onCompeletShow();
+            }
             return;
         }
+
+        tvGoldCount.setText("+" + mData.getGold());
+        tvGoldCount.setVisibility(View.VISIBLE);
+        llRewardInfo.setVisibility(View.VISIBLE);
+
         resultStateRootView.setVisibility(View.GONE);
         mView.setBackgroundColor(Color.parseColor(BG_COLOR));
         ivResultBtn.setVisibility(View.GONE);
@@ -315,32 +359,36 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
 
             mAdapter = new AnswerResultAdapter(mData.getAnswerList());
             recyclerView.setAdapter(mAdapter);
-            recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
-                @Override
-                public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-                    if (mAdapter.getItemCount() > 1) {
-                        int itemPosition = parent.getChildAdapterPosition(view);
-                        int left = 0;
-                        int right = 0;
-                        int top = 0;
-                        int bottom = 0;
-                        if (itemPosition >= SPAN_COUNT) {
-                            top = SizeUtils.Dp2Px(mContext, 8);
-                        }
-                        outRect.set(left, top, right, bottom);
-                    }else{
-                        int widthSpec = View.MeasureSpec.makeMeasureSpec(recyclerView.getMeasuredWidth(), View.MeasureSpec.EXACTLY);
-                        int heightSpec = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
-                        view.measure(widthSpec,heightSpec);
-                        int topMargin = (recyclerView.getLayoutParams().height - view.getMeasuredHeight())/2;
-                        outRect.set(0, topMargin<0?0:topMargin, 0, 0);
-                    }
-                }
-            });
+//            recyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
+//                @Override
+//                public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+//                    if (mAdapter.getItemCount() > 1) {
+//                        int itemPosition = parent.getChildAdapterPosition(view);
+//                        int left = 0;
+//                        int right = 0;
+//                        int top = 0;
+//                        int bottom = 0;
+//                        if (itemPosition >= SPAN_COUNT) {
+//                            top = SizeUtils.Dp2Px(mContext, 8);
+//                        }
+//                        outRect.set(left, top, right, bottom);
+//                    } else {
+//                        int widthSpec = View.MeasureSpec.makeMeasureSpec(recyclerView.getMeasuredWidth(), View
+//                                .MeasureSpec.EXACTLY);
+//                        int heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+//                        view.measure(widthSpec, heightSpec);
+//                        int topMargin = (recyclerView.getLayoutParams().height - view.getMeasuredHeight()) / 2;
+//                        outRect.set(0, topMargin < 0 ? 0 : topMargin, 0, 0);
+//                    }
+//                }
+//            });
         } else {
             mAdapter.notifyDataSetChanged();
         }
-        mStateListenr.onCompeletShow();
+        if (mStateListenr != null) {
+
+            mStateListenr.onCompeletShow();
+        }
     }
 
     private boolean isGameResult() {
@@ -368,6 +416,12 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
         mView.setBackgroundColor(Color.parseColor(BG_COLOR));
         // 测试代码
         mReusltType = mData.getIsRight();
+
+        if (!isGameResult()) {
+            disPlayDetailUI();
+            return;
+        }
+
         resultStateRootView.setVisibility(View.VISIBLE);
         resultDetailRootView.setVisibility(View.GONE);
 

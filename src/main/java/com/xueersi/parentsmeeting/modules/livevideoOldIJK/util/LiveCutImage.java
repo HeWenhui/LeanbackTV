@@ -72,4 +72,25 @@ public class LiveCutImage {
         }
         return bmpScreen;
     }
+
+
+    /**
+     * 生成圆形图片
+     * @param input  原始图片
+     * @param radius 半径
+     * @return
+     */
+    public static Bitmap scaleBitmap(Bitmap input, int radius) {
+        Bitmap result = Bitmap.createBitmap(radius * 2, radius * 2, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(result);
+        Rect src = new Rect(0, 0, input.getWidth(), input.getHeight());
+        Rect dst = new Rect(0, 0, radius * 2, radius * 2);
+        Path path = new Path();
+        path.addCircle(radius, radius, radius, Path.Direction.CCW);
+        canvas.clipPath(path);
+        Paint paint = new Paint();
+        paint.setFlags(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+        canvas.drawBitmap(input, src, dst, paint);
+        return result;
+    }
 }

@@ -1072,15 +1072,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     }
                 }
             }
-            JSONObject object = new JSONObject();
-            try {
-                object.put("liveType", liveType);
-                object.put("vSectionID", mVSectionID);
-                object.put("testId", entity.getTestId());
-                mShareDataManager.put(QUESTION, object.toString(), ShareDataManager.SHAREDATA_USER);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            saveH5AnswerRecord(QUESTION, entity.getTestId());
         }
         if (isSuccess) {
             if (tempBaseQuestionPager != null) {
@@ -1404,9 +1396,17 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      */
     private void closePageByTeamPk(final BasePager pager) {
         logger.e("=======>closePageByTeamPk 1111:" + isTeamPkAllowed + ":" + isPageOnCloseing);
-        if (isTeamPkAllowed) {
+        if (isTeamPkAllowed && pager != null) {
             if (mVPlayVideoControlHandler != null && !isPageOnCloseing) {
                 isPageOnCloseing = true;
+                boolean isAnswerResultShowing = false;
+                if (pager instanceof BaseQuestionWebInter) {
+                    isAnswerResultShowing = ((BaseQuestionWebInter) pager).isResultRecived();
+                } else if (pager instanceof BaseExamQuestionInter) {
+                    isAnswerResultShowing = ((BaseExamQuestionInter) pager).isResultRecived();
+                }
+                long timeDelay = isAnswerResultShowing ? 0L : 6000L;
+                logger.e("=======>closePageByTeamPk 2222:" + timeDelay);
                 mVPlayVideoControlHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -1423,7 +1423,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         }
                         isPageOnCloseing = false;
                     }
-                }, 6000);
+                }, timeDelay);
             }
         }
     }
@@ -1561,15 +1561,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         rlQuestionContent.removeView(baseExamQuestionInter.getRootView());
         baseExamQuestionInter.onDestroy();
         setHaveExam(false);
-        try {
-            JSONObject object = new JSONObject();
-            object.put("liveType", liveType);
-            object.put("vSectionID", mVSectionID);
-            object.put("num", num);
-            mShareDataManager.put(EXAM, object.toString(), ShareDataManager.SHAREDATA_USER);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        saveH5AnswerRecord(EXAM, num);
         questionHttp.getStuGoldCount("stopExam");
     }
 
@@ -1582,14 +1574,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             }
             setHaveWebQuestion(false);
             JSONObject object = new JSONObject();
-            try {
-                object.put("liveType", liveType);
-                object.put("vSectionID", mVSectionID);
-                object.put("testId", testId);
-                mShareDataManager.put(QUESTION, object.toString(), ShareDataManager.SHAREDATA_USER);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            saveH5AnswerRecord(QUESTION, testId);
             if (!isAnaswer) {
                 onQuestionShow(null, false, "stopWebQuestion");
             }
@@ -1616,15 +1601,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             speechAssessmentPager.onDestroy();
             rlQuestionContent.removeView(speechAssessmentPager.getRootView());
             if (speechAssessmentPager instanceof SpeechAssAutoPager) {
-                JSONObject object = new JSONObject();
-                try {
-                    object.put("liveType", liveType);
-                    object.put("vSectionID", mVSectionID);
-                    object.put("testId", num);
-                    mShareDataManager.put(QUESTION, object.toString(), ShareDataManager.SHAREDATA_USER);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                saveH5AnswerRecord(QUESTION, num);
             }
             if (speechEndAction != null) {
                 speechAssessmentPagerUserBack = speechAssessmentPager;
@@ -1662,14 +1639,34 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     public void onSpeechSuccess(String num) {
         logger.d("onSpeechSuccess:num=" + num);
         mQueAndBool.add("" + num);
-        JSONObject object = new JSONObject();
-        try {
-            object.put("liveType", liveType);
-            object.put("vSectionID", mVSectionID);
-            object.put("testId", num);
-            mShareDataManager.put(QUESTION, object.toString(), ShareDataManager.SHAREDATA_USER);
-        } catch (JSONException e) {
-            e.printStackTrace();
+        saveH5AnswerRecord(QUESTION, num);
+    }
+
+    /**
+     * 持久化缓存 已作答过的试题地址
+     *
+     * @param cacheKey
+     * @param id
+     */
+    private void saveH5AnswerRecord(String cacheKey, String id) {
+        // 理科，语文 pk 直播间 由于业务需要   不能缓存已作答过的 试题Url
+        if (!isTeamPkAllowed) {
+            try {
+                JSONObject object = new JSONObject();
+                if (QUESTION.equals(cacheKey)) {
+                    object.put("liveType", liveType);
+                    object.put("vSectionID", mVSectionID);
+                    object.put("testId", id);
+                    mShareDataManager.put(QUESTION, object.toString(), ShareDataManager.SHAREDATA_USER);
+                } else if (EXAM.equals(cacheKey)) {
+                    object.put("liveType", liveType);
+                    object.put("vSectionID", mVSectionID);
+                    object.put("num", id);
+                    mShareDataManager.put(EXAM, object.toString(), ShareDataManager.SHAREDATA_USER);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -1963,6 +1960,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      */
     @Override
     public void initSelectAnswerRightResultVoice(VideoResultEntity entity) {
+        entity.setPreEnglish(liveGetInfo != null && liveGetInfo.getSmallEnglish());
         final View popupWindow_view = QuestionResultView.initSelectAnswerRightResultVoice(activity, entity);
         initQuestionAnswerReslut(popupWindow_view);
     }
@@ -1972,6 +1970,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      */
     @Override
     public void initFillinAnswerRightResultVoice(VideoResultEntity entity) {
+        entity.setPreEnglish(liveGetInfo != null && liveGetInfo.getSmallEnglish());
+
         View popupWindow_view = QuestionResultView.initFillinAnswerRightResultVoice(activity, entity);
         initQuestionAnswerReslut(popupWindow_view);
     }
@@ -1981,6 +1981,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      */
     @Override
     public void initSelectAnswerWrongResultVoice(VideoResultEntity entity) {
+        entity.setPreEnglish(liveGetInfo != null && liveGetInfo.getSmallEnglish());
+
         View popupWindow_view = QuestionResultView.initSelectAnswerWrongResultVoice(activity, entity);
         initQuestionAnswerReslut(popupWindow_view);
     }
@@ -1990,6 +1992,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      */
     @Override
     public void initFillAnswerWrongResultVoice(VideoResultEntity entity) {
+        entity.setPreEnglish(liveGetInfo != null && liveGetInfo.getSmallEnglish());
+
         View popupWindow_view = QuestionResultView.initFillAnswerWrongResultVoice(activity, entity);
         initQuestionAnswerReslut(popupWindow_view);
     }

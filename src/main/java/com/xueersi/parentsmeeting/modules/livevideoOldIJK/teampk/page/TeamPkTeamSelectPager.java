@@ -55,7 +55,7 @@ import java.util.List;
  * Created by chenkun on 2018/4/12
  * 战队选择页面
  */
-public class TeamPkTeamSelectPager extends BasePager implements View.OnClickListener {
+public class TeamPkTeamSelectPager extends TeamPkBasePager implements View.OnClickListener {
     private static final String TAG = "TeamPkTeamSelectPager";
     private TeamPkBll mPKBll;
     private ImageView ivBg;
@@ -1016,6 +1016,7 @@ public class TeamPkTeamSelectPager extends BasePager implements View.OnClickList
     public void onClick(View v) {
         if (v.getId() == R.id.iv_teampk_btn_ok) {
             upLoadStudentReady();
+            TeamPkLog.sendReady(mPKBll.getLiveBll());
         }
     }
 
