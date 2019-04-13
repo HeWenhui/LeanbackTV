@@ -226,9 +226,15 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                         .getApplication(), false,
                         VerifyCancelAlertDialog.TITLE_MESSAGE_VERIRY_CANCEL_TYPE);
                 verifyCancelAlertDialog.initInfo("课件提醒", "老师发布了课件，是否参与互动？");
+                MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                if (!liveBackBll.getExperience() && mediaPlayerControl != null) {//体验课不能暂停
+                    mediaPlayerControl.pause();
+                }
                 verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                        mediaPlayerControl.start();
                         VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                         if (questionEntity.getvCategory() == 1001) {
                             List<String> testIds = new ArrayList<>();
@@ -487,7 +493,8 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
 
     /**
      * 发送语音评测
-     *  @param id
+     *
+     * @param id
      * @param stuAnswer
      * @param isSubmit
      * @param onSpeechEval

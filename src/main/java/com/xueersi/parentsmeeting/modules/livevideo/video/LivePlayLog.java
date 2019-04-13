@@ -64,6 +64,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 //import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
 //import tv.danmaku.ijk.media.player.IjkMediaPlayer;
@@ -288,87 +289,87 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
 //                return;
 //            }
                 try {
-//                if (vPlayer.isInitialized()) {
-//                    if (vPlayer.getPlayer() instanceof IjkMediaPlayer) {
-//                        IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
-//                        float fps;
-//                        if (isBuffer) {
-//                            fps = 0;
+                if (vPlayer.isInitialized()) {
+                    if (vPlayer.getPlayer() instanceof IjkMediaPlayer) {
+                        IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
+                        float fps;
+                        if (isBuffer) {
+                            fps = 0;
+                        } else {
+                            fps = ijkMediaPlayer.getVideoOutputFramesPerSecond();
+                        }
+                        long disaplyCount = ijkMediaPlayer.getDisaplyCount();
+                        framesPsTen.add(fps);
+                        logger.d("handleHeartMessage:fps=" + fps + ",disaplyCount=" + disaplyCount + "," + (disaplyCount - lastDisaplyCount));
+                        if (framesPsTen.size() == 15) {
+                            ArrayList<Float> framesPsTenTemp = new ArrayList<Float>(framesPsTen);
+                            framesPsTen.clear();
+                            long bufferduration = 0;
+                            float bitrate = 0f;
+                            long trafficStatisticByteCount = 0;
+                            try {
+                                if (vPlayer.isInitialized()) {
+                                    bufferduration = ijkMediaPlayer.getVideoCachedDuration();
+                                    bitrate = ijkMediaPlayer.getTcpSpeed() * 8 / 1000;
+                                    trafficStatisticByteCount = ijkMediaPlayer.getTrafficStatisticByteCount();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            long time = SystemClock.elapsedRealtime() - frame10Start;
+                            float averagefps = (float) (((double) (disaplyCount - fistDisaplyCount)) * 1000 / time);
+                            logger.d("handleHeartMessage:fps=" + (disaplyCount - fistDisaplyCount) / 15 + ",averagefps=" + averagefps + ",time=" + time);
+                            if (lastHeartTime == 0) {
+                                time = 15000;
+                            } else {
+                                time = SystemClock.elapsedRealtime() - lastHeartTime;
+                            }
+                            xescdnLogHeart(framesPsTenTemp, averagefps, bufferduration, bitrate, trafficStatisticByteCount - lastTrafficStatisticByteCount, time);
+                            if (TextUtils.equals(bufferStartEntity.getTip(), tid)) {
+                                if (bufferStartEntity.getStartTime() >= frame10Start && bufferStartEntity.getEndTime() < System.currentTimeMillis()) {
+                                    float bufferTime = (videofps - averagefps) * time / videofps;
+                                    float bufferTime2 = bufferStartEntity.getEndTime() - bufferStartEntity.getStartTime();
+                                    logger.d("handleHeartMessage:bufferTime=" + bufferTime + ",bufferTime2=" + bufferTime2 + ",time=" + time);
+                                }
+                            }
+                            fistDisaplyCount = disaplyCount;
+                            lastTrafficStatisticByteCount = trafficStatisticByteCount;
+                            LivePlayLog.this.trafficStatisticByteCount = lastTrafficStatisticByteCount;
+                            lastHeartTime = frame10Start = SystemClock.elapsedRealtime();
+                        } else {
+                            try {
+                                if (vPlayer.isInitialized()) {
+                                    trafficStatisticByteCount = ijkMediaPlayer.getTrafficStatisticByteCount();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        lastDisaplyCount = disaplyCount;
+                        if (!isLive) {
+                            if (!isDownCom) {
+                                long currentPosition = ijkMediaPlayer.getCurrentPosition();
+                                long duration = ijkMediaPlayer.getDuration();
+                                if (currentPosition > duration / 2) {
+                                    long bufferduration = ijkMediaPlayer.getVideoCachedDuration();
+                                    if (currentPosition + bufferduration + 500 > duration) {
+                                        isDownCom = true;
+                                        downCom();
+                                    }
+                                }
+                            }
+                        }
+//                        if (lastFps != 0) {
+//                            frames.add("" + ((int) ((lastFps + fps) * 5 / 2)));
 //                        } else {
-//                            fps = ijkMediaPlayer.getVideoOutputFramesPerSecond();
+//                            frames.add("" + ((int) (fps * 5)));
 //                        }
-//                        long disaplyCount = ijkMediaPlayer.getDisaplyCount();
-//                        framesPsTen.add(fps);
-//                        logger.d("handleHeartMessage:fps=" + fps + ",disaplyCount=" + disaplyCount + "," + (disaplyCount - lastDisaplyCount));
-//                        if (framesPsTen.size() == 15) {
-//                            ArrayList<Float> framesPsTenTemp = new ArrayList<Float>(framesPsTen);
-//                            framesPsTen.clear();
-//                            long bufferduration = 0;
-//                            float bitrate = 0f;
-//                            long trafficStatisticByteCount = 0;
-//                            try {
-//                                if (vPlayer.isInitialized()) {
-//                                    bufferduration = ijkMediaPlayer.getVideoCachedDuration();
-//                                    bitrate = ijkMediaPlayer.getTcpSpeed() * 8 / 1000;
-//                                    trafficStatisticByteCount = ijkMediaPlayer.getTrafficStatisticByteCount();
-//                                }
-//                            } catch (Exception e) {
-//                                e.printStackTrace();
-//                            }
-//                            long time = SystemClock.elapsedRealtime() - frame10Start;
-//                            float averagefps = (float) (((double) (disaplyCount - fistDisaplyCount)) * 1000 / time);
-//                            logger.d("handleHeartMessage:fps=" + (disaplyCount - fistDisaplyCount) / 15 + ",averagefps=" + averagefps + ",time=" + time);
-//                            if (lastHeartTime == 0) {
-//                                time = 15000;
-//                            } else {
-//                                time = SystemClock.elapsedRealtime() - lastHeartTime;
-//                            }
-//                            xescdnLogHeart(framesPsTenTemp, averagefps, bufferduration, bitrate, trafficStatisticByteCount - lastTrafficStatisticByteCount, time);
-//                            if (TextUtils.equals(bufferStartEntity.getTip(), tid)) {
-//                                if (bufferStartEntity.getStartTime() >= frame10Start && bufferStartEntity.getEndTime() < System.currentTimeMillis()) {
-//                                    float bufferTime = (videofps - averagefps) * time / videofps;
-//                                    float bufferTime2 = bufferStartEntity.getEndTime() - bufferStartEntity.getStartTime();
-//                                    logger.d("handleHeartMessage:bufferTime=" + bufferTime + ",bufferTime2=" + bufferTime2 + ",time=" + time);
-//                                }
-//                            }
-//                            fistDisaplyCount = disaplyCount;
-//                            lastTrafficStatisticByteCount = trafficStatisticByteCount;
-//                            LivePlayLog.this.trafficStatisticByteCount = lastTrafficStatisticByteCount;
-//                            lastHeartTime = frame10Start = SystemClock.elapsedRealtime();
-//                        } else {
-//                            try {
-//                                if (vPlayer.isInitialized()) {
-//                                    trafficStatisticByteCount = ijkMediaPlayer.getTrafficStatisticByteCount();
-//                                }
-//                            } catch (Exception e) {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                        lastDisaplyCount = disaplyCount;
-//                        if (!isLive) {
-//                            if (!isDownCom) {
-//                                long currentPosition = ijkMediaPlayer.getCurrentPosition();
-//                                long duration = ijkMediaPlayer.getDuration();
-//                                if (currentPosition > duration / 2) {
-//                                    long bufferduration = ijkMediaPlayer.getVideoCachedDuration();
-//                                    if (currentPosition + bufferduration + 500 > duration) {
-//                                        isDownCom = true;
-//                                        downCom();
-//                                    }
-//                                }
-//                            }
-//                        }
-////                        if (lastFps != 0) {
-////                            frames.add("" + ((int) ((lastFps + fps) * 5 / 2)));
-////                        } else {
-////                            frames.add("" + ((int) (fps * 5)));
-////                        }
-////                        lastFps = fps;
-//                    }
-//                } else {
-//                    framesPsTen.add(0.0f);
-//                    logger.d("handleHeartMessage:isInitialized=false");
-//                }
+//                        lastFps = fps;
+                    }
+                } else {
+                    framesPsTen.add(0.0f);
+                    logger.d("handleHeartMessage:isInitialized=false");
+                }
                 } catch (Exception e) {
                     UmsAgentManager.umsAgentException(BaseApplication.getContext(), TAG + "handleHeartMessage", e);
                 }
