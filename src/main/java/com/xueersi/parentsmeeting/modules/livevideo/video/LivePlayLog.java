@@ -157,7 +157,8 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
     private String temTid = "undefined";
     //    private HashMap<String, String> tidAndPri = new HashMap<>();
     private PlayBufferEntity bufferStartEntity = new PlayBufferEntity();
-
+    /** 文件 */
+    private boolean isNewIJK;
 
     /** 文件 */
     private File liveLog920;
@@ -169,7 +170,8 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
     }
 
     public LivePlayLog(final Activity activity, boolean isLive) {
-        if (!MediaPlayer.getIsNewIJK()) {
+        isNewIJK = MediaPlayer.getIsNewIJK();
+        if (!isNewIJK) {
             logger.setLogMethod(false);
             if (isLive) {
                 serv = 120;
@@ -231,7 +233,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
     }
 
     public void setLive(boolean live) {
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             if (this.isLive != live) {
                 isLive = live;
                 if (isLive) {
@@ -283,93 +285,93 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
 
         @Override
         public void handleMessage(Message msg) {
-            if (!MediaPlayer.getIsNewIJK()) {
+            if (!isNewIJK) {
                 //不是直播，不统计心跳
 //            if (!isLive) {
 //                return;
 //            }
                 try {
-                if (vPlayer.isInitialized()) {
-                    if (vPlayer.getPlayer() instanceof IjkMediaPlayer) {
-                        IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
-                        float fps;
-                        if (isBuffer) {
-                            fps = 0;
-                        } else {
-                            fps = ijkMediaPlayer.getVideoOutputFramesPerSecond();
-                        }
-                        long disaplyCount = ijkMediaPlayer.getDisaplyCount();
-                        framesPsTen.add(fps);
-                        logger.d("handleHeartMessage:fps=" + fps + ",disaplyCount=" + disaplyCount + "," + (disaplyCount - lastDisaplyCount));
-                        if (framesPsTen.size() == 15) {
-                            ArrayList<Float> framesPsTenTemp = new ArrayList<Float>(framesPsTen);
-                            framesPsTen.clear();
-                            long bufferduration = 0;
-                            float bitrate = 0f;
-                            long trafficStatisticByteCount = 0;
-                            try {
-                                if (vPlayer.isInitialized()) {
-                                    bufferduration = ijkMediaPlayer.getVideoCachedDuration();
-                                    bitrate = ijkMediaPlayer.getTcpSpeed() * 8 / 1000;
-                                    trafficStatisticByteCount = ijkMediaPlayer.getTrafficStatisticByteCount();
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            long time = SystemClock.elapsedRealtime() - frame10Start;
-                            float averagefps = (float) (((double) (disaplyCount - fistDisaplyCount)) * 1000 / time);
-                            logger.d("handleHeartMessage:fps=" + (disaplyCount - fistDisaplyCount) / 15 + ",averagefps=" + averagefps + ",time=" + time);
-                            if (lastHeartTime == 0) {
-                                time = 15000;
+                    if (vPlayer.isInitialized()) {
+                        if (vPlayer.getPlayer() instanceof IjkMediaPlayer) {
+                            IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
+                            float fps;
+                            if (isBuffer) {
+                                fps = 0;
                             } else {
-                                time = SystemClock.elapsedRealtime() - lastHeartTime;
+                                fps = ijkMediaPlayer.getVideoOutputFramesPerSecond();
                             }
-                            xescdnLogHeart(framesPsTenTemp, averagefps, bufferduration, bitrate, trafficStatisticByteCount - lastTrafficStatisticByteCount, time);
-                            if (TextUtils.equals(bufferStartEntity.getTip(), tid)) {
-                                if (bufferStartEntity.getStartTime() >= frame10Start && bufferStartEntity.getEndTime() < System.currentTimeMillis()) {
-                                    float bufferTime = (videofps - averagefps) * time / videofps;
-                                    float bufferTime2 = bufferStartEntity.getEndTime() - bufferStartEntity.getStartTime();
-                                    logger.d("handleHeartMessage:bufferTime=" + bufferTime + ",bufferTime2=" + bufferTime2 + ",time=" + time);
+                            long disaplyCount = ijkMediaPlayer.getDisaplyCount();
+                            framesPsTen.add(fps);
+                            logger.d("handleHeartMessage:fps=" + fps + ",disaplyCount=" + disaplyCount + "," + (disaplyCount - lastDisaplyCount));
+                            if (framesPsTen.size() == 15) {
+                                ArrayList<Float> framesPsTenTemp = new ArrayList<Float>(framesPsTen);
+                                framesPsTen.clear();
+                                long bufferduration = 0;
+                                float bitrate = 0f;
+                                long trafficStatisticByteCount = 0;
+                                try {
+                                    if (vPlayer.isInitialized()) {
+                                        bufferduration = ijkMediaPlayer.getVideoCachedDuration();
+                                        bitrate = ijkMediaPlayer.getTcpSpeed() * 8 / 1000;
+                                        trafficStatisticByteCount = ijkMediaPlayer.getTrafficStatisticByteCount();
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                long time = SystemClock.elapsedRealtime() - frame10Start;
+                                float averagefps = (float) (((double) (disaplyCount - fistDisaplyCount)) * 1000 / time);
+                                logger.d("handleHeartMessage:fps=" + (disaplyCount - fistDisaplyCount) / 15 + ",averagefps=" + averagefps + ",time=" + time);
+                                if (lastHeartTime == 0) {
+                                    time = 15000;
+                                } else {
+                                    time = SystemClock.elapsedRealtime() - lastHeartTime;
+                                }
+                                xescdnLogHeart(framesPsTenTemp, averagefps, bufferduration, bitrate, trafficStatisticByteCount - lastTrafficStatisticByteCount, time);
+                                if (TextUtils.equals(bufferStartEntity.getTip(), tid)) {
+                                    if (bufferStartEntity.getStartTime() >= frame10Start && bufferStartEntity.getEndTime() < System.currentTimeMillis()) {
+                                        float bufferTime = (videofps - averagefps) * time / videofps;
+                                        float bufferTime2 = bufferStartEntity.getEndTime() - bufferStartEntity.getStartTime();
+                                        logger.d("handleHeartMessage:bufferTime=" + bufferTime + ",bufferTime2=" + bufferTime2 + ",time=" + time);
+                                    }
+                                }
+                                fistDisaplyCount = disaplyCount;
+                                lastTrafficStatisticByteCount = trafficStatisticByteCount;
+                                LivePlayLog.this.trafficStatisticByteCount = lastTrafficStatisticByteCount;
+                                lastHeartTime = frame10Start = SystemClock.elapsedRealtime();
+                            } else {
+                                try {
+                                    if (vPlayer.isInitialized()) {
+                                        trafficStatisticByteCount = ijkMediaPlayer.getTrafficStatisticByteCount();
+                                    }
+                                } catch (Exception e) {
+                                    e.printStackTrace();
                                 }
                             }
-                            fistDisaplyCount = disaplyCount;
-                            lastTrafficStatisticByteCount = trafficStatisticByteCount;
-                            LivePlayLog.this.trafficStatisticByteCount = lastTrafficStatisticByteCount;
-                            lastHeartTime = frame10Start = SystemClock.elapsedRealtime();
-                        } else {
-                            try {
-                                if (vPlayer.isInitialized()) {
-                                    trafficStatisticByteCount = ijkMediaPlayer.getTrafficStatisticByteCount();
-                                }
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        lastDisaplyCount = disaplyCount;
-                        if (!isLive) {
-                            if (!isDownCom) {
-                                long currentPosition = ijkMediaPlayer.getCurrentPosition();
-                                long duration = ijkMediaPlayer.getDuration();
-                                if (currentPosition > duration / 2) {
-                                    long bufferduration = ijkMediaPlayer.getVideoCachedDuration();
-                                    if (currentPosition + bufferduration + 500 > duration) {
-                                        isDownCom = true;
-                                        downCom();
+                            lastDisaplyCount = disaplyCount;
+                            if (!isLive) {
+                                if (!isDownCom) {
+                                    long currentPosition = ijkMediaPlayer.getCurrentPosition();
+                                    long duration = ijkMediaPlayer.getDuration();
+                                    if (currentPosition > duration / 2) {
+                                        long bufferduration = ijkMediaPlayer.getVideoCachedDuration();
+                                        if (currentPosition + bufferduration + 500 > duration) {
+                                            isDownCom = true;
+                                            downCom();
+                                        }
                                     }
                                 }
                             }
-                        }
 //                        if (lastFps != 0) {
 //                            frames.add("" + ((int) ((lastFps + fps) * 5 / 2)));
 //                        } else {
 //                            frames.add("" + ((int) (fps * 5)));
 //                        }
 //                        lastFps = fps;
+                        }
+                    } else {
+                        framesPsTen.add(0.0f);
+                        logger.d("handleHeartMessage:isInitialized=false");
                     }
-                } else {
-                    framesPsTen.add(0.0f);
-                    logger.d("handleHeartMessage:isInitialized=false");
-                }
                 } catch (Exception e) {
                     UmsAgentManager.umsAgentException(BaseApplication.getContext(), TAG + "handleHeartMessage", e);
                 }
@@ -379,7 +381,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
     };
 
     private void downCom() {
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             logger.d("downCom");
             HashMap<String, Object> defaultKey = new HashMap<>();
             defaultKey.put("ver", logVersion);
@@ -427,7 +429,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
     }
 
     private void send(String method, int code, long dur) {
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             logger.d("send:method=" + method + ",framesPsTen=" + framesPsTen.size() + ",tid=" + tid);
             framesPsTen.clear();
 //        if (StringUtils.isEmpty(tid)) {
@@ -502,7 +504,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
     }
 
     public void onPause(long dur) {
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             logger.d("onPause:isDestory=" + isDestory);
             isPause = true;
             isHavePause = true;
@@ -516,7 +518,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
     }
 
     public void onReplay() {
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             isPause = false;
             handler.removeMessages(1);
         }
@@ -525,7 +527,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
 
     @Override
     public void onOpenStart() {
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             super.onOpenStart();
             if (!isLive) {
                 tid = "" + UUID.randomUUID();
@@ -633,7 +635,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
 
     @Override
     public void onOpenSuccess() {
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             super.onOpenSuccess();
             sip = sipMap.get(mUri);
             lastDisaplyCount = fistDisaplyCount = 0;
@@ -648,7 +650,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
     }
 
     public void stopPlay() {
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             isHavePause = true;
             handler.removeMessages(1);
             send("stopPlay", 0, 0);
@@ -656,7 +658,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
     }
 
     public void onBufferTimeOut() {
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             handler.removeMessages(1);
             send("onBufferTimeOut", 15, 0);
         }
@@ -664,7 +666,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
 
     @Override
     public void onBufferStart() {
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             super.onBufferStart();
             isBuffer = true;
             if (isSeek) {
@@ -712,7 +714,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
 
     @Override
     public void onBufferComplete() {
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             super.onBufferComplete();
             isBuffer = false;
             bufferStartEntity.setEndTime(System.currentTimeMillis());
@@ -762,7 +764,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
 
     private double getMemRate() {
         double memRate = 0;
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             int totalRam = HardWareUtil.getTotalRam();
             if (totalRam == 0) {
                 return 0;
@@ -786,7 +788,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
 
     private double getCpuRate() {
         double cpuRate = 0;
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             cpuRate = HardWareUtil.getCPURateDesc();
         }
         return cpuRate;
@@ -803,7 +805,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
      * @param defaultKey
      */
     private void addDefault(HashMap<String, Object> defaultKey) {
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             defaultKey.put("ts", System.currentTimeMillis());
             defaultKey.put("appId", "" + UserBll.getInstance().getMyUserInfoEntity().getPsAppId());
             defaultKey.put("psId", "" + psId);
@@ -818,7 +820,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
     }
 
     public void liveGetPlayServer(final long delay, PlayFailCode playFailCode, int code, String cipdispatch, URLDNS urldns, final String url) {
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             tid = "" + UUID.randomUUID();
             logger.d("liveGetPlayServer:delay=" + delay + ",ipsb=" + urldns.ip);
             HashMap<String, Object> defaultKey = new HashMap<>();
@@ -862,7 +864,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
     private String getRemoteIp(String defaultIp) {
 
         String remoteIp = "";
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             if (lastPlayserverEntity != null) {
                 String ipAddress = lastPlayserverEntity.getIpAddress();
                 if (StringUtils.isEmpty(ipAddress)) {
@@ -887,7 +889,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
     }
 
     private void xescdnLogHeart(final ArrayList<Float> framesPsTen, final float averagefps, final long bufferduration, final float bitrate, final long bytes, final long time) {
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             final String finalTid = tid;
             liveThreadPoolExecutor.execute(new Runnable() {
                 @Override
@@ -951,7 +953,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
     }
 
     private void uploadOld() {
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             File[] fs = saveLogDir.listFiles();
             if (fs != null && fs.length > 0) {
                 File file = fs[0];
@@ -1054,7 +1056,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
 //    }
 
     private void saveStrToFile(String savestr) {
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             if (!saveLogDir.exists()) {
                 saveLogDir.mkdirs();
             }
@@ -1072,7 +1074,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
     }
 
     private void saveLogToFile(String tid, String savestr) {
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             if (!saveLogDirDebug.exists()) {
                 saveLogDirDebug.mkdirs();
             }
@@ -1084,7 +1086,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
     }
 
     private void xescdnLogUrl(JSONObject requestJson, final File file) {
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             final HttpRequestParams httpRequestParams = new HttpRequestParams();
             httpRequestParams.setJson(requestJson.toString());
             httpRequestParams.setWriteAndreadTimeOut(10);
@@ -1112,7 +1114,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
     private long xescdnLog2Before = 0;
 
     private void xescdnLog2(HashMap<String, Object> defaultKey, final JSONObject dataJson, final boolean saveToFile) {
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             String tid = "" + defaultKey.get("tid");
             String pri = "" + defaultKey.get("pri");
             logger.d("xescdnLog2:tid=" + tid + ",pri=" + pri);
@@ -1225,7 +1227,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
 
     @Override
     public void onOpenFailed(int arg1, final int arg2) {
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             handler.removeMessages(1);
             final long heartTime;
             if (lastHeartTime == 0) {
@@ -1359,7 +1361,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
      * @param saveToFile
      */
     private void startTraceRoute(final String url, final String msip, final String cip, final boolean saveToFile) {
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             Long time = urlTrace.get(url);
             long now = System.currentTimeMillis();
             if (time != null) {
@@ -1438,7 +1440,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
 
     @Override
     public void onPlaybackComplete() {
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             super.onPlaybackComplete();
             handler.removeMessages(1);
             send("onPlaybackComplete", 0, 0);
@@ -1448,7 +1450,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
 
     @Override
     public void onPlayError() {
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             super.onPlayError();
             handler.removeMessages(1);
         }
@@ -1456,7 +1458,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
     }
 
     public void destory() {
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             isDestory = true;
             logger.d("destory:isPause=" + isPause);
             handler.removeMessages(1);
@@ -1471,7 +1473,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
 
     public String getAppVersionName() {
         String versionName = "";
-        if (!MediaPlayer.getIsNewIJK()) {
+        if (!isNewIJK) {
             try {
                 PackageManager pm = activity.getPackageManager();
                 PackageInfo pi = pm.getPackageInfo(activity.getPackageName(), 0);
@@ -1496,10 +1498,9 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
     }
 
     private void getFps() {
-        if (!MediaPlayer.getIsNewIJK()) {
-            if (!MediaPlayer.getIsNewIJK()) {
-                try {
-                    if (vPlayer.isInitialized() && lastPlayserverEntity != null) {
+        if (!isNewIJK) {
+            try {
+                if (vPlayer.isInitialized() && lastPlayserverEntity != null) {
 //                if (vPlayer.getPlayer() instanceof IjkMediaPlayer) {
 //                    IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
 //                    Bundle bundle = ijkMediaPlayer.getMediaMeta();
@@ -1519,10 +1520,9 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
 //                        }
 //                    }
 //                }
-                    }
-                } catch (Exception e) {
-                    UmsAgentManager.umsAgentException(BaseApplication.getContext(), TAG + "getFps", e);
                 }
+            } catch (Exception e) {
+                UmsAgentManager.umsAgentException(BaseApplication.getContext(), TAG + "getFps", e);
             }
         }
     }
@@ -1530,11 +1530,9 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
     public static int getErrorCodeInt(int arg2) {
         int code = -1111;
         if (!MediaPlayer.getIsNewIJK()) {
-            if (!MediaPlayer.getIsNewIJK()) {
-                PlayFailCode code1 = getErrorCode(arg2);
-                if (code1 != null) {
-                    code = code1.code;
-                }
+            PlayFailCode code1 = getErrorCode(arg2);
+            if (code1 != null) {
+                code = code1.code;
             }
         }
         return code;
