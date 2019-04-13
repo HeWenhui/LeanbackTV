@@ -50,6 +50,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
                 android:layout_centerVertical="true"
                 android:src="@drawable/zhanduipk_fantastic_huomiao_pic" />
 
@@ -64,6 +65,7 @@
             <ImageView
                 android:id="@id/iv_live_speech_result_mygold"
                 android:layout_width="wrap_content"
+                android:layout_marginTop="2dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="13dp"
                 android:src="@drawable/zhanduipk_fantastic_jinbi_pic" />

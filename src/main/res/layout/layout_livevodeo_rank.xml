@@ -1,4 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#cc000000"
@@ -92,11 +94,12 @@
         android:background="@color/white" />
 
     <RelativeLayout
+        android:id="@id/rl_livevideo_rank_tips"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="10dp">
 
         <TextView
             style="@style/text_font11_ffffff_style"
@@ -123,6 +126,55 @@
             android:includeFontPadding="false"
             android:text="正确率" />
     </RelativeLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@id/ctlayout_livevideo_rank_middle_science_even_drive_tips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@id/tv_livevideo_middle_science_even_title_rank"
+            style="@style/text_font11_ffffff_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="13dp"
+            android:layout_marginTop="13dp"
+            android:text="排名"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="UnknownId" />
+
+        <TextView
+            android:id="@id/tv_livevideo_middle_science_even_title_student"
+            style="@style/text_font11_ffffff_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="7dp"
+            android:text="学员"
+            app:layout_constraintLeft_toRightOf="@id/tv_livevideo_middle_science_even_title_rank"
+            app:layout_constraintTop_toTopOf="@id/tv_livevideo_middle_science_even_title_rank" />
+
+        <TextView
+            android:id="@id/tv_livevideo_middle_science_even_title_right"
+            style="@style/text_font11_ffffff_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="7dp"
+            android:text="正确率"
+            app:layout_constraintRight_toLeftOf="@id/tv_livevideo_middle_science_even_title_like"
+            app:layout_constraintTop_toTopOf="@id/tv_livevideo_middle_science_even_title_rank" />
+
+        <TextView
+            android:id="@id/tv_livevideo_middle_science_even_title_like"
+            style="@style/text_font11_ffffff_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="12dp"
+            android:text="点赞"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tv_livevideo_middle_science_even_title_rank" />
+    </android.support.constraint.ConstraintLayout>
 
     <ListView
         android:id="@id/lv_livevideo_rank_list"

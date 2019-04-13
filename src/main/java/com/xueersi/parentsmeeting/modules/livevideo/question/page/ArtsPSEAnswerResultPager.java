@@ -508,7 +508,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
             @Override
             public void onGlobalLayout() {
                 if (resultAnimeView.getMeasuredWidth() > 0) {
-                    int expectedWidth = (int) (resultAnimeView.getMeasuredWidth() * 0.578f);
+                    int expectedWidth = (int) (resultAnimeView.getMeasuredWidth() * 0.54);
                     if (recyclerView.getMeasuredWidth() != expectedWidth) {
                         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView
                                 .getLayoutParams();
@@ -552,10 +552,10 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                 }
             }
         });
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
-        Point point = new Point();
-        ((Activity) mContext).getWindowManager().getDefaultDisplay().getSize(point);
-        int realY = Math.min(point.x, point.y);
+        //RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) recyclerView.getLayoutParams();
+       // Point point = new Point();
+       // ((Activity) mContext).getWindowManager().getDefaultDisplay().getSize(point);
+        // int realY = Math.min(point.x, point.y);
       //  params.topMargin = (int) (realY * 0.30);
       //  recyclerView.setLayoutParams(params);
         recyclerView.startAnimation(alphaAnimation);
