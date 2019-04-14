@@ -314,6 +314,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                 LiveVideoConfig.isSend = true;
                                 status = LiveVideoConfig.isSend ? "on" : "off";
                                 String nonce = object.optString("nonce");
+                                LiveVideoConfig.nonce = nonce;
+                                videoQuestionLiveEntity.nonce = nonce;
                                 LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
                                 String teamId = studentLiveInfo.getTeamId();
                                 String classId = studentLiveInfo.getClassId();
@@ -460,6 +462,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                     String teamId = studentLiveInfo.getTeamId();
                     String classId = studentLiveInfo.getClassId();
                     EnglishH5Entity englishH5Entity = videoQuestionLiveEntity.englishH5Entity;
+                    videoQuestionLiveEntity.nonce = nonce;
                     englishH5Entity.setNewEnglishH5(true);
                     try {
                         JSONObject objects = new JSONObject();
@@ -875,7 +878,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             String[] res = getSrcType(englishH5Entity);
             if ((LiveVideoConfig.EDUCATION_STAGE_3.equals(detailInfo.getEducationstage()) || LiveVideoConfig.EDUCATION_STAGE_4.equals(detailInfo.getEducationstage()))) {
                 getCourseWareHttpManager().getStuChiAITestResult(mGetInfo.getId(), mGetInfo.getStuId(), res[0], res[1], englishH5Entity.getClassTestId(), englishH5Entity.getPackageId(),
-                        englishH5Entity.getPackageAttr(), isPlayBack, callBack);
+                        englishH5Entity.getPackageAttr(), isPlayBack, mGetInfo.getStudentLiveInfo().getClassId(), callBack);
             } else {
                 getCourseWareHttpManager().getStuTestResult(mGetInfo.getId(), mGetInfo.getStuId(), res[0], res[1], englishH5Entity.getClassTestId(), englishH5Entity.getPackageId(),
                         englishH5Entity.getPackageAttr(), isPlayBack, callBack);

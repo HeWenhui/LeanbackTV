@@ -1,14 +1,21 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 
+import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -19,6 +26,7 @@ import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
+import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BasePager;
@@ -66,8 +74,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
+import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 import pl.droidsonroids.gif.GifDrawable;
 
 /**
@@ -144,14 +154,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
      * 加载的布局
      */
     private RelativeLayout rlSubjectLoading;
-    /**
-     * 下方控制条
-     */
-    private RelativeLayout rlCourseControl;
-    /**
-     * 倒计时
-     */
-    private TextView tvCourseTimeText;
+
     /**
      * 课件接口失败刷新
      */
@@ -160,22 +163,6 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
      * 课件网页刷新
      */
     private ImageView ivWebViewRefresh;
-    /**
-     * 课件题目数量
-     */
-    private TextView tvCourseNum;
-    /**
-     * 课件上一题
-     */
-    private Button btCoursePre;
-    /**
-     * 课件下一题
-     */
-    private Button btCourseNext;
-    /**
-     * 课件提交
-     */
-    private Button btCourseSubmit;
     /**
      * 新课件缓存
      */
@@ -236,6 +223,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
      * 课件题目数量
      */
     private int totalQuestion = -1;
+    private String testId = "";
 
     private CourseWareHttpManager courseWareHttpManager;
 
@@ -277,29 +265,15 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
         ivCourseRefresh = view.findViewById(R.id.iv_livevideo_course_refresh);
         ivWebViewRefresh = view.findViewById(R.id.iv_livevideo_subject_refresh);
         rlSubjectLoading = view.findViewById(R.id.rl_livevideo_subject_loading);
-        rlCourseControl = view.findViewById(R.id.rl_livevideo_new_course_control);
 
-//        if ((LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage))) {
-//            LayoutInflater.from(mContext).inflate(R.layout.page_livevideo_h5_courseware_control_primary,
-//                    rlCourseControl);
-//            preLoad = new PrimaryPreLoad();
-//        } else {
-        LayoutInflater.from(mContext).inflate(R.layout.page_livevideo_h5_courseware_control_middle,
-                rlCourseControl);
         preLoad = new MiddleSchool();
-//        }
-        //下方控制条的一些布局
-        tvCourseNum = view.findViewById(R.id.tv_livevideo_new_course_num);
-        tvCourseTimeText = view.findViewById(R.id.tv_livevideo_new_course_time_text);
-        btCoursePre = view.findViewById(R.id.bt_livevideo_new_course_pre);
-        btCourseNext = view.findViewById(R.id.bt_livevideo_new_course_next);
-        btCourseSubmit = view.findViewById(R.id.bt_livevideo_new_course_submit);
         view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             long before;
 
             @Override
             public void onViewAttachedToWindow(View v) {
                 before = System.currentTimeMillis();
+
             }
 
             @Override
@@ -381,56 +355,6 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 }
             }
         }), "xesApp");
-        btCoursePre.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getAnswerType = LiveQueConfig.GET_ANSWERTYPE_PRE;
-                btCoursePre.setEnabled(false);
-                btCourseNext.setEnabled(false);
-                JSONObject jsonData = new JSONObject();
-                try {
-                    jsonData.put("type", CourseMessage.SEND_getAnswer);
-                    JSONObject resultData = new JSONObject();
-                    jsonData.put("data", resultData);
-                    StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        btCourseNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getAnswerType = LiveQueConfig.GET_ANSWERTYPE_NEXT;
-                btCoursePre.setEnabled(false);
-                btCourseNext.setEnabled(false);
-                JSONObject jsonData = new JSONObject();
-                try {
-                    jsonData.put("type", CourseMessage.SEND_getAnswer);
-                    JSONObject resultData = new JSONObject();
-                    jsonData.put("data", resultData);
-                    StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        btCourseSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getAnswerType = LiveQueConfig.GET_ANSWERTYPE_SUBMIT;
-                JSONObject jsonData = new JSONObject();
-                try {
-                    jsonData.put("type", CourseMessage.SEND_getAnswer);
-                    JSONObject resultData = new JSONObject();
-                    jsonData.put("data", resultData);
-                    StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
-                } catch (JSONException e) {
-                    CrashReport.postCatchedException(e);
-                    mLogtf.e("btCourseSubmit", e);
-                }
-            }
-        });
         ivCourseRefresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -576,11 +500,20 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
             public void run() {
                 NewCourseSec.Test oldTest = tests.get(currentIndex);
                 try {
-                    JSONArray data = message.getJSONArray("data");
+                    JSONObject msg = new JSONObject();
+                    if (message.has("message")) {
+                        msg = message.getJSONObject("message");
+                    }
+                    if (message.has("data")){
+                        msg = message;
+                    }
+//                    String d = message.getString("data");
+//                    JSONArray data = new JSONArray(d);
+                    JSONArray data = msg.getJSONArray("data");
                     if (data != null && data.length() > 0) {
                         JSONArray userAnswerContent = data.getJSONObject(0).optJSONArray("userAnswerContent");
                         JSONArray rightAnswerContent = data.getJSONObject(0).optJSONArray("rightAnswerContent");
-                        String maxScore = data.getJSONObject(0).getString("maxScore");
+                        String maxScore = data.getJSONObject(0).optString("maxScore","0");
                         oldTest.setUserAnswerContent(userAnswerContent);
                         oldTest.setRightAnswerContent(rightAnswerContent);
                         oldTest.setMaxScore(maxScore);
@@ -645,37 +578,21 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                                     if (dialog == courseTipDialog) {
                                         courseTipDialog = null;
                                     }
-                                    submit(0, "");
+                                    submit(0, nonce);
                                 }
                             });
                             courseTipDialog.showDialog();
                         } else {
-                            submit(0, "");
+                            submit(0, nonce);
                         }
                     } else {
-                        submit(1, "");
+                        submit(1, nonce);
                     }
                 } else {
                     if (tests.size() == 1) {
-                        submit(0, "");
-//                        setViewEnable("onAnswer1");
-                    } else {
-                        if (getAnswerType == LiveQueConfig.GET_ANSWERTYPE_PRE) {
-                            currentIndex--;
-                            btCourseSubmit.setVisibility(View.GONE);
-                        } else if (getAnswerType == LiveQueConfig.GET_ANSWERTYPE_NEXT) {
-                            currentIndex++;
-                        }
-                        setViewEnable("onAnswer2");
-                        if (currentIndex >= 0 && currentIndex < tests.size()) {
-                            setNum(currentIndex + 1);
-                            NewCourseSec.Test test = tests.get(currentIndex);
-                            addJs = false;
-                            NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo,
-                                    isArts), getSubtestid(), test.getPreviewPath(), ispreload, test.getId());
-                            wvSubjectWeb.loadUrl(test.getPreviewPath());
-                        }
+                        submit(0, nonce);
                     }
+
                 }
             }
         });
@@ -715,7 +632,6 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                             (System.currentTimeMillis() - pagerStart), isRefresh, refreshTime);
                     isRefresh = 0;
                 }
-                setViewEnable("onLoadComplete");
             }
         });
     }
@@ -726,30 +642,6 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
             totalQuestion = data.optInt("totalQuestion", -1);
         } catch (JSONException e) {
             e.printStackTrace();
-        }
-    }
-
-    private void setViewEnable(String method) {
-        mLogtf.d("setViewEnable:method=" + method + ",showControl=" + showControl);
-        if (showControl) {
-            if (currentIndex == 0) {
-                btCoursePre.setEnabled(false);
-                if (tests.size() > 0) {
-                    btCourseNext.setEnabled(true);
-                    btCourseNext.setVisibility(View.VISIBLE);
-                }
-            } else if (currentIndex == tests.size() - 1) {
-                btCourseNext.setEnabled(false);
-                btCourseNext.setVisibility(View.INVISIBLE);
-                btCourseSubmit.setVisibility(View.VISIBLE);
-                if (tests.size() > 0) {
-                    btCoursePre.setEnabled(true);
-                }
-            } else {
-                btCoursePre.setEnabled(true);
-                btCourseNext.setVisibility(View.VISIBLE);
-                btCourseNext.setEnabled(true);
-            }
         }
     }
 
@@ -830,11 +722,12 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
      * @param nonce
      */
     private void submitAnswer(final int isforce, final String nonce) {
-        final HashMap<String,String> testInfos = new HashMap<>();
+        final HashMap<String, String> testInfos = new HashMap<>();
         JSONObject dataJson = new JSONObject();
-        for (int i = 0; i < tests.size(); i++) {
+//        for (int i = 0; i < tests.size(); i++) {
         if (!tests.isEmpty()) {
             NewCourseSec.Test test = tests.get(0);
+            testId = test.getId();
             dataJson = test.getJson();
             JSONArray userAnswerContent = test.getUserAnswerContent();
             JSONArray rightAnswerContent = test.getRightAnswerContent();
@@ -847,7 +740,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                     JSONArray array = new JSONArray();
                     //需要填上id 和 text
                     JSONObject emptyJson = new JSONObject();
-                    emptyJson.put("index", "");
+                    emptyJson.put("id", "");
                     emptyJson.put("text", "");
                     emptyJson.put("score", "");
                     emptyJson.put("scoreKey", "");
@@ -869,13 +762,17 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                     rightAnswerContent.put(jsonObject);
                 }
                 dataJson.put("testid", test.getId());
-                dataJson.put("userid", englishH5Entity.getStuId());
+                dataJson.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId());
                 dataJson.put("hasAnswer", isforce);
                 dataJson.put("liveId", liveId);
-                dataJson.put("gradeType", UserBll.getInstance().getMyUserInfoEntity().getGradeCode());
+                dataJson.put("gradeType", Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getGradeCode()));
                 dataJson.put("deviceid", 8);
                 dataJson.put("totalScore", 0);
-                dataJson.put("maxScore", Integer.parseInt(test.getMaxScore()));
+                if (test.getMaxScore() != null && !test.getMaxScore().isEmpty()){
+                    dataJson.put("maxScore", Integer.parseInt(test.getMaxScore()));
+                }else{
+                    dataJson.put("maxScore", 0);
+                }
                 dataJson.put("lostReason", "");
                 dataJson.put("rightAnswerContent", rightAnswerContent);
                 dataJson.put("userAnswerContent", userAnswerContent);
@@ -885,14 +782,33 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 mLogtf.e("submit", e);
             }
         }
-        }
+//        }
         LiveHttpManager mLiveHttpManager = new LiveHttpManager(mContext);
 
         mLiveHttpManager.submitChineseAISubjectiveAnswer(testInfos, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                JSONObject response = (JSONObject) responseEntity.getJsonObject();
+                if (response.has(testId)){
+                    JSONObject resultData = response.getJSONObject(testId);
+                    JSONArray userAnswerContent = resultData.getJSONArray("userAnswerContent");
+                    JSONArray rightAnswerContent = resultData.getJSONArray("rightAnswerContent");
+                    resultData.remove("rightAnswerContent");
+                    resultData.remove("userAnswerContent");
+                    resultData.remove("testid");
+                    resultData.put("id",testId);
+                    resultData.put("index",0);
+                    resultData.put("userAnswerStatus", 0);
+                    resultData.put("endTime", System.currentTimeMillis() / 1000);
+                    resultData.put("srcType",LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE);
+                    JSONObject userAnswer = new JSONObject();
+                    userAnswer.put("userAnswerContent",userAnswerContent);
+                    userAnswer.put("rightAnswerContent",rightAnswerContent);
+                    resultData.put("userAnswerContent",userAnswer);
+                }
+
                 englishH5CoursewareSecHttp.submitCourseWareTests(detailInfo, isforce, nonce, entranceTime,
-                        responseEntity.getJsonObject().toString(), new AbstractBusinessDataCallBack() {
+                        response.toString(), new AbstractBusinessDataCallBack() {
                             @Override
                             public void onDataSucess(Object... objData) {
                                 JSONObject jsonObject = (JSONObject) objData[0];
@@ -905,8 +821,6 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                                 super.onDataFail(errStatus, failMsg);
                                 isSumit = false;
                                 onSubmitError(isforce, failMsg);
-//                String url = englishH5CoursewareSecHttp.getResultUrl(detailInfo, isforce, "");
-//                wvSubjectWeb.loadUrl(url);
                             }
                         });
 
@@ -919,6 +833,25 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 onSubmitError(isforce, msg);
             }
         });
+        /** 强制收题直接显示结果页*/
+        if (1 == isforce) {
+            ChineseAISubjectResultEntity resultEntity = new ChineseAISubjectResultEntity();
+            List<String> answerList = new ArrayList<>();
+            resultEntity.setTotalScore(0);
+            try {
+                if (dataJson != null && dataJson.has("rightAnswerContent")) {
+                    JSONArray rightAnswer = dataJson.getJSONArray("rightAnswerContent");
+                    for (int i = 0; i < rightAnswer.length(); i++) {
+                        answerList.add(rightAnswer.getJSONObject(i).optString("text"));
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            resultEntity.setRightAnswers(answerList);
+            resultEntity.setGold(0);
+            addResultPager(1, resultEntity);
+        }
     }
 
     /**
@@ -968,19 +901,9 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
             preLoad.onProgressChanged(view, newProgress);
             if (newProgress == 100) {
                 rlSubjectLoading.setVisibility(View.GONE);
-                if (showControl) {
-                    rlCourseControl.setVisibility(View.VISIBLE);
-                }
                 preLoad.onStop();
             }
         } else {
-//            if (isFinish) {
-//                //初中结果页是网页，需要调接口
-//                if (isArts != LiveVideoSAConfig.ART_EN && (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage)
-// || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage))) {
-//                    wvSubjectWeb.loadUrl(jsClientSubmit);
-//                }
-//            }
         }
     }
 
@@ -1007,7 +930,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                         XESToastUtils.showToast(mContext, "互动题为空");
                         return;
                     }
-                    showControl();
+//                    showControl();
                     if (quesJson != null) {
                         for (int i = 0; i < tests.size(); i++) {
                             NewCourseSec.Test test = tests.get(i);
@@ -1015,7 +938,6 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                             test.setUserAnswerContent(userAnswerContent);
                         }
                     }
-                    setNum(1);
                     NewCourseSec.Test test = tests.get(0);
                     currentIndex = 0;
                     wvSubjectWeb.loadUrl(test.getPreviewPath());
@@ -1027,118 +949,9 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                     }
                     NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts),
                             getSubtestid(), test.getPreviewPath(), ispreload, test.getId());
-                    //设置作答时间
-                    setTimeSec(newCourseSec);
                 }
             }
 
-            /**
-             * 设置文理时间
-             * @param newCourseSec
-             */
-            private void setTimeSec(NewCourseSec newCourseSec) {
-//                if ((LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage))) {
-//                    setTimeSecPrimary(newCourseSec);
-//                } else {
-                setTimeSecMiddle(newCourseSec);
-//                }
-            }
-
-            /**
-             * 设置文理时间,小学倒计时
-             * @param newCourseSec
-             */
-//            private void setTimeSecPrimary(NewCourseSec newCourseSec) {
-//                //小学倒计时
-//                final long releaseTime;
-//                if (startQueTime != 0) {
-//                    releaseTime =
-//                            newCourseSec.getEndTime() - newCourseSec.getReleaseTime() - (System.currentTimeMillis() - startQueTime) / 1000;
-//                    mLogtf.d("setTimeSecPrimary:time1=" + (newCourseSec.getEndTime() - newCourseSec.getReleaseTime()) + ",time2=" + ((System.currentTimeMillis() - startQueTime) / 1000));
-//                } else {
-//                    releaseTime = newCourseSec.getEndTime() - newCourseSec.getReleaseTime();
-//                    saveThisQuesStart(System.currentTimeMillis());
-//                }
-//                final long startTime = System.currentTimeMillis() / 1000;
-//                final AtomicInteger negative = new AtomicInteger(0);
-//                tvCourseTimeText.setText(getTimeNegativePrimary(releaseTime, startTime, negative));
-//                if (negative.get() == 1) {
-//                    negative.getAndIncrement();
-//                    tvCourseTimeText.setTextColor(Color.RED);
-//                }
-//                handler.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        String timeStr = getTimeNegativePrimary(releaseTime, startTime, negative);
-//                        if (loadResult || mView.getParent() == null) {
-//                            return;
-//                        }
-//                        if (negative.get() == 1) {
-//                            negative.getAndIncrement();
-//                            tvCourseTimeText.setTextColor(Color.RED);
-//                        }
-//                        tvCourseTimeText.setText(timeStr);
-//                        handler.postDelayed(this, 1000);
-//                    }
-//                }, 1000);
-//            }
-
-            /**
-             * 设置文理时间,初中正计时
-             * @param newCourseSec
-             */
-            private void setTimeSecMiddle(NewCourseSec newCourseSec) {
-                final long startTime;
-                if (isPlayBack) {
-                    startTime = System.currentTimeMillis() / 1000;
-                    tvCourseTimeText.setText("0秒");
-                } else {
-                    startTime = newCourseSec.getReleaseTime();
-                    tvCourseTimeText.setText(getTimePositive(startTime));
-                }
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        tvCourseTimeText.setText(getTimePositive(startTime));
-                        if (loadResult || mView.getParent() == null) {
-                            return;
-                        }
-                        handler.postDelayed(this, 1000);
-                    }
-                }, 1000);
-            }
-
-            /**
-             * 正计时
-             * @param startTime
-             * @return
-             */
-            private String getTimePositive(long startTime) {
-                long time = System.currentTimeMillis() / 1000 - startTime;
-                long second = time % 60;
-                long minute = time / 60;
-                return minute + "分" + second + "秒";
-            }
-
-            /**
-             * 倒计时
-             * @param startTime
-             * @return
-             */
-//            private String getTimeNegativePrimary(long releaseTime, long startTime, AtomicInteger negative) {
-//                long time = System.currentTimeMillis() / 1000 - startTime;
-//                long second = (releaseTime - time) % 60;
-//                long minute = (releaseTime - time) / 60;
-//                if (releaseTime - time < 0) {
-//                    second = (time - releaseTime) % 60;
-//                    minute = (time - releaseTime) / 60;
-//                    if (negative.get() == 0) {
-//                        negative.getAndIncrement();
-//                    }
-//                    return minute + "分" + second + "秒";
-//                }
-//                return minute + "分" + second + "秒";
-//            }
 
             @Override
             public void onDataFail(int errStatus, String failMsg) {
@@ -1152,59 +965,6 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 logger.d("onDataFail:errStatus=" + errStatus + ",failMsg=" + failMsg);
             }
         });
-    }
-
-    /**
-     * 设置中间数字
-     *
-     * @param index
-     */
-    private void setNum(int index) {
-//        if (isArts != LiveVideoSAConfig.ART_EN && (LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage))) {
-//            setNumPrimary(index);
-//        } else {
-            setNumMiddle(index);
-//        }
-    }
-
-    /**
-     * 设置中间数字,文理小学
-     *
-     * @param index
-     */
-//    private void setNumPrimary(int index) {
-//        SpannableString sp = new SpannableString(index + " / " + tests.size());
-//        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(0xff66cbfa);
-//        sp.setSpan(foregroundColorSpan, ("" + index).length(), sp.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-//        tvCourseNum.setText(sp);
-//    }
-
-    /**
-     * 设置中间数字,其他
-     *
-     * @param index
-     */
-    private void setNumMiddle(int index) {
-        tvCourseNum.setText(index + " / " + tests.size());
-    }
-
-    /**
-     * 设置下方控件的
-     */
-    private void showControl() {
-        showControl = false;
-        if (LiveQueConfig.SEC_COURSE_TYPE_QUE.equals(englishH5Entity.getPackageSource())) {
-            showControl = true;
-        }
-        if (showControl) {
-            if (tests.size() == 1) {
-                btCoursePre.setVisibility(View.GONE);
-                btCourseNext.setVisibility(View.GONE);
-                btCourseSubmit.setVisibility(View.VISIBLE);
-            }
-        } else {
-            rlCourseControl.setVisibility(View.GONE);
-        }
     }
 
     @Override
@@ -1418,49 +1178,62 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
     }
 
     /**
-     * 显示 理科互动题 结果页
+     * 显示 AI语文主观题 结果页
      *
      * @param isforce
      */
     private void showAnswerResult(final int isforce, JSONObject data) {
-        rlCourseControl.setVisibility(View.GONE);
+
         if (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage)) {
             englishH5CoursewareSecHttp.getStuTestResult(detailInfo, isPlayBack ? 1 : 0,
                     new AbstractBusinessDataCallBack() {
 
                         @Override
                         public void onDataSucess(Object... objData) {
-                            loadResult = true;
-                            ChineseAISubjectResultEntity resultEntity = (ChineseAISubjectResultEntity) objData[0];
-                            if (isforce == 0) {
-                                mGoldNum = resultEntity.getGold();
-                                if (allowTeamPk) {
-                                    mEnergyNum = resultEntity.getEnergy();
-                                }
-                            }
-                            ChiAnswerResultPager answerResultPager = new ChiAnswerResultPager(mContext, resultEntity, new AnswerResultStateListener() {
-                                @Override
-                                public void onCompeletShow() {
+                            addResultPager(isforce, (ChineseAISubjectResultEntity) objData[0]);
+                        }
 
-                                }
-
-                                @Override
-                                public void onAutoClose(BasePager basePager) {
-                                }
-
-                                @Override
-                                public void onCloseByUser() {
-                                    onClose.onH5ResultClose(ChineseAiSubjectiveCoursewarePager.this,getBaseVideoQuestionEntity());
-                                }
-                            });
-                            ((RelativeLayout) mView).addView(answerResultPager.getRootView(),
-                                    new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                                            ViewGroup.LayoutParams.MATCH_PARENT));
-                            NewCourseLog.sno8(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts),
-                                    ispreload, 0);
+                        @Override
+                        public void onDataFail(int errStatus, String failMsg) {
+                            super.onDataFail(errStatus, failMsg);
                         }
                     });
         }
+    }
+
+    /**
+     * 显示结果页
+     * @param isforce
+     * @param resultEntity
+     */
+    private void addResultPager(final int isforce, ChineseAISubjectResultEntity resultEntity) {
+        loadResult = true;
+        if (isforce == 0) {
+            mGoldNum = resultEntity.getGold();
+            if (allowTeamPk) {
+                mEnergyNum = resultEntity.getEnergy();
+            }
+        }
+        ChiAnswerResultPager answerResultPager = new ChiAnswerResultPager(mContext, resultEntity, new AnswerResultStateListener() {
+            @Override
+            public void onCompeletShow() {
+
+            }
+
+            @Override
+            public void onAutoClose(BasePager basePager) {
+            }
+
+            @Override
+            public void onCloseByUser() {
+                onClose.onH5ResultClose(ChineseAiSubjectiveCoursewarePager.this, getBaseVideoQuestionEntity());
+            }
+        });
+        ((RelativeLayout) mView).addView(answerResultPager.getRootView(),
+                new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                        ViewGroup.LayoutParams.MATCH_PARENT));
+        NewCourseLog.sno8(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts),
+                ispreload, 0);
     }
 
 }

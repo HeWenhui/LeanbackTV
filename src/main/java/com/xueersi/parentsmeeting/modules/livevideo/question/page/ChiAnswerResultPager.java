@@ -53,7 +53,6 @@ public class ChiAnswerResultPager extends BasePager implements IArtsAnswerRsultD
     private static final int RESULT_TYPE_ERRRO = 0;
 
     private int mReusltType;
-    private ImageView ivResultBtn;
 
     private static final String BG_COLOR = "#CC000000";
     private ChineseAISubjectResultEntity mData;
@@ -131,8 +130,6 @@ public class ChiAnswerResultPager extends BasePager implements IArtsAnswerRsultD
         private TextView tvRightAnswer;
         private TextView tvUserAnswer;
 
-        private TextView tvIndex;
-
         ImageView ivAnswerIcon;
 
 
@@ -143,7 +140,6 @@ public class ChiAnswerResultPager extends BasePager implements IArtsAnswerRsultD
             tvRightAnswer = itemView.findViewById(R.id.tv_chi_answer_result_item_muti_right_answer);
 
             ivAnswerIcon = itemView.findViewById(R.id.iv_chi_answer_result_item_muti_right_answer);
-            tvIndex = itemView.findViewById(R.id.tv_chi_answer_result_item_muti_index);
         }
 
         public void bindData(List<String> rightData,List<ChineseAISubjectResultEntity.StuAnswer> stuData, int position) {
@@ -153,7 +149,6 @@ public class ChiAnswerResultPager extends BasePager implements IArtsAnswerRsultD
 //            } else {
 //                tvIndex.setVisibility(View.GONE);
 //            }
-            tvIndex.setVisibility(View.GONE);
             String standerAnswerText = "";
             StringBuilder myAnswerText = markScoreKey(stuData, ";");
             standerAnswerText = listToStr(rightData, ";");
@@ -335,12 +330,15 @@ public class ChiAnswerResultPager extends BasePager implements IArtsAnswerRsultD
     public void showAnswerReuslt() {
         {
             tvGoldCount.setText("+" + mData.getGold());
-            tvScore.setText(mData.getTotalScore());
+            if (0 == mData.getTotalScore()){
+                tvScore.setText("0分");
+            }else {
+                tvScore.setText(mData.getTotalScore()+"分");
+            }
             tvGoldCount.setVisibility(View.VISIBLE);
             llRewardInfo.setVisibility(View.VISIBLE);
 
             mView.setBackgroundColor(Color.parseColor(BG_COLOR));
-            ivResultBtn.setVisibility(View.GONE);
             resultDetailRootView.setVisibility(View.VISIBLE);
 
             if (recyclerView == null) {
@@ -349,6 +347,7 @@ public class ChiAnswerResultPager extends BasePager implements IArtsAnswerRsultD
                     @Override
                     public void onClick(View v) {
                         closeResultUi();
+                        close();
                     }
                 });
 
@@ -365,16 +364,16 @@ public class ChiAnswerResultPager extends BasePager implements IArtsAnswerRsultD
 
                     bgView.setBackgroundResource(R.drawable.arts_answer_result_partcorrect_bg_big);
                     tvState.setTextColor(Color.parseColor("#F0773c"));
-                    ivHead.setImageResource(R.drawable.chi_answer_partcorrect_head);
+                    ivHead.setImageResource(R.drawable.chi_answer_error_head);
                     tvState.setText("哎呀!好可惜!");
                 } else {
                     bgView.setBackgroundResource(R.drawable.arts_answer_result_error_bg_big);
                     tvState.setTextColor(Color.parseColor("#327AF0"));
-                    ivHead.setImageResource(R.drawable.chi_answer_error_head);
+                    ivHead.setImageResource(R.drawable.chi_answer_partcorrect_head);
                     tvState.setText("加油!再接再厉!");
                 }
 
-                recyclerView = resultDetailRootView.findViewById(R.id.rcl_arts_answer_result_detail);
+                recyclerView = resultDetailRootView.findViewById(R.id.rcl_chi_answer_result_detail);
                 recyclerView.setLayoutManager(new GridLayoutManager(mContext, SPAN_COUNT, LinearLayoutManager.VERTICAL,
                         false));
 

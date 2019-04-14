@@ -537,6 +537,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
 
     private void onChiAIAnswerResult(final ArtsAnswerResultEvent event, String result) {
         final HashMap<String, String> testInfos = new HashMap<>();
+        JSONObject dataJson = new JSONObject();
         try {
             JSONObject jsonObject = new JSONObject(result);
             JSONObject dataObject = jsonObject.optJSONObject("data");
@@ -579,7 +580,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 rightAnswerObject.put("rightAnswerContent", array);
                 rightAnswerContent.put(rightAnswerObject);
             }
-            JSONObject dataJson = new JSONObject();
+
             dataJson.put("testid", event.getTestId());
             dataJson.put("userid", mGetInfo.getStuId());
             dataJson.put("hasAnswer", event.getIsforce());
@@ -616,18 +617,11 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                                 manager.getStuChiAITestResult(mGetInfo.getId(), mGetInfo.getStuId(),
                                         res[0], res[1], englishH5Entity.getClassTestId(),
                                         englishH5Entity.getPackageId(),
-                                        englishH5Entity.getPackageAttr(), event.isPlayBack() ? 1 : 0,
+                                        englishH5Entity.getPackageAttr(), event.isPlayBack() ? 1 : 0,mGetInfo.getStudentLiveInfo().getClassId(),
                                         new AbstractBusinessDataCallBack() {
                                             @Override
                                             public void onDataSucess(Object... objData) {
-                                                ChineseAISubjectResultEntity resultEntity = (ChineseAISubjectResultEntity) objData[0];
-                                                ChiAnswerResultPager answerResultPager = new ChiAnswerResultPager(mContext, resultEntity, ArtsAnswerResultBll.this);
-                                                RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
-                                                        (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-                                                rlAnswerResultLayout.addView(answerResultPager.getRootLayout(), layoutParams);
-                                                if (event.getDetailInfo() != null) {
-                                                    NewCourseLog.sno8(mLiveBll, NewCourseLog.getNewCourseTestIdSec(event.getDetailInfo(), LiveVideoSAConfig.ART_CH), event.isIspreload(), 0);
-                                                }
+                                                addResultPager(event,(ChineseAISubjectResultEntity) objData[0]);
                                             }
                                         });
                             }
@@ -639,6 +633,37 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 super.onPmFailure(error, msg);
             }
         });
+        /** 强制收题只显示结果页*/
+        if (1 == event.getIsforce()){
+            ChineseAISubjectResultEntity resultEntity = new ChineseAISubjectResultEntity();
+            List<String> answerList = new ArrayList<>();
+            resultEntity.setTotalScore(0);
+            try {
+                if (dataJson != null && dataJson.has("rightAnswerContent")) {
+                    JSONArray rightAnswer = dataJson.getJSONArray("rightAnswerContent");
+                    for (int i = 0; i < rightAnswer.length(); i++) {
+                        answerList.add(rightAnswer.getJSONObject(i).optString("text"));
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            resultEntity.setRightAnswers(answerList);
+            resultEntity.setGold(0);
+            addResultPager(event,resultEntity);
+        }
+
+    }
+
+    private void addResultPager(final ArtsAnswerResultEvent event, ChineseAISubjectResultEntity resultEntity) {
+
+        ChiAnswerResultPager answerResultPager = new ChiAnswerResultPager(mContext, resultEntity,ArtsAnswerResultBll.this);
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
+                (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        rlAnswerResultLayout.addView(answerResultPager.getRootLayout(), layoutParams);
+        if (event.getDetailInfo() != null) {
+            NewCourseLog.sno8(mLiveBll, NewCourseLog.getNewCourseTestIdSec(event.getDetailInfo(), LiveVideoSAConfig.ART_CH), event.isIspreload(), 0);
+        }
     }
 
     private String[] getSrcType(EnglishH5Entity englishH5Entity) {

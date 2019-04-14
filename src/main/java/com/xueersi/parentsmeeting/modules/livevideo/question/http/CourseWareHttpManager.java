@@ -179,7 +179,7 @@ public class CourseWareHttpManager {
 
     //语文主观题
     public void getStuChiAITestResult(String liveId, String stuId, String srcTypes, String testIds, String classTestId, String packageId, String packageAttr, int isPlayBack,
-                                      final AbstractBusinessDataCallBack callBack) {
+                                      String classId,final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         liveHttpManager.setDefaultParameter(httpRequestParams);
         httpRequestParams.addBodyParam("liveId", liveId);
@@ -190,6 +190,7 @@ public class CourseWareHttpManager {
         httpRequestParams.addBodyParam("packageId", "" + packageId);
         httpRequestParams.addBodyParam("packageAttr", "" + packageAttr);
         httpRequestParams.addBodyParam("isPlayBack", "" + isPlayBack);
+        httpRequestParams.addBodyParam("classId", "" + classId);
         HttpCallBack httpCallBack = new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {

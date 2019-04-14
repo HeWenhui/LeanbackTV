@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingRight="30dp">
 
     <LinearLayout
         android:id="@id/ll_chi_answer_result_item_muti_user_answer_info"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal">
@@ -17,40 +18,32 @@
             android:layout_width="15dp"
             android:layout_height="15dp"
             android:layout_marginLeft="30dp"
-            android:layout_marginRight="5dp" />
+             />
 
+        <!--选择题 标准答案-->
         <TextView
-            android:id="@id/tv_chi_answer_result_item_muti_index"
+            android:id="@id/tv_chi_answer_result_item_muti_user_answer"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/iv_chi_answer_result_item_muti_right_answer"
-            android:text="11"
-            android:textColor="#726665"
-            android:textSize="17sp" />
+            android:gravity="center"
+            android:textColor="@color/COLOR_333333"
+            android:textSize="17sp"
+            android:visibility="visible"
+            android:layout_marginLeft="5dp"
+            tools:text="aaaaaaaaaaaaaaaaaaaaaaaaaaaa" />
     </LinearLayout>
 
-    <!--选择题 标准答案-->
-    <TextView
-        android:id="@id/tv_chi_answer_result_item_muti_user_answer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="12dp"
-        android:layout_toRightOf="@id/ll_chi_answer_result_item_muti_user_answer_info"
-        android:text=""
-        android:textColor="@color/COLOR_333333"
-        android:textSize="17sp"
-        android:visibility="visible" />
-
 
     <TextView
-        android:layout_below="@id/tv_chi_answer_result_item_muti_user_answer"
         android:id="@id/tv_chi_answer_result_item_muti_right_answer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="12dp"
-        android:layout_toRightOf="@id/ll_chi_answer_result_item_muti_user_answer_info"
-        android:text=""
+        android:layout_below="@id/ll_chi_answer_result_item_muti_user_answer_info"
+        android:layout_marginLeft="50dp"
+        android:layout_alignParentLeft="true"
+        android:gravity="center_vertical"
         android:textColor="@color/COLOR_333333"
         android:textSize="17sp"
-        android:visibility="visible" />
+        android:visibility="visible"
+        tools:text="bbbbbbbbbbbbbbbbbbbbbbbbb" />
 </RelativeLayout>

@@ -80,7 +80,7 @@
 
         <LinearLayout
             android:layout_width="370dp"
-            android:layout_height="130dp"
+            android:layout_height="100dp"
             android:gravity="center_vertical"
             android:layout_below="@id/ll_chi_normal_answer_result_gold_info"
             android:layout_centerHorizontal="true"
