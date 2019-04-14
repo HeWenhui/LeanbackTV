@@ -121,6 +121,9 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
 
             logger.i("ircsdk login code:" + loginResp.code);
             logger.i("ircsdk login info:" + loginResp.info);
+            if (PMDefs.ResultCode.Result_Success == loginResp.code){
+                mIRCCallback.onRegister();
+            }
             if (PMDefs.ResultCode.Result_Success == loginResp.code && isFirstLogin) {
                 isFirstLogin = false;
                 if (roomid == null) {
@@ -170,7 +173,6 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
             if (PMDefs.NetStatus.PMNetStatus_Connecting== netStatusResp.netStatus) {
                 if (mIRCCallback != null) {
                     mIRCCallback.onStartConnect();
-                    mIRCCallback.onRegister();
                 }
             } else if (PMDefs.NetStatus.PMNetStatus_Unkown == netStatusResp.netStatus ||
                     PMDefs.NetStatus.PMNetStatus_Unavailable == netStatusResp.netStatus ||
