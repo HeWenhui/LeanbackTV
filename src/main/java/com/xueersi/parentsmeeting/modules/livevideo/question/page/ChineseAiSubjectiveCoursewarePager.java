@@ -64,6 +64,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.web.OnHttpCode;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.StaticWeb;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.WebInstertJs;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.NewCourseLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
@@ -78,6 +79,7 @@ import java.util.List;
 import java.util.Locale;
 
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
+import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
 import pl.droidsonroids.gif.GifDrawable;
 
 /**
@@ -313,6 +315,15 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
         getTodayQues();
         newCourseCache = new NewCourseCache(mContext, liveId);
         addJavascriptInterface();
+        wvSubjectWeb.getSettings().setLoadWithOverviewMode(false);
+//        wvSubjectWeb.getSettings().setDisplayZoomControls(false);
+        wvSubjectWeb.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
+        KeyboardUtil.attach((Activity) mContext, new KPSwitchFSPanelLinearLayout(mContext), new KeyboardUtil.OnKeyboardShowingListener() {
+            @Override
+            public void onKeyboardShowing(boolean isShowing) {
+                ChineseAiSubjectiveCoursewarePager.this.onKeyboardShowing(isShowing);
+            }
+        });
         wvSubjectWeb.setWebChromeClient(new BaseCoursewareNativePager.MyWebChromeClient() {
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
@@ -1236,4 +1247,19 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 ispreload, 0);
     }
 
+    public void onKeyboardShowing(boolean isShowing) {
+        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) wvSubjectWeb.getLayoutParams();
+        int bottomMargin;
+        if (isShowing) {
+            int panelHeight = KeyboardUtil.getValidPanelHeight(mContext);
+            bottomMargin = panelHeight;
+        } else {
+            bottomMargin = 0;
+        }
+        if (bottomMargin != lp.bottomMargin) {
+            lp.bottomMargin = bottomMargin;
+//            wvSubjectWeb.setLayoutParams(lp);
+            LayoutParamsUtil.setViewLayoutParams(wvSubjectWeb, lp);
+        }
+    }
 }
