@@ -951,6 +951,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
      */
     private boolean isInLikeTime() {
         long nowTime = System.currentTimeMillis();
+        logger.i("isMiddleScienceH5Open " + isMiddleScienceH5Open);
         return (isMiddleScienceH5Open || (((nowTime - endTime) < TIME_SEND_PRIVATE_MSG)));
     }
 
@@ -984,13 +985,6 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             if (("" + id).contains(mLiveBll.getNickname())) {
                 forbidSendMsg = true;
             }
-        }
-
-        JSONObject object = jsonObject.optJSONObject("platformTest");
-        if (object != null && !object.toString().equals("{}")) {
-            isMiddleScienceH5Open = true;
-        } else {
-            isMiddleScienceH5Open = false;
         }
 
         liveTopic.setDisable(forbidSendMsg);
