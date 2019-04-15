@@ -15,7 +15,6 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.http.HttpCallBack;
@@ -63,6 +62,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseQuestionWe
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSubjectResultInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BigQuestionFillInBlankLivePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BigQuestionSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.CoursewareNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionWebX5Pager;
@@ -399,11 +399,13 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             }
             rlQuestionContent.addView(speechAssessmentPager.getRootView());
         }
-//        if (AppConfig.DEBUG) {
+//        if (com.xueersi.common.config.AppConfig.DEBUG) {
 //            VideoQuestionLiveEntity baseVideoQuestionEntity = new VideoQuestionLiveEntity();
 //            baseVideoQuestionEntity.num = 6;
-//            BigQuestionFillInBlankLivePager bigQuestionFillInBlankLivePager = new BigQuestionFillInBlankLivePager(activity, baseVideoQuestionEntity);
-//            rlQuestionContent.addView(bigQuestionFillInBlankLivePager.getRootView());
+////            BigQuestionFillInBlankLivePager bigQuestionFillInBlankLivePager = new BigQuestionFillInBlankLivePager(activity, baseVideoQuestionEntity);
+////            rlQuestionContent.addView(bigQuestionFillInBlankLivePager.getRootView());
+//            BigQuestionSelectLivePager bigQuestionSelectLivePager = new BigQuestionSelectLivePager(activity, baseVideoQuestionEntity);
+//            rlQuestionContent.addView(bigQuestionSelectLivePager.getRootView());
 //        }
     }
 
