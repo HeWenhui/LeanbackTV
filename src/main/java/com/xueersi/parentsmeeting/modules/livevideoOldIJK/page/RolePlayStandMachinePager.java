@@ -1328,6 +1328,8 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
      * 关闭当前页面
      */
     public void relaseCurrentPage() {
+        //释放所有正在播放的音频
+        relaseAllAudioPlay();
         if (mIse != null) {
             mIse.stop();
         }
