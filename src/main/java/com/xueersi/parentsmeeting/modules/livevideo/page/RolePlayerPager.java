@@ -1551,7 +1551,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
         if (mRolePlayerOtherItem != null) {
             mRolePlayerOtherItem.stopVoicePlay();
         }
-
+        relaseAllAudioPlay();
 
     }
 
