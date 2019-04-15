@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.AudioManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -145,11 +146,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
      * 语音评测
      */
     protected SpeechUtils mIse;
-    private SpeechParamEntity mParam;
-    /**
-     * 语音保存位置
-     */
-    private File saveVideoFile;
     /**
      * 在网页中嵌入js，只嵌入一次
      */
@@ -175,6 +171,24 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     private JSONArray userAnswer = new JSONArray();
 
     private static int MAX_SINGLE_COUNT;
+
+    /**
+     * 音量管理
+     */
+    private AudioManager mAM;
+    /**
+     * 最大音量
+     */
+    private int mMaxVolume;
+    /**
+     * 当前音量
+     */
+    private int mVolume = 0;
+
+    /**
+     * 是否恢复了音量
+     */
+    private boolean isVolumeResume = true;
 
     public GroupGameNativePager(Context context, boolean isPlayBack, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity
             detailInfo, EnglishH5Entity englishH5Entity, EnglishH5CoursewareBll.OnH5ResultClose onClose) {
@@ -425,9 +439,9 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        saveVideoFile = new File(dir, "ise" + System.currentTimeMillis() + ".mp3");
-        mParam = new SpeechParamEntity();
-        //语音评测开始
+        /* 语音保存位置 */
+        File saveVideoFile = new File(dir, "ise" + System.currentTimeMillis() + ".mp3");
+        SpeechParamEntity mParam = new SpeechParamEntity();
         if (mIse == null) {
             mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
             mIse.prepar();
@@ -445,6 +459,12 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             @Override
             public void onBeginOfSpeech() {
                 logger.d("onBeginOfSpeech()");
+                //静音处理
+                mAM = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE); // 音量管理
+                mMaxVolume = mAM.getStreamMaxVolume(AudioManager.STREAM_MUSIC); // 获取系统最大音量
+                mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
+                mAM.setStreamVolume(AudioManager.STREAM_MUSIC, (int) (0.3f * mMaxVolume), 0);
+                isVolumeResume = false;
             }
 
             @Override
@@ -488,6 +508,11 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     startSpeechRecognize();
                 }
             }, 300);
+        }
+        //音量恢复
+        if (mAM != null && !isVolumeResume) {
+            mAM.setStreamVolume(AudioManager.STREAM_MUSIC, mVolume, 0);
+            isVolumeResume = true;
         }
     }
 
