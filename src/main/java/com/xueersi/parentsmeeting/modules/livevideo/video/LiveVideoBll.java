@@ -935,6 +935,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
                         public void run() {
 //                            playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
 //                            liveGetPlayServer.liveGetPlayServer(false);
+                            nowProtol = changeProtol(nowProtol);
                             psRePlay(false);
                         }
                     }, 1000);
