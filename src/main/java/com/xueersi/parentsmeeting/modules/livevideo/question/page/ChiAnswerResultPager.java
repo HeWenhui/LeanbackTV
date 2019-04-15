@@ -389,13 +389,15 @@ public class ChiAnswerResultPager extends BasePager implements IArtsAnswerRsultD
 
     @Override
     public void close() {
-        mView.post(new Runnable() {
-            @Override
-            public void run() {
-                if (mView.getParent() != null) {
-                    ((ViewGroup) mView.getParent()).removeView(mView);
+        if (mView != null) {
+            mView.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (mView.getParent() != null) {
+                        ((ViewGroup) mView.getParent()).removeView(mView);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 }

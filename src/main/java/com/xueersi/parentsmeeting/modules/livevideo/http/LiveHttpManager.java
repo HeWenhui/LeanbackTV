@@ -582,7 +582,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
     public void submitChineseAISubjectiveAnswer(HashMap<String,String> data,final HttpCallBack callBack){
 
         String url ="http://192.168.34.127:12010";
-//        url= "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/submitChineseAISubjectiveAnswer";
+        url= "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/submitChineseAISubjectiveAnswer";
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         for(String key:data.keySet())
         {
