@@ -77,6 +77,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.web.OnHttpCode;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.StaticWeb;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.WebInstertJs;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.NewCourseLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveAudioManager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -128,6 +129,11 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     private LiveAndBackDebug liveAndBackDebug;
     /** 文理英属性 */
     private int isArts = LiveVideoSAConfig.ART_EN;
+    private LiveAudioManager liveAudioManager;
+    /** 最大音量 */
+    private int mMaxVolume;
+    /** 当前音量 */
+    private int mVolume = 0;
     //    private NewCourseSec newCourseSec;
     private GroupGameTestInfosEntity mGroupGameTestInfosEntity;
     private List<GroupGameTestInfosEntity.TestInfoEntity> tests = new ArrayList<>();
@@ -224,6 +230,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         if (audioRequest != null) {
             audioRequest.request(null);
         }
+        setVoice();
         //网页消息
         if (LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(gameType)) {
             multModeAction = new CleanUpOnMessage();
@@ -299,6 +306,14 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
         wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, multModeAction), "xesApp");
 //        wvSubjectWeb.loadUrl(TEST_URL);
+    }
+
+    private void setVoice() {
+        liveAudioManager = new LiveAudioManager(mContext, "GroupGameMultNativePager");
+        mMaxVolume = liveAudioManager.getmMaxVolume();
+        mVolume = liveAudioManager.getmVolume();
+        int v = (int) (0.3f * mMaxVolume);
+        liveAudioManager.setVolume(v);
     }
 
     private class VoiceCannonTurnRun implements Runnable {
@@ -1426,11 +1441,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         jsonObject.put("scores", scores);
                         userAnswer.put(jsonObject);
                     }
-                    //有作答痕迹，能量加5
-                    if (tryTimes > 0) {
-                        cleanUpEntity.teamMemberEntity.energy = energy + 5;
-                        energy = cleanUpEntity.teamMemberEntity.energy;
-                    }
                 } else {
                     answerData.put("rightNum", 0);
                 }
@@ -1439,6 +1449,12 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             } catch (Exception e) {
                 CrashReport.postCatchedException(e);
                 logger.d("submit", e);
+            }
+            ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
+            for (int i = 0; i < entities.size(); i++) {
+                TeamMemberEntity teamMemberEntity = entities.get(i);
+                //有用户能量就加5
+                teamMemberEntity.energy += 5;
             }
         } else {
             //遍历作答正确，取最大的金币为3
@@ -1639,6 +1655,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             logger.d("onDestroy:key=" + key + ",videoTime=" + videoTime + ",audioTime=" + audioTime);
         }
         courseGroupItemHashMap.clear();
+        if (liveAudioManager != null) {
+            liveAudioManager.setVolume(mVolume);
+        }
     }
 
     class CourseWebViewClient extends MyWebViewClient implements OnHttpCode {
