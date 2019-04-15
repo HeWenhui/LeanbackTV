@@ -10,6 +10,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseLiveQuestionPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BigQuestionFillInBlankLivePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BigQuestionSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionFillInBlankLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionFillInBlankPortLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionMulitSelectLivePager;
@@ -56,7 +58,7 @@ public class LiveQuestionCreat {
         BaseLiveQuestionPager baseQuestionPager;
         long before = System.currentTimeMillis();
         if (isAbLand.get()) {
-            baseQuestionPager = new QuestionFillInBlankLivePager(activity, videoQuestionLiveEntity);
+            baseQuestionPager = new BigQuestionFillInBlankLivePager(activity, videoQuestionLiveEntity);
         } else {
             baseQuestionPager = new QuestionFillInBlankPortLivePager(activity, videoQuestionLiveEntity);
         }
@@ -73,7 +75,7 @@ public class LiveQuestionCreat {
         BaseLiveQuestionPager baseQuestionPager;
         long before = System.currentTimeMillis();
         if (isAbLand.get()) {
-            baseQuestionPager = new QuestionSelectLivePager(activity, videoQuestionLiveEntity);
+            baseQuestionPager = new BigQuestionSelectLivePager(activity, videoQuestionLiveEntity);
         } else {
             baseQuestionPager = new QuestionSelectPortLivePager(activity, videoQuestionLiveEntity);
         }

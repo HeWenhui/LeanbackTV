@@ -15,6 +15,7 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.http.HttpCallBack;
@@ -61,6 +62,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseLiveQuesti
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseQuestionWebInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSubjectResultInter;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BigQuestionFillInBlankLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.CoursewareNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionWebX5Pager;
@@ -397,6 +399,12 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             }
             rlQuestionContent.addView(speechAssessmentPager.getRootView());
         }
+//        if (AppConfig.DEBUG) {
+//            VideoQuestionLiveEntity baseVideoQuestionEntity = new VideoQuestionLiveEntity();
+//            baseVideoQuestionEntity.num = 6;
+//            BigQuestionFillInBlankLivePager bigQuestionFillInBlankLivePager = new BigQuestionFillInBlankLivePager(activity, baseVideoQuestionEntity);
+//            rlQuestionContent.addView(bigQuestionFillInBlankLivePager.getRootView());
+//        }
     }
 
     @Override
@@ -2442,7 +2450,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         public void onPutQuestionResult(BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity
                 videoQuestionLiveEntity, String answer, String
                                                 result, int sorce, boolean isRight, double voiceTime, String
-                isSubmit, OnAnswerReslut answerReslut) {
+                                                isSubmit, OnAnswerReslut answerReslut) {
             final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
             String testAnswer;
             if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(videoQuestionLiveEntity1.type)) {

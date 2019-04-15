@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@id/rl_livevideo_question_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@id/rl_livevideo_question_content_question"
+            android:layout_width="match_parent"
+            android:layout_height="70dp"
+            android:layout_alignParentBottom="true"
+            android:background="@color/white"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingLeft="18dp">
+
+                <Button
+                    android:id="@id/btn_livevideo_question_select_questiona"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/shape_question_answer_normal"
+                    android:gravity="center"
+                    android:text="A"
+                    android:textColor="#666666"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@id/btn_livevideo_question_select_questionb"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="28dp"
+                    android:background="@drawable/shape_question_answer_normal"
+                    android:gravity="center"
+                    android:text="B"
+                    android:textColor="#666666"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@id/btn_livevideo_question_select_questionc"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="28dp"
+                    android:background="@drawable/shape_question_answer_normal"
+                    android:gravity="center"
+                    android:text="C"
+                    android:textColor="#666666"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@id/btn_livevideo_question_select_questiond"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="28dp"
+                    android:background="@drawable/shape_question_answer_normal"
+                    android:gravity="center"
+                    android:text="D"
+                    android:textColor="#666666"
+                    android:textSize="20sp" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true">
+
+                <com.xueersi.ui.widget.button.progressbutton.CircularProgressButton
+                    android:id="@id/btn_livevideo_question_fillin_submit"
+                    android:layout_width="100dp"
+                    android:layout_height="40dp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginRight="20dp"
+                    android:padding="0dp"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    app:cpb_cornerRadius="4dp"
+                    app:cpb_selectorIdle="@color/selector_idle_state_cpb"
+                    app:cpb_iconComplete="@drawable/bg_action_accept"
+                    app:cpb_iconError="@drawable/ic_action_cancel"
+                    app:cpb_textIdle="提交" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@id/rl_livevideo_question_fillin_down"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/rl_livevideo_question_content_question">
+
+            <ImageView
+                android:id="@id/iv_livevideo_question_fillin_down"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:background="@drawable/ic_course_question_down" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@id/rl_livevideo_question_hide"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#00000000"
+        android:visibility="invisible">
+
+        <ImageView
+            android:id="@id/iv_pop_question_visible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+            android:background="@drawable/ic_course_question_up" />
+    </RelativeLayout>
+</FrameLayout>
