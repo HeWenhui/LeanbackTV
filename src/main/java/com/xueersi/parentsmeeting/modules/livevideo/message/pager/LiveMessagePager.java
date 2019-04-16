@@ -188,6 +188,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     /** 当前最高连对数 */
     private TextView tvHighestEvenNum;
 
+//    private View evenDriveView;
+
     @Override
     public View initView() {
         mView = View.inflate(mContext, R.layout.page_livevideo_message, null);
@@ -208,6 +210,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 //        if (getInfo.getIsOpenNewCourseWare() == 1) {
 //        ViewStub viewStub = mView.findViewById(R.id.vs_livevideo_livemessage_middle_science_even);
 //        viewStub.setVisibility(View.VISIBLE);
+//        evenDriveView = mView.findViewById(R.id.vs_livevideo_livemessage_middle_science_even);
         tvNowEvenNum = mView.findViewById(R.id.tv_livevideo_livemessage_middle_even_right_now);
         tvHighestEvenNum = mView.findViewById(R.id.tv_livevideo_livemessage_middle_even_right_max);
 //        }
@@ -531,7 +534,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             @Override
             public void onClick(@NonNull View widget) {
                 //弹出排行榜
-                UmsAgentManager.umsAgentCustomerBusiness(mContext,mContext.getResources().getString(R.string.livevideo_1713001));
+                UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1713001));
                 if (liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_rank) != null) {
                     liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_rank).performClick();
                 }
