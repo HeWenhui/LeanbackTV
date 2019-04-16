@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.alibaba.fastjson.JSONObject;
@@ -32,6 +33,8 @@ import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
+
+import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 
 /**
  * Created by linyuqiang on 2019/4/15.  大题互动填空题
@@ -279,14 +282,21 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveQuestionPager {
 
     @Override
     public void onKeyboardShowing(boolean isShowing) {
-//        keyIsShowing = isShowing;
-//        final ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) v_livevideo_question_content_bord.getLayoutParams();
-//        final int bottomMargin;
-//        if (isShowing) {
-//            bottomMargin = KeyboardUtil.getValidPanelHeight(mContext);
-//        } else {
-//            bottomMargin = 0;
-//        }
+        keyIsShowing = isShowing;
+        final ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) v_livevideo_question_content_bord.getLayoutParams();
+        final int bottomMargin;
+        if (isShowing) {
+            v_livevideo_question_content_bord.setVisibility(View.VISIBLE);
+            bottomMargin = KeyboardUtil.getValidPanelHeight(mContext);
+        } else {
+            v_livevideo_question_content_bord.setVisibility(View.GONE);
+            bottomMargin = 0;
+        }
+        if (bottomMargin != lp.height) {
+            lp.height = bottomMargin;
+            LayoutParamsUtil.setViewLayoutParams(v_livevideo_question_content_bord, lp);
+        }
+        v_livevideo_question_content_bord.requestLayout();
 //        if (bottomMargin != lp.height) {
 //            ValueAnimator valueAnimator = ValueAnimator.ofInt(bottomMargin);
 //            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
