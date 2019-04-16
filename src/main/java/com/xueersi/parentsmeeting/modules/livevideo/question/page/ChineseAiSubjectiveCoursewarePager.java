@@ -747,28 +747,22 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 //用户没有作答,字段不能缺
                 if (userAnswerContent == null || userAnswerContent.length() == 0) {
                     userAnswerContent = new JSONArray();
-                    JSONObject jsonObject = new JSONObject();
-                    JSONArray array = new JSONArray();
                     //需要填上id 和 text
                     JSONObject emptyJson = new JSONObject();
                     emptyJson.put("id", "");
                     emptyJson.put("text", "");
                     emptyJson.put("score", "");
                     emptyJson.put("scoreKey", "");
-                    array.put(emptyJson);
-                    userAnswerContent.put(array);
+                    userAnswerContent.put(emptyJson);
                 }
                 if (rightAnswerContent == null || rightAnswerContent.length() == 0) {
                     rightAnswerContent = new JSONArray();
-                    JSONObject jsonObject = new JSONObject();
-                    JSONArray array = new JSONArray();
                     //需要填上id 和 text
                     JSONObject emptyJson = new JSONObject();
                     emptyJson.put("text", "");
                     emptyJson.put("score", "");
                     emptyJson.put("scoreKey", "");
-                    array.put(emptyJson);
-                    rightAnswerContent.put(array);
+                    rightAnswerContent.put(emptyJson);
                 }
                 dataJson.put("testid", test.getId());
                 dataJson.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId());
@@ -785,7 +779,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 dataJson.put("lostReason", "");
                 dataJson.put("rightAnswerContent", rightAnswerContent);
                 dataJson.put("userAnswerContent", userAnswerContent);
-                data.put(test.getId(), dataJson.toString());
+                data.put(test.getId(), dataJson);
             } catch (JSONException e) {
                 CrashReport.postCatchedException(e);
                 mLogtf.e("submit", e);
