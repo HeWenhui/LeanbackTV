@@ -733,7 +733,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
      * @param nonce
      */
     private void submitAnswer(final int isforce, final String nonce) {
-        final HashMap<String, String> testInfos = new HashMap<>();
+        JSONObject data = new JSONObject();
         JSONObject dataJson = new JSONObject();
 //        for (int i = 0; i < tests.size(); i++) {
         if (!tests.isEmpty()) {
@@ -756,8 +756,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                     emptyJson.put("score", "");
                     emptyJson.put("scoreKey", "");
                     array.put(emptyJson);
-                    jsonObject.put("userAnswerContent", array);
-                    userAnswerContent.put(jsonObject);
+                    userAnswerContent.put(array);
                 }
                 if (rightAnswerContent == null || rightAnswerContent.length() == 0) {
                     rightAnswerContent = new JSONArray();
@@ -769,8 +768,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                     emptyJson.put("score", "");
                     emptyJson.put("scoreKey", "");
                     array.put(emptyJson);
-                    jsonObject.put("rightAnswerContent", array);
-                    rightAnswerContent.put(jsonObject);
+                    rightAnswerContent.put(array);
                 }
                 dataJson.put("testid", test.getId());
                 dataJson.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId());
@@ -787,7 +785,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 dataJson.put("lostReason", "");
                 dataJson.put("rightAnswerContent", rightAnswerContent);
                 dataJson.put("userAnswerContent", userAnswerContent);
-                testInfos.put(test.getId(), dataJson.toString());
+                data.put(test.getId(), dataJson.toString());
             } catch (JSONException e) {
                 CrashReport.postCatchedException(e);
                 mLogtf.e("submit", e);
@@ -796,7 +794,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
 //        }
         LiveHttpManager mLiveHttpManager = new LiveHttpManager(mContext);
 
-        mLiveHttpManager.submitChineseAISubjectiveAnswer(testInfos, new HttpCallBack(false) {
+        mLiveHttpManager.submitChineseAISubjectiveAnswer(data.toString(), new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 JSONObject response = (JSONObject) responseEntity.getJsonObject();

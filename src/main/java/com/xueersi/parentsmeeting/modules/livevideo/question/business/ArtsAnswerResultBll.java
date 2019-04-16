@@ -536,7 +536,8 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
     }
 
     private void onChiAIAnswerResult(final ArtsAnswerResultEvent event, String result) {
-        final HashMap<String, String> testInfos = new HashMap<>();
+//        final HashMap<String, String> testInfos = new HashMap<>();
+        JSONObject data = new JSONObject();
         JSONObject dataJson = new JSONObject();
         try {
             JSONObject jsonObject = new JSONObject(result);
@@ -592,13 +593,13 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
             dataJson.put("lostReason", "");
             dataJson.put("rightAnswerContent", rightAnswerContent);
             dataJson.put("userAnswerContent", userAnswerContent);
-            testInfos.put(event.getTestId(), dataJson.toString());
+            data.put(event.getTestId(), dataJson.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
         LiveHttpManager mLiveHttpManager = new LiveHttpManager(mContext);
 
-        mLiveHttpManager.submitChineseAISubjectiveAnswer(testInfos, new HttpCallBack(false) {
+        mLiveHttpManager.submitChineseAISubjectiveAnswer(data.toString(), new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 final CourseWareHttpManager manager = new CourseWareHttpManager(getHttpManager());
