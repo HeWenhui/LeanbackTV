@@ -354,7 +354,6 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         if (mLiveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
             LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = new LiveGetInfo.StudentLiveInfoEntity();
             studentLiveInfo.setLearning_stage(mVideoEntity.getLearning_stage());
-            studentLiveInfo.setClassId(mVideoEntity.getClassId());
             liveGetInfo.setStudentLiveInfo(studentLiveInfo);
         }
         liveGetInfo.setPattern(pattern);
@@ -364,6 +363,9 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                 JSONObject liveInfo = new JSONObject(getInfoStr);
                 liveGetInfo.setSmallEnglish("1".equals(liveInfo.optString("useSkin")));
                 liveGetInfo.setPrimaryChinese("2".equals(liveInfo.optString("useSkin")));
+                if (liveGetInfo.getStudentLiveInfo() != null) {
+                    liveGetInfo.getStudentLiveInfo().setClassId(liveInfo.optString("class_id"));
+                }
                 //解析学科id
                 if (liveInfo.has("subject_ids")) {
                     String strSubjIds = liveInfo.getString("subject_ids");
