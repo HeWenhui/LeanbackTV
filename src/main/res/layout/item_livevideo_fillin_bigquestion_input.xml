@@ -10,8 +10,11 @@
         android:layout_centerVertical="true"
         android:background="@drawable/shape_livevideo_big_fillin_edittext_port_bg"
         android:imeOptions="flagNoExtractUi"
+        android:includeFontPadding="false"
         android:maxLines="1"
+        android:paddingLeft="10dp"
         android:textColor="@color/white"
-        android:textColorHint="#73ffffff" />
+        android:textColorHint="#73ffffff"
+        android:textSize="14sp" />
 
 </RelativeLayout>

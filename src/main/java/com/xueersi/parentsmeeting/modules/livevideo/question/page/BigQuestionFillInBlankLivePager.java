@@ -143,7 +143,7 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveQuestionPager {
                 holder = (BlankViewHolder) convertView.getTag();
             }
             holder.etFillBlank.setOnClickListener(editClickListener);
-            holder.etFillBlank.setHint((position + 1) + ".");
+            holder.etFillBlank.setHint("  " + (position + 1) + "  |  请输入");
             // holder.etFillBlank.setOnFocusChangeListener(editOnFocusChangeListener);
             TextWatcher textWatcher = (TextWatcher) holder.etFillBlank.getTag(R.id.et_livevideo_question_fillin_input);
             if (textWatcher != null) {
