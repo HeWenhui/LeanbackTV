@@ -12,6 +12,6 @@
         android:imeOptions="flagNoExtractUi"
         android:maxLines="1"
         android:textColor="@color/white"
-        android:textColorHint="@color/white" />
+        android:textColorHint="#73ffffff" />
 
 </RelativeLayout>

@@ -66,7 +66,6 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveQuestionPager {
         mAnswerEntityLst = baseVideoQuestionEntity.getAnswerEntityLst();
         mQuestionSize = mAnswerEntityLst.size();
         mBlankSize = baseVideoQuestionEntity.getvBlankSize();
-        gvFillBlank.setNumColumns(mBlankSize);
         initData();
     }
 
@@ -87,6 +86,7 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveQuestionPager {
 
     @Override
     public void initData() {
+        gvFillBlank.setNumColumns(mBlankSize);
         FillBlankAdapter fillBlankAdapter = new FillBlankAdapter(mContext, mAnswerEntityLst);
         gvFillBlank.setAdapter(fillBlankAdapter);
         rlDown.setOnClickListener(new OnClickListener() {

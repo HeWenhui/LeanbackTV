@@ -8,4 +8,5 @@
     <dimen name="livevideo_praise_interac_praise_btn_width">40dp</dimen>
     <dimen name="livevideo_big_fillin_width">120dp</dimen>
     <dimen name="livevideo_big_fillin_allwidth">140dp</dimen>
+    <dimen name="livevideo_big_select_allwidth">72dp</dimen>
 </resources>

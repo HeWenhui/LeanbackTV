@@ -51,6 +51,19 @@ public class LiveQueConfig {
     public static final String EN_COURSE_TYPE_NEW_GAME = "17";
     public static final String EN_COURSE_TYPE_18 = "18";
     public static final String EN_COURSE_TYPE_19 = "19";
+    /**
+     * 大题互动类型-单选
+     * http://wiki.xesv5.com/pages/viewpage.action?pageId=17724551
+     */
+    public static final int DOTTYPE_SELE = 1;
+    /**
+     * 大题互动类型-多选
+     */
+    public static final int DOTTYPE_MUL_SELE = 2;
+    /**
+     * 大题互动类型-填空
+     */
+    public static final int DOTTYPE_FILL = 3;
 
     public static ArrayList getSubmitMultiTestTypes() {
         if (SUBMIT_MULTI_TEST_TYPES == null) {

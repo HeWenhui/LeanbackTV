@@ -1,8 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -13,16 +11,15 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.entity.AnswerEntity;
-import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.ui.adapter.XsBaseAdapter;
-import com.xueersi.ui.widget.button.progressbutton.CircularProgressButton;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -34,25 +31,23 @@ import java.util.List;
  * @author hua
  */
 public class BigQuestionSelectLivePager extends BaseLiveQuestionPager {
-    RelativeLayout rlQuestionContentQuestion;
+    private RelativeLayout rlQuestionContentQuestion;
     /** 答案列表 */
-    List<AnswerEntity> mAnswerEntityLst;
+    private List<AnswerEntity> mAnswerEntityLst;
     private Button btnSubmit;
     /** 隐藏试题图标布局 */
-    RelativeLayout rlDown;
+    private RelativeLayout rlDown;
     /** 提交 */
     private String mAnswer = "";
     /** 隐藏试题布局 */
-    ImageView mImgDown;
-    /** 互动题 */
-    private BaseVideoQuestionEntity baseVideoQuestionEntity;
+    private ImageView mImgDown;
     private RelativeLayout rlQuestionContent;
     private RelativeLayout rlQuestionHide;
     private ImageView ivQuestionVisible;
-    private float screenDensity;
     private GridView gvQuestion;
+    private int dotType = LiveQueConfig.DOTTYPE_SELE;
 
-    public BigQuestionSelectLivePager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity) {
+    public BigQuestionSelectLivePager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity) {
         super(context);
         this.baseVideoQuestionEntity = baseVideoQuestionEntity;
         mAnswerEntityLst = baseVideoQuestionEntity.getAnswerEntityLst();
@@ -64,7 +59,6 @@ public class BigQuestionSelectLivePager extends BaseLiveQuestionPager {
 //                mAnswerEntityLst.get(i).setStuAnswer("1");
 //            }
 //        }
-        screenDensity = ScreenUtils.getScreenDensity();
         initListener();
         initData();
     }
@@ -109,23 +103,84 @@ public class BigQuestionSelectLivePager extends BaseLiveQuestionPager {
 
     @Override
     public void initData() {
+        int size = mAnswerEntityLst.size();
+        gvQuestion.setNumColumns(size);
         MulitSelectAdapter mulitSelectAdapter = new MulitSelectAdapter(mContext, mAnswerEntityLst);
         gvQuestion.setAdapter(mulitSelectAdapter);
-        //选项少于两行，重新设置高度
-//        if (mAnswerEntityLst.size() < 6) {
-//            ViewGroup.LayoutParams lp = rlQuestionContentQuestion.getLayoutParams();
-//            lp.height = (int) (64 * screenDensity);
-////            rlQuestionContentQuestion.setLayoutParams(lp);
-//            LayoutParamsUtil.setViewLayoutParams(rlQuestionContentQuestion, lp);
-//            ViewGroup.MarginLayoutParams lp2 = (ViewGroup.MarginLayoutParams) btnSubmit.getLayoutParams();
-//            lp2.topMargin = (int) (ScreenUtils.getScreenDensity() * 10);
-////            btnSubmit.setLayoutParams(lp2);
-//            LayoutParamsUtil.setViewLayoutParams(btnSubmit, lp2);
-//        }
+        ViewGroup.LayoutParams lp = gvQuestion.getLayoutParams();
+        float width = mContext.getResources().getDimension(R.dimen.livevideo_big_select_allwidth);
+        lp.width = (int) (width * size);
+        logger.d("initData:width=" + width + ",all=" + lp.width);
+        LayoutParamsUtil.setViewLayoutParams(gvQuestion, lp);
     }
 
-    /** 答案选择 */
-    private class AnswerOnClickListener implements OnClickListener {
+    private Button lastBt;
+
+    /** 答案选择-单选 */
+    private class AnswerSelOnClickListener implements OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            Integer isSelect = (Integer) v.getTag();
+            if (isSelect == null) {
+                isSelect = 1;
+            } else {
+                if (isSelect == 1) {
+                    isSelect = 0;
+                } else {
+                    isSelect = 1;
+                }
+            }
+            v.setTag(isSelect);
+            Button thisButton = (Button) v;
+            int position = (int) v.getTag(R.id.btn_livevideo_question_select_questiona);
+            if (isSelect == 1) {
+                if (lastBt != null) {
+                    lastBt.setTag(0);
+                    int lastPosition = (int) lastBt.getTag(R.id.btn_livevideo_question_select_questiona);
+                    mAnswerEntityLst.get(lastPosition).setStuAnswer("0");
+                    lastBt.setTextColor(mContext.getResources().getColor(R.color.white));
+                    lastBt.setBackgroundResource(R.drawable.shape_big_question_select_answer_normal);
+                }
+                mAnswerEntityLst.get(position).setStuAnswer("1");
+                thisButton.setTextColor(mContext.getResources().getColor(R.color.COLOR_333333));
+                thisButton.setBackgroundResource(R.drawable.shape_big_question_select_answer_sel);
+                lastBt = thisButton;
+            } else {
+                mAnswerEntityLst.get(position).setStuAnswer("0");
+                thisButton.setTextColor(mContext.getResources().getColor(R.color.white));
+                thisButton.setBackgroundResource(R.drawable.shape_big_question_select_answer_normal);
+                if (lastBt == thisButton) {
+                    lastBt = null;
+                }
+            }
+            mAnswer = "";
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < mAnswerEntityLst.size(); i++) {
+                View child = gvQuestion.getChildAt(i);
+                Button button = child.findViewById(R.id.btn_livevideo_question_select_questiona);
+                isSelect = (Integer) button.getTag();
+                if (isSelect != null && isSelect == 1) {
+                    sb.append(button.getText());
+                    sb.append(",");
+                }
+            }
+            if (sb.length() > 0) {
+                sb.deleteCharAt(sb.length() - 1);
+            }
+            mAnswer = sb.toString();
+            baseVideoQuestionEntity.setStuAnswer(mAnswer);
+            if ("".equals(mAnswer)) {
+                btnSubmit.setEnabled(false);
+            } else {
+                btnSubmit.setEnabled(true);
+            }
+        }
+    }
+
+    /** 答案选择- 多选 */
+    private class AnswerMulSelOnClickListener implements OnClickListener {
+
         @Override
         public void onClick(View v) {
             Integer isSelect = (Integer) v.getTag();
@@ -142,12 +197,12 @@ public class BigQuestionSelectLivePager extends BaseLiveQuestionPager {
             int position = (int) v.getTag(R.id.btn_livevideo_question_select_questiona);
             if (isSelect == 1) {
                 mAnswerEntityLst.get(position).setStuAnswer("1");
-                ((Button) v).setTextColor(Color.WHITE);
-                v.setBackgroundResource(R.drawable.shape_question_mulitselect_answer_selected);
+                ((Button) v).setTextColor(mContext.getResources().getColor(R.color.COLOR_333333));
+                v.setBackgroundResource(R.drawable.shape_big_question_select_answer_sel);
             } else {
                 mAnswerEntityLst.get(position).setStuAnswer("0");
-                ((Button) v).setTextColor(mContext.getResources().getColor(R.color.COLOR_333333));
-                v.setBackgroundResource(R.drawable.shape_question_mulitselect_answer_normal);
+                ((Button) v).setTextColor(mContext.getResources().getColor(R.color.white));
+                v.setBackgroundResource(R.drawable.shape_big_question_select_answer_normal);
             }
             mAnswer = "";
             StringBuilder sb = new StringBuilder();
@@ -210,19 +265,23 @@ public class BigQuestionSelectLivePager extends BaseLiveQuestionPager {
                 mAnswer = "";
             }
             convertView = LayoutInflater.from(mContext).inflate(R.layout.item_livevideo_select_bigquestion, parent, false);
-            Button button = (Button) convertView.findViewById(R.id.btn_livevideo_question_select_questiona);
+            Button button = convertView.findViewById(R.id.btn_livevideo_question_select_questiona);
             button.setText("" + ((char) ('A' + position)));
             button.setTag(R.id.btn_livevideo_question_select_questiona, position);
             AnswerEntity answerLiveEntity = getItem(position);
             if ("1".equals(answerLiveEntity.getStuAnswer())) {
-                button.setTextColor(Color.WHITE);
-                mAnswer += button.getText() + ",";
-                button.setBackgroundResource(R.drawable.shape_question_mulitselect_answer_selected);
-            } else {
                 button.setTextColor(mContext.getResources().getColor(R.color.COLOR_333333));
-                button.setBackgroundResource(R.drawable.shape_question_mulitselect_answer_normal);
+                mAnswer += button.getText() + ",";
+                button.setBackgroundResource(R.drawable.shape_big_question_select_answer_sel);
+            } else {
+                button.setTextColor(mContext.getResources().getColor(R.color.white));
+                button.setBackgroundResource(R.drawable.shape_big_question_select_answer_normal);
             }
-            button.setOnClickListener(new AnswerOnClickListener());
+            if (dotType == LiveQueConfig.DOTTYPE_SELE) {
+                button.setOnClickListener(new AnswerSelOnClickListener());
+            } else {
+                button.setOnClickListener(new AnswerMulSelOnClickListener());
+            }
             if ("".equals(mAnswer)) {
                 btnSubmit.setEnabled(false);
             } else {

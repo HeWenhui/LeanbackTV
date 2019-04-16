@@ -7,10 +7,10 @@
         android:id="@id/btn_livevideo_question_select_questiona"
         android:layout_width="52dp"
         android:layout_height="36dp"
-        android:background="@drawable/selector_live_ques_big_select_answer"
+        android:background="@drawable/shape_big_question_select_answer_normal"
         android:gravity="center"
         android:includeFontPadding="false"
         android:text="A"
-        android:textColor="#666666"
+        android:textColor="@color/white"
         android:textSize="20sp" />
 </RelativeLayout>
