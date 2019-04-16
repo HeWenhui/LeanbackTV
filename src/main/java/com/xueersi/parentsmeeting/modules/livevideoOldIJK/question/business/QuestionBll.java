@@ -1839,11 +1839,20 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         rlQuestionContent.addView(baseQuestionPager.getRootView(), params);
     }
 
+
     /**
      * 创建互动题作答，抢红包结果提示PopupWindow
      */
     @Override
     public void initQuestionAnswerReslut(View popupWindow_view) {
+        initQuestionAnswerReslut(popupWindow_view,true);
+    }
+
+
+    /**
+     * 创建互动题作答，抢红包结果提示PopupWindow
+     */
+    public void initQuestionAnswerReslut(View popupWindow_view,boolean isAutoDismiss) {
         logger.d("initQuestionAnswerReslut");
         popupWindow_view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             long before;
@@ -1856,7 +1865,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
             @Override
             public void onViewDetachedFromWindow(View view) {
-                mLogtf.d("initQuestionAnswerReslut:onViewDetachedFromWindow:time=" + (System.currentTimeMillis() - before));
+                mLogtf.d("initQuestionAnswerReslut:onViewDetachedFromWindow:time=" + (System.currentTimeMillis() -
+                        before));
             }
         });
         rlQuestionResContent.addView(popupWindow_view, new ViewGroup.LayoutParams(ViewGroup.LayoutParams
@@ -1868,8 +1878,12 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 rlQuestionResContent.removeAllViews();
             }
         });
-        disMissAnswerResult();
+        if (isAutoDismiss) {
+            disMissAnswerResult();
+        }
     }
+
+
 
     @Override
     public void removeQuestionAnswerReslut(View popupWindow_view) {
@@ -1962,7 +1976,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     public void initSelectAnswerRightResultVoice(VideoResultEntity entity) {
         entity.setPreEnglish(liveGetInfo != null && liveGetInfo.getSmallEnglish());
         final View popupWindow_view = QuestionResultView.initSelectAnswerRightResultVoice(activity, entity);
-        initQuestionAnswerReslut(popupWindow_view);
+        initQuestionAnswerReslut(popupWindow_view,false);
     }
 
     /**
@@ -1973,7 +1987,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         entity.setPreEnglish(liveGetInfo != null && liveGetInfo.getSmallEnglish());
 
         View popupWindow_view = QuestionResultView.initFillinAnswerRightResultVoice(activity, entity);
-        initQuestionAnswerReslut(popupWindow_view);
+        initQuestionAnswerReslut(popupWindow_view,false);
     }
 
     /**
@@ -1984,7 +1998,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         entity.setPreEnglish(liveGetInfo != null && liveGetInfo.getSmallEnglish());
 
         View popupWindow_view = QuestionResultView.initSelectAnswerWrongResultVoice(activity, entity);
-        initQuestionAnswerReslut(popupWindow_view);
+        initQuestionAnswerReslut(popupWindow_view,false);
     }
 
     /**
@@ -1995,7 +2009,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         entity.setPreEnglish(liveGetInfo != null && liveGetInfo.getSmallEnglish());
 
         View popupWindow_view = QuestionResultView.initFillAnswerWrongResultVoice(activity, entity);
-        initQuestionAnswerReslut(popupWindow_view);
+        initQuestionAnswerReslut(popupWindow_view,false);
     }
 
     /**

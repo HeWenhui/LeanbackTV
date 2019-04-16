@@ -672,7 +672,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     public void initSelectAnswerRightResultVoice(VideoResultEntity entity) {
         entity.setPreEnglish(mGetInfo != null && mGetInfo.getSmallEnglish());
         final View popupWindow_view = QuestionResultView.initSelectAnswerRightResultVoice(context, entity);
-        initQuestionAnswerReslut(popupWindow_view);
+        initQuestionAnswerReslut(popupWindow_view,false);
     }
 
     @Override
@@ -680,7 +680,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         entity.setPreEnglish(mGetInfo != null && mGetInfo.getSmallEnglish());
 
         View popupWindow_view = QuestionResultView.initFillinAnswerRightResultVoice(context, entity);
-        initQuestionAnswerReslut(popupWindow_view);
+        initQuestionAnswerReslut(popupWindow_view,false);
     }
 
     /** 语音答题回答错误 */
@@ -689,7 +689,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         entity.setPreEnglish(mGetInfo != null && mGetInfo.getSmallEnglish());
 
         View popupWindow_view = QuestionResultView.initSelectAnswerWrongResultVoice(context, entity);
-        initQuestionAnswerReslut(popupWindow_view);
+        initQuestionAnswerReslut(popupWindow_view,false);
     }
 
     /** 语音答题回答错误 */
@@ -698,7 +698,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         entity.setPreEnglish(mGetInfo != null && mGetInfo.getSmallEnglish());
 
         View popupWindow_view = QuestionResultView.initFillAnswerWrongResultVoice(context, entity);
-        initQuestionAnswerReslut(popupWindow_view);
+        initQuestionAnswerReslut(popupWindow_view,false);
     }
 
     /**
