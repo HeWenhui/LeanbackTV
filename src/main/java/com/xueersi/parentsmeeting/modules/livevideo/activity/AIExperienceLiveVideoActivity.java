@@ -539,7 +539,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                 chatRoomUid);
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
         if (MediaPlayer.getIsNewIJK()) {
-            mIRCMessage = new NewIRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, mGetInfo,ums, channel);
+            mIRCMessage = new NewIRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, mGetInfo, channel);
         } else {
             // 获取 聊天服务器地址  的接口地址
             ArrayList<TalkConfHost> talkConfHosts = new ArrayList<>();

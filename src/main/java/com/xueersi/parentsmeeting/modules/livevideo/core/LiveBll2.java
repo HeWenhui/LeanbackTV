@@ -468,9 +468,9 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
         if (MediaPlayer.getIsNewIJK()) {
             if (TextUtils.isEmpty(eChannel) || LiveTopic.MODE_CLASS.equals(getMode())) {
-                mIRCMessage = new NewIRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, mGetInfo, this,channel);
+                mIRCMessage = new NewIRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, mGetInfo, channel);
             } else {
-                mIRCMessage = new NewIRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, mGetInfo,this, channel, eChannel);
+                mIRCMessage = new NewIRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, mGetInfo, channel, eChannel);
             }
         } else {
             if (TextUtils.isEmpty(eChannel) || LiveTopic.MODE_CLASS.equals(getMode())) {
