@@ -947,7 +947,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
             mIse.prepar();
         }
-        mParam.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
+        mParam.setRecogType(SpeechConfig.SPEECH_GROUP_GAME_EVALUATOR_OFFLINE);
         mParam.setLang(com.tal.speech.speechrecognizer.Constants.ASSESS_PARAM_LANGUAGE_EN);
         speechAnswerList.clear();
         speechAnswerList.addAll(allAnswerList);
