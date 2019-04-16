@@ -135,8 +135,8 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             isArts = activity.getIntent().getIntExtra("isArts", -1);
             isSmallEnglish = activity.getIntent().getBooleanExtra("isSmallEnglish", false);
             useSkin = activity.getIntent().getIntExtra("useSkin", 0);
+            //logger.e("========>:onVideoCreate 22222229999000:");
             pattern = activity.getIntent().getIntExtra("pattern", 2);
-
             String mode2 = activity.getIntent().getStringExtra("mode");
             if (mode2 != null) {
                 mode = mode2;
@@ -496,7 +496,6 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
 
 //        tvLoadingTint = mContentView.findViewById(R.id.tv_course_video_loading_content);
 
-        logger.e("========>:initView:" + bottomContent);
         // 预加载布局中退出事件
         mContentView.findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
         createMediaControlerTop();
@@ -507,8 +506,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         // TODO: 2018/10/23  添加了LayoutParams 是否会有其他异常？
         bottomContent.addView(liveMediaControllerBottom, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
-        android.util.Log.e("HalfBody", "====>LiveVideoFragment initView:add mediaContriller:"
-                + liveMediaControllerBottom.getClass().getSimpleName());
+        //logger.e("========>:initView 22222229999000:");
 
         pattern = activity.getIntent().getIntExtra("pattern", 2);
         if ((pattern == 1)) {
