@@ -15,8 +15,8 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.LiveExperienceEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.se.widget.GestureScrollEditText;
-import com.xueersi.parentsmeeting.modules.livevideo.se.widget.ItemLearnFeedbackPageSelectLayout;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.widget.GestureScrollEditText;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.widget.ItemLearnFeedbackPageSelectLayout;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,6 +29,7 @@ import okhttp3.Call;
 
 /**
  * 新的反馈弹窗，如果使用RadioGroup显示时，左边的选择按钮样式不好，采用这个Pager来显示反馈弹窗
+ *
  * @param <T>
  */
 public class NewStandExperienceLearnFeedBackPager<T extends IStandExperienceLearnFeedbackContract.IExperienceSendHttp> extends BasePager {

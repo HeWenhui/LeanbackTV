@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -33,12 +34,13 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <com.xueersi.parentsmeeting.modules.livevideo.se.widget.ItemLearnFeedbackPageSelectLayout
+            <com.xueersi.parentsmeeting.modules.livevideo.fragment.se.widget.ItemLearnFeedbackPageSelectLayout
                 android:id="@+id/item_select_layout1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                tools:ignore="MissingConstraints" />
 
-            <com.xueersi.parentsmeeting.modules.livevideo.se.widget.ItemLearnFeedbackPageSelectLayout
+            <com.xueersi.parentsmeeting.modules.livevideo.fragment.se.widget.ItemLearnFeedbackPageSelectLayout
                 android:id="@+id/item_select_layout2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -55,7 +57,7 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/item_select_layout2" />
 
-            <com.xueersi.parentsmeeting.modules.livevideo.se.widget.GestureScrollEditText
+            <com.xueersi.parentsmeeting.modules.livevideo.fragment.se.widget.GestureScrollEditText
                 android:id="@+id/et_stand_experience_learn_feedback_suggest"
                 android:layout_width="0dp"
                 android:layout_height="50dp"
