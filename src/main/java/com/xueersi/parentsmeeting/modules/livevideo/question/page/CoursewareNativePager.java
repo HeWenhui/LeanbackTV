@@ -1447,7 +1447,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 }
             }
         } else {
-            if (LiveQueConfig.SEC_COURSE_TYPE_QUE.equals(englishH5Entity.getPackageSource())) {
+            if (LiveQueConfig.SEC_COURSE_TYPE_QUE.equals(englishH5Entity.getPackageSource()) || LiveQueConfig.SEC_COURSE_TYPE_FUTURE.equals(englishH5Entity.getPackageSource())) {
                 showControl = true;
             }
         }
