@@ -1995,8 +1995,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     public void initSelectAnswerRightResultVoice(VideoResultEntity entity) {
         entity.setPreEnglish(liveGetInfo != null && liveGetInfo.getSmallEnglish());
         final View popupWindow_view = QuestionResultView.initSelectAnswerRightResultVoice(activity, entity);
-        initQuestionAnswerReslut(popupWindow_view,false);
-    }
+        boolean isAutoDissMiss = !entity.isPreEnglish();
+
+        initQuestionAnswerReslut(popupWindow_view,isAutoDissMiss);    }
 
     /**
      * 语音答题填空题回答正确
@@ -2006,7 +2007,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         entity.setPreEnglish(liveGetInfo != null && liveGetInfo.getSmallEnglish());
 
         View popupWindow_view = QuestionResultView.initFillinAnswerRightResultVoice(activity, entity);
-        initQuestionAnswerReslut(popupWindow_view,false);
+        boolean isAutoDissMiss = !entity.isPreEnglish();
+
+        initQuestionAnswerReslut(popupWindow_view,isAutoDissMiss);
+
     }
 
     /**
@@ -2017,8 +2021,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         entity.setPreEnglish(liveGetInfo != null && liveGetInfo.getSmallEnglish());
 
         View popupWindow_view = QuestionResultView.initSelectAnswerWrongResultVoice(activity, entity);
-        initQuestionAnswerReslut(popupWindow_view,false);
-    }
+        boolean isAutoDissMiss = !entity.isPreEnglish();
+
+        initQuestionAnswerReslut(popupWindow_view,isAutoDissMiss);    }
 
     /**
      * 语音答题回答错误
@@ -2028,8 +2033,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         entity.setPreEnglish(liveGetInfo != null && liveGetInfo.getSmallEnglish());
 
         View popupWindow_view = QuestionResultView.initFillAnswerWrongResultVoice(activity, entity);
-        initQuestionAnswerReslut(popupWindow_view,false);
-    }
+        boolean isAutoDissMiss = !entity.isPreEnglish();
+
+        initQuestionAnswerReslut(popupWindow_view,isAutoDissMiss);    }
 
     /**
      * 互动题回答错误
