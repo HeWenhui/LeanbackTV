@@ -1685,12 +1685,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 public void onDataSucess(Object... objData) {
                     loadResult = true;
                     PrimaryScienceAnswerResultEntity entity = (PrimaryScienceAnswerResultEntity) objData[0];
-                    if (isforce == 0) {
-                        mGoldNum = entity.getGold();
-                        if (allowTeamPk) {
-                            mEnergyNum = entity.getEnergy();
-                        }
+                    mGoldNum = entity.getGold();
+                    if (allowTeamPk) {
+                        mEnergyNum = isforce ==0?entity.getEnergy():0;
                     }
+
                     // 对外暴露答题结果
                     broadCastAnswerRestult(entity);
 
