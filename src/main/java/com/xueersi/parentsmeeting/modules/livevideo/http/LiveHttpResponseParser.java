@@ -510,6 +510,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     parseLiveGetInfoScience(data, liveTopic, getInfo);
                 }
             }
+            getInfo.setSubjectiveItem2AIUrl(data.optString("subjectiveItem2AIUrl","http://192.168.34.127:12010"));
             return getInfo;
         } catch (JSONException e) {
             logger.e("parseLiveGetInfo", e);

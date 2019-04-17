@@ -150,7 +150,7 @@ public class ChiAnswerResultPager extends BasePager implements IArtsAnswerRsultD
 //                tvIndex.setVisibility(View.GONE);
 //            }
             String standerAnswerText = "";
-            StringBuilder myAnswerText = markScoreKey(stuData, ";");
+            SpannableStringBuilder myAnswerText = markScoreKey(stuData, ";");
             standerAnswerText = listToStr(rightData, ";");
 
             int iconResId = 0;
@@ -165,13 +165,11 @@ public class ChiAnswerResultPager extends BasePager implements IArtsAnswerRsultD
                 ivAnswerIcon.setBackgroundResource(iconResId);
             }
 
-            SpannableStringBuilder stringBuilder = new SpannableStringBuilder("你的答案:");
             if (TextUtils.isEmpty(myAnswerText)) {
-                myAnswerText = new StringBuilder("空");
+                myAnswerText = new SpannableStringBuilder("空");
             }
-            stringBuilder.append(myAnswerText);
 
-            tvUserAnswer.setText(stringBuilder);
+            tvUserAnswer.setText(myAnswerText);
             tvRightAnswer.setText("正确答案:" + standerAnswerText);
 
         }
@@ -214,8 +212,8 @@ public class ChiAnswerResultPager extends BasePager implements IArtsAnswerRsultD
      * @param
      * @return
      */
-    private StringBuilder markScoreKey(List<ChineseAISubjectResultEntity.StuAnswer> data, String spiltStr) {
-        StringBuilder stringBuilder = new StringBuilder();
+    private SpannableStringBuilder markScoreKey(List<ChineseAISubjectResultEntity.StuAnswer> data, String spiltStr) {
+        SpannableStringBuilder stringBuilder = new SpannableStringBuilder("你的答案:");
         if (data != null) {
             boolean isAllSpace = true;
             for (int i = 0; i < data.size(); i++) {
@@ -225,20 +223,21 @@ public class ChiAnswerResultPager extends BasePager implements IArtsAnswerRsultD
                     temp = "空";
                 } else {
                     isAllSpace = false;
+                    if (i != 0 && !TextUtils.isEmpty(spiltStr)) {
+                        stringBuilder.append(spiltStr);
+                    }
                 }
-                if (i != 0 && !TextUtils.isEmpty(spiltStr)) {
-                    stringBuilder.append(spiltStr);
-                }
+
                 if (!"空".equals(temp)){
                     String [] keys = answer.getScoreKey().split(";");
                     Map<Integer,String> indexs = new TreeMap<>();
                     for (int j = 0; j < keys.length; j++) {
-                        indexs.putAll(getIndex(temp,keys[i]));
+                        indexs.putAll(getIndex(temp,keys[j]));
                     }
                     int firstIndex = 0;
                     for(int key:indexs.keySet()){
                         SpannableString span = new SpannableString(indexs.get(key));
-                        span.setSpan(new ForegroundColorSpan(getColor(R.color.COLOR_5DA741)), 0, span.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+                        span.setSpan(new ForegroundColorSpan(Color.parseColor("#FF5DA741")), 0, span.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE );
                         if (key > firstIndex){
                             stringBuilder.append(temp.substring(firstIndex,key));
                             stringBuilder.append(span);
@@ -251,10 +250,10 @@ public class ChiAnswerResultPager extends BasePager implements IArtsAnswerRsultD
                         stringBuilder.append(temp.substring(firstIndex));
                     }
                 }
-                stringBuilder.append(answer);
+//                stringBuilder.append(temp.substring());
             }
             if (isAllSpace) {
-                return new StringBuilder("空");
+                return new SpannableStringBuilder("空");
             }
         }
         return stringBuilder;
@@ -263,8 +262,10 @@ public class ChiAnswerResultPager extends BasePager implements IArtsAnswerRsultD
     //获取匹配到的字符串下标
     public Map<Integer,String> getIndex(String strings, String str){
         Map<Integer,String> keyIndex=new TreeMap<>();
+        int offset = 0;
         while (strings.indexOf(str)!=-1){
-            keyIndex.put(strings.indexOf(str),str);
+            keyIndex.put(strings.indexOf(str)+offset,str);
+            offset = strings.indexOf(str)+str.length();
             strings=strings.substring(strings.indexOf(str)+str.length());
         }
         return keyIndex;
@@ -335,6 +336,7 @@ public class ChiAnswerResultPager extends BasePager implements IArtsAnswerRsultD
             }else {
                 tvScore.setText(mData.getTotalScore()+"分");
             }
+            mReusltType = mData.getIsRight();
             tvGoldCount.setVisibility(View.VISIBLE);
             llRewardInfo.setVisibility(View.VISIBLE);
 
@@ -346,7 +348,6 @@ public class ChiAnswerResultPager extends BasePager implements IArtsAnswerRsultD
                 ivClose.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        closeResultUi();
                         close();
                     }
                 });
@@ -393,6 +394,7 @@ public class ChiAnswerResultPager extends BasePager implements IArtsAnswerRsultD
             mView.post(new Runnable() {
                 @Override
                 public void run() {
+                    closeResultUi();
                     if (mView.getParent() != null) {
                         ((ViewGroup) mView.getParent()).removeView(mView);
                     }

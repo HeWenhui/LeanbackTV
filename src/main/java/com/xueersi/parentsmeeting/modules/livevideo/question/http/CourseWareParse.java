@@ -86,14 +86,12 @@ public class CourseWareParse {
         ChineseAISubjectResultEntity resultEntity = new ChineseAISubjectResultEntity();
         try {
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-            resultEntity.setType(jsonObject.getInt("type"));
-            resultEntity.setGold(jsonObject.getInt("gold"));
-            resultEntity.setEnergy(jsonObject.getInt("energy"));
-            resultEntity.setTotalScore(jsonObject.getDouble("totalScore"));
-            resultEntity.setTestType(jsonObject.getString("testType"));
-            resultEntity.setIsRight(jsonObject.getInt("isRight"));
-            resultEntity.setIsAnswered(jsonObject.getInt("isAnswered"));
-            resultEntity.setReviseGold(jsonObject.getInt("reviseGold"));
+            resultEntity.setGold(jsonObject.optInt("gold"));
+            resultEntity.setEnergy(jsonObject.optInt("energy"));
+            resultEntity.setTotalScore(jsonObject.optDouble("totalScore"));
+            resultEntity.setTestType(jsonObject.optString("testType"));
+            resultEntity.setIsRight(jsonObject.optInt("isRight"));
+            resultEntity.setIsAnswered(jsonObject.optInt("isAnswered"));
             JSONObject answerLists = jsonObject.getJSONObject("answerLists");
 
             JSONArray stuAnswerArray = answerLists.getJSONArray("stuAnswer");
@@ -101,9 +99,10 @@ public class CourseWareParse {
             for (int i = 0; i < stuAnswerArray.length(); i++) {
                 JSONObject answerJson = stuAnswerArray.getJSONObject(i);
                 ChineseAISubjectResultEntity.StuAnswer stuAnswer = new ChineseAISubjectResultEntity.StuAnswer();
-                stuAnswer.setAnswer(answerJson.getString("answer"));
-                stuAnswer.setScoreKey(answerJson.getString("soreKey"));
-                stuAnswer.setRight(answerJson.getInt("right"));
+                stuAnswer.setAnswer(answerJson.optString("answer"));
+                stuAnswer.setScoreKey(answerJson.optString("soreKey"));
+                stuAnswer.setScore(answerJson.optString("score"));
+                stuAnswer.setId(answerJson.optString("id"));
                 stuAnswers.add(stuAnswer);
             }
             resultEntity.setStuAnswers(stuAnswers);

@@ -33,7 +33,6 @@ public class ChineseAISubjectResultEntity {
     int isAnswered;
     /** 1-选择 2-填空 3-主观题*/
     String testType;
-    int reviseGold;
     List<String> rightAnswers;
     List<StuAnswer> stuAnswers;
 
@@ -69,14 +68,6 @@ public class ChineseAISubjectResultEntity {
         this.testType = testType;
     }
 
-    public int getReviseGold() {
-        return reviseGold;
-    }
-
-    public void setReviseGold(int reviseGold) {
-        this.reviseGold = reviseGold;
-    }
-
     public List<String> getRightAnswers() {
         return rightAnswers;
     }
@@ -95,7 +86,8 @@ public class ChineseAISubjectResultEntity {
     public static class StuAnswer {
         String answer;
         String scoreKey;
-        int right;
+        String score;
+        String id;
 
         public String getAnswer() {
             return answer;
@@ -113,12 +105,20 @@ public class ChineseAISubjectResultEntity {
             this.scoreKey = scoreKey;
         }
 
-        public int getRight() {
-            return right;
+        public String getScore() {
+            return score;
         }
 
-        public void setRight(int right) {
-            this.right = right;
+        public void setScore(String score) {
+            this.score = score;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
         }
     }
 

@@ -77,7 +77,7 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
                         && LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(videoQuestionH5Entity.englishH5Entity.getPackageAttr())) {
                     ChineseAiSubjectiveCoursewarePager h5CoursewarePager = new ChineseAiSubjectiveCoursewarePager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
                             videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, "0"
-                            , isArts, false);
+                            , isArts, false,liveGetInfo.getSubjectiveItem2AIUrl());
                     h5CoursewarePager.setLivePagerBack(livePagerBack);
                     return h5CoursewarePager;
                 }

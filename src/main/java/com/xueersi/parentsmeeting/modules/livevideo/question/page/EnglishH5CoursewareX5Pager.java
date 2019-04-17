@@ -101,8 +101,6 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private boolean isNewArtsCourseware;
     private HashMap header;
     private String mGold;
-    private int isforce = 0;
-    private long entranceTime = 0;
 
     @Override
     public void setEnglishH5CoursewareBll(EnglishH5CoursewareBll englishH5CoursewareBll) {
@@ -153,7 +151,6 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         if (!mPublicCacheout.exists()) {
             mPublicCacheout.mkdirs();
         }
-        entranceTime = System.currentTimeMillis() / 1000;
         initData();
         header = new HashMap();
         header.put("Access-Control-Allow-Origin", "*");
@@ -193,7 +190,6 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
             return;
         }
         isFinish = true;
-        isforce = 1;
         String commit;
         if (isNewArtsCourseware && !LiveQueConfig.EN_COURSE_TYPE_NEW_GAME.equals(detailInfo.type)) {
             wvSubjectWeb.loadUrl(jsArtsForceSubmit);
@@ -662,17 +658,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         Loger.e("EnglishH5CourseWareX5Pager",
                 "=========>showAnswerResult_LiveVideo:" + data);
         Loger.e(TAG, "======> newArtsH5CourseWare data:" + data);
-        if(LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(englishH5Entity.getPackageAttr())){
-            ArtsAnswerResultEvent artsAnswerResultEvent = new ArtsAnswerResultEvent(data, ArtsAnswerResultEvent.TYPE_AI_CHINESE_ANSWERRESULT);
-            artsAnswerResultEvent.setTestId(getId());
-            artsAnswerResultEvent.setIsforce(isforce);
-            artsAnswerResultEvent.setDetailInfo(detailInfo);
-            artsAnswerResultEvent.setEntranceTime(entranceTime);
-            artsAnswerResultEvent.setPlayBack(isPlayBack);
-            EventBus.getDefault().post(new ArtsAnswerResultEvent(data, ArtsAnswerResultEvent.TYPE_AI_CHINESE_ANSWERRESULT));
-        } else {
-            EventBus.getDefault().post(new ArtsAnswerResultEvent(data, ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT));
-        }
+        EventBus.getDefault().post(new ArtsAnswerResultEvent(data, ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT));
     }
 
     /**

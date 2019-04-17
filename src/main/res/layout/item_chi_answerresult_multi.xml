@@ -6,41 +6,34 @@
     android:layout_height="wrap_content"
     android:paddingRight="30dp">
 
-    <LinearLayout
-        android:id="@id/ll_chi_answer_result_item_muti_user_answer_info"
-        android:layout_width="match_parent"
+
+    <ImageView
+        android:id="@id/iv_chi_answer_result_item_muti_right_answer"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="4dp"
+        />
+
+
+    <TextView
+        android:id="@id/tv_chi_answer_result_item_muti_user_answer"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <ImageView
-            android:id="@id/iv_chi_answer_result_item_muti_right_answer"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_marginLeft="30dp"
-             />
-
-        <!--选择题 标准答案-->
-        <TextView
-            android:id="@id/tv_chi_answer_result_item_muti_user_answer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:textColor="@color/COLOR_333333"
-            android:textSize="17sp"
-            android:visibility="visible"
-            android:layout_marginLeft="5dp"
-            tools:text="aaaaaaaaaaaaaaaaaaaaaaaaaaaa" />
-    </LinearLayout>
-
+        android:textColor="@color/COLOR_333333"
+        android:textSize="17sp"
+        android:visibility="visible"
+        android:layout_toRightOf="@id/iv_chi_answer_result_item_muti_right_answer"
+        tools:text="aaaaaaaaaaaaaaaaaaaaaaaaaaaa" />
 
     <TextView
         android:id="@id/tv_chi_answer_result_item_muti_right_answer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/ll_chi_answer_result_item_muti_user_answer_info"
-        android:layout_marginLeft="50dp"
-        android:layout_alignParentLeft="true"
+        android:layout_below="@id/tv_chi_answer_result_item_muti_user_answer"
+        android:layout_alignLeft="@id/tv_chi_answer_result_item_muti_user_answer"
         android:gravity="center_vertical"
         android:textColor="@color/COLOR_333333"
         android:textSize="17sp"
