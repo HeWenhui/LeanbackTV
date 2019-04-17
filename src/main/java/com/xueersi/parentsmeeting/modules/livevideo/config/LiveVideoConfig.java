@@ -465,9 +465,9 @@ public class LiveVideoConfig {
      */
     public static String URL_LIVE_GET_SCIENCE_COURSEWARE_URL =  LiveVideoConfig.HTTP_HOST+"/science/LiveCourses/preLoadNewCourseWare";
 
-    public static final String URL_GOLD_MICROPHONE_TO_AI = "https://app.chs.xueersi.com/LiveCourses/isGoldMicrophoneToAi";
+    public static final String URL_GOLD_MICROPHONE_TO_AI = "https://app.chs.xueersi.com/LiveCourse/isGoldMicrophoneToAi";
 
-    public static final String URL_IS_GOLD_MICROPHONE = "https://app.chs.xueersi.com/LiveCourses/setGoldMicrophoneData";
+    public static final String URL_IS_GOLD_MICROPHONE = "https://app.chs.xueersi.com/LiveCourse/setGoldMicrophoneData";
 
 
 }
