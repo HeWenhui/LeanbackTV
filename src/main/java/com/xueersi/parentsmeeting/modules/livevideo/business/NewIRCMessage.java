@@ -81,6 +81,7 @@ public class NewIRCMessage implements IIRCMessage {
     private boolean isFirstLogin = true;
     private String eventid = "NewIRCMessage";
     private Map<String, String> analysis;
+    private UUID mSid = UUID.randomUUID();
 
     public NewIRCMessage(Context context, int netWorkType, String login, String nickname, LiveGetInfo liveInfo, String... channel) {
         this.netWorkType = netWorkType;
@@ -152,12 +153,10 @@ public class NewIRCMessage implements IIRCMessage {
                 MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
                 int logincode = mChatClient.login(myUserInfoEntity.getPsimId(), myUserInfoEntity.getPsimPwd());
             }
-            Map<String, String> logHashMap = new HashMap<>();
+            Map<String, String> logHashMap = defaultlog();
             logHashMap.put("logtype","login");
             logHashMap.put("loginCode", "" + loginResp.code);
             logHashMap.put("loginInfo", "" + loginResp.info);
-            logHashMap.put("eventid",eventid);
-            logHashMap.put("nickname", mNickname);
             logHashMap.put("connectCount", ""+mConnectCount);
             UmsAgentManager.umsAgentOtherBusiness(context,UmsConstants.APP_ID,UmsConstants.uploadSystem,logHashMap,analysis);
         }
@@ -201,12 +200,10 @@ public class NewIRCMessage implements IIRCMessage {
                 }
 
             }
-            Map<String, String> logHashMap = new HashMap<>();
+            Map<String, String> logHashMap = defaultlog();
             logHashMap.put("logtype","logout");
             logHashMap.put("logoutCode", "" + logoutNotice.code);
             logHashMap.put("logoutInfo", "" + logoutNotice.info);
-            logHashMap.put("eventid",eventid);
-            logHashMap.put("nickname", mNickname);
             UmsAgentManager.umsAgentOtherBusiness(context,UmsConstants.APP_ID,UmsConstants.uploadSystem,logHashMap,analysis);
         }
 
@@ -230,11 +227,9 @@ public class NewIRCMessage implements IIRCMessage {
                 if (mIRCCallback != null) {
                     mIRCCallback.onDisconnect(null, false);
                 }
-                Map<String, String> logHashMap = new HashMap<>();
-                logHashMap.put("logtype","netStatus");
+                Map<String, String> logHashMap = defaultlog();
+                logHashMap.put("logtype","netStatusFail");
                 logHashMap.put("netStatus", "" + netStatusResp.netStatus);
-                logHashMap.put("eventid",eventid);
-                logHashMap.put("nickname", mNickname);
                 UmsAgentManager.umsAgentOtherBusiness(context,UmsConstants.APP_ID,UmsConstants.uploadSystem,logHashMap,analysis);
             }
         }
@@ -391,11 +386,9 @@ public class NewIRCMessage implements IIRCMessage {
                     mChatClient.getPeerManager().sendPeerMessage(userList, "T", PMDefs.MessagePriority.MSG_PRIORITY_PRI);
                 }
             }
-            Map<String, String> logHashMap = new HashMap<>();
+            Map<String, String> logHashMap = defaultlog();
             logHashMap.put("logtype","joinRoom");
             logHashMap.put("joinRoomCode", "" + joinRoomResp.code);
-            logHashMap.put("eventid",eventid);
-            logHashMap.put("nickname", mNickname);
             UmsAgentManager.umsAgentOtherBusiness(context,UmsConstants.APP_ID,UmsConstants.uploadSystem,logHashMap,analysis);
 
         }
@@ -526,12 +519,10 @@ public class NewIRCMessage implements IIRCMessage {
             String topic = roomTopic.topic;
             long date = 0;
             onTopic(channel, topic, date);
-            Map<String, String> logHashMap = new HashMap<>();
-            logHashMap.put("type","roomTopic");
+            Map<String, String> logHashMap = defaultlog();
+            logHashMap.put("logtype","roomTopic");
             logHashMap.put("roomCode", "" + roomTopic.code);
             logHashMap.put("roomTopic", "" + roomTopic.topic);
-            logHashMap.put("eventid",eventid);
-            logHashMap.put("nickname", mNickname);
             UmsAgentManager.umsAgentOtherBusiness(context,UmsConstants.APP_ID,UmsConstants.uploadSystem,logHashMap,analysis);
 
         }
@@ -544,6 +535,12 @@ public class NewIRCMessage implements IIRCMessage {
         public void onLeaveRoomResponse(PMDefs.LeaveRoomResp leaveRoomResp) {
             //0-成功退出 442-你不在该聊天室
             logger.i("ircsdk leave room code" + leaveRoomResp.code);
+            Map<String, String> logHashMap = defaultlog();
+            logHashMap.put("logtype","leaveRoomResp");
+            logHashMap.put("leaveRoomRespCode", "" + leaveRoomResp.code);
+            logHashMap.put("leaveRoomRespRoodId", "" + leaveRoomResp.roomId);
+            logHashMap.put("leaveRoomRespNicename",""+leaveRoomResp.userInfo.nickname);
+            UmsAgentManager.umsAgentOtherBusiness(context,UmsConstants.APP_ID,UmsConstants.uploadSystem,logHashMap,analysis);
         }
 
         /**
@@ -553,7 +550,12 @@ public class NewIRCMessage implements IIRCMessage {
         @Override
         public void onLeaveRoomNotice(PMDefs.LeaveRoomNotice leaveRoomNotice) {
             logger.i("ircsdk onLeaveRoomNotic");
-
+            Map<String, String> logHashMap = defaultlog();
+            logHashMap.put("logtype","leaveRoomResp");
+            logHashMap.put("leaveRoomNoticeInfo", "" + leaveRoomNotice.info);
+            logHashMap.put("leaveRoomNoticeRoomId", "" + leaveRoomNotice.roomId);
+            logHashMap.put("leaveRoomNoticeNicename",""+leaveRoomNotice.userInfo.nickname);
+            UmsAgentManager.umsAgentOtherBusiness(context,UmsConstants.APP_ID,UmsConstants.uploadSystem,logHashMap,analysis);
         }
 
         /**
@@ -670,6 +672,11 @@ public class NewIRCMessage implements IIRCMessage {
             if (495 == sendRoomMessageResp.code) {
                 mIRCCallback.onUnknown("BLOCK");
             }
+            Map<String, String> logHashMap = defaultlog();
+            logHashMap.put("logtype","sendRoomMessageResp");
+            logHashMap.put("roomMessageRespCode", "" + sendRoomMessageResp.code);
+            logHashMap.put("roomMessageRespInfo", sendRoomMessageResp.info);
+            UmsAgentManager.umsAgentOtherBusiness(mContext, UmsConstants.APP_ID, UmsConstants.uploadSystem, logHashMap, analysis);
         }
     };
 
@@ -680,13 +687,7 @@ public class NewIRCMessage implements IIRCMessage {
 
     @Override
     public void create() {
-        analysis = new HashMap<>();
-        analysis.put("timestamp", "" + System.currentTimeMillis());
-        analysis.put("userid", mLiveInfo.getStuId());
-        analysis.put("planid", mLiveInfo.getId());
-        analysis.put("clientip", IpAddressUtil.USER_IP);
-        analysis.put("traceid", "" + UUID.randomUUID());
-        analysis.put("platform", "android");
+
         if (!workSpaceDir.exists()) {
             workSpaceDir.mkdirs();
         }
@@ -725,21 +726,17 @@ public class NewIRCMessage implements IIRCMessage {
         //登陆 code: 0 成功， 1 参数错误，11 未初始化，17 已登录，18 正在登陆
         int logincode = mChatClient.login(myUserInfoEntity.getPsimId(), myUserInfoEntity.getPsimPwd());
 
-        Map<String, String> logHashMap = new HashMap<>();
+        Map<String, String> logHashMap = defaultlog();
+        logHashMap.put("logtype","init");
         logHashMap.put("initcode", "" + initcode);
         logHashMap.put("initSDKState", PMDefs.ResultCode.Result_Success == initcode ? "success" : "fail");
-        logHashMap.put("logincode", "" + initcode);
+        logHashMap.put("logincode", "" + logincode);
         logHashMap.put("initLoginState", PMDefs.ResultCode.Result_Success == logincode ? "success" : "fail");
-        logHashMap.put("nickname", mNickname);
         logHashMap.put("PsAppId", myUserInfoEntity.getPsAppId());
         logHashMap.put("PsAppClientKey", myUserInfoEntity.getPsAppClientKey());
         logHashMap.put("PsImId", myUserInfoEntity.getPsimId());
         logHashMap.put("PsImPwd", myUserInfoEntity.getPsimPwd());
         logHashMap.put("workspace", workSpaceDir.getAbsolutePath());
-        logHashMap.put("time", "" + System.currentTimeMillis());
-        logHashMap.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId());
-        logHashMap.put("liveId", mLiveInfo.getId());
-        logHashMap.put("eventid",eventid);
         UmsAgentManager.umsAgentOtherBusiness(mContext, UmsConstants.APP_ID, UmsConstants.uploadSystem, logHashMap, analysis);
 
         logger.i("irc sdk logincode:" + logincode);
@@ -893,6 +890,9 @@ public class NewIRCMessage implements IIRCMessage {
             mChatClient.getPeerManager().removeListener(mPeerListener);
             mChatClient.getRoomManager().removeListener(mRoomListener);
             mChatClient.removeListener(mClientListener);
+            Map<String, String> logHashMap = defaultlog();
+            logHashMap.put("logtype", "" + "unInit");
+            UmsAgentManager.umsAgentOtherBusiness(mContext, UmsConstants.APP_ID, UmsConstants.uploadSystem, logHashMap, analysis);
         }
         isConnected = false;
         mIsDestory = true;
@@ -917,5 +917,25 @@ public class NewIRCMessage implements IIRCMessage {
         if (mChannels.length > 1) {
             currentMode = mode;
         }
+    }
+
+    private Map<String, String> defaultlog(){
+        Map<String, String> logMap = new HashMap<>();
+        logMap.put("eventid",eventid);
+        logMap.put("sid",mSid.toString());
+        logMap.put("nickname", mNickname);
+        logMap.put("time", "" + System.currentTimeMillis());
+        logMap.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId());
+        logMap.put("liveId", mLiveInfo.getId());
+        if (analysis == null){
+            analysis = new HashMap<>();
+        }
+        analysis.put("timestamp", "" + System.currentTimeMillis());
+        analysis.put("userid", mLiveInfo.getStuId());
+        analysis.put("planid", mLiveInfo.getId());
+        analysis.put("clientip", IpAddressUtil.USER_IP);
+        analysis.put("traceid", "" + UUID.randomUUID());
+        analysis.put("platform", "android");
+        return logMap;
     }
 }

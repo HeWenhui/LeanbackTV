@@ -49,6 +49,7 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
     private String mChannel;
     private String mNickname;
     private String childName;
+    private UUID mSid = UUID.randomUUID();
     /**
      * 备用用户聊天服务配置列表
      */
@@ -141,11 +142,9 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
                 MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
                 int logincode = mChatClient.login(myUserInfoEntity.getPsimId(), myUserInfoEntity.getPsimPwd());
             }
-            StableLogHashMap logHashMap = new StableLogHashMap("login");
+            StableLogHashMap logHashMap = defaultlog("login");
             logHashMap.put("loginCode", "" + loginResp.code);
             logHashMap.put("loginInfo", "" + loginResp.info);
-            logHashMap.put("eventid",eventid);
-            logHashMap.put("nickname", mNickname);
             logHashMap.put("connectCount", ""+mConnectCount);
             liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());
         }
@@ -171,11 +170,9 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
                     mIRCCallback.onQuit(sourceNick, sourceLogin, sourceHostname, reason, "");
                 }
             }
-            StableLogHashMap logHashMap = new StableLogHashMap("logout");
+            StableLogHashMap logHashMap = defaultlog("logout");
             logHashMap.put("logoutCode", "" + logoutNotice.code);
             logHashMap.put("logoutInfo", "" + logoutNotice.info);
-            logHashMap.put("eventid",eventid);
-            logHashMap.put("nickname", mNickname);
             liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());
         }
 
@@ -200,10 +197,8 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
                 if (mIRCCallback != null) {
                     mIRCCallback.onDisconnect(null, false);
                 }
-                StableLogHashMap logHashMap = new StableLogHashMap("logout");
+                StableLogHashMap logHashMap = defaultlog("logout");
                 logHashMap.put("netStatus", "" + netStatusResp.netStatus);
-                logHashMap.put("eventid",eventid);
-                logHashMap.put("nickname", mNickname);
                 liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());
             }
         }
@@ -384,10 +379,8 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
                     mIRCCallback.onConnect(null);
                 }
             }
-            StableLogHashMap logHashMap = new StableLogHashMap("joinRoom");
+            StableLogHashMap logHashMap = defaultlog("joinRoom");
             logHashMap.put("joinRoomCode", "" + joinRoomResp.code);
-            logHashMap.put("eventid",eventid);
-            logHashMap.put("nickname", mNickname);
             liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());
 
         }
@@ -488,11 +481,9 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
             if (mIRCCallback != null) {
                 mIRCCallback.onTopic(channel, topic, "", date, false, channel);
             }
-            StableLogHashMap logHashMap = new StableLogHashMap("roomTopic");
+            StableLogHashMap logHashMap = defaultlog("roomTopic");
             logHashMap.put("roomCode", "" + roomTopic.code);
             logHashMap.put("roomTopic", "" + roomTopic.topic);
-            logHashMap.put("eventid",eventid);
-            logHashMap.put("nickname", mNickname);
             liveAndBackDebug.umsAgentDebugSys(eventid, logHashMap.getData());
 
         }
@@ -632,10 +623,10 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
         //登陆 code: 0 成功， 1 参数错误，11 未初始化，17 已登录，18 正在登陆
         int logincode = mChatClient.login(myUserInfoEntity.getPsimId(), myUserInfoEntity.getPsimPwd());
         logger.i("irc sdk logincode:" + logincode);
-        StableLogHashMap logHashMap = new StableLogHashMap("IRCMessage");
+        StableLogHashMap logHashMap = defaultlog("IRCMessage");
         logHashMap.put("initcode", "" + initcode);
         logHashMap.put("initSDKState", PMDefs.ResultCode.Result_Success == initcode ? "success" : "fail");
-        logHashMap.put("logincode", "" + initcode);
+        logHashMap.put("logincode", "" + logincode);
         logHashMap.put("initLoginState", PMDefs.ResultCode.Result_Success == logincode ? "success" : "fail");
         logHashMap.put("nickname", mNickname);
         logHashMap.put("PsAppId", myUserInfoEntity.getPsAppId());
@@ -764,6 +755,8 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
             mChatClient.getPeerManager().removeListener(mPeerListener);
             mChatClient.getRoomManager().removeListener(mRoomListener);
             mChatClient.removeListener(mClientListener);
+            StableLogHashMap logHashMap = defaultlog("unInit");
+            liveAndBackDebug.umsAgentDebugSys(eventid,logHashMap);
         }
         mHandler.removeCallbacks(startVideoRun);
         mHandler.removeCallbacks(mStudyTimeoutRunnable);
@@ -812,4 +805,14 @@ public class NewAuditIRCMessage implements IAuditIRCMessage {
             mIRCCallback.onStudentLeave(true, stuPushStatus);
         }
     };
+    private StableLogHashMap defaultlog(String logType){
+        StableLogHashMap logMap = new StableLogHashMap(logType);
+        logMap.put("sid",mSid.toString());
+        logMap.put("nickname", mNickname);
+        logMap.put("time", "" + System.currentTimeMillis());
+        logMap.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId());
+        logMap.put("liveId", mLiveInfo.getId());
+        return logMap;
+    }
+
 }
