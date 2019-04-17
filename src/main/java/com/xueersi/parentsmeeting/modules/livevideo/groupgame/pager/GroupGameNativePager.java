@@ -916,7 +916,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         private Runnable turnPageRunnable = new Runnable() {
             @Override
             public void run() {
-                turnPage();
+                uploadScore(-1,true);
+                singleModeAction.startTimer();
             }
         };
 
@@ -932,6 +933,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 resultData.put("type", CourseMessage.SEND_CoursewareOnloading);
                 resultData.put("pageNum", pageNum);
                 resultData.put("isSingle", true);
+                logger.d("turnPage : resultData = " + resultData.toString());
                 StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
                 singleModeAction.startTimer();
             } catch (JSONException e) {
@@ -948,6 +950,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 jsonData.put("studentNum", 2);
                 jsonData.put("score", score);
                 jsonData.put("isTurnPage", isTurnPage);
+                logger.d("uploadScore : jsonData = " + jsonData.toString());
                 wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
                 if (isTurnPage) {
                     pageNum++;
