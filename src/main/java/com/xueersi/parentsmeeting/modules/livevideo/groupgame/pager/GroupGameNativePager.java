@@ -464,7 +464,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 mAM = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE); // 音量管理
                 mMaxVolume = mAM.getStreamMaxVolume(AudioManager.STREAM_MUSIC); // 获取系统最大音量
                 mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
-                mAM.setStreamVolume(AudioManager.STREAM_MUSIC, (int) (0.3f * mMaxVolume), 0);
+                mAM.setStreamVolume(AudioManager.STREAM_MUSIC, (int) (0.0f * mMaxVolume), 0);
                 isVolumeResume = false;
             }
 
@@ -923,18 +923,20 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         private void uploadScore(int score, boolean isTurnPage) {
             JSONObject jsonData = new JSONObject();
             try {
-                jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
-                //答对题目学生序号（1/2/3）  单人模式只有2号学生
-                jsonData.put("studentNum", 2);
-                jsonData.put("score", score);
-                jsonData.put("isTurnPage", isTurnPage);
-                logger.d("uploadScore : jsonData = " + jsonData.toString());
-                wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
+                int turnToPageNum = -1;
                 if (isTurnPage) {
                     pageNum++;
                     presentTime = System.currentTimeMillis() - presentTime;
                     presentTimeList.add(presentTime);
+                    turnToPageNum = pageNum;
                 }
+                jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
+                //答对题目学生序号（1/2/3）  单人模式只有2号学生
+                jsonData.put("studentNum", 2);
+                jsonData.put("score", score);
+                jsonData.put("turnToPageNum", turnToPageNum);
+                logger.d("uploadScore : jsonData = " + jsonData.toString());
+                wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
