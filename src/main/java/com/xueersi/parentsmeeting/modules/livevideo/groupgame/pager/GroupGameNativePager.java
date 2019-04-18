@@ -934,6 +934,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 //答对题目学生序号（1/2/3）  单人模式只有2号学生
                 jsonData.put("studentNum", 2);
                 jsonData.put("score", score);
+                jsonData.put("isTurnPage", isTurnPage);
                 jsonData.put("turnToPageNum", turnToPageNum);
                 logger.d("uploadScore : jsonData = " + jsonData.toString());
                 wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
