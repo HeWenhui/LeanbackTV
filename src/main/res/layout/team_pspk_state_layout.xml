@@ -105,8 +105,23 @@
             android:textSize="11sp"
             android:layout_alignBottom="@id/tv_teampk_pkstate_adversary"
             />
-
     </RelativeLayout>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/v_teampk_pkstate_devide_line"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/livevideo_teampk_pkstate_bg"
+        android:gravity="center"
+        android:id="@id/tv_answer_question_state"
+        android:textSize="9dp"
+        android:text="平手"
+        android:visibility="invisible"
+        android:textStyle="bold"
+        android:textColor="#FFBC2B" />
 
     <com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar
         android:id="@id/tpb_teampk_pkstate_energy_bar"

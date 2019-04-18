@@ -17,7 +17,7 @@ android {
             res.srcDirs += ['src/main/res-achievement']
         }
     }
-    compileSdkVersion 26
+    compileSdkVersion 27
     buildToolsVersion '27.0.3'
 }
 dependencies {
@@ -45,6 +45,7 @@ dependencies {
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.share)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.browser)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.xeslottie)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.pschatsdk)
     implementation rootProject.ext.thirdlibraries.arouterapi
     implementation rootProject.ext.thirdlibraries.appcompat
     implementation rootProject.ext.thirdlibraries.recyclerview
@@ -56,6 +57,7 @@ dependencies {
     //    implementation project(':business:endictation')
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.endictation)
     implementation rootProject.ext.thirdlibraries.ticker
+
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.agora)
     //    implementation project(':library:agora')
     //implementation(rootProject.ext.xeslibraries.waveform) { changing = true }

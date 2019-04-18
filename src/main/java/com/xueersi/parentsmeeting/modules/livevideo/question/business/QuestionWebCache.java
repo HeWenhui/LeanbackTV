@@ -1,6 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.WebView;
@@ -24,10 +26,22 @@ public class QuestionWebCache {
     }
 
     public void startCache() {
-        CacheWebView webView = new CacheWebView(context);
+
+        final CacheWebView webView = new CacheWebView(context);
         webView.setWebViewClient(new MyWebViewClient());
         webView.loadUrl("https://live.xueersi.com/science/Live/getMultiTestPaper?liveId=119740&testId=365160-1&stuId=-111&stuName=test@talwx.com&stuCouId=12345654&isArts=0&nonce=45645dasf&isTowall=0");
+
         webView.getWebViewCache().setNeedHttpDns(true);
+//        if (Looper.getMainLooper() == Looper.myLooper()) {
+        Handler mHandler = new Handler(Looper.getMainLooper());
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                webView.getWebViewCache().setNeedHttpDns(false);
+                webView.loadUrl("http://scistatic.xueersi.com/ZhongXueKeJian/test/index.html");
+            }
+        });
+//        }
     }
 
     private class MyWebViewClient extends ErrorWebViewClient {

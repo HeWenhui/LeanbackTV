@@ -3,6 +3,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.switchflow;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.MainThread;
+import android.support.annotation.UiThread;
 import android.support.constraint.ConstraintLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,14 +55,24 @@ public class SwitchFlowRoutePager extends BasePager {
         super(context, isLazy);
     }
 
-    /** 每次 */
+    /**
+     * 可能在子线程
+     */
     public void setRouteSum(int routeSum) {
         this.routeSum = routeSum;
-        initData();
+        if (mView != null) {
+            mView.post(new Runnable() {
+                @Override
+                public void run() {
+                    initData();
+                }
+            });
+        }
         logger.i("线路数量为" + routeSum);
 //        init();
     }
 
+    @MainThread
     public void init() {
         if (mView == null) {
             initView();
@@ -132,6 +144,10 @@ public class SwitchFlowRoutePager extends BasePager {
 
     private RouteAdapter routeAdapter;
 
+    /**
+     * ui操作，必须在主线程中
+     */
+    @UiThread
     @Override
     public void initData() {
         if (listRoute == null) {
@@ -225,7 +241,6 @@ public class SwitchFlowRoutePager extends BasePager {
         } else {
             routeAdapter.notifyDataSetChanged();
         }
-
     }
 
     public interface ItemClickListener {

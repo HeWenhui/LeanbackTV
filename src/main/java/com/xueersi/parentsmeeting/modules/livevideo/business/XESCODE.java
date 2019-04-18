@@ -29,11 +29,11 @@ public interface XESCODE {
     /** 学习报告 */
     int LEARNREPORT = 133;
 //    int LEARNREPORT = 106;
-    /** 点名 */
+    /** 点名,签到 */
     int ROLLCALL = 134;
-    /** 结束点名 */
+    /** 结束点名，结束签到 */
     int STOPROLLCALL = 135;
-    /** 其他学生点名 */
+    /** 其他学生点名，签到 */
     int CLASS_MATEROLLCALL = 136;
     /** 直播表扬批评功能 */
     @Deprecated
@@ -161,8 +161,19 @@ public interface XESCODE {
 
     /** 退出每题pk 结果 */
     int TEAM_PK_EXIT_PK_RESULT = 235;
+    /** 公布明星榜**/
+    int TEAM_PK_STAR_RANK_LIST = 301;
+    /** 公布黑马榜 **/
+    int TEAM_PK_BLACK_RANK_LIST = 302;
+    /** 教师端结束pk 统计**/
+    int TEAM_PK_PK_END = 303;
+    /** 战队PK答对超难题 **/
+    int TEAM_PK_PARISE_ANWSER_RIGHT = 304;
+    /** 战队pk老师徽章表扬**/
+    int TEAM_PK_TEACHER_PRAISE = 305;
 
     /** 一题多发 */
+    /** 一题多发 收题发题都是251 TODO */
     int MULTIPLE_H5_COURSEWARE = 251;
 
     /** 开启/关闭语音弹幕 */
@@ -204,6 +215,13 @@ public interface XESCODE {
         int STU_RAISE_HAND = 283;
         /** 点赞 */
         int PRAISE_STU = 286;
+    }
+
+    interface EvenDrive {
+        /** 学生之间私发点赞消息 */
+        int PRAISE_PRIVATE_STUDENT = 299;
+        /** 教师广播发送学报消息 */
+        int BROADCAST_STUDY_REPORT = 300;
     }
 
     /** 文科表扬榜  开始notice */

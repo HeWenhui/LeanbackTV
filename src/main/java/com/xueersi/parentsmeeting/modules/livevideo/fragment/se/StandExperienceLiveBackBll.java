@@ -145,7 +145,7 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
     }
 
     /**
-     * 视频结束的时候，扫描一遍所有的livebackbasebll是否需要做什么事情
+     * 视频结束的时候，扫描一遍所有的{@link #liveBackBaseBlls}做视频结束操作
      */
     public void resultAllComplete() {
         for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
@@ -154,16 +154,12 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
             }
             //如果prek为false，并且examUrl不为null,则加载定级卷
             if (!mVideoEntity.isPrek() && !TextUtils.isEmpty(mVideoEntity.getExamUrl())) {
-                //展示购课窗口
-//            if (liveBackBaseBll instanceof ExperienceBuyCourseExperiencePresenter) {
-//                ((ExperienceBuyCourseExperiencePresenter) liveBackBaseBll).showNextWindow();
-//                showNextWindow((ExperienceBuyCourseExperiencePresenter) liveBackBaseBll);
-//            }
                 //定级卷展示窗口
                 if (liveBackBaseBll instanceof StandExperienceEvaluationBll) {
                     showNextWindow((StandExperienceEvaluationBll) liveBackBaseBll);
                 }
-            } else {//反过来，prek为true，或者examUrl为null，不加载定级卷
+            } else {
+                //反过来，prek为true，或者examUrl为null，不加载定级卷
                 if (liveBackBaseBll instanceof StandExperienceLearnFeedbackBll) {
                     showNextWindow((StandExperienceLearnFeedbackBll) liveBackBaseBll);
                 }
@@ -175,7 +171,7 @@ public class StandExperienceLiveBackBll extends LiveBackBll {
     /**
      * 展示下一个View的页面,这里可以做一些下一个View展示前的逻辑处理
      *
-     * @param mPresenter
+     * @param mPresenter 下一个需要展示的Presenter类
      */
     public void showNextWindow(IExperiencePresenter mPresenter) {
         if (mPresenter != null) {

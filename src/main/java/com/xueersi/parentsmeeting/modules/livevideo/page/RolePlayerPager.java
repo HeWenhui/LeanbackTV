@@ -460,6 +460,9 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
         if (mRolePlayerSelfItem != null) {
             mRolePlayerSelfItem.relaseAudioPlay();
         }
+        if (mReadHandler != null) {
+            mReadHandler.sendEmptyMessage(STOP_ROLEPLAY);
+        }
     }
 
     @Override
@@ -620,11 +623,11 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
             public AdapterItemInterface<RolePlayerEntity.RolePlayerMessage> getItemView(Object type) {
                 if ((boolean) type) {
                     //自己朗读的
-                    mRolePlayerSelfItem = new RolePlayerSelfItem(mContext, mRolePlayBll);
+                    mRolePlayerSelfItem = new RolePlayerSelfItem(mContext, mRolePlayBll,mReadHandler);
                     return mRolePlayerSelfItem;
                 } else {
                     //他人朗读的
-                    mRolePlayerOtherItem = new RolePlayerOtherItem(mContext, mRolePlayBll);
+                    mRolePlayerOtherItem = new RolePlayerOtherItem(mContext, mRolePlayBll,mReadHandler);
                     return mRolePlayerOtherItem;
                 }
             }
@@ -671,6 +674,10 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
      * 去评测
      */
     private final static int GO_SPEECH = 200;
+    /**
+     * 停止roleplay,及其音频播放
+     */
+    private static final int STOP_ROLEPLAY = 404;
 
     /**
      * 用来自动朗读
@@ -683,6 +690,32 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
                 if (mEntity == null) {
                     logger.i("数据实体已经销毁，handler不再处理剩余消息");
                     return;
+                }
+                if (RolePlayerEntity.RolePlayerMessageStatus.CUR_PLAYING_ITEM_INDEX == msg.what){
+                    int curPlayingIndex = (int) msg.obj;
+                    logger.i("print_curPlayingIndex:" + curPlayingIndex);
+                    mCurrentReadIndex = curPlayingIndex + 1;
+                    return;
+                }
+                //主要为了停止音频
+                if (STOP_ROLEPLAY == msg.what) {
+                    logger.i("print_stop_role_play:" + mCurrentReadIndex);
+                    int tempIndex = mCurrentReadIndex - 1;
+                    if (tempIndex >= mEntity.getLstRolePlayerMessage().size()) {
+                        return;
+                    }
+                    if (tempIndex < 0) {
+                        tempIndex = 0;
+                    }
+                    RolePlayerEntity.RolePlayerMessage upMessage = mEntity.getLstRolePlayerMessage().get
+                            (tempIndex);
+                    upMessage.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY);
+                    if(mRolePlayerAdapter != null){
+                        mRolePlayerAdapter.updataSingleRow(lvReadList, upMessage);
+                    }
+                    mEntity = null;
+                    return;
+
                 }
                 if (msg.what == READ_MESSAGE) {
                     //恢复上一条的状态
@@ -1518,7 +1551,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
         if (mRolePlayerOtherItem != null) {
             mRolePlayerOtherItem.stopVoicePlay();
         }
-
+        relaseAllAudioPlay();
 
     }
 

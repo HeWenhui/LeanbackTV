@@ -21,17 +21,18 @@ import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.TeamPkConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
-import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 
 /**
  * 战队pk  右侧状态栏
  *
  * @author chekun
- *         created  at 2018/4/16 18:38
+ * created  at 2018/4/16 18:38
  */
 public class TeamPkStateLayout extends FrameLayout {
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
@@ -73,9 +74,10 @@ public class TeamPkStateLayout extends FrameLayout {
      */
     protected static final long ENERGY_MY_CONTRIBUTION_DURATION = 4 * 1000;
 
+    private ContextLiveAndBackDebug liveAndBackDebug;
     private boolean dataInited = false;
     protected TextView tvEnergyMyContribution;
-    protected TeamPkBll mTeamPkBll;
+//    protected TeamPkBll liveAndBackDebug;
 
     public TeamPkStateLayout(@NonNull Context context) {
         super(context);
@@ -93,8 +95,8 @@ public class TeamPkStateLayout extends FrameLayout {
         initView();
     }
 
-
     protected void initView() {
+        liveAndBackDebug = new ContextLiveAndBackDebug(getContext());
         if (LiveVideoConfig.isPrimary) {
             LayoutInflater.from(getContext()).inflate(R.layout.team_pspk_state_layout, this);
         } else if (LiveVideoConfig.isSmallChinese) {
@@ -114,7 +116,12 @@ public class TeamPkStateLayout extends FrameLayout {
                 //logger.e( "===========>:onGlobalLayout"+TeamPkStateLayout.this.getMeasuredWidth());
                 if (TeamPkStateLayout.this.getMeasuredWidth() > 0) {
                     try {
-                        addPkStatBar();
+                        //语文沿用之前老样式
+                        if(LiveVideoConfig.isSmallChinese){
+                            addPkStatBar();
+                        }else{
+                            addNewPkStatBar();
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -127,6 +134,8 @@ public class TeamPkStateLayout extends FrameLayout {
             }
         });
     }
+
+
 
 
     /**
@@ -169,6 +178,50 @@ public class TeamPkStateLayout extends FrameLayout {
     }
 
 
+    /**
+     * 理科pk二期新状态栏
+     */
+    private void addNewPkStatBar() {
+        tvState = findViewById(R.id.tv_answer_question_state);
+        tvState.setVisibility(GONE);
+        statBarRootView = View.inflate(getContext(), R.layout.team_pk_newstate_bar_layout, null);
+        ViewGroup viewGroup = (ViewGroup) ((Activity) getContext()).getWindow().getDecorView();
+        ViewGroup rootView = viewGroup.findViewById(R.id.rl_livevideo_message_root);
+        if (rootView != null) {
+            int stateBarHeight = SizeUtils.Dp2Px(getContext(), 19);
+            int gapAbovePkStateLayout = SizeUtils.Dp2Px(getContext(), 5);
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(this.getMeasuredWidth(), stateBarHeight);
+            int[] location = new int[2];
+            this.getLocationInWindow(location);
+            lp.topMargin = location[1] - (gapAbovePkStateLayout + stateBarHeight);
+            int rightMargin = (LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x4);
+            lp.rightMargin = rightMargin > 0 ? rightMargin : 0;
+            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+            rootView.addView(statBarRootView, lp);
+            tvEnergyMyContribution = statBarRootView.findViewById(R.id.tv_teampk_pkstate_energy_mycontribution);
+            tvEnergyMyContribution.setVisibility(GONE);
+
+            //监听布局变化设置边距
+            statBarRootView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
+                    .OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    int rightMargin = (LiveVideoPoint.getInstance().screenWidth - LiveVideoPoint.getInstance().x4);
+                    RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) statBarRootView.getLayoutParams();
+                    if (lp.rightMargin != rightMargin) {
+                        lp.rightMargin = rightMargin;
+                        LayoutParamsUtil.setViewLayoutParams(statBarRootView, lp);
+                    }
+                }
+            });
+        }
+
+    }
+
+
+
+
+
     @Override
     protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
         //关联显示状态
@@ -189,8 +242,8 @@ public class TeamPkStateLayout extends FrameLayout {
         mOtherTeamEnergy = mOtherTeamEnergy + otherEnergyAdd;
         mCoinNum = mCoinNum + coinAdd;
         logger.e("====>updateData22222:" + mMyTeamEnergy + ":" + mOtherTeamEnergy + ":" + mCoinNum);
-        if (mTeamPkBll != null && coinAdd > 0) {
-            TeamPkLog.showMyGold(mTeamPkBll.getLiveBll(), mCoinNum + "");
+        if (liveAndBackDebug != null && coinAdd > 0) {
+            TeamPkLog.showMyGold(liveAndBackDebug, mCoinNum + "");
         }
         //正 增长 显示动画 ，负增涨 不显示动画
         if (ownEnergyAdd > 0) {
@@ -273,8 +326,8 @@ public class TeamPkStateLayout extends FrameLayout {
         tvMyTeamEnergy.setText(mMyTeamEnergy + "");
         tvOtherTeamEnergy.setText(otherTeamAnergy + "");
 
-        if (mTeamPkBll != null && mCoinNum > 0) {
-            TeamPkLog.showMyGold(mTeamPkBll.getLiveBll(), mCoinNum + "");
+        if (liveAndBackDebug != null && mCoinNum > 0) {
+            TeamPkLog.showMyGold(liveAndBackDebug, mCoinNum + "");
         }
 
         float ratio;
@@ -293,20 +346,26 @@ public class TeamPkStateLayout extends FrameLayout {
     protected void updatePkState(float ratio) {
         if (this.showPopWindow) {
             this.showPopWindow = false;
-            if (ratio > HALF_PROGRESS) {
-                tvState.setText("暂时领先");
-                tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_lead_bg);
-            } else if (ratio < HALF_PROGRESS) {
-                tvState.setText("全力追赶");
-                tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_follow_bg);
-            } else if (ratio == HALF_PROGRESS) {
-
-                if (LiveVideoConfig.isSmallChinese) {
-                    tvState.setText("");
-                    tvState.setBackgroundResource(0);
-                } else {
-                    tvState.setText("打成平手");
+            //语文pk还用老样式
+            if(LiveVideoConfig.isSmallChinese){
+                if (ratio > HALF_PROGRESS) {
+                    tvState.setText("暂时领先");
                     tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_lead_bg);
+                } else if (ratio < HALF_PROGRESS) {
+                    tvState.setText("全力追赶");
+                    tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_follow_bg);
+                } else if (ratio == HALF_PROGRESS) {
+                    tvState.setText("");
+                    tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_lead_bg);
+                }
+            }else{
+                // 理科pk 新样式
+                if (ratio > HALF_PROGRESS) {
+                    tvState.setText("领先");
+                } else if (ratio < HALF_PROGRESS) {
+                    tvState.setText("追赶");
+                } else if (ratio == HALF_PROGRESS) {
+                    tvState.setText("平手");
                 }
             }
             showPkSateBar();
@@ -319,12 +378,15 @@ public class TeamPkStateLayout extends FrameLayout {
      * 显示 准备战斗提示
      */
     public void showPkReady() {
-        if (tvState != null) {
+        //语文沿用一期pk样式
+        if(LiveVideoConfig.isSmallChinese){
             tvState.setText("准备战斗");
             tvState.setBackgroundResource(R.drawable.shape_livevideo_teampk_statebar_ready_bg);
-            showPkSateBar();
+        }else{
+            // 理科pk二期新样式
+            tvState.setText("准备");
         }
-
+        showPkSateBar();
     }
 
 
@@ -391,9 +453,23 @@ public class TeamPkStateLayout extends FrameLayout {
     }
 
 
-    public void setTeamPkBll(TeamPkBll teamPkBll) {
-        mTeamPkBll = teamPkBll;
+//    public void setTeamPkBll(TeamPkBll teamPkBll) {
+//        liveAndBackDebug = teamPkBll;
+//    }
+
+    /**
+     * 返回当前pk 结果
+     * @return
+     */
+    public int getLatesPkState(){
+        int result = 0;
+        if(mMyTeamEnergy > mOtherTeamEnergy){
+            result = TeamPkConfig.PK_STATE_LEAD;
+        }else if(mMyTeamEnergy < mOtherTeamEnergy){
+            result = TeamPkConfig.PK_STATE_BEHIND;
+        }else {
+            result = TeamPkConfig.PK_STATE_DRAW;
+        }
+        return  result;
     }
-
-
 }

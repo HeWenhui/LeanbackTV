@@ -81,6 +81,7 @@ import java.util.List;
 import java.util.Random;
 
 public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
+
     String file3 = "live_stand/frame_anim/speech/mine_score";
     String file4 = "live_stand/frame_anim/speech/mine_score_loop";
     /**
@@ -184,6 +185,10 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
      * 去评测
      */
     private final static int GO_SPEECH = 200;
+    /**
+     * 停止roleplay,及其音频播放
+     */
+    private static final int STOP_ROLEPLAY = 404;
     private RolePlayerEntity mEntity;
     private ReadyGoImageView rgivLivevideoStandReadygo;
     private LiveSoundPool liveSoundPool;
@@ -412,6 +417,10 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
         if (mRolePlayerSelfItem != null) {
             mRolePlayerSelfItem.relaseAudioPlay();
         }
+        if(mReadHandler != null){
+            mReadHandler.sendEmptyMessage(STOP_ROLEPLAY);
+        }
+
     }
 
     /**
@@ -421,9 +430,36 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
+
             if (mEntity == null) {
                 logger.i("数据实体已经销毁，handler不再处理剩余消息");
                 return;
+            }
+            if (RolePlayerEntity.RolePlayerMessageStatus.CUR_PLAYING_ITEM_INDEX == msg.what){
+                int curPlayingIndex = (int) msg.obj;
+                logger.i("print_curPlayingIndex:" + curPlayingIndex);
+                mCurrentReadIndex = curPlayingIndex + 1;
+                return;
+            }
+            //主要为了停止音频
+            if(STOP_ROLEPLAY == msg.what){
+                logger.i("print_stop_role_play:"+mCurrentReadIndex);
+                int tempIndex = mCurrentReadIndex - 1;
+                if (tempIndex >= mEntity.getLstRolePlayerMessage().size()) {
+                    return;
+                }
+                if (tempIndex < 0) {
+                    tempIndex = 0;
+                }
+                RolePlayerEntity.RolePlayerMessage upMessage = mEntity.getLstRolePlayerMessage().get
+                        (tempIndex);
+                upMessage.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY);
+                if(mRolePlayerAdapter != null){
+                    mRolePlayerAdapter.updataSingleRow(lvReadList, upMessage);
+                }
+                mEntity = null;
+                return;
+
             }
             if (msg.what == READ_MESSAGE) {
                 //恢复上一条的状态
@@ -1153,7 +1189,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
                 logger.i("type = " + type);
                 if ((boolean) type) {
                     //自己朗读的
-                    mRolePlayerSelfItem = new RolePlayerStandMachineSelfItem(mContext, mRolePlayBll);
+                    mRolePlayerSelfItem = new RolePlayerStandMachineSelfItem(mContext, mRolePlayBll,mReadHandler);
                     return mRolePlayerSelfItem;
                 } else {
                     //他人朗读的
@@ -1294,6 +1330,8 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
      * 关闭当前页面
      */
     public void relaseCurrentPage() {
+        //释放所有正在播放的音频
+        relaseAllAudioPlay();
         if (mIse != null) {
             mIse.stop();
         }

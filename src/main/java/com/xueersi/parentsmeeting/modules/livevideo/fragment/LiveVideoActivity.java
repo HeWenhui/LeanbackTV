@@ -56,6 +56,7 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
     public void onDestroy() {
         AppBll.getInstance().unRegisterAppEvent(this);
         super.onDestroy();
+//        System.exit(0);
     }
 
     @Override

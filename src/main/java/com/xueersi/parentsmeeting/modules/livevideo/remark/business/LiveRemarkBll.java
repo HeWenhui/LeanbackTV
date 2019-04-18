@@ -43,6 +43,8 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoPointEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
+import com.xueersi.parentsmeeting.module.videoplayer.ps.PSIJK;
+import com.xueersi.parentsmeeting.module.videoplayer.ps.PSPlayerInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -68,9 +70,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import tv.danmaku.ijk.media.player.FrameInfo;
-import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 import static com.xueersi.common.business.sharebusiness.config.LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE;
 import static com.xueersi.common.business.sharebusiness.config.LocalCourseConfig.CATEGORY_EXAM;
@@ -155,8 +154,8 @@ public class LiveRemarkBll {
                 long tcpSpeed;
                 float vdfps;
                 try {
-                    tcpSpeed = ((IjkMediaPlayer) mPlayerService.getPlayer()).getTcpSpeed();
-                    vdfps = ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoDecodeFramesPerSecond();
+                    tcpSpeed = ((PSIJK) mPlayerService.getPlayer()).getPlayerInfo().mTcpSpeed;//.getTcpSpeed();
+                    vdfps = ((PSIJK) mPlayerService.getPlayer()).getPlayerInfo().mRenderfps;//.getVideoDecodeFramesPerSecond();
                 } catch (Exception e) {
                     return;
                 }
@@ -184,15 +183,16 @@ public class LiveRemarkBll {
         if (mPlayerService.getPlayer() == null) {
             return;
         }
-        FrameInfo frameInfo = ((IjkMediaPlayer) mPlayerService.getPlayer()).native_getFrameInfo();
+//        FrameInfo frameInfo = ((PSIJK) mPlayerService.getPlayer()).native_getFrameInfo();
+        PSPlayerInfo frameInfo = ((PSIJK) mPlayerService.getPlayer()).getPlayerInfo();
         if (time == 0) {
-            offSet = System.currentTimeMillis() / 1000 + sysTimeOffset - frameInfo.pkt / 1000;
+            offSet = System.currentTimeMillis() / 1000 + sysTimeOffset - ((PSIJK) mPlayerService.getPlayer()).getPlayerInfo().mVideoDecodePts / 1000;
         } else {
-            offSet = time - frameInfo.pkt / 1000;
+            offSet = time - frameInfo.mVideoDecodePts / 1000;
         }
-        logger.i("nowtime  " + frameInfo.nowTime + "   dts     " + frameInfo.pkt_dts
-                + "   pkt   " + frameInfo.pkt + "  cache:" + ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoCachedDuration()
-                + " systime:" + (System.currentTimeMillis() / 1000 + sysTimeOffset) + "   nettime:" + time);
+//        logger.i("nowtime  " + frameInfo.nowTime + "   dts     " + frameInfo.pkt_dts
+//                + "   mVideoDecodePts   " + frameInfo.mVideoDecodePts + "  cache:" + ((PSIJK) mPlayerService.getPlayer()).getVideoCachedDuration()
+//                + " systime:" + (System.currentTimeMillis() / 1000 + sysTimeOffset) + "   nettime:" + time);
         //setBtEnable(true);
         setVideoReady(true);
         mTimer.cancel();
@@ -234,7 +234,7 @@ public class LiveRemarkBll {
                     isMarking = true;
                     final LiveVideoView liveVideoView = (LiveVideoView) ((Activity) mContext).findViewById(R.id.vv_course_video_video);
 //                liveVideoView.setVisibility(View.INVISIBLE);
-                    ((IjkMediaPlayer) mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
+                    ((PSIJK) mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
                     v.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -242,7 +242,7 @@ public class LiveRemarkBll {
                                 markFail("fail2");
                                 return;
                             }
-                            ((IjkMediaPlayer) mPlayerService.getPlayer()).setDisplay(liveVideoView.getSurfaceHolder());
+                            ((PSIJK) mPlayerService.getPlayer()).setDisplay(liveVideoView.getSurfaceHolder());
                             v.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -250,7 +250,7 @@ public class LiveRemarkBll {
                                         markFail("fail3");
                                         return;
                                     }
-                                    ((IjkMediaPlayer) mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
+                                    ((PSIJK) mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
                                     v.postDelayed(new Runnable() {
                                         @Override
                                         public void run() {
@@ -268,7 +268,7 @@ public class LiveRemarkBll {
                                             File file = new File(saveDir, "" + System.currentTimeMillis() + ".png");
                                             ImageUtils.save(bitmap, file, Bitmap.CompressFormat.JPEG);
                                             reMark(file, "");
-                                            ((IjkMediaPlayer) mPlayerService.getPlayer()).setDisplay(liveVideoView.getSurfaceHolder());
+                                            ((PSIJK) mPlayerService.getPlayer()).setDisplay(liveVideoView.getSurfaceHolder());
                                         }
                                     }, 100);
                                 }
@@ -298,7 +298,7 @@ public class LiveRemarkBll {
                         isMarking = true;
                         final LiveVideoView liveVideoView = (LiveVideoView) ((Activity) mContext).findViewById(R.id.vv_course_video_video);
 //                liveVideoView.setVisibility(View.INVISIBLE);
-                        ((IjkMediaPlayer) mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
+                        ((PSIJK) mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
                         v.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -306,7 +306,7 @@ public class LiveRemarkBll {
                                     markFail("fail6");
                                     return;
                                 }
-                                ((IjkMediaPlayer) mPlayerService.getPlayer()).setDisplay(liveVideoView.getSurfaceHolder());
+                                ((PSIJK) mPlayerService.getPlayer()).setDisplay(liveVideoView.getSurfaceHolder());
                                 v.postDelayed(new Runnable() {
                                     @Override
                                     public void run() {
@@ -314,7 +314,7 @@ public class LiveRemarkBll {
                                             markFail("fail7");
                                             return;
                                         }
-                                        ((IjkMediaPlayer) mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
+                                        ((PSIJK) mPlayerService.getPlayer()).setSurface(liveTextureView.surface);
                                         v.postDelayed(new Runnable() {
                                             @Override
                                             public void run() {
@@ -332,7 +332,7 @@ public class LiveRemarkBll {
                                                 File file = new File(saveDir, "" + System.currentTimeMillis() + ".png");
                                                 ImageUtils.save(bitmap, file, Bitmap.CompressFormat.JPEG);
                                                 reMark(file, (String) v.getTag());
-                                                ((IjkMediaPlayer) mPlayerService.getPlayer()).setDisplay(liveVideoView.getSurfaceHolder());
+                                                ((PSIJK) mPlayerService.getPlayer()).setDisplay(liveVideoView.getSurfaceHolder());
                                             }
                                         }, 100);
                                     }
@@ -498,11 +498,11 @@ public class LiveRemarkBll {
         ShareDataManager.getInstance().put(LiveVideoConfig.SP_LIVEVIDEO_MARK_POINT_COUNT, 4, ShareDataManager.SHAREDATA_USER);
         String fileName = file.getAbsolutePath();
         try {
-            final long pkt = ((IjkMediaPlayer) mPlayerService.getPlayer()).native_getFrameInfo().pkt / 1000;
-            final long cache = ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoCachedDuration() / 1000;
-            final long time = pkt - cache + offSet - 8;
-            logger.i("frameTime:" + ((IjkMediaPlayer) mPlayerService.getPlayer()).native_getFrameInfo().pkt / 1000);
-            logger.i("cacheTime:" + ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoCachedDuration() / 1000);
+            final long mVideoDecodePts = ((PSIJK) mPlayerService.getPlayer()).getPlayerInfo().mVideoDecodePts / 1000;
+            final long cache = ((PSIJK) mPlayerService.getPlayer()).getVideoCachedDuration() / 1000;
+            final long time = mVideoDecodePts - cache + offSet - 8;
+            logger.i("frameTime:" + ((PSIJK) mPlayerService.getPlayer()).getPlayerInfo().mVideoDecodePts / 1000);
+            logger.i("cacheTime:" + ((PSIJK) mPlayerService.getPlayer()).getVideoCachedDuration() / 1000);
             logger.i("offset:" + offSet + "  time:" + time + "   sysTime:" + System.currentTimeMillis());
             if (!TextUtils.isEmpty(fileName)) {
                 CloudUploadEntity entity = new CloudUploadEntity();
@@ -546,7 +546,7 @@ public class LiveRemarkBll {
                                     XESToastUtils.showToast(mContext, "标记成功");
                                 }
                                 isMarking = false;
-                                umsAgentMark(true, pkt, cache, offSet);
+                                umsAgentMark(true, mVideoDecodePts, cache, offSet);
                                 startCountDown();
                             }
 
@@ -1060,12 +1060,12 @@ public class LiveRemarkBll {
         }
     }
 
-    private void umsAgentMark(boolean success, long pkt, long cache, long offSet) {
+    private void umsAgentMark(boolean success, long mVideoDecodePts, long cache, long offSet) {
         HashMap<String, String> map = new HashMap<>();
         map.put("logtype", "clickMark");
         map.put("ex", success ? "Y" : "N");
         if (success) {
-            map.put("pkt", pkt + "");
+            map.put("mVideoDecodePts", mVideoDecodePts + "");
             map.put("cache", cache + "");
             map.put("offset", offSet + "");
             map.put("systime", (System.currentTimeMillis() / 1000 + sysTimeOffset) + "");

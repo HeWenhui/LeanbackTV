@@ -89,7 +89,7 @@ public class WebInstertJs {
                     if (index == line.length() - 1) {
                         line = line + "\n" + indexJs;
                     } else {
-                        line = line.substring(0, index + findStr.length()) + "\n" + indexJs + "\n" + line.substring(index);
+                        line = line.substring(0, index + findStr.length()) + "\n" + indexJs + "\n" + line.substring(index + findStr.length());
                     }
                     logToFile.d("httpRequest:insertJs=" + index);
                     addJs = true;

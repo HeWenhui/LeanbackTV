@@ -225,7 +225,7 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
     }
 
     public interface MediaChildViewClick {
-        void onMediaViewClick(View child);
+       public void onMediaViewClick(View child);
     }
 
     public LiveMediaController getController() {

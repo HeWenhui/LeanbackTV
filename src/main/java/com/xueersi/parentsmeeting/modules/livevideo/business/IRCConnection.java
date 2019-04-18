@@ -98,7 +98,7 @@ public class IRCConnection extends PircBot {
      */
     @Override
     public void onConnect() {
-        logger.d( "onConnect");
+        logger.d("onConnect");
         if (mIRCCallback != null) {
             mIRCCallback.onConnect(this);
         }
@@ -211,20 +211,22 @@ public class IRCConnection extends PircBot {
     @Override
     protected void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice, String channel) {
         if (mIRCCallback != null) {
+            logger.i("sourceNick = " + sourceNick + ",sourceLogin=" + sourceLogin + ",sourceHostname=" + sourceHostname + ",notice=" + notice + ",channel=" + channel);
             mIRCCallback.onNotice(sourceNick, sourceLogin, sourceHostname, target, notice, channel);
         }
     }
 
     protected void onTopic(String channel, String topic) {
         if (mIRCCallback != null) {
-            mIRCCallback.onTopic(channel, topic, "", 0, false,channel );
+            mIRCCallback.onTopic(channel, topic, "", 0, false, channel);
         }
     }
 
     @Override
     protected void onTopic(String channel, String topic, String setBy, long date, boolean changed, String channelId) {
         if (mIRCCallback != null) {
-            mIRCCallback.onTopic(channel, topic, setBy, date, changed,channelId );
+            logger.i("channel = " + channel + " topic = " + topic + " setBy" + setBy + " date" + date + " changed = " + changed + " channelId" + channelId);
+            mIRCCallback.onTopic(channel, topic, setBy, date, changed, channelId);
         }
     }
 
