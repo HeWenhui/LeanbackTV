@@ -486,6 +486,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
             @Override
             public void onClick(View v) {
                 StandLiveMethod.onClickVoice(liveSoundPool);
+                mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
                 if (!ircState.openchat()) {
                     XESToastUtils.showToast(mContext, "已关闭聊天区");
                     return;
@@ -1833,6 +1834,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     }
 
     private void startVoiceInput() {
+        mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
         if (mSpeechUtils != null) {
             mSpeechUtils.cancel();
         }
