@@ -377,6 +377,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     /** 聊天打开的动画 */
     private void initBtMesOpenAnimation(boolean isvoice) {
         if (rlMessageContent.getVisibility() == View.GONE) {
+            mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
             startOpenAnimation(isvoice);
             rlMessageContent.setVisibility(View.VISIBLE);
             lvMessage.setVisibility(View.VISIBLE);
@@ -486,7 +487,6 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
             @Override
             public void onClick(View v) {
                 StandLiveMethod.onClickVoice(liveSoundPool);
-                mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
                 if (!ircState.openchat()) {
                     XESToastUtils.showToast(mContext, "已关闭聊天区");
                     return;
