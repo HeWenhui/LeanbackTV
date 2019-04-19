@@ -816,11 +816,11 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 break;
             }
             case XESCODE.MULTIPLE_H5_COURSEWARE: {
-                boolean isOff = object.optBoolean("open");
+                boolean isOpen = object.optBoolean("open");
                 //
-                userLikeList.clear();
+
                 if (mGetInfo.getIsOpenNewCourseWare() == 1) {
-                    if (!isOff) {
+                    if (!isOpen) {
                         //老师收题之后，更新聊天区连对榜
 //                    getHttpManager().getEvenLikeData(
 ////                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
@@ -860,6 +860,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 //                    isHasReceiveLike = false;
                         isMiddleScienceH5Open = false;
                     } else {
+                        userLikeList.clear();
 //                    isHasReceiveLike = false;
                         isMiddleScienceH5Open = true;
                     }
@@ -869,11 +870,11 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             case XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT: {
                 //点赞
                 if (mGetInfo.getIsOpenNewCourseWare() == 1) {
-                    logger.i("收到点赞消息");
+                    logger.i("receive Appreciate message");
                     String senderId = object.optString("from");
                     if (isInLikeTime() && !userLikeList.contains(senderId)) {
                         String likeSender = object.optString("stuName");
-                        logger.i(likeSender + " 刚刚赞了你");
+                        logger.i(likeSender + " Appreciate you just now");
                         mRoomAction.addMessage("", LiveMessageEntity.EVEN_DRIVE_LIKE, likeSender + " 刚刚赞了你");
                         userLikeList.add(senderId);
 //                    isHasReceiveLike = true;
@@ -1379,7 +1380,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getEvenDrive(EvenDriveEvent evenDriveEvent) {
         if (evenDriveEvent.getStatus() == EvenDriveEvent.CLOSE_H5
-                && isMiddleScience()) {
+                && mGetInfo.getIsOpenNewCourseWare() == 1) {
             //老师收题之后，更新聊天区连对榜
             getHttpManager().getEvenLikeData(
 //                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",

@@ -798,7 +798,6 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             case XESCODE.MULTIPLE_H5_COURSEWARE: {
                 boolean isOff = object.optBoolean("open");
                 //
-                userLikeList.clear();
                 if (mGetInfo.getIsOpenNewCourseWare() == 1) {
                     if (!isOff) {
                         //老师收题之后，更新聊天区连对榜
@@ -841,6 +840,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         isMiddleScienceH5Open = false;
                     } else {
 //                    isHasReceiveLike = false;
+                        userLikeList.clear();
                         isMiddleScienceH5Open = true;
                     }
                 }
@@ -1360,7 +1360,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getEvenDrive(EvenDriveEvent evenDriveEvent) {
         if (evenDriveEvent.getStatus() == EvenDriveEvent.CLOSE_H5
-                && isMiddleScience()) {
+                && mGetInfo.getIsOpenNewCourseWare() == 1) {
             //老师收题之后，更新聊天区连对榜
             getHttpManager().getEvenLikeData(
 //                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
