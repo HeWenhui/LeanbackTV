@@ -271,6 +271,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         ivWebViewRefresh.setVisibility(View.VISIBLE);
         wvSubjectWeb.setVisibility(View.VISIBLE);
         rlGroupGameSingle.setVisibility(View.VISIBLE);
+        tvFireSum.setText("0");
 
         handler.postDelayed(new Runnable() {
             @Override
@@ -463,7 +464,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 mAM = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE); // 音量管理
                 mMaxVolume = mAM.getStreamMaxVolume(AudioManager.STREAM_MUSIC); // 获取系统最大音量
                 mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
-                mAM.setStreamVolume(AudioManager.STREAM_MUSIC, (int) (0.3f * mMaxVolume), 0);
+                mAM.setStreamVolume(AudioManager.STREAM_MUSIC, (int) (0.0f * mMaxVolume), 0);
                 isVolumeResume = false;
             }
 
@@ -582,7 +583,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(detailInfo.type)) {
                 fireNum = rightNum;
             } else if (LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(detailInfo.type)) {
-                fireNum = rightNum;
+                fireNum = rightNum + 5;
             } else {
                 fireNum = (int) Math.ceil(10d * successTimes / (double) (mAnswersList.size()));
             }
@@ -779,14 +780,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
      * @param fireNum
      */
     private void onFireAdd(int fireNum) {
-        flFireAdd.setVisibility(View.VISIBLE);
-        tvFireAdd.setText("" + fireNum);
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                flFireAdd.setVisibility(View.GONE);
-            }
-        }, 2000);
+        tvFireSum.setText("" + fireNum);
     }
 
     /**
@@ -846,6 +840,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 }
                 //语音炮弹单人模式，完成次数减为1/3
                 MAX_SINGLE_COUNT = (int) Math.ceil((double) MAX_SINGLE_COUNT / 3d);
+            } else {
+                tvFireSum.setVisibility(View.GONE);
             }
         }
 
@@ -864,6 +860,9 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             if (score >= 70) {
                 singleCount++;
                 rightNum++;
+                if (!isPlayBack) {
+                    onFireAdd(rightNum);
+                }
                 if (singleCount >= MAX_SINGLE_COUNT) {
                     if (isPlayBack) {
                         goldNum = 1;
@@ -916,44 +915,29 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         private Runnable turnPageRunnable = new Runnable() {
             @Override
             public void run() {
-                turnPage();
+                uploadScore(-1,true);
+                singleModeAction.startTimer();
             }
         };
-
-        /**
-         * android调JS方法：翻页
-         */
-        private void turnPage() {
-            pageNum++;
-            presentTime = System.currentTimeMillis() - presentTime;
-            presentTimeList.add(presentTime);
-            JSONObject resultData = new JSONObject();
-            try {
-                resultData.put("type", CourseMessage.SEND_CoursewareOnloading);
-                resultData.put("pageNum", pageNum);
-                resultData.put("isSingle", true);
-                StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
-                singleModeAction.startTimer();
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-
 
         private void uploadScore(int score, boolean isTurnPage) {
             JSONObject jsonData = new JSONObject();
             try {
+                int turnToPageNum = -1;
+                if (isTurnPage) {
+                    pageNum++;
+                    presentTime = System.currentTimeMillis() - presentTime;
+                    presentTimeList.add(presentTime);
+                    turnToPageNum = pageNum;
+                }
                 jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
                 //答对题目学生序号（1/2/3）  单人模式只有2号学生
                 jsonData.put("studentNum", 2);
                 jsonData.put("score", score);
                 jsonData.put("isTurnPage", isTurnPage);
+                jsonData.put("turnToPageNum", turnToPageNum);
+                logger.d("uploadScore : jsonData = " + jsonData.toString());
                 wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
-                if (isTurnPage) {
-                    pageNum++;
-                    presentTime = System.currentTimeMillis() - presentTime;
-                    presentTimeList.add(presentTime);
-                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -1037,6 +1021,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     if (isPlayBack) {
                         goldNum = 1;
                     } else {
+                        onFireAdd(rightNum);
                         goldNum = 2;
                     }
                     uploadScore(id);
