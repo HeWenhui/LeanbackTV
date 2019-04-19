@@ -166,7 +166,7 @@ public class ChiAnswerResultPager extends BasePager implements IArtsAnswerRsultD
             }
 
             if (TextUtils.isEmpty(myAnswerText)) {
-                myAnswerText = new SpannableStringBuilder("空");
+                myAnswerText = new SpannableStringBuilder("我的答案:未作答或未按时提交;");
             }
 
             tvUserAnswer.setText(myAnswerText);
@@ -253,7 +253,7 @@ public class ChiAnswerResultPager extends BasePager implements IArtsAnswerRsultD
 //                stringBuilder.append(temp.substring());
             }
             if (isAllSpace) {
-                return new SpannableStringBuilder("空");
+                return new SpannableStringBuilder("你的答案:未作答或未按时提交;");
             }
         }
         return stringBuilder;
