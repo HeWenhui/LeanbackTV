@@ -13,11 +13,11 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.PCMFormat;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
-import com.tal.speech.speechrecognizer.SpeechConfig;
 import com.tal.speech.utils.SpeechEvaluatorUtils;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -398,7 +398,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
         mSpeechEvaluatorUtils.startOnlineRecognize(
                 path,
                 SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
-                evaluatorListener, false);
+                evaluatorListener);
         isRecord.set(true);
     }
 

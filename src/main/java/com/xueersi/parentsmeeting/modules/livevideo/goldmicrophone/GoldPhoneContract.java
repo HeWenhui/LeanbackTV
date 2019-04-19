@@ -8,7 +8,7 @@ public interface GoldPhoneContract {
     /** 金话筒的时间间隔 */
     long LOTTIE_VIEW_INTERVAL = 2000;
     /** 金话筒的音量 */
-    int GOLD_MICROPHONE_VOLUME = 15;
+    int GOLD_MICROPHONE_VOLUME = 14;
     String MP3_FILE_NAME = "/gold_microphone.mp3";
     /** 采取数据间隔 */
     long VOLUME_INTERVAL = 150;
