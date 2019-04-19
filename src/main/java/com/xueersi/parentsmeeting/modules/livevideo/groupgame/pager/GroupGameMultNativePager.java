@@ -330,10 +330,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         public void run() {
             JSONObject jsonData = new JSONObject();
             try {
-                jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
-                jsonData.put("isTurnPage", true);
+
                 boolean remove = false;
-                wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
                 if (!allAnswerList.isEmpty()) {
                     GroupGameTestInfosEntity.TestInfoEntity test = tests.get(0);
                     List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = test.getAnswerList();
@@ -345,6 +343,13 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             createSpeechContent("VoiceCannonTurnRun", false);
                         }
                     }
+                }
+                if (remove) {
+                    jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
+                    jsonData.put("score", -1);
+//                jsonData.put("studentNum", -1);
+                    jsonData.put("turnToPageNum", currentAnswerIndex);
+                    wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
                 }
                 mLogtf.d("VoiceCannonTurnRun:pagerNum=" + pagerNum + ",currentAnswerIndex=" + currentAnswerIndex + ",remove=" + remove);
             } catch (Exception e) {
@@ -418,6 +423,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 @Override
                 public void run() {
                     preLoad.onStop();
+                    ivWebViewRefresh.setVisibility(View.GONE);
                     if (test.getTotalTime() > 0) {
                         coursewareOnloading(currentAnswerIndex);
                     }
@@ -430,40 +436,37 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
         private void onCoursewareDoing(String where, final JSONObject message) {
             if (LiveQueConfig.GET_ANSWERTYPE_WHERE_LISTENER.equals(where)) {
-                boolean isTurnPage = message.optBoolean("isTurnPage");
-                if (isTurnPage) {
-                    try {
-                        //当前页
-                        PagerShowTime pagerShowTime = voicePagerShowTimeHashMap.get(currentAnswerIndex);
-                        if (pagerShowTime != null) {
-                            if (pagerShowTime.start == 0) {
-                                pagerShowTime.start = System.currentTimeMillis();
-                            }
+                try {
+                    //当前页
+                    PagerShowTime pagerShowTime = voicePagerShowTimeHashMap.get(currentAnswerIndex);
+                    if (pagerShowTime != null) {
+                        if (pagerShowTime.start == 0) {
+                            pagerShowTime.start = System.currentTimeMillis();
                         }
-                        //上一页
-                        pagerShowTime = voicePagerShowTimeHashMap.get(currentAnswerIndex - 1);
-                        if (pagerShowTime != null) {
-                            pagerShowTime.end = System.currentTimeMillis();
-                        }
-                        GroupGameTestInfosEntity.TestInfoEntity test = tests.get(0);
-                        if (currentAnswerIndex >= test.getAnswerList().size()) {
-                            return;
-                        }
-                        int time = test.getAnswerList().get(currentAnswerIndex).getSingleTime() + 1;
-                        if (turnRun == null) {
+                    }
+                    //上一页
+                    pagerShowTime = voicePagerShowTimeHashMap.get(currentAnswerIndex - 1);
+                    if (pagerShowTime != null) {
+                        pagerShowTime.end = System.currentTimeMillis();
+                    }
+                    GroupGameTestInfosEntity.TestInfoEntity test = tests.get(0);
+                    if (currentAnswerIndex >= test.getAnswerList().size()) {
+                        return;
+                    }
+                    int time = test.getAnswerList().get(currentAnswerIndex).getSingleTime() + 1;
+                    if (turnRun == null) {
+                        turnRun = new VoiceCannonTurnRun(currentAnswerIndex, time);
+                        handler.postDelayed(turnRun, time * 1000);
+                    } else {
+                        logger.d("onLoadComplete:pagerNum=" + turnRun.pagerNum + "," + currentAnswerIndex);
+                        if (turnRun.pagerNum != currentAnswerIndex) {
+                            handler.removeCallbacks(turnRun);
                             turnRun = new VoiceCannonTurnRun(currentAnswerIndex, time);
                             handler.postDelayed(turnRun, time * 1000);
-                        } else {
-                            logger.d("onLoadComplete:pagerNum=" + turnRun.pagerNum + "" + currentAnswerIndex);
-                            if (turnRun.pagerNum != currentAnswerIndex) {
-                                handler.removeCallbacks(turnRun);
-                                turnRun = new VoiceCannonTurnRun(currentAnswerIndex, time);
-                                handler.postDelayed(turnRun, time * 1000);
-                            }
                         }
-                    } catch (Exception e) {
-                        CrashReport.postCatchedException(e);
                     }
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(e);
                 }
             } else {
                 logger.e("onCoursewareDoing:where=" + where);
@@ -491,7 +494,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         resultData.put("isSingle", false);
                         StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
                     } catch (Exception e) {
-                        logger.d("onLoadComplete2", e);
+                        logger.d("coursewareOnloading", e);
                     }
                 }
             });
@@ -578,6 +581,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 @Override
                 public void run() {
                     preLoad.onStop();
+                    ivWebViewRefresh.setVisibility(View.GONE);
                     if (test.getTotalTime() > 0) {
                         onScene("onLoadComplete");
                     }
@@ -2025,7 +2029,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                         }
                                     }
                                 } else {
+                                    mLogtf.d("Voice_Projectile_Statis:current_word=" + current_word + "," + currentAnswerIndex + ",all=" + allAnswerList.size());
                                     if (current_word > currentAnswerIndex) {
+                                        currentAnswerIndex = current_word;
                                         if (!allAnswerList.isEmpty()) {
                                             allAnswerList.remove(0);
                                             isTurnPage = true;
@@ -2056,7 +2062,11 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                                 jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
                                                 jsonData.put("score", score);
                                                 jsonData.put("studentNum", finalStudentNum);
-                                                jsonData.put("isTurnPage", isTurnPage);
+                                                if (isTurnPage) {
+                                                    jsonData.put("turnToPageNum", currentAnswerIndex);
+                                                } else {
+                                                    jsonData.put("turnToPageNum", -1);
+                                                }
                                                 wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
                                             } catch (JSONException e) {
                                                 e.printStackTrace();
@@ -2081,7 +2091,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             int current_word = jsonObject.optInt("current_word", currentAnswerIndex);
                             GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
                             List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = testInfoEntity.getAnswerList();
-                            for (int i = 0; i < current_word; i++) {
+                            for (int i = 0; i < Math.min(current_word, answerList.size()); i++) {
                                 GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = answerList.get(i);
                                 allAnswerList.remove(answersEntity);
                             }
@@ -2153,13 +2163,15 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                 }
                             }
                             createSpeechContent("Voice_Projectile_Scene", false);
-                            if (!allAnswerList.isEmpty()) {
-                                current_word = answerList.size() - allAnswerList.size();
-                            } else {
-                                current_word = answerList.size() - 1;
+//                            if (!allAnswerList.isEmpty()) {
+//                                current_word = answerList.size() - allAnswerList.size();
+//                            } else {
+//                                current_word = answerList.size() - 1;
+//                            }
+                            if (current_word > currentAnswerIndex) {
+                                currentAnswerIndex = current_word;
                             }
-                            currentAnswerIndex = current_word;
-                            voiceCannonOnMessage.coursewareOnloading(current_word);
+                            voiceCannonOnMessage.coursewareOnloading(currentAnswerIndex);
                         } catch (Exception e) {
                             logger.d("onMessage:Scene", e);
                             CrashReport.postCatchedException(e);

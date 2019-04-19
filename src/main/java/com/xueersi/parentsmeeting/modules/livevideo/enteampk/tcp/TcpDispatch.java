@@ -12,7 +12,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.lib.SendCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.TcpConstants;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
-import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.json.JSONObject;
 
@@ -106,7 +105,7 @@ public class TcpDispatch {
         this.addresses = addresses;
         InetSocketAddress inetSocketAddress = addresses.get(addressIndex++);
         logger.d("setAddresses:inetSocketAddress=" + inetSocketAddress);
-        groupGameTcp = new GroupGameTcp(inetSocketAddress.getHostName(), inetSocketAddress.getPort());
+        groupGameTcp = new GroupGameTcp(inetSocketAddress);
         groupGameTcp.setReceiveMegCallBack(receiveMegCallBack);
         groupGameTcp.start();
     }
@@ -114,7 +113,7 @@ public class TcpDispatch {
     public void stop() {
         isStop = true;
         if (groupGameTcp != null) {
-            groupGameTcp.stop();
+            groupGameTcp.stop("stop");
         }
         mMessageActionMap.clear();
     }
@@ -166,7 +165,7 @@ public class TcpDispatch {
 
         @Override
         public void onDisconnect(GroupGameTcp oldGroupGameTcp) {
-            oldGroupGameTcp.stop();
+            oldGroupGameTcp.stop("onDisconnect:isStop=" + isStop);
             final int seq = oldGroupGameTcp.getSeq();
             if (isStop) {
                 return;
@@ -178,7 +177,7 @@ public class TcpDispatch {
                         @Override
                         public void run() {
                             InetSocketAddress inetSocketAddress = addresses.get(addressIndex++ % addresses.size());
-                            groupGameTcp = new GroupGameTcp(inetSocketAddress.getHostName(), inetSocketAddress.getPort());
+                            groupGameTcp = new GroupGameTcp(inetSocketAddress);
                             groupGameTcp.setSeq(seq);
                             groupGameTcp.setReceiveMegCallBack(receiveMegCallBack);
                             groupGameTcp.start();
@@ -188,34 +187,6 @@ public class TcpDispatch {
             }, 1000);
         }
     };
-
-    public boolean setTest(int testType, String testId) {
-        boolean change = false;
-        if (gt != testType) {
-            gt = testType;
-            change = true;
-        }
-        if (!TextUtils.equals(test_id, testId)) {
-            test_id = testId;
-            change = true;
-        }
-        logger.d("setTest：testType=" + testType + ",testId=" + testId + ",change=" + change);
-        if (change) {
-            liveThreadPoolExecutor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    if (groupGameTcp != null) {
-                        groupGameTcp.stop();
-                    }
-                    InetSocketAddress inetSocketAddress = addresses.get(addressIndex++ % addresses.size());
-                    groupGameTcp = new GroupGameTcp(inetSocketAddress.getHostName(), inetSocketAddress.getPort());
-                    groupGameTcp.setReceiveMegCallBack(receiveMegCallBack);
-                    groupGameTcp.start();
-                }
-            });
-        }
-        return change;
-    }
 
     public void send(short type, int operation, String bodyStr) {
         if (groupGameTcp != null) {

@@ -13,6 +13,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.InteractiveT
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageReg;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager.GroupGameEmptyPager;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager.GroupGameMultNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager.GroupGameNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
@@ -205,6 +206,30 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
         } else {
             InteractiveTeam interactiveTeam = getStuActiveTeam.getStuActiveTeam(null);
             //还没有小组,或者没有tcp
+//            if (interactiveTeam == null || interactiveTeam.getEntities().size() < 2) {
+//                if (interactiveTeam == null) {
+//                    GroupGameEmptyPager groupGameEmptyPager = new GroupGameEmptyPager(context, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
+//                    groupGameEmptyPager.setLivePagerBack(livePagerBack);
+//                    h5CoursewarePager = groupGameEmptyPager;
+////                    GroupGameNativePager groupGameMultNativePager = new GroupGameNativePager(context, false, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
+////                    groupGameMultNativePager.setLivePagerBack(livePagerBack);
+////                    h5CoursewarePager = groupGameMultNativePager;
+//                } else {
+//                    GroupGameEmptyPager groupGameEmptyPager = new GroupGameEmptyPager(context, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
+//                    groupGameEmptyPager.setLivePagerBack(livePagerBack);
+//                    h5CoursewarePager = groupGameEmptyPager;
+////                    GroupGameNativePager groupGameMultNativePager = new GroupGameNativePager(context, false, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
+////                    groupGameMultNativePager.setLivePagerBack(livePagerBack);
+////                    h5CoursewarePager = groupGameMultNativePager;
+//                }
+//            } else {
+//                GroupGameEmptyPager groupGameEmptyPager = new GroupGameEmptyPager(context, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
+//                groupGameEmptyPager.setLivePagerBack(livePagerBack);
+//                h5CoursewarePager = groupGameEmptyPager;
+////                GroupGameMultNativePager groupGameMultNativePager = new GroupGameMultNativePager(context, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
+////                groupGameMultNativePager.setLivePagerBack(livePagerBack);
+////                h5CoursewarePager = groupGameMultNativePager;
+//            }
             if (interactiveTeam == null || interactiveTeam.getEntities().size() < 2) {
                 GroupGameNativePager groupGameMultNativePager = new GroupGameNativePager(context, false, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
                 groupGameMultNativePager.setLivePagerBack(livePagerBack);

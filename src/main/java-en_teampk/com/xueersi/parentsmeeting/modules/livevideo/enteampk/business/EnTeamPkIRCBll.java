@@ -673,13 +673,6 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     }
                 }
 
-                @Override
-                public boolean setTest(int testType, String testId) {
-                    if (tcpDispatch != null) {
-                        return tcpDispatch.setTest(testType, testId);
-                    }
-                    return false;
-                }
             };
             ProxUtil.getProxUtil().put(mContext, TcpMessageReg.class, tcpMessageReg);
         }
@@ -754,7 +747,11 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     }
 
     public void getStuActiveTeam(final AbstractBusinessDataCallBack callBack) {
-        logger.d("getStuActiveTeam:mInteractiveTeam=null?" + (mInteractiveTeam == null));
+        if (mInteractiveTeam == null) {
+            mLogtf.d("getStuActiveTeam:mInteractiveTeam=null?true");
+        } else {
+            mLogtf.d("getStuActiveTeam:mInteractiveTeam.size=" + mInteractiveTeam.getEntities().size());
+        }
         if (mInteractiveTeam != null) {
             if (callBack != null) {
                 callBack.onDataSucess(mInteractiveTeam);

@@ -79,8 +79,9 @@ public class EnTeamPkHttpManager {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 try {
+                    String res = response.body().string();
                     ResponseEntity responseEntity = new ResponseEntity();
-                    responseEntity.setJsonObject(new JSONObject(response.body().string()));
+                    responseEntity.setJsonObject(new JSONObject(res));
                     ArrayList<InetSocketAddress> addresses = enTeamPkResponseParser.parseTcpDispatch(responseEntity);
                     callBack.onDataSucess(addresses);
                 } catch (Exception e) {

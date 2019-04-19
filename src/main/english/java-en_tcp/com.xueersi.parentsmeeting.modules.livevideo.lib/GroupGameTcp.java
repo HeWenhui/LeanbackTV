@@ -6,7 +6,6 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.util.SparseArray;
 
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
@@ -18,6 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 
@@ -33,20 +33,24 @@ public class GroupGameTcp {
     private boolean readSave = false;
     /** 测试用，存在本地文件 */
     private boolean saveRead = false;
-    private String host;
-    private int port;
+    private InetSocketAddress inetSocketAddress;
     private Socket socket;
     /** 消息序号 */
     private int seq = 0;
+    /** ping 超时 */
+    private long pingTime = 10000;
+    private PingTimeOut pingTimeOut = new PingTimeOut();
+    /** 心跳间隔 */
+    private long heartTime = 10000;
     private WriteThread writeThread;
     private Handler sendMessageHandler;
     private Handler mainHandler = new Handler(Looper.getMainLooper());
     private boolean isStop = false;
     private SparseArray<SendCallBack> callBackSparseArray = new SparseArray<>();
 
-    public GroupGameTcp(String host, int port) {
-        this.host = host;
-        this.port = port;
+    public GroupGameTcp(InetSocketAddress inetSocketAddress) {
+        this.inetSocketAddress = inetSocketAddress;
+        log.d("GroupGameTcp:host=" + inetSocketAddress);
 //        if (AppConfig.DEBUG) {
 //            saveRead = true;
 //        }
@@ -65,12 +69,15 @@ public class GroupGameTcp {
     }
 
     public void start() {
+        long before = System.currentTimeMillis();
         try {
             isStop = false;
-            socket = new Socket(host, port);
-            log.d("start:KeepAlive=" + socket.getKeepAlive());
+            log.d("start");
+            socket = new Socket();
             socket.setKeepAlive(true);
             socket.setSoTimeout(130000);
+            socket.connect(inetSocketAddress,5000);
+            log.d("start:KeepAlive=" + socket.getKeepAlive() + ",time=" + (System.currentTimeMillis() - before));
             writeThread = new WriteThread(socket.getOutputStream());
             writeThread.start();
             new Thread(new ReadThread(writeThread, socket.getInputStream())).start();
@@ -79,16 +86,17 @@ public class GroupGameTcp {
                 receiveMegCallBack.onConnect(this);
             }
         } catch (Exception e) {
-            log.d("start:e=" + e.getMessage());
+            log.d("start:e=" + e.getMessage() + ",time=" + (System.currentTimeMillis() - before));
             if (receiveMegCallBack != null) {
                 receiveMegCallBack.onDisconnect(this);
             }
         }
     }
 
-    public void stop() {
+    public void stop(String method) {
+        mainHandler.removeCallbacks(pingTimeOut);
         isStop = true;
-        log.d("stop");
+        log.d("stop:method=" + method);
         if (socket != null) {
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR1) {
                 writeThread.quitSafely();
@@ -229,6 +237,21 @@ public class GroupGameTcp {
         }
     }
 
+    private class PingTimeOut implements Runnable {
+
+        PingTimeOut() {
+            log.d("PingTimeOut");
+        }
+
+        @Override
+        public void run() {
+            log.d("PingTimeOut:run:isStop=" + isStop);
+            if (!isStop && receiveMegCallBack != null) {
+                receiveMegCallBack.onDisconnect(GroupGameTcp.this);
+            }
+        }
+    }
+
     class ReadThread implements Runnable {
         Logger log = LiveLoggerFactory.getLogger(TAG + ":ReadThread");
         WriteThread writeThread;
@@ -243,7 +266,7 @@ public class GroupGameTcp {
         }
 
         private void onReceiveMeg(short type, int operation, int seq, String msg) {
-            log.d("onReceiveMeg:type=" + type + ",operation=" + operation + ",msg=" + msg);
+            log.d("onReceiveMeg:type=" + type + ",operation=" + operation + ",seq=" + seq + ",msg=" + msg);
 //			if (readCount > 10) {
 //				return;
 //			}
@@ -254,18 +277,21 @@ public class GroupGameTcp {
                         sendMessageHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
+                                mainHandler.postDelayed(pingTimeOut, pingTime);
                                 writeThread.heart();
                             }
-                        }, 30000);
+                        }, heartTime);
                     }
-                } else if (type == TcpConstants.HEAD_TYPE) {
+                } else if (type == TcpConstants.REPLAY_TYPE) {
                     if (operation == TcpConstants.HEAD_OPERATION_REC) {
+                        mainHandler.removeCallbacks(pingTimeOut);
                         sendMessageHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
+                                mainHandler.postDelayed(pingTimeOut, pingTime);
                                 writeThread.heart();
                             }
-                        }, 30000);
+                        }, heartTime);
                     }
                 }
             }

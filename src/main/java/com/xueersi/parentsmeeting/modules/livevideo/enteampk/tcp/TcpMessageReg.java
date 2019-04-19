@@ -14,9 +14,6 @@ public interface TcpMessageReg {
 
     void unregistTcpMessageAction(TcpMessageAction tcpMessageAction);
 
-    @Deprecated
-    boolean setTest(int testType, String testId);
-
     interface OnTcpReg {
         void onReg();
     }
