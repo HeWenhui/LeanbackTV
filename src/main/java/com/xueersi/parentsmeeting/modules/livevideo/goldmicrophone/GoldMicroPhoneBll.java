@@ -143,6 +143,9 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
                 sign = data.optString("sign");
                 logger.i("receive arts_gold_microphone open = " + open);
                 if (open == 1) {
+                    if (istraning) {
+                        return;
+                    }
                     isStop.set(false);
 
                     showMicroPhoneView();
@@ -708,6 +711,11 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
         isStop.set(true);
     }
 
+    /**
+     * 是否是辅导状态
+     */
+    private boolean istraning = false;
+
     @Override
     public void onModeChange(final String oldMode, final String mode, final boolean isPresent) {
         super.onModeChange(oldMode, mode, isPresent);
@@ -719,9 +727,12 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
 //                    Toast.makeText(mContext, "oldMode = " + oldMode + " mode = " + mode + " isPresent = " + isPresent, Toast.LENGTH_SHORT).show();
 //        logger.i();
                     if (!LiveTopic.MODE_CLASS.equals(mode)) {
+                        istraning = true;
                         if (mGoldView instanceof GoldPhoneContract.CloseTipPresenter) {
                             ((GoldPhoneContract.CloseTipPresenter) mGoldView).removeGoldView();
                         }
+                    } else {
+                        istraning = false;
                     }
                 }
             });
