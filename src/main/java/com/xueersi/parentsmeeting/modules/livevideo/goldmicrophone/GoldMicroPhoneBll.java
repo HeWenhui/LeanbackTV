@@ -143,7 +143,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
                 sign = data.optString("sign");
                 logger.i("receive arts_gold_microphone open = " + open);
                 if (open == 1) {
-                    if (istraning) {
+                    if (mGetInfo.getLiveTopic().getMode().equals(LiveTopic.MODE_TRANING)) {
                         return;
                     }
                     isStop.set(false);

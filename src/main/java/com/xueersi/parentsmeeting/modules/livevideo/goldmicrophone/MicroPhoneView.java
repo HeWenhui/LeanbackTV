@@ -383,7 +383,9 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
 
     @Override
     public void addRipple(int level) {
-        swvView.addRipple(new SoundWaveView.Circle(0, level));
+        if (swvView != null) {
+            swvView.addRipple(new SoundWaveView.Circle(0, level));
+        }
     }
 
     @Override
