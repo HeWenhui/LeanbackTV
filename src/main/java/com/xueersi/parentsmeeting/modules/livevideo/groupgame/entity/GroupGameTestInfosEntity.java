@@ -114,6 +114,10 @@ public class GroupGameTestInfosEntity {
          */
         private String testId;
         /**
+         * 游戏模式： 只有小组互动有此字段， 1： 单人（返回此时，走单人模式）； 2：多人（端拿到gameModel=2时， 需要再根据分组和检测结果决定最后单人或者多人）
+         */
+        private int gameModel;
+        /**
          * 正确答案数组
          */
         private List<AnswersEntity> answerList;
@@ -172,6 +176,14 @@ public class GroupGameTestInfosEntity {
 
         public void setTestId(String testId) {
             this.testId = testId;
+        }
+
+        public int getGameModel() {
+            return gameModel;
+        }
+
+        public void setGameModel(int gameModel) {
+            this.gameModel = gameModel;
         }
 
         public List<AnswersEntity> getAnswerList() {

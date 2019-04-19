@@ -59,6 +59,11 @@ public class LiveQueConfig {
     /** 直播-小组互动Cleaning up */
     public static final int EN_COURSE_GAME_TYPE_2 = 2;
 
+    /** 游戏模式1 */
+    public static int GAME_MODEL_1 = 1;
+    /** 游戏模式2 */
+    public static int GAME_MODEL_2 = 2;
+
     public static ArrayList getSubmitMultiTestTypes() {
         if (SUBMIT_MULTI_TEST_TYPES == null) {
             SUBMIT_MULTI_TEST_TYPES = new ArrayList<>();

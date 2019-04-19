@@ -453,8 +453,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         mParam.setLocalSavePath(saveVideoFile.getPath());
         mParam.setMultRef(false);
         mParam.setLearning_stage(learningStage);
-        mParam.setVad_max_sec("60");
-        mParam.setVad_pause_sec("60");
+        mParam.setVad_max_sec("90");
+        mParam.setVad_pause_sec("90");
         mIse.startRecog(mParam, new EvaluatorListener() {
 
             @Override
@@ -639,6 +639,10 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         preLoad.onProgressChanged(view, newProgress);
     }
 
+    public void setGroupGameTestInfosEntity(GroupGameTestInfosEntity mGroupGameTestInfosEntity) {
+        this.mGroupGameTestInfosEntity = mGroupGameTestInfosEntity;
+    }
+
     @Override
     public void setEnglishH5CoursewareSecHttp(EnglishH5CoursewareSecHttp englishH5CoursewareSecHttp) {
         this.englishH5CoursewareSecHttp = englishH5CoursewareSecHttp;
@@ -647,7 +651,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
     private void getCourseWareTests() {
         preLoad.onStart();
-        englishH5CoursewareSecHttp.getCourseWareTests(detailInfo, new AbstractBusinessDataCallBack() {
+        AbstractBusinessDataCallBack callBack = new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
                 logger.d("getCourseWareTests -> onDataSucess()");
@@ -685,7 +689,12 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 }
                 ivCourseRefresh.setVisibility(View.VISIBLE);
             }
-        });
+        };
+        if (mGroupGameTestInfosEntity == null) {
+            englishH5CoursewareSecHttp.getCourseWareTests(detailInfo, callBack);
+        } else {
+            callBack.onDataSucess(mGroupGameTestInfosEntity);
+        }
     }
 
     public BasePager getBasePager() {
@@ -915,7 +924,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         private Runnable turnPageRunnable = new Runnable() {
             @Override
             public void run() {
-                uploadScore(-1,true);
+                uploadScore(-1, true);
                 singleModeAction.startTimer();
             }
         };

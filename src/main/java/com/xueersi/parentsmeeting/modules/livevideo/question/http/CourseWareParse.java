@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.http;
 
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.GroupGameTestInfosEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
 
@@ -132,6 +133,7 @@ public class CourseWareParse {
                 testinfo.setSingleCount(testObj.getInt("singleCount"));
                 testinfo.setTotalTime(testObj.getInt("totalTime"));
                 testinfo.setStemLength(testObj.getInt("stemLength"));
+                testinfo.setGameModel(testObj.optInt("gameModel", LiveQueConfig.GAME_MODEL_1));
                 List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = new ArrayList<>();
                 JSONArray answers = testObj.getJSONArray("answers");
                 for (int j = 0; j < answers.length(); j++) {
@@ -173,6 +175,7 @@ public class CourseWareParse {
 //                testinfo.setSingleCount(testObj.getInt("singleCount"));
                 testinfo.setTotalTime(testObj.getInt("totalTime"));
                 testinfo.setStemLength(testObj.getInt("stemLength"));
+                testinfo.setGameModel(testObj.optInt("gameModel", LiveQueConfig.GAME_MODEL_1));
                 List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = new ArrayList<>();
                 JSONArray answers = testObj.getJSONArray("answers");
                 for (int j = 0; j < answers.length(); j++) {

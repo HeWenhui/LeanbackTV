@@ -482,10 +482,11 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         JSONObject resultData = new JSONObject();
                         resultData.put("type", CourseMessage.SEND_CoursewareOnloading);
                         resultData.put("pageNum", pageNum);
-                        int playTime = (int) (System.currentTimeMillis() - enterTime) / 1000;
-                        resultData.put("restTime", testInfoEntity.getTotalTime() - playTime);
+//                        int playTime = (int) (System.currentTimeMillis() - enterTime) / 1000;
+                        GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = testInfoEntity.getAnswerList().get(pageNum);
+                        resultData.put("restTime", answersEntity.getSingleTime());
                         Integer integer = wordCount.get("" + pageNum);
-                        mLogtf.d("coursewareOnloading:pageNum=" + pageNum + ",integer=" + integer + ",playTime=" + playTime);
+                        mLogtf.d("coursewareOnloading:pageNum=" + pageNum + ",integer=" + integer + ",singleTime=" + answersEntity.getSingleTime());
                         if (integer == null) {
                             resultData.put("currentRight", 0);
                         } else {
@@ -495,6 +496,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
                     } catch (Exception e) {
                         logger.d("coursewareOnloading", e);
+                        CrashReport.postCatchedException(e);
                     }
                 }
             });
@@ -960,8 +962,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         mParam.setMultRef(false);
         mParam.setPcm(true);
         mParam.setLearning_stage(learningStage);
-        mParam.setVad_max_sec("60");
-        mParam.setVad_pause_sec("60");
+        mParam.setVad_max_sec("90");
+        mParam.setVad_pause_sec("90");
         mIse.startRecog(mParam, new EvaluatorListenerWithPCM() {
             int lastVolume = 0;
 
@@ -1217,6 +1219,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         }
     }
 
+    public void setGroupGameTestInfosEntity(GroupGameTestInfosEntity mGroupGameTestInfosEntity) {
+        this.mGroupGameTestInfosEntity = mGroupGameTestInfosEntity;
+    }
+
     @Override
     public void setEnglishH5CoursewareSecHttp(EnglishH5CoursewareSecHttp englishH5CoursewareSecHttp) {
         this.englishH5CoursewareSecHttp = englishH5CoursewareSecHttp;
@@ -1225,7 +1231,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
     private void getCourseWareTests() {
         preLoad.onStart();
-        englishH5CoursewareSecHttp.getCourseWareTests(detailInfo, new AbstractBusinessDataCallBack() {
+        AbstractBusinessDataCallBack callBack = new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
                 mGroupGameTestInfosEntity = (GroupGameTestInfosEntity) objData[0];
@@ -1357,7 +1363,13 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 logger.d("onDataFail:errStatus=" + errStatus + ",failMsg=" + failMsg);
 //                preLoad.onStop();
             }
-        });
+        };
+        mLogtf.d("getCourseWareTests:mGroupGameTestInfosEntity=null?" + (mGroupGameTestInfosEntity == null));
+        if (mGroupGameTestInfosEntity == null) {
+            englishH5CoursewareSecHttp.getCourseWareTests(detailInfo, callBack);
+        } else {
+            callBack.onDataSucess(mGroupGameTestInfosEntity);
+        }
     }
 
     boolean submit = false;
@@ -1974,6 +1986,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     case TcpConstants.Voice_Projectile_Statis: {
                         try {
                             JSONObject jsonObject = new JSONObject(msg);
+                            String test_id = jsonObject.optString("test_id");
+                            if (!detailInfo.id.equals(test_id)) {
+                                return;
+                            }
                             JSONObject dataObj = jsonObject.getJSONObject("data");
                             int word_id = dataObj.getInt("word_id");
                             final int who_id = dataObj.getInt("who_id");
@@ -2017,26 +2033,32 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             {
                                 int maxSingCount = testInfoEntity.getSingleCount();
                                 final boolean isTurnPage;
-                                if (integer >= maxSingCount) {
-                                    isTurnPage = true;
-                                    for (int allAns = 0; allAns < allAnswerList.size(); allAns++) {
-                                        GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = allAnswerList.get(allAns);
-                                        if (answer.getId() == word_id) {
-                                            allAnswerList.remove(allAns);
-                                            logger.d("Voice_Projectile_TYPE:currentAnswerIndex=" + currentAnswerIndex);
-                                            currentAnswerIndex++;
-                                            break;
-                                        }
-                                    }
-                                } else {
-                                    mLogtf.d("Voice_Projectile_Statis:current_word=" + current_word + "," + currentAnswerIndex + ",all=" + allAnswerList.size());
-                                    if (current_word > currentAnswerIndex) {
-                                        currentAnswerIndex = current_word;
-                                        if (!allAnswerList.isEmpty()) {
+                                mLogtf.d("Voice_Projectile_Statis:current_word=" + current_word + "," + currentAnswerIndex);
+                                int oldIndex = currentAnswerIndex;
+                                if (currentAnswerIndex < current_word) {
+                                    currentAnswerIndex = current_word;
+                                    int oldSize = allAnswerList.size();
+                                    if (!allAnswerList.isEmpty()) {
+                                        while (oldIndex < current_word && !allAnswerList.isEmpty()) {
+                                            oldIndex++;
                                             allAnswerList.remove(0);
-                                            isTurnPage = true;
-                                        } else {
-                                            isTurnPage = false;
+                                        }
+                                        isTurnPage = true;
+                                    } else {
+                                        isTurnPage = false;
+                                    }
+                                    mLogtf.d("Voice_Projectile_Statis:oldSize=" + oldSize + ",all=" + allAnswerList.size());
+                                } else {
+                                    if (integer >= maxSingCount) {
+                                        isTurnPage = true;
+                                        for (int allAns = 0; allAns < allAnswerList.size(); allAns++) {
+                                            GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = allAnswerList.get(allAns);
+                                            if (answer.getId() == word_id) {
+                                                allAnswerList.remove(allAns);
+                                                logger.d("Voice_Projectile_TYPE:currentAnswerIndex=" + currentAnswerIndex);
+                                                currentAnswerIndex++;
+                                                break;
+                                            }
                                         }
                                     } else {
                                         isTurnPage = false;
@@ -2088,6 +2110,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     case TcpConstants.Voice_Projectile_Scene: {
                         try {
                             JSONObject jsonObject = new JSONObject(msg);
+                            String test_id = jsonObject.optString("test_id");
+                            if (!detailInfo.id.equals(test_id)) {
+                                return;
+                            }
                             int current_word = jsonObject.optInt("current_word", currentAnswerIndex);
                             GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
                             List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = testInfoEntity.getAnswerList();
@@ -2202,6 +2228,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     case TcpConstants.CLEAN_UP_REC: {
                         try {
                             JSONObject jsonObject = new JSONObject(msg);
+                            String test_id = jsonObject.optString("test_id");
+                            if (!detailInfo.id.equals(test_id)) {
+                                return;
+                            }
                             final int word_id = jsonObject.getInt("word_id");
                             String word = jsonObject.getString("word");
                             final int who_id = jsonObject.getInt("who_id");
@@ -2266,6 +2296,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     case TcpConstants.CLEAN_UP_SECN: {
                         try {
                             JSONObject jsonObject = new JSONObject(msg);
+                            String test_id = jsonObject.optString("test_id");
+                            if (!detailInfo.id.equals(test_id)) {
+                                return;
+                            }
                             JSONArray dataAray = jsonObject.getJSONArray("data");
                             for (int i = 0; i < dataAray.length(); i++) {
                                 int totalEnergy = 0;

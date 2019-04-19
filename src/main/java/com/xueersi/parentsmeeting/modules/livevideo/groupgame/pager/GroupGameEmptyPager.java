@@ -8,15 +8,17 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
-import com.xueersi.parentsmeeting.modules.livevideo.enteampk.business.GetStuActiveTeam;
-import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.InteractiveTeam;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.GroupGameTestInfosEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareSecHttp;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseCoursewareNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
-import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+
+import java.util.List;
 
 public class GroupGameEmptyPager extends BaseCoursewareNativePager implements BaseEnglishH5CoursewarePager {
     private BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager;
@@ -41,51 +43,14 @@ public class GroupGameEmptyPager extends BaseCoursewareNativePager implements Ba
 
     @Override
     public View initView() {
-        group = new RelativeLayout(mContext);
+        View view = View.inflate(mContext, R.layout.page_livevideo_h5_courseware_groupgame_multiple, null);
+        group = (RelativeLayout) view;
         return group;
     }
 
     @Override
     public void initData() {
         super.initData();
-        GetStuActiveTeam getStuActiveTeam = ProxUtil.getProxUtil().get(mContext, GetStuActiveTeam.class);
-        getStuActiveTeam.getStuActiveTeam(new AbstractBusinessDataCallBack() {
-            @Override
-            public void onDataSucess(Object... objData) {
-                InteractiveTeam mInteractiveTeam = (InteractiveTeam) objData[0];
-                logger.d("onDataSucess:mInteractiveTeam=" + mInteractiveTeam);
-                GroupGameMultNativePager groupGameMultNativePager = new GroupGameMultNativePager(mContext, liveGetInfo, detailInfo, englishH5Entity, new EnglishH5CoursewareBll.OnH5ResultClose() {
-                    @Override
-                    public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
-                        group.removeAllViews();
-                        onClose.onH5ResultClose(GroupGameEmptyPager.this, baseVideoQuestionEntity);
-                    }
-                });
-                groupGameMultNativePager.setLivePagerBack(livePagerBack);
-                group.addView(groupGameMultNativePager.getRootView());
-                baseEnglishH5CoursewarePager = groupGameMultNativePager;
-                baseEnglishH5CoursewarePager.setEnglishH5CoursewareBll(englishH5CoursewareBll);
-                baseEnglishH5CoursewarePager.setEnglishH5CoursewareSecHttp(englishH5CoursewareSecHttp);
-            }
-
-            @Override
-            public void onDataFail(int errStatus, String failMsg) {
-                logger.d("onDataFail:errStatus=" + errStatus + ",failMsg=" + failMsg);
-                super.onDataFail(errStatus, failMsg);
-                GroupGameNativePager groupGameMultNativePager = new GroupGameNativePager(mContext, false, liveGetInfo, detailInfo, englishH5Entity, new EnglishH5CoursewareBll.OnH5ResultClose() {
-                    @Override
-                    public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
-                        group.removeAllViews();
-                        onClose.onH5ResultClose(GroupGameEmptyPager.this, baseVideoQuestionEntity);
-                    }
-                });
-                groupGameMultNativePager.setLivePagerBack(livePagerBack);
-                group.addView(groupGameMultNativePager.getRootView());
-                baseEnglishH5CoursewarePager = groupGameMultNativePager;
-                baseEnglishH5CoursewarePager.setEnglishH5CoursewareBll(englishH5CoursewareBll);
-                baseEnglishH5CoursewarePager.setEnglishH5CoursewareSecHttp(englishH5CoursewareSecHttp);
-            }
-        });
     }
 
     @Override
@@ -137,17 +102,70 @@ public class GroupGameEmptyPager extends BaseCoursewareNativePager implements Ba
     @Override
     public void setEnglishH5CoursewareBll(EnglishH5CoursewareBll englishH5CoursewareBll) {
         this.englishH5CoursewareBll = englishH5CoursewareBll;
-        if (baseEnglishH5CoursewarePager != null) {
-            baseEnglishH5CoursewarePager.setEnglishH5CoursewareBll(englishH5CoursewareBll);
-        }
     }
 
     @Override
-    public void setEnglishH5CoursewareSecHttp(EnglishH5CoursewareSecHttp englishH5CoursewareSecHttp) {
+    public void setEnglishH5CoursewareSecHttp(final EnglishH5CoursewareSecHttp englishH5CoursewareSecHttp) {
         this.englishH5CoursewareSecHttp = englishH5CoursewareSecHttp;
-        if (baseEnglishH5CoursewarePager != null) {
-            baseEnglishH5CoursewarePager.setEnglishH5CoursewareSecHttp(englishH5CoursewareSecHttp);
-        }
+        englishH5CoursewareSecHttp.getCourseWareTests(detailInfo, new AbstractBusinessDataCallBack() {
+            @Override
+            public void onDataSucess(Object... objData) {
+                GroupGameTestInfosEntity mGroupGameTestInfosEntity = (GroupGameTestInfosEntity) objData[0];
+                List<GroupGameTestInfosEntity.TestInfoEntity> tests = mGroupGameTestInfosEntity.getTestInfoList();
+                if (mGroupGameTestInfosEntity.isAnswered() && tests.isEmpty()) {
+                    onClose.onH5ResultClose(GroupGameEmptyPager.this, baseVideoQuestionEntity);
+                    return;
+                }
+                GroupGameTestInfosEntity.TestInfoEntity test = tests.get(0);
+                int gameModel = test.getGameModel();
+                if (gameModel == LiveQueConfig.GAME_MODEL_2) {
+                    GroupGameMultNativePager groupGameMultNativePager = new GroupGameMultNativePager(mContext, liveGetInfo, detailInfo, englishH5Entity, new EnglishH5CoursewareBll.OnH5ResultClose() {
+                        @Override
+                        public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
+                            group.removeAllViews();
+                            onClose.onH5ResultClose(GroupGameEmptyPager.this, baseVideoQuestionEntity);
+                        }
+                    });
+                    groupGameMultNativePager.setLivePagerBack(livePagerBack);
+                    groupGameMultNativePager.setGroupGameTestInfosEntity(mGroupGameTestInfosEntity);
+                    group.addView(groupGameMultNativePager.getRootView());
+                    baseEnglishH5CoursewarePager = groupGameMultNativePager;
+                    baseEnglishH5CoursewarePager.setEnglishH5CoursewareBll(englishH5CoursewareBll);
+                    baseEnglishH5CoursewarePager.setEnglishH5CoursewareSecHttp(englishH5CoursewareSecHttp);
+                } else {
+                    GroupGameNativePager groupGameNativePager = new GroupGameNativePager(mContext, false, liveGetInfo, detailInfo, englishH5Entity, new EnglishH5CoursewareBll.OnH5ResultClose() {
+                        @Override
+                        public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
+                            group.removeAllViews();
+                            onClose.onH5ResultClose(GroupGameEmptyPager.this, baseVideoQuestionEntity);
+                        }
+                    });
+                    groupGameNativePager.setLivePagerBack(livePagerBack);
+                    groupGameNativePager.setGroupGameTestInfosEntity(mGroupGameTestInfosEntity);
+                    group.addView(groupGameNativePager.getRootView());
+                    baseEnglishH5CoursewarePager = groupGameNativePager;
+                    baseEnglishH5CoursewarePager.setEnglishH5CoursewareBll(englishH5CoursewareBll);
+                    baseEnglishH5CoursewarePager.setEnglishH5CoursewareSecHttp(englishH5CoursewareSecHttp);
+                }
+            }
+
+            @Override
+            public void onDataFail(int errStatus, String failMsg) {
+                super.onDataFail(errStatus, failMsg);
+                GroupGameNativePager groupGameNativePager = new GroupGameNativePager(mContext, false, liveGetInfo, detailInfo, englishH5Entity, new EnglishH5CoursewareBll.OnH5ResultClose() {
+                    @Override
+                    public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
+                        group.removeAllViews();
+                        onClose.onH5ResultClose(GroupGameEmptyPager.this, baseVideoQuestionEntity);
+                    }
+                });
+                groupGameNativePager.setLivePagerBack(livePagerBack);
+                group.addView(groupGameNativePager.getRootView());
+                baseEnglishH5CoursewarePager = groupGameNativePager;
+                baseEnglishH5CoursewarePager.setEnglishH5CoursewareBll(englishH5CoursewareBll);
+                baseEnglishH5CoursewarePager.setEnglishH5CoursewareSecHttp(englishH5CoursewareSecHttp);
+            }
+        });
     }
 
     @Override
