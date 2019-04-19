@@ -152,6 +152,12 @@ public class NewIRCMessage implements IIRCMessage {
                 mChatClient.setLiveInfo(liveInfo);
                 MyUserInfoEntity myUserInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
                 int logincode = mChatClient.login(myUserInfoEntity.getPsimId(), myUserInfoEntity.getPsimPwd());
+                logger.i("ircsdk t-relogin, logincode"+logincode);
+                Map<String, String> logHashMap = defaultlog();
+                logHashMap.put("logtype","t-relogin");
+                logHashMap.put("loginCode", "" + logincode);
+                logHashMap.put("connectCount", ""+mConnectCount);
+                UmsAgentManager.umsAgentOtherBusiness(context,UmsConstants.APP_ID,UmsConstants.uploadSystem,logHashMap,analysis);
             }
             Map<String, String> logHashMap = defaultlog();
             logHashMap.put("logtype","login");
