@@ -908,6 +908,10 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         if (noSpeechTimer != null) {
             noSpeechTimer.cancel();
         }
+        if (vwvVoiceChatWave != null){
+            vwvVoiceChatWave.stop();
+            vwvVoiceChatWave.setVisibility(View.GONE);
+        }
         Map<String, String> mData = new HashMap<>();
         mData.put("userid", getInfo.getStuId());
         mData.put("liveid", getInfo.getId());
