@@ -125,6 +125,9 @@ public class SmallChineseClassSignPager extends BasePager {
 //            String errorMsg = TextUtils.isEmpty(responseEntity.getErrorMsg()) ? "网络异常" : responseEntity
 //                    .getErrorMsg();
 //            XESToastUtils.showToast(mContext, errorMsg);
+            if (responseEntity.getErrorMsg() != null) {
+                XESToastUtils.showToast(mContext, responseEntity.getErrorMsg());
+            }
         }
     };
 
