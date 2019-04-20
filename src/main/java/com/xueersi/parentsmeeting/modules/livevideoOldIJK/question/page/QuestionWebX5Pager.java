@@ -27,13 +27,14 @@ import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.web.NewCourseCache;
@@ -94,9 +95,10 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
     private File mMorecacheout;
     private File cacheFile;
     private String type;
-    /**是否接收到或者展示过答题结果页面**/
+    /** 是否接收到或者展示过答题结果页面 **/
     private boolean isAnswerResultRecived;
 
+    private int isOpenNewCourseWare = 0;
     /**
      * 是否是强制提交
      */
@@ -237,6 +239,10 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         btSubjectClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (isOpenNewCourseWare == 1) {
+                    //中学连对激励
+                    EventBus.getDefault().post(new EvenDriveEvent(EvenDriveEvent.CLOSE_H5));
+                }
                 ViewGroup group = (ViewGroup) mView.getParent();
                 group.removeView(mView);
                 questionBll.stopWebQuestion(QuestionWebX5Pager.this, testId, getBaseVideoQuestionEntity());
@@ -336,7 +342,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
      * 理科 课件 答题结果回调
      */
     @JavascriptInterface
-    public void onAnswerResult_LiveVideo(String data){
+    public void onAnswerResult_LiveVideo(String data) {
         isAnswerResultRecived = true;
         EventBus.getDefault().post(new AnswerResultEvent(data));
     }
@@ -654,4 +660,8 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         }
     }
 
+    /** 中学连对激励 */
+    public void setOpenNewCourseWare(int openNewCourseWare) {
+        this.isOpenNewCourseWare = openNewCourseWare;
+    }
 }

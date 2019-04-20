@@ -719,7 +719,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             case XESCODE.SENDQUESTION: {
                 mRoomAction.onOpenVoiceNotic(true, "SENDQUESTION");
                 if (mGetInfo.getIsOpenNewCourseWare() == 1) {
-                    isMiddleScienceH5Open = true;
+                    isMiddleScienceEvenDriveH5Open = true;
                 }
                 break;
             }
@@ -738,7 +738,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 //                            }
 //                        });
                 if (mGetInfo.getIsOpenNewCourseWare() == 1) {
-                    isMiddleScienceH5Open = false;
+                    isMiddleScienceEvenDriveH5Open = false;
                     endTime = System.currentTimeMillis();
                     mHandler.postDelayed(new Runnable() {
                         @Override
@@ -858,11 +858,11 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         //设置结束时间，判断是否显示XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT点赞消息
                         endTime = System.currentTimeMillis();
 //                    isHasReceiveLike = false;
-                        isMiddleScienceH5Open = false;
+                        isMiddleScienceEvenDriveH5Open = false;
                     } else {
                         userLikeList.clear();
 //                    isHasReceiveLike = false;
-                        isMiddleScienceH5Open = true;
+                        isMiddleScienceEvenDriveH5Open = true;
                     }
                 }
                 break;
@@ -983,12 +983,12 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
      */
     private boolean isInLikeTime() {
         long nowTime = System.currentTimeMillis();
-        logger.i("isMiddleScienceH5Open " + isMiddleScienceH5Open);
-        return (isMiddleScienceH5Open || (((nowTime - endTime) < TIME_SEND_PRIVATE_MSG)));
+        logger.i("isMiddleScienceH5Open " + isMiddleScienceEvenDriveH5Open);
+        return (isMiddleScienceEvenDriveH5Open || (((nowTime - endTime) < TIME_SEND_PRIVATE_MSG)));
     }
 
-    //当前互动题是否处于打开状态
-    private boolean isMiddleScienceH5Open = false;
+    //当前互动题是否处于打开状态(用来判断中学连对激励是否显示点赞消息)
+    private boolean isMiddleScienceEvenDriveH5Open = false;
     /**
      * 中学激励系统，15s内来判断是否显示点赞消息
      */
@@ -1398,12 +1398,5 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 //            endTime = System.currentTimeMillis();
 //            isHasReceiveLike = false;
         }
-    }
-
-    private boolean isMiddleScience() {
-        return mGetInfo.getIsArts() == 0 &&
-                !LiveVideoConfig.isSmallChinese &&
-                !LiveVideoConfig.isPrimary &&
-                !mGetInfo.getSmallEnglish();
     }
 }

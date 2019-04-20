@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -29,6 +28,7 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -95,9 +95,10 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
     private File mMorecacheout;
     private File cacheFile;
     private String type;
-    /**是否接收到或者展示过答题结果页面**/
+    /** 是否接收到或者展示过答题结果页面 **/
     private boolean isAnswerResultRecived;
-
+    /** 是否是中学连对激励系统 */
+    private int isOpenNewCourseWare = 0;
     /**
      * 是否是强制提交
      */
@@ -238,9 +239,14 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         btSubjectClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (isOpenNewCourseWare == 1) {
+                    //中学连对激励
+                    EventBus.getDefault().post(new EvenDriveEvent(EvenDriveEvent.CLOSE_H5));
+                }
                 ViewGroup group = (ViewGroup) mView.getParent();
                 group.removeView(mView);
                 questionBll.stopWebQuestion(QuestionWebX5Pager.this, testId, getBaseVideoQuestionEntity());
+
             }
         });
         btSubjectCalljs.setOnClickListener(new View.OnClickListener() {
@@ -338,7 +344,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
      * 理科 课件 答题结果回调
      */
     @JavascriptInterface
-    public void onAnswerResult_LiveVideo(String data){
+    public void onAnswerResult_LiveVideo(String data) {
         isAnswerResultRecived = true;
         EventBus.getDefault().post(new AnswerResultEvent(data));
     }
@@ -656,4 +662,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         }
     }
 
+    public void setOpenNewCourseWare(int openNewCourseWare) {
+        this.isOpenNewCourseWare = openNewCourseWare;
+    }
 }

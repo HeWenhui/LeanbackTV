@@ -611,6 +611,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 videoQuestionLiveEntity.nonce, liveGetInfo.getIs_show_ranks(), liveGetInfo.getIsArts
                                 (), stuCouId,
                                 "1".equals(liveGetInfo.getIsAllowTeamPk()));
+                        questionWebPager.setOpenNewCourseWare(liveGetInfo.getIsOpenNewCourseWare());
                         questionWebPager.setLivePagerBack(QuestionBll.this);
                         rlQuestionContent.addView(questionWebPager.getRootView());
                         QuestionBll.this.questionWebPager = questionWebPager;
@@ -1863,14 +1864,14 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      */
     @Override
     public void initQuestionAnswerReslut(View popupWindow_view) {
-        initQuestionAnswerReslut(popupWindow_view,true);
+        initQuestionAnswerReslut(popupWindow_view, true);
     }
 
 
     /**
      * 创建互动题作答，抢红包结果提示PopupWindow
      */
-    public void initQuestionAnswerReslut(View popupWindow_view,boolean isAutoDismiss) {
+    public void initQuestionAnswerReslut(View popupWindow_view, boolean isAutoDismiss) {
         logger.d("initQuestionAnswerReslut");
         popupWindow_view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             long before;
@@ -1900,8 +1901,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             disMissAnswerResult();
         }
     }
-
-
 
 
     @Override
@@ -1997,7 +1996,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         final View popupWindow_view = QuestionResultView.initSelectAnswerRightResultVoice(activity, entity);
         boolean isAutoDissMiss = !entity.isPreEnglish();
 
-        initQuestionAnswerReslut(popupWindow_view,isAutoDissMiss);    }
+        initQuestionAnswerReslut(popupWindow_view, isAutoDissMiss);
+    }
 
     /**
      * 语音答题填空题回答正确
@@ -2009,7 +2009,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         View popupWindow_view = QuestionResultView.initFillinAnswerRightResultVoice(activity, entity);
         boolean isAutoDissMiss = !entity.isPreEnglish();
 
-        initQuestionAnswerReslut(popupWindow_view,isAutoDissMiss);
+        initQuestionAnswerReslut(popupWindow_view, isAutoDissMiss);
 
     }
 
@@ -2023,7 +2023,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         View popupWindow_view = QuestionResultView.initSelectAnswerWrongResultVoice(activity, entity);
         boolean isAutoDissMiss = !entity.isPreEnglish();
 
-        initQuestionAnswerReslut(popupWindow_view,isAutoDissMiss);    }
+        initQuestionAnswerReslut(popupWindow_view, isAutoDissMiss);
+    }
 
     /**
      * 语音答题回答错误
@@ -2035,7 +2036,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         View popupWindow_view = QuestionResultView.initFillAnswerWrongResultVoice(activity, entity);
         boolean isAutoDissMiss = !entity.isPreEnglish();
 
-        initQuestionAnswerReslut(popupWindow_view,isAutoDissMiss);    }
+        initQuestionAnswerReslut(popupWindow_view, isAutoDissMiss);
+    }
 
     /**
      * 互动题回答错误
@@ -2461,7 +2463,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         public void onPutQuestionResult(BaseVoiceAnswerPager baseVoiceAnswerPager, BaseVideoQuestionEntity
                 videoQuestionLiveEntity, String answer, String
                                                 result, int sorce, boolean isRight, double voiceTime, String
-                isSubmit, OnAnswerReslut answerReslut) {
+                                                isSubmit, OnAnswerReslut answerReslut) {
             final VideoQuestionLiveEntity videoQuestionLiveEntity1 = (VideoQuestionLiveEntity) videoQuestionLiveEntity;
             String testAnswer;
             if (LocalCourseConfig.QUESTION_TYPE_BLANK.equals(videoQuestionLiveEntity1.type)) {
