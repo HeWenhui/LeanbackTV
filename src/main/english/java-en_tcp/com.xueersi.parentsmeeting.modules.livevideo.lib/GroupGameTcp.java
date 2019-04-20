@@ -76,7 +76,7 @@ public class GroupGameTcp {
             socket = new Socket();
             socket.setKeepAlive(true);
             socket.setSoTimeout(130000);
-            socket.connect(inetSocketAddress,5000);
+            socket.connect(inetSocketAddress, 5000);
             log.d("start:KeepAlive=" + socket.getKeepAlive() + ",time=" + (System.currentTimeMillis() - before));
             writeThread = new WriteThread(socket.getOutputStream());
             writeThread.start();
@@ -98,10 +98,12 @@ public class GroupGameTcp {
         isStop = true;
         log.d("stop:method=" + method);
         if (socket != null) {
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                writeThread.quitSafely();
-            } else {
-                writeThread.quit();
+            if (writeThread != null) {
+                if (Build.VERSION.SDK_INT > Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    writeThread.quitSafely();
+                } else {
+                    writeThread.quit();
+                }
             }
             try {
                 socket.close();

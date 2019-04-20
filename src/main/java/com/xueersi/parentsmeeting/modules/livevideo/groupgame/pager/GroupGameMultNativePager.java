@@ -91,6 +91,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.agora.rtc.Constants;
 import io.agora.rtc.RtcEngine;
@@ -692,13 +693,13 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             });
             mWorkerThread.eventHandler().removeEventHandler(agEventHandler);
             mWorkerThread.exit();
-            logger.d("leaveChannel:mWorkerThread.joinstart");
-            try {
-                mWorkerThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            logger.d("leaveChannel:mWorkerThread.joinend");
+//            logger.d("leaveChannel:mWorkerThread.joinstart");
+//            try {
+//                mWorkerThread.join();
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//            logger.d("leaveChannel:mWorkerThread.joinend");
             mWorkerThread = null;
         }
     }
@@ -1482,6 +1483,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 int rightNum = vidooCannonEntity.rightNum;
                 if (rightNum > 0) {
                     vidooCannonEntity.teamMemberEntity.gold = 2;
+                    vidooCannonEntity.teamMemberEntity.energy = rightNum;
                 }
                 if (rightNum > maxRight) {
                     maxRight = rightNum;
@@ -1846,7 +1848,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     bodyJson.put("uid", "" + stuid);
                     bodyJson.put("word_id", "" + answersEntity.getId());
                     bodyJson.put("pk_team_id", teamEntity.getPkTeamId());
-                    bodyJson.put("team_type", "interactive");
+                    bodyJson.put("team_type", interactiveTeam.getTeam_type());
                     bodyJson.put("interactive_team_id", interactiveTeam.getInteractive_team_id());
                     JSONArray team_mate = new JSONArray();
                     for (int i = 0; i < entities.size(); i++) {
@@ -1932,7 +1934,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     bodyJson.put("uid", "" + stuid);
                     bodyJson.put("word", "" + removeAnswersEntity.getText());
                     bodyJson.put("pk_team_id", teamEntity.getPkTeamId());
-                    bodyJson.put("team_type", "interactive");
+                    bodyJson.put("team_type", interactiveTeam.getTeam_type());
                     bodyJson.put("interactive_team_id", interactiveTeam.getInteractive_team_id());
                     bodyJson.put("score", "" + score);
                     bodyJson.put("voiceTime", resultEntity.getSpeechDuration());
@@ -2035,7 +2037,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                 final boolean isTurnPage;
                                 mLogtf.d("Voice_Projectile_Statis:current_word=" + current_word + "," + currentAnswerIndex);
                                 int oldIndex = currentAnswerIndex;
+                                //是不是比别人少
+                                final AtomicBoolean lessOther = new AtomicBoolean(false);
                                 if (currentAnswerIndex < current_word) {
+                                    lessOther.set(true);
                                     currentAnswerIndex = current_word;
                                     int oldSize = allAnswerList.size();
                                     if (!allAnswerList.isEmpty()) {
@@ -2048,6 +2053,12 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                         isTurnPage = false;
                                     }
                                     mLogtf.d("Voice_Projectile_Statis:oldSize=" + oldSize + ",all=" + allAnswerList.size());
+                                    handler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            voiceCannonOnMessage.coursewareOnloading(currentAnswerIndex);
+                                        }
+                                    });
                                 } else {
                                     if (integer >= maxSingCount) {
                                         isTurnPage = true;
@@ -2079,19 +2090,21 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                     handler.post(new Runnable() {
                                         @Override
                                         public void run() {
-                                            JSONObject jsonData = new JSONObject();
-                                            try {
-                                                jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
-                                                jsonData.put("score", score);
-                                                jsonData.put("studentNum", finalStudentNum);
-                                                if (isTurnPage) {
-                                                    jsonData.put("turnToPageNum", currentAnswerIndex);
-                                                } else {
-                                                    jsonData.put("turnToPageNum", -1);
+                                            if (!lessOther.get()) {
+                                                JSONObject jsonData = new JSONObject();
+                                                try {
+                                                    jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
+                                                    jsonData.put("score", score);
+                                                    jsonData.put("studentNum", finalStudentNum);
+                                                    if (isTurnPage) {
+                                                        jsonData.put("turnToPageNum", currentAnswerIndex);
+                                                    } else {
+                                                        jsonData.put("turnToPageNum", -1);
+                                                    }
+                                                    wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
+                                                } catch (JSONException e) {
+                                                    e.printStackTrace();
                                                 }
-                                                wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
                                             }
                                             BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + who_id);
                                             if (courseGroupItem != null) {
