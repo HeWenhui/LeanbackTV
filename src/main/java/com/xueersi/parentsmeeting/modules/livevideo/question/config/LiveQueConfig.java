@@ -64,6 +64,14 @@ public class LiveQueConfig {
      * 大题互动类型-填空
      */
     public static final int DOTTYPE_FILL = 3;
+    /**
+     * 大题互动正确
+     */
+    public static final int DOTTYPE_RESULT_RIGHT = 1;
+    /**
+     * 大题互动错误
+     */
+    public static final int DOTTYPE_RESULT_WRONG = 2;
 
     public static ArrayList getSubmitMultiTestTypes() {
         if (SUBMIT_MULTI_TEST_TYPES == null) {
