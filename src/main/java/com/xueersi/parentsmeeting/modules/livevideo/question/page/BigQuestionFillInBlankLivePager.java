@@ -30,7 +30,9 @@ import com.xueersi.ui.adapter.XsBaseAdapter;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.EventBus;
+import org.json.JSONArray;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.dreamtobe.kpswitch.util.KPSwitchConflictUtil;
@@ -40,7 +42,7 @@ import cn.dreamtobe.kpswitch.util.KeyboardUtil;
  * Created by linyuqiang on 2019/4/15.  大题互动填空题
  */
 @SuppressWarnings("rawtypes")
-public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager {
+public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager implements KeyboardUtil.OnKeyboardShowingListener {
 
     /** 答案列表 */
     List<AnswerEntity> mAnswerEntityLst;
@@ -52,6 +54,8 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager {
     ImageView mImgDown;
     /** 填空题个数 */
     int mBlankSize = 0;
+    /** 用户答案 */
+    private ArrayList<String> answers = new ArrayList<>();
     /** 隐藏试题图标布局 */
     RelativeLayout rlDown;
     /** 互动题 */
@@ -62,6 +66,7 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager {
     private View v_livevideo_question_content_bord;
     /** 提交 */
     public Button btnSubmit;
+    private long startTime;
 
     public BigQuestionFillInBlankLivePager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity) {
         super(context);
@@ -90,6 +95,7 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager {
 
     @Override
     public void initData() {
+        startTime = System.currentTimeMillis();
         gvFillBlank.setNumColumns(mBlankSize);
         FillBlankAdapter fillBlankAdapter = new FillBlankAdapter(mContext, mAnswerEntityLst);
         gvFillBlank.setAdapter(fillBlankAdapter);
@@ -120,6 +126,7 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager {
         lp.width = (int) (width * mBlankSize);
         logger.d("initData:width=" + width + ",all=" + lp.width);
         LayoutParamsUtil.setViewLayoutParams(gvFillBlank, lp);
+        KeyboardUtil.registKeyboardShowingListener(this);
     }
 
     private class FillBlankAdapter extends XsBaseAdapter {
@@ -240,7 +247,15 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager {
 
     private void commit(QuesReslutEntity quesReslutEntity) {
         hideInputMode();
-        questionSecHttp.submitBigTestInteraction(videoQuestionLiveEntity, null, 0, 0, new AbstractBusinessDataCallBack() {
+        submitBigTestInteraction(0);
+    }
+
+    private void submitBigTestInteraction(int isForce) {
+        JSONArray userAnswer = new JSONArray();
+        for (int i = 0; i < answers.size(); i++) {
+            userAnswer.put(answers.get(i));
+        }
+        questionSecHttp.submitBigTestInteraction(videoQuestionLiveEntity, userAnswer, startTime, isForce, new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
                 questionSecHttp.getStuInteractionResult(videoQuestionLiveEntity, new AbstractBusinessDataCallBack() {
@@ -262,12 +277,14 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager {
     private QuesReslutEntity chkReslut() {
         QuesReslutEntity quesReslutEntity = new QuesReslutEntity();
         String[] result = new String[mBlankSize];
+        answers.clear();
         for (int i = 0; i < mBlankSize; i++) {
             String stuAnswer = mAnswerEntityLst.get(i).getStuAnswer();
             if (StringUtils.isSpace(stuAnswer)) {
                 quesReslutEntity.setHaveEmpty(true);
             }
             result[i] = stuAnswer.trim();
+            answers.add(stuAnswer.trim());
         }
         quesReslutEntity.setResult(JSONObject.toJSONString(result));
         return quesReslutEntity;
@@ -363,8 +380,15 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager {
     }
 
     @Override
+    public void submitData() {
+        super.submitData();
+        submitBigTestInteraction(1);
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
+        KeyboardUtil.unRegistKeyboardShowingListener(this);
         try {
             hideInputMode();
         } catch (Exception ex) {

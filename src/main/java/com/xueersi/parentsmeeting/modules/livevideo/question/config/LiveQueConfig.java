@@ -65,13 +65,25 @@ public class LiveQueConfig {
      */
     public static final int DOTTYPE_FILL = 3;
     /**
+     * 大题互动错误
+     */
+    public static final int DOTTYPE_RESULT_WRONG = 0;
+    /**
      * 大题互动正确
      */
-    public static final int DOTTYPE_RESULT_RIGHT = 1;
+    public static final int DOTTYPE_ITEM_RIGHT = 1;
+    /**
+     * 大题互动部分正确
+     */
+    public static final int DOTTYPE_ITEM_PART_RIGHT = 2;
+    /**
+     * 大题互动正确
+     */
+    public static final int DOTTYPE_ITEM_RESULT_RIGHT = 1;
     /**
      * 大题互动错误
      */
-    public static final int DOTTYPE_RESULT_WRONG = 2;
+    public static final int DOTTYPE_ITEM_RESULT_WRONG = 2;
 
     public static ArrayList getSubmitMultiTestTypes() {
         if (SUBMIT_MULTI_TEST_TYPES == null) {

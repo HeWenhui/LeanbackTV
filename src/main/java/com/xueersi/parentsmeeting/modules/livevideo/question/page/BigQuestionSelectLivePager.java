@@ -13,11 +13,13 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.entity.AnswerEntity;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultItemEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.ui.adapter.XsBaseAdapter;
 
@@ -244,13 +246,42 @@ public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
                 questionSecHttp.getStuInteractionResult(videoQuestionLiveEntity, new AbstractBusinessDataCallBack() {
                     @Override
                     public void onDataSucess(Object... objData) {
-
+                        BigResultEntity bigResultEntity = (BigResultEntity) objData[0];
+                        showResult(bigResultEntity);
                     }
                 });
             }
 
             @Override
             public void onDataFail(int errStatus, String failMsg) {
+                if (com.xueersi.common.config.AppConfig.DEBUG) {
+                    BigResultEntity bigResultEntity = new BigResultEntity();
+                    ArrayList<BigResultItemEntity> bigResultEntities = bigResultEntity.getBigResultItemEntityArrayList();
+                    for (int i = 0; i < 10; i++) {
+                        BigResultItemEntity bigResultItemEntity = new BigResultItemEntity();
+                        bigResultItemEntity.standAnswer = "A";
+                        bigResultItemEntity.youAnswer = "B";
+                        if (i % 2 == 0) {
+                            bigResultItemEntity.rightType = LiveQueConfig.DOTTYPE_ITEM_RESULT_RIGHT;
+                        } else {
+                            bigResultItemEntity.rightType = LiveQueConfig.DOTTYPE_ITEM_RESULT_WRONG;
+                        }
+                        bigResultEntities.add(bigResultItemEntity);
+                    }
+                    showResult(bigResultEntity);
+                }
+//                onPagerClose.onClose(BigQuestionSelectLivePager.this);
+            }
+        });
+    }
+
+    private void showResult(BigResultEntity bigResultEntity) {
+        BigResultPager resultPager = new BigResultPager(mContext, rlQuestionResContent, bigResultEntity);
+        rlQuestionResContent.addView(resultPager.getRootView());
+        resultPager.setOnPagerClose(new OnPagerClose() {
+            @Override
+            public void onClose(LiveBasePager basePager) {
+                rlQuestionResContent.removeView(basePager.getRootView());
                 onPagerClose.onClose(BigQuestionSelectLivePager.this);
             }
         });

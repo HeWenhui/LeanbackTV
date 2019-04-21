@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.http;
 
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
 
@@ -104,4 +105,18 @@ public class CourseWareParse {
         }
         return null;
     }
+
+    public BigResultEntity parseBigResult(ResponseEntity responseEntity) {
+        try {
+            BigResultEntity bigResultEntity = new BigResultEntity();
+            JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+            bigResultEntity.setIsRight(jsonObject.getInt("isRight"));
+            bigResultEntity.setGold(jsonObject.getInt("gold"));
+            return bigResultEntity;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

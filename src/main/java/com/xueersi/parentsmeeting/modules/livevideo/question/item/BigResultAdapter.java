@@ -9,14 +9,14 @@ import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultItemEntity;
 
 import java.util.ArrayList;
 
 public class BigResultAdapter extends RecyclerView.Adapter {
-    private ArrayList<BigResultEntity> bigResultEntities;
+    private ArrayList<BigResultItemEntity> bigResultEntities;
 
-    public BigResultAdapter(ArrayList<BigResultEntity> bigResultEntities) {
+    public BigResultAdapter(ArrayList<BigResultItemEntity> bigResultEntities) {
         this.bigResultEntities = bigResultEntities;
     }
 
@@ -28,7 +28,7 @@ public class BigResultAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        BigResultEntity bigResultEntity = bigResultEntities.get(position);
+        BigResultItemEntity bigResultEntity = bigResultEntities.get(position);
         ((ItemHolder) holder).bindData(bigResultEntity, position);
     }
 
@@ -49,10 +49,10 @@ public class BigResultAdapter extends RecyclerView.Adapter {
             iv_livevideo_bigque_result_type = itemView.findViewById(R.id.iv_livevideo_bigque_result_type);
         }
 
-        public void bindData(BigResultEntity bigResultEntity, int position) {
+        public void bindData(BigResultItemEntity bigResultEntity, int position) {
             tv_livevideo_bigque_result_stand.setText(bigResultEntity.standAnswer);
             tv_livevideo_bigque_result_your.setText(bigResultEntity.youAnswer);
-            if (bigResultEntity.rightType == LiveQueConfig.DOTTYPE_RESULT_RIGHT) {
+            if (bigResultEntity.rightType == LiveQueConfig.DOTTYPE_ITEM_RESULT_RIGHT) {
                 iv_livevideo_bigque_result_type.setImageResource(R.drawable.bg_livevideo_bigque_result_right);
             } else {
                 iv_livevideo_bigque_result_type.setImageResource(R.drawable.bg_livevideo_bigque_result_wrong);

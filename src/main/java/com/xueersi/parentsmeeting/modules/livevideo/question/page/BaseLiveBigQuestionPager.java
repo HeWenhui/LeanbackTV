@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -19,9 +20,13 @@ public abstract class BaseLiveBigQuestionPager extends LiveBasePager {
     protected boolean isPostEvent;
     protected QuestionSecHttp questionSecHttp;
     protected VideoQuestionLiveEntity videoQuestionLiveEntity;
-
+    protected RelativeLayout rlQuestionResContent;
     public BaseLiveBigQuestionPager(Context context) {
         super(context);
+    }
+
+    public void setRlQuestionResContent(RelativeLayout rlQuestionResContent) {
+        this.rlQuestionResContent = rlQuestionResContent;
     }
 
     @Override
@@ -102,10 +107,6 @@ public abstract class BaseLiveBigQuestionPager extends LiveBasePager {
     }
 
     public void hideInputMode() {
-    }
-
-    public void onKeyboardShowing(boolean isShowing) {
-
     }
 
     public void onKeyboardShowing(boolean isShowing, int height) {

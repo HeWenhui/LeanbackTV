@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.create;
 
 import android.app.Activity;
+import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSecHttp;
@@ -23,14 +24,16 @@ public class LiveBigQueCreate implements BigQueCreate {
     }
 
     @Override
-    public BaseLiveBigQuestionPager create(VideoQuestionLiveEntity videoQuestionLiveEntity) {
+    public BaseLiveBigQuestionPager create(VideoQuestionLiveEntity videoQuestionLiveEntity, RelativeLayout rlQuestionResContent) {
         if (videoQuestionLiveEntity.getDotType() == LiveQueConfig.DOTTYPE_SELE || videoQuestionLiveEntity.getDotType() == LiveQueConfig.DOTTYPE_MUL_SELE) {
             BigQuestionSelectLivePager bigQuestionSelectLivePager = new BigQuestionSelectLivePager(activity, videoQuestionLiveEntity);
             bigQuestionSelectLivePager.setQuestionSecHttp(questionSecHttp);
+            bigQuestionSelectLivePager.setRlQuestionResContent(rlQuestionResContent);
             return bigQuestionSelectLivePager;
         } else if (videoQuestionLiveEntity.getDotType() == LiveQueConfig.DOTTYPE_FILL) {
             BigQuestionFillInBlankLivePager bigQuestionFillInBlankLivePager = new BigQuestionFillInBlankLivePager(activity, videoQuestionLiveEntity);
             bigQuestionFillInBlankLivePager.setQuestionSecHttp(questionSecHttp);
+            bigQuestionFillInBlankLivePager.setRlQuestionResContent(rlQuestionResContent);
             return bigQuestionFillInBlankLivePager;
         }
         return null;

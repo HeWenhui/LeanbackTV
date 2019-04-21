@@ -7,25 +7,44 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultItemEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.item.BigResultAdapter;
 
 import java.util.ArrayList;
+import java.util.Random;
 
+/**
+ * Created by linyuqiang on 2019/4/15.  大题互动结果页
+ */
 public class BigResultPager extends LiveBasePager {
-    private ArrayList<BigResultEntity> bigResultEntities = new ArrayList<>();
-    private RecyclerView rv_livevideo_bigque_result_list;
-    ImageView iv_livevideo_bigque_result_close;
+    private BigResultEntity bigResultEntitie;
+    private ArrayList<BigResultItemEntity> bigResultItemEntities = new ArrayList<>();
+    /** 结果页上边金币标题 */
+    private ImageView ivBigqueResultTitle;
+    /** 结果页上边金币数量标题 */
+    private TextView tvBigqueResultTitle;
+    /** 结果页答题列表 */
+    private RecyclerView rvBigqueResultList;
+    /** 结果页关闭 */
+    private ImageView ivBigqueResultClose;
     private ViewGroup group;
 
-    public BigResultPager(Context context, ViewGroup group) {
+    public BigResultPager(Context context, ViewGroup group, BigResultEntity bigResultEntitie) {
         super(context, false);
         this.group = group;
         mView = initView();
+        if (com.xueersi.common.config.AppConfig.DEBUG) {
+            Random random = new Random();
+            bigResultEntitie.setIsRight(random.nextInt(2));
+        }
+        this.bigResultEntitie = bigResultEntitie;
+        bigResultItemEntities = bigResultEntitie.getBigResultItemEntityArrayList();
         initData();
         initListener();
     }
@@ -33,36 +52,36 @@ public class BigResultPager extends LiveBasePager {
     @Override
     public View initView() {
         mView = LayoutInflater.from(mContext).inflate(R.layout.page_livevideo_bigques_result, group, false);
-        rv_livevideo_bigque_result_list = mView.findViewById(R.id.rv_livevideo_bigque_result_list);
-        iv_livevideo_bigque_result_close = mView.findViewById(R.id.iv_livevideo_bigque_result_close);
+        ivBigqueResultTitle = mView.findViewById(R.id.iv_livevideo_bigque_result_title);
+        tvBigqueResultTitle = mView.findViewById(R.id.tv_livevideo_bigque_result_title);
+        rvBigqueResultList = mView.findViewById(R.id.rv_livevideo_bigque_result_list);
+        ivBigqueResultClose = mView.findViewById(R.id.iv_livevideo_bigque_result_close);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        rv_livevideo_bigque_result_list.setLayoutManager(layoutManager);
+        rvBigqueResultList.setLayoutManager(layoutManager);
         return mView;
     }
 
     @Override
     public void initData() {
         super.initData();
-        for (int i = 0; i < 10; i++) {
-            BigResultEntity bigResultEntity = new BigResultEntity();
-            bigResultEntity.standAnswer = "A";
-            bigResultEntity.youAnswer = "B";
-            if (i % 2 == 0) {
-                bigResultEntity.rightType = LiveQueConfig.DOTTYPE_RESULT_RIGHT;
-            } else {
-                bigResultEntity.rightType = LiveQueConfig.DOTTYPE_RESULT_WRONG;
-            }
-            bigResultEntities.add(bigResultEntity);
+        tvBigqueResultTitle.setText("恭喜你答对了，金币+" + bigResultEntitie.getGold());
+        int isRight = bigResultEntitie.getIsRight();
+        if (isRight == LiveQueConfig.DOTTYPE_RESULT_WRONG) {
+            ivBigqueResultTitle.setImageResource(R.drawable.bg_livevideo_bigque_result_wrong_title);
+        } else if (isRight == LiveQueConfig.DOTTYPE_ITEM_RIGHT) {
+            ivBigqueResultTitle.setImageResource(R.drawable.bg_livevideo_bigque_result_right_title);
+        } else if (isRight == LiveQueConfig.DOTTYPE_ITEM_PART_RIGHT) {
+            ivBigqueResultTitle.setImageResource(R.drawable.bg_livevideo_bigque_result_part_title);
         }
-        BigResultAdapter bigResultAdapter = new BigResultAdapter(bigResultEntities);
-        rv_livevideo_bigque_result_list.setAdapter(bigResultAdapter);
+        BigResultAdapter bigResultAdapter = new BigResultAdapter(bigResultItemEntities);
+        rvBigqueResultList.setAdapter(bigResultAdapter);
     }
 
     @Override
     public void initListener() {
         super.initListener();
-        iv_livevideo_bigque_result_close.setOnClickListener(new View.OnClickListener() {
+        ivBigqueResultClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (onPagerClose != null) {

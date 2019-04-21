@@ -11,6 +11,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListDanmakuEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueHttpConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
 
@@ -302,7 +303,8 @@ public class CourseWareHttpManager {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                callBack.onDataSucess();
+                BigResultEntity bigResultEntity = courseWareParse.parseBigResult(responseEntity);
+                callBack.onDataSucess(bigResultEntity);
             }
 
             @Override

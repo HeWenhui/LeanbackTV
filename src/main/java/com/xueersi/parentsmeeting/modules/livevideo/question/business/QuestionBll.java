@@ -56,6 +56,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayMachinePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayStandMachinePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.create.BigQueCreate;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultItemEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.CreateAnswerReslutEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
@@ -64,8 +66,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseLiveQuesti
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseQuestionWebInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSubjectResultInter;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.BigQuestionFillInBlankLivePager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.BigQuestionSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BigResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.CoursewareNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5Pager;
@@ -656,7 +656,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     rlQuestionContent.removeView(baseLiveBigQuestionPager.getRootView());
                 }
             }
-            final BaseLiveBigQuestionPager bigQuestionPager = bigQueCreate.create(videoQuestionLiveEntity);
+            final BaseLiveBigQuestionPager bigQuestionPager = bigQueCreate.create(videoQuestionLiveEntity, rlQuestionResContent);
             if (bigQuestionPager != null) {
                 baseLiveBigQuestionPager = bigQuestionPager;
                 mVPlayVideoControlHandler.post(new Runnable() {
@@ -667,6 +667,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         bigQuestionPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
                             @Override
                             public void onClose(LiveBasePager basePager) {
+                                basePager.onDestroy();
                                 rlQuestionContent.removeView(basePager.getRootView());
                                 if (basePager == baseLiveBigQuestionPager) {
                                     baseLiveBigQuestionPager = null;
