@@ -5,6 +5,7 @@ import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -34,6 +35,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
+import cn.dreamtobe.kpswitch.util.KPSwitchConflictUtil;
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 
 /**
@@ -145,13 +147,24 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveQuestionPager {
             } else {
                 holder = (BlankViewHolder) convertView.getTag();
             }
-            holder.etFillBlank.setOnClickListener(editClickListener);
             holder.etFillBlank.setHint("  " + (position + 1) + "  |  请输入");
             // holder.etFillBlank.setOnFocusChangeListener(editOnFocusChangeListener);
             TextWatcher textWatcher = (TextWatcher) holder.etFillBlank.getTag(R.id.et_livevideo_question_fillin_input);
             if (textWatcher != null) {
                 holder.etFillBlank.removeTextChangedListener(textWatcher);
             }
+            holder.etFillBlank.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (v_livevideo_question_content_bord.getVisibility() == View.VISIBLE) {
+                        return false;
+                    } else {
+                        onKeyboardShowing(true);
+                        KPSwitchConflictUtil.showKeyboard(v_livevideo_question_content_bord, holder.etFillBlank);
+                        return true;
+                    }
+                }
+            });
             textWatcher = new TextWatcher() {
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -202,17 +215,6 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveQuestionPager {
             super.notifyDataSetChanged();
         }
     }
-
-    /**
-     * 填空题上移
-     */
-    private OnClickListener editClickListener = new OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            gvFillBlank.smoothScrollToPosition((Integer) v.getTag());
-        }
-    };
-
 
     /**
      * 提交填空题答案
@@ -296,7 +298,7 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveQuestionPager {
             lp.height = bottomMargin;
             LayoutParamsUtil.setViewLayoutParams(v_livevideo_question_content_bord, lp);
         }
-        v_livevideo_question_content_bord.requestLayout();
+        logger.d("onKeyboardShowing:isShowing=" + isShowing + ",bottomMargin=" + bottomMargin);
 //        if (bottomMargin != lp.height) {
 //            ValueAnimator valueAnimator = ValueAnimator.ofInt(bottomMargin);
 //            valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
