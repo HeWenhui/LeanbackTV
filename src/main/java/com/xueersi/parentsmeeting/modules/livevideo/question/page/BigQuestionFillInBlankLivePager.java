@@ -14,14 +14,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.entity.AnswerEntity;
-import com.xueersi.common.entity.BaseVideoQuestionEntity;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.QuesReslutEntity;
@@ -42,7 +40,7 @@ import cn.dreamtobe.kpswitch.util.KeyboardUtil;
  * Created by linyuqiang on 2019/4/15.  大题互动填空题
  */
 @SuppressWarnings("rawtypes")
-public class BigQuestionFillInBlankLivePager extends BaseLiveQuestionPager {
+public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager {
 
     /** 答案列表 */
     List<AnswerEntity> mAnswerEntityLst;
@@ -65,8 +63,9 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveQuestionPager {
     /** 提交 */
     public Button btnSubmit;
 
-    public BigQuestionFillInBlankLivePager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity) {
+    public BigQuestionFillInBlankLivePager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity) {
         super(context);
+        videoQuestionLiveEntity = baseVideoQuestionEntity;
         this.baseVideoQuestionEntity = baseVideoQuestionEntity;
         mAnswerEntityLst = baseVideoQuestionEntity.getAnswerEntityLst();
         mQuestionSize = mAnswerEntityLst.size();
@@ -241,10 +240,22 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveQuestionPager {
 
     private void commit(QuesReslutEntity quesReslutEntity) {
         hideInputMode();
-        if (putQuestion != null) {
-            mLogtf.d("commit:result=" + quesReslutEntity.getResult());
-            putQuestion.onPutQuestionResult(this, baseVideoQuestionEntity, quesReslutEntity.getResult());
-        }
+        questionSecHttp.submitBigTestInteraction(videoQuestionLiveEntity, null, 0, 0, new AbstractBusinessDataCallBack() {
+            @Override
+            public void onDataSucess(Object... objData) {
+                questionSecHttp.getStuInteractionResult(videoQuestionLiveEntity, new AbstractBusinessDataCallBack() {
+                    @Override
+                    public void onDataSucess(Object... objData) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onDataFail(int errStatus, String failMsg) {
+                onPagerClose.onClose(BigQuestionFillInBlankLivePager.this);
+            }
+        });
     }
 
     /** 填空题校验 */

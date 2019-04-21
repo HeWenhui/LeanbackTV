@@ -58,7 +58,7 @@ public class LiveQuestionCreat {
         BaseLiveQuestionPager baseQuestionPager;
         long before = System.currentTimeMillis();
         if (isAbLand.get()) {
-            baseQuestionPager = new BigQuestionFillInBlankLivePager(activity, videoQuestionLiveEntity);
+            baseQuestionPager = new QuestionFillInBlankLivePager(activity, videoQuestionLiveEntity);
         } else {
             baseQuestionPager = new QuestionFillInBlankPortLivePager(activity, videoQuestionLiveEntity);
         }
@@ -75,7 +75,7 @@ public class LiveQuestionCreat {
         BaseLiveQuestionPager baseQuestionPager;
         long before = System.currentTimeMillis();
         if (isAbLand.get()) {
-            baseQuestionPager = new BigQuestionSelectLivePager(activity, videoQuestionLiveEntity);
+            baseQuestionPager = new QuestionSelectLivePager(activity, videoQuestionLiveEntity);
         } else {
             baseQuestionPager = new QuestionSelectPortLivePager(activity, videoQuestionLiveEntity);
         }

@@ -175,7 +175,8 @@ public interface XESCODE {
     /** 一题多发 */
     /** 一题多发 收题发题都是251 TODO */
     int MULTIPLE_H5_COURSEWARE = 251;
-
+    /** 大题互动 http://wiki.xesv5.com/pages/viewpage.action?pageId=17724551 */
+    int QUES_BIG = 252;
     /** 开启/关闭语音弹幕 */
     int XCR_ROOM_DANMU_OPEN = 260;
 

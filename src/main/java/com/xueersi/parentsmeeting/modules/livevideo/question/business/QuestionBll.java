@@ -54,15 +54,19 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayMachinePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayStandMachinePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.question.create.BigQueCreate;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.CreateAnswerReslutEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseLiveBigQuestionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseLiveQuestionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseQuestionWebInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSubjectResultInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BigQuestionFillInBlankLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BigQuestionSelectLivePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BigResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.CoursewareNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionWebX5Pager;
@@ -155,6 +159,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      * 互动题布局
      */
     private BaseLiveQuestionPager baseQuestionPager;
+    private BaseLiveBigQuestionPager baseLiveBigQuestionPager;
+    private BigQueCreate bigQueCreate;
     LiveQuestionCreat liveQuestionCreat;
     /**
      * 互动题的布局
@@ -399,14 +405,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             }
             rlQuestionContent.addView(speechAssessmentPager.getRootView());
         }
-//        if (com.xueersi.common.config.AppConfig.DEBUG) {
-//            VideoQuestionLiveEntity baseVideoQuestionEntity = new VideoQuestionLiveEntity();
-//            baseVideoQuestionEntity.num = 6;
-////            BigQuestionFillInBlankLivePager bigQuestionFillInBlankLivePager = new BigQuestionFillInBlankLivePager(activity, baseVideoQuestionEntity);
-////            rlQuestionContent.addView(bigQuestionFillInBlankLivePager.getRootView());
-//            BigQuestionSelectLivePager bigQuestionSelectLivePager = new BigQuestionSelectLivePager(activity, baseVideoQuestionEntity);
-//            rlQuestionContent.addView(bigQuestionSelectLivePager.getRootView());
-//        }
     }
 
     @Override
@@ -647,6 +645,44 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         mVPlayVideoControlHandler.sendEmptyMessage(SHOW_QUESTION);
     }
 
+    @Override
+    public void showBigQuestion(final VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isOpen) {
+        isAnaswer = isOpen;
+        if (isOpen) {
+            if (baseLiveBigQuestionPager != null) {
+                if (baseLiveBigQuestionPager.getBaseVideoQuestionEntity().getvQuestionID().equals(videoQuestionLiveEntity.id)) {
+                    return;
+                } else {
+                    rlQuestionContent.removeView(baseLiveBigQuestionPager.getRootView());
+                }
+            }
+            final BaseLiveBigQuestionPager bigQuestionPager = bigQueCreate.create(videoQuestionLiveEntity);
+            if (bigQuestionPager != null) {
+                baseLiveBigQuestionPager = bigQuestionPager;
+                mVPlayVideoControlHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        rlQuestionContent.addView(bigQuestionPager.getRootView());
+                        onQuestionShow(videoQuestionLiveEntity, true, "showBigQuestion");
+                        bigQuestionPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
+                            @Override
+                            public void onClose(LiveBasePager basePager) {
+                                rlQuestionContent.removeView(basePager.getRootView());
+                                if (basePager == baseLiveBigQuestionPager) {
+                                    baseLiveBigQuestionPager = null;
+                                }
+                                onQuestionShow(videoQuestionLiveEntity, false, "showBigQuestion:onClose");
+                            }
+                        });
+                    }
+                });
+            }
+        } else {
+            if (baseLiveBigQuestionPager != null) {
+                baseLiveBigQuestionPager.submitData();
+            }
+        }
+    }
 
     /**
      * 文科课件平台改版后 文科答题 处理逻辑
@@ -1738,6 +1774,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     public void setBaseVoiceAnswerCreat(BaseVoiceAnswerCreat baseVoiceAnswerCreat) {
         this.baseVoiceAnswerCreat = baseVoiceAnswerCreat;
+    }
+
+    public void setBigQueCreate(BigQueCreate bigQueCreate) {
+        this.bigQueCreate = bigQueCreate;
     }
 
     public void setBaseExamQuestionCreat(BaseExamQuestionCreat baseExamQuestionCreat) {

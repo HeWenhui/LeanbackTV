@@ -18,6 +18,7 @@
     <!--大题互动结果页-->
     <item name="iv_livevideo_bigque_result_title" type="id" />
     <item name="tv_livevideo_bigque_result_title" type="id" />
+    <item name="iv_livevideo_bigque_result_close" type="id" />
     <item name="rl_livevideo_bigque_result_content" type="id" />
     <item name="rl_livevideo_bigque_result_tip" type="id" />
     <item name="rv_livevideo_bigque_result_list" type="id" />

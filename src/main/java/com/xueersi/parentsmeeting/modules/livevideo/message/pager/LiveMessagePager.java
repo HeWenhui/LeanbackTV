@@ -67,6 +67,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
@@ -1875,6 +1876,20 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         flowerContentView.findViewById(R.id.tv_livevideo_message_gold_word).setVisibility(View.VISIBLE);
     }
 
+    @Override
+    public void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isShow) {
+        if (videoQuestionLiveEntity.getDotType() != 0) {
+            if (isShow) {
+                for (int i = 0; i < liveMediaControllerBottom.getChildCount(); i++) {
+                    liveMediaControllerBottom.getChildAt(i).setVisibility(View.GONE);
+                }
+            } else {
+                for (int i = 0; i < liveMediaControllerBottom.getChildCount(); i++) {
+                    liveMediaControllerBottom.getChildAt(i).setVisibility(View.VISIBLE);
+                }
+            }
+        }
+    }
 
     // 03.16 模拟显示聊天人数
     public void showPeopleCount(int num) {

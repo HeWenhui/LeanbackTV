@@ -14,6 +14,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueHttpC
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
 
+import org.json.JSONArray;
+
 public class CourseWareHttpManager {
     private final Logger logger = LoggerFactory.getLogger("CourseWareHttpManager");
     private LiveHttpManager liveHttpManager;
@@ -260,6 +262,56 @@ public class CourseWareHttpManager {
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 logger.d("getTestInfos:onPmFailure:responseEntity=" + msg, error);
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
+            }
+        });
+    }
+
+    public void submitBigTestInteraction(String testId, String interactionId, JSONArray userAnswer, long startTime, int isForce, int isPlayBack, final AbstractBusinessDataCallBack callBack) {
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+        liveHttpManager.setDefaultParameter(httpRequestParams);
+        httpRequestParams.addBodyParam("testId", "" + testId);
+        httpRequestParams.addBodyParam("interactionId", "" + interactionId);
+        httpRequestParams.addBodyParam("isForce", "" + isForce);
+        httpRequestParams.addBodyParam("userAnswer", "" + userAnswer);
+        httpRequestParams.addBodyParam("isPlayBack", "" + isPlayBack);
+        httpRequestParams.addBodyParam("startTime", "" + startTime);
+        liveHttpManager.sendPost(liveHttpManager.getLiveVideoSAConfigInner().URL_LIVE_SUBMIT_BIG_TEST, httpRequestParams, new HttpCallBack(false) {
+
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                callBack.onDataSucess();
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR, responseEntity.getErrorMsg());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
+            }
+        });
+    }
+
+    public void getStuInteractionResult(final AbstractBusinessDataCallBack callBack) {
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+        liveHttpManager.setDefaultParameter(httpRequestParams);
+        liveHttpManager.sendPost(liveHttpManager.getLiveVideoSAConfigInner().URL_LIVE_GET_BIG_TEST_RESULT, httpRequestParams, new HttpCallBack(false) {
+
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                callBack.onDataSucess();
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR, responseEntity.getErrorMsg());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
                 callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
             }
         });

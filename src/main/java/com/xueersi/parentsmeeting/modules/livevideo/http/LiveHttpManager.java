@@ -62,6 +62,10 @@ public class LiveHttpManager extends BaseHttpBusiness {
         liveVideoSAConfigInner = liveVideoSAConfig.inner;
     }
 
+    public LiveVideoSAConfig.Inner getLiveVideoSAConfigInner() {
+        return liveVideoSAConfigInner;
+    }
+
     public void addBodyParam(String key, String value) {
         defaultKey.put(key, value);
     }
