@@ -18,7 +18,8 @@
         android:layout_width="460dp"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/rl_livevideo_bigque_result_content"
-        android:layout_centerHorizontal="true">
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="20dp">
 
         <ImageView
             android:id="@id/iv_livevideo_bigque_result_title"
@@ -45,11 +46,18 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/iv_livevideo_bigque_result_title"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            android:background="@drawable/shape_live_bigque_result_tip">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="14dp"
+                android:layout_marginTop="3dp"
+                android:layout_marginRight="14dp"
+                android:layout_marginBottom="3dp"
+                android:drawableLeft="@drawable/bg_livevideo_bigque_result_rank"
+                android:drawablePadding="8dp"
                 android:text="暂不计入排名"
                 android:textColor="#ff999999"
                 android:textSize="12sp" />
@@ -59,13 +67,15 @@
             android:id="@id/rl_livevideo_bigque_result_item_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/rl_livevideo_bigque_result_tip">
+            android:layout_below="@id/rl_livevideo_bigque_result_tip"
+            android:layout_marginTop="20dp">
 
             <TextView
                 android:id="@id/tv_livevideo_bigque_result_stand"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="40dp"
+                android:includeFontPadding="false"
                 android:text="正确答案"
                 android:textColor="@color/COLOR_666666" />
 
@@ -74,6 +84,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
+                android:includeFontPadding="false"
                 android:text="你的答案"
                 android:textColor="@color/COLOR_666666" />
 
@@ -83,6 +94,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="40dp"
+                android:includeFontPadding="false"
                 android:text="答题情况"
                 android:textColor="@color/COLOR_666666" />
         </RelativeLayout>

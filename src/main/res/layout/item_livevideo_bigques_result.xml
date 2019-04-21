@@ -5,8 +5,11 @@
 
     <TextView
         android:id="@id/tv_livevideo_bigque_result_stand"
-        android:layout_width="wrap_content"
+        android:layout_width="56dp"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="40dp"
+        android:gravity="center"
+        android:includeFontPadding="false"
         android:text="A"
         android:textColor="@color/title_color" />
 
@@ -15,12 +18,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:includeFontPadding="false"
         android:text="B"
         android:textColor="@color/title_color" />
 
     <ImageView
         android:id="@id/iv_livevideo_bigque_result_type"
-        android:layout_width="wrap_content"
+        android:layout_width="56dp"
         android:layout_height="13dp"
-        android:layout_alignParentRight="true" />
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="40dp"
+        android:includeFontPadding="false" />
 </RelativeLayout>
