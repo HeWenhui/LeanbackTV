@@ -452,6 +452,18 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
             public void onShare() {
                 liveBackPlayVideoFragment.onShare();
             }
+
+            @Override
+            public void setVideoStatus(int code, int status, String values) {
+
+            }
+
+            @Override
+            public int onVideoStatusChange(int code, int status) {
+                return 0;
+            }
+
+
         });
         ProxUtil.getProxUtil().put(activity, ActivityChangeLand.class, this);
         initBusiness();

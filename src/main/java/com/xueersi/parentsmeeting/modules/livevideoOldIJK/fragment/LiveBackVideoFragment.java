@@ -35,6 +35,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
@@ -226,6 +227,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         mMediaController.setPlayNextVisable(false);
         // 设置速度按钮显示
         mMediaController.setSetSpeedVisable(true);
+
+        mMediaController.setVideoStatus(MediaPlayer.VIDEO_BOTTOM_CONTROL_CODE_TEACHER,MediaPlayer.VIDEO_TEACHER_HIDE,"");
 
         // 设置当前是否为横屏
         if (mPlayBackMediaController == null) {
