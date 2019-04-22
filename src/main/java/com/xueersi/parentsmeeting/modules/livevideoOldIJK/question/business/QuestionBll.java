@@ -256,6 +256,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      * 新课件平台，人机roleplay业务类
      */
     RolePlayMachineBll rolePlayMachineBll;
+    /**
+     * 多人连麦，是否分组成功
+     */
+    private boolean isMulitGroupSuc;
 
     public QuestionBll(Activity activity, String stuCouId) {
         ProxUtil.getProxUtil().put(activity, QuestionStatic.class, this);
@@ -474,6 +478,14 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     public void setRolePlayAction(RolePlayAction rolePlayAction, RolePlayActionEnd playActionEnd) {
         this.rolePlayAction = rolePlayAction;
         this.playActionEnd = playActionEnd;
+        this.rolePlayAction.setOnGroupSuc(new RolePlayAction.OnGroupSuc(){
+            @Override
+            public void onGroupSuc() {
+                //收到分组的回调，也直接走多人
+                isMulitGroupSuc = true;
+                logger.d("oldijk multi_people_onGroupSuc:callback receive");
+            }
+        });
         rolePlayAction.setOnError(new RolePlayAction.OnError() {
 
             @Override
@@ -738,7 +750,17 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         speechAssessmentPager.initData();
 
                     } else {
-                        logger.e("走人机000");
+                        //新讲义讲义：分组成功的回调收到之后，不再判断videoQuestionLiveEntity.multiRolePlay，也走多人
+                        if (isMulitGroupSuc) {
+                            logger.d("oldijk multi_people_onGroupSuc:callback use new kj "+rolePlayAction+" multiRolePlay = "+videoQuestionLiveEntity.multiRolePlay);
+                            if (rolePlayAction != null) {
+                                mQueAndBool.add(id);
+                                rolePlayAction.teacherPushTest(videoQuestionLiveEntity);
+                                isMulitGroupSuc = false;
+                                return;
+                            }
+                        }
+
                         if ("1".equals(videoQuestionLiveEntity.multiRolePlay)) {
                             if (rolePlayAction != null) {
                                 mQueAndBool.add(id);
@@ -914,6 +936,17 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         speechAssessmentPager.setIse(mIse);
                         speechAssessmentPager.initData();
                     } else {
+                        //旧讲义：分组成功的回调收到之后，不再判断videoQuestionLiveEntity.multiRolePlay，也走多人
+                        if (isMulitGroupSuc) {
+                            logger.d("oldijk multi_people_onGroupSuc:callback use old kj "+rolePlayAction+" multiRolePlay = "+videoQuestionLiveEntity.multiRolePlay);
+                            if (rolePlayAction != null) {
+                                mQueAndBool.add(id);
+                                rolePlayAction.teacherPushTest(videoQuestionLiveEntity);
+                                isMulitGroupSuc = false;
+                                return;
+                            }
+                        }
+
                         if ("1".equals(videoQuestionLiveEntity.multiRolePlay)) {
                             if (rolePlayAction != null) {
                                 mQueAndBool.add(id);
