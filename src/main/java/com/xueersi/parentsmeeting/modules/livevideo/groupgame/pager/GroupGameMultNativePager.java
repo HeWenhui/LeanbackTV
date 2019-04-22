@@ -1290,7 +1290,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             }
                         }
                         if (currAnswersEntity != null) {
-                            int more = (int) (playTime - nowPlayTime - currAnswersEntity.getSingleTime());
+                            int more = (int) (currAnswersEntity.getSingleTime() + 1 - (playTime - nowPlayTime));
                             mLogtf.d("getCourseWareTests:id=" + currAnswersEntity.getId() + ",more=" + more);
                             currAnswersEntity.setSingleTime(currAnswersEntity.getSingleTime() - more);
                         }
