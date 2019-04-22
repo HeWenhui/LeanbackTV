@@ -1338,7 +1338,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     return;
                 }
 
-                if (pkStepCode == 1 && !isTopicHandled()) {
+                if ((pkStepCode == 1 || openBoxStateCode == 1) && !isTopicHandled()) {
                     setTopicHandled(true);
                     showPkResult();
                     logger.e("====>onTopic showPkResult:");
