@@ -1752,6 +1752,12 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         return "0";
     }
 
+    /**
+     * 创建评测文本，
+     *
+     * @param method
+     * @param waitTcp 等待tcp连接
+     */
     private void createSpeechContent(String method, boolean waitTcp) {
         speechContent = "";
         if (gameOver) {
@@ -1845,7 +1851,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 //                        return;
 //                    }
                     bodyJson.put("uid", "" + stuid);
-                    bodyJson.put("word_id", "" + answersEntity.getId());
+                    final String word_id = "" + answersEntity.getId();
+                    bodyJson.put("word_id", word_id);
                     bodyJson.put("pk_team_id", teamEntity.getPkTeamId());
                     bodyJson.put("team_type", "interactive");
                     bodyJson.put("interactive_team_id", interactiveTeam.getInteractive_team_id());
@@ -1862,25 +1869,27 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     bodyJson.put("userData", userData);
                     tcpMessageReg.send(TcpConstants.VOICE_CANNO_TYPE, TcpConstants.VOICE_CANNO_SEND, bodyJson.toString(), new SendCallBack() {
                         String TAG = "SendCallBack:";
+                        int seq;
 
                         @Override
                         public void onNoOpen() {
-                            logger.d(TAG + "onNoOpen");
+                            mLogtf.d(TAG + "onNoOpen");
                         }
 
                         @Override
                         public void onStart(int seq) {
-                            logger.d(TAG + "onStart:seq=" + seq);
+                            this.seq = seq;
+                            mLogtf.d(TAG + "onStart:word_id=" + word_id + ",seq=" + seq);
                         }
 
                         @Override
                         public void onReceiveMeg(short type, int operation, int seq, String msg) {
-                            logger.d(TAG + "onReceiveMeg:seq=" + seq);
+                            mLogtf.d(TAG + "onReceiveMeg:word_id=" + word_id + ",seq=" + seq);
                         }
 
                         @Override
                         public void onTimeOut() {
-                            logger.d(TAG + "onTimeOut");
+                            mLogtf.d(TAG + "onTimeOut:word_id=" + word_id + ",seq=" + seq);
                         }
                     });
                 }
@@ -1931,7 +1940,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 //                        return;
 //                    }
                     bodyJson.put("uid", "" + stuid);
-                    bodyJson.put("word", "" + removeAnswersEntity.getText());
+                    final String word = "" + removeAnswersEntity.getText();
+                    bodyJson.put("word", word);
                     bodyJson.put("pk_team_id", teamEntity.getPkTeamId());
                     bodyJson.put("team_type", "interactive");
                     bodyJson.put("interactive_team_id", interactiveTeam.getInteractive_team_id());
@@ -1945,25 +1955,27 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     bodyJson.put("team_mate", team_mate);
                     tcpMessageReg.send(TcpConstants.CLEAN_UP_TYPE, TcpConstants.CLEAN_UP_SEND, bodyJson.toString(), new SendCallBack() {
                         String TAG = "SendCallBack:";
+                        int seq;
 
                         @Override
                         public void onNoOpen() {
-                            logger.d(TAG + "onNoOpen");
+                            mLogtf.d(TAG + "onNoOpen");
                         }
 
                         @Override
                         public void onStart(int seq) {
-                            logger.d(TAG + "onStart:seq=" + seq);
+                            this.seq = seq;
+                            mLogtf.d(TAG + "onStart:word=" + word + ",seq=" + seq);
                         }
 
                         @Override
                         public void onReceiveMeg(short type, int operation, int seq, String msg) {
-                            logger.d(TAG + "onReceiveMeg:seq=" + seq);
+                            mLogtf.d(TAG + "onReceiveMeg:word=" + word + ",seq=" + seq);
                         }
 
                         @Override
                         public void onTimeOut() {
-                            logger.d(TAG + "onTimeOut");
+                            mLogtf.d(TAG + "onTimeOut:word=" + word + ",seq=" + seq);
                         }
                     });
                 }
@@ -2036,10 +2048,12 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                 final boolean isTurnPage;
                                 mLogtf.d("VOICE_CANNO_STATIS:current_word=" + current_word + "," + currentAnswerIndex);
                                 int oldIndex = currentAnswerIndex;
+                                //本地比之前的试题小，删除到当前页数-1
                                 if (currentAnswerIndex < current_word) {
                                     currentAnswerIndex = current_word;
                                     int oldSize = allAnswerList.size();
                                     if (!allAnswerList.isEmpty()) {
+                                        //删除之前的试题
                                         while (oldIndex < current_word - 1 && !allAnswerList.isEmpty()) {
                                             oldIndex++;
                                             allAnswerList.remove(0);
@@ -2119,7 +2133,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             int current_word = jsonObject.optInt("current_word", currentAnswerIndex);
                             GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
                             List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = testInfoEntity.getAnswerList();
-                            for (int i = 0; i < Math.min(current_word, answerList.size()); i++) {
+                            //删除之前的试题
+                            for (int i = 0; i < Math.min(current_word, answerList.size()) - 1; i++) {
                                 GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = answerList.get(i);
                                 allAnswerList.remove(answersEntity);
                             }
