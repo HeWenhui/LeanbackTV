@@ -9,6 +9,13 @@ import android.util.AndroidException;
  */
 public class LiveException extends AndroidException {
 
+    public LiveException() {
+    }
+
+    public LiveException(String name) {
+        super(name);
+    }
+
     public LiveException(Exception cause) {
         super(cause);
     }

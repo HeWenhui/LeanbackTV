@@ -298,7 +298,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
                 if (("" + consoleMessage.message()).contains("sendToCourseware")) {
-                    CrashReport.postCatchedException(new Exception());
+                    CrashReport.postCatchedException(new LiveException(TAG));
                 }
                 return super.onConsoleMessage(consoleMessage);
             }
@@ -354,8 +354,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 }
                 mLogtf.d("VoiceCannonTurnRun:pagerNum=" + pagerNum + ",currentAnswerIndex=" + currentAnswerIndex + ",remove=" + remove);
             } catch (Exception e) {
-                e.printStackTrace();
-                CrashReport.postCatchedException(e);
+                logger.e("VoiceCannonTurnRun:run", e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
     }
@@ -379,7 +379,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     onCoursewareDoing(where, message);
                 }
             } catch (JSONException e) {
-                e.printStackTrace();
+                mLogtf.e("VoiceCannonOnMessage:postMessage", e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
 
@@ -406,7 +407,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     }
                 }
             } catch (Exception e) {
-                CrashReport.postCatchedException(e);
+                mLogtf.e("onLoadComplete", e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
             //当前页
             PagerShowTime pagerShowTime = voicePagerShowTimeHashMap.get(currentAnswerIndex);
@@ -467,7 +469,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         }
                     }
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(e);
+                    mLogtf.e("onCoursewareDoing", e);
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             } else {
                 logger.e("onCoursewareDoing:where=" + where);
@@ -496,8 +499,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         resultData.put("isSingle", false);
                         StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
                     } catch (Exception e) {
-                        logger.d("coursewareOnloading", e);
-                        CrashReport.postCatchedException(e);
+                        mLogtf.e("coursewareOnloading", e);
+                        CrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                 }
             });
@@ -531,8 +534,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 }
                 mLogtf.d("CleanUpTurnRun:pagerNum=" + pagerNum + ",oldSize=" + oldSize);
             } catch (Exception e) {
-                e.printStackTrace();
-                CrashReport.postCatchedException(e);
+                mLogtf.e("CleanUpTurnRun:run", e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
     }
@@ -556,7 +559,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     onCoursewareDoing(where, message);
                 }
             } catch (JSONException e) {
-                e.printStackTrace();
+                mLogtf.e("CleanUpOnMessage:postMessage", e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
 
@@ -640,7 +644,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 mLogtf.d("coursewareOnloading:pageNum=" + entities.size() + ",playTime=" + playTime);
                 StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
             } catch (Exception e) {
-                logger.d("onScene", e);
+                mLogtf.e("onScene", e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
 
@@ -827,7 +832,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         jsonObject.put("data", data);
                         tcpMessageReg.send(TcpConstants.AUDIO_TYPE, TcpConstants.AUDIO_SEND, jsonObject.toString());
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        mLogtf.e("onVideoClick", e);
+                        CrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                 }
 
@@ -844,7 +850,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         jsonObject.put("data", data);
                         tcpMessageReg.send(TcpConstants.AUDIO_TYPE, TcpConstants.AUDIO_SEND, jsonObject.toString());
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        mLogtf.e("onAudioClick", e);
+                        CrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                 }
             });
@@ -1407,8 +1414,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 averageScore = sum / size;
             }
         } catch (Exception e) {
-            CrashReport.postCatchedException(e);
-            logger.d("submit", e);
+            mLogtf.e("submit", e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
         }
         GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
         List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = testInfoEntity.getAnswerList();
@@ -1464,8 +1471,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 answerData.put("averageScore", averageScore);
                 answerData.put("userAnswer", userAnswer);
             } catch (Exception e) {
-                CrashReport.postCatchedException(e);
-                logger.d("submit", e);
+                mLogtf.e("submit2", e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
             ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
             for (int i = 0; i < entities.size(); i++) {
@@ -1554,8 +1561,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 answerData.put("averageScore", averageScore);
                 answerData.put("userAnswer", userAnswer);
             } catch (JSONException e) {
-                CrashReport.postCatchedException(e);
-                logger.d("submit", e);
+                mLogtf.e("submit3", e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
         {
@@ -1894,7 +1901,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     });
                 }
             } catch (Exception e) {
-                logger.d("onResult", e);
+                mLogtf.e("onResult", e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
     }
@@ -1980,8 +1988,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     });
                 }
             } catch (Exception e) {
-                CrashReport.postCatchedException(e);
-                logger.d("CleanEvaluatorIng", e);
+                mLogtf.e("CleanEvaluatorIng", e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
     }
@@ -2118,7 +2126,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             }
                         } catch (JSONException e) {
                             mLogtf.e("onMessage:Statis", e);
-                            CrashReport.postCatchedException(new LiveException("VOICE_CANNO_STATIS", e));
+                            CrashReport.postCatchedException(new LiveException(TAG, e));
                             MobAgent.httpResponseParserError(TAG, "onMessage:Statis", e.getMessage());
                         }
                     }
@@ -2216,8 +2224,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             }
                             voiceCannonOnMessage.coursewareOnloading(currentAnswerIndex);
                         } catch (Exception e) {
-                            logger.d("onMessage:Scene", e);
-                            CrashReport.postCatchedException(e);
+                            mLogtf.e("onMessage:Scene", e);
+                            CrashReport.postCatchedException(new LiveException(TAG, e));
                             MobAgent.httpResponseParserError(TAG, "onMessage:Scene", e.getMessage());
                         }
                     }
