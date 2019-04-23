@@ -662,6 +662,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         }
     }
 
+
     /**
      * @param direction 1:向左  2:向右
      */
