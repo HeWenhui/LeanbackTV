@@ -2161,6 +2161,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             wordCount.clear();
                             JSONArray mateArray = jsonObject.optJSONArray("stu_data");
                             if (mateArray != null) {
+                                boolean isEmpty = allScoreList.isEmpty();
                                 for (int i = 0; i < mateArray.length(); i++) {
                                     JSONObject mateObj = mateArray.getJSONObject(i);
                                     String stu_id = mateObj.getString("stu_id");
@@ -2192,6 +2193,11 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                             for (int wordIndex = 0; wordIndex < word_score.length(); wordIndex++) {
                                                 int score = word_score.getInt(wordIndex);
                                                 allScore.add(score);
+                                                if (isEmpty && stu_id.equals("" + stuid)) {
+                                                    ResultEntity resultEntity = new ResultEntity();
+                                                    resultEntity.setScore(score);
+                                                    allScoreList.add(resultEntity);
+                                                }
                                                 rightNum++;
                                                 integer++;
                                             }

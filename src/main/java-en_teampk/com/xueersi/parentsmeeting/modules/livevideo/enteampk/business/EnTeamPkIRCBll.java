@@ -227,7 +227,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             tcpDispatch.setAddresses(addresses);
             tcpDispatch.registTcpMessageAction(new TeamMessageAction());
             while (!tcpRun.isEmpty()) {
-                TcpRunnable runnable = tcpRun.get(0);
+                TcpRunnable runnable = tcpRun.remove(0);
                 mLogtf.d("connect:run=" + runnable.getName());
                 runnable.run();
             }
