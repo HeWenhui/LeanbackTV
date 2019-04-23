@@ -53,6 +53,8 @@ public interface GoldPhoneContract {
         void addRipple(int level);
 
         List<SoundWaveView.Circle> getRipples();
+
+        void onResume();
     }
 
     interface GoldPhonePresenter {

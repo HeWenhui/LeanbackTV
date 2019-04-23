@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.constraint.ConstraintLayout;
@@ -86,7 +87,7 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
     /**
      * 出场动画
      */
-    private ObjectAnimator openAnimator;
+//    private ObjectAnimator openAnimator;
     /**
      * 显示金话筒View
      */
@@ -209,6 +210,26 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
         });
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        boolean isHavePermission = isHasAudioPermission();
+        if (isHavePermission) {
+            settingGroup.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * 是否有语音权限
+     *
+     * @return
+     */
+    private boolean isHasAudioPermission() {
+        PackageManager pkm = mContext.getPackageManager();
+        return (PackageManager.PERMISSION_GRANTED == pkm.checkPermission("android.permission.MODIFY_AUDIO_SETTINGS", mContext.getPackageName())
+                && PackageManager.PERMISSION_GRANTED == pkm.checkPermission("android.permission.RECORD_AUDIO", mContext.getPackageName()));
+    }
+
     private void applyAudioPermission() {
         boolean have = XesPermission.checkPermission(mContext, new PermissionCallback() {
                     @Override
@@ -227,6 +248,7 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
                             settingGroup.setVisibility(View.GONE);
                         }
                         mPresenter.startAudioRecord();
+                        isStop = false;
                     }
                 },
                 PermissionConfig.PERMISSION_CODE_AUDIO);
@@ -252,25 +274,32 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
     /**
      * 消失动画
      */
-    ObjectAnimator goneAnimator;
-
+//    ObjectAnimator goneAnimator;
+    /**
+     * 当前声波是否处于活跃状态
+     */
     private boolean isActive = false;
+    /** 当前声波是否结束 */
+    private boolean isStop = false;
 
     /**
      * 移除金话筒这个功能
      */
     @Override
     public void removeGoldView() {
+        isStop = true;
         isActive = false;
         ivClose.setVisibility(View.GONE);
+        lottieAnimationView.setVisibility(View.GONE);
         float curY, goldY;
         curY = ivMicroPhone.getTranslationY();
         goldY = curY + SizeUtils.Dp2Px(mContext,
                 ivMicroPhone.getHeight() + ((ConstraintLayout.LayoutParams) ivMicroPhone.getLayoutParams()).bottomMargin);
-        goneAnimator = ObjectAnimator.ofFloat(ivMicroPhone, "translationY", curY, goldY);
+        ObjectAnimator goneAnimator = ObjectAnimator.ofFloat(ivMicroPhone, "translationY", curY, goldY);
         logger.i("swvView set View.GONE");
         swvView.clear();
-        swvView.setVisibility(View.GONE);
+
+//        swvView.setVisibility(View.GONE);
         goneAnimator.setDuration(1000);
         goneAnimator.start();
 
@@ -324,6 +353,9 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
     @Override
     public void showSettingView(boolean isVisible) {
         settingGroup.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        if (!isVisible) {
+            isStop = false;
+        }
     }
 
     @Override
@@ -383,7 +415,7 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
 
     @Override
     public void addRipple(int level) {
-        if (swvView != null) {
+        if (swvView != null && !isStop) {
             swvView.addRipple(new SoundWaveView.Circle(0, level));
         }
     }
