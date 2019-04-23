@@ -25,7 +25,7 @@ public class GroupCourseCache extends NewCourseCache {
         if (webResourceResponse1 != null) {
             return webResourceResponse1;
         }
-        if (s.endsWith("Arial%20Rounded%20MT%20Bold.ttf")) {
+        if (s.endsWith("ArialRoundedMTBold.ttf")) {
             InputStream inputStream = null;
             try {
                 String extension = MimeTypeMap.getFileExtensionFromUrl(s.toLowerCase());
