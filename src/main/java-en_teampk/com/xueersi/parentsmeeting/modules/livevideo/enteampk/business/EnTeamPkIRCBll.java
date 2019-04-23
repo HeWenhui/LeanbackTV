@@ -35,6 +35,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.enteampk.pager.TeamPkLeadPag
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpDispatch;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageReg;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpRunnable;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -225,6 +226,11 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             tcpDispatch.setOnTcpConnects(onTcpConnects);
             tcpDispatch.setAddresses(addresses);
             tcpDispatch.registTcpMessageAction(new TeamMessageAction());
+            while (!tcpRun.isEmpty()) {
+                TcpRunnable runnable = tcpRun.get(0);
+                mLogtf.d("connect:run=" + runnable.getName());
+                runnable.run();
+            }
         }
     }
 
@@ -571,6 +577,8 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         return pkTeamEntity2;
     }
 
+    private ArrayList<TcpRunnable> tcpRun = new ArrayList<>();
+
     private void startTeam(String method) {
         logger.d("startTeam:method=" + method + ",Team=null?" + (getStuActiveTeam == null));
         if (getStuActiveTeam == null) {
@@ -646,23 +654,50 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
 
                 @Override
-                public void send(short type, int operation, String bodyStr) {
+                public void send(final short type, final int operation, final String bodyStr) {
                     if (tcpDispatch != null) {
                         tcpDispatch.send(type, operation, bodyStr);
+                    } else {
+                        tcpRun.add(new TcpRunnable("send1") {
+                            @Override
+                            public void run() {
+                                if (tcpDispatch != null) {
+                                    tcpDispatch.send(type, operation, bodyStr);
+                                }
+                            }
+                        });
                     }
                 }
 
                 @Override
-                public void send(short type, int operation, String bodyStr, SendCallBack sendCallBack) {
+                public void send(final short type, final int operation, final String bodyStr, final SendCallBack sendCallBack) {
                     if (tcpDispatch != null) {
                         tcpDispatch.send(type, operation, bodyStr, sendCallBack);
+                    } else {
+                        tcpRun.add(new TcpRunnable("send2") {
+                            @Override
+                            public void run() {
+                                if (tcpDispatch != null) {
+                                    tcpDispatch.send(type, operation, bodyStr, sendCallBack);
+                                }
+                            }
+                        });
                     }
                 }
 
                 @Override
-                public void registTcpMessageAction(TcpMessageAction tcpMessageAction) {
+                public void registTcpMessageAction(final TcpMessageAction tcpMessageAction) {
                     if (tcpDispatch != null) {
                         tcpDispatch.registTcpMessageAction(tcpMessageAction);
+                    } else {
+                        tcpRun.add(new TcpRunnable("registTcpMessageAction") {
+                            @Override
+                            public void run() {
+                                if (tcpDispatch != null) {
+                                    tcpDispatch.registTcpMessageAction(tcpMessageAction);
+                                }
+                            }
+                        });
                     }
                 }
 

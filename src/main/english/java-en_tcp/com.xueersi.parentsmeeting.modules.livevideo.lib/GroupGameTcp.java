@@ -51,9 +51,9 @@ public class GroupGameTcp {
     public GroupGameTcp(InetSocketAddress inetSocketAddress) {
         this.inetSocketAddress = inetSocketAddress;
         log.d("GroupGameTcp:host=" + inetSocketAddress);
-//        if (AppConfig.DEBUG) {
-//            saveRead = true;
-//        }
+        if (com.xueersi.common.config.AppConfig.DEBUG) {
+            saveRead = true;
+        }
     }
 
     public void setReceiveMegCallBack(ReceiveMegCallBack receiveMegCallBack) {
@@ -366,7 +366,7 @@ public class GroupGameTcp {
                     if (fileOutputStream != null) {
                         try {
                             fileOutputStream.write(readBuffer, 0, length);
-                        } catch (IOException e) {
+                        } catch (Exception e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
                         }

@@ -680,7 +680,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         int vProfile = Constants.VIDEO_PROFILE_120P;
         mWorkerThread.configEngine(Constants.CLIENT_ROLE_BROADCASTER, vProfile);
         String channel = liveGetInfo.getId() + "_" + liveGetInfo.getStudentLiveInfo().getClassId() + "_" + getStuActiveTeam.getPkTeamEntity().getPkTeamId() + "_" + interactiveTeam.getInteractive_team_id();
-        logger.d("joinChannel:channel=" + channel);
+        mLogtf.d("joinChannel:channel=" + channel);
         mWorkerThread.joinChannel("", channel, stuid, new WorkerThread.OnJoinChannel() {
             @Override
             public void onJoinChannel(int joinChannel) {
@@ -2197,12 +2197,13 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                             }
                                             wordCount.put(key, integer);
                                             int maxSingCount = testInfoEntity.getSingleCount();
-                                            logger.d("Projectile_Scene:integer=" + integer + ",maxSingCount=" + maxSingCount);
+                                            mLogtf.d("VOICE_CANNO_SCENE:integer=" + integer + ",maxSingCount=" + maxSingCount);
                                             if (integer >= maxSingCount) {
                                                 for (int allAns = 0; allAns < allAnswerList.size(); allAns++) {
                                                     GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = allAnswerList.get(allAns);
                                                     if (answer.getId() == wordId) {
                                                         allAnswerList.remove(allAns);
+                                                        currentAnswerIndex++;
                                                         break;
                                                     }
                                                 }
