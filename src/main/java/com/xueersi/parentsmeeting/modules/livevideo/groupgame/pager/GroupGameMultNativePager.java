@@ -1508,7 +1508,11 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 int rightNum = vidooCannonEntity.rightNum;
                 if (rightNum > 0) {
                     vidooCannonEntity.teamMemberEntity.gold = 2;
-                    vidooCannonEntity.teamMemberEntity.energy = rightNum;
+                    if (rightNum > GroupGameConfig.CANNON_MAX_ENERGY) {
+                        vidooCannonEntity.teamMemberEntity.setEnergy(GroupGameConfig.CANNON_MAX_ENERGY);
+                    } else {
+                        vidooCannonEntity.teamMemberEntity.setEnergy(rightNum);
+                    }
                 }
                 if (rightNum > maxRight) {
                     maxRight = rightNum;
@@ -2059,7 +2063,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                     if (answer.getId() == word_id) {
                                         vidooCannonEntity.rightNum++;
                                         //一个单词一个能量
-                                        vidooCannonEntity.teamMemberEntity.energy++;
+                                        if (vidooCannonEntity.teamMemberEntity.getEnergy() < GroupGameConfig.CANNON_MAX_ENERGY) {
+                                            vidooCannonEntity.teamMemberEntity.setEnergy(vidooCannonEntity.teamMemberEntity.getEnergy() + 1);
+                                        }
                                         break;
                                     }
                                 }
@@ -2262,7 +2268,11 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                             @Override
                                             public void run() {
                                                 TeamMemberEntity entity = courseGroupItem.getEntity();
-                                                entity.energy = total_energy;
+                                                if (total_energy > GroupGameConfig.CANNON_MAX_ENERGY) {
+                                                    entity.setEnergy(GroupGameConfig.CANNON_MAX_ENERGY);
+                                                } else {
+                                                    entity.setEnergy(total_energy);
+                                                }
                                                 courseGroupItem.onScene("VOICE_CANNO_SCENE");
                                             }
                                         });
