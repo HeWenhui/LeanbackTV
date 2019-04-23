@@ -33,6 +33,7 @@ import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
@@ -81,6 +82,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.NewCourseLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveAudioManager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -228,6 +230,16 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
     @Override
     public void initData() {
+        BasePlayerFragment videoFragment = ProxUtil.getProxUtil().get(mContext, BasePlayerFragment.class);
+        if (videoFragment != null) {
+            videoFragment.setVolume(0, 0);
+            logger.d(TAG + ":setVolume:0");
+            StableLogHashMap stableLogHashMap = new StableLogHashMap("stop");
+            stableLogHashMap.put("tag", TAG);
+            umsAgentDebugSys(LogConfig.LIVE_STOP_VOLUME, stableLogHashMap);
+        } else {
+            logger.d(TAG + ":setVolume:null");
+        }
         AudioRequest audioRequest = ProxUtil.getProxUtil().get(mContext, AudioRequest.class);
         if (audioRequest != null) {
             audioRequest.request(null);
@@ -694,19 +706,24 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             mWorkerThread.leaveChannel(mWorkerThread.getEngineConfig().mChannel, new WorkerThread.OnLeaveChannel() {
                 @Override
                 public void onLeaveChannel(int leaveChannel) {
-
+                    logger.d("leaveChannel:mWorkerThread.joinstart");
                 }
             });
             mWorkerThread.eventHandler().removeEventHandler(agEventHandler);
-            mWorkerThread.exit();
-            logger.d("leaveChannel:mWorkerThread.joinstart");
-            try {
-                mWorkerThread.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            logger.d("leaveChannel:mWorkerThread.joinend");
-            mWorkerThread = null;
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mWorkerThread.exit();
+                    logger.d("leaveChannel:mWorkerThread.joinstart");
+//                    try {
+//                        mWorkerThread.join();
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+                    logger.d("leaveChannel:mWorkerThread.joinend");
+                    mWorkerThread = null;
+                }
+            }, 10);
         }
     }
 
@@ -1638,7 +1655,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
     @Override
     public BasePager getBasePager() {
-        return null;
+        return this;
     }
 
     @Override
@@ -1683,6 +1700,16 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         courseGroupItemHashMap.clear();
         if (liveAudioManager != null) {
             liveAudioManager.setVolume(mVolume);
+        }
+        BasePlayerFragment videoFragment = ProxUtil.getProxUtil().get(mContext, BasePlayerFragment.class);
+        if (videoFragment != null) {
+            videoFragment.setVolume(VP.DEFAULT_STEREO_VOLUME, VP.DEFAULT_STEREO_VOLUME);
+            logger.d("onDestroy:setVolume:1");
+            StableLogHashMap stableLogHashMap = new StableLogHashMap("start");
+            stableLogHashMap.put("tag", TAG);
+            umsAgentDebugSys(LogConfig.LIVE_STOP_VOLUME, stableLogHashMap);
+        } else {
+            logger.d("onDestroy:setVolume:null");
         }
     }
 

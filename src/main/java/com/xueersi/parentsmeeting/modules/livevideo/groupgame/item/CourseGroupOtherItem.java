@@ -45,6 +45,15 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
 
     public void doRenderRemoteUi(SurfaceView surfaceV) {
         rl_livevideo_course_item_video_head.setVisibility(View.GONE);
+        boolean remove = false;
+        if (rlCourseItemVideo.getChildCount() > 0) {
+            View view = rlCourseItemVideo.getChildAt(0);
+            if (view instanceof SurfaceView) {
+                rlCourseItemVideo.removeView(view);
+                remove = true;
+            }
+        }
+        mLogtf.d("doRenderRemoteUi:remove=" + remove + ",uid=" + uid);
         rlCourseItemVideo.addView(surfaceV, 0);
         rlCourseItemCtrl.setVisibility(View.VISIBLE);
         tvCourseItemLoad.setVisibility(View.GONE);
@@ -53,6 +62,7 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
     @Override
     public void onUserJoined() {
         onLine = true;
+        mLogtf.d("onUserJoined" + uid);
         if (videoTime == 0) {
             videoStartTime = System.currentTimeMillis();
         }
@@ -65,6 +75,7 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
 
     public void onUserOffline() {
         onLine = false;
+        mLogtf.d("onUserOffline:uid=" + uid);
         rl_livevideo_course_item_video_head.setVisibility(View.VISIBLE);
         rlCourseItemCtrl.setVisibility(View.GONE);
         tvCourseItemLoad.setText("已离线");

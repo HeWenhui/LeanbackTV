@@ -134,18 +134,25 @@ public class GroupGameEmptyPager extends BaseCoursewareNativePager implements Ba
             public void onDataSucess(Object... objData) {
                 GroupGameTestInfosEntity mGroupGameTestInfosEntity = (GroupGameTestInfosEntity) objData[0];
                 List<GroupGameTestInfosEntity.TestInfoEntity> tests = mGroupGameTestInfosEntity.getTestInfoList();
-                if (mGroupGameTestInfosEntity.isAnswered() && tests.isEmpty()) {
+                if (mGroupGameTestInfosEntity.isAnswered() || tests.isEmpty()) {
                     onClose.onH5ResultClose(GroupGameEmptyPager.this, baseVideoQuestionEntity);
                     return;
                 }
+//                mGroupGameTestInfosEntity.setAnswered(true);
                 GroupGameTestInfosEntity.TestInfoEntity test = tests.get(0);
                 int gameModel = test.getGameModel();
                 if (gameModel == LiveQueConfig.GAME_MODEL_2) {
                     GroupGameMultNativePager groupGameMultNativePager = new GroupGameMultNativePager(mContext, liveGetInfo, detailInfo, englishH5Entity, new EnglishH5CoursewareBll.OnH5ResultClose() {
                         @Override
                         public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
-                            group.removeAllViews();
-                            onClose.onH5ResultClose(GroupGameEmptyPager.this, baseVideoQuestionEntity);
+                            //延迟remove，否则会卡住界面
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    group.removeAllViews();
+                                    onClose.onH5ResultClose(GroupGameEmptyPager.this, detailInfo);
+                                }
+                            });
                         }
                     });
                     groupGameMultNativePager.setLivePagerBack(livePagerBack);

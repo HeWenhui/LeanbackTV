@@ -75,10 +75,20 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
 
     public void doRenderRemoteUi(SurfaceView surfaceV) {
         rl_livevideo_course_item_video_head.setVisibility(View.GONE);
+        boolean remove = false;
+        if (rlCourseItemVideo.getChildCount() > 0) {
+            View view = rlCourseItemVideo.getChildAt(0);
+            if (view instanceof SurfaceView) {
+                rlCourseItemVideo.removeView(view);
+                remove = true;
+            }
+        }
+        mLogtf.d("doRenderRemoteUi:remove=" + remove + ",uid=" + uid);
         rlCourseItemVideo.addView(surfaceV, 0);
     }
 
     public void onUserOffline() {
+        mLogtf.d("onUserOffline:uid=" + uid);
         rl_livevideo_course_item_video_head.setVisibility(View.VISIBLE);
     }
 

@@ -21,4 +21,6 @@ public class LogConfig {
     public static String LIVE_H5PLAT = "live_h5plat";
     /** 直播音量 */
     public static String LIVE_AUDIO = "live_audio_enent";
+    /** 停止声音 */
+    public static String LIVE_STOP_VOLUME = "live_stop_volume";
 }
