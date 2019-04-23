@@ -36,13 +36,13 @@ public class TcpConstants {
     /** 消息心跳-服务器回复学生互动分组 */
     public final static int TEAM_OPERATION_SEND = 15;
     /** 消息类型，客户端发语音炮弹数据 */
-    public final static short Voice_Projectile_TYPE = 8;
+    public final static short VOICE_CANNO_TYPE = 8;
     /** 消息类型，客户端发语音炮弹数据 */
-    public final static int Voice_Projectile_SEND = 16;
+    public final static int VOICE_CANNO_SEND = 16;
     /** 消息类型，服务器端发送恢复场景的数据 */
-    public final static int Voice_Projectile_Scene = 17;
+    public final static int VOICE_CANNO_SCENE = 17;
     /** 消息类型，服务器端发送语音炮弹统计数据 */
-    public final static int Voice_Projectile_Statis = 18;
+    public final static int VOICE_CANNO_STATIS = 18;
     /** 消息类型，客户端发clean up数据 */
     public final static short CLEAN_UP_TYPE = 9;
     /** 消息类型，客户端发clean up数据 */
