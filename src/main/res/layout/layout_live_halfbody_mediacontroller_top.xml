@@ -18,7 +18,7 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:contentDescription="@string/content_desc_lock"
-            android:layout_marginLeft="20dp"
+            android:layout_marginLeft="5dp"
             android:src="@drawable/selector_live_halfbody_back" />
 
         <!-- 播放的视频名称 -->

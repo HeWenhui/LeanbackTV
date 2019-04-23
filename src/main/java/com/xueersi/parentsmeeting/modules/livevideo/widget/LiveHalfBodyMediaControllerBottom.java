@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -27,6 +28,8 @@ public class LiveHalfBodyMediaControllerBottom extends BaseLiveMediaControllerBo
     View tranLiveView;
     View mainLiveView;
 
+    private LiveGetInfo mRoomInintData;
+
     public LiveHalfBodyMediaControllerBottom(Context context, LiveMediaController controller, LiveMediaController
             .MediaPlayerControl player) {
         super(context, controller, player);
@@ -36,29 +39,100 @@ public class LiveHalfBodyMediaControllerBottom extends BaseLiveMediaControllerBo
     @Override
     public View inflateLayout() {
 
+        Log.e(TAG,"======>inflateLayout called");
+        //在得到 详细的直播间初始化参数之前 返回默认布局信息
+        if(mRoomInintData == null){
+            return super.inflateLayout();
+        }
+
+        View view;
+        //语文半身直播 沿用 一期 交互方式
+        if(isChHalfBodyLive()){
+            view = initChMediaCtr();
+        }else{
+            view = initScienceMediaCtr();
+        }
+
+        return  view;
+    }
+
+
+    /**
+     * 初始化 理科半身直播 底部媒体控制栏
+     * @return
+     */
+    private View initScienceMediaCtr() {
         View view;
         if (LiveTopic.MODE_CLASS.equals(mode)) {
-            if (mainLiveView == null) {
-                mainLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livehalfbody_mediacontroller_bottom,
+
+            // TODO: 2019/4/19 不在复用 View
+            //if (mainLiveView == null) {
+                mainLiveView =
+                        LayoutInflater.from(mContext).inflate(R.layout.layout_livehalfbody_mediacontroller_bottom,
                         this, false);
-            }
+            //}
             view = mainLiveView;
             addView(view);
         } else {
-            if(tranLiveView == null){
+            if (tranLiveView == null) {
                 if (LiveVideoConfig.isPrimary) {
-                    tranLiveView  = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_psbottom, this,false);
-                }else if(LiveVideoConfig.isSmallChinese) {
-                    tranLiveView  = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_chs_bottom, this,false);
-                }
-                else {
-                    tranLiveView  = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom, this,false);
+                    tranLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_psbottom
+                            , this, false);
+                } else if (LiveVideoConfig.isSmallChinese) {
+                    tranLiveView =
+                            LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_chs_bottom,
+                                    this, false);
+                } else {
+                    tranLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom,
+                            this, false);
                 }
             }
             view = tranLiveView;
             addView(view);
         }
-        return  view;
+        return view;
+    }
+
+    /**
+     * 初始化 语文底部媒体控制栏
+     * @return
+     */
+    private View initChMediaCtr() {
+        View view;
+        if (LiveTopic.MODE_CLASS.equals(mode)) {
+            if (mainLiveView == null) {
+                mainLiveView =
+                        LayoutInflater.from(mContext).inflate(R.layout.layout_livehalfbody_mediacontroller_bottom_ch,
+                        this, false);
+            }
+            view = mainLiveView;
+            addView(view);
+        } else {
+            if (tranLiveView == null) {
+                if (LiveVideoConfig.isPrimary) {
+                    tranLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_psbottom
+                            , this, false);
+                } else if (LiveVideoConfig.isSmallChinese) {
+                    tranLiveView =
+                            LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_chs_bottom,
+                                    this, false);
+                } else {
+                    tranLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom,
+                            this, false);
+                }
+            }
+            view = tranLiveView;
+            addView(view);
+        }
+        return view;
+    }
+
+
+    // 是否是语文半身直播
+
+    private boolean isChHalfBodyLive() {
+
+        return false;
     }
 
 
@@ -68,6 +142,8 @@ public class LiveHalfBodyMediaControllerBottom extends BaseLiveMediaControllerBo
      * @param getInfo
      */
     public void onModeChange(String mode,LiveGetInfo getInfo){
+        Log.e(TAG,"======>onModeChange called");
+        mRoomInintData = getInfo;
         this.mode = mode;
        // removeAllViews();
         removeAllViewsInLayout();
@@ -104,13 +180,25 @@ public class LiveHalfBodyMediaControllerBottom extends BaseLiveMediaControllerBo
 
     @Override
     public void onHide() {
-        super.onHide();
+        if(!interceptBtmMediaCtrHide){
+            super.onHide();
+        }
+
         if(controllerStateListener != null){
             controllerStateListener.onHide();
         }
     }
 
     ControllerStateListener controllerStateListener;
+
+    /**
+     * 是否拦截 顶部控制栏自动隐藏
+     */
+    boolean interceptBtmMediaCtrHide;
+
+    public void interceptHideBtmMediaCtr(boolean intercept){
+        interceptBtmMediaCtrHide = intercept;
+    }
 
 
     public void setControllerStateListener(ControllerStateListener controllerStateListener) {
