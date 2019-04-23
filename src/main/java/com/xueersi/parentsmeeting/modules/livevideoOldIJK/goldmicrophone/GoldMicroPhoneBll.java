@@ -26,6 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.BuildConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.widget.SoundWaveView;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveBll2;
@@ -273,7 +274,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
             @Override
             public void run() {
                 if (mGoldView == null) {
-                    mGoldView = new MicroPhoneView(mContext, GoldMicroPhoneBll.this);
+                    mGoldView = new MicroPhonePager(mContext, GoldMicroPhoneBll.this);
                 }
                 if (mGoldView.getRootView().getParent() == null) {
                     RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);

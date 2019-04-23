@@ -7,12 +7,12 @@ import android.widget.ImageView;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
-public class MicroPhoneCloseTipView extends BasePager implements GoldPhoneContract.CloseTipView {
+public class MicroPhoneCloseTipPager extends BasePager implements GoldPhoneContract.CloseTipView {
     private ImageView ivCloseBtnYes, ivCloseBtnNo;
 
     private GoldPhoneContract.CloseTipPresenter presenter;
 
-    public MicroPhoneCloseTipView(Context context, GoldPhoneContract.CloseTipPresenter presenter) {
+    public MicroPhoneCloseTipPager(Context context, GoldPhoneContract.CloseTipPresenter presenter) {
         super(context);
         this.presenter = presenter;
         initListener();

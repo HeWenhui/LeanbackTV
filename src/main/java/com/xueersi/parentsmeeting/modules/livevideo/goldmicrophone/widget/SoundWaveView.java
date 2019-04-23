@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone;
+package com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.widget;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -121,9 +121,9 @@ public class SoundWaveView extends View {
 
     private int oneRadius, twoRadius, threeRadius;
 
-    private final int oneSpeed = 5, twoSpeed = 10, threeSpeed = 15;
+    //    private final int oneSpeed = 5, twoSpeed = 10, threeSpeed = 15;
     private int innerRadius;
-    private int oneColor = R.color.COLOR_F7E1A8, twoColor = R.color.COLOR_F7E1A8, threeColor = R.color.COLOR_F7E1A8;
+//    private int oneColor = R.color.COLOR_F7E1A8, twoColor = R.color.COLOR_F7E1A8, threeColor = R.color.COLOR_F7E1A8;
 
     @SuppressLint("ResourceAsColor")
     @Override
@@ -198,35 +198,35 @@ public class SoundWaveView extends View {
 
             logger.i("width:" + (c.width + innerRadius));
             // 当圆超出View的宽度后删除
-            if (c.width + innerRadius > (mWidth / 2 - innerRadius) / 3 * c.level + innerRadius + SizeUtils.Dp2Px(mContext, 6) / c.level) {
+            if (c.width + innerRadius > (mWidth / 2 - innerRadius) / 3 * c.level + innerRadius) {
                 mRipples.remove(0);
                 i--;
             } else {
                 // 修改这个值控制速度
-                oneRadius = (mWidth / 2 - innerRadius) / 3 + innerRadius + SizeUtils.Dp2Px(mContext, 6);
-                twoRadius = (mWidth / 2 - innerRadius) / 3 * 2 + innerRadius + SizeUtils.Dp2Px(mContext, 6) / 2;
+                oneRadius = (mWidth / 2 - innerRadius) / 3 + innerRadius;
+                twoRadius = (mWidth / 2 - innerRadius) / 3 * 2 + innerRadius;
 
                 mPaint.setColor(mContext.getResources().getColor(R.color.COLOR_66F7E1A8));
                 if (c.level == 1) {
                     int ik = (c.width + innerRadius);
-                    int jk = ((mWidth / 2 - innerRadius) / 3 + innerRadius + SizeUtils.Dp2Px(mContext, 6));
+//                    int jk = ((mWidth / 2 - innerRadius) / 3 + innerRadius);
                     logger.i("a.level:" + c.level + " " + " w.width=" + ik + (c.width) * 1.0 / (oneRadius - innerRadius));
 //                    mPaint.setColor(mContext.getResources().getColor(R.color.COLOR_99F7E1A8));
-                    int alpha = (int) (255 * (1.0 - (c.width) * 1.0 / (oneRadius - innerRadius + SizeUtils.Dp2Px(mContext, 6) / c.level)));
+                    int alpha = (int) (255 * (1.0 - (c.width) * 1.0 / (oneRadius - innerRadius)));
                     logger.i("a alpha:" + alpha);
 
                     mPaint.setAlpha(alpha);
                 } else if (c.level == 2) {
                     int ik = (c.width + innerRadius);
-                    int jk = (((mWidth / 2 - innerRadius) / 3 * 2 + innerRadius + SizeUtils.Dp2Px(mContext, 6) / 2));
+                    int jk = (((mWidth / 2 - innerRadius) / 3 * 2 + innerRadius));
                     logger.i("b.level:" + c.level + " " + " w.width=" + ik + " " + jk + (ik * 1.0 / jk));
 //                    mPaint.setColor(mContext.getResources().getColor(R.color.CLOR_66F7E1A8));
-                    int alpha = (int) (255 * (1.0 - (c.width) * 1.0 / (twoRadius - innerRadius + SizeUtils.Dp2Px(mContext, 6) / c.level)));
+                    int alpha = (int) (255 * (1.0 - (c.width) * 1.0 / (twoRadius - innerRadius)));
                     logger.i("b alpha:" + alpha);
                     mPaint.setAlpha(alpha);
                 } else {
                     logger.i("c.level:" + c.level + " " + (c.width + innerRadius));
-                    int alpha = (int) (255 * (1.0 - (c.width) * 1.0 / (mWidth / 2 - innerRadius + SizeUtils.Dp2Px(mContext, 6) / c.level)));
+                    int alpha = (int) (255 * (1.0 - (c.width) * 1.0 / (mWidth / 2 - innerRadius)));
                     logger.i("c alpha:" + alpha);
                     mPaint.setAlpha(alpha);
 //                    mPaint.setColor(mContext.getResources().getColor(R.color.COLOR_33F7E1A8));
@@ -259,7 +259,7 @@ public class SoundWaveView extends View {
     }
 
     public static class Circle {
-        Circle(int width, int level) {
+        public Circle(int width, int level) {
             this.width = width;
 //            this.alpha = alpha;
             this.level = level;

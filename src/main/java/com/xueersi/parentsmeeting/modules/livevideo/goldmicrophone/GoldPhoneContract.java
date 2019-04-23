@@ -2,6 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone;
 
 import android.view.View;
 
+import com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.widget.SoundWaveView;
+
 import java.util.List;
 
 public interface GoldPhoneContract {

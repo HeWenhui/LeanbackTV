@@ -37,7 +37,7 @@
         android:layout_marginTop="23dp"
         android:text="关闭后将无法进行语音互动哦"
         android:textColor="@color/COLOR_EA4D43"
-        android:textSize="17dp"
+        android:textSize="12dp"
         app:layout_constraintLeft_toLeftOf="@id/tv_gold_microphone_close_microphone_top_tip"
         app:layout_constraintRight_toRightOf="@id/tv_gold_microphone_close_microphone_top_tip"
         app:layout_constraintTop_toBottomOf="@id/tv_gold_microphone_close_microphone_top_tip" />

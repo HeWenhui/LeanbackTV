@@ -24,10 +24,11 @@ import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.widget.SoundWaveView;
 
 import java.util.List;
 
-public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldPhoneView, GoldPhoneContract.CloseTipPresenter {
+public class MicroPhonePager extends BasePager implements GoldPhoneContract.GoldPhoneView, GoldPhoneContract.CloseTipPresenter {
 
     private GoldPhoneContract.GoldPhonePresenter mPresenter;
 
@@ -45,7 +46,7 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
 
     private ConstraintLayout rootLayout;
 
-    public MicroPhoneView(Context context, GoldMicroPhoneBll presenter) {
+    public MicroPhonePager(Context context, GoldMicroPhoneBll presenter) {
         super(context);
         this.mPresenter = presenter;
 
@@ -195,7 +196,7 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
                 layoutParams.topToTop = R.id.layout_livevideo_gold_microphone;
                 layoutParams.bottomToBottom = R.id.layout_livevideo_gold_microphone;
                 if (closeTipView == null) {
-                    closeTipView = new MicroPhoneCloseTipView(mContext, MicroPhoneView.this);
+                    closeTipView = new MicroPhoneCloseTipPager(mContext, MicroPhonePager.this);
                     ((ViewGroup) mView).addView(closeTipView.getRootView(), layoutParams);
                 } else if (closeTipView.getRootView().getParent() == null) {
                     ((ViewGroup) mView).addView(closeTipView.getRootView(), layoutParams);
@@ -214,9 +215,12 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
     public void onResume() {
         super.onResume();
         boolean isHavePermission = isHasAudioPermission();
-        if (isHavePermission) {
+        if (isHavePermission && settingGroup != null && settingGroup.getVisibility() != View.GONE) {
             settingGroup.setVisibility(View.GONE);
+            mPresenter.startAudioRecord();
+            isStop = false;
         }
+
     }
 
     /**
@@ -279,8 +283,8 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
      * 当前声波是否处于活跃状态
      */
     private boolean isActive = false;
-    /** 当前声波是否结束 */
-    private boolean isStop = false;
+    /** 当前声波是否结束,默认是结束状态 */
+    private boolean isStop = true;
 
     /**
      * 移除金话筒这个功能
@@ -353,9 +357,10 @@ public class MicroPhoneView extends BasePager implements GoldPhoneContract.GoldP
     @Override
     public void showSettingView(boolean isVisible) {
         settingGroup.setVisibility(isVisible ? View.VISIBLE : View.GONE);
-        if (!isVisible) {
-            isStop = false;
-        }
+        isStop = isVisible;
+//        if (!isVisible) {
+//            isStop = false;
+//        }
     }
 
     @Override
