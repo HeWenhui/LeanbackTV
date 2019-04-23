@@ -1362,6 +1362,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         if (evenDriveEvent.getStatus() == EvenDriveEvent.CLOSE_H5
                 && mGetInfo.getIsOpenNewCourseWare() == 1) {
             //老师收题之后，更新聊天区连对榜
+            logger.i("update livemessage evendrive data");
             getHttpManager().getEvenLikeData(
 //                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
                     mGetInfo.getGetEvenPairListUrl(),
