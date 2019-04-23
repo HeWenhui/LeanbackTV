@@ -719,7 +719,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             case XESCODE.SENDQUESTION: {
                 mRoomAction.onOpenVoiceNotic(true, "SENDQUESTION");
                 if (mGetInfo.getIsOpenNewCourseWare() == 1) {
-                    isMiddleScienceH5Open = true;
+                    isMiddleScienceEvenDriveH5Open = true;
                 }
                 break;
             }
@@ -738,7 +738,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 //                            }
 //                        });
                 if (mGetInfo.getIsOpenNewCourseWare() == 1) {
-                    isMiddleScienceH5Open = false;
+                    isMiddleScienceEvenDriveH5Open = false;
                     endTime = System.currentTimeMillis();
                     mHandler.postDelayed(new Runnable() {
                         @Override
@@ -816,11 +816,11 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                 break;
             }
             case XESCODE.MULTIPLE_H5_COURSEWARE: {
-                boolean isOff = object.optBoolean("open");
+                boolean isOpen = object.optBoolean("open");
                 //
-                userLikeList.clear();
+
                 if (mGetInfo.getIsOpenNewCourseWare() == 1) {
-                    if (!isOff) {
+                    if (!isOpen) {
                         //老师收题之后，更新聊天区连对榜
 //                    getHttpManager().getEvenLikeData(
 ////                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
@@ -858,10 +858,11 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         //设置结束时间，判断是否显示XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT点赞消息
                         endTime = System.currentTimeMillis();
 //                    isHasReceiveLike = false;
-                        isMiddleScienceH5Open = false;
+                        isMiddleScienceEvenDriveH5Open = false;
                     } else {
+                        userLikeList.clear();
 //                    isHasReceiveLike = false;
-                        isMiddleScienceH5Open = true;
+                        isMiddleScienceEvenDriveH5Open = true;
                     }
                 }
                 break;
@@ -869,11 +870,11 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             case XESCODE.EvenDrive.PRAISE_PRIVATE_STUDENT: {
                 //点赞
                 if (mGetInfo.getIsOpenNewCourseWare() == 1) {
-                    logger.i("收到点赞消息");
+                    logger.i("receive Appreciate message");
                     String senderId = object.optString("from");
                     if (isInLikeTime() && !userLikeList.contains(senderId)) {
                         String likeSender = object.optString("stuName");
-                        logger.i(likeSender + " 刚刚赞了你");
+                        logger.i(likeSender + " Appreciate you just now");
                         mRoomAction.addMessage("", LiveMessageEntity.EVEN_DRIVE_LIKE, likeSender + " 刚刚赞了你");
                         userLikeList.add(senderId);
 //                    isHasReceiveLike = true;
@@ -982,12 +983,12 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
      */
     private boolean isInLikeTime() {
         long nowTime = System.currentTimeMillis();
-        logger.i("isMiddleScienceH5Open " + isMiddleScienceH5Open);
-        return (isMiddleScienceH5Open || (((nowTime - endTime) < TIME_SEND_PRIVATE_MSG)));
+        logger.i("isMiddleScienceH5Open " + isMiddleScienceEvenDriveH5Open);
+        return (isMiddleScienceEvenDriveH5Open || (((nowTime - endTime) < TIME_SEND_PRIVATE_MSG)));
     }
 
-    //当前互动题是否处于打开状态
-    private boolean isMiddleScienceH5Open = false;
+    //当前互动题是否处于打开状态(用来判断中学连对激励是否显示点赞消息)
+    private boolean isMiddleScienceEvenDriveH5Open = false;
     /**
      * 中学激励系统，15s内来判断是否显示点赞消息
      */
@@ -1379,7 +1380,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getEvenDrive(EvenDriveEvent evenDriveEvent) {
         if (evenDriveEvent.getStatus() == EvenDriveEvent.CLOSE_H5
-                && isMiddleScience()) {
+                && mGetInfo.getIsOpenNewCourseWare() == 1) {
             //老师收题之后，更新聊天区连对榜
             getHttpManager().getEvenLikeData(
 //                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
@@ -1397,12 +1398,5 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
 //            endTime = System.currentTimeMillis();
 //            isHasReceiveLike = false;
         }
-    }
-
-    private boolean isMiddleScience() {
-        return mGetInfo.getIsArts() == 0 &&
-                !LiveVideoConfig.isSmallChinese &&
-                !LiveVideoConfig.isPrimary &&
-                !mGetInfo.getSmallEnglish();
     }
 }

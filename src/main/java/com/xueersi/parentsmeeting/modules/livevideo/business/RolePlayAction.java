@@ -39,8 +39,17 @@ public interface RolePlayAction {
 
     void setOnError(OnError onError);
 
+
+
     interface OnError {
         void  onError(BaseVideoQuestionEntity testId);
     }
 
+    /**
+     * 多人连麦，分组成功之后的回调
+     */
+    interface OnGroupSuc {
+        void  onGroupSuc();
+    }
+    void setOnGroupSuc(OnGroupSuc onGroupSuc);
 }

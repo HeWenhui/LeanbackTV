@@ -58,12 +58,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.Response;
+import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 //import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
@@ -551,85 +553,85 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
             if (mUri != null) {
                 mUriHost = DNSUtil.getHost(mUri.toString());
             }
-//        if (vPlayer.getPlayer() instanceof IjkMediaPlayer) {
-//            IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
-//            ijkMediaPlayer.setOnNativeInvokeListener(new IjkMediaPlayer.OnNativeInvokeListener() {
-//                @Override
-//                public boolean onNativeInvoke(int what, Bundle args) {
-//                    logger.d("onOpenStart:what=" + what + "," + mUri + ",args=" + args);
-//                    if (what == CTRL_DID_TCP_OPEN) {
-//                        sip = args.getString("ip", "0.0.0.0");
-//                        sipMap.put(mUri, sip);
-//                        long openTime = (System.currentTimeMillis() - openSuccess);
-//                        logger.d("onOpenStart:what=" + what + "," + mUri + ",openTime=" + openTime);
-//                    }
-//                    return false;
-//                }
-//            });
-//            ijkMediaPlayer.setOnInfoListener2(new IMediaPlayer.OnInfoListener() {
-//                boolean haveStart = false;
-//
-//                @Override
-//                public boolean onInfo(IMediaPlayer mp, int what, int extra) {
-//                    logger.d("onInfo:what=" + what + "," + extra);
-//                    if (what == IMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
-//                        if (haveStart) {
-//                            return false;
-//                        }
-//                        haveStart = true;
-//                        final long openTime = (System.currentTimeMillis() - openStart);
-//                        logger.d("onInfo:what=3," + (System.currentTimeMillis() - openSuccess));
-//                        getFps();
-//                        final String finalTid = tid;
-//                        liveThreadPoolExecutor.execute(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                URLDNS urldns = new URLDNS();
-//                                try {
-//                                    DNSUtil.getDns(urldns, mUriHost);
-//                                } catch (UnknownHostException e) {
-//                                    e.printStackTrace();
-//                                }
-//
-//                                HashMap<String, Object> defaultKey = new HashMap<>();
-//                                defaultKey.put("ver", logVersion);
-//                                defaultKey.put("serv", serv);
-//                                defaultKey.put("pri", priMap.get(PRI_KEY_RENDERING));
-//                                addDefault(defaultKey);
-//                                defaultKey.put("cpu", getCpuRate());
-//                                defaultKey.put("mem", getMemRate());
-//                                String cip = oldCipdispatch;
-//                                defaultKey.put("cip", "" + cip);
-//                                defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
-//                                String hostIp = getRemoteIp(urldns.ip);
-//                                defaultKey.put("sip", "" + hostIp);
-//                                defaultKey.put("tid", "" + finalTid);
-//
-//                                JSONObject dataJson = new JSONObject();
-//                                try {
-//                                    dataJson.put("url", "" + mUri);
-//                                    dataJson.put("uri", channelname);
-//                                    if (lastPlayserverEntity != null) {
-//                                        dataJson.put("node", "" + lastPlayserverEntity.getProvide());
-//                                    } else {
-//                                        dataJson.put("node", "xrs_back");
-//                                    }
-//                                    dataJson.put("code", 0);
-//                                    dataJson.put("msg", "Success");
-//                                    dataJson.put("dns", urldns.time);
-//                                    dataJson.put("delay", openTime);
-//                                    dataJson.put("uid", "" + userId);
-//                                } catch (JSONException e) {
-//                                    e.printStackTrace();
-//                                }
-//                                xescdnLog2(defaultKey, dataJson, false);
-//                            }
-//                        });
-//                    }
-//                    return false;
-//                }
-//            });
-//        }
+            if (vPlayer.getPlayer() instanceof IjkMediaPlayer) {
+                IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
+                ijkMediaPlayer.setOnNativeInvokeListener(new IjkMediaPlayer.OnNativeInvokeListener() {
+                    @Override
+                    public boolean onNativeInvoke(int what, Bundle args) {
+                        logger.d("onOpenStart:what=" + what + "," + mUri + ",args=" + args);
+                        if (what == CTRL_DID_TCP_OPEN) {
+                            sip = args.getString("ip", "0.0.0.0");
+                            sipMap.put(mUri, sip);
+                            long openTime = (System.currentTimeMillis() - openSuccess);
+                            logger.d("onOpenStart:what=" + what + "," + mUri + ",openTime=" + openTime);
+                        }
+                        return false;
+                    }
+                });
+                ijkMediaPlayer.setOnInfoListener2(new IMediaPlayer.OnInfoListener() {
+                    boolean haveStart = false;
+
+                    @Override
+                    public boolean onInfo(IMediaPlayer mp, int what, int extra) {
+                        logger.d("onInfo:what=" + what + "," + extra);
+                        if (what == IMediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
+                            if (haveStart) {
+                                return false;
+                            }
+                            haveStart = true;
+                            final long openTime = (System.currentTimeMillis() - openStart);
+                            logger.d("onInfo:what=3," + (System.currentTimeMillis() - openSuccess));
+                            getFps();
+                            final String finalTid = tid;
+                            liveThreadPoolExecutor.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    URLDNS urldns = new URLDNS();
+                                    try {
+                                        DNSUtil.getDns(urldns, mUriHost);
+                                    } catch (UnknownHostException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                    HashMap<String, Object> defaultKey = new HashMap<>();
+                                    defaultKey.put("ver", logVersion);
+                                    defaultKey.put("serv", serv);
+                                    defaultKey.put("pri", priMap.get(PRI_KEY_RENDERING));
+                                    addDefault(defaultKey);
+                                    defaultKey.put("cpu", getCpuRate());
+                                    defaultKey.put("mem", getMemRate());
+                                    String cip = oldCipdispatch;
+                                    defaultKey.put("cip", "" + cip);
+                                    defaultKey.put("lip", "" + IRCTalkConf.getHostIP());
+                                    String hostIp = getRemoteIp(urldns.ip);
+                                    defaultKey.put("sip", "" + hostIp);
+                                    defaultKey.put("tid", "" + finalTid);
+
+                                    JSONObject dataJson = new JSONObject();
+                                    try {
+                                        dataJson.put("url", "" + mUri);
+                                        dataJson.put("uri", channelname);
+                                        if (lastPlayserverEntity != null) {
+                                            dataJson.put("node", "" + lastPlayserverEntity.getProvide());
+                                        } else {
+                                            dataJson.put("node", "xrs_back");
+                                        }
+                                        dataJson.put("code", 0);
+                                        dataJson.put("msg", "Success");
+                                        dataJson.put("dns", urldns.time);
+                                        dataJson.put("delay", openTime);
+                                        dataJson.put("uid", "" + userId);
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                    xescdnLog2(defaultKey, dataJson, false);
+                                }
+                            });
+                        }
+                        return false;
+                    }
+                });
+            }
         }
     }
 
@@ -1501,25 +1503,25 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
         if (!isNewIJK) {
             try {
                 if (vPlayer.isInitialized() && lastPlayserverEntity != null) {
-//                if (vPlayer.getPlayer() instanceof IjkMediaPlayer) {
-//                    IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
-//                    Bundle bundle = ijkMediaPlayer.getMediaMeta();
-//                    ArrayList arrayList = bundle.getParcelableArrayList("streams");
-//                    Set<String> keys = bundle.keySet();
-//                    for (int i = 0; i < arrayList.size(); i++) {
-//                        Bundle bundle1 = (Bundle) arrayList.get(i);
-//                        if ("video".equals(bundle1.getString("type"))) {
-//                            logger.d("getFps:bundle1=" + bundle1);
-//                            if (bundle1.containsKey("fps_num") && bundle1.containsKey("fps_den")) {
-//                                int fps_num = Integer.parseInt(bundle1.getString("fps_num"));
-//                                int fps_den = Integer.parseInt(bundle1.getString("fps_den"));
-//                                videofps = (float) fps_num / (float) fps_den;
-//                                logger.d("getFps:fps_num=" + fps_num + ",fps_den=" + fps_den + ",fps=" + videofps);
-//                            }
-//                            break;
-//                        }
-//                    }
-//                }
+                if (vPlayer.getPlayer() instanceof IjkMediaPlayer) {
+                    IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
+                    Bundle bundle = ijkMediaPlayer.getMediaMeta();
+                    ArrayList arrayList = bundle.getParcelableArrayList("streams");
+                    Set<String> keys = bundle.keySet();
+                    for (int i = 0; i < arrayList.size(); i++) {
+                        Bundle bundle1 = (Bundle) arrayList.get(i);
+                        if ("video".equals(bundle1.getString("type"))) {
+                            logger.d("getFps:bundle1=" + bundle1);
+                            if (bundle1.containsKey("fps_num") && bundle1.containsKey("fps_den")) {
+                                int fps_num = Integer.parseInt(bundle1.getString("fps_num"));
+                                int fps_den = Integer.parseInt(bundle1.getString("fps_den"));
+                                videofps = (float) fps_num / (float) fps_den;
+                                logger.d("getFps:fps_num=" + fps_num + ",fps_den=" + fps_den + ",fps=" + videofps);
+                            }
+                            break;
+                        }
+                    }
+                }
                 }
             } catch (Exception e) {
                 UmsAgentManager.umsAgentException(BaseApplication.getContext(), TAG + "getFps", e);

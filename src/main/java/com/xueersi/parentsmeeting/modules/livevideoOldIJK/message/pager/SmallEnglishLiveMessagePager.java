@@ -1973,6 +1973,10 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         if (speechUtils != null) {
             speechUtils.cancel();
         }
+        if (vwvVoiceChatWave != null){
+            vwvVoiceChatWave.stop();
+            vwvVoiceChatWave.setVisibility(View.GONE);
+        }
         if (mAM != null) {
             mAM.setStreamVolume(AudioManager.STREAM_MUSIC, mVolume, 0);
             Map<String, String> mData = new HashMap<>();
