@@ -692,6 +692,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
         }
         recognizeStr = "";
         ansStr = new StringBuilder();
+        lottieLastPlayTime = -1;
         showOrhideBottom(true);
         mGoldView = null;
     }
