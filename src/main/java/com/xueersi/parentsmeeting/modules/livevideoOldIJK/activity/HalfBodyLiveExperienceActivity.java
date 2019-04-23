@@ -222,7 +222,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
     /** 是否使用新IRC SDK*/
 //    private boolean isNewIRC = false;
 
-
     /**
      * 播放时长，5分钟统计
      */
