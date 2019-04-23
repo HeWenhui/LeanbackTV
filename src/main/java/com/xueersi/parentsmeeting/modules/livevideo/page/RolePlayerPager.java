@@ -283,6 +283,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
     //private boolean mIsEvaluatoring;//标记正在测评中
     private RolePlayerEntity mtype;
     private SpeechParamEntity param;
+    private RtcEngine rtcEngine;
 
     public RolePlayerPager(Context context, RolePlayerEntity obj, boolean isNewView, RolePlayerBll rolePlayerBll,
                            LiveGetInfo liveGetInfo) {
@@ -849,10 +850,17 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
      */
     private void beginRolePlayer() {
         mReadHandler.sendEmptyMessage(READ_MESSAGE);
-
+        mWorkerThread.setOnEngineCreate(new WorkerThread.OnEngineCreate() {
+            @Override
+            public void onEngineCreate(RtcEngine mRtcEngine) {
+                logger.i("agora rtcEngine init");
+                rtcEngine = mRtcEngine;
+            }
+        });
         //开启声网连接
         mWorkerThread.start();
         mWorkerThread.waitForReady();
+
         int vProfile = Constants.VIDEO_PROFILE_120P;
         mWorkerThread.configEngine(Constants.CLIENT_ROLE_BROADCASTER, vProfile);
         if (mEntity == null) {
@@ -866,7 +874,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
                         .OnJoinChannel() {
                     @Override
                     public void onJoinChannel(int joinChannel) {
-                        logger.i("声网:" + joinChannel);
+                        logger.i("agora onJoinChannel" + joinChannel);
                     }
                 });
     }
@@ -1188,12 +1196,12 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
         if (mWorkerThread == null) {
             return;
         }
-        RtcEngine rtcEngine = mWorkerThread.getRtcEngine();
+        rtcEngine = mWorkerThread.getRtcEngine();
 
         if (!message.getRolePlayer().isSelfRole()) {
             if (rtcEngine != null) {
                 rtcEngine.muteLocalAudioStream(true);
-                logger.i("别人在朗读，停止音频流");
+                logger.i("agora rtcEngine stop other");
             }
             //对方朗读则隐藏
             rlSpeechVolumnMain.setVisibility(View.INVISIBLE);
@@ -1204,7 +1212,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
         if (rtcEngine != null) {
             rtcEngine.muteLocalAudioStream(false);
             rtcEngine.adjustRecordingSignalVolume(400);
-            logger.i("自己在朗读，开启音频流");
+            logger.i("agora rtcEngine start self");
         }
 
 
@@ -1247,6 +1255,7 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
         param.setStrEvaluator(spechMsg);
         param.setLocalSavePath(saveVideoFile.getAbsolutePath());
         param.setMultRef(false);
+        param.setPcm(true);
         param.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
         mIse.startRecog(param,new RoleEvaluatorListener() {
             @Override
@@ -1307,8 +1316,9 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
                             dest[i * 2] = (byte) (shorts[i]);
                             dest[i * 2 + 1] = (byte) (shorts[i] >> 8);
                         }
-                        RtcEngine rtcEngine = mWorkerThread.getRtcEngine();
+                        rtcEngine = mWorkerThread.getRtcEngine();
                         if (rtcEngine != null) {
+                            logger.i("agora rtcEngine through");
                             rtcEngine.pushExternalAudioFrame(dest, System.currentTimeMillis());
                             rtcEngine.adjustRecordingSignalVolume(400);
                         }
