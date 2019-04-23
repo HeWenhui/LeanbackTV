@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -39,7 +38,6 @@ public class LiveHalfBodyMediaControllerBottom extends BaseLiveMediaControllerBo
     @Override
     public View inflateLayout() {
 
-        Log.e(TAG,"======>inflateLayout called");
         //在得到 详细的直播间初始化参数之前 返回默认布局信息
         if(mRoomInintData == null){
             return super.inflateLayout();
@@ -142,7 +140,6 @@ public class LiveHalfBodyMediaControllerBottom extends BaseLiveMediaControllerBo
      * @param getInfo
      */
     public void onModeChange(String mode,LiveGetInfo getInfo){
-        Log.e(TAG,"======>onModeChange called");
         mRoomInintData = getInfo;
         this.mode = mode;
        // removeAllViews();
@@ -172,7 +169,10 @@ public class LiveHalfBodyMediaControllerBottom extends BaseLiveMediaControllerBo
 
     @Override
     public void onShow() {
-        super.onShow();
+        if(!interceptBtmMediaCtrHide){
+            super.onShow();
+        }
+
         if(controllerStateListener != null){
             controllerStateListener.onSHow();
         }

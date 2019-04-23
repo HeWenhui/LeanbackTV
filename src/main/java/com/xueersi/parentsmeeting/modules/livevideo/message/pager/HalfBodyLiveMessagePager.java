@@ -630,7 +630,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                         break;
                     case MotionEvent.ACTION_CANCEL:
                     case MotionEvent.ACTION_UP:
-                        interceptBtmMediaHide(false);
                         hideBottomMediaCtr(3000);
                         break;
                     default:
@@ -638,26 +637,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                 }
             }
         });
-
-        //监听显示状态，移除自动隐藏任务
-        if (liveMediaControllerBottom instanceof LiveHalfBodyMediaControllerBottom) {
-            ((LiveHalfBodyMediaControllerBottom) liveMediaControllerBottom).setControllerStateListener
-                    (new LiveHalfBodyMediaControllerBottom.ControllerStateListener() {
-
-                         @Override
-                         public void onSHow() {
-                             if (hideBtmMediaCtrTask != null) {
-                                 mView.removeCallbacks(hideBtmMediaCtrTask);
-                             }
-                         }
-                         @Override
-                         public void onHide() {
-
-                         }
-                     }
-                    );
-        }
-
     }
 
 
@@ -738,6 +717,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
     Runnable hideBtmMediaCtrTask = new Runnable() {
         @Override
         public void run() {
+            interceptBtmMediaHide(false);
             if (liveMediaControllerBottom.getController() != null) {
                 liveMediaControllerBottom.onHide();
             }
