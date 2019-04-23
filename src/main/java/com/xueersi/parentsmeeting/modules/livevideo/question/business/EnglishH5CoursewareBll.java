@@ -33,6 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WebViewRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
@@ -244,6 +245,9 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                                 if (webViewRequest != null) {
                                     webViewRequest.releaseWebView();
                                 }
+                                if (isMiddleScience()) {
+                                    EventBus.getDefault().post(new EvenDriveEvent(EvenDriveEvent.CLOSE_H5));
+                                }
                             }
                         }
                     });
@@ -280,6 +284,18 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                 }
             }
         }
+    }
+
+    /**
+     * 是否是中学理科
+     *
+     * @return
+     */
+    private boolean isMiddleScience() {
+        return mGetInfo.getIsArts() == 0
+                && !LiveVideoConfig.isPrimary
+                && !LiveVideoConfig.isSmallChinese
+                && !mGetInfo.getSmallEnglish();
     }
 
     public boolean onBack() {
@@ -480,6 +496,9 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         OnH5ResultClose onH5ResultClose = new OnH5ResultClose() {
             @Override
             public void onH5ResultClose(BaseEnglishH5CoursewarePager baseEnglishH5CoursewarePager, BaseVideoQuestionEntity baseVideoQuestionEntity) {
+
+                EventBus.getDefault().post(new EvenDriveEvent(EvenDriveEvent.CLOSE_H5));
+
                 mH5AndBool.add(baseEnglishH5CoursewarePager.getUrl());
                 if (!videoQuestionH5Entity.englishH5Entity.getNewEnglishH5()) {
                     saveH5AnswerRecord(videoQuestionH5Entity.getUrl());
@@ -652,35 +671,45 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
 
     @Override
     public void initSelectAnswerRightResultVoice(VideoResultEntity entity) {
+        entity.setPreEnglish(mGetInfo != null && mGetInfo.getSmallEnglish());
+
         final View popupWindow_view = QuestionResultView.initSelectAnswerRightResultVoice(context, entity);
-        initQuestionAnswerReslut(popupWindow_view);
-    }
+        boolean isAutoDissMiss = !entity.isPreEnglish();
+        initQuestionAnswerReslut(popupWindow_view,isAutoDissMiss);    }
 
     @Override
     public void initFillinAnswerRightResultVoice(VideoResultEntity entity) {
+        entity.setPreEnglish(mGetInfo != null && mGetInfo.getSmallEnglish());
+
         View popupWindow_view = QuestionResultView.initFillinAnswerRightResultVoice(context, entity);
-        initQuestionAnswerReslut(popupWindow_view);
-    }
+        boolean isAutoDissMiss = !entity.isPreEnglish();
+        initQuestionAnswerReslut(popupWindow_view,isAutoDissMiss);    }
 
     /** 语音答题回答错误 */
     @Override
     public void initSelectAnswerWrongResultVoice(VideoResultEntity entity) {
+        entity.setPreEnglish(mGetInfo != null && mGetInfo.getSmallEnglish());
+
         View popupWindow_view = QuestionResultView.initSelectAnswerWrongResultVoice(context, entity);
-        initQuestionAnswerReslut(popupWindow_view);
-    }
+        boolean isAutoDissMiss = !entity.isPreEnglish();
+        initQuestionAnswerReslut(popupWindow_view,isAutoDissMiss);    }
 
     /** 语音答题回答错误 */
     @Override
     public void initFillAnswerWrongResultVoice(VideoResultEntity entity) {
+        entity.setPreEnglish(mGetInfo != null && mGetInfo.getSmallEnglish());
+
         View popupWindow_view = QuestionResultView.initFillAnswerWrongResultVoice(context, entity);
-        initQuestionAnswerReslut(popupWindow_view);
-    }
+
+        boolean isAutoDissMiss = !entity.isPreEnglish();
+        initQuestionAnswerReslut(popupWindow_view,isAutoDissMiss);    }
 
     /**
      * 创建互动题作答，抢红包结果提示PopupWindow
      */
     @Override
     public void initQuestionAnswerReslut(final View popupWindow_view) {
+
         initQuestionAnswerReslut(popupWindow_view, true);
     }
 

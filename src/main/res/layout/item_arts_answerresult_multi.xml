@@ -5,62 +5,59 @@
     android:layout_height="wrap_content"
     android:paddingRight="30dp">
 
-    <TextView
-        android:id="@id/tv_arts_answer_result_answer_index"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
-        android:text="1."
-        android:textColor="#333333"
-        android:textSize="15sp" />
-
     <LinearLayout
-        android:id="@id/ll_arts_answer_result_useranswer_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/tv_arts_answer_result_answer_index"
+        android:id="@id/ll_middle_answer_result_item_muti_user_answer_info"
+        android:layout_width="wrap_content"
+        android:layout_height="23dp"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <com.xueersi.parentsmeeting.modules.livevideo.widget.ArtsAnswerTextView
-            android:id="@id/tv_arts_answer_result_answer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="left"
-            android:text="南极洲板块、美洲板块、印度洋板块板块块块"
-            android:textColor="#333333"
-            android:textSize="15sp"
-            app:drawableLeftMargin="-5dp"
-            app:drawableTopMargin="8dp"
-            android:lineSpacingExtra="3dp"
-            android:minWidth="15dp"
-            app:suffixIcon="@drawable/icon_live_prart_correct" />
+        <ImageView
+            android:id="@id/iv_middle_answer_result_item_muti_right_answer"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="5dp" />
 
-        <!--选择题 标准答案-->
         <TextView
-            android:id="@id/tv_arts_answer_result_stander_answer"
+            android:id="@id/tv_middle_answer_result_item_muti_index"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="12dp"
-            android:text="C"
-            android:textColor="#6CBF4C"
-            android:textSize="15sp"
-            android:visibility="visible" />
-
+            android:layout_toRightOf="@id/iv_middle_answer_result_item_muti_right_answer"
+            android:text=""
+            android:minWidth="15dp"
+            android:textColor="#726665"
+            android:textSize="17sp" />
     </LinearLayout>
 
-    <!--填空题标准答案-->
+    <!--选择题 标准答案-->
     <TextView
-        android:id="@id/tv_arts_answer_result_stander_answer_below"
+        android:id="@id/tv_middle_answer_result_item_muti_user_answer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/ll_arts_answer_result_useranswer_container"
-        android:layout_below="@id/ll_arts_answer_result_useranswer_container"
-        android:text="数字式线段式文字式,数字式线段式文字式,数字式,线段式,ß文字式"
-        android:textColor="#6CBF4C"
-        android:textSize="15sp"
-        android:visibility="gone"
-        android:lineSpacingExtra="3dp"
-        android:layout_marginTop="-5dp"
-        />
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@id/ll_middle_answer_result_item_muti_user_answer_info"
+        android:text="11"
+        android:textColor="@color/COLOR_333333"
+        android:textSize="17sp"
+        android:visibility="visible" />
+
+
+    <TextView
+        android:layout_below="@id/tv_middle_answer_result_item_muti_user_answer"
+        android:id="@id/tv_middle_answer_result_item_muti_right_answer"
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="3dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/ll_middle_answer_result_item_muti_user_answer_info"
+        android:text=""
+        android:textColor="@color/COLOR_333333"
+        android:textSize="17sp"
+        android:visibility="visible" />
+    <View
+        android:layout_below="@id/tv_middle_answer_result_item_muti_right_answer"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"/>
 
 </RelativeLayout>

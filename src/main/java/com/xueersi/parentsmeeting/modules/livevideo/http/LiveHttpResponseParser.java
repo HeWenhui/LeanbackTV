@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
@@ -9,11 +8,11 @@ import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
-import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
-import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.parentsmeeting.module.videoplayer.entity.LiveExperienceEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
@@ -70,6 +69,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 public class LiveHttpResponseParser extends HttpResponseParser {
@@ -100,7 +100,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         //小英萌萌哒皮肤专用
         if (data.has("useSkin")) {
             getInfo.setSmallEnglish((String.valueOf(data.optString("useSkin"))).equals("1"));
-            getInfo.setUseSkin(data.optInt("useSkin",0));
+            getInfo.setUseSkin(data.optInt("useSkin", 0));
             LiveVideoConfig.isSmallChinese = String.valueOf(data.optString("useSkin")).equals("2");
         } else {
             getInfo.setSmallEnglish(false);
@@ -195,7 +195,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         //小英萌萌哒皮肤专用
         if (data.has("useSkin")) {
             getInfo.setSmallEnglish((String.valueOf(data.optString("useSkin"))).equals("1"));
-            getInfo.setUseSkin(data.optInt("useSkin",0));
+            getInfo.setUseSkin(data.optInt("useSkin", 0));
             LiveVideoConfig.isSmallChinese = String.valueOf(data.optString("useSkin")).equals("2");
         } else {
             getInfo.setSmallEnglish(false);
@@ -233,7 +233,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         //小英萌萌哒皮肤专用
         if (data.has("useSkin")) {
             getInfo.setSmallEnglish((String.valueOf(data.optString("useSkin"))).equals("1"));
-            getInfo.setUseSkin(data.optInt("useSkin",0));
+            getInfo.setUseSkin(data.optInt("useSkin", 0));
             LiveVideoConfig.isSmallChinese = String.valueOf(data.optString("useSkin")).equals("2");
         } else {
             getInfo.setSmallEnglish(false);
@@ -279,6 +279,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     public LiveGetInfo parseLiveGetInfo(JSONObject data, LiveTopic liveTopic, int liveType, int from) {
         try {
             LiveGetInfo getInfo = new LiveGetInfo(liveTopic);
+//            MediaPlayer.getIsNewIJK() = "1".equals(data.optString("isNewSDK")) && "1".equals(data.optString("isNewIRC"));
+//            MediaPlayer.getIsNewIJK() = true;
+            MediaPlayer.setIsNewIJK("1".equals(data.optString("isNewSDK")) && "1".equals(data.optString("isNewIRC")));
             //解析getInfo之前，先把之前用来判断状态的静态变量置空
             setStaticStatusNull();
             getInfo.setId(data.getString("id"));
@@ -301,10 +304,18 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setIsShowMarkPoint(data.optString("isAllowMarkpoint"));
             getInfo.setIsAIPartner(data.optInt("isAIPartner"));
 
+            //连对激励
+            getInfo.setIsOpenNewCourseWare(data.optInt("isOpenNewCourseWare"));
+//            getInfo.setIsOpenNewCourseWare(1);
+            getInfo.setGetJournalUrl(data.optString("getJournalUrl", "https://live.xueersi.com/science/Stimulation/getJournal"));
+            getInfo.setGetEvenPairListUrl(data.optString("getEvenPairListUrl", "https://live.xueersi.com/science/Stimulation/evenPairList"));
+            getInfo.setGetThumbsUpUrl(data.optString("getThumbsUpUrl", "https://live.xueersi.com/science/Stimulation/thumbsUp"));
             //getInfo.setIsShowMarkPoint("0");
             getInfo.setIsShowCounselorWhisper(data.optString("counselor_whisper"));
             getInfo.setIsSeniorOfHighSchool(data.optInt("isSeniorOfHighSchool"));
             getInfo.setIsVoiceInteraction(data.optInt("isVoiceInteraction"));
+
+            //幼升小金话筒
 
             //getInfo.setIsShowCounselorWhisper("1");
             if (data.has("followType")) {
@@ -505,6 +516,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 String[] arrSubjIds = strSubjIds.split(",");
                 getInfo.setSubjectIds(arrSubjIds);
             }
+            //金话筒
+            getInfo.setUseGoldMicroPhone(data.optBoolean("isGoldMicrophone"));
             getInfo.setSubject_digits(data.optString("subject_digits"));
             if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                 getInfo.setIsNewProject(data.optInt("isNewProject", 0));
@@ -674,6 +687,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             roomInfo1.setAlloteam(status.optInt("alloteam"));
             roomInfo1.setOpenbox(status.optInt("openbox"));
             roomInfo1.setAllotpkman(status.optInt("allotpkman"));
+            roomInfo1.setPKStep(status.optInt("PKStep"));
+
             teamPkEntity.setRoomInfo1(roomInfo1);
 
 
@@ -1321,6 +1336,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     rankEntity.setRank(teamRanking.getString("rank"));
                     rankEntity.setName(teamRanking.getString("stuName"));
                     rankEntity.setRate(teamRanking.getString("rate"));
+                    rankEntity.setThumbsUpNum(teamRanking.optInt("thumbsUpNum"));
+                    rankEntity.setIsThumbsUp(teamRanking.optInt("isThumbsUp"));
                     if (rankEntity.getId().equals(myRankEntityMyTeam.getMyId())) {
                         rankEntity.setMe(true);
                         contentMe = true;
@@ -2304,5 +2321,80 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
         }
         return coursewareInfoEntity;
+    }
+
+    /**
+     * 解析中学理科 连对激励的Entity
+     *
+     * @param responseEntity
+     * @return
+     */
+    public EvenDriveEntity parseEvenEntity(ResponseEntity responseEntity) {
+        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+        EvenDriveEntity evenDriveEntity = new EvenDriveEntity();
+        EvenDriveEntity.MyEntity myEntity = new EvenDriveEntity.MyEntity();
+        int myRank = 1;
+        if (jsonObject.has("myInfo")) {
+            try {
+                JSONObject myJSON = jsonObject.getJSONObject("myInfo");
+                myEntity.setEvenPairNum(myJSON.optInt("evenPairNum"));
+                myEntity.setHighestRightNum(myJSON.optString("highestRightNum"));
+                myEntity.setName(myJSON.optString("name"));
+                myEntity.setStuId(myJSON.optString("stuId"));
+                myEntity.setIsThumbsUp(myJSON.optInt("isThumbsUp"));
+                myEntity.setThumbsUpNum(myJSON.optInt("thumbsUpNum"));
+                myRank = myJSON.optInt("rank");
+                myEntity.setRank(myRank);
+                evenDriveEntity.setMyEntity(myEntity);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        if (jsonObject.has("stuRanking")) {
+            JSONArray jsonArray;
+            try {
+                jsonArray = jsonObject.getJSONArray("stuRanking");
+                List<EvenDriveEntity.OtherEntity> list = new LinkedList<>();
+                for (int item = 0; item < jsonArray.length(); item++) {
+                    JSONObject itemJSON = jsonArray.getJSONObject(item);
+                    EvenDriveEntity.OtherEntity otherEntity = new EvenDriveEntity.OtherEntity();
+                    otherEntity.setEvenPairNum(itemJSON.optInt("evenPairNum"));
+                    otherEntity.setIsThumbsUp(itemJSON.optInt("isThumbsUp"));
+                    otherEntity.setName(itemJSON.optString("name"));
+                    String stuId = itemJSON.optString("stuId");
+                    otherEntity.setStuId(stuId);
+                    otherEntity.setThumbsUpNum(itemJSON.optInt("thumbsUpNum"));
+                    int ranking = itemJSON.optInt("ranking");
+                    otherEntity.setRanking(ranking);
+//                    if (myRank == ranking) {
+//                    EvenDriveEntity.OtherEntity myListEntity = new EvenDriveEntity.OtherEntity();
+//                    myListEntity.setRanking(myRank);
+//                    myListEntity.setEvenPairNum(itemJSON.optInt("evenPairNum"));
+//                    myListEntity.setIsThumbsUp(itemJSON.optInt("isThumbsUp"));
+//                    myListEntity.setName(itemJSON.optString("name"));
+//                        String stuId = itemJSON.optString("stuId");
+//                    myListEntity.setStuId(stuId);
+//                    myListEntity.setThumbsUpNum(itemJSON.optInt("thumbsUpNum"));
+//                    list.add(0, myListEntity);
+//                    }
+                    list.add(otherEntity);
+                }
+                if (myRank != 0) {
+                    EvenDriveEntity.OtherEntity myInOtherEntity = new EvenDriveEntity.OtherEntity();
+                    myInOtherEntity.setRanking(myRank);
+                    myInOtherEntity.setEvenPairNum(myEntity.getEvenPairNum());
+                    myInOtherEntity.setIsThumbsUp(myEntity.getIsThumbsUp());
+                    myInOtherEntity.setName(myEntity.getName());
+//                        String stuId = itemJSON.optString("stuId");
+                    myInOtherEntity.setStuId(myEntity.getStuId());
+                    myInOtherEntity.setThumbsUpNum(myEntity.getThumbsUpNum());
+                    list.add(0, myInOtherEntity);
+                }
+                evenDriveEntity.setOtherEntities(list);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return evenDriveEntity;
     }
 }

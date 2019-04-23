@@ -79,4 +79,14 @@ public class SampleLiveVPlayerListener implements LiveVPlayerListener {
     public void onPlayError() {
 
     }
+
+    @Override
+    public void getPSServerList(int cur, int total, boolean modeChange) {
+
+    }
+
+//    @Override
+//    public void getPServerListFail() {
+//
+//    }
 }

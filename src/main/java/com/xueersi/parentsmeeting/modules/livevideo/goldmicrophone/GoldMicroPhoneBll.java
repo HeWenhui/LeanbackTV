@@ -249,7 +249,9 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
     @Override
     public void onResume() {
         super.onResume();
-        mGoldView.onResume();
+        if (mGoldView != null) {
+            mGoldView.onResume();
+        }
     }
 
     /**

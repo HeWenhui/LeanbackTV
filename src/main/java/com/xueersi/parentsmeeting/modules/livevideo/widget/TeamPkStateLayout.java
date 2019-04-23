@@ -21,18 +21,18 @@ import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.TeamPkConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
-import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 
 /**
  * 战队pk  右侧状态栏
  *
  * @author chekun
- *         created  at 2018/4/16 18:38
+ * created  at 2018/4/16 18:38
  */
 public class TeamPkStateLayout extends FrameLayout {
     protected Logger logger = LoggerFactory.getLogger(this.getClass().getSimpleName());
@@ -74,9 +74,10 @@ public class TeamPkStateLayout extends FrameLayout {
      */
     protected static final long ENERGY_MY_CONTRIBUTION_DURATION = 4 * 1000;
 
+    private ContextLiveAndBackDebug liveAndBackDebug;
     private boolean dataInited = false;
     protected TextView tvEnergyMyContribution;
-    protected TeamPkBll mTeamPkBll;
+//    protected TeamPkBll liveAndBackDebug;
 
     public TeamPkStateLayout(@NonNull Context context) {
         super(context);
@@ -96,6 +97,7 @@ public class TeamPkStateLayout extends FrameLayout {
 
 
     protected void initView() {
+        liveAndBackDebug = new ContextLiveAndBackDebug(getContext());
         if (LiveVideoConfig.isSmallChinese) {
             LayoutInflater.from(getContext()).inflate(R.layout.chinese_pk_state_layout, this);
         } else if (LiveVideoConfig.isPrimary) {
@@ -241,8 +243,8 @@ public class TeamPkStateLayout extends FrameLayout {
         mOtherTeamEnergy = mOtherTeamEnergy + otherEnergyAdd;
         mCoinNum = mCoinNum + coinAdd;
         logger.e("====>updateData22222:" + mMyTeamEnergy + ":" + mOtherTeamEnergy + ":" + mCoinNum);
-        if (mTeamPkBll != null && coinAdd > 0) {
-            TeamPkLog.showMyGold(mTeamPkBll.getLiveBll(), mCoinNum + "");
+        if (liveAndBackDebug != null && coinAdd > 0) {
+            TeamPkLog.showMyGold(liveAndBackDebug, mCoinNum + "");
         }
         //正 增长 显示动画 ，负增涨 不显示动画
         if (ownEnergyAdd > 0) {
@@ -325,8 +327,8 @@ public class TeamPkStateLayout extends FrameLayout {
         tvMyTeamEnergy.setText(mMyTeamEnergy + "");
         tvOtherTeamEnergy.setText(otherTeamAnergy + "");
 
-        if (mTeamPkBll != null && mCoinNum > 0) {
-            TeamPkLog.showMyGold(mTeamPkBll.getLiveBll(), mCoinNum + "");
+        if (liveAndBackDebug != null && mCoinNum > 0) {
+            TeamPkLog.showMyGold(liveAndBackDebug, mCoinNum + "");
         }
 
         float ratio;
@@ -452,9 +454,9 @@ public class TeamPkStateLayout extends FrameLayout {
     }
 
 
-    public void setTeamPkBll(TeamPkBll teamPkBll) {
-        mTeamPkBll = teamPkBll;
-    }
+//    public void setTeamPkBll(TeamPkBll teamPkBll) {
+//        liveAndBackDebug = teamPkBll;
+//    }
 
     /**
      * 返回当前pk 结果

@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity;
 
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
+
 import java.util.ArrayList;
 
 public class EnTeamPkRankEntity {

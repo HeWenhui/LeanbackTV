@@ -35,13 +35,15 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
+import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
-import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
-import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherPlayBackBll;
+import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.SpeechBulletScreen.business.SpeechBulletScreenPalyBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
@@ -52,6 +54,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIm
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5PlayBackBll;
@@ -64,7 +67,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.PlayErrorCodeLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveBackVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
@@ -75,8 +77,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
 /**
  * Created by linyuqiang on 2018/7/23.
@@ -287,16 +287,51 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         TextView errorInfo = videoBackgroundRefresh.findViewById(com.xueersi.parentsmeeting.base.R.id
                 .tv_course_video_errorinfo);
         videoBackgroundRefresh.findViewById(R.id.tv_course_video_errortip).setVisibility(View.GONE);
-        AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
-        if (error != null) {
+        if (MediaPlayer.getIsNewIJK()) {
+            MediaErrorInfo mediaErrorInfo = liveBackPlayVideoFragment.getMediaErrorInfo();
             errorInfo.setVisibility(View.VISIBLE);
-            if (error == AvformatOpenInputError.HTTP_NOT_FOUND) {
-                errorInfo.setText("回放视频未生成，请重试[" + mVideoEntity.getLiveId() + "]");
-            } else {
-                PlayErrorCode playErrorCode = PlayErrorCode.getError(arg2);
-                errorInfo.setText("视频播放失败 [" + playErrorCode.getCode() + "]");
-                //统计日志
-                PlayErrorCodeLog.livePlayError(liveBackBll, playErrorCode);
+
+            if (mediaErrorInfo != null) {
+                switch (mediaErrorInfo.mErrorCode) {
+                    case MediaErrorInfo.PSPlayerError: {
+                        AvformatOpenInputError error = AvformatOpenInputError.getError(mediaErrorInfo.mPlayerErrorCode);
+                        if (error == AvformatOpenInputError.HTTP_NOT_FOUND) {
+                            errorInfo.setText("回放视频未生成，请重试[" + mVideoEntity.getLiveId() + "]");
+                        } else {
+                            errorInfo.setText("视频播放失败[" + mediaErrorInfo.mPlayerErrorCode + " " + "],请重试");
+                        }
+                        break;
+                    }
+                    case MediaErrorInfo.PSDispatchFailed: {
+                        errorInfo.setText("视频播放失败[" + MediaErrorInfo.PSDispatchFailed + "],请点击重试");
+                        break;
+                    }
+                    case MediaErrorInfo.PSChannelNotExist: {
+                        errorInfo.setText("视频播放失败[" + MediaErrorInfo.PSChannelNotExist + "],请点击重试");
+                        break;
+                    }
+                    case MediaErrorInfo.PSServer403: {
+                        errorInfo.setText("鉴权失败[" + MediaErrorInfo.PSServer403 + "],请点击重试");
+                        break;
+                    }
+                    default: {
+                        errorInfo.setText("视频播放失败 [" + arg2 + "]");
+                        break;
+                    }
+                }
+            }
+        } else {
+            AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
+            if (error != null) {
+                errorInfo.setVisibility(View.VISIBLE);
+                if (error == AvformatOpenInputError.HTTP_NOT_FOUND) {
+                    errorInfo.setText("回放视频未生成，请重试[" + mVideoEntity.getLiveId() + "]");
+                } else {
+                    PlayErrorCode playErrorCode = PlayErrorCode.getError(arg2);
+                    errorInfo.setText("视频播放失败 [" + playErrorCode.getCode() + "]");
+                    //统计日志
+                    PlayErrorCodeLog.livePlayError(liveBackBll, playErrorCode);
+                }
             }
         }
         rlQuestionContent.setVisibility(View.GONE);
@@ -397,7 +432,6 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         ProxUtil.getProxUtil().put(activity, MediaControllerAction.class, this);
         ProxUtil.getProxUtil().put(activity, MediaPlayerControl.class, liveBackPlayVideoFragment);
         ProxUtil.getProxUtil().put(activity, ActivityChangeLand.class, this);
-        ProxUtil.getProxUtil().put(activity, BasePlayerFragment.class, liveBackPlayVideoFragment);
         initBusiness();
         if (islocal) {
             // 互动题播放地址
@@ -426,6 +460,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     protected void playNewVideo() {
         liveBackVideoBll.playNewVideo();
     }
+
 
     protected void initBusiness() {
         liveBackBll.addBusinessShareParam("videoView", videoView);
@@ -491,9 +526,6 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 liveBackBll.addBusinessBll(new SpeechBulletScreenPalyBackBll(activity, liveBackBll));
                 initLiveRemarkBll();
             } else {
-                if (liveBackBll.getIsArts() == 2) {
-                    liveBackBll.addBusinessBll(new SpeechBulletScreenPalyBackBll(activity, liveBackBll));
-                }
                 Log.e("LiveBackVideoFragment", "====> initAnswerResultBll");
                 liveBackBll.addBusinessBll(new ArtsAnswerResultPlayBackBll(activity, liveBackBll));
                 if (liveBackBll.getPattern() != 2) {
@@ -597,7 +629,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     }
 
     @Override
-    protected PlayerService.VPlayerListener getWrapListener() {
+    protected VPlayerCallBack.VPlayerListener getWrapListener() {
         return liveBackVideoBll.getPlayListener();
     }
 

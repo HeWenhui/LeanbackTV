@@ -160,7 +160,7 @@ public class EnglishH5HalfBodyExperienceBll extends LiveBackBaseBll {
      * 构建体验课 新课件平台 试题加载地址
      **/
     private String buildCourseUrl(VideoQuestionLiveEntity videoQuestionLiveEntity, VideoQuestionEntity questionEntity) {
-        if(questionEntity == null){
+        if (questionEntity == null) {
             return "";
         }
         StringBuilder stringBuilder = new StringBuilder();

@@ -42,10 +42,14 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
+import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
+import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -57,8 +61,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
 /***
  * 视频播放主界面
@@ -524,7 +526,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
         }
 
         @Override
-        protected PlayerService.VPlayerListener getWrapListener() {
+        protected VPlayerCallBack.VPlayerListener getWrapListener() {
             return liveBackVideoFragment.getWrapListener();
         }
 
@@ -618,17 +620,50 @@ public class LiveBackVideoFragmentBase extends Fragment {
         updateRefreshImage();
         TextView errorInfo = (TextView) videoBackgroundRefresh.findViewById(com.xueersi.parentsmeeting.module.player
                 .R.id.tv_course_video_errorinfo);
-        AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
-        if (error != null) {
-            errorInfo.setVisibility(View.VISIBLE);
-            String videoKey = getVideoKey();
-            if (StringUtils.isSpace(videoKey)) {
-                errorInfo.setText(error.getNum() + " (" + error.getTag() + ")");
-            } else {
-                errorInfo.setText("(" + videoKey + ")" + error.getNum() + " (" + error.getTag() + ")");
+        if (MediaPlayer.getIsNewIJK()) {
+            MediaErrorInfo mediaErrorInfo = liveBackPlayVideoFragment.getMediaErrorInfo();
+            if (mediaErrorInfo != null) {
+                switch (mediaErrorInfo.mErrorCode) {
+                    case MediaErrorInfo.PSPlayerError: {
+
+                        errorInfo.setText("视频播放失败[" + mediaErrorInfo.mPlayerErrorCode + " " + "],请重试");
+                        break;
+                    }
+                    case MediaErrorInfo.PSDispatchFailed: {
+
+                        errorInfo.setText("视频播放失败[" + MediaErrorInfo.PSDispatchFailed + "],请点击重试");
+                        break;
+                    }
+                    case MediaErrorInfo.PSChannelNotExist: {
+
+                        errorInfo.setText("视频播放失败[" + MediaErrorInfo.PSChannelNotExist + "],请点击重试");
+                        break;
+                    }
+                    case MediaErrorInfo.PSServer403: {
+
+                        errorInfo.setText("鉴权失败[" + MediaErrorInfo.PSServer403 + "],请点击重试");
+                        break;
+                    }
+                    default: {
+
+                        errorInfo.setText("视频播放失败 [" + arg2 + "]");
+                        break;
+                    }
+                }
             }
         } else {
-            errorInfo.setVisibility(View.GONE);
+            AvformatOpenInputError error = AvformatOpenInputError.getError(arg2);
+            if (error != null) {
+                errorInfo.setVisibility(View.VISIBLE);
+                String videoKey = getVideoKey();
+                if (StringUtils.isSpace(videoKey)) {
+                    errorInfo.setText(error.getNum() + " (" + error.getTag() + ")");
+                } else {
+                    errorInfo.setText("(" + videoKey + ")" + error.getNum() + " (" + error.getTag() + ")");
+                }
+            } else {
+                errorInfo.setVisibility(View.GONE);
+            }
         }
         videoBackgroundRefresh.getLayoutParams().height = LayoutParams.MATCH_PARENT;
     }
@@ -655,11 +690,6 @@ public class LiveBackVideoFragmentBase extends Fragment {
         liveBackPlayVideoFragment.playNewVideo();
     }
 
-    public void playNewVideo(Uri uri, String displayName) {
-        mUri = uri;
-        mDisplayName = displayName;
-        liveBackPlayVideoFragment.playNewVideo(uri, displayName);
-    }
 
     /** 播放下一个视频 */
     protected void startPlayNextVideo() {
@@ -851,7 +881,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
         }
     };
 
-    protected PlayerService.VPlayerListener getWrapListener() {
+    protected VPlayerCallBack.VPlayerListener getWrapListener() {
         return null;
     }
 
@@ -1049,5 +1079,6 @@ public class LiveBackVideoFragmentBase extends Fragment {
 //        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.getResources()
 //                .getDisplayMetrics());
 //    }
+
 
 }

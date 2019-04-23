@@ -360,6 +360,8 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
             mLiveMessagePager.onopenchat(openchat, mode, false);
         }
         rlLiveMessageContent.addView(mLiveMessagePager.getRootView(), params);
+
+
     }
 
     public void initView(RelativeLayout bottomContent, boolean isLand) {
@@ -454,6 +456,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
             mLiveMessagePager.urlclick = urlclick;
             mLiveMessagePager.setGetInfo(getInfo);
         }
+
     }
 
     /**
@@ -731,6 +734,18 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     public void addMessage(String sender, int type, String text) {
         if (mLiveMessagePager != null) {
             mLiveMessagePager.addMessage(sender, type, text, "");
+        }
+    }
+
+    /**
+     * 设置连对num
+     *
+     * @param nowEvenNum      当前连对数
+     * @param highestRightNum 最高连对数
+     */
+    public void setEvenNum(String nowEvenNum, String highestRightNum) {
+        if (mLiveMessagePager instanceof LiveMessagePager) {
+            ((LiveMessagePager) mLiveMessagePager).setEvenText(nowEvenNum, highestRightNum);
         }
     }
 
