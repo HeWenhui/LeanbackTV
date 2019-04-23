@@ -1362,7 +1362,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
             @Override
             public void onDataFail(int errStatus, String failMsg) {
-                super.onDataFail(errStatus, failMsg);
+                mLogtf.d("onDataFail:errStatus=" + errStatus + ",failMsg=" + failMsg);
                 if (errStatus == LiveHttpConfig.HTTP_ERROR_ERROR) {
                     XESToastUtils.showToast(mContext, failMsg + ",请刷新");
                 } else {
@@ -2098,6 +2098,16 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                     }
                                 }
                                 createSpeechContent("VOICE_CANNO_TYPE", false);
+                                //来的单词是不是和当前一致
+                                final AtomicBoolean correntPager = new AtomicBoolean(true);
+                                GroupGameTestInfosEntity.TestInfoEntity test = tests.get(0);
+                                if (oldIndex < test.getAnswerList().size()) {
+                                    int id = test.getAnswerList().get(oldIndex).getId();
+                                    mLogtf.d("VOICE_CANNO_TYPE:id=" + id + ",word_id=" + word_id);
+                                    if (id != word_id) {
+                                        correntPager.set(false);
+                                    }
+                                }
                                 int studentNum = -1;
                                 ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
                                 for (int entityIndex = 0; entityIndex < entities.size(); entityIndex++) {
@@ -2112,7 +2122,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                     handler.post(new Runnable() {
                                         @Override
                                         public void run() {
-                                            if (!lessOther.get()) {
+                                            if (!lessOther.get() && correntPager.get()) {
                                                 JSONObject jsonData = new JSONObject();
                                                 try {
                                                     jsonData.put("type", CourseMessage.SEND_CoursewareDoing);

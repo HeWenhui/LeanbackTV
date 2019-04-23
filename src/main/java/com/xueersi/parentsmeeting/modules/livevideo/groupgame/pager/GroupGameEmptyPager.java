@@ -150,6 +150,7 @@ public class GroupGameEmptyPager extends BaseCoursewareNativePager implements Ba
                     });
                     groupGameMultNativePager.setLivePagerBack(livePagerBack);
                     groupGameMultNativePager.setGroupGameTestInfosEntity(mGroupGameTestInfosEntity);
+                    group.removeAllViews();
                     group.addView(groupGameMultNativePager.getRootView());
                     baseEnglishH5CoursewarePager = groupGameMultNativePager;
                     baseEnglishH5CoursewarePager.setEnglishH5CoursewareBll(englishH5CoursewareBll);
@@ -164,6 +165,7 @@ public class GroupGameEmptyPager extends BaseCoursewareNativePager implements Ba
                     });
                     groupGameNativePager.setLivePagerBack(livePagerBack);
                     groupGameNativePager.setGroupGameTestInfosEntity(mGroupGameTestInfosEntity);
+                    group.removeAllViews();
                     group.addView(groupGameNativePager.getRootView());
                     baseEnglishH5CoursewarePager = groupGameNativePager;
                     baseEnglishH5CoursewarePager.setEnglishH5CoursewareBll(englishH5CoursewareBll);
@@ -173,8 +175,7 @@ public class GroupGameEmptyPager extends BaseCoursewareNativePager implements Ba
 
             @Override
             public void onDataFail(int errStatus, String failMsg) {
-                super.onDataFail(errStatus, failMsg);
-                super.onDataFail(errStatus, failMsg);
+                mLogtf.d("onDataFail:errStatus=" + errStatus + ",failMsg=" + failMsg);
                 if (errStatus == LiveHttpConfig.HTTP_ERROR_ERROR) {
                     XESToastUtils.showToast(mContext, failMsg + ",请刷新");
                 } else {
