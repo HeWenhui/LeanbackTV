@@ -30,8 +30,11 @@ import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -51,7 +54,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.web.OnHttpCode;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.StaticWeb;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.WebInstertJs;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveAudioManager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
 import com.xueersi.ui.widget.WaveView;
 
 import org.json.JSONArray;
@@ -120,7 +126,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     /**
      * 是不是回放
      */
-    private boolean isPlayBack = false;
+    private boolean isPlayBack;
     /**
      * 拉取课件接口成功
      */
@@ -171,7 +177,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     private JSONArray userAnswer = new JSONArray();
 
     private static int MAX_SINGLE_COUNT;
-
+    private LiveAudioManager liveAudioManager;
     /**
      * 音量管理
      */
@@ -208,6 +214,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         } else if ((LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(detailInfo.type))) {
             singleModeAction = new CleanUpAction();
         }
+        initListener();
+        setVoice();
     }
 
     @Override
@@ -224,7 +232,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         tvFireAdd = view.findViewById(R.id.tv_livevideo_groupgame_single_fire_add);
         tvOops = view.findViewById(R.id.tv_livevideo_groupgame_single_oops);
         mWaveView = view.findViewById(R.id.wv_livevideo_groupgame_single_wave);
-        initListener();
         return view;
     }
 
@@ -313,6 +320,29 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 }
             }, PermissionConfig.PERMISSION_CODE_AUDIO);
         }
+    }
+
+    private void setVoice() {
+        AudioRequest audioRequest = ProxUtil.getProxUtil().get(mContext, AudioRequest.class);
+        if (audioRequest != null) {
+            audioRequest.request(null);
+        }
+        BasePlayerFragment videoFragment = ProxUtil.getProxUtil().get(mContext, BasePlayerFragment.class);
+        if (videoFragment != null) {
+            videoFragment.setVolume(0, 0);
+            logger.d(TAG + ":setVolume:0");
+            StableLogHashMap stableLogHashMap = new StableLogHashMap("stop");
+            stableLogHashMap.put("tag", TAG);
+            umsAgentDebugSys(LogConfig.LIVE_STOP_VOLUME, stableLogHashMap);
+        } else {
+            logger.d(TAG + ":setVolume:null");
+        }
+
+        liveAudioManager = new LiveAudioManager(mContext, "GroupGameNativePager");
+        mMaxVolume = liveAudioManager.getmMaxVolume();
+        mVolume = liveAudioManager.getmVolume();
+        int v = (int) (0.3f * mMaxVolume);
+        liveAudioManager.setVolume(v);
     }
 
     private void initWebView() {
@@ -460,12 +490,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             @Override
             public void onBeginOfSpeech() {
                 logger.d("onBeginOfSpeech()");
-                //静音处理
-                mAM = (AudioManager) mContext.getSystemService(Context.AUDIO_SERVICE); // 音量管理
-                mMaxVolume = mAM.getStreamMaxVolume(AudioManager.STREAM_MUSIC); // 获取系统最大音量
-                mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
-                mAM.setStreamVolume(AudioManager.STREAM_MUSIC, (int) (0.0f * mMaxVolume), 0);
-                isVolumeResume = false;
             }
 
             @Override
@@ -510,11 +534,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 }
             }, 300);
         }
-        //音量恢复
-        if (mAM != null && !isVolumeResume) {
-            mAM.setStreamVolume(AudioManager.STREAM_MUSIC, mVolume, 0);
-            isVolumeResume = true;
-        }
     }
 
     /**
@@ -549,6 +568,26 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         wvSubjectWeb.destroy();
         mWaveView.destroy();
         singleModeAction.onDestory();
+
+        if (liveAudioManager != null) {
+            liveAudioManager.setVolume(mVolume);
+        }
+
+        AudioRequest audioRequest = ProxUtil.getProxUtil().get(mContext, AudioRequest.class);
+        if (audioRequest != null) {
+            audioRequest.release();
+        }
+
+        BasePlayerFragment videoFragment = ProxUtil.getProxUtil().get(mContext, BasePlayerFragment.class);
+        if (videoFragment != null) {
+            videoFragment.setVolume(VP.DEFAULT_STEREO_VOLUME, VP.DEFAULT_STEREO_VOLUME);
+            logger.d("onDestroy:setVolume:1");
+            StableLogHashMap stableLogHashMap = new StableLogHashMap("start");
+            stableLogHashMap.put("tag", TAG);
+            umsAgentDebugSys(LogConfig.LIVE_STOP_VOLUME, stableLogHashMap);
+        } else {
+            logger.d("onDestroy:setVolume:null");
+        }
     }
 
     @Override
@@ -579,11 +618,11 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             e.printStackTrace();
         }
         starNum = calculateStarByScore(averageScore);
-        if (!isPlayBack) {
+        if (!isPlayBack && liveGetInfo.getEnglishPk().hasGroup == 1) {
             if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(detailInfo.type)) {
-                fireNum = rightNum;
+                fireNum = rightNum < 50 ? rightNum : 30;
             } else if (LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(detailInfo.type)) {
-                fireNum = rightNum + 5;
+                fireNum = (rightNum + 5) < 30 ? ((rightNum + 5)) : 30;
             } else {
                 fireNum = (int) Math.ceil(10d * successTimes / (double) (mAnswersList.size()));
             }
@@ -784,15 +823,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     }
 
     /**
-     * 评测成功 - 火焰+N
-     *
-     * @param fireNum
-     */
-    private void onFireAdd(int fireNum) {
-        tvFireSum.setText("" + fireNum);
-    }
-
-    /**
      * 评测失败 - oops
      */
     private void onOops() {
@@ -869,7 +899,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             if (score >= 70) {
                 singleCount++;
                 rightNum++;
-                if (!isPlayBack) {
+                if (!isPlayBack && liveGetInfo.getEnglishPk().hasGroup == 1) {
                     onFireAdd(rightNum);
                 }
                 if (singleCount >= MAX_SINGLE_COUNT) {
@@ -884,6 +914,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     uploadScore(score, false);
                 }
             } else {
+                onOops();
                 uploadScore(score, false);
             }
         }
@@ -949,6 +980,28 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
             } catch (JSONException e) {
                 e.printStackTrace();
+            }
+        }
+
+        /**
+         * 评测成功 - 火焰+N
+         *
+         * @param fireNum
+         */
+        private void onFireAdd(int fireNum) {
+            if (detailInfo.type.equals(LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON)) {
+                if (fireNum > 50) {
+                    return;
+                }
+                tvFireSum.setText("" + fireNum);
+                flFireAdd.setVisibility(View.VISIBLE);
+                tvFireAdd.setText("+1");
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        flFireAdd.setVisibility(View.GONE);
+                    }
+                }, 2000);
             }
         }
     }
@@ -1034,6 +1087,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                         goldNum = 2;
                     }
                     uploadScore(id);
+                } else {
+                    onOops();
                 }
             }
         }
@@ -1089,10 +1144,10 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
                 JSONObject rightItem = new JSONObject();
                 rightItem.put("rightId", newSenIndex);
-                if (isPlayBack) {
-                    rightItem.put("getFireCount", 0);
-                } else {
+                if (!isPlayBack && liveGetInfo.getEnglishPk().hasGroup == 1) {
                     rightItem.put("getFireCount", 1);
+                } else {
+                    rightItem.put("getFireCount", 0);
                 }
                 jsonData.put("rightItem", rightItem);
                 jsonData.put("combo", 0);
@@ -1100,6 +1155,26 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             } catch (Exception e) {
                 logger.d("uploadScore", e);
             }
+        }
+
+        /**
+         * 评测成功 - 火焰+N
+         *
+         * @param fireNum
+         */
+        private void onFireAdd(int fireNum) {
+            if (fireNum > 30) {
+                return;
+            }
+            tvFireSum.setText("" + fireNum);
+            flFireAdd.setVisibility(View.VISIBLE);
+            tvFireAdd.setText("+1");
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    flFireAdd.setVisibility(View.GONE);
+                }
+            }, 2000);
         }
     }
 }
