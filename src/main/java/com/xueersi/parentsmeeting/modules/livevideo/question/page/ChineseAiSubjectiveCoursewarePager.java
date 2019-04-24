@@ -238,6 +238,8 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
      */
     private final int NOTFORCE = 0;
 
+    private final int FORCE = 1;
+
     public ChineseAiSubjectiveCoursewarePager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity,
                                               boolean isPlayBack, String liveId, String id,
                                               EnglishH5Entity englishH5Entity,
@@ -863,6 +865,25 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 onSubmitError(isforce, msg);
             }
         });
+        /** 强制收题直接显示结果页*/
+        if (FORCE == isforce) {
+            ChineseAISubjectResultEntity resultEntity = new ChineseAISubjectResultEntity();
+            List<String> answerList = new ArrayList<>();
+            resultEntity.setTotalScore(0);
+            try {
+                if (dataJson != null && dataJson.has("rightAnswerContent")) {
+                    JSONArray rightAnswer = dataJson.getJSONArray("rightAnswerContent");
+                    for (int i = 0; i < rightAnswer.length(); i++) {
+                        answerList.add(rightAnswer.getJSONObject(i).optString("text"));
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            resultEntity.setRightAnswers(answerList);
+            resultEntity.setGold(0);
+            addResultPager(1, resultEntity);
+        }
     }
 
     /**
