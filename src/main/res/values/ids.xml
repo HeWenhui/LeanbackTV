@@ -855,6 +855,7 @@
     <item name="bt_livevideo_worddictation_close" type="id" />
 
 
+
     <!--文科答题结果页-->
     <item name="tv_arts_answer_result_state" type="id" />
     <item name="rl_arts_answer_result_state" type="id" />
@@ -902,66 +903,68 @@
     <item name="ll_arts_answer_reslult_reward_info" type="id" />
 
     <!--半身直播-->
-    <item name="iv_livevideo_halfbody_connect_state" type="id" />
-    <item name="ll_livevideo_halbody_msg_bottom" type="id" />
-    <item name="iv_livevideo_halfbody_msg_btn" type="id" />
-    <item name="iv_livevideo_halfbody_hot_wrod" type="id" />
-    <item name="tv_livevideo_halfbody_msg_onlinenum" type="id" />
+    <item name="iv_livevideo_halfbody_connect_state" type="id"/>
+    <item name="ll_livevideo_halbody_msg_bottom" type="id"/>
+    <item name="iv_livevideo_halfbody_msg_btn" type="id"/>
+    <item name="iv_livevideo_halfbody_hot_wrod" type="id"/>
+    <item name="tv_livevideo_halfbody_msg_onlinenum" type="id"/>
 
-    <item name="rl_livevideo_halfbody_msgcontent" type="id" />
+    <item name="rl_livevideo_halfbody_msgcontent" type="id"/>
     <item name="lv_livevideo_halfbody_common_word" type="id" />
 
     <!--半身直播旁听-->
-    <item name="ll_livevideo_auditclass_online_state_container" type="id" />
-    <item name="rcl_livevideo_auditclass_anwser_state" type="id" />
-    <item name="rcl_livevideo_auditclass_business_container" type="id" />
+    <item name="ll_livevideo_auditclass_online_state_container" type="id"/>
+    <item name="rcl_livevideo_auditclass_anwser_state" type="id"/>
+    <item name="rcl_livevideo_auditclass_business_container" type="id"/>
 
-    <item name="tv_livevideo_auditclass_team_rank_anchor" type="id" />
-    <item name="tv_livevideo_auditclass_team_rank" type="id" />
+    <item name="tv_livevideo_auditclass_team_rank_anchor" type="id"/>
+    <item name="tv_livevideo_auditclass_team_rank" type="id"/>
 
-    <item name="tv_livevideo_auditclass_energy_anchor" type="id" />
-    <item name="tv_livevideo_auditclass_energy" type="id" />
+    <item name="tv_livevideo_auditclass_energy_anchor" type="id"/>
+    <item name="tv_livevideo_auditclass_energy" type="id"/>
 
-    <item name="tv_livevideo_auditclass_against_energy_anchor" type="id" />
-    <item name="tv_livevideo_auditclass_against_energy" type="id" />
-    <item name="v_livevideo_auditclass_devide_line" type="id" />
-    <item name="tv_livevideo_auditclass_rate_anchor" type="id" />
-    <item name="tv_livevideo_auditclass_rate" type="id" />
+    <item name="tv_livevideo_auditclass_against_energy_anchor" type="id"/>
+    <item name="tv_livevideo_auditclass_against_energy" type="id"/>
+    <item name="v_livevideo_auditclass_devide_line" type="id"/>
+    <item name="tv_livevideo_auditclass_rate_anchor" type="id"/>
+    <item name="tv_livevideo_auditclass_rate" type="id"/>
 
-    <item name="tv_livevideo_auditclass_title_test_num" type="id" />
-    <item name="tv_livevideo_auditclass_title_answer_result" type="id" />
-    <item name="tv_livevideo_auditclass_title_rate" type="id" />
-    <item name="tv_livevideo_auditclass_no_testinfo" type="id" />
-    <item name="consl_livevideo_auditclass_test_tilte_container" type="id" />
+    <item name="tv_livevideo_auditclass_title_test_num" type="id"/>
+    <item name="tv_livevideo_auditclass_title_answer_result" type="id"/>
+    <item name="tv_livevideo_auditclass_title_rate" type="id"/>
+    <item name="tv_livevideo_auditclass_no_testinfo" type="id"/>
+    <item name="consl_livevideo_auditclass_test_tilte_container" type="id"/>
 
-    <item name="tv_livevideo_auditclass_test_index" type="id" />
-    <item name="iv_livevideo_auditclass_answer_state" type="id" />
-    <item name="tv_livevideo_auditclass_answer_rate" type="id" />
-    <item name="tv_livevideo_auditclass_myrank" type="id" />
+    <item name="tv_livevideo_auditclass_test_index" type="id"/>
+    <item name="iv_livevideo_auditclass_answer_state" type="id"/>
+    <item name="tv_livevideo_auditclass_answer_rate" type="id"/>
+    <item name="tv_livevideo_auditclass_myrank" type="id"/>
 
-    <item name="iv_live_halfbody_pk_state" type="id" />
-    <item name="fl_live_halfbody_coin_container" type="id" />
-    <item name="rl_live_halfbody_energy_contribution" type="id" />
-    <item name="tv_live_halfbody_energy_contribution" type="id" />
+    <item name="iv_live_halfbody_pk_state" type="id"/>
+    <item name="fl_live_halfbody_coin_container" type="id"/>
+    <item name="rl_live_halfbody_energy_contribution" type="id"/>
+    <item name="tv_live_halfbody_energy_contribution" type="id"/>
 
-    <item name="rcl_live_halfbody_msg" type="id" />
-    <item name="tv_live_halfbody_msg" type="id" />
-    <item name="tv_live_halfbody_sys_msg" type="id" />
+    <item name="rcl_live_halfbody_msg" type="id"/>
+    <item name="tv_live_halfbody_msg" type="id"/>
+    <item name="tv_live_halfbody_sys_msg" type="id"/>
 
-    <item name="rl_live_halfbody_livemsg_container" type="id" />
-    <item name="rl_live_halfbody_mediacontroll_container" type="id" />
+    <item name="rl_live_halfbody_livemsg_container" type="id"/>
+    <item name="rl_live_halfbody_mediacontroll_container" type="id"/>
 
-    <item name="rl_live_halfbody_video_loading" type="id" />
-    <item name="tv_live_halfbody_live_state" type="id" />
-    <item name="iv_live_halfbody_video_loading" type="id" />
-    <item name="iv_live_halfbody_hotwrod" type="id" />
 
-    <item name="ll_live_halfbody_understand_btns" type="id" />
-    <item name="iv_live_halfbody_understand_top" type="id" />
+    <item name="iv_live_halfbody_teacher_state" type="id"/>
+    <item name="rl_live_halfbody_video_loading" type="id"/>
+    <item name="tv_live_halfbody_live_state" type="id"/>
+    <item name="iv_live_halfbody_video_loading" type="id"/>
+    <item name="iv_live_halfbody_hotwrod" type="id"/>
 
-    <item name="tv_live_auditclass_checktime_anchor" type="id" />
-    <item name="gl_live_auditclass_tile_anchor" type="id" />
-    <item name="gl_live_auditclass_item_anchor" type="id" />
+    <item name="ll_live_halfbody_understand_btns" type="id"/>
+    <item name="iv_live_halfbody_understand_top" type="id"/>
+
+    <item name="tv_live_auditclass_checktime_anchor" type="id"/>
+    <item name="gl_live_auditclass_tile_anchor" type="id"/>
+    <item name="gl_live_auditclass_item_anchor" type="id"/>
     <item name="cl_live_auditclass_title" type="id" />
     <item name="iv_live_auditclass_nodata" type="id" />
     <item name="cl_live_auditclass_pkinfo" type="id" />
@@ -1010,45 +1013,45 @@
     <!-- 给老师评价-->
     <item name="rl_livevideo_evalutate_teacher" type="id" />
     <!-- 教师评价弹窗-->
-    <item name="rl_livevideo_evaluate" type="id" />
-    <item name="rl_livevideo_evaluate_title" type="id" />
-    <item name="iv_livevideo_evaluate_close" type="id" />
-    <item name="ll_livevideo_evaluate" type="id" />
-    <item name="ll_livevideo_evaluate_main" type="id" />
-    <item name="iv_livevideo_evaluate_main" type="id" />
-    <item name="iv_livevideo_evaluate_main_icon" type="id" />
-    <item name="iv_livevideo_evaluate_main_status" type="id" />
-    <item name="tv_livevideo_evaluate_main_name" type="id" />
-    <item name="rg_livevideo_evaluate_main" type="id" />
-    <item name="rb_livevideo_evaluate_main_unsatisfactory" type="id" />
-    <item name="rb_livevideo_evaluate_main_satisfactory" type="id" />
-    <item name="rb_livevideo_evaluate_main_very_satisfactory" type="id" />
-    <item name="ll_livevideo_evaluate_main_option" type="id" />
-    <item name="cb_livevideo_evaluate_main_option_1" type="id" />
-    <item name="cb_livevideo_evaluate_main_option_2" type="id" />
-    <item name="cb_livevideo_evaluate_main_option_3" type="id" />
-    <item name="cb_livevideo_evaluate_main_option_4" type="id" />
-    <item name="ll_livevideo_evaluate_tutor" type="id" />
-    <item name="iv_livevideo_evaluate_tutor" type="id" />
-    <item name="iv_livevideo_evaluate_tutor_status" type="id" />
-    <item name="tv_livevideo_evaluate_tutor_name" type="id" />
-    <item name="rg_livevideo_evaluate_tutor" type="id" />
-    <item name="rb_livevideo_evaluate_tutor_unsatisfactory" type="id" />
-    <item name="rb_livevideo_evaluate_tutor_satisfactory" type="id" />
-    <item name="rb_livevideo_evaluate_tutor_very_satisfactory" type="id" />
-    <item name="ll_livevideo_evaluate_tutor_option" type="id" />
-    <item name="cb_livevideo_evaluate_tutor_option_1" type="id" />
-    <item name="cb_livevideo_evaluate_tutor_option_2" type="id" />
-    <item name="cb_livevideo_evaluate_tutor_option_3" type="id" />
-    <item name="cb_livevideo_evaluate_tutor_option_4" type="id" />
-    <item name="rl_livevideo_evaluate_submit" type="id" />
-    <item name="tv_livevideo_evaluate_submit_text" type="id" />
-    <item name="pb_livevideo_evaluate_submit_loading" type="id" />
-    <item name="rl_livevideo_evaluate_submit_result" type="id" />
-    <item name="iv_livevideo_evaluate_submit_result" type="id" />
-    <item name="tv_livevideo_evaluate_submit_status" type="id" />
-    <item name="tv_livevideo_evaluate_count_down" type="id" />
-    <item name="rl_livevideo_evaluate_tryagain" type="id" />
+    <item name="rl_livevideo_evaluate" type="id"/>
+    <item name="rl_livevideo_evaluate_title" type="id"/>
+    <item name="iv_livevideo_evaluate_close" type="id"/>
+    <item name="ll_livevideo_evaluate" type="id"/>
+    <item name="ll_livevideo_evaluate_main" type="id"/>
+    <item name="iv_livevideo_evaluate_main" type="id"/>
+    <item name="iv_livevideo_evaluate_main_icon" type="id"/>
+    <item name="iv_livevideo_evaluate_main_status" type="id"/>
+    <item name="tv_livevideo_evaluate_main_name" type="id"/>
+    <item name="rg_livevideo_evaluate_main" type="id"/>
+    <item name="rb_livevideo_evaluate_main_unsatisfactory" type="id"/>
+    <item name="rb_livevideo_evaluate_main_satisfactory" type="id"/>
+    <item name="rb_livevideo_evaluate_main_very_satisfactory" type="id"/>
+    <item name="ll_livevideo_evaluate_main_option" type="id"/>
+    <item name="cb_livevideo_evaluate_main_option_1" type="id"/>
+    <item name="cb_livevideo_evaluate_main_option_2" type="id"/>
+    <item name="cb_livevideo_evaluate_main_option_3" type="id"/>
+    <item name="cb_livevideo_evaluate_main_option_4" type="id"/>
+    <item name="ll_livevideo_evaluate_tutor" type="id"/>
+    <item name="iv_livevideo_evaluate_tutor" type="id"/>
+    <item name="iv_livevideo_evaluate_tutor_status" type="id"/>
+    <item name="tv_livevideo_evaluate_tutor_name" type="id"/>
+    <item name="rg_livevideo_evaluate_tutor" type="id"/>
+    <item name="rb_livevideo_evaluate_tutor_unsatisfactory" type="id"/>
+    <item name="rb_livevideo_evaluate_tutor_satisfactory" type="id"/>
+    <item name="rb_livevideo_evaluate_tutor_very_satisfactory" type="id"/>
+    <item name="ll_livevideo_evaluate_tutor_option" type="id"/>
+    <item name="cb_livevideo_evaluate_tutor_option_1" type="id"/>
+    <item name="cb_livevideo_evaluate_tutor_option_2" type="id"/>
+    <item name="cb_livevideo_evaluate_tutor_option_3" type="id"/>
+    <item name="cb_livevideo_evaluate_tutor_option_4" type="id"/>
+    <item name="rl_livevideo_evaluate_submit" type="id"/>
+    <item name="tv_livevideo_evaluate_submit_text" type="id"/>
+    <item name="pb_livevideo_evaluate_submit_loading" type="id"/>
+    <item name="rl_livevideo_evaluate_submit_result" type="id"/>
+    <item name="iv_livevideo_evaluate_submit_result" type="id"/>
+    <item name="tv_livevideo_evaluate_submit_status" type="id"/>
+    <item name="tv_livevideo_evaluate_count_down" type="id"/>
+    <item name="rl_livevideo_evaluate_tryagain" type="id"/>
     <!-- 体验课退出反馈-->
     <item name="rl_livevideo_experience_feedback_quit" type="id" />
     <item name="group_livevideo_small_chinese_sign_name" type="id" />
@@ -1272,6 +1275,27 @@
     <item name="pg_livevideo_en_achive_pk" type="id" />
     <item name="rl_livevideo_en_achive_pk" type="id" />
 
+
+    <item name="iv_gold_microphone_teacher_tip" type="id" />
+    <item name="tv_gold_microphone_teacher_tip" type="id" />
+    <item name="iv_gold_microphone_close_microphone_background" type="id" />
+    <item name="tv_gold_microphone_close_microphone_bottom_tip" type="id" />
+    <item name="tv_gold_microphone_close_microphone_top_tip" type="id" />
+    <item name="iv_livevideo_gold_microphone_close_btn_cancel" type="id" />
+    <item name="iv_livevideo_gold_microphone_close_btn_no" type="id" />
+    <item name="iv_livevideo_gold_microphone_bg" type="id" />
+    <item name="iv_livevideo_gold_microphone_cancel" type="id" />
+    <item name="iv_livevideo_gold_microphone_close_btn_yes" type="id" />
+    <item name="iv_livevideo_gold_microphone_setting" type="id" />
+    <item name="iv_livevideo_gold_microphone_setting_background" type="id" />
+    <item name="iv_livevideo_gold_microphone_setting_group" type="id" />
+    <item name="group_livevideo_gold_microphone_microphone_group" type="id" />
+    <item name="group_livevideo_gold_microphone_teacher_tip_window" type="id" />
+    <item name="iv_livevideo_gold_microphone_speak_loudly" type="id" />
+    <item name="group_livevideo_gold_microphone_speak_loudly" type="id" />
+    <item name="lottie_livevideo_gold_microphone_gold_view" type="id" />
+    <item name="layout_livevideo_gold_microphone" type="id" />
+    <item name="swv_livevideo_gold_microphone_sound_wave" type="id" />
 
     <item name="ll_arts_answer_result_item_muti_user_answer_info" type="id" />
     <item name="tv_arts_answer_result_item_muti_user_answer_hint" type="id" />

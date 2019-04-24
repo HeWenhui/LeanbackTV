@@ -158,6 +158,7 @@ public class TeamPkContributionPager extends TeamPkBasePager {
         }
     }
 
+
     private List<AnimInfo> animInfos;
 
 

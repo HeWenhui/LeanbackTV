@@ -243,6 +243,9 @@ public class LiveGetInfo {
     /** 全身直播语音答题和评测小组排名请求时间 */
     private String requestTime;
 
+    /**语文，英语是否使用皮肤**/
+    private int useSkin;
+
     /**
      * 是否是 teampk 直播间
      * 1 :是pk 直播间  0 :非pk直播间
@@ -338,6 +341,16 @@ public class LiveGetInfo {
 
     public void setGetThumbsUpUrl(String getThumbsUpUrl) {
         this.getThumbsUpUrl = getThumbsUpUrl;
+    }
+
+    private boolean useGoldMicroPhone;
+
+    public boolean isUseGoldMicroPhone() {
+        return useGoldMicroPhone;
+    }
+
+    public void setUseGoldMicroPhone(boolean useGoldMicroPhone) {
+        this.useGoldMicroPhone = useGoldMicroPhone;
     }
 
     public int getPraiseAutoCutTime() {
@@ -647,6 +660,14 @@ public class LiveGetInfo {
 
     public String getUname() {
         return uname;
+    }
+
+    public void setUseSkin(int useSkin) {
+        this.useSkin = useSkin;
+    }
+
+    public int getUseSkin() {
+        return useSkin;
     }
 
     /**

@@ -24,7 +24,8 @@ dependencies {
     api 'org.java-websocket:Java-WebSocket:1.3.4'
     //glide库
     implementation rootProject.ext.thirdlibraries.glide
-    rootProject.xrsImplementation(this.getProject(),rootProject.ext.xeslibraries.speechrecognizer)
+
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.speechrecognizer)
     implementation(rootProject.ext.xeslibraries.ldnetdiagnoservice) { changing = true }
     //uicomponent
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.uicomponent)
@@ -62,5 +63,6 @@ dependencies {
     //implementation(rootProject.ext.xeslibraries.waveform) { changing = true }
     //implementation project(':library:waveform')
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.gifDrawable)
+    api 'com.android.support:transition:27.1.1'
     //    implementation project(':library:agora')
 }

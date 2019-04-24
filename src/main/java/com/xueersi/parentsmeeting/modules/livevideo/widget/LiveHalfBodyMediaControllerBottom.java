@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 /**
  * 半身直播 底部播放控制栏
+ *
  * @author chenkun
  * @version 1.0, 2018/10/22 下午3:59
  */
@@ -39,44 +40,48 @@ public class LiveHalfBodyMediaControllerBottom extends BaseLiveMediaControllerBo
         View view;
         if (LiveTopic.MODE_CLASS.equals(mode)) {
             if (mainLiveView == null) {
-                mainLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livehalfbody_mediacontroller_bottom,
+                mainLiveView =
+                        LayoutInflater.from(mContext).inflate(R.layout.layout_livehalfbody_mediacontroller_bottom,
                         this, false);
             }
             view = mainLiveView;
             addView(view);
         } else {
-            if(tranLiveView == null){
-                if (LiveVideoConfig.isPrimary) {
-                    tranLiveView  = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_psbottom, this,false);
-                }else if(LiveVideoConfig.isSmallChinese) {
-                    tranLiveView  = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_chs_bottom, this,false);
-                }
-                else {
-                    tranLiveView  = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom, this,false);
+            if (tranLiveView == null) {
+                if (LiveVideoConfig.isSmallChinese) {
+                    tranLiveView =
+                            LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_chs_bottom,
+                                    this, false);
+                } else if (LiveVideoConfig.isPrimary) {
+                    tranLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_psbottom
+                            , this, false);
+                } else {
+                    tranLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom,
+                            this, false);
                 }
             }
             view = tranLiveView;
             addView(view);
         }
-        return  view;
+        return view;
     }
 
 
     /**
      * 根据不同直播流切换不同 底部控制栏
+     *
      * @param mode
      * @param getInfo
      */
-    public void onModeChange(String mode,LiveGetInfo getInfo){
+    public void onModeChange(String mode, LiveGetInfo getInfo) {
         this.mode = mode;
-       // removeAllViews();
+        // removeAllViews();
         removeAllViewsInLayout();
         inflateLayout();
         findViewItems();
         //通知相关 UI 底部 控制栏改变
         noticeUIChange();
     }
-
 
 
     /**
@@ -97,7 +102,7 @@ public class LiveHalfBodyMediaControllerBottom extends BaseLiveMediaControllerBo
     @Override
     public void onShow() {
         super.onShow();
-        if(controllerStateListener != null){
+        if (controllerStateListener != null) {
             controllerStateListener.onSHow();
         }
     }
@@ -105,7 +110,7 @@ public class LiveHalfBodyMediaControllerBottom extends BaseLiveMediaControllerBo
     @Override
     public void onHide() {
         super.onHide();
-        if(controllerStateListener != null){
+        if (controllerStateListener != null) {
             controllerStateListener.onHide();
         }
     }
@@ -117,9 +122,9 @@ public class LiveHalfBodyMediaControllerBottom extends BaseLiveMediaControllerBo
         this.controllerStateListener = controllerStateListener;
     }
 
-    public interface ControllerStateListener{
+    public interface ControllerStateListener {
         /**
-         *  状态栏显示
+         * 状态栏显示
          */
         void onSHow();
 

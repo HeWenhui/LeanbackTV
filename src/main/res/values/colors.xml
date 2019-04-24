@@ -128,5 +128,9 @@
     <color name="COLOR_726665">#726665</color>
     <color name="COLOR_84AD3D">#84AD3D</color>
     <color name="COLOR_D45E58">#D45E58</color>
-
+    <color name="COLOR_F7E1A8">#F7E1A8</color>
+    <color name="COLOR_CCF7E1A8">#CCF7E1A8</color>
+    <color name="COLOR_99F7E1A8">#99F7E1A8</color>
+    <color name="COLOR_66F7E1A8">#66F7E1A8</color>
+    <color name="COLOR_33F7E1A8">#33F7E1A8</color>
 </resources>
