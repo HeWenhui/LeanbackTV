@@ -503,8 +503,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
         private void coursewareOnloading(final int pageNum) {
             if (turnRun != null) {
-                mLogtf.d("coursewareOnloading:turnRun");
-                handler.removeCallbacks(turnRun);
+                mLogtf.d("coursewareOnloading:turnRun=" + turnRun.pagerNum + "," + pageNum);
             }
             handler.post(new Runnable() {
                 @Override
