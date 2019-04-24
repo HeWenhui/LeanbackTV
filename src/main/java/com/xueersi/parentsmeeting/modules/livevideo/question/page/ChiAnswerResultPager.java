@@ -255,6 +255,8 @@ public class ChiAnswerResultPager extends BasePager implements IArtsAnswerRsultD
             if (isAllSpace) {
                 return new SpannableStringBuilder("你的答案:未作答或未按时提交;");
             }
+        }else {
+            return new SpannableStringBuilder("你的答案:未作答或未按时提交;");
         }
         return stringBuilder;
     }

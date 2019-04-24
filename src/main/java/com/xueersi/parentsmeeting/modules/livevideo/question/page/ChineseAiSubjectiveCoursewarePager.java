@@ -676,6 +676,9 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
         logHashMap.put("closetype", "clickBackButton");
         logHashMap.put("isFinish", "" + isFinish);
         umsAgentDebugSys(eventId, logHashMap.getData());
+        if (answerResultPager != null){
+            answerResultPager.close();
+        }
     }
 
     @Override
@@ -847,15 +850,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                                     onSubmitError(isforce, failMsg);
                                 }
                             });
-                } else {
-                    if (onClose != null) {
-                        loadResult = true;
-                        onClose.onH5ResultClose(ChineseAiSubjectiveCoursewarePager.this, getBaseVideoQuestionEntity());
-                    }
-
                 }
-
-
             }
 
             @Override
@@ -883,7 +878,12 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
             resultEntity.setRightAnswers(answerList);
             resultEntity.setGold(0);
             addResultPager(1, resultEntity);
+            if (onClose != null) {
+                loadResult = true;
+                onClose.onH5ResultClose(ChineseAiSubjectiveCoursewarePager.this, getBaseVideoQuestionEntity());
+            }
         }
+
     }
 
     /**
@@ -1254,10 +1254,12 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
 
             @Override
             public void onCloseByUser() {
-                onClose.onH5ResultClose(ChineseAiSubjectiveCoursewarePager.this, getBaseVideoQuestionEntity());
+                if (isforce == 0){
+                    onClose.onH5ResultClose(ChineseAiSubjectiveCoursewarePager.this, getBaseVideoQuestionEntity());
+                }
             }
         });
-        ((RelativeLayout) mView).addView(answerResultPager.getRootView(),
+        ((RelativeLayout) mView.getParent()).addView(answerResultPager.getRootView(),
                 new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT));
         NewCourseLog.sno8(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts),
