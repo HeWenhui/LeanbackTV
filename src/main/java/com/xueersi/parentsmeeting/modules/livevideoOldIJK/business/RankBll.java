@@ -139,7 +139,7 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
             liveStandMediaControllerBottom.addOnViewChange(onViewChange);
         }
 
-        if(liveMediaControllerBottom instanceof LiveHalfBodyMediaControllerBottom){
+        if (liveMediaControllerBottom instanceof LiveHalfBodyMediaControllerBottom) {
             LiveHalfBodyMediaControllerBottom liveHalfBodyMediaControllerBottom = (LiveHalfBodyMediaControllerBottom)
                     liveMediaControllerBottom;
             liveHalfBodyMediaControllerBottom.addLiveUIStateListener(onViewChange);
@@ -254,12 +254,13 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                 });
     }
 
-    private com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener onViewChange = new com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener(){
+    private com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener onViewChange = new com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener() {
         @Override
         public void onViewChange(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
             setLiveMediaController(mMediaController, baseLiveMediaControllerBottom);
         }
     };
+
 
     public void getAllRanking(final AbstractBusinessDataCallBack callBack) {
         logger.e("======> rankBll getAllRanking called:" + ":" + mGetInfo.getArtsExtLiveInfo());
@@ -437,7 +438,6 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                     if (allRankEntity == null) {
                         return;
                     }
-
                     mArtsRankEntities = allRankEntity.getMyRankEntityMyTeam().getRankEntities();
                     mArtsGroupCommonAdapter.updateData(mArtsRankEntities);//一定要先更新在
                     if (lv_livevideo_rank_list.getAdapter() == null || lv_livevideo_rank_list.getAdapter() !=
@@ -560,17 +560,13 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                 final TextView tv_livevideo_rank_subtitle_mid = (TextView) relativeLayout.findViewById(R.id
                         .tv_livevideo_rank_subtitle_mid);
                 lv_livevideo_rank_list = relativeLayout.findViewById(R.id.lv_livevideo_rank_list);
-//        ArrayList<RankEntity> rankEntities = new ArrayList<>();
-//        for (int i = 0; i < 10; i++) {
-//            RankEntity rankEntity = new RankEntity();
-//            rankEntity.setRank(i + 1);
-//            rankEntity.setName("王星" + i);
-//            rankEntity.setRate((100 - i) + "%");
-//            rankEntities.add(rankEntity);
-//        }
+
+
                 final int COLOR_F13232 = activity.getResources().getColor(R.color.COLOR_F13232);
                 final int white = activity.getResources().getColor(R.color.white);
                 final int slider = activity.getResources().getColor(R.color.COLOR_SLIDER);
+
+
                 rl_livevideo_rank_mygroup.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -653,16 +649,17 @@ public class RankBll extends LiveBaseBll implements BaseLiveMediaControllerBotto
                     }
                 });
             }
-            //把该布局加到排行榜的右边
-            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
-                    RelativeLayout.LayoutParams.MATCH_PARENT);
-//        relativeLayout.setBackgroundColor(liveVideoActivity.getResources().getColor(R.color.translucent_black));
-            lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            int index = bottomContent.indexOfChild(tempView);
-            bottomContent.removeViewInLayout(tempView);
-            bottomContent.addView(relativeLayout, index, lp);
-            setVideoLayout();
         }
+        //把该布局加到排行榜的右边
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT,
+                RelativeLayout.LayoutParams.MATCH_PARENT);
+//        relativeLayout.setBackgroundColor(liveVideoActivity.getResources().getColor(R.color.translucent_black));
+        lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        int index = bottomContent.indexOfChild(tempView);
+        bottomContent.removeViewInLayout(tempView);
+        bottomContent.addView(relativeLayout, index, lp);
+        setVideoLayout();
+
     }
 
     private static String findUserId(String user) {
