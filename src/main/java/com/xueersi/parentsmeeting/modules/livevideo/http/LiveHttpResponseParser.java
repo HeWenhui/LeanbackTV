@@ -517,7 +517,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 getInfo.setSubjectIds(arrSubjIds);
             }
             //金话筒
-            getInfo.setUseGoldMicroPhone(data.optBoolean("isGoldMicrophone"));
+            getInfo.setUseGoldMicroPhone(data.optInt("isGoldMicrophone"));
             getInfo.setSubject_digits(data.optString("subject_digits"));
             if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                 getInfo.setIsNewProject(data.optInt("isNewProject", 0));

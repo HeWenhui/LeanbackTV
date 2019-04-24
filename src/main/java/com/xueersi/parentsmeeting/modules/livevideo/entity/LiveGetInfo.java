@@ -343,13 +343,13 @@ public class LiveGetInfo {
         this.getThumbsUpUrl = getThumbsUpUrl;
     }
 
-    private boolean useGoldMicroPhone;
+    private int useGoldMicroPhone;
 
-    public boolean isUseGoldMicroPhone() {
+    public int isUseGoldMicroPhone() {
         return useGoldMicroPhone;
     }
 
-    public void setUseGoldMicroPhone(boolean useGoldMicroPhone) {
+    public void setUseGoldMicroPhone(int useGoldMicroPhone) {
         this.useGoldMicroPhone = useGoldMicroPhone;
     }
 

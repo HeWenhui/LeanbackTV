@@ -200,7 +200,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     bundle.putBoolean("isSmallChinese", LiveVideoConfig.isSmallChinese);
                     bundle.putBoolean("isSmallEnglish", mGetInfo.getSmallEnglish());
                     bundle.putInt("useSkin", mGetInfo.getUseSkin());
-                    bundle.putInt("isGoldMicrophone", mGetInfo.isUseGoldMicroPhone() ? 1 : 0);
+                    bundle.putInt("isGoldMicrophone", mGetInfo.isUseGoldMicroPhone());
                     if (mGetInfo.getIsArts() == 0) {
                         bundle.putInt("allowLinkMicNew", mGetInfo.getAllowLinkMicNew());
                     } else {
@@ -213,7 +213,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
 //                }
                     if (1 == mGetInfo.getIsEnglish()) {
                         gotoEnglish(bundle);
-                    } else if (mGetInfo.isUseGoldMicroPhone()) {
+                    } else if (mGetInfo.isUseGoldMicroPhone() == 1) {
                         gotoHalfBodyChinese(bundle);
                     } else {
                         if (MediaPlayer.getIsNewIJK()) {
@@ -316,7 +316,11 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
                     @Override
                     public void onDeny(String permission, int position) {
-                        com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                        if (MediaPlayer.getIsNewIJK()) {
+                            com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                        } else {
+                            com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                        }
                         finish();
                     }
 
@@ -326,7 +330,11 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
-                                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                                if (MediaPlayer.getIsNewIJK()) {
+                                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                                } else {
+                                    com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                                }
                                 finish();
                             }
                         });
