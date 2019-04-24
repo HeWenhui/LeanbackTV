@@ -3,30 +3,37 @@ package com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.TextUtils;
 
+import com.xueersi.common.base.BaseApplication;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.GroupGameTcp;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.ReceiveMegCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.SendCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.TcpConstants;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
 
 import org.json.JSONObject;
 
+import java.io.File;
 import java.net.InetSocketAddress;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /** tcp调度 */
 public class TcpDispatch {
     private Logger logger = LiveLoggerFactory.getLogger("TcpDispatch");
+    private File logDir;
     private ArrayList<InetSocketAddress> addresses = new ArrayList<>();
     private GroupGameTcp groupGameTcp;
     private int addressIndex = 0;
+    private Context context;
     private String stuId;
     private String xes_rfh;
     private String live_id;
@@ -54,6 +61,7 @@ public class TcpDispatch {
     private String test_id;
 
     public TcpDispatch(Context context, String stuId, String xes_rfh, String live_id, String class_id, int gt, int pid, int iid, String test_id) {
+        this.context = context;
         this.stuId = stuId;
         this.xes_rfh = xes_rfh;
         this.live_id = live_id;
@@ -62,6 +70,13 @@ public class TcpDispatch {
         this.pid = pid;
         this.iid = iid;
         this.test_id = test_id;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd,HH:mm:ss", Locale.getDefault());
+        String s = dateFormat.format(new Date());
+        String[] ss = s.split(",");
+        logDir = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + ss[0] + "/" + live_id + "-NL");
+        if (!logDir.exists()) {
+            logDir.mkdirs();
+        }
     }
 
     public int getGt() {
@@ -105,7 +120,8 @@ public class TcpDispatch {
         this.addresses = addresses;
         InetSocketAddress inetSocketAddress = addresses.get(addressIndex++);
         logger.d("setAddresses:inetSocketAddress=" + inetSocketAddress);
-        groupGameTcp = new GroupGameTcp(inetSocketAddress);
+
+        groupGameTcp = new GroupGameTcp(inetSocketAddress, logDir);
         groupGameTcp.setReceiveMegCallBack(receiveMegCallBack);
         groupGameTcp.start();
     }
@@ -177,7 +193,7 @@ public class TcpDispatch {
                         @Override
                         public void run() {
                             InetSocketAddress inetSocketAddress = addresses.get(addressIndex++ % addresses.size());
-                            groupGameTcp = new GroupGameTcp(inetSocketAddress);
+                            groupGameTcp = new GroupGameTcp(inetSocketAddress, logDir);
                             groupGameTcp.setSeq(seq);
                             groupGameTcp.setReceiveMegCallBack(receiveMegCallBack);
                             groupGameTcp.start();

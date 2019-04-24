@@ -11,6 +11,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
+import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThreadPool;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.ui.adapter.AdapterItemInterface;
@@ -26,7 +27,7 @@ public abstract class BaseCourseGroupItem implements AdapterItemInterface<TeamMe
     protected TextView rlCourseItemName;
     protected ImageView ivCourseItemVideo;
     protected ImageView ivCourseItemAudio;
-    protected WorkerThread workerThread;
+    protected WorkerThreadPool workerThread;
     protected int uid;
     protected Context mContext;
     protected TeamMemberEntity entity;
@@ -36,7 +37,7 @@ public abstract class BaseCourseGroupItem implements AdapterItemInterface<TeamMe
     protected long audioTime = 0;
     protected LogToFile mLogtf;
 
-    public BaseCourseGroupItem(Context context, TeamMemberEntity entity, WorkerThread workerThread, int uid) {
+    public BaseCourseGroupItem(Context context, TeamMemberEntity entity, WorkerThreadPool workerThread, int uid) {
         this.mContext = context;
         this.entity = entity;
         this.workerThread = workerThread;

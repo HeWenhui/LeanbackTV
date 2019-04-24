@@ -6,10 +6,9 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.util.SparseArray;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.lib.framework.are.ContextManager;
-import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,6 +32,7 @@ public class GroupGameTcp {
     private boolean readSave = false;
     /** 测试用，存在本地文件 */
     private boolean saveRead = false;
+    private File saveDir;
     private InetSocketAddress inetSocketAddress;
     private Socket socket;
     /** 消息序号 */
@@ -48,9 +48,10 @@ public class GroupGameTcp {
     private boolean isStop = false;
     private SparseArray<SendCallBack> callBackSparseArray = new SparseArray<>();
 
-    public GroupGameTcp(InetSocketAddress inetSocketAddress) {
+    public GroupGameTcp(InetSocketAddress inetSocketAddress, File saveDir) {
         this.inetSocketAddress = inetSocketAddress;
         log.d("GroupGameTcp:host=" + inetSocketAddress);
+        this.saveDir = saveDir;
         if (com.xueersi.common.config.AppConfig.DEBUG) {
             saveRead = true;
         }
@@ -337,7 +338,8 @@ public class GroupGameTcp {
             FileInputStream fileInputStream = null;
             try {
                 if (readSave || saveRead) {
-                    File saveDir = LiveCacheFile.geCacheFile(ContextManager.getContext(), "tcp");
+                    String name = ("" + inetSocketAddress).replaceAll("\\.", "_").replaceAll(":", "-");
+                    saveDir = new File(saveDir, name);
                     if (!saveDir.exists()) {
                         saveDir.mkdirs();
                     }
@@ -507,6 +509,10 @@ public class GroupGameTcp {
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
+                log.e("testBuffer", e);
+            } catch (Exception e) {
+                e.printStackTrace();
+                CrashReport.postCatchedException(new TcpException("testBuffer", e));
                 log.e("testBuffer", e);
             } finally {
                 if (fileOutputStream != null) {

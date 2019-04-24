@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.AGEventHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
+import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThreadPool;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
@@ -169,7 +170,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     private int mPagerIndex = 0;
     private int mSingCount = 0;
     private InteractiveTeam interactiveTeam;
-    private WorkerThread mWorkerThread;
+    private WorkerThreadPool mWorkerThread;
     private HashMap<String, BaseCourseGroupItem> courseGroupItemHashMap = new HashMap<>();
     private LiveGetInfo liveGetInfo;
     private int stuid;
@@ -713,14 +714,14 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     }
 
     private void joinChannel(ArrayList<TeamMemberEntity> entities) {
-        mWorkerThread = new WorkerThread(mContext, stuid, false, true);
+        mWorkerThread = new WorkerThreadPool(mContext, stuid, false, true);
         mWorkerThread.setAppid(liveGetInfo.getAppid());
         mWorkerThread.eventHandler().addEventHandler(agEventHandler);
         mWorkerThread.setEnableLocalVideo(true);
-        mWorkerThread.setOnEngineCreate(new WorkerThread.OnEngineCreate() {
+        mWorkerThread.setOnEngineCreate(new WorkerThreadPool.OnEngineCreate() {
             @Override
             public void onEngineCreate(final RtcEngine mRtcEngine) {
-                VideoEncoderConfiguration.VideoDimensions dimensions = new VideoEncoderConfiguration.VideoDimensions(256, 192);
+                VideoEncoderConfiguration.VideoDimensions dimensions = new VideoEncoderConfiguration.VideoDimensions(320, 240);
                 VideoEncoderConfiguration configuration = new VideoEncoderConfiguration(dimensions,
                         VideoEncoderConfiguration.FRAME_RATE.FRAME_RATE_FPS_10,
                         VideoEncoderConfiguration.STANDARD_BITRATE,
@@ -730,13 +731,13 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             }
         });
         addTeam(entities);
-        mWorkerThread.start();
-        mWorkerThread.waitForReady();
+//        mWorkerThread.start();
+//        mWorkerThread.waitForReady();
         int vProfile = Constants.VIDEO_PROFILE_120P;
         mWorkerThread.configEngine(Constants.CLIENT_ROLE_BROADCASTER, vProfile);
         String channel = liveGetInfo.getId() + "_" + liveGetInfo.getStudentLiveInfo().getClassId() + "_" + getStuActiveTeam.getPkTeamEntity().getPkTeamId() + "_" + interactiveTeam.getInteractive_team_id();
         mLogtf.d("joinChannel:channel=" + channel);
-        mWorkerThread.joinChannel("", channel, stuid, new WorkerThread.OnJoinChannel() {
+        mWorkerThread.joinChannel("", channel, stuid, new WorkerThreadPool.OnJoinChannel() {
             @Override
             public void onJoinChannel(int joinChannel) {
                 logger.d("onJoinChannel:joinChannel=" + joinChannel);
@@ -746,27 +747,14 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
     private void leaveChannel() {
         if (mWorkerThread != null) {
-            mWorkerThread.leaveChannel(mWorkerThread.getEngineConfig().mChannel, new WorkerThread.OnLeaveChannel() {
+            mWorkerThread.leaveChannel(mWorkerThread.getEngineConfig().mChannel, new WorkerThreadPool.OnLeaveChannel() {
                 @Override
                 public void onLeaveChannel(int leaveChannel) {
                     logger.d("leaveChannel:mWorkerThread.joinstart");
                 }
             });
             mWorkerThread.eventHandler().removeEventHandler(agEventHandler);
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    mWorkerThread.exit();
-                    logger.d("leaveChannel:mWorkerThread.joinstart");
-//                    try {
-//                        mWorkerThread.join();
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-                    logger.d("leaveChannel:mWorkerThread.joinend");
-                    mWorkerThread = null;
-                }
-            }, 10);
+            mWorkerThread.exit();
         }
     }
 

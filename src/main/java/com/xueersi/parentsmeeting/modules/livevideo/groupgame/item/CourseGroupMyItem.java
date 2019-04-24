@@ -23,6 +23,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
+import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThreadPool;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 
@@ -53,7 +54,7 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
     OpenImageAssetDelegate openImageAssetDelegate;
     CloseImageAssetDelegate closeImageAssetDelegate;
 
-    public CourseGroupMyItem(Context context, TeamMemberEntity entity, WorkerThread workerThread, int uid) {
+    public CourseGroupMyItem(Context context, TeamMemberEntity entity, WorkerThreadPool workerThread, int uid) {
         super(context, entity, workerThread, uid);
         oldEnergy = entity.energy;
         videoStartTime = System.currentTimeMillis();

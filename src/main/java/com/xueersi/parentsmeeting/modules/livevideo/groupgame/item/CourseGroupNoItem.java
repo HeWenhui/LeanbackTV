@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
+import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThreadPool;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 
 
@@ -22,7 +23,7 @@ public class CourseGroupNoItem extends BaseCourseGroupItem {
     private boolean enableAudio = true;
     private int progress = 0;
 
-    public CourseGroupNoItem(Context context, TeamMemberEntity entity, WorkerThread workerThread, int uid) {
+    public CourseGroupNoItem(Context context, TeamMemberEntity entity, WorkerThreadPool workerThread, int uid) {
         super(context, entity, workerThread, uid);
     }
 

@@ -10,6 +10,7 @@ import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
+import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThreadPool;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.config.GroupGameConfig;
 
@@ -26,7 +27,7 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
     private long audioStartTime;
     private boolean onLine = false;
 
-    public CourseGroupOtherItem(Context context, TeamMemberEntity entity, WorkerThread workerThread, int uid) {
+    public CourseGroupOtherItem(Context context, TeamMemberEntity entity, WorkerThreadPool workerThread, int uid) {
         super(context, entity, workerThread, uid);
     }
 
