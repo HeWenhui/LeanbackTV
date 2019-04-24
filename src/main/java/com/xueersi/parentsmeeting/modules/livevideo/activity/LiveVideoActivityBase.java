@@ -543,7 +543,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
 
         vPlayerHandler.sendEmptyMessage(OPEN_FILE);
     }
-
+    /** 赋值视频名称 */
     public void setmDisplayName(String displayName) {
         this.mDisplayName = displayName;
     }
@@ -1213,16 +1213,20 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
 
     /** 设置视频名称 */
     protected void setFileName() {
-        if (mUri != null) {
-            String name = null;
-            if (mUri.getScheme() == null || mUri.getScheme().equals("file"))
-                name = FileUtils.getFileName(mUri);
-            else
-                name = mUri.getLastPathSegment();
-            if (name == null)
-                name = "null";
-            if (mDisplayName == null)
-                mDisplayName = name;
+        if (!MediaPlayer.getIsNewIJK()) {
+            if (mUri != null) {
+                String name = null;
+                if (mUri.getScheme() == null || mUri.getScheme().equals("file"))
+                    name = FileUtils.getFileName(mUri);
+                else
+                    name = mUri.getLastPathSegment();
+                if (name == null)
+                    name = "null";
+                if (mDisplayName == null)
+                    mDisplayName = name;
+                mMediaController.setFileName(mDisplayName);
+            }
+        } else {
             mMediaController.setFileName(mDisplayName);
         }
     }
