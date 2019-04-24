@@ -140,7 +140,6 @@ public class LiveHalfBodyMediaControllerBottom extends BaseLiveMediaControllerBo
         return view;
     }
 
-
     /**
      * 是否是语文半身直播
       * @return
