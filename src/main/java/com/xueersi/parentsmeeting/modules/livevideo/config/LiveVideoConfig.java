@@ -231,11 +231,11 @@ public class LiveVideoConfig {
     public static String LIVE_PLAY_ERROR = "live_play_error";
     /** 直播-学习报告截图 */
     public static String LIVE_STUDY_REPORT_IMG = "live_study_report_img";
-    /** 直播-小英语音聊天*/
+    /** 直播-小英语音聊天 */
     public static String LIVE_VOICE_CHAT = "voicechat";
-    /** 直播-小英语音弹幕*/
+    /** 直播-小英语音弹幕 */
     public static String LIVE_VOICE_BULLET = "voicebullet";
-    /** 直播-小英语音聊天*/
+    /** 直播-小英语音聊天 */
     public static String LIVE_VOICE_VOLUME = "live_smallenglish_volume";
 
     public static class ShareData {
@@ -373,11 +373,11 @@ public class LiveVideoConfig {
     /** 一发多题的两个动态接口-语文 */
     public static String LIVEMULPRELOADCHS;
     public static String LIVEMULH5URLCHS;
-    /** AI体验课互动题答题结果*/
+    /** AI体验课互动题答题结果 */
     public static Boolean isAITrue = false;
-    /** AI体验课已答互动题序号*/
+    /** AI体验课已答互动题序号 */
     public static int aiQuestionIndex = -1;
-    /** AI体验课退出时，记录当前的进度*/
+    /** AI体验课退出时，记录当前的进度 */
     public static HashMap<String, Long> liveKey = new HashMap<>();
     public static HashMap<String, Long> curentTime = new HashMap<>();
     public static HashMap<String, Boolean> livefinish = new HashMap<>();
@@ -417,11 +417,12 @@ public class LiveVideoConfig {
 
     /** 文科新课件平台的标识 */
     public static Boolean isNewArts = false;
-    /** 全身直播的标识*/
+    /** 全身直播的标识 */
     public static Boolean isStandLive = false;
-    /** H5语音答题新增字段*/
+    /** H5语音答题新增字段 */
     public static String userAnswer;
     public static String answer;
+
     /** 学习报告精彩瞬间 */
     public interface STUDY_REPORT {
         /** 贡献之星 */
@@ -456,13 +457,14 @@ public class LiveVideoConfig {
     /**
      * 体验课类型
      */
-    public static interface ExperiencLiveType{
-        /**半身直播体验课*/
+    public static interface ExperiencLiveType {
+        /** 半身直播体验课 */
         int HALF_BODY = 1001;
-        /**普通直播体验课*/
+        /** 普通直播体验课 */
         int NORMAL = 1000;
     }
-    /**半身直播体验课 试题 h5 地址**/
+
+    /** 半身直播体验课 试题 h5 地址 **/
     public static final String URL_HALFBODY_EXPERIENCE_LIVE_H5 = "https://expclass.xueersi.com/live-rewrite/courseware-sci/index.html";
 
     /**
@@ -476,11 +478,16 @@ public class LiveVideoConfig {
     /**
      * 理科课件预加载
      */
-    public static String URL_LIVE_GET_SCIENCE_COURSEWARE_URL =  LiveVideoConfig.HTTP_HOST+"/science/LiveCourses/preLoadNewCourseWare";
+    public static String URL_LIVE_GET_SCIENCE_COURSEWARE_URL = LiveVideoConfig.HTTP_HOST + "/science/LiveCourses/preLoadNewCourseWare";
 
     public static final String URL_GOLD_MICROPHONE_TO_AI = "https://app.chs.xueersi.com/LiveCourse/isGoldMicrophoneToAi";
 
     public static final String URL_IS_GOLD_MICROPHONE = "https://app.chs.xueersi.com/LiveCourse/setGoldMicrophoneData";
-
+    /** app端上传演讲秀视频 */
+    public static final String SUPER_SPEAKER_UPLOAD_SPEECH_SHOW = "https://app.chs.xueersi.com/LiveCourse/uploadSpeechShow";
+    /** app端摄像头开启状态 */
+    public static final String SUPER_SPEAKER_SPEECH_SHOW_CAMERA_STATUS = "https://app.chs.xueersi.com/LiveCourse/speechShowCameraStatus";
+    /** app端提交演讲秀 */
+    public static final String SUPER_SPEAKER_SUBMIT_SPEECH_SHOW = "https://app.chs.xueersi.com/LiveCourse/submitSpeechShow";
 
 }

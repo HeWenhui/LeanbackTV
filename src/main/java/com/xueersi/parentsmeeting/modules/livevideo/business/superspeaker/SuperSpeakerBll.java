@@ -1,15 +1,34 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker;
 
 import android.app.Activity;
+import android.os.Environment;
 
+import com.alibaba.fastjson.JSON;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.component.cloud.XesCloudUploadBusiness;
+import com.xueersi.component.cloud.config.CloudDir;
+import com.xueersi.component.cloud.config.XesCloudConfig;
+import com.xueersi.component.cloud.entity.CloudUploadEntity;
+import com.xueersi.component.cloud.entity.XesCloudResult;
+import com.xueersi.component.cloud.listener.XesStsUploadListener;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.SuperSpeakerRedPackageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
+import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 
 import org.json.JSONObject;
 
-public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction {
+import java.io.File;
+import java.util.UUID;
+
+public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicAction, ISuperSpeakerContract.ICameraPresenter {
+    ISuperSpeakerContract.ICameraView iView;
+
     public SuperSpeakerBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
     }
@@ -22,7 +41,14 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction {
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
         switch (type) {
             case XESCODE.SUPER_SPEAKER_TAKE_CAMERA: {
-
+                int open = data.optInt("open");
+                srcType = data.optString("srcType");
+                courseWareId = data.optString("testId");
+                if (open == 1) {
+                    performShowRecordCamera();
+                } else {
+                    iView.timeUp();
+                }
                 break;
             }
             default: {
@@ -31,11 +57,112 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction {
         }
     }
 
+    /**
+     * http://wiki.xesv5.com/pages/viewpage.action?pageId=18552940
+     *
+     * @param liveTopic
+     * @param jsonObject
+     * @param modeChange 是否发生主/辅导 态切换
+     */
+    @Override
+    public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
+        JSONObject dataJson = jsonObject.optJSONObject("speechShow");
+        if (dataJson != null) {
+            boolean open = dataJson.optBoolean("open");
+            courseWareId = dataJson.optString("testId");
+            srcType = dataJson.optString("srcType");
+            if (open) {
+                performShowRecordCamera();
+            }
+        }
+    }
+
+    /**
+     * 表现录制视频
+     */
+    private void performShowRecordCamera() {
+        iView = new SuperSpeakerCameraPager(mContext, this);
+        iView.initView();
+    }
+
     @Override
     public int[] getNoticeFilter() {
         //学生点赞
         return new int[]{
-                XESCODE.SUPER_SPEAKER_TAKE_CAMERA};
+                XESCODE.SUPER_SPEAKER_TAKE_CAMERA
+        };
     }
 
+    /** 互动题所属id */
+    private String courseWareId;
+    /** 互动题所属题目类型 */
+    private String srcType;
+
+    /**
+     * 提交视频
+     *
+     * @param isForce 1：是 2：否
+     */
+    @Override
+    public void submitSpeechShow(String isForce) {
+        getHttpManager().sendSuperSpeakersubmitSpeech(
+                mGetInfo.getId(),
+                mGetInfo.getStuCouId(),
+                mGetInfo.getStuId(),
+                "1",
+                courseWareId,
+                srcType,
+                isForce,
+                new HttpCallBack() {
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                        SuperSpeakerRedPackageEntity entity = getHttpResponseParser().parseSuperSpeakerSubmitEntity(responseEntity);
+                        if (iView != null) {
+                            iView.updateNum(entity.getMoney());
+                        }
+                    }
+                });
+    }
+
+    XesCloudUploadBusiness business;
+    File file;
+
+    private void uploadVideo() {
+        business = new XesCloudUploadBusiness(mContext);
+        final String path = Environment.getExternalStorageDirectory() + "/parentsmeeting/love.mp4";
+
+        CloudUploadEntity entity = new CloudUploadEntity();
+        String id = UUID.randomUUID().toString();
+        entity.setFileId(id);
+        entity.setCloudPath(CloudDir.CLOUD_TEST);
+        entity.setFilePath(path);
+        entity.setType(XesCloudConfig.UPLOAD_OTHER);
+        file = new File(path);
+        if (!file.exists()) {
+            XESToastUtils.showToast(mContext, "录制失败");
+            return;
+        }
+        business.asyncUpload(entity, new XesStsUploadListener() {
+            @Override
+            public void onProgress(XesCloudResult result, int percent) {
+                if (percent % 10 == 0) {
+                    XESToastUtils.showToast(mContext, "上传进度：" + percent + "    " + "视频总大小:" + getDataSize(file.length()));
+                }
+            }
+
+            @Override
+            public void onSuccess(XesCloudResult result) {
+                XESToastUtils.showToast(mContext, "complete");
+                mNotificationManager.cancel(1099);
+
+            }
+
+            @Override
+            public void onError(XesCloudResult result) {
+                XESToastUtils.showToast(mContext, JSON.toJSONString(result));
+
+            }
+        });
+
+    }
 }
