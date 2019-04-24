@@ -243,7 +243,7 @@ public class LiveGetInfo {
     /** 全身直播语音答题和评测小组排名请求时间 */
     private String requestTime;
 
-    /**语文，英语是否使用皮肤**/
+    /** 语文，英语是否使用皮肤 **/
     private int useSkin;
 
     /**
@@ -343,13 +343,13 @@ public class LiveGetInfo {
         this.getThumbsUpUrl = getThumbsUpUrl;
     }
 
-    private boolean useGoldMicroPhone;
+    private int useGoldMicroPhone;
 
-    public boolean isUseGoldMicroPhone() {
+    public int isUseGoldMicroPhone() {
         return useGoldMicroPhone;
     }
 
-    public void setUseGoldMicroPhone(boolean useGoldMicroPhone) {
+    public void setUseGoldMicroPhone(int useGoldMicroPhone) {
         this.useGoldMicroPhone = useGoldMicroPhone;
     }
 
