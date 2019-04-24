@@ -593,19 +593,23 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
      * #mPlayListener
      * #getPSServerList(int, int, boolean)}
      * 调用
+     *
+     * @param cur        当前播放线路索引(由0开始算)
+     * @param total      所有播放线路总数
+     * @param modeChange
      */
     @Override
     public void getPSServerList(int cur, int total, boolean modeChange) {
         super.getPSServerList(cur, total, modeChange);
         this.totalSwitchRouteNum = total;
-        this.userEyePos = cur;
+//        this.userEyePos = cur + 1;
         if ((pattern == 1) && switchFlowBll != null) {
 //            if (total != 0) {
             switchFlowBll.setListRoute(total);
 //                logger.i(total);
 //            } else {
 //                switchFlowBll.setListRoute(0);
-            logger.i("total = 0");
+            logger.i("total = " + total);
 //            }
         }
     }
