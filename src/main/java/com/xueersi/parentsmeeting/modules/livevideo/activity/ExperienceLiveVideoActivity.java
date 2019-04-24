@@ -957,6 +957,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 videoPath = url;
             }
             playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+            setmDisplayName(mSectionName);
         }
         chatCfgServerList = getIntent().getStringArrayListExtra("roomChatCfgServerList");
         expChatId = getIntent().getStringExtra("expChatId");
@@ -1442,6 +1443,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                     videoPath = url;
                 }
                 playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+                setmDisplayName(mSectionName);
             }
         }
         AppBll.getInstance(mBaseApplication);
@@ -1505,6 +1507,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 videoPath = url;
             }
             playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+            setmDisplayName(mSectionName);
         }
 
     }
@@ -1573,6 +1576,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                     videoPath = url;
                 }
                 playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+                setmDisplayName(mSectionName);
             }
         } else {
             super.resultFailed(arg1, arg2);

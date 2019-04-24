@@ -223,7 +223,8 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
 
     private IIRCMessage mIRCMessage;
     private final String IRC_CHANNEL_PREFIX = "4L";
-    /** 是否使用新IRC SDK*/
+
+    /** 是否使用新IRC SDK */
 //    private boolean isNewIRC = false;
 
     // 定时获取聊天记录的任务
@@ -956,6 +957,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                 videoPath = url;
             }
             playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+            setmDisplayName(mSectionName);
         }
         chatCfgServerList = getIntent().getStringArrayListExtra("roomChatCfgServerList");
         expChatId = getIntent().getStringExtra("expChatId");
@@ -1688,6 +1690,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                     videoPath = url;
                 }
                 playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+                setmDisplayName(mSectionName);
             }
         }
         AppBll.getInstance(mBaseApplication);
@@ -1754,6 +1757,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                 videoPath = url;
             }
             playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+            setmDisplayName(mSectionName);
         }
 
     }
@@ -1821,6 +1825,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                     videoPath = url;
                 }
                 playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+                setmDisplayName(mSectionName);
             }
         } else {
             super.resultFailed(arg1, arg2);

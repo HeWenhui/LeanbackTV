@@ -167,6 +167,7 @@ public class StandExperienceVideoBll {
                 videoPath = url;
             }
             liveBackPlayVideoFragment.playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+            liveBackPlayVideoFragment.setmDisplayName(mSectionName);
 //            liveBackPlayVideoFragment.playPSVideo(mVideoEntity.getVideoPath(), MediaPlayer.VIDEO_PROTOCOL_MP4);
         }
     }
