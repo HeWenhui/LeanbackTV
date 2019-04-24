@@ -52,9 +52,7 @@ public class GroupGameTcp {
         this.inetSocketAddress = inetSocketAddress;
         log.d("GroupGameTcp:host=" + inetSocketAddress);
         this.saveDir = saveDir;
-        if (com.xueersi.common.config.AppConfig.DEBUG) {
-            saveRead = true;
-        }
+        saveRead = true;
     }
 
     public void setReceiveMegCallBack(ReceiveMegCallBack receiveMegCallBack) {
@@ -339,28 +337,33 @@ public class GroupGameTcp {
             File saveFile = null;
             try {
                 if (readSave || saveRead) {
-                    String name = ("" + inetSocketAddress).replaceAll("\\.", "_").replaceAll(":", "-");
-                    saveDir = new File(saveDir, name);
-                    if (!saveDir.exists()) {
-                        saveDir.mkdirs();
-                    }
-                    saveFile = new File(saveDir, "read_" + System.currentTimeMillis());
-                    log.d("testBuffer:saveFile=" + saveFile.length());
-                    if (readSave) {
-                        try {
-                            fileInputStream = new FileInputStream(saveFile);
-                            inputStream = fileInputStream;
-                        } catch (Exception e) {
-                            log.d("testBuffer:Input.e=" + e);
+                    //暂时没有出现过异常
+                    try {
+                        String name = ("" + inetSocketAddress).replaceAll("\\.", "_").replaceAll(":", "-");
+                        saveDir = new File(saveDir, name);
+                        if (!saveDir.exists()) {
+                            saveDir.mkdirs();
                         }
-                        saveRead = false;
-                    }
-                    if (saveRead) {
-                        try {
-                            fileOutputStream = new FileOutputStream(saveFile);
-                        } catch (Exception e) {
-                            log.d("testBuffer:Output.e=" + e);
+                        saveFile = new File(saveDir, "read_" + System.currentTimeMillis());
+                        log.d("testBuffer:saveFile=" + saveFile.length());
+                        if (readSave) {
+                            try {
+                                fileInputStream = new FileInputStream(saveFile);
+                                inputStream = fileInputStream;
+                            } catch (Exception e) {
+                                log.d("testBuffer:Input.e=" + e);
+                            }
+                            saveRead = false;
                         }
+                        if (saveRead) {
+                            try {
+                                fileOutputStream = new FileOutputStream(saveFile);
+                            } catch (Exception e) {
+                                log.d("testBuffer:Output.e=" + e);
+                            }
+                        }
+                    } catch (Exception e) {
+                        CrashReport.postCatchedException(new TcpException("testBuffer", e));
                     }
                 }
                 while (!isStop && (length = inputStream.read(readBuffer)) != -1) {
@@ -370,7 +373,6 @@ public class GroupGameTcp {
                         try {
                             fileOutputStream.write(readBuffer, 0, length);
                         } catch (Exception e) {
-                            // TODO Auto-generated catch block
                             e.printStackTrace();
                         }
                     }
