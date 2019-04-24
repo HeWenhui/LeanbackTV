@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.irc;
 
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,7 +12,12 @@ public class QueIrcParse {
         videoQuestionLiveEntity.id = object.getString("testId");
         videoQuestionLiveEntity.setDotId(object.getString("dotId"));
         videoQuestionLiveEntity.setDotType(object.getInt("dotType"));
-        videoQuestionLiveEntity.num = object.getInt("itemNum");
+        videoQuestionLiveEntity.setSrcType(object.getString("srcType"));
+        if (videoQuestionLiveEntity.getDotType() == LiveQueConfig.DOTTYPE_FILL) {
+            videoQuestionLiveEntity.num = object.getInt("itemNum");
+        } else {
+            videoQuestionLiveEntity.num = LiveQueConfig.DOTTYPE_SELE_NUM;
+        }
         return videoQuestionLiveEntity;
     }
 }

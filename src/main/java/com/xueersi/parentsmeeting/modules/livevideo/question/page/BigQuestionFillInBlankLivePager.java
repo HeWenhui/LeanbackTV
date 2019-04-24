@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 import android.app.Activity;
 import android.content.Context;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -20,11 +21,16 @@ import com.alibaba.fastjson.JSONObject;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.entity.AnswerEntity;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.QuesReslutEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultItemEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.ui.adapter.XsBaseAdapter;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
@@ -67,6 +73,7 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
     /** 提交 */
     public Button btnSubmit;
     private long startTime;
+    private final int MAX_CHAR_NUM = 10;
 
     public BigQuestionFillInBlankLivePager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity) {
         super(context);
@@ -172,9 +179,15 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
                 }
             });
             textWatcher = new TextWatcher() {
+                int selectionEnd;
+                boolean isDelete = false;
+
                 @Override
                 public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                    if (!isDelete) {
+                        selectionEnd = holder.etFillBlank.getSelectionEnd();
+                    }
+                    logger.d("beforeTextChanged:selectionEnd=" + selectionEnd);
                 }
 
                 @Override
@@ -190,12 +203,24 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
 //                            return;
 //                        }
                     // 保存答案
+                    int charSequenceCount = countChineseChar(edit);
+                    logger.d("afterTextChanged:" + edit + ",count=" + charSequenceCount);
+                    if (edit.length() + charSequenceCount > MAX_CHAR_NUM) {
+                        isDelete = true;
+                        holder.etFillBlank.setText(edit.subSequence(0, edit.length() - 1));
+                        return;
+                    }
+                    if (isDelete) {
+                        holder.etFillBlank.setSelection(selectionEnd);
+                    }
+                    isDelete = false;
                     mAnswerEntityLst.get(position).setStuAnswer(edit.toString());
-//                    if (TextUtils.isEmpty(chkReslut())) {
-//                        btnSubmit.setEnabled(false);
-//                    } else {
-//                        btnSubmit.setEnabled(true);
-//                    }
+                    QuesReslutEntity quesReslutEntity = chkReslut();
+                    if (quesReslutEntity.isHaveEmpty()) {
+                        btnSubmit.setEnabled(false);
+                    } else {
+                        btnSubmit.setEnabled(true);
+                    }
                 }
             };
             holder.etFillBlank.setTag(R.id.et_livevideo_question_fillin_input, textWatcher);
@@ -250,7 +275,7 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
         submitBigTestInteraction(0);
     }
 
-    private void submitBigTestInteraction(int isForce) {
+    private void submitBigTestInteraction(final int isForce) {
         JSONArray userAnswer = new JSONArray();
         for (int i = 0; i < answers.size(); i++) {
             userAnswer.put(answers.get(i));
@@ -258,6 +283,13 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
         questionSecHttp.submitBigTestInteraction(videoQuestionLiveEntity, userAnswer, startTime, isForce, new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
+                org.json.JSONObject jsonObject = (org.json.JSONObject) objData[0];
+                int toAnswered = jsonObject.optInt("toAnswered");
+                if (toAnswered == 2) {
+                    XESToastUtils.showToast(mContext, "已作答");
+                    onPagerClose.onClose(BigQuestionFillInBlankLivePager.this);
+                    return;
+                }
                 questionSecHttp.getStuInteractionResult(videoQuestionLiveEntity, new AbstractBusinessDataCallBack() {
                     @Override
                     public void onDataSucess(Object... objData) {
@@ -268,6 +300,38 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
 
             @Override
             public void onDataFail(int errStatus, String failMsg) {
+                if (isForce == 1) {
+
+                }
+                XESToastUtils.showToast(mContext, failMsg);
+//                onPagerClose.onClose(BigQuestionFillInBlankLivePager.this);
+//                if (com.xueersi.common.config.AppConfig.DEBUG) {
+//                    BigResultEntity bigResultEntity = new BigResultEntity();
+//                    ArrayList<BigResultItemEntity> bigResultEntities = bigResultEntity.getBigResultItemEntityArrayList();
+//                    for (int i = 0; i < 10; i++) {
+//                        BigResultItemEntity bigResultItemEntity = new BigResultItemEntity();
+//                        bigResultItemEntity.standAnswer = "A啊A啊A啊A啊";
+//                        bigResultItemEntity.youAnswer = "A啊A啊A啊A啊";
+//                        if (i % 2 == 0) {
+//                            bigResultItemEntity.rightType = LiveQueConfig.DOTTYPE_ITEM_RESULT_RIGHT;
+//                        } else {
+//                            bigResultItemEntity.rightType = LiveQueConfig.DOTTYPE_ITEM_RESULT_WRONG;
+//                        }
+//                        bigResultEntities.add(bigResultItemEntity);
+//                    }
+//                    showResult(bigResultEntity);
+//                }
+            }
+        });
+    }
+
+    private void showResult(BigResultEntity bigResultEntity) {
+        BigResultPager resultPager = new BigResultPager(mContext, rlQuestionResContent, bigResultEntity);
+        rlQuestionResContent.addView(resultPager.getRootView());
+        resultPager.setOnPagerClose(new OnPagerClose() {
+            @Override
+            public void onClose(LiveBasePager basePager) {
+                rlQuestionResContent.removeView(basePager.getRootView());
                 onPagerClose.onClose(BigQuestionFillInBlankLivePager.this);
             }
         });
@@ -282,9 +346,11 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
             String stuAnswer = mAnswerEntityLst.get(i).getStuAnswer();
             if (StringUtils.isSpace(stuAnswer)) {
                 quesReslutEntity.setHaveEmpty(true);
+                result[i] = "";
+            } else {
+                result[i] = stuAnswer.trim();
             }
-            result[i] = stuAnswer.trim();
-            answers.add(stuAnswer.trim());
+            answers.add(result[i]);
         }
         quesReslutEntity.setResult(JSONObject.toJSONString(result));
         return quesReslutEntity;
@@ -408,5 +474,47 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
      */
     public void onSubFailure() {
 
+    }
+
+    /**
+     *      * 计算中文字符
+     *      *
+     *      * @param sequence
+     *      * @return
+     *     
+     */
+    private int countChineseChar(CharSequence sequence) {
+
+        if (TextUtils.isEmpty(sequence)) {
+            return 0;
+        }
+        int charNum = 0;
+        for (int i = 0; i < sequence.length(); i++) {
+            char word = sequence.charAt(i);
+            if (isChineseChar(word)) {//中文
+                charNum++;
+            }
+        }
+        return charNum;
+    }
+
+    /**
+     *      * 判断是否是中文
+     *      * @param c
+     *      * @return
+     *     
+     */
+    public static boolean isChineseChar(char c) {
+        Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);
+        if (ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
+                || ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
+                || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A
+                || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_B
+                || ub == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION
+                || ub == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS
+                || ub == Character.UnicodeBlock.GENERAL_PUNCTUATION) {
+            return true;
+        }
+        return false;
     }
 }

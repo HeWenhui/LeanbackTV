@@ -653,6 +653,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 if (baseLiveBigQuestionPager.getBaseVideoQuestionEntity().getvQuestionID().equals(videoQuestionLiveEntity.id)) {
                     return;
                 } else {
+                    baseLiveBigQuestionPager.onDestroy();
                     rlQuestionContent.removeView(baseLiveBigQuestionPager.getRootView());
                 }
             }

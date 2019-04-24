@@ -61,6 +61,10 @@ public class LiveQueConfig {
      */
     public static final int DOTTYPE_MUL_SELE = 2;
     /**
+     * 大题互动选择题数量
+     */
+    public static final int DOTTYPE_SELE_NUM = 4;
+    /**
      * 大题互动类型-填空
      */
     public static final int DOTTYPE_FILL = 3;

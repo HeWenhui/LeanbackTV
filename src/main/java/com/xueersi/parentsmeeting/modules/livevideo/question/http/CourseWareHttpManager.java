@@ -4,12 +4,12 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListDanmakuEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
@@ -268,10 +268,12 @@ public class CourseWareHttpManager {
         });
     }
 
-    public void submitBigTestInteraction(String testId, String interactionId, JSONArray userAnswer, long startTime, int isForce, int isPlayBack, final AbstractBusinessDataCallBack callBack) {
+    public void submitBigTestInteraction(String stuId, String testId, String interactionId, JSONArray userAnswer, long startTime, int isForce, int isPlayBack, String srcType, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         liveHttpManager.setDefaultParameter(httpRequestParams);
+        httpRequestParams.addBodyParam("stuId", "" + stuId);
         httpRequestParams.addBodyParam("testId", "" + testId);
+        httpRequestParams.addBodyParam("srcType", "" + srcType);
         httpRequestParams.addBodyParam("interactionId", "" + interactionId);
         httpRequestParams.addBodyParam("isForce", "" + isForce);
         httpRequestParams.addBodyParam("userAnswer", "" + userAnswer);
@@ -281,7 +283,7 @@ public class CourseWareHttpManager {
 
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                callBack.onDataSucess();
+                callBack.onDataSucess(responseEntity.getJsonObject());
             }
 
             @Override
@@ -296,9 +298,14 @@ public class CourseWareHttpManager {
         });
     }
 
-    public void getStuInteractionResult(final AbstractBusinessDataCallBack callBack) {
+    public void getStuInteractionResult(String stuId, String testId, String srcType, String interactionId, int isPlayBack, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         liveHttpManager.setDefaultParameter(httpRequestParams);
+        httpRequestParams.addBodyParam("stuId", "" + stuId);
+        httpRequestParams.addBodyParam("testId", "" + testId);
+        httpRequestParams.addBodyParam("srcType", "" + srcType);
+        httpRequestParams.addBodyParam("interactionId", "" + interactionId);
+        httpRequestParams.addBodyParam("isPlayBack", "" + isPlayBack);
         liveHttpManager.sendPost(liveHttpManager.getLiveVideoSAConfigInner().URL_LIVE_GET_BIG_TEST_RESULT, httpRequestParams, new HttpCallBack(false) {
 
             @Override

@@ -479,6 +479,16 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     mQuestionAction.showQuestion(null);
                 }
             }
+            JSONObject platformTestDot = jsonObject.optJSONObject("platformTestDot");
+            if (platformTestDot != null) {
+                try {
+                    VideoQuestionLiveEntity videoQuestionLiveEntity = QueIrcParse.parseBigQues(platformTestDot);
+                    boolean isOpen = platformTestDot.getBoolean("isOpen");
+                    mQuestionAction.showBigQuestion(videoQuestionLiveEntity, isOpen);
+                } catch (JSONException e) {
+                    logger.d("onNotice:QUES_BIG");
+                }
+            }
         }
         Loger.e(Tag, "=======>onTopic:" + "isNewArts:" + LiveVideoConfig.isNewArts);
     }
@@ -809,12 +819,12 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
         @Override
         public void submitBigTestInteraction(VideoQuestionLiveEntity videoQuestionLiveEntity, JSONArray userAnswer, long startTime, int isForce, AbstractBusinessDataCallBack callBack) {
-            getCourseWareHttpManager().submitBigTestInteraction(videoQuestionLiveEntity.id, videoQuestionLiveEntity.getDotId(), userAnswer, startTime, isForce, 0, callBack);
+            getCourseWareHttpManager().submitBigTestInteraction(mGetInfo.getStuId(), videoQuestionLiveEntity.id, videoQuestionLiveEntity.getDotId(), userAnswer, startTime, isForce, 0, videoQuestionLiveEntity.getSrcType(), callBack);
         }
 
         @Override
         public void getStuInteractionResult(VideoQuestionLiveEntity videoQuestionLiveEntity, AbstractBusinessDataCallBack callBack) {
-            getCourseWareHttpManager().getStuInteractionResult(callBack);
+            getCourseWareHttpManager().getStuInteractionResult(mGetInfo.getStuId(), videoQuestionLiveEntity.id, videoQuestionLiveEntity.getSrcType(), videoQuestionLiveEntity.getDotId(), 0, callBack);
         }
     }
 

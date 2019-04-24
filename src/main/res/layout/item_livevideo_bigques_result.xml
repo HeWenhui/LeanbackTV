@@ -14,6 +14,16 @@
         android:textColor="@color/title_color" />
 
     <TextView
+        android:id="@id/tv_livevideo_bigque_result_your_hind"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:includeFontPadding="false"
+        android:text="你的答案"
+        android:textColor="@color/COLOR_666666"
+        android:visibility="invisible" />
+
+    <TextView
         android:id="@id/tv_livevideo_bigque_result_your"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

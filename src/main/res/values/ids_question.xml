@@ -26,6 +26,7 @@
     <!--大题互动结果页-item-->
     <item name="tv_livevideo_bigque_result_stand" type="id" />
     <item name="tv_livevideo_bigque_result_your" type="id" />
+    <item name="tv_livevideo_bigque_result_your_hind" type="id" />
     <item name="tv_livevideo_bigque_result_type" type="id" />
     <item name="iv_livevideo_bigque_result_type" type="id" />
 </resources>

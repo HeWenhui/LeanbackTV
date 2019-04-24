@@ -263,6 +263,14 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
         this.newCourseTestIdSec = newCourseTestIdSec;
     }
 
+    public String getSrcType() {
+        return srcType;
+    }
+
+    public void setSrcType(String srcType) {
+        this.srcType = srcType;
+    }
+
     public String getDotId() {
         return dotId;
     }

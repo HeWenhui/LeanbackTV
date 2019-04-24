@@ -25,6 +25,7 @@ import com.xueersi.ui.adapter.XsBaseAdapter;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -243,6 +244,13 @@ public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
         questionSecHttp.submitBigTestInteraction(videoQuestionLiveEntity, userAnswer, startTime, isForce, new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
+                JSONObject jsonObject = (JSONObject) objData[0];
+                int toAnswered = jsonObject.optInt("toAnswered");
+                if (toAnswered == 2) {
+                    XESToastUtils.showToast(mContext, "已作答");
+                    onPagerClose.onClose(BigQuestionSelectLivePager.this);
+                    return;
+                }
                 questionSecHttp.getStuInteractionResult(videoQuestionLiveEntity, new AbstractBusinessDataCallBack() {
                     @Override
                     public void onDataSucess(Object... objData) {
@@ -254,22 +262,25 @@ public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
 
             @Override
             public void onDataFail(int errStatus, String failMsg) {
-                if (com.xueersi.common.config.AppConfig.DEBUG) {
-                    BigResultEntity bigResultEntity = new BigResultEntity();
-                    ArrayList<BigResultItemEntity> bigResultEntities = bigResultEntity.getBigResultItemEntityArrayList();
-                    for (int i = 0; i < 10; i++) {
-                        BigResultItemEntity bigResultItemEntity = new BigResultItemEntity();
-                        bigResultItemEntity.standAnswer = "A";
-                        bigResultItemEntity.youAnswer = "B";
-                        if (i % 2 == 0) {
-                            bigResultItemEntity.rightType = LiveQueConfig.DOTTYPE_ITEM_RESULT_RIGHT;
-                        } else {
-                            bigResultItemEntity.rightType = LiveQueConfig.DOTTYPE_ITEM_RESULT_WRONG;
-                        }
-                        bigResultEntities.add(bigResultItemEntity);
-                    }
-                    showResult(bigResultEntity);
-                }
+                XESToastUtils.showToast(mContext, failMsg);
+//                if (com.xueersi.common.config.AppConfig.DEBUG) {
+//                    BigResultEntity bigResultEntity = new BigResultEntity();
+//                    ArrayList<BigResultItemEntity> bigResultEntities = bigResultEntity.getBigResultItemEntityArrayList();
+//                    for (int i = 0; i < 10; i++) {
+//                        BigResultItemEntity bigResultItemEntity = new BigResultItemEntity();
+//                        bigResultItemEntity.standAnswer = "A啊A啊A啊A啊";
+//                        bigResultItemEntity.youAnswer = "A啊A啊A啊A啊";
+//                        bigResultItemEntity.standAnswer = "A啊";
+//                        bigResultItemEntity.youAnswer = "A啊";
+//                        if (i % 2 == 0) {
+//                            bigResultItemEntity.rightType = LiveQueConfig.DOTTYPE_ITEM_RESULT_RIGHT;
+//                        } else {
+//                            bigResultItemEntity.rightType = LiveQueConfig.DOTTYPE_ITEM_RESULT_WRONG;
+//                        }
+//                        bigResultEntities.add(bigResultItemEntity);
+//                    }
+//                    showResult(bigResultEntity);
+//                }
 //                onPagerClose.onClose(BigQuestionSelectLivePager.this);
             }
         });

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -15,9 +16,41 @@ import java.util.ArrayList;
 
 public class BigResultAdapter extends RecyclerView.Adapter {
     private ArrayList<BigResultItemEntity> bigResultEntities;
+    boolean standAnswerLeft = false;
+    boolean youAnswerLeft = false;
 
     public BigResultAdapter(ArrayList<BigResultItemEntity> bigResultEntities) {
         this.bigResultEntities = bigResultEntities;
+        for (int entityIndex = 0; entityIndex < bigResultEntities.size(); entityIndex++) {
+            BigResultItemEntity bigResultItemEntity = bigResultEntities.get(entityIndex);
+            String standAnswer = bigResultItemEntity.standAnswer;
+            String youAnswer = bigResultItemEntity.youAnswer;
+            if (standAnswer != null && !standAnswerLeft) {
+                char[] chars = standAnswer.toCharArray();
+                int standAnswerLenght = 0;
+                for (int j = 0; j < chars.length; j++) {
+                    byte[] bytes = ("" + chars[j]).getBytes();
+                    standAnswerLenght += bytes.length;
+                }
+                if (standAnswerLenght > 8) {
+                    standAnswerLeft = true;
+                }
+            }
+            if (youAnswer != null && !youAnswerLeft) {
+                char[] chars = youAnswer.toCharArray();
+                int youAnswerLenght = 0;
+                for (int j = 0; j < chars.length; j++) {
+                    byte[] bytes = ("" + chars[j]).getBytes();
+                    youAnswerLenght += bytes.length;
+                }
+                if (youAnswerLenght > 8) {
+                    youAnswerLeft = true;
+                }
+            }
+            if (standAnswerLeft && youAnswerLeft) {
+                break;
+            }
+        }
     }
 
     @Override
@@ -45,7 +78,20 @@ public class BigResultAdapter extends RecyclerView.Adapter {
         public ItemHolder(View itemView) {
             super(itemView);
             tv_livevideo_bigque_result_stand = itemView.findViewById(R.id.tv_livevideo_bigque_result_stand);
+            if (standAnswerLeft) {
+                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tv_livevideo_bigque_result_stand.getLayoutParams();
+                lp.width = RelativeLayout.LayoutParams.WRAP_CONTENT;
+                tv_livevideo_bigque_result_stand.setLayoutParams(lp);
+            } else {
+
+            }
             tv_livevideo_bigque_result_your = itemView.findViewById(R.id.tv_livevideo_bigque_result_your);
+            if (youAnswerLeft) {
+                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tv_livevideo_bigque_result_your.getLayoutParams();
+                lp.width = RelativeLayout.LayoutParams.WRAP_CONTENT;
+                lp.addRule(RelativeLayout.ALIGN_LEFT, R.id.tv_livevideo_bigque_result_your_hind);
+                tv_livevideo_bigque_result_your.setLayoutParams(lp);
+            }
             iv_livevideo_bigque_result_type = itemView.findViewById(R.id.iv_livevideo_bigque_result_type);
         }
 
