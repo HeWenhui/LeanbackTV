@@ -76,6 +76,17 @@ public class MyEngineEventHandler {
         }
 
         @Override
+        public void onRemoteVideoStateChanged(int uid, int state) {
+            super.onRemoteVideoStateChanged(uid, state);
+            logger.d("onRemoteVideoStateChanged:uid=" + uid + ",state=" + state);
+            Iterator<AGEventHandler> it = mEventHandlerList.keySet().iterator();
+            while (it.hasNext()) {
+                AGEventHandler handler = it.next();
+                handler.onRemoteVideoStateChanged(uid, state);
+            }
+        }
+
+        @Override
         public void onFirstRemoteAudioFrame(int uid, int elapsed) {
             super.onFirstRemoteAudioFrame(uid, elapsed);
             logger.d("onFirstRemoteAudioFrame:uid=" + uid + ",elapsed=" + elapsed);

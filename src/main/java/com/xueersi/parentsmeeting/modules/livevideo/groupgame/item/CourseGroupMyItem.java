@@ -74,7 +74,7 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
     }
 
     public void doRenderRemoteUi(SurfaceView surfaceV) {
-        rl_livevideo_course_item_video_head.setVisibility(View.GONE);
+        rlCourseItemVideoHead.setVisibility(View.GONE);
         boolean remove = false;
         if (rlCourseItemVideo.getChildCount() > 0) {
             View view = rlCourseItemVideo.getChildAt(0);
@@ -89,7 +89,7 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
 
     public void onUserOffline() {
         mLogtf.d("onUserOffline:uid=" + uid);
-        rl_livevideo_course_item_video_head.setVisibility(View.VISIBLE);
+        rlCourseItemVideoHead.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -107,11 +107,11 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
                         }
                     });
                     if (enableVideo) {
-                        rl_livevideo_course_item_video_head.setVisibility(View.GONE);
+                        rlCourseItemVideoHead.setVisibility(View.GONE);
                         videoStartTime = System.currentTimeMillis();
                         ivCourseItemVideo.setImageResource(VIDEO_RES[2]);
                     } else {
-                        rl_livevideo_course_item_video_head.setVisibility(View.VISIBLE);
+                        rlCourseItemVideoHead.setVisibility(View.VISIBLE);
                         ivCourseItemVideo.setImageResource(VIDEO_RES[1]);
                         videoTime += (System.currentTimeMillis() - videoStartTime);
                     }

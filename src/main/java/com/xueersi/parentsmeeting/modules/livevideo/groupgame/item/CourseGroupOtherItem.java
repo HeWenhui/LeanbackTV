@@ -44,7 +44,7 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
     }
 
     public void doRenderRemoteUi(SurfaceView surfaceV) {
-        rl_livevideo_course_item_video_head.setVisibility(View.GONE);
+        rlCourseItemVideoHead.setVisibility(View.GONE);
         boolean remove = false;
         if (rlCourseItemVideo.getChildCount() > 0) {
             View view = rlCourseItemVideo.getChildAt(0);
@@ -57,6 +57,15 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
         rlCourseItemVideo.addView(surfaceV, 0);
         rlCourseItemCtrl.setVisibility(View.VISIBLE);
         tvCourseItemLoad.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onRemoteVideoStateChanged(int state) {
+        if (state == 1) {
+            rlCourseItemVideoHead.setVisibility(View.GONE);
+        } else {
+            rlCourseItemVideoHead.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -76,7 +85,7 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
     public void onUserOffline() {
         onLine = false;
         mLogtf.d("onUserOffline:uid=" + uid);
-        rl_livevideo_course_item_video_head.setVisibility(View.VISIBLE);
+        rlCourseItemVideoHead.setVisibility(View.VISIBLE);
         rlCourseItemCtrl.setVisibility(View.GONE);
         tvCourseItemLoad.setText("已离线");
         tvCourseItemLoad.setVisibility(View.VISIBLE);
@@ -92,10 +101,10 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
                     enableVideo = !enableVideo;
                     if (enableVideo) {
                         ivCourseItemVideo.setImageResource(VIDEO_RES[2]);
-                        rl_livevideo_course_item_video_head.setVisibility(View.GONE);
+                        rlCourseItemVideoHead.setVisibility(View.GONE);
                     } else {
                         ivCourseItemVideo.setImageResource(VIDEO_RES[1]);
-                        rl_livevideo_course_item_video_head.setVisibility(View.VISIBLE);
+                        rlCourseItemVideoHead.setVisibility(View.VISIBLE);
                     }
                     workerThread.execute(new Runnable() {
                         @Override
@@ -176,7 +185,7 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
             if (enable) {
                 if (enableVideo) {
                     ivCourseItemVideo.setImageResource(VIDEO_RES[2]);
-                    rl_livevideo_course_item_video_head.setVisibility(View.GONE);
+//                    rlCourseItemVideoHead.setVisibility(View.GONE);
                 } else {
                     ivCourseItemVideo.setImageResource(VIDEO_RES[1]);
                 }
@@ -186,7 +195,7 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
                 if (videoStartTime != 0) {
                     videoTime += (System.currentTimeMillis() - videoStartTime);
                 }
-                rl_livevideo_course_item_video_head.setVisibility(View.VISIBLE);
+                rlCourseItemVideoHead.setVisibility(View.VISIBLE);
             }
             ivCourseItemVideo.setEnabled(enable);
         } else if (type == GroupGameConfig.OPERATION_AUDIO) {

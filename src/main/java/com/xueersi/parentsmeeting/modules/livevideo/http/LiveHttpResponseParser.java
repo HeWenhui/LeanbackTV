@@ -214,6 +214,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @param getInfo
      */
     public void parseLiveGetInfoLibarts(JSONObject data, LiveTopic liveTopic, LiveGetInfo getInfo) {
+        getInfo.setAppid(data.optString("appId"));
         // 文科表扬榜
         if (data.has("liveRank")) {
             JSONObject jsonObject = data.optJSONObject("liveRank");

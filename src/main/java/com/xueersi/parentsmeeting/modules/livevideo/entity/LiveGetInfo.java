@@ -210,7 +210,10 @@ public class LiveGetInfo {
     private String subjectiveTestAnswerResult;
     //是否是小英
     private boolean smallEnglish;
-
+    /**
+     * 声网appid
+     */
+    private String appid;
     private boolean primaryChinese;
     /**
      * 当前的直播模式
@@ -349,6 +352,14 @@ public class LiveGetInfo {
 
     public boolean getSmallEnglish() {
         return smallEnglish;
+    }
+
+    public String getAppid() {
+        return appid;
+    }
+
+    public void setAppid(String appid) {
+        this.appid = appid;
     }
 
     public boolean isPrimaryChinese() {

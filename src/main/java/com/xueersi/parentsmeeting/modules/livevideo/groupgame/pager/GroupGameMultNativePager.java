@@ -519,6 +519,33 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             });
         }
 
+        private void coursewareDoingLoad(final int pageNum) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
+                        JSONObject resultData = new JSONObject();
+                        resultData.put("type", CourseMessage.SEND_coursewareDoingLoad);
+//                        int playTime = (int) (System.currentTimeMillis() - enterTime) / 1000;
+                        GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = testInfoEntity.getAnswerList().get(pageNum);
+                        resultData.put("restTime", answersEntity.getSingleTime());
+                        Integer integer = wordCount.get("" + pageNum);
+                        mLogtf.d("coursewareOnloading:pageNum=" + pageNum + ",integer=" + integer + ",singleTime=" + answersEntity.getSingleTime());
+                        if (integer == null) {
+                            resultData.put("currentRight", 0);
+                        } else {
+                            resultData.put("currentRight", integer);
+                        }
+                        StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
+                    } catch (Exception e) {
+                        mLogtf.e("coursewareDoingLoad", e);
+                        CrashReport.postCatchedException(new LiveException(TAG, e));
+                    }
+                }
+            });
+        }
+
         @Override
         public void onDestory() {
             if (turnRun != null) {
@@ -672,6 +699,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
     private void joinChannel(ArrayList<TeamMemberEntity> entities) {
         mWorkerThread = new WorkerThread(mContext, stuid, false, true);
+        mWorkerThread.setAppid(liveGetInfo.getAppid());
         mWorkerThread.eventHandler().addEventHandler(agEventHandler);
         mWorkerThread.setEnableLocalVideo(true);
         mWorkerThread.setOnEngineCreate(new WorkerThread.OnEngineCreate() {
@@ -732,15 +760,32 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         @Override
         public void onFirstRemoteVideoDecoded(final int uid, int width, int height, int elapsed) {
             BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + uid);
-            logger.d("onFirstRemoteVideoDecoded:uid=" + uid + ",courseGroupItem=null?" + (courseGroupItem == null));
+            mLogtf.d("onFirstRemoteVideoDecoded:uid=" + uid + ",courseGroupItem=null?" + (courseGroupItem == null));
             if (courseGroupItem != null) {
                 doRenderRemoteUi(uid, courseGroupItem);
             }
         }
 
         @Override
+        public void onRemoteVideoStateChanged(int uid, final int state) {
+            final BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + uid);
+            mLogtf.d("onRemoteVideoStateChanged:uid=" + uid + ",state=" + state + ",courseGroupItem=null?" + (courseGroupItem == null));
+            if (courseGroupItem != null) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (mWorkerThread == null) {
+                            return;
+                        }
+                        courseGroupItem.onRemoteVideoStateChanged(state);
+                    }
+                });
+            }
+        }
+
+        @Override
         public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
-            logger.d("onJoinChannelSuccess:channel=" + channel + ",uid=" + uid);
+            mLogtf.d("onJoinChannelSuccess:channel=" + channel + ",uid=" + uid);
             if (stuid == uid) {
                 BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + uid);
                 if (courseGroupItem != null) {
@@ -751,7 +796,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
         @Override
         public void onUserJoined(final int uid, final int elapsed) {
-            logger.d("onUserJoined:uid=" + uid + ",elapsed=" + elapsed);
+            mLogtf.d("onUserJoined:uid=" + uid + ",elapsed=" + elapsed);
             final BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + uid);
             if (courseGroupItem != null) {
                 handler.post(new Runnable() {
@@ -765,7 +810,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
         @Override
         public void onUserOffline(final int uid, final int reason) {
-            logger.d("onUserOffline:uid=" + uid + ",reason=" + reason);
+            mLogtf.d("onUserOffline:uid=" + uid + ",reason=" + reason);
             final BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + uid);
             if (courseGroupItem != null) {
                 handler.post(new Runnable() {
@@ -779,7 +824,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
         @Override
         public void onError(int err) {
-            logger.d("onError:err=" + err);
+            mLogtf.d("onError:err=" + err);
         }
 
         @Override
@@ -2111,7 +2156,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                     handler.post(new Runnable() {
                                         @Override
                                         public void run() {
-                                            voiceCannonOnMessage.coursewareOnloading(currentAnswerIndex);
+                                            voiceCannonOnMessage.coursewareDoingLoad(currentAnswerIndex);
                                         }
                                     });
                                 } else {
@@ -2288,7 +2333,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             if (current_word > currentAnswerIndex) {
                                 currentAnswerIndex = current_word;
                             }
-                            voiceCannonOnMessage.coursewareOnloading(currentAnswerIndex);
+                            voiceCannonOnMessage.coursewareDoingLoad(currentAnswerIndex);
                         } catch (Exception e) {
                             mLogtf.e("onMessage:Scene", e);
                             CrashReport.postCatchedException(new LiveException(TAG, e));
