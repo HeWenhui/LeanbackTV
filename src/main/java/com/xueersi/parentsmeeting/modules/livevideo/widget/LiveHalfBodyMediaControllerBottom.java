@@ -149,7 +149,6 @@ public class LiveHalfBodyMediaControllerBottom extends BaseLiveMediaControllerBo
         return mRoomInintData != null && mRoomInintData.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH;
     }
 
-
     /**
      * 根据不同直播流切换不同 底部控制栏
      *
