@@ -680,6 +680,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             roomInfo1.setAlloteam(status.optInt("alloteam"));
             roomInfo1.setOpenbox(status.optInt("openbox"));
             roomInfo1.setAllotpkman(status.optInt("allotpkman"));
+            roomInfo1.setPKStep(status.optInt("PKStep"));
+
             teamPkEntity.setRoomInfo1(roomInfo1);
 
 

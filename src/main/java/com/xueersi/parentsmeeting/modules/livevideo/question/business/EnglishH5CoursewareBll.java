@@ -674,16 +674,16 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         entity.setPreEnglish(mGetInfo != null && mGetInfo.getSmallEnglish());
 
         final View popupWindow_view = QuestionResultView.initSelectAnswerRightResultVoice(context, entity);
-        initQuestionAnswerReslut(popupWindow_view);
-    }
+        boolean isAutoDissMiss = !entity.isPreEnglish();
+        initQuestionAnswerReslut(popupWindow_view,isAutoDissMiss);    }
 
     @Override
     public void initFillinAnswerRightResultVoice(VideoResultEntity entity) {
         entity.setPreEnglish(mGetInfo != null && mGetInfo.getSmallEnglish());
 
         View popupWindow_view = QuestionResultView.initFillinAnswerRightResultVoice(context, entity);
-        initQuestionAnswerReslut(popupWindow_view);
-    }
+        boolean isAutoDissMiss = !entity.isPreEnglish();
+        initQuestionAnswerReslut(popupWindow_view,isAutoDissMiss);    }
 
     /** 语音答题回答错误 */
     @Override
@@ -691,8 +691,8 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         entity.setPreEnglish(mGetInfo != null && mGetInfo.getSmallEnglish());
 
         View popupWindow_view = QuestionResultView.initSelectAnswerWrongResultVoice(context, entity);
-        initQuestionAnswerReslut(popupWindow_view);
-    }
+        boolean isAutoDissMiss = !entity.isPreEnglish();
+        initQuestionAnswerReslut(popupWindow_view,isAutoDissMiss);    }
 
     /** 语音答题回答错误 */
     @Override
@@ -700,14 +700,16 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         entity.setPreEnglish(mGetInfo != null && mGetInfo.getSmallEnglish());
 
         View popupWindow_view = QuestionResultView.initFillAnswerWrongResultVoice(context, entity);
-        initQuestionAnswerReslut(popupWindow_view);
-    }
+
+        boolean isAutoDissMiss = !entity.isPreEnglish();
+        initQuestionAnswerReslut(popupWindow_view,isAutoDissMiss);    }
 
     /**
      * 创建互动题作答，抢红包结果提示PopupWindow
      */
     @Override
     public void initQuestionAnswerReslut(final View popupWindow_view) {
+
         initQuestionAnswerReslut(popupWindow_view, true);
     }
 

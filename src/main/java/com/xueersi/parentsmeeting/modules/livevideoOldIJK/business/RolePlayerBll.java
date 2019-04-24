@@ -73,6 +73,10 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
      */
     OnError onError;
     /**
+     * 分组成功之后,通知直接多人，不再走人机的逻辑
+     */
+    OnGroupSuc onGroupSuc;
+    /**
      * 连接地址
      */
     private String webSocketUrl = "ws://wsarts.xueersi" +
@@ -312,6 +316,12 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
     public void setOnError(OnError onError) {
         this.onError = onError;
     }
+
+    @Override
+    public void setOnGroupSuc(OnGroupSuc onGroupSuc) {
+        this.onGroupSuc = onGroupSuc;
+    }
+
 
     /**
      * 进人机
@@ -638,7 +648,14 @@ public class RolePlayerBll extends BaseBll implements RolePlayAction {
                                 mRolePlayerEntity.getMapRoleHeadInfo().put(head.getRoleName(), head);
                                 mRolePlayerEntity.getLstRoleInfo().add(head);
                             }
+                            //分组成功的回调，通知，QuestionBll进多人
+                            if(onGroupSuc != null){
+                                onGroupSuc.onGroupSuc();
+                                logger.d("oldijk multi_people_onGroupSuc:callback send");
+                            }
                         }
+
+
                     }
                     break;
                 case -1:

@@ -184,7 +184,7 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
                 chatRoomUid);
         mNetWorkType = NetWorkHelper.getNetWorkState(mContext);
         if (MediaPlayer.getIsNewIJK()){
-            mIRCMessage = new NewIRCMessage(mContext, mNetWorkType, liveGetInfo.getStuName(), chatRoomUid, liveGetInfo, null,channel);
+            mIRCMessage = new NewIRCMessage(mContext, mNetWorkType, liveGetInfo.getStuName(), chatRoomUid, liveGetInfo, channel);
         } else{
             chatCfgServerList = mVideoEntity.getRoomChatCfgServerList();
             // 获取 聊天服务器地址  的接口地址

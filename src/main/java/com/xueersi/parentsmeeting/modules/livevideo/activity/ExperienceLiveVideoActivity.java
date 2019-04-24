@@ -541,7 +541,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 chatRoomUid);
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
         if (MediaPlayer.getIsNewIJK()) {
-            mIRCMessage = new NewIRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, mGetInfo, ums, channel);
+            mIRCMessage = new NewIRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, mGetInfo, channel);
 
         } else {
             // 获取 聊天服务器地址  的接口地址
@@ -957,6 +957,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 videoPath = url;
             }
             playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+            setmDisplayName(mSectionName);
         }
         chatCfgServerList = getIntent().getStringArrayListExtra("roomChatCfgServerList");
         expChatId = getIntent().getStringExtra("expChatId");
@@ -1442,6 +1443,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                     videoPath = url;
                 }
                 playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+                setmDisplayName(mSectionName);
             }
         }
         AppBll.getInstance(mBaseApplication);
@@ -1505,6 +1507,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                 videoPath = url;
             }
             playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+            setmDisplayName(mSectionName);
         }
 
     }
@@ -1573,6 +1576,7 @@ public class ExperienceLiveVideoActivity extends LiveVideoActivityBase implement
                     videoPath = url;
                 }
                 playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+                setmDisplayName(mSectionName);
             }
         } else {
             super.resultFailed(arg1, arg2);

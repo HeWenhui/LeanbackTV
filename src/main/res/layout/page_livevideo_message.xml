@@ -51,7 +51,8 @@
             layout="@layout/item_livemessage_middle_science_even_drive_layout"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_below="@id/rl_livevideo_message_top" />
+            android:layout_below="@id/rl_livevideo_message_top"
+            android:visibility="gone" />
 
 
         <RelativeLayout
