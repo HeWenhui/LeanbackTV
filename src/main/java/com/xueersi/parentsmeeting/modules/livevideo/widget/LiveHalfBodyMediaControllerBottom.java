@@ -7,6 +7,7 @@ import android.view.View;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -85,14 +86,15 @@ public class LiveHalfBodyMediaControllerBottom extends BaseLiveMediaControllerBo
             addView(view);
         } else {
             if (tranLiveView == null) {
-                if (LiveVideoConfig.isPrimary) {
-                    tranLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_psbottom
-                            , this, false);
-                } else if (LiveVideoConfig.isSmallChinese) {
+
+                if (LiveVideoConfig.isSmallChinese) {
                     tranLiveView =
                             LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_chs_bottom,
                                     this, false);
-                } else {
+                }else if (LiveVideoConfig.isPrimary) {
+                    tranLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_psbottom
+                            , this, false);
+                } else{
                     tranLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom,
                             this, false);
                 }
@@ -139,11 +141,12 @@ public class LiveHalfBodyMediaControllerBottom extends BaseLiveMediaControllerBo
     }
 
 
-    // 是否是语文半身直播
-
+    /**
+     * 是否是语文半身直播
+      * @return
+     */
     private boolean isChHalfBodyLive() {
-
-        return false;
+        return mRoomInintData != null && mRoomInintData.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH;
     }
 
 

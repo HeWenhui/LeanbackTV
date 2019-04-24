@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -99,7 +100,8 @@ public class HalfBodyLiveMediaCtrlTop extends BaseLiveMediaControllerTop {
      * @return
      */
     private boolean isChHalfBodyLive() {
-        return false;
+
+        return mRoomInitData != null && mRoomInitData.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH;
     }
 
 
