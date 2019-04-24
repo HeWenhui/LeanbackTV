@@ -239,10 +239,10 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         btSubjectClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isOpenNewCourseWare == 1) {
-                    //中学连对激励
-                    EventBus.getDefault().post(new EvenDriveEvent(EvenDriveEvent.CLOSE_H5));
-                }
+//                if (isOpenNewCourseWare == 1) {
+//                    //中学连对激励
+//                    EventBus.getDefault().post(new EvenDriveEvent(EvenDriveEvent.CLOSE_H5));
+//                }
                 ViewGroup group = (ViewGroup) mView.getParent();
                 group.removeView(mView);
                 questionBll.stopWebQuestion(QuestionWebX5Pager.this, testId, getBaseVideoQuestionEntity());
@@ -643,6 +643,10 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
             }
 
             if ("xueersi://livevideo/examPaper/close".equals(url) || url.contains("baidu.com")) {
+                if (isOpenNewCourseWare == 1) {
+                    //中学连对激励
+                    EventBus.getDefault().post(new EvenDriveEvent(EvenDriveEvent.CLOSE_H5));
+                }
                 ViewGroup group = (ViewGroup) mView.getParent();
                 if (group != null) {
                     group.removeView(mView);

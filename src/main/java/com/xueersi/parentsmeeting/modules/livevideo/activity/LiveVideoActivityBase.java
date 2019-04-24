@@ -544,6 +544,9 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         vPlayerHandler.sendEmptyMessage(OPEN_FILE);
     }
 
+    public void setmDisplayName(String displayName) {
+        this.mDisplayName = displayName;
+    }
     // endregion
 
     // region 生命周期及系统调用
