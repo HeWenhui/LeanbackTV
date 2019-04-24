@@ -23,4 +23,6 @@ public class LogConfig {
     public static String LIVE_AUDIO = "live_audio_enent";
     /** 停止声音 */
     public static String LIVE_STOP_VOLUME = "live_stop_volume";
+    /** 直播tcp日志 */
+    public static String LIVE_TCP_ERROR = "live_tcp_log";
 }

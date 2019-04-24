@@ -5,7 +5,17 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.xueersi.common.base.BaseApplication;
+import com.xueersi.common.config.AppConfig;
+import com.xueersi.component.cloud.XesCloudUploadBusiness;
+import com.xueersi.component.cloud.config.CloudDir;
+import com.xueersi.component.cloud.config.XesCloudConfig;
+import com.xueersi.component.cloud.entity.CloudUploadEntity;
+import com.xueersi.component.cloud.entity.XesCloudResult;
+import com.xueersi.component.cloud.listener.XesStsUploadListener;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.GroupGameTcp;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.ReceiveMegCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.SendCallBack;
@@ -201,6 +211,51 @@ public class TcpDispatch {
                     });
                 }
             }, 1000);
+        }
+
+        @Override
+        public void onReadException(InetSocketAddress inetSocketAddress, Exception e, File saveFile) {
+            uploadWonderMoment(inetSocketAddress, saveFile);
+        }
+
+        /**
+         * 把错误文件上传阿里云
+         * @param inetSocketAddress
+         * @param saveFile
+         */
+        private void uploadWonderMoment(final InetSocketAddress inetSocketAddress, final File saveFile) {
+            logger.d("uploadWonderMoment:saveFile=" + saveFile);
+            XesCloudUploadBusiness xesCloudUploadBusiness = new XesCloudUploadBusiness(BaseApplication.getContext());
+            CloudUploadEntity uploadEntity = new CloudUploadEntity();
+            uploadEntity.setFilePath(saveFile.getPath());
+            uploadEntity.setType(XesCloudConfig.UPLOAD_OTHER);
+            uploadEntity.setCloudPath(CloudDir.LIVE_TCP);
+            xesCloudUploadBusiness.asyncUpload(uploadEntity, new XesStsUploadListener() {
+                @Override
+                public void onProgress(XesCloudResult result, int percent) {
+
+                }
+
+                @Override
+                public void onSuccess(XesCloudResult result) {
+                    if (!AppConfig.DEBUG) {
+                        saveFile.delete();
+                    }
+                    String httpPath = result.getHttpPath();
+                    logger.d("asyncUpload:onSuccess=" + httpPath);
+                    StableLogHashMap stableLogHashMap = new StableLogHashMap("readerror");
+                    stableLogHashMap.put("liveid", live_id);
+                    stableLogHashMap.put("address", "" + inetSocketAddress);
+                    stableLogHashMap.put("savefile", "" + saveFile);
+                    stableLogHashMap.put("httppath", httpPath);
+                    UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_TCP_ERROR, stableLogHashMap.getData());
+                }
+
+                @Override
+                public void onError(XesCloudResult result) {
+                    logger.d("asyncUpload:onError=" + result.getErrorCode() + "," + result.getErrorMsg());
+                }
+            });
         }
     };
 

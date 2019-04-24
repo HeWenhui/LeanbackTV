@@ -336,6 +336,7 @@ public class GroupGameTcp {
 
             FileOutputStream fileOutputStream = null;
             FileInputStream fileInputStream = null;
+            File saveFile = null;
             try {
                 if (readSave || saveRead) {
                     String name = ("" + inetSocketAddress).replaceAll("\\.", "_").replaceAll(":", "-");
@@ -343,7 +344,7 @@ public class GroupGameTcp {
                     if (!saveDir.exists()) {
                         saveDir.mkdirs();
                     }
-                    File saveFile = new File(saveDir, "read_" + System.currentTimeMillis());
+                    saveFile = new File(saveDir, "read_" + System.currentTimeMillis());
                     log.d("testBuffer:saveFile=" + saveFile.length());
                     if (readSave) {
                         try {
@@ -513,6 +514,11 @@ public class GroupGameTcp {
             } catch (Exception e) {
                 e.printStackTrace();
                 CrashReport.postCatchedException(new TcpException("testBuffer", e));
+                if (saveFile != null) {
+                    if (receiveMegCallBack != null) {
+                        receiveMegCallBack.onReadException(inetSocketAddress, e, saveFile);
+                    }
+                }
                 log.e("testBuffer", e);
             } finally {
                 if (fileOutputStream != null) {
