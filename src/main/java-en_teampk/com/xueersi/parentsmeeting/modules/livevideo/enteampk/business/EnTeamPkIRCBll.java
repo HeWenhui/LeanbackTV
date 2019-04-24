@@ -584,8 +584,8 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         if (getStuActiveTeam == null) {
             getStuActiveTeam = new GetStuActiveTeam() {
                 @Override
-                public InteractiveTeam getStuActiveTeam(AbstractBusinessDataCallBack callBack) {
-                    EnTeamPkIRCBll.this.getStuActiveTeam(callBack);
+                public InteractiveTeam getStuActiveTeam(boolean forseGet, AbstractBusinessDataCallBack callBack) {
+                    EnTeamPkIRCBll.this.getStuActiveTeam(forseGet, callBack);
                     return mInteractiveTeam;
                 }
 
@@ -781,13 +781,25 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         }
     }
 
-    public void getStuActiveTeam(final AbstractBusinessDataCallBack callBack) {
+    /**
+     * 强制更新小组信息
+     *
+     * @param forseGet
+     * @param callBack
+     */
+    public void getStuActiveTeam(boolean forseGet, final AbstractBusinessDataCallBack callBack) {
         if (mInteractiveTeam == null) {
-            mLogtf.d("getStuActiveTeam:mInteractiveTeam=null?true");
+            mLogtf.d("getStuActiveTeam:forseGet=" + forseGet + ",mInteractiveTeam=null?true");
         } else {
-            mLogtf.d("getStuActiveTeam:mInteractiveTeam.size=" + mInteractiveTeam.getEntities().size());
+            mLogtf.d("getStuActiveTeam:forseGet=" + forseGet + ",mInteractiveTeam.size=" + mInteractiveTeam.getEntities().size());
         }
-        if (mInteractiveTeam != null) {
+        if (!forseGet && mInteractiveTeam != null) {
+            if (callBack != null) {
+                callBack.onDataSucess(mInteractiveTeam);
+            }
+            return;
+        }
+        if (mInteractiveTeam != null && mInteractiveTeam.getEntities().size() == 3) {
             if (callBack != null) {
                 callBack.onDataSucess(mInteractiveTeam);
             }

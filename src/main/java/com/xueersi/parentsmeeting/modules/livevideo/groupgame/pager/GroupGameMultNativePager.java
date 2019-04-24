@@ -40,7 +40,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackD
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.AGEventHandler;
-import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThreadPool;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -256,17 +255,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         getStuActiveTeam = ProxUtil.getProxUtil().get(mContext, GetStuActiveTeam.class);
         //有战队pk，才有这种题的多人.目前不会发生了
         if (getStuActiveTeam != null) {
-            interactiveTeam = getStuActiveTeam.getStuActiveTeam(new AbstractBusinessDataCallBack() {
-                @Override
-                public void onDataSucess(Object... objData) {
-
-                }
-
-                @Override
-                public void onDataFail(int errStatus, String failMsg) {
-                    super.onDataFail(errStatus, failMsg);
-                }
-            });
+            interactiveTeam = getStuActiveTeam.getStuActiveTeam(false, null);
             ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
             if (LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(gameType)) {
                 for (int i = 0; i < entities.size(); i++) {
@@ -366,7 +355,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     }
                     mLogtf.d("VoiceCannonTurnRun:pagerNum=" + pagerNum + ",currentAnswerIndex=" + currentAnswerIndex + ",allId=" + allId);
                     allAnswerList.clear();
-                    createSpeechContent("VoiceCannonTurnRun:end", false);
+                    createSpeechContent("VoiceCannonTurnRun:end", true);
                 } else {
                     //大于1页的时候再翻页
                     if (currentAnswerIndex - pagerNum == 1) {
@@ -1223,7 +1212,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
     @Override
     public void submitData() {
-        submit();
+        submit(true);
     }
 
     @Override
@@ -1463,7 +1452,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
     boolean submit = false;
 
-    private void submit() {
+    /**
+     * @param showResult 是否显示结果页，时间结束不显示
+     */
+    private void submit(final boolean showResult) {
         if (submit) {
             return;
         }
@@ -1687,16 +1679,20 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     @Override
                     public void onDataSucess(Object... objData) {
                         logger.d("submitGroupGame->onDataSucess:objData=" + objData);
-                        ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
-                        GroupGameMVPMultPager groupGameMVPMultPager = new GroupGameMVPMultPager(mContext, entities);
-                        ((ViewGroup) mView).addView(groupGameMVPMultPager.getRootView());
-                        groupGameMVPMultPager.setOnPagerClose(new OnPagerClose() {
-                            @Override
-                            public void onClose(LiveBasePager basePager) {
-                                ((ViewGroup) mView).removeView(basePager.getRootView());
-                                onClose.onH5ResultClose(GroupGameMultNativePager.this, detailInfo);
-                            }
-                        });
+                        if (showResult) {
+                            ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
+                            GroupGameMVPMultPager groupGameMVPMultPager = new GroupGameMVPMultPager(mContext, entities);
+                            ((ViewGroup) mView).addView(groupGameMVPMultPager.getRootView());
+                            groupGameMVPMultPager.setOnPagerClose(new OnPagerClose() {
+                                @Override
+                                public void onClose(LiveBasePager basePager) {
+                                    ((ViewGroup) mView).removeView(basePager.getRootView());
+                                    onClose.onH5ResultClose(GroupGameMultNativePager.this, detailInfo);
+                                }
+                            });
+                        } else {
+                            onClose.onH5ResultClose(GroupGameMultNativePager.this, detailInfo);
+                        }
                     }
 
                     @Override
@@ -1859,9 +1855,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
      * 创建评测文本，
      *
      * @param method
-     * @param waitTcp 等待tcp连接
+     * @param delay 等待tcp连接
      */
-    private void createSpeechContent(String method, boolean waitTcp) {
+    private void createSpeechContent(String method, boolean delay) {
         speechContent = "";
         if (gameOver) {
             return;
@@ -1872,16 +1868,16 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 mIse.cancel();
             }
             XESToastUtils.showToast(mContext, "游戏结束");
-            mLogtf.d("createSpeechContent:method=" + method + ",waitTcp=" + waitTcp);
-            if (waitTcp) {
+            mLogtf.d("createSpeechContent:method=" + method + ",delay=" + delay);
+            if (delay) {
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        submit();
+                        submit(false);
                     }
                 }, 1200);
             } else {
-                submit();
+                submit(true);
             }
             return;
         }

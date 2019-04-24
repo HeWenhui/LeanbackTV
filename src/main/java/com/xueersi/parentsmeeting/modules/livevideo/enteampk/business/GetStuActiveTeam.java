@@ -11,10 +11,11 @@ public interface GetStuActiveTeam {
     /**
      * 获得小组
      *
+     * @param forseGet 强制刷新
      * @param callBack
      * @return
      */
-    InteractiveTeam getStuActiveTeam(final AbstractBusinessDataCallBack callBack);
+    InteractiveTeam getStuActiveTeam(boolean forseGet, final AbstractBusinessDataCallBack callBack);
 
     /**
      * 获得战队信息

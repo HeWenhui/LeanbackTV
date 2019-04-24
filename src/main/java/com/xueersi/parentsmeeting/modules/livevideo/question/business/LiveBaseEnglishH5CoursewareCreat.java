@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.business;
 
 import android.content.Context;
 
-import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -10,14 +9,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.business.GetStuActiveTeam;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.InteractiveTeam;
-import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageReg;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager.GroupGameEmptyPager;
-import com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager.GroupGameMultNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager.GroupGameNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ScienceStaticConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.CoursewareNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.EnglishH5CoursewareX5Pager;
@@ -33,7 +29,8 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
     private boolean allowTeamPk;
     private LiveGetInfo liveGetInfo;
     private Logger logger;
-    LivePagerBack livePagerBack;
+    private LivePagerBack livePagerBack;
+    private boolean isFirst = true;
 
     public LiveBaseEnglishH5CoursewareCreat() {
         logger = LiveLoggerFactory.getLogger("LiveBaseEnglishH5CoursewareCreat");
@@ -204,7 +201,7 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
             groupGameMultNativePager.setLivePagerBack(livePagerBack);
             h5CoursewarePager = groupGameMultNativePager;
         } else {
-            InteractiveTeam interactiveTeam = getStuActiveTeam.getStuActiveTeam(null);
+            InteractiveTeam interactiveTeam = getStuActiveTeam.getStuActiveTeam(false, null);
             //还没有小组,或者没有tcp
 //            if (interactiveTeam == null || interactiveTeam.getEntities().size() < 2) {
 //                if (interactiveTeam == null) {
@@ -230,14 +227,15 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
 ////                groupGameMultNativePager.setLivePagerBack(livePagerBack);
 ////                h5CoursewarePager = groupGameMultNativePager;
 //            }
-            if (interactiveTeam == null || interactiveTeam.getEntities().size() < 2) {
+            if (!isFirst && (interactiveTeam == null || interactiveTeam.getEntities().size() < 2)) {
                 GroupGameNativePager groupGameMultNativePager = new GroupGameNativePager(context, false, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
                 groupGameMultNativePager.setLivePagerBack(livePagerBack);
                 h5CoursewarePager = groupGameMultNativePager;
             } else {
-                GroupGameEmptyPager groupGameEmptyPager = new GroupGameEmptyPager(context, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
+                GroupGameEmptyPager groupGameEmptyPager = new GroupGameEmptyPager(context, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose, isFirst);
                 groupGameEmptyPager.setLivePagerBack(livePagerBack);
                 h5CoursewarePager = groupGameEmptyPager;
+                isFirst = false;
 //                GroupGameMultNativePager groupGameMultNativePager = new GroupGameMultNativePager(context, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
 //                groupGameMultNativePager.setLivePagerBack(livePagerBack);
 //                h5CoursewarePager = groupGameMultNativePager;
