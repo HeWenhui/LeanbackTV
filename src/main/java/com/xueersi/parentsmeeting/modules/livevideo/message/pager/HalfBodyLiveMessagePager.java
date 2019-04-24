@@ -930,17 +930,17 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                     if (fromNotice) {
                         XESToastUtils.showToast(mContext, "你被老师禁言了");
                     }
-                    btMesOpen.setAlpha(0.4f);
+                    //btMesOpen.setAlpha(0.4f);
                     btMesOpen.setBackgroundResource(getMsgBtnResId());
                 } else {
                     if (fromNotice) {
                         XESToastUtils.showToast(mContext, "老师解除了你的禁言");
                     }
                     if (ircState.openchat()) {
-                        btMesOpen.setAlpha(1.0f);
+                        //btMesOpen.setAlpha(1.0f);
                         btMesOpen.setBackgroundResource(getMsgBtnResId());
                     } else {
-                        btMesOpen.setAlpha(0.4f);
+                        //btMesOpen.setAlpha(0.4f);
                         btMesOpen.setBackgroundResource(getMsgBtnResId());
                     }
                 }
@@ -958,14 +958,14 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
             @Override
             public void run() {
                 if (ircState.isDisable()) {
-                    btMesOpen.setAlpha(0.4f);
+                    //btMesOpen.setAlpha(0.4f);
                     btMesOpen.setBackgroundResource(getMsgBtnResId());
                 } else {
                     if (openchat) {
-                        btMesOpen.setAlpha(1.0f);
+                        //btMesOpen.setAlpha(1.0f);
                         btMesOpen.setBackgroundResource(getMsgBtnResId());
                     } else {
-                        btMesOpen.setAlpha(0.4f);
+                        //btMesOpen.setAlpha(0.4f);
                         btMesOpen.setBackgroundResource(getMsgBtnResId());
                     }
                     if (fromNotice) {

@@ -15,6 +15,7 @@ import java.util.ArrayList;
 
 /**
  * 半身直播 底部播放控制栏
+ *
  * @author chenkun
  * @version 1.0, 2018/10/22 下午3:59
  */
@@ -22,12 +23,28 @@ import java.util.ArrayList;
 public class LiveHalfBodyMediaControllerBottom extends BaseLiveMediaControllerBottom {
 
     private String mode = LiveTopic.MODE_TRANING;
-    private static final String TAG = "LiveHalfBodyMediaControllerBottom";
+    /**
+     * UI 模式切换监听器
+     */
     ArrayList<LiveUIStateListener> liveUIStateListeners = new ArrayList<>();
     View tranLiveView;
     View mainLiveView;
 
+    /**
+     * 直播间 初始化参数
+     */
     private LiveGetInfo mRoomInintData;
+
+
+    /**
+     * 显示隐藏回调监听器
+     */
+    ControllerStateListener controllerStateListener;
+
+    /**
+     * 是否拦截 顶部控制栏自动隐藏
+     */
+    boolean interceptBtmMediaCtrHide;
 
     public LiveHalfBodyMediaControllerBottom(Context context, LiveMediaController controller, LiveMediaController
             .MediaPlayerControl player) {
@@ -37,38 +54,33 @@ public class LiveHalfBodyMediaControllerBottom extends BaseLiveMediaControllerBo
 
     @Override
     public View inflateLayout() {
-
         //在得到 详细的直播间初始化参数之前 返回默认布局信息
-        if(mRoomInintData == null){
+        if (mRoomInintData == null) {
             return super.inflateLayout();
         }
 
         View view;
         //语文半身直播 沿用 一期 交互方式
-        if(isChHalfBodyLive()){
+        if (isChHalfBodyLive()) {
             view = initChMediaCtr();
-        }else{
+        } else {
             view = initScienceMediaCtr();
         }
-
-        return  view;
+        return view;
     }
 
 
     /**
      * 初始化 理科半身直播 底部媒体控制栏
+     *
      * @return
      */
     private View initScienceMediaCtr() {
         View view;
         if (LiveTopic.MODE_CLASS.equals(mode)) {
-
-            // TODO: 2019/4/19 不在复用 View
-            //if (mainLiveView == null) {
-                mainLiveView =
-                        LayoutInflater.from(mContext).inflate(R.layout.layout_livehalfbody_mediacontroller_bottom,
-                        this, false);
-            //}
+            mainLiveView =
+                    LayoutInflater.from(mContext).inflate(R.layout.layout_livehalfbody_mediacontroller_bottom,
+                            this, false);
             view = mainLiveView;
             addView(view);
         } else {
@@ -93,6 +105,7 @@ public class LiveHalfBodyMediaControllerBottom extends BaseLiveMediaControllerBo
 
     /**
      * 初始化 语文底部媒体控制栏
+     *
      * @return
      */
     private View initChMediaCtr() {
@@ -101,7 +114,7 @@ public class LiveHalfBodyMediaControllerBottom extends BaseLiveMediaControllerBo
             if (mainLiveView == null) {
                 mainLiveView =
                         LayoutInflater.from(mContext).inflate(R.layout.layout_livehalfbody_mediacontroller_bottom_ch,
-                        this, false);
+                                this, false);
             }
             view = mainLiveView;
             addView(view);
@@ -136,20 +149,20 @@ public class LiveHalfBodyMediaControllerBottom extends BaseLiveMediaControllerBo
 
     /**
      * 根据不同直播流切换不同 底部控制栏
+     *
      * @param mode
      * @param getInfo
      */
-    public void onModeChange(String mode,LiveGetInfo getInfo){
+    public void onModeChange(String mode, LiveGetInfo getInfo) {
         mRoomInintData = getInfo;
         this.mode = mode;
-       // removeAllViews();
+        // removeAllViews();
         removeAllViewsInLayout();
         inflateLayout();
         findViewItems();
         //通知相关 UI 底部 控制栏改变
         noticeUIChange();
     }
-
 
 
     /**
@@ -169,34 +182,32 @@ public class LiveHalfBodyMediaControllerBottom extends BaseLiveMediaControllerBo
 
     @Override
     public void onShow() {
-        if(!interceptBtmMediaCtrHide){
+        if (!interceptBtmMediaCtrHide) {
             super.onShow();
         }
 
-        if(controllerStateListener != null){
+        if (controllerStateListener != null) {
             controllerStateListener.onSHow();
         }
     }
 
     @Override
     public void onHide() {
-        if(!interceptBtmMediaCtrHide){
+        if (!interceptBtmMediaCtrHide) {
             super.onHide();
         }
 
-        if(controllerStateListener != null){
+        if (controllerStateListener != null) {
             controllerStateListener.onHide();
         }
     }
 
-    ControllerStateListener controllerStateListener;
 
     /**
-     * 是否拦截 顶部控制栏自动隐藏
+     * 拦截 显示隐藏 动画
+     * @param intercept
      */
-    boolean interceptBtmMediaCtrHide;
-
-    public void interceptHideBtmMediaCtr(boolean intercept){
+    public void interceptHideBtmMediaCtr(boolean intercept) {
         interceptBtmMediaCtrHide = intercept;
     }
 
@@ -205,9 +216,9 @@ public class LiveHalfBodyMediaControllerBottom extends BaseLiveMediaControllerBo
         this.controllerStateListener = controllerStateListener;
     }
 
-    public interface ControllerStateListener{
+    public interface ControllerStateListener {
         /**
-         *  状态栏显示
+         * 状态栏显示
          */
         void onSHow();
 
