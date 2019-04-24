@@ -26,6 +26,7 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
     private long videoStartTime;
     private long audioStartTime;
     private boolean onLine = false;
+    private int state = 0;
 
     public CourseGroupOtherItem(Context context, TeamMemberEntity entity, WorkerThreadPool workerThread, int uid) {
         super(context, entity, workerThread, uid);
@@ -45,6 +46,7 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
     }
 
     public void doRenderRemoteUi(SurfaceView surfaceV) {
+        state = 1;
         rlCourseItemVideoHead.setVisibility(View.GONE);
         boolean remove = false;
         if (rlCourseItemVideo.getChildCount() > 0) {
@@ -62,7 +64,8 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
 
     @Override
     public void onRemoteVideoStateChanged(int state) {
-        if (state == 1) {
+        this.state = state;
+        if (state == 1 && enableVideo) {
             rlCourseItemVideoHead.setVisibility(View.GONE);
         } else {
             rlCourseItemVideoHead.setVisibility(View.VISIBLE);
@@ -101,8 +104,10 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
                 if (rtcEngine != null) {
                     enableVideo = !enableVideo;
                     if (enableVideo) {
-                        ivCourseItemVideo.setImageResource(VIDEO_RES[2]);
-                        rlCourseItemVideoHead.setVisibility(View.GONE);
+                        if (state == 1) {
+                            ivCourseItemVideo.setImageResource(VIDEO_RES[2]);
+                            rlCourseItemVideoHead.setVisibility(View.GONE);
+                        }
                     } else {
                         ivCourseItemVideo.setImageResource(VIDEO_RES[1]);
                         rlCourseItemVideoHead.setVisibility(View.VISIBLE);

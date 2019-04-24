@@ -503,9 +503,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         }
 
         private void coursewareOnloading(final int pageNum) {
-            if (turnRun != null) {
-                mLogtf.d("coursewareOnloading:turnRun=" + turnRun.pagerNum + "," + pageNum);
-            }
             handler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -540,20 +537,38 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 public void run() {
                     try {
                         GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
-                        JSONObject resultData = new JSONObject();
-                        resultData.put("type", CourseMessage.SEND_coursewareDoingLoad);
-//                        int playTime = (int) (System.currentTimeMillis() - enterTime) / 1000;
                         GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = testInfoEntity.getAnswerList().get(pageNum);
-                        resultData.put("restTime", answersEntity.getSingleTime());
-                        Integer integer = wordCount.get("" + pageNum);
-                        mLogtf.d("coursewareOnloading:pageNum=" + pageNum + ",integer=" + integer + ",singleTime=" + answersEntity.getSingleTime());
-                        if (integer == null) {
-                            resultData.put("currentRight", 0);
-                        } else {
-                            resultData.put("currentRight", integer);
+                        try {
+                            JSONObject resultData = new JSONObject();
+                            resultData.put("type", CourseMessage.SEND_coursewareDoingLoad);
+//                        int playTime = (int) (System.currentTimeMillis() - enterTime) / 1000;
+                            resultData.put("restTime", answersEntity.getSingleTime());
+                            Integer integer = wordCount.get("" + pageNum);
+                            mLogtf.d("coursewareDoingLoad:pageNum=" + pageNum + ",integer=" + integer + ",singleTime=" + answersEntity.getSingleTime());
+                            if (integer == null) {
+                                resultData.put("currentRight", 0);
+                            } else {
+                                resultData.put("currentRight", integer);
+                            }
+                            resultData.put("turnToPageNum", pageNum);
+                            StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
+                        } catch (Exception e) {
+                            mLogtf.e("coursewareDoingLoad", e);
+                            CrashReport.postCatchedException(new LiveException(TAG, e));
                         }
-                        resultData.put("turnToPageNum", pageNum);
-                        StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
+                        //恢复数据，翻页
+                        int time = answersEntity.getSingleTime() + 1;
+                        if (turnRun == null) {
+                            turnRun = new VoiceCannonTurnRun(pageNum, time);
+                            handler.postDelayed(turnRun, time * 1000);
+                        } else {
+                            mLogtf.d("coursewareDoingLoad:pageNum=" + turnRun.pagerNum + ",pageNum=" + pageNum);
+                            if (turnRun.pagerNum != pageNum) {
+                                handler.removeCallbacks(turnRun);
+                                turnRun = new VoiceCannonTurnRun(pageNum, time);
+                                handler.postDelayed(turnRun, time * 1000);
+                            }
+                        }
                     } catch (Exception e) {
                         mLogtf.e("coursewareDoingLoad", e);
                         CrashReport.postCatchedException(new LiveException(TAG, e));
