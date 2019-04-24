@@ -240,7 +240,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         BaseLiveMessagePager liveMessagePager = null;
 
         //根据不同的直播类型创建不同皮肤
-        if (getInfo != null && getInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE) {
+        if (getInfo != null && getInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
             // 语文
             liveMessagePager = new HalfBodyArtsLiveMsgPager(activity, this,
                     null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
@@ -317,16 +317,16 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 
         long before = System.currentTimeMillis();
         if (!isSmallEnglish) {
-            if (LiveVideoConfig.isPrimary) {
-                LivePsMessagePager liveMessagePager = new LivePsMessagePager(activity, this, null,
-                        baseLiveMediaControllerBottom, liveMessageLandEntities, null);
-                mLiveMessagePager = liveMessagePager;
-            } else if (LiveVideoConfig.isSmallChinese) {//如果是语文
+            if (LiveVideoConfig.isSmallChinese) {//如果是语文
                 SmallChineseLiveMessagePager chineseLiveMessagePager = new SmallChineseLiveMessagePager(activity, this, null, baseLiveMediaControllerBottom
                         , liveMessageLandEntities, liveMessagePortEntities);
                 mLiveMessagePager = chineseLiveMessagePager;
 
-            } else {
+            } else if (LiveVideoConfig.isPrimary) {
+                LivePsMessagePager liveMessagePager = new LivePsMessagePager(activity, this, null,
+                        baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+                mLiveMessagePager = liveMessagePager;
+            }   else {
                 LiveMessagePager liveMessagePager = new LiveMessagePager(activity, this, null,
                         baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;

@@ -91,7 +91,7 @@ public class HalfBodySceneTransAnim {
         if (animationView != null) {
             String lottieResPath = null;
             String lottieJsonPath = null;
-            if(mGetInfo != null && mGetInfo.getIsArts() == HalfBodyLiveConfig.LIVE_TYPE_CHINESE){
+            if(mGetInfo != null && mGetInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH){
                 lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR_ARTS  +"/images";
                 lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR_ARTS +"/data.json";
             }else{

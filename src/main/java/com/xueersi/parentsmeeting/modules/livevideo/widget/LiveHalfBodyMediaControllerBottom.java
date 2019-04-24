@@ -120,13 +120,13 @@ public class LiveHalfBodyMediaControllerBottom extends BaseLiveMediaControllerBo
             addView(view);
         } else {
             if (tranLiveView == null) {
-                if (LiveVideoConfig.isPrimary) {
-                    tranLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_psbottom
-                            , this, false);
-                } else if (LiveVideoConfig.isSmallChinese) {
+                if (LiveVideoConfig.isSmallChinese) {
                     tranLiveView =
                             LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_chs_bottom,
                                     this, false);
+                } else if (LiveVideoConfig.isPrimary) {
+                    tranLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_psbottom
+                            , this, false);
                 } else {
                     tranLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom,
                             this, false);
