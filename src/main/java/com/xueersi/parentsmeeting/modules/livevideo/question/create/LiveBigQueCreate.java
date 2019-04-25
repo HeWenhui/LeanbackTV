@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSecHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseLiveBigQuestionPager;
@@ -24,16 +25,18 @@ public class LiveBigQueCreate implements BigQueCreate {
     }
 
     @Override
-    public BaseLiveBigQuestionPager create(VideoQuestionLiveEntity videoQuestionLiveEntity, RelativeLayout rlQuestionResContent) {
+    public BaseLiveBigQuestionPager create(VideoQuestionLiveEntity videoQuestionLiveEntity, RelativeLayout rlQuestionResContent, LiveBasePager.OnPagerClose onPagerClose) {
         if (videoQuestionLiveEntity.getDotType() == LiveQueConfig.DOTTYPE_SELE || videoQuestionLiveEntity.getDotType() == LiveQueConfig.DOTTYPE_MUL_SELE) {
             BigQuestionSelectLivePager bigQuestionSelectLivePager = new BigQuestionSelectLivePager(activity, videoQuestionLiveEntity);
             bigQuestionSelectLivePager.setQuestionSecHttp(questionSecHttp);
             bigQuestionSelectLivePager.setRlQuestionResContent(rlQuestionResContent);
+            bigQuestionSelectLivePager.setOnPagerClose(onPagerClose);
             return bigQuestionSelectLivePager;
         } else if (videoQuestionLiveEntity.getDotType() == LiveQueConfig.DOTTYPE_FILL) {
             BigQuestionFillInBlankLivePager bigQuestionFillInBlankLivePager = new BigQuestionFillInBlankLivePager(activity, videoQuestionLiveEntity);
             bigQuestionFillInBlankLivePager.setQuestionSecHttp(questionSecHttp);
             bigQuestionFillInBlankLivePager.setRlQuestionResContent(rlQuestionResContent);
+            bigQuestionFillInBlankLivePager.setOnPagerClose(onPagerClose);
             return bigQuestionFillInBlankLivePager;
         }
         return null;

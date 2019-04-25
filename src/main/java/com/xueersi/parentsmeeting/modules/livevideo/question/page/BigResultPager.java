@@ -39,10 +39,6 @@ public class BigResultPager extends LiveBasePager {
         super(context, false);
         this.group = group;
         mView = initView();
-        if (com.xueersi.common.config.AppConfig.DEBUG) {
-            Random random = new Random();
-            bigResultEntitie.setIsRight(random.nextInt(2));
-        }
         this.bigResultEntitie = bigResultEntitie;
         bigResultItemEntities = bigResultEntitie.getBigResultItemEntityArrayList();
         initData();

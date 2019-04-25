@@ -236,7 +236,7 @@ public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
         }
     }
 
-    private void submitBigTestInteraction(int isForce) {
+    private void submitBigTestInteraction(final int isForce) {
         JSONArray userAnswer = new JSONArray();
         for (int i = 0; i < answers.size(); i++) {
             userAnswer.put(answers.get(i));
@@ -257,12 +257,23 @@ public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
                         BigResultEntity bigResultEntity = (BigResultEntity) objData[0];
                         showResult(bigResultEntity);
                     }
+
+                    @Override
+                    public void onDataFail(int errStatus, String failMsg) {
+                        XESToastUtils.showToast(mContext, failMsg);
+                        if (isForce == 1) {
+                            onPagerClose.onClose(BigQuestionSelectLivePager.this);
+                        }
+                    }
                 });
             }
 
             @Override
             public void onDataFail(int errStatus, String failMsg) {
                 XESToastUtils.showToast(mContext, failMsg);
+                if (isForce == 1) {
+                    onPagerClose.onClose(BigQuestionSelectLivePager.this);
+                }
 //                if (com.xueersi.common.config.AppConfig.DEBUG) {
 //                    BigResultEntity bigResultEntity = new BigResultEntity();
 //                    ArrayList<BigResultItemEntity> bigResultEntities = bigResultEntity.getBigResultItemEntityArrayList();

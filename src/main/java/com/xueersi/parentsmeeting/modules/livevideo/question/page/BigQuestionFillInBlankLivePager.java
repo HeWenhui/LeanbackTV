@@ -280,6 +280,7 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
         for (int i = 0; i < answers.size(); i++) {
             userAnswer.put(answers.get(i));
         }
+        KeyboardUtil.hideKeyboard(getRootView());
         questionSecHttp.submitBigTestInteraction(videoQuestionLiveEntity, userAnswer, startTime, isForce, new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
@@ -293,17 +294,26 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
                 questionSecHttp.getStuInteractionResult(videoQuestionLiveEntity, new AbstractBusinessDataCallBack() {
                     @Override
                     public void onDataSucess(Object... objData) {
+                        BigResultEntity bigResultEntity = (BigResultEntity) objData[0];
+                        showResult(bigResultEntity);
+                    }
 
+                    @Override
+                    public void onDataFail(int errStatus, String failMsg) {
+                        XESToastUtils.showToast(mContext, failMsg);
+                        if (isForce == 1) {
+                            onPagerClose.onClose(BigQuestionFillInBlankLivePager.this);
+                        }
                     }
                 });
             }
 
             @Override
             public void onDataFail(int errStatus, String failMsg) {
-                if (isForce == 1) {
-
-                }
                 XESToastUtils.showToast(mContext, failMsg);
+                if (isForce == 1) {
+                    onPagerClose.onClose(BigQuestionFillInBlankLivePager.this);
+                }
 //                onPagerClose.onClose(BigQuestionFillInBlankLivePager.this);
 //                if (com.xueersi.common.config.AppConfig.DEBUG) {
 //                    BigResultEntity bigResultEntity = new BigResultEntity();

@@ -27,36 +27,17 @@
     <RelativeLayout
         android:layout_width="460dp"
         android:layout_height="wrap_content"
+        android:layout_alignTop="@id/rl_livevideo_bigque_result_content"
         android:layout_alignBottom="@id/rl_livevideo_bigque_result_content"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="20dp">
-
-        <ImageView
-            android:id="@id/iv_livevideo_bigque_result_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:src="@drawable/bg_livevideo_bigque_result_right_title" />
-
-        <TextView
-            android:id="@id/tv_livevideo_bigque_result_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/iv_livevideo_bigque_result_title"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="15dp"
-            android:includeFontPadding="false"
-            android:text="恭喜你答对了，金币+10"
-            android:textColor="@color/white"
-            android:textSize="16sp" />
 
         <RelativeLayout
             android:id="@id/rl_livevideo_bigque_result_tip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/iv_livevideo_bigque_result_title"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="28dp"
             android:background="@drawable/shape_live_bigque_result_tip">
 
             <TextView
@@ -120,4 +101,25 @@
 
         </android.support.v7.widget.RecyclerView>
     </RelativeLayout>
+
+
+    <ImageView
+        android:id="@id/iv_livevideo_bigque_result_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/bg_livevideo_bigque_result_right_title" />
+
+    <TextView
+        android:id="@id/tv_livevideo_bigque_result_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/iv_livevideo_bigque_result_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"
+        android:includeFontPadding="false"
+        android:text="恭喜你答对了，金币+10"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
+
 </RelativeLayout>

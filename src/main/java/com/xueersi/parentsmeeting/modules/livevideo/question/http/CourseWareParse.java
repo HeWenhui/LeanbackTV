@@ -1,9 +1,12 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.http;
 
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultItemEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CourseWareParse {
+    Logger logger = LiveLoggerFactory.getLogger("CourseWareParse");
+
     public NewCourseSec parseSec(ResponseEntity responseEntity) {
         try {
             NewCourseSec newCourseSec = new NewCourseSec();
@@ -101,7 +106,7 @@ public class CourseWareParse {
             }
             return newCourseSec;
         } catch (JSONException e) {
-            e.printStackTrace();
+            logger.e("parseEn", e);
         }
         return null;
     }
@@ -110,11 +115,25 @@ public class CourseWareParse {
         try {
             BigResultEntity bigResultEntity = new BigResultEntity();
             JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-            bigResultEntity.setIsRight(jsonObject.getInt("isRight"));
+            bigResultEntity.setIsRight(jsonObject.getInt("is_right"));
             bigResultEntity.setGold(jsonObject.getInt("gold"));
+            ArrayList<BigResultItemEntity> bigResultItemEntityArrayList = bigResultEntity.getBigResultItemEntityArrayList();
+            JSONArray each_question = jsonObject.getJSONArray("each_question");
+            for (int i = 0; i < each_question.length(); i++) {
+                JSONObject question = each_question.getJSONObject(i);
+                BigResultItemEntity bigResultItemEntity = new BigResultItemEntity();
+                bigResultItemEntity.standAnswer = question.optString("rightAnswer");
+                bigResultItemEntity.youAnswer = question.optString("userAnswer");
+                if (question.has("is_right")) {
+                    bigResultItemEntity.rightType = question.getInt("is_right");
+                } else {
+                    bigResultItemEntity.rightType = question.getInt("isRight");
+                }
+                bigResultItemEntityArrayList.add(bigResultItemEntity);
+            }
             return bigResultEntity;
         } catch (JSONException e) {
-            e.printStackTrace();
+            logger.e("parseBigResult", e);
         }
         return null;
     }

@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.item;
 
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultItemEntity;
@@ -80,15 +82,16 @@ public class BigResultAdapter extends RecyclerView.Adapter {
             tv_livevideo_bigque_result_stand = itemView.findViewById(R.id.tv_livevideo_bigque_result_stand);
             if (standAnswerLeft) {
                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tv_livevideo_bigque_result_stand.getLayoutParams();
-                lp.width = RelativeLayout.LayoutParams.WRAP_CONTENT;
+                lp.width = SizeUtils.Dp2Px(itemView.getContext(), 140);
                 tv_livevideo_bigque_result_stand.setLayoutParams(lp);
+                tv_livevideo_bigque_result_stand.setGravity(Gravity.LEFT);
             } else {
 
             }
             tv_livevideo_bigque_result_your = itemView.findViewById(R.id.tv_livevideo_bigque_result_your);
             if (youAnswerLeft) {
                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tv_livevideo_bigque_result_your.getLayoutParams();
-                lp.width = RelativeLayout.LayoutParams.WRAP_CONTENT;
+                lp.width = SizeUtils.Dp2Px(itemView.getContext(), 140);
                 lp.addRule(RelativeLayout.ALIGN_LEFT, R.id.tv_livevideo_bigque_result_your_hind);
                 tv_livevideo_bigque_result_your.setLayoutParams(lp);
             }

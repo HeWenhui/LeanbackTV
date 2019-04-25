@@ -311,7 +311,11 @@ public class CourseWareHttpManager {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 BigResultEntity bigResultEntity = courseWareParse.parseBigResult(responseEntity);
-                callBack.onDataSucess(bigResultEntity);
+                if (bigResultEntity == null) {
+                    callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_NULL, "数据解析异常");
+                } else {
+                    callBack.onDataSucess(bigResultEntity);
+                }
             }
 
             @Override

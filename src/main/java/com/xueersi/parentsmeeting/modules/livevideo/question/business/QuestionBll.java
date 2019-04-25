@@ -657,7 +657,17 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     rlQuestionContent.removeView(baseLiveBigQuestionPager.getRootView());
                 }
             }
-            final BaseLiveBigQuestionPager bigQuestionPager = bigQueCreate.create(videoQuestionLiveEntity, rlQuestionResContent);
+            final BaseLiveBigQuestionPager bigQuestionPager = bigQueCreate.create(videoQuestionLiveEntity, rlQuestionResContent, new LiveBasePager.OnPagerClose() {
+                @Override
+                public void onClose(LiveBasePager basePager) {
+                    basePager.onDestroy();
+                    rlQuestionContent.removeView(basePager.getRootView());
+                    if (basePager == baseLiveBigQuestionPager) {
+                        baseLiveBigQuestionPager = null;
+                    }
+                    onQuestionShow(videoQuestionLiveEntity, false, "showBigQuestion:onClose");
+                }
+            });
             if (bigQuestionPager != null) {
                 baseLiveBigQuestionPager = bigQuestionPager;
                 mVPlayVideoControlHandler.post(new Runnable() {
@@ -665,17 +675,6 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     public void run() {
                         rlQuestionContent.addView(bigQuestionPager.getRootView());
                         onQuestionShow(videoQuestionLiveEntity, true, "showBigQuestion");
-                        bigQuestionPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
-                            @Override
-                            public void onClose(LiveBasePager basePager) {
-                                basePager.onDestroy();
-                                rlQuestionContent.removeView(basePager.getRootView());
-                                if (basePager == baseLiveBigQuestionPager) {
-                                    baseLiveBigQuestionPager = null;
-                                }
-                                onQuestionShow(videoQuestionLiveEntity, false, "showBigQuestion:onClose");
-                            }
-                        });
                     }
                 });
             }
