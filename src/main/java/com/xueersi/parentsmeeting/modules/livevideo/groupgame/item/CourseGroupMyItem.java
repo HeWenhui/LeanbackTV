@@ -134,7 +134,8 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
                         workerThread.execute(new Runnable() {
                             @Override
                             public void run() {
-                                rtcEngine.enableAudio();
+//                                rtcEngine.enableAudio();
+                                rtcEngine.muteLocalAudioStream(false);
                             }
                         });
 //                        ivCourseItemAudio.setImageResource(AUDIO_RES[2]);
@@ -148,7 +149,8 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
                         workerThread.execute(new Runnable() {
                             @Override
                             public void run() {
-                                rtcEngine.disableAudio();
+//                                rtcEngine.disableAudio();
+                                rtcEngine.muteLocalAudioStream(true);
                             }
                         });
                         stopRun.animationView = animationView;

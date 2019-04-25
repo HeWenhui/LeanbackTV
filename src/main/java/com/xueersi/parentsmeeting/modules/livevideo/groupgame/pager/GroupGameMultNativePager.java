@@ -2362,20 +2362,15 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 //                                current_word = answerList.size() - 1;
 //                            }
                             if (current_word > currentAnswerIndex) {
-                                int oldIndex = currentAnswerIndex;
                                 currentAnswerIndex = current_word;
-                                String removeId = "";
-                                if (!allAnswerList.isEmpty()) {
-                                    //删除之前的试题
-                                    while (oldIndex < current_word - 1 && !allAnswerList.isEmpty()) {
-                                        oldIndex++;
-                                        GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = allAnswerList.remove(0);
-                                        if (answersEntity != null) {
-                                            removeId += answersEntity.getId() + ",";
-                                        }
-                                    }
+                            }
+                            //删除之前的试题
+                            for (int i = 0; i < Math.min(currentAnswerIndex, answerList.size()) - 1; i++) {
+                                GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = answerList.get(i);
+                                boolean remove = allAnswerList.remove(answersEntity);
+                                if (remove) {
+                                    mLogtf.d("VOICE_CANNO_SCENE:id=" + answersEntity.getId() + ",text=" + answersEntity.getText());
                                 }
-                                mLogtf.d("VOICE_CANNO_SCENE:removeId=" + removeId);
                             }
                             createSpeechContent("VOICE_CANNO_SCENE", false);
                             getCurrent("SCENEend");

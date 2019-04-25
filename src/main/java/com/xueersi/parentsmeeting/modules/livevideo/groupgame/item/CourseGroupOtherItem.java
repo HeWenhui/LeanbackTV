@@ -138,7 +138,7 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
                     workerThread.execute(new Runnable() {
                         @Override
                         public void run() {
-                            rtcEngine.muteRemoteAudioStream(uid, enableAudio);
+                            rtcEngine.muteRemoteAudioStream(uid, !enableAudio);
                         }
                     });
 //                    if (onVideoAudioClick != null) {
