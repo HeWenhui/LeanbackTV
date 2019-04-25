@@ -227,6 +227,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         // 设置速度按钮显示
         mMediaController.setSetSpeedVisable(true);
 
+        mMediaController.setVideoStatus(MediaPlayer.VIDEO_BOTTOM_CONTROL_CODE_TEACHER,MediaPlayer.VIDEO_TEACHER_HIDE,"");
+
         // 设置当前是否为横屏
         if (mPlayBackMediaController == null) {
 
@@ -626,6 +628,12 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 "times=" + times + ",time=" + (System.currentTimeMillis() - createTime) + ",speed=" + speed + ",key="
                         + key);
         liveBackBll.setSpeed(speed);
+    }
+
+    @Override
+    protected int onVideoStatusChange(int code,int status){
+        UmsAgentManager.umsAgentDebug(activity,""+code,"status");
+        return  code;
     }
 
     @Override

@@ -502,6 +502,13 @@ public class LiveBackVideoFragmentBase extends Fragment {
         }
 
         @Override
+        public int onVideoStatusChange(int code, int status) {
+            liveBackVideoFragment.onVideoStatusChange(code,status);
+            return super.onVideoStatusChange(code, status);
+
+        }
+
+        @Override
         public void seekTo(long pos) {
             super.seekTo(pos);
             liveBackVideoFragment.seekTo(pos);
@@ -735,6 +742,11 @@ public class LiveBackVideoFragmentBase extends Fragment {
     protected void onPlayOpenSuccess() {
 
     }
+    protected int onVideoStatusChange(int code,int status){
+        return code;
+
+    }
+
 
     /** 视频正常播放完毕退出时调用，非加载失败 */
     protected void resultComplete() {

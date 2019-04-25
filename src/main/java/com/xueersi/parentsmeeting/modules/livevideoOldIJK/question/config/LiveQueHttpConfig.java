@@ -35,4 +35,13 @@ public class LiveQueHttpConfig {
     /** 课件结果页-小学文科 */
     public static String LIVE_GET_STU_TESTS_RESULT_CN = LiveVideoChConfig.CH_LIVE_HTTP_HOST + "/LiveExam/getStuTestResult";
 //    public static String LIVE_GET_STU_TESTS_RESULT = "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example" + "/getStuTestResult";
+
+
+    /** 辅导 获取试题 */
+    public static String LIVE_GET_COURSEWARE_TUTOR_TESTS = LiveHttpConfig.LIVE_HOST + "/science/Tutorship/getCourseWareTest";
+    /** 辅导 提交试题 */
+    public static String LIVE_GET_COURSEWARE_SUBMIT_TESTS = LiveHttpConfig.LIVE_HOST + "/science/Tutorship/submitCourseWareTest";
+
+
+
 }

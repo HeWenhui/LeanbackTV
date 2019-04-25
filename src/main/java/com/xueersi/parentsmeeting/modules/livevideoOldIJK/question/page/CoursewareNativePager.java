@@ -189,6 +189,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         this.isNewArtsCourseware = englishH5Entity.isArtsNewH5Courseware();
         LiveVideoConfig.englishH5Entity = englishH5Entity;
         this.detailInfo = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
+        if (detailInfo.isTUtor) {
+            isArts = LiveVideoSAConfig.ART_SEC;
+        }
         if (isArts != LiveVideoSAConfig.ART_EN) {
             this.educationstage = detailInfo.getEducationstage();
         }

@@ -105,6 +105,9 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
         this.voiceType = voiceType;
     }
 
+    /** 辅导态 */
+    public boolean isTUtor = true;
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -258,5 +261,13 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
 
     public void setNewCourseTestIdSec(String newCourseTestIdSec) {
         this.newCourseTestIdSec = newCourseTestIdSec;
+    }
+
+    public boolean isTUtor() {
+        return isTUtor;
+    }
+
+    public void setTUtor(boolean TUtor) {
+        isTUtor = TUtor;
     }
 }

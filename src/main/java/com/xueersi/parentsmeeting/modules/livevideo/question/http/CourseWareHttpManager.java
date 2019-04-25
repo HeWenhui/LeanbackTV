@@ -8,8 +8,10 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListDanmakuEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
@@ -28,7 +30,7 @@ public class CourseWareHttpManager {
         }
     }
 
-    public void submitCourseWareTests(String stuId, String packageId, String packageSource, String packageAttr, String releasedPageInfos, int isPlayBack, String classId,
+    public void submitCourseWareTests(VideoQuestionLiveEntity detailInfo,String stuId, String packageId, String packageSource, String packageAttr, String releasedPageInfos, int isPlayBack, String classId,
                                       String classTestId, String srcTypes, String testIds, String educationStage, String nonce, String testInfos, int isforce, long entranceTime, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         liveHttpManager.setDefaultParameter(httpRequestParams);
@@ -50,7 +52,16 @@ public class CourseWareHttpManager {
         httpRequestParams.addBodyParam("entranceTime", "" + entranceTime);
         httpRequestParams.addBodyParam("isForce", "" + isforce);
         String url;
-        if (arts == LiveVideoSAConfig.ART_SEC) {
+        if (detailInfo.isTUtor()) {
+            httpRequestParams.addBodyParam("stuCouId", "9649079");
+            httpRequestParams.addBodyParam("stuId", "58074");
+            httpRequestParams.addBodyParam("packageId", "59148");
+            httpRequestParams.addBodyParam("packageSource", "2");
+            httpRequestParams.addBodyParam("liveId", "376269");
+            httpRequestParams.addBodyParam("packageAttr", "1");
+            httpRequestParams.addBodyParam("releasedPageInfos", "[{\"72853\":[\"21\",\"20188\"]}]");
+            url = LiveQueHttpConfig.LIVE_GET_COURSEWARE_TUTOR_TESTS;
+        } else if (arts == LiveVideoSAConfig.ART_SEC) {
             url = LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE;
         } else {
             url = LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_CN;
@@ -76,7 +87,7 @@ public class CourseWareHttpManager {
         });
     }
 
-    public void getCourseWareTests(String stuId, String packageId, String packageSource, String packageAttr, String releasedPageInfos, int isPlayBack, String classId, String classTestId,
+    public void getCourseWareTests(VideoQuestionLiveEntity info, String stuId, String packageId, String packageSource, String packageAttr, String releasedPageInfos, int isPlayBack, String classId, String classTestId,
                                    String srcTypes, String testIds, String educationStage, String nonce, String isShowTeamPk, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         liveHttpManager.setDefaultParameter(httpRequestParams);
@@ -94,7 +105,16 @@ public class CourseWareHttpManager {
         httpRequestParams.addBodyParam("nonce", "" + nonce);
         httpRequestParams.addBodyParam("isShowTeamPk", "" + isShowTeamPk);
         String url;
-        if (arts == LiveVideoSAConfig.ART_SEC) {
+        if (info.isTUtor()){
+            httpRequestParams.addBodyParam("stuCouId","9649079");
+            httpRequestParams.addBodyParam("stuId", "58074");
+            httpRequestParams.addBodyParam("packageId", "59148");
+            httpRequestParams.addBodyParam("packageSource", "2");
+            httpRequestParams.addBodyParam("liveId", "376269");
+            httpRequestParams.addBodyParam("packageAttr", "1");
+            httpRequestParams.addBodyParam("releasedPageInfos", "[{\"72853\":[\"21\",\"20188\"]}]");
+            url = LiveQueHttpConfig.LIVE_GET_COURSEWARE_TUTOR_TESTS;
+        } else if (arts == LiveVideoSAConfig.ART_SEC) {
             url = LiveQueHttpConfig.LIVE_GET_COURSEWARE_TESTS;
         } else {
             url = LiveQueHttpConfig.LIVE_GET_COURSEWARE_TESTS_CN;
