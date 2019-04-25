@@ -2107,6 +2107,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             if (!detailInfo.id.equals(test_id)) {
                                 return;
                             }
+                            getCurrent("STATISstart");
                             JSONObject dataObj = jsonObject.getJSONObject("data");
                             int word_id = dataObj.getInt("word_id");
                             final int who_id = dataObj.getInt("who_id");
@@ -2242,6 +2243,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                     });
                                 }
                             }
+                            getCurrent("STATISend");
                         } catch (JSONException e) {
                             mLogtf.e("onMessage:Statis", e);
                             CrashReport.postCatchedException(new LiveException(TAG, e));
@@ -2256,12 +2258,14 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             if (!detailInfo.id.equals(test_id)) {
                                 return;
                             }
+                            getCurrent("SCENEstart");
                             int current_word = jsonObject.optInt("current_word", currentAnswerIndex);
                             List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = testEntity.getAnswerList();
                             //删除之前的试题
                             for (int i = 0; i < Math.min(current_word, answerList.size()) - 1; i++) {
                                 GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = answerList.get(i);
-                                allAnswerList.remove(answersEntity);
+                                boolean remove = allAnswerList.remove(answersEntity);
+                                mLogtf.d("VOICE_CANNO_SCENE:id=" + answersEntity.getId() + ",remove=" + remove);
                             }
                             wordCount.clear();
                             JSONArray mateArray = jsonObject.optJSONArray("stu_data");
@@ -2308,7 +2312,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                             }
                                             wordCount.put(key, integer);
                                             int maxSingCount = testEntity.getSingleCount();
-                                            mLogtf.d("VOICE_CANNO_SCENE:integer=" + integer + ",maxSingCount=" + maxSingCount);
+                                            mLogtf.d("VOICE_CANNO_SCENE:key=" + key + ",integer=" + integer + ",maxSingCount=" + maxSingCount);
                                             if (integer >= maxSingCount) {
                                                 for (int allAns = 0; allAns < allAnswerList.size(); allAns++) {
                                                     GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = allAnswerList.get(allAns);
@@ -2323,6 +2327,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                                             }
                                                             mLogtf.d("VOICE_CANNO_SCENE:allId=" + allId);
                                                             allAnswerList.clear();
+                                                        } else {
+                                                            mLogtf.d("VOICE_CANNO_SCENE:wordId=" + wordId);
                                                         }
                                                         break;
                                                     }
@@ -2350,24 +2356,50 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                     }
                                 }
                             }
-                            createSpeechContent("VOICE_CANNO_SCENE", false);
 //                            if (!allAnswerList.isEmpty()) {
 //                                current_word = answerList.size() - allAnswerList.size();
 //                            } else {
 //                                current_word = answerList.size() - 1;
 //                            }
                             if (current_word > currentAnswerIndex) {
+                                int oldIndex = currentAnswerIndex;
                                 currentAnswerIndex = current_word;
+                                String removeId = "";
+                                if (!allAnswerList.isEmpty()) {
+                                    //删除之前的试题
+                                    while (oldIndex < current_word - 1 && !allAnswerList.isEmpty()) {
+                                        oldIndex++;
+                                        GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = allAnswerList.remove(0);
+                                        if (answersEntity != null) {
+                                            removeId += answersEntity.getId() + ",";
+                                        }
+                                    }
+                                }
+                                mLogtf.d("VOICE_CANNO_SCENE:removeId=" + removeId);
                             }
+                            createSpeechContent("VOICE_CANNO_SCENE", false);
+                            getCurrent("SCENEend");
                             voiceCannonOnMessage.coursewareDoingLoad(currentAnswerIndex);
                         } catch (Exception e) {
-                            mLogtf.e("onMessage:Scene", e);
+                            mLogtf.e("onMessage:VOICE_CANNO_SCENE", e);
                             CrashReport.postCatchedException(new LiveException(TAG, e));
-                            MobAgent.httpResponseParserError(TAG, "onMessage:Scene", e.getMessage());
                         }
                     }
                     break;
                 }
+            }
+        }
+
+        private void getCurrent(String method) {
+            try {
+                String ids = "";
+                for (int allAns = 0; allAns < allAnswerList.size(); allAns++) {
+                    GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = allAnswerList.get(allAns);
+                    ids += answer.getId() + ",";
+                }
+                mLogtf.d("getCurrent:method=" + method + ",current=" + currentAnswerIndex + ",ids=" + ids);
+            } catch (Exception e) {
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
 
