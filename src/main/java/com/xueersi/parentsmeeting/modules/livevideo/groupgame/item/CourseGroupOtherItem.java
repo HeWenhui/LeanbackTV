@@ -66,6 +66,7 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
     public void onRemoteVideoStateChanged(int state) {
         this.state = state;
         if (state == 1 && enableVideo) {
+            ivCourseItemVideo.setImageResource(VIDEO_RES[2]);
             rlCourseItemVideoHead.setVisibility(View.GONE);
         } else {
             rlCourseItemVideoHead.setVisibility(View.VISIBLE);
@@ -115,7 +116,7 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
                     workerThread.execute(new Runnable() {
                         @Override
                         public void run() {
-                            rtcEngine.muteRemoteVideoStream(uid, enableVideo);
+                            rtcEngine.muteRemoteVideoStream(uid, !enableVideo);
                         }
                     });
 //                    if (onVideoAudioClick != null) {

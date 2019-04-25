@@ -1480,6 +1480,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         float averageScore = 0;
         int sum = 0;
         int gameGroupId = interactiveTeam.getInteractive_team_id();
+        String scores = "";
         try {
             int size = allScoreList.size();
             if (size != 0) {
@@ -1487,6 +1488,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     ResultEntity resultEntity = allScoreList.get(i);
                     voiceTime += resultEntity.getSpeechDuration() * 1000;
                     sum += resultEntity.getScore();
+                    scores += resultEntity.getScore();
+                    if (i < size - 1) {
+                        scores += ",";
+                    }
                 }
                 averageScore = sum / size;
             }
@@ -1507,6 +1512,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 int rightNum = cleanUpEntity.rightAnswerList.size();
                 if (rightNum > 0) {
                     cleanUpEntity.teamMemberEntity.gold = 2;
+                } else {
+                    cleanUpEntity.teamMemberEntity.gold = 0;
                 }
                 if (rightNum > maxRight) {
                     maxRight = rightNum;
@@ -1529,10 +1536,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         JSONObject jsonObject = new JSONObject();
                         GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = answerList.get(ansIndex);
                         jsonObject.put("text", answer.getText());
-                        String scores = "";
                         ScoreEnergy scoreEnergy = wordScore.get(answer);
                         if (scoreEnergy != null) {
-                            scores = "" + scoreEnergy.scores;
                             energy += scoreEnergy.energy;
                             jsonObject.put("isRight", 1);
                         } else {
@@ -1572,6 +1577,12 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     } else {
                         vidooCannonEntity.teamMemberEntity.setEnergy(rightNum);
                     }
+                } else {
+                    int oldGold = vidooCannonEntity.teamMemberEntity.gold;
+                    if (oldGold != 0) {
+                        mLogtf.d("submit:oldGold=" + oldGold);
+                    }
+                    vidooCannonEntity.teamMemberEntity.gold = 0;
                 }
                 if (rightNum > maxRight) {
                     maxRight = rightNum;
@@ -1586,8 +1597,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 answerData.put("tryTimes", allScoreList.size());
                 JSONArray userAnswer = new JSONArray();
                 VidooCannonEntity vidooCannonEntity = vidooCannonEntities.get("" + stuid);
-                float totalScore = 0;
-                int totalCount = 0;
                 if (vidooCannonEntity != null && !tests.isEmpty()) {
                     energy = vidooCannonEntity.rightNum;
                     answerData.put("rightNum", vidooCannonEntity.rightNum);
@@ -1597,23 +1606,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = answerList.get(ansIndex);
                         jsonObject.put("text", answer.getText());
                         ArrayList<Integer> arrayList = wordScore.get(answer);
-                        String scores = "";
                         if (arrayList != null) {
-                            for (int arrIndex = 0; arrIndex < arrayList.size(); arrIndex++) {
-                                Integer soc = arrayList.get(arrIndex);
-                                scores += soc;
-                                if (arrIndex < arrayList.size() - 1) {
-                                    scores += ",";
-                                }
-                                try {
-                                    totalScore += soc;
-                                } catch (Exception e) {
-                                    CrashReport.postCatchedException(e);
-                                }
-                                totalCount++;
-                            }
                             mLogtf.d("submit:arrayList=" + arrayList.size() + ",singleCount=" + testInfoEntity.getSingleCount());
-                            jsonObject.put("isiRght", arrayList.size() == testInfoEntity.getSingleCount() ? 1 : 0);
+                            jsonObject.put("isRight", arrayList.size() == testInfoEntity.getSingleCount() ? 1 : 0);
                         } else {
                             jsonObject.put("isRight", 0);
                         }
