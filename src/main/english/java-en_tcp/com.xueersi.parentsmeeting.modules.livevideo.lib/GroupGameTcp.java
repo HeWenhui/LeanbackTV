@@ -464,6 +464,10 @@ public class GroupGameTcp {
                                         }
                                     } else {
                                         lastBody = body;
+                                        int capacity2 = capacity - head;
+                                        if (capacity2 < 0) {
+                                            throw new Exception("pack=" + pack + ",head=" + head);
+                                        }
                                         lastBuffer = ByteBuffer.allocate(capacity - head);
                                         lastBuffer.put(buffer, head, capacity - head);
                                         lastBuffer.flip();

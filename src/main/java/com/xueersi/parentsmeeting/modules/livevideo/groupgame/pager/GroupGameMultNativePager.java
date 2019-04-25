@@ -719,7 +719,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
     private void joinChannel(ArrayList<TeamMemberEntity> entities) {
         mWorkerThread = new WorkerThreadPool(mContext, stuid, false, true);
-        mWorkerThread.setAppid(liveGetInfo.getAppid());
         mWorkerThread.eventHandler().addEventHandler(agEventHandler);
         mWorkerThread.setEnableLocalVideo(true);
         mWorkerThread.setOnEngineCreate(new WorkerThreadPool.OnEngineCreate() {
@@ -1212,7 +1211,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
     @Override
     public void submitData() {
-        submit(true);
+        submit();
     }
 
     @Override
@@ -1342,6 +1341,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 //小于0直接结束
                 mLogtf.d("getCourseWareTests:total=" + test.getTotalTime() + ",nowPlayTime=" + nowPlayTime);
                 if (lastTime < 0) {
+                    showResult = false;
                     test.setTotalTime(0);
                     allAnswerList.clear();
                 } else {
@@ -1451,11 +1451,15 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     }
 
     boolean submit = false;
+    /**
+     * 是否显示结果页，时间结束不显示
+     */
+    private boolean showResult = true;
 
     /**
-     * @param showResult 是否显示结果页，时间结束不显示
+     * 提交
      */
-    private void submit(final boolean showResult) {
+    private void submit() {
         if (submit) {
             return;
         }
@@ -1855,7 +1859,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
      * 创建评测文本，
      *
      * @param method
-     * @param delay 等待tcp连接
+     * @param delay  等待tcp连接
      */
     private void createSpeechContent(String method, boolean delay) {
         speechContent = "";
@@ -1873,11 +1877,11 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        submit(false);
+                        submit();
                     }
                 }, 1200);
             } else {
-                submit(true);
+                submit();
             }
             return;
         }

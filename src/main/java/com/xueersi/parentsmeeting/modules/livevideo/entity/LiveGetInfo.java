@@ -359,7 +359,7 @@ public class LiveGetInfo {
     }
 
     public void setAppid(String appid) {
-//        this.appid = appid;
+        this.appid = appid;
     }
 
     public boolean isPrimaryChinese() {
