@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.http;
 
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultItemEntity;
@@ -16,7 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CourseWareParse {
-    Logger logger = LiveLoggerFactory.getLogger("CourseWareParse");
+    String TAG = "CourseWareParse";
+    Logger logger = LiveLoggerFactory.getLogger(TAG);
 
     public NewCourseSec parseSec(ResponseEntity responseEntity) {
         try {
@@ -38,7 +40,8 @@ public class CourseWareParse {
             }
             return newCourseSec;
         } catch (JSONException e) {
-            e.printStackTrace();
+            logger.e("parseSec", e);
+            MobAgent.httpResponseParserError(TAG, "parseSec", e.getMessage());
         }
         return null;
     }
@@ -82,7 +85,8 @@ public class CourseWareParse {
             resultEntity.setEnergy(energy);
             return resultEntity;
         } catch (JSONException e) {
-            e.printStackTrace();
+            logger.e("parseStuTestResult", e);
+            MobAgent.httpResponseParserError(TAG, "parseStuTestResult", e.getMessage());
         }
         return null;
     }
@@ -107,6 +111,7 @@ public class CourseWareParse {
             return newCourseSec;
         } catch (JSONException e) {
             logger.e("parseEn", e);
+            MobAgent.httpResponseParserError(TAG, "parseEn", e.getMessage());
         }
         return null;
     }
@@ -134,6 +139,7 @@ public class CourseWareParse {
             return bigResultEntity;
         } catch (JSONException e) {
             logger.e("parseBigResult", e);
+            MobAgent.httpResponseParserError(TAG, "parseBigResult", e.getMessage());
         }
         return null;
     }
