@@ -929,16 +929,18 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             for (int i = 0; i < pageNum; i++) {
                 JSONObject jsonObject = new JSONObject();
                 int isRight = 0;
-                int singCount = 0;
+                int singleCount = 0;
                 List<Integer> scoreList = scoreMatrix.get(i);
                 try {
                     jsonObject.put("text", mAnswersList.get(i).getText());
                     JSONArray scoreArray = new JSONArray();
                     for (int j = 0; j < scoreList.size(); j++) {
                         scoreArray.put(scoreList.get(j));
-                        singCount++;
+                        if (scoreList.get(j) >= 70) {
+                            singleCount++;
+                        }
                     }
-                    if (singCount >= MAX_SINGLE_COUNT) {
+                    if (singleCount >= MAX_SINGLE_COUNT) {
                         isRight = 1;
                         successTimes++;
                     }
