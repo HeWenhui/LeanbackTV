@@ -336,7 +336,7 @@ public class ChiAnswerResultPager extends BasePager implements IArtsAnswerRsultD
             if (0 == mData.getTotalScore()){
                 tvScore.setText("0分");
             }else {
-                tvScore.setText(mData.getTotalScore()+"分");
+                tvScore.setText((int)mData.getTotalScore()+"分");
             }
             mReusltType = mData.getIsRight();
             tvGoldCount.setVisibility(View.VISIBLE);
@@ -385,7 +385,7 @@ public class ChiAnswerResultPager extends BasePager implements IArtsAnswerRsultD
             } else {
                 mAdapter.notifyDataSetChanged();
             }
-            mStateListenr.onCompeletShow();
+//            mStateListenr.onCompeletShow();
         }
     }
 

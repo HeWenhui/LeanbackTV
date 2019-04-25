@@ -43,8 +43,7 @@ public class ArtsAnswerResultEvent {
 
     /** 本地上传语音答题 填空选择 */
     public static final int TYPE_NATIVE_UPLOAD_VOICE_SELECT_BLANK = 5;
-    /** js回调 语文ai主观题传回答案 */
-    public static final int TYPE_AI_CHINESE_ANSWERRESULT = 1;
+
 
     /**
      * @param dataStr 结果数据   type 为1时  dataStr 为答案原始数据  type为2时  为试题id

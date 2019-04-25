@@ -197,7 +197,7 @@ public class CourseWareHttpManager {
                 logger.d("getStuTestResult:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
                 ChineseAISubjectResultEntity chineseAISubjectResultEntity = courseWareParse.paresChiAIStuTestResult(responseEntity);
                 if (chineseAISubjectResultEntity != null) {
-                    callBack.onDataSucess(chineseAISubjectResultEntity);
+                    callBack.onDataSucess(chineseAISubjectResultEntity,responseEntity);
                 } else {
                     callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_NULL, "null");
                 }

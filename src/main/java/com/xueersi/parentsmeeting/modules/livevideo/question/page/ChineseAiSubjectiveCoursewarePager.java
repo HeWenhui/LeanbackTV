@@ -48,6 +48,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.ChsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerResultStateListener;
@@ -229,10 +231,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
 
     private CourseWareHttpManager courseWareHttpManager;
     String aiUrl;
-    /**
-     * 结果页
-     */
-    private ChiAnswerResultPager answerResultPager;
+
     /**
      * 强制收题
      */
@@ -676,9 +675,6 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
         logHashMap.put("closetype", "clickBackButton");
         logHashMap.put("isFinish", "" + isFinish);
         umsAgentDebugSys(eventId, logHashMap.getData());
-        if (answerResultPager != null){
-            answerResultPager.close();
-        }
     }
 
     @Override
@@ -726,15 +722,8 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 CrashReport.postCatchedException(e);
                 mLogtf.e("submitData", e);
             }
-            if (LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage)) {
-                XESToastUtils.showToast(mContext, "时间到,停止作答!");
-            }
-        } else {
-            if (answerResultPager != null) {
-                answerResultPager.close();
-            }
+//            XESToastUtils.showToast(mContext, "时间到,停止作答!");
         }
-
     }
 
     private void submit(int isforce, String nonce) {
@@ -877,7 +866,12 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
             }
             resultEntity.setRightAnswers(answerList);
             resultEntity.setGold(0);
-            addResultPager(1, resultEntity);
+            ChsAnswerResultEvent artsAnswerResultEvent = new ChsAnswerResultEvent( "", ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT);
+            artsAnswerResultEvent.setDetailInfo(detailInfo);
+            artsAnswerResultEvent.setIspreload(ispreload);
+            artsAnswerResultEvent.setResultEntity(resultEntity);
+            EventBus.getDefault().post(artsAnswerResultEvent);
+//            addResultPager(1, resultEntity);
             if (onClose != null) {
                 loadResult = true;
                 onClose.onH5ResultClose(ChineseAiSubjectiveCoursewarePager.this, getBaseVideoQuestionEntity());
@@ -1217,7 +1211,12 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
 
                         @Override
                         public void onDataSucess(Object... objData) {
-                            addResultPager(isforce, (ChineseAISubjectResultEntity) objData[0]);
+//                            addResultPager(isforce, (ChineseAISubjectResultEntity) objData[0]);
+                            ChsAnswerResultEvent artsAnswerResultEvent = new ChsAnswerResultEvent(objData[1] + "", ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT);
+                            artsAnswerResultEvent.setDetailInfo(detailInfo);
+                            artsAnswerResultEvent.setIspreload(ispreload);
+                            artsAnswerResultEvent.setResultEntity((ChineseAISubjectResultEntity) objData[0]);
+                            EventBus.getDefault().post(artsAnswerResultEvent);
                         }
 
                         @Override
@@ -1234,37 +1233,37 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
      * @param isforce
      * @param resultEntity
      */
-    private void addResultPager(final int isforce, ChineseAISubjectResultEntity resultEntity) {
-        loadResult = true;
-        if (isforce == 0) {
-            mGoldNum = resultEntity.getGold();
-            if (allowTeamPk) {
-                mEnergyNum = resultEntity.getEnergy();
-            }
-        }
-        answerResultPager = new ChiAnswerResultPager(mContext, resultEntity, new AnswerResultStateListener() {
-            @Override
-            public void onCompeletShow() {
-
-            }
-
-            @Override
-            public void onAutoClose(BasePager basePager) {
-            }
-
-            @Override
-            public void onCloseByUser() {
-                if (isforce == 0){
-                    onClose.onH5ResultClose(ChineseAiSubjectiveCoursewarePager.this, getBaseVideoQuestionEntity());
-                }
-            }
-        });
-        ((RelativeLayout) mView.getParent()).addView(answerResultPager.getRootView(),
-                new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                        ViewGroup.LayoutParams.MATCH_PARENT));
-        NewCourseLog.sno8(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts),
-                ispreload, 0);
-    }
+//    private void addResultPager(final int isforce, ChineseAISubjectResultEntity resultEntity) {
+//        loadResult = true;
+//        if (isforce == 0) {
+//            mGoldNum = resultEntity.getGold();
+//            if (allowTeamPk) {
+//                mEnergyNum = resultEntity.getEnergy();
+//            }
+//        }
+//        answerResultPager = new ChiAnswerResultPager(mContext, resultEntity, new AnswerResultStateListener() {
+//            @Override
+//            public void onCompeletShow() {
+//
+//            }
+//
+//            @Override
+//            public void onAutoClose(BasePager basePager) {
+//            }
+//
+//            @Override
+//            public void onCloseByUser() {
+//                if (isforce == 0){
+//                    onClose.onH5ResultClose(ChineseAiSubjectiveCoursewarePager.this, getBaseVideoQuestionEntity());
+//                }
+//            }
+//        });
+//        ((RelativeLayout) mView.getParent()).addView(answerResultPager.getRootView(),
+//                new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+//                        ViewGroup.LayoutParams.MATCH_PARENT));
+//        NewCourseLog.sno8(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts),
+//                ispreload, 0);
+//    }
 
     public void onKeyboardShowing(boolean isShowing) {
         ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) wvSubjectWeb.getLayoutParams();
