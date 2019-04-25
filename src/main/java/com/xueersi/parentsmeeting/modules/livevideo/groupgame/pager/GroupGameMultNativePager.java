@@ -413,8 +413,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         turnRun = new VoiceCannonTurnRun(currentAnswerIndex, time);
                         handler.postDelayed(turnRun, time * 1000);
                     } else {
-                        logger.d("onLoadComplete:pagerNum=" + turnRun.pagerNum + "," + currentAnswerIndex);
-                        if (turnRun.pagerNum != currentAnswerIndex) {
+                        mLogtf.d("onLoadComplete:pagerNum=" + turnRun.pagerNum + "," + currentAnswerIndex);
+                        if (turnRun.pagerNum < currentAnswerIndex) {
                             handler.removeCallbacks(turnRun);
                             turnRun = new VoiceCannonTurnRun(currentAnswerIndex, time);
                             handler.postDelayed(turnRun, time * 1000);
@@ -475,8 +475,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         turnRun = new VoiceCannonTurnRun(currentAnswerIndex, time);
                         handler.postDelayed(turnRun, time * 1000);
                     } else {
-                        logger.d("onLoadComplete:pagerNum=" + turnRun.pagerNum + "," + currentAnswerIndex);
-                        if (turnRun.pagerNum != currentAnswerIndex) {
+                        mLogtf.d("onLoadComplete:pagerNum=" + turnRun.pagerNum + "," + currentAnswerIndex);
+                        if (turnRun.pagerNum < currentAnswerIndex) {
                             handler.removeCallbacks(turnRun);
                             turnRun = new VoiceCannonTurnRun(currentAnswerIndex, time);
                             handler.postDelayed(turnRun, time * 1000);
@@ -552,7 +552,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             handler.postDelayed(turnRun, time * 1000);
                         } else {
                             mLogtf.d("coursewareDoingLoad:pageNum=" + turnRun.pagerNum + ",pageNum=" + pageNum);
-                            if (turnRun.pagerNum != pageNum) {
+                            if (turnRun.pagerNum < pageNum) {
                                 handler.removeCallbacks(turnRun);
                                 turnRun = new VoiceCannonTurnRun(pageNum, time);
                                 handler.postDelayed(turnRun, time * 1000);
