@@ -229,7 +229,7 @@ public class TcpDispatch {
             CloudUploadEntity uploadEntity = new CloudUploadEntity();
             uploadEntity.setFilePath(saveFile.getPath());
             uploadEntity.setType(XesCloudConfig.UPLOAD_OTHER);
-            uploadEntity.setCloudPath(CloudDir.LIVE_TCP);
+            uploadEntity.setCloudPath(CloudDir.CLOUD_TEST);
             xesCloudUploadBusiness.asyncUpload(uploadEntity, new XesStsUploadListener() {
                 @Override
                 public void onProgress(XesCloudResult result, int percent) {
