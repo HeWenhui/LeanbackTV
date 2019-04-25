@@ -141,6 +141,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     //    private NewCourseSec newCourseSec;
     private GroupGameTestInfosEntity mGroupGameTestInfosEntity;
     private List<GroupGameTestInfosEntity.TestInfoEntity> tests = new ArrayList<>();
+    private GroupGameTestInfosEntity.TestInfoEntity testEntity;
     /** 每个题是作答次数 */
     private HashMap<String, Integer> wordCount = new HashMap<>();
     /** 进入时间 */
@@ -466,11 +467,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     if (pagerShowTime != null) {
                         pagerShowTime.end = System.currentTimeMillis();
                     }
-                    GroupGameTestInfosEntity.TestInfoEntity test = tests.get(0);
-                    if (currentAnswerIndex >= test.getAnswerList().size()) {
+                    if (currentAnswerIndex >= testEntity.getAnswerList().size()) {
                         return;
                     }
-                    int time = test.getAnswerList().get(currentAnswerIndex).getSingleTime() + 1;
+                    int time = testEntity.getAnswerList().get(currentAnswerIndex).getSingleTime() + 1;
                     if (turnRun == null) {
                         turnRun = new VoiceCannonTurnRun(currentAnswerIndex, time);
                         handler.postDelayed(turnRun, time * 1000);
@@ -1322,30 +1322,30 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     XESToastUtils.showToast(mContext, "互动题为空");
                     return;
                 }
-                GroupGameTestInfosEntity.TestInfoEntity test = tests.get(0);
+                testEntity = tests.get(0);
 //                if (AppConfig.DEBUG) {
 //                    test.setPreviewPath("file:///android_asset/group_game_cleanup/index.html");
 //                }
-                allAnswerList.addAll(test.getAnswerList());
+                allAnswerList.addAll(testEntity.getAnswerList());
                 long nowTime = mGroupGameTestInfosEntity.getTimeStamp();
                 int nowPlayTime = (int) (nowTime - mGroupGameTestInfosEntity.getOperateTimeStamp());
                 if (nowPlayTime < 0) {
                     nowPlayTime = 0;
                 }
                 // 剩余时间
-                long lastTime = test.getTotalTime() - nowPlayTime;
+                long lastTime = testEntity.getTotalTime() - nowPlayTime;
 //                if (com.xueersi.common.config.AppConfig.DEBUG) {
 //                    nowPlayTime = 0;
 //                    lastTime = 10000;
 //                }
                 //小于0直接结束
-                mLogtf.d("getCourseWareTests:total=" + test.getTotalTime() + ",nowPlayTime=" + nowPlayTime);
+                mLogtf.d("getCourseWareTests:total=" + testEntity.getTotalTime() + ",nowPlayTime=" + nowPlayTime);
                 if (lastTime < 0) {
                     showResult = false;
-                    test.setTotalTime(0);
+                    testEntity.setTotalTime(0);
                     allAnswerList.clear();
                 } else {
-                    test.setTotalTime(test.getTotalTime() - nowPlayTime);
+                    testEntity.setTotalTime(testEntity.getTotalTime() - nowPlayTime);
                     if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(gameType)) {
                         // 游戏时间
                         long playTime = 0;
@@ -1386,15 +1386,15 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     }
                 }
                 createSpeechContent("getCourseWareTests", lastTime < 0);
-                wvSubjectWeb.loadUrl(test.getPreviewPath());
-                int type = newCourseCache.loadCourseWareUrl(test.getPreviewPath());
+                wvSubjectWeb.loadUrl(testEntity.getPreviewPath());
+                int type = newCourseCache.loadCourseWareUrl(testEntity.getPreviewPath());
                 if (type != 0) {
                     ispreload = type == 1;
                 } else {
                     ispreload = true;
                 }
                 connectTcp();
-                NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), getSubtestid(), test.getPreviewPath(), ispreload, test.getTestId());
+                NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), getSubtestid(), testEntity.getPreviewPath(), ispreload, testEntity.getTestId());
             }
 
             private void connectTcp() {
@@ -2257,8 +2257,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                 return;
                             }
                             int current_word = jsonObject.optInt("current_word", currentAnswerIndex);
-                            GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
-                            List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = testInfoEntity.getAnswerList();
+                            List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = testEntity.getAnswerList();
                             //删除之前的试题
                             for (int i = 0; i < Math.min(current_word, answerList.size()) - 1; i++) {
                                 GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = answerList.get(i);
@@ -2308,7 +2307,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                                 integer++;
                                             }
                                             wordCount.put(key, integer);
-                                            int maxSingCount = testInfoEntity.getSingleCount();
+                                            int maxSingCount = testEntity.getSingleCount();
                                             mLogtf.d("VOICE_CANNO_SCENE:integer=" + integer + ",maxSingCount=" + maxSingCount);
                                             if (integer >= maxSingCount) {
                                                 for (int allAns = 0; allAns < allAnswerList.size(); allAns++) {
@@ -2316,6 +2315,15 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                                     if (answer.getId() == wordId) {
                                                         allAnswerList.remove(allAns);
                                                         currentAnswerIndex++;
+                                                        //为了以防没有移除完成，偶现。需要查剩下的id数量
+                                                        if (currentAnswerIndex > testEntity.getAnswerList().size() - 1) {
+                                                            String allId = "";
+                                                            for (int aindex = 0; aindex < allAnswerList.size(); aindex++) {
+                                                                allId += allAnswerList.get(aindex) + ",";
+                                                            }
+                                                            mLogtf.d("VOICE_CANNO_SCENE:allId=" + allId);
+                                                            allAnswerList.clear();
+                                                        }
                                                         break;
                                                     }
                                                 }
