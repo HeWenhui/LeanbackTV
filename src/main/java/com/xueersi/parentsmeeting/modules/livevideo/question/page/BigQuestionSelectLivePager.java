@@ -255,7 +255,7 @@ public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
                     @Override
                     public void onDataSucess(Object... objData) {
                         BigResultEntity bigResultEntity = (BigResultEntity) objData[0];
-                        showResult(bigResultEntity);
+                        showResult(bigResultEntity, isForce);
                     }
 
                     @Override
@@ -297,8 +297,8 @@ public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
         });
     }
 
-    private void showResult(BigResultEntity bigResultEntity) {
-        BigResultPager resultPager = new BigResultPager(mContext, rlQuestionResContent, bigResultEntity);
+    private void showResult(BigResultEntity bigResultEntity, int isForce) {
+        final BigResultPager resultPager = new BigResultPager(mContext, rlQuestionResContent, bigResultEntity);
         rlQuestionResContent.addView(resultPager.getRootView());
         resultPager.setOnPagerClose(new OnPagerClose() {
             @Override
@@ -307,6 +307,17 @@ public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
                 onPagerClose.onClose(BigQuestionSelectLivePager.this);
             }
         });
+        if (isForce == 1) {
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (resultPager.isAttach()) {
+                        rlQuestionResContent.removeView(resultPager.getRootView());
+                        onPagerClose.onClose(BigQuestionSelectLivePager.this);
+                    }
+                }
+            }, 5000);
+        }
     }
 
     private class MulitSelectAdapter extends XsBaseAdapter {

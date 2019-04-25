@@ -295,7 +295,7 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
                     @Override
                     public void onDataSucess(Object... objData) {
                         BigResultEntity bigResultEntity = (BigResultEntity) objData[0];
-                        showResult(bigResultEntity);
+                        showResult(bigResultEntity, isForce);
                     }
 
                     @Override
@@ -335,8 +335,8 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
         });
     }
 
-    private void showResult(BigResultEntity bigResultEntity) {
-        BigResultPager resultPager = new BigResultPager(mContext, rlQuestionResContent, bigResultEntity);
+    private void showResult(BigResultEntity bigResultEntity, int isForce) {
+        final BigResultPager resultPager = new BigResultPager(mContext, rlQuestionResContent, bigResultEntity);
         rlQuestionResContent.addView(resultPager.getRootView());
         resultPager.setOnPagerClose(new OnPagerClose() {
             @Override
@@ -345,6 +345,18 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
                 onPagerClose.onClose(BigQuestionFillInBlankLivePager.this);
             }
         });
+        //强制提交，结果页关闭
+        if (isForce == 1) {
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (resultPager.isAttach()) {
+                        rlQuestionResContent.removeView(resultPager.getRootView());
+                        onPagerClose.onClose(BigQuestionFillInBlankLivePager.this);
+                    }
+                }
+            }, 5000);
+        }
     }
 
     /** 填空题校验 */
