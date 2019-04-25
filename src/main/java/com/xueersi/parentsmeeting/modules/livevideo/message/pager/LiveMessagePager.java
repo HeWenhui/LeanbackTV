@@ -117,6 +117,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     private CommonAdapter<LiveMessageEntity> messageAdapter;
     private CommonAdapter<LiveMessageEntity> otherMessageAdapter;
     private boolean isTouch = false;
+    /** 大题互动过程中，不能收聊天消息 */
+    private boolean isBigQue = false;
     /** 聊天字体大小，最多13个汉字 */
     private int messageSize = 0;
     /** 献花 */
@@ -532,7 +534,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             @Override
             public void onClick(@NonNull View widget) {
                 //弹出排行榜
-                UmsAgentManager.umsAgentCustomerBusiness(mContext,mContext.getResources().getString(R.string.livevideo_1713001));
+                UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1713001));
                 if (liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_rank) != null) {
                     liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_rank).performClick();
                 }
@@ -1207,7 +1209,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     @Override
     public void onPrivateMessage(boolean isSelf, final String sender, String login, String hostname, String target,
                                  final String message) {
-        if (isCloseChat()) {
+        if (isCloseChat() || isBigQue) {
             return;
         }
         mainHandler.post(new Runnable() {
@@ -1879,6 +1881,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     @Override
     public void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isShow) {
         if (videoQuestionLiveEntity.getDotType() != 0) {
+            isBigQue = isShow;
             if (isShow) {
                 for (int i = 0; i < liveMediaControllerBottom.getChildCount(); i++) {
                     liveMediaControllerBottom.getChildAt(i).setVisibility(View.GONE);
