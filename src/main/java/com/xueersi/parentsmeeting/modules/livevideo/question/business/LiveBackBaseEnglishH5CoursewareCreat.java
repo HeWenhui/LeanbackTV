@@ -70,6 +70,7 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
             englishH5Entity.setDynamicurl("https://live.chs.xueersi.com/LiveExam/getCourseWareTestHtml");
             if( LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(englishH5Entity.getPackageAttr())){
                 englishH5Entity.setDynamicurl(liveGetInfo.getGetCourseWareHtmlNew());
+                videoQuestionH5Entity.setSubjectiveItem2AIUrl(liveGetInfo.getSubjectiveItem2AIUrl());
             }
             String educationstage = liveGetInfo.getEducationStage();
             videoQuestionH5Entity.setEducationstage(educationstage);

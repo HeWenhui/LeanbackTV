@@ -246,6 +246,7 @@ public class LivePlayBackHttpResponseParser extends HttpResponseParser {
         getInfo.setGetCourseWareHtmlZhongXueUrl(data.optString("getCourseWareHtmlZhongXueUrl"));
         if (!data.has("getCourseWareHtml")){
             getInfo.setGetCourseWareHtmlNew(data.optString("getCourseWareWeb"));
+            getInfo.setSubjectiveItem2AIUrl(data.optString("subjectiveItem2AIUrl"));
         }
     }
 
