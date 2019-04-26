@@ -543,7 +543,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
 
         vPlayerHandler.sendEmptyMessage(OPEN_FILE);
     }
-
+    /** 赋值视频名称 */
     public void setmDisplayName(String displayName) {
         this.mDisplayName = displayName;
     }

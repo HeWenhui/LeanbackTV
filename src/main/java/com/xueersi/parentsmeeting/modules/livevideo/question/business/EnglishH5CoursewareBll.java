@@ -45,9 +45,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.RankUserEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.CreateAnswerReslutEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.VoiceAnswerPager;
@@ -341,6 +343,12 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                                 logToFile.i("onH5Courseware:queskey=" + queskey);
                                 return;
                             }
+                        }
+                        //小学不显示语文AI主观题
+                        if((LiveVideoConfig.EDUCATION_STAGE_1.equals(videoQuestionLiveEntity.getEducationstage())
+                                || LiveVideoConfig.EDUCATION_STAGE_2.equals(videoQuestionLiveEntity.getEducationstage()))
+                                && LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(videoQuestionLiveEntity.englishH5Entity.getPackageAttr())){
+                            return;
                         }
                         showH5Paper(videoQuestionLiveEntity);
                         return;

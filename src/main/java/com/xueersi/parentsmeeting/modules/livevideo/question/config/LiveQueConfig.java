@@ -51,6 +51,8 @@ public class LiveQueConfig {
     public static final String EN_COURSE_TYPE_NEW_GAME = "17";
     public static final String EN_COURSE_TYPE_18 = "18";
     public static final String EN_COURSE_TYPE_19 = "19";
+    /** 语文AI主观题*/
+    public static final String CHI_COURESWARE_TYPE_AISUBJECTIVE = "17";
 
     public static ArrayList getSubmitMultiTestTypes() {
         if (SUBMIT_MULTI_TEST_TYPES == null) {
