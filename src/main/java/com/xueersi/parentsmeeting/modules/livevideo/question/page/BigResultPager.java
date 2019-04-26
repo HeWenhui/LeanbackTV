@@ -61,13 +61,15 @@ public class BigResultPager extends LiveBasePager {
     @Override
     public void initData() {
         super.initData();
-        tvBigqueResultTitle.setText("恭喜你答对了，金币+" + bigResultEntitie.getGold());
         int isRight = bigResultEntitie.getIsRight();
         if (isRight == LiveQueConfig.DOTTYPE_RESULT_WRONG) {
+            tvBigqueResultTitle.setText("很遗憾答错了");
             ivBigqueResultTitle.setImageResource(R.drawable.bg_livevideo_bigque_result_wrong_title);
         } else if (isRight == LiveQueConfig.DOTTYPE_ITEM_RIGHT) {
+            tvBigqueResultTitle.setText("恭喜你答对了    金币+" + bigResultEntitie.getGold());
             ivBigqueResultTitle.setImageResource(R.drawable.bg_livevideo_bigque_result_right_title);
         } else if (isRight == LiveQueConfig.DOTTYPE_ITEM_PART_RIGHT) {
+            tvBigqueResultTitle.setText("部分正确    金币+" + bigResultEntitie.getGold());
             ivBigqueResultTitle.setImageResource(R.drawable.bg_livevideo_bigque_result_part_title);
         }
         BigResultAdapter bigResultAdapter = new BigResultAdapter(bigResultItemEntities);

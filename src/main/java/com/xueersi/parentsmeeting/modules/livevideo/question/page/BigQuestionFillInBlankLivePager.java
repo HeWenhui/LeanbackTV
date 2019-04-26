@@ -173,12 +173,27 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
                     if (v_livevideo_question_content_bord.getVisibility() == View.VISIBLE) {
                         return false;
                     } else {
-                        onKeyboardShowing(true);
-                        KPSwitchConflictUtil.showKeyboard(v_livevideo_question_content_bord, holder.etFillBlank);
-                        return true;
+                        if (event.getAction() == MotionEvent.ACTION_UP) {
+                            onKeyboardShowing(true);
+                            KPSwitchConflictUtil.showKeyboard(v_livevideo_question_content_bord, holder.etFillBlank);
+                            return true;
+                        } else {
+                            return false;
+                        }
                     }
                 }
             });
+//            holder.etFillBlank.setOnClickListener(new OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    if (v_livevideo_question_content_bord.getVisibility() == View.VISIBLE) {
+//
+//                    } else {
+//                        onKeyboardShowing(true);
+//                        KPSwitchConflictUtil.showKeyboard(v_livevideo_question_content_bord, holder.etFillBlank);
+//                    }
+//                }
+//            });
             textWatcher = new TextWatcher() {
                 int selectionEnd;
                 boolean isDelete = false;
