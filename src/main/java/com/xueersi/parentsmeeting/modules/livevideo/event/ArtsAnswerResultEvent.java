@@ -17,6 +17,12 @@ public class ArtsAnswerResultEvent {
 
     private String testId;
     private int isRight;
+    /** 1-强制收题，0-自己提交*/
+    private int isforce;
+    /** 互动题打开时间*/
+    private long entranceTime;
+
+    private boolean isPlayBack;
 
     private int mType;
     /** 新课件互动题 */
@@ -37,6 +43,7 @@ public class ArtsAnswerResultEvent {
 
     /** 本地上传语音答题 填空选择 */
     public static final int TYPE_NATIVE_UPLOAD_VOICE_SELECT_BLANK = 5;
+
 
     /**
      * @param dataStr 结果数据   type 为1时  dataStr 为答案原始数据  type为2时  为试题id
@@ -108,6 +115,30 @@ public class ArtsAnswerResultEvent {
 
     public void setIspreload(boolean ispreload) {
         this.ispreload = ispreload;
+    }
+
+    public int getIsforce() {
+        return isforce;
+    }
+
+    public void setIsforce(int isforce) {
+        this.isforce = isforce;
+    }
+
+    public long getEntranceTime() {
+        return entranceTime;
+    }
+
+    public void setEntranceTime(long entranceTime) {
+        this.entranceTime = entranceTime;
+    }
+
+    public boolean isPlayBack() {
+        return isPlayBack;
+    }
+
+    public void setPlayBack(boolean playBack) {
+        isPlayBack = playBack;
     }
 
     @Override

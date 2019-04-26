@@ -467,6 +467,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                                 "&releasedPageInfos=" + releasedPageInfos + "&classTestId=" + classTestId +
                                 "&educationStage=" + LiveVideoConfig.LIVEPLAYBACKSTAGE + "&isPlayBack=1" + "&nonce="
                                 + "" + UUID.randomUUID();
+                        if(LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(packageAttr)){
+                            mLoadUrls += "&aiUrl="+detailInfo.getSubjectiveItem2AIUrl()+"&deviceId=8&gradeType="+Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getGradeCode());
+                        }
                     }
                 } else {
                     // 理科直播

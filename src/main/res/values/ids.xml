@@ -1293,4 +1293,21 @@
     <item name="tv_middle_answer_result_item_muti_right_answer" type="id" />
     <item name="tv_middle_answer_result_item_muti_index" type="id" />
 
+
+    <!-- 语文主观题结果页-->
+    <item name="rl_chi_answer_result_resultdetail" type="id" />
+    <item name="v_chi_answer_result_detail_bg" type="id" />
+    <item name="iv_chi_answer_result_detail_head" type="id" />
+    <item name="tv_chi_answer_result_detail_title" type="id" />
+    <item name="ll_chi_normal_answer_result_gold_info" type="id" />
+    <item name="tv_chi_normal_answer_result_gold_count" type="id" />
+    <item name="rcl_chi_answer_result_detail" type="id" />
+    <item name="iv_chi_answer_result_detail_close_btn" type="id" />
+
+    <item name="ll_chi_answer_result_item_muti_user_answer_info" type="id" />
+    <item name="iv_chi_answer_result_item_muti_right_answer" type="id" />
+    <item name="tv_chi_answer_result_item_muti_index" type="id" />
+    <item name="tv_chi_answer_result_item_muti_user_answer" type="id" />
+    <item name="tv_chi_answer_result_item_muti_right_answer" type="id" />
+    <item name="tv_chi_answer_result_score" type="id" />
 </resources>

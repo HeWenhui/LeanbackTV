@@ -55,6 +55,9 @@ public class NewCourseSec {
         String hasAnswer;
         JSONObject json;
         JSONArray userAnswerContent;
+        JSONArray rightAnswerContent;
+        //总分
+        String maxScore;
 
         public String getId() {
             return id;
@@ -102,6 +105,22 @@ public class NewCourseSec {
 
         public void setUserAnswerContent(JSONArray userAnswerContent) {
             this.userAnswerContent = userAnswerContent;
+        }
+
+        public JSONArray getRightAnswerContent() {
+            return rightAnswerContent;
+        }
+
+        public void setRightAnswerContent(JSONArray rightAnswerContent) {
+            this.rightAnswerContent = rightAnswerContent;
+        }
+
+        public String getMaxScore() {
+            return maxScore;
+        }
+
+        public void setMaxScore(String maxScore) {
+            this.maxScore = maxScore;
         }
     }
 }
