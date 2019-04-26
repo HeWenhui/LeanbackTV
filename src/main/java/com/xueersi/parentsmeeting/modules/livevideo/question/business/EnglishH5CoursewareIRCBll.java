@@ -578,7 +578,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 XESCODE.MULTIPLE_H5_COURSEWARE,
                 XESCODE.ARTS_H5_COURSEWARE,
                 XESCODE.ARTS_STOP_QUESTION,
-                XESCODE.AI_SUBJECTIVE_H5_COURSEWARE,
+                
         };
     }
 

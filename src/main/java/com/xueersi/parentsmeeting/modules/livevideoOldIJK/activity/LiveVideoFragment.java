@@ -51,6 +51,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.business.Pr
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.presenter.PraiseListIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.AnswerRankIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.ArtsAnswerResultBll;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.ChsAnswerResultBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.EnglishH5CoursewareIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.QuestionIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.redpackage.business.RedPackageIRCBll;
@@ -258,6 +259,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new ChineseSpeechBulletScreenIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new PraiseListIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new PraiseInteractionBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new ChsAnswerResultBll(activity, mLiveBll));
 //            mLiveBll.addBusinessBll(new StudyReportBll(activity, mLiveBll));
             int allowLinkMicNew = activity.getIntent().getIntExtra("allowLinkMicNew", 0);
             VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
