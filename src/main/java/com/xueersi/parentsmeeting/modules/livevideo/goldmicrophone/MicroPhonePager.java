@@ -22,6 +22,7 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.common.permission.PermissionCallback;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.widget.SoundWaveView;
@@ -118,6 +119,7 @@ public class MicroPhonePager extends BasePager implements GoldPhoneContract.Gold
                 public void onTransitionEnd(Transition transition) {
                     logger.i("animator end");
                     swvView.setVisibility(View.VISIBLE);
+                    UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1714001));
                     swvView.setStart(true);
                 }
 
@@ -168,6 +170,7 @@ public class MicroPhonePager extends BasePager implements GoldPhoneContract.Gold
         @Override
         public void run() {
             if (ivClose != null && ivClose.getVisibility() != View.VISIBLE) {
+                UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1714004));
                 ivClose.setVisibility(View.VISIBLE);
             }
         }
@@ -190,6 +193,7 @@ public class MicroPhonePager extends BasePager implements GoldPhoneContract.Gold
         ivClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1714005));
                 ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 layoutParams.leftToLeft = R.id.layout_livevideo_gold_microphone;
                 layoutParams.rightToRight = R.id.layout_livevideo_gold_microphone;
@@ -207,6 +211,7 @@ public class MicroPhonePager extends BasePager implements GoldPhoneContract.Gold
             @Override
             public void onClick(View view) {
                 applyAudioPermission();
+                UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1714009));
             }
         });
     }
@@ -287,7 +292,7 @@ public class MicroPhonePager extends BasePager implements GoldPhoneContract.Gold
      */
     private boolean isActive = false;
     /** 当前声波是否结束 */
-    private boolean isStop = false;
+    private boolean isStop = true;
 
     /**
      * 移除金话筒这个功能
@@ -318,6 +323,7 @@ public class MicroPhonePager extends BasePager implements GoldPhoneContract.Gold
 
             @Override
             public void onAnimationEnd(Animator animation) {
+                UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1714002));
                 if (!isActive) {
                     mPresenter.remove(mView);
                 }
@@ -360,14 +366,16 @@ public class MicroPhonePager extends BasePager implements GoldPhoneContract.Gold
     @Override
     public void showSettingView(boolean isVisible) {
         settingGroup.setVisibility(isVisible ? View.VISIBLE : View.GONE);
+        isStop = isVisible;
         if (!isVisible) {
-            isStop = false;
+            UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1714008));
         }
     }
 
     @Override
     public void showSpeakLoudly() {
         speakLoudlyGroup.setVisibility(View.VISIBLE);
+        UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1714010));
         mView.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -394,6 +402,7 @@ public class MicroPhonePager extends BasePager implements GoldPhoneContract.Gold
     @Override
     public void showLottieView() {
         if (lottieAnimationView != null) {
+            UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1714003));
             lottieAnimationView.setVisibility(View.VISIBLE);
             lottieAnimationView.playAnimation();
             lottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
