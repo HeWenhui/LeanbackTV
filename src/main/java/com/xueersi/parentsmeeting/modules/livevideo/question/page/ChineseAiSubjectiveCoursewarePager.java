@@ -1136,6 +1136,11 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
         return englishH5Entity;
     }
 
+    @Override
+    public boolean isResultRecived() {
+        return loadResult;
+    }
+
     class CourseWebViewClient extends MyWebViewClient implements OnHttpCode {
 
         @Override

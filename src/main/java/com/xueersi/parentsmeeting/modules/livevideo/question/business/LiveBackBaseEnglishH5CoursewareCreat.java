@@ -57,7 +57,7 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
 //                }
             } else {
                 // TODO 理科小学
-//                englishH5Entity.setDynamicurl(liveGetInfo.getGetCourseWareHtmlNew() + ScienceStaticConfig.THIS_VERSION_HTML + "/index.html");
+               //englishH5Entity.setDynamicurl(liveGetInfo.getGetCourseWareHtmlNew() + ScienceStaticConfig.THIS_VERSION_HTML + "/index.html");
                 englishH5Entity.setDynamicurl("https://live.xueersi.com/science/LiveExam/getCourseWareTestHtml");
 //                if (englishH5Entity.getNewEnglishH5()) {
 //                    CoursewareNativePager h5CoursewarePager = new CoursewareNativePager(context, videoQuestionH5Entity, true, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
@@ -68,6 +68,9 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
             }
         } else if (isArts == 2) {
             englishH5Entity.setDynamicurl("https://live.chs.xueersi.com/LiveExam/getCourseWareTestHtml");
+            if( LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(englishH5Entity.getPackageAttr())){
+                englishH5Entity.setDynamicurl(liveGetInfo.getGetCourseWareHtmlNew());
+            }
             String educationstage = liveGetInfo.getEducationStage();
             videoQuestionH5Entity.setEducationstage(educationstage);
             //语文

@@ -116,9 +116,17 @@
     <color name="COLOR_00000000">#00000000</color>
     <color name="COLOR_FFFFF8F5">#FFFFF8F5</color>
     <color name="COLOR_FF8EA6EB">#FF8EA6EB</color>
+    <color name="COLOR_327af1">#327af1</color>
+    <color name="COLOR_FCBB23">#FCBB23</color>
+    <color name="COLOR_1AFFFFFF">#1AFFFFFF</color>
+    <color name="COLOR_E6FFFFFF">#E6FFFFFF</color>
     <color name="COLOR_FF449CEE">#FF449CEE</color>
 
-    <color name="COLOR_5DA741">#FF5DA741</color>
-    <color name="COLOR_E34949">#FFE34949</color>
+    <color name="COLOR_E34949">#E34949</color>
+
+    <color name="COLOR_5DA741">#5DA741</color>
+    <color name="COLOR_726665">#726665</color>
+    <color name="COLOR_84AD3D">#84AD3D</color>
+    <color name="COLOR_D45E58">#D45E58</color>
 
 </resources>

@@ -6,14 +6,17 @@ import android.animation.TypeEvaluator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.media.AudioManager;
 import android.os.Build;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
 import android.view.animation.ScaleAnimation;
 import android.widget.FrameLayout;
@@ -21,11 +24,16 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.airbnb.lottie.ImageAssetDelegate;
+import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.SoundPoolHelper;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BezierEvaluator;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SpringScaleInterpolator;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkProgressBar;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
@@ -37,7 +45,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
  * @author chekun
  * created  at 2018/4/17 16:26
  */
-public class TeamPkAqResultPager extends BasePager {
+public class TeamPkAqResultPager extends TeamPkBasePager {
 
     private RelativeLayout rlQuestionRootView;
     private ImageView ivEnergy;
@@ -69,6 +77,8 @@ public class TeamPkAqResultPager extends BasePager {
      * 答题奖励
      */
     public static final int AWARD_TYPE_QUESTION = 2;
+
+
 
     /**
      * 奖励类型
@@ -148,6 +158,8 @@ public class TeamPkAqResultPager extends BasePager {
     }
 
 
+
+
     /**
      * 设置数据
      *
@@ -182,6 +194,7 @@ public class TeamPkAqResultPager extends BasePager {
         rlQuestionRootView.setVisibility(View.VISIBLE);
         rlQuestionRootView.startAnimation(scaleAnimation);
 
+         //能量不在飞
         scaleAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -196,7 +209,6 @@ public class TeamPkAqResultPager extends BasePager {
                     }
                 }, 500);
             }
-
             @Override
             public void onAnimationRepeat(Animation animation) {
             }
@@ -288,12 +300,15 @@ public class TeamPkAqResultPager extends BasePager {
                 if (endRect != null) {
                     playFlayAnim(ivVoteEnergy, endRect);
                 } else {
+                    mTeamPkBll.updatePkStateLayout(true);
                     closePager();
                 }
             } else {
+                mTeamPkBll.updatePkStateLayout(true);
                 closePager();
             }
         } else {
+            mTeamPkBll.updatePkStateLayout(true);
             closePager();
         }
     }
@@ -375,6 +390,11 @@ public class TeamPkAqResultPager extends BasePager {
             if (teamPKStateLayout != null && mTeamPkBll != null) {
                 teamPKStateLayout.updateData(mEnergy, 0, mGoldNum);
                 teamPKStateLayout.showEnergyMyContribute(mEnergy);
+                //投票题 动画结束刷新右侧总能量
+                if(awardType == AWARD_TYPE_VOTE){
+                    mTeamPkBll.updatePkStateLayout(true);
+                }
+
             }
             closePager();
         }
@@ -403,29 +423,6 @@ public class TeamPkAqResultPager extends BasePager {
     private void releaseRes() {
         if (soundPoolHelper != null) {
             soundPoolHelper.release();
-        }
-    }
-
-    /**
-     * 贝塞尔曲线（二阶抛物线）
-     * controlPoint 是中间的转折点
-     * startValue 是起始的位置
-     * endValue 是结束的位置
-     */
-    public class BezierEvaluator implements TypeEvaluator<Point> {
-        private Point controlPoint;
-
-        BezierEvaluator(Point controlPoint) {
-            this.controlPoint = controlPoint;
-        }
-
-        @Override
-        public Point evaluate(float fraction, Point startValue, Point endValue) {
-            int x = (int) ((1 - fraction) * (1 - fraction) * startValue.x + 2 * fraction * (1 - fraction) *
-                    controlPoint.x + fraction * fraction * endValue.x);
-            int y = (int) ((1 - fraction) * (1 - fraction) * startValue.y + 2 * fraction * (1 - fraction) *
-                    controlPoint.y + fraction * fraction * endValue.y);
-            return new Point(x, y);
         }
     }
 

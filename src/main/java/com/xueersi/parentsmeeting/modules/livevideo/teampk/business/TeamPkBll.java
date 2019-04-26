@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.teampk.business;
 
 import android.app.Activity;
-import android.graphics.Rect;
 import android.os.Build;
 import android.text.TextUtils;
 import android.view.View;
@@ -9,27 +8,36 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
-import com.xueersi.common.base.BasePager;
+import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.TeamPkConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ScienceAnswerResult;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentCoinAndTotalEnergyEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentPkResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAdversaryEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkStar;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkStuProgress;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.NativeVoteRusltulCloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
@@ -38,7 +46,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.redpackage.entity.RedPackage
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkAqResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkAwardPager;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkContributionPager;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkEndPager;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkImprovePager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkResultPager;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkStarsPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkTeamSelectPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkTeamSelectingPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
@@ -60,8 +73,7 @@ import okhttp3.Call;
  * created  at 2018/4/12
  * 战队PK 相关业务处理
  */
-public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction {
-
+public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction, MessageAction {
 
     public static final String TEAMPK_URL_FIFTE = "http://addenergyandgold.com/";
     /**
@@ -81,17 +93,29 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      * 战队PK rootView
      */
     private RelativeLayout rlTeamPkContent;
+
+    /**
+     * 展示飞星动画等顶层UI 父布局
+     **/
+    private RelativeLayout rlTopLayerContent;
+
     private LiveHttpManager mHttpManager;
     private LiveGetInfo roomInitInfo;
     private LiveHttpResponseParser mHttpResponseParser;
     private TeamPkTeamInfoEntity teamInfoEntity;
-    private BasePager mFocusPager;
+    private TeamPkBasePager mFocusPager;
+
+    private TeamPkBasePager mTopLayerPager;
 
     private static final String OPEN_STATE_OPEN = "1";
 
     private static final String OPEN_STATE_CLOSE = "0";
 
 
+    /**
+     * 战队名称
+     **/
+    String mTeamName = "";
     /**
      * pk对手
      */
@@ -132,6 +156,16 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      * 当前老师模式
      */
     private String mTeacherMode = LiveTopic.MODE_TRANING;
+    /**
+     * 战队成员信息
+     **/
+    private List<TeamMate> mTeamMates;
+    private TeamPkPraiseBll mPraiseBll;
+    /**
+     * 分队仪式是否是有notice 触发的
+     */
+    private boolean teamSelectByNotice = false;
+
 
     public TeamPkBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -149,7 +183,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
     }
 
 
-    public void setRoomInitInfo(LiveGetInfo roomInfo) {
+    private void setRoomInitInfo(LiveGetInfo roomInfo) {
         roomInitInfo = roomInfo;
     }
 
@@ -164,9 +198,11 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.
                 LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         ((RelativeLayout) mRootView).addView(rlTeamPkContent, params);
-        showPkStateLayout();
-        registLayotListener();
+        rlTopLayerContent = new RelativeLayout(mActivity);
+        mRootView.addView(rlTopLayerContent, params);
 
+        showPkStateLayout();
+        registLayoutListener();
     }
 
     @Override
@@ -228,6 +264,19 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      */
     public void showOpenBoxScene(boolean isWin) {
         showAwardGetScene(CHEST_TYPE_STUDENT, null, isWin);
+    }
+
+
+    /**
+     * 显示贡献之星页面
+     *
+     * @param data
+     */
+    public void showContributionPage(TeamEnergyAndContributionStarEntity data) {
+        if (mFocusPager == null || !(mFocusPager instanceof TeamPkEndPager)) {
+            TeamPkContributionPager contributionPager = new TeamPkContributionPager(mActivity, TeamPkBll.this, data);
+            addPager(contributionPager);
+        }
     }
 
     public boolean isWin() {
@@ -293,6 +342,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
 
     }
 
+
     /**
      * 获取每题的 pk 结果
      *
@@ -308,7 +358,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
         }
         final String eventId = getLogEventId(event.getH5Type());
 
-        if (LiveVideoConfig.isNewEnglishH5) {
+        if (event.isScienceNewCourseWare()) {
             mHttpManager.teamEnergyNumAndContributionmulStar(mLiveBll.getLiveId(),
                     roomInitInfo.getStudentLiveInfo().getTeamId(),
                     roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), LiveVideoConfig.tests,
@@ -395,7 +445,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      * 开启分队仪式
      */
     public void startTeamSelect() {
-        logger.e("====>startTeamSelect:");
         getTeamInfo();
     }
 
@@ -432,26 +481,15 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                 });
     }
 
-
-    public void initView(RelativeLayout bottomContent) {
-        rlTeamPkContent = new RelativeLayout(mActivity);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.
-                LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-        bottomContent.addView(rlTeamPkContent, params);
-
-    }
-
     /**
      * 显示分队仪式 场景
      */
     private void showTeamSelectScene() {
         if (mFocusPager == null || !(mFocusPager instanceof TeamPkTeamSelectingPager)) {
             logger.e("====>showTeamSelectScene:" + mFocusPager);
-
             if (mFocusPager != null && mFocusPager instanceof TeamPkTeamSelectPager) {
                 return;
             }
-
             TeamPkTeamSelectPager teamSelectPager = new TeamPkTeamSelectPager(mActivity, this);
             addPager(teamSelectPager);
             teamSelectPager.setData(teamInfoEntity);
@@ -502,11 +540,8 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      * @param isWin
      */
     public void showAwardGetScene(int type, final Object data, final boolean isWin) {
-        logger.e("======>showAwardGetScene called");
         //   if (mFocusPager == null || !(mFocusPager instanceof TeamPkAwardPager)) {
         if (mFocusPager == null || !(mFocusPager instanceof TeamPkAwardPager)) {
-            logger.e("======>showAwardGetScene called 11111");
-
             if (type == CHEST_TYPE_CLASS) {
                 //从pk结果页面直接跳到 贡献之星
                 if (mFocusPager != null && mFocusPager instanceof TeamPkResultPager) {
@@ -532,7 +567,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                         TeamPkAwardPager awardGetPager = new TeamPkAwardPager(mActivity, TeamPkBll.this);
                         addPager(awardGetPager);
                         awardGetPager.showBoxLoop();
-                        logger.e("======>showAwardGetScene called 3333");
                     }
                 }, 1000);
             }
@@ -593,6 +627,9 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                     break;
                 case PK_RESULT_TYPE_PKRESULT:
                     resultPager.showCurrentResult((TeamEnergyAndContributionStarEntity) data);
+                    if (data != null && TextUtils.isEmpty(mTeamName)) {
+                        mTeamName = ((TeamEnergyAndContributionStarEntity) data).getMyTeamEngerInfo().getTeamName();
+                    }
                     break;
                 default:
                     break;
@@ -605,6 +642,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      */
     public void closeCurrentPager() {
         if (mFocusPager != null) {
+            mFocusPager.onDestroy();
             rlTeamPkContent.post(new Runnable() {
                 @Override
                 public void run() {
@@ -626,7 +664,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
         pkStateRootView = viewGroup.findViewById(R.id.tpkL_teampk_pkstate_root);
         if (pkStateRootView != null) {
             pkStateRootView.setVisibility(View.VISIBLE);
-            pkStateRootView.setTeamPkBll(this);
+           // pkStateRootView.setTeamPkBll(this);
             // 设置当前pk 状态,兼容 半身直播 主辅导态来回切换
             if (mCurrentPkState != null) {
                 pkStateRootView.bindData(mCurrentPkState.getStuLiveGold(),
@@ -687,7 +725,8 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
     public void showAnswerQuestionAward(int goldNum, int energyNum, String id) {
         TeamPkAqResultPager aqAwardPager = new TeamPkAqResultPager(mActivity,
                 TeamPkAqResultPager.AWARD_TYPE_QUESTION, this);
-        addPager(aqAwardPager);
+       // addPager(aqAwardPager);
+        addTopLayerPager(aqAwardPager);
         aqAwardPager.setData(goldNum, energyNum);
         TeamPkLog.showAddPower(mLiveBll, id, energyNum + "");
     }
@@ -704,14 +743,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      */
     private void showVoteEnergyAnim(int addEnergy, String voteId) {
         logger.e("========> showVoteEnergyAnim:" + voteId + ":" + addEnergy);
-        TeamPkAqResultPager aqAwardPager = new TeamPkAqResultPager(mActivity, TeamPkAqResultPager.AWARD_TYPE_VOTE,
-                this);
-        addPager(aqAwardPager);
-        aqAwardPager.setData(0, addEnergy);
-
-        TeamPkLog.showAddPower(mLiveBll, voteId, addEnergy + "");
-
-
         //上报服务器 增加加能量
         mHttpManager.addPersonAndTeamEnergy(mLiveBll.getLiveId(), addEnergy,
                 roomInitInfo.getStudentLiveInfo().getTeamId(),
@@ -721,6 +752,12 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
 
                     }
                 });
+        TeamPkAqResultPager aqAwardPager = new TeamPkAqResultPager(mActivity, TeamPkAqResultPager.AWARD_TYPE_VOTE,
+                this);
+        //addPager(aqAwardPager);
+        addTopLayerPager(aqAwardPager);
+        aqAwardPager.setData(0, addEnergy);
+        TeamPkLog.showAddPower(mLiveBll, voteId, addEnergy + "");
     }
 
     /**
@@ -739,12 +776,33 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      *
      * @return
      */
-    public boolean isFullScreenMode() {
+    private boolean isFullScreenMode() {
         boolean result = isHalfBodyLiveRoom() && mTeacherMode != null && mTeacherMode.equals(LiveTopic.MODE_CLASS);
         return result;
     }
 
-    private void addPager(BasePager aqAwardPager) {
+
+    /**
+     * 添加顶层 UI
+     */
+    private void addTopLayerPager(TeamPkBasePager pager) {
+        if (mTopLayerPager != null) {
+            mTopLayerPager.onDestroy();
+        }
+        rlTopLayerContent.removeAllViews();
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        int rightMargin = getRightMargin();
+        params.rightMargin = rightMargin;
+        rlTopLayerContent.addView(pager.getRootView(), params);
+        mTopLayerPager = pager;
+    }
+
+
+    private void addPager(TeamPkBasePager aqAwardPager) {
+        if (mFocusPager != null) {
+            mFocusPager.onDestroy();
+        }
         rlTeamPkContent.removeAllViews();
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT);
@@ -754,19 +812,66 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
         mFocusPager = aqAwardPager;
     }
 
-    private void registLayotListener() {
+    /**
+     * 添加全屏模式 页面
+     *
+     * @param pager
+     */
+    private void addFullScreenPager(TeamPkBasePager pager) {
+        if (mFocusPager != null) {
+            mFocusPager.onDestroy();
+        }
+        rlTeamPkContent.removeAllViews();
+        pager.setFullScreenMode(true);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        rlTeamPkContent.addView(pager.getRootView(), params);
+        mFocusPager = pager;
+    }
+
+    private void registLayoutListener() {
+        registContentLayerLayoutListener();
+        registTopLayerLayoutListener();
+    }
+
+    /**
+     * 注册普通内容 展示容器  layout 监听
+     */
+    private void registContentLayerLayoutListener() {
         rlTeamPkContent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-
                 if (!isFullScreenMode()) {
-                    if (mFocusPager != null) {
+                    if (mFocusPager != null && !mFocusPager.isFullScreenMode()) {
                         int rightMargin = LiveVideoPoint.getInstance().getRightMargin();
                         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mFocusPager.getRootView()
                                 .getLayoutParams();
                         if (rightMargin != params.rightMargin) {
                             params.rightMargin = rightMargin;
                             LayoutParamsUtil.setViewLayoutParams(mFocusPager.getRootView(), params);
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * 注册 TopLayer layout 监听
+     */
+    private void registTopLayerLayoutListener() {
+        rlTopLayerContent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener
+                () {
+            @Override
+            public void onGlobalLayout() {
+                if (!isFullScreenMode()) {
+                    if (mTopLayerPager != null && !mTopLayerPager.isFullScreenMode()) {
+                        int rightMargin = LiveVideoPoint.getInstance().getRightMargin();
+                        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mTopLayerPager.getRootView()
+                                .getLayoutParams();
+                        if (rightMargin != params.rightMargin) {
+                            params.rightMargin = rightMargin;
+                            LayoutParamsUtil.setViewLayoutParams(mTopLayerPager.getRootView(), params);
                         }
                     }
                 }
@@ -783,6 +888,11 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
         if (mFocusPager != null) {
             mFocusPager.onStop();
         }
+
+        if(mTopLayerPager != null){
+            mTopLayerPager.onStop();
+        }
+
         logger.e("======>onStop");
     }
 
@@ -795,11 +905,12 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
 
     @Override
     public void onResume() {
-
         if (mFocusPager != null) {
             mFocusPager.onResume();
         }
-
+        if(mTopLayerPager != null){
+            mTopLayerPager.onResume();
+        }
         logger.e("======>onResume");
     }
 
@@ -812,7 +923,14 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
             mFocusPager.onDestroy();
             mFocusPager = null;
         }
+        if (mTopLayerPager != null) {
+            mTopLayerPager.onDestroy();
+            mTopLayerPager = null;
+        }
         isTopicHandled = false;
+        if (mPraiseBll != null) {
+            mPraiseBll.releas();
+        }
         EventBus.getDefault().unregister(this);
     }
 
@@ -829,11 +947,46 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
             isAIPartner = roomInitInfo.getIsAIPartner() == 1;
             isAvailable = true;
             this.mTeacherMode = mLiveBll.getMode();
+            getTeamMates();
         }
     }
 
+    /**
+     * 获取战队成员信息
+     */
+    private void getTeamMates() {
+
+        mHttpManager.getTeamMates(roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStudentLiveInfo()
+                .getTeamId(), new HttpCallBack() {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                mTeamMates = mHttpResponseParser.parseTeamMates(responseEntity);
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+            }
+        });
+
+    }
+
+    /**
+     *
+     */
+    private LiveRoomH5CloseEvent latestAnswerRecord = null;
+    //最近一次答题信息
+    private LiveRoomH5CloseEvent latesH5CloseEvent;
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRoomH5CloseEvent(final LiveRoomH5CloseEvent event) {
+        latesH5CloseEvent = event;
+
         logger.e("=======>:onRoomH5CloseEvent:" + event.getId() + ":"
                 + event.getmGoldNum() + ":" + event.getmEnergyNum() + ":" + event.isCloseByTeacher());
         if (h5CloseEvents == null) {
@@ -871,14 +1024,22 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
 
 
     /**
+     * 获取最近一次答题结果信息
+     *
+     * @return
+     */
+    public LiveRoomH5CloseEvent getLatesH5CloseEvent() {
+
+        return latesH5CloseEvent;
+    }
+
+    /**
      * 显示当前的pk 结果
      */
     public void showCurrentPkResult() {
-        logger.e("======>showCurrentPkResult: called 666669999:" + h5CloseEvents);
         if (h5CloseEvents == null || h5CloseEvents.size() == 0) {
             return;
         }
-        logger.e("======>showCurrentPkResult: called");
         LiveRoomH5CloseEvent cacheEvent = h5CloseEvents.remove(0);
         getEnergyNumAndContributionStar(cacheEvent);
     }
@@ -942,10 +1103,14 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      * 关闭 每题的 pk 结果展示
      */
     public void closeCurrentPkResult() {
-        if (mFocusPager != null && mFocusPager instanceof TeamPkResultPager) {
+       /* if (mFocusPager != null && mFocusPager instanceof TeamPkResultPager) {
             ((TeamPkResultPager) mFocusPager).closePkResultPager();
+        }*/
+        if (mFocusPager != null && mFocusPager instanceof TeamPkContributionPager) {
+            ((TeamPkContributionPager) mFocusPager).startAutoClose();
         }
     }
+
 
     /**
      * 上传服务端 学生分队准备ok
@@ -971,7 +1136,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
         this.nonce = nonce;
     }
 
-    private String getNonce() {
+    public String getNonce() {
         return TextUtils.isEmpty(nonce) ? "" : nonce;
     }
 
@@ -979,37 +1144,66 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
     ///////////////////////////消息通讯相关///////////////////////////////////////
     private int[] noticeCodes = {
             XESCODE.STOPQUESTION,
-            XESCODE.EXAM_STOP, XESCODE.ENGLISH_H5_COURSEWARE,
-            XESCODE.TEAM_PK_TEAM_SELECT, XESCODE.TEAM_PK_SELECT_PKADVERSARY,
+            XESCODE.EXAM_STOP,
+            XESCODE.ENGLISH_H5_COURSEWARE,
+            XESCODE.TEAM_PK_TEAM_SELECT,
+            XESCODE.TEAM_PK_SELECT_PKADVERSARY,
             XESCODE.TEAM_PK_PUBLIC_PK_RESULT,
             XESCODE.TEAM_PK_PUBLIC_CONTRIBUTION_STAR,
             XESCODE.TEAM_PK_EXIT_PK_RESULT,
-            XESCODE.MULTIPLE_H5_COURSEWARE
+            XESCODE.MULTIPLE_H5_COURSEWARE,
+            XESCODE.TEAM_PK_BLACK_RANK_LIST,
+            XESCODE.TEAM_PK_STAR_RANK_LIST,
+            XESCODE.TEAM_PK_PK_END,
+            XESCODE.TEACHER_PRAISE,
+            XESCODE.TEAM_PK_PARISE_ANWSER_RIGHT,
+            XESCODE.TEAM_PK_TEACHER_PRAISE,
+            XESCODE.SENDQUESTION,
+            XESCODE.EXAM_START
     };
 
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
-
-        logger.e("=======>onNotice :" + type);
-
+        logger.e("=======>onNotice :" + type + ":" + data);
         if (isAvailable) {
-
             String nonce = "";
             String open = "";
             switch (type) {
+                case XESCODE.EXAM_START:
+                case XESCODE.SENDQUESTION:
+                    //收到发题指令 清空上一次 答题结果记录
+                    answerResult = null;
+                    break;
+                case XESCODE.ENGLISH_H5_COURSEWARE:
+                    String status = data.optString("status");
+                    if ("on".equals(status)) {
+                        //收到发题指令 清空上一次 答题结果记录
+                        answerResult = null;
+                    } else if ("off".equals(status)) {
+                        setNonce(data.optString("nonce", ""));
+                        showCurrentPkResult();
+                    }
+                    break;
+                case XESCODE.MULTIPLE_H5_COURSEWARE:
+                    boolean isOpen = data.optBoolean("open");
+                    if (isOpen) {
+                        //收到发题指令 清空上一次 答题结果记录
+                        answerResult = null;
+                    } else {
+                        setNonce(data.optString("nonce", ""));
+                        showCurrentPkResult();
+                    }
+                    break;
                 case XESCODE.STOPQUESTION:
                 case XESCODE.EXAM_STOP:
-                case XESCODE.ENGLISH_H5_COURSEWARE:
-                case XESCODE.MULTIPLE_H5_COURSEWARE:
                     setNonce(data.optString("nonce", ""));
                     showCurrentPkResult();
                     break;
-
                 case XESCODE.TEAM_PK_TEAM_SELECT:
-
                     open = data.optString("open");
                     nonce = data.optString("nonce", "");
+                    teamSelectByNotice = true;
                     if (OPEN_STATE_OPEN.equals(open)) {
                         startTeamSelect();
                         TeamPkLog.receiveCreateTeam(mLiveBll, nonce, true);
@@ -1017,19 +1211,13 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                         stopTeamSelect();
                         TeamPkLog.receiveCreateTeam(mLiveBll, nonce, false);
                     }
-
                     break;
-
                 case XESCODE.TEAM_PK_SELECT_PKADVERSARY:
                     open = data.optString("open");
                     nonce = data.optString("nonce", "");
                     if (OPEN_STATE_OPEN.equals(open)) {
                         startSelectAdversary();
                         TeamPkLog.receiveMatchOpponent(mLiveBll, nonce, true);
-                        logger.e("====>onNotice startSelectAdversary:");
-                    } else if (OPEN_STATE_CLOSE.equals(open)) {
-                        stopSelectAdversary();
-                        TeamPkLog.receiveMatchOpponent(mLiveBll, nonce, false);
                     }
                     break;
 
@@ -1044,20 +1232,60 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                     nonce = data.optString("nonce", "");
                     TeamPkLog.receiveClassBoxInfo(mLiveBll, nonce, true);
                     showClassChest();
-
                     break;
 
                 case XESCODE.TEAM_PK_EXIT_PK_RESULT:
-
-                    closeCurrentPkResult();
+                    //closeCurrentPkResult();
+                    break;
+                case XESCODE.TEAM_PK_BLACK_RANK_LIST:
+                    //closeStarts();
+                    nonce = data.optString("nonce");
+                    TeamPkLog.receivePkStarList(mLiveBll,nonce,"1");
+                    closeCurrentPager();
+                    setNonce(nonce);
+                    getProgressStudent();
                     break;
 
+                case XESCODE.TEAM_PK_STAR_RANK_LIST:
+                    //关闭 幸运星页面
+                    //closeClassChest();
+                    nonce = data.optString("nonce","");
+                    TeamPkLog.receivePkStarList(mLiveBll,nonce,"0");
+                    closeCurrentPager();
+                    setNonce(nonce);
+                    getStusStars();
+                    break;
+
+                case XESCODE.TEAM_PK_PK_END:
+                    TeamPkLog.showPkFinished(mLiveBll,data.optString("nonce",""));
+                    showPkEndToast();
+                    break;
+                case XESCODE.TEACHER_PRAISE:
+                    TeamPkLog.receiveVoicePraise(mLiveBll, data.optString("nonce", ""));
+                    break;
+                case XESCODE.TEAM_PK_PARISE_ANWSER_RIGHT:
+                    boolean isDouble = data.optInt("isDouble", 0) == 1;
+                    if (mPraiseBll == null) {
+                        mPraiseBll = new TeamPkPraiseBll(mActivity, this);
+                    }
+                    mPraiseBll.onPraise(sourceNick, target, data, type);
+                    //表扬全对 刷新右侧状态栏
+                    if (isDouble) {
+                        updatePkStateLayout(false);
+                    }
+                    break;
+                case XESCODE.TEAM_PK_TEACHER_PRAISE:
+                    if (mPraiseBll == null) {
+                        mPraiseBll = new TeamPkPraiseBll(mActivity, this);
+                    }
+                    mPraiseBll.onPraise(sourceNick, target, data, type);
+                    break;
                 default:
                     break;
-
             }
         }
     }
+
 
     @Override
     public int[] getNoticeFilter() {
@@ -1067,8 +1295,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
 
     @Override
     public void onTopic(LiveTopic data, JSONObject jsonObject, boolean modeChange) {
-
-        logger.e("====>onTopic");
         if (isAvailable) {
             // 战队pk  topic 逻辑
             LiveTopic.TeamPkEntity teamPkEntity = data.getTeamPkEntity();
@@ -1077,11 +1303,13 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                 int openBoxStateCode = 0;
                 int alloteamStateCode = 0;
                 int allotpkmanStateCode = 0;
+                int pkStepCode = 0;
 
                 if (LiveTopic.MODE_CLASS.equals(mLiveBll.getMode()) && teamPkEntity.getRoomInfo1() != null) {
                     openBoxStateCode = teamPkEntity.getRoomInfo1().getOpenbox();
                     alloteamStateCode = teamPkEntity.getRoomInfo1().getAlloteam();
                     allotpkmanStateCode = teamPkEntity.getRoomInfo1().getAllotpkman();
+                    pkStepCode = teamPkEntity.getRoomInfo1().getPKStep();
                     logger.e("====>onTopic teampk main_teacher_info:" + openBoxStateCode + ":" +
                             alloteamStateCode + ":" + allotpkmanStateCode);
                 } else {
@@ -1089,14 +1317,17 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                         openBoxStateCode = teamPkEntity.getRoomInfo2().getOpenbox();
                         alloteamStateCode = teamPkEntity.getRoomInfo2().getAlloteam();
                         allotpkmanStateCode = teamPkEntity.getRoomInfo2().getAllotpkman();
+                        pkStepCode = teamPkEntity.getRoomInfo2().getPKStep();
                         logger.e("====>onTopic teampk assist_teacher_info:" + openBoxStateCode + ":" +
-                                alloteamStateCode + ":" + allotpkmanStateCode);
+                                alloteamStateCode + ":" + allotpkmanStateCode + ":" + pkStepCode);
                     }
                 }
 
                 if (!isTopicHandled() && alloteamStateCode == 1) {
                     setTopicHandled(true);
-                    showTeamSelecting();
+                    if (!teamSelectByNotice) {
+                        showTeamSelecting();
+                    }
                     logger.e("====>onTopic showTeamSelecting:");
                     return;
                 }
@@ -1107,11 +1338,19 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
                     return;
                 }
 
-                if (openBoxStateCode == 1 && !isTopicHandled()) {
+                if ((pkStepCode == 1 || openBoxStateCode == 1) && !isTopicHandled()) {
                     setTopicHandled(true);
                     showPkResult();
                     logger.e("====>onTopic showPkResult:");
                     return;
+                }
+
+                if (TeamPkConfig.TOPIC_PKSTEP_BLACK_RANK_LIST == pkStepCode && !isTopicHandled()) {
+                    setTopicHandled(true);
+                    getProgressStudent();
+                } else if (TeamPkConfig.TOPIC_PKSTEP_STAR_RANK_LIST == pkStepCode && !isTopicHandled()) {
+                    setTopicHandled(true);
+                    getStusStars();
                 }
                 setTopicHandled(true);
             }
@@ -1126,5 +1365,308 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction 
      */
     public boolean isAIPartner() {
         return isAIPartner;
+    }
+
+
+    /**
+     * 展示明星榜
+     */
+    private void getStusStars() {
+        mHttpManager.getTeamPkStarStudents(mLiveBll.getLiveId(),
+                roomInitInfo.getStudentLiveInfo().getClassId(),
+                roomInitInfo.getStudentLiveInfo().getCourseId(),
+                new HttpCallBack() {
+
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                        List<TeamPkStar> data = mHttpResponseParser.parseTeamPkStar(responseEntity);
+                        if (data != null && data.size() > 0) {
+                            showStars(data);
+                            TeamPkLog.showPkStarList(mLiveBll,getNonce(),"0");
+                            if (TextUtils.isEmpty(mTeamName)) {
+                                mTeamName = data.get(0).getTeamName();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        super.onPmError(responseEntity);
+                        String errorMsg = responseEntity.getErrorMsg();
+                        XESToastUtils.showToast(mActivity, TextUtils.isEmpty(errorMsg) ? "明星榜数据获取失败" : errorMsg);
+                    }
+
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        super.onFailure(call, e);
+                        XESToastUtils.showToast(mActivity, "明星榜数据获取失败");
+                    }
+                });
+
+    }
+
+    /**
+     * 展示明星榜UI
+     *
+     * @param data
+     */
+    private void showStars(List<TeamPkStar> data) {
+        if (mFocusPager == null || !(mFocusPager instanceof TeamPkStarsPager)) {
+            TeamPkStarsPager startsPager = new TeamPkStarsPager(mActivity, data, TeamPkBll.this);
+            addPager(startsPager);
+        }
+    }
+
+
+    /**
+     * 获取进步榜
+     */
+    private void getProgressStudent() {
+        mHttpManager.getTeamPkProgressStudent(mLiveBll.getLiveId(),
+                roomInitInfo.getStudentLiveInfo().getClassId(),
+                roomInitInfo.getStudentLiveInfo().getCourseId(),
+                new HttpCallBack() {
+
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                        List<TeamPkStuProgress> data = mHttpResponseParser.parseTeamPkProgressStu(responseEntity);
+                        if (data != null && data.size() > 0) {
+                            showStuProgressList(data);
+                            TeamPkLog.showPkStarList(mLiveBll,getNonce(),"1");
+                            if (TextUtils.isEmpty(mTeamName)) {
+                                mTeamName = data.get(0).getTeamName();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        super.onPmError(responseEntity);
+                        String errorMsg = responseEntity.getErrorMsg();
+                        XESToastUtils.showToast(mActivity, TextUtils.isEmpty(errorMsg) ? "黑马榜数据获取失败" : errorMsg);
+                    }
+
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        super.onPmFailure(error, msg);
+                        XESToastUtils.showToast(mActivity, TextUtils.isEmpty(msg) ? "黑马榜数据获取失败" : msg);
+                    }
+
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        super.onFailure(call, e);
+                        XESToastUtils.showToast(mActivity, "进步榜数据获取失败");
+                    }
+                });
+    }
+
+    /**
+     * 显示进步榜
+     *
+     * @param data
+     */
+    private void showStuProgressList(List<TeamPkStuProgress> data) {
+        if (mFocusPager == null || !(mFocusPager instanceof TeamPkImprovePager)) {
+            TeamPkImprovePager startsPager = new TeamPkImprovePager(mActivity, data, TeamPkBll.this);
+            addPager(startsPager);
+        }
+    }
+
+    /**
+     * 显示 pk 总结 结束弹框
+     */
+    private void showPkEndToast() {
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mFocusPager == null || !(mFocusPager instanceof TeamPkEndPager)) {
+                    TeamPkEndPager startsPager = new TeamPkEndPager(mActivity, TeamPkBll.this);
+                    addFullScreenPager(startsPager);
+                }
+            }
+        });
+    }
+
+
+    /**
+     * 在线用户聊天id列表
+     **/
+    private List<String> onLineChatIds = new ArrayList<>();
+
+
+    @Override
+    public void onStartConnect() {
+
+    }
+
+    @Override
+    public void onConnect(IRCConnection connection) {
+
+    }
+
+    @Override
+    public void onRegister() {
+
+    }
+
+    @Override
+    public void onDisconnect(IRCConnection connection, boolean isQuitting) {
+
+    }
+
+    @Override
+    public void onMessage(String target, String sender, String login, String hostname, String text) {
+
+    }
+
+    @Override
+    public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target, String
+            message) {
+
+    }
+
+    @Override
+    public void onChannelInfo(String channel, int userCount, String topic) {
+
+    }
+
+    @Override
+    public void onUserList(String channel, User[] users) {
+        for (User user : users) {
+            if (!onLineChatIds.contains(user.getNick())) {
+                onLineChatIds.add(user.getNick());
+            }
+        }
+    }
+
+    @Override
+    public void onJoin(String target, String sender, String login, String hostname) {
+        if (!onLineChatIds.contains(sender)) {
+            onLineChatIds.add(sender);
+        }
+    }
+
+    @Override
+    public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
+        if (onLineChatIds.contains(sourceNick)) {
+            onLineChatIds.remove(sourceNick);
+        }
+    }
+
+    @Override
+    public void onKick(String target, String kickerNick, String kickerLogin, String kickerHostname, String
+            recipientNick, String reason) {
+
+    }
+
+    @Override
+    public void onUnknown(String line) {
+
+    }
+
+
+    /**
+     * 获取本队在线队员列表
+     *
+     * @return
+     */
+    public List<TeamMate> getOnlineTeamMates() {
+        List<TeamMate> resultList = null;
+        // 除去自己
+        if (mTeamMates != null && mTeamMates.size() > 1) {
+            resultList = new ArrayList<TeamMate>();
+            String stuId = null;
+            TeamMate onLineTeamMate = null;
+            for (int i = 0; i < mTeamMates.size(); i++) {
+                //除去自己
+                stuId = mTeamMates.get(i).getId();
+                if (stuId != null && !stuId.equals(UserBll.getInstance().getMyUserInfoEntity().getStuId())) {
+                    for (int j = 0; j < onLineChatIds.size(); j++) {
+                        if (onLineChatIds.get(j).contains(stuId)) {
+                            onLineTeamMate = new TeamMate();
+                            onLineTeamMate.setName(mTeamMates.get(i).getName());
+                            onLineTeamMate.setId(stuId);
+                            resultList.add(onLineTeamMate);
+                        }
+                    }
+                }
+            }
+        }
+        return resultList;
+    }
+
+    private List<String> prasieTextList;
+
+    /**
+     * 获取点赞文案
+     *
+     * @return
+     */
+    public List<String> getPraiseText() {
+        if (prasieTextList == null || prasieTextList.size() == 0) {
+            prasieTextList = new ArrayList<String>();
+            //大拇指1
+            prasieTextList.add("\uD83D\uDC4D\uD83D\uDC4D\uD83D\uDC4D\uD83D\uDC4D\uD83D\uDC4D");
+            //大拇指2
+            prasieTextList.add("\uD83D\uDC4D\uD83D\uDC4D");
+            //爱心
+            prasieTextList.add("\u2764\u2764\u2764");
+            //大笑
+            prasieTextList.add("\uD83D\uDE04");
+            prasieTextList.add("我们的贡献之星超棒~！");
+            prasieTextList.add("一起加油！");
+            prasieTextList.add("神一样的队友！");
+            prasieTextList.add("一个大大的赞~");
+            prasieTextList.add("你们是最棒的！");
+            prasieTextList.add("祝贺你！");
+            prasieTextList.add("加油加小心," + mTeamName + "稳赢！");
+            prasieTextList.add("超爱" + mTeamName + "的大家~");
+        }
+        return prasieTextList;
+    }
+
+    /**
+     * 用户最近一次答题 答题结果
+     **/
+    ScienceAnswerResult answerResult;
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onScineceAnswerResutlEvent(AnswerResultEvent event) {
+        logger.e("========>onAnswerResult_LiveVideo:" + event.toString());
+        try {
+            JSONObject jsonObject = new JSONObject(event.getData());
+            String id = jsonObject.optString("id");
+            int isRight = jsonObject.optInt("isRight", -1);
+            if (!TextUtils.isEmpty(id)) {
+                answerResult = new ScienceAnswerResult();
+                answerResult.setId(id);
+                answerResult.setIsRight(isRight);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取最近一次 答题结果
+     *
+     * @return
+     */
+    public ScienceAnswerResult getCurrentAnswerResult() {
+        return answerResult;
+    }
+
+
+    /**
+     * 获取最近一次 pk 胜负关系
+     *
+     * @return
+     */
+    public int getLatesPkState() {
+        int result = TeamPkConfig.PK_STATE_DRAW;
+        if (pkStateRootView != null) {
+            result = pkStateRootView.getLatesPkState();
+        }
+        return result;
     }
 }

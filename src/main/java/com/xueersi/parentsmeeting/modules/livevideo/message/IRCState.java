@@ -32,4 +32,5 @@ public interface IRCState {
     boolean isOpenFDLKbarrage();
 
     String getLKNoticeMode();
+
 }

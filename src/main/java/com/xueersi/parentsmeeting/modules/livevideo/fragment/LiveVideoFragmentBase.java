@@ -31,6 +31,7 @@ import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
+import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
@@ -42,8 +43,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlayerFragment;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
 /***
  * 视频播放主界面
@@ -386,9 +385,9 @@ public class LiveVideoFragmentBase extends Fragment {
      * @author zouhao
      * @Create at: 2015-9-23 下午7:45:41
      */
-    protected void playNewVideo(Uri uri, String displayName, String shareKey) {
-        videoFragment.playNewVideo(uri, displayName, shareKey);
-    }
+//    protected void playNewVideo(Uri uri, String displayName, String shareKey) {
+//        videoFragment.playNewVideo(uri, displayName, shareKey);
+//    }
 
     /** 播放下一个视频 */
     protected void startPlayNextVideo() {

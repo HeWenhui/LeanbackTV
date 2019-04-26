@@ -7,6 +7,7 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.JavascriptInterface;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -19,13 +20,13 @@ import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoChConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
@@ -72,6 +73,12 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
     private int mGoldNum;
     private int mEnergyNum;
     private boolean allowTeamPk;
+    /**是否接收到或者展示过答题结果页面**/
+    private boolean isAnswerResultRecived;
+    /**
+     * 答题结果是否是 由强制提交 得到的
+     */
+    private boolean resultGotByForceSubmit;
 
     public ExamQuestionX5Pager(Context context, QuestionBll questionBll, String stuId
             , String stuName, String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity, String isShowRankList,
@@ -124,6 +131,12 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
     /** 测试卷 */
     @Override
     public void initData() {
+
+        WebSettings webSetting = wvSubjectWeb.getSettings();
+        webSetting.setBuiltInZoomControls(true);
+        webSetting.setJavaScriptEnabled(true);
+        wvSubjectWeb.addJavascriptInterface(this, "wx_xesapp");
+
         btSubjectClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -177,6 +190,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
                     event.setCloseByTeahcer(((QuestionBll) questionBll).isWebViewCloseByTeacher());
                     ((QuestionBll) questionBll).setWebViewCloseByTeacher(false);
                 }
+                event.setForceSubmit(resultGotByForceSubmit);
                 EventBus.getDefault().post(event);
                 mGoldNum = -1;
                 mEnergyNum = -1;
@@ -226,6 +240,7 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
     @Override
     public void examSubmitAll() {
 //        wvSubjectWeb.loadUrl(String.format("javascript:examSubmitAll(" + code + ")"));
+        resultGotByForceSubmit = !isAnswerResultRecived;
         isEnd = true;
         wvSubjectWeb.loadUrl(jsExamSubmitAll);
         Map<String, String> mData = new HashMap<>();
@@ -394,10 +409,27 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
         }
     }
 
+
+    /**
+     * 理科 课件 答题结果回调
+     */
+    @JavascriptInterface
+    public void onAnswerResult_LiveVideo(String data){
+        isAnswerResultRecived = true;
+        EventBus.getDefault().post(new AnswerResultEvent(data));
+    }
+
+
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         wvSubjectWeb.stopLoading();
         wvSubjectWeb.destroy();
+    }
+
+    @Override
+    public boolean isResultRecived() {
+        return isAnswerResultRecived;
     }
 }

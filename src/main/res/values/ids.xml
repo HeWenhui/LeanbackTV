@@ -559,6 +559,8 @@
     <item name="itv_teampk_team_info" type="id" />
     <item name="tv_teampk_rule_title" type="id" />
     <item name="iv_teampk_team_logo" type="id" />
+    <item name="iv_teampk_close_btn" type="id" />
+    <item name="rl_teampk_close_btn_container" type="id" />
 
     <item name="rl_teampk_rule_1" type="id" />
     <item name="tv_teampk_rule_1" type="id" />
@@ -575,6 +577,18 @@
     <item name="iv_teampk_finish_team_select" type="id" />
     <item name="tv_teampk_team_select_timecoutdown" type="id" />
     <item name="rl_teampk_head_container" type="id" />
+    <item name="tv_teampk_pk_end" type="id"/>
+    <item name="iv_teampk_pk_state" type="id"/>
+    <item name="rcl_teampk_contribution" type="id"/>
+    <item name="iv_teampk_praise" type="id"/>
+    <item name="lav_teampk_praise" type="id"/>
+    <item name="lav_teampk_praise_click" type="id"/>
+    <item name="rcl_teampk_praise" type="id"/>
+    <item name="pk_praise_layout" type="id"/>
+    <item name="lav_teampk_contribution" type="id"/>
+    <item name="iv_teampk_contribution_close" type="id"/>
+    <item name="tv_teampk_contribution_time" type="id"/>
+
 
     <!--分队进行中-->
     <item name="iv_teampk_enter_teamselect" type="id" />
@@ -635,6 +649,22 @@
     <item name="fl_teampk_aipatner_chip_contanier" type="id" />
     <item name="iv_teampk_aipatner_chip" type="id" />
 
+    <!--明星榜-->
+    <item name="lav_teampk_starts" type="id"/>
+    <item name="tv_teampk_stars_energy" type="id" />
+    <item name="tv_teampk_stars_teamname" type="id" />
+    <item name="tv_teampk_stars_name" type="id" />
+    <item name="iv_teampk_stars_head" type="id" />
+    <item name="iv_teampk_stars_super_star" type="id" />
+
+    <!--战队pk老师表扬-->
+    <item name="lav_teampk_praise_anwser_right" type="id"/>
+    <item name="lav_teampk_praise_badge" type="id"/>
+    <item name="cstl_teampk_praise_answer_right" type="id"/>
+    <item name="iv_teampk_praise_energy" type="id"/>
+    <item name="tv_teampk_praise_energy" type="id"/>
+    <item name="gl_teampk_praise_answer_top_guide_line" type="id"/>
+
     <!--实时答题-->
     <item name="rl_answer_question_award_root" type="id" />
     <item name="iv_answer_question_energy" type="id" />
@@ -661,11 +691,23 @@
     <item name="cad_teampk_open_box_my_coin" type="id" />
     <item name="iv_teampk_open_box_open_state" type="id" />
 
+    <item name="rcl_teampk_starts_list" type="id" />
     <item name="rcl_teampk_open_box_rank" type="id" />
     <item name="iv_teampk_open_box_bg" type="id" />
     <item name="iv_teampk_open_box_bg_mask" type="id" />
+    <item name="iv_teampk_bg_mask" type="id" />
 
     <item name="iv_teampk_open_box_close" type="id" />
+    <item name="iv_teampk_open_btn_close" type="id" />
+
+    <item name="rl_teampk_lucy_header_container" type="id" />
+    <item name="gl_teampk_starts_top_guide_line" type="id"/>
+    <item name="gl_teampk_starts_left_guide_line" type="id"/>
+    <item name="gl_teampk_starts_bottom_guide_line" type="id"/>
+    <item name="gl_teampk_praisebtn_right_guide_line" type="id"/>
+    <item name="gl_teampk_award_left_guide_line" type="id"/>
+
+
 
     <item name="iv_teampk_open_box_winner_head" type="id" />
     <item name="tv_teampk_open_box_winner_name" type="id" />
@@ -840,6 +882,9 @@
     <item name="tv_arts_answer_result_answer_index" type="id" />
     <item name="tvw_arts_answer_result_answer_state" type="id" />
 
+    <item name="iv_arts_answer_result_item_muti_icon" type="id" />
+
+
 
     <item name="lv_arts_answer_state_pse" type="id" />
     <item name="lv_arts_answer_result_pse" type="id" />
@@ -849,6 +894,12 @@
     <item name="rl_arts_pse_answer_result_root" type="id" />
 
     <item name="iv_arts_pse_teacher_praise" type="id" />
+
+
+    <item name="tv_arts_answer_reslult_fire_count" type="id" />
+    <item name="tv_arts_answer_reslult_gold_count" type="id" />
+
+    <item name="ll_arts_answer_reslult_reward_info" type="id" />
 
     <!--半身直播-->
     <item name="iv_livevideo_halfbody_connect_state" type="id" />
@@ -1112,6 +1163,29 @@
     <item name="fzcytv_livevideo_triple_screen_switch_route_text" type="id" />
     <item name="fzcytv_livevideo_triple_screen_switch_route_success_text" type="id" />
     <item name="iv_livevideo_triple_screen_switch_route_success" type="id" />
+    <item name="tv_livevideo_middle_science_mygroup" type="id" />
+    <item name="tv_livevideo_middle_science_even" type="id" />
+    <item name="tv_livevideo_middle_science_groups" type="id" />
+    <item name="view_livevideo_middle_science_line" type="id" />
+    <item name="tv_livevideo_middle_science_even_title_like" type="id" />
+    <item name="tv_livevideo_middle_science_even_title_right" type="id" />
+    <item name="tv_livevideo_middle_science_even_title_student" type="id" />
+    <item name="tv_livevideo_middle_science_even_title_rank" type="id" />
+    <item name="ctlayout_livevideo_rank_middle_science_even_drive_tips" type="id" />
+    <item name="lv_livevideo_middle_science_list" type="id" />
+    <item name="tv_livevideo_livemessage_middle_even_right_now" type="id" />
+    <item name="view_livevideo_livemessage_middle_even_right_barrair" type="id" />
+    <item name="tv_livevideo_livemessage_middle_even_right_max" type="id" />
+    <item name="tv_livevideo_rank_item_mid_left" type="id" />
+    <item name="tv_livevideo_rank_item_mid_right" type="id" />
+    <item name="iv_livevideo_rank_item_right_leftimg" type="id" />
+    <item name="rl_livevideo_rank_tips" type="id" />
+    <item name="include_livevideo_even_drive_tips_layout" type="id" />
+    <item name="tv_livevideo_rank_tips_left" type="id" />
+    <item name="tv_livevideo_rank_tips_middle" type="id" />
+    <item name="tv_livevideo_rank_tips_right" type="id" />
+    <item name="include_livevideo_rank_normal_tips_layout" type="id" />
+    <item name="vs_livevideo_livemessage_middle_science_even" type="id" />
     <!--<item name="" type="id" />-->
     <!--<item name="" type="id" />-->
     <!--<item name="" type="id" />-->
@@ -1197,6 +1271,28 @@
     <item name="tv_livevideo_en_achive_pk_energy_other" type="id" />
     <item name="pg_livevideo_en_achive_pk" type="id" />
     <item name="rl_livevideo_en_achive_pk" type="id" />
+
+
+    <item name="ll_arts_answer_result_item_muti_user_answer_info" type="id" />
+    <item name="tv_arts_answer_result_item_muti_user_answer_hint" type="id" />
+    <item name="tv_arts_answer_result_item_muti_user_answer" type="id" />
+    <item name="tv_arts_answer_result_item_muti_right_answer_hint" type="id" />
+    <item name="tv_arts_answer_result_item_muti_right_answer" type="id" />
+    <item name="tv_arts_answer_result_item_muti_index" type="id" />
+
+
+    <item name="ll_arts_normal_answer_result_gold_info" type="id" />
+    <item name="tv_arts_normal_answer_result_gold_count" type="id" />
+
+
+    <item name="iv_middle_answer_result_item_muti_right_answer" type="id" />
+    <item name="ll_middle_answer_result_item_muti_user_answer_info" type="id" />
+    <item name="tv_middle_answer_result_item_muti_user_answer_hint" type="id" />
+    <item name="tv_middle_answer_result_item_muti_user_answer" type="id" />
+    <item name="tv_middle_answer_result_item_muti_right_answer_hint" type="id" />
+    <item name="tv_middle_answer_result_item_muti_right_answer" type="id" />
+    <item name="tv_middle_answer_result_item_muti_index" type="id" />
+
 
     <!-- 语文主观题结果页-->
     <item name="rl_chi_answer_result_resultdetail" type="id" />

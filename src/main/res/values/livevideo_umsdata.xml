@@ -48,4 +48,6 @@
     <string name="livevideo_switch_flow_170712">{"levelone":\"17\","leveltwo":\"07\","levelthree":\"12\","businessinfo$json":{}}</string>
     <!-->说明: 直播-线路切换-具体线路切换点击数,Over</!-->
     <string name="livevideo_switch_flow_1707013">{"levelone":\"17\","leveltwo":\"07\","levelthree":\"013\","businessinfo$json":{}}</string>
+    <!--中学连对激励系统-->
+    <string name="livevideo_1713001">{"levelone":\"17\","leveltwo":\"13\","levelthree":\"001\","businessinfo$json":{"plan_id":\"%1$s\","stu_id":\"%2$s\","click_time":\"%3$s\","click_relative_time":\"%4$s\"}}</string>
 </resources>

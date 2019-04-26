@@ -26,4 +26,10 @@ public interface BaseExamQuestionInter {
     interface ExamStop {
         void stopExam(BaseExamQuestionInter baseExamQuestionInter, VideoQuestionLiveEntity mQuestionEntity);
     }
+
+    /**
+     * 是否展示过答题结果页面
+     * @return
+     */
+    boolean isResultRecived();
 }

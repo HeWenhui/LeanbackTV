@@ -6,8 +6,10 @@ import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveUIStateListener;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -23,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.VideoAudioChatLog;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.VideoChatEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatStatusChange;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveStandMediaControllerBottom;
 
 import org.json.JSONArray;
@@ -92,14 +95,20 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
                         baseLiveMediaControllerBottom;
                 liveStandMediaControllerBottom.addOnViewChange(onViewChange);
             }
+
+            if(baseLiveMediaControllerBottom instanceof LiveHalfBodyMediaControllerBottom){
+                LiveHalfBodyMediaControllerBottom halfBodyMediaControllerBottom = (LiveHalfBodyMediaControllerBottom)
+                        baseLiveMediaControllerBottom;
+                halfBodyMediaControllerBottom.addLiveUIStateListener(onViewChange);
+            }
+
             putInstance(VideoChatEvent.class, this);
         } else {
             mLiveBll.removeBusinessBll(this);
         }
     }
 
-    private LiveStandMediaControllerBottom.OnViewChange onViewChange = new LiveStandMediaControllerBottom
-            .OnViewChange() {
+    private LiveUIStateListener onViewChange = new LiveUIStateListener() {
         @Override
         public void onViewChange(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
             videoChatAction.setControllerBottom(baseLiveMediaControllerBottom);
@@ -141,7 +150,11 @@ public class VideoAudioChatIRCBll extends LiveBaseBll implements VideoChatEvent,
 
     @Override
     public void rePlay(boolean b) {
-        liveFragmentBase.rePlay(b);
+        if (!MediaPlayer.getIsNewIJK()) {
+            liveFragmentBase.rePlay(b);
+        } else {
+            liveFragmentBase.changeNowLine();
+        }
     }
 
     @Override

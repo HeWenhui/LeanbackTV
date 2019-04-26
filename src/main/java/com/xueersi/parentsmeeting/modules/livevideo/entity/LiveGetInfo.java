@@ -122,6 +122,7 @@ public class LiveGetInfo {
     private String clientLog;
     /**
      * 直播id
+     * liveId
      */
     private String id;
     /**
@@ -307,6 +308,46 @@ public class LiveGetInfo {
 
     public void setSubjectiveItem2AIUrl(String subjectiveItem2AIUrl) {
         this.subjectiveItem2AIUrl = subjectiveItem2AIUrl;
+    }
+    /** 是否支持连对激励 0：关闭 1：打开 */
+    private int isOpenNewCourseWare;
+    /** 连对榜接口地址 */
+    private String getEvenPairListUrl;
+    /** 点赞接口地址 */
+    private String getThumbsUpUrl;
+
+    private String getJournalUrl;
+
+    public String getGetJournalUrl() {
+        return getJournalUrl;
+    }
+
+    public void setGetJournalUrl(String getJournalUrl) {
+        this.getJournalUrl = getJournalUrl;
+    }
+
+    public int getIsOpenNewCourseWare() {
+        return isOpenNewCourseWare;
+    }
+
+    public void setIsOpenNewCourseWare(int isOpenNewCourseWare) {
+        this.isOpenNewCourseWare = isOpenNewCourseWare;
+    }
+
+    public String getGetEvenPairListUrl() {
+        return getEvenPairListUrl;
+    }
+
+    public void setGetEvenPairListUrl(String getEvenPairListUrl) {
+        this.getEvenPairListUrl = getEvenPairListUrl;
+    }
+
+    public String getGetThumbsUpUrl() {
+        return getThumbsUpUrl;
+    }
+
+    public void setGetThumbsUpUrl(String getThumbsUpUrl) {
+        this.getThumbsUpUrl = getThumbsUpUrl;
     }
 
     public int getPraiseAutoCutTime() {

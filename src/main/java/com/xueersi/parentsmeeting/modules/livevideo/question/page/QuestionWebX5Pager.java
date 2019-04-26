@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Build;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -22,20 +21,23 @@ import com.tencent.smtt.sdk.WebChromeClient;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.base.BasePager;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.common.logerhelper.UmsAgentUtil;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.web.NewCourseCache;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ErrorWebViewClient;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
@@ -93,11 +95,22 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
     private File mMorecacheout;
     private File cacheFile;
     private String type;
+    /** 是否接收到或者展示过答题结果页面 **/
+    private boolean isAnswerResultRecived;
+    /** 是否是中学连对激励系统 */
+    private int isOpenNewCourseWare = 0;
+    /**
+     * 是否是强制提交
+     */
+    private boolean isForceSubmit;
+
     /**
      * 文科新课件平台 试题
      **/
     private boolean isNewArtsTest;
     private HashMap header;
+    /** 新课件缓存 */
+    private NewCourseCache newCourseCache;
 
     public QuestionWebX5Pager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity, StopWebQuestion questionBll, String testPaperUrl,
                               String stuId, String stuName, String liveid, String testId,
@@ -222,13 +235,18 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 
     @Override
     public void initData() {
-
+        newCourseCache = new NewCourseCache(mContext, liveid);
         btSubjectClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (isOpenNewCourseWare == 1) {
+                    //中学连对激励
+                    EventBus.getDefault().post(new EvenDriveEvent(EvenDriveEvent.CLOSE_H5));
+                }
                 ViewGroup group = (ViewGroup) mView.getParent();
                 group.removeView(mView);
                 questionBll.stopWebQuestion(QuestionWebX5Pager.this, testId, getBaseVideoQuestionEntity());
+
             }
         });
         btSubjectCalljs.setOnClickListener(new View.OnClickListener() {
@@ -241,12 +259,14 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         wvSubjectWeb.setWebChromeClient(new MyWebChromeClient());
         wvSubjectWeb.setWebViewClient(new MyWebViewClient());
         logger.e("=======> isNewArtsTest:" + isNewArtsTest);
+
+        WebSettings webSetting = wvSubjectWeb.getSettings();
+        webSetting.setBuiltInZoomControls(true);
+        webSetting.setJavaScriptEnabled(true);
+        wvSubjectWeb.addJavascriptInterface(this, "wx_xesapp");
+
         // 文科新课件平台 填空选择题
         if (isNewArtsTest) {
-            WebSettings webSetting = wvSubjectWeb.getSettings();
-            webSetting.setBuiltInZoomControls(true);
-            webSetting.setJavaScriptEnabled(true);
-            wvSubjectWeb.addJavascriptInterface(this, "wx_xesapp");
             logger.e("=======> loadUrl:" + examUrl);
             wvSubjectWeb.loadUrl(examUrl);
         } else {
@@ -281,6 +301,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                     event.setCloseByTeahcer(((QuestionBll) questionBll).isWebViewCloseByTeacher());
                     ((QuestionBll) questionBll).setWebViewCloseByTeacher(false);
                 }
+                event.setForceSubmit(isForceSubmit);
                 EventBus.getDefault().post(event);
                 mGoldNum = -1;
                 mEngerNum = -1;
@@ -302,6 +323,11 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         }
     }
 
+    @Override
+    public boolean isResultRecived() {
+        return isAnswerResultRecived;
+    }
+
 
     /**
      * 文科 课件 答题结果回调
@@ -309,9 +335,19 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
     @JavascriptInterface
     public void showAnswerResult_LiveVideo(String data) {
         logger.e("=========>showAnswerResult_LiveVideo:" + data);
+        isAnswerResultRecived = true;
         EventBus.getDefault().post(new ArtsAnswerResultEvent(data, ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT));
     }
 
+
+    /**
+     * 理科 课件 答题结果回调
+     */
+    @JavascriptInterface
+    public void onAnswerResult_LiveVideo(String data) {
+        isAnswerResultRecived = true;
+        EventBus.getDefault().post(new AnswerResultEvent(data));
+    }
 
     @android.webkit.JavascriptInterface
     private void addJavascriptInterface() {
@@ -329,7 +365,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
             CacheWebView cacheWebView = (CacheWebView) wvSubjectWeb;
             // TODO: 2018/12/5  
             if (isArts == 0) {
-                cacheWebView.getWebViewCache().setNeedHttpDns(true);
+                cacheWebView.getWebViewCache().setNeedHttpDns(!AppConfig.DEBUG);
             } else {
                 cacheWebView.getWebViewCache().setNeedHttpDns(false);
             }
@@ -346,6 +382,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 
     @Override
     public void submitData() {
+        isForceSubmit = !isAnswerResultRecived;
         Map<String, String> mData = new HashMap<>();
         mData.put("testid", "" + testId);
         mData.put("logtype", "interactTestEnd");
@@ -494,6 +531,11 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
                         e.printStackTrace();
                     }
                 }
+            } else {
+                WebResourceResponse webResourceResponse = newCourseCache.interceptZhongXueKeJian("" + request.getUrl());
+                if (webResourceResponse != null) {
+                    return webResourceResponse;
+                }
             }
             logger.e("没有本地资源就去网络请求咯咯咯new");
             logger.e("shouldInterceptRequestnew:lasturl=" + request.getUrl().toString());
@@ -620,4 +662,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
         }
     }
 
+    public void setOpenNewCourseWare(int openNewCourseWare) {
+        this.isOpenNewCourseWare = openNewCourseWare;
+    }
 }

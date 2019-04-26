@@ -13,7 +13,8 @@ import java.util.HashMap;
  * Created by Administrator on 2017/3/31.
  */
 public class LiveVideoConfig {
-
+    //是否使用PSIJK
+//    public static final boolean getIsNewIJK() = true;
     // private static final String TEST_HOST="https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example";
 
     public static String HTTP_HOST = "https://laoshi.xueersi.com";
@@ -78,7 +79,7 @@ public class LiveVideoConfig {
      */
     public final static int LIVE_TYPE_TUTORIAL = 1;
     /**
-     * 公开直播
+     * 公开直播，讲座
      */
     public final static int LIVE_TYPE_LECTURE = 2;
     /**
@@ -91,6 +92,18 @@ public class LiveVideoConfig {
     public final static int LIVE_PATTERN_2 = 2;
     /** 视频类型为站立直播体验课 */
     public static final int LIVE_TYPE_STAND_EXPERIENCE = 10000;
+    /**
+     * 中学激励系统获取当前连对和最高连对
+     */
+    public static final String EVEN_DRIVE_PAIR_INFO = "https://live.xueersi.com/science/Stimulation/getEvenPairInfo";
+    /**
+     * 中学激励系统获取连对榜单
+     */
+    public static final String EVEN_DRIVE_PAIR_LIST = "https://live.xueersi.com/science/Stimulation/evenPairList";
+    /** 中学激励系统学报接口地址 */
+    public static final String EVEN_DRIVE_STYDU_REPORT = "https://live.xueersi.com/science/Stimulation/getJournal";
+    /** 中学激励系统点赞地址 */
+    public static final String EVEN_DRIVE_LIKE = "https://live.xueersi.com/science/Stimulation/thumbsUp";
     /**
      * 语音评测地址
      */
@@ -464,5 +477,6 @@ public class LiveVideoConfig {
      * 理科课件预加载
      */
     public static String URL_LIVE_GET_SCIENCE_COURSEWARE_URL =  LiveVideoConfig.HTTP_HOST+"/science/LiveCourses/preLoadNewCourseWare";
+
 
 }

@@ -290,6 +290,7 @@ public class AnswerResultEntity {
                 choiceList.add(entity.getYourAnswer());
                 answer.setChoiceList(choiceList);
                 answer.setTestType(AnswerResultEntity.TEST_TYPE_1);
+                answer.setBlankList(choiceList);
             }
             answerList.add(answer);
         }

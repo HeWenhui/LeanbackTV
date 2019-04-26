@@ -661,7 +661,9 @@ public class PraiseListPager extends LiveBasePager {
                         }
                     });
                 } else {
-                    mSoundPool.play(soundLike, 1, 1, 0, 0, 1);
+                    if (mSoundPool != null) {
+                        mSoundPool.play(soundLike, 1, 1, 0, 0, 1);
+                    }
                 }
                 startClickLikeAnimation();
                 lottieAnimationLoopStarView.setVisibility(View.GONE);

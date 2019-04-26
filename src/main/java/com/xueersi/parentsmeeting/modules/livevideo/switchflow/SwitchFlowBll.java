@@ -4,9 +4,11 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.MainThread;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RegMediaPlayerControl;
@@ -91,6 +93,21 @@ public class SwitchFlowBll extends LiveBaseBll implements BaseLiveMediaControlle
 
     private List<PlayServerEntity.PlayserverEntity> listRoute;
 
+    public void setListRoute(int total) {
+
+        if (total != 0) {
+            this.route = total < 4 ? total : 4;
+        } else if (total == 0 && mGetInfo != null) {
+            this.route = mGetInfo.getRtmpUrls().length;
+            mLogtf.i("switchFlowBll ,list.size()=" + mGetInfo.getRtmpUrls().length);
+        } else {
+            route = 0;
+        }
+        if (mPager != null) {
+            mPager.setRouteSum(route);
+        }
+    }
+
     public void setListRoute(List<PlayServerEntity.PlayserverEntity> listRoute) {
         this.listRoute = listRoute;
 
@@ -173,21 +190,24 @@ public class SwitchFlowBll extends LiveBaseBll implements BaseLiveMediaControlle
         });
     }
 
+    @MainThread
     private void initPager() {
         initView();
         addView();
 
-        if (listRoute == null) {
-            logger.i("listRoute为null");
-        } else {
-            logger.i("listRoute数量为" + listRoute.size());
-        }
-        if (listRoute != null && listRoute.size() != 0) {
-            route = listRoute.size() < 4 ? listRoute.size() : 4;
-        } else if (mGetInfo != null) {
-            route = mGetInfo.getRtmpUrls().length;
-        } else {
-            route = 0;
+        if (!MediaPlayer.getIsNewIJK()) {
+            if (listRoute == null) {
+                logger.i("listRoute为null");
+            } else {
+                logger.i("listRoute数量为" + listRoute.size());
+            }
+            if (listRoute != null && listRoute.size() != 0) {
+                route = listRoute.size() < 4 ? listRoute.size() : 4;
+            } else if (mGetInfo != null) {
+                route = mGetInfo.getRtmpUrls().length;
+            } else {
+                route = 0;
+            }
         }
         mPager.setRouteSum(route);
         LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
@@ -257,7 +277,7 @@ public class SwitchFlowBll extends LiveBaseBll implements BaseLiveMediaControlle
             }
         });
     }
-
+    @MainThread
     private void initView() {
         mPager = new SwitchFlowRoutePager(mContext, false);
         mPager.init();
