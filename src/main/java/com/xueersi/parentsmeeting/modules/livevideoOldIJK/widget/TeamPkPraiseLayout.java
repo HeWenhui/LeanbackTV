@@ -300,9 +300,11 @@ public class TeamPkPraiseLayout extends FrameLayout {
 
     private void playClickAnim() {
         playClickSound();
-        loopAnimationView.setVisibility(GONE);
+
+       /* loopAnimationView.setVisibility(GONE);
         loopAnimationView.cancelAnimation();
-        loopAnimationView.destroyDrawingCache();
+        loopAnimationView.destroyDrawingCache();*/
+
         if (clickAnimView.getComposition() == null) {
             String lottieResPath = ANIM_RES_DIR + "click/images";
             String lottieJsonPath = ANIM_RES_DIR + "click/data.json";
