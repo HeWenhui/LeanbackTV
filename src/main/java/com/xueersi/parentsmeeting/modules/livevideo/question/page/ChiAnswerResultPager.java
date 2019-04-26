@@ -404,4 +404,7 @@ public class ChiAnswerResultPager extends BasePager implements IArtsAnswerRsultD
             });
         }
     }
+
+
+
 }

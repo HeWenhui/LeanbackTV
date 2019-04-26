@@ -17,6 +17,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ChsAnswerResultEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ChineseAISubjectResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ArtsPSEAnswerResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ChiAnswerResultPager;
@@ -156,6 +157,12 @@ public class ChsAnswerResultBll extends LiveBaseBll implements NoticeAction, Ans
             mAnswerReulst = event.getResultEntity();
             showAnswerReulst(event);
         }
+    }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onWebviewClose(LiveRoomH5CloseEvent event) {
+        //logger.e( "=======>onWebviewClose called");
+        //mArtsAnswerResultEvent = null;
+        closeAnswerResult(false);
     }
 
     @Override
