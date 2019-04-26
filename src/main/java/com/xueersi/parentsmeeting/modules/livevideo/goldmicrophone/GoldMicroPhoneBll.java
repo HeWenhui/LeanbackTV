@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.PCMFormat;
 import com.tal.speech.speechrecognizer.ResultCode;
@@ -395,7 +394,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
      * 在线记录
      */
     private void onLineRecord() {
-        SpeechConfig.setStatus(SpeechConfig.SPEECH_CHS_MICROPHONE);
+//        SpeechConfig.setStatus(SpeechConfig.SPEECH_CHS_MICROPHONE);
         if (mSpeechEvaluatorUtils == null) {
             mSpeechEvaluatorUtils = new SpeechEvaluatorUtils(false);
         }
@@ -407,7 +406,8 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
         mSpeechEvaluatorUtils.startOnlineRecognize(
                 path,
                 SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
-                evaluatorListener);
+                evaluatorListener,
+                true);
         isRecord.set(true);
     }
 
