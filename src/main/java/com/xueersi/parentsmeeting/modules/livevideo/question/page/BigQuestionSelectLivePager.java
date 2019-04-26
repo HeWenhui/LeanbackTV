@@ -240,18 +240,24 @@ public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
     private void submitBigTestInteraction(final int isForce) {
         mLogtf.d("submitBigTestInteraction:isForce=" + isForce + ",resultPager=null?" + (resultPager == null));
         if (resultPager != null) {
-            handler.post(new Runnable() {
+            handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    rlQuestionResContent.removeView(resultPager.getRootView());
-                    onPagerClose.onClose(BigQuestionSelectLivePager.this);
+                    if (resultPager.isAttach()) {
+                        rlQuestionResContent.removeView(resultPager.getRootView());
+                        onPagerClose.onClose(BigQuestionSelectLivePager.this);
+                    }
                 }
-            });
+            }, 10000);
             return;
         }
         JSONArray userAnswer = new JSONArray();
-        for (int i = 0; i < answers.size(); i++) {
-            userAnswer.put(answers.get(i));
+        if (answers.isEmpty()) {
+            userAnswer.put("");
+        } else {
+            for (int i = 0; i < answers.size(); i++) {
+                userAnswer.put(answers.get(i));
+            }
         }
         questionSecHttp.submitBigTestInteraction(videoQuestionLiveEntity, userAnswer, startTime, isForce, new AbstractBusinessDataCallBack() {
             @Override
@@ -329,7 +335,7 @@ public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
                         onPagerClose.onClose(BigQuestionSelectLivePager.this);
                     }
                 }
-            }, 5000);
+            }, 10000);
         }
     }
 

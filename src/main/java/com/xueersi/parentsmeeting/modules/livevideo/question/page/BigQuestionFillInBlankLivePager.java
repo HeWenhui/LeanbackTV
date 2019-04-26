@@ -306,8 +306,12 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
             return;
         }
         JSONArray userAnswer = new JSONArray();
-        for (int i = 0; i < answers.size(); i++) {
-            userAnswer.put(answers.get(i));
+        if (answers.isEmpty()) {
+            userAnswer.put("");
+        } else {
+            for (int i = 0; i < answers.size(); i++) {
+                userAnswer.put(answers.get(i));
+            }
         }
         KeyboardUtil.hideKeyboard(getRootView());
         questionSecHttp.submitBigTestInteraction(videoQuestionLiveEntity, userAnswer, startTime, isForce, new AbstractBusinessDataCallBack() {
