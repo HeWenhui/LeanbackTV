@@ -653,8 +653,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 if (baseLiveBigQuestionPager.getBaseVideoQuestionEntity().getvQuestionID().equals(videoQuestionLiveEntity.id)) {
                     return;
                 } else {
+                    //来一个不同的题
                     baseLiveBigQuestionPager.onDestroy();
                     rlQuestionContent.removeView(baseLiveBigQuestionPager.getRootView());
+                    rlQuestionResContent.removeAllViews();
                 }
             }
             final BaseLiveBigQuestionPager bigQuestionPager = bigQueCreate.create(videoQuestionLiveEntity, rlQuestionResContent, new LiveBasePager.OnPagerClose() {
@@ -669,18 +671,30 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 }
             });
             if (bigQuestionPager != null) {
+                //延迟两秒显示题目
                 baseLiveBigQuestionPager = bigQuestionPager;
-                mVPlayVideoControlHandler.post(new Runnable() {
+                mVPlayVideoControlHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        rlQuestionContent.addView(bigQuestionPager.getRootView());
-                        onQuestionShow(videoQuestionLiveEntity, true, "showBigQuestion");
+                        mLogtf.d("showBigQuestion:isAnaswer=" + isAnaswer);
+                        if (isAnaswer) {
+                            rlQuestionContent.addView(bigQuestionPager.getRootView());
+                            onQuestionShow(videoQuestionLiveEntity, true, "showBigQuestion");
+                        } else {
+                            if (baseLiveBigQuestionPager == bigQuestionPager) {
+                                baseLiveBigQuestionPager = null;
+                            }
+                            bigQuestionPager.onDestroy();
+                        }
                     }
-                });
+                }, 2000);
             }
         } else {
             if (baseLiveBigQuestionPager != null) {
-                baseLiveBigQuestionPager.submitData();
+                mLogtf.d("showBigQuestion:isAttach=" + baseLiveBigQuestionPager.isAttach());
+                if (baseLiveBigQuestionPager.isAttach()) {
+                    baseLiveBigQuestionPager.submitData();
+                }
             }
         }
     }

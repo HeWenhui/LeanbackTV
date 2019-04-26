@@ -1883,13 +1883,11 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         if (videoQuestionLiveEntity.getDotType() != 0) {
             isBigQue = isShow;
             if (isShow) {
-                for (int i = 0; i < liveMediaControllerBottom.getChildCount(); i++) {
-                    liveMediaControllerBottom.getChildAt(i).setVisibility(View.GONE);
-                }
+                btMesOpen.setVisibility(View.GONE);
+                btMsgCommon.setVisibility(View.GONE);
             } else {
-                for (int i = 0; i < liveMediaControllerBottom.getChildCount(); i++) {
-                    liveMediaControllerBottom.getChildAt(i).setVisibility(View.VISIBLE);
-                }
+                btMesOpen.setVisibility(View.VISIBLE);
+                btMsgCommon.setVisibility(View.VISIBLE);
             }
         }
     }

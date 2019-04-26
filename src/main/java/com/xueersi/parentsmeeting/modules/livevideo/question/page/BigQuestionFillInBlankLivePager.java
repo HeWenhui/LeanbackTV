@@ -74,6 +74,7 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
     public Button btnSubmit;
     private long startTime;
     private final int MAX_CHAR_NUM = 10;
+    private BigResultPager resultPager;
 
     public BigQuestionFillInBlankLivePager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity) {
         super(context);
@@ -231,7 +232,9 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
                 holder.etFillBlank.setVisibility(View.INVISIBLE);
             } else {
                 holder.etFillBlank.setVisibility(View.VISIBLE);
-                holder.etFillBlank.setText(mAnswerEntityLst.get(position).getStuAnswer());
+                if (!TextUtils.equals(holder.etFillBlank.getText(), mAnswerEntityLst.get(position).getStuAnswer())) {
+                    holder.etFillBlank.setText(mAnswerEntityLst.get(position).getStuAnswer());
+                }
             }
             return convertView;
         }
@@ -276,6 +279,17 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
     }
 
     private void submitBigTestInteraction(final int isForce) {
+        mLogtf.d("submitBigTestInteraction:isForce=" + isForce + ",resultPager=null?" + (resultPager == null));
+        if (resultPager != null) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    rlQuestionResContent.removeView(resultPager.getRootView());
+                    onPagerClose.onClose(BigQuestionFillInBlankLivePager.this);
+                }
+            });
+            return;
+        }
         JSONArray userAnswer = new JSONArray();
         for (int i = 0; i < answers.size(); i++) {
             userAnswer.put(answers.get(i));
@@ -336,7 +350,8 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
     }
 
     private void showResult(BigResultEntity bigResultEntity, int isForce) {
-        final BigResultPager resultPager = new BigResultPager(mContext, rlQuestionResContent, bigResultEntity);
+        mView.setVisibility(View.GONE);
+        resultPager = new BigResultPager(mContext, rlQuestionResContent, bigResultEntity);
         rlQuestionResContent.addView(resultPager.getRootView());
         resultPager.setOnPagerClose(new OnPagerClose() {
             @Override

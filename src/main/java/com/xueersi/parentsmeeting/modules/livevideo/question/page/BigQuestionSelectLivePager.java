@@ -52,6 +52,7 @@ public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
     private GridView gvQuestion;
     private int dotType;
     private long startTime;
+    private BigResultPager resultPager;
 
     public BigQuestionSelectLivePager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity) {
         super(context);
@@ -237,6 +238,17 @@ public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
     }
 
     private void submitBigTestInteraction(final int isForce) {
+        mLogtf.d("submitBigTestInteraction:isForce=" + isForce + ",resultPager=null?" + (resultPager == null));
+        if (resultPager != null) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    rlQuestionResContent.removeView(resultPager.getRootView());
+                    onPagerClose.onClose(BigQuestionSelectLivePager.this);
+                }
+            });
+            return;
+        }
         JSONArray userAnswer = new JSONArray();
         for (int i = 0; i < answers.size(); i++) {
             userAnswer.put(answers.get(i));
@@ -298,7 +310,8 @@ public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
     }
 
     private void showResult(BigResultEntity bigResultEntity, int isForce) {
-        final BigResultPager resultPager = new BigResultPager(mContext, rlQuestionResContent, bigResultEntity);
+        mView.setVisibility(View.GONE);
+        resultPager = new BigResultPager(mContext, rlQuestionResContent, bigResultEntity);
         rlQuestionResContent.addView(resultPager.getRootView());
         resultPager.setOnPagerClose(new OnPagerClose() {
             @Override
