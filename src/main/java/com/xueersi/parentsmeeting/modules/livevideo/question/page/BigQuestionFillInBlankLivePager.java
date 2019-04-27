@@ -297,13 +297,13 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
     private void submitBigTestInteraction(final int isForce) {
         mLogtf.d("submitBigTestInteraction:isForce=" + isForce + ",resultPager=null?" + (resultPager == null));
         if (resultPager != null) {
-            handler.post(new Runnable() {
+            handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     rlQuestionResContent.removeView(resultPager.getRootView());
                     onPagerClose.onClose(BigQuestionFillInBlankLivePager.this);
                 }
-            });
+            }, 10000);
             return;
         }
         JSONArray userAnswer = new JSONArray();
