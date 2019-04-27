@@ -256,6 +256,8 @@ public class LiveVideoSAConfig {
         /** 储存学生直播在线时长(App端) https://wiki.xesv5.com/pages/viewpage.action?pageId=13838543 */
         public String URL_LIVE_STU_ONLINE_TIME = HTTP_HOST + "/LiveCourse/saveStuPlanOnlineTime";
 
+        /** 集体发言 http://wiki.xesv5.com/pages/viewpage.action?pageId=18553425 */
+        public String URL_UPLOAD_SPEECH_MSG = HTTP_HOST + "/LiveCourses/uploadSpeechMsg";
 
         /** 文科学生对老师评价 */
         public String URL_LIVE_ARTS_EVALUATE_TEACHER = "https://app.arts.xueersi.com/LiveCourse/submitStuEvaluateTeacher";
