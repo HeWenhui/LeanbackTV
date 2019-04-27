@@ -14,23 +14,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.widget.SoundWaveView;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.business.SpeechCollectiveView;
+
+import java.util.List;
 
 /**
  * Created by linyuqiang on 2019/4/26.
  * 集体发言2期布局
  */
-public class SpeechCollectiveNo2Pager extends LiveBasePager {
+public class SpeechCollectiveNo2Pager extends LiveBasePager implements SpeechCollectiveView {
     ViewGroup mRootView;
     private ImageView ivClose;
     private SoundWaveView swvView;
     private ConstraintLayout rootLayout;
     private Group microhpneGroup;
     private LottieAnimationView lottieAnimationView;
+    private TextView ivSpeechcollectiveNoVolume;
 
     public SpeechCollectiveNo2Pager(Context context, ViewGroup mRootView) {
         super(context, false);
@@ -48,6 +53,7 @@ public class SpeechCollectiveNo2Pager extends LiveBasePager {
         microhpneGroup = view.findViewById(R.id.group_livevideo_gold_microphone_microphone_group);
         swvView = view.findViewById(R.id.swv_livevideo_gold_microphone_sound_wave);
         lottieAnimationView = view.findViewById(R.id.lottie_livevideo_gold_microphone_gold_view);
+        ivSpeechcollectiveNoVolume = view.findViewById(R.id.iv_livevideo_speechcollective_novolume);
         return view;
     }
 
@@ -75,6 +81,18 @@ public class SpeechCollectiveNo2Pager extends LiveBasePager {
                 onPagerClose.onClose(SpeechCollectiveNo2Pager.this);
             }
         });
+    }
+
+
+    @Override
+    public void onNoVolume() {
+        ivSpeechcollectiveNoVolume.setVisibility(View.VISIBLE);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ivSpeechcollectiveNoVolume.setVisibility(View.GONE);
+            }
+        }, 2000);
     }
 
     private Runnable microphoneShowRunnable = new Runnable() {
@@ -166,5 +184,13 @@ public class SpeechCollectiveNo2Pager extends LiveBasePager {
         }
     };
 
+    @Override
+    public void addRipple(int level) {
+        swvView.addRipple(new SoundWaveView.Circle(0, level));
+    }
 
+    @Override
+    public List<SoundWaveView.Circle> getRipples() {
+        return swvView.getRipples();
+    }
 }

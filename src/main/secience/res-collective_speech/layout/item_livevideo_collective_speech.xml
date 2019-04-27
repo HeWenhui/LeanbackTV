@@ -12,6 +12,18 @@
         android:layout_height="wrap_content"
         app:constraint_referenced_ids="iv_livevideo_gold_microphone_bg,swv_livevideo_gold_microphone_sound_wave" />
 
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@id/iv_livevideo_speechcollective_novolume"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="说错了没关系，勇敢尝试吧"
+        android:background="@color/transparent_80"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@id/iv_livevideo_gold_microphone_bg"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
     <ImageView
         android:id="@id/iv_livevideo_gold_microphone_bg"
         android:layout_width="70dp"

@@ -173,7 +173,6 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
         }
     }
 
-
     @Override
     public int[] getNoticeFilter() {
         return new int[]{
