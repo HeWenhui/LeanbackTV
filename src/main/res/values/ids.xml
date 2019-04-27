@@ -143,6 +143,8 @@
     <item name="iv_livevideo_question_fillin_down" type="id" />
     <item name="rl_livevideo_question_fillin_bottom" type="id" />
     <item name="btn_livevideo_question_fillin_submit" type="id" />
+    <item name="tv_livevideo_question_fillin_input_index" type="id" />
+    <item name="iv_livevideo_question_fillin_input_div" type="id" />
     <item name="et_livevideo_question_fillin_input" type="id" />
     <item name="tv_livevideo_question_sele_lable" type="id" />
     <item name="tv_livevideo_question_sele_answer" type="id" />

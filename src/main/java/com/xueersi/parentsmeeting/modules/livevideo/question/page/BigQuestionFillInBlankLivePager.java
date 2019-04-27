@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
@@ -28,9 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.QuesReslutEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultItemEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.ui.adapter.XsBaseAdapter;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
@@ -73,7 +72,7 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
     /** 提交 */
     public Button btnSubmit;
     private long startTime;
-    private final int MAX_CHAR_NUM = 10;
+    private final int MAX_CHAR_NUM = 20;
     private BigResultPager resultPager;
 
     public BigQuestionFillInBlankLivePager(Context context, VideoQuestionLiveEntity baseVideoQuestionEntity) {
@@ -155,13 +154,15 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
             if (convertView == null) {
                 holder = new BlankViewHolder();
                 View view = LayoutInflater.from(mContext).inflate(R.layout.item_livevideo_fillin_bigquestion_input, parent, false);
+                holder.tvInputIndex = view.findViewById(R.id.tv_livevideo_question_fillin_input_index);
                 holder.etFillBlank = view.findViewById(R.id.et_livevideo_question_fillin_input);
                 convertView = view;
                 convertView.setTag(holder);
             } else {
                 holder = (BlankViewHolder) convertView.getTag();
             }
-            holder.etFillBlank.setHint("  " + (position + 1) + "  |  请输入");
+            holder.tvInputIndex.setText((position + 1) + "");
+            holder.etFillBlank.setHint("请输入");
             // holder.etFillBlank.setOnFocusChangeListener(editOnFocusChangeListener);
             TextWatcher textWatcher = (TextWatcher) holder.etFillBlank.getTag(R.id.et_livevideo_question_fillin_input);
             if (textWatcher != null) {
@@ -418,6 +419,7 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
     class BlankViewHolder {
         /** 填空题 */
         public EditText etFillBlank;
+        TextView tvInputIndex;
     }
 
     /** 键盘隐藏 */
