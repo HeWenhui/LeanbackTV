@@ -7,8 +7,6 @@ import android.os.Looper;
 import android.util.SparseArray;
 
 import com.tencent.bugly.crashreport.CrashReport;
-import com.xueersi.lib.framework.are.ContextManager;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -87,7 +85,7 @@ public class GroupGameTcp {
         } catch (Exception e) {
             log.d("start:e=" + e.getMessage() + ",time=" + (System.currentTimeMillis() - before));
             if (receiveMegCallBack != null) {
-                receiveMegCallBack.onDisconnect(this);
+                receiveMegCallBack.onDisconnect(inetSocketAddress, e, this);
             }
         }
     }
@@ -227,7 +225,7 @@ public class GroupGameTcp {
                 // 包头长度计算
                 // header Length = PackSize + HeaderSize + VerSize + TypeSize + OperationSize +
                 // SeqIdSize
-                log.d("WriteThread:header=" + TcpConstants.header / 8);
+                log.d("WriteThread:header:seq=" + seq);
                 short type = TcpConstants.HEAD_TYPE;
                 int operation = TcpConstants.HEAD_OPERATION_SEND;
                 send(type, operation, "");
@@ -239,6 +237,8 @@ public class GroupGameTcp {
     }
 
     private class PingTimeOut implements Runnable {
+        int seq;
+        int operation;
 
         PingTimeOut() {
             log.d("PingTimeOut");
@@ -246,9 +246,9 @@ public class GroupGameTcp {
 
         @Override
         public void run() {
-            log.d("PingTimeOut:run:isStop=" + isStop);
+            log.d("PingTimeOut:run:isStop=" + isStop + ",seq=" + seq);
             if (!isStop && receiveMegCallBack != null) {
-                receiveMegCallBack.onDisconnect(GroupGameTcp.this);
+                receiveMegCallBack.onDisconnect(inetSocketAddress, "seq=" + seq + "，operation=" + operation, GroupGameTcp.this);
             }
         }
     }
@@ -275,6 +275,8 @@ public class GroupGameTcp {
             if (!readSave) {
                 if (type == TcpConstants.LOGIN_TYPE) {
                     if (operation == TcpConstants.LOGIN_OPERATION_REC) {
+                        pingTimeOut.seq = seq;
+                        pingTimeOut.operation = operation;
                         sendMessageHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -284,8 +286,10 @@ public class GroupGameTcp {
                         }, heartTime);
                     }
                 } else if (type == TcpConstants.REPLAY_TYPE) {
-                    if (operation == TcpConstants.HEAD_OPERATION_REC) {
+                    if (operation == TcpConstants.HEAD_OPERATION_REC || operation == TcpConstants.REPLAY_REC) {
                         mainHandler.removeCallbacks(pingTimeOut);
+                        pingTimeOut.seq = seq;
+                        pingTimeOut.operation = operation;
                         sendMessageHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
@@ -331,7 +335,7 @@ public class GroupGameTcp {
             boolean readHead = false;
             // 上一次的缓存
             ByteBuffer lastBuffer = null;
-
+            Exception endEx = null;
             FileOutputStream fileOutputStream = null;
             FileInputStream fileInputStream = null;
             File saveFile = null;
@@ -516,9 +520,11 @@ public class GroupGameTcp {
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
+                endEx = e;
                 log.e("testBuffer", e);
             } catch (Exception e) {
                 e.printStackTrace();
+                endEx = e;
                 CrashReport.postCatchedException(new TcpException("testBuffer", e));
                 if (saveFile != null) {
                     if (receiveMegCallBack != null) {
@@ -545,7 +551,7 @@ public class GroupGameTcp {
                 }
             }
             if (!isStop && receiveMegCallBack != null) {
-                receiveMegCallBack.onDisconnect(GroupGameTcp.this);
+                receiveMegCallBack.onDisconnect(inetSocketAddress, endEx, GroupGameTcp.this);
             }
         }
     }
