@@ -205,6 +205,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         LiveVideoConfig.educationstage = getInfo.getEducationStage();
         LiveVideoConfig.LIVEMULPRELOADCHS = data.optString("courseWarePreLoadUrl");
         LiveVideoConfig.LIVEMULH5URLCHS = data.optString("getCourseWareHtml");
+        getInfo.setGetCourseWareHtmlNew(data.optString("getCourseWareWeb"));
 //        LiveVideoConfig.LIVEMULPRELOAD = data.optString("courseWarePreLoadUrl");
 //        LiveVideoConfig.LIVEMULH5URL = data.optString("getCourseWareHtml");
 //        getInfo.setStuPutUpHandsNum(data.optInt("stuPutUpHandsNum"));

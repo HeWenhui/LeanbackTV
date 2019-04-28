@@ -1230,11 +1230,12 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                         @Override
                         public void onDataSucess(Object... objData) {
 //                            addResultPager(isforce, (ChineseAISubjectResultEntity) objData[0]);
-                            ChsAnswerResultEvent artsAnswerResultEvent = new ChsAnswerResultEvent(objData[1] + "", ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT);
-                            artsAnswerResultEvent.setDetailInfo(detailInfo);
-                            artsAnswerResultEvent.setIspreload(ispreload);
-                            artsAnswerResultEvent.setResultEntity((ChineseAISubjectResultEntity) objData[0]);
-                            EventBus.getDefault().post(artsAnswerResultEvent);
+                            logger.i("showAnswerResult");
+                            ChsAnswerResultEvent chsAnswerResultEvent = new ChsAnswerResultEvent(objData[1] + "", ChsAnswerResultEvent.TYPE_AI_CHINESE_ANSWERRESULT);
+                            chsAnswerResultEvent.setDetailInfo(detailInfo);
+                            chsAnswerResultEvent.setIspreload(ispreload);
+                            chsAnswerResultEvent.setResultEntity((ChineseAISubjectResultEntity) objData[0]);
+                            EventBus.getDefault().post(chsAnswerResultEvent);
                         }
 
                         @Override
