@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -36,6 +37,7 @@ public abstract class BaseCourseGroupItem implements AdapterItemInterface<TeamMe
     protected long videoTime = 0;
     protected long audioTime = 0;
     protected LogToFile mLogtf;
+    protected int headCornerSize;
 
     public BaseCourseGroupItem(Context context, TeamMemberEntity entity, WorkerThreadPool workerThread, int uid) {
         this.mContext = context;
@@ -43,6 +45,7 @@ public abstract class BaseCourseGroupItem implements AdapterItemInterface<TeamMe
         this.workerThread = workerThread;
         this.uid = uid;
         mLogtf = new LogToFile(context, TAG);
+        headCornerSize = SizeUtils.Dp2Px(mContext, 5);
     }
 
     public void setOnVideoAudioClick(OnVideoAudioClick onVideoAudioClick) {

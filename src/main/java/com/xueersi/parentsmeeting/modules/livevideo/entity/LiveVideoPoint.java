@@ -119,4 +119,8 @@ public class LiveVideoPoint {
         }
         return new int[]{newWidth, newHeight};
     }
+
+    public interface VideoSizeChange {
+        void videoSizeChange(LiveVideoPoint liveVideoPoint);
+    }
 }

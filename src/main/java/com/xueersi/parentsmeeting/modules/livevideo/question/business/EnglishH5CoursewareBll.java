@@ -796,6 +796,11 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         if (voiceAnswerPager instanceof VoiceAnswerPager) {
             int wradio = liveVideoPoint.getRightMargin();
             baseVoiceAnswerCreat.setViewLayoutParams(voiceAnswerPager, wradio);
+        } else {
+            if (h5CoursewarePager instanceof LiveVideoPoint.VideoSizeChange) {
+                LiveVideoPoint.VideoSizeChange change = (LiveVideoPoint.VideoSizeChange) h5CoursewarePager;
+                change.videoSizeChange(liveVideoPoint);
+            }
         }
     }
 

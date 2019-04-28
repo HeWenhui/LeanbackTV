@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.LayoutInflater;
@@ -86,6 +87,10 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
         }
         mLogtf.d("doRenderRemoteUi:remove=" + remove + ",uid=" + uid);
         rlCourseItemVideo.addView(surfaceV, 0);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            surfaceV.setOutlineProvider(new TextureVideoViewOutlineProvider(headCornerSize));
+            surfaceV.setClipToOutline(true);
+        }
     }
 
     public void onUserOffline() {

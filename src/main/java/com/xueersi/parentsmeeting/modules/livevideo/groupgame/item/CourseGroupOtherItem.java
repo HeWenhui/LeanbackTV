@@ -1,13 +1,17 @@
 package com.xueersi.parentsmeeting.modules.livevideo.groupgame.item;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.lib.framework.are.ContextManager;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThreadPool;
@@ -60,6 +64,10 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
         rlCourseItemVideo.addView(surfaceV, 0);
         rlCourseItemCtrl.setVisibility(View.VISIBLE);
         tvCourseItemLoad.setVisibility(View.GONE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            surfaceV.setOutlineProvider(new TextureVideoViewOutlineProvider(headCornerSize));
+            surfaceV.setClipToOutline(true);
+        }
     }
 
     @Override
@@ -155,9 +163,22 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
     }
 
     @Override
-    public void updateViews(TeamMemberEntity entity, int position, Object objTag) {
+    public void updateViews(final TeamMemberEntity entity, int position, Object objTag) {
         super.updateViews(entity, position, objTag);
-        ImageLoader.with(ContextManager.getContext()).load(entity.headurl).into(ivCourseItemVideoHead);
+        final String headurl = entity.headurl;
+//        ImageLoader.with(ContextManager.getContext()).load(headurl).rectRoundCorner(headCornerSize).into(ivCourseItemVideoHead, new SingleConfig.BitmapListener() {
+//            @Override
+//            public void onSuccess(Drawable drawable) {
+//                mLogtf.d("onSuccess:uid=" + uid + ",headurl=" + headurl);
+//            }
+//
+//            @Override
+//            public void onFail() {
+//                mLogtf.d("onFail:uid=" + uid + ",headurl=" + headurl);
+//            }
+//        });
+        ImageLoader.with(ContextManager.getContext()).load(headurl).rectRoundCorner(headCornerSize / 2).into(ivCourseItemVideoHead);
+//        ImageLoader.with(ContextManager.getContext()).load(headurl).into(ivCourseItemVideoHead);
         ivCourseItemVideo.setImageResource(VIDEO_RES[2]);
         ivCourseItemAudio.setImageResource(AUDIO_RES[2]);
     }

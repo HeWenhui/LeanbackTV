@@ -37,7 +37,8 @@ public class CourseGroupNoItem extends BaseCourseGroupItem {
         super.initViews(root);
         ImageView imageView = new ImageView(root.getContext());
         imageView.setImageResource(R.drawable.pc_zbhd_shipingkuang_ufo);
-        ((ViewGroup) root).addView(imageView);
+        imageView.setScaleType(ImageView.ScaleType.FIT_XY);
+        ((ViewGroup) root).addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
     public void doRenderRemoteUi(SurfaceView surfaceV) {

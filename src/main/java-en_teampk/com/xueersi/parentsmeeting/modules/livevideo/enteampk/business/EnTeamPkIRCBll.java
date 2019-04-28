@@ -126,6 +126,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         if (englishShowReg != null) {
             englishShowReg.registQuestionShow(enTeamPkQuestionShowAction);
         }
+        parseTeamInter();
         if (englishPk.hasGroup != EnglishPk.HAS_GROUP_NO) {
             try {
                 String string = mShareDataManager.getString(ShareDataConfig.LIVE_ENPK_MY_TEAM, "{}", ShareDataManager.SHAREDATA_USER);
@@ -146,7 +147,6 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 CrashReport.postCatchedException(e);
             }
         }
-        parseTeamInter();
 //        if (com.xueersi.common.config.AppConfig.DEBUG) {
 //            java.util.Random random = new java.util.Random();
 //            EnTeamPkRankEntity enTeamPkRankEntity = new EnTeamPkRankEntity();
@@ -571,8 +571,20 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             if (artsExtLiveInfo != null) {
                 int isGroupGmaeCourseWare = artsExtLiveInfo.getIsGroupGameCourseWare();
                 if (isGroupGmaeCourseWare == 1) {
-                    startTeam("parsegetSelfTeamInfo");
+                    startTeam("parsegetSelfTeamInfo1");
                 }
+            } else if (mInteractiveTeam != null) {
+                getEnTeamPkHttpManager().dispatch(mGetInfo.getStuId(), new AbstractBusinessDataCallBack() {
+                    @Override
+                    public void onDataSucess(Object... objData) {
+                        ArrayList<InetSocketAddress> addresses = (ArrayList<InetSocketAddress>) objData[0];
+                        mLogtf.d("dispatch:size=" + addresses.size());
+                        if (addresses.size() > 0) {
+                            connect(addresses);
+                        }
+                    }
+                });
+                startTeam("parsegetSelfTeamInfo2");
             }
         }
         return pkTeamEntity2;
