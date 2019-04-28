@@ -117,20 +117,34 @@ import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
  */
 public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveAndBackDebug {
     private String TAG = getClass().getSimpleName();
-    /** 聊天，默认开启 */
+    /**
+     * 聊天，默认开启
+     */
     private Button btMesOpen;
-    /** 聊天输入框的关闭按钮 */
+    /**
+     * 聊天输入框的关闭按钮
+     */
     private ImageView ivMessageClose;
-    /** 左侧聊天区 */
+    /**
+     * 左侧聊天区
+     */
     private View liveStandMessageContent;
     FrameAnimation btMesOpenAnimation;
-    /** 献花，默认关闭 第一版没有这功能 */
+    /**
+     * 献花，默认关闭 第一版没有这功能
+     */
     private Button btMessageFlowers;
-    /** 聊天人数 */
+    /**
+     * 聊天人数
+     */
     private TextView tvMessageCount;
-    /** 聊天IRC一下状态，正在连接，在线等 */
+    /**
+     * 聊天IRC一下状态，正在连接，在线等
+     */
     private ImageView ivMessageOnline;
-    /** 聊天消息 */
+    /**
+     * 聊天消息
+     */
     private ListView lvMessage;
     private View rlInfo;
     private View rlMessageContent;
@@ -138,24 +152,34 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     private Button btMessageExpress;
     private CommonAdapter<LiveMessageEntity> messageAdapter;
     private CommonAdapter<LiveMessageEntity> otherMessageAdapter;
-    /** 聊天字体大小，最多13个汉字 */
+    /**
+     * 聊天字体大小，最多13个汉字
+     */
     private int messageSize = 0;
-    /** 献花 */
+    /**
+     * 献花
+     */
     private PopupWindow mFlowerWindow;
     private View flowerContentView;
     private TextView tvMessageGoldLable;
     private TextView tvMessageGold;
     private String goldNum;
-    /** 上次发送消息时间 */
+    /**
+     * 上次发送消息时间
+     */
     private long lastSendMsg;
     private BaseLiveMediaControllerBottom liveMediaControllerBottom;
     private KPSwitchFSPanelLinearLayout switchFSPanelLinearLayout;
     private ImageView ivExpressionCancle;
     private Activity liveVideoActivity;
     private KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener;
-    /** 竖屏的时候，也添加横屏的消息 */
+    /**
+     * 竖屏的时候，也添加横屏的消息
+     */
     private ArrayList<LiveMessageEntity> otherLiveMessageEntities;
-    /** 是不是正在答题 */
+    /**
+     * 是不是正在答题
+     */
     private boolean isAnaswer = false;
     LiveSoundPool liveSoundPool;
     private Button btnVoiceMesOpen;
@@ -166,31 +190,51 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     private FangZhengCuYuanTextView tvVoiceChatCountdown;
     private View rlMessageText;
 
-    /** 语音保存位置-目录 */
+    /**
+     * 语音保存位置-目录
+     */
     File dir;
-    /** 音量管理 */
+    /**
+     * 音量管理
+     */
     private AudioManager mAM;
-    /** 最大音量 */
+    /**
+     * 最大音量
+     */
     private int mMaxVolume;
-    /** 当前音量 */
+    /**
+     * 当前音量
+     */
     private int mVolume = 0;
 
     boolean isVoice = false;
     //当前语音输入转换的文本
     String mVoiceContent = "";
     String mMsgContent = "";
-    /** 语音转文字的聊天是否已发送 */
+    /**
+     * 语音转文字的聊天是否已发送
+     */
     private boolean isVoiceMsgSend = true;
-    /** 发送聊天数目 */
+    /**
+     * 发送聊天数目
+     */
     private int mMsgCount = 0;
-    /** 发送语音聊天数目 */
+    /**
+     * 发送语音聊天数目
+     */
     private int mVoiceMsgCount = 0;
-    /** 语音文件 */
+    /**
+     * 语音文件
+     */
     private File mVoiceFile;
     private AudioRequest mAudioRequest;
-    /** 模型启动文案 */
+    /**
+     * 模型启动文案
+     */
     private String mSpeechFail = "模型正在启动，请稍后";
-    /** 语音聊天是否完成 */
+    /**
+     * 语音聊天是否完成
+     */
     boolean isSpeekDone = false;
 
     SpeechParamEntity mParam;
@@ -372,7 +416,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         }
     }
 
-    /** 聊天打开的动画 */
+    /**
+     * 聊天打开的动画
+     */
     private void initBtMesOpenAnimation(boolean isvoice) {
         if (rlMessageContent.getVisibility() == View.GONE) {
             mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
@@ -894,7 +940,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         mAudioRequest = ProxUtil.getProxUtil().
 
                 get(liveVideoActivity, AudioRequest.class);
-
+        logger.i("AudioRequest" + mAudioRequest == null ? "null" : mAudioRequest.toString());
     }
 
     @Override
@@ -906,7 +952,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         if (noSpeechTimer != null) {
             noSpeechTimer.cancel();
         }
-        if (vwvVoiceChatWave != null){
+        if (vwvVoiceChatWave != null) {
             vwvVoiceChatWave.stop();
             vwvVoiceChatWave.setVisibility(View.GONE);
         }
@@ -1086,7 +1132,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         return false;
     }
 
-    /** 聊天开始连接 */
+    /**
+     * 聊天开始连接
+     */
     public void onStartConnect() {
         mainHandler.post(new Runnable() {
             @Override
@@ -1118,7 +1166,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         }
     }
 
-    /** 聊天连上 */
+    /**
+     * 聊天连上
+     */
     public void onConnect() {
         mainHandler.post(new Runnable() {
             @Override
@@ -1139,7 +1189,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         ivMessageOnline.setImageResource(R.drawable.bg_livevideo_message_online);
     }
 
-    /** 聊天进入房间 */
+    /**
+     * 聊天进入房间
+     */
     public void onRegister() {
         mainHandler.post(new Runnable() {
             @Override
@@ -1150,7 +1202,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         });
     }
 
-    /** 聊天断开 */
+    /**
+     * 聊天断开
+     */
     public void onDisconnect() {
         mainHandler.post(new Runnable() {
             @Override
@@ -1246,7 +1300,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
 
     }
 
-    /** 被禁言 */
+    /**
+     * 被禁言
+     */
     public void onDisable(final boolean disable, final boolean fromNotice) {
         mView.post(new Runnable() {
             @Override
@@ -1293,7 +1349,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         });
     }
 
-    /** 关闭开启聊天 */
+    /**
+     * 关闭开启聊天
+     */
     @Override
     public void onopenchat(final boolean openchat, final String mode, final boolean fromNotice) {
         mainHandler.post(new Runnable() {
@@ -1372,7 +1430,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         });
     }
 
-    /** 关闭开启弹幕 */
+    /**
+     * 关闭开启弹幕
+     */
     public void onOpenbarrage(final boolean openbarrage, final boolean fromNotice) {
         mView.post(new Runnable() {
             @Override
@@ -1592,11 +1652,17 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     /**
      * ************************************************** 语音识别 **************************************************
      */
-    /** 语音评测工具类 */
+    /**
+     * 语音评测工具类
+     */
     private SpeechUtils mSpeechUtils;
-    /** 是不是评测失败 */
+    /**
+     * 是不是评测失败
+     */
     private boolean isSpeechError = false;
-    /** 是不是评测成功 */
+    /**
+     * 是不是评测成功
+     */
     private boolean isSpeechSuccess = false;
     private final static String VOICE_RECOG_HINT = "语音输入中，请大声说英语";
     private final static String VOICE_RECOG_NOVOICE_HINT = "抱歉没听清，请大点声重说哦";
@@ -1629,7 +1695,9 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
             }
         }
     };
-    /** 计时器 */
+    /**
+     * 计时器
+     */
     CountDownTimer noSpeechTimer = new CountDownTimer(30000, 1000) {
         @Override
         public void onTick(long millisUntilFinished) {
@@ -1854,6 +1922,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         tvVoiceContent.setText(VOICE_RECOG_HINT);
         tvVoiceCount.setText("");
         tvVoiceCount.setVisibility(View.GONE);
+        logger.i("AudioRequest" + mAudioRequest == null ? "null" : mAudioRequest.toString());
         if (mAudioRequest != null) {
             mAudioRequest.request(new AudioRequest.OnAudioRequest() {
                 @Override
