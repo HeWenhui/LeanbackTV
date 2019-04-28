@@ -29,9 +29,10 @@ public class Camera1Utils implements IRecordVideoView {
         // setType必须设置，要不出错.
         surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         surfaceHolder.addCallback(callback2);
+
     }
 
-    private void getDataInfo(int width, int height) {
+    public void getDataInfo(int width, int height) {
         int num = Camera.getNumberOfCameras();
 
         logger.d("NUM:" + num);

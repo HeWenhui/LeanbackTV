@@ -5,10 +5,11 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+
+import static com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract.RECORD_TIME;
 
 public class SuperSpeakerCameraPager extends BasePager implements
         ISuperSpeakerContract.ICameraView,
@@ -21,11 +22,15 @@ public class SuperSpeakerCameraPager extends BasePager implements
 
     private ISuperSpeakerContract.ICommonTip iCommonTip;
 
-    private ImageView ivRecordCamera;
+    private View ivRecordCamera;
 
     private SurfaceView sfvVideo;
 
     private Camera1Utils camera1Utils;
+    /** 开始录制视频的时间 */
+    private long startRecordVideoTime;
+    /** 结束录制时间 */
+    private long stopRecordVideoTime;
 
     public SuperSpeakerCameraPager(Context context, ISuperSpeakerContract.ICameraPresenter presenter) {
         super(context);
@@ -46,7 +51,7 @@ public class SuperSpeakerCameraPager extends BasePager implements
 
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
-
+                logger.i("surfaceCreated");
             }
 
             @Override
@@ -56,9 +61,10 @@ public class SuperSpeakerCameraPager extends BasePager implements
 
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
-
+                logger.i("surfaceDestroyed");
             }
         });
+        initListener();
         return view;
     }
 
@@ -68,8 +74,8 @@ public class SuperSpeakerCameraPager extends BasePager implements
         ivRecordCamera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                startRecordVideoTime = System.currentTimeMillis();
                 performRecordVideo();
-
             }
         });
     }
@@ -86,6 +92,11 @@ public class SuperSpeakerCameraPager extends BasePager implements
     }
 
     @Override
+    public View getView() {
+        return getRootView();
+    }
+
+    @Override
     public void initData() {
 
     }
@@ -98,12 +109,14 @@ public class SuperSpeakerCameraPager extends BasePager implements
 
     private void performRecordVideo() {
         if (sfvVideo.getVisibility() != View.VISIBLE) {
+            logger.i("set surfaceView visible");
             sfvVideo.setVisibility(View.VISIBLE);
         }
         startRecordVideo();
     }
 
     private void startRecordVideo() {
+        camera1Utils.getDataInfo(1920,1080);
         camera1Utils.startRecordVideo();
     }
 
@@ -130,7 +143,8 @@ public class SuperSpeakerCameraPager extends BasePager implements
 
     @Override
     public void timeUp() {
-        iCommonTip.timeUp();
+        long nowtime = System.currentTimeMillis();
+        iCommonTip.timeUp(nowtime - startRecordVideoTime < RECORD_TIME);
     }
 
     @Override

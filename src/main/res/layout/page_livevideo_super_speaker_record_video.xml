@@ -8,6 +8,7 @@
 
     <ImageView
         android:layout_width="220dp"
+
         android:layout_height="118dp"
         android:src="@drawable/bg_livevideo_kindergarten_primary_school_microphone_close_background" />
 

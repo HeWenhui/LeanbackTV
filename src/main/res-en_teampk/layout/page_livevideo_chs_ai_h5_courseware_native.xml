@@ -8,11 +8,17 @@
         android:layout_height="match_parent"
         android:visibility="visible">
 
-        <ren.yale.android.cachewebviewlib.CacheWebView
-            android:id="@id/wv_livevideo_subject_web"
+        <ScrollView
+            android:id="@+id/sv_livevideo_web"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
+            <ren.yale.android.cachewebviewlib.CacheWebView
+                android:id="@id/wv_livevideo_subject_web"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </ScrollView>
 
         <ImageView
             android:id="@id/iv_livevideo_subject_refresh"

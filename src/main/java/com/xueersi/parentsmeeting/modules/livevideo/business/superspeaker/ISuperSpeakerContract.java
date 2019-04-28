@@ -10,10 +10,14 @@ public interface ISuperSpeakerContract {
         void removeRedPackageView();
     }
 
-    interface ICameraView extends ICommonTip {
+    interface ICameraView {
         View initView();
 
         void updateNum(String num);
+
+        View getView();
+
+        void timeUp();
     }
 
     interface ICameraPresenter {
@@ -40,7 +44,7 @@ public interface ISuperSpeakerContract {
         /**
          * 时间到了，结束视频录制
          */
-        void timeUp();
+        void timeUp(boolean complete);
     }
 
     interface ICommonPresenter extends ICameraPresenter {

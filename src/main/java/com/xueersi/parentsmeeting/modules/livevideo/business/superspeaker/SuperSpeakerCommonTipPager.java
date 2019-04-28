@@ -9,8 +9,6 @@ import android.widget.TextView;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
-import static com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract.RECORD_TIME;
-
 public class SuperSpeakerCommonTipPager extends BasePager implements ISuperSpeakerContract.ICommonTip {
 
     private ISuperSpeakerContract.ICommonPresenter iCommonPresenter;
@@ -80,9 +78,9 @@ public class SuperSpeakerCommonTipPager extends BasePager implements ISuperSpeak
     private long recordTime;
 
     @Override
-    public void timeUp() {
+    public void timeUp(boolean complete) {
         //如果录制时间小于1s
-        if (recordTime < RECORD_TIME) {
+        if (complete) {
             groupSubmitVideo.setVisibility(View.GONE);
             groupCancelVideo.setVisibility(View.VISIBLE);
             tvTimeUpTittle.setText("时间到，视频没有完成哦");

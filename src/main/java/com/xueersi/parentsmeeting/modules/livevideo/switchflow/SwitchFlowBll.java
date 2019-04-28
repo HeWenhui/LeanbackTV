@@ -97,10 +97,12 @@ public class SwitchFlowBll extends LiveBaseBll implements BaseLiveMediaControlle
 
         if (total != 0) {
             this.route = total < 4 ? total : 4;
-        } else if (total == 0 && mGetInfo != null) {
-            this.route = mGetInfo.getRtmpUrls().length;
-            mLogtf.i("switchFlowBll ,list.size()=" + mGetInfo.getRtmpUrls().length);
-        } else {
+        }
+//        else if (total == 0 && mGetInfo != null) {
+//            this.route = mGetInfo.getRtmpUrls().length;
+//            mLogtf.i("switchFlowBll ,list.size()=" + mGetInfo.getRtmpUrls().length);
+//        }
+        else {
             route = 0;
         }
         if (mPager != null) {
@@ -277,6 +279,7 @@ public class SwitchFlowBll extends LiveBaseBll implements BaseLiveMediaControlle
             }
         });
     }
+
     @MainThread
     private void initView() {
         mPager = new SwitchFlowRoutePager(mContext, false);

@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.business.UserBll;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
@@ -32,6 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoteBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.SuperSpeakerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.chpk.business.ChinesePkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.AllBllConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
@@ -55,6 +57,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseIn
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.presenter.PraiseListIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerRankIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.ArtsAnswerResultBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.ChsAnswerResultBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageIRCBll;
@@ -136,6 +139,8 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     private int totalSwitchRouteNum = 0;
     private int isGoldMicrophone;
 
+    private int useSuperSpeakerShow;
+
     /** {@link #onActivityCreated(Bundle)} */
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -145,6 +150,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             isSmallEnglish = activity.getIntent().getBooleanExtra("isSmallEnglish", false);
             useSkin = activity.getIntent().getIntExtra("useSkin", 0);
             isGoldMicrophone = activity.getIntent().getIntExtra("isGoldMicrophone", 0);
+            useSuperSpeakerShow = activity.getIntent().getIntExtra("useSuperSpeakerShow", 0);
             //logger.e("========>:onVideoCreate 22222229999000:");
             pattern = activity.getIntent().getIntExtra("pattern", 2);
             String mode2 = activity.getIntent().getStringExtra("mode");
@@ -229,7 +235,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         //是文科
         BllConfigEntity[] bllConfigEntities;
         if (isArts == 1) {
-            bllConfigEntities = AllBllConfig.live_business_arts;
+            bllConfigEntities = AllBllConfig.getLiveBusinessArts();
             liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             mLiveBll.addBusinessBll(liveIRCMessageBll);
@@ -274,6 +280,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new PraiseListIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new PraiseInteractionBll(activity, mLiveBll));
 //            mLiveBll.addBusinessBll(new StudyReportBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new ChsAnswerResultBll(activity, mLiveBll));
             int allowLinkMicNew = activity.getIntent().getIntExtra("allowLinkMicNew", 0);
             VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
             videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
@@ -329,6 +336,9 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         mLiveBll.addBusinessBll(evaluateTeacherBll);
         if (isGoldMicrophone == 1) {
             mLiveBll.addBusinessBll(new GoldMicroPhoneBll(activity, mLiveBll));
+        }
+        if (AppConfig.DEBUG || useSuperSpeakerShow == 1) {
+            mLiveBll.addBusinessBll(new SuperSpeakerBll(activity, mLiveBll));
         }
         if ((pattern == 1)) {
             addSwitchFlowBll();
@@ -565,7 +575,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
 
                     if ((pattern == 1) && switchFlowBll != null) {
 //            if (server != null) {
-                        switchFlowBll.setListRoute(0);
+//                        switchFlowBll.setListRoute(0);
                         logger.i("0");
 //        } else {
 //            switchFlowBll.setListRoute(null);

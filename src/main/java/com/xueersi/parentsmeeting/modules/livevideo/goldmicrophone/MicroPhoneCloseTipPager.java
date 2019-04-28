@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.xueersi.common.base.BasePager;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 public class MicroPhoneCloseTipPager extends BasePager implements GoldPhoneContract.CloseTipView {
@@ -33,12 +34,14 @@ public class MicroPhoneCloseTipPager extends BasePager implements GoldPhoneContr
             @Override
             public void onClick(View view) {
                 clickNo();
+                UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1714006));
             }
         });
         ivCloseBtnYes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 clickYes();
+                UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1714007));
             }
         });
     }

@@ -302,6 +302,17 @@ public class LiveGetInfo {
 
     // add by William on 2018/12/5  专属老师用
     public EPlanInfoBean ePlanInfo;
+    /** 语文AI主观题AI接口 */
+    private String subjectiveItem2AIUrl;
+
+    public String getSubjectiveItem2AIUrl() {
+        return subjectiveItem2AIUrl;
+    }
+
+    public void setSubjectiveItem2AIUrl(String subjectiveItem2AIUrl) {
+        this.subjectiveItem2AIUrl = subjectiveItem2AIUrl;
+    }
+
     /** 是否支持连对激励 0：关闭 1：打开 */
     private int isOpenNewCourseWare;
     /** 连对榜接口地址 */
@@ -344,6 +355,16 @@ public class LiveGetInfo {
     }
 
     private int useGoldMicroPhone;
+
+    private int useSuperSpeakerShow;
+
+    public int getUseSuperSpeakerShow() {
+        return useSuperSpeakerShow;
+    }
+
+    public void setUseSuperSpeakerShow(int useSuperSpeakerShow) {
+        this.useSuperSpeakerShow = useSuperSpeakerShow;
+    }
 
     public int isUseGoldMicroPhone() {
         return useGoldMicroPhone;

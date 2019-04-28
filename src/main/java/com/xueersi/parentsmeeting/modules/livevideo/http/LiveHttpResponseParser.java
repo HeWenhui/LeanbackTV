@@ -206,6 +206,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         LiveVideoConfig.educationstage = getInfo.getEducationStage();
         LiveVideoConfig.LIVEMULPRELOADCHS = data.optString("courseWarePreLoadUrl");
         LiveVideoConfig.LIVEMULH5URLCHS = data.optString("getCourseWareHtml");
+        getInfo.setGetCourseWareHtmlNew(data.optString("getCourseWareWeb"));
 //        LiveVideoConfig.LIVEMULPRELOAD = data.optString("courseWarePreLoadUrl");
 //        LiveVideoConfig.LIVEMULH5URL = data.optString("getCourseWareHtml");
 //        getInfo.setStuPutUpHandsNum(data.optInt("stuPutUpHandsNum"));
@@ -519,6 +520,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
             //金话筒
             getInfo.setUseGoldMicroPhone(data.optInt("isGoldMicrophone"));
+            //超级演讲秀
+            getInfo.setUseSuperSpeakerShow(data.optInt("isSuperSpeechShow "));
             getInfo.setSubject_digits(data.optString("subject_digits"));
             if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                 getInfo.setIsNewProject(data.optInt("isNewProject", 0));
@@ -530,6 +533,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     parseLiveGetInfoScience(data, liveTopic, getInfo);
                 }
             }
+            getInfo.setSubjectiveItem2AIUrl(data.optString("subjectiveItem2AIUrl", "https://subjectcorrect.xesv5.com"));
             return getInfo;
         } catch (JSONException e) {
             logger.e("parseLiveGetInfo", e);
