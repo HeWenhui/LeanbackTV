@@ -63,6 +63,6 @@ dependencies {
     //implementation(rootProject.ext.xeslibraries.waveform) { changing = true }
     //implementation project(':library:waveform')
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.gifDrawable)
-    api 'com.android.support:transition:27.1.1'
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.transition)
     //    implementation project(':library:agora')
 }
