@@ -519,7 +519,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                         dynamicurl = TextUtils.isEmpty(LiveVideoConfig.LIVEMULH5URL) ? defaulturl : LiveVideoConfig.LIVEMULH5URL;
                     }
                     if(isArts == 2 && LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(packageAttr)){
-                        defaulturl = englishH5Entity.getDynamicurl();
+                        dynamicurl = englishH5Entity.getDynamicurl();
                     }
                     mLoadUrls = dynamicurl + "?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId +
                             "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId +
