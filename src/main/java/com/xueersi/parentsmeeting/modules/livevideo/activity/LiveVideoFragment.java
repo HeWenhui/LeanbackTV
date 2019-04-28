@@ -230,7 +230,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         //是文科
         BllConfigEntity[] bllConfigEntities;
         if (isArts == 1) {
-            bllConfigEntities = AllBllConfig.live_business_arts;
+            bllConfigEntities = AllBllConfig.getLiveBusinessArts();
             liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             mLiveBll.addBusinessBll(liveIRCMessageBll);
