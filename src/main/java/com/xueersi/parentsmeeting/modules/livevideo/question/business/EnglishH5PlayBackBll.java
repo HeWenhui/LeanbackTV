@@ -365,7 +365,14 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             String classId = studentLiveInfo.getClassId();
             String teamId = studentLiveInfo.getTeamId();
             String educationStage = liveGetInfo.getEducationStage();
-            StringBuilder stringBuilder = new StringBuilder(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_RESULT_FILE);
+            StringBuilder stringBuilder;
+            if (detailInfo.isTUtor) {
+                stringBuilder = new StringBuilder(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_RESULT_TUTOR_FILE);
+
+            } else {
+                stringBuilder = new StringBuilder(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_RESULT_FILE);
+
+            }
             stringBuilder.append("?stuId=").append(liveGetInfo.getStuId());
             stringBuilder.append("&liveId=").append(liveGetInfo.getId());
             stringBuilder.append("&stuCouId=").append(liveBackBll.getStuCourId());

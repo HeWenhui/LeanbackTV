@@ -203,6 +203,9 @@ public interface XESCODE {
     /** 集体语言互动消息 */
     int SPEECH_COLLECTIVE = 270;
 
+    /** 辅导老师发题 */
+    int QUESTION_TUTOR = 315;
+
     /** 2018接麦 */
     interface AgoraChat {
         /** 开启/关闭举手 */

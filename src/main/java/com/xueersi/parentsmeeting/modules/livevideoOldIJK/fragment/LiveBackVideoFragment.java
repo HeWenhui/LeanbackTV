@@ -134,10 +134,16 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     private RelativeLayout bottom;
     private View mFloatView;
     private PopupWindow mPopupWindows;
-    private Handler mHandler;
     private int progress = 0;
     protected LiveBackBll liveBackBll;
     protected LiveBackVideoBll liveBackVideoBll;
+    /** 视频节对象 */
+    VideoLivePlayBackEntity mVideoMainEntity;
+    /** 视频节对象 */
+    VideoLivePlayBackEntity mVideoTutorEntity;
+    /** 播放视频类型 主讲，辅导 */
+    int videoPlayStatus = MediaPlayer.VIDEO_TEACHER_ONLY_MAIN;
+
     /**
      * 全屏显示
      */
@@ -154,16 +160,30 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         // 设置不可自动横竖屏
         setAutoOrientation(false);
         Intent intent = activity.getIntent();
-        mVideoEntity = (VideoLivePlayBackEntity) intent.getExtras().getSerializable("videoliveplayback");
+
+        mVideoMainEntity = (VideoLivePlayBackEntity) intent.getExtras().getSerializable("videoliveplayback");
+        mVideoTutorEntity = (VideoLivePlayBackEntity) intent.getExtras().getSerializable("videoTutorEntity");
+        videoPlayStatus = intent.getIntExtra("teacherVideoStatus",0);
+
         islocal = intent.getBooleanExtra("islocal", false);
-        mHandler = new Handler();
+        startNewVideo();
+
+        addOnGlobalLayoutListener();
+    }
+
+    private void startNewVideo() {
+        if (videoPlayStatus == MediaPlayer.VIDEO_TEACHER_MAIN || videoPlayStatus == MediaPlayer.VIDEO_TEACHER_ONLY_MAIN) {
+            mVideoEntity = mVideoMainEntity;
+        } else {
+            mVideoEntity = mVideoTutorEntity;
+        }
+
         if (mVideoEntity == null) {
-            CrashReport.postCatchedException(new Exception("" + intent.getExtras()));
+            CrashReport.postCatchedException(new Exception("" + activity.getIntent().getExtras()));
         }
         // 请求相应数据
         initData();
         initBll();
-        addOnGlobalLayoutListener();
     }
 
     @Nullable
@@ -228,7 +248,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         // 设置速度按钮显示
         mMediaController.setSetSpeedVisable(true);
 
-        mMediaController.setVideoStatus(MediaPlayer.VIDEO_BOTTOM_CONTROL_CODE_TEACHER,MediaPlayer.VIDEO_TEACHER_MAIN,"");
+        mMediaController.setVideoStatus(MediaPlayer.VIDEO_BOTTOM_CONTROL_CODE_TEACHER, videoPlayStatus, "");
+
 
         // 设置当前是否为横屏
         if (mPlayBackMediaController == null) {
@@ -340,6 +361,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         // 加载竖屏时显示更多课程广告的布局
         rlAdvanceContent = (RelativeLayout) mContentView.findViewById(R.id.rl_livevideo_playback);
     }
+
 
     /** 竖屏时填充视频列表布局 */
     protected void initData() {
@@ -506,7 +528,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 }
             }
             if (!islocal) {
-                EvaluateTeacherPlayBackBll evaluateTeacherPlayBackBll = new EvaluateTeacherPlayBackBll(activity, liveBackBll);
+                EvaluateTeacherPlayBackBll evaluateTeacherPlayBackBll = new EvaluateTeacherPlayBackBll(activity,
+                        liveBackBll);
                 evaluateTeacherPlayBackBll.setLiveFragmentBase(liveBackPlayVideoFragment);
                 liveBackBll.addBusinessBll(evaluateTeacherPlayBackBll);
             }
@@ -601,9 +624,13 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     }
 
     @Override
-    protected int onVideoStatusChange(int code,int status){
-        UmsAgentManager.umsAgentDebug(activity,""+code,"status");
-        return  code;
+    protected int onVideoStatusChange(int code, int status) {
+        UmsAgentManager.umsAgentDebug(activity, "" + code, "status");
+        if (code == MediaPlayer.VIDEO_BOTTOM_CONTROL_CODE_TEACHER) {
+            videoPlayStatus = status;
+        }
+        startNewVideo();
+        return code;
     }
 
     @Override
@@ -824,6 +851,14 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
     @Override
     protected void resultComplete() {
+        if (mVideoTutorEntity != null && videoPlayStatus == MediaPlayer.VIDEO_TEACHER_MAIN) {
+            videoPlayStatus = MediaPlayer.VIDEO_TEACHER_TUTOR;
+            mMediaController.setVideoStatus(MediaPlayer.VIDEO_BOTTOM_CONTROL_CODE_TEACHER,
+                    MediaPlayer.VIDEO_TEACHER_TUTOR, "");
+
+            startNewVideo();
+            return;
+        }
         onUserBackPressed();
     }
 

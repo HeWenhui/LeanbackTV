@@ -42,6 +42,9 @@ public class LiveQueHttpConfig {
 //    public static String LIVE_GET_STU_TESTS_RESULT = "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example" + "/getStuTestResult";
 
 
+    /** 辅导老师结果页 */
+    public static String LIVE_SUBMIT_COURSEWARE_RESULT_TUTOR_FILE = "file:///android_asset/newcourse_tutor/index.html";
+
 
     /** 辅导 获取试题 */
     public static String LIVE_GET_COURSEWARE_TUTOR_TESTS = LiveHttpConfig.LIVE_HOST + "/science/Tutorship/getCourseWareTest";
