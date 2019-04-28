@@ -206,6 +206,12 @@ public class LiveVideoSAConfig {
         public String URL_TEMPK_STUPKRESULT = HTTP_HOST + "/LiveCourse/stuPKResult";
         /** 贡献之星结果 */
         public String URL_TEMPK_TEAMENERGYNUMANDCONTRIBUTIONSTAR = HTTP_HOST + "/LiveCourse/teamEnergyNumAndContributionStar";
+        /**战队PK 明星榜**/
+        public String URL_TEMPK_GETSTARSTUDENTS = HTTP_HOST + "/LiveCourse/getStarStudents";
+        /**获取战队pk  进步榜*/
+        public String URL_TEMPK_GETPROGRESSSTU = HTTP_HOST + "/LiveCourse/getProgressStudents";
+        /**获取战队成员信息**/
+        public String URL_TEAMPK_GETTEAMMATES = HTTP_HOST + "/LiveCourse/getStudentInfoInTeam";
 
         /** 文科表扬榜 */
         public String URL_ARTS_PRAISE_LIST = "https://app.arts.xueersi.com/LiveRank/getRankData";

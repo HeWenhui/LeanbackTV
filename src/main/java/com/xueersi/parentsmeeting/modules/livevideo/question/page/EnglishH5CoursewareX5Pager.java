@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 
 import android.content.Context;
 import android.graphics.drawable.AnimationDrawable;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -28,6 +27,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseWebviewX5Pager;
@@ -101,6 +101,12 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
     private boolean isNewArtsCourseware;
     private HashMap header;
     private String mGold;
+    /**是否接收到或者展示过答题结果页面**/
+    private boolean isAnswerResultRecived;
+    /**
+     * 答题结果是否是 由强制提交得到的
+     */
+    private boolean resultGotByForceSubmit;
 
     @Override
     public void setEnglishH5CoursewareBll(EnglishH5CoursewareBll englishH5CoursewareBll) {
@@ -189,6 +195,8 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         if (isFinish) {
             return;
         }
+        // 调用此方法 时判断是否已经 收到过 作答结果
+        resultGotByForceSubmit = !isAnswerResultRecived;
         isFinish = true;
         String commit;
         if (isNewArtsCourseware && !LiveQueConfig.EN_COURSE_TYPE_NEW_GAME.equals(detailInfo.type)) {
@@ -459,6 +467,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                                 "&releasedPageInfos=" + releasedPageInfos + "&classTestId=" + classTestId +
                                 "&educationStage=" + LiveVideoConfig.LIVEPLAYBACKSTAGE + "&isPlayBack=1" + "&nonce="
                                 + "" + UUID.randomUUID();
+                        if(LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(packageAttr)){
+                            mLoadUrls += "&aiUrl="+detailInfo.getSubjectiveItem2AIUrl()+"&deviceId=8&gradeType="+Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getGradeCode());
+                        }
                     }
                 } else {
                     // 理科直播
@@ -584,7 +595,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     logger.e("======> reloadUrlLiveds:" + mLoadUrls);
                 } else {
                     String url = reloadurl + "&time=" + System.currentTimeMillis();
-                    loadUrl(url);
+//                    loadUrl(url);
                     reloadUrl();
                     logger.e("======> reloadUrlLived:" + url);
                 }
@@ -636,14 +647,16 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     event.setCloseByTeahcer(mEnglishH5CoursewareBll.isWebViewCloseByTeacher());
                     mEnglishH5CoursewareBll.setWebViewCloseByTeacher(false);
                 }
+                event.setScienceNewCourseWare(englishH5Entity.getNewEnglishH5());
+                event.setForceSubmit(resultGotByForceSubmit);
                 EventBus.getDefault().post(event);
                 mGoldNum = -1;
                 mEnergyNum = -1;
-                if (englishH5Entity.getNewEnglishH5()) {
+              /*  if (englishH5Entity.getNewEnglishH5()) {
                     LiveVideoConfig.isNewEnglishH5 = true;
                 } else {
                     LiveVideoConfig.isNewEnglishH5 = false;
-                }
+                }*/
             }
         });
 
@@ -658,8 +671,19 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         Loger.e("EnglishH5CourseWareX5Pager",
                 "=========>showAnswerResult_LiveVideo:" + data);
         Loger.e(TAG, "======> newArtsH5CourseWare data:" + data);
+        isAnswerResultRecived = true;
         EventBus.getDefault().post(new ArtsAnswerResultEvent(data, ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT));
     }
+
+    /**
+     * 理科 课件 答题结果回调
+     */
+    @JavascriptInterface
+    public void onAnswerResult_LiveVideo(String data){
+        isAnswerResultRecived =true;
+        EventBus.getDefault().post(new AnswerResultEvent(data));
+    }
+
 
     /**
      * AI体验课 课件 答题结果回调
@@ -740,6 +764,11 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
 
     public EnglishH5Entity getEnglishH5Entity() {
         return englishH5Entity;
+    }
+
+    @Override
+    public boolean isResultRecived() {
+        return isAnswerResultRecived;
     }
 
     @Override

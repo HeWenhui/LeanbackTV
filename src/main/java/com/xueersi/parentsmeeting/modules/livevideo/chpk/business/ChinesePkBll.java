@@ -97,6 +97,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
 
     private boolean isWin;
 
+    private boolean newCourseWare;
     private TeamPkStateLayout pkStateRootView;
     /**
      * 直播间内答题 H5 答题结果页面关闭事件队列
@@ -190,11 +191,12 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             }
         };
 
-        mHttpManager.stuCHPKResult(mLiveBll.getLiveId(),
+        mHttpManager.stuCHPKResult(isHalfBodyLiveRoom(),mLiveBll.getLiveId(),
                 roomInitInfo.getStudentLiveInfo().getTeamId(),
                 roomInitInfo.getStudentLiveInfo().getClassId(),
                 savedTestId,
                 savedTestPlan,
+                roomInitInfo.getUseSkin(),
                 callback);
     }
 
@@ -233,11 +235,11 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             }
         };
 
-        mHttpManager.getCHClassChestResult(mLiveBll.getLiveId(),
+        mHttpManager.getCHClassChestResult(isHalfBodyLiveRoom(), mLiveBll.getLiveId(),
                 roomInitInfo.getStuId(),
                 roomInitInfo.getStudentLiveInfo().getTeamId(),
                 roomInitInfo.getStudentLiveInfo().getClassId()
-                , isAIPartner, callback);
+                , isAIPartner, roomInitInfo.getUseSkin(), callback);
 
     }
 
@@ -286,7 +288,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             }
         };
 
-        mHttpManager.getCHTeamInfo(roomInitInfo.getId(), roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStudentLiveInfo().getTeamId(), callBack);
+        mHttpManager.getCHTeamInfo(isHalfBodyLiveRoom(), roomInitInfo.getId(), roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStudentLiveInfo().getTeamId(), roomInitInfo.getUseSkin(), callBack);
 
     }
 
@@ -602,15 +604,6 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     }
 
 
-    public void onDestroy() {
-        if (mFocusPager != null) {
-            mFocusPager.onDestroy();
-            mFocusPager = null;
-        }
-        isTopicHandled = false;
-        EventBus.getDefault().unregister(this);
-    }
-
     /**
      * activity stop
      */
@@ -644,6 +637,12 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     public void onDestory() {
         super.onDestory();
         logger.e("======>onDestory");
+        if (mFocusPager != null) {
+            mFocusPager.onDestroy();
+            mFocusPager = null;
+        }
+        isTopicHandled = false;
+        EventBus.getDefault().unregister(this);
     }
 
 
@@ -679,7 +678,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRoomH5CloseEvent(final LiveRoomH5CloseEvent event) {
         logger.e("=======>:onRoomH5CloseEvent:" + event.getId() + ":" + event.getmGoldNum() + ":" + event.getmEnergyNum() + ":" + event.isCloseByTeacher());
-
+        newCourseWare = event.isScienceNewCourseWare();
         if (event.getH5Type() == LiveRoomH5CloseEvent.H5_TYPE_EXAM) {
             savedTestPlan = event.getId();
             savedTestId = "";
@@ -994,10 +993,10 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             }
         };
 
-        mHttpManager.liveCHStuGoldAndTotalEnergy(mLiveBll.getLiveId(),
+        mHttpManager.liveCHStuGoldAndTotalEnergy(isHalfBodyLiveRoom(), mLiveBll.getLiveId(),
                 roomInitInfo.getStudentLiveInfo().getTeamId(),
                 roomInitInfo.getStudentLiveInfo().getClassId(),
-                roomInitInfo.getStuId(), callback);
+                roomInitInfo.getStuId(),roomInitInfo.getUseSkin(), callback);
     }
 
     /**
@@ -1031,8 +1030,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             }
         };
 
-        mHttpManager.getCHPkAdversary(roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStudentLiveInfo
-                ().getTeamId(), callback);
+        mHttpManager.getCHPkAdversary(isHalfBodyLiveRoom(), roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStudentLiveInfo().getTeamId(),roomInitInfo.getUseSkin(), callback);
 
     }
 
@@ -1049,9 +1047,9 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
 
 
         //上报服务器 增加加能量
-        mHttpManager.addCHPersonAndTeamEnergy(mLiveBll.getLiveId(), addEnergy,
+        mHttpManager.addCHPersonAndTeamEnergy(isHalfBodyLiveRoom(), mLiveBll.getLiveId(), addEnergy,
                 roomInitInfo.getStudentLiveInfo().getTeamId(),
-                roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), new HttpCallBack() {
+                roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(),roomInitInfo.getUseSkin(), new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
 
@@ -1064,8 +1062,8 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
      */
     public void enterTeamSelectScene() {
 //        TeamPkLog.clickFastEnter(mLiveBll);
-        mHttpManager.getCHTeamInfo(roomInitInfo.getId(), roomInitInfo.getStudentLiveInfo().getClassId(),
-                roomInitInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
+        mHttpManager.getCHTeamInfo(isHalfBodyLiveRoom(), roomInitInfo.getId(), roomInitInfo.getStudentLiveInfo().getClassId(),
+                roomInitInfo.getStudentLiveInfo().getTeamId(), roomInitInfo.getUseSkin(), new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                         teamInfoEntity = mHttpResponseParser.parseTeamInfo(responseEntity);
@@ -1079,15 +1077,18 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
                 });
     }
 
+    public void requestStuChest(int isWin, HttpCallBack callBack){
+        mHttpManager.getCHStuChest(isHalfBodyLiveRoom(), isWin, roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStudentLiveInfo().getTeamId(), roomInitInfo.getStuId(), mLiveBll.getLiveId(), isAIPartner(), roomInitInfo.getUseSkin(),callBack);
+    }
+
 
     /**
      * 获取每题的 pk 结果
      *
-     * @param event
      */
     private void getEnergyNumAndContributionStar() {
 
-        if (LiveVideoConfig.isNewEnglishH5) {
+        if (newCourseWare) {
 
             HttpCallBack callback = new HttpCallBack() {
                 @Override
@@ -1097,13 +1098,14 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
                 }
             };
 
-            mHttpManager.teamCHEnergyNumAndContributionmulStar(mLiveBll.getLiveId(),
+            mHttpManager.teamCHEnergyNumAndContributionmulStar(isHalfBodyLiveRoom(), mLiveBll.getLiveId(),
                     roomInitInfo.getStudentLiveInfo().getTeamId(),
                     roomInitInfo.getStudentLiveInfo().getClassId(),
                     roomInitInfo.getStuId(),
                     LiveVideoConfig.tests,
                     LiveVideoConfig.ctId,
                     LiveVideoConfig.pSrc,
+                    roomInitInfo.getUseSkin(),
                     callback);
 
         } else {
@@ -1115,12 +1117,13 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
                 }
             };
 
-            mHttpManager.teamCHEnergyNumAndContributionStar(mLiveBll.getLiveId(),
+            mHttpManager.teamCHEnergyNumAndContributionStar(isHalfBodyLiveRoom(), mLiveBll.getLiveId(),
                     roomInitInfo.getStudentLiveInfo().getTeamId(),
                     roomInitInfo.getStudentLiveInfo().getClassId(),
                     roomInitInfo.getStuId(),
                     savedTestId,
                     savedTestPlan,
+                    roomInitInfo.getUseSkin(),
                     callback);
         }
     }

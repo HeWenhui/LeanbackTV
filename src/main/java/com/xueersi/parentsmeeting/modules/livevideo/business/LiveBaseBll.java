@@ -106,6 +106,7 @@ public class LiveBaseBll extends BaseBll {
     public void sendNotice(JSONObject jsonObject, String target) {
         if (mLiveBll != null) {
             mLiveBll.sendNotice(target, jsonObject);
+            logger.i("发送IRC" + target + " obj = " + jsonObject.toString());
         }
     }
 

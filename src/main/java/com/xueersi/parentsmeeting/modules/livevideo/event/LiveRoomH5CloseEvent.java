@@ -20,6 +20,32 @@ public class LiveRoomH5CloseEvent {
     /** 是否是老师发起的关闭*/
     private boolean closeByTeacher;
 
+    /**
+     * 此次作答是否是 强制提交
+     */
+    private boolean forceSubmit;
+
+    public void setForceSubmit(boolean forceSubmit) {
+        this.forceSubmit = forceSubmit;
+    }
+
+    public boolean isForceSubmit() {
+        return forceSubmit;
+    }
+
+    public boolean isScienceNewCourseWare() {
+        return scienceNewCourseWare;
+    }
+
+    public void setScienceNewCourseWare(boolean scienceNewCourseWare) {
+        this.scienceNewCourseWare = scienceNewCourseWare;
+    }
+
+    /**
+     * 是否是理科新课件平台
+     */
+    private boolean scienceNewCourseWare;
+
     public void setCloseByTeahcer(boolean closeByTeacher) {
         this.closeByTeacher = closeByTeacher;
     }

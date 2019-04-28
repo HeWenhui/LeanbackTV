@@ -122,6 +122,7 @@ public class LiveGetInfo {
     private String clientLog;
     /**
      * 直播id
+     * liveId
      */
     private String id;
     /**
@@ -245,6 +246,9 @@ public class LiveGetInfo {
     /** 全身直播语音答题和评测小组排名请求时间 */
     private String requestTime;
 
+    /**语文，英语是否使用皮肤**/
+    private int useSkin;
+
     /**
      * 是否是 teampk 直播间
      * 1 :是pk 直播间  0 :非pk直播间
@@ -301,6 +305,66 @@ public class LiveGetInfo {
 
     // add by William on 2018/12/5  专属老师用
     public EPlanInfoBean ePlanInfo;
+    /** 语文AI主观题AI接口*/
+    private String subjectiveItem2AIUrl;
+
+    public String getSubjectiveItem2AIUrl() {
+        return subjectiveItem2AIUrl;
+    }
+
+    public void setSubjectiveItem2AIUrl(String subjectiveItem2AIUrl) {
+        this.subjectiveItem2AIUrl = subjectiveItem2AIUrl;
+    }
+    /** 是否支持连对激励 0：关闭 1：打开 */
+    private int isOpenNewCourseWare;
+    /** 连对榜接口地址 */
+    private String getEvenPairListUrl;
+    /** 点赞接口地址 */
+    private String getThumbsUpUrl;
+
+    private String getJournalUrl;
+
+    public String getGetJournalUrl() {
+        return getJournalUrl;
+    }
+
+    public void setGetJournalUrl(String getJournalUrl) {
+        this.getJournalUrl = getJournalUrl;
+    }
+
+    public int getIsOpenNewCourseWare() {
+        return isOpenNewCourseWare;
+    }
+
+    public void setIsOpenNewCourseWare(int isOpenNewCourseWare) {
+        this.isOpenNewCourseWare = isOpenNewCourseWare;
+    }
+
+    public String getGetEvenPairListUrl() {
+        return getEvenPairListUrl;
+    }
+
+    public void setGetEvenPairListUrl(String getEvenPairListUrl) {
+        this.getEvenPairListUrl = getEvenPairListUrl;
+    }
+
+    public String getGetThumbsUpUrl() {
+        return getThumbsUpUrl;
+    }
+
+    public void setGetThumbsUpUrl(String getThumbsUpUrl) {
+        this.getThumbsUpUrl = getThumbsUpUrl;
+    }
+
+    private int useGoldMicroPhone;
+
+    public int isUseGoldMicroPhone() {
+        return useGoldMicroPhone;
+    }
+
+    public void setUseGoldMicroPhone(int useGoldMicroPhone) {
+        this.useGoldMicroPhone = useGoldMicroPhone;
+    }
 
     public int getPraiseAutoCutTime() {
         return praiseAutoCutTime;
@@ -617,6 +681,14 @@ public class LiveGetInfo {
 
     public String getUname() {
         return uname;
+    }
+
+    public void setUseSkin(int useSkin) {
+        this.useSkin = useSkin;
+    }
+
+    public int getUseSkin() {
+        return useSkin;
     }
 
     /**

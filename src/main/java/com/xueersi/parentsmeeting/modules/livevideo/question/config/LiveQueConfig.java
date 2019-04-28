@@ -18,7 +18,10 @@ public class LiveQueConfig {
     /** 直播-新课件保存互动题 */
     public static final String LIVE_STUDY_REPORT_IMG = "live_new_course_que_save";
 
+    /** 直播-新课件-互动题 */
     public static final String SEC_COURSE_TYPE_QUE = "2";
+    /** 直播-新课件-未来课件 */
+    public static final String SEC_COURSE_TYPE_FUTURE = "4";
     /** 英语调普通互动题：选择、填空提交接口 http://wiki.xesv5.com/pages/viewpage.action?pageId=12954171 */
     private static ArrayList<String> SUBMIT_MULTI_TEST_TYPES;
     /** 英语调用submitH5的接口类型 */
@@ -48,6 +51,8 @@ public class LiveQueConfig {
     public static final String EN_COURSE_TYPE_NEW_GAME = "17";
     public static final String EN_COURSE_TYPE_18 = "18";
     public static final String EN_COURSE_TYPE_19 = "19";
+    /** 语文AI主观题*/
+    public static final String CHI_COURESWARE_TYPE_AISUBJECTIVE = "17";
     /** 直播- voice cannon */
     public static final String EN_COURSE_TYPE_VOICE_CANNON = "22";
     /** 直播- Cleaning up */

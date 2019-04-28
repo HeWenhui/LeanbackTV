@@ -17,6 +17,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -44,10 +45,16 @@ public class NewCourseCache {
     private File mPublicCacheout;
     protected HashMap header;
     protected WebInstertJs webInstertJs;
+    /** 普通新课件标识 */
     protected String coursewarePages = "courseware_pages";
+    /** 未来课件标识 */
+    protected String XESlides = "XESlides";
     protected String mathJax = "MathJax";
     protected String katex = "katex";
+    /** 初高中连对，取本地图片 */
+    private String zhongXueKeJian = "ZhongXueKeJian";
     OnHttpCode onHttpCode;
+    private ArrayList<InterceptRequest> interceptRequests = new ArrayList<>();
 
     public NewCourseCache(Context mContext, String liveId) {
         this.mContext = mContext;
@@ -68,6 +75,10 @@ public class NewCourseCache {
         header.put("Access-Control-Allow-Origin", "*");
     }
 
+    public void add(InterceptRequest interceptRequest) {
+        interceptRequests.add(interceptRequest);
+    }
+
     public OnHttpCode getOnHttpCode() {
         return onHttpCode;
     }
@@ -78,40 +89,53 @@ public class NewCourseCache {
     }
 
     public int loadCourseWareUrl(String url) {
-        if (url.contains(coursewarePages)) {
-            ArrayList<String> urls = new ArrayList<>();
-            int index = url.indexOf("?");
-            if (index != -1) {
-                String url1 = url.substring(0, index);
-                String url2 = url.substring(index + 1, url.length());
-                if (url1.contains(coursewarePages)) {
-                    urls.add(url1);
-                }
-                if (url2.contains(coursewarePages)) {
-                    index = url2.indexOf("&");
-                    if (index != -1) {
-                        url2 = url2.substring(0, index);
-                    }
-                    urls.add(url2);
-                }
-            } else {
-                urls.add(url);
-            }
-            logger.d("loadCourseWareUrl:url=" + urls.size());
-            boolean ispreload = true;
-            for (int i = 0; i < urls.size(); i++) {
-                String urlChild = urls.get(i);
-                index = urlChild.indexOf(coursewarePages);
-                File file = getCourseWarePagesFileName(urlChild, index);
-                logger.d("loadCourseWareUrl:urlChild=" + urlChild + "," + file + ",exists=" + file.exists());
-                if (!file.exists()) {
-                    ispreload = false;
-                }
-            }
-            return ispreload ? 1 : -1;
-        } else {
-            return 0;
+        int type = index(url, coursewarePages);
+        if (type != 1) {
+            type = index(url, XESlides);
         }
+        return type;
+    }
+
+    private int index(String url, String content) {
+        try {
+            if (url.contains(content)) {
+                ArrayList<String> urls = new ArrayList<>();
+                int index = url.indexOf("?");
+                if (index != -1) {
+                    String url1 = url.substring(0, index);
+                    String url2 = url.substring(index + 1, url.length());
+                    if (url1.contains(content)) {
+                        urls.add(url1);
+                    }
+                    if (url2.contains(content)) {
+                        index = url2.indexOf("&");
+                        if (index != -1) {
+                            url2 = url2.substring(0, index);
+                        }
+                        urls.add(url2);
+                    }
+                } else {
+                    urls.add(url);
+                }
+                logger.d("loadCourseWareUrl:url=" + urls.size());
+                boolean ispreload = true;
+                for (int i = 0; i < urls.size(); i++) {
+                    String urlChild = urls.get(i);
+                    index = urlChild.indexOf(content);
+                    File file = getCourseWarePagesFileName(urlChild, content, index);
+                    logger.d("loadCourseWareUrl:urlChild=" + urlChild + "," + file + ",exists=" + file.exists());
+                    if (!file.exists()) {
+                        ispreload = false;
+                    }
+                }
+                return ispreload ? 1 : -1;
+            } else {
+                return 0;
+            }
+        } catch (Exception e) {
+            CrashReport.postCatchedException(e);
+        }
+        return 0;
     }
 
     public WebResourceResponse interceptJsRequest(WebView view, String url) {
@@ -176,7 +200,7 @@ public class NewCourseCache {
         File file = null;
         int index = s.indexOf(coursewarePages);
         if (index != -1) {
-            file = getCourseWarePagesFileName(s, index);
+            file = getCourseWarePagesFileName(s, coursewarePages, index);
             logger.d("shouldInterceptRequest:file=" + file + ",file=" + file.exists());
         } else {
             index = s.indexOf(mathJax);
@@ -187,7 +211,18 @@ public class NewCourseCache {
                 if (index != -1) {
                     file = getkatexFileName(s, index);
                 } else {
-                    file = getPubFileName(s);
+                    File interceptFile = null;
+                    for (int i = 0; i < interceptRequests.size(); i++) {
+                        InterceptRequest interceptRequest = interceptRequests.get(i);
+                        interceptFile = interceptRequest.shouldInterceptRequest(view, s);
+                        if (interceptFile != null) {
+                            file = interceptFile;
+                            break;
+                        }
+                    }
+                    if (interceptFile == null) {
+                        file = getPubFileName(s);
+                    }
                 }
             }
             index = s.lastIndexOf("/");
@@ -227,8 +262,8 @@ public class NewCourseCache {
         return null;
     }
 
-    private File getCourseWarePagesFileName(String s, int index) {
-        String url2 = s.substring(index + coursewarePages.length());
+    private File getCourseWarePagesFileName(String s, String contens, int index) {
+        String url2 = s.substring(index + contens.length());
         int index2 = url2.indexOf("?");
         if (index2 != -1) {
             url2 = url2.substring(0, index2);
@@ -281,5 +316,59 @@ public class NewCourseCache {
         String filemd5 = MD5Utils.getMD5(path);
         File file = new File(mPublicCacheout, filemd5);
         return file;
+    }
+
+    public WebResourceResponse interceptZhongXueKeJian(String url) {
+        int index2 = url.indexOf(zhongXueKeJian);
+        if (index2 != -1) {
+            if (url.contains("animations") || url.contains("assets")) {
+                String fileSub = url.substring(index2 + zhongXueKeJian.length());
+                try {
+                    String fileName = "newcourse_result/sec/middleSchoolCourseware" + fileSub;
+                    InputStream inputStream = mContext.getAssets().open(fileName);
+                    String extension = MimeTypeMap.getFileExtensionFromUrl(url.toLowerCase());
+                    String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+                    WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "", new WrapInputStream(mContext, inputStream));
+                    webResourceResponse.setResponseHeaders(header);
+                    logger.d("interceptZhongXueKeJian:fileName=" + fileName);
+                    return webResourceResponse;
+                } catch (IOException e) {
+                    logger.d("interceptZhongXueKeJian:fileSub=" + fileSub);
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 对url进行文件拦截
+     */
+    interface InterceptRequest {
+        File shouldInterceptRequest(WebView view, String url);
+    }
+
+    /**
+     * 对url进行文件拦截，未来课件
+     */
+    public class FutureCourse implements InterceptRequest {
+
+        @Override
+        public File shouldInterceptRequest(WebView view, String url) {
+            File file = null;
+            int index = url.indexOf(XESlides);
+            if (index != -1) {
+                String url2 = url.substring(index + XESlides.length());
+                int index2 = url2.indexOf("?");
+                if (index2 != -1) {
+                    url2 = url2.substring(0, index2);
+                }
+                file = new File(mMorecacheout, url2);
+                logger.d("FutureCourse:Intercept:file=" + file + ",file=" + file.exists());
+                if (!file.exists()) {
+                    return null;
+                }
+            }
+            return file;
+        }
     }
 }

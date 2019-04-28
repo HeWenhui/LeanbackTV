@@ -3,6 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
+    <!--<include-->
+    <!--layout="@layout/item_livemessage_middle_science_even_drive_layout"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="40dp"-->
+    <!--android:visibility="gone" />-->
+
     <RelativeLayout
         android:id="@id/rl_livevideo_info"
         android:layout_width="wrap_content"
@@ -39,11 +46,20 @@
 
         </RelativeLayout>
 
+        <include
+            android:id="@id/vs_livevideo_livemessage_middle_science_even"
+            layout="@layout/item_livemessage_middle_science_even_drive_layout"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_below="@id/rl_livevideo_message_top"
+            android:visibility="gone" />
+
+
         <RelativeLayout
             android:id="@id/rl_livevideo_message_status"
             android:layout_width="match_parent"
             android:layout_height="25dp"
-            android:layout_below="@id/rl_livevideo_message_top"
+            android:layout_below="@id/vs_livevideo_livemessage_middle_science_even"
             android:background="@color/COLOR_333333">
 
             <TextView
@@ -51,8 +67,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="5dp"
-                android:textColor="@color/white" />
+                android:layout_marginLeft="10dp"
+                android:textColor="@color/white"
+                android:textSize="10dp" />
 
             <ImageView
                 android:id="@id/iv_livevideo_message_online"
@@ -76,15 +93,16 @@
             style="@style/listview_common_style"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
             android:layout_below="@id/v_livevideo_message_gap"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
             android:background="@color/COLOR_333333"
             android:divider="@null"
+            android:dividerHeight="8dp"
             android:listSelector="@color/transparent"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
+            android:paddingLeft="10dp"
             android:paddingTop="10dp"
+            android:paddingRight="4dp"
             android:scrollbars="none" />
 
     </RelativeLayout>

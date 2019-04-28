@@ -11,8 +11,8 @@ import android.view.animation.Interpolator;
 
 
 public class SpringScaleInterpolator implements Interpolator {
-
-    private float mFactor; //弹性因子  值越大 动画效果越慢
+    //弹性因子  值越大 动画效果越慢
+    private float mFactor;
 
     public  SpringScaleInterpolator(float factor){
         this.mFactor = factor;

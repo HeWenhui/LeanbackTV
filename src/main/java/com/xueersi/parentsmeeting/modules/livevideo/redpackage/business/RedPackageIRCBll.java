@@ -98,7 +98,8 @@ public class RedPackageIRCBll extends LiveBaseBll implements NoticeAction {
             redPackageStandBll.initView(mRootView);
             redPackageAction = redPackageStandBll;
         } else {
-            if(LiveVideoConfig.isPrimary){
+            //
+            if(LiveVideoConfig.isPrimary && !LiveVideoConfig.isSmallChinese){
                 PScienceRedPackageBll redPackageBll = new PScienceRedPackageBll(activity, mGetInfo, true);
                 redPackageBll.setVSectionID(mLiveId);
                 redPackageBll.initView(mRootView);

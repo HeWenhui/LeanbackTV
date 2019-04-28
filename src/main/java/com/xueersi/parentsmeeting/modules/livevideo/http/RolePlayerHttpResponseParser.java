@@ -99,6 +99,24 @@ public class RolePlayerHttpResponseParser extends HttpResponseParser {
 
             //所有对话的音频地址
             JSONObject objAudio =  jsonObject.optJSONObject("audio");
+            JSONObject objStems = objAudio.optJSONObject("stem");
+            for(int i = 0; i<arrRoles.length();i++){
+                JSONObject objRole = arrRoles.getJSONObject(i);
+                String roleName = objRole.optString("role");
+                String nickName = objRole.optString("name");
+                String img = objRole.optString("img");
+                RolePlayerEntity.RolePlayerHead rolePlayerHead = new RolePlayerEntity.RolePlayerHead();
+                rolePlayerHead.setRoleName(roleName);
+                rolePlayerHead.setNickName(nickName);
+                rolePlayerHead.setHeadImg(img);
+                //通过“releaseRole”字段来判断“我”的角色
+                if(roleName.equals(releaseRole)){
+                    rolePlayerHead.setSelfRole(true);
+                }
+                //将分组信息放到map，list中
+                rolePlayerEntity.getMapRoleHeadInfo().put(roleName,rolePlayerHead);
+                rolePlayerEntity.getLstRoleInfo().add(rolePlayerHead);
+            }
 
             for (int i = 0; i < arrSpeech.length(); i++) {
                 JSONObject objMsg = arrSpeech.getJSONObject(i);
@@ -111,7 +129,6 @@ public class RolePlayerHttpResponseParser extends HttpResponseParser {
 
                 String realAudio = null;
                 if(objAudio != null){
-                    JSONObject objStems = objAudio.optJSONObject("stem");
                     if(objStems != null){
                         realAudio = objStems.optString(audio);
                     }
@@ -121,28 +138,6 @@ public class RolePlayerHttpResponseParser extends HttpResponseParser {
                     maxTime = (msgContent.length()/5) +3;
                 }*/
 
-                //----根据roles解析audio,要先解析roleplayhead并放到map中，否则，展示对话的时候，会出现对话都是对方的----//
-                if(i < arrRoles.length()){
-                    JSONObject objRole = arrRoles.getJSONObject(i);
-                    String nickName = objRole.optString("name");
-                    String img = objRole.optString("img");
-                    RolePlayerEntity.RolePlayerHead rolePlayerHead = new RolePlayerEntity.RolePlayerHead();
-                    if(roleName != null){
-                        roleName = roleName.replaceAll("\n","");
-                    }
-                    rolePlayerHead.setRoleName(roleName);
-                    rolePlayerHead.setNickName(nickName);
-                    rolePlayerHead.setHeadImg(img);
-                    //通过“releaseRole”字段来判断“我”的角色
-                    if(roleName.equals(releaseRole)){
-                        rolePlayerHead.setSelfRole(true);
-                    }
-                    logger.i(roleName+":"+releaseRole);
-
-                    //将分组信息放到map，list中
-                    rolePlayerEntity.getMapRoleHeadInfo().put(roleName,rolePlayerHead);
-                    rolePlayerEntity.getLstRoleInfo().add(rolePlayerHead);
-                }
                 //解析message
                 RolePlayerEntity.RolePlayerHead head = rolePlayerEntity.getMapRoleHeadInfo().get(roleName);
                 if (head == null) {
@@ -162,8 +157,6 @@ public class RolePlayerHttpResponseParser extends HttpResponseParser {
                 //msg.setWebVoiceUrl(objMsg.optString("audio"));
                 msg.setPosition(i);
                 rolePlayerEntity.getLstRolePlayerMessage().add(msg);
-
-
             }
             return rolePlayerEntity;
         } catch (Exception e) {
@@ -264,7 +257,28 @@ public class RolePlayerHttpResponseParser extends HttpResponseParser {
                 MobAgent.httpResponseParserError(TAG, "parserNewRolePlayGroupAndTestInfos", "audio is empty");
                 //return null;
             }
-
+            JSONObject objStems = objAudio.optJSONObject("stem");
+            for(int i = 0; i<arrRoles.length();i++){
+                JSONObject objRole = arrRoles.getJSONObject(i);
+                String roleName = objRole.optString("role");
+                String nickName = objRole.optString("name");
+                String img = objRole.optString("img");
+                RolePlayerEntity.RolePlayerHead rolePlayerHead = new RolePlayerEntity.RolePlayerHead();
+                if(roleName != null){
+                    roleName = roleName.replaceAll("\n","");
+                }
+                rolePlayerHead.setRoleName(roleName);
+                rolePlayerHead.setNickName(nickName);
+                rolePlayerHead.setHeadImg(img);
+                //通过“releaseRole”字段来判断“我”的角色
+                if(roleName.equals(releaseRole)){
+                    rolePlayerHead.setSelfRole(true);
+                }
+                logger.i(roleName+":"+releaseRole);
+                //将分组信息放到map，list中
+                rolePlayerEntity.getMapRoleHeadInfo().put(roleName,rolePlayerHead);
+                rolePlayerEntity.getLstRoleInfo().add(rolePlayerHead);
+            }
             for (int i = 0; i < arrSpeech.length(); i++) {
                 JSONObject objMsg = arrSpeech.getJSONObject(i);
                 String roleName = objMsg.optString("role");
@@ -275,34 +289,12 @@ public class RolePlayerHttpResponseParser extends HttpResponseParser {
                 //http://resource.xxyys.com/test_library/audio/2017/11/07/t_20125_9.mp3?1510050714
                 String realAudio = null;
                 if(objAudio != null){
-                    JSONObject objStems = objAudio.optJSONObject("stem");
                     if(objStems != null){
                         realAudio = objStems.optString(audio);
                     }
                 }
 
-                //----根据roles解析audio,要先解析roleplayhead并放到map中，否则，展示对话的时候，会出现对话都是对方的----//
-                if(i < arrRoles.length()){
-                    JSONObject objRole = arrRoles.getJSONObject(i);
-                    String nickName = objRole.optString("name");
-                    String img = objRole.optString("img");
-                    RolePlayerEntity.RolePlayerHead rolePlayerHead = new RolePlayerEntity.RolePlayerHead();
-                    if(roleName != null){
-                        roleName = roleName.replaceAll("\n","");
-                    }
-                    rolePlayerHead.setRoleName(roleName);
-                    rolePlayerHead.setNickName(nickName);
-                    rolePlayerHead.setHeadImg(img);
-                    //通过“releaseRole”字段来判断“我”的角色
-                    if(roleName.equals(releaseRole)){
-                        rolePlayerHead.setSelfRole(true);
-                    }
-                    logger.i(roleName+":"+releaseRole);
 
-                    //将分组信息放到map，list中
-                    rolePlayerEntity.getMapRoleHeadInfo().put(roleName,rolePlayerHead);
-                    rolePlayerEntity.getLstRoleInfo().add(rolePlayerHead);
-                }
 
                 //不满三秒，也要保证至少三秒，统一由服务器计算好返回
                /* if (maxTime < 3) {
@@ -331,8 +323,6 @@ public class RolePlayerHttpResponseParser extends HttpResponseParser {
                 //msg.setWebVoiceUrl(objMsg.optString("audio"));
                 msg.setPosition(i);
                 rolePlayerEntity.getLstRolePlayerMessage().add(msg);
-
-
             }
             return rolePlayerEntity;
         } catch (Exception e) {

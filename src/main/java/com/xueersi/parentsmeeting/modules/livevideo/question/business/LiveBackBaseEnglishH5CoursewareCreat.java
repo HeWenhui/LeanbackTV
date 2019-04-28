@@ -10,7 +10,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager.GroupGameNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ScienceStaticConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.ChineseAiSubjectiveCoursewarePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.CoursewareNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.EnglishH5CoursewareX5Pager;
 
 /**
@@ -67,6 +71,12 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
             }
         } else if (isArts == LiveVideoSAConfig.ART_CH) {
             englishH5Entity.setDynamicurl("https://live.chs.xueersi.com/LiveExam/getCourseWareTestHtml");
+            if( LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(englishH5Entity.getPackageAttr())){
+                englishH5Entity.setDynamicurl(liveGetInfo.getGetCourseWareHtmlNew());
+                videoQuestionH5Entity.setSubjectiveItem2AIUrl(liveGetInfo.getSubjectiveItem2AIUrl());
+            }
+            String educationstage = liveGetInfo.getEducationStage();
+            videoQuestionH5Entity.setEducationstage(educationstage);
         } else if (isArts == LiveVideoSAConfig.ART_EN){
             String type = videoQuestionH5Entity.type;
             if (LiveQueConfig.isGroupGame(type)) {

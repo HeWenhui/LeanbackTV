@@ -5,8 +5,8 @@ import android.util.Log;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LiveThreadPoolExecutor;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveCacheFile;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveThreadPoolExecutor;
 
 import java.io.File;
 import java.io.FileOutputStream;

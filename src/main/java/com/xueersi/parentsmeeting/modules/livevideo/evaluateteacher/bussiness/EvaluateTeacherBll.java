@@ -9,18 +9,19 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.http.EvaluateResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.pager.BaseEvaluateTeacherPaper;
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.pager.EvaluateTeacherPager;
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.pager.PrimaryChineseEvaluateTeacherPager;
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.pager.PrimaryScienceEvaluateTeacherPager;
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.pager.SmallEnglishEvaluateTeacherPager;
-import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 
 import java.util.Map;
@@ -29,7 +30,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /**
  * Created by：WangDe on 2018/11/27 16:12
  */
-public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateAction, IButtonOnClick {
+public class EvaluateTeacherBll extends LiveBaseBll implements com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.IShowEvaluateAction, com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.IButtonOnClick {
     RelativeLayout bottomContent;
     private BaseEvaluateTeacherPaper evaluateTeacherPager;
     private RelativeLayout rlLiveMessageContent;
@@ -60,7 +61,12 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
                     getArtsEvaluateOption(getInfo.getSmallEnglish());
                 } else if (getInfo.getIsArts() == 0) {
                     logger.i("IsArts:" + getInfo.getIsArts() + " IsPrimaryScience:" + getInfo.getIsPrimarySchool());
-                    if (1 == getInfo.getIsPrimarySchool()) {
+
+                   // 语文半身 直播，采用语文的皮肤，理科的接口
+                   if(getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY
+                           && getInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH){
+                       evaluateTeacherPager = new PrimaryChineseEvaluateTeacherPager(mContext, getInfo);
+                   } else if (1 == getInfo.getIsPrimarySchool()) {
                         evaluateTeacherPager = new PrimaryScienceEvaluateTeacherPager(mContext, getInfo);
                     } else {
                         evaluateTeacherPager = new EvaluateTeacherPager(mContext, getInfo);
