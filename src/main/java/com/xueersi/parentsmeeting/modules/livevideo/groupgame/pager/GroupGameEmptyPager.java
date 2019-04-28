@@ -267,4 +267,9 @@ public class GroupGameEmptyPager extends BaseCoursewareNativePager implements Ba
         }
         return englishH5Entity;
     }
+
+    @Override
+    public boolean isResultRecived() {
+        return false;
+    }
 }

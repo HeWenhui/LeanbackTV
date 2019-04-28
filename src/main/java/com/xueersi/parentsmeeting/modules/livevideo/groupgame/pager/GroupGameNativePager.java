@@ -750,6 +750,11 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         return englishH5Entity;
     }
 
+    @Override
+    public boolean isResultRecived() {
+        return false;
+    }
+
     /**
      * 课件加载
      */

@@ -1731,6 +1731,11 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     }
 
     @Override
+    public boolean isResultRecived() {
+        return false;
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         wvSubjectWeb.destroy();
