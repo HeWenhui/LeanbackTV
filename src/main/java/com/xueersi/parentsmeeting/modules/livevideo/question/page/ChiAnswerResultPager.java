@@ -229,10 +229,12 @@ public class ChiAnswerResultPager extends BasePager implements IArtsAnswerRsultD
                 }
 
                 if (!"空".equals(temp)){
-                    String [] keys = answer.getScoreKey().split(";");
                     Map<Integer,String> indexs = new TreeMap<>();
-                    for (int j = 0; j < keys.length; j++) {
-                        indexs.putAll(getIndex(temp,keys[j]));
+                    if (answer.getScoreKey() != null && !answer.getScoreKey().isEmpty()){
+                        String [] keys = answer.getScoreKey().split(";");
+                        for (int j = 0; j < keys.length; j++) {
+                            indexs.putAll(getIndex(temp,keys[j]));
+                        }
                     }
                     int firstIndex = 0;
                     for(int key:indexs.keySet()){

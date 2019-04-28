@@ -70,15 +70,15 @@ public class ChsAnswerResultBll extends LiveBaseBll implements NoticeAction, Ans
         if (mDsipalyer != null) {
             return;
         }
-        mRootView.post(new Runnable() {
+        mDsipalyer = new ChiAnswerResultPager(mContext, mAnswerReulst, ChsAnswerResultBll.this);
+        mRootView.postDelayed(new Runnable() {
             @Override
             public void run() {
-                mDsipalyer = new ChiAnswerResultPager(mContext, mAnswerReulst, ChsAnswerResultBll.this);
                 RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
                         (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 rlAnswerResultLayout.addView(mDsipalyer.getRootLayout(), layoutParams);
             }
-        });
+        },10);
         VideoQuestionLiveEntity detailInfo = event.getDetailInfo();
         if (detailInfo != null) {
             NewCourseLog.sno8(mLiveBll, NewCourseLog.getNewCourseTestIdSec(detailInfo, LiveVideoSAConfig.ART_CH), event.isIspreload(), 0);
@@ -149,7 +149,7 @@ public class ChsAnswerResultBll extends LiveBaseBll implements NoticeAction, Ans
         closeAnswerResult(false);
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode = ThreadMode.ASYNC)
     public void onAnswerResult(ChsAnswerResultEvent event) {
         if (ChsAnswerResultEvent.TYPE_AI_CHINESE_ANSWERRESULT == event.getmType()){
             mAnswerReulst = event.getResultEntity();
