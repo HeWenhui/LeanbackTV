@@ -196,7 +196,7 @@ public class TcpDispatch {
             logHashMap.put("live_id", "" + live_id);
             logHashMap.put("address", "" + inetSocketAddress);
             logHashMap.put("obj", "" + obj);
-            UmsAgentManager.umsAgentDebug(context, TcpLog.eventId, logHashMap.getData());
+            UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_TCP_ERROR, logHashMap.getData());
             final int seq = oldGroupGameTcp.getSeq();
             if (isStop) {
                 return;

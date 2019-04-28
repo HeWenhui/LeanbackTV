@@ -25,6 +25,8 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.AllLiveBasePagerIml;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveLog;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveOnLineLogs;
@@ -661,9 +663,9 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                 hashMap.put("where", "" + where);
                 hashMap.put("liveid", "" + mVideoEntity.getLiveId());
                 hashMap.put("category", "" + mQuestionEntity.getvCategory());
-                UmsAgentManager.umsAgentDebug(activity, TAG, hashMap);
+                UmsAgentManager.umsAgentDebug(activity, LogConfig.LIVE_BACK_CATEGORY_UNKNOW, hashMap);
             } catch (Exception e) {
-                CrashReport.postCatchedException(e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
     }

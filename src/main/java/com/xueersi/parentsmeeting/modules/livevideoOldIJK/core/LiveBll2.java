@@ -24,6 +24,8 @@ import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IRCCallback;
@@ -486,7 +488,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
         if (MediaPlayer.getIsNewIJK()) {
             if (TextUtils.isEmpty(eChannel) || LiveTopic.MODE_CLASS.equals(getMode())) {
-                mIRCMessage = new NewIRCMessage( mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, mGetInfo, this, channel);
+                mIRCMessage = new NewIRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, mGetInfo, this, channel);
             } else {
                 mIRCMessage = new NewIRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, mGetInfo, this, channel, eChannel);
             }
@@ -677,9 +679,23 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                             CrashReport.postCatchedException(e);
                         }
                     }
+                } else {
+                    try {
+                        HashMap<String, String> hashMap = new HashMap();
+                        hashMap.put("logtype", "onNotice");
+                        hashMap.put("livetype", "" + mLiveType);
+                        hashMap.put("liveid", "" + mLiveId);
+                        hashMap.put("arts", "" + mGetInfo.getIsArts());
+                        hashMap.put("pattern", "" + mGetInfo.getPattern());
+                        hashMap.put("type", "" + mtype);
+                        UmsAgentManager.umsAgentDebug(mContext, LogConfig.LIVE_NOTICE_UNKNOW, hashMap);
+                    } catch (Exception e) {
+                        CrashReport.postCatchedException(new LiveException(TAG, e));
+                    }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.e("onNotice", e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
 

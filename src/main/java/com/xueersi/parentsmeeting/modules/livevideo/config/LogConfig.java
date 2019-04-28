@@ -25,4 +25,8 @@ public class LogConfig {
     public static String LIVE_STOP_VOLUME = "live_stop_volume";
     /** 直播tcp日志 */
     public static String LIVE_TCP_ERROR = "live_tcp_log";
+    /** 直播回放未知类型 */
+    public static String LIVE_BACK_CATEGORY_UNKNOW = "live_back_category_unknow";
+    /** 直播未知类型 */
+    public static String LIVE_NOTICE_UNKNOW = "live_notice_unknow";
 }

@@ -23,6 +23,11 @@ import io.agora.rtc.video.VideoCanvas;
 
 import static io.agora.rtc.Constants.RAW_AUDIO_FRAME_OP_MODE_READ_WRITE;
 
+/**
+ * @deprecated
+ * 使用 WorkerThreadPool 同步，这个exit耗时
+ */
+@Deprecated
 public class WorkerThread extends Thread {
     private final static String TAG = "WorkerThread";
     protected static Logger logger = LoggerFactory.getLogger(TAG);
