@@ -83,9 +83,14 @@ public class SpeechCollectiveNo2Pager extends LiveBasePager implements SpeechCol
         });
     }
 
+    private boolean showNoVolume = false;
 
     @Override
     public void onNoVolume() {
+        if (showNoVolume) {
+            return;
+        }
+        showNoVolume = true;
         ivSpeechcollectiveNoVolume.setVisibility(View.VISIBLE);
         handler.postDelayed(new Runnable() {
             @Override

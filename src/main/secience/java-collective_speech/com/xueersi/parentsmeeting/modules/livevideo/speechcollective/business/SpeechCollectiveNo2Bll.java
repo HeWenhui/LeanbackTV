@@ -5,11 +5,13 @@ import android.content.Context;
 import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.TextUtils;
 import android.widget.RelativeLayout;
 
 import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.utils.SpeechEvaluatorUtils;
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.log.LoggerFactory;
@@ -21,6 +23,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.config.Spee
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.page.SpeechCollectiveNo2Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.List;
@@ -37,6 +42,11 @@ public class SpeechCollectiveNo2Bll {
     private Context context;
     private LogToFile mLogtf;
     private SpeechEvaluatorUtils mSpeechEvaluatorUtils;
+    /** 语音识别出来的文字 */
+    private String recognizeStr = "";
+    private StringBuilder ansStr = new StringBuilder();
+    /** 是否正在录音 */
+    private AtomicBoolean isRecord = new AtomicBoolean(false);
     /**
      * 语音保存位置-目录
      */
@@ -54,6 +64,7 @@ public class SpeechCollectiveNo2Bll {
     private String devicestatus = "0";
     SpeechCollectiveView speechCollectiveView;
     Handler handler = new Handler(Looper.getMainLooper());
+    SpeechCollectiveHttp collectiveHttp;
 
     public SpeechCollectiveNo2Bll(Context context) {
         this.context = context;
@@ -63,6 +74,10 @@ public class SpeechCollectiveNo2Bll {
         if (!dir.exists()) {
             dir.mkdirs();
         }
+    }
+
+    public void setCollectiveHttp(SpeechCollectiveHttp collectiveHttp) {
+        this.collectiveHttp = collectiveHttp;
     }
 
     public void start(String roomId) {
@@ -115,6 +130,7 @@ public class SpeechCollectiveNo2Bll {
                 mRootView.removeView(basePager.getRootView());
                 if (mSpeechEvaluatorUtils != null) {
                     mSpeechEvaluatorUtils.cancel();
+                    isRecord.set(false);
                 }
             }
         });
@@ -123,19 +139,25 @@ public class SpeechCollectiveNo2Bll {
     }
 
     private void startEvaluator() {
+        isRecord.set(true);
         File saveFile = new File(dir, "speechbul" + System.currentTimeMillis() + ".mp3");
-        mSpeechEvaluatorUtils.startChineseSpeechBulletRecognize(saveFile.getPath(), SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
+        mSpeechEvaluatorUtils.startOnlineChsRecognize(saveFile.getPath(), SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
                 new EvaluatorListener() {
                     @Override
                     public void onBeginOfSpeech() {
                         logger.i("onBeginOfSpeech");
+                        post = false;
                     }
 
                     @Override
                     public void onResult(ResultEntity resultEntity) {
-                        logger.i("onResult:status=" + resultEntity.getStatus() + ",errorNo=" + resultEntity.getErrorNo() + ",sid=" + resultEntity.getSid());
+                        logger.i("onResult:errorno=" + resultEntity.getErrorNo() + " curString:" + resultEntity.getCurString() + " status:" + resultEntity.getStatus());
                         if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
-
+                            if (resultEntity.getErrorNo() > 0) {
+                                recognizeError(resultEntity.getErrorNo());
+                            } else {
+                                recognizeSuccess(resultEntity.getCurString(), true);
+                            }
                         } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
                             handler.postDelayed(new Runnable() {
                                 @Override
@@ -146,20 +168,28 @@ public class SpeechCollectiveNo2Bll {
                                 }
                             }, 1000);
                         } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
-
+                            recognizeSuccess(resultEntity.getCurString(), false);
                         }
                     }
 
                     @Override
                     public void onVolumeUpdate(int volume) {
-                        logger.d("onVolumeUpdate:volume=" + volume);
+                        logger.d("onVolumeUpdate:volume=" + volume + ",post=" + post);
                         performVolume(volume, true);
-                        handler.removeCallbacks(timeOut);
-                        handler.postDelayed(timeOut, 8000);
+                        if (!post && volume < 2) {
+                            post = true;
+                            handler.removeCallbacks(timeOut);
+                            handler.postDelayed(timeOut, 8000);
+                        }
+                        if (volume > 1) {
+                            handler.removeCallbacks(timeOut);
+                            handler.postDelayed(timeOut, 8000);
+                        }
                     }
                 });
     }
 
+    private boolean post = false;
     private Runnable timeOut = new Runnable() {
         @Override
         public void run() {
@@ -175,6 +205,7 @@ public class SpeechCollectiveNo2Bll {
 //        }
         isStop.set(true);
         mSpeechEvaluatorUtils.cancel();
+        isRecord.set(false);
     }
 
     public void onResume() {
@@ -189,6 +220,73 @@ public class SpeechCollectiveNo2Bll {
         this.mRootView = mRootView;
     }
 
+    /**
+     * 识别成功
+     *
+     * @param str      识别初来的JSONObject---String
+     * @param isFinish 识别是否结束
+     */
+    private void recognizeSuccess(String str, boolean isFinish) {
+        try {
+            JSONObject jsonObject = new JSONObject(str);
+            String content = jsonObject.optString("nbest");
+            content = content.replaceAll("。", "");
+            if (!TextUtils.isEmpty(content)) {
+                recognizeStr = content;
+//                tvTitle.setText(content);
+//                logger.i("recognizeSuccess:content" + content);
+            }
+            if (isFinish && isRecord.get()) {
+                ansStr.append(recognizeStr);
+                recognizeStr = "";
+                logger.i("recognizeSuccess");
+                mSpeechEvaluatorUtils.cancel();
+                isRecord.set(false);
+                collectiveHttp.uploadSpeechMsg("", "" + ansStr, new AbstractBusinessDataCallBack() {
+                    @Override
+                    public void onDataSucess(Object... objData) {
+                        logger.i("onDataSucess:data=" + objData[0]);
+                    }
+
+                    @Override
+                    public void onDataFail(int errStatus, String failMsg) {
+                        super.onDataFail(errStatus, failMsg);
+                        logger.i("onDataFail:errStatus=" + errStatus + ",failMsg=" + failMsg);
+                    }
+                });
+                startEvaluator();
+            }
+            // tvTitle.setText("说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什");
+            //if(tvTitle.getLineCount()>2){
+            //tvTitle.setText(ellipsizeString(tvTitle.getText().toString(),tvTitle));
+            //}
+//            if (isFinish) {
+//                mSpeechEvaluatorUtils.cancel();
+//                String s = tvTitle.getText().toString().replaceAll("\\*", "");
+//                if (TextUtils.isEmpty(s) || s.startsWith("没听清") || s.length() == 1) {
+//                    setStatus(RECERROR);
+//                    return;
+//                }
+//                if (recgonizeCallback != null) {
+//                    recgonizeCallback.onDataSucess(content.replaceAll("\\*", ""));
+//                    if (mBlurPopupWindow != null) {
+//                        mBlurPopupWindow.dismiss();
+//                    }
+//                }
+//                setStatus(SEARCHING);
+//                Loger.i("voice search____" + "success");
+//            } else {
+//                Loger.i("voice search____" + "recording");
+//            }
+        } catch (Exception e) {
+            logger.i("recognizeSuccess" + e.getMessage());
+            recognizeError(0);
+        }
+    }
+
+    private void recognizeError(int code) {
+        logger.i("recognizeErrori:code=" + code);
+    }
 
     /**
      * 解决音量大小
@@ -222,8 +320,7 @@ public class SpeechCollectiveNo2Bll {
                     && volume >= SpeechCollectiveConfig.ONE_GEAR_LEFT) {
                 List<SoundWaveView.Circle> list = speechCollectiveView.getRipples();
                 if (((nowTime - lastOneLevelTime > SpeechCollectiveConfig.GOLD_ONE_LEVEL_INTEVAL)
-                        || (lastVolumeTime > lastOneLevelTime) && list.size() == 0)
-                        ) {
+                        || (lastVolumeTime > lastOneLevelTime) && list.size() == 0)) {
                     gear = 1;
                     lastOneLevelTime = nowTime;
                     speechCollectiveView.addRipple(gear);
@@ -236,8 +333,7 @@ public class SpeechCollectiveNo2Bll {
 //                    logger.i("add Ripple level = " + gear);
 //                }
             } else if (volume > SpeechCollectiveConfig.ONE_GEAR_RIGHT
-                    && volume < SpeechCollectiveConfig.TWO_GEAR_RIGHT
-                    ) {
+                    && volume < SpeechCollectiveConfig.TWO_GEAR_RIGHT) {
                 //2档
                 if (nowTime - lastTwoLevelTime > SpeechCollectiveConfig.GOLD_TWO_LEVEL_INTEVAL) {
                     gear = 2;

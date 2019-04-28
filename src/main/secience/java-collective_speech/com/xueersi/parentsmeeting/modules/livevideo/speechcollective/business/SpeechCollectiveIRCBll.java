@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.speechcollective.business;
 
 import android.app.Activity;
 
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -23,6 +24,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
     private SpeechCollectiveNo2Bll speechCollectiveBll;
     private boolean isFirstCreate = true;
     private SpeechCollectiveHttpManager speechCollectiveHttpManager;
+    private SpeechCollectiveHttp collectiveHttp;
 
     public SpeechCollectiveIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -32,8 +34,17 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
+        collectiveHttp = new SpeechCollectiveHttpImpl();
         createBll();
         speechCollectiveBll.start("");
+    }
+
+    class SpeechCollectiveHttpImpl implements SpeechCollectiveHttp {
+
+        @Override
+        public void uploadSpeechMsg(String voiceId, String msg, AbstractBusinessDataCallBack callBack) {
+            getSpeechCollectiveHttpManager().uploadSpeechMsg(voiceId, msg, callBack);
+        }
     }
 
     @Override
@@ -121,6 +132,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
         }
         speechCollectiveBll = new SpeechCollectiveNo2Bll(activity);
         speechCollectiveBll.setBottomContent(mRootView);
+        speechCollectiveBll.setCollectiveHttp(collectiveHttp);
     }
 
     @Override

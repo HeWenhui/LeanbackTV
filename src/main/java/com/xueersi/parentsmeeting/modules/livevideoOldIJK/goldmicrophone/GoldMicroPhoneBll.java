@@ -404,11 +404,10 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        mSpeechEvaluatorUtils.startOnlineRecognize(
+        mSpeechEvaluatorUtils.startOnlineChsRecognize(
                 path,
                 SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
-                evaluatorListener,
-                true);
+                evaluatorListener);
         isRecord.set(true);
     }
 

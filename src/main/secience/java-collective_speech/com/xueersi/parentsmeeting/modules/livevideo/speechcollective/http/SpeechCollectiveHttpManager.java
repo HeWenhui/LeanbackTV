@@ -13,12 +13,14 @@ public class SpeechCollectiveHttpManager {
         this.liveHttpManager = liveHttpManager;
     }
 
-    public void uploadSpeechMsg(final AbstractBusinessDataCallBack callBack) {
+    public void uploadSpeechMsg(String voiceId, String msg, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
+        httpRequestParams.addBodyParam("voiceId", "" + voiceId);
+        httpRequestParams.addBodyParam("msg", "" + msg);
         liveHttpManager.sendPost(liveHttpManager.getLiveVideoSAConfig().inner.URL_UPLOAD_SPEECH_MSG, httpRequestParams, new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                callBack.onDataSucess();
+                callBack.onDataSucess(responseEntity);
             }
 
             @Override
