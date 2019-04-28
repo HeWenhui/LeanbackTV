@@ -620,7 +620,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         starNum = calculateStarByScore(averageScore);
         if (!isPlayBack && liveGetInfo.getEnglishPk().hasGroup == 1) {
             if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(detailInfo.type)) {
-                fireNum = rightNum < 50 ? rightNum : 30;
+                fireNum = rightNum < 50 ? rightNum : 50;
             } else if (LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(detailInfo.type)) {
                 fireNum = (rightNum + 5) < 30 ? ((rightNum + 5)) : 30;
             } else {
