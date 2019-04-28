@@ -22,6 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
@@ -100,11 +101,11 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         super.onLiveInited(getInfo);
         LiveGetInfo.EnglishPk englishPk = getInfo.getEnglishPk();
         logger.d("onLiveInited:use=" + englishPk.canUsePK + ",has=" + englishPk.hasGroup);
-        if (com.xueersi.common.config.AppConfig.DEBUG) {
+//        if (com.xueersi.common.config.AppConfig.DEBUG) {
 //            englishPk.canUsePK = 1;
-            englishPk.isTwoLose = 1;
+//            englishPk.isTwoLose = 1;
 //            englishPk.hasGroup = 0;
-        }
+//        }
         if (englishPk.canUsePK == 0) {
             mLiveBll.removeBusinessBll(this);
             return;
@@ -580,7 +581,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private ArrayList<TcpRunnable> tcpRun = new ArrayList<>();
 
     private void startTeam(String method) {
-        logger.d("startTeam:method=" + method + ",Team=null?" + (getStuActiveTeam == null));
+        mLogtf.d("startTeam:method=" + method + ",Team=null?" + (getStuActiveTeam == null));
         if (getStuActiveTeam == null) {
             getStuActiveTeam = new GetStuActiveTeam() {
                 @Override
@@ -720,6 +721,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private class TeamMessageAction implements TcpMessageAction {
         @Override
         public void onMessage(short type, int operation, String msg) {
+            mLogtf.d("onMessage:type=" + type + ",operation=" + operation + ",msg=" + msg);
             switch (type) {
                 case TcpConstants.TEAM_TYPE: {
                     if (operation == TcpConstants.TEAM_OPERATION_SEND) {
@@ -728,15 +730,15 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                             if (interactiveTeam != null) {
                                 mInteractiveTeam = interactiveTeam;
                                 entities = interactiveTeam.getEntities();
-                                if (tcpDispatch != null) {
-                                    tcpDispatch.setIid(mInteractiveTeam.getInteractive_team_id());
-                                }
-                                logger.d("onMessage(TEAM_TYPE):entities=" + entities.size());
+                                mLogtf.d("onMessage(TEAM_TYPE):entities=" + entities.size());
+                            } else {
+                                mLogtf.d("onMessage:interactiveTeam=null");
                             }
                             saveTeamInter(msg);
                         } catch (Exception e) {
                             e.printStackTrace();
-                            logger.d("onMessage(TEAM_TYPE)", e);
+                            CrashReport.postCatchedException(new LiveException(TAG, e));
+                            mLogtf.e("onMessage(TEAM_TYPE)" + e.getMessage(), e);
                         }
                     }
                     break;
@@ -764,7 +766,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             }
         } catch (Exception e) {
             mShareDataManager.put(ShareDataConfig.LIVE_ENPK_MY_TEAM_INTER, "{}", ShareDataManager.SHAREDATA_USER);
-            CrashReport.postCatchedException(e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
         }
     }
 
@@ -777,7 +779,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             mShareDataManager.put(ShareDataConfig.LIVE_ENPK_MY_TEAM_INTER, "" + jsonObject, ShareDataManager.SHAREDATA_USER);
         } catch (Exception e) {
             mShareDataManager.put(ShareDataConfig.LIVE_ENPK_MY_TEAM_INTER, "{}", ShareDataManager.SHAREDATA_USER);
-            CrashReport.postCatchedException(e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
         }
     }
 
