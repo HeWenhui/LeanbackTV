@@ -510,6 +510,16 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                     ArtsExtLiveInfo info = mHttpResponseParser.parseArtsExtLiveInfo(responseEntity);
                     mGetInfo.setArtsExtLiveInfo(info);
+                    List<LiveBaseBll> businessBllTemps = new ArrayList<>(businessBlls);
+                    for (LiveBaseBll businessBll : businessBllTemps) {
+                        try {
+                            businessBll.onArtsExtLiveInited(mGetInfo);
+                        } catch (Exception e) {
+                            CrashReport.postCatchedException(e);
+                        }
+                    }
+                    mLogtf.d("onGetInfoSuccess:old=" + businessBlls + ",new=" + businessBllTemps.size());
+                    businessBllTemps.clear();
                 }
 
                 @Override

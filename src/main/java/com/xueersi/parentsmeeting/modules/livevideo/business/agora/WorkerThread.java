@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.view.SurfaceView;
 
 import com.xueersi.common.config.AppConfig;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -50,6 +51,7 @@ public class WorkerThread extends Thread {
     private boolean isExternalAudio;
     private OnEngineCreate onEngineCreate;
     MyEngineEventHandler.OnLastmileQuality onLastmileQuality;
+    private String appid;
 
     private static final class WorkerThreadHandler extends Handler {
 
@@ -285,13 +287,21 @@ public class WorkerThread extends Thread {
         return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     }
 
+    public void setAppid(String appid) {
+        this.appid = appid;
+    }
+
     private RtcEngine ensureRtcEngineReadyLock() throws Exception {
         if (mRtcEngine == null) {
             String appId;
-            if (AppConfig.DEBUG) {
-                appId = mContext.getString(R.string.agora_private_app_id_debug);
+            if (StringUtils.isEmpty(appid)) {
+                if (AppConfig.DEBUG) {
+                    appId = mContext.getString(R.string.agora_private_app_id_debug);
+                } else {
+                    appId = mContext.getString(R.string.agora_private_app_id_release);
+                }
             } else {
-                appId = mContext.getString(R.string.agora_private_app_id_release);
+                appId = appid;
             }
             if (TextUtils.isEmpty(appId)) {
                 throw new RuntimeException("NEED TO use your App ID, get your own ID at https://dashboard.agora.io/");
@@ -342,6 +352,10 @@ public class WorkerThread extends Thread {
 
     public RtcEngine getRtcEngine() {
         return mRtcEngine;
+    }
+
+    public void execute(Runnable runnable) {
+        mWorkerHandler.post(runnable);
     }
 
     /**

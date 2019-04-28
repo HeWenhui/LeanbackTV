@@ -447,18 +447,18 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     /**
      * 强制关闭webview
      **/
-    public void froceClose() {
+    public void froceClose(final String method) {
         bottomContent.post(new Runnable() {
             @Override
             public void run() {
-                if(mLiveBll != null){
-                    mLiveBll.getStuGoldCount("froceClose");
-                }
                 if (h5CoursewarePager != null) {
+                    if(mLiveBll != null){
+                        mLiveBll.getStuGoldCount("forceClose:"+method);
+                    }
                     h5CoursewarePager.destroy();
                     bottomContent.removeView(h5CoursewarePager.getRootView());
                     h5CoursewarePager = null;
-                    onQuestionShow(null, false, "froceClose");
+                    onQuestionShow(null, false, "forceClose:"+method);
                 }
             }
         });
@@ -796,6 +796,11 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
         if (voiceAnswerPager instanceof VoiceAnswerPager) {
             int wradio = liveVideoPoint.getRightMargin();
             baseVoiceAnswerCreat.setViewLayoutParams(voiceAnswerPager, wradio);
+        } else {
+            if (h5CoursewarePager instanceof LiveVideoPoint.VideoSizeChange) {
+                LiveVideoPoint.VideoSizeChange change = (LiveVideoPoint.VideoSizeChange) h5CoursewarePager;
+                change.videoSizeChange(liveVideoPoint);
+            }
         }
     }
 
@@ -1309,7 +1314,7 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onArtsResultCmplShow(AnswerResultCplShowEvent event) {
         Loger.e("EnglishH5CoursewareBll:onArtsResultCmplShow ");
-        froceClose();
+        froceClose(event.getMethod());
     }
 
     /**

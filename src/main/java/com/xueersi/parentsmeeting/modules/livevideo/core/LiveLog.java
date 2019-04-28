@@ -65,7 +65,9 @@ public class LiveLog implements LiveOnLineLogs {
         type = "a" + mLiveType;
         enterTime = System.currentTimeMillis();
         times = LIVE_TIME++;
-        File logDir = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + mLiveId + "-" + getPrefix);
+        String s = dateFormat.format(new Date());
+        String[] ss = s.split(",");
+        File logDir = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + ss[0] + "/" + mLiveId + "-" + getPrefix);
         if (!logDir.exists()) {
             logDir.mkdirs();
         }
