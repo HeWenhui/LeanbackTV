@@ -403,11 +403,10 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        mSpeechEvaluatorUtils.startOnlineRecognize(
+        mSpeechEvaluatorUtils.startOnlineChsRecognize(
                 path,
                 SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
-                evaluatorListener,
-                true);
+                evaluatorListener);
         isRecord.set(true);
     }
 
@@ -538,7 +537,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
                 ansStr.append(recognizeStr);
                 recognizeStr = "";
                 logger.i(" isRecord = " + isRecord.get());
-                mSpeechEvaluatorUtils.startOnlineRecognize(
+                mSpeechEvaluatorUtils.startOnlineChsRecognize(
                         dir.getPath() + MP3_FILE_NAME,
                         SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
                         evaluatorListener);
@@ -553,7 +552,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
                             ansStr.append(recognizeStr);
                             recognizeStr = "";
                             logger.i(" isRecord = " + isRecord.get());
-                            mSpeechEvaluatorUtils.startOnlineRecognize(
+                            mSpeechEvaluatorUtils.startOnlineChsRecognize(
                                     dir.getPath() + MP3_FILE_NAME,
                                     SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
                                     evaluatorListener);
@@ -610,7 +609,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
                 logger.i("isFinish = " + isFinish + " isRecord = " + isRecord.get());
                 logger.i("restart evaluator");
                 mSpeechEvaluatorUtils.cancel();
-                mSpeechEvaluatorUtils.startOnlineRecognize(
+                mSpeechEvaluatorUtils.startOnlineChsRecognize(
                         dir.getPath() + MP3_FILE_NAME,
                         SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
                         evaluatorListener);
