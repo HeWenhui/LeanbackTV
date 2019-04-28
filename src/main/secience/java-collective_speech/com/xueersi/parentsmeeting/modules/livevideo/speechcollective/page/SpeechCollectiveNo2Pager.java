@@ -107,7 +107,7 @@ public class SpeechCollectiveNo2Pager extends LiveBasePager implements SpeechCol
             ConstraintSet constraintSet = new ConstraintSet();
 
             constraintSet.clone(rootLayout);
-            constraintSet.load(mContext, R.layout.page_livevideo_chinese_gold_microphone_start);
+            constraintSet.load(mContext, R.layout.page_livevideo_speechcoll_microphone_start);
             Transition transition = new AutoTransition();
             transition.addListener(new Transition.TransitionListener() {
                 @Override
