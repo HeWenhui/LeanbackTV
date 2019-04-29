@@ -2,7 +2,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.speechcollective.business;
 
 import android.Manifest;
 import android.content.Context;
-import android.media.AudioManager;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
@@ -20,11 +19,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.widget.SoundWaveView;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.config.SpeechCollectiveConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.dialog.SpeechStartDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.page.SpeechCollectiveNo2Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -65,6 +64,7 @@ public class SpeechCollectiveNo2Bll {
     SpeechCollectiveView speechCollectiveView;
     Handler handler = new Handler(Looper.getMainLooper());
     SpeechCollectiveHttp collectiveHttp;
+    private SpeechStartDialog speechStartDialog;
 
     public SpeechCollectiveNo2Bll(Context context) {
         this.context = context;
@@ -81,6 +81,8 @@ public class SpeechCollectiveNo2Bll {
     }
 
     public void start(String roomId) {
+        speechStartDialog = new SpeechStartDialog(context);
+        speechStartDialog.setStart();
         mLogtf.d("start:roomId=" + roomId);
         addView();
         boolean hasAudidoPermission = XesPermission.hasSelfPermission(context, Manifest.permission.RECORD_AUDIO); //
@@ -200,6 +202,8 @@ public class SpeechCollectiveNo2Bll {
 
     public void stop() {
         mLogtf.d("start:stop");
+        speechStartDialog = new SpeechStartDialog(context);
+        speechStartDialog.setSop();
 //        if (swvView != null) {
 //            swvView.setStart(false);
 //        }

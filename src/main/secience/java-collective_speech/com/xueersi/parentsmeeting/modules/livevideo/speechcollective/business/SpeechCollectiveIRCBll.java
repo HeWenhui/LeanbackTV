@@ -35,8 +35,8 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
         collectiveHttp = new SpeechCollectiveHttpImpl();
-        createBll();
-        speechCollectiveBll.start("");
+//        createBll();
+//        speechCollectiveBll.start("");
     }
 
     class SpeechCollectiveHttpImpl implements SpeechCollectiveHttp {
