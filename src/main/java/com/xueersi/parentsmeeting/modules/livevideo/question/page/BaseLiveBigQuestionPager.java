@@ -10,6 +10,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.PutQuestion;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSecHttp;
+import com.xueersi.parentsmeeting.modules.livevideo.question.create.BigQueCreate;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -20,6 +21,7 @@ public abstract class BaseLiveBigQuestionPager extends LiveBasePager {
     protected QuestionSecHttp questionSecHttp;
     protected VideoQuestionLiveEntity videoQuestionLiveEntity;
     protected RelativeLayout rlQuestionResContent;
+    BigQueCreate.OnSubmit onSubmit;
 
     public BaseLiveBigQuestionPager(Context context) {
         super(context);
@@ -27,6 +29,10 @@ public abstract class BaseLiveBigQuestionPager extends LiveBasePager {
 
     public void setRlQuestionResContent(RelativeLayout rlQuestionResContent) {
         this.rlQuestionResContent = rlQuestionResContent;
+    }
+
+    public void setOnSubmit(BigQueCreate.OnSubmit onSubmit) {
+        this.onSubmit = onSubmit;
     }
 
     @Override

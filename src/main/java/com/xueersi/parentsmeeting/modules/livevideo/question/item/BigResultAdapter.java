@@ -103,6 +103,8 @@ public class BigResultAdapter extends RecyclerView.Adapter {
             tv_livevideo_bigque_result_your.setText(bigResultEntity.youAnswer);
             if (bigResultEntity.rightType == LiveQueConfig.DOTTYPE_ITEM_RESULT_RIGHT) {
                 iv_livevideo_bigque_result_type.setImageResource(R.drawable.bg_livevideo_bigque_result_right);
+            } else if (bigResultEntity.rightType == LiveQueConfig.DOTTYPE_ITEM_PART_RIGHT) {
+                iv_livevideo_bigque_result_type.setImageResource(R.drawable.bg_livevideo_bigque_result_part_right);
             } else {
                 iv_livevideo_bigque_result_type.setImageResource(R.drawable.bg_livevideo_bigque_result_wrong);
             }

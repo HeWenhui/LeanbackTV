@@ -648,25 +648,39 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     @Override
     public void showBigQuestion(final VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isOpen) {
         isAnaswer = isOpen;
+        mLogtf.d("showBigQuestion:isOpen=" + isOpen + ",id=" + videoQuestionLiveEntity.id + ",dot=" + videoQuestionLiveEntity.getDotId());
         if (isOpen) {
             if (baseLiveBigQuestionPager != null) {
-                if (baseLiveBigQuestionPager.getBaseVideoQuestionEntity().getvQuestionID().equals(videoQuestionLiveEntity.id)) {
+                VideoQuestionLiveEntity oldEntity = (VideoQuestionLiveEntity) baseLiveBigQuestionPager.getBaseVideoQuestionEntity();
+                mLogtf.d("showBigQuestion:oldid=" + oldEntity.id + ",dot=" + oldEntity.getDotId());
+                if (oldEntity.getvQuestionID().equals(videoQuestionLiveEntity.id) &&
+                        oldEntity.getDotId().equals(videoQuestionLiveEntity.getDotId())) {
                     return;
                 } else {
                     //来一个不同的题
-                    baseLiveBigQuestionPager.onDestroy();
-                    rlQuestionContent.removeView(baseLiveBigQuestionPager.getRootView());
-                    rlQuestionResContent.removeAllViews();
+                    final BaseLiveBigQuestionPager finalpager = baseLiveBigQuestionPager;
+                    mVPlayVideoControlHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            finalpager.onDestroy();
+                            rlQuestionContent.removeView(finalpager.getRootView());
+                            rlQuestionResContent.removeAllViews();
+                        }
+                    });
                 }
             }
             final BaseLiveBigQuestionPager bigQuestionPager = bigQueCreate.create(videoQuestionLiveEntity, rlQuestionResContent, new LiveBasePager.OnPagerClose() {
                 @Override
                 public void onClose(LiveBasePager basePager) {
-                    basePager.onDestroy();
-                    rlQuestionContent.removeView(basePager.getRootView());
                     if (basePager == baseLiveBigQuestionPager) {
                         baseLiveBigQuestionPager = null;
                     }
+                }
+            }, new BigQueCreate.OnSubmit() {
+                @Override
+                public void onSubmit(LiveBasePager basePager) {
+                    basePager.onDestroy();
+                    rlQuestionContent.removeView(basePager.getRootView());
                     onQuestionShow(videoQuestionLiveEntity, false, "showBigQuestion:onClose");
                 }
             });
@@ -692,9 +706,15 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         } else {
             if (baseLiveBigQuestionPager != null) {
                 mLogtf.d("showBigQuestion:isAttach=" + baseLiveBigQuestionPager.isAttach());
-                if (baseLiveBigQuestionPager.isAttach()) {
-                    baseLiveBigQuestionPager.submitData();
-                }
+                final BaseLiveBigQuestionPager finalpager = baseLiveBigQuestionPager;
+                mVPlayVideoControlHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (finalpager == baseLiveBigQuestionPager && baseLiveBigQuestionPager.isAttach()) {
+                            baseLiveBigQuestionPager.submitData();
+                        }
+                    }
+                }, 2000);
             }
         }
     }

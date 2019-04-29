@@ -25,18 +25,20 @@ public class LiveBigQueCreate implements BigQueCreate {
     }
 
     @Override
-    public BaseLiveBigQuestionPager create(VideoQuestionLiveEntity videoQuestionLiveEntity, RelativeLayout rlQuestionResContent, LiveBasePager.OnPagerClose onPagerClose) {
+    public BaseLiveBigQuestionPager create(VideoQuestionLiveEntity videoQuestionLiveEntity, RelativeLayout rlQuestionResContent, LiveBasePager.OnPagerClose onPagerClose, OnSubmit onSubmit) {
         if (videoQuestionLiveEntity.getDotType() == LiveQueConfig.DOTTYPE_SELE || videoQuestionLiveEntity.getDotType() == LiveQueConfig.DOTTYPE_MUL_SELE) {
             BigQuestionSelectLivePager bigQuestionSelectLivePager = new BigQuestionSelectLivePager(activity, videoQuestionLiveEntity);
             bigQuestionSelectLivePager.setQuestionSecHttp(questionSecHttp);
             bigQuestionSelectLivePager.setRlQuestionResContent(rlQuestionResContent);
             bigQuestionSelectLivePager.setOnPagerClose(onPagerClose);
+            bigQuestionSelectLivePager.setOnSubmit(onSubmit);
             return bigQuestionSelectLivePager;
         } else if (videoQuestionLiveEntity.getDotType() == LiveQueConfig.DOTTYPE_FILL) {
             BigQuestionFillInBlankLivePager bigQuestionFillInBlankLivePager = new BigQuestionFillInBlankLivePager(activity, videoQuestionLiveEntity);
             bigQuestionFillInBlankLivePager.setQuestionSecHttp(questionSecHttp);
             bigQuestionFillInBlankLivePager.setRlQuestionResContent(rlQuestionResContent);
             bigQuestionFillInBlankLivePager.setOnPagerClose(onPagerClose);
+            bigQuestionFillInBlankLivePager.setOnSubmit(onSubmit);
             return bigQuestionFillInBlankLivePager;
         }
         return null;

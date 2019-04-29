@@ -11,5 +11,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseLiveBigQue
  * 大题互动创建
  */
 public interface BigQueCreate {
-    BaseLiveBigQuestionPager create(VideoQuestionLiveEntity videoQuestionLiveEntity, RelativeLayout rlQuestionResContent, LiveBasePager.OnPagerClose onPagerClose);
+    BaseLiveBigQuestionPager create(VideoQuestionLiveEntity videoQuestionLiveEntity, RelativeLayout rlQuestionResContent, LiveBasePager.OnPagerClose onPagerClose, OnSubmit onSubmit);
+
+    interface OnSubmit {
+        void onSubmit(LiveBasePager liveBasePager);
+    }
 }
