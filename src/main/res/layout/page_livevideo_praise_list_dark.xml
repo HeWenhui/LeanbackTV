@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
     android:background="@drawable/bg_page_livevideo_praise_list_dark">
 
     <ImageButton
@@ -14,6 +15,7 @@
         android:background="@drawable/bg_page_livevideo_praise_list_dark_close" />
 
     <RelativeLayout
+        android:id="@id/rl_page_livevideo_praise_list_dark_content"
         android:layout_width="340dp"
         android:layout_height="314dp"
         android:layout_centerInParent="true"
@@ -34,5 +36,50 @@
 
     </RelativeLayout>
 
+<LinearLayout
+    android:orientation="vertical"
+    android:layout_centerVertical="true"
+    android:layout_toRightOf="@id/rl_page_livevideo_praise_list_dark_content"
+    android:layout_alignParentRight="true"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@id/lav_livevideo_praise_list_dark_practice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
 
+        app:lottie_fileName="practicecourse/dark/practice_course_dark.json"
+        app:lottie_imageAssetsFolder="practicecourse/dark/images"
+        android:layout_below="@id/fl_page_livevideo_praise_list_dark_practice"
+        app:lottie_loop="true" />
+
+
+
+    <com.xueersi.parentsmeeting.modules.livevideo.widget.PraiseBtnAnimLayout
+        android:id="@id/fl_page_livevideo_praise_list_dark_practice"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginBottom="15dp"
+        app:auto_star="false">
+
+        <ImageView
+            android:id="@id/iv_page_livevideo_praise_list_dark_practice"
+            android:background="@drawable/bg_page_livevideo_praise_list_dark_practice"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@id/tv_page_livevideo_praise_list_dark_practice_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="16dp"
+            android:textColor="#FFEDA5"
+            android:textSize="11sp" />
+
+    </com.xueersi.parentsmeeting.modules.livevideo.widget.PraiseBtnAnimLayout>
+</LinearLayout>
 </RelativeLayout>
