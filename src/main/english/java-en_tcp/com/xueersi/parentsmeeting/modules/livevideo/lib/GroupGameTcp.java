@@ -37,9 +37,10 @@ public class GroupGameTcp {
     private int seq = 0;
     /** ping 超时 */
     private long pingTime = 10000;
-    private PingTimeOut pingTimeOut = new PingTimeOut();
     /** 心跳间隔 */
     private long heartTime = 10000;
+    private PingTimeOut pingTimeOut = new PingTimeOut();
+    private PingRunnable pingRunnable = new PingRunnable();
     private WriteThread writeThread;
     private Handler sendMessageHandler;
     private Handler mainHandler = new Handler(Looper.getMainLooper());
@@ -92,6 +93,7 @@ public class GroupGameTcp {
 
     public void stop(String method) {
         mainHandler.removeCallbacks(pingTimeOut);
+        mainHandler.removeCallbacks(pingRunnable);
         isStop = true;
         log.d("stop:method=" + method);
         if (socket != null) {
@@ -253,6 +255,26 @@ public class GroupGameTcp {
         }
     }
 
+    private class PingRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            if (!isStop) {
+                mainHandler.postDelayed(pingTimeOut, pingTime);
+                if (sendMessageHandler != null) {
+                    sendMessageHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!isStop) {
+                                writeThread.heart();
+                            }
+                        }
+                    });
+                }
+            }
+        }
+    }
+
     class ReadThread implements Runnable {
         Logger log = LiveLoggerFactory.getLogger(TAG + ":ReadThread");
         WriteThread writeThread;
@@ -277,30 +299,15 @@ public class GroupGameTcp {
                     if (operation == TcpConstants.LOGIN_OPERATION_REC) {
                         pingTimeOut.seq = seq;
                         pingTimeOut.operation = operation;
-                        sendMessageHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!isStop) {
-                                    mainHandler.postDelayed(pingTimeOut, pingTime);
-                                    writeThread.heart();
-                                }
-                            }
-                        }, heartTime);
+                        sendMessageHandler.postDelayed(pingRunnable, heartTime);
                     }
                 } else if (type == TcpConstants.REPLAY_TYPE) {
                     if (operation == TcpConstants.HEAD_OPERATION_REC || operation == TcpConstants.REPLAY_REC) {
                         mainHandler.removeCallbacks(pingTimeOut);
+                        mainHandler.removeCallbacks(pingRunnable);
                         pingTimeOut.seq = seq;
                         pingTimeOut.operation = operation;
-                        sendMessageHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!isStop) {
-                                    mainHandler.postDelayed(pingTimeOut, pingTime);
-                                    writeThread.heart();
-                                }
-                            }
-                        }, heartTime);
+                        mainHandler.postDelayed(pingRunnable, heartTime);
                     }
                 }
             }
