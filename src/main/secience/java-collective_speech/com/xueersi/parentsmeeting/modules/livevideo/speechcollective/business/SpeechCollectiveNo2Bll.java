@@ -202,14 +202,19 @@ public class SpeechCollectiveNo2Bll {
 
     public void stop() {
         mLogtf.d("start:stop");
-        speechStartDialog = new SpeechStartDialog(context);
-        speechStartDialog.setSop();
-//        if (swvView != null) {
-//            swvView.setStart(false);
-//        }
-        isStop.set(true);
         mSpeechEvaluatorUtils.cancel();
+        isStop.set(true);
         isRecord.set(false);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                speechStartDialog = new SpeechStartDialog(context);
+                speechStartDialog.setSop();
+                if(speechCollectiveView!=null){
+                    mRootView.removeView(speechCollectiveView.getRootView());
+                }
+            }
+        });
     }
 
     public void onResume() {

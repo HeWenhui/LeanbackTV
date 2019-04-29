@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.speechcollective.business;
 
+import android.view.View;
+
 import com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.widget.SoundWaveView;
 
 import java.util.List;
@@ -13,4 +15,7 @@ public interface SpeechCollectiveView {
     void start();
 
     void onNoVolume();
+
+    View getRootView();
+
 }
