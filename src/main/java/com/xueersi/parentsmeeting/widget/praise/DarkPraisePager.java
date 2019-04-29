@@ -91,6 +91,7 @@ public class DarkPraisePager extends LiveBasePager {
         mView = View.inflate(mContext, R.layout.page_livevideo_praise_list_dark, null);
         recyclerView = mView.findViewById(R.id.rv_livevideo_praise_list_dark_content);
         GridLayoutManager manager = new GridLayoutManager(mContext, 4);
+        manager.setSpanSizeLookup(new GridSpanSizeLookup());
         recyclerView.setLayoutManager(manager);
         imgBtnPractice = mView.findViewById(R.id.fl_page_livevideo_praise_list_dark_practice);
         practiceView = mView.findViewById(R.id.lav_livevideo_praise_list_dark_practice);
@@ -102,6 +103,7 @@ public class DarkPraisePager extends LiveBasePager {
         contentAdapter = new RCommonAdapter(mContext, listContent);
         contentAdapter.addItemViewDelegate(1, new LivePraiseItem());
         recyclerView.setAdapter(contentAdapter);
+
         setListener();
         practiceView.playAnimation();
 
