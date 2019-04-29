@@ -248,7 +248,7 @@ public class GroupGameTcp {
         public void run() {
             log.d("PingTimeOut:run:isStop=" + isStop + ",seq=" + seq);
             if (!isStop && receiveMegCallBack != null) {
-                receiveMegCallBack.onDisconnect(inetSocketAddress, "seq=" + seq + "，operation=" + operation, GroupGameTcp.this);
+                receiveMegCallBack.onDisconnect(inetSocketAddress, "seq=" + seq + ",operation=" + operation, GroupGameTcp.this);
             }
         }
     }
