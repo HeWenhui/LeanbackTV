@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThreadPool;
@@ -38,7 +39,8 @@ public class CourseGroupNoItem extends BaseCourseGroupItem {
         ImageView imageView = new ImageView(root.getContext());
         imageView.setImageResource(R.drawable.pc_zbhd_shipingkuang_ufo);
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
-        ((ViewGroup) root).addView(imageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        int width = SizeUtils.Dp2Px(mContext, 140);
+        ((ViewGroup) root).addView(imageView, width, ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
     public void doRenderRemoteUi(SurfaceView surfaceV) {
