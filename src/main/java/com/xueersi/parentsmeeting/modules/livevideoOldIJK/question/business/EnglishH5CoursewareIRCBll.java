@@ -309,7 +309,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                             JSONObject object = jsonObject.optJSONObject("platformTest");
                             // 辅导老师发题
                             if (object == null || object.toString().equals("{}")) {
-                              JSONObject objectRoom2 =   object.optJSONObject("room_2");
+                              JSONObject objectRoom2 =   jsonObject.optJSONObject("room_2");
                               if (objectRoom2 != null) {
                                   object =  objectRoom2.optJSONObject("platformTest");;
                                   videoQuestionLiveEntity.setTUtor(true);

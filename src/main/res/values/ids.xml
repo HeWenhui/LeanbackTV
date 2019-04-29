@@ -1293,4 +1293,8 @@
     <item name="tv_middle_answer_result_item_muti_right_answer" type="id" />
     <item name="tv_middle_answer_result_item_muti_index" type="id" />
 
+    <item name="tv_item_livevideo_praise_list_dark_name" type="id" />
+    <item name="rv_livevideo_praise_list_dark_content" type="id" />
+
+
 </resources>
