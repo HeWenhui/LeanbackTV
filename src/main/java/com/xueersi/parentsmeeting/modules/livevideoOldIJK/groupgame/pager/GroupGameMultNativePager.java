@@ -84,7 +84,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.NewCourseLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveAudioManager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.BasePlayerFragment;
 
 import org.json.JSONArray;
 import org.json.JSONException;

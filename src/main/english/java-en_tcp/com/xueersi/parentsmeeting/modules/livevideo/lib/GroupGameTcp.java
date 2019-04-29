@@ -280,8 +280,10 @@ public class GroupGameTcp {
                         sendMessageHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                mainHandler.postDelayed(pingTimeOut, pingTime);
-                                writeThread.heart();
+                                if (!isStop) {
+                                    mainHandler.postDelayed(pingTimeOut, pingTime);
+                                    writeThread.heart();
+                                }
                             }
                         }, heartTime);
                     }
@@ -293,8 +295,10 @@ public class GroupGameTcp {
                         sendMessageHandler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                mainHandler.postDelayed(pingTimeOut, pingTime);
-                                writeThread.heart();
+                                if (!isStop) {
+                                    mainHandler.postDelayed(pingTimeOut, pingTime);
+                                    writeThread.heart();
+                                }
                             }
                         }, heartTime);
                     }
