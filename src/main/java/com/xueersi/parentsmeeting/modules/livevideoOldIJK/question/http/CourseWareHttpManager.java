@@ -58,7 +58,7 @@ public class CourseWareHttpManager {
 //            httpRequestParams.addBodyParam("liveId", "376269");
 //            httpRequestParams.addBodyParam("packageAttr", "1");
 //            httpRequestParams.addBodyParam("releasedPageInfos", "[{\"72853\":[\"21\",\"20188\"]}]");
-            url = LiveQueHttpConfig.LIVE_GET_COURSEWARE_TUTOR_TESTS;
+            url = LiveQueHttpConfig.LIVE_GET_COURSEWARE_SUBMIT_TESTS;
         } else if (arts == LiveVideoSAConfig.ART_SEC) {
             url = LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE;
         } else {
