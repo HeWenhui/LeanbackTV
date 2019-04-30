@@ -37,6 +37,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.action.SingleModeAction;
@@ -76,7 +77,8 @@ import java.util.Queue;
  * @Author zhangyuansun
  * @Description
  */
-public class GroupGameNativePager extends BaseCoursewareNativePager implements BaseEnglishH5CoursewarePager {
+public class GroupGameNativePager extends BaseCoursewareNativePager implements BaseEnglishH5CoursewarePager,
+        LiveVideoPoint.VideoSizeChange {
 
     /**
      * 加载中
@@ -320,6 +322,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 }
             }, PermissionConfig.PERMISSION_CODE_AUDIO);
         }
+        videoSizeChange(LiveVideoPoint.getInstance());
     }
 
     private void setVoice() {
@@ -393,6 +396,16 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             }
         });
         ((ViewGroup) mView).addView(groupGameMVPMultPager.getRootView());
+    }
+
+    @Override
+    public void videoSizeChange(LiveVideoPoint liveVideoPoint) {
+        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) rlGroupGameSingle.getLayoutParams();
+        int rightMargin = liveVideoPoint.screenWidth - liveVideoPoint.x4;
+        if (lp.rightMargin != rightMargin) {
+            lp.rightMargin = rightMargin;
+            rlGroupGameSingle.setLayoutParams(lp);
+        }
     }
 
     class CourseWebViewClient extends MyWebViewClient implements OnHttpCode {
