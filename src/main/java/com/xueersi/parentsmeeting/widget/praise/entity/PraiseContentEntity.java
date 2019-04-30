@@ -11,6 +11,8 @@ public class PraiseContentEntity {
     int status;
     /** 布局类型 */
     int viewType;
+    /** 列占位*/
+    int itemSpan;
 
     public String getTittle() {
         return tittle;
@@ -42,5 +44,13 @@ public class PraiseContentEntity {
 
     public void setViewType(int viewType) {
         this.viewType = viewType;
+    }
+
+    public int getItemSpan() {
+        return itemSpan;
+    }
+
+    public void setItemSpan(int itemSpan) {
+        this.itemSpan = itemSpan;
     }
 }
