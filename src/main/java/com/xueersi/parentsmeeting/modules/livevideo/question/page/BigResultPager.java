@@ -65,6 +65,7 @@ public class BigResultPager extends LiveBasePager {
         if (isRight == LiveQueConfig.DOTTYPE_RESULT_WRONG) {
             tvBigqueResultTitle.setText("很遗憾答错了");
             ivBigqueResultTitle.setImageResource(R.drawable.bg_livevideo_bigque_result_wrong_title);
+            mView.findViewById(R.id.iv_livevideo_bigque_result_title_light).setVisibility(View.GONE);
         } else if (isRight == LiveQueConfig.DOTTYPE_ITEM_RIGHT) {
             tvBigqueResultTitle.setText("恭喜你答对了    金币+" + bigResultEntitie.getGold());
             ivBigqueResultTitle.setImageResource(R.drawable.bg_livevideo_bigque_result_right_title);

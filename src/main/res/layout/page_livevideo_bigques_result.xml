@@ -4,6 +4,13 @@
     android:background="#9f000000"
     android:orientation="vertical">
 
+    <ImageView
+        android:id="@id/iv_livevideo_bigque_result_title_light"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/bg_livevideo_bigque_result_right_title_light" />
+
     <RelativeLayout
         android:id="@id/rl_livevideo_bigque_result_content"
         android:layout_width="460dp"
@@ -101,7 +108,6 @@
 
         </android.support.v7.widget.RecyclerView>
     </RelativeLayout>
-
 
     <ImageView
         android:id="@id/iv_livevideo_bigque_result_title"

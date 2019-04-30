@@ -17,6 +17,7 @@
     <item name="tv_livevideo_new_course_commit_continue" type="id" />
     <!--大题互动结果页-->
     <item name="iv_livevideo_bigque_result_title" type="id" />
+    <item name="iv_livevideo_bigque_result_title_light" type="id" />
     <item name="tv_livevideo_bigque_result_title" type="id" />
     <item name="iv_livevideo_bigque_result_close" type="id" />
     <item name="rl_livevideo_bigque_result_content" type="id" />

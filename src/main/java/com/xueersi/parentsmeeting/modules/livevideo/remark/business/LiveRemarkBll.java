@@ -1050,8 +1050,7 @@ public class LiveRemarkBll {
                         ivShot.setScaleType(ImageView.ScaleType.FIT_XY);
                         vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f13232);
                         ImageLoader.with(mContext).load(entity.getPic()).placeHolder(R.drawable.bg_default_image).error(R.drawable.bg_default_image).into(ivShot);
-                        sb.append("大题互动");
-                        sb.append(entity.getNum());
+                        sb.append("互动点");
                         break;
                     default:
                         ivShot.setScaleType(ImageView.ScaleType.FIT_XY);
