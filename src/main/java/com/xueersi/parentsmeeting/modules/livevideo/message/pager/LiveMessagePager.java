@@ -1880,12 +1880,15 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 
     @Override
     public void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isShow) {
-        if (videoQuestionLiveEntity.getDotType() != 0) {
-            isBigQue = isShow;
-            if (isShow) {
+        if (isShow) {
+            if (videoQuestionLiveEntity != null && videoQuestionLiveEntity.getDotType() != 0) {
+                isBigQue = true;
                 btMesOpen.setVisibility(View.GONE);
                 btMsgCommon.setVisibility(View.GONE);
-            } else {
+            }
+        } else {
+            if (isBigQue) {
+                isBigQue = false;
                 btMesOpen.setVisibility(View.VISIBLE);
                 btMsgCommon.setVisibility(View.VISIBLE);
             }
