@@ -1633,7 +1633,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         ArrayList<Integer> arrayList = wordScore.get(answer);
                         if (arrayList != null) {
                             mLogtf.d("submit:arrayList=" + arrayList.size() + ",singleCount=" + testInfoEntity.getSingleCount());
-                            int isRight = arrayList.size() == testInfoEntity.getSingleCount() ? 1 : 0;
+                            int isRight = arrayList.size() >= testInfoEntity.getSingleCount() ? 1 : 0;
                             if (isRight == 1) {
                                 rightNum++;
                             }
