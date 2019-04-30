@@ -29,4 +29,6 @@ public class LogConfig {
     public static String LIVE_BACK_CATEGORY_UNKNOW = "live_back_category_unknow";
     /** 直播未知类型 */
     public static String LIVE_NOTICE_UNKNOW = "live_notice_unknow";
+    /** 直播文件夹 */
+    public static String LIVE_CACHE_FILE = "live_cache_file";
 }

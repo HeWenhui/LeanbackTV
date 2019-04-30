@@ -6,9 +6,9 @@ import android.content.Context;
 import com.tal.speech.utils.SpeechUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.BasePlayerFragment;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
 
 /**
  * Created by lyqai on 2017/11/21.

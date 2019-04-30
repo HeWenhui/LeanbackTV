@@ -759,6 +759,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         stopShowRefresyLayout();
     }
 
+    /** 是否允许移动数据播放 */
+    private boolean allowMobilePlayVideo = false;
+
     /**
      * 开启了3G/4G提醒
      *
@@ -798,6 +801,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                         public void onClick(View v) {
                             logger.i("onNowMobileEvent:onClick:initialized=" + initialized + ",finalPause=" +
                                     finalPause);
+                            allowMobilePlayVideo = true;
                             if (initialized) {
                                 if (finalPause) {
                                     if (vPlayer != null) {
@@ -856,6 +860,16 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             videoBackgroundRefresh.setVisibility(View.GONE);
             logger.d("onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
             playNewVideo();
+        } else {
+            StringBuilder stringBuilder = new StringBuilder();
+            int netWorkType = NetWorkHelper.getNetWorkState(activity, stringBuilder);
+            if (netWorkType == NetWorkHelper.MOBILE_STATE && allowMobilePlayVideo) {
+                videoBackgroundRefresh.setVisibility(View.GONE);
+                logger.d("mobile status : onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
+                playNewVideo();
+            } else {
+                logger.i("not mobile status,or not allowMobilePlayVideo");
+            }
         }
 //        if (AppBll.getInstance(this).isNetWorkAlert()) {
 //            loadView(mLayoutVideo);
