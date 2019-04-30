@@ -532,7 +532,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     parseLiveGetInfoScience(data, liveTopic, getInfo);
                 }
             }
-            getInfo.setSubjectiveItem2AIUrl(data.optString("subjectiveItem2AIUrl","https://subjectcorrect.xesv5.com"));
+            getInfo.setSubjectiveItem2AIUrl(data.optString("subjectiveItem2AIUrl"));
             return getInfo;
         } catch (JSONException e) {
             logger.e("parseLiveGetInfo", e);
