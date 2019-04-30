@@ -114,6 +114,22 @@ public class GroupGameEmptyPager extends BaseCoursewareNativePager implements Ba
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        if (baseEnglishH5CoursewarePager != null) {
+            baseEnglishH5CoursewarePager.onResume();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (baseEnglishH5CoursewarePager != null) {
+            baseEnglishH5CoursewarePager.onPause();
+        }
+    }
+
+    @Override
     public void submitData() {
         if (baseEnglishH5CoursewarePager != null) {
             baseEnglishH5CoursewarePager.submitData();

@@ -85,6 +85,14 @@ public abstract class BaseCourseGroupItem implements AdapterItemInterface<TeamMe
 
     public abstract void onUserOffline();
 
+    public void onResume() {
+
+    }
+
+    public void onPause() {
+
+    }
+
     @Override
     public abstract void bindListener();
 

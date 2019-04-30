@@ -355,6 +355,49 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
     }
 
     @Override
+    public void onResume() {
+        mLogtf.d("onResume:enableVideo=" + enableVideo + ",enableAudio=" + enableAudio);
+        final RtcEngine rtcEngine = workerThread.getRtcEngine();
+        if (rtcEngine != null) {
+            workerThread.execute(new Runnable() {
+                @Override
+                public void run() {
+                    if (enableVideo) {
+                        rtcEngine.enableLocalVideo(true);
+                    }
+                }
+            });
+            workerThread.execute(new Runnable() {
+                @Override
+                public void run() {
+                    if (enableAudio) {
+                        rtcEngine.muteLocalAudioStream(false);
+                    }
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onPause() {
+        final RtcEngine rtcEngine = workerThread.getRtcEngine();
+        if (rtcEngine != null) {
+            workerThread.execute(new Runnable() {
+                @Override
+                public void run() {
+                    rtcEngine.enableLocalVideo(false);
+                }
+            });
+            workerThread.execute(new Runnable() {
+                @Override
+                public void run() {
+                    rtcEngine.muteLocalAudioStream(true);
+                }
+            });
+        }
+    }
+
+    @Override
     public void onDestory() {
         if (bitmap6 != null) {
             bitmap6.recycle();
