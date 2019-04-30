@@ -62,6 +62,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.CleanUpEnti
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.GroupGameTestInfosEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.PagerShowTime;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.ScoreEnergy;
+import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.SpeechResult;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.VidooCannonEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.item.BaseCourseGroupItem;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.item.CourseGroupMyItem;
@@ -170,7 +171,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     private boolean addJs = false;
 
     private int mPagerIndex = 0;
-    private int mSingCount = 0;
     private InteractiveTeam interactiveTeam;
     private WorkerThreadPool mWorkerThread;
     private HashMap<String, BaseCourseGroupItem> courseGroupItemHashMap = new HashMap<>();
@@ -187,7 +187,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     private HashMap<Integer, PagerShowTime> voicePagerShowTimeHashMap = new HashMap<>();
     /** cleanUp页面展示时间 */
     private HashMap<Integer, PagerShowTime> cleanUpPagerShowTimeHashMap = new HashMap<>();
-    private List<ResultEntity> allScoreList = new ArrayList<>();
+    //    private List<ResultEntity> allScoreList = new ArrayList<>();
+    private HashMap<Integer, List<SpeechResult>> scoreHashmap = new HashMap<>();
     /** 最小分数 */
     private int minscore = 70;
     private GetStuActiveTeam getStuActiveTeam;
@@ -1502,20 +1503,24 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         float averageScore = 0;
         int sum = 0;
         int gameGroupId = interactiveTeam.getInteractive_team_id();
-        String scores = "";
+        int tryTimes = 0;
         try {
-            int size = allScoreList.size();
+            int size = scoreHashmap.size();
             if (size != 0) {
-                for (int i = 0; i < size; i++) {
-                    ResultEntity resultEntity = allScoreList.get(i);
-                    voiceTime += resultEntity.getSpeechDuration() * 1000;
-                    sum += resultEntity.getScore();
-                    scores += resultEntity.getScore();
-                    if (i < size - 1) {
-                        scores += ",";
+                Set<Integer> keySet = scoreHashmap.keySet();
+                Iterator<Integer> it = keySet.iterator();
+                if (it.hasNext()) {
+                    Integer key = it.next();
+                    List<SpeechResult> speechResults = scoreHashmap.get(key);
+                    for (int i = 0; i < speechResults.size(); i++) {
+                        tryTimes++;
+                        SpeechResult speechResult = speechResults.get(i);
+                        sum += speechResult.score;
                     }
                 }
-                averageScore = sum / size;
+                if (tryTimes != 0) {
+                    averageScore = sum / tryTimes;
+                }
             }
         } catch (Exception e) {
             mLogtf.e("submit", e);
@@ -1547,7 +1552,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 maxCleanUpEntity.teamMemberEntity.gold = 3;
             }
             try {
-                int tryTimes = allScoreList.size();
                 answerData.put("tryTimes", tryTimes);
                 JSONArray userAnswer = new JSONArray();
                 CleanUpEntity cleanUpEntity = cleanUpEntities.get("" + stuid);
@@ -1566,7 +1570,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             jsonObject.put("isRight", 0);
                         }
                         jsonObject.put("voiceTime", 0);
-                        jsonObject.put("scores", scores);
+                        jsonObject.put("scores", getScores(answer.getId()));
                         userAnswer.put(jsonObject);
                     }
                 } else {
@@ -1616,7 +1620,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 maxVidooCannonEntity.teamMemberEntity.gold = 3;
             }
             try {
-                answerData.put("tryTimes", allScoreList.size());
+                answerData.put("tryTimes", tryTimes);
                 JSONArray userAnswer = new JSONArray();
                 VidooCannonEntity vidooCannonEntity = vidooCannonEntities.get("" + stuid);
                 if (vidooCannonEntity != null && !tests.isEmpty()) {
@@ -1651,7 +1655,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         } else {
                             jsonObject.put("voiceTime", 0);
                         }
-                        jsonObject.put("scores", scores);
+                        jsonObject.put("scores", getScores(answer.getId()));
                         userAnswer.put(jsonObject);
                     }
                 } else {
@@ -1735,6 +1739,22 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 //                        }
                     }
                 });
+    }
+
+    private String getScores(Integer key) {
+        String scores = "";
+        List<SpeechResult> speechResults = scoreHashmap.get(key);
+        if (speechResults != null) {
+            for (int sindex = 0; sindex < speechResults.size(); sindex++) {
+                SpeechResult speechResult = speechResults.get(sindex);
+                scores += "" + speechResult.score;
+                if (sindex < speechResults.size() - 1) {
+                    scores += ",";
+                }
+            }
+        }
+        mLogtf.d("getScores:key=" + key + ",scores=" + scores);
+        return scores;
     }
 
     @Override
@@ -1928,8 +1948,20 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
         @Override
         public void onResult(ResultEntity resultEntity) {
+            int newSenIndex = resultEntity.getNewSenIdx();
             int score = resultEntity.getScore();
-            allScoreList.add(resultEntity);
+            try {
+                List<SpeechResult> speechResults = scoreHashmap.get(newSenIndex);
+                if (speechResults == null) {
+                    speechResults = new ArrayList<>();
+                    scoreHashmap.put(newSenIndex, speechResults);
+                }
+                SpeechResult speechResult = new SpeechResult();
+                speechResult.score = score;
+                speechResults.add(speechResult);
+            } catch (Exception e) {
+                CrashReport.postCatchedException(new LiveException(TAG, e));
+            }
             if (score < minscore) {
                 BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stuid);
                 if (courseGroupItem != null) {
@@ -1938,7 +1970,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 }
                 return;
             }
-            mSingCount++;
             ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
             try {
                 {
@@ -2035,8 +2066,20 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         @Override
         public void onResult(ResultEntity resultEntity) {
             try {
+                int newSenIndex = resultEntity.getNewSenIdx();
                 int score = resultEntity.getScore();
-                allScoreList.add(resultEntity);
+                try {
+                    List<SpeechResult> speechResults = scoreHashmap.get(newSenIndex);
+                    if (speechResults == null) {
+                        speechResults = new ArrayList<>();
+                        scoreHashmap.put(newSenIndex, speechResults);
+                    }
+                    SpeechResult speechResult = new SpeechResult();
+                    speechResult.score = score;
+                    speechResults.add(speechResult);
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                }
                 if (score < minscore) {
                     BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stuid);
                     if (courseGroupItem != null) {
@@ -2045,7 +2088,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     }
                     return;
                 }
-                mSingCount++;
                 ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
                 int newSenIdx = resultEntity.getNewSenIdx();
                 mLogtf.d("CleanEvaluatorIng:newSenIdx=" + newSenIdx + ",size" + allAnswerList.size() + ",speechContent=" + speechContent);
@@ -2296,7 +2338,6 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             wordCount.clear();
                             JSONArray mateArray = jsonObject.optJSONArray("stu_data");
                             if (mateArray != null) {
-                                boolean isEmpty = allScoreList.isEmpty();
                                 for (int i = 0; i < mateArray.length(); i++) {
                                     JSONObject mateObj = mateArray.getJSONObject(i);
                                     String stu_id = mateObj.getString("stu_id");
@@ -2324,14 +2365,23 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                                     }
                                                 }
                                             }
+                                            boolean isEmpty;
+                                            List<SpeechResult> speechResults = scoreHashmap.get(wordId);
+                                            if (speechResults == null) {
+                                                isEmpty = true;
+                                                speechResults = new ArrayList<>();
+                                                scoreHashmap.put(wordId, speechResults);
+                                            } else {
+                                                isEmpty = speechResults.isEmpty();
+                                            }
                                             JSONArray word_score = word_scores.getJSONArray(key);
                                             for (int wordIndex = 0; wordIndex < word_score.length(); wordIndex++) {
                                                 int score = word_score.getInt(wordIndex);
                                                 allScore.add(score);
                                                 if (isEmpty && stu_id.equals("" + stuid)) {
-                                                    ResultEntity resultEntity = new ResultEntity();
-                                                    resultEntity.setScore(score);
-                                                    allScoreList.add(resultEntity);
+                                                    SpeechResult speechResult = new SpeechResult();
+                                                    speechResult.score = score;
+                                                    speechResults.add(speechResult);
                                                 }
                                                 rightNum++;
                                                 integer++;
