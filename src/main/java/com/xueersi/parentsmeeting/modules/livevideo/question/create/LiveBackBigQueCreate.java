@@ -27,7 +27,7 @@ public class LiveBackBigQueCreate implements BigQueCreate {
     }
 
     @Override
-    public BaseLiveBigQuestionPager create(final VideoQuestionLiveEntity videoQuestionLiveEntity, RelativeLayout rlQuestionResContent, LiveBasePager.OnPagerClose onPagerClose, OnSubmit onSubmit) {
+    public BaseLiveBigQuestionPager create(final VideoQuestionLiveEntity videoQuestionLiveEntity, RelativeLayout rlQuestionResContent, final LiveBasePager.OnPagerClose onPagerClose, OnSubmit onSubmit) {
         if (videoQuestionLiveEntity.getDotType() == LiveQueConfig.DOTTYPE_SELE || videoQuestionLiveEntity.getDotType() == LiveQueConfig.DOTTYPE_MUL_SELE) {
             BigQuestionSelectLivePager bigQuestionSelectLivePager = new BigQuestionSelectLivePager(activity, videoQuestionLiveEntity);
             bigQuestionSelectLivePager.setQuestionSecHttp(questionSecHttp);
@@ -36,7 +36,7 @@ public class LiveBackBigQueCreate implements BigQueCreate {
             bigQuestionSelectLivePager.setOnPagerClose(new LiveBasePager.WrapOnPagerClose(onPagerClose) {
                 @Override
                 public void onClose(LiveBasePager basePager) {
-                    super.onClose(basePager);
+                    onPagerClose.onClose(basePager);
                     MediaPlayerControl mediaPlayerControl = ProxUtil.getProxUtil().get(activity, MediaPlayerControl.class);
                     if (mediaPlayerControl != null) {
                         mediaPlayerControl.seekTo(videoQuestionLiveEntity.getvEndTime() * 1000);
@@ -53,7 +53,7 @@ public class LiveBackBigQueCreate implements BigQueCreate {
             bigQuestionFillInBlankLivePager.setOnPagerClose(new LiveBasePager.WrapOnPagerClose(onPagerClose) {
                 @Override
                 public void onClose(LiveBasePager basePager) {
-                    super.onClose(basePager);
+                    onPagerClose.onClose(basePager);
                     MediaPlayerControl mediaPlayerControl = ProxUtil.getProxUtil().get(activity, MediaPlayerControl.class);
                     if (mediaPlayerControl != null) {
                         mediaPlayerControl.seekTo(videoQuestionLiveEntity.getvEndTime() * 1000);

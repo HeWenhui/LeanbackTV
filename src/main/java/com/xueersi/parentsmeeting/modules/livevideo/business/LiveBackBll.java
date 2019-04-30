@@ -445,7 +445,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             logger.d("scanQuestion:showQuestion");
             Log.e("Duncan", "showQuestion:" + position);
             showQuestion(oldQuestionEntity, showQuestion);
-            if (LocalCourseConfig.CATEGORY_REDPACKET != mQuestionEntity.getvCategory()){
+            if (LocalCourseConfig.CATEGORY_REDPACKET != mQuestionEntity.getvCategory()) {
                 LiveVideoConfig.isAITrue = false;
             }
         }
@@ -639,6 +639,13 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                     hasQuestionShow = true;
                     index = i;
                     standexperienceRecommondCourseIsShow = true;
+                    break;
+                }
+            } else if (LocalCourseConfig.CATEGORY_BIG_TEST == videoQuestionEntity.getvCategory()) {//大题互动
+                if (startTime <= playPosition) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
                     break;
                 }
             }

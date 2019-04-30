@@ -678,6 +678,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             final BaseLiveBigQuestionPager bigQuestionPager = bigQueCreate.create(videoQuestionLiveEntity, rlQuestionResContent, new LiveBasePager.OnPagerClose() {
                 @Override
                 public void onClose(LiveBasePager basePager) {
+                    basePager.onDestroy();
+                    rlQuestionContent.removeView(basePager.getRootView());
                     if (basePager == baseLiveBigQuestionPager) {
                         baseLiveBigQuestionPager = null;
                     }
