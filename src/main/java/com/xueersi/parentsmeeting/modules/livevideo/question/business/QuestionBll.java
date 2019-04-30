@@ -669,6 +669,12 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     });
                 }
             }
+            String key = videoQuestionLiveEntity.id + "-" + videoQuestionLiveEntity.getDotId();
+            //已经做过题目。
+            if (mQueAndBool.contains(key)) {
+                return;
+            }
+            mQueAndBool.add(key);
             final BaseLiveBigQuestionPager bigQuestionPager = bigQueCreate.create(videoQuestionLiveEntity, rlQuestionResContent, new LiveBasePager.OnPagerClose() {
                 @Override
                 public void onClose(LiveBasePager basePager) {
@@ -705,12 +711,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             }
         } else {
             if (baseLiveBigQuestionPager != null) {
-                mLogtf.d("showBigQuestion:isAttach=" + baseLiveBigQuestionPager.isAttach());
                 final BaseLiveBigQuestionPager finalpager = baseLiveBigQuestionPager;
                 mVPlayVideoControlHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        if (finalpager == baseLiveBigQuestionPager && baseLiveBigQuestionPager.isAttach()) {
+                        if (finalpager == baseLiveBigQuestionPager) {
                             baseLiveBigQuestionPager.submitData();
                         }
                     }

@@ -371,6 +371,7 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
 
     private void showResult(BigResultEntity bigResultEntity, int isForce) {
         mView.setVisibility(View.GONE);
+        onSubmit.onSubmit(this);
         resultPager = new BigResultPager(mContext, rlQuestionResContent, bigResultEntity);
         rlQuestionResContent.addView(resultPager.getRootView());
         resultPager.setOnPagerClose(new OnPagerClose() {

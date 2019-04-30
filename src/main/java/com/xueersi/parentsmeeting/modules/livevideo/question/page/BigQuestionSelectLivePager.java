@@ -317,6 +317,7 @@ public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
 
     private void showResult(BigResultEntity bigResultEntity, int isForce) {
         mView.setVisibility(View.GONE);
+        onSubmit.onSubmit(this);
         resultPager = new BigResultPager(mContext, rlQuestionResContent, bigResultEntity);
         rlQuestionResContent.addView(resultPager.getRootView());
         resultPager.setOnPagerClose(new OnPagerClose() {
