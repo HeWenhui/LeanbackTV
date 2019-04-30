@@ -224,7 +224,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         }
         initListener();
         setVoice();
-        GroupGameLog.sno2(liveAndBackDebug, detailInfo.id);
+        GroupGameLog.sno2(liveAndBackDebug, detailInfo.id, 0);
     }
 
     @Override
@@ -484,8 +484,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 initData();
             }
         });
-        GroupGameLog.sno3(liveAndBackDebug, detailInfo.id);
-        GroupGameLog.sno4(liveAndBackDebug, detailInfo.id, "0");
+        GroupGameLog.sno3(liveAndBackDebug, detailInfo.id, 0);
+        GroupGameLog.sno4(liveAndBackDebug, detailInfo.id, "0", 0);
     }
 
     private void onCoursewareDoing(String where, JSONObject message) {
@@ -668,7 +668,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     public void onDataSucess(Object... objData) {
                         logger.d("submitGroupGame -> onDataSucess");
                         showResultPager();
-                        GroupGameLog.sno6(liveAndBackDebug, detailInfo.id, "1");
+                        GroupGameLog.sno6(liveAndBackDebug, detailInfo.id, "1", 0);
                     }
 
                     @Override
@@ -683,7 +683,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     }
                 });
         GroupGameLog.sno5(liveAndBackDebug, detailInfo.id, isForce ? "endPublish" : "autoSubmit", voiceTime == 0 ?
-                "0" : "1");
+                "0" : "1", 0);
     }
 
     private int calculateStarByScore(int averageScore) {
@@ -998,7 +998,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     presentTime = System.currentTimeMillis() - presentTime;
                     presentTimeList.add(presentTime);
                     turnToPageNum = pageNum;
-                    GroupGameLog.sno4(liveAndBackDebug, detailInfo.id, pageNum + "");
+                    GroupGameLog.sno4(liveAndBackDebug, detailInfo.id, pageNum + "", 0);
                 }
                 jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
                 //答对题目学生序号（1/2/3）  单人模式只有2号学生
