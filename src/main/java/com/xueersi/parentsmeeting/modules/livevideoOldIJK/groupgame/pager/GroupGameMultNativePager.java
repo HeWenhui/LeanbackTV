@@ -36,7 +36,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.AudioRequest;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -1509,7 +1509,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             if (size != 0) {
                 Set<Integer> keySet = scoreHashmap.keySet();
                 Iterator<Integer> it = keySet.iterator();
-                if (it.hasNext()) {
+                while (it.hasNext()) {
                     Integer key = it.next();
                     List<SpeechResult> speechResults = scoreHashmap.get(key);
                     for (int i = 0; i < speechResults.size(); i++) {
@@ -1945,25 +1945,35 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         void onResult(ResultEntity resultEntity);
     }
 
-    private class VoiceCannnon implements EvaluatorIng {
-
-        @Override
-        public void onResult(ResultEntity resultEntity) {
-            int newSenIndex = resultEntity.getNewSenIdx();
-            int score = resultEntity.getScore();
-            try {
-                List<SpeechResult> speechResults = scoreHashmap.get(newSenIndex);
+    private void addScore(ResultEntity resultEntity) {
+        int newSenIndex = resultEntity.getNewSenIdx();
+        int score = resultEntity.getScore();
+        try {
+            if (newSenIndex >= 0 && newSenIndex < speechAnswerList.size()) {
+                GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity removeAnswersEntity = speechAnswerList.get(newSenIndex);
+                int key = removeAnswersEntity.getId();
+                List<SpeechResult> speechResults = scoreHashmap.get(key);
                 if (speechResults == null) {
                     speechResults = new ArrayList<>();
-                    scoreHashmap.put(newSenIndex, speechResults);
+                    scoreHashmap.put(key, speechResults);
                 }
                 SpeechResult speechResult = new SpeechResult();
                 speechResult.score = score;
                 speechResult.speechDuration = resultEntity.getSpeechDuration();
                 speechResults.add(speechResult);
-            } catch (Exception e) {
-                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
+        } catch (Exception e) {
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
+    }
+
+    private class VoiceCannnon implements EvaluatorIng {
+
+        @Override
+        public void onResult(ResultEntity resultEntity) {
+            addScore(resultEntity);
+            int newSenIndex = resultEntity.getNewSenIdx();
+            int score = resultEntity.getScore();
             if (score < minscore) {
                 BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stuid);
                 if (courseGroupItem != null) {
@@ -2068,21 +2078,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         @Override
         public void onResult(ResultEntity resultEntity) {
             try {
-                int newSenIndex = resultEntity.getNewSenIdx();
+                addScore(resultEntity);
                 int score = resultEntity.getScore();
-                try {
-                    List<SpeechResult> speechResults = scoreHashmap.get(newSenIndex);
-                    if (speechResults == null) {
-                        speechResults = new ArrayList<>();
-                        scoreHashmap.put(newSenIndex, speechResults);
-                    }
-                    SpeechResult speechResult = new SpeechResult();
-                    speechResult.score = score;
-                    speechResult.speechDuration = resultEntity.getSpeechDuration();
-                    speechResults.add(speechResult);
-                } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
-                }
                 if (score < minscore) {
                     BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stuid);
                     if (courseGroupItem != null) {
