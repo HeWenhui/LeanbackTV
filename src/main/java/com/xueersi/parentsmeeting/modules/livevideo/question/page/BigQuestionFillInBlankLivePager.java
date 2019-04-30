@@ -29,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.QuesReslutEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.PlaybackVideoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.ui.adapter.XsBaseAdapter;
@@ -303,7 +304,7 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
                     rlQuestionResContent.removeView(resultPager.getRootView());
                     onPagerClose.onClose(BigQuestionFillInBlankLivePager.this);
                 }
-            }, 10000);
+            }, LiveQueConfig.BIG_TEST_CLOSE);
             return;
         }
         JSONArray userAnswer = new JSONArray();
@@ -391,7 +392,7 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
                         onPagerClose.onClose(BigQuestionFillInBlankLivePager.this);
                     }
                 }
-            }, 5000);
+            }, LiveQueConfig.BIG_TEST_CLOSE);
         }
     }
 

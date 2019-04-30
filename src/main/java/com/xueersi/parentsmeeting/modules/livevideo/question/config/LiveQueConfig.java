@@ -88,6 +88,10 @@ public class LiveQueConfig {
      * 大题互动部分正确
      */
     public static final int DOTTYPE_ITEM_PART_RIGHT = 2;
+    /**
+     * 大题互动自动关闭
+     */
+    public static final int BIG_TEST_CLOSE = 10000;
 
     public static ArrayList getSubmitMultiTestTypes() {
         if (SUBMIT_MULTI_TEST_TYPES == null) {

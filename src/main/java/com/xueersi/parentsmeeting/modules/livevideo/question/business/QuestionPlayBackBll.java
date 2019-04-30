@@ -313,7 +313,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                     videoQuestionLiveEntity.setSrcType(jsonObject.getString("srcType"));
                     videoQuestionLiveEntity.setDotType(jsonObject.getInt("choiceType"));
                     if (videoQuestionLiveEntity.getDotType() == LiveQueConfig.DOTTYPE_FILL) {
-                        videoQuestionLiveEntity.num = jsonObject.getInt("itemNum");
+                        videoQuestionLiveEntity.num = jsonObject.getInt("item_num");
                     } else {
                         videoQuestionLiveEntity.num = LiveQueConfig.DOTTYPE_SELE_NUM;
                     }

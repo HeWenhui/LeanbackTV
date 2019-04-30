@@ -248,7 +248,7 @@ public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
                         onPagerClose.onClose(BigQuestionSelectLivePager.this);
                     }
                 }
-            }, 10000);
+            }, LiveQueConfig.BIG_TEST_CLOSE);
             return;
         }
         JSONArray userAnswer = new JSONArray();
@@ -336,7 +336,7 @@ public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
                         onPagerClose.onClose(BigQuestionSelectLivePager.this);
                     }
                 }
-            }, 10000);
+            }, LiveQueConfig.BIG_TEST_CLOSE);
         }
     }
 
