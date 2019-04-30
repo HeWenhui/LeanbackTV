@@ -50,8 +50,8 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.Engl
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.config.CourseMessage;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.dialog.CourseTipDialog;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.entity.NewCourseSec;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.entity.PrimaryScienceAnswerResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.web.MiddleResult;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.web.NewCourseCache;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.web.OnHttpCode;

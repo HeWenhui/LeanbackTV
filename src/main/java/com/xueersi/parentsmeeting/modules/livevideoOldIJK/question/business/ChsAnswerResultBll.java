@@ -70,7 +70,7 @@ public class ChsAnswerResultBll extends LiveBaseBll implements NoticeAction, Ans
         if (mDsipalyer != null) {
             return;
         }
-        mDsipalyer = new ChiAnswerResultPager(mContext, mAnswerReulst, ChsAnswerResultBll.this);
+        mDsipalyer = new ChiAnswerResultPager(mContext, mAnswerReulst, this);
         mRootView.postDelayed(new Runnable() {
             @Override
             public void run() {
