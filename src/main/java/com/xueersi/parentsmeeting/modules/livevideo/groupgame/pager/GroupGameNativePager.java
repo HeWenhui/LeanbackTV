@@ -841,19 +841,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     }
 
     /**
-     * 评测失败 - oops
-     */
-    private void onOops() {
-        tvOops.setVisibility(View.VISIBLE);
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                tvOops.setVisibility(View.GONE);
-            }
-        }, 2000);
-    }
-
-    /**
      * 热气球交互
      */
     class HotAirBallonAction implements SingleModeAction {
@@ -1024,6 +1011,22 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 }, 2000);
             }
         }
+
+        /**
+         * 评测失败 - oops
+         */
+        private void onOops() {
+            if (detailInfo.type.equals(LiveQueConfig.EN_COURSE_TYPE_HOT_AIR_BALLON)) {
+                return;
+            }
+            tvOops.setVisibility(View.VISIBLE);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    tvOops.setVisibility(View.GONE);
+                }
+            }, 2000);
+        }
     }
 
     /**
@@ -1193,6 +1196,19 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 @Override
                 public void run() {
                     flFireAdd.setVisibility(View.GONE);
+                }
+            }, 2000);
+        }
+
+        /**
+         * 评测失败 - oops
+         */
+        private void onOops() {
+            tvOops.setVisibility(View.VISIBLE);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    tvOops.setVisibility(View.GONE);
                 }
             }, 2000);
         }
