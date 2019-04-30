@@ -105,7 +105,7 @@ public class DarkPraisePager extends LiveBasePager {
         recyclerView.setAdapter(contentAdapter);
 
         setListener();
-        practiceView.playAnimation();
+//        practiceView.playAnimation();
 
     }
 
@@ -115,6 +115,7 @@ public class DarkPraisePager extends LiveBasePager {
             @Override
             public void onClick(View v) {
                 upDatePraiseNum(1, true);
+                practiceView.playAnimation();
             }
         });
     }

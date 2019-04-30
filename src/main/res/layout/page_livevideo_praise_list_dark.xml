@@ -27,29 +27,33 @@
             android:layout_centerHorizontal="true"
             android:background="@drawable/bg_page_livevideo_praise_list_dark_sub_title_1"
             android:gravity="center"
+            android:layout_marginTop="100dp"
             android:text="恭喜入榜，再接在理哦！" />
 
         <android.support.v7.widget.RecyclerView
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="140dp"
+            android:layout_marginBottom="50dp"
+            android:layout_marginRight="18dp"
             android:id="@id/rv_livevideo_praise_list_dark_content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </RelativeLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="220dp"
+        android:layout_marginRight="10dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/rl_page_livevideo_praise_list_dark_content"
-        android:orientation="vertical">
+        android:layout_toRightOf="@id/rl_page_livevideo_praise_list_dark_content">
 
         <com.airbnb.lottie.LottieAnimationView
             android:id="@id/lav_livevideo_praise_list_dark_practice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/fl_page_livevideo_praise_list_dark_practice"
-            android:layout_marginRight="10dp"
+            android:layout_marginBottom="10dp"
             app:lottie_fileName="practicecourse/dark/practice_course_dark.json"
             app:lottie_imageAssetsFolder="practicecourse/dark/images"
             app:lottie_loop="true" />
@@ -60,8 +64,8 @@
             android:layout_width="65dp"
             android:layout_height="65dp"
             android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
             android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginBottom="15dp"
             app:auto_star="false">
 
             <ImageView
@@ -76,9 +80,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|bottom"
                 android:layout_marginBottom="16dp"
-                android:textColor="#FFEDA5"
+                android:textColor="#F9BD43"
                 android:textSize="11sp" />
 
         </com.xueersi.parentsmeeting.modules.livevideo.widget.PraiseBtnAnimLayout>
-    </LinearLayout>
+    </RelativeLayout>
 </RelativeLayout>
