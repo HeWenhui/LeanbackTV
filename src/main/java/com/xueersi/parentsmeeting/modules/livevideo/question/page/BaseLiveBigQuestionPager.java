@@ -21,7 +21,8 @@ public abstract class BaseLiveBigQuestionPager extends LiveBasePager {
     protected QuestionSecHttp questionSecHttp;
     protected VideoQuestionLiveEntity videoQuestionLiveEntity;
     protected RelativeLayout rlQuestionResContent;
-    BigQueCreate.OnSubmit onSubmit;
+    protected BigQueCreate.OnSubmit onSubmit;
+    protected boolean isPlayback = false;
 
     public BaseLiveBigQuestionPager(Context context) {
         super(context);
@@ -33,6 +34,10 @@ public abstract class BaseLiveBigQuestionPager extends LiveBasePager {
 
     public void setOnSubmit(BigQueCreate.OnSubmit onSubmit) {
         this.onSubmit = onSubmit;
+    }
+
+    public void setPlayback(boolean playback) {
+        isPlayback = playback;
     }
 
     @Override

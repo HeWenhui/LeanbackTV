@@ -16,7 +16,7 @@
             android:layout_alignParentBottom="true"
             android:orientation="vertical">
 
-            <LinearLayout
+            <cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout
                 android:id="@id/v_livevideo_question_content_bord"
                 android:layout_width="100dp"
                 android:layout_height="@dimen/panel_height"

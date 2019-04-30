@@ -33,6 +33,7 @@ public class LiveBackBigQueCreate implements BigQueCreate {
             bigQuestionSelectLivePager.setQuestionSecHttp(questionSecHttp);
             bigQuestionSelectLivePager.setRlQuestionResContent(rlQuestionResContent);
             bigQuestionSelectLivePager.setOnSubmit(onSubmit);
+            bigQuestionSelectLivePager.setPlayback(true);
             bigQuestionSelectLivePager.setOnPagerClose(new LiveBasePager.WrapOnPagerClose(onPagerClose) {
                 @Override
                 public void onClose(LiveBasePager basePager) {
@@ -46,7 +47,7 @@ public class LiveBackBigQueCreate implements BigQueCreate {
             });
             return bigQuestionSelectLivePager;
         } else if (videoQuestionLiveEntity.getDotType() == LiveQueConfig.DOTTYPE_FILL) {
-            BigQuestionFillInBlankLivePager bigQuestionFillInBlankLivePager = new BigQuestionFillInBlankLivePager(activity, videoQuestionLiveEntity);
+            BigQuestionFillInBlankLivePager bigQuestionFillInBlankLivePager = new BigQuestionFillInBlankLivePager(activity, videoQuestionLiveEntity, true);
             bigQuestionFillInBlankLivePager.setQuestionSecHttp(questionSecHttp);
             bigQuestionFillInBlankLivePager.setRlQuestionResContent(rlQuestionResContent);
             bigQuestionFillInBlankLivePager.setOnSubmit(onSubmit);

@@ -34,7 +34,7 @@ public class LiveBigQueCreate implements BigQueCreate {
             bigQuestionSelectLivePager.setOnSubmit(onSubmit);
             return bigQuestionSelectLivePager;
         } else if (videoQuestionLiveEntity.getDotType() == LiveQueConfig.DOTTYPE_FILL) {
-            BigQuestionFillInBlankLivePager bigQuestionFillInBlankLivePager = new BigQuestionFillInBlankLivePager(activity, videoQuestionLiveEntity);
+            BigQuestionFillInBlankLivePager bigQuestionFillInBlankLivePager = new BigQuestionFillInBlankLivePager(activity, videoQuestionLiveEntity, false);
             bigQuestionFillInBlankLivePager.setQuestionSecHttp(questionSecHttp);
             bigQuestionFillInBlankLivePager.setRlQuestionResContent(rlQuestionResContent);
             bigQuestionFillInBlankLivePager.setOnPagerClose(onPagerClose);
