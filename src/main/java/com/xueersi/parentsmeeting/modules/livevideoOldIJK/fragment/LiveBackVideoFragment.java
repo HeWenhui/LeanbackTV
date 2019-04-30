@@ -833,8 +833,10 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             int netWorkType = NetWorkHelper.getNetWorkState(activity, stringBuilder);
             if (netWorkType == NetWorkHelper.MOBILE_STATE && allowMobilePlayVideo) {
                 videoBackgroundRefresh.setVisibility(View.GONE);
-                logger.d("onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
+                logger.d("mobile status : onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
                 playNewVideo();
+            } else {
+                logger.i("not mobile status,or not allowMobilePlayVideo");
             }
         }
 //        if (AppBll.getInstance(this).isNetWorkAlert()) {
