@@ -1631,22 +1631,17 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 if (vidooCannonEntity != null && !tests.isEmpty()) {
                     energy = vidooCannonEntity.rightNum;
                     int rightNum = 0;
-                    HashMap<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity, ArrayList<Integer>> wordScore = vidooCannonEntity.wordScore;
                     for (int ansIndex = 0; ansIndex < answerList.size(); ansIndex++) {
                         JSONObject jsonObject = new JSONObject();
                         GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = answerList.get(ansIndex);
                         jsonObject.put("text", answer.getText());
-                        ArrayList<Integer> arrayList = wordScore.get(answer);
-                        if (arrayList != null) {
-                            mLogtf.d("submit:arrayList=" + arrayList.size() + ",singleCount=" + testInfoEntity.getSingleCount());
-                            int isRight = arrayList.size() >= testInfoEntity.getSingleCount() ? 1 : 0;
-                            if (isRight == 1) {
-                                rightNum++;
-                            }
-                            jsonObject.put("isRight", isRight);
-                        } else {
-                            jsonObject.put("isRight", 0);
+                        ArrayList<Integer> arrayList = getAllWord(answer);
+                        mLogtf.d("submit:arrayList=" + arrayList.size() + ",singleCount=" + testInfoEntity.getSingleCount());
+                        int isRight = arrayList.size() >= testInfoEntity.getSingleCount() ? 1 : 0;
+                        if (isRight == 1) {
+                            rightNum++;
                         }
+                        jsonObject.put("isRight", isRight);
                         PagerShowTime pagerShowTime = voicePagerShowTimeHashMap.get(answer.getId());
                         if (pagerShowTime != null) {
                             if (pagerShowTime.start == 0) {
@@ -1756,6 +1751,20 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 //                        }
                     }
                 });
+    }
+
+    private ArrayList<Integer> getAllWord(GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer) {
+        ArrayList<Integer> allList = new ArrayList<>();
+        Set<String> keys = vidooCannonEntities.keySet();
+        for (String key : keys) {
+            VidooCannonEntity vidooCannonEntity = vidooCannonEntities.get(key);
+            HashMap<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity, ArrayList<Integer>> wordScore = vidooCannonEntity.wordScore;
+            ArrayList<Integer> arrayList = wordScore.get(answer);
+            if (arrayList != null) {
+                allList.addAll(arrayList);
+            }
+        }
+        return allList;
     }
 
     private String getScores(Integer key) {
