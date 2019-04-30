@@ -32,19 +32,48 @@ public class Camera1Utils implements IRecordVideoView {
 
     }
 
-    public void getDataInfo(int width, int height) {
+    private Camera camera;
+
+    public void initCamera(boolean isFacingBack, int width, int height) {
         int num = Camera.getNumberOfCameras();
 
         logger.d("NUM:" + num);
-        Camera camera = Camera.open(MediaRecorder.VideoSource.CAMERA);
+//        Camera camera = Camera.open(MediaRecorder.VideoSource.CAMERA);
+        camera = Camera.open(isFacingBack ? Camera.CameraInfo.CAMERA_FACING_BACK : Camera.CameraInfo.CAMERA_FACING_FRONT);
+        try {
+            camera.setPreviewDisplay(surfaceHolder);
+            camera.setPreviewCallback(new Camera.PreviewCallback() {
+                @Override
+                public void onPreviewFrame(byte[] data, Camera camera) {
+
+                }
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Camera.Parameters parameters = camera.getParameters();
         parameters.getSupportedVideoSizes();
         cameraSize = getFitSize(parameters.getSupportedVideoSizes(), width, height);
-        camera.release();
+        logger.i("cameraSize.height = " + cameraSize.height + " cameraSize.weight =" + cameraSize.width);
+        camera.startPreview();
         // Log.d(TAG,"size:height="+cameraSize.height+"   width="+cameraSize.width);
 
         // int num = Camera.getNumberOfCameras();
         //  Log.d(TAG,"size:"+parameters.toString());
+    }
+
+    public void releaseCamera() {
+        if (camera != null) {
+            //停掉原来摄像头的预览
+            camera.stopPreview();
+            //移除回调
+            camera.setPreviewCallback(null);
+            //释放资源
+            camera.release();
+            //取消原来摄像头
+            camera = null;
+            camera.release();
+        }
     }
 
     private Camera.Size getFitSize(List<Camera.Size> sizes, int realWidth, int realHeight) {
@@ -89,7 +118,7 @@ public class Camera1Utils implements IRecordVideoView {
         // 设置录制的视频帧率。必须放在设置编码和格式的后面，否则报错
         // mediarecorder.setVideoFrameRate(20);
         mediarecorder.setPreviewDisplay(surfaceHolder.getSurface());
-        String path = Environment.getExternalStorageDirectory() + "/parentsmeeting/love.mp4";
+        String path = Environment.getExternalStorageDirectory() + "/parentsmeeting/livevideo/superSpeaker/love.mp4";
         File file = new File(path);
         if (!file.exists()) {
             try {

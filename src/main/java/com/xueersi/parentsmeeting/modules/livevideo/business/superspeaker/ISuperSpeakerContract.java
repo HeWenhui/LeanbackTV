@@ -27,6 +27,8 @@ public interface ISuperSpeakerContract {
          * @param isForce 1：是 2：否
          */
         void submitSpeechShow(String isForce);
+
+        void removeView(View view);
     }
 
     interface IRedPackageView {
@@ -48,7 +50,7 @@ public interface ISuperSpeakerContract {
     }
 
     interface ICommonPresenter extends ICameraPresenter {
-        void removeView(View view);
+
     }
 //    interface ICameraView{
 //

@@ -3,9 +3,12 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Environment;
+import android.support.annotation.UiThread;
+import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.alibaba.fastjson.JSON;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.component.cloud.XesCloudUploadBusiness;
@@ -27,14 +30,15 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.text.DecimalFormat;
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
-import io.reactivex.Observer;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 
 public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicAction, ISuperSpeakerContract.ICameraPresenter {
     ISuperSpeakerContract.ICameraView iView;
@@ -51,78 +55,105 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
         super.initView(bottomContent, mIsLand);
-        if (bottomContent != null) {
-            bottomContent.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    performShowRecordCamera();
-                }
-            }, 2000);
+        if (AppConfig.DEBUG) {
+            if (bottomContent != null) {
+                bottomContent.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        performShowRecordCamera();
+                    }
+                }, 2000);
+            }
         }
     }
 
     @Override
-    public void onNotice(String sourceNick, String target, JSONObject data, int type) {
+    public void onNotice(String sourceNick, String target, final JSONObject data, int type) {
         switch (type) {
             case XESCODE.SUPER_SPEAKER_TAKE_CAMERA: {
                 int open = data.optInt("open");
                 srcType = data.optString("srcType");
                 courseWareId = data.optString("testId");
-
-                Observable.range(1, 5).map(String::valueOf).subscribe(new Observer<String>() {
+                Observable.create(new ObservableOnSubscribe<JSONObject>() {
                     @Override
-                    public void onSubscribe(Disposable d) {
-
+                    public void subscribe(ObservableEmitter<JSONObject> e) throws Exception {
+                        e.onNext(data);
                     }
-
+                }).flatMap(new Function<JSONObject, ObservableSource<Integer>>() {
                     @Override
-                    public void onNext(String s) {
-
+                    public ObservableSource<Integer> apply(JSONObject jsonObject) throws Exception {
+                        return Observable.just(data.optInt("open"));//,data.optString("srcType"),data.optString("testId"));
+//                        return null;
                     }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
-
-                Observable.create(
-                        (ObservableEmitter<Integer> e) -> {
-
-                        }
-//                        new ObservableOnSubscribe<Integer>() {
-//                    @Override
-//                    public void subscribe(ObservableEmitter<Integer> e) throws Exception {
-//
-//                    }
-//                }
-                ).observeOn(AndroidSchedulers.mainThread()).
-                        subscribe(new Observer<Integer>() {
+                })
+//                        .map(new Function<Integer, Object>() {
+//                })
+                        .subscribe(new Consumer<Integer>() {
                             @Override
-                            public void onSubscribe(Disposable d) {
-
-                            }
-
-                            @Override
-                            public void onNext(Integer integer) {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-
-                            }
-
-                            @Override
-                            public void onComplete() {
+                            public void accept(Integer integer) throws Exception {
 
                             }
                         });
+//                        .map(new Function<JSONObject, Integer>() {
+//                    @Override
+//                    public Integer apply(JSONObject jsonObject) throws Exception {
+//                        return null;
+//                    }
+//                });
+//                Observable.range(1, 5).map(String::valueOf).subscribe(new Observer<String>() {
+//                    @Override
+//                    public void onSubscribe(Disposable d) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onNext(String s) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onError(Throwable e) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onComplete() {
+//
+//                    }
+//                });
+
+//                Observable.create(
+//                        (ObservableEmitter<Integer> e) -> {
+//
+//                        }
+////                        new ObservableOnSubscribe<Integer>() {
+////                    @Override
+////                    public void subscribe(ObservableEmitter<Integer> e) throws Exception {
+////
+////                    }
+////                }
+//                ).observeOn(AndroidSchedulers.mainThread()).
+//                        subscribe(new Observer<Integer>() {
+//                            @Override
+//                            public void onSubscribe(Disposable d) {
+//
+//                            }
+//
+//                            @Override
+//                            public void onNext(Integer integer) {
+//
+//                            }
+//
+//                            @Override
+//                            public void onError(Throwable e) {
+//
+//                            }
+//
+//                            @Override
+//                            public void onComplete() {
+//
+//                            }
+//                        });
                 if (open == 1) {
                     performShowRecordCamera();
                 } else {
@@ -144,8 +175,8 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
      * @param modeChange 是否发生主/辅导 态切换
      */
     @Override
-    public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
-        JSONObject dataJson = jsonObject.optJSONObject("speechShow");
+    public void onTopic(LiveTopic liveTopic, final JSONObject jsonObject, boolean modeChange) {
+        final JSONObject dataJson = jsonObject.optJSONObject("speechShow");
         if (dataJson != null) {
             boolean open = dataJson.optBoolean("open");
             courseWareId = dataJson.optString("testId");
@@ -154,11 +185,37 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                 performShowRecordCamera();
             }
         }
+        Observable.create(new ObservableOnSubscribe<JSONObject>() {
+            @Override
+            public void subscribe(ObservableEmitter<JSONObject> e) throws Exception {
+                e.onNext(jsonObject.optJSONObject("speechShow"));
+            }
+        }).map(new Function<JSONObject, Integer>() {
+            @Override
+            public Integer apply(JSONObject jsonObject) throws Exception {
+                Integer open = dataJson.optInt("open");
+                courseWareId = dataJson.optString("testId");
+                srcType = dataJson.optString("srcType");
+                return open;
+            }
+        }).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer integer) throws Exception {
+                        performShowRecordCamera();
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        logger.i(throwable);
+                    }
+                });
     }
 
     /**
      * 表现录制视频
      */
+    @UiThread
     private void performShowRecordCamera() {
         if (iView == null) {
             iView = new SuperSpeakerCameraPager(mContext, this);
@@ -218,6 +275,13 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                 });
     }
 
+    @Override
+    public void removeView(View view) {
+        if (view != null && view.getParent() == mRootView) {
+            mRootView.removeView(view);
+        }
+    }
+
     XesCloudUploadBusiness business;
     File file;
 
@@ -226,9 +290,13 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
         final String path = Environment.getExternalStorageDirectory() + "/parentsmeeting/love.mp4";
 
         CloudUploadEntity entity = new CloudUploadEntity();
-        String id = UUID.randomUUID().toString();
-        entity.setFileId(id);
-        entity.setCloudPath(CloudDir.CLOUD_TEST);
+//        String id = UUID.randomUUID().toString();
+//        entity.setFileId(id);
+        if (AppConfig.DEBUG) {
+            entity.setCloudPath(CloudDir.CLOUD_TEST);
+        } else {
+            entity.setCloudPath(CloudDir.LIVE_SUPER_SPEAKER);
+        }
         entity.setFilePath(path);
         entity.setType(XesCloudConfig.UPLOAD_OTHER);
         file = new File(path);

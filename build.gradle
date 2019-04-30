@@ -18,10 +18,10 @@ android {
         }
     }
     compileSdkVersion 27
-    compileOptions {
-        sourceCompatibility = '1.8'
-        targetCompatibility = '1.8'
-    }
+//    compileOptions {
+//        sourceCompatibility = '1.8'
+//        targetCompatibility = '1.8'
+//    }
 }
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
@@ -68,7 +68,9 @@ dependencies {
     //implementation project(':library:waveform')
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.gifDrawable)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.transition)
-    rootProject.xrsImplementation(this.getProject(),rootProject.ext.thirdlibraries.rxjava)
-    rootProject.xrsImplementation(this.getProject(),rootProject.ext.thirdlibraries.rxandroid)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.rxjava)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.rxandroid)
+
+//    implementation "androidx.work:work-runtime:2.01"
     //    implementation project(':library:agora')
 }

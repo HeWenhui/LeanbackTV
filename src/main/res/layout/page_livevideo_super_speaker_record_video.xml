@@ -4,27 +4,199 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:ignore="MissingConstraints">
+    android:background="@color/COLOR_01B2FC"
+    tools:ignore="MissingConstraints,NotSibling">
 
     <ImageView
-        android:layout_width="220dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
-        android:layout_height="118dp"
-        android:src="@drawable/bg_livevideo_kindergarten_primary_school_microphone_close_background" />
+    <ImageView
+        android:id="@id/iv_livevideo_super_speaker_record_video_back"
+        android:layout_width="91dp"
+
+        android:layout_height="33dp"
+        android:layout_marginTop="13dp"
+        android:src="@drawable/selector_livevideo_super_speaker_record_video_feedback"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <SurfaceView
         android:id="@id/sfv_livevideo_super_speaker_record_video"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
+        android:layout_height="match_parent" />
 
-    <Button
-        android:id="@id/btn_livevideo_super_speaker_record_video"
+    <ImageView
+        android:id="@id/iv_livevideo_super_speaker_record_video_reversal"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="70dp"
+        android:src="@drawable/selector_livevideo_super_speaker_record_video_reversal_btn"
+        app:layout_constraintBottom_toTopOf="@id/iv_livevideo_super_speaker_record_video_start"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_super_speaker_record_video_start"
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_super_speaker_record_video_start" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@id/tv_livevideo_super_speaker_record_video_reversal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:text="拍照"
+        android:text="翻转"
+        android:textColor="@color/COLOR_FFFFFF"
+        android:textSize="15dp"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_super_speaker_record_video_reversal"
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_super_speaker_record_video_reversal"
+        app:layout_constraintTop_toBottomOf="@id/iv_livevideo_super_speaker_record_video_reversal" />
+
+    <android.support.constraint.Group
+        android:id="@id/group_livevideo_super_speaker_record_video_reversal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        app:constraint_referenced_ids="iv_livevideo_super_speaker_record_video_reversal,
+        tv_livevideo_super_speaker_record_video_reversal" />
+
+    <ImageView
+        android:id="@id/iv_livevideo_super_speaker_record_video_start"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginRight="50dp"
+        android:src="@drawable/selector_livevideo_super_speaker_record_video_start_btn"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@id/tv_livevideo_super_speaker_record_video_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="开始录制"
+        android:textColor="@color/COLOR_FFFFFF"
+        android:textSize="15dp"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_super_speaker_record_video_start"
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_super_speaker_record_video_start"
+        app:layout_constraintTop_toBottomOf="@id/iv_livevideo_super_speaker_record_video_start" />
+
+    <android.support.constraint.Group
+        android:id="@id/group_livevideo_super_speaker_record_video_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        app:constraint_referenced_ids="iv_livevideo_super_speaker_record_video_start,tv_livevideo_super_speaker_record_video_start" />
+
+    <ImageView
+        android:id="@id/iv_livevideo_super_speaker_record_video_submit"
+        android:layout_width="79dp"
+        android:layout_height="79dp"
+        android:layout_marginRight="50dp"
+        android:src="@drawable/selector_livevideo_super_speaker_record_video_submit_btn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@id/tv_livevideo_super_speaker_record_video_submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="提交"
+        android:textColor="@color/COLOR_FFFFFF"
+        android:textSize="15dp"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_super_speaker_record_video_submit"
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_super_speaker_record_video_submit"
+        app:layout_constraintTop_toBottomOf="@id/iv_livevideo_super_speaker_record_video_submit" />
+
+    <android.support.constraint.Group
+        android:id="@id/group_livevideo_super_speaker_record_video_submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="iv_livevideo_super_speaker_record_video_submit,tv_livevideo_super_speaker_record_video_submit" />
+
+    <ImageView
+        android:id="@id/iv_livevideo_super_speaker_record_video_stop"
+        android:layout_width="79dp"
+        android:layout_height="79dp"
+        android:layout_marginRight="50dp"
+        android:src="@drawable/selector_livevideo_super_speaker_record_video_stop_btn"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@id/tv_livevideo_super_speaker_record_video_stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="结束录制"
+        android:textColor="@color/COLOR_FFFFFF"
+        android:textSize="15dp"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_super_speaker_record_video_stop"
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_super_speaker_record_video_stop"
+        app:layout_constraintTop_toBottomOf="@id/iv_livevideo_super_speaker_record_video_stop" />
+
+    <android.support.constraint.Group
+        android:id="@id/group_livevideo_super_speaker_record_video_stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="iv_livevideo_super_speaker_record_video_stop,
+        tv_livevideo_super_speaker_record_video_stop" />
+
+    <ImageView
+        android:id="@id/iv_livevideo_super_speaker_record_video_restart"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="70dp"
+        android:src="@drawable/selector_livevideo_super_speaker_record_video_restart_btn"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_super_speaker_record_video_submit"
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_super_speaker_record_video_submit"
+        app:layout_constraintTop_toBottomOf="@id/iv_livevideo_super_speaker_record_video_submit" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@id/tv_livevideo_super_speaker_record_video_restart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="重录"
+        android:textColor="@color/COLOR_FFFFFF"
+        android:textSize="15dp"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_super_speaker_record_video_restart"
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_super_speaker_record_video_restart"
+        app:layout_constraintTop_toBottomOf="@id/iv_livevideo_super_speaker_record_video_restart" />
+
+    <android.support.constraint.Group
+        android:id="@id/group_livevideo_super_speaker_record_video_restart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="iv_livevideo_super_speaker_record_video_restart,
+        tv_livevideo_super_speaker_record_video_restart" />
+
+    <ImageView
+        android:id="@id/iv_livevideo_super_speaker_record_video_time_frame"
+        android:layout_width="110dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="7dp"
+        android:layout_marginBottom="7dp"
+        android:src="@drawable/bg_livevideo_super_speaker_record_video_time_frame"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <ImageView
+        android:id="@id/iv_livevideo_super_speaker_record_video_time_frame_clock"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="11dp"
+        android:src="@drawable/bg_livevideo_super_speaker_record_video_time_frame_clock"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_super_speaker_record_video_time_frame"
+        app:layout_constraintTop_toTopOf="@id/iv_livevideo_super_speaker_record_video_time_frame" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@id/tv_livevideo_super_speaker_record_video_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="4dp"
+        android:textColor="@color/COLOR_A05431"
+        app:layout_constraintLeft_toRightOf="@id/iv_livevideo_super_speaker_record_video_time_frame_clock"
+        app:layout_constraintTop_toTopOf="@id/iv_livevideo_super_speaker_record_video_time_frame_clock"
+
+        tools:text="02分00秒" />
+
 </android.support.constraint.ConstraintLayout>
