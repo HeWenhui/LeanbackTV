@@ -52,7 +52,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.config.Course
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.dialog.CourseTipDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ChineseAISubjectResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.entity.NewCourseSec;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.web.NewCourseCache;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.web.OnHttpCode;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.web.StaticWeb;
