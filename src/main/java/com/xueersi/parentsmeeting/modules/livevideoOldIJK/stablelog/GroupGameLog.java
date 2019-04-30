@@ -11,9 +11,10 @@ public class GroupGameLog {
     /**
      * 学生收到题目信息（SNO 2）   ---交互日志
      */
-    public static void sno2(LiveAndBackDebug liveAndBackDebug, String testid) {
+    public static void sno2(LiveAndBackDebug liveAndBackDebug, String testid, int signal) {
         StableLogHashMap logHashMap = new StableLogHashMap("voicecannonReceive");
         logHashMap.put("testid", testid);
+        logHashMap.put("signal", "" + signal);
         logHashMap.put("sno", "2");
         liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
@@ -21,9 +22,10 @@ public class GroupGameLog {
     /**
      * 开始作答时间---展示日志
      */
-    public static void sno3(LiveAndBackDebug liveAndBackDebug, String testid) {
+    public static void sno3(LiveAndBackDebug liveAndBackDebug, String testid, int signal) {
         StableLogHashMap logHashMap = new StableLogHashMap("voicecannonAnswer");
         logHashMap.put("testid", testid);
+        logHashMap.put("signal", "" + signal);
         logHashMap.put("sno", "3");
         liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
@@ -31,10 +33,11 @@ public class GroupGameLog {
     /**
      * 翻页时间---交互
      */
-    public static void sno4(LiveAndBackDebug liveAndBackDebug, String testid, String subtestid) {
+    public static void sno4(LiveAndBackDebug liveAndBackDebug, String testid, String subtestid, int signal) {
         StableLogHashMap logHashMap = new StableLogHashMap("voicecannonNextPage");
         logHashMap.put("testid", testid);
         logHashMap.put("subtestid", subtestid);
+        logHashMap.put("signal", "" + signal);
         logHashMap.put("sno", "4");
         liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
@@ -43,20 +46,22 @@ public class GroupGameLog {
      * 游戏结束时间（SNO 5）---交互日志
      */
     public static void sno5(LiveAndBackDebug liveAndBackDebug, String testid, String state,
-                            String hasvoicetime) {
+                            String hasvoicetime, int signal) {
         StableLogHashMap logHashMap = new StableLogHashMap("voicecannonSubmit");
         logHashMap.put("testid", testid);
         logHashMap.put("state", state);
         logHashMap.put("hasvoicetime", hasvoicetime);
+        logHashMap.put("signal", "" + signal);
         logHashMap.put("sno", "5");
         liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 
     /** sno6显示结果页 */
-    public static void sno6(LiveAndBackDebug liveAndBackDebug, String testid, String mvpnum) {
+    public static void sno6(LiveAndBackDebug liveAndBackDebug, String testid, String mvpnum, int signal) {
         StableLogHashMap logHashMap = new StableLogHashMap("voicecannonShowMvp");
         logHashMap.put("testid", testid);
         logHashMap.put("mvpnum", "" + mvpnum);
+        logHashMap.put("signal", "" + signal);
         logHashMap.put("sno", "6");
         liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
