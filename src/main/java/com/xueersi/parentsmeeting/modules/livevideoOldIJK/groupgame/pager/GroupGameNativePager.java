@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.action.SingleModeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.GroupGameTestInfosEntity;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.BasePlayerFragment;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.EnglishH5CoursewareSecHttp;
@@ -57,7 +58,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionC
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveAudioManager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
 import com.xueersi.ui.widget.WaveView;
 
 import org.json.JSONArray;
