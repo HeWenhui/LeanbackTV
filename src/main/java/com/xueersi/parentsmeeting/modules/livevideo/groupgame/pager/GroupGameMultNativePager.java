@@ -1508,9 +1508,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             int size = scoreHashmap.size();
             if (size != 0) {
                 Set<Integer> keySet = scoreHashmap.keySet();
-                Iterator<Integer> it = keySet.iterator();
-                while (it.hasNext()) {
-                    Integer key = it.next();
+                for (Integer key : keySet) {
                     List<SpeechResult> speechResults = scoreHashmap.get(key);
                     for (int i = 0; i < speechResults.size(); i++) {
                         tryTimes++;
@@ -1776,6 +1774,22 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     @Override
     public boolean isResultRecived() {
         return false;
+    }
+
+    public void onResume() {
+        Set<String> itemKeySet = courseGroupItemHashMap.keySet();
+        for (String userId : itemKeySet) {
+            BaseCourseGroupItem baseCourseGroupItem = courseGroupItemHashMap.get(userId);
+            baseCourseGroupItem.onResume();
+        }
+    }
+
+    public void onPause() {
+        Set<String> itemKeySet = courseGroupItemHashMap.keySet();
+        for (String userId : itemKeySet) {
+            BaseCourseGroupItem baseCourseGroupItem = courseGroupItemHashMap.get(userId);
+            baseCourseGroupItem.onPause();
+        }
     }
 
     @Override
