@@ -53,12 +53,15 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LiveAudioManager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.AudioRequest;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.ContextLiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.BasePlayerFragment;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.EnglishH5CoursewareBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.EnglishH5CoursewareSecHttp;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.BaseCoursewareNativePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.BaseEnglishH5CoursewarePager;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.GroupGameLog;
 import com.xueersi.ui.widget.WaveView;
 
 import org.json.JSONArray;
@@ -197,6 +200,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
      * 是否恢复了音量
      */
     private boolean isVolumeResume = true;
+    private LiveAndBackDebug liveAndBackDebug;
 
     public GroupGameNativePager(Context context, boolean isPlayBack, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity
             detailInfo, EnglishH5Entity englishH5Entity, EnglishH5CoursewareBll.OnH5ResultClose onClose) {
@@ -209,6 +213,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         this.liveId = liveGetInfo.getId();
         this.learningStage = liveGetInfo.getStudentLiveInfo().getLearning_stage();
         this.onClose = onClose;
+        this.liveAndBackDebug = new ContextLiveAndBackDebug(context);
         preLoad = new MiddleSchoolPreLoad();
         if (LiveQueConfig.EN_COURSE_TYPE_HOT_AIR_BALLON.equals(detailInfo.type) || LiveQueConfig
                 .EN_COURSE_TYPE_VOICE_CANNON.equals(detailInfo.type)) {
@@ -218,6 +223,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         }
         initListener();
         setVoice();
+        GroupGameLog.sno2(liveAndBackDebug, detailInfo.id);
     }
 
     @Override
@@ -471,6 +477,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 initData();
             }
         });
+        GroupGameLog.sno3(liveAndBackDebug, detailInfo.id);
+        GroupGameLog.sno4(liveAndBackDebug, detailInfo.id, "0");
     }
 
     private void onCoursewareDoing(String where, JSONObject message) {
@@ -605,6 +613,10 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
     @Override
     public void submitData() {
+        submitData(true);
+    }
+
+    private void submitData(boolean isForce) {
         if (!fetchCoursewareSuccess || isSubmit) {
             return;
         }
@@ -649,6 +661,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     public void onDataSucess(Object... objData) {
                         logger.d("submitGroupGame -> onDataSucess");
                         showResultPager();
+                        GroupGameLog.sno6(liveAndBackDebug, detailInfo.id, "1");
                     }
 
                     @Override
@@ -662,6 +675,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                         onClose.onH5ResultClose(GroupGameNativePager.this, detailInfo);
                     }
                 });
+        GroupGameLog.sno5(liveAndBackDebug, detailInfo.id, isForce ? "endPublish" : "autoSubmit", voiceTime == 0 ?
+                "0" : "1");
     }
 
     private int calculateStarByScore(int averageScore) {
@@ -858,7 +873,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        submitData();
+                        submitData(false);
                     }
                 }, 1000);
             } else {
@@ -976,6 +991,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     presentTime = System.currentTimeMillis() - presentTime;
                     presentTimeList.add(presentTime);
                     turnToPageNum = pageNum;
+                    GroupGameLog.sno4(liveAndBackDebug, detailInfo.id, pageNum + "");
                 }
                 jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
                 //答对题目学生序号（1/2/3）  单人模式只有2号学生
@@ -1155,7 +1171,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 if (mIse != null) {
                     mIse.cancel();
                 }
-                submitData();
+                submitData(false);
             }
         };
 
