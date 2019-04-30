@@ -2,8 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.http;
 
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ChineseAISubjectResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.entity.NewCourseSec;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.entity.PrimaryScienceAnswerResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
