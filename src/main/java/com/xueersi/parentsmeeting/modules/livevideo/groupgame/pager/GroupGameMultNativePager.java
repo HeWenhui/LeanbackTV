@@ -1515,6 +1515,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     for (int i = 0; i < speechResults.size(); i++) {
                         tryTimes++;
                         SpeechResult speechResult = speechResults.get(i);
+                        voiceTime += speechResult.speechDuration * 1000;
                         sum += speechResult.score;
                     }
                 }
@@ -1958,6 +1959,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 }
                 SpeechResult speechResult = new SpeechResult();
                 speechResult.score = score;
+                speechResult.speechDuration = resultEntity.getSpeechDuration();
                 speechResults.add(speechResult);
             } catch (Exception e) {
                 CrashReport.postCatchedException(new LiveException(TAG, e));
@@ -2076,6 +2078,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     }
                     SpeechResult speechResult = new SpeechResult();
                     speechResult.score = score;
+                    speechResult.speechDuration = resultEntity.getSpeechDuration();
                     speechResults.add(speechResult);
                 } catch (Exception e) {
                     CrashReport.postCatchedException(new LiveException(TAG, e));
@@ -2581,6 +2584,28 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                     int word_id = rob_wordObj.getInt("word_id");
 //                                    String word_text = rob_wordObj.getString("word_text");
                                     int scores = rob_wordObj.optInt("scores");
+                                    try {
+                                        //恢复clean up的分数
+                                        if (stu_id.equals("" + stuid)) {
+                                            //恢复clean up的分数
+                                            boolean isEmpty;
+                                            List<SpeechResult> speechResults = scoreHashmap.get(word_id);
+                                            if (speechResults == null) {
+                                                isEmpty = true;
+                                                speechResults = new ArrayList<>();
+                                                scoreHashmap.put(word_id, speechResults);
+                                            } else {
+                                                isEmpty = speechResults.isEmpty();
+                                            }
+                                            if (isEmpty) {
+                                                SpeechResult speechResult = new SpeechResult();
+                                                speechResult.score = scores;
+                                                speechResults.add(speechResult);
+                                            }
+                                        }
+                                    } catch (Exception e) {
+                                        CrashReport.postCatchedException(new LiveException(TAG, e));
+                                    }
                                     int incr_energy = rob_wordObj.optInt("incr_energy");
                                     totalEnergy += incr_energy;
                                     for (int k = 0; k < allAnswerList.size(); k++) {
