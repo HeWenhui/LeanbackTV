@@ -1624,7 +1624,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 VidooCannonEntity vidooCannonEntity = vidooCannonEntities.get("" + stuid);
                 if (vidooCannonEntity != null && !tests.isEmpty()) {
                     energy = vidooCannonEntity.rightNum;
-                    answerData.put("rightNum", vidooCannonEntity.rightNum);
+                    int rightNum = 0;
                     HashMap<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity, ArrayList<Integer>> wordScore = vidooCannonEntity.wordScore;
                     for (int ansIndex = 0; ansIndex < answerList.size(); ansIndex++) {
                         JSONObject jsonObject = new JSONObject();
@@ -1633,7 +1633,11 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         ArrayList<Integer> arrayList = wordScore.get(answer);
                         if (arrayList != null) {
                             mLogtf.d("submit:arrayList=" + arrayList.size() + ",singleCount=" + testInfoEntity.getSingleCount());
-                            jsonObject.put("isRight", arrayList.size() == testInfoEntity.getSingleCount() ? 1 : 0);
+                            int isRight = arrayList.size() == testInfoEntity.getSingleCount() ? 1 : 0;
+                            if (isRight == 1) {
+                                rightNum++;
+                            }
+                            jsonObject.put("isRight", isRight);
                         } else {
                             jsonObject.put("isRight", 0);
                         }
@@ -1657,6 +1661,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         jsonObject.put("scores", getScores(answer.getId()));
                         userAnswer.put(jsonObject);
                     }
+                    answerData.put("rightNum", rightNum);
                 } else {
                     answerData.put("rightNum", 0);
                 }
