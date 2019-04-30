@@ -118,7 +118,6 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
         }
     }
 
-
     @Override
     public int[] getCategorys() {
         return new int[]{LocalCourseConfig.CATEGORY_QUESTION, LocalCourseConfig.CATEGORY_EXAM, LocalCourseConfig.CATEGORY_QUESTIONBLL_NEWARTSWARE, LocalCourseConfig.CATEGORY_BIG_TEST};
@@ -127,6 +126,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
     @Override
     public void onQuestionEnd(VideoQuestionEntity questionEntity) {
         int vCategory = questionEntity.getvCategory();
+        logger.i("onQuestionEnd:vCategory=" + vCategory);
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_QUESTION: {
                 questionBll.onStopQuestion("PlayBack:onQuestionEnd1", questionEntity.getvQuestionType(), "");
@@ -142,6 +142,24 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                 questionBll.onStopQuestion("PlayBack:onQuestionEnd3", questionEntity.getvQuestionType(), "");
             }
             break;
+//            case LocalCourseConfig.CATEGORY_BIG_TEST: {
+//                try {
+//                    final VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
+//                    String url = questionEntity.getUrl();
+//                    JSONObject jsonObject = new JSONObject(url);
+//                    videoQuestionLiveEntity.id = jsonObject.getString("testId");
+//                    videoQuestionLiveEntity.setDotId(jsonObject.getString("dotId"));
+//                    videoQuestionLiveEntity.setSrcType(jsonObject.getString("srcType"));
+//                    videoQuestionLiveEntity.setDotType(jsonObject.getInt("choiceType"));
+//                    videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
+//                    questionBll.showBigQuestion(videoQuestionLiveEntity, false);
+//                } catch (Exception e) {
+//                    CrashReport.postCatchedException(e);
+//                }
+//                break;
+//            }
+            default:
+                break;
         }
     }
 
@@ -155,7 +173,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
     LiveBackBll.ShowQuestion showQuestion) {
         mRootView.setVisibility(View.VISIBLE);
         int vCategory = questionEntity.getvCategory();
-        logger.i("showQuestion :" + vCategory);
+        logger.i("showQuestion:vCategory=" + vCategory);
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_QUESTION: {
                 LiveVideoConfig.isNewArts = false;
