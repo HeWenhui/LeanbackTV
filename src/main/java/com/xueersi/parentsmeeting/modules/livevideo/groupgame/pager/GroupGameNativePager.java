@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
+import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.utils.SpeechUtils;
@@ -116,6 +117,10 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
      * oops
      */
     private TextView tvOops;
+    /**
+     * oops
+     */
+    private TextView tvVoiceTip;
     /**
      * 测评音量波形
      */
@@ -240,6 +245,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         flFireAdd = view.findViewById(R.id.fl_livevideo_groupgame_single_fire_add);
         tvFireAdd = view.findViewById(R.id.tv_livevideo_groupgame_single_fire_add);
         tvOops = view.findViewById(R.id.tv_livevideo_groupgame_single_oops);
+        tvVoiceTip = view.findViewById(R.id.tv_livevideo_groupgame_single_voice_tip);
         mWaveView = view.findViewById(R.id.wv_livevideo_groupgame_single_wave);
         return view;
     }
@@ -561,6 +567,15 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     startSpeechRecognize();
                 }
             }, 300);
+        }
+        if (resultEntity.getErrorNo() == ResultCode.MUTE_AUDIO || resultEntity.getErrorNo() == ResultCode.MUTE) {
+            tvVoiceTip.setVisibility(View.VISIBLE);
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    tvVoiceTip.setVisibility(View.GONE);
+                }
+            }, 2000);
         }
     }
 

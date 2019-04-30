@@ -96,6 +96,22 @@
             android:textSize="18dp"
             android:visibility="gone" />
 
+        <!-- 声音小的提示 -->
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@+id/tv_livevideo_groupgame_single_voice_tip"
+            android:layout_width="128dp"
+            android:layout_height="43dp"
+            android:layout_above="@+id/iv_livevideo_groupgame_single_wave"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="-4dp"
+            android:background="@drawable/app_zbhd_yuyin_kuang_voice_tip"
+            android:paddingTop="9dp"
+            android:gravity="top"
+            android:text="没听清，请大声点哦"
+            android:textColor="#FFFFFFFF"
+            android:textSize="12dp"
+            android:visibility="gone" />
+
         <!-- 收音条 -->
         <FrameLayout
             android:id="@+id/iv_livevideo_groupgame_single_wave"
