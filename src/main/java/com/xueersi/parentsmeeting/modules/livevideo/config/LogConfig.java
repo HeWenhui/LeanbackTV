@@ -19,6 +19,8 @@ public class LogConfig {
 
     /** 新课件平台H5课件日志  http://wiki.xesv5.com/pages/viewpage.action?pageId=17696139 */
     public static String LIVE_H5PLAT = "live_h5plat";
+    /** 语音大炮日志  http://http://wiki.xesv5.com/pages/viewpage.action?pageId=17723077 */
+    public static String LIVE_VOICE_CANNON = "voicecannon";
     /** 直播音量 */
     public static String LIVE_AUDIO = "live_audio_enent";
     /** 停止声音 */
