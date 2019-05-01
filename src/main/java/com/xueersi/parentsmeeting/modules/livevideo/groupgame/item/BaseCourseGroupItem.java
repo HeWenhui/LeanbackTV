@@ -124,6 +124,14 @@ public abstract class BaseCourseGroupItem implements AdapterItemInterface<TeamMe
 
     }
 
+    public void onBeginOfSpeech() {
+
+    }
+
+    public void onRecognizeStop() {
+
+    }
+
     public void onScene(String method) {
         tvCourseItemFire.setText("" + entity.energy);
     }
