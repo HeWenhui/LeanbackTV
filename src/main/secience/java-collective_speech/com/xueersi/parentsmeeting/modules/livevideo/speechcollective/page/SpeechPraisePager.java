@@ -18,6 +18,7 @@ import com.xueersi.parentsmeeting.widget.VolumeWaveView;
  */
 public class SpeechPraisePager extends BasePager {
     private LottieAnimationView animationView;
+    static int times = 0;
 
     public SpeechPraisePager(Context context) {
         super(context);
@@ -33,13 +34,15 @@ public class SpeechPraisePager extends BasePager {
 
     @Override
     public void initData() {
-        String lottieResPath = "team_pk/pkresult/teacher_praise/images";
-        String lottieJsonPath = "team_pk/pkresult/teacher_praise/data.json";
+        String lottieResPath = "speech_collec_praise/images";
+        String lottieJsonPath = "speech_collec_praise/data.json";
         final LottieEffectInfo effectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
-        animationView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext),"teacher_praise");
+        times++;
+        animationView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext), "teacher_praise");
         animationView.setImageAssetDelegate(new ImageAssetDelegate() {
             @Override
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                logger.d("fetchBitmap:name=" + lottieImageAsset.getFileName() + ",id=" + lottieImageAsset.getId());
                 return effectInfo.fetchBitmapFromAssets(animationView, lottieImageAsset.getFileName(),
                         lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(),
                         mContext);
