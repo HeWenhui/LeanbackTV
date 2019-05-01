@@ -106,10 +106,10 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean isLand) {
         mQuestionAction.initView(bottomContent, isLand.get());
-        if (com.xueersi.common.config.AppConfig.DEBUG) {
-            DarkPraisePager pager = new DarkPraisePager(mContext);
-            bottomContent.addView(pager.getRootView());
-        }
+//        if (com.xueersi.common.config.AppConfig.DEBUG) {
+//            DarkPraisePager pager = new DarkPraisePager(mContext);
+//            bottomContent.addView(pager.getRootView());
+//        }
 //        if (com.xueersi.common.config.AppConfig.DEBUG) {
 //            com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity answerResultEntity = new com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity();
 //            answerResultEntity.isVoice = 1;
