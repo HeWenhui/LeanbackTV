@@ -22,6 +22,7 @@
             android:background="@drawable/bg_page_livevideo_praise_list_dark_title_1" />
 
         <TextView
+            android:id="@id/tv_page_livevideo_praise_list_dark_sub_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -42,6 +43,63 @@
             app:VerticalTrackDrawable="@drawable/rcl_fastscroller_tracker" />
 
     </RelativeLayout>
+
+
+    <LinearLayout
+        android:id="@id/ll_page_livevideo_praise_list_dark_teacher_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/transparent_70"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_centerInParent="true">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:background="@drawable/bg_page_livevideo_praise_list_dark_teacher_hint"
+            android:layout_height="64dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+            <com.xueersi.ui.widget.CircleImageView
+                android:id="@id/iv_page_livevideo_praise_list_dark_teacher_head_image"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="7dp"
+                android:layout_centerVertical="true"
+                app:border_color="#E49E42"
+                app:border_width="2dp"
+                android:src="@drawable/ic_default_head_square" />
+            <TextView
+                android:id="@id/tv_page_livevideo_praise_list_dark_teacher_tip"
+                android:layout_marginLeft="10dp"
+                android:text="涵涵老师对你说："
+                style="@style/text_font15_ffffff_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+        <TextView
+            android:id="@id/tv_page_livevideo_praise_list_dark_teacher_talk"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/bg_page_livevideo_praise_list_dark_teacher_talk"
+            android:text="小风你真棒！下次还要做满分学神喔！"
+            android:textSize="15dp"
+            android:paddingTop="30dp"
+            android:textColor="#E49E42"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:layout_width="305dp"
+            android:layout_height="75dp" />
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@id/btn_page_livevideo_praise_list_dark_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="11dp"
+        android:layout_marginRight="13dp"
+        android:background="@drawable/bg_page_livevideo_praise_list_dark_close" />
 
     <RelativeLayout
         android:layout_width="wrap_content"
@@ -88,11 +146,4 @@
         </com.xueersi.parentsmeeting.modules.livevideo.widget.PraiseBtnAnimLayout>
     </RelativeLayout>
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="11dp"
-        android:layout_marginRight="13dp"
-        android:background="@drawable/bg_page_livevideo_praise_list_dark_close" />
 </RelativeLayout>
