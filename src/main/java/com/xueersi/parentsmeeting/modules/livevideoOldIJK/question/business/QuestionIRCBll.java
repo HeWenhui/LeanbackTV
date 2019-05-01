@@ -42,6 +42,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.Keybo
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.http.CourseWareHttpManager;
+import com.xueersi.parentsmeeting.widget.praise.DarkPraisePager;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -105,6 +106,10 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean isLand) {
         mQuestionAction.initView(bottomContent, isLand.get());
+        if (com.xueersi.common.config.AppConfig.DEBUG) {
+            DarkPraisePager pager = new DarkPraisePager(mContext);
+            bottomContent.addView(pager.getRootView());
+        }
 //        if (com.xueersi.common.config.AppConfig.DEBUG) {
 //            com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity answerResultEntity = new com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity();
 //            answerResultEntity.isVoice = 1;
