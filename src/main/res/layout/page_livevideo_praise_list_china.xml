@@ -13,6 +13,7 @@
         android:layout_centerInParent="true"
         android:background="@drawable/bg_page_livevideo_praise_list_dark_content">
 
+
         <ImageView
             android:id="@id/iv_page_livevideo_praise_list_dark_title"
             android:layout_width="wrap_content"
@@ -29,6 +30,7 @@
             android:text="表扬榜"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="55dp" />
+
         <TextView
             android:id="@id/tv_page_livevideo_praise_list_dark_sub_title"
             android:layout_width="wrap_content"
@@ -131,7 +133,7 @@
             android:id="@id/fl_page_livevideo_praise_list_dark_practice"
             android:layout_width="65dp"
             android:layout_height="65dp"
-            android:layout_centerHorizontal="true"
+            android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
             android:layout_gravity="bottom|center_horizontal"
             app:auto_star="false">
