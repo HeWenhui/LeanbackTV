@@ -18,8 +18,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="10dp"
-            android:visibility="gone"
-            android:src="@drawable/cy_main_shuaxinbai_icon_normal" />
+            android:src="@drawable/cy_main_shuaxinbai_icon_normal"
+            android:visibility="gone" />
 
     </RelativeLayout>
 
@@ -105,8 +105,8 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="-4dp"
             android:background="@drawable/app_zbhd_yuyin_kuang_voice_tip"
+            android:gravity="top|center_horizontal"
             android:paddingTop="9dp"
-            android:gravity="top"
             android:text="没听清，请大声点哦"
             android:textColor="#FFFFFFFF"
             android:textSize="12dp"

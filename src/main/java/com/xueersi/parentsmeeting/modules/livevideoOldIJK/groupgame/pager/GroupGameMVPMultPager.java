@@ -111,7 +111,7 @@ public class GroupGameMVPMultPager extends LiveBasePager {
 
     @Override
     public void initData() {
-        tvTime.setTimeDuration(3);
+        tvTime.setTimeDuration(5);
         tvTime.setTimeSuffix("s");
         tvTime.startCountDow();
         if (entities.size() == 1) {
@@ -263,13 +263,13 @@ public class GroupGameMVPMultPager extends LiveBasePager {
                     if (lottieImageAsset.getId().equals("image_4")) {
                         return creatGoldBitmap(teamMemberEntityOne.gold, lottieImageAsset.getFileName());
                     }
-                    if (lottieImageAsset.getId().equals("image_3")) {
+                    if (lottieImageAsset.getId().equals("image_5")) {
                         return creatFireBitmap(teamMemberEntityOne.energy, lottieImageAsset.getFileName());
                     }
-                    if (lottieImageAsset.getId().equals("image_8")) {
+                    if (lottieImageAsset.getId().equals("image_9")) {
                         return creatNameBitmap(teamMemberEntityOne.name, lottieImageAsset.getFileName());
                     }
-                    if (lottieImageAsset.getId().equals("image_0")) {
+                    if (lottieImageAsset.getId().equals("image_1")) {
                         Bitmap headBitmap = headBitHashMap.get(lottieImageAsset.getId());
                         if (headBitmap != null) {
                             return headBitmap;
@@ -281,13 +281,13 @@ public class GroupGameMVPMultPager extends LiveBasePager {
                     if (lottieImageAsset.getId().equals("image_23")) {
                         return creatGoldBitmap(teamMemberEntityTwo.gold, lottieImageAsset.getFileName());
                     }
-                    if (lottieImageAsset.getId().equals("image_22")) {
+                    if (lottieImageAsset.getId().equals("image_24")) {
                         return creatFireBitmap(teamMemberEntityTwo.energy, lottieImageAsset.getFileName());
                     }
-                    if (lottieImageAsset.getId().equals("image_24")) {
+                    if (lottieImageAsset.getId().equals("image_25")) {
                         return creatNameBitmap(teamMemberEntityTwo.name, lottieImageAsset.getFileName());
                     }
-                    if (lottieImageAsset.getId().equals("image_19")) {
+                    if (lottieImageAsset.getId().equals("image_20")) {
                         Bitmap headBitmap = headBitHashMap.get(lottieImageAsset.getId());
                         if (headBitmap != null) {
                             return headBitmap;
@@ -296,16 +296,16 @@ public class GroupGameMVPMultPager extends LiveBasePager {
                 }
                 {
                     //第三个人的
-                    if (lottieImageAsset.getId().equals("image_38")) {
+                    if (lottieImageAsset.getId().equals("image_39")) {
                         return creatGoldBitmap(teamMemberEntityThree.gold, lottieImageAsset.getFileName());
                     }
-                    if (lottieImageAsset.getId().equals("image_39")) {
+                    if (lottieImageAsset.getId().equals("image_40")) {
                         return creatFireBitmap(teamMemberEntityThree.energy, lottieImageAsset.getFileName());
                     }
-                    if (lottieImageAsset.getId().equals("image_40")) {
+                    if (lottieImageAsset.getId().equals("image_41")) {
                         return creatNameBitmap(teamMemberEntityThree.name, lottieImageAsset.getFileName());
                     }
-                    if (lottieImageAsset.getId().equals("image_35")) {
+                    if (lottieImageAsset.getId().equals("image_36")) {
                         Bitmap headBitmap = headBitHashMap.get(lottieImageAsset.getId());
                         if (headBitmap != null) {
                             return headBitmap;
@@ -323,9 +323,9 @@ public class GroupGameMVPMultPager extends LiveBasePager {
         };
         mLottieAnimationView.setImageAssetDelegate(imageAssetDelegate);
         mLottieAnimationView.playAnimation();
-        setHead(teamMemberEntityOne.headurl, "image_0");
-        setHead(teamMemberEntityTwo.headurl, "image_19");
-        setHead(teamMemberEntityThree.headurl, "image_35");
+        setHead(teamMemberEntityOne.headurl, "image_1");
+        setHead(teamMemberEntityTwo.headurl, "image_20");
+        setHead(teamMemberEntityThree.headurl, "image_36");
     }
 
     private void setHead(final String headurl, final String lottieId) {
@@ -371,21 +371,31 @@ public class GroupGameMVPMultPager extends LiveBasePager {
         Bitmap bitmap;
         try {
             bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(LOTTIE_RES_ASSETS_ROOTDIR + "images/" + lottieId));
+            int width = bitmap.getWidth();
+            int height = bitmap.getHeight();
             Bitmap creatBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);
-
-            Paint paint = new Paint();
-            paint.setAntiAlias(true);
-            paint.setTextSize(bitmap.getHeight());
-            paint.setColor(0xFFFFE376);
+            View view = LayoutInflater.from(mContext).inflate(R.layout.layout_en_groupgame_mvp_energy, null);
+            TextView tvCourseMvpName = view.findViewById(R.id.tv_livevideo_course_mvp_name);
             Typeface fontFace = FontCache.getTypeface(mContext, "fangzhengcuyuan.ttf");
-            paint.setTypeface(fontFace);
-            canvas.drawText("+" + fireNum, 0, bitmap.getHeight(), paint);
+            tvCourseMvpName.setTypeface(fontFace);
+            tvCourseMvpName.setText("+" + fireNum);
+
+            float size = height * 8.0f / 10.0f / ScreenUtils.getScreenDensity();
+            logger.d("creatGoldBitmap:size=" + size);
+            tvCourseMvpName.setTextSize(size);
+
+            int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
+            int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
+            view.measure(widthMeasureSpec, heightMeasureSpec);
+            view.layout(0, 0, width, height);
+            view.draw(canvas);
+
             bitmap.recycle();
             bitmap = creatBitmap;
             return bitmap;
         } catch (IOException e) {
-            logger.e("creatGoldBitmap", e);
+            logger.e("creatFireBitmap", e);
         }
         return null;
     }
@@ -401,16 +411,26 @@ public class GroupGameMVPMultPager extends LiveBasePager {
         Bitmap bitmap;
         try {
             bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(LOTTIE_RES_ASSETS_ROOTDIR + "images/" + lottieId));
+            int width = bitmap.getWidth();
+            int height = bitmap.getHeight();
             Bitmap creatBitmap = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);
-
-            Paint paint = new Paint();
-            paint.setAntiAlias(true);
-            paint.setTextSize(bitmap.getHeight());
-            paint.setColor(0xFFFFE376);
+            View view = LayoutInflater.from(mContext).inflate(R.layout.layout_en_groupgame_mvp_energy, null);
+            TextView tvCourseMvpName = view.findViewById(R.id.tv_livevideo_course_mvp_name);
             Typeface fontFace = FontCache.getTypeface(mContext, "fangzhengcuyuan.ttf");
-            paint.setTypeface(fontFace);
-            canvas.drawText("+" + fireNum, 0, bitmap.getHeight(), paint);
+            tvCourseMvpName.setTypeface(fontFace);
+            tvCourseMvpName.setText("+" + fireNum);
+
+            float size = height * 8.0f / 10.0f / ScreenUtils.getScreenDensity();
+            logger.d("creatFireBitmap:size=" + size);
+            tvCourseMvpName.setTextSize(size);
+
+            int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
+            int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY);
+            view.measure(widthMeasureSpec, heightMeasureSpec);
+            view.layout(0, 0, width, height);
+            view.draw(canvas);
+
             bitmap.recycle();
             bitmap = creatBitmap;
             return bitmap;
