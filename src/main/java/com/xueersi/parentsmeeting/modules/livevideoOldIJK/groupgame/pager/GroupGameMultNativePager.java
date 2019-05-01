@@ -831,7 +831,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 });
             } else {
                 final RtcEngine rtcEngine = mWorkerThread.getRtcEngine();
-                if(rtcEngine!=null){
+                if (rtcEngine != null) {
                     mWorkerThread.execute(new Runnable() {
                         @Override
                         public void run() {
@@ -1094,10 +1094,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             public void onResult(ResultEntity resultEntity) {
                 if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
                     mLogtf.d("onEvaluatorSuccess(): score = " + resultEntity.getScore());
-                    onRecognizeStop();
+                    onRecognizeStop(false);
                 } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
                     mLogtf.d("onEvaluatorError: ErrorNo = " + resultEntity.getErrorNo() + ", isOfflineFail =" + mIse.isOfflineFail());
-                    onRecognizeStop();
+                    onRecognizeStop(true);
                     if (resultEntity.getErrorNo() == ResultCode.MUTE_AUDIO || resultEntity.getErrorNo() == ResultCode.MUTE) {
                         tvMyVoiceTip.setVisibility(View.VISIBLE);
                         handler.postDelayed(new Runnable() {
@@ -1158,7 +1158,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         });
     }
 
-    private void onRecognizeStop() {
+    private void onRecognizeStop(boolean delay) {
         Set<String> itemKeySet = courseGroupItemHashMap.keySet();
         for (String userId : itemKeySet) {
             BaseCourseGroupItem baseCourseGroupItem = courseGroupItemHashMap.get(userId);
@@ -1173,7 +1173,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         startSpeechRecognize();
                     }
                 }
-            }, 1000);
+            }, delay ? 1000 : 0);
         }
     }
 
@@ -1683,6 +1683,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             jsonObject.put("voiceTime", 0);
                         }
                         jsonObject.put("scores", getScores(answer.getId()));
+                        jsonObject.put("myword", getMyWord(answer));
                         userAnswer.put(jsonObject);
                     }
                     answerData.put("rightNum", rightNum);
@@ -1788,6 +1789,27 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             }
         }
         return allList;
+    }
+
+    private String getMyWord(GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer) {
+        String rightWord = "";
+        try {
+            VidooCannonEntity vidooCannonEntity = vidooCannonEntities.get("" + stuid);
+            HashMap<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity, ArrayList<Integer>> wordScore = vidooCannonEntity.wordScore;
+            ArrayList<Integer> arrayList = wordScore.get(answer);
+            if (arrayList != null) {
+                for (int i = 0; i < arrayList.size(); i++) {
+                    Integer integer = arrayList.get(i);
+                    rightWord += integer;
+                    if (i < arrayList.size() - 1) {
+                        rightWord += ",";
+                    }
+                }
+            }
+        } catch (Exception e) {
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
+        return rightWord;
     }
 
     private String getScores(Integer key) {
