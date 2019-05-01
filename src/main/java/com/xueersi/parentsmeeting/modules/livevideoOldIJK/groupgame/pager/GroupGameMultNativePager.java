@@ -738,7 +738,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     private void joinChannel(ArrayList<TeamMemberEntity> entities) {
         mWorkerThread = new WorkerThreadPool(mContext, stuid, false, true);
         mWorkerThread.eventHandler().addEventHandler(agEventHandler);
-        mWorkerThread.setEnableLocalVideo(true);
+//        mWorkerThread.setEnableLocalVideo(true);
         mWorkerThread.setOnEngineCreate(new WorkerThreadPool.OnEngineCreate() {
             @Override
             public void onEngineCreate(final RtcEngine mRtcEngine) {
@@ -820,8 +820,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
         @Override
         public void onUserJoined(final int uid, final int elapsed) {
-            mLogtf.d("onUserJoined:uid=" + uid + ",elapsed=" + elapsed);
             final BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + uid);
+            mLogtf.d("onUserJoined:uid=" + uid + ",elapsed=" + elapsed + ",item=null?" + (courseGroupItem == null));
             if (courseGroupItem != null) {
                 handler.post(new Runnable() {
                     @Override
@@ -829,6 +829,16 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         courseGroupItem.onUserJoined();
                     }
                 });
+            } else {
+                final RtcEngine rtcEngine = mWorkerThread.getRtcEngine();
+                if(rtcEngine!=null){
+                    mWorkerThread.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            rtcEngine.muteRemoteAudioStream(uid, true);
+                        }
+                    });
+                }
             }
         }
 
