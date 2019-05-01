@@ -163,6 +163,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
         mVideoMainEntity = (VideoLivePlayBackEntity) intent.getExtras().getSerializable("videoliveplayback");
         mVideoTutorEntity = (VideoLivePlayBackEntity) intent.getExtras().getSerializable("videoTutorEntity");
+        if (mVideoTutorEntity!=null) {
+            mVideoTutorEntity.setIsAllowMarkpoint(0);
+        }
         videoPlayStatus = intent.getIntExtra("teacherVideoStatus",0);
 
         islocal = intent.getBooleanExtra("islocal", false);

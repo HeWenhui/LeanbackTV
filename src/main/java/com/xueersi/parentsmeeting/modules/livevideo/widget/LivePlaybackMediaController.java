@@ -248,7 +248,8 @@ public class LivePlaybackMediaController extends MediaController2 {
             } else {
                 textView.setText("互动课件");
             }
-        } else if(LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == videoQuestionEntity.getvCategory()){
+        } else if(LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == videoQuestionEntity.getvCategory()
+        || LocalCourseConfig.CATEGORY_TUTOR_EVENT_35 == videoQuestionEntity.getvCategory()){
             String type = videoQuestionEntity.getvQuestionType();
             switch (type){
                 case "1":
