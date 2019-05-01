@@ -42,7 +42,7 @@ public class StandExperienceEnglishH5PlayBackBll extends EnglishH5PlayBackBll {
                         mediaPlayerControl1.start();
                     }
                     VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity
-                            (questionEntity);
+                            (questionEntity,vCategory);
 
                     englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
                     showQuestion.onShow(true, videoQuestionLiveEntity);
@@ -68,7 +68,7 @@ public class StandExperienceEnglishH5PlayBackBll extends EnglishH5PlayBackBll {
                         mediaPlayerControl1.start();
                     }
                     VideoQuestionLiveEntity videoQuestionLiveEntity = getVideoQuestionLiveEntity
-                            (questionEntity);
+                            (questionEntity,vCategory);
 
                     videoQuestionLiveEntity.englishH5Entity.setNewEnglishH5(true);
                     englishH5CoursewareBll.onH5Courseware("on", videoQuestionLiveEntity);
