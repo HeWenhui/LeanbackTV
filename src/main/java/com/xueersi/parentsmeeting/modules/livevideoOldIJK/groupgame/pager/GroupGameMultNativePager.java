@@ -1181,30 +1181,33 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             public void onClick(View view) {
                 addJs = false;
                 wvSubjectWeb.reload();
-//                if (AppConfig.DEBUG) {
+//                if (com.xueersi.common.config.AppConfig.DEBUG) {
 //                    ArrayList<TeamMemberEntity> entities = new ArrayList<>();
 //                    if (interactiveTeam != null) {
 //                        entities = interactiveTeam.getEntities();
-//                        TeamMemberEntity teamMemberEntity = entities.get(0);
-//                        teamMemberEntity.gold = 11;
-//                        teamMemberEntity.energy = 12;
+//                        for (int i = 0; i < entities.size(); i++) {
+//                            TeamMemberEntity teamMemberEntity = entities.get(i);
+//                            teamMemberEntity.name = "测试测试测试测试" + i;
+//                            teamMemberEntity.gold = (i + 2) * 10 + 1;
+//                            teamMemberEntity.energy = (i + 2) * 10 + 2;
+//                        }
 //                    }
 //                    String[] heads = {"https://gss0.bdstatic.com/94o3dSag_xI4khGkpoWK1HF6hhy/baike/c0%3Dbaike80%2C5%2C5%2C80%2C26/sign=107d95c34134970a537e187df4a3baad/a8014c086e061d95b2d56ad47bf40ad163d9ca4f.jpg",
 //                            "https://gss0.bdstatic.com/-4o3dSag_xI4khGkpoWK1HF6hhy/baike/crop%3D24%2C0%2C851%2C562%3Bc0%3Dbaike92%2C5%2C5%2C92%2C30/sign=031be2a37f3e6709aa4f1fbf06f5ab11/fd039245d688d43f23098f767d1ed21b0ff43b95.jpg"};
-//                    int count = 2;
-//                    if (entities.size() < count) {
+//                    int count = 3;
+//                    int i = entities.size();
+//                    while (entities.size() < count) {
 ////                        TeamMemberEntity myTeamMemberEntity = entities.get(0);
 ////                        myTeamMemberEntity.gold = 11;
 ////                        myTeamMemberEntity.energy = 12;
-//                        for (int i = 0; i < 1; i++) {
-//                            TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
-//                            teamMemberEntity.id = i;
-//                            teamMemberEntity.name = "测试测试" + i;
-//                            teamMemberEntity.headurl = heads[i];
-//                            teamMemberEntity.gold = (i + 2) * 10 + 1;
-//                            teamMemberEntity.energy = (i + 2) * 10 + 2;
-//                            entities.add(teamMemberEntity);
-//                        }
+//                        i++;
+//                        TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
+//                        teamMemberEntity.id = i;
+//                        teamMemberEntity.name = "测试测试测试测试" + i;
+//                        teamMemberEntity.headurl = heads[i % heads.length];
+//                        teamMemberEntity.gold = (i + 2) * 10 + 1;
+//                        teamMemberEntity.energy = (i + 2) * 10 + 2;
+//                        entities.add(teamMemberEntity);
 //                    }
 //                    GroupGameMVPMultPager groupGameMVPMultPager = new GroupGameMVPMultPager(mContext, entities);
 //                    ((ViewGroup) mView).addView(groupGameMVPMultPager.getRootView());
