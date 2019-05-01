@@ -3,16 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_page_livevideo_praise_list_dark"
-    android:gravity="center_vertical">
+    android:background="@drawable/bg_page_livevideo_praise_list_dark">
 
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="11dp"
-        android:layout_marginRight="13dp"
-        android:background="@drawable/bg_page_livevideo_praise_list_dark_close" />
 
     <RelativeLayout
         android:id="@id/rl_page_livevideo_praise_list_dark_content"
@@ -21,32 +13,42 @@
         android:layout_centerInParent="true"
         android:background="@drawable/bg_page_livevideo_praise_list_dark_content">
 
+        <ImageView
+            android:id="@id/iv_page_livevideo_praise_list_dark_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="55dp"
+            android:background="@drawable/bg_page_livevideo_praise_list_dark_title_1" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="100dp"
             android:background="@drawable/bg_page_livevideo_praise_list_dark_sub_title_1"
             android:gravity="center"
-            android:layout_marginTop="100dp"
             android:text="恭喜入榜，再接在理哦！" />
 
-        <android.support.v7.widget.RecyclerView
-            android:layout_marginLeft="30dp"
-            android:layout_marginTop="140dp"
-            android:layout_marginBottom="50dp"
-            android:layout_marginRight="18dp"
+        <com.xueersi.parentsmeeting.modules.livevideo.widget.FastScrollableRecyclerView
             android:id="@id/rv_livevideo_praise_list_dark_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="140dp"
+            android:layout_marginRight="18dp"
+            android:layout_marginBottom="50dp"
+            app:VerticalThumbDrawable="@drawable/arts_rcl_fastscorller_header_selector"
+            app:VerticalTrackDrawable="@drawable/rcl_fastscroller_tracker" />
 
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="220dp"
-        android:layout_marginRight="10dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
+        android:layout_marginRight="10dp"
         android:layout_toRightOf="@id/rl_page_livevideo_praise_list_dark_content">
 
         <com.airbnb.lottie.LottieAnimationView
@@ -85,4 +87,12 @@
 
         </com.xueersi.parentsmeeting.modules.livevideo.widget.PraiseBtnAnimLayout>
     </RelativeLayout>
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="11dp"
+        android:layout_marginRight="13dp"
+        android:background="@drawable/bg_page_livevideo_praise_list_dark_close" />
 </RelativeLayout>
