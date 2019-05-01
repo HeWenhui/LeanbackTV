@@ -111,9 +111,9 @@ public class GroupGameMVPMultPager extends LiveBasePager {
 
     @Override
     public void initData() {
-        tvTime.setTimeDuration(5);
+        tvTime.setTimeDuration(3);
         tvTime.setTimeSuffix("s");
-        tvTime.startCountDow();
+        tvTime.startCountDow(2000);
         if (entities.size() == 1) {
             startLottieAnimationOne();
         } else if (entities.size() == 2) {
