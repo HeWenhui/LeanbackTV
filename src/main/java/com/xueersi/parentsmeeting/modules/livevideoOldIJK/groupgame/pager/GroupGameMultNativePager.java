@@ -1073,6 +1073,11 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             @Override
             public void onBeginOfSpeech() {
                 logger.d("onBeginOfSpeech()");
+                Set<String> itemKeySet = courseGroupItemHashMap.keySet();
+                for (String userId : itemKeySet) {
+                    BaseCourseGroupItem baseCourseGroupItem = courseGroupItemHashMap.get(userId);
+                    baseCourseGroupItem.onBeginOfSpeech();
+                }
             }
 
             @Override
@@ -1144,6 +1149,11 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     }
 
     private void onRecognizeStop() {
+        Set<String> itemKeySet = courseGroupItemHashMap.keySet();
+        for (String userId : itemKeySet) {
+            BaseCourseGroupItem baseCourseGroupItem = courseGroupItemHashMap.get(userId);
+            baseCourseGroupItem.onRecognizeStop();
+        }
         if (isAttach()) {
             handler.postDelayed(new Runnable() {
                 @Override

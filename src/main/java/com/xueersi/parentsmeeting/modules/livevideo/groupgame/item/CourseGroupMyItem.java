@@ -498,6 +498,34 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
     }
 
     @Override
+    public void onBeginOfSpeech() {
+        final RtcEngine rtcEngine = workerThread.getRtcEngine();
+        if (rtcEngine != null) {
+            workerThread.execute(new Runnable() {
+                @Override
+                public void run() {
+                    if (enableAudio) {
+                        rtcEngine.muteLocalAudioStream(false);
+                    }
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onRecognizeStop() {
+        final RtcEngine rtcEngine = workerThread.getRtcEngine();
+        if (rtcEngine != null) {
+            workerThread.execute(new Runnable() {
+                @Override
+                public void run() {
+                    rtcEngine.muteLocalAudioStream(true);
+                }
+            });
+        }
+    }
+
+    @Override
     public void onOpps() {
         final View view = LayoutInflater.from(mContext).inflate(R.layout.item_livevideo_h5_courseware_group_tip_opps, rlVideoTip, false);
         TextView tv_livevideo_course_item_video_energy = view.findViewById(R.id.tv_livevideo_course_item_video_energy);
