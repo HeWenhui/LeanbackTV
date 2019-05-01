@@ -21,6 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.config.SpeechCollectiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.dialog.SpeechStartDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.page.SpeechCollectiveNo2Pager;
+import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.page.SpeechPraisePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 
@@ -210,7 +211,7 @@ public class SpeechCollectiveNo2Bll {
             public void run() {
                 speechStartDialog = new SpeechStartDialog(context);
                 speechStartDialog.setSop();
-                if(speechCollectiveView!=null){
+                if (speechCollectiveView != null) {
                     mRootView.removeView(speechCollectiveView.getRootView());
                 }
             }
@@ -227,6 +228,8 @@ public class SpeechCollectiveNo2Bll {
 
     public void setBottomContent(RelativeLayout mRootView) {
         this.mRootView = mRootView;
+        SpeechPraisePager speechPraisePager = new SpeechPraisePager(context);
+        mRootView.addView(speechPraisePager.getRootView());
     }
 
     /**
@@ -295,6 +298,16 @@ public class SpeechCollectiveNo2Bll {
 
     private void recognizeError(int code) {
         logger.i("recognizeErrori:code=" + code);
+        if (code == 11) {
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (!isStop.get()) {
+                        startEvaluator();
+                    }
+                }
+            }, 1000);
+        }
     }
 
     /**

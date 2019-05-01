@@ -4,4 +4,5 @@
     <!--集体发言-->
     <!--<item name="swv_livevideo_gold_microphone_sound_wave" type="id" />-->
     <item name="iv_livevideo_speechcollective_novolume" type="id" />
+    <item name="iv_livevideo_speechcollective_praise" type="id" />
 </resources>
