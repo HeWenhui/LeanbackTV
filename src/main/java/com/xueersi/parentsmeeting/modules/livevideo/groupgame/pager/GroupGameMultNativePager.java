@@ -171,6 +171,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
      */
     private boolean addJs = false;
     private boolean isForce = false;
+    private boolean isDestory = false;
     private int mPagerIndex = 0;
     private InteractiveTeam interactiveTeam;
     private WorkerThreadPool mWorkerThread;
@@ -1168,12 +1169,12 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (!gameOver) {
+                    if (!gameOver && !isDestory) {
 //                        XESToastUtils.showToast(mContext, "评测完成");
                         startSpeechRecognize();
                     }
                 }
-            }, delay ? 1000 : 0);
+            }, delay ? 1000 : 10);
         }
     }
 
@@ -1872,6 +1873,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         if (mIse != null) {
             mIse.cancel();
         }
+        isDestory = true;
         leaveChannel();
         AudioRequest audioRequest = ProxUtil.getProxUtil().get(mContext, AudioRequest.class);
         if (audioRequest != null) {
