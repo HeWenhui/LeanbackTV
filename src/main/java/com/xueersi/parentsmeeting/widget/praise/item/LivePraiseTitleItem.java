@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.widget.praise.item;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.widget.praise.config.PraiseConfig;
 import com.xueersi.parentsmeeting.widget.praise.entity.PraiseContentEntity;
 import com.xueersi.ui.adapter.RItemViewInterface;
 import com.xueersi.ui.adapter.ViewHolder;
@@ -17,7 +18,11 @@ public class LivePraiseTitleItem implements RItemViewInterface<PraiseContentEnti
 
     @Override
     public boolean isShowView(PraiseContentEntity item, int position) {
-        return true;
+        if(item.getViewType()== PraiseConfig.VIEW_TYPE_TITLE) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override

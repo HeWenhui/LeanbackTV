@@ -14,11 +14,13 @@ import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.FastScrollableRecyclerView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.PraiseBtnAnimLayout;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 import com.xueersi.parentsmeeting.widget.praise.config.PraiseConfig;
 import com.xueersi.parentsmeeting.widget.praise.entity.PraiseContentEntity;
 import com.xueersi.parentsmeeting.widget.praise.item.LivePraiseItem;
+import com.xueersi.parentsmeeting.widget.praise.item.LivePraiseTitleItem;
 import com.xueersi.ui.adapter.RCommonAdapter;
 
 import java.math.BigDecimal;
@@ -29,14 +31,22 @@ import java.util.List;
  * 表扬榜1
  */
 public class DarkPraisePager extends LiveBasePager {
-    /** 内容view */
-    RecyclerView recyclerView;
+    /**
+     * 内容view
+     */
+    FastScrollableRecyclerView recyclerView;
     private RCommonAdapter contentAdapter;
-    /** 榜单数据 */
+    /**
+     * 榜单数据
+     */
     List<PraiseContentEntity> listContent;
-    /** 点赞 */
+    /**
+     * 点赞
+     */
     PraiseBtnAnimLayout imgBtnPractice;
-    /** 点赞动画 */
+    /**
+     * 点赞动画
+     */
     LottieAnimationView practiceView;
     TextView tvPracticeCount;
     int mCurrentNum;
@@ -47,12 +57,14 @@ public class DarkPraisePager extends LiveBasePager {
         for (int i = 0; i < 30; i++) {
             PraiseContentEntity entity = new PraiseContentEntity();
             if (i == 0) {
+                entity.setItemSpan(4);
+                entity.setName("课清全对");
                 entity.setViewType(PraiseConfig.VIEW_TYPE_TITLE);
             } else {
-                entity.setViewType(1);
-
+                entity.setItemSpan(1);
+                entity.setName("i" + i);
             }
-            entity.setName("i" + i);
+
             listContent.add(entity);
         }
         setContentData();
@@ -82,7 +94,7 @@ public class DarkPraisePager extends LiveBasePager {
         public int getSpanSize(int position) {
 
             //return gridManager.getSpanCount();
-            return listContent.get(position).getViewType();
+            return listContent.get(position).getItemSpan();
         }
     }
 
@@ -102,8 +114,8 @@ public class DarkPraisePager extends LiveBasePager {
     private void setContentData() {
         contentAdapter = new RCommonAdapter(mContext, listContent);
         contentAdapter.addItemViewDelegate(1, new LivePraiseItem());
+        contentAdapter.addItemViewDelegate(4, new LivePraiseTitleItem());
         recyclerView.setAdapter(contentAdapter);
-
         setListener();
 //        practiceView.playAnimation();
 
