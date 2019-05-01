@@ -310,6 +310,11 @@ public class SpeechFeedBackBll implements com.xueersi.parentsmeeting.modules.liv
         public void onVolume(int volume) {
             speechFeedBackPager.setVolume(volume / 4);
         }
+
+        @Override
+        public void onRemoteVideoStateChanged(int uid, int state) {
+
+        }
     };
 
     @Override

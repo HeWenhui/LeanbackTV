@@ -38,6 +38,12 @@ public class AllBllConfig {
         };
     }
 
+    public static BllConfigEntity[] getLiveBusinessScience() {
+        return new BllConfigEntity[]{
+                new BllConfigEntity(getSpeechCollectiveIRCBllClassPath())
+        };
+    }
+
     public static BllConfigEntity[] live_business_cn = {};
-    public static BllConfigEntity[] live_business_science = {};
+
 }
