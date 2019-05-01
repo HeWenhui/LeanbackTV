@@ -460,8 +460,12 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        String tutorId = liveId;
+                        if (!TextUtils.isEmpty(tutorId)) {
+                            tutorId=  tutorId.replace("_t","");
+                        }
                         String realurl = englishH5Entity.getDynamicurl();
-                        mLoadUrls = realurl + "?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId +
+                        mLoadUrls = realurl + "?stuId=" + stuId + "&liveId=" + tutorId + "&stuCouId=" + stuCouId +
                                 "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId +
                                 "&packageSource=" + packageSource + "&packageAttr=" + packageAttr +
                                 "&releasedPageInfos=" + releasedPageInfos + "&classTestId=" + classTestId +
@@ -515,6 +519,8 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     } else {
                         dynamicurl = TextUtils.isEmpty(LiveVideoConfig.LIVEMULH5URL) ? defaulturl : LiveVideoConfig.LIVEMULH5URL;
                     }
+
+
                     mLoadUrls = dynamicurl + "?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId +
                             "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId +
                             "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos="
