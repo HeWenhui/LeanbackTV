@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.tencent.bugly.crashreport.CrashReport;
@@ -31,6 +32,7 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.ContextLiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
@@ -50,11 +52,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.config.Course
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.dialog.CourseTipDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ChineseAISubjectResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.entity.NewCourseSec;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.http.CourseWareHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.BaseCoursewareNativePager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.BaseEnglishH5CoursewarePager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.BaseQuestionWebInter;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.web.NewCourseCache;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.web.OnHttpCode;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.web.StaticWeb;
@@ -70,7 +68,6 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import cn.dreamtobe.kpswitch.util.KeyboardUtil;
@@ -231,6 +228,8 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
     private final int NOTFORCE = 0;
 
     private final int FORCE = 1;
+    private ScrollView svSubjectWeb;
+    private KeyboardUtil.OnKeyboardShowingListener mKeyboardListener;
 
     public ChineseAiSubjectiveCoursewarePager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity,
                                               boolean isPlayBack, String liveId, String id,
@@ -266,11 +265,12 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
 
     @Override
     public View initView() {
-        View view = View.inflate(mContext, R.layout.page_livevideo_h5_courseware_native, null);
+        View view = View.inflate(mContext, R.layout.page_livevideo_chs_ai_h5_courseware_native, null);
         wvSubjectWeb = view.findViewById(R.id.wv_livevideo_subject_web);
         ivCourseRefresh = view.findViewById(R.id.iv_livevideo_course_refresh);
         ivWebViewRefresh = view.findViewById(R.id.iv_livevideo_subject_refresh);
         rlSubjectLoading = view.findViewById(R.id.rl_livevideo_subject_loading);
+        svSubjectWeb = view.findViewById(R.id.sv_livevideo_web);
 
         preLoad = new MiddleSchool();
         view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
@@ -289,15 +289,15 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                             .currentTimeMillis() - before));
                 }
 
-                if (allowTeamPk && newCourseSec != null && newCourseSec.getIsAnswer() == 0) {
-                    LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum, mEnergyNum, LiveRoomH5CloseEvent
-                            .H5_TYPE_COURSE, id);
-                    if (mEnglishH5CoursewareBll != null) {
-                        event.setCloseByTeahcer(mEnglishH5CoursewareBll.isWebViewCloseByTeacher());
-                        mEnglishH5CoursewareBll.setWebViewCloseByTeacher(false);
-                    }
-                    EventBus.getDefault().post(event);
-                }
+//                if (allowTeamPk && newCourseSec != null && newCourseSec.getIsAnswer() == 0) {
+//                    LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum, mEnergyNum, LiveRoomH5CloseEvent
+//                            .H5_TYPE_COURSE, id);
+//                    if (mEnglishH5CoursewareBll != null) {
+//                        event.setCloseByTeahcer(mEnglishH5CoursewareBll.isWebViewCloseByTeacher());
+//                        mEnglishH5CoursewareBll.setWebViewCloseByTeacher(false);
+//                    }
+//                    EventBus.getDefault().post(event);
+//                }
 
                 if (englishH5Entity.getNewEnglishH5()) {
                     LiveVideoConfig.isNewEnglishH5 = true;
@@ -322,12 +322,20 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
         wvSubjectWeb.getSettings().setLoadWithOverviewMode(false);
 //        wvSubjectWeb.getSettings().setDisplayZoomControls(false);
         wvSubjectWeb.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
-        KeyboardUtil.attach((Activity) mContext, new KPSwitchFSPanelLinearLayout(mContext), new KeyboardUtil.OnKeyboardShowingListener() {
+        mKeyboardListener =  new KeyboardUtil.OnKeyboardShowingListener() {
             @Override
             public void onKeyboardShowing(boolean isShowing) {
                 ChineseAiSubjectiveCoursewarePager.this.onKeyboardShowing(isShowing);
             }
-        });
+        };
+//        KeyboardUtil.attach((Activity) mContext, new KPSwitchFSPanelLinearLayout(mContext), new KeyboardUtil.OnKeyboardShowingListener() {
+//            @Override
+//            public void onKeyboardShowing(boolean isShowing) {
+//                ChineseAiSubjectiveCoursewarePager.this.onKeyboardShowing(isShowing);
+//            }
+//        });
+        KeyboardUtil.registKeyboardShowingListener(mKeyboardListener);
+
         wvSubjectWeb.setWebChromeClient(new MyWebChromeClient() {
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
@@ -337,6 +345,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                 return super.onConsoleMessage(consoleMessage);
             }
         });
+
         CourseWebViewClient courseWebViewClient = new CourseWebViewClient();
         newCourseCache.setOnHttpCode(courseWebViewClient);
         wvSubjectWeb.setWebViewClient(courseWebViewClient);
@@ -677,6 +686,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
     public void destroy() {
         isFinish = true;
         wvSubjectWeb.destroy();
+        KeyboardUtil.unRegistKeyboardShowingListener(mKeyboardListener);
     }
 
     @Override
@@ -1220,11 +1230,12 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                         @Override
                         public void onDataSucess(Object... objData) {
 //                            addResultPager(isforce, (ChineseAISubjectResultEntity) objData[0]);
-                            ChsAnswerResultEvent artsAnswerResultEvent = new ChsAnswerResultEvent(objData[1] + "", ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT);
-                            artsAnswerResultEvent.setDetailInfo(detailInfo);
-                            artsAnswerResultEvent.setIspreload(ispreload);
-                            artsAnswerResultEvent.setResultEntity((ChineseAISubjectResultEntity) objData[0]);
-                            EventBus.getDefault().post(artsAnswerResultEvent);
+                            logger.i("showAnswerResult");
+                            ChsAnswerResultEvent chsAnswerResultEvent = new ChsAnswerResultEvent(objData[1] + "", ChsAnswerResultEvent.TYPE_AI_CHINESE_ANSWERRESULT);
+                            chsAnswerResultEvent.setDetailInfo(detailInfo);
+                            chsAnswerResultEvent.setIspreload(ispreload);
+                            chsAnswerResultEvent.setResultEntity((ChineseAISubjectResultEntity) objData[0]);
+                            EventBus.getDefault().post(chsAnswerResultEvent);
                         }
 
                         @Override
@@ -1273,7 +1284,13 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
 //                ispreload, 0);
 //    }
     public void onKeyboardShowing(boolean isShowing) {
-        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) wvSubjectWeb.getLayoutParams();
+        ViewGroup.MarginLayoutParams lpsc = (ViewGroup.MarginLayoutParams) svSubjectWeb.getLayoutParams();
+        svSubjectWeb.post(new Runnable() {
+            @Override
+            public void run() {
+                svSubjectWeb.fullScroll(ScrollView.FOCUS_DOWN);
+            }
+        });
         int bottomMargin;
         if (isShowing) {
             int panelHeight = KeyboardUtil.getValidPanelHeight(mContext);
@@ -1281,10 +1298,12 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
         } else {
             bottomMargin = 0;
         }
-        if (bottomMargin != lp.bottomMargin) {
-            lp.bottomMargin = bottomMargin;
+        if (bottomMargin != lpsc.bottomMargin) {
+            lpsc.bottomMargin = bottomMargin;
 //            wvSubjectWeb.setLayoutParams(lp);
-            LayoutParamsUtil.setViewLayoutParams(wvSubjectWeb, lp);
+//            lp.setMargins(0,-bottomMargin,0,bottomMargin);
+            lpsc.setMargins(0,0,0,bottomMargin);
+            LayoutParamsUtil.setViewLayoutParams(svSubjectWeb, lpsc);
         }
     }
 

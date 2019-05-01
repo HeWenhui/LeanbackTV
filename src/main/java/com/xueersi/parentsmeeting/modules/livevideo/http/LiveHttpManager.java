@@ -2032,7 +2032,6 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("stu_lose_flag", stu_lose_flag);
         params.addBodyParam("nick_name", nick_name);
         params.addBodyParam("unique_id", unique_id);
-        params.addHeaderParam("Connection", "Close");
         setDefaultParameter(params);
         sendPost(LiveVideoHttpEnConfig.URL_LIVE_REPORT_STUINFO + "?unique_id=" + unique_id, params, requestCallBack);
     }

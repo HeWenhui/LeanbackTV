@@ -28,8 +28,16 @@ public class AllBllConfig {
         }
     }
 
-    public static BllConfigEntity[] live_business_arts = {new BllConfigEntity(getEnTeamPkIRCBllClassPath()),
-            new BllConfigEntity(getLiveAchievementIRCBllClassPath())};
+//    public static BllConfigEntity[] live_business_arts = {new BllConfigEntity(getEnTeamPkIRCBllClassPath()),
+//            new BllConfigEntity(getLiveAchievementIRCBllClassPath())};
+
+    public static BllConfigEntity[] getLiveBusinessArts() {
+        return new BllConfigEntity[]{
+                new BllConfigEntity(getEnTeamPkIRCBllClassPath()),
+                new BllConfigEntity(getLiveAchievementIRCBllClassPath())
+        };
+    }
+
     public static BllConfigEntity[] live_business_cn = {};
-    public static BllConfigEntity[] live_business_science = {new BllConfigEntity(getSpeechCollectiveIRCBllClassPath())};
+    public static BllConfigEntity[] live_business_science = {};
 }

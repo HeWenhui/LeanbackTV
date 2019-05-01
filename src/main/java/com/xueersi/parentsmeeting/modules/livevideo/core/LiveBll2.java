@@ -39,6 +39,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -510,6 +511,16 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                     ArtsExtLiveInfo info = mHttpResponseParser.parseArtsExtLiveInfo(responseEntity);
                     mGetInfo.setArtsExtLiveInfo(info);
+                    List<LiveBaseBll> businessBllTemps = new ArrayList<>(businessBlls);
+                    for (LiveBaseBll businessBll : businessBllTemps) {
+                        try {
+                            businessBll.onArtsExtLiveInited(mGetInfo);
+                        } catch (Exception e) {
+                            CrashReport.postCatchedException(e);
+                        }
+                    }
+                    mLogtf.d("onGetInfoSuccess:old=" + businessBlls + ",new=" + businessBllTemps.size());
+                    businessBllTemps.clear();
                 }
 
                 @Override
@@ -659,9 +670,23 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                             CrashReport.postCatchedException(e);
                         }
                     }
+                } else {
+                    try {
+                        HashMap<String, String> hashMap = new HashMap();
+                        hashMap.put("logtype", "onNotice");
+                        hashMap.put("livetype", "" + mLiveType);
+                        hashMap.put("liveid", "" + mLiveId);
+                        hashMap.put("arts", "" + mGetInfo.getIsArts());
+                        hashMap.put("pattern", "" + mGetInfo.getPattern());
+                        hashMap.put("type", "" + mtype);
+                        UmsAgentManager.umsAgentDebug(mContext, LogConfig.LIVE_NOTICE_UNKNOW, hashMap);
+                    } catch (Exception e) {
+                        CrashReport.postCatchedException(new LiveException(TAG, e));
+                    }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.e("onNotice", e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
 

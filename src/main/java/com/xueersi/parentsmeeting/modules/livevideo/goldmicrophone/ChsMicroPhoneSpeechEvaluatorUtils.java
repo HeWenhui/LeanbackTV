@@ -830,7 +830,7 @@
 //     * @param type
 //     * @param listener
 //     */
-//    public void startOnlineRecognize(String localPath, int type, EvaluatorListener listener) {
+//    public void startOnlineChsRecognize(String localPath, int type, EvaluatorListener listener) {
 //        if (type == RECOGNIZE_CHINESE) {
 //            speechEvaluatorInter = speech;
 ////            speech.setParameter(EvaluatorConstant.EXTRA_URL, "ws://10.99.1.232:8002/wsAd");
@@ -853,7 +853,7 @@
 //     * @param type
 //     * @param listener
 //     */
-//    public void startOnlineRecognize(String localPath, int type, EvaluatorListener listener, boolean isChsMicrophone) {
+//    public void startOnlineChsRecognize(String localPath, int type, EvaluatorListener listener, boolean isChsMicrophone) {
 //        if (type == RECOGNIZE_CHINESE) {
 //            speechEvaluatorInter = speech;
 ////            speech.setParameter(EvaluatorConstant.EXTRA_URL, "ws://10.99.1.232:8002/wsAd");

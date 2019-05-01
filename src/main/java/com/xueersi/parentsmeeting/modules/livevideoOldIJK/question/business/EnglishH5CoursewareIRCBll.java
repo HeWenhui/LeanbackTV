@@ -17,6 +17,7 @@ import com.xueersi.lib.framework.utils.string.Base64;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
@@ -36,7 +37,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.config.LiveQueHttpConfig;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.http.CourseWareHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.business.TeamPkBll;
 
 import org.greenrobot.eventbus.EventBus;
@@ -874,7 +874,8 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         public void getStuTestResult(VideoQuestionLiveEntity detailInfo, int isPlayBack, AbstractBusinessDataCallBack callBack) {
             EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
             String[] res = getSrcType(englishH5Entity);
-            if ((LiveVideoConfig.EDUCATION_STAGE_3.equals(detailInfo.getEducationstage()) || LiveVideoConfig.EDUCATION_STAGE_4.equals(detailInfo.getEducationstage()))) {
+            if ((LiveVideoConfig.EDUCATION_STAGE_3.equals(detailInfo.getEducationstage()) || LiveVideoConfig.EDUCATION_STAGE_4.equals(detailInfo.getEducationstage()))
+                    && LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(englishH5Entity.getPackageAttr())) {
                 getCourseWareHttpManager().getStuChiAITestResult(mGetInfo.getId(), mGetInfo.getStuId(), res[0], res[1], englishH5Entity.getClassTestId(), englishH5Entity.getPackageId(),
                         englishH5Entity.getPackageAttr(), isPlayBack, mGetInfo.getStudentLiveInfo().getClassId(), callBack);
             } else {
@@ -883,6 +884,11 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
             }
         }
 
+        @Override
+        public void submitGroupGame(VideoQuestionLiveEntity detailInfo, int gameMode, int voiceTime, int pkTeamId, int gameGroupId, int starNum, int energy, int gold, int videoLengthTime, int micLengthTime, int acceptVideoLengthTime, int acceptMicLengthTime, String answerData, AbstractBusinessDataCallBack callBack) {
+            String classId = mGetInfo.getStudentLiveInfo().getClassId();
+            getCourseWareHttpManager().submitGroupGame(classId, detailInfo.id, detailInfo.type, gameMode, voiceTime, 1, pkTeamId, gameGroupId, starNum, energy, gold, videoLengthTime, micLengthTime, acceptVideoLengthTime, acceptMicLengthTime, answerData, callBack);
+        }
 
         @Override
         public void submitCourseWareTests(VideoQuestionLiveEntity detailInfo, int isforce, String nonce, long entranceTime, String testInfos, AbstractBusinessDataCallBack callBack) {
@@ -913,7 +919,11 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         @Override
         public void getCourseWareTests(VideoQuestionLiveEntity detailInfo, AbstractBusinessDataCallBack callBack) {
             if (isArts == LiveVideoSAConfig.ART_EN) {
-                getCourseWareHttpManager().getTestInfos(detailInfo.id, callBack);
+                if (LiveQueConfig.isGroupGame(detailInfo.type)) {
+                    getCourseWareHttpManager().getGroupGameTestInfos(detailInfo.id, mGetInfo.getStuId(), detailInfo.type, callBack);
+                } else {
+                    getCourseWareHttpManager().getTestInfos(detailInfo.id, callBack);
+                }
             } else {
                 EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
                 String classId = mGetInfo.getStudentLiveInfo().getClassId();

@@ -69,7 +69,7 @@ public class LiveVideoPoint {
         Rect r = new Rect();
         actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
         //int screenWidth = (r.right - r.left);
-        int  screenWidth = Math.min((r.right - r.left),ScreenUtils.getScreenWidth());
+        int screenWidth = Math.min((r.right - r.left), ScreenUtils.getScreenWidth());
         int screenHeight = ScreenUtils.getScreenHeight();
         if (liveVideoPoint.screenWidth == screenWidth && liveVideoPoint.videoWidth == lp.width && liveVideoPoint.videoHeight == lp.height) {
             return false;
@@ -97,5 +97,30 @@ public class LiveVideoPoint {
         liveVideoPoint.screenHeight = screenHeight;
         liveVideoPoint.toString();
         return true;
+    }
+
+    /**
+     * 屏幕按比例缩放
+     *
+     * @return
+     */
+    public int[] getNewWidthHeight() {
+        int screenHeight = ScreenUtils.getScreenHeight();
+        float density = ScreenUtils.getScreenDensity();
+        int bitmapW = (int) (density * 1280);
+        int bitmapH = (int) (density * 720);
+        float screenRatio = (float) screenWidth / (float) screenHeight;
+        int newWidth = screenWidth;
+        int newHeight = screenHeight;
+        if (screenRatio > (float) 16 / (float) 9) {
+            newHeight = (int) ((float) screenWidth * (float) bitmapH / (float) bitmapW);
+        } else if (screenRatio < (float) 16 / (float) 9) {
+            newWidth = (int) ((float) screenHeight * (float) bitmapW / (float) bitmapH);
+        }
+        return new int[]{newWidth, newHeight};
+    }
+
+    public interface VideoSizeChange {
+        void videoSizeChange(LiveVideoPoint liveVideoPoint);
     }
 }
