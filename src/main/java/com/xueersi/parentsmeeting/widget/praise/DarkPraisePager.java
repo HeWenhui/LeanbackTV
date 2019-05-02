@@ -3,6 +3,9 @@ package com.xueersi.parentsmeeting.widget.praise;
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -44,6 +47,14 @@ public class DarkPraisePager extends LiveBasePager {
      */
     LottieAnimationView practiceView;
     TextView tvPracticeCount;
+    /** 教师信息 */
+    LinearLayout llTeacherContent;
+    /** 教师信息 */
+    ImageButton imgBtnClose;
+    /** 标题 */
+    ImageView ivTitle;
+    /** 自定义标题 */
+    TextView tvTitle;
     int mCurrentNum;
 
     public DarkPraisePager(Context context) {
@@ -69,7 +80,8 @@ public class DarkPraisePager extends LiveBasePager {
     private void setLayout(View view) {
         int rightMargin = LiveVideoPoint.getInstance().getRightMargin();
         //设置主视图参数
-        RelativeLayout.LayoutParams mainParam = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+        RelativeLayout.LayoutParams mainParam = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                .MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
 
         mainParam.rightMargin = rightMargin;
         view.setLayoutParams(mainParam);
@@ -95,7 +107,7 @@ public class DarkPraisePager extends LiveBasePager {
 
     @Override
     public View initView() {
-        mView = View.inflate(mContext, R.layout.page_livevideo_praise_list_china, null);
+        mView = View.inflate(mContext, R.layout.page_livevideo_praise_list_lovely, null);
         recyclerView = mView.findViewById(R.id.rv_livevideo_praise_list_content);
         GridLayoutManager manager = new GridLayoutManager(mContext, 4);
         manager.setSpanSizeLookup(new GridSpanSizeLookup());
@@ -103,6 +115,10 @@ public class DarkPraisePager extends LiveBasePager {
         imgBtnPractice = mView.findViewById(R.id.fl_page_livevideo_praise_list_practice);
         practiceView = mView.findViewById(R.id.lav_livevideo_praise_list_practice);
         tvPracticeCount = mView.findViewById(R.id.tv_page_livevideo_praise_list_practice_count);
+        llTeacherContent = mView.findViewById(R.id.ll_page_livevideo_praise_list_teacher_content);
+        imgBtnClose = mView.findViewById(R.id.btn_page_livevideo_praise_list_close);
+        ivTitle  = mView.findViewById(R.id.iv_page_livevideo_praise_list_title);
+        tvTitle  = mView.findViewById(R.id.tv_page_livevideo_praise_list_title);
         return mView;
     }
 
@@ -123,6 +139,21 @@ public class DarkPraisePager extends LiveBasePager {
             public void onClick(View v) {
                 upDatePraiseNum(1, true);
                 practiceView.playAnimation();
+            }
+        });
+        // 关闭
+        imgBtnClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (llTeacherContent.getVisibility() == View.GONE) {
+                    llTeacherContent.setVisibility(View.VISIBLE);
+                    tvTitle.setVisibility(View.VISIBLE);
+                    ivTitle.setVisibility(View.GONE);
+                } else {
+                    llTeacherContent.setVisibility(View.GONE);
+                    tvTitle.setVisibility(View.GONE);
+                    ivTitle.setVisibility(View.VISIBLE);
+                }
             }
         });
     }

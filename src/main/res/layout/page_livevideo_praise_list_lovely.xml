@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_page_livevideo_praise_list_china">
+    android:background="@drawable/bg_page_livevideo_praise_list_lovely">
 
 
     <RelativeLayout
@@ -11,7 +11,7 @@
         android:layout_width="400dp"
         android:layout_height="355dp"
         android:layout_centerInParent="true"
-        android:background="@drawable/bg_page_livevideo_praise_list_china_content">
+        android:background="@drawable/bg_page_livevideo_praise_list_lovely_content">
 
 
         <ImageView
@@ -20,17 +20,17 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="60dp"
-            android:background="@drawable/bg_page_livevideo_praise_list_china_title_1"
-            android:visibility="visible" />
+            android:background="@drawable/bg_page_livevideo_praise_list_lovely_title_1"
+            android:visibility="gone" />
 
         <TextView
             android:id="@id/tv_page_livevideo_praise_list_title"
             android:layout_width="160dp"
             android:layout_height="25dp"
             android:layout_centerHorizontal="true"
-            android:visibility="gone"
-            android:layout_marginTop="63dp"
-            android:textColor="#FD6368"
+            android:visibility="visible"
+            android:layout_marginTop="65dp"
+            android:textColor="#FFFBEB"
             android:gravity="center"
             android:text="表扬榜" />
 
@@ -40,9 +40,8 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="110dp"
-            android:background="@drawable/bg_page_livevideo_praise_list_china_sub_title_1"
             android:gravity="center"
-            android:text="恭喜入榜，再接在理哦！" />
+            android:text="恭喜入榜，再接再厉哦！" />
 
         <com.xueersi.parentsmeeting.modules.livevideo.widget.FastScrollableRecyclerView
             android:id="@id/rv_livevideo_praise_list_content"
@@ -52,7 +51,7 @@
             android:layout_marginTop="140dp"
             android:layout_marginRight="45dp"
             android:layout_marginBottom="50dp"
-            app:VerticalThumbDrawable="@drawable/rcl_fast_scoller_line_ffff8400_style"
+            app:VerticalThumbDrawable="@drawable/rcl_fast_scoller_line_ffa0a0a0_style"
             app:VerticalTrackDrawable="@drawable/rcl_fastscroller_transparent" />
 
     </RelativeLayout>
@@ -62,7 +61,7 @@
         android:id="@id/ll_page_livevideo_praise_list_teacher_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_centerInParent="true"
         android:background="@color/transparent_70"
         android:gravity="center"
@@ -71,7 +70,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="64dp"
-            android:background="@drawable/bg_page_livevideo_praise_list_china_teacher_hint"
+            android:background="@drawable/bg_page_livevideo_praise_list_lovely_teacher_hint"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -91,7 +90,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:text="涵涵老师对你说："
-                android:textColor="#FD6368"
+                android:textColor="#FFFBEB"
                 android:textSize="15sp" />
         </LinearLayout>
 
@@ -99,7 +98,7 @@
             android:id="@id/tv_page_livevideo_praise_list_teacher_talk"
             android:layout_width="294dp"
             android:layout_height="75dp"
-            android:background="@drawable/bg_page_livevideo_praise_list_china_teacher_talk"
+            android:background="@drawable/bg_page_livevideo_praise_list_lovely_teacher_talk"
             android:paddingLeft="20dp"
             android:paddingTop="30dp"
             android:paddingRight="20dp"
@@ -116,7 +115,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginTop="11dp"
         android:layout_marginRight="13dp"
-        android:background="@drawable/bg_page_livevideo_praise_list_china_close" />
+        android:background="@drawable/bg_page_livevideo_praise_list_lovely_close" />
 
     <RelativeLayout
         android:layout_width="75dp"
@@ -148,7 +147,7 @@
                 android:id="@id/iv_page_livevideo_praise_list_practice"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/bg_page_livevideo_praise_list_china_practice" />
+                android:background="@drawable/bg_page_livevideo_praise_list_lovely_practice" />
 
             <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                 android:id="@id/tv_page_livevideo_praise_list_practice_count"

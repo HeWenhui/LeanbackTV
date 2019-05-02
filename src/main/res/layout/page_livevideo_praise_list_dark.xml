@@ -87,7 +87,6 @@
         </LinearLayout>
         <TextView
             android:id="@id/tv_page_livevideo_praise_list_teacher_talk"
-            android:layout_marginLeft="10dp"
             android:background="@drawable/bg_page_livevideo_praise_list_dark_teacher_talk"
             android:text="小风你真棒！下次还要做满分学神喔！"
             android:textSize="15dp"
