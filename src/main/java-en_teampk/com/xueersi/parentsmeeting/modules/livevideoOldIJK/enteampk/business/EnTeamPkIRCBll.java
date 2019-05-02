@@ -90,6 +90,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private int classInt = 0;
     private EnTeamPkHttpManager enTeamPkHttpManager;
     private TcpDispatch tcpDispatch;
+    private boolean destory = false;
     private InteractiveTeam mInteractiveTeam;
     private ArrayList<TeamMemberEntity> entities = new ArrayList<>();
 
@@ -216,6 +217,10 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     private void connect(ArrayList<InetSocketAddress> addresses) {
         if (tcpDispatch == null) {
+            if (destory) {
+                mLogtf.d("connect:destory");
+                return;
+            }
             int pid = -1;
             if (pkTeamEntity != null) {
                 pid = pkTeamEntity.getPkTeamId();
@@ -1210,6 +1215,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void onDestory() {
         super.onDestory();
+        destory = true;
         if (classEndReg != null) {
             classEndReg.destory();
             classEndReg = null;
