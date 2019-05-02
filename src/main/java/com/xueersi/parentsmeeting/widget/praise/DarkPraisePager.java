@@ -100,7 +100,7 @@ public class DarkPraisePager extends LiveBasePager {
 
     @Override
     public View initView() {
-        mView = View.inflate(mContext, R.layout.page_livevideo_praise_list_dark, null);
+        mView = View.inflate(mContext, R.layout.page_livevideo_praise_list_china, null);
         recyclerView = mView.findViewById(R.id.rv_livevideo_praise_list_dark_content);
         GridLayoutManager manager = new GridLayoutManager(mContext, 4);
         manager.setSpanSizeLookup(new GridSpanSizeLookup());
