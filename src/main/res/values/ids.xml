@@ -1295,22 +1295,22 @@
 
 
     <!--- 辅导老师表扬榜-->
-    <item name="tv_page_livevideo_praise_list_dark_title" type="id" />
-    <item name="tv_item_livevideo_praise_list_dark_name" type="id" />
-    <item name="rv_livevideo_praise_list_dark_content" type="id" />
-    <item name="lav_livevideo_praise_list_dark_practice" type="id" />
-    <item name="btn_page_livevideo_praise_list_dark_practice" type="id" />
-    <item name="tv_page_livevideo_praise_list_dark_sub_title" type="id" />
-    <item name="fl_page_livevideo_praise_list_dark_practice" type="id" />
-    <item name="tv_page_livevideo_praise_list_dark_practice_count" type="id" />
-    <item name="iv_page_livevideo_praise_list_dark_practice" type="id" />
-    <item name="rl_page_livevideo_praise_list_dark_content" type="id" />
-    <item name="iv_page_livevideo_praise_list_dark_title" type="id" />
-    <item name="ll_page_livevideo_praise_list_dark_teacher_content" type="id" />
-    <item name="btn_page_livevideo_praise_list_dark_close" type="id" />
-    <item name="iv_page_livevideo_praise_list_dark_teacher_head_image" type="id" />
-    <item name="tv_page_livevideo_praise_list_dark_teacher_tip" type="id" />
-    <item name="tv_page_livevideo_praise_list_dark_teacher_talk" type="id" />
+    <item name="tv_page_livevideo_praise_list_title" type="id" />
+    <item name="tv_item_livevideo_praise_list_name" type="id" />
+    <item name="rv_livevideo_praise_list_content" type="id" />
+    <item name="lav_livevideo_praise_list_practice" type="id" />
+    <item name="btn_page_livevideo_praise_list_practice" type="id" />
+    <item name="tv_page_livevideo_praise_list_sub_title" type="id" />
+    <item name="fl_page_livevideo_praise_list_practice" type="id" />
+    <item name="tv_page_livevideo_praise_list_practice_count" type="id" />
+    <item name="iv_page_livevideo_praise_list_practice" type="id" />
+    <item name="rl_page_livevideo_praise_list_content" type="id" />
+    <item name="iv_page_livevideo_praise_list_title" type="id" />
+    <item name="ll_page_livevideo_praise_list_teacher_content" type="id" />
+    <item name="btn_page_livevideo_praise_list_close" type="id" />
+    <item name="iv_page_livevideo_praise_list_teacher_head_image" type="id" />
+    <item name="tv_page_livevideo_praise_list_teacher_tip" type="id" />
+    <item name="tv_page_livevideo_praise_list_teacher_talk" type="id" />
 
 
 </resources>

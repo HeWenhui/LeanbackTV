@@ -2,15 +2,11 @@ package com.xueersi.parentsmeeting.widget.praise;
 
 import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.xueersi.common.base.BasePager;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -23,7 +19,6 @@ import com.xueersi.parentsmeeting.widget.praise.item.LivePraiseItem;
 import com.xueersi.parentsmeeting.widget.praise.item.LivePraiseTitleItem;
 import com.xueersi.ui.adapter.RCommonAdapter;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,13 +96,13 @@ public class DarkPraisePager extends LiveBasePager {
     @Override
     public View initView() {
         mView = View.inflate(mContext, R.layout.page_livevideo_praise_list_china, null);
-        recyclerView = mView.findViewById(R.id.rv_livevideo_praise_list_dark_content);
+        recyclerView = mView.findViewById(R.id.rv_livevideo_praise_list_content);
         GridLayoutManager manager = new GridLayoutManager(mContext, 4);
         manager.setSpanSizeLookup(new GridSpanSizeLookup());
         recyclerView.setLayoutManager(manager);
-        imgBtnPractice = mView.findViewById(R.id.fl_page_livevideo_praise_list_dark_practice);
-        practiceView = mView.findViewById(R.id.lav_livevideo_praise_list_dark_practice);
-        tvPracticeCount = mView.findViewById(R.id.tv_page_livevideo_praise_list_dark_practice_count);
+        imgBtnPractice = mView.findViewById(R.id.fl_page_livevideo_praise_list_practice);
+        practiceView = mView.findViewById(R.id.lav_livevideo_praise_list_practice);
+        tvPracticeCount = mView.findViewById(R.id.tv_page_livevideo_praise_list_practice_count);
         return mView;
     }
 

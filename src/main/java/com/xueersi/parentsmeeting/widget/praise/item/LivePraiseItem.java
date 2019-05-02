@@ -27,7 +27,7 @@ public class LivePraiseItem implements RItemViewInterface<PraiseContentEntity> {
     @Override
     public void initView(ViewHolder holder, int position) {
 
-        tvName = holder.getView(R.id.tv_item_livevideo_praise_list_dark_name);
+        tvName = holder.getView(R.id.tv_item_livevideo_praise_list_name);
 
     }
 
