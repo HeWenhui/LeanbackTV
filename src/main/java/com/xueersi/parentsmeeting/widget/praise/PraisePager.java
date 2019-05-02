@@ -66,21 +66,21 @@ public class PraisePager extends LiveBasePager {
     PraiseEntity mPraiseEntity;
 
     public PraisePager(Context context, PraiseEntity praiseEntity) {
-        super(context);
-        listContent = new ArrayList<>();
-        for (int i = 0; i < 30; i++) {
-            PraiseContentEntity entity = new PraiseContentEntity();
-            if (i == 0) {
-                entity.setItemSpan(4);
-                entity.setName("课清全对");
-                entity.setViewType(PraiseConfig.VIEW_TYPE_TITLE);
-            } else {
-                entity.setItemSpan(1);
-                entity.setName("i" + i);
-            }
-
-            listContent.add(entity);
-        }
+        super(context,praiseEntity,true);
+        listContent = praiseEntity.getContentEntityList();
+//        for (int i = 0; i < 30; i++) {
+//            PraiseContentEntity entity = new PraiseContentEntity();
+//            if (i == 0) {
+//                entity.setItemSpan(4);
+//                entity.setName("课清全对");
+//                entity.setViewType(PraiseConfig.VIEW_TYPE_TITLE);
+//            } else {
+//                entity.setItemSpan(1);
+//                entity.setName("i" + i);
+//            }
+//
+//            listContent.add(entity);
+//        }
         setContentData();
         setLayout(mView);
     }
@@ -138,11 +138,17 @@ public class PraisePager extends LiveBasePager {
     }
 
     private void setContentData() {
-        contentAdapter = new RCommonAdapter(mContext, listContent);
-        contentAdapter.addItemViewDelegate(1, new LivePraiseItem(mContext));
-        contentAdapter.addItemViewDelegate(4, new LivePraiseTitleItem(mContext));
-        recyclerView.setAdapter(contentAdapter);
+        if (contentAdapter == null) {
+            contentAdapter = new RCommonAdapter(mContext, listContent);
+            contentAdapter.addItemViewDelegate(1, new LivePraiseItem(mContext));
+            contentAdapter.addItemViewDelegate(4, new LivePraiseTitleItem(mContext));
+            recyclerView.setAdapter(contentAdapter);
+        } else {
+            contentAdapter.updateData(listContent);
+        }
         setListener();
+        setPriseType();
+        setReslutType();
 //        practiceView.playAnimation();
 
     }

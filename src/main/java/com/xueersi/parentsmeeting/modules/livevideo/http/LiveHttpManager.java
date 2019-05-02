@@ -1103,6 +1103,19 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(liveVideoSAConfigInner.URL_LIVE_GET_HONOR_LIST, params, requestCallBack);
     }
 
+
+    public void getPraoseTutorList(String rankId, String liveId, String courseId, String counselorId, HttpCallBack
+            requestCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("rankId", rankId);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("courseId", courseId);
+        params.addBodyParam("counselorId", counselorId);
+        setDefaultParameter(params);
+
+        sendPost(liveVideoSAConfigInner.URL_LIVE_PRAISE_TUTOR_LIST, params, requestCallBack);
+    }
+
     /**
      * 获取计算小超市榜
      *

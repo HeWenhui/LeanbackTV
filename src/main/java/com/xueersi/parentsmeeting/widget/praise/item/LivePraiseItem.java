@@ -45,27 +45,30 @@ public class LivePraiseItem implements RItemViewInterface<PraiseContentEntity> {
     private void setStyle( PraiseContentEntity praiseContentEntity){
         if (praiseContentEntity.getPraiseStyle() == PraiseConfig.PRAISE_DARK) {
             if(PraiseConfig.PRAISE_IN == praiseContentEntity.getStatus()) {
-                tvName.setTextColor(getColor(R.color.COLOR_FFFFFF));
-            } else {
                 tvName.setTextColor(getColor(R.color.COLOR_FFBC2D));
+            } else {
+                tvName.setTextColor(getColor(R.color.COLOR_FFFFFF));
+
             }
         } else if (praiseContentEntity.getPraiseStyle() == PraiseConfig.PRAISE_LOVELY) {
             if(PraiseConfig.PRAISE_IN == praiseContentEntity.getStatus()) {
-                tvName.setTextColor(getColor(R.color.COLOR_707070));
-            } else {
                 tvName.setTextColor(getColor(R.color.COLOR_FFBC2D));
+
+            } else {
+                tvName.setTextColor(getColor(R.color.COLOR_707070));
             }
         } else if (praiseContentEntity.getPraiseStyle() == PraiseConfig.PRAISE_CHINA) {
             if(PraiseConfig.PRAISE_IN == praiseContentEntity.getStatus()) {
-                tvName.setTextColor(getColor(R.color.COLOR_707070));
-            } else {
                 tvName.setTextColor(getColor(R.color.COLOR_FF8400));
+            } else {
+
+                tvName.setTextColor(getColor(R.color.COLOR_707070));
             }
         } else {
             if(PraiseConfig.PRAISE_IN == praiseContentEntity.getStatus()) {
-                tvName.setTextColor(getColor(R.color.COLOR_985540));
-            } else {
                 tvName.setTextColor(getColor(R.color.COLOR_FFA421));
+            } else {
+                tvName.setTextColor(getColor(R.color.COLOR_985540));
             }
         }
     }

@@ -1,7 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import android.content.Context;
+import android.text.TextUtils;
 
+import com.alibaba.fastjson.JSON;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.http.HttpResponseParser;
@@ -11,8 +13,8 @@ import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
@@ -61,6 +63,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.Minimarket
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListStudentEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ScienceStaticConfig;
+import com.xueersi.parentsmeeting.widget.praise.config.PraiseConfig;
+import com.xueersi.parentsmeeting.widget.praise.entity.PraiseContentEntity;
+import com.xueersi.parentsmeeting.widget.praise.entity.PraiseEntity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -142,7 +147,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             JSONObject science_static_config = data.optJSONObject("science_static_config");
             if (science_static_config != null) {
                 scienceStaticConfig = new ScienceStaticConfig();
-                HashMap<String, ScienceStaticConfig.Version> stringVersionHashMap = scienceStaticConfig.stringVersionHashMap;
+                HashMap<String, ScienceStaticConfig.Version> stringVersionHashMap = scienceStaticConfig
+                        .stringVersionHashMap;
                 Iterator<String> keys = science_static_config.keys();
                 if (keys.hasNext()) {
                     String key = keys.next();
@@ -276,7 +282,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
     public LiveGetInfo parseLiveGetInfo(JSONObject data, LiveTopic liveTopic, int liveType, int from) {
         try {
             LiveGetInfo getInfo = new LiveGetInfo(liveTopic);
-//            MediaPlayer.getIsNewIJK() = "1".equals(data.optString("isNewSDK")) && "1".equals(data.optString("isNewIRC"));
+//            MediaPlayer.getIsNewIJK() = "1".equals(data.optString("isNewSDK")) && "1".equals(data.optString
+// ("isNewIRC"));
 //            MediaPlayer.getIsNewIJK() = true;
             MediaPlayer.setIsNewIJK("1".equals(data.optString("isNewSDK")) && "1".equals(data.optString("isNewIRC")));
             //解析getInfo之前，先把之前用来判断状态的静态变量置空
@@ -304,9 +311,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             //连对激励
             getInfo.setIsOpenNewCourseWare(data.optInt("isOpenNewCourseWare"));
 //            getInfo.setIsOpenNewCourseWare(1);
-            getInfo.setGetJournalUrl(data.optString("getJournalUrl", "https://live.xueersi.com/science/Stimulation/getJournal"));
-            getInfo.setGetEvenPairListUrl(data.optString("getEvenPairListUrl", "https://live.xueersi.com/science/Stimulation/evenPairList"));
-            getInfo.setGetThumbsUpUrl(data.optString("getThumbsUpUrl", "https://live.xueersi.com/science/Stimulation/thumbsUp"));
+            getInfo.setGetJournalUrl(data.optString("getJournalUrl", "https://live.xueersi" +
+                    ".com/science/Stimulation/getJournal"));
+            getInfo.setGetEvenPairListUrl(data.optString("getEvenPairListUrl", "https://live.xueersi" +
+                    ".com/science/Stimulation/evenPairList"));
+            getInfo.setGetThumbsUpUrl(data.optString("getThumbsUpUrl", "https://live.xueersi" +
+                    ".com/science/Stimulation/thumbsUp"));
             //getInfo.setIsShowMarkPoint("0");
             getInfo.setIsShowCounselorWhisper(data.optString("counselor_whisper"));
             getInfo.setIsSeniorOfHighSchool(data.optInt("isSeniorOfHighSchool"));
@@ -2235,7 +2245,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                         List<CoursewareInfoEntity.ItemCoursewareInfo> coursewareInfos = new ArrayList<>();
                         for (int j = 0; j < coursewareArray.length(); j++) {
                             JSONObject coursewareJson = coursewareArray.getJSONObject(j);
-                            CoursewareInfoEntity.ItemCoursewareInfo coursewareInfo = new CoursewareInfoEntity.ItemCoursewareInfo();
+                            CoursewareInfoEntity.ItemCoursewareInfo coursewareInfo = new CoursewareInfoEntity
+                                    .ItemCoursewareInfo();
                             coursewareInfo.setSourceId(coursewareJson.optString("sourceId"));
                             coursewareInfo.setPackageId(coursewareJson.optString("packageId"));
                             coursewareInfo.setPackageSource(coursewareJson.optString("packageSource"));
@@ -2387,5 +2398,85 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
         }
         return evenDriveEntity;
+    }
+
+    /**
+     * 解析 出门测表扬榜数据
+     *
+     * @param responseEntity
+     * @return
+     */
+    public PraiseEntity parseTutorPraiseEntity(String data) throws Exception {
+        // JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+        JSONObject jsonObject = new JSONObject(data);
+        List<PraiseContentEntity> contentEntityList = new ArrayList<>();
+        PraiseContentEntity titleEntity = null;
+        PraiseContentEntity contentEntity = null;
+        PraiseEntity entity = new PraiseEntity();
+        entity.setContentEntityList(contentEntityList);
+        entity.setStatus(jsonObject.optInt("isInList"));
+        int gradle = jsonObject.optInt("grade");
+        if (gradle ==PraiseConfig.GRADLE_SMALL) {
+            entity.setPraiseStyle(jsonObject.optInt("bizId"));
+        } else {
+            entity.setPraiseStyle(PraiseConfig.PRAISE_DARK);
+        }
+        entity.setPraiseName(jsonObject.optString("rankTitle"));
+        entity.setPraiseType(jsonObject.optInt("category"));
+        if(entity.getPraiseType() == PraiseConfig.PRAISE_TYPE_TALK) {
+            titleEntity = new PraiseContentEntity();
+            titleEntity.setViewType(PraiseConfig.VIEW_TYPE_TITLE);
+            titleEntity.setPraiseStyle(entity.getPraiseStyle());
+            titleEntity.setItemSpan(4);
+            titleEntity.setName("题目描述");
+
+            contentEntityList.add(titleEntity);
+            contentEntity = new PraiseContentEntity();
+            contentEntity.setPraiseStyle(entity.getPraiseStyle());
+            contentEntity.setName("desc");
+            contentEntityList.add(contentEntity);
+        }
+        entity.setResultType(jsonObject.optInt("rankType"));
+        entity.setTeacherHeadImage(jsonObject.optString("counselorAvatar"));
+        entity.setTeacherName(jsonObject.optString("counselorName"));
+        entity.setEncouraging(jsonObject.optString("word"));
+        JSONArray array = jsonObject.optJSONArray("list");
+        if (array != null && array.length() > 0) {
+            JSONObject userListObject = null;
+            for (int i = 0; i < array.length(); i++) {
+                userListObject = array.optJSONObject(i);
+                String title = userListObject.optString("group");
+                if (!TextUtils.isEmpty(title)) {
+                    titleEntity = new PraiseContentEntity();
+                    titleEntity.setViewType(PraiseConfig.VIEW_TYPE_TITLE);
+                    titleEntity.setItemSpan(4);
+                    titleEntity.setName(title);
+                    titleEntity.setPraiseStyle(entity.getPraiseStyle());
+                    contentEntityList.add(titleEntity);
+                }
+                parsePraiseContentEntity(userListObject,contentEntityList,entity.getPraiseStyle());
+            }
+        }
+        return entity;
+    }
+    /**
+     * 解析榜单内容
+     * @param jsonObject
+     * @param contentEntityList
+     */
+    private void parsePraiseContentEntity(JSONObject jsonObject,List<PraiseContentEntity> contentEntityList,int style) {
+        JSONArray array = jsonObject.optJSONArray("stus");
+        if (array != null && array.length() > 0) {
+            JSONObject userListObject = null;
+            PraiseContentEntity contentEntity = null;
+            for (int i = 0; i < array.length(); i++) {
+                userListObject = array.optJSONObject(i);
+                contentEntity = new PraiseContentEntity();
+                contentEntity.setName(userListObject.optString("name"));
+                contentEntity.setStatus(userListObject.optInt("inList"));
+                contentEntity.setPraiseStyle(style);
+                contentEntityList.add(contentEntity);
+            }
+        }
     }
 }

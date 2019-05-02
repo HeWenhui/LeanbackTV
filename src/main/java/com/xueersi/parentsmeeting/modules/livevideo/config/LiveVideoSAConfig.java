@@ -269,6 +269,11 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_CHS_GET_EVALUATE_OPTION = "https://app.chs.xueersi.com/LiveCourse/getEvaluateInfo";
         /** 小语学生对老师评价 */
         public String URL_LIVE_CHS_EVALUATE_TEACHER = "https://app.chs.xueersi.com/LiveCourse/submitEvaluate";
+
+
+        /** 出门测表扬榜 */
+        public String URL_LIVE_PRAISE_TUTOR_LIST = "http://app.arts.xueersi.com/LivePraise/getPraiseData";
+
     }
 
 

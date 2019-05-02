@@ -4,13 +4,13 @@ public class PraiseConfig {
     /** 布局类型标题 */
     public static final int VIEW_TYPE_TITLE = 1;
     /** 表扬榜类型1 */
-    public static final int PRAISE_DARK = 1;
+    public static final int PRAISE_DARK = 4;
     /** 表扬榜类型2 */
-    public static final int PRAISE_CHINA = 2;
+    public static final int PRAISE_CHINA = 1;
     /** 表扬榜类型3 */
     public static final int PRAISE_LOVELY = 3;
     /** 表扬榜类型4 */
-    public static final int PRAISE_WOOD = 4;
+    public static final int PRAISE_WOOD = 2;
 
     /** 表扬榜类型-表扬榜 */
     public static final int PRAISE_TYPE_PRACTICE = 1;
@@ -22,5 +22,7 @@ public class PraiseConfig {
     public static final int RESULT_PRAISE = 1;
     /** 在榜单中 */
     public static final int PRAISE_IN = 1;
+    /** 小学 */
+    public static final int GRADLE_SMALL = 1;
 
 }

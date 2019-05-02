@@ -21,7 +21,12 @@ public class PraiseEntity {
     private int resultType;
     /** 榜单名*/
     private String praiseName;
-
+    /** 老师名*/
+    private String teacherName;
+    /** 老师头像地址*/
+    private String teacherHeadImage;
+    /** 鼓励语*/
+    private String encouraging ;
     /** 内容类型 */
     private List<PraiseContentEntity> contentEntityList;
 
@@ -103,5 +108,29 @@ public class PraiseEntity {
 
     public void setContentEntityList(List<PraiseContentEntity> contentEntityList) {
         this.contentEntityList = contentEntityList;
+    }
+
+    public String getTeacherName() {
+        return teacherName;
+    }
+
+    public void setTeacherName(String teacherName) {
+        this.teacherName = teacherName;
+    }
+
+    public String getTeacherHeadImage() {
+        return teacherHeadImage;
+    }
+
+    public void setTeacherHeadImage(String teacherHeadImage) {
+        this.teacherHeadImage = teacherHeadImage;
+    }
+
+    public String getEncouraging() {
+        return encouraging;
+    }
+
+    public void setEncouraging(String encouraging) {
+        this.encouraging = encouraging;
     }
 }

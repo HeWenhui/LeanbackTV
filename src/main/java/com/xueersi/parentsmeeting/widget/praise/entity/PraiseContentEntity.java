@@ -12,7 +12,7 @@ public class PraiseContentEntity {
     /** 布局类型 */
     private int viewType;
     /** 列占位 */
-    private int itemSpan;
+    private int itemSpan = 1;
     /** 表扬榜样式 */
     private int praiseStyle;
 
