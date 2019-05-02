@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.component.cloud.XesCloudUploadBusiness;
@@ -15,6 +16,7 @@ import com.xueersi.component.cloud.listener.XesStsUploadListener;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.GroupGameTcp;
 import com.xueersi.parentsmeeting.modules.livevideo.lib.ReceiveMegCallBack;
@@ -36,9 +38,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-/** tcp调度 */
+/**
+ * tcp调度
+ */
 public class TcpDispatch {
-    private Logger logger = LiveLoggerFactory.getLogger("TcpDispatch");
+    private String TAG = "TcpDispatch";
+    private Logger logger = LiveLoggerFactory.getLogger(TAG);
     private File logDir;
     private ArrayList<InetSocketAddress> addresses = new ArrayList<>();
     private GroupGameTcp groupGameTcp;
@@ -191,22 +196,28 @@ public class TcpDispatch {
 
         @Override
         public void onDisconnect(InetSocketAddress inetSocketAddress, Object obj, GroupGameTcp oldGroupGameTcp) {
+            boolean isTcpStop = oldGroupGameTcp.isStop();
             oldGroupGameTcp.stop("onDisconnect:isStop=" + isStop);
             StableLogHashMap logHashMap = new StableLogHashMap(TcpLog.logTypeDisconnect);
             logHashMap.put("live_id", "" + live_id);
             logHashMap.put("address", "" + inetSocketAddress);
+            logHashMap.put("isTcpStop", "" + isTcpStop);
+            logHashMap.put("isStop", "" + isStop);
             logHashMap.put("obj", "" + obj);
             UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_TCP_ERROR, logHashMap.getData());
-            final int seq = oldGroupGameTcp.getSeq();
-            if (isStop) {
+            if (isStop || isTcpStop) {
                 return;
             }
+            final int seq = oldGroupGameTcp.getSeq();
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     liveThreadPoolExecutor.execute(new Runnable() {
                         @Override
                         public void run() {
+                            if (isStop) {
+                                return;
+                            }
                             InetSocketAddress inetSocketAddress = addresses.get(addressIndex++ % addresses.size());
                             groupGameTcp = new GroupGameTcp(inetSocketAddress, logDir);
                             groupGameTcp.setSeq(seq);
@@ -224,8 +235,13 @@ public class TcpDispatch {
         }
 
         @Override
+        public void onReadEnd(InetSocketAddress inetSocketAddress, Exception e, File saveFile) {
+            uploadWonderMoment(inetSocketAddress, e, saveFile, false);
+        }
+
+        @Override
         public void onReadException(InetSocketAddress inetSocketAddress, Exception e, File saveFile) {
-            uploadWonderMoment(inetSocketAddress, saveFile);
+            uploadWonderMoment(inetSocketAddress, e, saveFile, true);
         }
 
         /**
@@ -233,7 +249,7 @@ public class TcpDispatch {
          * @param inetSocketAddress
          * @param saveFile
          */
-        private void uploadWonderMoment(final InetSocketAddress inetSocketAddress, final File saveFile) {
+        private void uploadWonderMoment(final InetSocketAddress inetSocketAddress, final Exception e, final File saveFile, final boolean error) {
             logger.d("uploadWonderMoment:saveFile=" + saveFile);
             XesCloudUploadBusiness xesCloudUploadBusiness = new XesCloudUploadBusiness(BaseApplication.getContext());
             CloudUploadEntity uploadEntity = new CloudUploadEntity();
@@ -248,17 +264,27 @@ public class TcpDispatch {
 
                 @Override
                 public void onSuccess(XesCloudResult result) {
-                    if (!AppConfig.DEBUG) {
-                        saveFile.delete();
+                    try {
+                        if (!AppConfig.DEBUG) {
+                            saveFile.delete();
+                        }
+                        String httpPath = result.getHttpPath();
+                        logger.d("asyncUpload:onSuccess=" + httpPath);
+                        StableLogHashMap stableLogHashMap;
+                        if (error) {
+                            stableLogHashMap = new StableLogHashMap("readerror");
+                        } else {
+                            stableLogHashMap = new StableLogHashMap("readend");
+                        }
+                        stableLogHashMap.put("liveid", live_id);
+                        stableLogHashMap.put("address", "" + inetSocketAddress);
+                        stableLogHashMap.put("savefile", "" + saveFile);
+                        stableLogHashMap.put("httppath", httpPath);
+                        stableLogHashMap.put("exce", "" + e);
+                        UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_TCP_ERROR, stableLogHashMap.getData());
+                    } catch (Exception e) {
+                        CrashReport.postCatchedException(new LiveException(TAG, e));
                     }
-                    String httpPath = result.getHttpPath();
-                    logger.d("asyncUpload:onSuccess=" + httpPath);
-                    StableLogHashMap stableLogHashMap = new StableLogHashMap("readerror");
-                    stableLogHashMap.put("liveid", live_id);
-                    stableLogHashMap.put("address", "" + inetSocketAddress);
-                    stableLogHashMap.put("savefile", "" + saveFile);
-                    stableLogHashMap.put("httppath", httpPath);
-                    UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_TCP_ERROR, stableLogHashMap.getData());
                 }
 
                 @Override

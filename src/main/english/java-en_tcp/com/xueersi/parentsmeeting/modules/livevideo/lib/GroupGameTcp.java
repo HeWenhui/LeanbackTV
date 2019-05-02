@@ -34,7 +34,7 @@ public class GroupGameTcp {
     private InetSocketAddress inetSocketAddress;
     private Socket socket;
     /** 消息序号 */
-    private int seq = 0;
+    private static int seq = 0;
     /** ping 超时 */
     private long pingTime = 10000;
     /** 心跳间隔 */
@@ -89,6 +89,10 @@ public class GroupGameTcp {
                 receiveMegCallBack.onDisconnect(inetSocketAddress, e, this);
             }
         }
+    }
+
+    public boolean isStop() {
+        return isStop;
     }
 
     public void stop(String method) {
@@ -359,7 +363,7 @@ public class GroupGameTcp {
                         if (!saveDir.exists()) {
                             saveDir.mkdirs();
                         }
-                        saveFile = new File(saveDir, "read_" + System.currentTimeMillis());
+                        saveFile = new File(saveDir, name + "_" + CREATE_TIMES + "_read_" + System.currentTimeMillis());
                         log.d("testBuffer:saveFile=" + saveFile.length());
                         if (readSave) {
                             try {
@@ -533,6 +537,11 @@ public class GroupGameTcp {
                 e.printStackTrace();
                 endEx = e;
                 log.e("testBuffer", e);
+                if (saveFile != null) {
+                    if (receiveMegCallBack != null) {
+                        receiveMegCallBack.onReadEnd(inetSocketAddress, e, saveFile);
+                    }
+                }
             } catch (Exception e) {
                 e.printStackTrace();
                 endEx = e;
