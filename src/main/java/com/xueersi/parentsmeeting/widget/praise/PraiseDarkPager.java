@@ -32,10 +32,10 @@ import java.util.List;
  *
  * @param hua
  */
-public class DarkPraisePager extends PraisePager {
+public class PraiseDarkPager extends PraisePager {
 
 
-    public DarkPraisePager(Context context, PraiseEntity praiseEntity) {
+    public PraiseDarkPager(Context context, PraiseEntity praiseEntity) {
         super(context, praiseEntity);
     }
 
