@@ -85,14 +85,10 @@ public class GroupGameTcp {
             }
         } catch (Exception e) {
             log.d("start:e=" + e.getMessage() + ",time=" + (System.currentTimeMillis() - before));
-            if (receiveMegCallBack != null) {
+            if (!isStop && receiveMegCallBack != null) {
                 receiveMegCallBack.onDisconnect(inetSocketAddress, e, this);
             }
         }
-    }
-
-    public boolean isStop() {
-        return isStop;
     }
 
     public void stop(String method) {

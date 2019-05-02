@@ -196,16 +196,14 @@ public class TcpDispatch {
 
         @Override
         public void onDisconnect(InetSocketAddress inetSocketAddress, Object obj, GroupGameTcp oldGroupGameTcp) {
-            boolean isTcpStop = oldGroupGameTcp.isStop();
             oldGroupGameTcp.stop("onDisconnect:isStop=" + isStop);
             StableLogHashMap logHashMap = new StableLogHashMap(TcpLog.logTypeDisconnect);
             logHashMap.put("live_id", "" + live_id);
             logHashMap.put("address", "" + inetSocketAddress);
-            logHashMap.put("isTcpStop", "" + isTcpStop);
             logHashMap.put("isStop", "" + isStop);
             logHashMap.put("obj", "" + obj);
             UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_TCP_ERROR, logHashMap.getData());
-            if (isStop || isTcpStop) {
+            if (isStop) {
                 return;
             }
             final int seq = oldGroupGameTcp.getSeq();
