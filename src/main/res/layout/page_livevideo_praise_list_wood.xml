@@ -115,7 +115,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginTop="11dp"
         android:layout_marginRight="13dp"
-        android:background="@drawable/bg_page_livevideo_praise_list_wood_close" />
+        android:background="@drawable/selector_page_livevideo_praise_list_wood_close_style" />
 
     <RelativeLayout
         android:layout_width="75dp"
