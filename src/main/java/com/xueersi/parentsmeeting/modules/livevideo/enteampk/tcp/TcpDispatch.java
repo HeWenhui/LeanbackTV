@@ -15,6 +15,7 @@ import com.xueersi.component.cloud.entity.XesCloudResult;
 import com.xueersi.component.cloud.listener.XesStsUploadListener;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -44,6 +45,7 @@ import java.util.Map;
 public class TcpDispatch {
     private String TAG = "TcpDispatch";
     private Logger logger = LiveLoggerFactory.getLogger(TAG);
+    private LogToFile logToFile;
     private File logDir;
     private ArrayList<InetSocketAddress> addresses = new ArrayList<>();
     private GroupGameTcp groupGameTcp;
@@ -92,6 +94,7 @@ public class TcpDispatch {
         if (!logDir.exists()) {
             logDir.mkdirs();
         }
+        logToFile = new LogToFile(context, TAG);
     }
 
     public int getGt() {
@@ -169,7 +172,7 @@ public class TcpDispatch {
                 int operation = TcpConstants.LOGIN_OPERATION_SEND;
                 groupGameTcp.send(type, operation, bodyStr);
             } catch (Exception e) {
-
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
             for (int i = 0; i < onTcpConnects.size(); i++) {
                 onTcpConnects.get(i).onTcpConnect();
@@ -186,10 +189,20 @@ public class TcpDispatch {
             }
             List<TcpMessageAction> tcpMessageActions = mMessageActionMap.get((Short) type);
             if (tcpMessageActions != null) {
-                logger.d("onReceiveMeg:type=" + type + ",tcpMessageActions=" + tcpMessageActions.size());
+                logToFile.d("onReceiveMeg:type=" + type + ",tcpMessageActions=" + tcpMessageActions.size());
                 for (int i = 0; i < tcpMessageActions.size(); i++) {
                     TcpMessageAction tcpMessageAction = tcpMessageActions.get(i);
                     tcpMessageAction.onMessage(type, operation, msg);
+                }
+            } else {
+                if (type != TcpConstants.REPLAY_TYPE) {
+                    StableLogHashMap logHashMap = new StableLogHashMap(TcpLog.logTypeUNKNOW);
+                    logHashMap.put("live_id", "" + live_id);
+                    logHashMap.put("class_id", "" + class_id);
+                    logHashMap.put("type", "" + type);
+                    logHashMap.put("operation", "" + operation);
+                    logHashMap.put("msg", "" + msg);
+                    UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_TCP_ERROR, logHashMap.getData());
                 }
             }
         }
@@ -229,7 +242,16 @@ public class TcpDispatch {
 
         @Override
         public void onLog(InetSocketAddress inetSocketAddress, HashMap<String, String> logs) {
-
+            try {
+                HashMap<String, String> logs2 = new HashMap<>();
+                logs2.put("liveid", live_id);
+                logs2.put("class_id", class_id);
+                logs2.put("address", "" + inetSocketAddress);
+                logs2.putAll(logs);
+                UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_TCP_ERROR, logs2);
+            } catch (Exception e) {
+                CrashReport.postCatchedException(new LiveException(TAG, e));
+            }
         }
 
         @Override

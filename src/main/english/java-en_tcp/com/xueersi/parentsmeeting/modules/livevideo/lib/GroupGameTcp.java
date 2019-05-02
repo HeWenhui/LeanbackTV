@@ -17,6 +17,7 @@ import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.ByteBuffer;
+import java.util.HashMap;
 
 /**
  * 小组互动的tcp
@@ -75,7 +76,15 @@ public class GroupGameTcp {
             socket.setKeepAlive(true);
             socket.setSoTimeout(130000);
             socket.connect(inetSocketAddress, 5000);
-            log.d("start:KeepAlive=" + socket.getKeepAlive() + ",time=" + (System.currentTimeMillis() - before));
+            if (receiveMegCallBack != null) {
+                HashMap<String, String> logs = new HashMap<>();
+                logs.put("logtype", "connect");
+                logs.put("time", "" + (System.currentTimeMillis() - before));
+                logs.put("times", "" + (CREATE_TIMES - 1));
+                receiveMegCallBack.onLog(inetSocketAddress, logs);
+            } else {
+                log.d("start:KeepAlive=" + socket.getKeepAlive() + ",time=" + (System.currentTimeMillis() - before));
+            }
             writeThread = new WriteThread(socket.getOutputStream());
             writeThread.start();
             new Thread(new ReadThread(writeThread, socket.getInputStream())).start();
@@ -196,6 +205,23 @@ public class GroupGameTcp {
                 // SeqIdSize
                 int packageLength = TcpConstants.header + bodyStr.getBytes().length;
                 log.d("WriteThread:send:type=" + type + ",operation=" + operation + ",packageLength=" + packageLength);
+                if (type != TcpConstants.HEAD_TYPE) {
+                    if (receiveMegCallBack != null) {
+                        try {
+                            HashMap<String, String> logs = new HashMap<>();
+                            logs.put("logtype", "sendtcp");
+                            logs.put("type", "" + type);
+                            logs.put("operation", "" + operation);
+                            logs.put("bodyStr", "" + bodyStr);
+                            logs.put("seq", "" + seq);
+                            logs.put("packageLength", "" + packageLength);
+                            logs.put("times", "" + (CREATE_TIMES - 1));
+                            receiveMegCallBack.onLog(inetSocketAddress, logs);
+                        } catch (Exception e) {
+                            CrashReport.postCatchedException(new TcpException(TAG, e));
+                        }
+                    }
+                }
                 ByteBuffer b = ByteBuffer.allocate(packageLength);
                 b.putInt(packageLength);
                 b.putShort(TcpConstants.header);

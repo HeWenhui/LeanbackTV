@@ -2252,8 +2252,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
         @Override
         public void onMessage(short type, int operation, String msg) {
-            logger.d("onMessage:type=" + type + ",operation=" + operation + ",msg=" + msg);
-            mLogtf.debugSave("onMessage:type=" + type + ",operation=" + operation + ",msg=" + msg);
+            mLogtf.d("onMessage:type=" + type + ",operation=" + operation + ",msg=" + msg);
             if (type == TcpConstants.VOICE_CANNO_TYPE) {
                 switch (operation) {
                     case TcpConstants.VOICE_CANNO_STATIS: {
@@ -2575,8 +2574,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
         @Override
         public void onMessage(short type, int operation, String msg) {
-            logger.d("onMessage:type=" + type + ",operation=" + operation + ",msg=" + msg);
-            mLogtf.debugSave("onMessage:type=" + type + ",operation=" + operation + ",msg=" + msg);
+            mLogtf.d("onMessage:type=" + type + ",operation=" + operation + ",msg=" + msg);
             if (type == TcpConstants.CLEAN_UP_TYPE) {
                 switch (operation) {
                     case TcpConstants.CLEAN_UP_REC: {
