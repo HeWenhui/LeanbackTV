@@ -47,8 +47,8 @@
             android:layout_marginTop="140dp"
             android:layout_marginRight="18dp"
             android:layout_marginBottom="50dp"
-            app:VerticalThumbDrawable="@drawable/arts_rcl_fastscorller_header_selector"
-            app:VerticalTrackDrawable="@drawable/rcl_fastscroller_tracker" />
+            app:VerticalThumbDrawable="@drawable/rcl_fast_scoller_line_ffc8d6ed_style"
+            app:VerticalTrackDrawable="@drawable/rcl_fastscroller_transparent"/>
 
     </RelativeLayout>
 
