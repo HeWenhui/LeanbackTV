@@ -3,16 +3,18 @@ package com.xueersi.parentsmeeting.widget.praise.entity;
 import java.util.List;
 
 public class PraiseContentEntity {
-    /** 标题*/
-    String tittle;
+    /** 标题 */
+    private String tittle;
     /** 名字 */
-    String name;
+    private String name;
     /** 是否上榜 */
-    int status;
+    private int status;
     /** 布局类型 */
-    int viewType;
-    /** 列占位*/
-    int itemSpan;
+    private int viewType;
+    /** 列占位 */
+    private int itemSpan;
+    /** 表扬榜样式 */
+    private int praiseStyle;
 
     public String getTittle() {
         return tittle;
@@ -53,4 +55,13 @@ public class PraiseContentEntity {
     public void setItemSpan(int itemSpan) {
         this.itemSpan = itemSpan;
     }
+
+    public int getPraiseStyle() {
+        return praiseStyle;
+    }
+
+    public void setPraiseStyle(int praiseStyle) {
+        this.praiseStyle = praiseStyle;
+    }
+
 }

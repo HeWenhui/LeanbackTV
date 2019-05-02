@@ -1,7 +1,26 @@
 package com.xueersi.parentsmeeting.widget.praise.config;
 
 public class PraiseConfig {
-    /**  布局类型标题*/
-    public static final int VIEW_TYPE_TITLE = 4;
+    /** 布局类型标题 */
+    public static final int VIEW_TYPE_TITLE = 1;
+    /** 表扬榜类型1 */
+    public static final int PRAISE_DARK = 1;
+    /** 表扬榜类型2 */
+    public static final int PRAISE_CHINA = 2;
+    /** 表扬榜类型3 */
+    public static final int PRAISE_LOVELY = 3;
+    /** 表扬榜类型4 */
+    public static final int PRAISE_WOOD = 4;
+
+    /** 表扬榜类型-表扬榜 */
+    public static final int PRAISE_TYPE_PRACTICE = 1;
+    /** 表扬榜类型-口述题 */
+    public static final int PRAISE_TYPE_TALK = 2;
+    /** 表扬榜类型-互动题 */
+    public static final int PRAISE_TYPE_QUESITON = 3;
+    /** 结果类型表扬 */
+    public static final int RESULT_PRAISE = 1;
+    /** 在榜单中 */
+    public static final int PRAISE_IN = 1;
 
 }

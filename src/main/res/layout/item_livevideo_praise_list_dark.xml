@@ -9,7 +9,7 @@
         style="@style/text_font12_ffffff_style"
         android:id="@id/tv_item_livevideo_praise_list_name"
         android:layout_width="wrap_content"
-        android:text="111"
+        android:text=""
         android:textColor="@color/white"
         android:layout_height="wrap_content" />
     <View
