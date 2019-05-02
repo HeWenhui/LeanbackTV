@@ -55,6 +55,14 @@ public class DarkPraisePager extends LiveBasePager {
     ImageView ivTitle;
     /** 自定义标题 */
     TextView tvTitle;
+    /** 副标题 */
+    TextView tvSubTitle;
+    /** 老师提示 */
+    TextView tvTeacherTip;
+    /** 老师批语 */
+    TextView tvTeacherTalk;
+    /** 老师头像 */
+    ImageView ivTeacherHeadImage;
     int mCurrentNum;
 
     public DarkPraisePager(Context context) {
@@ -107,7 +115,7 @@ public class DarkPraisePager extends LiveBasePager {
 
     @Override
     public View initView() {
-        mView = View.inflate(mContext, R.layout.page_livevideo_praise_list_lovely, null);
+        mView = View.inflate(mContext, R.layout.page_livevideo_praise_list_wood, null);
         recyclerView = mView.findViewById(R.id.rv_livevideo_praise_list_content);
         GridLayoutManager manager = new GridLayoutManager(mContext, 4);
         manager.setSpanSizeLookup(new GridSpanSizeLookup());
@@ -119,6 +127,11 @@ public class DarkPraisePager extends LiveBasePager {
         imgBtnClose = mView.findViewById(R.id.btn_page_livevideo_praise_list_close);
         ivTitle  = mView.findViewById(R.id.iv_page_livevideo_praise_list_title);
         tvTitle  = mView.findViewById(R.id.tv_page_livevideo_praise_list_title);
+        tvSubTitle = mView.findViewById(R.id.tv_page_livevideo_praise_list_sub_title);
+
+        tvTeacherTip  = mView.findViewById(R.id.tv_page_livevideo_praise_list_teacher_tip);
+        tvTeacherTalk  = mView.findViewById(R.id.tv_page_livevideo_praise_list_teacher_talk);
+        ivTeacherHeadImage = mView.findViewById(R.id.iv_page_livevideo_praise_list_teacher_head_image);
         return mView;
     }
 
