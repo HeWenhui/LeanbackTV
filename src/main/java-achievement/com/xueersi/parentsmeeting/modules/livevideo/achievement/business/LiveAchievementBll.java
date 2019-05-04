@@ -589,7 +589,7 @@ public class LiveAchievementBll implements StarInteractAction {
                 R.drawable.bg_livevideo_small_english_statinteract_stat_big :
                 R.drawable.bg_livevideo_statinteract_stat_big);
 
-        if (endGoldPoint == null) {
+        if (endStarPoint == null) {
             logToFile.d("onStarAdd:endGoldPoint=null");
             int[] outLocation = new int[2];
             ivStarInteractStat.getLocationInWindow(outLocation);
