@@ -135,6 +135,7 @@ public class IRCTalkConf {
         if (hosts.isEmpty()) {
             return false;
         }
+        mIsSuccess = false;
         handler.removeMessages(GET_SERVER);
         handler.sendEmptyMessage(GET_SERVER);
         return true;
@@ -179,7 +180,6 @@ public class IRCTalkConf {
                     return;
                 }
                 handler.removeMessages(GET_SERVER);
-                mLogtf.d("onPmSuccess:url=" + url + ",jsonObject=" + responseEntity.getJsonObject());
                 JSONArray jsonArray = (JSONArray) responseEntity.getJsonObject();
                 List<LiveGetInfo.NewTalkConfEntity> mNewTalkConf = new ArrayList<>();
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -194,6 +194,7 @@ public class IRCTalkConf {
                         CrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                 }
+                mLogtf.d("onPmSuccess:mIsDestory=" + mIsDestory + ",size=" + mNewTalkConf.size());
                 if (!mIsDestory) {
                     businessDataCallBack.onDataSucess(mNewTalkConf);//回调IRCMessage中businessDataCallBack的onDataSucess方法
                 }
@@ -210,12 +211,16 @@ public class IRCTalkConf {
                 if (callBack != this) {
                     return;
                 }
-                StableLogHashMap stableLogHashMap = new StableLogHashMap();
-                stableLogHashMap.put("gslburl", url);
-                stableLogHashMap.put("errmsg", msg);
-                stableLogHashMap.put("ip", getHostIP());
-                stableLogHashMap.put("netWorkType", "" + netWorkType);
-                UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), eventId, stableLogHashMap.getData());
+                try {
+                    StableLogHashMap stableLogHashMap = new StableLogHashMap();
+                    stableLogHashMap.put("gslburl", url);
+                    stableLogHashMap.put("errmsg", msg);
+                    stableLogHashMap.put("ip", getHostIP());
+                    stableLogHashMap.put("netWorkType", "" + netWorkType);
+                    UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), eventId, stableLogHashMap.getData());
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                }
                 //体验课获取失败
                 final String finalmsg = msg;
                 if (chatServiceError != null) {
@@ -248,11 +253,15 @@ public class IRCTalkConf {
                 if (callBack != this) {
                     return;
                 }
-                StableLogHashMap stableLogHashMap = new StableLogHashMap();
-                stableLogHashMap.put("gslburl", url);
-                stableLogHashMap.put("errmsg", responseEntity.getErrorMsg());
-                stableLogHashMap.put("ip", getHostIP());
-                UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), eventId, stableLogHashMap.getData());
+                try {
+                    StableLogHashMap stableLogHashMap = new StableLogHashMap();
+                    stableLogHashMap.put("gslburl", url);
+                    stableLogHashMap.put("errmsg", responseEntity.getErrorMsg());
+                    stableLogHashMap.put("ip", getHostIP());
+                    UmsAgentManager.umsAgentDebug(BaseApplication.getContext(), eventId, stableLogHashMap.getData());
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                }
                 reTry();
             }
 
