@@ -413,7 +413,7 @@ public class LiveStandAchievementBll implements StarInteractAction {
 //        params.leftMargin = (int) startPoint.getX();
 //        params.topMargin = (int) startPoint.getY();
 //        bottomContent.addView(flyStat, params);
-//        final ImageView iv_livevideo_starinteract_stat = (ImageView) flyStat.findViewById(R.id.iv_livevideo_starinteract_stat);
+//        final ImageView ivStarinteractStat = (ImageView) flyStat.findViewById(R.id.ivStarinteractStat);
 //        ValueAnimator translateValueAnimator = ValueAnimator.ofObject(new LineEvaluator(), new LineEvaluator.PointAndFloat(startPoint), new LineEvaluator.PointAndFloat(endStarPoint));
 //        translateValueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
 //        translateValueAnimator.setDuration(600);
@@ -428,11 +428,11 @@ public class LiveStandAchievementBll implements StarInteractAction {
 //                LayoutParamsUtil.setViewLayoutParams(flyStat, params);
 //                float fraction = currentPoint.fraction;
 //                flyStat.setAlpha(1 - fraction);
-//                int width = iv_livevideo_starinteract_stat.getWidth();
+//                int width = ivStarinteractStat.getWidth();
 ////                float scale = ((float) ivStarInteractStat.getWidth() / (float) width - 1) * fraction + 1;
 //                float scale = 1;
-//                iv_livevideo_starinteract_stat.setScaleX(scale);
-//                iv_livevideo_starinteract_stat.setScaleY(scale);
+//                ivStarinteractStat.setScaleX(scale);
+//                ivStarinteractStat.setScaleY(scale);
 //                logger.i( "onAnimationUpdate:fraction=" + fraction + ",leftMargin=" + params.leftMargin);
 ////                    logger.i( "onAnimationUpdate:fraction=" + fraction + ",scale=" + scale + ",s=" + ((float) ivStarInteractStat.getWidth() / (float) width));
 //            }

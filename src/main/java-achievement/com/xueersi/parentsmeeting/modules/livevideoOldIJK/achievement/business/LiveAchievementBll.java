@@ -751,7 +751,7 @@ public class LiveAchievementBll implements StarInteractAction {
          * 移动动画
          */
         ValueAnimator translateValueAnimator;
-        ImageView iv_livevideo_starinteract_stat;
+        ImageView ivStarinteractStat;
         boolean isLightRotate = false;
         LineEvaluator.PointAndFloat endLinePoint;
         OnAnimationEnd onAnimationEnd;
@@ -813,10 +813,10 @@ public class LiveAchievementBll implements StarInteractAction {
                     LayoutParamsUtil.setViewLayoutParams(flyStat, params);
                     float fraction = currentPoint.fraction;
                     flyStat.setAlpha(1 - fraction);
-                    int width = iv_livevideo_starinteract_stat.getWidth();
+                    int width = ivStarinteractStat.getWidth();
                     float scale = ((float) ivStarInteractStat.getWidth() / (float) width - 1) * fraction + 1;
-                    iv_livevideo_starinteract_stat.setScaleX(scale);
-                    iv_livevideo_starinteract_stat.setScaleY(scale);
+                    ivStarinteractStat.setScaleX(scale);
+                    ivStarinteractStat.setScaleY(scale);
                     logger.i("onAnimationUpdate:fraction=" + fraction + ",leftMargin=" + params.leftMargin);
 //                    logger.i( "onAnimationUpdate:fraction=" + fraction + ",scale=" + scale + ",s=" + ((float)
 // ivStarInteractStat.getWidth() / (float) width));
@@ -952,15 +952,15 @@ public class LiveAchievementBll implements StarInteractAction {
         public void setFlyStat(int type, View flyStat) {
             this.type = type;
             this.flyStat = flyStat;
-            iv_livevideo_starinteract_stat = (ImageView) flyStat.findViewById(R.id.iv_livevideo_starinteract_stat);
+            ivStarinteractStat = (ImageView) flyStat.findViewById(R.id.iv_livevideo_starinteract_stat);
             if (type == AnimationType_STAR) {
                 endLinePoint.point = endStarPoint;
-                iv_livevideo_starinteract_stat.setImageResource(isSmallEnglish
+                ivStarinteractStat.setImageResource(isSmallEnglish
                         ? R.drawable.bg_livevideo_small_english_statinteract_stat_big
                         : R.drawable.bg_livevideo_statinteract_stat_big);
             } else {
                 endLinePoint.point = endGoldPoint;
-                iv_livevideo_starinteract_stat.setImageResource(isSmallEnglish
+                ivStarinteractStat.setImageResource(isSmallEnglish
                         ? R.drawable.bg_livevideo_small_english_statinteract_gold_big
                         : R.drawable.bg_livevideo_statinteract_gold_big);
             }
@@ -1014,10 +1014,10 @@ public class LiveAchievementBll implements StarInteractAction {
 //                    flyStat.setLayoutParams(params);
 //                    float fraction = currentPoint.fraction;
 //                    flyStat.setAlpha(1 - fraction);
-//                    int width = iv_livevideo_starinteract_stat.getWidth();
+//                    int width = ivStarinteractStat.getWidth();
 //                    float scale = ((float) ivStarInteractStat.getWidth() / (float) width - 1) * fraction + 1;
-//                    iv_livevideo_starinteract_stat.setScaleX(scale);
-//                    iv_livevideo_starinteract_stat.setScaleY(scale);
+//                    ivStarinteractStat.setScaleX(scale);
+//                    ivStarinteractStat.setScaleY(scale);
 //                    logger.i( "onAnimationUpdate:fraction=" + fraction + ",scale=" + scale + ",s=" + ((float)
 // ivStarInteractStat.getWidth() / (float) width));
 //                }
