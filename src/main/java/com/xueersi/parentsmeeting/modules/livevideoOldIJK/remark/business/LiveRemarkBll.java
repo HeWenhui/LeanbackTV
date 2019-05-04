@@ -44,6 +44,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoPointEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -190,9 +191,13 @@ public class LiveRemarkBll {
         } else {
             offSet = time - frameInfo.pkt / 1000;
         }
-        logger.i("nowtime  " + frameInfo.nowTime + "   dts     " + frameInfo.pkt_dts
-                + "   pkt   " + frameInfo.pkt + "  cache:" + ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoCachedDuration()
-                + " systime:" + (System.currentTimeMillis() / 1000 + sysTimeOffset) + "   nettime:" + time);
+        try {
+            logger.i("nowtime  " + frameInfo.nowTime + "   dts     " + frameInfo.pkt_dts
+                    + "   pkt   " + frameInfo.pkt + "  cache:" + ((IjkMediaPlayer) mPlayerService.getPlayer()).getVideoCachedDuration()
+                    + " systime:" + (System.currentTimeMillis() / 1000 + sysTimeOffset) + "   nettime:" + time);
+        } catch (Exception e) {
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
         //setBtEnable(true);
         setVideoReady(true);
         mTimer.cancel();
@@ -259,7 +264,11 @@ public class LiveRemarkBll {
                                                 markFail("fail4");
                                                 return;
                                             }
-                                            bitmap = Bitmap.createBitmap(bitmap, 0, 0, (int) videoWidth, displayHeight);
+                                            if (videoWidth <= bitmap.getWidth()) {
+                                                bitmap = Bitmap.createBitmap(bitmap, 0, 0, (int) videoWidth, displayHeight);
+                                            } else {
+                                                logToFile.d("createBitmap:w=" + videoWidth + "," + bitmap.getWidth());
+                                            }
                                             bitmap = Bitmap.createScaledBitmap(bitmap, 320, 240, true);
                                             File saveDir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/save");
                                             if (!saveDir.exists()) {
