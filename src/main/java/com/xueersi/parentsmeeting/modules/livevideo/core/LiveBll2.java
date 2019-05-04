@@ -933,18 +933,27 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     ///日志上传相关
     @Override
     public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
+        if (mGetInfo == null) {
+            return;
+        }
         setLogParam(eventId, mData);
         UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
     }
 
     @Override
     public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
+        if (mGetInfo == null) {
+            return;
+        }
         setLogParam(eventId, mData);
         UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadBehavior, mData);
     }
 
     @Override
     public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
+        if (mGetInfo == null) {
+            return;
+        }
         setLogParam(eventId, mData);
         UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData);
     }
