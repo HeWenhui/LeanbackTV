@@ -226,10 +226,16 @@ public class SpeechCollectiveNo2Bll {
 
     }
 
-    public void setBottomContent(RelativeLayout mRootView) {
+    public void setBottomContent(final RelativeLayout mRootView) {
         this.mRootView = mRootView;
-        SpeechPraisePager speechPraisePager = new SpeechPraisePager(context);
-        mRootView.addView(speechPraisePager.getRootView());
+//        SpeechPraisePager speechPraisePager = new SpeechPraisePager(context);
+//        mRootView.addView(speechPraisePager.getRootView());
+//        speechPraisePager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
+//            @Override
+//            public void onClose(LiveBasePager basePager) {
+//                mRootView.removeView(basePager.getRootView());
+//            }
+//        });
     }
 
     /**

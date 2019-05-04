@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.speechcollective.page;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -11,14 +12,16 @@ import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 
 /**
  * Created by linyuqiang on 2019/4/29.
  */
-public class SpeechPraisePager extends BasePager {
+public class SpeechPraisePager extends LiveBasePager {
     private LottieAnimationView animationView;
-    static int times = 0;
+    private static int times = 0;
+    private String[] names = new String[]{"img_0.png", "img_9.png", "img_10.png"};
 
     public SpeechPraisePager(Context context) {
         super(context);
@@ -37,18 +40,43 @@ public class SpeechPraisePager extends BasePager {
         String lottieResPath = "speech_collec_praise/images";
         String lottieJsonPath = "speech_collec_praise/data.json";
         final LottieEffectInfo effectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
-        times++;
         animationView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext), "teacher_praise");
         animationView.setImageAssetDelegate(new ImageAssetDelegate() {
             @Override
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
                 logger.d("fetchBitmap:name=" + lottieImageAsset.getFileName() + ",id=" + lottieImageAsset.getId());
-                return effectInfo.fetchBitmapFromAssets(animationView, lottieImageAsset.getFileName(),
+                String fileName = lottieImageAsset.getFileName();
+                if ("img_0.png".equals(lottieImageAsset.getFileName())) {
+                    fileName = names[times % names.length];
+                }
+                return effectInfo.fetchBitmapFromAssets(animationView, fileName,
                         lottieImageAsset.getId(), lottieImageAsset.getWidth(), lottieImageAsset.getHeight(),
                         mContext);
             }
         });
+        times++;
         animationView.playAnimation();
+        animationView.addAnimatorListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                onPagerClose.onClose(SpeechPraisePager.this);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animator) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animator) {
+
+            }
+        });
     }
 
 }
