@@ -146,7 +146,7 @@ public class SpeechCollectiveNo2Bll {
     private void startEvaluator() {
         isRecord.set(true);
         File saveFile = new File(dir, "speechbul" + System.currentTimeMillis() + ".mp3");
-        mSpeechEvaluatorUtils.startOnlineChsRecognize(saveFile.getPath(), SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
+        mSpeechEvaluatorUtils.startSpeechBulletScreenRecognize(saveFile.getPath(), SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
                 new EvaluatorListener() {
                     @Override
                     public void onBeginOfSpeech() {

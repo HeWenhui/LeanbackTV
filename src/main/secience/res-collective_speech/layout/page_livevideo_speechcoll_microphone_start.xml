@@ -6,10 +6,10 @@
 
     <ImageView
         android:id="@id/iv_livevideo_gold_microphone_bg"
-        android:layout_width="70dp"
+        android:layout_width="63dp"
         android:layout_height="63dp"
         android:layout_marginBottom="15dp"
-        android:src="@drawable/bg_livevideo_gold_microphone_icon"
+        android:src="@drawable/icon_livevideo_speech_collec_mic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
