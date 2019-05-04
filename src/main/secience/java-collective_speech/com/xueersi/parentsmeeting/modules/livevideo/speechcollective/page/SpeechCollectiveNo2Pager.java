@@ -14,12 +14,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.widget.SoundWaveView;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.business.SpeechCollecPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.business.SpeechCollectiveView;
 
 import java.util.List;
@@ -36,6 +38,9 @@ public class SpeechCollectiveNo2Pager extends LiveBasePager implements SpeechCol
     private Group microhpneGroup;
     private LottieAnimationView lottieAnimationView;
     private TextView ivSpeechcollectiveNoVolume;
+    private RelativeLayout rlSpeechcollectiveNoperm;
+    private TextView tvSpeechcollectiveNopermClick;
+    private SpeechCollecPresenter speechCollecPresenter;
 
     public SpeechCollectiveNo2Pager(Context context, ViewGroup mRootView) {
         super(context, false);
@@ -43,6 +48,10 @@ public class SpeechCollectiveNo2Pager extends LiveBasePager implements SpeechCol
         mView = initView();
         initData();
         initListener();
+    }
+
+    public void setSpeechCollecPresenter(SpeechCollecPresenter speechCollecPresenter) {
+        this.speechCollecPresenter = speechCollecPresenter;
     }
 
     @Override
@@ -54,12 +63,19 @@ public class SpeechCollectiveNo2Pager extends LiveBasePager implements SpeechCol
         swvView = view.findViewById(R.id.swv_livevideo_gold_microphone_sound_wave);
         lottieAnimationView = view.findViewById(R.id.lottie_livevideo_gold_microphone_gold_view);
         ivSpeechcollectiveNoVolume = view.findViewById(R.id.iv_livevideo_speechcollective_novolume);
+        rlSpeechcollectiveNoperm = view.findViewById(R.id.rl_livevideo_speechcollective_noperm);
+        tvSpeechcollectiveNopermClick = view.findViewById(R.id.tv_livevideo_speechcollective_noperm_click);
         return view;
     }
 
     @Override
     public void initData() {
 
+    }
+
+    @Override
+    public void onDeny() {
+        rlSpeechcollectiveNoperm.setVisibility(View.VISIBLE);
     }
 
     public void start() {
@@ -79,6 +95,13 @@ public class SpeechCollectiveNo2Pager extends LiveBasePager implements SpeechCol
             @Override
             public void onClick(View view) {
                 onPagerClose.onClose(SpeechCollectiveNo2Pager.this);
+            }
+        });
+        tvSpeechcollectiveNopermClick.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                rlSpeechcollectiveNoperm.setVisibility(View.GONE);
+                speechCollecPresenter.onRequest();
             }
         });
     }

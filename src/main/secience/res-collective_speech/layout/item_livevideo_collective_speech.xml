@@ -19,6 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/icon_livevideo_speech_coll_tip"
+        android:includeFontPadding="false"
         android:paddingLeft="11dp"
         android:paddingTop="11dp"
         android:paddingRight="11dp"
@@ -30,6 +31,78 @@
         app:layout_constraintBottom_toTopOf="@id/iv_livevideo_gold_microphone_bg"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
+
+    <RelativeLayout
+        android:id="@id/rl_livevideo_speechcollective_noperm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/icon_livevideo_speech_coll_tip"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/iv_livevideo_gold_microphone_bg"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@id/tl_livevideo_speechcollective_noperm_tip1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="8dp"
+            android:includeFontPadding="false"
+            android:text="麦克风异常哦"
+            android:textColor="#ffffffff"
+            android:textSize="12sp" />
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tl_livevideo_speechcollective_noperm_tip1"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="13dp">
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@id/tl_livevideo_speechcollective_noperm_tip2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:includeFontPadding="false"
+                android:text="点击"
+                android:textColor="#ffffffff"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@id/tv_livevideo_speechcollective_noperm_click"
+                android:layout_width="46dp"
+                android:layout_height="17dp"
+                android:layout_marginLeft="3dp"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:shadowColor="#ffe60e00"
+                android:shadowDx="0"
+                android:shadowDy="0"
+                android:shadowRadius="3.0"
+                android:text="检测"
+                android:textColor="#ffffffff"
+                android:textSize="10sp"
+                app:layout_constraintLeft_toRightOf="@id/tl_livevideo_speechcollective_noperm_tip2" />
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@id/tl_livevideo_speechcollective_noperm_tip3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:includeFontPadding="false"
+                android:text="麦克风"
+                android:textColor="#ffffffff"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/tv_livevideo_speechcollective_noperm_click"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </android.support.constraint.ConstraintLayout>
+    </RelativeLayout>
 
     <ImageView
         android:id="@id/iv_livevideo_gold_microphone_bg"

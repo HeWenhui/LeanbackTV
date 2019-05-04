@@ -97,35 +97,43 @@ public class SpeechCollectiveNo2Bll {
         } else {
             //如果没有麦克风权限，申请麦克风权限
             devicestatus = "0";
-            XesPermission.checkPermissionNoAlert(context, new LiveActivityPermissionCallback() {
-                /**
-                 * 结束
-                 */
-                @Override
-                public void onFinish() {
-                    logger.i("onFinish()");
-                }
-
-                /**
-                 * 用户拒绝某个权限
-                 */
-                @Override
-                public void onDeny(String permission, int position) {
-                    logger.i("onDeny()");
-                }
-
-                /**
-                 * 用户允许某个权限
-                 */
-                @Override
-                public void onGuarantee(String permission, int position) {
-                    logger.i("onGuarantee()");
-                    speechCollectiveView.start();
-                    startEvaluator();
-                }
-            }, PermissionConfig.PERMISSION_CODE_AUDIO);
+            XesPermission.checkPermissionNoAlert(context, getCallBack(), PermissionConfig.PERMISSION_CODE_AUDIO);
         }
     }
+
+    LiveActivityPermissionCallback getCallBack() {
+        return new LiveActivityPermissionCallback() {
+            /**
+             * 结束
+             */
+            @Override
+            public void onFinish() {
+                logger.i("onFinish()");
+            }
+
+            /**
+             * 用户拒绝某个权限
+             */
+            @Override
+            public void onDeny(String permission, int position) {
+                logger.i("onDeny()");
+                speechCollectiveView.onDeny();
+            }
+
+            /**
+             * 用户允许某个权限
+             */
+            @Override
+            public void onGuarantee(String permission, int position) {
+                logger.i("onGuarantee()");
+                speechCollectiveView.start();
+                startEvaluator();
+            }
+        };
+    }
+
+    ;
+
 
     private void addView() {
         final SpeechCollectiveNo2Pager speechCollectiveNo2Pager = new SpeechCollectiveNo2Pager(context, mRootView);
@@ -137,6 +145,12 @@ public class SpeechCollectiveNo2Bll {
                     mSpeechEvaluatorUtils.cancel();
                     isRecord.set(false);
                 }
+            }
+        });
+        speechCollectiveNo2Pager.setSpeechCollecPresenter(new SpeechCollecPresenter() {
+            @Override
+            public void onRequest() {
+                XesPermission.checkPermissionNoAlert(context, getCallBack(), PermissionConfig.PERMISSION_CODE_AUDIO);
             }
         });
         mRootView.addView(speechCollectiveNo2Pager.getRootView());

@@ -12,6 +12,8 @@ public interface SpeechCollectiveView {
 
     List<SoundWaveView.Circle> getRipples();
 
+    void onDeny();
+
     void start();
 
     void onNoVolume();
