@@ -11,6 +11,7 @@ import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.utils.SpeechEvaluatorUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.log.LoggerFactory;
@@ -21,6 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.config.SpeechCollectiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.dialog.SpeechStartDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.page.SpeechCollectiveNo2Pager;
+import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.page.SpeechEnergyPager;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.page.SpeechPraisePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
@@ -228,14 +230,24 @@ public class SpeechCollectiveNo2Bll {
 
     public void setBottomContent(final RelativeLayout mRootView) {
         this.mRootView = mRootView;
-//        SpeechPraisePager speechPraisePager = new SpeechPraisePager(context);
-//        mRootView.addView(speechPraisePager.getRootView());
-//        speechPraisePager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
-//            @Override
-//            public void onClose(LiveBasePager basePager) {
-//                mRootView.removeView(basePager.getRootView());
-//            }
-//        });
+//        if (com.xueersi.common.config.AppConfig.DEBUG) {
+//            SpeechPraisePager speechPraisePager = new SpeechPraisePager(context);
+//            mRootView.addView(speechPraisePager.getRootView());
+//            speechPraisePager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
+//                @Override
+//                public void onClose(LiveBasePager basePager) {
+//                    mRootView.removeView(basePager.getRootView());
+//                }
+//            });
+//            SpeechEnergyPager speechEnergyPager = new SpeechEnergyPager(context);
+//            mRootView.addView(speechEnergyPager.getRootView());
+//            speechEnergyPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
+//                @Override
+//                public void onClose(LiveBasePager basePager) {
+//                    mRootView.removeView(basePager.getRootView());
+//                }
+//            });
+//        }
     }
 
     /**
