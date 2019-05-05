@@ -31,7 +31,7 @@ import java.util.List;
  *
  * @param hua
  */
-public class PraisePager extends LiveBasePager {
+public class PraiseBasePager extends LiveBasePager {
 
     /** 内容view */
     FastScrollableRecyclerView recyclerView;
@@ -65,7 +65,7 @@ public class PraisePager extends LiveBasePager {
     int HUNDRED = 100;
     PraiseEntity mPraiseEntity;
 
-    public PraisePager(Context context, PraiseEntity praiseEntity) {
+    public PraiseBasePager(Context context, PraiseEntity praiseEntity) {
         super(context,praiseEntity,true);
         listContent = praiseEntity.getContentEntityList();
 //        for (int i = 0; i < 30; i++) {
@@ -85,7 +85,7 @@ public class PraisePager extends LiveBasePager {
         setLayout(mView);
     }
 
-    public PraisePager(Context context) {
+    public PraiseBasePager(Context context) {
         super(context);
 
     }

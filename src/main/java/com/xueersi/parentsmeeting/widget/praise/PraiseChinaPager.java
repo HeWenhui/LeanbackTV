@@ -12,7 +12,7 @@ import com.xueersi.parentsmeeting.widget.praise.entity.PraiseEntity;
  *
  * @param hua
  */
-public class PraiseChinaPager extends PraisePager {
+public class PraiseChinaPager extends PraiseBasePager {
 
 
     public PraiseChinaPager(Context context, PraiseEntity praiseEntity) {
