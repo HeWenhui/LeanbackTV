@@ -10,23 +10,9 @@ import java.io.File;
  * 直播获得缓存目录
  */
 public class LiveCacheFile {
+
     public static File geCacheFile(Context context, String cache) {
-        File alldir;
-        File cacheDir = context.getExternalCacheDir();
-        if (cacheDir != null) {
-            alldir = new File(cacheDir, cache);
-        } else {
-            String status = Environment.getExternalStorageState();
-            if (Environment.MEDIA_MOUNTED.equals(status)) {
-                alldir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/" + cache);
-            } else {
-                alldir = new File(context.getCacheDir(), cache);
-            }
-        }
-        if (!alldir.exists()) {
-            alldir.mkdirs();
-        }
-        return alldir;
+        return com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile.geCacheFile(context, cache);
     }
 
     public static File geFileDir(Context context, String cache) {

@@ -31,7 +31,7 @@ public class LiveThreadPoolExecutor {
 
     private LiveThreadPoolExecutor() {
         pingPool = new ThreadPoolExecutor(3, 4,
-                0L, TimeUnit.MILLISECONDS,
+                30L, TimeUnit.SECONDS,
                 new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
 
             @Override
@@ -52,6 +52,7 @@ public class LiveThreadPoolExecutor {
 
             }
         });
+        pingPool.allowCoreThreadTimeOut(true);
     }
 
     public void execute(Runnable command) {

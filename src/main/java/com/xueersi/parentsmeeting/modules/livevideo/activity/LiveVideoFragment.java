@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.annotation.AnyThread;
-import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +18,6 @@ import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
@@ -37,6 +34,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.chpk.business.ChinesePkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.AllBllConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -47,6 +45,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherBll;
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveFragmentBase;
+import com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.GoldMicroPhoneBll;
 import com.xueersi.parentsmeeting.modules.livevideo.learnreport.business.LearnReportIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NBH5CoursewareIRCBll;
@@ -56,6 +55,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseIn
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.presenter.PraiseListIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerRankIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.ArtsAnswerResultBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.ChsAnswerResultBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageIRCBll;
@@ -70,6 +70,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.switchflow.SwitchRouteSucces
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraise.business.TeacherPraiseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.business.TeamPkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.understand.business.UnderstandIRCBll;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.videoaudiochat.business.VideoAudioChatIRCBll;
@@ -92,7 +93,8 @@ import java.util.List;
  */
 public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, BaseLiveMessagePager.OnMsgUrlClick {
     private String TAG = "LiveVideoFragment";
-    Logger logger = LoggerFactory.getLogger(TAG);
+    Logger logger = LiveLoggerFactory.getLogger(TAG);
+    private int useSkin;
 
     public LiveVideoFragment() {
         mLayoutVideo = R.layout.activity_video_live_new;
@@ -133,6 +135,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
 //    private int nowPos = 0;
     /** 当前切换线路的线路总数 */
     private int totalSwitchRouteNum = 0;
+    private int isGoldMicrophone;
 
     /** {@link #onActivityCreated(Bundle)} */
     @Override
@@ -141,7 +144,10 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         if (onVideoCreate) {
             isArts = activity.getIntent().getIntExtra("isArts", -1);
             isSmallEnglish = activity.getIntent().getBooleanExtra("isSmallEnglish", false);
-
+            useSkin = activity.getIntent().getIntExtra("useSkin", 0);
+            isGoldMicrophone = activity.getIntent().getIntExtra("isGoldMicrophone", 0);
+            //logger.e("========>:onVideoCreate 22222229999000:");
+            pattern = activity.getIntent().getIntExtra("pattern", 2);
             String mode2 = activity.getIntent().getStringExtra("mode");
             if (mode2 != null) {
                 mode = mode2;
@@ -224,7 +230,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         //是文科
         BllConfigEntity[] bllConfigEntities;
         if (isArts == 1) {
-            bllConfigEntities = AllBllConfig.live_business_arts;
+            bllConfigEntities = AllBllConfig.getLiveBusinessArts();
             liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             mLiveBll.addBusinessBll(liveIRCMessageBll);
@@ -269,6 +275,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new PraiseListIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new PraiseInteractionBll(activity, mLiveBll));
 //            mLiveBll.addBusinessBll(new StudyReportBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new ChsAnswerResultBll(activity, mLiveBll));
             int allowLinkMicNew = activity.getIntent().getIntExtra("allowLinkMicNew", 0);
             VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
             videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
@@ -279,7 +286,14 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             mLiveBll.addBusinessBll(liveIRCMessageBll);
-            mLiveBll.addBusinessBll(new TeamPkBll(activity, mLiveBll));
+
+            // 语文半身直播 添加 语文pk 业务类
+            if (pattern == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY && useSkin == HalfBodyLiveConfig.SKIN_TYPE_CH) {
+                mLiveBll.addBusinessBll(new ChinesePkBll(activity, mLiveBll));
+            } else {
+                mLiveBll.addBusinessBll(new TeamPkBll(activity, mLiveBll));
+            }
+
             mLiveBll.addBusinessBll(new RollCallIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new RankBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new QuestionIRCBll(activity, mLiveBll));
@@ -298,6 +312,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new PraiseListIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new PraiseInteractionBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new StudyReportBll(activity, mLiveBll));
+
             int allowLinkMicNew = activity.getIntent().getIntExtra("allowLinkMicNew", 0);
             if (allowLinkMicNew == 1) {
                 VideoAudioChatIRCBll videoAudioChatIRCBll = new VideoAudioChatIRCBll(activity, mLiveBll);
@@ -314,7 +329,9 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         EvaluateTeacherBll evaluateTeacherBll = new com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherBll(activity, mLiveBll);
         evaluateTeacherBll.setLiveFragment(this);
         mLiveBll.addBusinessBll(evaluateTeacherBll);
-
+        if (isGoldMicrophone == 1) {
+            mLiveBll.addBusinessBll(new GoldMicroPhoneBll(activity, mLiveBll));
+        }
         if ((pattern == 1)) {
             addSwitchFlowBll();
             initSwitchFlowListener();
@@ -513,7 +530,6 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
 
 //        tvLoadingTint = mContentView.findViewById(R.id.tv_course_video_loading_content);
 
-        logger.e("========>:initView:" + bottomContent);
         // 预加载布局中退出事件
         mContentView.findViewById(R.id.iv_course_video_back).setVisibility(View.GONE);
         createMediaControlerTop();
@@ -551,7 +567,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
 
                     if ((pattern == 1) && switchFlowBll != null) {
 //            if (server != null) {
-                        switchFlowBll.setListRoute(0);
+//                        switchFlowBll.setListRoute(0);
                         logger.i("0");
 //        } else {
 //            switchFlowBll.setListRoute(null);
@@ -593,19 +609,23 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
      * #mPlayListener
      * #getPSServerList(int, int, boolean)}
      * 调用
+     *
+     * @param cur        当前播放线路索引(由0开始算)
+     * @param total      所有播放线路总数
+     * @param modeChange
      */
     @Override
     public void getPSServerList(int cur, int total, boolean modeChange) {
         super.getPSServerList(cur, total, modeChange);
         this.totalSwitchRouteNum = total;
-        this.userEyePos = cur;
+//        this.userEyePos = cur + 1;
         if ((pattern == 1) && switchFlowBll != null) {
 //            if (total != 0) {
             switchFlowBll.setListRoute(total);
 //                logger.i(total);
 //            } else {
 //                switchFlowBll.setListRoute(0);
-            logger.i("total = 0");
+            logger.i("total = " + total);
 //            }
         }
     }

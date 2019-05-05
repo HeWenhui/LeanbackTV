@@ -559,13 +559,12 @@ public class AuditClassLiveBll extends BaseBll implements LiveAndBackDebug {
             return;
         }
         liveLog.setGetInfo(mGetInfo);
-        if (isChineseHalfBodyLive(mGetInfo)) {
+       /* if (isChineseHalfBodyLive(mGetInfo)) {
             ResponseEntity responseEntity = new ResponseEntity();
             responseEntity.setErrorMsg("语文半身直播旁听暂不支持，程序员哥哥正在夜以继日的开发哦!");
             onLiveError(responseEntity);
             return;
-        }
-
+        }*/
 
         if (mGetInfo.getPattern() == 2) {
             ResponseEntity responseEntity = new ResponseEntity();

@@ -189,18 +189,20 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             }
         }
         //中学连对激励系统，教师广播发送学报消息
-        getHttpManager().getEvenLikeData(
+        if (getInfo.getIsOpenNewCourseWare() == 1) {
+            getHttpManager().getEvenLikeData(
 //                "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
-                mGetInfo.getGetEvenPairListUrl(),
-                mGetInfo.getStudentLiveInfo().getClassId(),
-                mGetInfo.getId(),
-                mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
-                        mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
-                    }
-                });
+                    mGetInfo.getGetEvenPairListUrl(),
+                    mGetInfo.getStudentLiveInfo().getClassId(),
+                    mGetInfo.getId(),
+                    mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                            EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
+                            mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
+                        }
+                    });
+        }
     }
 
     @Override

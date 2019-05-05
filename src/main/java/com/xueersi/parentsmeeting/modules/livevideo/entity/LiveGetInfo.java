@@ -211,7 +211,10 @@ public class LiveGetInfo {
     private String subjectiveTestAnswerResult;
     //是否是小英
     private boolean smallEnglish;
-
+    /**
+     * 声网appid
+     */
+    private String appid;
     private boolean primaryChinese;
     /**
      * 当前的直播模式
@@ -242,6 +245,9 @@ public class LiveGetInfo {
     private int pattern = 1;
     /** 全身直播语音答题和评测小组排名请求时间 */
     private String requestTime;
+
+    /**语文，英语是否使用皮肤**/
+    private int useSkin;
 
     /**
      * 是否是 teampk 直播间
@@ -299,6 +305,16 @@ public class LiveGetInfo {
 
     // add by William on 2018/12/5  专属老师用
     public EPlanInfoBean ePlanInfo;
+    /** 语文AI主观题AI接口*/
+    private String subjectiveItem2AIUrl;
+
+    public String getSubjectiveItem2AIUrl() {
+        return subjectiveItem2AIUrl;
+    }
+
+    public void setSubjectiveItem2AIUrl(String subjectiveItem2AIUrl) {
+        this.subjectiveItem2AIUrl = subjectiveItem2AIUrl;
+    }
     /** 是否支持连对激励 0：关闭 1：打开 */
     private int isOpenNewCourseWare;
     /** 连对榜接口地址 */
@@ -338,6 +354,16 @@ public class LiveGetInfo {
 
     public void setGetThumbsUpUrl(String getThumbsUpUrl) {
         this.getThumbsUpUrl = getThumbsUpUrl;
+    }
+
+    private int useGoldMicroPhone;
+
+    public int isUseGoldMicroPhone() {
+        return useGoldMicroPhone;
+    }
+
+    public void setUseGoldMicroPhone(int useGoldMicroPhone) {
+        this.useGoldMicroPhone = useGoldMicroPhone;
     }
 
     public int getPraiseAutoCutTime() {
@@ -390,6 +416,14 @@ public class LiveGetInfo {
 
     public boolean getSmallEnglish() {
         return smallEnglish;
+    }
+
+    public String getAppid() {
+        return appid;
+    }
+
+    public void setAppid(String appid) {
+        this.appid = appid;
     }
 
     public boolean isPrimaryChinese() {
@@ -647,6 +681,14 @@ public class LiveGetInfo {
 
     public String getUname() {
         return uname;
+    }
+
+    public void setUseSkin(int useSkin) {
+        this.useSkin = useSkin;
+    }
+
+    public int getUseSkin() {
+        return useSkin;
     }
 
     /**

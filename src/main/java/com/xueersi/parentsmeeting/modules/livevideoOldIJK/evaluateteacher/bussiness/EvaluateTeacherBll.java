@@ -9,6 +9,7 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.http.EvaluateResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.pager.BaseEvaluateTeacherPaper;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.pager.EvaluateTeacherPager;
@@ -60,7 +61,12 @@ public class EvaluateTeacherBll extends LiveBaseBll implements IShowEvaluateActi
                     getArtsEvaluateOption(getInfo.getSmallEnglish());
                 } else if (getInfo.getIsArts() == 0) {
                     logger.i("IsArts:" + getInfo.getIsArts() + " IsPrimaryScience:" + getInfo.getIsPrimarySchool());
-                    if (1 == getInfo.getIsPrimarySchool()) {
+
+                   // 语文半身 直播，采用语文的皮肤，理科的接口
+                   if(getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY
+                           && getInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH){
+                       evaluateTeacherPager = new PrimaryChineseEvaluateTeacherPager(mContext, getInfo);
+                   } else if (1 == getInfo.getIsPrimarySchool()) {
                         evaluateTeacherPager = new PrimaryScienceEvaluateTeacherPager(mContext, getInfo);
                     } else {
                         evaluateTeacherPager = new EvaluateTeacherPager(mContext, getInfo);

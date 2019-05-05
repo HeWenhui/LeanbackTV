@@ -166,6 +166,10 @@ public class LiveBaseBll extends BaseBll {
         this.mGetInfo = getInfo;
     }
 
+    public void onArtsExtLiveInited(LiveGetInfo getInfo) {
+
+    }
+
     public final void initViewF(RelativeLayout rlMessageBottom, RelativeLayout bottomContent, AtomicBoolean mIsLand, RelativeLayout mContentView) {
         mRootView = bottomContent;
         this.rlMessageBottom = rlMessageBottom;

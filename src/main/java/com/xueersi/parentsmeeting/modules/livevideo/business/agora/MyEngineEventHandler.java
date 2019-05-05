@@ -76,6 +76,23 @@ public class MyEngineEventHandler {
         }
 
         @Override
+        public void onRemoteVideoStateChanged(int uid, int state) {
+            super.onRemoteVideoStateChanged(uid, state);
+            logger.d("onRemoteVideoStateChanged:uid=" + uid + ",state=" + state);
+            Iterator<AGEventHandler> it = mEventHandlerList.keySet().iterator();
+            while (it.hasNext()) {
+                AGEventHandler handler = it.next();
+                handler.onRemoteVideoStateChanged(uid, state);
+            }
+        }
+
+        @Override
+        public void onFirstRemoteAudioFrame(int uid, int elapsed) {
+            super.onFirstRemoteAudioFrame(uid, elapsed);
+            logger.d("onFirstRemoteAudioFrame:uid=" + uid + ",elapsed=" + elapsed);
+        }
+
+        @Override
         public void onFirstLocalVideoFrame(int width, int height, int elapsed) {
             logger.d("onFirstLocalVideoFrame " + width + " " + height + " " + elapsed);
         }
@@ -102,6 +119,16 @@ public class MyEngineEventHandler {
 
         @Override
         public void onUserMuteVideo(int uid, boolean muted) {
+            logger.d("onUserMuteVideo:uid=" + uid + ",muted=" + muted);
+        }
+
+        @Override
+        public void onUserMuteAudio(int uid, boolean muted) {
+            logger.d("onUserMuteAudio:uid=" + uid + ",muted=" + muted);
+        }
+
+        public void onUserEnableLocalVideo(int uid, boolean enabled) {
+            logger.d("onUserEnableLocalVideo:uid=" + uid + ",enabled=" + enabled);
         }
 
         @Override

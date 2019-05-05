@@ -176,10 +176,13 @@ public interface XESCODE {
     /** 一题多发 收题发题都是251 TODO */
     int MULTIPLE_H5_COURSEWARE = 251;
 
+    /** 语文AI主观题*/
+    int AI_SUBJECTIVE_H5_COURSEWARE = 252;
+
     /** 开启/关闭语音弹幕 */
     int XCR_ROOM_DANMU_OPEN = 260;
 
-    /** 发送语音弹幕  */
+    /** 发送语音弹幕 */
     int XCR_ROOM_DANMU_SEND = 261;
 
     /** 语文：开启/关闭语音弹幕 */
@@ -268,4 +271,8 @@ public interface XESCODE {
         int XCR_ROOM_TEAMPK_STULIKE = 1021;//     ("1021")  //学生点赞上报
     }
 
+    /** 语文幼升小金话筒 */
+    int ARTS_GOLD_MICROPHONE = 3000;
+    /** 语文幼升小发送语音识别消息 */
+    int ARTS_GOLD_MICROPHONE_SEND_TEACHER = 3001;
 }
