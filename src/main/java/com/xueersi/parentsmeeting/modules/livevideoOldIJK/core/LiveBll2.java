@@ -26,6 +26,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IRCCallback;
