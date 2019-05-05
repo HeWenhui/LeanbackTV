@@ -127,7 +127,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
     private RelativeLayout rlLiveMessageContent;
     LiveMessageBll liveMessageBll;
     private LiveVideoSAConfig liveVideoSAConfig;
-
     /**
      * 横屏聊天信息
      */
