@@ -91,7 +91,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:text="涵涵老师对你说："
-                android:textColor="#FD6368"
+                android:textColor="#A9743C"
                 android:textSize="15sp" />
         </LinearLayout>
 
@@ -104,7 +104,7 @@
             android:paddingTop="30dp"
             android:paddingRight="20dp"
             android:text="小风你真棒！下次还要做满分学神喔！"
-            android:textColor="#FD6368"
+            android:textColor="#A9743C"
             android:textSize="15dp" />
 
     </LinearLayout>
@@ -119,8 +119,8 @@
         android:background="@drawable/bg_page_livevideo_praise_list_china_close" />
 
     <RelativeLayout
-        android:layout_width="75dp"
-        android:layout_height="220dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="10dp">
@@ -130,8 +130,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            app:lottie_fileName="practicecourse/dark/practice_course_dark.json"
-            app:lottie_imageAssetsFolder="practicecourse/dark/images"
+            app:lottie_fileName="praise_list/loop_star/data.json"
+            app:lottie_imageAssetsFolder="praise_list/loop_star/images"
             app:lottie_loop="true" />
 
 

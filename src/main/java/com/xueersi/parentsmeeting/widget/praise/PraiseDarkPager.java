@@ -49,10 +49,8 @@ public class PraiseDarkPager extends PraiseBasePager {
     protected void setReslutType() {
         super.setReslutType();
         if(mPraiseEntity.getResultType() == PraiseConfig.RESULT_PRAISE){
-            tvSubTitle.setTextColor(getColor(R.color.COLOR_FD6368));
             tvSubTitle.setText("恭喜入榜，再接再厉哦");
         } else {
-            tvSubTitle.setTextColor(getColor(R.color.COLOR_70A1DE));
             tvSubTitle.setText("不要灰心，下次要上榜哦");
         }
     }

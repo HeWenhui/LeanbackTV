@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FastScrollableRecyclerView;
@@ -149,7 +150,8 @@ public class PraiseBasePager extends LiveBasePager {
         setListener();
         setPriseType();
         setReslutType();
-//        practiceView.playAnimation();
+        ImageLoader.with(mContext).load(mPraiseEntity.getTeacherHeadImage()).
+                error(R.drawable.icon_livevideo_praiselist_team_head_default).into(ivTeacherHeadImage);
 
     }
 
