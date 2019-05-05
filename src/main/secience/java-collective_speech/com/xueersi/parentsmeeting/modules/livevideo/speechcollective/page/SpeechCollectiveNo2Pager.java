@@ -36,7 +36,6 @@ public class SpeechCollectiveNo2Pager extends LiveBasePager implements SpeechCol
     private SoundWaveView swvView;
     private ConstraintLayout rootLayout;
     private Group microhpneGroup;
-    private LottieAnimationView lottieAnimationView;
     private TextView ivSpeechcollectiveNoVolume;
     private RelativeLayout rlSpeechcollectiveNoperm;
     private TextView tvSpeechcollectiveNopermClick;
@@ -61,7 +60,6 @@ public class SpeechCollectiveNo2Pager extends LiveBasePager implements SpeechCol
         ivClose = view.findViewById(R.id.iv_livevideo_gold_microphone_cancel);
         microhpneGroup = view.findViewById(R.id.group_livevideo_gold_microphone_microphone_group);
         swvView = view.findViewById(R.id.swv_livevideo_gold_microphone_sound_wave);
-        lottieAnimationView = view.findViewById(R.id.lottie_livevideo_gold_microphone_gold_view);
         ivSpeechcollectiveNoVolume = view.findViewById(R.id.iv_livevideo_speechcollective_novolume);
         rlSpeechcollectiveNoperm = view.findViewById(R.id.rl_livevideo_speechcollective_noperm);
         tvSpeechcollectiveNopermClick = view.findViewById(R.id.tv_livevideo_speechcollective_noperm_click);
@@ -151,29 +149,6 @@ public class SpeechCollectiveNo2Pager extends LiveBasePager implements SpeechCol
                     swvView.setVisibility(View.VISIBLE);
                     swvView.setStart(true);
                     swvView.invalidate();
-                    lottieAnimationView.setVisibility(View.VISIBLE);
-                    lottieAnimationView.playAnimation();
-                    lottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
-                        @Override
-                        public void onAnimationStart(Animator animation) {
-
-                        }
-
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            lottieAnimationView.setVisibility(View.GONE);
-                        }
-
-                        @Override
-                        public void onAnimationCancel(Animator animation) {
-
-                        }
-
-                        @Override
-                        public void onAnimationRepeat(Animator animation) {
-
-                        }
-                    });
                 }
 
                 @Override

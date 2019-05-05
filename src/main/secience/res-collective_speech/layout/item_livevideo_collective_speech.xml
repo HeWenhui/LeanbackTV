@@ -77,16 +77,12 @@
                 android:layout_width="46dp"
                 android:layout_height="17dp"
                 android:layout_marginLeft="3dp"
+                android:background="@drawable/icon_livevideo_speech_coll_check"
                 android:gravity="center"
                 android:includeFontPadding="false"
-                android:shadowColor="#ffe60e00"
-                android:shadowDx="0"
-                android:shadowDy="0"
-                android:shadowRadius="3.0"
-                android:text="检测"
-                android:textColor="#ffffffff"
-                android:textSize="10sp"
-                app:layout_constraintLeft_toRightOf="@id/tl_livevideo_speechcollective_noperm_tip2" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintLeft_toRightOf="@id/tl_livevideo_speechcollective_noperm_tip2"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                 android:id="@id/tl_livevideo_speechcollective_noperm_tip3"
@@ -106,8 +102,8 @@
 
     <ImageView
         android:id="@id/iv_livevideo_gold_microphone_bg"
-        android:layout_width="63dp"
-        android:layout_height="63dp"
+        android:layout_width="55.5dp"
+        android:layout_height="52.5dp"
         android:src="@drawable/icon_livevideo_speech_collec_mic"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -117,26 +113,12 @@
         android:id="@id/swv_livevideo_gold_microphone_sound_wave"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        app:cInnerRaidus="31"
+        android:layout_marginLeft="5dp"
+        app:cInnerRaidus="27"
         app:layout_constraintBottom_toBottomOf="@id/iv_livevideo_gold_microphone_bg"
         app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_gold_microphone_bg"
         app:layout_constraintRight_toRightOf="@id/iv_livevideo_gold_microphone_bg"
         app:layout_constraintTop_toTopOf="@id/iv_livevideo_gold_microphone_bg" />
-
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@id/lottie_livevideo_gold_microphone_gold_view"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
-        android:layout_marginLeft="10dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/iv_livevideo_gold_microphone_bg"
-        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_gold_microphone_bg"
-        app:layout_constraintRight_toRightOf="@id/iv_livevideo_gold_microphone_bg"
-        app:layout_constraintTop_toTopOf="@id/iv_livevideo_gold_microphone_bg"
-        app:lottie_fileName="gold_microphone/data.json"
-        app:lottie_imageAssetsFolder="gold_microphone/images"
-        app:lottie_loop="false" />
 
     <ImageView
         android:id="@id/iv_livevideo_gold_microphone_cancel"

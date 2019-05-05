@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.widget.RelativeLayout;
 
 import com.tal.speech.speechrecognizer.EvaluatorListener;
+import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.utils.SpeechEvaluatorUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
@@ -160,7 +161,7 @@ public class SpeechCollectiveNo2Bll {
     private void startEvaluator() {
         isRecord.set(true);
         File saveFile = new File(dir, "speechbul" + System.currentTimeMillis() + ".mp3");
-        mSpeechEvaluatorUtils.startSpeechBulletScreenRecognize(saveFile.getPath(), SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
+        mSpeechEvaluatorUtils.startSpeechCollectRecognize(saveFile.getPath(), SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
                 new EvaluatorListener() {
                     @Override
                     public void onBeginOfSpeech() {
@@ -178,14 +179,18 @@ public class SpeechCollectiveNo2Bll {
                                 recognizeSuccess(resultEntity.getCurString(), true);
                             }
                         } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (!isStop.get()) {
-                                        startEvaluator();
+                            if (resultEntity.getErrorNo() == ResultCode.NO_AUTHORITY) {
+                                speechCollectiveView.onDeny();
+                            } else {
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (!isStop.get()) {
+                                            startEvaluator();
+                                        }
                                     }
-                                }
-                            }, 1000);
+                                }, 1000);
+                            }
                         } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
                             recognizeSuccess(resultEntity.getCurString(), false);
                         }
