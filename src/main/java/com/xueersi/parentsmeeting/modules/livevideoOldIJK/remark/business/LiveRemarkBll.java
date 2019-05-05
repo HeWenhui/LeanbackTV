@@ -269,6 +269,8 @@ public class LiveRemarkBll {
                                                 bitmap = Bitmap.createBitmap(bitmap, 0, 0, (int) videoWidth, displayHeight);
                                             } else {
                                                 logToFile.d("createBitmap:w=" + videoWidth + "," + bitmap.getWidth());
+                                                int wradio = (int) ((LiveVideoConfig.VIDEO_WIDTH - LiveVideoConfig.VIDEO_HEAD_WIDTH) * bitmap.getWidth() / LiveVideoConfig.VIDEO_WIDTH);
+                                                bitmap = Bitmap.createBitmap(bitmap, 0, 0, wradio, bitmap.getHeight());
                                             }
                                             bitmap = Bitmap.createScaledBitmap(bitmap, 320, 240, true);
                                             File saveDir = new File(Environment.getExternalStorageDirectory(), "parentsmeeting/save");

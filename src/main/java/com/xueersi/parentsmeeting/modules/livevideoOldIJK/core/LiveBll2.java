@@ -411,7 +411,9 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
             onLiveFailure("服务器异常", null);
             return;
         }
-        mGetInfo.setNewCourse(mBaseActivity.getIntent().getBooleanExtra("newCourse", false));
+        boolean newCourse = mBaseActivity.getIntent().getBooleanExtra("newCourse", false);
+        mLogtf.d("onGetInfoSuccess:newCourse=" + newCourse);
+        mGetInfo.setNewCourse(newCourse);
         if (liveLog != null) {
             liveLog.setGetInfo(mGetInfo);
         }
@@ -434,6 +436,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         try {
             enterTime = enterTime();
         } catch (Exception e) {
+            CrashReport.postCatchedException(new LiveException(TAG, e));
         }
         if (mGetInfo.getStat() == 1) {
             if (mVideoAction != null) {
@@ -452,7 +455,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 businessBll.onLiveInited(getInfo);
                 logger.d("=======>onGetInfoSuccess 22222222:businessBll=" + businessBll);
             } catch (Exception e) {
-                CrashReport.postCatchedException(e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
                 logger.e("=======>onGetInfoSuccess 22222222:businessBll=" + businessBll, e);
             }
         }
@@ -535,7 +538,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                         try {
                             businessBll.onArtsExtLiveInited(mGetInfo);
                         } catch (Exception e) {
-                            CrashReport.postCatchedException(e);
+                            CrashReport.postCatchedException(new LiveException(TAG, e));
                         }
                     }
                     mLogtf.d("onGetInfoSuccess:old=" + businessBlls + ",new=" + businessBllTemps.size());
@@ -686,7 +689,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                         try {
                             noticeAction.onNotice(sourceNick, target, object, mtype);
                         } catch (Exception e) {
-                            CrashReport.postCatchedException(e);
+                            CrashReport.postCatchedException(new LiveException(TAG, e));
                         }
                     }
                 } else {

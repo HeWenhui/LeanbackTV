@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.tal100.chatsdk.utils.ToastUtils;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
@@ -806,7 +807,12 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
         mLiveHttpManager.submitChineseAISubjectiveAnswer(aiUrl, data.toString(), new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+
                 JSONObject response = (JSONObject) responseEntity.getJsonObject();
+                if(response.has("totalScore")){
+                    XESToastUtils.showToast(mContext,"答题结果提交失败，请刷新后重新作答！(10001)");
+                    return;
+                }
                 if (response.has(testId)) {
                     JSONObject resultData = response.getJSONObject(testId);
                     JSONArray userAnswerContent = resultData.getJSONArray("userAnswerContent");
@@ -841,9 +847,12 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                             @Override
                             public void onDataFail(int errStatus, String failMsg) {
                                 super.onDataFail(errStatus, failMsg);
+                                XESToastUtils.showToast(mContext,"答题结果提交失败，请刷新后重新作答！(10002)"+errStatus);
                                 isSumit = false;
                                 onSubmitError(isforce, failMsg);
                             }
+
+
                         });
                 if (FORCE == isforce) {
                     if (onClose != null) {
@@ -856,38 +865,17 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
+                XESToastUtils.showToast(mContext,msg);
                 isSumit = false;
                 onSubmitError(isforce, msg);
             }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                XESToastUtils.showToast(mContext,"答题结果提交失败，请刷新后重新作答！（10001）");
+            }
         });
-        /** 强制收题直接显示结果页*/
-//        if (FORCE == isforce) {
-//            ChineseAISubjectResultEntity resultEntity = new ChineseAISubjectResultEntity();
-//            List<String> answerList = new ArrayList<>();
-//            resultEntity.setTotalScore(0);
-//            try {
-//                if (dataJson != null && dataJson.has("rightAnswerContent")) {
-//                    JSONArray rightAnswer = dataJson.getJSONArray("rightAnswerContent");
-//                    for (int i = 0; i < rightAnswer.length(); i++) {
-//                        answerList.add(rightAnswer.getJSONObject(i).optString("text"));
-//                    }
-//                }
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//            resultEntity.setRightAnswers(answerList);
-//            resultEntity.setGold(0);
-//            ChsAnswerResultEvent artsAnswerResultEvent = new ChsAnswerResultEvent("", ArtsAnswerResultEvent.TYPE_H5_ANSWERRESULT);
-//            artsAnswerResultEvent.setDetailInfo(detailInfo);
-//            artsAnswerResultEvent.setIspreload(ispreload);
-//            artsAnswerResultEvent.setResultEntity(resultEntity);
-//            EventBus.getDefault().post(artsAnswerResultEvent);
-////            addResultPager(1, resultEntity);
-//            if (onClose != null) {
-//                loadResult = true;
-//                onClose.onH5ResultClose(ChineseAiSubjectiveCoursewarePager.this, getBaseVideoQuestionEntity());
-//            }
-//        }
 
     }
 
@@ -1241,6 +1229,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                         @Override
                         public void onDataFail(int errStatus, String failMsg) {
                             super.onDataFail(errStatus, failMsg);
+                            XESToastUtils.showToast(mContext,"答题结果提交失败，请刷新后重新作答！(10003)" + errStatus);
                         }
                     });
         }

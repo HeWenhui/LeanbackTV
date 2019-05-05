@@ -739,7 +739,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     private void joinChannel(ArrayList<TeamMemberEntity> entities) {
         mWorkerThread = new WorkerThreadPool(mContext, stuid, false, true);
         mWorkerThread.eventHandler().addEventHandler(agEventHandler);
-//        mWorkerThread.setEnableLocalVideo(true);
+        mWorkerThread.setEnableLocalVideo(true);
         mWorkerThread.setOnEngineCreate(new WorkerThreadPool.OnEngineCreate() {
             @Override
             public void onEngineCreate(final RtcEngine mRtcEngine) {
@@ -1645,7 +1645,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 }
             }
             if (maxVidooCannonEntity != null) {
-                logger.d("submit:userId=" + maxVidooCannonEntity.teamMemberEntity.id + ",rightNum=" + maxVidooCannonEntity.rightNum);
+                mLogtf.d("submit:userId=" + maxVidooCannonEntity.teamMemberEntity.id + ",rightNum=" + maxVidooCannonEntity.rightNum);
                 maxVidooCannonEntity.teamMemberEntity.gold = 3;
             }
             try {
@@ -2277,18 +2277,19 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
                             VidooCannonEntity vidooCannonEntity = vidooCannonEntities.get("" + who_id);
                             if (vidooCannonEntity != null) {
-                                for (int allAns = 0; allAns < allAnswerList.size(); allAns++) {
-                                    GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = allAnswerList.get(allAns);
+                                List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = testInfoEntity.getAnswerList();
+                                for (int allAns = 0; allAns < answerList.size(); allAns++) {
+                                    GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = answerList.get(allAns);
                                     if (answer.getId() == word_id) {
                                         vidooCannonEntity.rightNum++;
                                         //一个单词一个能量
                                         if (vidooCannonEntity.teamMemberEntity.getEnergy() < GroupGameConfig.CANNON_MAX_ENERGY) {
                                             vidooCannonEntity.teamMemberEntity.setEnergy(vidooCannonEntity.teamMemberEntity.getEnergy() + 1);
                                         }
+                                        mLogtf.d("VOICE_CANNO_STATIS:word_id=" + word_id + ",who_id=" + who_id + ",energy=" + vidooCannonEntity.teamMemberEntity.getEnergy() + ",contains=" + allAnswerList.contains(answer));
                                         break;
                                     }
                                 }
-                                List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = testInfoEntity.getAnswerList();
                                 for (int ansIndex = 0; ansIndex < answerList.size(); ansIndex++) {
                                     GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = answerList.get(ansIndex);
                                     if (answer.getId() == word_id) {
