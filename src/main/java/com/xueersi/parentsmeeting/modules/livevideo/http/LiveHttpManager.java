@@ -7,6 +7,9 @@ import android.os.Looper;
 
 import com.alibaba.android.arouter.utils.TextUtils;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.AppBll;
@@ -14,11 +17,13 @@ import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.CommonRequestCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.DeviceUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoChConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoHttpEnConfig;
@@ -606,6 +611,20 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("answer", LiveVideoConfig.answer);
         sendPost(url, params, requestCallBack);
     }
+
+    /**
+     * 提交语文AI主观题答案
+     * @param params
+     * @param requestCallBack
+     */
+    public void submitChineseAISubjectiveAnswer(String url,String data,final HttpCallBack callBack){
+
+//        url= "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/submitChineseAISubjectiveAnswer";
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+        httpRequestParams.addBodyParam("testInfos",data);
+        sendPost(url, httpRequestParams, callBack);
+    }
+
 
     public void getAllRanking(String enstuId, String liveId, String classId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
@@ -2013,7 +2032,6 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("stu_lose_flag", stu_lose_flag);
         params.addBodyParam("nick_name", nick_name);
         params.addBodyParam("unique_id", unique_id);
-        params.addHeaderParam("Connection", "Close");
         setDefaultParameter(params);
         sendPost(LiveVideoHttpEnConfig.URL_LIVE_REPORT_STUINFO + "?unique_id=" + unique_id, params, requestCallBack);
     }

@@ -30,6 +30,14 @@ public class TeamMemberEntity {
         nick_name = other.nick_name;
     }
 
+    public int getEnergy() {
+        return energy;
+    }
+
+    public void setEnergy(int energy) {
+        this.energy = energy;
+    }
+
     public String getNick_name() {
         return nick_name;
     }

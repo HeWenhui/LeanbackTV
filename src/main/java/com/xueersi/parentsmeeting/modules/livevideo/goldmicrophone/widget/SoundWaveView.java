@@ -125,6 +125,8 @@ public class SoundWaveView extends View {
     private int innerRadius;
 //    private int oneColor = R.color.COLOR_F7E1A8, twoColor = R.color.COLOR_F7E1A8, threeColor = R.color.COLOR_F7E1A8;
 
+    private int extraRadius = 2;
+
     @SuppressLint("ResourceAsColor")
     @Override
     protected void onDraw(Canvas canvas) {
@@ -198,35 +200,35 @@ public class SoundWaveView extends View {
 
             logger.i("width:" + (c.width + innerRadius));
             // 当圆超出View的宽度后删除
-            if (c.width + innerRadius > (mWidth / 2 - innerRadius) / 3 * c.level + innerRadius) {
+            if (c.width + innerRadius > (mWidth / 2 - innerRadius) / 3 * c.level + innerRadius + SizeUtils.Dp2Px(mContext, extraRadius) / c.level) {
                 mRipples.remove(0);
                 i--;
             } else {
                 // 修改这个值控制速度
-                oneRadius = (mWidth / 2 - innerRadius) / 3 + innerRadius;
-                twoRadius = (mWidth / 2 - innerRadius) / 3 * 2 + innerRadius;
+                oneRadius = (mWidth / 2 - innerRadius) / 3 + innerRadius + SizeUtils.Dp2Px(mContext, extraRadius);
+                twoRadius = (mWidth / 2 - innerRadius) / 3 * 2 + innerRadius + SizeUtils.Dp2Px(mContext, extraRadius) / 2;
 
                 mPaint.setColor(mContext.getResources().getColor(R.color.COLOR_66F7E1A8));
                 if (c.level == 1) {
                     int ik = (c.width + innerRadius);
-//                    int jk = ((mWidth / 2 - innerRadius) / 3 + innerRadius);
+                    int jk = ((mWidth / 2 - innerRadius) / 3 + innerRadius + SizeUtils.Dp2Px(mContext, extraRadius));
                     logger.i("a.level:" + c.level + " " + " w.width=" + ik + (c.width) * 1.0 / (oneRadius - innerRadius));
 //                    mPaint.setColor(mContext.getResources().getColor(R.color.COLOR_99F7E1A8));
-                    int alpha = (int) (255 * (1.0 - (c.width) * 1.0 / (oneRadius - innerRadius)));
+                    int alpha = (int) (255 * (1.0 - (c.width) * 1.0 / (oneRadius - innerRadius + SizeUtils.Dp2Px(mContext, extraRadius) / c.level)));
                     logger.i("a alpha:" + alpha);
 
                     mPaint.setAlpha(alpha);
                 } else if (c.level == 2) {
                     int ik = (c.width + innerRadius);
-                    int jk = (((mWidth / 2 - innerRadius) / 3 * 2 + innerRadius));
+                    int jk = (((mWidth / 2 - innerRadius) / 3 * 2 + innerRadius + SizeUtils.Dp2Px(mContext, extraRadius) / 2));
                     logger.i("b.level:" + c.level + " " + " w.width=" + ik + " " + jk + (ik * 1.0 / jk));
 //                    mPaint.setColor(mContext.getResources().getColor(R.color.CLOR_66F7E1A8));
-                    int alpha = (int) (255 * (1.0 - (c.width) * 1.0 / (twoRadius - innerRadius)));
+                    int alpha = (int) (255 * (1.0 - (c.width) * 1.0 / (twoRadius - innerRadius + SizeUtils.Dp2Px(mContext, extraRadius) / c.level)));
                     logger.i("b alpha:" + alpha);
                     mPaint.setAlpha(alpha);
                 } else {
                     logger.i("c.level:" + c.level + " " + (c.width + innerRadius));
-                    int alpha = (int) (255 * (1.0 - (c.width) * 1.0 / (mWidth / 2 - innerRadius)));
+                    int alpha = (int) (255 * (1.0 - (c.width) * 1.0 / (mWidth / 2 - innerRadius + SizeUtils.Dp2Px(mContext, extraRadius) / c.level)));
                     logger.i("c alpha:" + alpha);
                     mPaint.setAlpha(alpha);
 //                    mPaint.setColor(mContext.getResources().getColor(R.color.COLOR_33F7E1A8));

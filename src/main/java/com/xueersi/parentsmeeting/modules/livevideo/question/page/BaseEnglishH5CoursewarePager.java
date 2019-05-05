@@ -48,4 +48,5 @@ public interface BaseEnglishH5CoursewarePager {
      * @return
      */
     boolean isResultRecived();
+
 }

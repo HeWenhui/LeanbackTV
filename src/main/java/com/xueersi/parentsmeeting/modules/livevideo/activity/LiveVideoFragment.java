@@ -55,6 +55,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.praiselist.business.PraiseIn
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.presenter.PraiseListIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.AnswerRankIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.ArtsAnswerResultBll;
+import com.xueersi.parentsmeeting.modules.livevideo.question.business.ChsAnswerResultBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5CoursewareIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageIRCBll;
@@ -229,7 +230,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         //是文科
         BllConfigEntity[] bllConfigEntities;
         if (isArts == 1) {
-            bllConfigEntities = AllBllConfig.live_business_arts;
+            bllConfigEntities = AllBllConfig.getLiveBusinessArts();
             liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             mLiveBll.addBusinessBll(liveIRCMessageBll);
@@ -274,6 +275,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new PraiseListIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new PraiseInteractionBll(activity, mLiveBll));
 //            mLiveBll.addBusinessBll(new StudyReportBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new ChsAnswerResultBll(activity, mLiveBll));
             int allowLinkMicNew = activity.getIntent().getIntExtra("allowLinkMicNew", 0);
             VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
             videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
@@ -565,7 +567,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
 
                     if ((pattern == 1) && switchFlowBll != null) {
 //            if (server != null) {
-                        switchFlowBll.setListRoute(0);
+//                        switchFlowBll.setListRoute(0);
                         logger.i("0");
 //        } else {
 //            switchFlowBll.setListRoute(null);

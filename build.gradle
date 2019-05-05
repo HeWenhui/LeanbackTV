@@ -15,9 +15,13 @@ android {
             res.srcDirs += ['src/main/res-en_teampk']
             java.srcDirs += ['src/main/java-achievement']
             res.srcDirs += ['src/main/res-achievement']
+            java.srcDirs += ['src/main/english/java-en_tcp']
+            assets.srcDirs += ['src/main/english/assets']
+            java.srcDirs += ['src/main/java-core']
         }
     }
-    compileSdkVersion 27
+    compileSdkVersion 26
+    buildToolsVersion '27.0.3'
 }
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')
@@ -63,6 +67,6 @@ dependencies {
     //implementation(rootProject.ext.xeslibraries.waveform) { changing = true }
     //implementation project(':library:waveform')
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.gifDrawable)
-    api 'com.android.support:transition:27.1.1'
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.transition)
     //    implementation project(':library:agora')
 }

@@ -211,6 +211,7 @@ public class RolePlayerMachineOtherItem extends RolePlayerItem {
             @Override
             public void onError(String msg, Object dataSource, AudioPlayerManager manager) {
                 super.onError(msg, dataSource, manager);
+                XESToastUtils.showToast(mContext,"音频播放失败");
                 if(isRolePlay){
                     logger.i( "机器播完出错:msg = "+msg+" dataSource = "+dataSource);
                     nextMsg();

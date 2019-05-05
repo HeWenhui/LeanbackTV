@@ -799,8 +799,11 @@ public class LiveVideoBll implements VPlayerListenerReg {
             Map<String, String> map = new HashMap<>();
             map.put("param", "openTimeOut");
             UmsAgentManager.umsAgentDebug(activity, LiveLogUtils.PLAY_VIDEO_FAIL, map);
-
-            liveGetPlayServer.liveGetPlayServer(false);
+            if (MediaPlayer.getIsNewIJK()) {
+                changeNextLine();
+            } else {
+                liveGetPlayServer.liveGetPlayServer(false);
+            }
         }
     };
 

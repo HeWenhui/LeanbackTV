@@ -110,6 +110,11 @@ public class AgoraVideoChatPager extends BasePager implements VideoChatInter {
         }
 
         @Override
+        public void onRemoteVideoStateChanged(int uid, int state) {
+
+        }
+
+        @Override
         public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
             mLogtf.d("onJoinChannelSuccess:channel=" + channel + ",uid=" + uid);
         }

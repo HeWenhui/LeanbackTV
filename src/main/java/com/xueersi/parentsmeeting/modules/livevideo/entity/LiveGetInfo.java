@@ -211,7 +211,10 @@ public class LiveGetInfo {
     private String subjectiveTestAnswerResult;
     //是否是小英
     private boolean smallEnglish;
-
+    /**
+     * 声网appid
+     */
+    private String appid;
     private boolean primaryChinese;
     /**
      * 当前的直播模式
@@ -302,6 +305,16 @@ public class LiveGetInfo {
 
     // add by William on 2018/12/5  专属老师用
     public EPlanInfoBean ePlanInfo;
+    /** 语文AI主观题AI接口*/
+    private String subjectiveItem2AIUrl;
+
+    public String getSubjectiveItem2AIUrl() {
+        return subjectiveItem2AIUrl;
+    }
+
+    public void setSubjectiveItem2AIUrl(String subjectiveItem2AIUrl) {
+        this.subjectiveItem2AIUrl = subjectiveItem2AIUrl;
+    }
     /** 是否支持连对激励 0：关闭 1：打开 */
     private int isOpenNewCourseWare;
     /** 连对榜接口地址 */
@@ -343,13 +356,13 @@ public class LiveGetInfo {
         this.getThumbsUpUrl = getThumbsUpUrl;
     }
 
-    private boolean useGoldMicroPhone;
+    private int useGoldMicroPhone;
 
-    public boolean isUseGoldMicroPhone() {
+    public int isUseGoldMicroPhone() {
         return useGoldMicroPhone;
     }
 
-    public void setUseGoldMicroPhone(boolean useGoldMicroPhone) {
+    public void setUseGoldMicroPhone(int useGoldMicroPhone) {
         this.useGoldMicroPhone = useGoldMicroPhone;
     }
 
@@ -403,6 +416,14 @@ public class LiveGetInfo {
 
     public boolean getSmallEnglish() {
         return smallEnglish;
+    }
+
+    public String getAppid() {
+        return appid;
+    }
+
+    public void setAppid(String appid) {
+        this.appid = appid;
     }
 
     public boolean isPrimaryChinese() {

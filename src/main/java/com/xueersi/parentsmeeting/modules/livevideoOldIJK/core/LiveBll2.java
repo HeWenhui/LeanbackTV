@@ -24,6 +24,8 @@ import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.ActivityStatic;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IRCCallback;
@@ -409,7 +411,9 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
             onLiveFailure("服务器异常", null);
             return;
         }
-        mGetInfo.setNewCourse(mBaseActivity.getIntent().getBooleanExtra("newCourse", false));
+        boolean newCourse = mBaseActivity.getIntent().getBooleanExtra("newCourse", false);
+        mLogtf.d("onGetInfoSuccess:newCourse=" + newCourse);
+        mGetInfo.setNewCourse(newCourse);
         if (liveLog != null) {
             liveLog.setGetInfo(mGetInfo);
         }
@@ -432,6 +436,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         try {
             enterTime = enterTime();
         } catch (Exception e) {
+            CrashReport.postCatchedException(new LiveException(TAG, e));
         }
         if (mGetInfo.getStat() == 1) {
             if (mVideoAction != null) {
@@ -450,7 +455,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 businessBll.onLiveInited(getInfo);
                 logger.d("=======>onGetInfoSuccess 22222222:businessBll=" + businessBll);
             } catch (Exception e) {
-                CrashReport.postCatchedException(e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
                 logger.e("=======>onGetInfoSuccess 22222222:businessBll=" + businessBll, e);
             }
         }
@@ -486,7 +491,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
         if (MediaPlayer.getIsNewIJK()) {
             if (TextUtils.isEmpty(eChannel) || LiveTopic.MODE_CLASS.equals(getMode())) {
-                mIRCMessage = new NewIRCMessage( mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, mGetInfo, this, channel);
+                mIRCMessage = new NewIRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, mGetInfo, this, channel);
             } else {
                 mIRCMessage = new NewIRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, mGetInfo, this, channel, eChannel);
             }
@@ -528,6 +533,16 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                     ArtsExtLiveInfo info = mHttpResponseParser.parseArtsExtLiveInfo(responseEntity);
                     mGetInfo.setArtsExtLiveInfo(info);
+                    List<LiveBaseBll> businessBllTemps = new ArrayList<>(businessBlls);
+                    for (LiveBaseBll businessBll : businessBllTemps) {
+                        try {
+                            businessBll.onArtsExtLiveInited(mGetInfo);
+                        } catch (Exception e) {
+                            CrashReport.postCatchedException(new LiveException(TAG, e));
+                        }
+                    }
+                    mLogtf.d("onGetInfoSuccess:old=" + businessBlls + ",new=" + businessBllTemps.size());
+                    businessBllTemps.clear();
                 }
 
                 @Override
@@ -674,12 +689,26 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                         try {
                             noticeAction.onNotice(sourceNick, target, object, mtype);
                         } catch (Exception e) {
-                            CrashReport.postCatchedException(e);
+                            CrashReport.postCatchedException(new LiveException(TAG, e));
                         }
+                    }
+                } else {
+                    try {
+                        HashMap<String, String> hashMap = new HashMap();
+                        hashMap.put("logtype", "onNotice");
+                        hashMap.put("livetype", "" + mLiveType);
+                        hashMap.put("liveid", "" + mLiveId);
+                        hashMap.put("arts", "" + mGetInfo.getIsArts());
+                        hashMap.put("pattern", "" + mGetInfo.getPattern());
+                        hashMap.put("type", "" + mtype);
+                        UmsAgentManager.umsAgentDebug(mContext, LogConfig.LIVE_NOTICE_UNKNOW, hashMap);
+                    } catch (Exception e) {
+                        CrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.e("onNotice", e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
 
@@ -926,18 +955,27 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     ///日志上传相关
     @Override
     public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
+        if (mGetInfo == null) {
+            return;
+        }
         setLogParam(eventId, mData);
         UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
     }
 
     @Override
     public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
+        if (mGetInfo == null) {
+            return;
+        }
         setLogParam(eventId, mData);
         UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadBehavior, mData);
     }
 
     @Override
     public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
+        if (mGetInfo == null) {
+            return;
+        }
         setLogParam(eventId, mData);
         UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData);
     }
@@ -1143,11 +1181,11 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         this.liveVideoBll = liveVideoBll;
     }
 
-    public void liveGetPlayServer() {
-        if (liveVideoBll != null) {
-            liveVideoBll.liveGetPlayServer();
-        }
-    }
+//    public void liveGetPlayServer() {
+//        if (liveVideoBll != null) {
+//            liveVideoBll.liveGetPlayServer();
+//        }
+//    }
 
     /**
      * 当前状态

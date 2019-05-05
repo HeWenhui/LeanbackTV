@@ -262,6 +262,8 @@ public class LivePlaybackMediaController extends MediaController2 {
                 case "5":
                 case "10":
                     textView.setText("互动游戏");
+                case "17":
+                    textView.setText("互动题");
                     break;
             }
         } else if (LocalCourseConfig.CATEGORY_LEC_ADVERT == videoQuestionEntity.getvCategory()) {

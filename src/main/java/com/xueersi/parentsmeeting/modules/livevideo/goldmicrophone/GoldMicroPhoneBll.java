@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.PCMFormat;
 import com.tal.speech.speechrecognizer.ResultCode;
@@ -395,7 +394,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
      * 在线记录
      */
     private void onLineRecord() {
-        SpeechConfig.setStatus(SpeechConfig.SPEECH_CHS_MICROPHONE);
+//        SpeechConfig.setStatus(SpeechConfig.SPEECH_CHS_MICROPHONE);
         if (mSpeechEvaluatorUtils == null) {
             mSpeechEvaluatorUtils = new SpeechEvaluatorUtils(false);
         }
@@ -404,7 +403,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
         if (!dir.exists()) {
             dir.mkdirs();
         }
-        mSpeechEvaluatorUtils.startOnlineRecognize(
+        mSpeechEvaluatorUtils.startOnlineChsRecognize(
                 path,
                 SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
                 evaluatorListener);
@@ -538,7 +537,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
                 ansStr.append(recognizeStr);
                 recognizeStr = "";
                 logger.i(" isRecord = " + isRecord.get());
-                mSpeechEvaluatorUtils.startOnlineRecognize(
+                mSpeechEvaluatorUtils.startOnlineChsRecognize(
                         dir.getPath() + MP3_FILE_NAME,
                         SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
                         evaluatorListener);
@@ -553,7 +552,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
                             ansStr.append(recognizeStr);
                             recognizeStr = "";
                             logger.i(" isRecord = " + isRecord.get());
-                            mSpeechEvaluatorUtils.startOnlineRecognize(
+                            mSpeechEvaluatorUtils.startOnlineChsRecognize(
                                     dir.getPath() + MP3_FILE_NAME,
                                     SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
                                     evaluatorListener);
@@ -610,7 +609,7 @@ public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, Gold
                 logger.i("isFinish = " + isFinish + " isRecord = " + isRecord.get());
                 logger.i("restart evaluator");
                 mSpeechEvaluatorUtils.cancel();
-                mSpeechEvaluatorUtils.startOnlineRecognize(
+                mSpeechEvaluatorUtils.startOnlineChsRecognize(
                         dir.getPath() + MP3_FILE_NAME,
                         SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
                         evaluatorListener);
