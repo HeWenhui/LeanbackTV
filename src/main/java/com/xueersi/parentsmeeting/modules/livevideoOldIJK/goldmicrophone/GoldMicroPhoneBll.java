@@ -21,7 +21,6 @@ import com.tal.speech.utils.SpeechEvaluatorUtils;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.BuildConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.widget.SoundWaveView;
@@ -52,7 +51,7 @@ import static com.xueersi.parentsmeeting.modules.livevideoOldIJK.goldmicrophone.
  * 幼升小金话筒
  */
 public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, GoldPhoneContract.GoldPhonePresenter {
-    private boolean testUse = true && BuildConfig.DEBUG;
+    private boolean testUse = true; //&& BuildConfig.DEBUG;
     /**
      * 录音对象
      */

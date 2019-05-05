@@ -576,6 +576,15 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                     index = i;
                     break;
                 }
+            }else if (LocalCourseConfig.CATEGORY_NB_ADDEXPERIMENT == videoQuestionEntity.getvCategory()) {
+                // 在开始时间和结束时间之间
+                if (startTime <= playPosition && playPosition < endTime) {
+//                if (startTime == playPosition) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
+                    break;
+                }
             } else if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == videoQuestionEntity.getvCategory()) {
                 // 在开始时间和结束时间之间
                 if (startTime <= playPosition && playPosition < endTime) {
@@ -880,5 +889,13 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
 
     public String getPrefix() {
         return "LB";
+    }
+
+    /**
+     * 获取直播间初始换参数
+     * @return
+     */
+    public LiveGetInfo getRommInitData() {
+        return mGetInfo;
     }
 }

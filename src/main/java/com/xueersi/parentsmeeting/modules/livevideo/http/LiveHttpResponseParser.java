@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
@@ -8,7 +9,7 @@ import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
-import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
+import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
@@ -16,6 +17,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDrive
 import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.NbCourseWareConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
@@ -2302,6 +2304,22 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                             resources.add(fontsArray.getString(k));
                         }
                     }
+
+                    JSONObject nbResource = resourceArray.optJSONObject("NBResource");
+                    if (nbResource != null) {
+                        String resurseMd5 = nbResource.optString("resourceMd5");
+                        String resurseUrl = nbResource.optString("resourceUrl");
+                        if(!TextUtils.isEmpty(resurseMd5) && !TextUtils.isEmpty(resurseUrl)){
+                            CoursewareInfoEntity.NbCoursewareInfo nbCoursewareInfo = new CoursewareInfoEntity.NbCoursewareInfo();
+                            nbCoursewareInfo.setResourceMd5(resurseMd5);
+                            nbCoursewareInfo.setResourceUrl(resurseUrl);
+                            coursewareInfoEntity.setNbCoursewareInfo(nbCoursewareInfo);
+                            //缓存NB资源文件解压相对路径
+                            ShareDataManager.getInstance().put(NbCourseWareConfig.LOCAL_RES_DIR, resurseMd5,
+                                    ShareDataManager.SHAREDATA_NOT_CLEAR);
+                        }
+                    }
+
 //                    }
                     coursewareInfoEntity.setResources(resources);
                 }

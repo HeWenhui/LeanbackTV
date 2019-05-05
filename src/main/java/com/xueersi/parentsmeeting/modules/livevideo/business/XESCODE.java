@@ -206,6 +206,12 @@ public interface XESCODE {
     /** 集体语言互动消息 */
     int SPEECH_COLLECTIVE = 270;
 
+    /**Nb 加试 消息指令**/
+    int NB_EXAM = 310;
+    /**nb 加试实验 学生提交成功**/
+    int NB_ADDEXPERIMENT_SUBMIT_SUCCESS = 311;
+
+
     /** 2018接麦 */
     interface AgoraChat {
         /** 开启/关闭举手 */

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="x5-page-mode" content="app">
+  <meta name="x5-fullscreen" content="true">
+  <meta name="full-screen" content="yes">
+  <title></title>
+  <style>
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #000000;
+    }
+  </style>
+  <script>
+    ;(function (props) {
+      var docEle = document.documentElement
+      var radio = window.devicePixelRatio
+      var scale = 1 / radio
+      var resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize'
+      var meta = document.querySelector('meta[name=viewport]')
+
+      meta.setAttribute('content', 'initial-scale=' + scale + ', maximum-scale=' + scale + ', minimum-scale=' + scale + ', user-scalable=no')
+
+      const reg = /iPad/
+
+      function __fn__ () {
+        const clientWidth = reg.test(window.navigator.userAgent) ? docEle.getBoundingClientRect().width : docEle.getBoundingClientRect().height * 16/9
+        docEle.style.fontSize = props.fontSize * (clientWidth / props.width) + 'px'
+      }
+
+      __fn__()
+
+      window.__fn__ = __fn__
+
+      window.addEventListener(resizeEvt, function () {
+        clearTimeout(__fn__.tid)
+        __fn__.tid = setTimeout(__fn__, 100)
+      }, false)
+
+      window.addEventListener('pageshow', function (e) {
+        if (e.persisted) {
+          clearTimeout(__fn__.tid)
+          refreshRem.tid = setTimeout(__fn__, 100)
+        }
+      }, false)
+
+      window.addEventListener('load', __fn__, false)
+    })({ fontSize: 100, width: 1334 });
+  </script>
+<link href="assets/client-bundle.css?fq-fcaddaf751890782f9fd" rel="stylesheet"></head>
+<body>
+  <div id="root"></div>
+<script type="text/javascript" src="assets/manifest.js?fq-04b252d43a773e7487cf"></script><script type="text/javascript" src="assets/vendors~client-bundle.js?fq-754540c93c1e9965d86f"></script><script type="text/javascript" src="assets/client-bundle.js?fq-8c1e12e661d7728c7a14"></script></body>
+</html>

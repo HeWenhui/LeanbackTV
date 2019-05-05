@@ -74,6 +74,7 @@ import java.util.TimerTask;
 import static com.xueersi.common.business.sharebusiness.config.LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE;
 import static com.xueersi.common.business.sharebusiness.config.LocalCourseConfig.CATEGORY_EXAM;
 import static com.xueersi.common.business.sharebusiness.config.LocalCourseConfig.CATEGORY_H5COURSE_WARE;
+import static com.xueersi.common.business.sharebusiness.config.LocalCourseConfig.CATEGORY_NB_ADDEXPERIMENT;
 import static com.xueersi.common.business.sharebusiness.config.LocalCourseConfig.CATEGORY_QUESTION;
 import static com.xueersi.common.business.sharebusiness.config.LocalCourseConfig.CATEGORY_REDPACKET;
 
@@ -995,6 +996,11 @@ public class LiveRemarkBll {
                     case CATEGORY_H5COURSE_WARE:
                     case CATEGORY_ENGLISH_H5COURSE_WARE:
                         sb.append("互动课件");
+                        vSig.setBackgroundResource(R.drawable.shape_blue_corners);
+                        ivShot.setImageResource(R.drawable.bg_live_video_mark_courceware);
+                        break;
+                    case CATEGORY_NB_ADDEXPERIMENT:
+                        sb.append("互动实验");
                         vSig.setBackgroundResource(R.drawable.shape_blue_corners);
                         ivShot.setImageResource(R.drawable.bg_live_video_mark_courceware);
                         break;

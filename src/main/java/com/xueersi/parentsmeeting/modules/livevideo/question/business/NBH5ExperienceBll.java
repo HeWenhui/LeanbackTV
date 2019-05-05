@@ -11,6 +11,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.NbCourseWareEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.H5CoursewareBll;
 
 import java.util.HashMap;
@@ -39,7 +40,8 @@ public class NBH5ExperienceBll extends LiveBackBaseBll {
     @Override
     public void onQuestionEnd(VideoQuestionEntity questionEntity) {
         if (h5CoursewareBll != null) {
-            h5CoursewareBll.onH5Courseware(questionEntity.getH5Play_url(), "off");
+            NbCourseWareEntity entity = new NbCourseWareEntity(liveBackBll.getRommInitData().getId(),questionEntity.getH5Play_url(),false);
+            h5CoursewareBll.onH5Courseware(entity, "off");
         }
     }
 
@@ -51,7 +53,7 @@ public class NBH5ExperienceBll extends LiveBackBaseBll {
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_H5COURSE_WARE: {
                 if (h5CoursewareBll == null) {
-                    h5CoursewareBll = new H5CoursewareBll(mContext);
+                    h5CoursewareBll = new H5CoursewareBll(mContext,liveBackBll.getRommInitData());
                     h5CoursewareBll.initView(mRootView);
                 }
                 if (oldQuestionEntity == null || questionEntity == null || !oldQuestionEntity.getvQuestionID().equals(questionEntity.getvQuestionID())) {
@@ -59,13 +61,14 @@ public class NBH5ExperienceBll extends LiveBackBaseBll {
                             mVideoEntity.getLiveId(), questionEntity.getvQuestionID(), mVideoEntity.getChapterId(),
                             "0", "", new HttpCallBack() {
 
-                        @Override
-                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                                @Override
+                                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
 
-                        }
-                    });
+                                }
+                            });
                 }
-                h5CoursewareBll.onH5Courseware(questionEntity.getH5Play_url(), "on");
+                NbCourseWareEntity entity = new NbCourseWareEntity(liveBackBll.getRommInitData().getId(),questionEntity.getH5Play_url(),false);
+                h5CoursewareBll.onH5Courseware(entity, "on");
                 break;
             }
             default:
