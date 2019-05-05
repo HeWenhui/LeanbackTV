@@ -2219,7 +2219,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param isUpload         是否上传成功(1:上传成功 2：上传失败)
      * @param averVocieDecibel 平均声音分贝数
      */
-    public void sendSuperSpeakerVideoUrl(String liveId, String stuCouId, String stuId, String isPlayBack, String testId, String srcType, String video_url, String voice_url, String isUpload, String averVocieDecibel
+    public void uploadSpeechShow(String liveId, String stuCouId, String stuId, String isPlayBack, String testId, String srcType, String video_url, String voice_url, String isUpload, String averVocieDecibel
             , HttpCallBack httpCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);

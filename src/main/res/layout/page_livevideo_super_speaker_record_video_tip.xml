@@ -64,7 +64,7 @@
         android:id="@id/group_livevideo_super_speaker_submit_video"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
+        android:visibility="gone"
         app:constraint_referenced_ids="tv_livevideo_super_speaker_tittle_tip,
             tv_livevideo_super_speaker_content_tip,
             iv_livevideo_gold_microphone_close_btn_no,

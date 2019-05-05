@@ -1372,4 +1372,17 @@
     <item name="tv_livevideo_super_speaker_video_bottom_time" type="id" />
     <item name="tv_livevideo_super_speaker_video_bottom_total_time" type="id" />
     <item name="iv_livevideo_super_speaker_video_controller_bottom_progress_bar" type="id" />
+    <item name="custom_controller_livevideo_super_speaker_record_video_video_player" type="id" />
+    <item name="tv_livevideo_super_speaker_record_video_record_time_currenttime" type="id" />
+    <item name="tv_livevideo_super_speaker_record_video_record_time_tip" type="id" />
+    <item name="tv_livevideo_super_speaker_record_video_record_time_total" type="id" />
+    <item name="include_livevideo_super_speaker_record_video_record_time" type="id" />
+    <item name="include_livevideo_super_speaker_record_video_stop_time" type="id" />
+    <item name="iv_livevideo_super_speaker_pop_window_background" type="id" />
+    <item name="tv_livevideo_super_speaker_pop_window_tip" type="id" />
+    <item name="iv_livevideo_super_speaker_back_pop_yes" type="id" />
+    <item name="iv_livevideo_super_speaker_back_pop_window_background" type="id" />
+    <item name="iv_livevideo_super_speaker_back_pop_window_cancel" type="id" />
+    <item name="tv_livevideo_super_speaker_back_camera_tip" type="id" />
+    <item name="tv_livevideo_super_speaker_back_camera_content_tip" type="id" />
 </resources>

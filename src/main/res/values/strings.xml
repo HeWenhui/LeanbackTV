@@ -7,4 +7,7 @@
     <string name="livevideo_chpk_how_to_win">如何获取能量 \n帮助战队在PK中获胜?</string>
     <!--战队pk没有小目标显示-->
     <string name="livevideo_enpk_notarget">你真棒！继续加油哦~</string>
+
+    <string name="super_speaker_back_camera_tip">确定退出超级演讲秀吗?</string>
+    <string name="super_speaker_back_camera_content_tip">已录制的内容将无法保存</string>
 </resources>

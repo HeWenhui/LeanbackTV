@@ -3,24 +3,53 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker;
 import android.view.View;
 
 public interface ISuperSpeakerContract {
+    /** 视频录制有效时间 */
+    int RECORD_VALID_TIME = 1000;
+    /** 视频录制的最大时间 */
+    String RECORD_MAX_TIME = "01:00";
+    /** 防止连续点击 */
+    int RECORD_DOUBLE_CLICK_TIME = 1000;
 
-    int RECORD_TIME = 1000;
-
-    interface IRecordManager {
-        void removeRedPackageView();
-    }
+//    interface IRecordManager {
+//        void removeRedPackageView();
+//    }
 
     interface ICameraView {
         View initView();
 
-        void updateNum(String num);
+//        void updateNum(String num);
 
         View getView();
 
         void timeUp();
+
+//        void startPlayVideo();
+
+        void pauseVideo();
+
+        void resumeVideo();
     }
 
     interface ICameraPresenter {
+
+        /**
+         * 是否是强制提交
+         *
+         * @param isForce 1：是 2：否
+         */
+        void submitSpeechShow(String isForce);
+
+//        void removeView(View view);
+
+        void stopRecord();
+
+        void uploadSucess(String videoUrl, String audioUrl);
+//        void updateNum(String num);
+
+//        void timeUp();
+    }
+
+    interface ISuperSpeakerBridge {
         /**
          * 是否是强制提交
          *
@@ -29,6 +58,40 @@ public interface ISuperSpeakerContract {
         void submitSpeechShow(String isForce);
 
         void removeView(View view);
+
+        void pauseVideo();
+
+        void updateNum(String num);
+
+        void timeUp();
+
+//        void startPlayVideo();
+
+        void resumeVideo();
+
+        boolean containsView();
+
+    }
+
+    interface ICommonPresenter {
+        /**
+         * 是否是强制提交
+         *
+         * @param isForce 1：是 2：否
+         */
+        void submitSpeechShow(String isForce);
+
+        /**
+         * 移除指定View
+         *
+         * @param view 指定的view
+         */
+//        void removeView(View view);
+
+        /**
+         * 移除整体View
+         */
+        void removeCameraView();
     }
 
     interface IRedPackageView {
@@ -49,10 +112,13 @@ public interface ISuperSpeakerContract {
         void timeUp(boolean complete);
     }
 
-    interface ICommonPresenter extends ICameraPresenter {
-
+    interface IRedPackagePresenter {
+        void removeView(View view);
     }
-//    interface ICameraView{
-//
-//    }
+
+    interface ICameraBackPresenter {
+        void removeView(View view);
+
+        void removeCameraView();
+    }
 }

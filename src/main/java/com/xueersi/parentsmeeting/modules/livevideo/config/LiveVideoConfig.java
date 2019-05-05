@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.config;
 
+import android.os.Environment;
+
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.EnglishH5Entity;
 
@@ -489,5 +491,7 @@ public class LiveVideoConfig {
     public static final String SUPER_SPEAKER_SPEECH_SHOW_CAMERA_STATUS = "https://app.chs.xueersi.com/LiveCourse/speechShowCameraStatus";
     /** app端提交演讲秀 */
     public static final String SUPER_SPEAKER_SUBMIT_SPEECH_SHOW = "https://app.chs.xueersi.com/LiveCourse/submitSpeechShow";
+    /** 超级演讲秀存储视频的地方 */
+    public static final String SUPER_SPEAKER_VIDEO_PATH = Environment.getExternalStorageDirectory() + "/parentsmeeting/livevideo/superSpeaker/";
 
 }
