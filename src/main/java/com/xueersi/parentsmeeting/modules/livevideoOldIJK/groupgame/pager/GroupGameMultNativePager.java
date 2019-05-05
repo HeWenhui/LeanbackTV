@@ -739,7 +739,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     private void joinChannel(ArrayList<TeamMemberEntity> entities) {
         mWorkerThread = new WorkerThreadPool(mContext, stuid, false, true);
         mWorkerThread.eventHandler().addEventHandler(agEventHandler);
-//        mWorkerThread.setEnableLocalVideo(true);
+        mWorkerThread.setEnableLocalVideo(true);
         mWorkerThread.setOnEngineCreate(new WorkerThreadPool.OnEngineCreate() {
             @Override
             public void onEngineCreate(final RtcEngine mRtcEngine) {
