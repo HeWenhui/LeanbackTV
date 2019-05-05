@@ -35,8 +35,8 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
         collectiveHttp = new SpeechCollectiveHttpImpl();
-        createBll();
-        speechCollectiveBll.start("");
+//        createBll();
+//        speechCollectiveBll.start("");
     }
 
     class SpeechCollectiveHttpImpl implements SpeechCollectiveHttp {
@@ -91,7 +91,12 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                 && LiveTopic.MODE_CLASS.equals(liveTopic.getMode())) {
             final String roomId = mainRoomstatus.getGroupSpeechRoom();
             if (speechCollectiveBll != null) {
-                speechCollectiveBll.start(roomId);
+                mHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        speechCollectiveBll.start(roomId);
+                    }
+                });
             } else {
                 mHandler.post(new Runnable() {
                     @Override

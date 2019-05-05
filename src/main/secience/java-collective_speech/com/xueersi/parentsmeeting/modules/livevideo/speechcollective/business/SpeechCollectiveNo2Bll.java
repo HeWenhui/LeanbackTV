@@ -60,6 +60,7 @@ public class SpeechCollectiveNo2Bll {
     private long lastVolumeTime = -1;
     /** 录音是否结束，用来 */
     private AtomicBoolean isStop = new AtomicBoolean(false);
+    private boolean start = false;
     private long lastOneLevelTime = -1, lastTwoLevelTime = -1, lastThreeLevelTime = -1;
     /**
      * 日志数据
@@ -85,6 +86,13 @@ public class SpeechCollectiveNo2Bll {
     }
 
     public void start(String roomId) {
+        if (start) {
+            return;
+        }
+        start = true;
+        if (speechStartDialog != null) {
+            speechStartDialog.cancelDialog();
+        }
         speechStartDialog = new SpeechStartDialog(context);
         speechStartDialog.setStart();
         mLogtf.d("start:roomId=" + roomId);
@@ -223,6 +231,7 @@ public class SpeechCollectiveNo2Bll {
     };
 
     public void stop() {
+        start = false;
         mLogtf.d("start:stop");
         mSpeechEvaluatorUtils.cancel();
         isStop.set(true);
