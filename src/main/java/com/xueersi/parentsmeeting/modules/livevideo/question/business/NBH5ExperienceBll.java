@@ -76,4 +76,11 @@ public class NBH5ExperienceBll extends LiveBackBaseBll {
         }
     }
 
+    @Override
+    public void onDestory() {
+        super.onDestory();
+        if(h5CoursewareBll != null){
+            h5CoursewareBll.onDestory();
+        }
+    }
 }
