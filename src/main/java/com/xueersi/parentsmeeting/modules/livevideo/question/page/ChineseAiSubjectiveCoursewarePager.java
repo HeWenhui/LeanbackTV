@@ -810,6 +810,10 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 JSONObject response = (JSONObject) responseEntity.getJsonObject();
+                if(response.has("totalScore")){
+                    XESToastUtils.showToast(mContext,"答题结果提交失败，请刷新后重新作答！(10001)");
+                    return;
+                }
                 if (response.has(testId)) {
                     JSONObject resultData = response.getJSONObject(testId);
                     JSONArray userAnswerContent = resultData.getJSONArray("userAnswerContent");
@@ -844,6 +848,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                             @Override
                             public void onDataFail(int errStatus, String failMsg) {
                                 super.onDataFail(errStatus, failMsg);
+                                XESToastUtils.showToast(mContext,"答题结果提交失败，请刷新后重新作答！(10002)"+errStatus);
                                 isSumit = false;
                                 onSubmitError(isforce, failMsg);
                             }
@@ -862,9 +867,17 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
                 isSumit = false;
+                XESToastUtils.showToast(mContext,msg);
                 onSubmitError(isforce, msg);
             }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+                XESToastUtils.showToast(mContext,"答题结果提交失败，请刷新后重新作答！（10001）");
+            }
         });
+
         /** 强制收题直接显示结果页*/
 //        if (FORCE == isforce) {
 //            ChineseAISubjectResultEntity resultEntity = new ChineseAISubjectResultEntity();
@@ -1245,6 +1258,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                         @Override
                         public void onDataFail(int errStatus, String failMsg) {
                             super.onDataFail(errStatus, failMsg);
+                            XESToastUtils.showToast(mContext,"答题结果提交失败，请刷新后重新作答！(10003)" + errStatus);
                         }
                     });
         }
