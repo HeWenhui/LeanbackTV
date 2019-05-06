@@ -163,6 +163,7 @@ public class TcpDispatch {
                 jsonObject.put("xes_rfh", xes_rfh);
                 jsonObject.put("live_id", live_id);
                 jsonObject.put("class_id", class_id);
+                jsonObject.put("device_id", "1");
 //                jsonObject.put("gt", gt);
 //                jsonObject.put("pid", pid);
 //                jsonObject.put("iid", iid);

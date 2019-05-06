@@ -29,7 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.AllLiveBasePagerIml;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveLog;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveOnLineLogs;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveUidRx;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;

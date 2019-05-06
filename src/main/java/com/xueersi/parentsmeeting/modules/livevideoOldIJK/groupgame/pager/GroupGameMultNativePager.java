@@ -2093,7 +2093,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stuid);
                     if (courseGroupItem != null) {
                         courseGroupItem.onOpps();
-                        mLogtf.d("onResult2:onOpps");
+                        mLogtf.d("onResult:onOpps2:score=" + score);
                     }
                     return;
                 }
@@ -2183,7 +2183,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stuid);
                     if (courseGroupItem != null) {
                         courseGroupItem.onOpps();
-                        mLogtf.d("onResult2:onOpps");
+                        mLogtf.d("onResult:onOpps2:score=" + score);
                     }
                     return;
                 }
@@ -2363,8 +2363,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                 }
                                 int studentNum = -1;
                                 ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
+                                String allUserIds = "";
                                 for (int entityIndex = 0; entityIndex < entities.size(); entityIndex++) {
                                     TeamMemberEntity teamMemberEntity = entities.get(entityIndex);
+                                    allUserIds += "," + teamMemberEntity.id;
                                     if (who_id == teamMemberEntity.id) {
                                         studentNum = 1 + entityIndex;
                                         break;
@@ -2393,11 +2395,14 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                                 }
                                             }
                                             BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + who_id);
+                                            mLogtf.d("VOICE_CANNO_STATIS:onScene:who_id=" + who_id + ",courseGroupItem=null?" + (courseGroupItem == null));
                                             if (courseGroupItem != null) {
                                                 courseGroupItem.onScene("VOICE_CANNO_STATIS");
                                             }
                                         }
                                     });
+                                } else {
+                                    mLogtf.d("VOICE_CANNO_STATIS:allUserIds=" + allUserIds);
                                 }
                             }
                             getCurrent("STATISend");

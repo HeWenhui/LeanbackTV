@@ -1,5 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideo.enteampk.http;
 
+import android.os.Handler;
+import android.os.Looper;
+
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
@@ -7,12 +11,14 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoHttpEnConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.config.EnTeamPkHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.InteractiveTeam;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -24,7 +30,8 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class EnTeamPkHttpManager {
-    Logger logger = LiveLoggerFactory.getLogger("EnTeamPkHttpManager");
+    String TAG = "EnTeamPkHttpManager";
+    Logger logger = LiveLoggerFactory.getLogger(TAG);
     LiveHttpManager liveHttpManager;
     EnTeamPkResponseParser enTeamPkResponseParser;
 
@@ -79,12 +86,24 @@ public class EnTeamPkHttpManager {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 try {
-                    String res = response.body().string();
-                    ResponseEntity responseEntity = new ResponseEntity();
-                    responseEntity.setJsonObject(new JSONObject(res));
-                    ArrayList<InetSocketAddress> addresses = enTeamPkResponseParser.parseTcpDispatch(responseEntity);
-                    callBack.onDataSucess(addresses);
+                    final String res = response.body().string();
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            ResponseEntity responseEntity = new ResponseEntity();
+                            try {
+                                responseEntity.setJsonObject(new JSONObject(res));
+                                ArrayList<InetSocketAddress> addresses = enTeamPkResponseParser.parseTcpDispatch(responseEntity);
+                                callBack.onDataSucess(addresses);
+                            } catch (JSONException e) {
+                                CrashReport.postCatchedException(new LiveException(TAG, e));
+                                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, e.getMessage());
+                            }
+                        }
+                    });
                 } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
                     callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, e.getMessage());
                 }
             }

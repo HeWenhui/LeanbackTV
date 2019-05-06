@@ -27,7 +27,7 @@ public class GroupGameLog {
         logHashMap.put("testid", testid);
         logHashMap.put("signal", "" + signal);
         logHashMap.put("sno", "3");
-        liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
+        liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
     }
 
     /**
@@ -63,7 +63,7 @@ public class GroupGameLog {
         logHashMap.put("mvpnum", "" + mvpnum);
         logHashMap.put("signal", "" + signal);
         logHashMap.put("sno", "6");
-        liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
+        liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
     }
 
 }
