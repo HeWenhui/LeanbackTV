@@ -66,7 +66,6 @@ public class NBH5PlayBackBll extends LiveBackBaseBll {
      * @return
      */
     private boolean isNbAddExperiment(VideoQuestionEntity questionEntity) {
-        // TODO: 2019/5/5 对接common 中的LocalCourseConfig
         return questionEntity != null && questionEntity.getvCategory() == LocalCourseConfig.CATEGORY_NB_ADDEXPERIMENT;
     }
 
