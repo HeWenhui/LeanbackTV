@@ -257,7 +257,8 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         mEnglishH5CoursewareBll.setWebViewCloseByTeacher(false);
                     }
                     EventBus.getDefault().post(event);
-                } else {
+                } else if (!detailInfo.isTUtor) {
+
                     if (allowTeamPk && newCourseSec != null) {
                         int gold = newCourseSec.getIsAnswer() == 0?mGoldNum:-1;
                         int energy = newCourseSec.getIsAnswer() == 0?mEnergyNum:-1;
