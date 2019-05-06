@@ -325,7 +325,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
         wvSubjectWeb.getSettings().setLoadWithOverviewMode(false);
 //        wvSubjectWeb.getSettings().setDisplayZoomControls(false);
         wvSubjectWeb.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
-        mKeyboardListener =  new KeyboardUtil.OnKeyboardShowingListener() {
+        mKeyboardListener = new KeyboardUtil.OnKeyboardShowingListener() {
             @Override
             public void onKeyboardShowing(boolean isShowing) {
                 ChineseAiSubjectiveCoursewarePager.this.onKeyboardShowing(isShowing);
@@ -772,13 +772,15 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                     emptyJson.put("score", "");
                     emptyJson.put("scoreKey", "");
                     userAnswerContent.put(emptyJson);
-                }else {
+                } else {
                     for (int i = 0; i < userAnswerContent.length(); i++) {
                         JSONObject temp = userAnswerContent.getJSONObject(i);
                         String text = temp.optString("text");
-                        text = text.replaceAll(" ","");
-                        temp.remove("text");
-                        temp.put("text",text);
+                        if (text != null){
+                            text = text.replaceAll(" ", "");
+                            temp.remove("text");
+                            temp.put("text", text);
+                        }
                     }
                 }
                 if (rightAnswerContent == null || rightAnswerContent.length() == 0) {
@@ -812,29 +814,31 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
             }
         }
 //        }
-        if (mLiveHttpManager == null){
+        if (mLiveHttpManager == null) {
             mLiveHttpManager = new LiveHttpManager(mContext);
         }
 
-        mLiveHttpManager.submitChineseAISubjectiveAnswer(aiUrl,data.toString(),new AiHttpCallBack(isforce,data));
+        mLiveHttpManager.submitChineseAISubjectiveAnswer(aiUrl, data.toString(), new AiHttpCallBack(isforce, data));
 
     }
 
-    class AiHttpCallBack extends HttpCallBack{
+    class AiHttpCallBack extends HttpCallBack {
 
         private int isforce;
         private JSONObject data;
-        AiHttpCallBack(int isforce,JSONObject data){
+
+        AiHttpCallBack(int isforce, JSONObject data) {
             super(false);
             this.isforce = isforce;
             this.data = data;
         }
+
         @Override
         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
 
             JSONObject response = (JSONObject) responseEntity.getJsonObject();
-            if(response.has("totalScore")){
-                XESToastUtils.showToast(mContext,"答题结果提交失败，请刷新后重新作答！(10001)");
+            if (response.has("totalScore")) {
+                XESToastUtils.showToast(mContext, "答题结果提交失败，请刷新后重新作答！(10001)");
                 return;
             }
             if (response.has(testId)) {
@@ -871,7 +875,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                         @Override
                         public void onDataFail(int errStatus, String failMsg) {
                             super.onDataFail(errStatus, failMsg);
-                            XESToastUtils.showToast(mContext,"答题结果提交失败，请刷新后重新作答！(10002)"+errStatus);
+                            XESToastUtils.showToast(mContext, "答题结果提交失败，请刷新后重新作答！(10002)" + errStatus);
                             isSumit = false;
                             onSubmitError(isforce, failMsg);
                         }
@@ -889,11 +893,11 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
         @Override
         public void onPmFailure(Throwable error, String msg) {
             super.onPmFailure(error, msg);
-            if(isFirstAI){
+            if (isFirstAI) {
                 isFirstAI = false;
-                mLiveHttpManager.submitChineseAISubjectiveAnswer(aiUrl, data.toString(),this);
-            }else {
-                XESToastUtils.showToast(mContext,msg);
+                mLiveHttpManager.submitChineseAISubjectiveAnswer(aiUrl, data.toString(), this);
+            } else {
+                XESToastUtils.showToast(mContext, msg);
             }
             isSumit = false;
             onSubmitError(isforce, msg);
@@ -902,9 +906,12 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
         @Override
         public void onPmError(ResponseEntity responseEntity) {
             super.onPmError(responseEntity);
-            XESToastUtils.showToast(mContext,"答题结果提交失败，请刷新后重新作答！（10001）");
+            XESToastUtils.showToast(mContext, "答题结果提交失败，请刷新后重新作答！（10001）");
         }
-    };
+    }
+
+    ;
+
     /**
      * 提交成功
      *
@@ -1255,7 +1262,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                         @Override
                         public void onDataFail(int errStatus, String failMsg) {
                             super.onDataFail(errStatus, failMsg);
-                            XESToastUtils.showToast(mContext,"答题结果提交失败，请刷新后重新作答！(10003)" + errStatus);
+                            XESToastUtils.showToast(mContext, "答题结果提交失败，请刷新后重新作答！(10003)" + errStatus);
                         }
                     });
         }
@@ -1317,7 +1324,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
             lpsc.bottomMargin = bottomMargin;
 //            wvSubjectWeb.setLayoutParams(lp);
 //            lp.setMargins(0,-bottomMargin,0,bottomMargin);
-            lpsc.setMargins(0,0,0,bottomMargin);
+            lpsc.setMargins(0, 0, 0, bottomMargin);
             LayoutParamsUtil.setViewLayoutParams(svSubjectWeb, lpsc);
         }
     }

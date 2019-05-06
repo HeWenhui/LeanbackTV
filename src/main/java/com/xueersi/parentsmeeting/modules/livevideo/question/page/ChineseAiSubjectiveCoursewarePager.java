@@ -778,9 +778,11 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                     for (int i = 0; i < userAnswerContent.length(); i++) {
                         JSONObject temp = userAnswerContent.getJSONObject(i);
                         String text = temp.optString("text");
-                        text = text.replaceAll(" ","");
-                        temp.remove("text");
-                        temp.put("text",text);
+                        if (text != null){
+                            text = text.replaceAll(" ", "");
+                            temp.remove("text");
+                            temp.put("text", text);
+                        }
                     }
                 }
                 if (rightAnswerContent == null || rightAnswerContent.length() == 0) {
