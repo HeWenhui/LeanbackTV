@@ -194,6 +194,19 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
         void onClose(LiveBasePager basePager);
     }
 
+    public static class WrapOnPagerClose implements LiveBasePager.OnPagerClose {
+        OnPagerClose onPagerClose;
+
+        public WrapOnPagerClose(LiveBasePager.OnPagerClose onPagerClose) {
+            this.onPagerClose = onPagerClose;
+        }
+
+        @Override
+        public void onClose(LiveBasePager basePager) {
+            onPagerClose.onClose(basePager);
+        }
+    }
+
     /**
      * 是不是有父布局
      *

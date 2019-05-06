@@ -51,10 +51,12 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.KeyBordAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.notice.business.LiveAutoNoticeBll;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.BaseLiveBigQuestionPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.RolePlayMachinePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.RolePlayStandMachinePager;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.create.BigQueCreate;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.entity.CreateAnswerReslutEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.BaseExamQuestionInter;
@@ -153,6 +155,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      * 互动题布局
      */
     private BaseLiveQuestionPager baseQuestionPager;
+    private BaseLiveBigQuestionPager baseLiveBigQuestionPager;
+    private BigQueCreate bigQueCreate;
     LiveQuestionCreat liveQuestionCreat;
     /**
      * 互动题的布局
@@ -646,6 +650,86 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         mVPlayVideoControlHandler.sendEmptyMessage(SHOW_QUESTION);
     }
 
+    @Override
+    public void showBigQuestion(final VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isOpen) {
+        isAnaswer = isOpen;
+        mLogtf.d("showBigQuestion:isOpen=" + isOpen + ",id=" + videoQuestionLiveEntity.id + ",dot=" + videoQuestionLiveEntity.getDotId());
+        if (isOpen) {
+            if (baseLiveBigQuestionPager != null) {
+                VideoQuestionLiveEntity oldEntity = (VideoQuestionLiveEntity) baseLiveBigQuestionPager.getBaseVideoQuestionEntity();
+                mLogtf.d("showBigQuestion:oldid=" + oldEntity.id + ",dot=" + oldEntity.getDotId());
+                if (oldEntity.getvQuestionID().equals(videoQuestionLiveEntity.id) &&
+                        oldEntity.getDotId().equals(videoQuestionLiveEntity.getDotId())) {
+                    return;
+                } else {
+                    //来一个不同的题
+                    final BaseLiveBigQuestionPager finalpager = baseLiveBigQuestionPager;
+                    mVPlayVideoControlHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            finalpager.onDestroy();
+                            rlQuestionContent.removeView(finalpager.getRootView());
+                            rlQuestionResContent.removeAllViews();
+                        }
+                    });
+                }
+            }
+            String key = videoQuestionLiveEntity.id + "-" + videoQuestionLiveEntity.getDotId();
+            //已经做过题目。
+            if (mQueAndBool.contains(key)) {
+                return;
+            }
+            mQueAndBool.add(key);
+            final BaseLiveBigQuestionPager bigQuestionPager = bigQueCreate.create(videoQuestionLiveEntity, rlQuestionResContent, new LiveBasePager.OnPagerClose() {
+                @Override
+                public void onClose(LiveBasePager basePager) {
+                    basePager.onDestroy();
+                    rlQuestionContent.removeView(basePager.getRootView());
+                    if (basePager == baseLiveBigQuestionPager) {
+                        baseLiveBigQuestionPager = null;
+                    }
+                }
+            }, new BigQueCreate.OnSubmit() {
+                @Override
+                public void onSubmit(LiveBasePager basePager) {
+                    basePager.onDestroy();
+                    rlQuestionContent.removeView(basePager.getRootView());
+                    onQuestionShow(videoQuestionLiveEntity, false, "showBigQuestion:onClose");
+                }
+            });
+            if (bigQuestionPager != null) {
+                //延迟两秒显示题目
+                baseLiveBigQuestionPager = bigQuestionPager;
+                mVPlayVideoControlHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mLogtf.d("showBigQuestion:isAnaswer=" + isAnaswer);
+                        if (isAnaswer) {
+                            rlQuestionContent.addView(bigQuestionPager.getRootView());
+                            onQuestionShow(videoQuestionLiveEntity, true, "showBigQuestion");
+                        } else {
+                            if (baseLiveBigQuestionPager == bigQuestionPager) {
+                                baseLiveBigQuestionPager = null;
+                            }
+                            bigQuestionPager.onDestroy();
+                        }
+                    }
+                }, 2000);
+            }
+        } else {
+            if (baseLiveBigQuestionPager != null) {
+                final BaseLiveBigQuestionPager finalpager = baseLiveBigQuestionPager;
+                mVPlayVideoControlHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (finalpager == baseLiveBigQuestionPager) {
+                            baseLiveBigQuestionPager.submitData();
+                        }
+                    }
+                }, 2000);
+            }
+        }
+    }
 
     /**
      * 文科课件平台改版后 文科答题 处理逻辑
@@ -1744,6 +1828,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
     public void setBaseVoiceAnswerCreat(BaseVoiceAnswerCreat baseVoiceAnswerCreat) {
         this.baseVoiceAnswerCreat = baseVoiceAnswerCreat;
+    }
+
+    public void setBigQueCreate(BigQueCreate bigQueCreate) {
+        this.bigQueCreate = bigQueCreate;
     }
 
     public void setBaseExamQuestionCreat(BaseExamQuestionCreat baseExamQuestionCreat) {
