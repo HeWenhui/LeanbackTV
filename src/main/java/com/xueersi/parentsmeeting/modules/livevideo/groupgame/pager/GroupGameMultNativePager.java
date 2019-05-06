@@ -973,11 +973,12 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 courseGroupItem.updateViews(teamMemberEntity, i, teamMemberEntity);
                 courseGroupItem.bindListener();
                 //语音炮弹往下排，其他往上排
-                if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(gameType)) {
-                    llCourseItemContent.addView(convertView);
-                } else {
-                    llCourseItemContent.addView(convertView, 0);
-                }
+//                if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(gameType)) {
+//                    llCourseItemContent.addView(convertView);
+//                } else {
+//                    llCourseItemContent.addView(convertView, 0);
+//                }
+                llCourseItemContent.addView(convertView, 0);
             }
         }
         //如果小于最小值

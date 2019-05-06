@@ -746,7 +746,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 case TcpConstants.TEAM_TYPE: {
                     if (operation == TcpConstants.TEAM_OPERATION_SEND) {
                         try {
-                            InteractiveTeam interactiveTeam = getEnTeamPkHttpManager().parseInteractiveTeam(new JSONObject(msg));
+                            InteractiveTeam interactiveTeam = getEnTeamPkHttpManager().parseInteractiveTeam(mGetInfo.getStuId(), new JSONObject(msg));
                             if (interactiveTeam != null) {
                                 mInteractiveTeam = interactiveTeam;
                                 entities = interactiveTeam.getEntities();
@@ -778,7 +778,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             JSONObject jsonObject = new JSONObject(string);
             if (jsonObject.has(mGetInfo.getId())) {
                 JSONObject liveObj = jsonObject.getJSONObject(mGetInfo.getId());
-                InteractiveTeam interactiveTeam = getEnTeamPkHttpManager().parseInteractiveTeam(liveObj);
+                InteractiveTeam interactiveTeam = getEnTeamPkHttpManager().parseInteractiveTeam(mGetInfo.getStuId(), liveObj);
                 if (interactiveTeam != null) {
                     mInteractiveTeam = interactiveTeam;
                     entities = mInteractiveTeam.getEntities();

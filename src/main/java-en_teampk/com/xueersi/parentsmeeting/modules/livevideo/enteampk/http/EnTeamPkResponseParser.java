@@ -41,7 +41,7 @@ public class EnTeamPkResponseParser extends HttpResponseParser {
         return addresses;
     }
 
-    public InteractiveTeam parseInteractiveTeam(JSONObject jsonObject) {
+    public InteractiveTeam parseInteractiveTeam(String userId, JSONObject jsonObject) {
         InteractiveTeam interactiveTeam = new InteractiveTeam();
         try {
             interactiveTeam.setLive_id(jsonObject.getString("live_id"));
@@ -49,7 +49,7 @@ public class EnTeamPkResponseParser extends HttpResponseParser {
             interactiveTeam.setPk_team_id(jsonObject.getString("pk_team_id"));
             interactiveTeam.setTeam_type(jsonObject.getString("team_type"));
             interactiveTeam.setInteractive_team_id(jsonObject.getInt("interactive_team_id"));
-            ArrayList<TeamMemberEntity> entities = parseGetStuActiveTeam(jsonObject.getJSONArray("team_mate"));
+            ArrayList<TeamMemberEntity> entities = parseGetStuActiveTeam(userId, jsonObject.getJSONArray("team_mate"));
             interactiveTeam.setEntities(entities);
             return interactiveTeam;
         } catch (JSONException e) {
@@ -59,16 +59,24 @@ public class EnTeamPkResponseParser extends HttpResponseParser {
         return null;
     }
 
-    public ArrayList<TeamMemberEntity> parseGetStuActiveTeam(JSONArray array) {
+    public ArrayList<TeamMemberEntity> parseGetStuActiveTeam(String userId, JSONArray array) {
         ArrayList<TeamMemberEntity> entities = new ArrayList<>();
         try {
+            TeamMemberEntity myTeamMemberEntity = null;
             for (int i = 0; i < array.length(); i++) {
                 JSONObject teamObj = array.getJSONObject(i);
                 TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
                 teamMemberEntity.id = teamObj.optInt("stu_id");
                 teamMemberEntity.name = teamObj.optString("stu_name");
                 teamMemberEntity.headurl = teamObj.optString("stu_head");
-                entities.add(teamMemberEntity);
+                if (("" + teamMemberEntity.id).equals(userId)) {
+                    myTeamMemberEntity = teamMemberEntity;
+                } else {
+                    entities.add(teamMemberEntity);
+                }
+            }
+            if (myTeamMemberEntity != null) {
+                entities.add(myTeamMemberEntity);
             }
         } catch (JSONException e) {
             logger.e("parseGetStuActiveTeam", e);
@@ -77,8 +85,4 @@ public class EnTeamPkResponseParser extends HttpResponseParser {
         return entities;
     }
 
-    public ArrayList<TeamMemberEntity> parseGetStuActiveTeam(ResponseEntity responseEntity) {
-        JSONArray array = (JSONArray) responseEntity.getJsonObject();
-        return parseGetStuActiveTeam(array);
-    }
 }
