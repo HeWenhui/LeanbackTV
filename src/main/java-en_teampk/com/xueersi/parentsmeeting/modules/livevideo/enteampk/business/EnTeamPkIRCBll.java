@@ -199,7 +199,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     ArrayList<InetSocketAddress> addresses = (ArrayList<InetSocketAddress>) objData[0];
                     mLogtf.d("dispatch:size=" + addresses.size());
                     if (addresses.size() > 0) {
-                        connect(addresses);
+                        connect("onArtsExtLiveInited", addresses);
                     }
                 }
             });
@@ -214,10 +214,10 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         super.initView(bottomContent, mIsLand);
     }
 
-    private void connect(ArrayList<InetSocketAddress> addresses) {
+    private synchronized void connect(String method, ArrayList<InetSocketAddress> addresses) {
         if (tcpDispatch == null) {
             if (destory) {
-                mLogtf.d("connect:destory");
+                mLogtf.d("connect:destory:method=" + method);
                 return;
             }
             int pid = -1;
@@ -237,6 +237,8 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 mLogtf.d("connect:run=" + runnable.getName());
                 runnable.run();
             }
+        } else {
+            mLogtf.d("connect:method=" + method);
         }
     }
 
@@ -585,7 +587,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         ArrayList<InetSocketAddress> addresses = (ArrayList<InetSocketAddress>) objData[0];
                         mLogtf.d("dispatch:size=" + addresses.size());
                         if (addresses.size() > 0) {
-                            connect(addresses);
+                            connect("parsegetSelfTeamInfo", addresses);
                         }
                     }
                 });
