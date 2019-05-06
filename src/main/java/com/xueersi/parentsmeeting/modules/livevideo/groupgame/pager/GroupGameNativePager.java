@@ -39,6 +39,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackD
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -374,7 +375,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
                 if (("" + consoleMessage.message()).contains("sendToCourseware")) {
-                    CrashReport.postCatchedException(new Exception());
+                    CrashReport.postCatchedException(new LiveException(TAG));
                 }
                 return super.onConsoleMessage(consoleMessage);
             }
@@ -499,7 +500,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     }
 
     private void startSpeechRecognize() {
-        File dir = LiveCacheFile.geCacheFile(mContext, "liveSpeech");
+        File dir = LiveCacheFile.geCacheFile(mContext, "groupgame");
         FileUtils.deleteDir(dir);
         if (!dir.exists()) {
             dir.mkdirs();
@@ -655,15 +656,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         if (tryTimes != 0) {
             averageScore = sum / tryTimes;
         }
-        try {
-            answerData.put("tryTimes", tryTimes);
-            answerData.put("rightNum", "" + rightNum);
-            answerData.put("total", mAnswersList.size());
-            answerData.put("averageScore", averageScore);
-            answerData.put("userAnswer", userAnswer);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
         starNum = calculateStarByScore(averageScore);
         if (!isPlayBack && liveGetInfo.getEnglishPk().hasGroup == 1) {
             if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(detailInfo.type)) {
@@ -676,6 +669,27 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         }
         logger.d("submitData: answerData = " + answerData.toString() + ", submitData: fireNum = " + fireNum + ", " +
                 "goldNum = " + goldNum + ", starNum = " + starNum);
+        int isRightCount = 0;
+        for (int i = 0; i < userAnswer.length(); i++) {
+            try {
+                JSONObject jsonObject = userAnswer.getJSONObject(i);
+                int isRight = jsonObject.optInt("isRight");
+                if (isRight == 1) {
+                    isRightCount++;
+                }
+            } catch (Exception e) {
+                CrashReport.postCatchedException(new LiveException(TAG, e));
+            }
+        }
+        try {
+            answerData.put("tryTimes", tryTimes);
+            answerData.put("rightNum", "" + isRightCount);
+            answerData.put("total", mAnswersList.size());
+            answerData.put("averageScore", averageScore);
+            answerData.put("userAnswer", userAnswer);
+        } catch (JSONException e) {
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
         isSubmit = true;
         englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 0, (int) voiceTime, 0, 0, starNum, fireNum, goldNum,
                 0, (int) voiceTime, 0, 0, answerData.toString(), new AbstractBusinessDataCallBack() {
@@ -1107,6 +1121,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 resultData.put("studentInfo", studentInfo);
                 StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
             } catch (Exception e) {
+                CrashReport.postCatchedException(new LiveException(TAG, e));
                 logger.d("onLoadComplete", e);
             }
             for (int i = 0; i < mAnswersList.size(); i++) {
@@ -1214,6 +1229,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 jsonData.put("combo", 0);
                 wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
             } catch (Exception e) {
+                CrashReport.postCatchedException(new LiveException(TAG, e));
                 logger.d("uploadScore", e);
             }
         }
