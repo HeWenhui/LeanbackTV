@@ -1054,8 +1054,9 @@ public class LiveRemarkBll {
                         break;
                     case MARK_TYPE_BIG_TEST:
                         ivShot.setScaleType(ImageView.ScaleType.FIT_XY);
-                        vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f13232);
-                        ImageLoader.with(mContext).load(entity.getPic()).placeHolder(R.drawable.bg_default_image).error(R.drawable.bg_default_image).into(ivShot);
+                        vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f0773c);
+//                        ImageLoader.with(mContext).load(entity.getPic()).placeHolder(R.drawable.bg_live_mark_question).error(R.drawable.bg_live_mark_question).into(ivShot);
+                        ivShot.setImageResource(R.drawable.bg_live_mark_question);
                         sb.append("互动点");
                         break;
                     default:

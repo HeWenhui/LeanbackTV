@@ -17,7 +17,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultIte
 import com.xueersi.parentsmeeting.modules.livevideo.question.item.BigResultAdapter;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 /**
  * Created by linyuqiang on 2019/4/15.  大题互动结果页
@@ -34,6 +33,7 @@ public class BigResultPager extends LiveBasePager {
     /** 结果页关闭 */
     private ImageView ivBigqueResultClose;
     private ViewGroup group;
+    private ImageView ivResultTitleLight;
 
     public BigResultPager(Context context, ViewGroup group, BigResultEntity bigResultEntitie) {
         super(context, false);
@@ -52,6 +52,7 @@ public class BigResultPager extends LiveBasePager {
         tvBigqueResultTitle = mView.findViewById(R.id.tv_livevideo_bigque_result_title);
         rvBigqueResultList = mView.findViewById(R.id.rv_livevideo_bigque_result_list);
         ivBigqueResultClose = mView.findViewById(R.id.iv_livevideo_bigque_result_close);
+        ivResultTitleLight = mView.findViewById(R.id.iv_livevideo_bigque_result_title_light);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mContext);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         rvBigqueResultList.setLayoutManager(layoutManager);
@@ -65,13 +66,15 @@ public class BigResultPager extends LiveBasePager {
         if (isRight == LiveQueConfig.DOTTYPE_RESULT_WRONG) {
             tvBigqueResultTitle.setText("很遗憾答错了");
             ivBigqueResultTitle.setImageResource(R.drawable.bg_livevideo_bigque_result_wrong_title);
-            mView.findViewById(R.id.iv_livevideo_bigque_result_title_light).setVisibility(View.GONE);
+            ivResultTitleLight.setImageResource(R.drawable.bg_livevideo_bigque_result_right_title_light_grey);
         } else if (isRight == LiveQueConfig.DOTTYPE_ITEM_RIGHT) {
             tvBigqueResultTitle.setText("恭喜你答对了    金币+" + bigResultEntitie.getGold());
             ivBigqueResultTitle.setImageResource(R.drawable.bg_livevideo_bigque_result_right_title);
+            ivResultTitleLight.setImageResource(R.drawable.bg_livevideo_bigque_result_right_title_light);
         } else if (isRight == LiveQueConfig.DOTTYPE_ITEM_PART_RIGHT) {
             tvBigqueResultTitle.setText("部分正确    金币+" + bigResultEntitie.getGold());
             ivBigqueResultTitle.setImageResource(R.drawable.bg_livevideo_bigque_result_part_title);
+            ivResultTitleLight.setImageResource(R.drawable.bg_livevideo_bigque_result_right_title_light);
         }
         BigResultAdapter bigResultAdapter = new BigResultAdapter(bigResultItemEntities);
         rvBigqueResultList.setAdapter(bigResultAdapter);
