@@ -14,4 +14,7 @@ public interface HalfBodyLiveConfig {
     /**直播类型:语文*/
     int LIVE_TYPE_CHINESE = 2;
 
+    /**半身直播 语文皮肤类型**/
+    int SKIN_TYPE_CH = 2;
+
 }

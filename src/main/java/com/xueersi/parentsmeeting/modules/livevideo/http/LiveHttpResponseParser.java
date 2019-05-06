@@ -8,11 +8,12 @@ import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
@@ -100,6 +101,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         //小英萌萌哒皮肤专用
         if (data.has("useSkin")) {
             getInfo.setSmallEnglish((String.valueOf(data.optString("useSkin"))).equals("1"));
+            getInfo.setUseSkin(data.optInt("useSkin", 0));
             LiveVideoConfig.isSmallChinese = String.valueOf(data.optString("useSkin")).equals("2");
         } else {
             getInfo.setSmallEnglish(false);
@@ -194,6 +196,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         //小英萌萌哒皮肤专用
         if (data.has("useSkin")) {
             getInfo.setSmallEnglish((String.valueOf(data.optString("useSkin"))).equals("1"));
+            getInfo.setUseSkin(data.optInt("useSkin", 0));
             LiveVideoConfig.isSmallChinese = String.valueOf(data.optString("useSkin")).equals("2");
         } else {
             getInfo.setSmallEnglish(false);
@@ -203,6 +206,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         LiveVideoConfig.educationstage = getInfo.getEducationStage();
         LiveVideoConfig.LIVEMULPRELOADCHS = data.optString("courseWarePreLoadUrl");
         LiveVideoConfig.LIVEMULH5URLCHS = data.optString("getCourseWareHtml");
+        getInfo.setGetCourseWareHtmlNew(data.optString("getCourseWareWeb"));
 //        LiveVideoConfig.LIVEMULPRELOAD = data.optString("courseWarePreLoadUrl");
 //        LiveVideoConfig.LIVEMULH5URL = data.optString("getCourseWareHtml");
 //        getInfo.setStuPutUpHandsNum(data.optInt("stuPutUpHandsNum"));
@@ -220,6 +224,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @param getInfo
      */
     public void parseLiveGetInfoLibarts(JSONObject data, LiveTopic liveTopic, LiveGetInfo getInfo) {
+        getInfo.setAppid(data.optString("appId"));
         // 文科表扬榜
         if (data.has("liveRank")) {
             JSONObject jsonObject = data.optJSONObject("liveRank");
@@ -231,6 +236,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         //小英萌萌哒皮肤专用
         if (data.has("useSkin")) {
             getInfo.setSmallEnglish((String.valueOf(data.optString("useSkin"))).equals("1"));
+            getInfo.setUseSkin(data.optInt("useSkin", 0));
             LiveVideoConfig.isSmallChinese = String.valueOf(data.optString("useSkin")).equals("2");
         } else {
             getInfo.setSmallEnglish(false);
@@ -311,6 +317,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             getInfo.setIsShowCounselorWhisper(data.optString("counselor_whisper"));
             getInfo.setIsSeniorOfHighSchool(data.optInt("isSeniorOfHighSchool"));
             getInfo.setIsVoiceInteraction(data.optInt("isVoiceInteraction"));
+
+            //幼升小金话筒
 
             //getInfo.setIsShowCounselorWhisper("1");
             if (data.has("followType")) {
@@ -511,6 +519,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 String[] arrSubjIds = strSubjIds.split(",");
                 getInfo.setSubjectIds(arrSubjIds);
             }
+            //金话筒
+            getInfo.setUseGoldMicroPhone(data.optInt("isGoldMicrophone"));
             getInfo.setSubject_digits(data.optString("subject_digits"));
             if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                 getInfo.setIsNewProject(data.optInt("isNewProject", 0));
@@ -522,6 +532,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     parseLiveGetInfoScience(data, liveTopic, getInfo);
                 }
             }
+            getInfo.setSubjectiveItem2AIUrl(data.optString("subjectiveItem2AIUrl"));
             return getInfo;
         } catch (JSONException e) {
             logger.e("parseLiveGetInfo", e);
@@ -680,6 +691,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             roomInfo1.setAlloteam(status.optInt("alloteam"));
             roomInfo1.setOpenbox(status.optInt("openbox"));
             roomInfo1.setAllotpkman(status.optInt("allotpkman"));
+            roomInfo1.setPKStep(status.optInt("PKStep"));
+
             teamPkEntity.setRoomInfo1(roomInfo1);
 
 
@@ -1997,6 +2010,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         ArtsExtLiveInfo info = new ArtsExtLiveInfo();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         info.setNewCourseWarePlatform(data.optString("newCourseWarePlatform"));
+        info.setIsGroupGameCourseWare(data.optInt("isGroupGameCourseWare", -1));
         return info;
     }
 

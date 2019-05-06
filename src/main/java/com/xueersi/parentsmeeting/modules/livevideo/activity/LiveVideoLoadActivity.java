@@ -122,7 +122,6 @@ public class LiveVideoLoadActivity extends BaseActivity {
         DataLoadEntity dataLoadEntity = new DataLoadEntity(this);
         BaseBll.postDataLoadEvent(dataLoadEntity.beginLoading());
         final LiveHttpManager httpManager = new LiveHttpManager(this);
-
         if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
             httpManager.liveLectureGetInfo("", vSectionID, new HttpCallBack(dataLoadEntity) {
                 @Override
@@ -177,11 +176,11 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         return;
                     }
                     // 语文半身直播 暂不支持观看
-                    if (isChineseHalfBodyLive(mGetInfo)) {
+                  /*  if (isChineseHalfBodyLive(mGetInfo)) {
                         XESToastUtils.showToast(LiveVideoLoadActivity.this, "语文半身直播暂不支持,请升级版本");
                         AppBll.getInstance(mContext).checkPartUpdate("语文半身直播暂不支持,请升级版本");
                         return;
-                    }
+                    }*/
 
                     String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
                     getInfos.put(stuId + "-" + vStuCourseID + "-" + vSectionID, mGetInfo);
@@ -200,6 +199,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     bundle.putBoolean("isPrimary", LiveVideoConfig.isPrimary);
                     bundle.putBoolean("isSmallChinese", LiveVideoConfig.isSmallChinese);
                     bundle.putBoolean("isSmallEnglish", mGetInfo.getSmallEnglish());
+                    bundle.putInt("useSkin", mGetInfo.getUseSkin());
+                    bundle.putInt("isGoldMicrophone", mGetInfo.isUseGoldMicroPhone());
                     if (mGetInfo.getIsArts() == 0) {
                         bundle.putInt("allowLinkMicNew", mGetInfo.getAllowLinkMicNew());
                     } else {
@@ -212,6 +213,8 @@ public class LiveVideoLoadActivity extends BaseActivity {
 //                }
                     if (1 == mGetInfo.getIsEnglish()) {
                         gotoEnglish(bundle);
+                    } else if (mGetInfo.isUseGoldMicroPhone() == 1) {
+                        gotoHalfBodyChinese(bundle);
                     } else {
                         if (MediaPlayer.getIsNewIJK()) {
                             com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
@@ -299,6 +302,54 @@ public class LiveVideoLoadActivity extends BaseActivity {
                 com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
             }
             finish();
+        }
+    }
+
+    /**  */
+    void gotoHalfBodyChinese(final Bundle bundle) {
+        boolean have = XesPermission.checkPermission(this, new LiveActivityPermissionCallback() {
+
+                    @Override
+                    public void onFinish() {
+
+                    }
+
+                    @Override
+                    public void onDeny(String permission, int position) {
+                        if (MediaPlayer.getIsNewIJK()) {
+                            com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                        } else {
+                            com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                        }
+                        finish();
+                    }
+
+                    @Override
+                    public void onGuarantee(String permission, int position) {
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (MediaPlayer.getIsNewIJK()) {
+                                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                                } else {
+                                    com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                                }
+                                finish();
+                            }
+                        });
+                    }
+                },
+                PermissionConfig.PERMISSION_CODE_AUDIO);
+
+        if (have) {
+            if (MediaPlayer.getIsNewIJK()) {
+                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+            } else {
+                com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+            }
+            finish();
+
         }
     }
 

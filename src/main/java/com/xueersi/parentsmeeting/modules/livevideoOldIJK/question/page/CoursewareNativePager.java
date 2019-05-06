@@ -50,8 +50,8 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.Engl
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.config.CourseMessage;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.dialog.CourseTipDialog;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.entity.NewCourseSec;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.entity.PrimaryScienceAnswerResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.web.MiddleResult;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.web.NewCourseCache;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.web.OnHttpCode;
@@ -1685,12 +1685,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 public void onDataSucess(Object... objData) {
                     loadResult = true;
                     PrimaryScienceAnswerResultEntity entity = (PrimaryScienceAnswerResultEntity) objData[0];
-                    if (isforce == 0) {
-                        mGoldNum = entity.getGold();
-                        if (allowTeamPk) {
-                            mEnergyNum = entity.getEnergy();
-                        }
+                    mGoldNum = entity.getGold();
+                    if (allowTeamPk) {
+                        mEnergyNum = isforce ==0?entity.getEnergy():0;
                     }
+
                     // 对外暴露答题结果
                     broadCastAnswerRestult(entity);
 

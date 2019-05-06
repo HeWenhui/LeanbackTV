@@ -17,8 +17,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlayerFragment;
  */
 
 public abstract class BaseSpeechAssessmentPager extends LiveBasePager {
-    /** 停止声音 */
-    public static String LIVE_STOP_VOLUME = "live_stop_volume";
     /** 语音评测 */
     protected SpeechUtils mIse;
 
@@ -30,7 +28,7 @@ public abstract class BaseSpeechAssessmentPager extends LiveBasePager {
             logger.d(TAG + ":setVolume:0");
             StableLogHashMap stableLogHashMap = new StableLogHashMap("stop");
             stableLogHashMap.put("tag", TAG);
-            umsAgentDebugSys(LIVE_STOP_VOLUME, stableLogHashMap);
+            umsAgentDebugSys(LogConfig.LIVE_STOP_VOLUME, stableLogHashMap);
         } else {
             logger.d(TAG + ":setVolume:null");
         }
@@ -45,7 +43,7 @@ public abstract class BaseSpeechAssessmentPager extends LiveBasePager {
             logger.d("onDestroy:setVolume:1");
             StableLogHashMap stableLogHashMap = new StableLogHashMap("start");
             stableLogHashMap.put("tag", TAG);
-            umsAgentDebugSys(LIVE_STOP_VOLUME, stableLogHashMap);
+            umsAgentDebugSys(LogConfig.LIVE_STOP_VOLUME, stableLogHashMap);
         } else {
             logger.d("onDestroy:setVolume:null");
         }

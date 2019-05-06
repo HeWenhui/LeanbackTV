@@ -275,6 +275,11 @@ public class SpeechFeedBackBll implements SpeechFeedBackAction {
         }
 
         @Override
+        public void onRemoteVideoStateChanged(int uid, int state) {
+
+        }
+
+        @Override
         public void onJoinChannelSuccess(String channel, int uid, int elapsed) {
             logToFile.i("joinchannelsuccess:channel=" + channel + ",uid=" + uid);
             joinTime = System.currentTimeMillis();

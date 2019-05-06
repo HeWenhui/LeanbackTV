@@ -87,7 +87,16 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     /** 年级阶段的标识 */
     private String educationstage = "";
     private String newCourseTestIdSec = null;
+    /** 语文AI主观题AI接口*/
+    private String subjectiveItem2AIUrl;
 
+    public String getSubjectiveItem2AIUrl() {
+        return subjectiveItem2AIUrl;
+    }
+
+    public void setSubjectiveItem2AIUrl(String subjectiveItem2AIUrl) {
+        this.subjectiveItem2AIUrl = subjectiveItem2AIUrl;
+    }
     public VideoQuestionLiveEntity() {
     }
 

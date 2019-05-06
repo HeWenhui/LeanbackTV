@@ -204,7 +204,14 @@ public class LiveVideoBll implements VPlayerListenerReg {
 //            } else {
 //                nowProtol = MediaPlayer.VIDEO_PROTOCOL_RTMP;
 //            }
-            videoFragment.playPSVideo(mGetInfo.getChannelname(), nowProtol);
+            mHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    videoFragment.playPSVideo(mGetInfo.getChannelname(), nowProtol);
+                    MediaPlayer.setNextDispatchTime();
+                }
+            }, MediaPlayer.getDispatchTime());
+
         }
     }
 
@@ -222,9 +229,9 @@ public class LiveVideoBll implements VPlayerListenerReg {
      * @param streamId
      * @param protocol
      */
-    public void playPSVideo(String streamId, int protocol) {
-        videoFragment.playPSVideo(streamId, protocol);
-    }
+//    public void playPSVideo(String streamId, int protocol) {
+//        videoFragment.playPSVideo(streamId, protocol);
+//    }
 
     /**
      * 第一次播放，或者播放失败，重新播放
@@ -696,6 +703,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
             lastPlayTime = System.currentTimeMillis();
             reportPlayStarTime = System.currentTimeMillis();
             openSuccess = true;
+            MediaPlayer.setLastDispatchTimeBlanking();
             mHandler.removeCallbacks(mOpenTimeOutRun);
             for (VPlayerCallBack.VPlayerListener vPlayerListener : mPlayStatistics) {
                 vPlayerListener.onOpenSuccess();
@@ -761,8 +769,8 @@ public class LiveVideoBll implements VPlayerListenerReg {
     };
 
     public void stopPlay() {
-        livePlayLog.stopPlay();
         if (isInitialized()) {
+            livePlayLog.stopPlay();
             vPlayer.releaseSurface();
             vPlayer.stop();
         }
@@ -791,8 +799,11 @@ public class LiveVideoBll implements VPlayerListenerReg {
             Map<String, String> map = new HashMap<>();
             map.put("param", "openTimeOut");
             UmsAgentManager.umsAgentDebug(activity, LiveLogUtils.PLAY_VIDEO_FAIL, map);
-
-            liveGetPlayServer.liveGetPlayServer(false);
+            if (MediaPlayer.getIsNewIJK()) {
+                changeNextLine();
+            } else {
+                liveGetPlayServer.liveGetPlayServer(false);
+            }
         }
     };
 
@@ -935,6 +946,7 @@ public class LiveVideoBll implements VPlayerListenerReg {
                         public void run() {
 //                            playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
 //                            liveGetPlayServer.liveGetPlayServer(false);
+                            nowProtol = changeProtol(nowProtol);
                             psRePlay(false);
                         }
                     }, 1000);

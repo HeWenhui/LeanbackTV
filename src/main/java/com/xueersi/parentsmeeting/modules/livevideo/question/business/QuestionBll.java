@@ -48,6 +48,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager.GroupGameMultNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.KeyBordAction;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
@@ -266,7 +267,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      * 新课件平台，人机roleplay业务类
      */
     RolePlayMachineBll rolePlayMachineBll;
-
+    /**
+     * 多人连麦，是否分组成功
+     */
+    private boolean isMulitGroupSuc;
     public QuestionBll(Activity activity, String stuCouId) {
         ProxUtil.getProxUtil().put(activity, QuestionStatic.class, this);
         ProxUtil.getProxUtil().put(activity, QuestionShowReg.class, this);
@@ -484,6 +488,14 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     public void setRolePlayAction(RolePlayAction rolePlayAction, RolePlayActionEnd playActionEnd) {
         this.rolePlayAction = rolePlayAction;
         this.playActionEnd = playActionEnd;
+        this.rolePlayAction.setOnGroupSuc(new RolePlayAction.OnGroupSuc(){
+            @Override
+            public void onGroupSuc() {
+                //收到分组的回调，也直接走多人
+                isMulitGroupSuc = true;
+                logger.d("oldijk multi_people_onGroupSuc:callback receive");
+            }
+        });
         rolePlayAction.setOnError(new RolePlayAction.OnError() {
 
             @Override
@@ -619,6 +631,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                                 videoQuestionLiveEntity.nonce, liveGetInfo.getIs_show_ranks(), liveGetInfo.getIsArts
                                 (), stuCouId,
                                 "1".equals(liveGetInfo.getIsAllowTeamPk()));
+                        questionWebPager.setOpenNewCourseWare(liveGetInfo.getIsOpenNewCourseWare());
                         questionWebPager.setLivePagerBack(QuestionBll.this);
                         rlQuestionContent.addView(questionWebPager.getRootView());
                         QuestionBll.this.questionWebPager = questionWebPager;
@@ -835,7 +848,16 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         speechAssessmentPager.initData();
 
                     } else {
-                        logger.e("走人机000");
+                        //新讲义讲义：分组成功的回调收到之后，不再判断videoQuestionLiveEntity.multiRolePlay，也走多人
+                        if (isMulitGroupSuc) {
+                            logger.d(" multi_people_onGroupSuc:callback use new kj "+rolePlayAction+" multiRolePlay = "+videoQuestionLiveEntity.multiRolePlay);
+                            if (rolePlayAction != null) {
+                                mQueAndBool.add(id);
+                                rolePlayAction.teacherPushTest(videoQuestionLiveEntity);
+                                isMulitGroupSuc = false;
+                                return;
+                            }
+                        }
                         if ("1".equals(videoQuestionLiveEntity.multiRolePlay)) {
                             if (rolePlayAction != null) {
                                 mQueAndBool.add(id);
@@ -1014,6 +1036,18 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                         speechAssessmentPager.setIse(mIse);
                         speechAssessmentPager.initData();
                     } else {
+
+                        //旧讲义：分组成功的回调收到之后，不再判断videoQuestionLiveEntity.multiRolePlay，也走多人
+                        if (isMulitGroupSuc) {
+                            logger.d(" multi_people_onGroupSuc:callback use new kj "+rolePlayAction+" multiRolePlay = "+videoQuestionLiveEntity.multiRolePlay);
+                            if (rolePlayAction != null) {
+                                mQueAndBool.add(id);
+                                rolePlayAction.teacherPushTest(videoQuestionLiveEntity);
+                                isMulitGroupSuc = false;
+                                return;
+                            }
+                        }
+
                         if ("1".equals(videoQuestionLiveEntity.multiRolePlay)) {
                             if (rolePlayAction != null) {
                                 mQueAndBool.add(id);
@@ -1955,6 +1989,14 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      */
     @Override
     public void initQuestionAnswerReslut(View popupWindow_view) {
+        initQuestionAnswerReslut(popupWindow_view, true);
+    }
+
+
+    /**
+     * 创建互动题作答，抢红包结果提示PopupWindow
+     */
+    public void initQuestionAnswerReslut(View popupWindow_view, boolean isAutoDismiss) {
         logger.d("initQuestionAnswerReslut");
         popupWindow_view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
             long before;
@@ -1980,8 +2022,11 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 rlQuestionResContent.removeAllViews();
             }
         });
-        disMissAnswerResult();
+        if (isAutoDismiss) {
+            disMissAnswerResult();
+        }
     }
+
 
     @Override
     public void removeQuestionAnswerReslut(View popupWindow_view) {
@@ -2074,7 +2119,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     public void initSelectAnswerRightResultVoice(VideoResultEntity entity) {
         entity.setPreEnglish(liveGetInfo != null && liveGetInfo.getSmallEnglish());
         final View popupWindow_view = QuestionResultView.initSelectAnswerRightResultVoice(activity, entity);
-        initQuestionAnswerReslut(popupWindow_view);
+        boolean isAutoDissMiss = !entity.isPreEnglish();
+
+        initQuestionAnswerReslut(popupWindow_view, isAutoDissMiss);
     }
 
     /**
@@ -2085,7 +2132,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         entity.setPreEnglish(liveGetInfo != null && liveGetInfo.getSmallEnglish());
 
         View popupWindow_view = QuestionResultView.initFillinAnswerRightResultVoice(activity, entity);
-        initQuestionAnswerReslut(popupWindow_view);
+        boolean isAutoDissMiss = !entity.isPreEnglish();
+
+        initQuestionAnswerReslut(popupWindow_view, isAutoDissMiss);
+
     }
 
     /**
@@ -2096,7 +2146,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         entity.setPreEnglish(liveGetInfo != null && liveGetInfo.getSmallEnglish());
 
         View popupWindow_view = QuestionResultView.initSelectAnswerWrongResultVoice(activity, entity);
-        initQuestionAnswerReslut(popupWindow_view);
+        boolean isAutoDissMiss = !entity.isPreEnglish();
+
+        initQuestionAnswerReslut(popupWindow_view, isAutoDissMiss);
     }
 
     /**
@@ -2107,7 +2159,9 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         entity.setPreEnglish(liveGetInfo != null && liveGetInfo.getSmallEnglish());
 
         View popupWindow_view = QuestionResultView.initFillAnswerWrongResultVoice(activity, entity);
-        initQuestionAnswerReslut(popupWindow_view);
+        boolean isAutoDissMiss = !entity.isPreEnglish();
+
+        initQuestionAnswerReslut(popupWindow_view, isAutoDissMiss);
     }
 
     /**
@@ -2603,10 +2657,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 @Override
                 public void run() {
                     logger.e("=======>forceClose 2222:" + curQuestionView);
-                    if (questionHttp != null) {
-                        questionHttp.getStuGoldCount("forceClose");
-                    }
                     if (questionWebPager != null) {
+                        if (questionHttp != null) {
+                            questionHttp.getStuGoldCount("forceClose:"+method);
+                        }
                         rlQuestionContent.removeView(questionWebPager.getRootView());
                         if (questionWebPager instanceof BaseQuestionWebInter) {
                             questionWebPager.onDestroy();

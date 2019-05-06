@@ -54,12 +54,6 @@ import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.item.CommonWordItem;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.item.FlowerItem;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.BaseLiveMessagePager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -67,12 +61,18 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.item.CommonWordItem;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.item.FlowerItem;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.BaseLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 import com.xueersi.ui.widget.button.CompoundButtonGroup;
@@ -188,6 +188,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     /** 当前最高连对数 */
     private TextView tvHighestEvenNum;
 
+//    private View evenDriveView;
+
     @Override
     public View initView() {
         mView = View.inflate(mContext, R.layout.page_livevideo_message, null);
@@ -208,6 +210,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 //        if (getInfo.getIsOpenNewCourseWare() == 1) {
 //        ViewStub viewStub = mView.findViewById(R.id.vs_livevideo_livemessage_middle_science_even);
 //        viewStub.setVisibility(View.VISIBLE);
+//        evenDriveView = mView.findViewById(R.id.vs_livevideo_livemessage_middle_science_even);
         tvNowEvenNum = mView.findViewById(R.id.tv_livevideo_livemessage_middle_even_right_now);
         tvHighestEvenNum = mView.findViewById(R.id.tv_livevideo_livemessage_middle_even_right_max);
 //        }
@@ -233,7 +236,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         btMsgCommon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                if(!commonWordInited){
+                if (!commonWordInited) {
                     initCommonWord();
                 }
                 liveMediaControllerBottom.onChildViewClick(v);
@@ -530,7 +533,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             @Override
             public void onClick(@NonNull View widget) {
                 //弹出排行榜
-                UmsAgentManager.umsAgentCustomerBusiness(mContext,mContext.getResources().getString(R.string.livevideo_1713001));
+                UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1713001));
                 if (liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_rank) != null) {
                     liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_rank).performClick();
                 }
@@ -1169,12 +1172,12 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             public void run() {
                 if (ircState.isSeniorOfHighSchool()) {
                     String mode = ircState.getMode();
-                   // Loger.d("___ircState:  "+ircState.getMode());
+                    // Loger.d("___ircState:  "+ircState.getMode());
                     StringBuilder sb = new StringBuilder();
-                    for (User user : users){
+                    for (User user : users) {
                         sb.append(user.getNick());
                     }
-                  //  Loger.d("___bug6:  users:  "+sb.toString());
+                    //  Loger.d("___bug6:  users:  "+sb.toString());
                     tvMessageCount.setText("班内" + peopleCount + "人");
                 } else {
                     if (ircState.isHaveTeam()) {
@@ -1222,7 +1225,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
                         addDanmaKuFlowers(jsonObject.getInt("ftype"), jsonObject.getString("name"));
                     }
                 } catch (JSONException e) {
-                  //  Loger.d("____bug20  private message sender:  "+sender);
+                    //  Loger.d("____bug20  private message sender:  "+sender);
                     addMessage(sender, LiveMessageEntity.MESSAGE_CLASS, message, "");
                 }
             }
@@ -1235,9 +1238,9 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             @Override
             public void run() {
                 if (ircState.isSeniorOfHighSchool()) {
-                  //  Loger.d("___ircState:  "+ircState.getMode()+"  sender:  "+sender);
-                   // for (User user : )
-                   // Loger.d("___bug34 :  "+peopleCount);
+                    //  Loger.d("___ircState:  "+ircState.getMode()+"  sender:  "+sender);
+                    // for (User user : )
+                    // Loger.d("___bug34 :  "+peopleCount);
                     tvMessageCount.setText("班内" + peopleCount + "人");
                 } else {
                     if (ircState.isHaveTeam()) {
@@ -1256,8 +1259,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
             @Override
             public void run() {
                 if (ircState.isSeniorOfHighSchool()) {
-                   // Loger.d("___ircState:  "+ircState.getMode()+"  sourceLogin:  "+sourceLogin);
-                //    Loger.d("___bug35 :  "+peopleCount);
+                    // Loger.d("___ircState:  "+ircState.getMode()+"  sourceLogin:  "+sourceLogin);
+                    //    Loger.d("___bug35 :  "+peopleCount);
                     tvMessageCount.setText("班内" + peopleCount + "人");
                 } else {
                     if (ircState.isHaveTeam()) {

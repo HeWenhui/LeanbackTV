@@ -326,13 +326,7 @@ public class PkOpenAwardPager extends BasePager {
             }
         };
 
-        pkBll.getmHttpManager().getCHStuChest(mIsWin ? 1 : 0,
-                pkBll.getRoomInitInfo().getStudentLiveInfo().getClassId(),
-                pkBll.getRoomInitInfo().getStudentLiveInfo().getTeamId(),
-                pkBll.getRoomInitInfo().getStuId(),
-                pkBll.getLiveBll().getLiveId(),
-                pkBll.isAIPartner(),
-                callback);
+        pkBll.requestStuChest(mIsWin ? 1 : 0, callback);
 
     }
 

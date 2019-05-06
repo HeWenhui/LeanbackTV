@@ -605,8 +605,8 @@ public class LiveVideoBll implements VPlayerListenerReg {
     };
 
     public void stopPlay() {
-        livePlayLog.stopPlay();
         if (isInitialized()) {
+            livePlayLog.stopPlay();
             vPlayer.releaseSurface();
             vPlayer.stop();
         }

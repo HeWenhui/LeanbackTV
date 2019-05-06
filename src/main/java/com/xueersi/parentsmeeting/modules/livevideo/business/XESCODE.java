@@ -29,11 +29,11 @@ public interface XESCODE {
     /** 学习报告 */
     int LEARNREPORT = 133;
 //    int LEARNREPORT = 106;
-    /** 点名 */
+    /** 点名,签到 */
     int ROLLCALL = 134;
-    /** 结束点名 */
+    /** 结束点名，结束签到 */
     int STOPROLLCALL = 135;
-    /** 其他学生点名 */
+    /** 其他学生点名，签到 */
     int CLASS_MATEROLLCALL = 136;
     /** 直播表扬批评功能 */
     @Deprecated
@@ -175,12 +175,16 @@ public interface XESCODE {
     /** 一题多发 */
     /** 一题多发 收题发题都是251 TODO */
     int MULTIPLE_H5_COURSEWARE = 251;
+
+    /** 语文AI主观题*/
+    int AI_SUBJECTIVE_H5_COURSEWARE = 252;
+
     /** 大题互动 http://wiki.xesv5.com/pages/viewpage.action?pageId=17724551 */
     int QUES_BIG = 252;
     /** 开启/关闭语音弹幕 */
     int XCR_ROOM_DANMU_OPEN = 260;
 
-    /** 发送语音弹幕  */
+    /** 发送语音弹幕 */
     int XCR_ROOM_DANMU_SEND = 261;
 
     /** 语文：开启/关闭语音弹幕 */
@@ -269,4 +273,8 @@ public interface XESCODE {
         int XCR_ROOM_TEAMPK_STULIKE = 1021;//     ("1021")  //学生点赞上报
     }
 
+    /** 语文幼升小金话筒 */
+    int ARTS_GOLD_MICROPHONE = 3000;
+    /** 语文幼升小发送语音识别消息 */
+    int ARTS_GOLD_MICROPHONE_SEND_TEACHER = 3001;
 }

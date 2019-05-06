@@ -191,6 +191,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     /** 当前最高连对数 */
     private TextView tvHighestEvenNum;
 
+//    private View evenDriveView;
+
     @Override
     public View initView() {
         mView = View.inflate(mContext, R.layout.page_livevideo_message, null);
@@ -211,6 +213,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
 //        if (getInfo.getIsOpenNewCourseWare() == 1) {
 //        ViewStub viewStub = mView.findViewById(R.id.vs_livevideo_livemessage_middle_science_even);
 //        viewStub.setVisibility(View.VISIBLE);
+//        evenDriveView = mView.findViewById(R.id.vs_livevideo_livemessage_middle_science_even);
         tvNowEvenNum = mView.findViewById(R.id.tv_livevideo_livemessage_middle_even_right_now);
         tvHighestEvenNum = mView.findViewById(R.id.tv_livevideo_livemessage_middle_even_right_max);
 //        }

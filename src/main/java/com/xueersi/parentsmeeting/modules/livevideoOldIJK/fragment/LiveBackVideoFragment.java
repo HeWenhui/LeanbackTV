@@ -42,17 +42,20 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.SpeechBulletScreen.business.SpeechBulletScreenPalyBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.PauseNotStopVideoIml;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.bussiness.EvaluateTeacherPlayBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.LiveMessageBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.nbh5courseware.business.NBH5PlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.ArtsAnswerResultPlayBackBll;
@@ -63,9 +66,6 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.remark.business.LiveRe
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.PlayErrorCodeLog;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.video.LiveBackVideoBll;
-import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -715,6 +715,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         }
     }
 
+    /** 是否允许移动数据播放 */
+    private boolean allowMobilePlayVideo = false;
+
     /**
      * 只在WIFI下使用激活
      *
@@ -766,6 +769,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                         public void onClick(View v) {
                             logger.i("onNowMobileEvent:onClick:initialized=" + initialized + ",finalPause=" +
                                     finalPause);
+                            allowMobilePlayVideo = true;
                             if (initialized) {
                                 if (finalPause) {
                                     if (vPlayer != null) {
@@ -824,6 +828,16 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             videoBackgroundRefresh.setVisibility(View.GONE);
             logger.d("onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
             playNewVideo();
+        } else {
+            StringBuilder stringBuilder = new StringBuilder();
+            int netWorkType = NetWorkHelper.getNetWorkState(activity, stringBuilder);
+            if (netWorkType == NetWorkHelper.MOBILE_STATE && allowMobilePlayVideo) {
+                videoBackgroundRefresh.setVisibility(View.GONE);
+                logger.d("mobile status : onRefresh:ChildCount=" + rlQuestionContent.getChildCount());
+                playNewVideo();
+            } else {
+                logger.i("not mobile status,or not allowMobilePlayVideo");
+            }
         }
 //        if (AppBll.getInstance(this).isNetWorkAlert()) {
 //            loadView(mLayoutVideo);

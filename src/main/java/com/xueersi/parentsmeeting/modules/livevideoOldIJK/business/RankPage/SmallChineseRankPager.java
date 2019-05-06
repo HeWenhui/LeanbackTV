@@ -7,14 +7,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.item.SmallChineseRankItem;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.AllRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.RankEntity;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.item.SmallChineseRankItem;
 import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
@@ -69,7 +70,11 @@ public class SmallChineseRankPager extends BasePager<RankEntity> {
 //                logger.i("点击了");
 //            }
 //        });
-        dynamicChangeTopIcon(view);
+        try {
+            dynamicChangeTopIcon(view);
+        } catch (Exception e) {
+            logger.e(e);
+        }
 //        dynamicChangeRankView();
         return view;
     }
@@ -88,7 +93,7 @@ public class SmallChineseRankPager extends BasePager<RankEntity> {
         double mag = ivWid * 1.0 / topIconWid;
         int ivRealHeight = (int) (mag * topIconHeight);
         //整个布局宽度都是ivWid;
-        ViewGroup.LayoutParams rootParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        RelativeLayout.LayoutParams rootParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
         rootParams.width = ivWid;
         view.setLayoutParams(rootParams);
 
