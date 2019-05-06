@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.speechcollective.business;
+package com.xueersi.parentsmeeting.modules.livevideoOldIJK.speechcollective.business;
 
 import android.app.Activity;
 
@@ -6,14 +6,16 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
-import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
-import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.business.SpeechCollectiveHttp;
+import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.business.SpeechCollectiveNo2Bll;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.http.SpeechCollectiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.NoticeAction;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.TopicAction;
 
 import org.json.JSONObject;
 

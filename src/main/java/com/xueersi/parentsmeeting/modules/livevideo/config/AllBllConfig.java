@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.config;
 
+import android.content.Intent;
+
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.BllConfigEntity;
 
@@ -24,7 +26,7 @@ public class AllBllConfig {
         if (MediaPlayer.getIsNewIJK()) {
             return "com.xueersi.parentsmeeting.modules.livevideo.speechcollective.business.SpeechCollectiveIRCBll";
         } else {
-            return "com.xueersi.parentsmeeting.modules.livevideoOldIJK.achievement.business.LiveAchievementIRCBll";
+            return "com.xueersi.parentsmeeting.modules.livevideoOldIJK.speechcollective.business.SpeechCollectiveIRCBll";
         }
     }
 
@@ -38,7 +40,7 @@ public class AllBllConfig {
         };
     }
 
-    public static BllConfigEntity[] getLiveBusinessScience() {
+    public static BllConfigEntity[] getLiveBusinessScience(Intent intent) {
         return new BllConfigEntity[]{
                 new BllConfigEntity(getSpeechCollectiveIRCBllClassPath())
         };
