@@ -34,6 +34,7 @@
     <item name="tv_livevideo_course_mvp_name" type="id" />
     <item name="rl_livevideo_groupgame_mvp_content" type="id" />
     <item name="iv_livevideo_groupgame_mvp_bg" type="id" />
+    <item name="lav_livevideo_groupgame_mvp_cloud" type="id" />
     <item name="lav_livevideo_groupgame_mvp" type="id" />
     <item name="iv_livevideo_groupgame_mvp_close" type="id" />
 </resources>

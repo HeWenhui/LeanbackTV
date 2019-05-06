@@ -45,6 +45,7 @@ public class GroupGameMVPMultPager extends LiveBasePager {
      * 主背景动画
      */
     private LottieAnimationView mLottieAnimationView;
+    private LottieAnimationView lav_livevideo_groupgame_mvp_cloud;
     /**
      * 倒计时
      */
@@ -60,7 +61,16 @@ public class GroupGameMVPMultPager extends LiveBasePager {
         super(context);
         this.entities = new ArrayList<>();
         this.entities.addAll(entities);
-        Collections.sort(this.entities, comparator);
+        Collections.sort(this.entities, new Comparator<TeamMemberEntity>() {
+            @Override
+            public int compare(TeamMemberEntity o1, TeamMemberEntity o2) {
+                int com = o2.gold - o1.gold;
+                if (com == 0 && (o2.isMy || o1.isMy)) {
+                    return -1;
+                }
+                return com;
+            }
+        });
         if (entities.size() == 1) {
             LOTTIE_RES_ASSETS_ROOTDIR = "group_game_one/";
         } else if (entities.size() == 2) {
@@ -72,21 +82,11 @@ public class GroupGameMVPMultPager extends LiveBasePager {
         initListener();
     }
 
-    private Comparator<TeamMemberEntity> comparator = new Comparator<TeamMemberEntity>() {
-        @Override
-        public int compare(TeamMemberEntity o1, TeamMemberEntity o2) {
-            int com = o2.gold - o1.gold;
-            if (com == 0 && (o2.isMy || o1.isMy)) {
-                return -1;
-            }
-            return com;
-        }
-    };
-
     @Override
     public View initView() {
         View view = View.inflate(mContext, R.layout.page_livevideo_groupgame_mvp, null);
         mLottieAnimationView = view.findViewById(R.id.lav_livevideo_groupgame_mvp);
+        lav_livevideo_groupgame_mvp_cloud = view.findViewById(R.id.lav_livevideo_groupgame_mvp_cloud);
         tvTime = view.findViewById(R.id.tv_livevideo_groupgame_mvp_time);
         ivClose = view.findViewById(R.id.iv_livevideo_groupgame_mvp_close);
         ImageView iv_livevideo_groupgame_mvp_bg = view.findViewById(R.id.iv_livevideo_groupgame_mvp_bg);
@@ -103,6 +103,10 @@ public class GroupGameMVPMultPager extends LiveBasePager {
             lp.width = newWidth;
             lp.height = newHeight;
             iv_livevideo_groupgame_mvp_bg.setLayoutParams(lp);
+            lp = lav_livevideo_groupgame_mvp_cloud.getLayoutParams();
+            lp.width = newWidth;
+            lp.height = newHeight;
+            lav_livevideo_groupgame_mvp_cloud.setLayoutParams(lp);
         }
         Typeface fontFace = FontCache.getTypeface(mContext, "fangzhengcuyuan.ttf");
         tvTime.setTypeface(fontFace);
@@ -114,13 +118,19 @@ public class GroupGameMVPMultPager extends LiveBasePager {
         tvTime.setTimeDuration(3);
         tvTime.setTimeSuffix("s");
         tvTime.startCountDow(2000);
-        if (entities.size() == 1) {
-            startLottieAnimationOne();
-        } else if (entities.size() == 2) {
-            startLottieAnimationTwo();
-        } else if (entities.size() == 3) {
-            startLottieAnimationThree();
-        }
+        startLottieAnimationCloud();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (entities.size() == 1) {
+                    startLottieAnimationOne();
+                } else if (entities.size() == 2) {
+                    startLottieAnimationTwo();
+                } else if (entities.size() == 3) {
+                    startLottieAnimationThree();
+                }
+            }
+        }, 100);
     }
 
     @Override
@@ -141,6 +151,29 @@ public class GroupGameMVPMultPager extends LiveBasePager {
         });
     }
 
+    private void startLottieAnimationCloud() {
+        String LOTTIE_RES_ASSETS_ROOTDIR = "group_game_cloud/";
+        String resPath = LOTTIE_RES_ASSETS_ROOTDIR + "images";
+        String jsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "data.json";
+        final LottieEffectInfo bubbleEffectInfo = new LottieEffectInfo(resPath, jsonPath);
+        lav_livevideo_groupgame_mvp_cloud.setAnimationFromJson(bubbleEffectInfo.getJsonStrFromAssets(mContext), "group_game_cloud");
+        lav_livevideo_groupgame_mvp_cloud.useHardwareAcceleration(true);
+        ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
+            @Override
+            public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
+                return bubbleEffectInfo.fetchBitmapFromAssets(
+                        lav_livevideo_groupgame_mvp_cloud,
+                        lottieImageAsset.getFileName(),
+                        lottieImageAsset.getId(),
+                        lottieImageAsset.getWidth(),
+                        lottieImageAsset.getHeight(),
+                        mContext);
+            }
+        };
+        lav_livevideo_groupgame_mvp_cloud.setImageAssetDelegate(imageAssetDelegate);
+        lav_livevideo_groupgame_mvp_cloud.playAnimation();
+    }
+
     private int width = 129;
     private int height = 128;
     private HashMap<String, Bitmap> headBitHashMap = new HashMap<>();
@@ -155,13 +188,13 @@ public class GroupGameMVPMultPager extends LiveBasePager {
         ImageAssetDelegate imageAssetDelegate = new ImageAssetDelegate() {
             @Override
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
-                if (lottieImageAsset.getId().equals("image_4")) {
+                if (lottieImageAsset.getId().equals("image_3")) {
                     return creatGoldBitmap(teamMemberEntityOne.gold, lottieImageAsset.getFileName());
                 }
                 if (lottieImageAsset.getId().equals("image_3")) {
                     return creatFireBitmap(teamMemberEntityOne.energy, lottieImageAsset.getFileName());
                 }
-                if (lottieImageAsset.getId().equals("image_8")) {
+                if (lottieImageAsset.getId().equals("image_4")) {
                     return creatNameBitmap(teamMemberEntityOne.name, lottieImageAsset.getFileName());
                 }
                 if (lottieImageAsset.getId().equals("image_0")) {
@@ -377,11 +410,9 @@ public class GroupGameMVPMultPager extends LiveBasePager {
             Canvas canvas = new Canvas(creatBitmap);
             View view = LayoutInflater.from(mContext).inflate(R.layout.layout_en_groupgame_mvp_energy, null);
             TextView tvCourseMvpName = view.findViewById(R.id.tv_livevideo_course_mvp_name);
-            Typeface fontFace = FontCache.getTypeface(mContext, "fangzhengcuyuan.ttf");
-            tvCourseMvpName.setTypeface(fontFace);
             tvCourseMvpName.setText("+" + fireNum);
 
-            float size = height * 8.6f / 10.0f / ScreenUtils.getScreenDensity();
+            float size = height * 9.8f / 10.0f / ScreenUtils.getScreenDensity();
             logger.d("creatGoldBitmap:size=" + size);
             tvCourseMvpName.setTextSize(size);
 
@@ -417,11 +448,9 @@ public class GroupGameMVPMultPager extends LiveBasePager {
             Canvas canvas = new Canvas(creatBitmap);
             View view = LayoutInflater.from(mContext).inflate(R.layout.layout_en_groupgame_mvp_energy, null);
             TextView tvCourseMvpName = view.findViewById(R.id.tv_livevideo_course_mvp_name);
-            Typeface fontFace = FontCache.getTypeface(mContext, "fangzhengcuyuan.ttf");
-            tvCourseMvpName.setTypeface(fontFace);
             tvCourseMvpName.setText("+" + fireNum);
 
-            float size = height * 8.6f / 10.0f / ScreenUtils.getScreenDensity();
+            float size = height * 9.8f / 10.0f / ScreenUtils.getScreenDensity();
             logger.d("creatFireBitmap:size=" + size);
             tvCourseMvpName.setTextSize(size);
 
@@ -458,7 +487,7 @@ public class GroupGameMVPMultPager extends LiveBasePager {
             View view = LayoutInflater.from(mContext).inflate(R.layout.layout_en_groupgame_mvp_name, null);
             TextView tvCourseMvpName = view.findViewById(R.id.tv_livevideo_course_mvp_name);
             tvCourseMvpName.setText(name);
-            float size = height * 8.0f / 10.0f / ScreenUtils.getScreenDensity();
+            float size = height * 9.0f / 10.0f / ScreenUtils.getScreenDensity();
             logger.d("creatNameBitmap:size=" + size);
             tvCourseMvpName.setTextSize(size);
 //            tvCourseMvpName.setTextSize(15);
