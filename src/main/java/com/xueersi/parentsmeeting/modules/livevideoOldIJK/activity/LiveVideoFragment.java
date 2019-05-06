@@ -77,6 +77,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBo
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LivePlayerFragment;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.TripleScreenBasePlayerFragment;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.worddictation.business.WordDictationIRCBll;
+import com.xueersi.parentsmeeting.widget.praise.business.PraiseTutorBll;
 
 import java.lang.reflect.Constructor;
 import java.util.List;
@@ -231,6 +232,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new WordDictationIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new TeacherPraiseBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new ArtsAnswerResultBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new PraiseTutorBll(activity,mLiveBll));
             VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
             videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             videoChatIRCBll.setLiveFragmentBase(this);
@@ -258,6 +260,8 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new ChineseSpeechBulletScreenIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new PraiseListIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new PraiseInteractionBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new PraiseTutorBll(activity,mLiveBll));
+
 //            mLiveBll.addBusinessBll(new StudyReportBll(activity, mLiveBll));
             int allowLinkMicNew = activity.getIntent().getIntExtra("allowLinkMicNew", 0);
             VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
@@ -288,6 +292,8 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new PraiseListIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new PraiseInteractionBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new StudyReportBll(activity, mLiveBll));
+            mLiveBll.addBusinessBll(new PraiseTutorBll(activity,mLiveBll));
+
             int allowLinkMicNew = activity.getIntent().getIntExtra("allowLinkMicNew", 0);
             if (allowLinkMicNew == 1) {
                 VideoAudioChatIRCBll videoAudioChatIRCBll = new VideoAudioChatIRCBll(activity, mLiveBll);

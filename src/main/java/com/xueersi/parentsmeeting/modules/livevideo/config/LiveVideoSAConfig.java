@@ -271,10 +271,10 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_CHS_EVALUATE_TEACHER = "https://app.chs.xueersi.com/LiveCourse/submitEvaluate";
 
 
-        /** 出门测表扬榜 */
-        public String URL_LIVE_PRAISE_TUTOR_LIST = "http://app.arts.xueersi.com/LivePraise/getPraiseData";
+
 
     }
-
+    /** 出门测表扬榜 */
+    public static final String URL_LIVE_PRAISE_TUTOR_LIST = LiveVideoConfig.APP_ARTS_HTTP_HOST +"/LivePraise/getPraiseData";
 
 }

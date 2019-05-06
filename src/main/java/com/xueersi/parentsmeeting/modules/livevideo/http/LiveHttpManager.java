@@ -1106,14 +1106,20 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
     public void getPraoseTutorList(String rankId, String liveId, String courseId, String counselorId, HttpCallBack
             requestCallBack) {
+
         HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+        liveId = "373963";
+        courseId = "49568";
+        counselorId = "2632";
+        rankId = "1";
         params.addBodyParam("rankId", rankId);
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("courseId", courseId);
         params.addBodyParam("counselorId", counselorId);
-        setDefaultParameter(params);
 
-        sendPost(liveVideoSAConfigInner.URL_LIVE_PRAISE_TUTOR_LIST, params, requestCallBack);
+
+        sendPost(LiveVideoSAConfig.URL_LIVE_PRAISE_TUTOR_LIST, params, requestCallBack);
     }
 
     /**

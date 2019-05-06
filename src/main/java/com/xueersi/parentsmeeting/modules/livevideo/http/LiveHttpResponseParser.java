@@ -2406,9 +2406,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @param responseEntity
      * @return
      */
-    public PraiseEntity parseTutorPraiseEntity(String data) throws Exception {
-        // JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
-        JSONObject jsonObject = new JSONObject(data);
+    public PraiseEntity parseTutorPraiseEntity(ResponseEntity  responseEntity) throws Exception {
+        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+       // JSONObject jsonObject = new JSONObject(data);
         List<PraiseContentEntity> contentEntityList = new ArrayList<>();
         PraiseContentEntity titleEntity = null;
         PraiseContentEntity contentEntity = null;

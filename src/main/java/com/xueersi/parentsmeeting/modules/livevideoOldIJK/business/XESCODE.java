@@ -1,6 +1,11 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.business;
 
 public interface XESCODE {
+    /** 开启 */
+    String ON = "on";
+    /** 关闭 */
+    String OFF = "off";
+
     /** 发红包 */
     int READPACAGE = 101;
     /** 禁言 */
@@ -205,6 +210,11 @@ public interface XESCODE {
 
     /** 辅导老师发题 */
     int QUESTION_TUTOR = 315;
+
+    /** 辅导老师 表扬榜on */
+    int TUTOR_ROOM_PRAISE_OPEN = 400;
+    /** 辅导老师 表扬- */
+    int TUTOR_ROOM_PRAISE_LIKE = 402;
 
     /** 2018接麦 */
     interface AgoraChat {
