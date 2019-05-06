@@ -364,6 +364,9 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                 JSONObject liveInfo = new JSONObject(getInfoStr);
                 liveGetInfo.setSmallEnglish("1".equals(liveInfo.optString("useSkin")));
                 liveGetInfo.setPrimaryChinese("2".equals(liveInfo.optString("useSkin")));
+                if (liveGetInfo.getStudentLiveInfo() != null) {
+                    liveGetInfo.getStudentLiveInfo().setClassId(liveInfo.optString("class_id"));
+                }
                 //解析学科id
                 if (liveInfo.has("subject_ids")) {
                     String strSubjIds = liveInfo.getString("subject_ids");
@@ -446,7 +449,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             logger.d("scanQuestion:showQuestion");
             Log.e("Duncan", "showQuestion:" + position);
             showQuestion(oldQuestionEntity, showQuestion);
-            if (LocalCourseConfig.CATEGORY_REDPACKET != mQuestionEntity.getvCategory()){
+            if (LocalCourseConfig.CATEGORY_REDPACKET != mQuestionEntity.getvCategory()) {
                 LiveVideoConfig.isAITrue = false;
             }
         }
@@ -640,6 +643,13 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                     hasQuestionShow = true;
                     index = i;
                     standexperienceRecommondCourseIsShow = true;
+                    break;
+                }
+            } else if (LocalCourseConfig.CATEGORY_BIG_TEST == videoQuestionEntity.getvCategory()) {//大题互动
+                if (startTime <= playPosition && playPosition < endTime) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
                     break;
                 }
             }
