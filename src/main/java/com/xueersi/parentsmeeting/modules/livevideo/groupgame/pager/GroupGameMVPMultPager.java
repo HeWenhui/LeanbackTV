@@ -260,10 +260,10 @@ public class GroupGameMVPMultPager extends LiveBasePager {
             public Bitmap fetchBitmap(LottieImageAsset lottieImageAsset) {
                 {
                     //第一个人的
-                    if (lottieImageAsset.getId().equals("image_4")) {
+                    if (lottieImageAsset.getId().equals("image_5")) {
                         return creatGoldBitmap(teamMemberEntityOne.gold, lottieImageAsset.getFileName());
                     }
-                    if (lottieImageAsset.getId().equals("image_5")) {
+                    if (lottieImageAsset.getId().equals("image_4")) {
                         return creatFireBitmap(teamMemberEntityOne.energy, lottieImageAsset.getFileName());
                     }
                     if (lottieImageAsset.getId().equals("image_9")) {
@@ -278,10 +278,10 @@ public class GroupGameMVPMultPager extends LiveBasePager {
                 }
                 {
                     //第二个人的
-                    if (lottieImageAsset.getId().equals("image_23")) {
+                    if (lottieImageAsset.getId().equals("image_24")) {
                         return creatGoldBitmap(teamMemberEntityTwo.gold, lottieImageAsset.getFileName());
                     }
-                    if (lottieImageAsset.getId().equals("image_24")) {
+                    if (lottieImageAsset.getId().equals("image_23")) {
                         return creatFireBitmap(teamMemberEntityTwo.energy, lottieImageAsset.getFileName());
                     }
                     if (lottieImageAsset.getId().equals("image_25")) {
@@ -381,7 +381,7 @@ public class GroupGameMVPMultPager extends LiveBasePager {
             tvCourseMvpName.setTypeface(fontFace);
             tvCourseMvpName.setText("+" + fireNum);
 
-            float size = height * 8.0f / 10.0f / ScreenUtils.getScreenDensity();
+            float size = height * 8.6f / 10.0f / ScreenUtils.getScreenDensity();
             logger.d("creatGoldBitmap:size=" + size);
             tvCourseMvpName.setTextSize(size);
 
@@ -421,7 +421,7 @@ public class GroupGameMVPMultPager extends LiveBasePager {
             tvCourseMvpName.setTypeface(fontFace);
             tvCourseMvpName.setText("+" + fireNum);
 
-            float size = height * 8.0f / 10.0f / ScreenUtils.getScreenDensity();
+            float size = height * 8.6f / 10.0f / ScreenUtils.getScreenDensity();
             logger.d("creatFireBitmap:size=" + size);
             tvCourseMvpName.setTextSize(size);
 

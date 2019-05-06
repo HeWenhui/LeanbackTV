@@ -17,5 +17,7 @@ public interface ReceiveMegCallBack {
 
     void onLog(InetSocketAddress inetSocketAddress, HashMap<String, String> logs);
 
+    void onReadEnd(InetSocketAddress inetSocketAddress, Exception e, File saveFile);
+
     void onReadException(InetSocketAddress inetSocketAddress, Exception e, File saveFile);
 }

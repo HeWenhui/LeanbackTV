@@ -122,11 +122,18 @@
             android:layout_marginBottom="5dp"
             android:background="@drawable/app_zbhd_yuyin">
 
-            <com.xueersi.ui.widget.WaveView
-                android:id="@+id/wv_livevideo_groupgame_single_wave"
-                android:layout_width="63dp"
-                android:layout_height="126dp"
-                android:layout_gravity="center" />
+            <FrameLayout
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_gravity="center">
+
+                <com.xueersi.ui.widget.WaveView
+                    android:id="@+id/wv_livevideo_groupgame_single_wave"
+                    android:layout_width="138dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center" />
+
+            </FrameLayout>
 
         </FrameLayout>
 

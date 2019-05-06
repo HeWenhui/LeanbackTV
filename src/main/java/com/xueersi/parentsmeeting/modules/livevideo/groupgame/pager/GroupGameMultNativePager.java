@@ -739,7 +739,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     private void joinChannel(ArrayList<TeamMemberEntity> entities) {
         mWorkerThread = new WorkerThreadPool(mContext, stuid, false, true);
         mWorkerThread.eventHandler().addEventHandler(agEventHandler);
-//        mWorkerThread.setEnableLocalVideo(true);
+        mWorkerThread.setEnableLocalVideo(true);
         mWorkerThread.setOnEngineCreate(new WorkerThreadPool.OnEngineCreate() {
             @Override
             public void onEngineCreate(final RtcEngine mRtcEngine) {
@@ -1055,7 +1055,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     }
 
     private void startSpeechRecognize() {
-        File dir = LiveCacheFile.geCacheFile(mContext, "liveSpeech");
+        File dir = LiveCacheFile.geCacheFile(mContext, "groupgamemul");
         FileUtils.deleteDir(dir);
         if (!dir.exists()) {
             dir.mkdirs();
@@ -1645,7 +1645,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 }
             }
             if (maxVidooCannonEntity != null) {
-                logger.d("submit:userId=" + maxVidooCannonEntity.teamMemberEntity.id + ",rightNum=" + maxVidooCannonEntity.rightNum);
+                mLogtf.d("submit:userId=" + maxVidooCannonEntity.teamMemberEntity.id + ",rightNum=" + maxVidooCannonEntity.rightNum);
                 maxVidooCannonEntity.teamMemberEntity.gold = 3;
             }
             try {
@@ -2093,7 +2093,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stuid);
                     if (courseGroupItem != null) {
                         courseGroupItem.onOpps();
-                        mLogtf.d("onResult2:onOpps");
+                        mLogtf.d("onResult:onOpps2:score=" + score);
                     }
                     return;
                 }
@@ -2183,7 +2183,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                     BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stuid);
                     if (courseGroupItem != null) {
                         courseGroupItem.onOpps();
-                        mLogtf.d("onResult2:onOpps");
+                        mLogtf.d("onResult:onOpps2:score=" + score);
                     }
                     return;
                 }
@@ -2252,8 +2252,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
         @Override
         public void onMessage(short type, int operation, String msg) {
-            logger.d("onMessage:type=" + type + ",operation=" + operation + ",msg=" + msg);
-            mLogtf.debugSave("onMessage:type=" + type + ",operation=" + operation + ",msg=" + msg);
+            mLogtf.d("onMessage:type=" + type + ",operation=" + operation + ",msg=" + msg);
             if (type == TcpConstants.VOICE_CANNO_TYPE) {
                 switch (operation) {
                     case TcpConstants.VOICE_CANNO_STATIS: {
@@ -2278,18 +2277,19 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             GroupGameTestInfosEntity.TestInfoEntity testInfoEntity = tests.get(0);
                             VidooCannonEntity vidooCannonEntity = vidooCannonEntities.get("" + who_id);
                             if (vidooCannonEntity != null) {
-                                for (int allAns = 0; allAns < allAnswerList.size(); allAns++) {
-                                    GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = allAnswerList.get(allAns);
+                                List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = testInfoEntity.getAnswerList();
+                                for (int allAns = 0; allAns < answerList.size(); allAns++) {
+                                    GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = answerList.get(allAns);
                                     if (answer.getId() == word_id) {
                                         vidooCannonEntity.rightNum++;
                                         //一个单词一个能量
                                         if (vidooCannonEntity.teamMemberEntity.getEnergy() < GroupGameConfig.CANNON_MAX_ENERGY) {
                                             vidooCannonEntity.teamMemberEntity.setEnergy(vidooCannonEntity.teamMemberEntity.getEnergy() + 1);
                                         }
+                                        mLogtf.d("VOICE_CANNO_STATIS:word_id=" + word_id + ",who_id=" + who_id + ",energy=" + vidooCannonEntity.teamMemberEntity.getEnergy() + ",contains=" + allAnswerList.contains(answer));
                                         break;
                                     }
                                 }
-                                List<GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity> answerList = testInfoEntity.getAnswerList();
                                 for (int ansIndex = 0; ansIndex < answerList.size(); ansIndex++) {
                                     GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answer = answerList.get(ansIndex);
                                     if (answer.getId() == word_id) {
@@ -2363,8 +2363,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                 }
                                 int studentNum = -1;
                                 ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
+                                String allUserIds = "";
                                 for (int entityIndex = 0; entityIndex < entities.size(); entityIndex++) {
                                     TeamMemberEntity teamMemberEntity = entities.get(entityIndex);
+                                    allUserIds += "," + teamMemberEntity.id;
                                     if (who_id == teamMemberEntity.id) {
                                         studentNum = 1 + entityIndex;
                                         break;
@@ -2393,11 +2395,14 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                                 }
                                             }
                                             BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + who_id);
+                                            mLogtf.d("VOICE_CANNO_STATIS:onScene:who_id=" + who_id + ",courseGroupItem=null?" + (courseGroupItem == null));
                                             if (courseGroupItem != null) {
                                                 courseGroupItem.onScene("VOICE_CANNO_STATIS");
                                             }
                                         }
                                     });
+                                } else {
+                                    mLogtf.d("VOICE_CANNO_STATIS:allUserIds=" + allUserIds);
                                 }
                             }
                             getCurrent("STATISend");
@@ -2575,8 +2580,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
         @Override
         public void onMessage(short type, int operation, String msg) {
-            logger.d("onMessage:type=" + type + ",operation=" + operation + ",msg=" + msg);
-            mLogtf.debugSave("onMessage:type=" + type + ",operation=" + operation + ",msg=" + msg);
+            mLogtf.d("onMessage:type=" + type + ",operation=" + operation + ",msg=" + msg);
             if (type == TcpConstants.CLEAN_UP_TYPE) {
                 switch (operation) {
                     case TcpConstants.CLEAN_UP_REC: {

@@ -12,8 +12,8 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassSignEntity;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.rollcall.business.Config;
 
 public class SmallEnglishClassSignPager extends BasePager {
@@ -147,6 +147,12 @@ public class SmallEnglishClassSignPager extends BasePager {
                 logToFile.d("primary english onPmError:msg=" + responseEntity.getErrorMsg());
                 XESToastUtils.showToast(mContext, responseEntity.getErrorMsg());
             }
+            try {
+                updateStatus(Config.SIGN_STATE_CODE_SIGNED);
+            } catch (Exception e) {
+                logger.e(e);
+            }
+
 //            String errorMsg = TextUtils.isEmpty(responseEntity.getErrorMsg()) ? "网络异常" : responseEntity
 //                    .getErrorMsg();
 //            XESToastUtils.showToast(mContext, errorMsg);

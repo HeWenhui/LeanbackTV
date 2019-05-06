@@ -24,7 +24,8 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class EnTeamPkHttpManager {
-    Logger logger = LiveLoggerFactory.getLogger("EnTeamPkHttpManager");
+    String TAG = "EnTeamPkHttpManager";
+    Logger logger = LiveLoggerFactory.getLogger(TAG);
     LiveHttpManager liveHttpManager;
     EnTeamPkResponseParser enTeamPkResponseParser;
 

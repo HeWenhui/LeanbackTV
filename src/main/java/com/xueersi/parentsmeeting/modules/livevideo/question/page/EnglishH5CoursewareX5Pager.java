@@ -25,6 +25,7 @@ import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
@@ -354,6 +355,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         wvSubjectWeb.addJavascriptInterface(this, "wx_xesapp");
         wvSubjectWeb.setInitialScale(100);
         // 新课件平台
+        if (mLogtf != null) {
+            mLogtf.d("initData:newEnglishH5=" + englishH5Entity.getNewEnglishH5() + ",mul=" + LiveVideoConfig.isMulLiveBack + ",isNewArts=" + isNewArtsCourseware);
+        }
         if (englishH5Entity.getNewEnglishH5() || LiveVideoConfig.isMulLiveBack || isNewArtsCourseware) {
             wvSubjectWeb.setWebViewClient(new MyWebViewClient() {
                 @Override
@@ -498,7 +502,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                         classTestId = jsonObject.optString("classTestId");
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        CrashReport.postCatchedException(e);
+                        CrashReport.postCatchedException(new LiveException(TAG, e));
                         mLogtf.e("initData:string=" + string, e);
                     }
                     if (StringUtils.isEmpty(packageId) || StringUtils.isEmpty(stuCouId)) {

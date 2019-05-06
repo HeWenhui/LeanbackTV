@@ -89,6 +89,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private int classInt = 0;
     private EnTeamPkHttpManager enTeamPkHttpManager;
     private TcpDispatch tcpDispatch;
+    private boolean destory = false;
     private InteractiveTeam mInteractiveTeam;
     private ArrayList<TeamMemberEntity> entities = new ArrayList<>();
 
@@ -198,7 +199,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     ArrayList<InetSocketAddress> addresses = (ArrayList<InetSocketAddress>) objData[0];
                     mLogtf.d("dispatch:size=" + addresses.size());
                     if (addresses.size() > 0) {
-                        connect(addresses);
+                        connect("onArtsExtLiveInited", addresses);
                     }
                 }
             });
@@ -213,8 +214,12 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         super.initView(bottomContent, mIsLand);
     }
 
-    private void connect(ArrayList<InetSocketAddress> addresses) {
+    private synchronized void connect(String method, ArrayList<InetSocketAddress> addresses) {
         if (tcpDispatch == null) {
+            if (destory) {
+                mLogtf.d("connect:destory:method=" + method);
+                return;
+            }
             int pid = -1;
             if (pkTeamEntity != null) {
                 pid = pkTeamEntity.getPkTeamId();
@@ -232,6 +237,8 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 mLogtf.d("connect:run=" + runnable.getName());
                 runnable.run();
             }
+        } else {
+            mLogtf.d("connect:method=" + method);
         }
     }
 
@@ -580,7 +587,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         ArrayList<InetSocketAddress> addresses = (ArrayList<InetSocketAddress>) objData[0];
                         mLogtf.d("dispatch:size=" + addresses.size());
                         if (addresses.size() > 0) {
-                            connect(addresses);
+                            connect("parsegetSelfTeamInfo", addresses);
                         }
                     }
                 });
@@ -1209,6 +1216,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void onDestory() {
         super.onDestory();
+        destory = true;
         if (classEndReg != null) {
             classEndReg.destory();
             classEndReg = null;
