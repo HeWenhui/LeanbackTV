@@ -381,7 +381,7 @@ public class GroupGameMVPMultPager extends LiveBasePager {
             tvCourseMvpName.setTypeface(fontFace);
             tvCourseMvpName.setText("+" + fireNum);
 
-            float size = height * 8.4f / 10.0f / ScreenUtils.getScreenDensity();
+            float size = height * 8.6f / 10.0f / ScreenUtils.getScreenDensity();
             logger.d("creatGoldBitmap:size=" + size);
             tvCourseMvpName.setTextSize(size);
 
@@ -421,7 +421,7 @@ public class GroupGameMVPMultPager extends LiveBasePager {
             tvCourseMvpName.setTypeface(fontFace);
             tvCourseMvpName.setText("+" + fireNum);
 
-            float size = height * 8.4f / 10.0f / ScreenUtils.getScreenDensity();
+            float size = height * 8.6f / 10.0f / ScreenUtils.getScreenDensity();
             logger.d("creatFireBitmap:size=" + size);
             tvCourseMvpName.setTextSize(size);
 
