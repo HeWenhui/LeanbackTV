@@ -142,6 +142,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
             return;
         }
         speechCollectiveBll = new SpeechCollectiveNo2Bll(activity);
+        speechCollectiveBll.setLiveGetInfo(mGetInfo);
         speechCollectiveBll.setBottomContent(mRootView);
         speechCollectiveBll.setCollectiveHttp(collectiveHttp);
     }

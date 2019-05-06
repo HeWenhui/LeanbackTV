@@ -1156,7 +1156,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
 
                     @Override
                     public void onFailure(Call call, IOException e) {
-                        logger.e("xescdnLog:onFailure", e);
+                        logger.e("xescdnLog:onFailure" + e);
                         if (retryInt.get() < 2) {
                             handler.postDelayed(new Runnable() {
                                 @Override

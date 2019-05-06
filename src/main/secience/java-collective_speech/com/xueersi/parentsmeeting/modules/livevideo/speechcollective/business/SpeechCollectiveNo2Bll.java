@@ -5,6 +5,8 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.view.View;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.tal.speech.speechrecognizer.EvaluatorListener;
@@ -18,6 +20,7 @@ import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.widget.SoundWaveView;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.config.SpeechCollectiveConfig;
@@ -70,6 +73,7 @@ public class SpeechCollectiveNo2Bll {
     Handler handler = new Handler(Looper.getMainLooper());
     SpeechCollectiveHttp collectiveHttp;
     private SpeechStartDialog speechStartDialog;
+    private LiveGetInfo liveGetInfo;
 
     public SpeechCollectiveNo2Bll(Context context) {
         this.context = context;
@@ -83,6 +87,10 @@ public class SpeechCollectiveNo2Bll {
 
     public void setCollectiveHttp(SpeechCollectiveHttp collectiveHttp) {
         this.collectiveHttp = collectiveHttp;
+    }
+
+    public void setLiveGetInfo(LiveGetInfo liveGetInfo) {
+        this.liveGetInfo = liveGetInfo;
     }
 
     public void start(String roomId) {
@@ -258,24 +266,34 @@ public class SpeechCollectiveNo2Bll {
 
     public void setBottomContent(final RelativeLayout mRootView) {
         this.mRootView = mRootView;
-//        if (com.xueersi.common.config.AppConfig.DEBUG) {
-//            SpeechPraisePager speechPraisePager = new SpeechPraisePager(context);
-//            mRootView.addView(speechPraisePager.getRootView());
-//            speechPraisePager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
-//                @Override
-//                public void onClose(LiveBasePager basePager) {
-//                    mRootView.removeView(basePager.getRootView());
-//                }
-//            });
-//            SpeechEnergyPager speechEnergyPager = new SpeechEnergyPager(context);
-//            mRootView.addView(speechEnergyPager.getRootView());
-//            speechEnergyPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
-//                @Override
-//                public void onClose(LiveBasePager basePager) {
-//                    mRootView.removeView(basePager.getRootView());
-//                }
-//            });
-//        }
+        if (com.xueersi.common.config.AppConfig.DEBUG) {
+            Button button = new Button(context);
+            button.setText("测试");
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+            lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
+            mRootView.addView(button, lp);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    SpeechPraisePager speechPraisePager = new SpeechPraisePager(context, 1 == liveGetInfo.getIsPrimarySchool());
+                    mRootView.addView(speechPraisePager.getRootView());
+                    speechPraisePager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
+                        @Override
+                        public void onClose(LiveBasePager basePager) {
+                            mRootView.removeView(basePager.getRootView());
+                        }
+                    });
+                    SpeechEnergyPager speechEnergyPager = new SpeechEnergyPager(context);
+                    mRootView.addView(speechEnergyPager.getRootView());
+                    speechEnergyPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
+                        @Override
+                        public void onClose(LiveBasePager basePager) {
+                            mRootView.removeView(basePager.getRootView());
+                        }
+                    });
+                }
+            });
+        }
     }
 
     /**
