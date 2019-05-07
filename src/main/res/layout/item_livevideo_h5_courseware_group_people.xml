@@ -97,14 +97,14 @@
             android:src="@drawable/livevide_course_group_video_no" />
     </RelativeLayout>
 
-    <TextView
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@id/tv_livevideo_course_item_load"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_below="@id/rl_livevideo_course_item_video"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="6dp"
+        android:layout_marginRight="3dp"
         android:background="@drawable/app_zbhd_shipingwenzidi"
         android:gravity="center"
         android:includeFontPadding="false"
