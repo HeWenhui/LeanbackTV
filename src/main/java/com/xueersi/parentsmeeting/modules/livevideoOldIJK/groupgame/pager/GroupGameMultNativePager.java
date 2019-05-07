@@ -154,6 +154,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     private int currentAnswerIndex = 0;
     private boolean gameOver = false;
     private String learningStage;
+    private String vad_max_sec = "90";
     private String liveId;
     private VideoQuestionLiveEntity detailInfo;
     private String gameType;
@@ -382,6 +383,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         jsonData.put("turnToPageNum", currentAnswerIndex);
                         wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
                         GroupGameLog.sno4(liveAndBackDebug, detailInfo.id, currentAnswerIndex + "", 1);
+                        reStartSpeechRecognize();
                     }
                     mLogtf.d("VoiceCannonTurnRun:pagerNum=" + pagerNum + ",currentAnswerIndex=" + currentAnswerIndex + ",remove=" + remove);
                 }
@@ -465,7 +467,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         coursewareOnloading(currentAnswerIndex);
                     }
                     if (!gameOver) {
-                        startSpeechRecognize();
+                        reStartSpeechRecognize();
                     }
                 }
             });
@@ -560,6 +562,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             }
                             resultData.put("turnToPageNum", pageNum);
                             StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
+                            reStartSpeechRecognize();
                         } catch (Exception e) {
                             mLogtf.e("coursewareDoingLoad", e);
                             CrashReport.postCatchedException(new LiveException(TAG, e));
@@ -672,7 +675,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         onScene("onLoadComplete");
                     }
                     if (!gameOver) {
-                        startSpeechRecognize();
+                        reStartSpeechRecognize();
                     }
                 }
             });
@@ -1055,6 +1058,14 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         }
     }
 
+    private void reStartSpeechRecognize() {
+        mLogtf.d("reStartSpeechRecognize");
+        if (mIse != null) {
+            mIse.cancel();
+        }
+        startSpeechRecognize();
+    }
+
     private void startSpeechRecognize() {
         File dir = LiveCacheFile.geCacheFile(mContext, "groupgamemul");
         FileUtils.deleteDir(dir);
@@ -1077,8 +1088,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         mParam.setMultRef(false);
         mParam.setPcm(true);
         mParam.setLearning_stage(learningStage);
-        mParam.setVad_max_sec("90");
-        mParam.setVad_pause_sec("90");
+        mParam.setVad_max_sec(vad_max_sec);
+        mParam.setVad_pause_sec(vad_max_sec);
         mIse.startRecog(mParam, new EvaluatorListenerWithPCM() {
             int lastVolume = 0;
 
@@ -1172,7 +1183,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 public void run() {
                     if (!gameOver && !isDestory) {
 //                        XESToastUtils.showToast(mContext, "评测完成");
-                        startSpeechRecognize();
+                        reStartSpeechRecognize();
                     }
                 }
             }, delay ? 1000 : 10);
@@ -2017,12 +2028,17 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             }
             return;
         }
-        for (int j = 0; j < allAnswerList.size(); j++) {
-            GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = allAnswerList.get(j);
-            speechContent += answersEntity.getText() + "|";
-        }
-        if (speechContent.endsWith("|")) {
-            speechContent = speechContent.substring(0, speechContent.length() - 1);
+        if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(gameType)) {
+            GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = allAnswerList.get(0);
+            speechContent += answersEntity.getText();
+        } else {
+            for (int j = 0; j < allAnswerList.size(); j++) {
+                GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = allAnswerList.get(j);
+                speechContent += answersEntity.getText() + "|";
+            }
+            if (speechContent.endsWith("|")) {
+                speechContent = speechContent.substring(0, speechContent.length() - 1);
+            }
         }
         mLogtf.d("createSpeechContent:method=" + method + ",speechContent=" + speechContent);
     }
@@ -2387,6 +2403,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                                     if (isTurnPage) {
                                                         GroupGameLog.sno4(liveAndBackDebug, detailInfo.id, currentAnswerIndex + "", 1);
                                                         jsonData.put("turnToPageNum", currentAnswerIndex);
+                                                        reStartSpeechRecognize();
                                                     } else {
                                                         jsonData.put("turnToPageNum", -1);
                                                     }
