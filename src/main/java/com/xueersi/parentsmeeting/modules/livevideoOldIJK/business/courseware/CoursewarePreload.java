@@ -107,26 +107,31 @@ public class CoursewarePreload {
                 if (file == null || file.listFiles() == null) {
                     return;
                 }
-                for (File itemFile : file.listFiles()) {
-                    //文件夹是日期格式并且不是今天才删除
-                    if (isCoursewareDir(itemFile.getName()) && !itemFile.getName().equals(today)) {
-                        if (!itemFile.isDirectory()) {
-                            itemFile.delete();
-                        } else {
-                            deleteFor(itemFile);
-                            itemFile.delete();
+                //buglys上面有报Attempt to get length of null array,加上try,catch
+                try {
+                    File[] files = file.listFiles();
+                    for (File itemFile : files) {
+                        //文件夹是日期格式并且不是今天才删除
+                        if (isCoursewareDir(itemFile.getName()) && !itemFile.getName().equals(today)) {
+                            if (!itemFile.isDirectory()) {
+                                itemFile.delete();
+                            } else {
+                                deleteFor(itemFile);
+                                itemFile.delete();
+                            }
                         }
                     }
+                    logger.i("delete file success");
+                    StableLogHashMap hashMap = new StableLogHashMap();
+                    hashMap.put("logtype", " deleteCourseware");
+                    hashMap.put("dir", file.getAbsolutePath());
+                    hashMap.put("sno", "5");
+                    hashMap.put("status", "true");
+                    hashMap.put("ip", IpAddressUtil.USER_IP);
+                    UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
+                } catch (Exception e) {
+                    logger.e(e);
                 }
-                logger.i("delete file success");
-                StableLogHashMap hashMap = new StableLogHashMap();
-                hashMap.put("logtype", " deleteCourseware");
-                hashMap.put("dir", file.getAbsolutePath());
-                hashMap.put("sno", "5");
-                hashMap.put("status", "true");
-                hashMap.put("ip", IpAddressUtil.USER_IP);
-                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
-
             }
         });
     }
@@ -140,7 +145,8 @@ public class CoursewarePreload {
         if (file == null || file.listFiles() == null) {
             return;
         }
-        for (File itemFile : file.listFiles()) {
+        File[] files = file.listFiles();
+        for (File itemFile : files) {
             if (!itemFile.isDirectory()) {
                 itemFile.delete();
             } else {
@@ -148,6 +154,7 @@ public class CoursewarePreload {
                 itemFile.delete();
             }
         }
+
     }
 
     /**
