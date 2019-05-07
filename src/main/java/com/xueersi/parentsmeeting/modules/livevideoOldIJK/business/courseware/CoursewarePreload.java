@@ -143,7 +143,7 @@ public class CoursewarePreload {
      *
      * @param file
      */
-    private void deleteFor(final File file) {
+    private synchronized static void deleteFor(final File file) {
         if (file == null || file.listFiles() == null) {
             return;
         }
