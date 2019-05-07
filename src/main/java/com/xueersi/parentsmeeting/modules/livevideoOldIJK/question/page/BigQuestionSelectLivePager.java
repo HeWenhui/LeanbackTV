@@ -268,6 +268,7 @@ public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
                 int toAnswered = jsonObject.optInt("toAnswered");
                 if (toAnswered == 2) {
                     XESToastUtils.showToast(mContext, "已作答");
+                    onSubmit.onSubmit(BigQuestionSelectLivePager.this);
                     onPagerClose.onClose(BigQuestionSelectLivePager.this);
                     return;
                 }

@@ -337,6 +337,7 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
                 int toAnswered = jsonObject.optInt("toAnswered");
                 if (toAnswered == 2) {
                     XESToastUtils.showToast(mContext, "已作答");
+                    onSubmit.onSubmit(BigQuestionFillInBlankLivePager.this);
                     onPagerClose.onClose(BigQuestionFillInBlankLivePager.this);
                     return;
                 }
