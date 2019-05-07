@@ -63,6 +63,7 @@ dependencies {
     implementation rootProject.ext.thirdlibraries.ticker
 
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.agora)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.rtcengine)
     //    implementation project(':library:agora')
     //implementation(rootProject.ext.xeslibraries.waveform) { changing = true }
     //implementation project(':library:waveform')
