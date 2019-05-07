@@ -245,7 +245,6 @@ public class H5CoursewareBll implements H5CoursewareAction, LivePagerBack, NbPre
     }
 
 
-
     @Override
     public void getNBTestInfo(NbCourseWareEntity testInfo, HttpCallBack requestCallBack) {
         mNbCourseInfo = testInfo;
