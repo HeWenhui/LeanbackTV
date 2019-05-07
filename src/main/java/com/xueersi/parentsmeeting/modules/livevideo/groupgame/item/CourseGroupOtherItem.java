@@ -63,7 +63,7 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
         mLogtf.d("doRenderRemoteUi:remove=" + remove + ",uid=" + uid);
         rlCourseItemVideo.addView(surfaceV, 0);
         rlCourseItemCtrl.setVisibility(View.VISIBLE);
-        tvCourseItemLoad.setVisibility(View.GONE);
+//        tvCourseItemLoad.setVisibility(View.GONE);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             surfaceV.setOutlineProvider(new TextureVideoViewOutlineProvider(headCornerSize));
             surfaceV.setClipToOutline(true);
@@ -91,8 +91,8 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
         if (audioTime == 0) {
             audioStartTime = System.currentTimeMillis();
         }
-        tvCourseItemLoad.setText("获取中");
-        tvCourseItemLoad.setVisibility(View.VISIBLE);
+//        tvCourseItemLoad.setText("获取中");
+        tvCourseItemLoad.setVisibility(View.GONE);
     }
 
     public void onUserOffline() {

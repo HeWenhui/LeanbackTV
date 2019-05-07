@@ -191,10 +191,10 @@ public class GroupGameMVPMultPager extends LiveBasePager {
                 if (lottieImageAsset.getId().equals("image_3")) {
                     return creatGoldBitmap(teamMemberEntityOne.gold, lottieImageAsset.getFileName());
                 }
-                if (lottieImageAsset.getId().equals("image_3")) {
+                if (lottieImageAsset.getId().equals("image_4")) {
                     return creatFireBitmap(teamMemberEntityOne.energy, lottieImageAsset.getFileName());
                 }
-                if (lottieImageAsset.getId().equals("image_4")) {
+                if (lottieImageAsset.getId().equals("image_8")) {
                     return creatNameBitmap(teamMemberEntityOne.name, lottieImageAsset.getFileName());
                 }
                 if (lottieImageAsset.getId().equals("image_0")) {
