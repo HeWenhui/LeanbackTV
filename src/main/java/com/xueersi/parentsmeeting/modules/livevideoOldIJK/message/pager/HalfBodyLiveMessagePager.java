@@ -949,6 +949,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
     }
 
+
     /**
      * 关闭开启聊天
      */
