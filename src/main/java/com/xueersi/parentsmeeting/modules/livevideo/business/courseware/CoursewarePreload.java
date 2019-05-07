@@ -99,7 +99,7 @@ public class CoursewarePreload {
     /**
      * 删除旧的Dir
      */
-    private void deleteOldDir(final File file, final String today) {
+    private synchronized void deleteOldDir(final File file, final String today) {
 //        LiveThreadPoolExecutor executor = LiveThreadPoolExecutor.getInstance();
         executos.execute(new Runnable() {
             @Override
@@ -111,6 +111,7 @@ public class CoursewarePreload {
                 //buglys上面有报Attempt to get length of null array,加上try,catch
                 try {
                     File[] files = file.listFiles();
+                    if (files == null) return;
                     for (File itemFile : files) {
                         //文件夹是日期格式并且不是今天才删除
                         if (isCoursewareDir(itemFile.getName()) && !itemFile.getName().equals(today)) {
@@ -148,6 +149,7 @@ public class CoursewarePreload {
         }
 
         File[] files = file.listFiles();
+        if (files == null) return;
         for (File itemFile : files) {
             if (!itemFile.isDirectory()) {
                 itemFile.delete();
