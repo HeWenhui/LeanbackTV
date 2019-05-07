@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.widget.praise.business;
 
 import android.app.Activity;
 import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
@@ -25,6 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.contract.Pr
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.contract.PraiseListView;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.page.PraiseListPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.view.PraiseListBll;
+import com.xueersi.parentsmeeting.widget.praise.PraisePager;
 import com.xueersi.parentsmeeting.widget.praise.entity.PraiseEntity;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
@@ -33,6 +35,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by Zhang Yuansun on 2018/7/27.
@@ -40,6 +43,8 @@ import java.util.ArrayList;
 
 public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAction {
 
+    RelativeLayout bottomContent;
+    PraisePager praisePager;
 
     public PraiseTutorBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -47,8 +52,10 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     @Override
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
-        //模式切换为主讲，关闭表扬榜
-
+        // 模式切换为主讲，关闭表扬榜
+        if (praisePager != null && mode.equals(LiveTopic.MODE_CLASS)) {
+            praisePager.closePraisePager();
+        }
     }
 
     @Override
@@ -58,29 +65,52 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
-        UmsAgentManager.umsAgentDebug(mContext,"tutor_practice_notice","type"+type+"/sourceNick"+sourceNick
-                +"target"+target+"data:"+data.toString());
+        UmsAgentManager.umsAgentDebug(mContext, "tutor_practice_notice", "type" + type + "/sourceNick" + sourceNick
+                + "target" + target + "data:" + data.toString());
         switch (type) {
             //开启和发布榜单
             case XESCODE.TUTOR_ROOM_PRAISE_OPEN:
                 String open = data.optString("open");
                 int zanType = data.optInt("zanType");
-                String nonce = data.optString("nonce");
-                if ("on".equals(open)) {
+                String listId = "";
+                if (data != null) {
+                    listId = data.optString("listId");
+                }
+                String nonce = data.optString(listId);
+                if (XESCODE.ON.equals(open)) {
+                    getPraiseTutorData(nonce);
+                } else if (XESCODE.OFF.equals(open)) {
+                    if (praisePager != null) {
+                        praisePager.closePraisePager();
+                    }
                 }
                 break;
             case XESCODE.TUTOR_ROOM_PRAISE_LIKE:
-
-            break;
+                showEncouraging();
+                break;
         }
     }
 
     @Override
     public int[] getNoticeFilter() {
         return new int[]{
-               XESCODE.TUTOR_ROOM_PRAISE_OPEN,
-                XESCODE.TUTOR_ROOM_PRAISE_LIKE
+                XESCODE.TUTOR_ROOM_PRAISE_OPEN,
+                XESCODE.TUTOR_ROOM_PRAISE_LIKE,
+                XESCODE.TUTOR_ROOM_PRAISE_LIKE_TOTAL
         };
+    }
+
+    private void showEncouraging() {
+        if (praisePager != null) {
+            praisePager.showEncouraging();
+        }
+    }
+
+
+    @Override
+    public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
+        super.initView(bottomContent, mIsLand);
+        this.bottomContent = bottomContent;
     }
 
     @Override
@@ -88,24 +118,48 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     }
 
-    private void getPraiseTutorData(String rankId){
+    private synchronized void getPraiseTutorData(final String rankId) {
         String classId = "";
         String courseId = "";
         String tutorId = "";
         if (mGetInfo.getStudentLiveInfo() != null) {
             classId = mGetInfo.getStudentLiveInfo().getClassId();
-            courseId= mGetInfo.getStudentLiveInfo().getCourseId();
+            courseId = mGetInfo.getStudentLiveInfo().getCourseId();
             tutorId = mGetInfo.getTeacherId();
         }
-        getHttpManager().getPraoseTutorList(rankId, mLiveId, courseId,tutorId,new HttpCallBack(false) {
+        getHttpManager().getPraoseTutorList(rankId, mLiveId, courseId, tutorId, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                PraiseEntity entity  = getHttpResponseParser().parseTutorPraiseEntity( responseEntity);
+                PraiseEntity entity = getHttpResponseParser().parseTutorPraiseEntity(responseEntity);
+                praisePager = new PraisePager(mContext, entity);
+                praisePager.showPraisePager(bottomContent);
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                mLogtf.d("getLikeList => onPmFailure: error = " + error + ", msg=" + msg);
+                VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false,
+                        VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
+                vcDialog.initInfo("当前网络不佳，请刷新获取榜单！").showDialog();
+                vcDialog.setVerifyBtnListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        getPraiseTutorData(rankId);
+                    }
+                });
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                mLogtf.d("getLikeList => onPmError: errorMsg = " + responseEntity.getErrorMsg());
+                showToast("" + responseEntity.getErrorMsg());
             }
         });
 
 
-    }@Override
+    }
+
+    @Override
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
 
     }

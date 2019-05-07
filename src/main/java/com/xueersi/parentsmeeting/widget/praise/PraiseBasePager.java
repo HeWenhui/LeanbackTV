@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.widget.praise;
 import android.content.Context;
 import android.os.Build;
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import android.support.v7.widget.GridLayoutManager;
 import android.view.View;
@@ -20,7 +19,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FastScrollableRecyclerView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.PraiseBtnAnimLayout;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 import com.xueersi.parentsmeeting.widget.praise.config.PraiseConfig;
 import com.xueersi.parentsmeeting.widget.praise.entity.PraiseContentEntity;
@@ -89,8 +87,10 @@ public class PraiseBasePager extends LiveBasePager {
             }
             int waht = msg.what;
             // 隐藏鼓励语
-            if(waht == PraiseConfig.HIDE_ENCOURAGING) {
+            if (waht == PraiseConfig.ENCOURAGING_HIDE) {
                 praiseBasePager.hideEncouraging();
+            } else if (waht == PraiseConfig.ENCOURAGING_SHOW) {
+                praiseBasePager.showEncouragingView();
             }
 
         }
@@ -186,12 +186,12 @@ public class PraiseBasePager extends LiveBasePager {
         practiceView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                    practiceView.playAnimation();
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        practiceView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                    } else {
-                        practiceView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                    }
+                practiceView.playAnimation();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    practiceView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    practiceView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
             }
         });
     }
@@ -230,8 +230,15 @@ public class PraiseBasePager extends LiveBasePager {
                     tvTitle.setVisibility(View.GONE);
                     ivTitle.setVisibility(View.VISIBLE);
                 }
+                closePraisePager();
             }
         });
+    }
+
+    public void closePraisePager() {
+        if (onPagerClose != null) {
+            onPagerClose.onClose(this);
+        }
     }
 
     /**
@@ -259,23 +266,37 @@ public class PraiseBasePager extends LiveBasePager {
         }
     }
 
+    @Override
+    public void setOnPagerClose(OnPagerClose onPagerClose) {
+        super.setOnPagerClose(onPagerClose);
+    }
+
     public int getColor(int id) {
         return mContext.getResources().getColor(id);
     }
+
     /**
      * 隐藏鼓励语
      */
-    public void hideEncouraging(){
+    public void hideEncouraging() {
         llTeacherContent.setVisibility(View.GONE);
     }
+
     /**
      * 显示鼓励语
      */
     public void showEncouraging() {
-        llTeacherContent.setVisibility(View.VISIBLE);
         if (mHandler != null) {
-            mHandler.sendEmptyMessageDelayed(PraiseConfig.HIDE_ENCOURAGING, 2000);
-
+            mHandler.sendEmptyMessageDelayed(PraiseConfig.ENCOURAGING_SHOW, 0);
         }
     }
+
+    private void showEncouragingView() {
+        llTeacherContent.setVisibility(View.VISIBLE);
+        if (mHandler != null) {
+            mHandler.sendEmptyMessageDelayed(PraiseConfig.ENCOURAGING_HIDE, 2000);
+        }
+
+    }
+
 }

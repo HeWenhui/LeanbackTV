@@ -215,6 +215,8 @@ public interface XESCODE {
     int TUTOR_ROOM_PRAISE_OPEN = 400;
     /** 辅导老师 表扬- */
     int TUTOR_ROOM_PRAISE_LIKE = 402;
+    /** 辅导老师 表扬- */
+    int TUTOR_ROOM_PRAISE_LIKE_TOTAL = 403;
 
     /** 2018接麦 */
     interface AgoraChat {

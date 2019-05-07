@@ -2416,9 +2416,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         entity.setStatus(jsonObject.optInt("isInList"));
         int gradle = jsonObject.optInt("grade");
         if (gradle ==PraiseConfig.GRADLE_SMALL) {
-          //  entity.setPraiseStyle(jsonObject.optInt("bizId"));
+          entity.setPraiseStyle(jsonObject.optInt("bizId"));
 
-            entity.setPraiseStyle(1);
+            //entity.setPraiseStyle(1);
         } else {
             entity.setPraiseStyle(PraiseConfig.PRAISE_DARK);
         }
