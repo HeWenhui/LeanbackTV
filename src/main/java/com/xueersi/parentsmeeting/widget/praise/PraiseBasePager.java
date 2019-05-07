@@ -1,8 +1,13 @@
 package com.xueersi.parentsmeeting.widget.praise;
 
 import android.content.Context;
+import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.v7.widget.GridLayoutManager;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -15,6 +20,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FastScrollableRecyclerView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.PraiseBtnAnimLayout;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 import com.xueersi.parentsmeeting.widget.praise.config.PraiseConfig;
 import com.xueersi.parentsmeeting.widget.praise.entity.PraiseContentEntity;
@@ -23,8 +29,8 @@ import com.xueersi.parentsmeeting.widget.praise.item.LivePraiseItem;
 import com.xueersi.parentsmeeting.widget.praise.item.LivePraiseTitleItem;
 import com.xueersi.ui.adapter.RCommonAdapter;
 
+import java.lang.ref.WeakReference;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -64,10 +70,35 @@ public class PraiseBasePager extends LiveBasePager {
     int mCurrentNum = 0;
     int TEN_THOUSAND = 10000;
     int HUNDRED = 100;
+
     PraiseEntity mPraiseEntity;
+    PraiseBasePagerHandler mHandler;
+
+    private static class PraiseBasePagerHandler extends Handler {
+        private WeakReference<PraiseBasePager> mc;
+
+        public PraiseBasePagerHandler(PraiseBasePager mc) {
+            this.mc = new WeakReference<PraiseBasePager>(mc);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            PraiseBasePager praiseBasePager = mc.get();
+            if (praiseBasePager == null) {
+                return;
+            }
+            int waht = msg.what;
+            // 隐藏鼓励语
+            if(waht == PraiseConfig.HIDE_ENCOURAGING) {
+                praiseBasePager.hideEncouraging();
+            }
+
+        }
+    }
 
     public PraiseBasePager(Context context, PraiseEntity praiseEntity) {
-        super(context,praiseEntity,true);
+        super(context, praiseEntity, true);
+        mHandler = new PraiseBasePagerHandler(this);
         listContent = praiseEntity.getContentEntityList();
 //        for (int i = 0; i < 30; i++) {
 //            PraiseContentEntity entity = new PraiseContentEntity();
@@ -152,17 +183,30 @@ public class PraiseBasePager extends LiveBasePager {
         setReslutType();
         ImageLoader.with(mContext).load(mPraiseEntity.getTeacherHeadImage()).
                 error(R.drawable.icon_livevideo_praiselist_team_head_default).into(ivTeacherHeadImage);
-
+        practiceView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                    practiceView.playAnimation();
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        practiceView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    } else {
+                        practiceView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
+            }
+        });
     }
 
     /**
      * 设置榜单类型
      */
-    protected void setPriseType() {}
+    protected void setPriseType() {
+    }
+
     /**
      * 设置结果类型
      */
-    protected void setReslutType() {}
+    protected void setReslutType() {
+    }
 
     private void setListener() {
         // 点赞
@@ -197,9 +241,7 @@ public class PraiseBasePager extends LiveBasePager {
      * @param withAnim  是否显示动画
      */
     private void upDatePraiseNum() {
-        if (mCurrentNum == 0) {
-            practiceView.playAnimation();
-        }
+
         if (imgBtnPractice != null && imgBtnPractice.getVisibility() == View.VISIBLE) {
             StringBuilder sb = new StringBuilder();
             if (mCurrentNum > TEN_THOUSAND) {
@@ -216,7 +258,24 @@ public class PraiseBasePager extends LiveBasePager {
             mCurrentNum++;
         }
     }
-    public int getColor(int id){
+
+    public int getColor(int id) {
         return mContext.getResources().getColor(id);
+    }
+    /**
+     * 隐藏鼓励语
+     */
+    public void hideEncouraging(){
+        llTeacherContent.setVisibility(View.GONE);
+    }
+    /**
+     * 显示鼓励语
+     */
+    public void showEncouraging() {
+        llTeacherContent.setVisibility(View.VISIBLE);
+        if (mHandler != null) {
+            mHandler.sendEmptyMessageDelayed(PraiseConfig.HIDE_ENCOURAGING, 2000);
+
+        }
     }
 }

@@ -129,8 +129,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            app:lottie_fileName="practicecourse/dark/practice_course_dark.json"
-            app:lottie_imageAssetsFolder="practicecourse/dark/images"
+            app:lottie_fileName="practicecourse/sweet/sweet.json"
+            app:lottie_imageAssetsFolder="practicecourse/sweet/images"
             app:lottie_loop="true" />
 
 

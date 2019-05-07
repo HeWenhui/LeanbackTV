@@ -3,7 +3,6 @@ package com.xueersi.parentsmeeting.modules.livevideo.http;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.alibaba.fastjson.JSON;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
 import com.xueersi.common.http.HttpResponseParser;
@@ -2417,7 +2416,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         entity.setStatus(jsonObject.optInt("isInList"));
         int gradle = jsonObject.optInt("grade");
         if (gradle ==PraiseConfig.GRADLE_SMALL) {
-            entity.setPraiseStyle(jsonObject.optInt("bizId"));
+          //  entity.setPraiseStyle(jsonObject.optInt("bizId"));
+
+            entity.setPraiseStyle(1);
         } else {
             entity.setPraiseStyle(PraiseConfig.PRAISE_DARK);
         }

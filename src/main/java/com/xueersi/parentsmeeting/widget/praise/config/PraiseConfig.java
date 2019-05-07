@@ -24,5 +24,6 @@ public class PraiseConfig {
     public static final int PRAISE_IN = 1;
     /** 小学 */
     public static final int GRADLE_SMALL = 1;
-
+    /** 隐藏鼓励语 */
+    public  final static int  HIDE_ENCOURAGING = 1;
 }

@@ -110,7 +110,7 @@
         android:background="@drawable/selector_page_livevideo_praise_list_dark_close_style" />
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="75dp"
         android:layout_height="220dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"

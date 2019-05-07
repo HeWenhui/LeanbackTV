@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="58dp"
             android:background="@drawable/bg_page_livevideo_praise_list_china_title_1"
             android:visibility="visible" />
 
@@ -119,8 +119,8 @@
         android:background="@drawable/bg_page_livevideo_praise_list_china_close" />
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="75dp"
+        android:layout_height="220dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="10dp">
@@ -130,8 +130,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            app:lottie_fileName="praise_list/loop_star/data.json"
-            app:lottie_imageAssetsFolder="praise_list/loop_star/images"
+            app:lottie_fileName="practicecourse/stars/tutor_stars.json"
+            app:lottie_imageAssetsFolder="practicecourse/stars/images"
             app:lottie_loop="true" />
 
 
