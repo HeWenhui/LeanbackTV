@@ -2369,7 +2369,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                     TeamMemberEntity teamMemberEntity = entities.get(entityIndex);
                                     allUserIds += "," + teamMemberEntity.id;
                                     if (who_id == teamMemberEntity.id) {
-                                        studentNum = 1 + entityIndex;
+                                        studentNum = 4 - entities.size() + entityIndex;
                                         break;
                                     }
                                 }
