@@ -144,6 +144,9 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
     private LiveAndBackDebug liveAndBackDebug;
     private long loadingStartTime;
 
+    /**课件是否成功加载过**/
+    private boolean nbLoaded;
+
     public NbH5ExamX5Pager(Context context, NbCourseWareEntity entity, LivePagerBack livePagerBack, NbPresenter
             presenter) {
         super(context);
@@ -303,7 +306,6 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
     public void reloadUrl() {
         showLoadingView();
         rlCtrContainer.setVisibility(View.GONE);
-        tvTime.stop();
         jsInserted = false;
         resultLoaded = false;
         //没有加载地址
@@ -371,7 +373,11 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
         switch (event.getEventType()) {
             case NbCourseEvent.EVENT_TYPE_ONLOAD:
                 hideLoadingView();
-                tvTime.start();
+                // 第一次成功加载 NB实验 从O开始即时
+                if(!nbLoaded){
+                    tvTime.start();
+                    nbLoaded = true;
+                }
                 rlCtrContainer.setVisibility(View.VISIBLE);
                 long timeSpend = System.currentTimeMillis() - loadingStartTime;
                 NbCourseLog.sno4(liveAndBackDebug,mCourseWareEntity.getExperimentId(),wvSubjectWeb.getUrl(),isPreLaod(),timeSpend+"",mCourseWareEntity.isPlayBack(),
