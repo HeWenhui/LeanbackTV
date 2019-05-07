@@ -48,17 +48,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager.GroupGameMultNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.KeyBordAction;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayMachinePager;
 import com.xueersi.parentsmeeting.modules.livevideo.page.RolePlayStandMachinePager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.create.BigQueCreate;
-import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultItemEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.CreateAnswerReslutEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseExamQuestionInter;
@@ -67,13 +63,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseLiveQuesti
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseQuestionWebInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSpeechAssessmentPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseSubjectResultInter;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.BigResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.CoursewareNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ExamQuestionX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeechAssAutoPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.KeyboardPopWindow;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.BigResultLog;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -688,6 +684,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 return;
             }
             mQueAndBool.add(key);
+            BigResultLog.sno3("true", videoQuestionLiveEntity, getLiveAndBackDebug());
             final BaseLiveBigQuestionPager bigQuestionPager = bigQueCreate.create(videoQuestionLiveEntity, rlQuestionResContent, new LiveBasePager.OnPagerClose() {
                 @Override
                 public void onClose(LiveBasePager basePager) {
@@ -726,6 +723,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             }
         } else {
             if (baseLiveBigQuestionPager != null) {
+                BigResultLog.sno3("false", videoQuestionLiveEntity, getLiveAndBackDebug());
                 final BaseLiveBigQuestionPager finalpager = baseLiveBigQuestionPager;
                 mVPlayVideoControlHandler.postDelayed(new Runnable() {
                     @Override
@@ -2304,6 +2302,13 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         if (audioRequest != null) {
             audioRequest.release();
         }
+    }
+
+    public LiveAndBackDebug getLiveAndBackDebug() {
+        if (liveAndBackDebug == null) {
+            liveAndBackDebug = ProxUtil.getProxUtil().get(activity, LiveAndBackDebug.class);
+        }
+        return liveAndBackDebug;
     }
 
     public void umsAgentDebugSys(String eventId, final Map<String, String> mData) {

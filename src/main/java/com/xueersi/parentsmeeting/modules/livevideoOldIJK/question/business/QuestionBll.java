@@ -68,6 +68,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.Coursewa
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.ExamQuestionX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.QuestionWebX5Pager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.SpeechAssAutoPager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.BigResultLog;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
@@ -482,7 +483,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     public void setRolePlayAction(RolePlayAction rolePlayAction, RolePlayActionEnd playActionEnd) {
         this.rolePlayAction = rolePlayAction;
         this.playActionEnd = playActionEnd;
-        this.rolePlayAction.setOnGroupSuc(new RolePlayAction.OnGroupSuc(){
+        this.rolePlayAction.setOnGroupSuc(new RolePlayAction.OnGroupSuc() {
             @Override
             public void onGroupSuc() {
                 //收到分组的回调，也直接走多人
@@ -680,6 +681,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 return;
             }
             mQueAndBool.add(key);
+            BigResultLog.sno3("true", videoQuestionLiveEntity, getLiveAndBackDebug());
             final BaseLiveBigQuestionPager bigQuestionPager = bigQueCreate.create(videoQuestionLiveEntity, rlQuestionResContent, new LiveBasePager.OnPagerClose() {
                 @Override
                 public void onClose(LiveBasePager basePager) {
@@ -718,6 +720,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             }
         } else {
             if (baseLiveBigQuestionPager != null) {
+                BigResultLog.sno3("false", videoQuestionLiveEntity, getLiveAndBackDebug());
                 final BaseLiveBigQuestionPager finalpager = baseLiveBigQuestionPager;
                 mVPlayVideoControlHandler.postDelayed(new Runnable() {
                     @Override
@@ -838,7 +841,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     } else {
                         //新讲义讲义：分组成功的回调收到之后，不再判断videoQuestionLiveEntity.multiRolePlay，也走多人
                         if (isMulitGroupSuc) {
-                            logger.d("oldijk multi_people_onGroupSuc:callback use new kj "+rolePlayAction+" multiRolePlay = "+videoQuestionLiveEntity.multiRolePlay);
+                            logger.d("oldijk multi_people_onGroupSuc:callback use new kj " + rolePlayAction + " multiRolePlay = " + videoQuestionLiveEntity.multiRolePlay);
                             if (rolePlayAction != null) {
                                 mQueAndBool.add(id);
                                 rolePlayAction.teacherPushTest(videoQuestionLiveEntity);
@@ -1024,7 +1027,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     } else {
                         //旧讲义：分组成功的回调收到之后，不再判断videoQuestionLiveEntity.multiRolePlay，也走多人
                         if (isMulitGroupSuc) {
-                            logger.d("oldijk multi_people_onGroupSuc:callback use old kj "+rolePlayAction+" multiRolePlay = "+videoQuestionLiveEntity.multiRolePlay);
+                            logger.d("oldijk multi_people_onGroupSuc:callback use old kj " + rolePlayAction + " multiRolePlay = " + videoQuestionLiveEntity.multiRolePlay);
                             if (rolePlayAction != null) {
                                 mQueAndBool.add(id);
                                 rolePlayAction.teacherPushTest(videoQuestionLiveEntity);
@@ -2283,6 +2286,13 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
         }
     }
 
+    public LiveAndBackDebug getLiveAndBackDebug() {
+        if (liveAndBackDebug == null) {
+            liveAndBackDebug = ProxUtil.getProxUtil().get(activity, LiveAndBackDebug.class);
+        }
+        return liveAndBackDebug;
+    }
+
     public void umsAgentDebugSys(String eventId, final Map<String, String> mData) {
         if (liveAndBackDebug == null) {
             liveAndBackDebug = ProxUtil.getProxUtil().get(activity, LiveAndBackDebug.class);
@@ -2635,7 +2645,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     logger.e("=======>forceClose 2222:" + curQuestionView);
                     if (questionWebPager != null) {
                         if (questionHttp != null) {
-                            questionHttp.getStuGoldCount("forceClose:"+method);
+                            questionHttp.getStuGoldCount("forceClose:" + method);
                         }
                         rlQuestionContent.removeView(questionWebPager.getRootView());
                         if (questionWebPager instanceof BaseQuestionWebInter) {

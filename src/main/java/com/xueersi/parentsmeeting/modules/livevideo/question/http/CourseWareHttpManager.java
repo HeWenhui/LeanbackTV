@@ -184,7 +184,7 @@ public class CourseWareHttpManager {
 
     //语文主观题
     public void getStuChiAITestResult(String liveId, String stuId, String srcTypes, String testIds, String classTestId, String packageId, String packageAttr, int isPlayBack,
-                                      String classId,final AbstractBusinessDataCallBack callBack) {
+                                      String classId, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         liveHttpManager.setDefaultParameter(httpRequestParams);
         httpRequestParams.addBodyParam("liveId", liveId);
@@ -202,7 +202,7 @@ public class CourseWareHttpManager {
                 logger.d("getStuTestResult:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
                 ChineseAISubjectResultEntity chineseAISubjectResultEntity = courseWareParse.paresChiAIStuTestResult(responseEntity);
                 if (chineseAISubjectResultEntity != null) {
-                    callBack.onDataSucess(chineseAISubjectResultEntity,responseEntity);
+                    callBack.onDataSucess(chineseAISubjectResultEntity, responseEntity);
                 } else {
                     callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_NULL, "null");
                 }
@@ -449,7 +449,7 @@ public class CourseWareHttpManager {
                 if (bigResultEntity == null) {
                     callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_NULL, "数据解析异常");
                 } else {
-                    callBack.onDataSucess(bigResultEntity);
+                    callBack.onDataSucess(bigResultEntity, responseEntity.getJsonObject());
                 }
             }
 

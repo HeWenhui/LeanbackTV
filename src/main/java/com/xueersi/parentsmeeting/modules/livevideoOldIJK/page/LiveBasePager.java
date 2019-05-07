@@ -112,6 +112,13 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
         }
     }
 
+    public LiveAndBackDebug getLiveAndBackDebug() {
+        if (mLiveBll == null) {
+            mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
+        }
+        return mLiveBll;
+    }
+
     @Override
     public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
         if (mLiveBll == null) {

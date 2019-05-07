@@ -13,6 +13,7 @@ public class QueIrcParse {
         videoQuestionLiveEntity.setDotId(object.getString("dotId"));
         videoQuestionLiveEntity.setDotType(object.getInt("dotType"));
         videoQuestionLiveEntity.setSrcType(object.getString("srcType"));
+        videoQuestionLiveEntity.nonce = object.optString("nonce");
         if (videoQuestionLiveEntity.getDotType() == LiveQueConfig.DOTTYPE_FILL) {
             videoQuestionLiveEntity.num = object.getInt("itemNum");
         } else {

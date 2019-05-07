@@ -32,6 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfi
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.BigResultLog;
 import com.xueersi.ui.adapter.XsBaseAdapter;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
@@ -85,6 +86,7 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
         mQuestionSize = mAnswerEntityLst.size();
         mBlankSize = baseVideoQuestionEntity.getvBlankSize();
         this.isPlayback = isPlayback;
+        BigResultLog.sno4(baseVideoQuestionEntity, getLiveAndBackDebug());
         initData();
     }
 
@@ -318,7 +320,7 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
             }, LiveQueConfig.BIG_TEST_CLOSE);
             return;
         }
-        JSONArray userAnswer = new JSONArray();
+        final JSONArray userAnswer = new JSONArray();
         if (answers.isEmpty()) {
             userAnswer.put("");
         } else {
@@ -330,6 +332,7 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
         questionSecHttp.submitBigTestInteraction(videoQuestionLiveEntity, userAnswer, startTime, isForce, new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
+                BigResultLog.sno5(videoQuestionLiveEntity, userAnswer, true, getLiveAndBackDebug());
                 org.json.JSONObject jsonObject = (org.json.JSONObject) objData[0];
                 int toAnswered = jsonObject.optInt("toAnswered");
                 if (toAnswered == 2) {
@@ -340,12 +343,14 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
                 questionSecHttp.getStuInteractionResult(videoQuestionLiveEntity, new AbstractBusinessDataCallBack() {
                     @Override
                     public void onDataSucess(Object... objData) {
+                        BigResultLog.sno6(videoQuestionLiveEntity, objData[1], true, getLiveAndBackDebug());
                         BigResultEntity bigResultEntity = (BigResultEntity) objData[0];
                         showResult(bigResultEntity, isForce);
                     }
 
                     @Override
                     public void onDataFail(int errStatus, String failMsg) {
+                        BigResultLog.sno6(videoQuestionLiveEntity, failMsg, false, getLiveAndBackDebug());
                         XESToastUtils.showToast(mContext, failMsg);
                         if (isForce == 1) {
                             onPagerClose.onClose(BigQuestionFillInBlankLivePager.this);
@@ -356,6 +361,7 @@ public class BigQuestionFillInBlankLivePager extends BaseLiveBigQuestionPager im
 
             @Override
             public void onDataFail(int errStatus, String failMsg) {
+                BigResultLog.sno5(videoQuestionLiveEntity, userAnswer, false, getLiveAndBackDebug());
                 XESToastUtils.showToast(mContext, failMsg);
                 if (isForce == 1) {
                     onPagerClose.onClose(BigQuestionFillInBlankLivePager.this);

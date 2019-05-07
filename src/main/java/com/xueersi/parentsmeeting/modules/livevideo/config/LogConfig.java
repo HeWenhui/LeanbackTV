@@ -33,4 +33,6 @@ public class LogConfig {
     public static String LIVE_NOTICE_UNKNOW = "live_notice_unknow";
     /** 直播文件夹 */
     public static String LIVE_CACHE_FILE = "live_cache_file";
+    /** 直播大题互动 http://wiki.xesv5.com/pages/viewpage.action?pageId=18547772 */
+    public static String LIVE_PLAT_DOT = "live_platformDot";
 }
