@@ -197,6 +197,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                                         byte[] pcmdata = new byte[10];
                                         int enrollIvector = speakerRecognitionerInterface.
                                                 enrollIvector(pcmdata, pcmdata.length, 0, stuId, false);
+                                        speakerRecognitionerInterface.speakerRecognitionerFree();
                                         if (enrollIvector != 0) {
                                             long interval = sTime * 1000 - System.currentTimeMillis();
                                             boolean allow = true;
