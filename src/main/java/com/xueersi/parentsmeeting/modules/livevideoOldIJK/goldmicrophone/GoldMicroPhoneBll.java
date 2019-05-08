@@ -51,7 +51,6 @@ import static com.xueersi.parentsmeeting.modules.livevideoOldIJK.goldmicrophone.
  * 幼升小金话筒
  */
 public class GoldMicroPhoneBll extends LiveBaseBll implements NoticeAction, GoldPhoneContract.GoldPhonePresenter {
-    private boolean testUse = && BuildConfig .DEBUG;
     /**
      * 录音对象
      */
