@@ -51,6 +51,13 @@ public class LiveService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+        if (intent.getAction().equals("START_SPEECH_GEN")) {
+//            if (speechEvaluatorUtils == null){
+//                speechEvaluatorUtils = new SpeechEvaluatorUtils(true);
+//                speechRecogBinder.setSpeechUtils(speechEvaluatorUtils);
+//            }
+            return new SpeechRecogGenBinder();
+        }
         return null;
     }
 
