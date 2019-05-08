@@ -2043,7 +2043,11 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         }
         if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(gameType)) {
             GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = allAnswerList.get(0);
-            speechContent += answersEntity.getText();
+            speechContent = answersEntity.getText();
+            if (allAnswerList.size() > 1) {
+                answersEntity = allAnswerList.get(1);
+                speechContent += "|" + answersEntity.getText();
+            }
         } else {
             for (int j = 0; j < allAnswerList.size(); j++) {
                 GroupGameTestInfosEntity.TestInfoEntity.AnswersEntity answersEntity = allAnswerList.get(j);
@@ -2349,7 +2353,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                     int oldSize = allAnswerList.size();
                                     if (!allAnswerList.isEmpty()) {
                                         //删除之前的试题
-                                        while (oldIndex < current_word - 1 && !allAnswerList.isEmpty()) {
+                                        while (oldIndex <= current_word - 1 && !allAnswerList.isEmpty()) {
                                             oldIndex++;
                                             allAnswerList.remove(0);
                                         }
