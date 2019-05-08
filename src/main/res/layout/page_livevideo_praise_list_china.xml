@@ -20,7 +20,6 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="58dp"
-            android:background="@drawable/bg_page_livevideo_praise_list_china_title_1"
             android:visibility="visible" />
 
         <TextView

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.widget.praise.business.OnPraisePageListener;
 import com.xueersi.parentsmeeting.widget.praise.config.PraiseConfig;
 import com.xueersi.parentsmeeting.widget.praise.entity.PraiseEntity;
 
@@ -15,10 +16,9 @@ import com.xueersi.parentsmeeting.widget.praise.entity.PraiseEntity;
 public class PraiseLovelyPager extends PraiseBasePager {
 
 
-    public PraiseLovelyPager(Context context, PraiseEntity praiseEntity) {
-        super(context, praiseEntity);
+    public PraiseLovelyPager(Context context, PraiseEntity praiseEntity,OnPraisePageListener listener) {
+        super(context, praiseEntity,listener);
     }
-
     @Override
     protected void setPriseType() {
         super.setPriseType();

@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.GridLayoutManager;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.ImageButton;
@@ -19,7 +20,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FastScrollableRecyclerView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.PraiseBtnAnimLayout;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.dialog.CloseConfirmDialog;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
+import com.xueersi.parentsmeeting.widget.praise.business.OnPraisePageListener;
 import com.xueersi.parentsmeeting.widget.praise.config.PraiseConfig;
 import com.xueersi.parentsmeeting.widget.praise.entity.PraiseContentEntity;
 import com.xueersi.parentsmeeting.widget.praise.entity.PraiseEntity;
@@ -71,7 +74,9 @@ public class PraiseBasePager extends LiveBasePager {
 
     PraiseEntity mPraiseEntity;
     PraiseBasePagerHandler mHandler;
+    OnPraisePageListener onPraisePageListener;
 
+    int totalCurrentNum = 0;
     private static class PraiseBasePagerHandler extends Handler {
         private WeakReference<PraiseBasePager> mc;
 
@@ -91,28 +96,18 @@ public class PraiseBasePager extends LiveBasePager {
                 praiseBasePager.hideEncouraging();
             } else if (waht == PraiseConfig.ENCOURAGING_SHOW) {
                 praiseBasePager.showEncouragingView();
+            } else if (waht == PraiseConfig.PRAISE_TOTAL_SEND) {
+                praiseBasePager.updatePraiseNum();
             }
 
         }
     }
 
-    public PraiseBasePager(Context context, PraiseEntity praiseEntity) {
+    public PraiseBasePager(Context context, PraiseEntity praiseEntity, OnPraisePageListener listener) {
         super(context, praiseEntity, true);
         mHandler = new PraiseBasePagerHandler(this);
         listContent = praiseEntity.getContentEntityList();
-//        for (int i = 0; i < 30; i++) {
-//            PraiseContentEntity entity = new PraiseContentEntity();
-//            if (i == 0) {
-//                entity.setItemSpan(4);
-//                entity.setName("课清全对");
-//                entity.setViewType(PraiseConfig.VIEW_TYPE_TITLE);
-//            } else {
-//                entity.setItemSpan(1);
-//                entity.setName("i" + i);
-//            }
-//
-//            listContent.add(entity);
-//        }
+        this.onPraisePageListener = listener;
         setContentData();
         setLayout(mView);
     }
@@ -206,6 +201,9 @@ public class PraiseBasePager extends LiveBasePager {
      * 设置结果类型
      */
     protected void setReslutType() {
+        if (mPraiseEntity.getPraiseType() == PraiseConfig.PRAISE_TYPE_TALK) {
+            tvSubTitle.setVisibility(View.GONE);
+        }
     }
 
     private void setListener() {
@@ -221,16 +219,25 @@ public class PraiseBasePager extends LiveBasePager {
         imgBtnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (llTeacherContent.getVisibility() == View.GONE) {
-                    llTeacherContent.setVisibility(View.VISIBLE);
-                    tvTitle.setVisibility(View.VISIBLE);
-                    ivTitle.setVisibility(View.GONE);
-                } else {
-                    llTeacherContent.setVisibility(View.GONE);
-                    tvTitle.setVisibility(View.GONE);
-                    ivTitle.setVisibility(View.VISIBLE);
-                }
-                closePraisePager();
+                final CloseConfirmDialog closeConfirmDialog = new CloseConfirmDialog(mContext);
+                closeConfirmDialog.setTitle("关闭后将无法再开启表扬榜哦，确定关闭吗？");
+                closeConfirmDialog.setTitleGravaty(Gravity.LEFT);
+                closeConfirmDialog.hideContent();
+                closeConfirmDialog.setOnClickCancelListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        closeConfirmDialog.cancelDialog();
+                    }
+                });
+                closeConfirmDialog.setOnClickConfirmlListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        closeConfirmDialog.cancelDialog();
+                        closePraisePager();
+                    }
+                });
+                closeConfirmDialog.showDialog();
+
             }
         });
     }
@@ -248,9 +255,17 @@ public class PraiseBasePager extends LiveBasePager {
      * @param withAnim  是否显示动画
      */
     private void upDatePraiseNum() {
+        mCurrentNum++;
+        if (onPraisePageListener != null) {
+            onPraisePageListener.onPraiseClick(mCurrentNum);
+        }
+    }
 
+    private void updatePraiseNum() {
+       // TotalCurrentNum
         if (imgBtnPractice != null && imgBtnPractice.getVisibility() == View.VISIBLE) {
             StringBuilder sb = new StringBuilder();
+            int total = mCurrentNum + totalCurrentNum;
             if (mCurrentNum > TEN_THOUSAND) {
                 if (mCurrentNum % TEN_THOUSAND >= HUNDRED) {
                     BigDecimal bigDecimal = new BigDecimal(mCurrentNum / 10000.0f);
@@ -262,7 +277,6 @@ public class PraiseBasePager extends LiveBasePager {
                 sb.append(mCurrentNum);
             }
             tvPracticeCount.setText(sb.toString());
-            mCurrentNum++;
         }
     }
 
@@ -291,8 +305,15 @@ public class PraiseBasePager extends LiveBasePager {
         }
     }
 
+    public void setPraiseTotal(int num) {
+        totalCurrentNum = num;
+        mHandler.sendEmptyMessageDelayed(PraiseConfig.PRAISE_TOTAL_SEND, 0);
+    }
+
     private void showEncouragingView() {
-        llTeacherContent.setVisibility(View.VISIBLE);
+        if (llTeacherContent != null) {
+            llTeacherContent.setVisibility(View.VISIBLE);
+        }
         if (mHandler != null) {
             mHandler.sendEmptyMessageDelayed(PraiseConfig.ENCOURAGING_HIDE, 2000);
         }

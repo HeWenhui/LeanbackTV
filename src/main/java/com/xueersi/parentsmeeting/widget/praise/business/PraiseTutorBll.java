@@ -68,26 +68,39 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
         UmsAgentManager.umsAgentDebug(mContext, "tutor_practice_notice", "type" + type + "/sourceNick" + sourceNick
                 + "target" + target + "data:" + data.toString());
         switch (type) {
-            //开启和发布榜单
+            // 开启和发布榜单
             case XESCODE.TUTOR_ROOM_PRAISE_OPEN:
-                String open = data.optString("open");
-                int zanType = data.optInt("zanType");
-                String listId = "";
-                if (data != null) {
-                    listId = data.optString("listId");
-                }
-                String nonce = data.optString(listId);
-                if (XESCODE.ON.equals(open)) {
-                    getPraiseTutorData(nonce);
-                } else if (XESCODE.OFF.equals(open)) {
-                    if (praisePager != null) {
-                        praisePager.closePraisePager();
-                    }
-                }
+                praiseShowOrHide(data);
                 break;
+            // 点赞
             case XESCODE.TUTOR_ROOM_PRAISE_LIKE:
                 showEncouraging();
                 break;
+            case XESCODE.TUTOR_ROOM_PRAISE_LIKE_TOTAL:
+                setPraiseTotal(data);
+                break;
+        }
+    }
+
+    private void setPraiseTotal(JSONObject data) {
+        if (praisePager != null && data != null) {
+            praisePager.setPraiseTotal(data.optInt("likes"));
+        }
+    }
+
+    private void praiseShowOrHide(JSONObject data) {
+        if (data == null) {
+            return;
+        }
+        String open = data.optString("open");
+        String listId = data.optString("listId");
+        String nonce = data.optString(listId);
+        if (XESCODE.ON.equals(open)) {
+            getPraiseTutorData(nonce);
+        } else if (XESCODE.OFF.equals(open)) {
+            if (praisePager != null) {
+                praisePager.closePraisePager();
+            }
         }
     }
 
@@ -106,7 +119,6 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
         }
     }
 
-
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
         super.initView(bottomContent, mIsLand);
@@ -115,7 +127,17 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
-
+        UmsAgentManager.umsAgentDebug(mContext, "tutor_practice_onTopic", "liveTopic" + liveTopic + "/jsonObject"
+                + "modeChange" + modeChange + "jsonObject:" + jsonObject.toString());
+        if (jsonObject != null) {
+            JSONObject room2Json = jsonObject.optJSONObject("room_2");
+            if (room2Json != null) {
+                JSONObject praiseListJson = room2Json.optJSONObject("praiseList");
+                if(XESCODE.ON.equals(praiseListJson.optString("status"))) {
+                    getPraiseTutorData(praiseListJson.optString("id"));
+                }
+            }
+        }
     }
 
     private synchronized void getPraiseTutorData(final String rankId) {
@@ -131,7 +153,7 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 PraiseEntity entity = getHttpResponseParser().parseTutorPraiseEntity(responseEntity);
-                praisePager = new PraisePager(mContext, entity);
+                praisePager = new PraisePager(mContext, entity, listener);
                 praisePager.showPraisePager(bottomContent);
             }
 
@@ -155,12 +177,31 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
                 showToast("" + responseEntity.getErrorMsg());
             }
         });
+    }
 
-
+    public void sendLikeNum(int likes) {
+        try {
+            mLogtf.d("sendLikeNum: likes = " + likes + ", mCounTeacherStr = " + mLiveBll.getCounTeacherStr());
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("type", "" + XESCODE.TUTOR_ROOM_PRAISE_SENT_LIKE);
+            jsonObject.put("likes", likes + "");
+            jsonObject.put("stuId", mGetInfo.getStuId());
+            jsonObject.put("stuName", mGetInfo.getStuName());
+            sendNotice(jsonObject, mLiveBll.getCounTeacherStr());
+        } catch (Exception e) {
+            mLogtf.e("sendLikeNum", e);
+        }
     }
 
     @Override
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
 
     }
+
+    OnPraisePageListener listener = new OnPraisePageListener() {
+        @Override
+        public void onPraiseClick(int num) {
+            sendLikeNum(num);
+        }
+    };
 }

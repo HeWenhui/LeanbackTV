@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.View;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.widget.praise.business.OnPraisePageListener;
 import com.xueersi.parentsmeeting.widget.praise.config.PraiseConfig;
 import com.xueersi.parentsmeeting.widget.praise.entity.PraiseEntity;
 
@@ -15,8 +16,8 @@ import com.xueersi.parentsmeeting.widget.praise.entity.PraiseEntity;
 public class PraiseChinaPager extends PraiseBasePager {
 
 
-    public PraiseChinaPager(Context context, PraiseEntity praiseEntity) {
-        super(context, praiseEntity);
+    public PraiseChinaPager(Context context, PraiseEntity praiseEntity,OnPraisePageListener listener) {
+        super(context, praiseEntity,listener);
     }
 
     @Override
@@ -48,6 +49,7 @@ public class PraiseChinaPager extends PraiseBasePager {
     @Override
     protected void setReslutType() {
         super.setReslutType();
+        tvSubTitle.setBackgroundResource(R.drawable.bg_page_livevideo_praise_list_china_sub_title_1);
         if(mPraiseEntity.getResultType() == PraiseConfig.RESULT_PRAISE){
             tvSubTitle.setTextColor(getColor(R.color.COLOR_FF8400));
             tvSubTitle.setText("恭喜入榜，再接再厉哦");

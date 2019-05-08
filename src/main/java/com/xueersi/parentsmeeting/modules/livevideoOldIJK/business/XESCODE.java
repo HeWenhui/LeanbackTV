@@ -213,9 +213,11 @@ public interface XESCODE {
 
     /** 辅导老师 表扬榜on */
     int TUTOR_ROOM_PRAISE_OPEN = 400;
-    /** 辅导老师 表扬- */
+    /** 辅导老师 表扬榜 发送点赞数 */
+    int TUTOR_ROOM_PRAISE_SENT_LIKE = 401;
+    /** 辅导老师 表扬-点赞 */
     int TUTOR_ROOM_PRAISE_LIKE = 402;
-    /** 辅导老师 表扬- */
+    /** 辅导老师 表扬- 点赞总数*/
     int TUTOR_ROOM_PRAISE_LIKE_TOTAL = 403;
 
     /** 2018接麦 */
