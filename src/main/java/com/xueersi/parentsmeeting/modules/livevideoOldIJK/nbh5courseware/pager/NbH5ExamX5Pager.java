@@ -342,6 +342,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
 
             @Override
             public void onViewDetachedFromWindow(View v) {
+                mView.removeCallbacks(hideStepResultTask);
                 EventBus.getDefault().unregister(NbH5ExamX5Pager.this);
             }
         });
@@ -468,6 +469,15 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
         loadingStartTime = System.currentTimeMillis();
     }
 
+
+
+    private Runnable hideStepResultTask = new Runnable() {
+        @Override
+        public void run() {
+            hideStepResult();
+        }
+    };
+
     /**
      * 小时连对UI
      *
@@ -475,7 +485,8 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
      * @param stepDesc 小步 描述
      */
     private void showStepResult(int rightNum, String stepDesc) {
-        if (rightNum >= 2) {
+
+        if (rightNum >= 2 && stepResultContanier.getVisibility() != View.VISIBLE) {
             stepResultContanier.setVisibility(View.VISIBLE);
             final LottieAnimationView animationView = stepResultContanier.findViewById(R.id
                     .lav_livevideo_nb_step_result);
@@ -498,12 +509,17 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                 }
             });
             animationView.playAnimation();
-            mView.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    hideStepResult();
-                }
-            }, 3000);
+            mView.postDelayed(hideStepResultTask, 3000);
+        }else{
+            //当前正在显示 每小步结果,更新当前 展示内容
+            mView.removeCallbacks(hideStepResultTask);
+            TextView tvStepDesc = stepResultContanier.findViewById(R.id.tv_livevideo_nb_step_desc);
+            tvStepDesc.setText(stepDesc);
+            TextView tvRightNum = stepResultContanier.findViewById(R.id.tv_livevideo_nb_step_result);
+            StringBuilder sb = new StringBuilder();
+            sb.append("连对 ").append("X").append(rightNum);
+            tvRightNum.setText(sb.toString());
+            mView.postDelayed(hideStepResultTask,3000);
         }
     }
 
@@ -579,7 +595,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
     @Override
     public void submitData() {
         //避免多少调用
-       // if(!isForceSubmit){
+        if(!isForceSubmit){
             isForceSubmit = true;
             if(currentMode == MODE_EXAM){
                 //已加载过结果页
@@ -604,7 +620,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                 currentMode = MODE_EXAM;
                 showResult();
             }
-     //   }
+       }
     }
 
     @Override
