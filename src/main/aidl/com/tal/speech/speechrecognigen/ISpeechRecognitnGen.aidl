@@ -7,9 +7,9 @@ import com.tal.speech.speechrecognigen.ISpeechRecognitnCall;
 
 interface ISpeechRecognitnGen {
 
-      void start(ISpeechRecognitnCall call);
+      void startSpeech(ISpeechRecognitnCall call);
 
-      void stop();
+      void stopSpeech();
 
       void release();
 }

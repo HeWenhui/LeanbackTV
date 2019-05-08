@@ -5,32 +5,18 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.media.AudioFormat;
-import android.media.AudioRecord;
-import android.media.MediaRecorder;
 import android.os.IBinder;
 import android.os.RemoteException;
-import android.support.annotation.NonNull;
 
-import com.tal.speech.service.SpeechService;
 import com.tal.speech.speechrecognigen.ISpeechRecognitnCall;
 import com.tal.speech.speechrecognigen.ISpeechRecognitnGen;
-import com.tal.speech.speechrecognizer.PCMFormat;
-import com.xueersi.common.business.UserBll;
-import com.xueersi.common.entity.MyUserInfoEntity;
-import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.service.LiveService;
-import com.xueersi.parentsmeeting.speakerrecognition.SpeakerRecognitionerInterface;
 
-import java.io.IOException;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.RejectedExecutionHandler;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -70,20 +56,29 @@ public class SpeakerRecognitioner {
                     iSpeechRecognitnGen.release();
                 } catch (RemoteException e) {
                     e.printStackTrace();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             } else {
                 if (isStart) {
                     try {
-                        iSpeechRecognitnGen.start(speechRecognitnCall);
+                        iSpeechRecognitnGen.startSpeech(speechRecognitnCall);
                     } catch (RemoteException e) {
                         e.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        CrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                 } else {
                     if (isStart) {
                         try {
-                            iSpeechRecognitnGen.stop();
+                            iSpeechRecognitnGen.stopSpeech();
                         } catch (RemoteException e) {
                             e.printStackTrace();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            CrashReport.postCatchedException(new LiveException(TAG, e));
                         }
                     }
                 }
@@ -92,17 +87,18 @@ public class SpeakerRecognitioner {
 
         @Override
         public void onServiceDisconnected(ComponentName componentName) {
-            logger.d("onServiceConnected");
+            logger.d("onServiceDisconnected");
         }
     };
 
     private ISpeechRecognitnCall.Stub speechRecognitnCall = new ISpeechRecognitnCall.Stub() {
 
         @Override
-        public void onPredict(String msg) throws RemoteException {
+        public boolean onPredict(String msg) throws RemoteException {
             if (speakerPredict != null) {
                 speakerPredict.onPredict(msg);
             }
+            return audioRequest.get();
         }
     };
 
@@ -117,9 +113,12 @@ public class SpeakerRecognitioner {
         isStart = true;
         if (iSpeechRecognitnGen != null) {
             try {
-                iSpeechRecognitnGen.start(speechRecognitnCall);
+                iSpeechRecognitnGen.startSpeech(speechRecognitnCall);
             } catch (RemoteException e) {
                 e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
     }
@@ -129,9 +128,12 @@ public class SpeakerRecognitioner {
         isStart = false;
         if (iSpeechRecognitnGen != null) {
             try {
-                iSpeechRecognitnGen.stop();
+                iSpeechRecognitnGen.stopSpeech();
             } catch (RemoteException e) {
                 e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
     }
@@ -143,6 +145,9 @@ public class SpeakerRecognitioner {
                 iSpeechRecognitnGen.release();
             } catch (RemoteException e) {
                 e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
         context.unbindService(serviceConnection);

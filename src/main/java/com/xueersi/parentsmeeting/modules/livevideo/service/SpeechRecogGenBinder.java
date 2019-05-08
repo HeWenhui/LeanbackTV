@@ -12,9 +12,10 @@ import com.tal.speech.speechrecognigen.ISpeechRecognitnGen;
 import com.tal.speech.speechrecognizer.PCMFormat;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.entity.MyUserInfoEntity;
+import com.xueersi.common.util.LoadSoCallBack;
 import com.xueersi.lib.framework.utils.string.StringUtils;
-import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.speakerrecognition.SpeakerRecognitionerInterface;
 
 import java.io.IOException;
@@ -26,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
-    private Logger logger = LoggerFactory.getLogger("SpeechRecogGenBinder");
+    private Logger logger = LiveLoggerFactory.getLogger("SpeechRecogGenBinder");
     private final Object lock = new Object();
     /** 和服务器的ping，线程池 */
     private ThreadPoolExecutor pingPool;
@@ -47,19 +48,18 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
     /** 原始录音数据 */
     private byte[] mPCMBuffer;
     private boolean isStart = false;
-    boolean init = false;
     private int index = 1;
     private boolean destory = false;
     private Context context;
     //    private SpeakerPredict speakerPredict;
     private SpeakerRecognitionerInterface speakerRecognitionerInterface;
-    private AtomicBoolean audioRequest;
+    private boolean loadSo = false;
+    private ISpeechRecognitnCall iSpeechRecognitnCall;
 
-    public SpeechRecogGenBinder() {
-        audioRequest = new AtomicBoolean();
+    public SpeechRecogGenBinder(Context context) {
         logger.d("SpeechRecogGenBinder");
         pingPool = new ThreadPoolExecutor(1, 1,
-                0L, TimeUnit.MILLISECONDS,
+                30L, TimeUnit.SECONDS,
                 new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
 
             @Override
@@ -78,6 +78,52 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
             @Override
             public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
 
+            }
+        });
+        pingPool.allowCoreThreadTimeOut(true);
+        SpeakerRecognitionerInterface.checkResoureDownload(context, new LoadSoCallBack() {
+            @Override
+            public void start() {
+            }
+
+            @Override
+            public void success() {
+                pingPool.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        speakerRecognitionerInterface = SpeakerRecognitionerInterface.getInstance();
+                        boolean result = speakerRecognitionerInterface.init();
+                        logger.d("init:result=" + result + ",isStart=" + isStart);
+                        if (result) {
+                            byte[] pcmdata = new byte[10];
+                            String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+                            int enrollIvector = speakerRecognitionerInterface.
+                                    enrollIvector(pcmdata, pcmdata.length, 0, stuId, false);
+                            logger.d("init:stuId=" + stuId + ",enrollIvector=" + enrollIvector);
+                            if (enrollIvector == 0) {
+                                loadSo = true;
+                                if (isStart) {
+                                    isStart = false;
+                                    try {
+                                        SpeechRecogGenBinder.this.startSpeech(iSpeechRecognitnCall);
+                                    } catch (RemoteException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void progress(float progress, int type) {
+
+            }
+
+            @Override
+            public void fail(int errorCode, String errorMsg) {
+                logger.d("checkResoureDownload:errorCode=" + errorCode + ",errorMsg=" + errorMsg);
             }
         });
     }
@@ -104,28 +150,23 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
     private int lastReadSize;
 
     @Override
-    public void start(final ISpeechRecognitnCall iSpeechRecognitnCall) throws RemoteException {
-        logger.d("start");
+    public void startSpeech(final ISpeechRecognitnCall iSpeechRecognitnCall) throws RemoteException {
+        logger.d("start:loadSo=" + loadSo);
+        this.iSpeechRecognitnCall = iSpeechRecognitnCall;
         if (isStart) {
             return;
         }
-        audioRequest.set(false);
         isStart = true;
+        if (!loadSo) {
+            return;
+        }
         pingPool.execute(new Runnable() {
             @Override
             public void run() {
-                if (audioRequest.get() || destory) {
-                    logger.d("start:audioRequest=" + audioRequest + ",destory=" + destory);
+                if (destory) {
+                    logger.d("start:destory=" + destory);
                     return;
                 }
-                speakerRecognitionerInterface = SpeakerRecognitionerInterface
-                        .getInstance();
-                boolean result = speakerRecognitionerInterface.init();
-                logger.d("start:result=" + result);
-                if (!result) {
-                    return;
-                }
-                init = true;
                 MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
                 String stuId = userInfoEntity.getStuId();
                 if (mAudioRecord == null) {
@@ -146,21 +187,27 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
 //                                byte[] pcm_data = toByteArray(mPCMBuffer, readSize);
 //                            logger.d("start:predict=" + readSize + ",pcm_data=" + pcm_data.length);
                         synchronized (lock) {
-                            if (destory || audioRequest.get()) {
+                            if (destory) {
                                 return;
                             }
                             //小于0是错误码
                             if (readSize > 0) {
                                 String predict = speakerRecognitionerInterface.predict(mPCMBuffer, readSize, index++, stuId, false);
                                 if (!StringUtils.isEmpty(predict)) {
-                                    logger.d("start:predict=" + predict);
 //                                    if (speakerPredict != null) {
 //                                        speakerPredict.onPredict(predict);
 //                                    }
                                     try {
-                                        iSpeechRecognitnCall.onPredict(predict);
+                                        boolean request = iSpeechRecognitnCall.onPredict(predict);
+                                        logger.d("start:request=" + request + ",predict=" + predict);
+                                        if (request) {
+                                            stop();
+                                            break;
+                                        }
                                     } catch (RemoteException e) {
                                         e.printStackTrace();
+                                        stop();
+                                        break;
                                     }
                                 }
                             } else {
@@ -177,9 +224,12 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
     }
 
     @Override
-    public void stop() throws RemoteException {
+    public void stopSpeech() throws RemoteException {
+        stop();
+    }
+
+    private void stop() {
         logger.d("stop");
-        audioRequest.set(true);
         isStart = false;
         if (mAudioRecord != null) {
             try {

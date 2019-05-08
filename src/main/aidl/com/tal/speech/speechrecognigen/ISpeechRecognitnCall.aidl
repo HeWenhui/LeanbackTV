@@ -5,6 +5,6 @@ package com.tal.speech.speechrecognigen;
 
 interface ISpeechRecognitnCall {
 
-      void onPredict(String msg);
+      boolean onPredict(String msg);
 
 }
