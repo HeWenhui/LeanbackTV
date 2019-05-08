@@ -467,7 +467,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         coursewareOnloading(currentAnswerIndex);
                     }
                     if (!gameOver) {
-                        reStartSpeechRecognize();
+                        startSpeechRecognize();
                     }
                 }
             });
@@ -675,7 +675,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         onScene("onLoadComplete");
                     }
                     if (!gameOver) {
-                        reStartSpeechRecognize();
+                        startSpeechRecognize();
                     }
                 }
             });
@@ -1058,12 +1058,25 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         }
     }
 
+    /**
+     * 语音炮弹翻页使用
+     */
     private void reStartSpeechRecognize() {
-        mLogtf.d("reStartSpeechRecognize");
         if (mIse != null) {
             mIse.cancel();
         }
-        startSpeechRecognize();
+        final String finalSpeechContent = speechContent;
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //避免多次启动
+                boolean equals = ("" + finalSpeechContent).equals(speechContent);
+                mLogtf.d("reStartSpeechRecognize:final=" + finalSpeechContent + "," + speechContent + ",equals=" + equals);
+                if (equals && !gameOver && !isDestory) {
+                    startSpeechRecognize();
+                }
+            }
+        }, 900);
     }
 
     private void startSpeechRecognize() {
@@ -1183,7 +1196,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 public void run() {
                     if (!gameOver && !isDestory) {
 //                        XESToastUtils.showToast(mContext, "评测完成");
-                        reStartSpeechRecognize();
+                        startSpeechRecognize();
                     }
                 }
             }, delay ? 1000 : 10);
