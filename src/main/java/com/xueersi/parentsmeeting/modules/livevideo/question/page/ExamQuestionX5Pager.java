@@ -416,7 +416,6 @@ public class ExamQuestionX5Pager extends LiveBasePager implements BaseExamQuesti
      */
     @JavascriptInterface
     public void onAnswerResult_LiveVideo(String data){
-        Log.e("PkTrace","======>onAnswerResult_LiveVideo:"+data);
         isAnswerResultRecived = true;
         EventBus.getDefault().post(new AnswerResultEvent(data));
     }
