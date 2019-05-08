@@ -65,8 +65,12 @@ public class GroupGameMVPMultPager extends LiveBasePager {
             @Override
             public int compare(TeamMemberEntity o1, TeamMemberEntity o2) {
                 int com = o2.gold - o1.gold;
-                if (com == 0 && (o2.isMy || o1.isMy)) {
-                    return -1;
+                if (com == 0) {
+                    if (o2.isMy || o1.isMy) {
+                        return -1;
+                    }
+                    com = o2.energy - o1.energy;
+                    return com;
                 }
                 return com;
             }
