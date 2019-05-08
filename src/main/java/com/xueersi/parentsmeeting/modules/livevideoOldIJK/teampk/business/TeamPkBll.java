@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.business;
 import android.app.Activity;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -1633,6 +1634,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onScineceAnswerResutlEvent(AnswerResultEvent event) {
+        Log.e("PkTrace","======>onAnswerResult_LiveVideo:"+event.toString());
         logger.e("========>onAnswerResult_LiveVideo:" + event.toString());
         try {
             JSONObject jsonObject = new JSONObject(event.getData());
