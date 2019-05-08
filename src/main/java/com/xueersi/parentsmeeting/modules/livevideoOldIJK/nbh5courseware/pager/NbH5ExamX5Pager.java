@@ -455,6 +455,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
         showLoadingView();
         resultLoaded = false;
         jsInserted = false;
+        nbLoaded = false;
         wvSubjectWeb.loadUrl(nbTestModeUrl);
         Log.e("NbH5ExamX5Pager","====>intoTestMode:"+nbTestModeUrl);
         btnSubmit.setText("结束练习");

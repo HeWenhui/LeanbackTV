@@ -60,6 +60,8 @@ public class TimeCountTextView extends android.support.v7.widget.AppCompatTextVi
      * 开始倒计时
      */
     public void start() {
+        //清空
+        setText("");
         start(1000);
     }
 
