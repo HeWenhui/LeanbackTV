@@ -77,6 +77,11 @@ public class PraiseBasePager extends LiveBasePager {
     OnPraisePageListener onPraisePageListener;
 
     int totalCurrentNum = 0;
+    /**
+     * 是否第一次点赞
+     */
+    boolean isSendParise = true;
+
     private static class PraiseBasePagerHandler extends Handler {
         private WeakReference<PraiseBasePager> mc;
 
@@ -98,7 +103,11 @@ public class PraiseBasePager extends LiveBasePager {
                 praiseBasePager.showEncouragingView();
             } else if (waht == PraiseConfig.PRAISE_TOTAL_SEND) {
                 praiseBasePager.updatePraiseNum();
+            } else if (waht == PraiseConfig.PRAISE_TOTAL_SEND) {
+                praiseBasePager.sentPraiseLikes();
+
             }
+
 
         }
     }
@@ -211,7 +220,7 @@ public class PraiseBasePager extends LiveBasePager {
         imgBtnPractice.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                upDatePraiseNum();
+                clickPraiseLikes();
 
             }
         });
@@ -219,29 +228,15 @@ public class PraiseBasePager extends LiveBasePager {
         imgBtnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final CloseConfirmDialog closeConfirmDialog = new CloseConfirmDialog(mContext);
-                closeConfirmDialog.setTitle("关闭后将无法再开启表扬榜哦，确定关闭吗？");
-                closeConfirmDialog.setTitleGravaty(Gravity.LEFT);
-                closeConfirmDialog.hideContent();
-                closeConfirmDialog.setOnClickCancelListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        closeConfirmDialog.cancelDialog();
-                    }
-                });
-                closeConfirmDialog.setOnClickConfirmlListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        closeConfirmDialog.cancelDialog();
-                        closePraisePager();
-                    }
-                });
-                closeConfirmDialog.showDialog();
+                closePraisePager();
 
             }
         });
     }
-
+    /**
+     * 关闭表扬榜
+     * @param onPagerClose
+     */
     public void closePraisePager() {
         if (onPagerClose != null) {
             onPagerClose.onClose(this);
@@ -249,37 +244,53 @@ public class PraiseBasePager extends LiveBasePager {
     }
 
     /**
-     * 更新点赞数
-     *
-     * @param praiseNum
-     * @param withAnim  是否显示动画
+     * 发送本地点赞数到服务器
      */
-    private void upDatePraiseNum() {
-        mCurrentNum++;
-        if (onPraisePageListener != null) {
+    private void sentPraiseLikes() {
+        if (onPraisePageListener != null && mCurrentNum > 0) {
             onPraisePageListener.onPraiseClick(mCurrentNum);
+            mCurrentNum = 0;
         }
+        mHandler.sendEmptyMessageDelayed(PraiseConfig.PRAISE_CLICK_SEND, 3000);
     }
 
+    /**
+     * 本地点赞数增加
+     */
+    private void clickPraiseLikes() {
+        mCurrentNum++;
+        totalCurrentNum = totalCurrentNum + 1;
+        if (isSendParise) {
+            sentPraiseLikes();
+            isSendParise = false;
+        }
+        updatePraiseNum();
+    }
+
+    /**
+     * 更新点赞
+     */
     private void updatePraiseNum() {
-       // TotalCurrentNum
         if (imgBtnPractice != null && imgBtnPractice.getVisibility() == View.VISIBLE) {
             StringBuilder sb = new StringBuilder();
-            int total = mCurrentNum + totalCurrentNum;
-            if (mCurrentNum > TEN_THOUSAND) {
-                if (mCurrentNum % TEN_THOUSAND >= HUNDRED) {
-                    BigDecimal bigDecimal = new BigDecimal(mCurrentNum / 10000.0f);
+            if (totalCurrentNum > TEN_THOUSAND) {
+                if (totalCurrentNum % TEN_THOUSAND >= HUNDRED) {
+                    BigDecimal bigDecimal = new BigDecimal(totalCurrentNum / 10000.0f);
                     sb.append(bigDecimal.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue()).append("万");
                 } else {
-                    sb.append(mCurrentNum / TEN_THOUSAND).append("万");
+                    sb.append(totalCurrentNum / TEN_THOUSAND).append("万");
                 }
             } else {
-                sb.append(mCurrentNum);
+                sb.append(totalCurrentNum);
             }
             tvPracticeCount.setText(sb.toString());
         }
     }
 
+    /**
+     * 关闭表扬监听增加
+     * @param onPagerClose
+     */
     @Override
     public void setOnPagerClose(OnPagerClose onPagerClose) {
         super.setOnPagerClose(onPagerClose);
@@ -297,7 +308,7 @@ public class PraiseBasePager extends LiveBasePager {
     }
 
     /**
-     * 显示鼓励语
+     * 显示鼓励语消息发送
      */
     public void showEncouraging() {
         if (mHandler != null) {
@@ -305,11 +316,20 @@ public class PraiseBasePager extends LiveBasePager {
         }
     }
 
+    /**
+     * 设置点赞
+     * @param num
+     */
     public void setPraiseTotal(int num) {
-        totalCurrentNum = num;
+        if (totalCurrentNum <num){
+            totalCurrentNum = num;
+        }
         mHandler.sendEmptyMessageDelayed(PraiseConfig.PRAISE_TOTAL_SEND, 0);
     }
 
+    /**
+     * 显示鼓励语
+     */
     private void showEncouragingView() {
         if (llTeacherContent != null) {
             llTeacherContent.setVisibility(View.VISIBLE);

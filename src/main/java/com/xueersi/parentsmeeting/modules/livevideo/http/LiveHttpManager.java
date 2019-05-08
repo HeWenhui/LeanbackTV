@@ -1109,10 +1109,10 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
         HttpRequestParams params = new HttpRequestParams();
         setDefaultParameter(params);
-        liveId = "373963";
-        courseId = "49568";
-        counselorId = "2632";
-        rankId = "68";
+//        liveId = "373963";
+//        courseId = "49568";
+//        counselorId = "2632";
+//        rankId = "68";
         params.addBodyParam("rankId", rankId);
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("courseId", courseId);

@@ -30,4 +30,6 @@ public class PraiseConfig {
     public  final static int  ENCOURAGING_SHOW = 1;
     /** 鼓励总数 */
     public  final static int  PRAISE_TOTAL_SEND = 2;
+    /** 鼓励总数 */
+    public  final static int  PRAISE_CLICK_SEND = 3;
 }

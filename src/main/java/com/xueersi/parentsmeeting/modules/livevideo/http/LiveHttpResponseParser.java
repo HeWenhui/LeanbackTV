@@ -2417,7 +2417,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         int gradle = jsonObject.optInt("grade");
         if (gradle ==PraiseConfig.GRADLE_SMALL) {
           entity.setPraiseStyle(jsonObject.optInt("bizId"));
-
             //entity.setPraiseStyle(1);
         } else {
             entity.setPraiseStyle(PraiseConfig.PRAISE_DARK);
@@ -2430,7 +2429,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             titleEntity.setPraiseStyle(entity.getPraiseStyle());
             titleEntity.setItemSpan(4);
             titleEntity.setName("题目描述");
-
             contentEntityList.add(titleEntity);
             contentEntity = new PraiseContentEntity();
             contentEntity.setPraiseStyle(entity.getPraiseStyle());
