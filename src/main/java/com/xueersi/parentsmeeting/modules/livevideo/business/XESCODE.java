@@ -184,7 +184,8 @@ public interface XESCODE {
 
     /** 发送语音弹幕 */
     int XCR_ROOM_DANMU_SEND = 261;
-
+    /** 发送集体发言 */
+    int XCR_ROOM_SPEECH_COLL = 273;
     /** 语文：开启/关闭语音弹幕 */
     int XCR_ROOM_CHINESE_DANMU_OPEN = 290;
 

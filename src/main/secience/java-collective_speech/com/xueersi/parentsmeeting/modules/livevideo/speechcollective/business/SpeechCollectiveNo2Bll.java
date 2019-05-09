@@ -64,6 +64,7 @@ public class SpeechCollectiveNo2Bll {
     /** 录音是否结束，用来 */
     private AtomicBoolean isStop = new AtomicBoolean(false);
     private boolean start = false;
+    private String voiceId;
     private long lastOneLevelTime = -1, lastTwoLevelTime = -1, lastThreeLevelTime = -1;
     /**
      * 日志数据
@@ -93,7 +94,8 @@ public class SpeechCollectiveNo2Bll {
         this.liveGetInfo = liveGetInfo;
     }
 
-    public void start(String roomId) {
+    public void start(String voiceId) {
+        this.voiceId = voiceId;
         if (start) {
             return;
         }
@@ -103,7 +105,7 @@ public class SpeechCollectiveNo2Bll {
         }
         speechStartDialog = new SpeechStartDialog(context);
         speechStartDialog.setStart();
-        mLogtf.d("start:roomId=" + roomId);
+        mLogtf.d("start:voiceId=" + voiceId);
         addView();
         boolean hasAudidoPermission = XesPermission.hasSelfPermission(context, Manifest.permission.RECORD_AUDIO); //
         // 检查用户麦克风权限
@@ -318,7 +320,8 @@ public class SpeechCollectiveNo2Bll {
                 logger.i("recognizeSuccess");
                 mSpeechEvaluatorUtils.cancel();
                 isRecord.set(false);
-                collectiveHttp.uploadSpeechMsg("", "" + ansStr, new AbstractBusinessDataCallBack() {
+                collectiveHttp.sendSpeechMsg(voiceId, "" + ansStr);
+                collectiveHttp.uploadSpeechMsg(voiceId, "" + ansStr, new AbstractBusinessDataCallBack() {
                     @Override
                     public void onDataSucess(Object... objData) {
                         logger.i("onDataSucess:data=" + objData[0]);

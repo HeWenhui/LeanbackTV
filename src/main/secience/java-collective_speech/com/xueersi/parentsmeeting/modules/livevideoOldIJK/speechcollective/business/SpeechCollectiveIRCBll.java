@@ -2,11 +2,14 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.speechcollective.busi
 
 import android.app.Activity;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.business.SpeechCollectiveHttp;
@@ -27,6 +30,10 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
     private boolean isFirstCreate = true;
     private SpeechCollectiveHttpManager speechCollectiveHttpManager;
     private SpeechCollectiveHttp collectiveHttp;
+    /**
+     * 是不是有分组
+     */
+    private boolean haveTeam = false;
 
     public SpeechCollectiveIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -40,6 +47,11 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
         int isVoiceInteraction = mGetInfo.getIsVoiceInteraction();
         if (isVoiceInteraction == 0) {
             mLiveBll.removeBusinessBll(this);
+            return;
+        }
+        LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
+        if (!StringUtils.isEmpty(studentLiveInfo.getTeamId()) && !"0".equals(studentLiveInfo.getTeamId())) {
+            haveTeam = true;
         }
 //        createBll();
 //        speechCollectiveBll.start("");
@@ -50,6 +62,28 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
         @Override
         public void uploadSpeechMsg(String voiceId, String msg, AbstractBusinessDataCallBack callBack) {
             getSpeechCollectiveHttpManager().uploadSpeechMsg(voiceId, msg, callBack);
+        }
+
+        @Override
+        public void sendSpeechMsg(String voiceId, String msg) {
+            try {
+                JSONObject jsonObject = new JSONObject();
+                jsonObject.put("type", "" + XESCODE.XCR_ROOM_SPEECH_COLL);
+                jsonObject.put("name", mGetInfo.getStuName());
+                jsonObject.put("headImg", mGetInfo.getHeadImgPath());
+                jsonObject.put("msg", msg);
+                //不同组的学生互相不能看弹幕
+                if (haveTeam) {
+                    LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
+                    String teamId = studentLiveInfo.getTeamId();
+                    jsonObject.put("from", "android_" + teamId);
+                    jsonObject.put("to", teamId);
+                }
+                mLiveBll.sendMessage(jsonObject);
+            } catch (Exception e) {
+                logger.e("sendSpeechMsg:", e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
+            }
         }
     }
 
@@ -92,15 +126,14 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
         isFirstCreate = false;
         LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
         String status = mainRoomstatus.getOnGroupSpeech();
-        int isVoiceInteraction = mGetInfo.getIsVoiceInteraction();
-        if (isVoiceInteraction == 1 && "on".equals(status)
+        if ("on".equals(status)
                 && LiveTopic.MODE_CLASS.equals(liveTopic.getMode())) {
-            final String roomId = mainRoomstatus.getGroupSpeechRoom();
+            final String voiceId = mainRoomstatus.getGroupSpeechRoom();
             if (speechCollectiveBll != null) {
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        speechCollectiveBll.start(roomId);
+                        speechCollectiveBll.start(voiceId);
                     }
                 });
             } else {
@@ -110,7 +143,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                         //如果是退出直播间再进来，不弹出倒计时和灰色收音球
                         ShareDataManager.getInstance().put("isOnTopic", true, ShareDataManager.SHAREDATA_USER);
                         createBll();
-                        speechCollectiveBll.start(roomId);
+                        speechCollectiveBll.start(voiceId);
                     }
                 });
             }
@@ -121,18 +154,17 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
         }
     }
 
-    private void onStaus(String status, String roomId) {
+    private void onStaus(String status, String voiceID) {
         if (speechCollectiveBll != null) {
             try {
-                int isVoiceInteraction = mGetInfo.getIsVoiceInteraction();
-                if (isVoiceInteraction == 1 && "on".equals(status)
-                        && LiveTopic.MODE_CLASS.equals(mLiveBll.getMode())) {
-                    speechCollectiveBll.start(roomId);
+                if ("on".equals(status) && LiveTopic.MODE_CLASS.equals(mLiveBll.getMode())) {
+                    speechCollectiveBll.start(voiceID);
                 } else {
                     speechCollectiveBll.stop();
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
     }
@@ -153,16 +185,16 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
         switch (type) {
             case XESCODE.SPEECH_COLLECTIVE: {
                 ShareDataManager.getInstance().put("isOnTopic", false, ShareDataManager.SHAREDATA_USER);
-                final String from = object.optString("roomId");
+                final String voiceID = object.optString("voiceId");
                 final String status = object.optString("status");
-                if (!"voice_plan_ios".equals(from)) {
+                if (!"voice_plan_ios".equals(voiceID)) {
                     return;
                 }
                 if (speechCollectiveBll != null) {
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            onStaus(status, from);
+                            onStaus(status, voiceID);
                         }
                     });
                 } else {
@@ -170,7 +202,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                         @Override
                         public void run() {
                             createBll();
-                            onStaus(status, from);
+                            onStaus(status, voiceID);
                         }
                     });
                 }

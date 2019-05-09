@@ -706,7 +706,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
             if (status.has("groupSpeech")) {
                 JSONObject jsonObject = status.optJSONObject("groupSpeech");
-                mainStatusEntity.setGroupSpeechRoom(jsonObject.optString("groupSpeechRoom"));
+                mainStatusEntity.setGroupSpeechRoom(jsonObject.optString("voiceId"));
                 mainStatusEntity.setOnGroupSpeech(jsonObject.optString("onGroupSpeech"));
             }
 
