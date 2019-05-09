@@ -252,6 +252,12 @@ public class BigQuestionSelectLivePager extends BaseLiveBigQuestionPager {
             }, LiveQueConfig.BIG_TEST_CLOSE);
             return;
         }
+        //回放不强制提交
+        if (isForce == 1 && isPlayback) {
+            onSubmit.onSubmit(BigQuestionSelectLivePager.this);
+            onPagerClose.onClose(BigQuestionSelectLivePager.this);
+            return;
+        }
         final JSONArray userAnswer = new JSONArray();
         if (answers.isEmpty()) {
             userAnswer.put("");
