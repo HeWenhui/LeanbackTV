@@ -75,7 +75,7 @@ public class PraiseBasePager extends LiveBasePager {
     PraiseEntity mPraiseEntity;
     PraiseBasePagerHandler mHandler;
     OnPraisePageListener onPraisePageListener;
-
+    RelativeLayout bottomContent;
     int totalCurrentNum = 0;
     /**
      * 是否第一次点赞
@@ -112,10 +112,11 @@ public class PraiseBasePager extends LiveBasePager {
         }
     }
 
-    public PraiseBasePager(Context context, PraiseEntity praiseEntity, OnPraisePageListener listener) {
+    public PraiseBasePager(Context context, PraiseEntity praiseEntity, OnPraisePageListener listener,RelativeLayout bottomContent) {
         super(context, praiseEntity, true);
         mHandler = new PraiseBasePagerHandler(this);
         listContent = praiseEntity.getContentEntityList();
+        this.bottomContent = bottomContent;
         this.onPraisePageListener = listener;
         setContentData();
         setLayout(mView);
@@ -154,7 +155,7 @@ public class PraiseBasePager extends LiveBasePager {
         } else if (mPraiseEntity.getPraiseStyle() == PraiseConfig.PRAISE_CHINA) {
             layoutId = R.layout.page_livevideo_praise_list_china;
         }
-        mView = View.inflate(mContext, layoutId, null);
+        mView = View.inflate(mContext, layoutId, bottomContent);
         recyclerView = mView.findViewById(R.id.rv_livevideo_praise_list_content);
         GridLayoutManager manager = new GridLayoutManager(mContext, 4);
         manager.setSpanSizeLookup(new GridSpanSizeLookup());

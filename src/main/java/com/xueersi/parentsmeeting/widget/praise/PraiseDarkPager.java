@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.widget.praise;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.widget.praise.business.OnPraisePageListener;
@@ -16,8 +17,8 @@ import com.xueersi.parentsmeeting.widget.praise.entity.PraiseEntity;
 public class PraiseDarkPager extends PraiseBasePager {
 
 
-    public PraiseDarkPager(Context context, PraiseEntity praiseEntity,OnPraisePageListener listener) {
-        super(context, praiseEntity,listener);
+    public PraiseDarkPager(Context context, PraiseEntity praiseEntity,OnPraisePageListener listener,RelativeLayout bottomContent) {
+        super(context, praiseEntity,listener,bottomContent);
     }
 
     @Override

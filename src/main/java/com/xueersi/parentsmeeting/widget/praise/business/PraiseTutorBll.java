@@ -178,7 +178,7 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 PraiseEntity entity = getHttpResponseParser().parseTutorPraiseEntity(responseEntity);
-                praisePager = new PraisePager(mContext, entity, listener);
+                praisePager = new PraisePager(mContext, entity, listener,bottomContent);
                 praisePager.showPraisePager(bottomContent);
             }
 

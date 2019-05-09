@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.widget.praise;
 
 import android.content.Context;
 import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.lib.analytics.umsagent.UmsAgentTrayPreference;
@@ -18,8 +19,8 @@ import com.xueersi.parentsmeeting.widget.praise.entity.PraiseEntity;
 public class PraiseLovelyPager extends PraiseBasePager {
 
 
-    public PraiseLovelyPager(Context context, PraiseEntity praiseEntity,OnPraisePageListener listener) {
-        super(context, praiseEntity,listener);
+    public PraiseLovelyPager(Context context, PraiseEntity praiseEntity,OnPraisePageListener listener,RelativeLayout bottomContent) {
+        super(context, praiseEntity,listener,bottomContent);
 
     }
     @Override

@@ -18,18 +18,18 @@ public class PraisePager {
     PraiseBasePager pager;
     OnPraisePageListener onPraisePageListener;
 
-    public PraisePager(Context context, PraiseEntity praiseEntity, OnPraisePageListener listener) {
+    public PraisePager(Context context, PraiseEntity praiseEntity, OnPraisePageListener listener,RelativeLayout bottomContent) {
         this.onPraisePageListener = listener;
         this.mContext = context;
         this.praiseEntity = praiseEntity;
         if (praiseEntity.getPraiseStyle() == PraiseConfig.PRAISE_DARK) {
-            pager = new PraiseDarkPager(mContext, praiseEntity, listener);
+            pager = new PraiseDarkPager(mContext, praiseEntity, listener,bottomContent);
         } else if (praiseEntity.getPraiseStyle() == PraiseConfig.PRAISE_LOVELY) {
-            pager = new PraiseLovelyPager(mContext, praiseEntity, listener);
+            pager = new PraiseLovelyPager(mContext, praiseEntity, listener,bottomContent);
         } else if (praiseEntity.getPraiseStyle() == PraiseConfig.PRAISE_CHINA) {
-            pager = new PraiseChinaPager(mContext, praiseEntity, listener);
+            pager = new PraiseChinaPager(mContext, praiseEntity, listener,bottomContent);
         } else {
-            pager = new PraiseWoodPager(mContext, praiseEntity, listener);
+            pager = new PraiseWoodPager(mContext, praiseEntity, listener,bottomContent);
         }
     }
 
