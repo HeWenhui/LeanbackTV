@@ -9,6 +9,8 @@ interface ISpeechRecognitnGen {
 
       void startSpeech(ISpeechRecognitnCall call);
 
+      void check(ISpeechRecognitnCall call);
+
       void stopSpeech();
 
       void release();

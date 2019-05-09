@@ -7,4 +7,6 @@ interface ISpeechRecognitnCall {
 
       boolean onPredict(String msg);
 
+      void enrollIvector(int enrollIvector);
+
 }

@@ -13,6 +13,7 @@ import com.tal.speech.speechrecognigen.ISpeechRecognitnGen;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.SpeakerEnrollIvector;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.service.LiveService;
@@ -34,6 +35,7 @@ public class SpeakerRecognitioner {
     private LogToFile logToFile;
     private AtomicBoolean audioRequest;
     private ISpeechRecognitnGen iSpeechRecognitnGen;
+    private SpeakerEnrollIvector speakerEnrollIvector;
 
     public SpeakerRecognitioner(Context context, AtomicBoolean audioRequest) {
         logger.setLogMethod(false);
@@ -100,10 +102,34 @@ public class SpeakerRecognitioner {
             }
             return audioRequest.get();
         }
+
+        @Override
+        public void enrollIvector(int enrollIvector) throws RemoteException {
+            if (speakerEnrollIvector != null) {
+                speakerEnrollIvector.enrollIvector(enrollIvector);
+            }
+        }
     };
 
     public void setSpeakerPredict(SpeakerPredict speakerPredict) {
         this.speakerPredict = speakerPredict;
+    }
+
+    public void setSpeakerEnrollIvector(SpeakerEnrollIvector speakerEnrollIvector) {
+        this.speakerEnrollIvector = speakerEnrollIvector;
+    }
+
+    public void check() {
+        if (iSpeechRecognitnGen != null) {
+            try {
+                iSpeechRecognitnGen.check(speechRecognitnCall);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            } catch (Exception e) {
+                e.printStackTrace();
+                CrashReport.postCatchedException(new LiveException(TAG, e));
+            }
+        }
     }
 
     public void start() {

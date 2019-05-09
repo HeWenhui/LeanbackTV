@@ -58,6 +58,7 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
 
     public SpeechRecogGenBinder(Context context) {
         logger.d("SpeechRecogGenBinder");
+        this.context = context;
         pingPool = new ThreadPoolExecutor(1, 1,
                 30L, TimeUnit.SECONDS,
                 new LinkedBlockingQueue<Runnable>(), new ThreadFactory() {
@@ -81,6 +82,10 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
             }
         });
         pingPool.allowCoreThreadTimeOut(true);
+        checkResoure();
+    }
+
+    private void checkResoure() {
         SpeakerRecognitionerInterface.checkResoureDownload(context, new LoadSoCallBack() {
             @Override
             public void start() {
@@ -100,15 +105,17 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
                             int enrollIvector = speakerRecognitionerInterface.
                                     enrollIvector(pcmdata, pcmdata.length, 0, stuId, false);
                             logger.d("init:stuId=" + stuId + ",enrollIvector=" + enrollIvector);
+                            if (iSpeechRecognitnCall != null) {
+                                try {
+                                    iSpeechRecognitnCall.enrollIvector(enrollIvector);
+                                } catch (RemoteException e) {
+                                    e.printStackTrace();
+                                }
+                            }
                             if (enrollIvector == 0) {
                                 loadSo = true;
                                 if (isStart) {
-                                    isStart = false;
-                                    try {
-                                        SpeechRecogGenBinder.this.startSpeech(iSpeechRecognitnCall);
-                                    } catch (RemoteException e) {
-                                        e.printStackTrace();
-                                    }
+                                    startSpeech();
                                 }
                             }
                         }
@@ -150,6 +157,13 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
     private int lastReadSize;
 
     @Override
+    public void check(ISpeechRecognitnCall iSpeechRecognitnCall) {
+        this.iSpeechRecognitnCall = iSpeechRecognitnCall;
+        logger.d("check:loadSo=" + loadSo);
+        checkResoure();
+    }
+
+    @Override
     public void startSpeech(final ISpeechRecognitnCall iSpeechRecognitnCall) throws RemoteException {
         logger.d("start:loadSo=" + loadSo);
         this.iSpeechRecognitnCall = iSpeechRecognitnCall;
@@ -160,6 +174,10 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
         if (!loadSo) {
             return;
         }
+        startSpeech();
+    }
+
+    public void startSpeech() {
         pingPool.execute(new Runnable() {
             @Override
             public void run() {
