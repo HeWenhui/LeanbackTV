@@ -61,7 +61,7 @@
         android:id="@id/ll_page_livevideo_praise_list_teacher_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
+        android:visibility="visible"
         android:layout_centerInParent="true"
         android:background="@color/transparent_70"
         android:gravity="center"
@@ -90,6 +90,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:text=""
+                android:paddingRight="20dp"
                 android:textColor="#A9743C"
                 android:textSize="15sp" />
         </LinearLayout>

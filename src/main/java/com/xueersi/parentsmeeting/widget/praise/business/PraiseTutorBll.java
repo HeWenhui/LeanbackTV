@@ -1,14 +1,18 @@
 package com.xueersi.parentsmeeting.widget.praise.business;
 
 import android.app.Activity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.business.UserBll;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.analytics.umsagent.UmsAgentTrayPreference;
+import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -27,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.contract.Pr
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.page.PraiseListPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.view.PraiseListBll;
 import com.xueersi.parentsmeeting.widget.praise.PraisePager;
+import com.xueersi.parentsmeeting.widget.praise.config.PraiseConfig;
 import com.xueersi.parentsmeeting.widget.praise.entity.PraiseEntity;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
@@ -45,7 +50,7 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     RelativeLayout bottomContent;
     PraisePager praisePager;
-
+    boolean isTopic = false;
     public PraiseTutorBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
     }
@@ -65,7 +70,7 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
-        UmsAgentManager.umsAgentDebug(mContext, "tutor_practice_notice", "type" + type + "/sourceNick" + sourceNick
+        Loger.d( "tutor_practice_notice", "type" + type + "/sourceNick" + sourceNick
                 + "target" + target + "data:" + data.toString());
         switch (type) {
             // 开启和发布榜单
@@ -76,8 +81,11 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
             case XESCODE.TUTOR_ROOM_PRAISE_LIKE:
                 showEncouraging();
                 break;
+            // 获取点赞总数
             case XESCODE.TUTOR_ROOM_PRAISE_LIKE_TOTAL:
                 setPraiseTotal(data);
+                break;
+            default:
                 break;
         }
     }
@@ -113,6 +121,14 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
         };
     }
 
+    public boolean isTopic() {
+        return isTopic;
+    }
+
+    public void setTopic(boolean topic) {
+        isTopic = topic;
+    }
+
     private void showEncouraging() {
         if (praisePager != null) {
             praisePager.showEncouraging();
@@ -127,18 +143,28 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
-        UmsAgentManager.umsAgentDebug(mContext, "tutor_practice_onTopic", "liveTopic" + liveTopic + "/jsonObject"
+        Loger.d( "tutor_practice_onTopic", "liveTopic" + liveTopic + "/jsonObject"
                 + "modeChange" + modeChange + "jsonObject:" + jsonObject.toString());
+//        if(LiveTopic.MODE_TRANING.equals(mLiveBll.getMode())) {
+//
+//        }
+
         if (jsonObject != null) {
             JSONObject room2Json = jsonObject.optJSONObject("room_2");
             if (room2Json != null) {
                 JSONObject praiseListJson = room2Json.optJSONObject("praiseList");
+                String id = praiseListJson.optString("id");
+                if(isTopic){
+                    return;
+                }
+                setTopic(true);
                 if (XESCODE.ON.equals(praiseListJson.optString("status"))) {
                     getPraiseTutorData(praiseListJson.optString("id"));
                 }
             }
         }
     }
+
 
     private synchronized void getPraiseTutorData(final String rankId) {
         String classId = "";

@@ -2413,7 +2413,6 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         PraiseContentEntity contentEntity = null;
         PraiseEntity entity = new PraiseEntity();
         entity.setContentEntityList(contentEntityList);
-        entity.setStatus(jsonObject.optInt("isInList"));
         int gradle = jsonObject.optInt("grade");
         if (gradle ==PraiseConfig.GRADLE_SMALL) {
           entity.setPraiseStyle(jsonObject.optInt("bizId"));
@@ -2432,10 +2431,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             contentEntityList.add(titleEntity);
             contentEntity = new PraiseContentEntity();
             contentEntity.setPraiseStyle(entity.getPraiseStyle());
-            contentEntity.setName("desc");
+            contentEntity.setName(jsonObject.optString("desc"));
             contentEntityList.add(contentEntity);
         }
-        entity.setResultType(jsonObject.optInt("rankType"));
+        entity.setResultType(jsonObject.optInt("isInList"));
         entity.setTeacherHeadImage(jsonObject.optString("counselorAvatar"));
         entity.setTeacherName(jsonObject.optString("counselorName"));
         entity.setEncouraging(jsonObject.optString("word"));

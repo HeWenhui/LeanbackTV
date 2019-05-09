@@ -1112,7 +1112,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
 //        liveId = "373963";
 //        courseId = "49568";
 //        counselorId = "2632";
-//        rankId = "68";
+//        rankId = "1";
         params.addBodyParam("rankId", rankId);
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("courseId", courseId);

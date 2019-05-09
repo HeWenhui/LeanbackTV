@@ -33,6 +33,11 @@ public class PraisePager {
         }
     }
 
+    /**
+     * 显示表扬榜
+     *
+     * @param bottomContent
+     */
     public void showPraisePager(RelativeLayout bottomContent) {
         View view = getRootView();
         if (bottomContent != null && view != null) {
@@ -41,14 +46,22 @@ public class PraisePager {
         }
     }
 
+    /**
+     * 关闭表扬榜
+     */
     public void closePraisePager() {
         if (pager != null) {
             pager.closePraisePager();
         }
     }
 
+    /**
+     * 设置关闭表扬榜监听
+     *
+     * @param bottomContent
+     */
     private void setClosePraise(final RelativeLayout bottomContent) {
-        if (pager != null) {
+        if (pager != null && bottomContent != null) {
             pager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
                 @Override
                 public void onClose(LiveBasePager basePager) {
@@ -58,12 +71,20 @@ public class PraisePager {
         }
     }
 
+    /**
+     * 设置点赞语
+     *
+     * @param num
+     */
     public void setPraiseTotal(int num) {
         if (pager != null) {
-             pager.setPraiseTotal(num);
+            pager.setPraiseTotal(num);
         }
     }
 
+    /**
+     * 展示鼓励语
+     */
     public void showEncouraging() {
         if (pager != null) {
             pager.showEncouraging();

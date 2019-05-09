@@ -90,6 +90,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:text=""
+                android:paddingRight="20dp"
+
                 android:textColor="#FFFBEB"
                 android:textSize="15sp" />
         </LinearLayout>

@@ -3,6 +3,8 @@ package com.xueersi.parentsmeeting.widget.praise;
 import android.content.Context;
 import android.view.View;
 
+import com.xueersi.common.config.AppConfig;
+import com.xueersi.lib.analytics.umsagent.UmsAgentTrayPreference;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.widget.praise.business.OnPraisePageListener;
 import com.xueersi.parentsmeeting.widget.praise.config.PraiseConfig;
@@ -18,6 +20,7 @@ public class PraiseLovelyPager extends PraiseBasePager {
 
     public PraiseLovelyPager(Context context, PraiseEntity praiseEntity,OnPraisePageListener listener) {
         super(context, praiseEntity,listener);
+
     }
     @Override
     protected void setPriseType() {

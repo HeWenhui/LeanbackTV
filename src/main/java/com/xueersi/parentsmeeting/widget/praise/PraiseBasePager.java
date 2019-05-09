@@ -187,6 +187,8 @@ public class PraiseBasePager extends LiveBasePager {
         setReslutType();
         ImageLoader.with(mContext).load(mPraiseEntity.getTeacherHeadImage()).
                 error(R.drawable.icon_livevideo_praiselist_team_head_default).into(ivTeacherHeadImage);
+        tvTeacherTip.setText(mPraiseEntity.getTeacherName()+"老师对你说:");
+        tvTeacherTalk.setText(mPraiseEntity.getEncouraging());
         practiceView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -233,13 +235,21 @@ public class PraiseBasePager extends LiveBasePager {
             }
         });
     }
+
     /**
      * 关闭表扬榜
+     *
      * @param onPagerClose
      */
     public void closePraisePager() {
         if (onPagerClose != null) {
             onPagerClose.onClose(this);
+            if (mHandler != null) {
+                mHandler.removeMessages(PraiseConfig.ENCOURAGING_HIDE);
+                mHandler.removeMessages(PraiseConfig.ENCOURAGING_SHOW);
+                mHandler.removeMessages(PraiseConfig.PRAISE_TOTAL_SEND);
+                mHandler.removeMessages(PraiseConfig.PRAISE_CLICK_SEND);
+            }
         }
     }
 
@@ -251,7 +261,9 @@ public class PraiseBasePager extends LiveBasePager {
             onPraisePageListener.onPraiseClick(mCurrentNum);
             mCurrentNum = 0;
         }
-        mHandler.sendEmptyMessageDelayed(PraiseConfig.PRAISE_CLICK_SEND, 3000);
+        if (mHandler != null) {
+            mHandler.sendEmptyMessageDelayed(PraiseConfig.PRAISE_CLICK_SEND, 3000);
+        }
     }
 
     /**
@@ -289,6 +301,7 @@ public class PraiseBasePager extends LiveBasePager {
 
     /**
      * 关闭表扬监听增加
+     *
      * @param onPagerClose
      */
     @Override
@@ -304,7 +317,9 @@ public class PraiseBasePager extends LiveBasePager {
      * 隐藏鼓励语
      */
     public void hideEncouraging() {
-        llTeacherContent.setVisibility(View.GONE);
+        if (llTeacherContent != null) {
+            llTeacherContent.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -318,13 +333,16 @@ public class PraiseBasePager extends LiveBasePager {
 
     /**
      * 设置点赞
+     *
      * @param num
      */
     public void setPraiseTotal(int num) {
-        if (totalCurrentNum <num){
+        if (totalCurrentNum < num) {
             totalCurrentNum = num;
         }
-        mHandler.sendEmptyMessageDelayed(PraiseConfig.PRAISE_TOTAL_SEND, 0);
+        if (mHandler != null) {
+            mHandler.sendEmptyMessageDelayed(PraiseConfig.PRAISE_TOTAL_SEND, 0);
+        }
     }
 
     /**

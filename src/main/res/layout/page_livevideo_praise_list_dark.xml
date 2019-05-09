@@ -83,6 +83,7 @@
                 android:id="@id/tv_page_livevideo_praise_list_teacher_tip"
                 android:layout_marginLeft="10dp"
                 android:text=""
+                android:paddingRight="20dp"
                 style="@style/text_font15_ffffff_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
