@@ -102,9 +102,8 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
         }
         String open = data.optString("open");
         String listId = data.optString("listId");
-        String nonce = data.optString(listId);
         if (XESCODE.ON.equals(open)) {
-            getPraiseTutorData(nonce);
+            getPraiseTutorData(listId);
         } else if (XESCODE.OFF.equals(open)) {
             if (praisePager != null) {
                 praisePager.closePraisePager();
