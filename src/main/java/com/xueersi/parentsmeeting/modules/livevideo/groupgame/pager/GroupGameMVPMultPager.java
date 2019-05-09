@@ -483,6 +483,7 @@ public class GroupGameMVPMultPager extends LiveBasePager {
     public Bitmap creatNameBitmap(String name, String lottieId) {
         Bitmap bitmap;
         try {
+            name = "" + name;
             bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(LOTTIE_RES_ASSETS_ROOTDIR + "images/" + lottieId));
             int width = bitmap.getWidth();
             int height = bitmap.getHeight();
@@ -490,8 +491,14 @@ public class GroupGameMVPMultPager extends LiveBasePager {
             Canvas canvas = new Canvas(creatBitmap);
             View view = LayoutInflater.from(mContext).inflate(R.layout.layout_en_groupgame_mvp_name, null);
             TextView tvCourseMvpName = view.findViewById(R.id.tv_livevideo_course_mvp_name);
-            tvCourseMvpName.setText(name);
-            float size = height * 9.0f / 10.0f / ScreenUtils.getScreenDensity();
+            String text;
+            if (name.length() > 4) {
+                text = ("" + name).substring(0, 4) + "...";
+            } else {
+                text = name;
+            }
+            tvCourseMvpName.setText(text);
+            float size = height * 9.8f / 10.0f / ScreenUtils.getScreenDensity();
             logger.d("creatNameBitmap:size=" + size);
             tvCourseMvpName.setTextSize(size);
 //            tvCourseMvpName.setTextSize(15);
