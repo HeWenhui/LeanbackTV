@@ -22,12 +22,14 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.event.TeachPraiseRusltulCloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportAction;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.page.SpeechEnergyPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.page.SpeechPraisePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -102,6 +104,7 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction {
                 @Override
                 public void onClose(LiveBasePager basePager) {
                     mRootView.removeView(basePager.getRootView());
+                    EventBus.getDefault().post(new TeachPraiseRusltulCloseEvent(""));
                 }
             });
         }
