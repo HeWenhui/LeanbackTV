@@ -496,7 +496,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         turnRun = new VoiceCannonTurnRun(currentAnswerIndex, time);
                         handler.postDelayed(turnRun, time * 1000);
                     } else {
-                        mLogtf.d("onLoadComplete:pagerNum=" + turnRun.pagerNum + "," + currentAnswerIndex);
+                        mLogtf.d("onCoursewareDoing:pagerNum=" + turnRun.pagerNum + "," + currentAnswerIndex);
                         if (turnRun.pagerNum < currentAnswerIndex) {
                             handler.removeCallbacks(turnRun);
                             turnRun = new VoiceCannonTurnRun(currentAnswerIndex, time);
