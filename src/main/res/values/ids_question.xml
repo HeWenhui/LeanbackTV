@@ -37,4 +37,19 @@
     <item name="lav_livevideo_groupgame_mvp_cloud" type="id" />
     <item name="lav_livevideo_groupgame_mvp" type="id" />
     <item name="iv_livevideo_groupgame_mvp_close" type="id" />
+    <!--大题互动结果页-->
+    <item name="iv_livevideo_bigque_result_title" type="id" />
+    <item name="iv_livevideo_bigque_result_title_light" type="id" />
+    <item name="tv_livevideo_bigque_result_title" type="id" />
+    <item name="iv_livevideo_bigque_result_close" type="id" />
+    <item name="rl_livevideo_bigque_result_content" type="id" />
+    <item name="rl_livevideo_bigque_result_tip" type="id" />
+    <item name="rv_livevideo_bigque_result_list" type="id" />
+    <item name="rl_livevideo_bigque_result_item_title" type="id" />
+    <!--大题互动结果页-item-->
+    <item name="tv_livevideo_bigque_result_stand" type="id" />
+    <item name="tv_livevideo_bigque_result_your" type="id" />
+    <item name="tv_livevideo_bigque_result_your_hind" type="id" />
+    <item name="tv_livevideo_bigque_result_type" type="id" />
+    <item name="iv_livevideo_bigque_result_type" type="id" />
 </resources>

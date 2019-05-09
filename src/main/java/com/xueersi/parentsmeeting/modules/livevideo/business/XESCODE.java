@@ -179,6 +179,8 @@ public interface XESCODE {
     /** 语文AI主观题*/
     int AI_SUBJECTIVE_H5_COURSEWARE = 252;
 
+    /** 大题互动 http://wiki.xesv5.com/pages/viewpage.action?pageId=17724551 */
+    int QUES_BIG = 252;
     /** 开启/关闭语音弹幕 */
     int XCR_ROOM_DANMU_OPEN = 260;
 
