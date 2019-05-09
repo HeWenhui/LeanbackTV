@@ -122,7 +122,7 @@
         <com.airbnb.lottie.LottieAnimationView
             android:id="@id/lav_livevideo_praise_list_practice"
             android:layout_width="65dp"
-            android:layout_height="65dp"
+            android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
             app:lottie_fileName="practicecourse/dark/practice_course_dark.json"
             app:lottie_imageAssetsFolder="practicecourse/dark/images"

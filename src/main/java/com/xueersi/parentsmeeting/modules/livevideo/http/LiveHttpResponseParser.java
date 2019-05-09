@@ -2413,7 +2413,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         PraiseContentEntity contentEntity = null;
         PraiseEntity entity = new PraiseEntity();
         entity.setContentEntityList(contentEntityList);
-        int gradle = jsonObject.optInt("grade");
+       int gradle = jsonObject.optInt("grade");
+//        int gradle = 2;
         if (gradle ==PraiseConfig.GRADLE_SMALL) {
           entity.setPraiseStyle(jsonObject.optInt("bizId"));
             //entity.setPraiseStyle(1);

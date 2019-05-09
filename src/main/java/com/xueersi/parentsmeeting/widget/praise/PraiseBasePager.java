@@ -185,6 +185,7 @@ public class PraiseBasePager extends LiveBasePager {
         setListener();
         setPriseType();
         setReslutType();
+
         ImageLoader.with(mContext).load(mPraiseEntity.getTeacherHeadImage()).
                 error(R.drawable.icon_livevideo_praiselist_team_head_default).into(ivTeacherHeadImage);
         tvTeacherTip.setText(mPraiseEntity.getTeacherName()+"老师对你说:");

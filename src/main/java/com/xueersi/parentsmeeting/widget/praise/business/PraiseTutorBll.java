@@ -154,7 +154,7 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
             if (room2Json != null) {
                 JSONObject praiseListJson = room2Json.optJSONObject("praiseList");
                 String id = praiseListJson.optString("id");
-                if(isTopic){
+                if(isTopic()){
                     return;
                 }
                 setTopic(true);
@@ -200,7 +200,16 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 mLogtf.d("getLikeList => onPmError: errorMsg = " + responseEntity.getErrorMsg());
-                showToast("" + responseEntity.getErrorMsg());
+              //  showToast("" + responseEntity.getErrorMsg());
+                VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false,
+                        VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
+                vcDialog.initInfo("当前网络不佳，请刷新获取榜单！").showDialog();
+                vcDialog.setVerifyBtnListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        getPraiseTutorData(rankId);
+                    }
+                });
             }
         });
     }
