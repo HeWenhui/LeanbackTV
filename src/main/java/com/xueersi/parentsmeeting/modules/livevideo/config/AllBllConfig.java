@@ -30,6 +30,14 @@ public class AllBllConfig {
         }
     }
 
+    public static String getTeacherPraiseIRCBllClassPath() {
+        if (MediaPlayer.getIsNewIJK()) {
+            return "com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.business.TeacherPraiseSecBll";
+        } else {
+            return "com.xueersi.parentsmeeting.modules.livevideoOldIJK.teacherpraisesec.business.TeacherPraiseSecBll";
+        }
+    }
+
 //    public static BllConfigEntity[] live_business_arts = {new BllConfigEntity(getEnTeamPkIRCBllClassPath()),
 //            new BllConfigEntity(getLiveAchievementIRCBllClassPath())};
 
@@ -42,7 +50,8 @@ public class AllBllConfig {
 
     public static BllConfigEntity[] getLiveBusinessScience(Intent intent) {
         return new BllConfigEntity[]{
-                new BllConfigEntity(getSpeechCollectiveIRCBllClassPath())
+                new BllConfigEntity(getSpeechCollectiveIRCBllClassPath()),
+                new BllConfigEntity(getTeacherPraiseIRCBllClassPath())
         };
     }
 

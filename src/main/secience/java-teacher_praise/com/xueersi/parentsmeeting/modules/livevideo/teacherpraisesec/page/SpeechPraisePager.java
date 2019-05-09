@@ -1,21 +1,18 @@
-package com.xueersi.parentsmeeting.modules.livevideo.speechcollective.page;
+package com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.page;
 
 import android.animation.Animator;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.view.View;
 
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
-import com.xueersi.common.base.BasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
-import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 
 /**
  * Created by linyuqiang on 2019/4/29.

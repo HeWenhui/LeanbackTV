@@ -185,9 +185,6 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                 ShareDataManager.getInstance().put("isOnTopic", false, ShareDataManager.SHAREDATA_USER);
                 final String voiceID = object.optString("voiceId");
                 final String status = object.optString("status");
-                if (!"voice_plan_ios".equals(voiceID)) {
-                    return;
-                }
                 if (speechCollectiveBll != null) {
                     mHandler.post(new Runnable() {
                         @Override

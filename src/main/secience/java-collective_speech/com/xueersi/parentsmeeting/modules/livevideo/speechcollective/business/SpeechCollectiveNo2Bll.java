@@ -14,7 +14,6 @@ import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.utils.SpeechEvaluatorUtils;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.log.LoggerFactory;
@@ -26,8 +25,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.config.SpeechCollectiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.dialog.SpeechStartDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.page.SpeechCollectiveNo2Pager;
-import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.page.SpeechEnergyPager;
-import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.page.SpeechPraisePager;
+import com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.page.SpeechEnergyPager;
+import com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.page.SpeechPraisePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 
@@ -268,34 +267,6 @@ public class SpeechCollectiveNo2Bll {
 
     public void setBottomContent(final RelativeLayout mRootView) {
         this.mRootView = mRootView;
-        if (com.xueersi.common.config.AppConfig.DEBUG) {
-            Button button = new Button(context);
-            button.setText("测试");
-            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
-            mRootView.addView(button, lp);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    SpeechPraisePager speechPraisePager = new SpeechPraisePager(context, 1 == liveGetInfo.getIsPrimarySchool());
-                    mRootView.addView(speechPraisePager.getRootView());
-                    speechPraisePager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
-                        @Override
-                        public void onClose(LiveBasePager basePager) {
-                            mRootView.removeView(basePager.getRootView());
-                        }
-                    });
-                    SpeechEnergyPager speechEnergyPager = new SpeechEnergyPager(context);
-                    mRootView.addView(speechEnergyPager.getRootView());
-                    speechEnergyPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
-                        @Override
-                        public void onClose(LiveBasePager basePager) {
-                            mRootView.removeView(basePager.getRootView());
-                        }
-                    });
-                }
-            });
-        }
     }
 
     /**

@@ -18,8 +18,12 @@ android {
             java.srcDirs += ['src/main/english/java-en_tcp']
             assets.srcDirs += ['src/main/english/assets']
             java.srcDirs += ['src/main/java-core']
+            //集体发言
             java.srcDirs += ['src/main/secience/java-collective_speech']
             res.srcDirs += ['src/main/secience/res-collective_speech']
+            //老师点赞
+            java.srcDirs += ['src/main/secience/java-teacher_praise']
+            res.srcDirs += ['src/main/secience/res-teacher_praise']
             assets.srcDirs += ['src/main/secience/assets']
         }
     }
