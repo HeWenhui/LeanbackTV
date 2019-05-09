@@ -32,6 +32,7 @@ public class SpeechEnergyPager extends LiveBasePager {
 
     @Override
     public void initData() {
+        animationView.useHardwareAcceleration(true);
         String lottieResPath = "speech_collec_praise/images";
         String lottieJsonPath = "speech_collec_praise/data5.json";
         final LottieEffectInfo effectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
