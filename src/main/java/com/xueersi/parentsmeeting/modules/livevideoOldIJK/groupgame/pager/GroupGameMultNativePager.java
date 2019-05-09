@@ -1271,6 +1271,23 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 //                    });
 //                }
 //            });
+//            button.setOnClickListener(new View.OnClickListener() {
+//                java.util.Random random = new java.util.Random();
+//
+//                @Override
+//                public void onClick(View view) {
+//                    JSONObject jsonData = new JSONObject();
+//                    try {
+//                        jsonData.put("type", CourseMessage.SEND_CoursewareDoing);
+//                        jsonData.put("score", 82);
+//                        jsonData.put("studentNum", random.nextInt(3));
+//                        jsonData.put("turnToPageNum", -1);
+//                        wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            });
 //        }
     }
 

@@ -42,7 +42,6 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.SendM
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.QuestionShowReg;
-import com.xueersi.parentsmeeting.speakerrecognition.SpeakerRecognitionerInterface;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.json.JSONArray;
