@@ -382,6 +382,8 @@
     <item name="iv_livevideo_common_word_arrow" type="id" />
     <item name="lv_livevideo_common_word" type="id" />
     <item name="tv_livevideo_common_word" type="id" />
+    <item name="iv_livevideo_common_word" type="id" />
+
     <!--直播-排名-->
     <item name="rl_livevideo_common_rank" type="id" />
     <item name="rgiv_livevideo_stand_readygo" type="id" />
