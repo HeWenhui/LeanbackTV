@@ -23,7 +23,9 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityStatic;
+import com.xueersi.parentsmeeting.modules.livevideo.business.IIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCMessage;
@@ -31,11 +33,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.IRCTalkConf;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.business.NewIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -94,13 +98,15 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     /** 校准系统时间 */
     private long sysTimeOffset;
     private final String ROOM_MIDDLE = "L";
-    private IRCMessage mIRCMessage;
+    private IIRCMessage mIRCMessage;
     private LiveVideoBll liveVideoBll;
     private String mCurrentDutyId;
     private AtomicBoolean mIsLand;
     private static String Tag = "LiveBll2";
     private LiveUidRx liveUidRx;
     private LiveLog liveLog;
+    /** 是否使用新IRC SDK */
+//    private boolean isNewIRC = false;
 
     /**
      * 直播的
@@ -386,7 +392,9 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
             onLiveFailure("服务器异常", null);
             return;
         }
-        mGetInfo.setNewCourse(mBaseActivity.getIntent().getBooleanExtra("newCourse", false));
+        boolean newCourse = mBaseActivity.getIntent().getBooleanExtra("newCourse", false);
+        mLogtf.d("onGetInfoSuccess:newCourse=" + newCourse);
+        mGetInfo.setNewCourse(newCourse);
         if (liveLog != null) {
             liveLog.setGetInfo(mGetInfo);
         }
@@ -409,6 +417,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         try {
             enterTime = enterTime();
         } catch (Exception e) {
+            CrashReport.postCatchedException(new LiveException(TAG, e));
         }
         if (mGetInfo.getStat() == 1) {
             if (mVideoAction != null) {
@@ -427,7 +436,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 businessBll.onLiveInited(getInfo);
                 logger.d("=======>onGetInfoSuccess 22222222:businessBll=" + businessBll);
             } catch (Exception e) {
-                CrashReport.postCatchedException(e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
                 logger.e("=======>onGetInfoSuccess 22222222:businessBll=" + businessBll, e);
             }
         }
@@ -453,7 +462,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 mHttpManager.addBodyParam("courseId", mCourseId);
             }
             channel = mGetInfo.getId() + "-" + studentLiveInfo.getClassId();
-            if (mGetInfo.ePlanInfo != null){
+            if (mGetInfo.ePlanInfo != null) {
                 eChannel = mGetInfo.ePlanInfo.ePlanId + "-" + mGetInfo.ePlanInfo.eClassId;
             }
         }
@@ -461,17 +470,27 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         s += ",liveType=" + mLiveType + ",channel=" + channel;
         String nickname = "s_" + mGetInfo.getLiveType() + "_"
                 + mGetInfo.getId() + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
-        if (TextUtils.isEmpty(eChannel) || LiveTopic.MODE_CLASS.equals(getMode())){
-            mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, channel);
-        }else {
-            mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, channel,eChannel);
+        if (MediaPlayer.getIsNewIJK()) {
+            if (TextUtils.isEmpty(eChannel) || LiveTopic.MODE_CLASS.equals(getMode())) {
+                mIRCMessage = new NewIRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, mGetInfo, channel);
+            } else {
+                mIRCMessage = new NewIRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, mGetInfo, channel, eChannel);
+            }
+        } else {
+            if (TextUtils.isEmpty(eChannel) || LiveTopic.MODE_CLASS.equals(getMode())) {
+                mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, channel);
+            } else {
+                mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, channel, eChannel);
+            }
+            IRCTalkConf ircTalkConf = new IRCTalkConf(mContext, getInfo, mLiveType, mHttpManager, getInfo.getNewTalkConfHosts());
+            mIRCMessage.setIrcTalkConf(ircTalkConf);
         }
+
         //mIRCMessage = new IRCMessage(mBaseActivity, netWorkType, mGetInfo.getStuName(), nickname, (TextUtils.isEmpty(eChannel)|| LiveTopic.MODE_CLASS.equals(getMode()))?channel:channel,eChannel);
-        if (mGetInfo!=null && mGetInfo.ePlanInfo!=null){
+        if (mGetInfo != null && mGetInfo.ePlanInfo != null) {
             mIRCMessage.modeChange(mGetInfo.getMode());
         }
-        IRCTalkConf ircTalkConf = new IRCTalkConf(mContext, getInfo, mLiveType, mHttpManager, getInfo.getNewTalkConfHosts());
-        mIRCMessage.setIrcTalkConf(ircTalkConf);
+
         mIRCMessage.setCallback(mIRCcallback);
         mIRCMessage.create();
         logger.e("=======>mIRCMessage.create()");
@@ -495,6 +514,16 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                     ArtsExtLiveInfo info = mHttpResponseParser.parseArtsExtLiveInfo(responseEntity);
                     mGetInfo.setArtsExtLiveInfo(info);
+                    List<LiveBaseBll> businessBllTemps = new ArrayList<>(businessBlls);
+                    for (LiveBaseBll businessBll : businessBllTemps) {
+                        try {
+                            businessBll.onArtsExtLiveInited(mGetInfo);
+                        } catch (Exception e) {
+                            CrashReport.postCatchedException(new LiveException(TAG, e));
+                        }
+                    }
+                    mLogtf.d("onGetInfoSuccess:old=" + businessBlls + ",new=" + businessBllTemps.size());
+                    businessBllTemps.clear();
                 }
 
                 @Override
@@ -611,7 +640,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                 switch (mtype) {
                     case XESCODE.MODECHANGE:
                         String mode = object.getString("mode");
-                        if (mode!=null && mIRCMessage!=null && mGetInfo!=null && mGetInfo.ePlanInfo!=null){
+                        if (mode != null && mIRCMessage != null && mGetInfo != null && mGetInfo.ePlanInfo != null) {
                             mIRCMessage.modeChange(mode);
                         }
                         if (!(mLiveTopic.getMode().equals(mode))) {
@@ -641,12 +670,26 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                         try {
                             noticeAction.onNotice(sourceNick, target, object, mtype);
                         } catch (Exception e) {
-                            CrashReport.postCatchedException(e);
+                            CrashReport.postCatchedException(new LiveException(TAG, e));
                         }
+                    }
+                } else {
+                    try {
+                        HashMap<String, String> hashMap = new HashMap();
+                        hashMap.put("logtype", "onNotice");
+                        hashMap.put("livetype", "" + mLiveType);
+                        hashMap.put("liveid", "" + mLiveId);
+                        hashMap.put("arts", "" + mGetInfo.getIsArts());
+                        hashMap.put("pattern", "" + mGetInfo.getPattern());
+                        hashMap.put("type", "" + mtype);
+                        UmsAgentManager.umsAgentDebug(mContext, LogConfig.LIVE_NOTICE_UNKNOW, hashMap);
+                    } catch (Exception e) {
+                        CrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.e("onNotice", e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
             }
         }
 
@@ -671,13 +714,13 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                     if (!(mLiveTopic.getMode().equals(liveTopic.getMode()))) {
                         String oldMode = mLiveTopic.getMode();
                         mLiveTopic.setMode(liveTopic.getMode());
-                       // Loger.d("___channel: "+channel+"  mode: "+liveTopic.getMode()+"  topic:  "+topicstr);
+                        // Loger.d("___channel: "+channel+"  mode: "+liveTopic.getMode()+"  topic:  "+topicstr);
                         mGetInfo.setMode(liveTopic.getMode());
                         boolean isPresent = isPresent(mLiveTopic.getMode());
                         if (mVideoAction != null) {
                             mVideoAction.onModeChange(mLiveTopic.getMode(), isPresent);
                         }
-                        if (mIRCMessage!=null){
+                        if (mIRCMessage != null) {
                             mIRCMessage.modeChange(mLiveTopic.getMode());
                         }
                         liveVideoBll.onModeChange(mLiveTopic.getMode(), isPresent);
@@ -698,7 +741,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
 
                     mLiveTopic.setMode(liveTopic.getMode());
                     Loger.setDebug(true);
-                  //  Loger.d("___channel: "+channel+"  mode: "+liveTopic.getMode()+"  topic:  "+topicstr);
+                    //  Loger.d("___channel: "+channel+"  mode: "+liveTopic.getMode()+"  topic:  "+topicstr);
                     mGetInfo.setMode(liveTopic.getMode());
                 }
                 if (mTopicActions != null && mTopicActions.size() > 0) {
@@ -893,18 +936,27 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
     ///日志上传相关
     @Override
     public void umsAgentDebugSys(String eventId, Map<String, String> mData) {
+        if (mGetInfo == null) {
+            return;
+        }
         setLogParam(eventId, mData);
         UmsAgentManager.umsAgentDebug(mContext, appID, eventId, mData);
     }
 
     @Override
     public void umsAgentDebugInter(String eventId, Map<String, String> mData) {
+        if (mGetInfo == null) {
+            return;
+        }
         setLogParam(eventId, mData);
         UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadBehavior, mData);
     }
 
     @Override
     public void umsAgentDebugPv(String eventId, Map<String, String> mData) {
+        if (mGetInfo == null) {
+            return;
+        }
         setLogParam(eventId, mData);
         UmsAgentManager.umsAgentOtherBusiness(mContext, appID, UmsConstants.uploadShow, mData);
     }
@@ -1110,11 +1162,11 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         this.liveVideoBll = liveVideoBll;
     }
 
-    public void liveGetPlayServer() {
-        if (liveVideoBll != null) {
-            liveVideoBll.liveGetPlayServer();
-        }
-    }
+//    public void liveGetPlayServer() {
+//        if (liveVideoBll != null) {
+//            liveVideoBll.liveGetPlayServer();
+//        }
+//    }
 
     /**
      * 当前状态
@@ -1201,6 +1253,6 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
 
     /** 测试notice */
     public void testNotice(String notice) {
-        mIRCcallback.onNotice("", "", "", "", notice,"");
+        mIRCcallback.onNotice("", "", "", "", notice, "");
     }
 }

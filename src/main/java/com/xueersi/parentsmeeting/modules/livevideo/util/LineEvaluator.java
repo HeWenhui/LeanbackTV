@@ -2,11 +2,15 @@ package com.xueersi.parentsmeeting.modules.livevideo.util;
 
 import android.animation.TypeEvaluator;
 
+import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+
 /**
  * Created by linyuqiang on 2017/9/26.
  * 线性位移
  */
 public class LineEvaluator implements TypeEvaluator<LineEvaluator.PointAndFloat> {
+    private String TAG = "LineEvaluator";
 
     public LineEvaluator() {
 
@@ -14,8 +18,17 @@ public class LineEvaluator implements TypeEvaluator<LineEvaluator.PointAndFloat>
 
     @Override
     public PointAndFloat evaluate(float t, PointAndFloat startValue, PointAndFloat endValue) {
-        int x = (int) (startValue.point.getX() + (endValue.point.getX() - startValue.point.getX()) * t);
-        int y = (int) (startValue.point.getY() + (endValue.point.getY() - startValue.point.getY()) * t);
+        int x = 0;
+        int y = 0;
+        try {
+            Point point = startValue.point;
+            float startX = point.getX();
+            float startY = point.getY();
+            x = (int) (startX + (endValue.point.getX() - startX) * t);
+            y = (int) (startY + (endValue.point.getY() - startY) * t);
+        } catch (Exception e) {
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
         PointAndFloat pointAndFloat = new PointAndFloat();
         pointAndFloat.fraction = t;
         pointAndFloat.point = new Point(x, y);

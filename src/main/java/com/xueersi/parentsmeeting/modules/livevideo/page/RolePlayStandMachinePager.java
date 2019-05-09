@@ -81,6 +81,7 @@ import java.util.List;
 import java.util.Random;
 
 public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
+
     String file3 = "live_stand/frame_anim/speech/mine_score";
     String file4 = "live_stand/frame_anim/speech/mine_score_loop";
     /**
@@ -184,6 +185,10 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
      * 去评测
      */
     private final static int GO_SPEECH = 200;
+    /**
+     * 停止roleplay,及其音频播放
+     */
+    private static final int STOP_ROLEPLAY = 404;
     private RolePlayerEntity mEntity;
     private ReadyGoImageView rgivLivevideoStandReadygo;
     private LiveSoundPool liveSoundPool;
@@ -412,6 +417,10 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
         if (mRolePlayerSelfItem != null) {
             mRolePlayerSelfItem.relaseAudioPlay();
         }
+        if(mReadHandler != null){
+            mReadHandler.sendEmptyMessage(STOP_ROLEPLAY);
+        }
+
     }
 
     /**
@@ -421,9 +430,36 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
+
             if (mEntity == null) {
                 logger.i("数据实体已经销毁，handler不再处理剩余消息");
                 return;
+            }
+            if (RolePlayerEntity.RolePlayerMessageStatus.CUR_PLAYING_ITEM_INDEX == msg.what){
+                int curPlayingIndex = (int) msg.obj;
+                logger.i("print_curPlayingIndex:" + curPlayingIndex);
+                mCurrentReadIndex = curPlayingIndex + 1;
+                return;
+            }
+            //主要为了停止音频
+            if(STOP_ROLEPLAY == msg.what){
+                logger.i("print_stop_role_play:"+mCurrentReadIndex);
+                int tempIndex = mCurrentReadIndex - 1;
+                if (tempIndex >= mEntity.getLstRolePlayerMessage().size()) {
+                    return;
+                }
+                if (tempIndex < 0) {
+                    tempIndex = 0;
+                }
+                RolePlayerEntity.RolePlayerMessage upMessage = mEntity.getLstRolePlayerMessage().get
+                        (tempIndex);
+                upMessage.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY);
+                if(mRolePlayerAdapter != null){
+                    mRolePlayerAdapter.updataSingleRow(lvReadList, upMessage);
+                }
+                mEntity = null;
+                return;
+
             }
             if (msg.what == READ_MESSAGE) {
                 //恢复上一条的状态
@@ -477,60 +513,16 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
                     //已经对话完毕
                     endRolePlayer();
                     return;
-                } else {
-                    //lvReadList.smoothScrollToPosition(mCurrentReadIndex + 1);
-
-                    if (mCurrentReadIndex == 1) {
-                        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) rgivLivevideoStandReadygo
-                                .getLayoutParams();
-                        int animDistance = rgivLivevideoStandReadygo.getHeight() + layoutParams.topMargin;
-                        ObjectAnimator oaAnimTransY = ObjectAnimator.ofFloat(rgivLivevideoStandReadygo, ImageView.TRANSLATION_Y,
-                                0, -animDistance * 3 / 2);
-                        oaAnimTransY.setInterpolator(new AccelerateInterpolator());
-                        oaAnimTransY.addListener(new Animator.AnimatorListener() {
-                            @Override
-                            public void onAnimationStart(Animator animation) {
-
-                            }
-
-                            @Override
-                            public void onAnimationEnd(Animator animation) {
-
-                            }
-
-                            @Override
-                            public void onAnimationCancel(Animator animation) {
-
-                            }
-
-                            @Override
-                            public void onAnimationRepeat(Animator animation) {
-
-                            }
-                        });
-                        oaAnimTransY.setDuration(500);
-                        oaAnimTransY.start();
-                        rgivLivevideoStandReadygo.setVisibility(View.GONE);
-                        lvReadList.setSelection(mCurrentReadIndex);
-                        logger.i("滚动到下一条" + mCurrentReadIndex);
-                        logger.i("第一条读完了，将提示带着平滑动画消失");
-
-
-                    } else {
-                        lvReadList.setSelection(mCurrentReadIndex);
-                        logger.i("滚动到下一条" + mCurrentReadIndex);
-                    }
-
-
                 }
 
                 //取出当前这条的延时时间
+                rgivLivevideoStandReadygo.setVisibility(View.GONE);
                 RolePlayerEntity.RolePlayerMessage currentMessage = mEntity.getLstRolePlayerMessage().get
                         (mCurrentReadIndex);
                 currentMessage.setMsgStatus(RolePlayerEntity.RolePlayerMessageStatus.BEGIN_ROLEPLAY);
                 mRolePlayerAdapter.updataSingleRow(lvReadList, currentMessage);
                 speechReadMessage(currentMessage, mEntity);
-
+                lvReadList.smoothScrollToPosition(mCurrentReadIndex);
                 mCurrentReadIndex++;
                 Message temp = mReadHandler.obtainMessage();
                 temp.what = READ_MESSAGE;
@@ -1078,11 +1070,9 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
         logger.i("准备显示对话了");
         ///获取当前应该走的离线模型
 
-        final int curSubModEva = ShareDataManager.getInstance().getInt(RolePlayConfig
-                .KEY_FOR_WHICH_SUBJECT_MODEL_EVA, RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager
-                .SHAREDATA_NOT_CLEAR);
-
-
+        if(mEntity == null){
+            return;
+        }
         rlRoleReadMain.setVisibility(View.VISIBLE);
 
         //只在直播的时候显示倒计时
@@ -1092,40 +1082,6 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
 
         rlRoleReadMain.setVisibility(View.VISIBLE);
         Typeface tFace = getTypeface(mContext);
-
-//        if (mEntity.getLstRolePlayerMessage().get(0).getRolePlayer().isSelfRole()) {
-//            tvBeginTipMsg.setText((curSubModEva == RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA) ? "你先开始.准备好了吗？" : "You" +
-//                    " go first. Are you ready?");
-//            tvBeginTipMsg.postDelayed(new Runnable() {
-//                @Override
-//                public void run() {
-//                    switch (curSubModEva) {
-//                        case RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA:
-//                            //当前是英语离线测评
-//                            tvBeginTipMsg.setBackgroundResource(R.drawable.shape_livevideo_roleplayer_ready_go_bg);
-//                            tvBeginTipMsg.setText("GO");
-//                            break;
-//                        case RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA:
-//                            //当前是语文离线测评
-//                            tvBeginTipMsg.setBackgroundResource(R.drawable.shape_livevideo_roleplayer_ready_go_bg);
-//                            tvBeginTipMsg.setText("开始");
-//                            break;
-//                        default:
-//                            //默认走英语离线测评
-//                            tvBeginTipMsg.setBackgroundResource(R.drawable.shape_livevideo_roleplayer_ready_go_bg);
-//                            tvBeginTipMsg.setText("GO");
-//                            break;
-//                    }
-//
-//                    //tvBeginTipMsg.setPadding(60, 10, 60, 15);
-//                    tvBeginTipMsg.setGravity(Gravity.CENTER);
-//
-//                }
-//            }, 2000);
-//        } else {
-//            tvBeginTipMsg.setText((curSubModEva == RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA) ? "别着急.还没到你." : "Don't" +
-//                    " hurry. Not your turn yet.");
-//        }
 
         showReadyGo();
         //只在直播的时候，有倒计时的逻辑
@@ -1153,7 +1109,7 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
                 logger.i("type = " + type);
                 if ((boolean) type) {
                     //自己朗读的
-                    mRolePlayerSelfItem = new RolePlayerStandMachineSelfItem(mContext, mRolePlayBll);
+                    mRolePlayerSelfItem = new RolePlayerStandMachineSelfItem(mContext, mRolePlayBll,mReadHandler);
                     return mRolePlayerSelfItem;
                 } else {
                     //他人朗读的
@@ -1294,6 +1250,8 @@ public class RolePlayStandMachinePager extends BaseSpeechAssessmentPager {
      * 关闭当前页面
      */
     public void relaseCurrentPage() {
+        //释放所有正在播放的音频
+        relaseAllAudioPlay();
         if (mIse != null) {
             mIse.stop();
         }

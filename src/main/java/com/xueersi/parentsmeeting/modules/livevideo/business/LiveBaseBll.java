@@ -106,6 +106,7 @@ public class LiveBaseBll extends BaseBll {
     public void sendNotice(JSONObject jsonObject, String target) {
         if (mLiveBll != null) {
             mLiveBll.sendNotice(target, jsonObject);
+            logger.i("发送IRC" + target + " obj = " + jsonObject.toString());
         }
     }
 
@@ -163,6 +164,10 @@ public class LiveBaseBll extends BaseBll {
      */
     public void onLiveInited(LiveGetInfo getInfo) {
         this.mGetInfo = getInfo;
+    }
+
+    public void onArtsExtLiveInited(LiveGetInfo getInfo) {
+
     }
 
     public final void initViewF(RelativeLayout rlMessageBottom, RelativeLayout bottomContent, AtomicBoolean mIsLand, RelativeLayout mContentView) {

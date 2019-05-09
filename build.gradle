@@ -15,17 +15,21 @@ android {
             res.srcDirs += ['src/main/res-en_teampk']
             java.srcDirs += ['src/main/java-achievement']
             res.srcDirs += ['src/main/res-achievement']
+            java.srcDirs += ['src/main/english/java-en_tcp']
+            assets.srcDirs += ['src/main/english/assets']
+            java.srcDirs += ['src/main/java-core']
         }
     }
     compileSdkVersion 26
     buildToolsVersion '27.0.3'
 }
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'org.java-websocket:Java-WebSocket:1.3.4'
+    api fileTree(include: ['*.jar'], dir: 'libs')
+    api 'org.java-websocket:Java-WebSocket:1.3.4'
     //glide库
     implementation rootProject.ext.thirdlibraries.glide
-    rootProject.xrsImplementation(this.getProject(),rootProject.ext.xeslibraries.speechrecognizer)
+
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.speechrecognizer)
     implementation(rootProject.ext.xeslibraries.ldnetdiagnoservice) { changing = true }
     //uicomponent
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.uicomponent)
@@ -45,6 +49,7 @@ dependencies {
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.share)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.browser)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.xeslottie)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.pschatsdk)
     implementation rootProject.ext.thirdlibraries.arouterapi
     implementation rootProject.ext.thirdlibraries.appcompat
     implementation rootProject.ext.thirdlibraries.recyclerview
@@ -56,10 +61,12 @@ dependencies {
     //    implementation project(':business:endictation')
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.endictation)
     implementation rootProject.ext.thirdlibraries.ticker
+
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.agora)
     //    implementation project(':library:agora')
     //implementation(rootProject.ext.xeslibraries.waveform) { changing = true }
     //implementation project(':library:waveform')
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.gifDrawable)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.transition)
     //    implementation project(':library:agora')
 }

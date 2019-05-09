@@ -12,9 +12,12 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
+import com.xueersi.parentsmeeting.modules.livevideo.business.IConnectService;
+import com.xueersi.parentsmeeting.modules.livevideo.business.IIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCMessage;
@@ -22,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.IRCTalkConf;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.business.NewIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -33,7 +37,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceE
 import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.StandExperienceLiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
-import com.xueersi.parentsmeeting.modules.livevideo.message.business.SendMessageReg;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.ExperLiveMessageStandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
@@ -108,8 +111,10 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
         this.lectureLivePlayBackBll = lectureLivePlayBackBll;
     }
 
-    private IRCMessage mIRCMessage;
+    private IIRCMessage mIRCMessage;
     private final String IRC_CHANNEL_PREFIX = "4L";
+    /** 是否使用新IRC SDK*/
+//    private boolean isNewIRC = false;
 
     @Override
     public void onCreate(VideoLivePlayBackEntity mVideoEntity,
@@ -177,61 +182,59 @@ public class StandExperienceMessageBll extends StandExperienceEventBaseBll imple
                 + expChatId + "_" + liveGetInfo.getStuId() + "_" + liveGetInfo.getStuSex();
         logger.i("=====>connectChatServer:channel=" + channel + ":nickname =" +
                 chatRoomUid);
-
-        // 获取 聊天服务器地址  的接口地址
-        ArrayList<TalkConfHost> talkConfHosts = new ArrayList<>();
-
-        chatCfgServerList = mVideoEntity.getRoomChatCfgServerList();
-        //后台没有数据时自己测试用的接口
-//        chatCfgServerList.add("chatgslb.xescdn.com");
-//        chatCfgServerList.add("chatgslb.xesimg.com");
-//        chatCfgServerList.add("10.99.1.15");
-
-        TalkConfHost confHost = null;
-        if (chatCfgServerList != null && chatCfgServerList.size() > 0) {
-            for (int i = 0; i < chatCfgServerList.size(); i++) {
-                confHost = new TalkConfHost();
-                confHost.setHost(chatCfgServerList.get(i));
-                talkConfHosts.add(confHost);
-            }
-        }
         mNetWorkType = NetWorkHelper.getNetWorkState(mContext);
-        mIRCMessage = new IRCMessage(mContext, mNetWorkType, liveGetInfo.getStuName(), chatRoomUid, channel);
-        IRCTalkConf ircTalkConf = new IRCTalkConf(mContext, liveGetInfo, LiveVideoConfig.LIVE_TYPE_STAND_EXPERIENCE, mHttpManager,
-                talkConfHosts);
-        ircTalkConf.setChatServiceError(new IRCTalkConf.ChatServiceError() {
-            @Override
-            public void getChatUrlFailure(String urlIp, String errMsg, String ip) {
-                Map<String, String> map = new HashMap<>();
-                map.put("logtype", "Error");
-                map.put("os", "Android");
-                map.put("url", urlIp);
-                map.put("ip", ip);
+        if (MediaPlayer.getIsNewIJK()){
+            mIRCMessage = new NewIRCMessage(mContext, mNetWorkType, liveGetInfo.getStuName(), chatRoomUid, liveGetInfo, channel);
+        } else{
+            chatCfgServerList = mVideoEntity.getRoomChatCfgServerList();
+            // 获取 聊天服务器地址  的接口地址
+            ArrayList<TalkConfHost> talkConfHosts = new ArrayList<>();
+            TalkConfHost confHost = null;
+            if (chatCfgServerList != null && chatCfgServerList.size() > 0) {
+                for (int i = 0; i < chatCfgServerList.size(); i++) {
+                    confHost = new TalkConfHost();
+                    confHost.setHost(chatCfgServerList.get(i));
+                    talkConfHosts.add(confHost);
+                }
+            }
+            IRCTalkConf ircTalkConf = new IRCTalkConf(mContext, liveGetInfo, LiveVideoConfig.LIVE_TYPE_STAND_EXPERIENCE, mHttpManager,
+                    talkConfHosts);
+            //聊天连接调度失败日志
+            ircTalkConf.setChatServiceError(new IRCTalkConf.ChatServiceError() {
+                @Override
+                public void getChatUrlFailure(String url, String errMsg,
+                                              String ip) {
+                    Map<String, String> map = new HashMap<>();
+                    map.put("logtype", "Error");
+                    map.put("os", "Android");
+                    map.put("url", url);
+                    map.put("ip", ip);
 //                map.put("",);
-                UmsAgentManager.umsAgentDebug(mContext, LiveVideoConfig.LIVE_CHAT_GSLB, map);
-            }
-        });
-
-        mIRCMessage.setIrcTalkConf(ircTalkConf);
+                    UmsAgentManager.umsAgentDebug(mContext, LiveVideoConfig.LIVE_CHAT_GSLB, map);
+                }
+            });
+            mIRCMessage = new IRCMessage(mContext, mNetWorkType, liveGetInfo.getStuName(), chatRoomUid, channel);
+            mIRCMessage.setIrcTalkConf(ircTalkConf);
+            //聊天服务器连接失败
+            mIRCMessage.setConnectService(new IConnectService() {
+                @Override
+                public void connectChatServiceError(String serverIp, String
+                        serverPort, String errMsg, String ip) {
+                    Map<String, String> map = new HashMap<>();
+                    map.put("logtype", "Error");
+                    map.put("os", "Android");
+                    map.put("serverport", serverPort);
+                    map.put("errmsg", errMsg);
+                    map.put("liveid", mVideoEntity.getLiveId());
+                    map.put("orderid", mVideoEntity.getChapterId());
+                    map.put("ip", ip);
+                    map.put("serverip", serverIp);
+                    UmsAgentManager.umsAgentDebug(mContext, LiveVideoConfig.EXPERIENCE_MESSAGE_CONNECT_ERROR, map);
+                }
+            });
+        }
         mIRCMessage.setCallback(mIRCcallback);
-        mIRCMessage.setConnectService(new IRCMessage.ConnectService() {
-
-            @Override
-            public void connectChatServiceError( String serverIp, String serverPort, String errMsg, String ip) {
-                Map<String, String> map = new HashMap<>();
-                map.put("logtype", "Error");
-                map.put("os", "Android");
-                map.put("serverport", serverPort);
-                map.put("errmsg", errMsg);
-                map.put("liveid", mVideoEntity.getLiveId());
-                map.put("orderid", mVideoEntity.getChapterId());
-                map.put("ip", ip);
-                map.put("serverip", serverIp);
-                UmsAgentManager.umsAgentDebug(mContext, LiveVideoConfig.EXPERIENCE_MESSAGE_CONNECT_ERROR, map);
-            }
-        });
         mIRCMessage.create();
-
     }
 
     @Override

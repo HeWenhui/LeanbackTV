@@ -63,6 +63,8 @@ public class RolePlayerStandMachineOtherItem extends RolePlayerItem {
      */
     private boolean mIsPlaying = false;
     Handler mReadHandler ;
+    private int mPostion;
+
     public RolePlayerStandMachineOtherItem(Context context, RolePlayerBll rolePlayerBll, Handler readHandler) {
         super(context, rolePlayerBll);
         mLiveBll = ProxUtil.getProxUtil().get(context, LiveAndBackDebug.class);
@@ -155,7 +157,7 @@ public class RolePlayerStandMachineOtherItem extends RolePlayerItem {
             }
 
         }
-
+        sendCurItemIndex();
         mAudioPlayerManager = AudioPlayerManager.get(ContextManager.getApplication());
         //播放
         mAudioPlayerManager.start(mEntity.getWebVoiceUrl(), new PlayerCallback() {
@@ -191,17 +193,26 @@ public class RolePlayerStandMachineOtherItem extends RolePlayerItem {
             @Override
             public void onError(String msg, Object dataSource, AudioPlayerManager manager) {
                 super.onError(msg, dataSource, manager);
+                XESToastUtils.showToast(mContext,"音频播放失败");
                 if(isRolePlay){
                     logger.i( "机器播完出错:msg = "+msg+" dataSource = "+dataSource);
                     nextMsg();
                 }
                 mIsPlaying = false;
                 recoverMsgUiStatus();
-                mAudioPlayerManager = null;
+                //mAudioPlayerManager = null;
             }
         });
     }
 
+    private void sendCurItemIndex() {
+        if(mReadHandler != null){
+            Message message = new Message();
+            message.what = RolePlayerEntity.RolePlayerMessageStatus.CUR_PLAYING_ITEM_INDEX;
+            message.obj = mPostion;
+            mReadHandler.sendMessage(message);
+        }
+    }
     /**
      * 开始播放机器音频，改变对话样式
      */
@@ -243,15 +254,19 @@ public class RolePlayerStandMachineOtherItem extends RolePlayerItem {
      * 机器播完之后，通知跳到下一条
      */
     private void nextMsg() {
-        Message temp = mReadHandler.obtainMessage();
-        temp.what = RolePlayMachinePager.READ_MESSAGE;
-        mReadHandler.sendMessage(temp);
+        if(mReadHandler != null){
+            Message temp = mReadHandler.obtainMessage();
+            temp.what = RolePlayMachinePager.READ_MESSAGE;
+            mReadHandler.sendMessage(temp);
+        }
+
     }
 
     @Override
     public void updateViews(RolePlayerEntity.RolePlayerMessage entity, int position, Object objTag) {
         super.updateViews(entity, position, objTag);
         logger.i( "updateViews entity = " + entity.getWebVoiceUrl());
+        mPostion = position;
         mEntity = entity;
 
         updateUserHeadImage(civUserHead, entity.getRolePlayer().getHeadImg()); // 绑定用户头像
@@ -281,7 +296,7 @@ public class RolePlayerStandMachineOtherItem extends RolePlayerItem {
 
                 break;
             case RolePlayerEntity.RolePlayerMessageStatus.END_ROLEPLAY:
-                // logger.i("RolePlayerDemoTest", "结束朗读");
+                logger.i( "结束roleplay朗读");
                 vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_other_item_bubble);
                 ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_you_huifang_3_lan);
 
@@ -318,6 +333,7 @@ public class RolePlayerStandMachineOtherItem extends RolePlayerItem {
             mAudioPlayerManager.stop();
             mAudioPlayerManager.release();
         }
+        mReadHandler = null;
     }
 
     @Override

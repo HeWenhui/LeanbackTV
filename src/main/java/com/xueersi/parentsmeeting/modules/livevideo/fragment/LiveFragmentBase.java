@@ -15,9 +15,11 @@ import android.widget.Toast;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
-import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
+import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVideoAction;
@@ -154,6 +156,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
     }
 
+    @Override
     public void stopPlayer() {
         super.stopPlayer();
         mLiveVideoBll.stopPlay();
@@ -265,6 +268,11 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
             this.liveFragmentBase = liveFragmentBase;
         }
 
+//        @Override
+//        protected void getPSServerList(int cur, int total) {
+//            super.getPSServerList(cur, total);
+//        }
+
         @Override
         protected void onPlayOpenStart() {
             liveFragmentBase.setFirstBackgroundVisible(View.VISIBLE);
@@ -364,7 +372,7 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         }
 
         @Override
-        protected PlayerService.VPlayerListener getWrapListener() {
+        protected VPlayerCallBack.VPlayerListener getWrapListener() {
             return liveFragmentBase.mLiveVideoBll.getPlayListener();
         }
 
@@ -379,6 +387,25 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
     protected abstract boolean initData();
 
     public abstract void rePlay(boolean modechange);
+
+    /**
+     * PS重播
+     *
+     * @param modeChange
+     */
+    public abstract void psRePlay(boolean modeChange);
+
+    /**
+     * 切换线路
+     *
+     * @param pos
+     */
+    public abstract void changeLine(int pos);
+
+    public abstract void changeNextLine();
+
+    /** 切换到当前线路，用于接麦 */
+    public abstract void changeNowLine();
 
     @Override
     public void onTeacherNotPresent(final boolean isBefore) {
@@ -415,16 +442,47 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
         }
     }
 
+    /**
+     * 仿照 {@link #onLiveStart(PlayServerEntity, LiveTopic, boolean)}
+     * 都是调度成功之后的回调。
+     *
+     * @param cur   当前播放线路索引
+     * @param total 所有播放线路总数
+     */
     @Override
-    public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
+    public void getPSServerList(int cur, int total, boolean modeChange) {
         if (liveVideoAction == null) {
             return;
         }
         mLogtf.d("onLiveStart:mHaveStop=" + mHaveStop);
-        liveVideoAction.onLiveStart(server, cacheData, modechange);
-        mLiveVideoBll.onLiveStart(server, cacheData, modechange);
-        AtomicBoolean change = new AtomicBoolean(modechange);// 直播状态是不是变化
-        rePlay(change.get());
+        liveVideoAction.getPSServerList(cur, total, modeChange);
+//        mLiveVideoBll.(cur, total);
+        // TODO: 2019/1/20 怎么判断直播状态是否发生变化 
+//        AtomicBoolean change = new AtomicBoolean(modeChange);// 直播状态是不是变化
+//        rePlay(change.get());
+    }
+
+    /**
+     * 更新调度的list，无论成功失败都会走
+     * PSIJK去掉调度，所以不会走这里
+     */
+    @Override
+    public void onLiveStart(PlayServerEntity server, LiveTopic cacheData, boolean modechange) {
+        if (!MediaPlayer.getIsNewIJK()) {
+            if (liveVideoAction == null) {
+                return;
+            }
+            mLogtf.d("onLiveStart:mHaveStop=" + mHaveStop);
+
+            liveVideoAction.onLiveStart(server, cacheData, modechange);
+            mLiveVideoBll.onLiveStart(server, cacheData, modechange);
+            AtomicBoolean change = new AtomicBoolean(modechange);// 直播状态是不是变化
+            rePlay(change.get());
+        }
+//        else {
+////            videoFragment.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+//            mLiveVideoBll.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+//        }
     }
 
     @Override
@@ -458,7 +516,6 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
     @Override
     protected void resultFailed(final int arg1, final int arg2) {
         postDelayedIfNotFinish(new Runnable() {
-
             @Override
             public void run() {
                 LiveThreadPoolExecutor liveThreadPoolExecutor = LiveThreadPoolExecutor.getInstance();
@@ -485,10 +542,60 @@ public abstract class LiveFragmentBase extends LiveVideoFragmentBase implements 
 
     /**
      * 播放失败，或者完成时调用
+     * 这里主要进行业务逻辑处理，不涉及到界面展示
      */
     protected void onFail(int arg1, final int arg2) {
+        //
+        if (mLiveBll != null) {
+            boolean isPresent = mLiveBll.isPresent();
+            mLogtf.d("liveGetPlayServer:isPresent=" + isPresent);
+            if (!isPresent && liveVideoAction != null) {
+                liveVideoAction.onTeacherNotPresent(true);
+            }
+        }
         if (liveVideoAction != null) {
-            liveVideoAction.onFail(arg1, arg2);
+            if (!MediaPlayer.getIsNewIJK()) {
+                liveVideoAction.onFail(arg1, arg2);
+            } else {
+                MediaErrorInfo mediaErrorInfo = videoFragment.getMediaErrorInfo();
+                liveVideoAction.onFail(mediaErrorInfo);
+                switch (arg2) {
+                    case MediaErrorInfo.PSPlayerError: {
+                        //播放器错误
+                        break;
+                    }
+                    case MediaErrorInfo.PSDispatchFailed: {
+
+                        //调度失败，建议重新访问playLive或者playVod频道不存在
+                        //调度失败，延迟1s再次访问调度，交给LiveVideoBll
+//                        mHandler.postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                if (mLiveVideoBll != null) {
+//                                    mLiveVideoBll.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+//                                }
+//                            }
+//                        }, 1000);
+
+                    }
+                    break;
+
+                    case MediaErrorInfo.PSChannelNotExist: {
+                        //提示用户等待,交给上层来处理
+
+                        break;
+                    }
+                    case MediaErrorInfo.PSServer403: {
+                        //防盗链鉴权失败，需要重新访问playLive或者playVod,交给liveVideoBll
+//                        mLiveVideoBll.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+                    }
+                    break;
+                    default:
+                        //除了这四种情况，还有播放完成的情况
+
+                        break;
+                }
+            }
         }
     }
 

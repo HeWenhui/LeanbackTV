@@ -51,6 +51,23 @@ public class LiveQueConfig {
     public static final String EN_COURSE_TYPE_NEW_GAME = "17";
     public static final String EN_COURSE_TYPE_18 = "18";
     public static final String EN_COURSE_TYPE_19 = "19";
+    /** 语文AI主观题*/
+    public static final String CHI_COURESWARE_TYPE_AISUBJECTIVE = "17";
+    /** 直播- voice cannon */
+    public static final String EN_COURSE_TYPE_VOICE_CANNON = "22";
+    /** 直播- Cleaning up */
+    public static final String EN_COURSE_TYPE_CLEANING_UP = "23";
+    /** 直播- 热气球 */
+    public static final String EN_COURSE_TYPE_HOT_AIR_BALLON = "24";
+    /** 直播-小组互动语音炮弹 */
+    public static final int EN_COURSE_GAME_TYPE_1 = 1;
+    /** 直播-小组互动Cleaning up */
+    public static final int EN_COURSE_GAME_TYPE_2 = 2;
+
+    /** 游戏模式1 */
+    public static int GAME_MODEL_1 = 1;
+    /** 游戏模式2 */
+    public static int GAME_MODEL_2 = 2;
 
     public static ArrayList getSubmitMultiTestTypes() {
         if (SUBMIT_MULTI_TEST_TYPES == null) {
@@ -104,5 +121,12 @@ public class LiveQueConfig {
             SHOW_CONTROL_TYPES.add(LiveQueConfig.EN_COURSE_TYPE_19);
         }
         return SHOW_CONTROL_TYPES;
+    }
+
+    public static boolean isGroupGame(String type) {
+        if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(type) || LiveQueConfig.EN_COURSE_TYPE_HOT_AIR_BALLON.equals(type)) {
+            return true;
+        }
+        return false;
     }
 }

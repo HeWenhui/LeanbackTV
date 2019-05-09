@@ -30,6 +30,8 @@ import android.widget.Toast;
 
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.base.XesActivity;
+import com.xueersi.common.business.AppBll;
+import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.entity.FooterIconEntity;
 import com.xueersi.common.event.AppEvent;
@@ -43,12 +45,14 @@ import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.log.FileLogger;
 import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
+import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
-import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService.VPlayerListener;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack.VPlayerListener;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
+import com.xueersi.parentsmeeting.module.videoplayer.ps.PSIJK;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
@@ -58,12 +62,15 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import tv.danmaku.ijk.media.player.AvformatOpenInputError;
+//import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
 
 
 /***
+ *
+ * 旁听三分屏体验课Activity
  * 视频播放主界面
  *
  * @author 林玉强
@@ -305,15 +312,46 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
                     // 准备开始播放指定视频
                     synchronized (mOpenLock) {
                         if (!mOpened.get() && vPlayer != null) {
-                            mOpened.set(true);
-                            vPlayer.setVPlayerListener(vPlayerServiceListener);
-                            if (vPlayer.isInitialized())
-                                mUri = vPlayer.getUri();
-
-                            if (videoView != null)
-                                vPlayer.setDisplay(videoView.getHolder());
-                            if (mUri != null)
-                                vPlayer.initialize(mUri, video, 0, vPlayerServiceListener, mIsHWCodec);
+                            if (!MediaPlayer.getIsNewIJK()) {
+                                mOpened.set(true);
+                                vPlayer.setVPlayerListener(vPlayerServiceListener);
+                                if (vPlayer.isInitialized()) {
+                                    mUri = vPlayer.getUri();
+                                }
+                                if (videoView != null) {
+                                    vPlayer.setDisplay(videoView.getHolder());
+                                }
+                                if (mUri != null) {
+                                    vPlayer.initialize(mUri, video, 0, vPlayerServiceListener, mIsHWCodec);
+                                }
+                            } else {
+                                mOpened.set(true);
+                                vPlayer.setVPlayerListener(vPlayerServiceListener);
+                                if (videoView != null) {
+                                    vPlayer.setDisplay(videoView.getHolder());
+                                }
+                                vPlayer.psInit(MediaPlayer.VIDEO_PLAYER_NAME, 0, vPlayerServiceListener, mIsHWCodec);
+                                if (isChangeLine) {
+                                    try {
+                                        vPlayer.changeLine(changeLinePos, protocol);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    isChangeLine = false;
+                                } else {
+                                    try {
+                                        if (vPlayer.getPlayer() instanceof PSIJK) {
+                                            vPlayer.getPlayer().setUserInfo(AppBll.getInstance().getAppInfoEntity().getChildName(), UserBll.getInstance().getMyUserInfoEntity().getStuId());
+                                        }
+                                        vPlayer.playPSVideo(videoPath, protocol);
+                                    } catch (IOException e) {
+                                        vPlayerHandler.sendEmptyMessage(OPEN_FAILED);
+                                        e.printStackTrace();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
                         }
                     }
                     break;
@@ -408,6 +446,107 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         }
     };
 
+    private String videoPath;
+    /** 切换线路使用位置 */
+    protected int changeLinePos;
+    /** 当前使用的协议 */
+    protected int protocol;
+    /**
+     * 使用切换线路，
+     * true代表切换线路，走
+     * {@link com.xueersi.parentsmeeting.module.videoplayer.ps.PSIJK#changePlayLine(int)}
+     * 和{@link PSIJK#tryPlayLive()}
+     * false代表不切换线路,直接走{@link com.xueersi.parentsmeeting.module.videoplayer.ps.PSIJK#playLive(String, int)}
+     */
+    protected boolean isChangeLine = false;
+    /**
+     * @param streamId 直播的话为channel_name
+     * @param protocol 回放的话为videoPath
+     */
+    /** 直播类型 */
+    public int liveType = 0;
+    /** 直播，使用{@link PSIJK#playLive(String, int)} */
+    public final static int PLAY_LIVE = 0;
+    /** 回放，使用{@link PSIJK#playVod(String, int)} */
+    public final static int PLAY_BACK = 1;
+    /** 录播，使用{@link PSIJK#playFile(String, int)} */
+    public final static int PLAY_TUTORIAL = 2;
+
+    /**
+     * PSIJK切换线路使用
+     *
+     * @param pos
+     * @param protocol
+     */
+    public void changePlayLive(int pos, int protocol) {
+        isChangeLine = true;
+        this.changeLinePos = pos;
+        this.protocol = protocol;
+        if (protocol == MediaPlayer.VIDEO_PROTOCOL_RTMP || protocol == MediaPlayer.VIDEO_PROTOCOL_FLV || protocol == MediaPlayer.VIDEO_PROTOCOL_HLS) {
+            this.liveType = PLAY_LIVE;
+        } else if (protocol == MediaPlayer.VIDEO_PROTOCOL_MP4 || protocol == MediaPlayer.VIDEO_PROTOCOL_M3U8) {
+            this.liveType = PLAY_BACK;
+        }
+        if (mCreated && vPlayer != null) {
+//        if (vPlayer != null) {
+            vPlayer.release();
+            vPlayer.psStop();
+        }
+//        }
+        //初始化
+
+        mDisplayName = "";
+        mIsHWCodec = false;
+        mFromStart = false;
+        mStartPos = 0;
+        mIsEnd = false;
+//        mUri = uri;
+//        mDisplayName = displayName;
+
+//        vPlayerHandler.post(new Runnable() {
+//            @Override
+//            public void run() {
+        if (viewRoot != null) {
+            viewRoot.postInvalidate();
+        }
+//            }
+//        });
+        if (mOpened != null) {
+            mOpened.set(false);
+        }
+        vPlayerHandler.sendEmptyMessage(OPEN_FILE);
+
+    }
+
+    protected void playPSVideo(String videoPath, int protocol) {
+        isChangeLine = false;
+        logger.i("videoPath = " + videoPath);
+        this.videoPath = videoPath;
+        this.protocol = protocol;
+        if (mCreated && vPlayer != null) {
+            vPlayer.release();
+            vPlayer.psStop();
+        }
+        mDisplayName = "";
+        mIsHWCodec = false;
+        mFromStart = false;
+        mStartPos = 0;
+        mIsEnd = false;
+//        mUri = uri;
+//        mDisplayName = displayName;
+        if (viewRoot != null) {
+            viewRoot.postInvalidate();
+        }
+        if (mOpened != null) {
+            mOpened.set(false);
+        }
+
+        vPlayerHandler.sendEmptyMessage(OPEN_FILE);
+    }
+    /** 赋值视频名称 */
+    public void setmDisplayName(String displayName) {
+        this.mDisplayName = displayName;
+    }
     // endregion
 
     // region 生命周期及系统调用
@@ -617,7 +756,18 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         } else {
             if (mCloseComplete) {
                 // 如果当前没有初始化，并且是已经播放完毕的状态则重新打开播放
-                playNewVideo();
+                if (!MediaPlayer.getIsNewIJK()) {
+                    playNewVideo();
+                } else {
+//                    String videoPath;
+//
+//                    if (url.contains("http") || url.contains("https")) {
+//                        videoPath = DoPSVideoHandle.getPSVideoPath(url);
+//                    } else {
+//                        videoPath = url;
+//                    }
+//                    playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+                }
             }
         }
     }
@@ -725,6 +875,9 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
      * 用户点击返回，判断是不是程序崩溃
      */
     protected void onUserBackPressed() {
+        if (vPlayer != null) {
+            vPlayer.psExit();
+        }
         finish(VIDEO_CANCLE);
     }
 
@@ -852,28 +1005,56 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     }
 
     /** 播放一个新的视频 */
+    @Deprecated
     protected void playNewVideo(Uri uri, String displayName) {
+        //
+        if (!MediaPlayer.getIsNewIJK()) {
+            if (isInitialized()) {
+                vPlayer.release();
+                vPlayer.releaseContext();
+            }
 
-        if (isInitialized()) {
-            vPlayer.release();
-            vPlayer.releaseContext();
+            mDisplayName = "";
+            mIsHWCodec = false;
+            mFromStart = false;
+            mStartPos = 0;
+            mIsEnd = false;
+
+            mUri = uri;
+            mDisplayName = displayName;
+
+            if (viewRoot != null) {
+                viewRoot.postInvalidate();
+            }
+            if (mOpened != null) {
+                mOpened.set(false);
+            }
+
+            vPlayerHandler.sendEmptyMessage(OPEN_FILE);
+        } else {
+            if (isInitialized()) {
+                vPlayer.release();
+                vPlayer.releaseContext();
+            }
+
+            mDisplayName = "";
+            mIsHWCodec = false;
+            mFromStart = false;
+            mStartPos = 0;
+            mIsEnd = false;
+
+            mUri = uri;
+            mDisplayName = displayName;
+
+            if (viewRoot != null) {
+                viewRoot.postInvalidate();
+            }
+            if (mOpened != null) {
+                mOpened.set(false);
+            }
+
+            vPlayerHandler.sendEmptyMessage(OPEN_FILE);
         }
-
-        mDisplayName = "";
-        mIsHWCodec = false;
-        mFromStart = false;
-        mStartPos = 0;
-        mIsEnd = false;
-
-        mUri = uri;
-        mDisplayName = displayName;
-
-        if (viewRoot != null)
-            viewRoot.invalidate();
-        if (mOpened != null)
-            mOpened.set(false);
-
-        vPlayerHandler.sendEmptyMessage(OPEN_FILE);
     }
 
     public void setVolume(float left, float right) {
@@ -884,37 +1065,37 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
         }
     }
 
-    /**
-     * 播放一个新的视频
-     *
-     * @param uri
-     * @param displayName
-     * @param shareKey    用于标识当前视频的唯一值
-     * @author zouhao
-     * @Create at: 2015-9-23 下午7:45:41
-     */
-    protected void playNewVideo(Uri uri, String displayName, String shareKey) {
-        if (isInitialized()) {
-            vPlayer.release();
-            vPlayer.releaseContext();
-        }
-        mDisplayName = "";
-        mIsHWCodec = false;
-        mFromStart = false;
-        mStartPos = 0;
-        mIsEnd = false;
-
-        mUri = uri;
-        mDisplayName = displayName;
-
-        if (viewRoot != null)
-            viewRoot.invalidate();
-        if (mOpened != null)
-            mOpened.set(false);
-
-        vPlayerHandler.sendEmptyMessage(OPEN_FILE);
-    }
-
+    //    /**
+//     * 播放一个新的视频
+//     *
+//     * @param uri
+//     * @param displayName
+//     * @param shareKey    用于标识当前视频的唯一值
+//     * @author zouhao
+//     * @Create at: 2015-9-23 下午7:45:41
+//     */
+//    protected void playNewVideo(Uri uri, String displayName, String shareKey) {
+//        if (isInitialized()) {
+//            vPlayer.release();
+//            vPlayer.releaseContext();
+//        }
+//        mDisplayName = "";
+//        mIsHWCodec = false;
+//        mFromStart = false;
+//        mStartPos = 0;
+//        mIsEnd = false;
+//
+//        mUri = uri;
+//        mDisplayName = displayName;
+//
+//        if (viewRoot != null)
+//            viewRoot.postInvalidate();
+//        if (mOpened != null)
+//            mOpened.set(false);
+//
+//        vPlayerHandler.sendEmptyMessage(OPEN_FILE);
+//    }
+    @Deprecated
     protected void playNewVideo() {
         if (mUri != null && mDisplayName != null) {
             playNewVideo(mUri, mDisplayName);
@@ -1032,17 +1213,23 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
 
     /** 设置视频名称 */
     protected void setFileName() {
-        if (mUri != null) {
-            String name = null;
-            if (mUri.getScheme() == null || mUri.getScheme().equals("file"))
-                name = FileUtils.getFileName(mUri);
-            else
-                name = mUri.getLastPathSegment();
-            if (name == null)
-                name = "null";
-            if (mDisplayName == null)
-                mDisplayName = name;
-            mMediaController.setFileName(mDisplayName);
+        if (!MediaPlayer.getIsNewIJK()) {
+            if (mUri != null) {
+                String name = null;
+                if (mUri.getScheme() == null || mUri.getScheme().equals("file"))
+                    name = FileUtils.getFileName(mUri);
+                else
+                    name = mUri.getLastPathSegment();
+                if (name == null)
+                    name = "null";
+                if (mDisplayName == null)
+                    mDisplayName = name;
+                mMediaController.setFileName(mDisplayName);
+            }
+        } else {
+            if (mDisplayName != null) {
+                mMediaController.setFileName(mDisplayName);
+            }
         }
     }
 
@@ -1080,6 +1267,16 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
 
     /** 播放器核心服务监听 */
     protected VPlayerListener vPlayerServiceListener = new VPlayerListener() {
+
+        @Override
+        public void getPSServerList(int cur, int total, boolean modeChange) {
+
+        }
+
+//        @Override
+//        public void getPServerListFail() {
+//
+//        }
 
         /** 硬解码失败 */
         @Override

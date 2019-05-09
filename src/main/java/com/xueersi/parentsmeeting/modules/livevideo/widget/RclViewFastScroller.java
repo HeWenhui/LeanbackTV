@@ -266,9 +266,8 @@ public class RclViewFastScroller extends ItemDecoration implements OnItemTouchLi
 
         int left = viewWidth - mVerticalThumbWidth;
 
-        int offeSetX = (mVerticalThumbWidth - mVerticalTrackWidth)/2;
+        float offeSetX = (mVerticalThumbWidth - mVerticalTrackWidth)/2.0f;
         offeSetX = offeSetX < 0?0:offeSetX;
-
         int top = mVerticalThumbCenterY - mVerticalThumbHeight / 2;
         top = top < 0 ? 0 : top;
         mVerticalThumbDrawable.setBounds(0, 0, mVerticalThumbWidth, mVerticalThumbHeight);

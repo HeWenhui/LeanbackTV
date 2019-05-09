@@ -127,7 +127,7 @@
 //import java.util.Map;
 //import java.util.concurrent.atomic.AtomicInteger;
 //
-//import tv.danmaku.ijk.media.player.AvformatOpenInputError;
+//import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
 //
 ///**
 // * 直播回放播放页

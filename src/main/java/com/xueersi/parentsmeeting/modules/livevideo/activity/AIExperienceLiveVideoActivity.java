@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.activity;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -12,7 +13,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -52,11 +52,15 @@ import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.browser.activity.BrowserActivity;
 import com.xueersi.parentsmeeting.module.browser.event.BrowserEvent;
+import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoSpeedEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.IConnectService;
+import com.xueersi.parentsmeeting.modules.livevideo.business.IIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCMessage;
@@ -66,6 +70,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBll;
+import com.xueersi.parentsmeeting.modules.livevideo.business.NewIRCMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XesAtomicInteger;
@@ -92,6 +97,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionEx
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.video.DoPSVideoHandle;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
@@ -108,8 +114,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
-
-import tv.danmaku.ijk.media.player.AvformatOpenInputError;
 
 /**
  * Created by David on 2018/12/24.
@@ -216,6 +220,12 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
      */
     private static final long SHOW_QUIT_DIALOG_THRESHOLD = 1500000;
     private ExperienceQuitFeedbackBll experienceQuitFeedbackBll;
+
+    private IIRCMessage mIRCMessage;
+    private final String IRC_CHANNEL_PREFIX = "4L";
+
+    /** 是否使用新IRC SDK */
+//    private boolean isNewIRC = false;
 
     // 定时获取聊天记录的任务
     class ScanRunnable implements Runnable {
@@ -514,11 +524,6 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         return getInfo;
     }
 
-
-    private IRCMessage mIRCMessage;
-    private final String IRC_CHANNEL_PREFIX = "4L";
-
-
     /**
      * 连接 聊天服务器
      */
@@ -533,57 +538,62 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
                 + expChatId + "_" + mGetInfo.getStuId() + "_" + mGetInfo.getStuSex();
         logger.i("=====>connectChatServer:channel=" + channel + ":nickname =" +
                 chatRoomUid);
-
-        // 获取 聊天服务器地址  的接口地址
-        ArrayList<TalkConfHost> talkConfHosts = new ArrayList<>();
-        TalkConfHost confHost = null;
-        if (chatCfgServerList != null && chatCfgServerList.size() > 0) {
-            for (int i = 0; i < chatCfgServerList.size(); i++) {
-                confHost = new TalkConfHost();
-                confHost.setHost(chatCfgServerList.get(i));
-                talkConfHosts.add(confHost);
-            }
-        }
         mNetWorkType = NetWorkHelper.getNetWorkState(this);
-        mIRCMessage = new IRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, channel);
-        IRCTalkConf ircTalkConf = new IRCTalkConf(this, mGetInfo, mGetInfo.getLiveType(), mHttpManager, talkConfHosts);
-        //聊天连接调度失败日志
-        ircTalkConf.setChatServiceError(new IRCTalkConf.ChatServiceError() {
-            @Override
-            public void getChatUrlFailure(String url, String errMsg,
-                                          String ip) {
-                Map<String, String> mData = new HashMap<>();
-                mData.put("os", "Android");
-                mData.put("logtype", "Error");
-                mData.put("currenttime", String.valueOf(System.currentTimeMillis()));
-                mData.put("url", url);
-                mData.put("ip", ip);
-                mData.put("errmsg", errMsg);
-                mData.put("liveid", mVideoEntity.getLiveId() == null ? "" : mVideoEntity.getLiveId());
-                mData.put("orderid", mVideoEntity.getChapterId());
-                ums.umsAgentDebugSys(LiveVideoConfig.LIVE_CHAT_GSLB, mData);
+        if (MediaPlayer.getIsNewIJK()) {
+            mIRCMessage = new NewIRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, mGetInfo, channel);
+        } else {
+            // 获取 聊天服务器地址  的接口地址
+            ArrayList<TalkConfHost> talkConfHosts = new ArrayList<>();
+            TalkConfHost confHost = null;
+            if (chatCfgServerList != null && chatCfgServerList.size() > 0) {
+                for (int i = 0; i < chatCfgServerList.size(); i++) {
+                    confHost = new TalkConfHost();
+                    confHost.setHost(chatCfgServerList.get(i));
+                    talkConfHosts.add(confHost);
+                }
             }
-        });
-        mIRCMessage.setIrcTalkConf(ircTalkConf);
+            IRCTalkConf ircTalkConf = new IRCTalkConf(this, mGetInfo, mGetInfo.getLiveType(), mHttpManager,
+                    talkConfHosts);
+            //聊天连接调度失败日志
+            ircTalkConf.setChatServiceError(new IRCTalkConf.ChatServiceError() {
+                @Override
+                public void getChatUrlFailure(String url, String errMsg,
+                                              String ip) {
+                    Map<String, String> mData = new HashMap<>();
+                    mData.put("os", "Android");
+                    mData.put("logtype", "Error");
+                    mData.put("currenttime", String.valueOf(System.currentTimeMillis()));
+                    mData.put("url", url);
+                    mData.put("ip", ip);
+                    mData.put("errmsg", errMsg);
+                    mData.put("liveid", mVideoEntity.getLiveId() == null ? "" : mVideoEntity.getLiveId());
+                    mData.put("orderid", mVideoEntity.getChapterId());
+                    ums.umsAgentDebugSys(LiveVideoConfig.LIVE_CHAT_GSLB, mData);
+                }
+            });
+            mIRCMessage = new IRCMessage(this, mNetWorkType, mGetInfo.getStuName(), chatRoomUid, channel);
+
+            mIRCMessage.setIrcTalkConf(ircTalkConf);
+            //聊天服务器连接失败
+            mIRCMessage.setConnectService(new IConnectService() {
+                @Override
+                public void connectChatServiceError(String serverIp, String
+                        serverPort, String errMsg, String ip) {
+                    Map<String, String> mData = new HashMap<>();
+                    mData.put("os", "Android");
+                    mData.put("logtype", "Error");
+                    mData.put("currenttime", String.valueOf(System.currentTimeMillis()));
+                    mData.put("serverip", serverIp);
+                    mData.put("serverport", serverPort);
+                    mData.put("errmsg", errMsg);
+                    mData.put("ip", ip);
+                    mData.put("liveid", mVideoEntity.getLiveId() == null ? "" : mVideoEntity.getLiveId());
+                    mData.put("orderid", mVideoEntity.getChapterId());
+                    ums.umsAgentDebugSys(LiveVideoConfig.EXPERIENCE_MESSAGE_CONNECT_ERROR, mData);
+                }
+            });
+        }
         mIRCMessage.setCallback(mIRCcallback);
-        //聊天服务器连接失败
-        mIRCMessage.setConnectService(new IRCMessage.ConnectService() {
-            @Override
-            public void connectChatServiceError(String serverIp, String
-                    serverPort, String errMsg, String ip) {
-                Map<String, String> mData = new HashMap<>();
-                mData.put("os", "Android");
-                mData.put("logtype", "Error");
-                mData.put("currenttime", String.valueOf(System.currentTimeMillis()));
-                mData.put("serverip", serverIp);
-                mData.put("serverport", serverPort);
-                mData.put("errmsg", errMsg);
-                mData.put("ip", ip);
-                mData.put("liveid", mVideoEntity.getLiveId() == null ? "" : mVideoEntity.getLiveId());
-                mData.put("orderid", mVideoEntity.getChapterId());
-                ums.umsAgentDebugSys(LiveVideoConfig.EXPERIENCE_MESSAGE_CONNECT_ERROR, mData);
-            }
-        });
         mIRCMessage.create();
 
     }
@@ -936,7 +946,19 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         }
 //        ProxUtil.getProxUtil().put(this, MediaControllerAction.class, this);
         ProxUtil.getProxUtil().put(this, LiveVideoActivityBase.class, this);
-        playNewVideo(Uri.parse(mWebPath), mSectionName);
+        if (!MediaPlayer.getIsNewIJK()) {
+            playNewVideo(Uri.parse(mWebPath), mSectionName);
+        } else {
+            String videoPath;
+            String url = mWebPath;
+            if (url.contains("http") || url.contains("https")) {
+                videoPath = DoPSVideoHandle.getPSVideoPath(url);
+            } else {
+                videoPath = url;
+            }
+            playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+            setmDisplayName(mSectionName);
+        }
         chatCfgServerList = getIntent().getStringArrayListExtra("roomChatCfgServerList");
         expChatId = getIntent().getStringExtra("expChatId");
         sex = getIntent().getStringExtra("sex");
@@ -1271,6 +1293,7 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         });
     }
 
+    @SuppressLint("WrongConstant")
     private void showPopupwinFeedback() {
         final ExperienceLearnFeedbackPager expFeedbackPager = new ExperienceLearnFeedbackPager(this, mVideoEntity,
                 getWindow(), lectureLivePlayBackBll);
@@ -1656,7 +1679,19 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
 //            if (rlQuestionContent.getChildCount() > 0) {
 //                rlQuestionContent.setVisibility(View.VISIBLE);
 //            }
-            playNewVideo(Uri.parse(mWebPath), mSectionName);
+            if (!MediaPlayer.getIsNewIJK()) {
+                playNewVideo(Uri.parse(mWebPath), mSectionName);
+            } else {
+                String videoPath;
+                String url = mWebPath;
+                if (url.contains("http") || url.contains("https")) {
+                    videoPath = DoPSVideoHandle.getPSVideoPath(url);
+                } else {
+                    videoPath = url;
+                }
+                playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+                setmDisplayName(mSectionName);
+            }
         }
         AppBll.getInstance(mBaseApplication);
     }
@@ -1711,7 +1746,19 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
     @Override
     public void onResume() {
         super.onResume();
-        playNewVideo(Uri.parse(mWebPath), mSectionName);
+        if (!MediaPlayer.getIsNewIJK()) {
+            playNewVideo(Uri.parse(mWebPath), mSectionName);
+        } else {
+            String videoPath;
+            String url = mWebPath;
+            if (url.contains("http") || url.contains("https")) {
+                videoPath = DoPSVideoHandle.getPSVideoPath(url);
+            } else {
+                videoPath = url;
+            }
+            playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+            setmDisplayName(mSectionName);
+        }
 
     }
 
@@ -1767,7 +1814,19 @@ public class AIExperienceLiveVideoActivity extends LiveVideoActivityBase impleme
         }
         if (rePlayCount < MAX_REPLAY_COUNT) {
             rePlayCount++;
-            playNewVideo(Uri.parse(mWebPath), mSectionName);
+            if (!MediaPlayer.getIsNewIJK()) {
+                playNewVideo(Uri.parse(mWebPath), mSectionName);
+            } else {
+                String videoPath;
+                String url = mWebPath;
+                if (url.contains("http") || url.contains("https")) {
+                    videoPath = DoPSVideoHandle.getPSVideoPath(url);
+                } else {
+                    videoPath = url;
+                }
+                playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+                setmDisplayName(mSectionName);
+            }
         } else {
             super.resultFailed(arg1, arg2);
         }

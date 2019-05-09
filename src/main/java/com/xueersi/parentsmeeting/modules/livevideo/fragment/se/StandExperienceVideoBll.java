@@ -7,19 +7,23 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputError;
+import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
+import com.xueersi.parentsmeeting.modules.livevideo.video.DoPSVideoHandle;
+import com.xueersi.parentsmeeting.modules.livevideo.video.LiveBackVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import tv.danmaku.ijk.media.player.AvformatOpenInputError;
-
 /**
- * 站立直播体验课的视频播放，仿照LiveBackVideoBll
+ * 站立直播体验课的视频播放，仿照{@link LiveBackVideoBll}
+ * 管理全身直播的视频播放
  */
 public class StandExperienceVideoBll {
 
@@ -137,11 +141,44 @@ public class StandExperienceVideoBll {
         liveBackPlayVideoFragment.setLivePlayLog(livePlayLog);
     }
 
+    /**
+     * 改变播放线路的位置
+     */
+    public void changePlayLine() {
+        if (routTotal != 0) {
+            liveBackPlayVideoFragment.changePlayLive((curRoute++) % routTotal, MediaPlayer.VIDEO_PROTOCOL_MP4);
+        }
+    }
+
     public void playNewVideo() {
-        index = index < 0 ? 0 : index;
-        String url = mWebPaths.get(index++ % mWebPaths.size());
-        logger.d("playNewVideo:url=" + url);
-        liveBackPlayVideoFragment.playNewVideo(Uri.parse(url), mSectionName);
+        if (!MediaPlayer.getIsNewIJK()) {
+            index = index < 0 ? 0 : index;
+            String url = mWebPaths.get(index++ % mWebPaths.size());
+            logger.d("playNewVideo:url=" + url);
+            liveBackPlayVideoFragment.playNewVideo(Uri.parse(url), mSectionName);
+        } else {
+            //使用PSIJK播放新视屏
+
+            String videoPath;
+            String url = mVideoEntity.getVideoPath();
+            if (url.contains("http") || url.contains("https")) {
+                videoPath = DoPSVideoHandle.getPSVideoPath(url);
+            } else {
+                videoPath = url;
+            }
+            liveBackPlayVideoFragment.playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+            liveBackPlayVideoFragment.setmDisplayName(mSectionName);
+//            liveBackPlayVideoFragment.playPSVideo(mVideoEntity.getVideoPath(), MediaPlayer.VIDEO_PROTOCOL_MP4);
+        }
+    }
+
+
+    public void playNewVideo(Uri uri, String displayName) {
+//        mUri = uri;
+//        mDisplayName = displayName;
+        if (uri != null && displayName != null) {
+            liveBackPlayVideoFragment.playNewVideo(uri, displayName);
+        }
     }
 
     public void savePosition(long fromStart) {
@@ -181,11 +218,31 @@ public class StandExperienceVideoBll {
         }
     }
 
-    public PlayerService.VPlayerListener getPlayListener() {
+    public VPlayerCallBack.VPlayerListener getPlayListener() {
         return mPlayListener;
     }
 
-    private PlayerService.VPlayerListener mPlayListener = new PlayerService.SimpleVPlayerListener() {
+    /** 线路总数 */
+    private int routTotal = 0;
+    /** 当前所在线路 */
+    private int curRoute = 0;
+    private VPlayerCallBack.VPlayerListener mPlayListener = new VPlayerCallBack.SimpleVPlayerListener() {
+
+
+        @Override
+        public void getPSServerList(int cur, int total, boolean modeChange) {
+            super.getPSServerList(cur, total, modeChange);
+            curRoute = cur;
+            routTotal = total;
+        }
+
+        /**
+         * 回放原来没有回调
+         */
+//        @Override
+//        public void getPServerListFail() {
+//            super.getPServerListFail();
+//        }
         @Override
         public void onOpenFailed(int arg1, int arg2) {
             logger.d("onOpenFailed:index=" + index + ",arg2=" + arg2);

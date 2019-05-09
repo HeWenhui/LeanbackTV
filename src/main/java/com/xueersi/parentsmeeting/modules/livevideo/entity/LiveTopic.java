@@ -809,7 +809,16 @@ public class LiveTopic {
             private int alloteam;
             private int allotpkman;
             private int openbox;
+            /**当前pk 进行到那一步**/
+            private int PKStep;
 
+            public int getPKStep() {
+                return PKStep;
+            }
+
+            public void setPKStep(int PKStep) {
+                this.PKStep = PKStep;
+            }
             public void setAlloteam(int alloteam) {
                 this.alloteam = alloteam;
             }

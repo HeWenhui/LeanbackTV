@@ -90,10 +90,10 @@
         android:layout_height="wrap_content"
         android:layout_above="@id/v_livevideo_mediacontrol_bottom"
         android:layout_alignParentRight="true"
-        android:background="@drawable/selector_livevideo_psmessagelock"
+        android:background="@drawable/selector_livevideo_messagelock"
         android:button="@null"
         android:paddingRight="10dp" />
-
+<!--   android:background="@drawable/selector_livevideo_psmessagelock"-->
 
     <RelativeLayout
         android:id="@id/rl_livevideo_common_word"

@@ -7,13 +7,13 @@
         <attr name="sliderHeader" format="reference"></attr>
         <attr name="sliderHeaderBg" format="reference"></attr>
         <!--边线颜色-->
-        <attr name="border_line_color" format="color"/>
+        <attr name="border_line_color" format="color" />
         <!--进度条颜色-->
-        <attr name="progress_color_start" format="color"/>
-        <attr name="progress_color_end" format="color"/>
+        <attr name="progress_color_start" format="color" />
+        <attr name="progress_color_end" format="color" />
         <!--背景颜色-->
-        <attr name="bg_color_start" format="color"/>
-        <attr name="bg_color_end" format="color"/>
+        <attr name="bg_color_start" format="color" />
+        <attr name="bg_color_end" format="color" />
 
     </declare-styleable>
 
@@ -52,21 +52,21 @@
     </declare-styleable>
     <!--推荐课程的滚动Banner消息-->
     <declare-styleable name="MarqueeViewStyle">
-        <attr name="mvInterval" format="integer|reference"/>
-        <attr name="mvAnimDuration" format="integer|reference"/>
-        <attr name="mvTextSize" format="dimension|reference"/>
-        <attr name="mvTextColor" format="color|reference"/>
-        <attr name="mvSingleLine" format="boolean"/>
+        <attr name="mvInterval" format="integer|reference" />
+        <attr name="mvAnimDuration" format="integer|reference" />
+        <attr name="mvTextSize" format="dimension|reference" />
+        <attr name="mvTextColor" format="color|reference" />
+        <attr name="mvSingleLine" format="boolean" />
         <attr name="mvGravity">
-            <enum name="left" value="0"/>
-            <enum name="center" value="1"/>
-            <enum name="right" value="2"/>
+            <enum name="left" value="0" />
+            <enum name="center" value="1" />
+            <enum name="right" value="2" />
         </attr>
         <attr name="mvDirection">
-            <enum name="bottom_to_top" value="0"/>
-            <enum name="top_to_bottom" value="1"/>
-            <enum name="right_to_left" value="2"/>
-            <enum name="left_to_right" value="3"/>
+            <enum name="bottom_to_top" value="0" />
+            <enum name="top_to_bottom" value="1" />
+            <enum name="right_to_left" value="2" />
+            <enum name="left_to_right" value="3" />
         </attr>
     </declare-styleable>
 
@@ -75,14 +75,14 @@
         <attr name="drawableTopMargin" format="dimension" />
         <attr name="drawableLeftMargin" format="dimension" />
         <!--是否使用系统默认字体,false:使用方正粗圆字体-->
-        <attr name="useDefultTextFont" format="boolean"/>
+        <attr name="useDefultTextFont" format="boolean" />
     </declare-styleable>
 
     <declare-styleable name="ExpGuideOptionView">
-        <attr name="titleText" format="string"/>
-        <attr name="titleColor" format="color"/>
+        <attr name="titleText" format="string" />
+        <attr name="titleColor" format="color" />
         <attr name="contentText" format="string" />
-        <attr name="contentColor" format="color"/>
+        <attr name="contentColor" format="color" />
         <attr name="imageSrc" format="reference" />
     </declare-styleable>
 
@@ -90,4 +90,13 @@
         <attr name="content_aspect" format="float" />
     </declare-styleable>
 
+    <!--涟漪控件属性-->
+    <declare-styleable name="RingView">
+        <attr name="cColor" format="color" />
+        <attr name="cSpeed" format="integer" />
+        <attr name="cDensity" format="integer" />
+        <attr name="cIsFill" format="boolean" />
+        <attr name="cIsAlpha" format="boolean" />
+        <attr name="cInnerRaidus" format="integer" />
+    </declare-styleable>
 </resources>

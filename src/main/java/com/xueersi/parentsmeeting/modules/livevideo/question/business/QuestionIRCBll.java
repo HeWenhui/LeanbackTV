@@ -1293,6 +1293,11 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         }
 
         @Override
+        public void submitGroupGame(VideoQuestionLiveEntity detailInfo, int gameMode, int voiceTime, int pkTeamId, int gameGroupId, int starNum, int energy, int gold, int videoLengthTime, int micLengthTime, int acceptVideoLengthTime, int acceptMicLengthTime, String answerData, AbstractBusinessDataCallBack callBack) {
+
+        }
+
+        @Override
         public String getResultUrl(VideoQuestionLiveEntity detailInfo, int isforce, String nonce) {
             return null;
         }

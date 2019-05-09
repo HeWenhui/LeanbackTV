@@ -57,7 +57,7 @@ public class WrapInputStream extends InputStream {
 
     @Override
     public void close() throws IOException {
-        logToFile.d("close:class" + inputStream.getClass());
+//        logToFile.d("close:class" + inputStream.getClass());
         try {
             inputStream.close();
         } catch (IOException e) {
