@@ -41,9 +41,13 @@ public class SpeakerRecognitioner {
         this.audioRequest = audioRequest;
         this.context = context;
         logToFile = new LogToFile(context, TAG);
-        Intent intent = new Intent(context, LiveService.class);
-        intent.setAction("START_SPEECH_GEN");
-        context.bindService(intent, serviceConnection, Service.BIND_AUTO_CREATE);
+        try {
+            Intent intent = new Intent(context, LiveService.class);
+            intent.setAction("START_SPEECH_GEN");
+            context.bindService(intent, serviceConnection, Service.BIND_AUTO_CREATE);
+        } catch (Exception e) {
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
     }
 
     private ServiceConnection serviceConnection = new ServiceConnection() {

@@ -6,6 +6,7 @@ import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.os.RemoteException;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.tal.speech.speechrecognigen.ISpeechRecognitnCall;
 import com.tal.speech.speechrecognigen.ISpeechRecognitnGen;
@@ -27,7 +28,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
-    private Logger logger = LiveLoggerFactory.getLogger("SpeechRecogGenBinder");
+    private String TAG = "SpeechRecogGenBinder";
+    private Logger logger = LiveLoggerFactory.getLogger(TAG);
     private final Object lock = new Object();
     /** 和服务器的ping，线程池 */
     private ThreadPoolExecutor pingPool;
@@ -48,7 +50,7 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
     /** 原始录音数据 */
     private byte[] mPCMBuffer;
     private boolean isStart = false;
-    private int index = 1;
+    private int index = 0;
     private boolean destory = false;
     private Context context;
     //    private SpeakerPredict speakerPredict;
@@ -103,7 +105,7 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
                             byte[] pcmdata = new byte[10];
                             String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
                             int enrollIvector = speakerRecognitionerInterface.
-                                    enrollIvector(pcmdata, pcmdata.length, 0, stuId, false);
+                                    enrollIvector(pcmdata, pcmdata.length, index++, stuId, false);
                             logger.d("init:stuId=" + stuId + ",enrollIvector=" + enrollIvector);
                             if (iSpeechRecognitnCall != null) {
                                 try {
@@ -146,6 +148,8 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
         mBufferSize = frameSize * bytesPerFrame;
         if (mBufferSize < 24000) {
             mPCMBuffer = new byte[24000];
+            //用安卓log为了让bugly统计到
+            Log.d(TAG, "initAudioRecorder:mBufferSize=" + mBufferSize);
         } else {
             mPCMBuffer = new byte[mBufferSize];
         }
@@ -181,8 +185,8 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
         pingPool.execute(new Runnable() {
             @Override
             public void run() {
-                if (destory) {
-                    logger.d("start:destory=" + destory);
+                if (destory || !isStart) {
+                    Log.d(TAG, "start:destory=" + destory + ",isStart=" + isStart);
                     return;
                 }
                 MyUserInfoEntity userInfoEntity = UserBll.getInstance().getMyUserInfoEntity();
@@ -209,7 +213,9 @@ public class SpeechRecogGenBinder extends ISpeechRecognitnGen.Stub {
                                 return;
                             }
                             //小于0是错误码
-                            if (readSize > 0) {
+                            if (readSize > 0 && isStart) {
+                                //用安卓log为了让bugly统计到
+                                Log.d(TAG, "startSpeech:index=" + index + ",readSize=" + readSize);
                                 String predict = speakerRecognitionerInterface.predict(mPCMBuffer, readSize, index++, stuId, false);
                                 if (!StringUtils.isEmpty(predict)) {
 //                                    if (speakerPredict != null) {
