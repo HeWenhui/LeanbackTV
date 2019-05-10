@@ -157,15 +157,21 @@ public class H5CoursewareBll implements H5CoursewareAction, LivePagerBack, NbPre
 
     @Override
     public void onH5Courseware(final NbCourseWareEntity entity, final String status) {
-//        logToFile.i("onH5Courseware:url=" + url + ",status=" + status);
-        handler.post(new Runnable() {
 
+        handler.post(new Runnable() {
 
             @Override
             public void run() {
                 if ("on".equals(status)) {
+
                     if (h5CoursewarePager != null) {
-                        if (h5CoursewarePager.getUrl().equals(entity.getUrl())) {
+                        if(entity.isNbExperiment()){
+                            if(entity.getExperimentId() != null){
+                                entity.getExperimentId().equals(mExperimentId);
+                                logToFile.i("onH5Courseware:mExperimentId.equals");
+                                return;
+                            }
+                        }else if (h5CoursewarePager.getUrl().equals(entity.getUrl())) {
                             logToFile.i("onH5Courseware:url.equals");
                             return;
                         } else {

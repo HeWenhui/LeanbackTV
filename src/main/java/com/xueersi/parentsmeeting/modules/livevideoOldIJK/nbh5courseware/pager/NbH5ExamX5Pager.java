@@ -147,6 +147,12 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
     /**课件是否成功加载过**/
     private boolean nbLoaded;
 
+    /**
+     * 是否已开始提交过程
+     */
+    private boolean onSubmit;
+
+
     public NbH5ExamX5Pager(Context context, NbCourseWareEntity entity, LivePagerBack livePagerBack, NbPresenter
             presenter) {
         super(context);
@@ -184,13 +190,15 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(currentMode == MODE_EXAM){
+                if(currentMode == MODE_EXAM && !onSubmit){
+                    Log.e("NbH5Pager","========> submit called:");
                     VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(mContext, (BaseApplication)
                             BaseApplication.getContext(), false,
                             VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
                     cancelDialog.setVerifyBtnListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            onSubmit = true;
                             tvTime.stop();
                             callNbSubmitMethod();
                         }
@@ -374,6 +382,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
         switch (event.getEventType()) {
             case NbCourseEvent.EVENT_TYPE_ONLOAD:
                 hideLoadingView();
+                onSubmit = false;
                 // 第一次成功加载 NB实验 从O开始即时
                 if(!nbLoaded){
                     tvTime.start();
@@ -393,6 +402,8 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
 
                 break;
             case NbCourseEvent.EVENT_TYPE_SUBMIT_FAIL:
+                //NB 提交失败
+                onSubmit = false;
                 XESToastUtils.showToast(mContext, !TextUtils.isEmpty(event.getResponseStr()) ? event.getResponseStr()
                         : "实验提交失败");
                 break;
@@ -555,10 +566,12 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                         if(mCourseWareEntity != null && !mCourseWareEntity.isPlayBack()){
                             mPresenter.sendSubmitSuccessMsg(UserBll.getInstance().getMyUserInfoEntity().getStuId(),mCourseWareEntity.getExperimentId());
                         }
+                        onSubmit = false;
                         showResult();
                     }
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
+                        onSubmit = false;
                         XESToastUtils.showToast(mContext, TextUtils.isEmpty(msg) ? "实验提交失败" : msg);
                         long spendTiem = System.currentTimeMillis() - upLoadStartTime;
                         NbCourseLog.sno6(liveAndBackDebug,mCourseWareEntity.getExperimentId(),mCourseWareEntity.isPlayBack(),"0",spendTiem+"");
@@ -566,6 +579,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
+                        onSubmit = false;
                         XESToastUtils.showToast(mContext, TextUtils.isEmpty(responseEntity.getErrorMsg()) ? "实验提交失败"
                                 : responseEntity.getErrorMsg());
                         long spendTiem = System.currentTimeMillis() - upLoadStartTime;
@@ -575,6 +589,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                     @Override
                     public void onFailure(Call call, IOException e) {
                         super.onFailure(call, e);
+                        onSubmit = false;
                         XESToastUtils.showToast(mContext, "实验提交失败");
                         long spendTiem = System.currentTimeMillis() - upLoadStartTime;
                         NbCourseLog.sno6(liveAndBackDebug,mCourseWareEntity.getExperimentId(),mCourseWareEntity.isPlayBack(),"0",spendTiem+"");
@@ -583,6 +598,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                     @Override
                     public void onFailure(String postUrl, Exception e, String msg) {
                         super.onFailure(postUrl, e, msg);
+                        onSubmit = false;
                         XESToastUtils.showToast(mContext, "实验提交失败");
                         long spendTiem = System.currentTimeMillis() - upLoadStartTime;
                         NbCourseLog.sno6(liveAndBackDebug,mCourseWareEntity.getExperimentId(),mCourseWareEntity.isPlayBack(),"0",spendTiem+"");
