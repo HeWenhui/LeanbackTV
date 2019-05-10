@@ -247,7 +247,8 @@ public class PraiseBasePager extends LiveBasePager {
      * @param onPagerClose
      */
     public void closePraisePager() {
-        mHandler.removeMessages(PraiseConfig.PRAISE_CLICK_CLOSE);
+        mHandler.sendEmptyMessageDelayed(PraiseConfig.PRAISE_CLICK_CLOSE, 0);
+
     }
     /**
      * 关闭表扬榜
@@ -265,6 +266,7 @@ public class PraiseBasePager extends LiveBasePager {
                 mHandler.removeMessages(PraiseConfig.ENCOURAGING_SHOW);
                 mHandler.removeMessages(PraiseConfig.PRAISE_TOTAL_SEND);
                 mHandler.removeMessages(PraiseConfig.PRAISE_CLICK_SEND);
+                mHandler.removeMessages(PraiseConfig.PRAISE_CLICK_CLOSE);
             }
         }
     }
