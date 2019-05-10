@@ -6,6 +6,7 @@ import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.MimeTypeMap;
 import com.tencent.smtt.sdk.WebView;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -14,9 +15,11 @@ import java.io.InputStream;
  * 新课件预加载-小组互动
  */
 public class GroupCourseCache extends NewCourseCache {
+    private File mMorecacheout;
 
     public GroupCourseCache(Context mContext, String liveId) {
         super(mContext, liveId);
+        mMorecacheout = new File(todayLiveCacheDir, liveId + "artschild");
     }
 
     @Override
@@ -42,5 +45,18 @@ public class GroupCourseCache extends NewCourseCache {
             }
         }
         return null;
+    }
+
+    protected File getCourseWarePagesFileName(String s, String contens, int index) {
+        String url2 = s.substring(index + contens.length());
+        int index2 = url2.indexOf("?");
+        if (index2 != -1) {
+            url2 = url2.substring(0, index2);
+        }
+        File file = new File(mMorecacheout, url2);
+        if (file.exists()) {
+            return file;
+        }
+        return super.getCourseWarePagesFileName(s, contens, index);
     }
 }

@@ -165,7 +165,7 @@ public class LiveQueConfig {
     }
 
     public static boolean isGroupGame(String type) {
-        if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(type) || LiveQueConfig.EN_COURSE_TYPE_HOT_AIR_BALLON.equals(type)) {
+        if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(type) || LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(type) || LiveQueConfig.EN_COURSE_TYPE_HOT_AIR_BALLON.equals(type)) {
             return true;
         }
         return false;

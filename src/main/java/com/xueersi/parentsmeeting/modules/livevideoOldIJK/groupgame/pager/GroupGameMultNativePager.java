@@ -57,6 +57,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.action.MultModeAction;
+import com.xueersi.parentsmeeting.modules.livevideo.groupgame.cloud.GroupGameUpload;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.config.GroupGameConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.CleanUpEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.GroupGameTestInfosEntity;
@@ -206,6 +207,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     private JSONArray userAnswer = new JSONArray();
     private int rightNum = 0;
     private EnglishH5CoursewareBll.OnH5ResultClose onClose;
+    private GroupGameUpload groupGameUpload;
 
     public GroupGameMultNativePager(Context context, LiveGetInfo liveGetInfo, VideoQuestionLiveEntity detailInfo, EnglishH5Entity englishH5Entity, EnglishH5CoursewareBll.OnH5ResultClose onClose) {
         super(context);
@@ -237,6 +239,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
     @Override
     public void initData() {
+        groupGameUpload = new GroupGameUpload(mContext, liveId, detailInfo.id);
         BasePlayerFragment videoFragment = ProxUtil.getProxUtil().get(mContext, BasePlayerFragment.class);
         if (videoFragment != null) {
             videoFragment.setVolume(0, 0);
@@ -940,6 +943,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
                 @Override
                 public void onAudioClick(boolean enable) {
+                    if (!enable) {
+                        setTip("小伙伴听不到你的声音啦，但不影响答题哦");
+                    }
                     try {
                         JSONObject jsonObject = new JSONObject();
                         jsonObject.put("live_id", liveId);
@@ -1065,6 +1071,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         if (mIse != null) {
             mIse.cancel();
         }
+        if (saveVideoFile != null) {
+            groupGameUpload.uploadWonderMoment(saveVideoFile, speechContent, 0);
+        }
         final String finalSpeechContent = speechContent;
         handler.postDelayed(new Runnable() {
             @Override
@@ -1103,8 +1112,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         mParam.setLearning_stage(learningStage);
         mParam.setVad_max_sec(vad_max_sec);
         mParam.setVad_pause_sec(vad_max_sec);
+        final File file = saveVideoFile;
+        final String speech = speechContent;
         mIse.startRecog(mParam, new EvaluatorListenerWithPCM() {
-            int lastVolume = 0;
 
             @Override
             public void onBeginOfSpeech() {
@@ -1121,17 +1131,13 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
                     mLogtf.d("onEvaluatorSuccess(): score = " + resultEntity.getScore());
                     onRecognizeStop(false);
+                    groupGameUpload.uploadWonderMoment(file, speech, 0);
                 } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
                     mLogtf.d("onEvaluatorError: ErrorNo = " + resultEntity.getErrorNo() + ", isOfflineFail =" + mIse.isOfflineFail());
                     onRecognizeStop(true);
+                    groupGameUpload.uploadWonderMoment(file, speech, resultEntity.getErrorNo());
                     if (resultEntity.getErrorNo() == ResultCode.MUTE_AUDIO || resultEntity.getErrorNo() == ResultCode.MUTE) {
-                        tvMyVoiceTip.setVisibility(View.VISIBLE);
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                tvMyVoiceTip.setVisibility(View.GONE);
-                            }
-                        }, 1000);
+                        setTip("没听清，请大声点哦");
                     }
                 } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
                     if (resultEntity.getNewSenIdx() >= 0) {
@@ -1182,6 +1188,17 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 }
             }
         });
+    }
+
+    private void setTip(String text) {
+        tvMyVoiceTip.setText(text);
+        tvMyVoiceTip.setVisibility(View.VISIBLE);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                tvMyVoiceTip.setVisibility(View.GONE);
+            }
+        }, 1000);
     }
 
     private void onRecognizeStop(boolean delay) {
