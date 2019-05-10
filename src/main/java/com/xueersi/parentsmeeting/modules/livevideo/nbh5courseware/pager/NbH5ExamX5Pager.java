@@ -454,12 +454,16 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                 intoTestMode();
                 break;
             case NbCourseEvent.EVENT_TYPE_RESULTPAGE_ONLOAD:
-                Log.e("NbH5ExamX5Pager","======>onNbCourseEvent intoTestMode:");
-                String data = event.getResponseStr();
-                // TODO: 2019/4/30 解析 最高连对次数，金币数
-                String highrightcount = "";
-                String goldcount ="";
-                NbCourseLog.sno7(liveAndBackDebug,mCourseWareEntity.getExperimentId(),mCourseWareEntity.isPlayBack(),"1",highrightcount,goldcount);
+                try {
+                    String data = event.getResponseStr();
+                    JSONObject jsonObject = new JSONObject(data);
+                    String highrightcount = jsonObject.optString("rightCount","0");
+                    String goldcount =jsonObject.optString("highGold","0");
+                    Log.e("NbH5ExamX5Pager","======>onNbCourseEvent onPageResult:"+highrightcount+":"+goldcount);
+                    NbCourseLog.sno7(liveAndBackDebug,mCourseWareEntity.getExperimentId(),mCourseWareEntity.isPlayBack(),"1",highrightcount,goldcount);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 break;
             default:
                 break;

@@ -105,7 +105,8 @@ public class NbWebJsProvider {
     }
 
     @JavascriptInterface
-    public final void onLoad(String data){
+    public final void experimentResult(String data){
+        Log.e("NbWebJsProvider","=====>experimentResult:"+data);
         //本地结果页加载成功，回传 最高连对，金币数
         NbCourseEvent event = new NbCourseEvent(NbCourseEvent.EVENT_TYPE_RESULTPAGE_ONLOAD);
         event.setResponseStr(data);
