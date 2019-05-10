@@ -375,6 +375,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
         }
     }
 
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNbCourseEvent(NbCourseEvent event) {
 
