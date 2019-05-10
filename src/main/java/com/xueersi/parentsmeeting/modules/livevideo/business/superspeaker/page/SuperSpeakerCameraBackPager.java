@@ -28,6 +28,7 @@ public class SuperSpeakerCameraBackPager extends BasePager {
         ivNo = view.findViewById(R.id.iv_livevideo_super_speaker_back_pop_window_cancel);
         ivYes = view.findViewById(R.id.iv_livevideo_super_speaker_back_pop_yes);
         tvContentTip = view.findViewById(R.id.tv_livevideo_super_speaker_back_camera_content_tip);
+        initListener();
         return view;
     }
 

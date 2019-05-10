@@ -37,13 +37,13 @@ public interface ISuperSpeakerContract {
          *
          * @param isForce 1：是 2：否
          */
-        void submitSpeechShow(String isForce);
+        void submitSpeechShow(String isForce, String videoDuration);
 
 //        void removeView(View view);
 
         void stopRecord();
 
-        void uploadSucess(String videoUrl, String audioUrl);
+        void uploadSucess(String videoUrl, String audioUrl, String averVocieDecibel);
 //        void updateNum(String num);
 
 //        void timeUp();
@@ -55,7 +55,7 @@ public interface ISuperSpeakerContract {
          *
          * @param isForce 1：是 2：否
          */
-        void submitSpeechShow(String isForce);
+        void submitSpeechShow(String isForce, String averVocieDecibel);
 
         void removeView(View view);
 

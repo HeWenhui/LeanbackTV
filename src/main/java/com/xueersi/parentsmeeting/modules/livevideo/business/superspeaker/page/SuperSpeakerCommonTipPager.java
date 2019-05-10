@@ -58,6 +58,7 @@ public class SuperSpeakerCommonTipPager extends BasePager implements ISuperSpeak
             @Override
             public void onClick(View v) {
                 if (iCommonPresenter != null) {
+                    mView.removeCallbacks(timeDownRunnable);
                     iCommonPresenter.removeCameraView();
                 }
             }
@@ -74,6 +75,7 @@ public class SuperSpeakerCommonTipPager extends BasePager implements ISuperSpeak
             @Override
             public void onClick(View v) {
                 if (iCommonPresenter != null) {
+                    mView.removeCallbacks(timeDownRunnable);
                     iCommonPresenter.removeCameraView();
                 }
             }

@@ -10,8 +10,9 @@ import com.xueersi.lib.log.logger.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Formatter;
 import java.util.List;
+
+//import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.widget.CustomLocalVideoPlayerBridge;
 
 public class Camera1Utils implements IRecordVideoView {
 
@@ -54,8 +55,6 @@ public class Camera1Utils implements IRecordVideoView {
 //                }
 //            }
 //        });
-
-
 
 
         int num = Camera.getNumberOfCameras();
@@ -181,6 +180,7 @@ public class Camera1Utils implements IRecordVideoView {
 
     @Override
     public void stopRecordVideo() {
+
         if (mediarecorder != null) {
             // 停止录制
             try {

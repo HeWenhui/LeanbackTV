@@ -3,18 +3,21 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.widge
 import android.content.Context;
 import android.view.SurfaceView;
 
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 
 import java.io.IOException;
 
-public class CustomLocalVideoPlayerBridge implements ILocalVideoPlayer {
+class CustomLocalVideoPlayerBridge implements ILocalVideoPlayer {
 
+    private Logger logger = LoggerFactory.getLogger(CustomLocalVideoPlayerBridge.class.getSimpleName());
     private Context mContext;
     private PlayerService playerService;
 
-    public CustomLocalVideoPlayerBridge(Context mContext) {
+    CustomLocalVideoPlayerBridge(Context mContext) {
         this.mContext = mContext;
         playerService = new PlayerService(mContext);
     }
@@ -30,6 +33,7 @@ public class CustomLocalVideoPlayerBridge implements ILocalVideoPlayer {
     @Override
     public void startPlayVideo(String path, int time) {
         try {
+            logger.i("path:" + path + " time:" + time);
             playerService.playFile(path, time);
         } catch (IOException e) {
             e.printStackTrace();

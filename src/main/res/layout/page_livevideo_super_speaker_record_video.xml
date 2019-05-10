@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.widget.CustromVideoController2
+    <com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.widget.CustomVideoController2
         android:id="@id/custom_controller_livevideo_super_speaker_record_video_video_player"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

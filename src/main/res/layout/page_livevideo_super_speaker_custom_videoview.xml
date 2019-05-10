@@ -11,7 +11,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"
-        android:saveEnabled="true" />
+        android:saveEnabled="true"
+        tools:layout_editor_absoluteX="258dp"
+        tools:layout_editor_absoluteY="0dp" />
+    <!--<SurfaceView-->
+    <!--android:id="@id/vv_course_video_video"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent" />-->
 
     <ImageView
         android:id="@id/iv_livevideo_super_speaker_video_controller_bottom_background"
@@ -34,11 +40,12 @@
 
     <ImageView
         android:id="@id/iv_livevideo_super_speaker_video_controller_bottom_progress_bar"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:scaleType="fitXY"
         android:src="@drawable/bg_livevideo_super_speaker_video_controller_bottom_progress_bar"
-        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_super_speaker_video_controller_bottom_progress_bar_background"
-        app:layout_constraintBottom_toBottomOf="@id/iv_livevideo_super_speaker_video_controller_bottom_background" />
+        app:layout_constraintBottom_toBottomOf="@id/iv_livevideo_super_speaker_video_controller_bottom_background"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_super_speaker_video_controller_bottom_progress_bar_background" />
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@id/tv_livevideo_super_speaker_video_bottom_time"
@@ -57,10 +64,10 @@
         android:id="@id/tv_livevideo_super_speaker_video_bottom_tt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="/"
         app:layout_constraintBottom_toBottomOf="@id/tv_livevideo_super_speaker_video_bottom_time"
         app:layout_constraintLeft_toRightOf="@id/tv_livevideo_super_speaker_video_bottom_time"
-        app:layout_constraintTop_toTopOf="@id/tv_livevideo_super_speaker_video_bottom_time"
-        tools:text="/" />
+        app:layout_constraintTop_toTopOf="@id/tv_livevideo_super_speaker_video_bottom_time" />
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@id/tv_livevideo_super_speaker_video_bottom_total_time"

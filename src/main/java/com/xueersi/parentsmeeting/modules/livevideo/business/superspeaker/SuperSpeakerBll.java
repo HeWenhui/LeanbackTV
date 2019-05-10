@@ -48,6 +48,9 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                 bottomContent.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+//                        mGetInfo.setId(String.valueOf(454400));
+                        courseWareId = String.valueOf(1);
+                        srcType = String.valueOf(40);
                         performShowRecordCamera(10, 60);
                     }
                 }, 2000);
@@ -248,7 +251,7 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
      * @param isForce 1：是 2：否
      */
     @Override
-    public void submitSpeechShow(String isForce) {
+    public void submitSpeechShow(String isForce, String videoDuration) {
         getHttpManager().sendSuperSpeakersubmitSpeech(
                 mGetInfo.getId(),
                 mGetInfo.getStuCouId(),
@@ -295,7 +298,7 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
     }
 
     @Override
-    public void uploadSucess(String videoUrl, String audioUrl) {
+    public void uploadSucess(String videoUrl, String audioUrl, String averVocieDecibel) {
         getHttpManager().uploadSpeechShow(
                 mGetInfo.getId(),
                 mGetInfo.getStuCouId(),
@@ -310,7 +313,20 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                 new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                        logger.i("通知接口成功");
                         XESToastUtils.showToast(mContext, "通知接口成功");
+                    }
+
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        super.onPmError(responseEntity);
+                        logger.i(responseEntity.getErrorMsg());
+                    }
+
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        super.onPmFailure(error, msg);
+                        logger.i(msg);
                     }
                 }
         );

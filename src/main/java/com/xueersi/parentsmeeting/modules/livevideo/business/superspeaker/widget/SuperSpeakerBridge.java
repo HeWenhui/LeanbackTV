@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.widge
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.os.Looper;
 import android.support.annotation.UiThread;
 import android.view.View;
@@ -22,11 +23,12 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page.SuperSpeakerCameraPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page.SuperSpeakerRedPackagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.StorageUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.UploadAliUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 
+import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -62,7 +64,7 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
     @UiThread
     public void performShowRecordCamera(int answerTime, int recordTime) {
         if (iView == null) {
-            iView = new SuperSpeakerCameraPager(mContext, this, liveId, answerTime, recordTime);
+            iView = new SuperSpeakerCameraPager(mContext, this, liveId, courseWareId, answerTime, recordTime);
         }
         ViewGroup.LayoutParams layoutParams = iView.getView().getLayoutParams();
         if (layoutParams == null) {
@@ -129,6 +131,7 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
 //            videoUrl = "";
 //            uploadSuccess();
             logger.i("video upload fail");
+            //重试uploadVideoNum次
             if (uploadVideoNum.get() > 0) {
                 uploadVideoNum.getAndDecrement();
                 uploadVideo();
@@ -176,16 +179,28 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
             return;
         }
         if (iCameraPresenter != null) {
-            iCameraPresenter.uploadSucess(videoUrl, audioUrl);
+            iCameraPresenter.uploadSucess(videoUrl, audioUrl, voiceDecibel);
         }
     }
 
     private UploadAliUtils uploadAliUtils;
 
+    private String voiceDecibel;
+
     @Override
-    public void submitSpeechShow(String isForce) {
+    public void submitSpeechShow(String isForce, String averVocieDecibel) {
+        MediaPlayer mediaPlayer = new MediaPlayer();
+        try {
+            mediaPlayer.setDataSource(StorageUtils.videoUrl);
+            mediaPlayer.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        long videoDuration = mediaPlayer.getDuration();
+        logger.i("videoDuration =" + videoDuration);
         if (iCameraPresenter != null) {
-            iCameraPresenter.submitSpeechShow(isForce);
+            iCameraPresenter.submitSpeechShow(isForce, String.valueOf(videoDuration));
         }
         uploadAliUtils = new UploadAliUtils(mContext);
 
@@ -195,12 +210,14 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
                 ShareDataManager.SHAREDATA_NOT_CLEAR,
                 false);
         latch = new CountDownLatch(2);
+        this.voiceDecibel = averVocieDecibel;
         uploadVideo();
         uploadAudio();
+
     }
 
     private void uploadVideo() {
-        uploadAliUtils.uploadFile(LiveVideoConfig.SUPER_SPEAKER_VIDEO_PATH + liveId + "video.mp4",
+        uploadAliUtils.uploadFile(StorageUtils.imageUrl,
                 AppConfig.DEBUG ? CloudDir.CLOUD_TEST : CloudDir.LIVE_SUPER_SPEAKER,
                 XesCloudConfig.UPLOAD_OTHER, videoUploadListener);
 
@@ -225,7 +242,7 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
     }
 
     private void uploadAudio() {
-        uploadAliUtils.uploadFile(LiveVideoConfig.SUPER_SPEAKER_VIDEO_PATH + liveId + "audio.mp3",
+        uploadAliUtils.uploadFile(StorageUtils.audioUrl,
                 AppConfig.DEBUG ? CloudDir.CLOUD_TEST : CloudDir.LIVE_SUPER_SPEAKER,
                 XesCloudConfig.UPLOAD_OTHER, audioUploadListener);
     }

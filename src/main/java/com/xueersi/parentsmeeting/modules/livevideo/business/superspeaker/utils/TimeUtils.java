@@ -1,30 +1,13 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils;
 
 public class TimeUtils {
-
-    private TimeUtils() {
-    }
-
-    public static TimeUtils instance;
-
-    public static TimeUtils getInstance() {
-        if (instance == null) {
-            synchronized (TimeUtils.class) {
-                if (instance == null) {
-                    instance = new TimeUtils();
-                }
-            }
-        }
-        return instance;
-    }
-
     /**
      * 把毫秒转换成：1：20：30这样的形式
      *
      * @param size
      * @return
      */
-    public String stringForTime(int size) {
+    public static String stringForTime(long size) {
 //        int totalSeconds = timeMs / 1000;
 //        int seconds = totalSeconds % 60;
 //        int minutes = (totalSeconds / 60) % 60;
@@ -49,7 +32,7 @@ public class TimeUtils {
     /**
      * 把毫秒转换成：1时20分30秒这样的形式
      */
-    public String stringForTimeChs(int second) {
+    public static String stringForTimeChs(int second) {
         int h = 0;
         int d = 0;
         int s = 0;
