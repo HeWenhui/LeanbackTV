@@ -92,6 +92,7 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
             audioStartTime = System.currentTimeMillis();
         }
 //        tvCourseItemLoad.setText("获取中");
+        rlCourseItemCtrl.setVisibility(View.VISIBLE);
         tvCourseItemLoad.setVisibility(View.GONE);
     }
 
@@ -246,5 +247,33 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
 
     public void onScene(String method) {
         tvCourseItemFire.setText("" + entity.energy);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        final RtcEngine rtcEngine = workerThread.getRtcEngine();
+        if (rtcEngine != null) {
+            workerThread.execute(new Runnable() {
+                @Override
+                public void run() {
+                    rtcEngine.muteRemoteAudioStream(uid, true);
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        final RtcEngine rtcEngine = workerThread.getRtcEngine();
+        if (rtcEngine != null) {
+            workerThread.execute(new Runnable() {
+                @Override
+                public void run() {
+                    rtcEngine.muteRemoteAudioStream(uid, !enableAudio);
+                }
+            });
+        }
     }
 }

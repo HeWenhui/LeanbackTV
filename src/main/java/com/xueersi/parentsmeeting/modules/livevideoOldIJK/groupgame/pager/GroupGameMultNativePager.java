@@ -1288,6 +1288,24 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 //                    }
 //                }
 //            });
+//            button.setOnClickListener(new View.OnClickListener() {
+//                java.util.Random random = new java.util.Random();
+//
+//                @Override
+//                public void onClick(View view) {
+//                    try {
+//                        JSONObject resultData = new JSONObject();
+//                        resultData.put("type", CourseMessage.SEND_CoursewareOnloading);
+//                        resultData.put("pageNum", random.nextInt(3));
+//                        resultData.put("currentRight", random.nextInt(10));
+//                        resultData.put("isSingle", false);
+//                        StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
+//                    } catch (Exception e) {
+//                        mLogtf.e("coursewareOnloading", e);
+//                        CrashReport.postCatchedException(new LiveException(TAG, e));
+//                    }
+//                }
+//            });
 //        }
     }
 
@@ -1674,6 +1692,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 TeamMemberEntity teamMemberEntity = entities.get(i);
                 //有用户能量就加5
                 teamMemberEntity.energy += 5;
+                energy += 5;
             }
         } else {
             //遍历作答正确，取最大的金币为3
