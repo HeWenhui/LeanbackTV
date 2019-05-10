@@ -1295,6 +1295,7 @@
 
 
     <!--- 辅导老师表扬榜-->
+    <item name="rl_page_livevideo_praise_list_main_content" type="id" />
     <item name="tv_page_livevideo_praise_list_title" type="id" />
     <item name="tv_item_livevideo_praise_list_name" type="id" />
     <item name="rv_livevideo_praise_list_content" type="id" />

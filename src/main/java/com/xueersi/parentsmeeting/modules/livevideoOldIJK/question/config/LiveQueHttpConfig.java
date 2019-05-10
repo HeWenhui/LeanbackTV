@@ -21,6 +21,8 @@ public class LiveQueHttpConfig {
     public static String LIVE_SUBMIT_COURSEWARE_CN = LiveVideoChConfig.CH_LIVE_HTTP_HOST + "/LiveExam/submitCourseWareTests";
     /** 提交课件-英语 http://wiki.xesv5.com/pages/viewpage.action?pageId=12954171 */
     public static String LIVE_SUBMIT_COURSEWARE_EN = LiveHttpConfig.HTTP_APP_ENGLISH_HOST + "/v2/commonTest/submitMultiTest";
+
+
     public static String LIVE_SUBMIT_COURSEWARE_VOICE_EN = LiveHttpConfig.HTTP_APP_ENGLISH_HOST + "/v2/CourseH5Test/submitH5";
 
     /** 课件结果页-理科本地 */
@@ -44,7 +46,8 @@ public class LiveQueHttpConfig {
     public static String LIVE_GET_COURSEWARE_TUTOR_TESTS = LiveHttpConfig.LIVE_HOST + "/science/Tutorship/getCourseWareTest";
     /** 辅导 提交试题 */
     public static String LIVE_GET_COURSEWARE_SUBMIT_TESTS = LiveHttpConfig.LIVE_HOST + "/science/Tutorship/submitCourseWareTest";
-
+    /** 辅导 获取课件结果 */
+    public static String LIVE_GET_COURSEWARE_TUTOR_RESULT = LiveHttpConfig.LIVE_HOST + "/science/Tutorship/getStuTestResult";
 
 
 }

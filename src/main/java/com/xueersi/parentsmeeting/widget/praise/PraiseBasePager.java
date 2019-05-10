@@ -77,6 +77,7 @@ public class PraiseBasePager extends LiveBasePager {
     OnPraisePageListener onPraisePageListener;
     RelativeLayout bottomContent;
     int totalCurrentNum = 0;
+    RelativeLayout rlMain;
     /**
      * 是否第一次点赞
      */
@@ -112,7 +113,8 @@ public class PraiseBasePager extends LiveBasePager {
         }
     }
 
-    public PraiseBasePager(Context context, PraiseEntity praiseEntity, OnPraisePageListener listener,RelativeLayout bottomContent) {
+    public PraiseBasePager(Context context, PraiseEntity praiseEntity, OnPraisePageListener listener, RelativeLayout
+            bottomContent) {
         super(context, praiseEntity, true);
         mHandler = new PraiseBasePagerHandler(this);
         listContent = praiseEntity.getContentEntityList();
@@ -160,6 +162,7 @@ public class PraiseBasePager extends LiveBasePager {
         GridLayoutManager manager = new GridLayoutManager(mContext, 4);
         manager.setSpanSizeLookup(new GridSpanSizeLookup());
         recyclerView.setLayoutManager(manager);
+        rlMain = mView.findViewById(R.id.rl_page_livevideo_praise_list_main_content);
         imgBtnPractice = mView.findViewById(R.id.fl_page_livevideo_praise_list_practice);
         practiceView = mView.findViewById(R.id.lav_livevideo_praise_list_practice);
         tvPracticeCount = mView.findViewById(R.id.tv_page_livevideo_praise_list_practice_count);
@@ -189,7 +192,7 @@ public class PraiseBasePager extends LiveBasePager {
 
         ImageLoader.with(mContext).load(mPraiseEntity.getTeacherHeadImage()).
                 error(R.drawable.icon_livevideo_praiselist_team_head_default).into(ivTeacherHeadImage);
-        tvTeacherTip.setText(mPraiseEntity.getTeacherName()+"老师对你说:");
+        tvTeacherTip.setText(mPraiseEntity.getTeacherName() + "老师对你说:");
         tvTeacherTalk.setText(mPraiseEntity.getEncouraging());
         practiceView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -245,6 +248,9 @@ public class PraiseBasePager extends LiveBasePager {
      */
     public void closePraisePager() {
         if (onPagerClose != null) {
+            if (rlMain != null) {
+                rlMain.removeAllViews();
+            }
             onPagerClose.onClose(this);
             if (mHandler != null) {
                 mHandler.removeMessages(PraiseConfig.ENCOURAGING_HIDE);
