@@ -34,7 +34,7 @@ public class BigResultAdapter extends RecyclerView.Adapter {
                     byte[] bytes = ("" + chars[j]).getBytes();
                     standAnswerLenght += bytes.length;
                 }
-                if (standAnswerLenght > 8) {
+                if (standAnswerLenght > 12) {
                     standAnswerLeft = true;
                 }
             }
@@ -45,7 +45,7 @@ public class BigResultAdapter extends RecyclerView.Adapter {
                     byte[] bytes = ("" + chars[j]).getBytes();
                     youAnswerLenght += bytes.length;
                 }
-                if (youAnswerLenght > 8) {
+                if (youAnswerLenght > 12) {
                     youAnswerLeft = true;
                 }
             }
