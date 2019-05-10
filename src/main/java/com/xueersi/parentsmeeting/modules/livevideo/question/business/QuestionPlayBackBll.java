@@ -335,6 +335,7 @@ public class QuestionPlayBackBll extends LiveBackBaseBll implements QuestionHttp
                     } else {
                         videoQuestionLiveEntity.num = LiveQueConfig.DOTTYPE_SELE_NUM;
                     }
+                    videoQuestionLiveEntity.setLive(false);
                     questionBll.showBigQuestion(videoQuestionLiveEntity, true);
                     videoQuestionLiveEntity.setvEndTime(questionEntity.getvEndTime());
                     long dealy = questionEntity.getvEndTime() - questionEntity.getvQuestionInsretTime();
