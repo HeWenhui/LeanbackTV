@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@id/rl_livevideo_question_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@id/ll_livevideo_question_content_bord"
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+
+            <cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout
+                android:id="@id/v_livevideo_question_content_bord"
+                android:layout_width="100dp"
+                android:layout_height="@dimen/panel_height"
+                android:background="@color/colorPrimary"
+                android:orientation="horizontal"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@id/ll_livevideo_question_content_test"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_above="@id/ll_livevideo_question_content_bord"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="80dp">
+
+                <RelativeLayout
+                    android:id="@id/rl_livevideo_question_fillin_down"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_centerHorizontal="true">
+
+                    <ImageView
+                        android:id="@id/iv_livevideo_question_fillin_down"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_course_question_big_down" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_below="@id/rl_livevideo_question_fillin_down"
+                    android:background="#151521">
+
+                    <Button
+                        android:id="@id/btn_livevideo_question_fillin_submit"
+                        android:layout_width="72dp"
+                        android:layout_height="36dp"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="20dp"
+                        android:background="@drawable/selector_live_ques_big_sub"
+                        android:gravity="center"
+                        android:padding="0dp"
+                        android:text="提交"
+                        android:textColor="@color/white"
+                        android:textSize="16sp" />
+
+                    <HorizontalScrollView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="40dp"
+                        android:layout_toLeftOf="@id/btn_livevideo_question_fillin_submit"
+                        android:scrollbars="none">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <GridView
+                                android:id="@id/gv_livevideo_question_fillin"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:horizontalSpacing="20dp"
+                                android:listSelector="@color/transparent"
+                                android:numColumns="4" />
+                        </LinearLayout>
+
+                    </HorizontalScrollView>
+
+                </RelativeLayout>
+            </RelativeLayout>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@id/rl_livevideo_question_hide"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible">
+
+        <ImageView
+            android:id="@id/iv_pop_question_visible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/bg_course_question_big_up" />
+    </RelativeLayout>
+</FrameLayout>
