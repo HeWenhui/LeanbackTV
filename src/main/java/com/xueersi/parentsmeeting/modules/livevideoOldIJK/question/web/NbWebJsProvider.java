@@ -57,6 +57,8 @@ public class NbWebJsProvider {
                         EventBus.getDefault().post(event);
                     }
                 }else if(NbCourseWareConfig.NOBOOK_ONE_STEP_CORRECT.equals(type)){
+                    //暂不处理 每小步 回调结果
+                    /*
                     // 每小步正确
                     NbCourseEvent event = new NbCourseEvent(NbCourseEvent.EVENT_TYPE_STEP_CORRECT);
                     JSONObject paramObj = msgObj.optJSONObject("params");
@@ -65,7 +67,10 @@ public class NbWebJsProvider {
                         event.setResponseStr(stepDesc);
                     }
                     EventBus.getDefault().post(event);
+                    */
                 }else if(NbCourseWareConfig.NOBOOK_ONE_STEP_WRONG.equals(type)) {
+                    //暂不处理 每小步 回调结果
+                    /*
                     NbCourseEvent event = new NbCourseEvent(NbCourseEvent.EVENT_TYPE_STEP_WRONG);
                     // 每小步错误
                     JSONObject paramObj = msgObj.optJSONObject("params");
@@ -74,6 +79,8 @@ public class NbWebJsProvider {
                         event.setResponseStr(stepDesc);
                     }
                     EventBus.getDefault().post(event);
+                    */
+
                 }else if(NbCourseWareConfig.NOBOOK_LOAD_ERROR.equals(type)){
                     //加载失败
                     EventBus.getDefault().post(new NbCourseEvent(NbCourseEvent.EVENT_TYPE_LOAD_ERROR));
