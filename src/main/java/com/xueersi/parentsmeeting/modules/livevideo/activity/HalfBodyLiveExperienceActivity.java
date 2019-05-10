@@ -138,6 +138,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
     private static final Object mIjkLock = new Object();
     private WeakHandler mHandler = new WeakHandler(null);
 
+
     /**
      * 视频宽度
      */
