@@ -14,6 +14,7 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.WebTrustVerifier;
 
 import java.io.File;
 import java.io.IOException;
@@ -232,6 +233,7 @@ public class WebViewCache {
         Exception dnsException = new Exception();
         String errorStr = null;
         try {
+            WebTrustVerifier.trustVerifier();
             URL oldUrl = new URL(url);
             if (dnsFailMap.containsKey(oldUrl.getHost())) {
                 isFail = dnsFailMap.get(oldUrl.getHost());
