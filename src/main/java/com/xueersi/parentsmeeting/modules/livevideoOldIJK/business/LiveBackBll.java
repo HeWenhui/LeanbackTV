@@ -27,6 +27,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.remark.business.OnItemClick;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.AllLiveBasePagerIml;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveLog;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
@@ -415,6 +416,29 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
 
     public LiveVideoSAConfig getLiveVideoSAConfig() {
         return liveVideoSAConfig;
+    }
+
+    private OnItemClick onItemClick;
+
+    public OnItemClick getOnItemClick() {
+        if (onItemClick == null) {
+            onItemClick = new OnItemClick() {
+                @Override
+                public void onItemClick(int position) {
+                    List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
+                    if (position < lstVideoQuestion.size()) {
+                        VideoQuestionEntity videoQuestionEntity = lstVideoQuestion.get(position);
+                        boolean same = mQuestionEntity == videoQuestionEntity;
+                        logger.d("onItemClick:position=" + position + "" + videoQuestionEntity.getvQuestionID() + ",start=" + videoQuestionEntity.getvQuestionInsretTime()
+                                + ",isAnswered=" + videoQuestionEntity.isAnswered() + ",same=" + same);
+                        if (!same) {
+                            videoQuestionEntity.setAnswered(false);
+                        }
+                    }
+                }
+            };
+        }
+        return onItemClick;
     }
 
     /**

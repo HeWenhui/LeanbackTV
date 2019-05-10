@@ -267,6 +267,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
      * 多人连麦，是否分组成功
      */
     private boolean isMulitGroupSuc;
+
     public QuestionBll(Activity activity, String stuCouId) {
         ProxUtil.getProxUtil().put(activity, QuestionStatic.class, this);
         ProxUtil.getProxUtil().put(activity, QuestionShowReg.class, this);
@@ -484,7 +485,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
     public void setRolePlayAction(RolePlayAction rolePlayAction, RolePlayActionEnd playActionEnd) {
         this.rolePlayAction = rolePlayAction;
         this.playActionEnd = playActionEnd;
-        this.rolePlayAction.setOnGroupSuc(new RolePlayAction.OnGroupSuc(){
+        this.rolePlayAction.setOnGroupSuc(new RolePlayAction.OnGroupSuc() {
             @Override
             public void onGroupSuc() {
                 //收到分组的回调，也直接走多人
@@ -683,6 +684,8 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
             if (mQueAndBool.contains(key)) {
                 return;
             }
+            //只存一个题，也是为了回放能重复作答。
+            mQueAndBool.clear();
             mQueAndBool.add(key);
             BigResultLog.sno3("true", videoQuestionLiveEntity, getLiveAndBackDebug());
             final BaseLiveBigQuestionPager bigQuestionPager = bigQueCreate.create(videoQuestionLiveEntity, rlQuestionResContent, new LiveBasePager.OnPagerClose() {
@@ -848,7 +851,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     } else {
                         //新讲义讲义：分组成功的回调收到之后，不再判断videoQuestionLiveEntity.multiRolePlay，也走多人
                         if (isMulitGroupSuc) {
-                            logger.d(" multi_people_onGroupSuc:callback use new kj "+rolePlayAction+" multiRolePlay = "+videoQuestionLiveEntity.multiRolePlay);
+                            logger.d(" multi_people_onGroupSuc:callback use new kj " + rolePlayAction + " multiRolePlay = " + videoQuestionLiveEntity.multiRolePlay);
                             if (rolePlayAction != null) {
                                 mQueAndBool.add(id);
                                 rolePlayAction.teacherPushTest(videoQuestionLiveEntity);
@@ -1037,7 +1040,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
 
                         //旧讲义：分组成功的回调收到之后，不再判断videoQuestionLiveEntity.multiRolePlay，也走多人
                         if (isMulitGroupSuc) {
-                            logger.d(" multi_people_onGroupSuc:callback use new kj "+rolePlayAction+" multiRolePlay = "+videoQuestionLiveEntity.multiRolePlay);
+                            logger.d(" multi_people_onGroupSuc:callback use new kj " + rolePlayAction + " multiRolePlay = " + videoQuestionLiveEntity.multiRolePlay);
                             if (rolePlayAction != null) {
                                 mQueAndBool.add(id);
                                 rolePlayAction.teacherPushTest(videoQuestionLiveEntity);
@@ -2664,7 +2667,7 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                     logger.e("=======>forceClose 2222:" + curQuestionView);
                     if (questionWebPager != null) {
                         if (questionHttp != null) {
-                            questionHttp.getStuGoldCount("forceClose:"+method);
+                            questionHttp.getStuGoldCount("forceClose:" + method);
                         }
                         rlQuestionContent.removeView(questionWebPager.getRootView());
                         if (questionWebPager instanceof BaseQuestionWebInter) {

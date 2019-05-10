@@ -45,6 +45,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.remark.business.OnItemClick;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -105,6 +106,7 @@ public class LiveRemarkBll {
     private CommonAdapter mAdapter;
     private MediaController2 mController;
     private AbstractBusinessDataCallBack mCallBack;
+    private OnItemClick onItemClick;
     private String liveId;
     private int markNum = 0;
     private int questionNum = 0;
@@ -427,6 +429,10 @@ public class LiveRemarkBll {
 
     public void setCallBack(AbstractBusinessDataCallBack callBack) {
         mCallBack = callBack;
+    }
+
+    public void setOnItemClick(OnItemClick onItemClick) {
+        this.onItemClick = onItemClick;
     }
 
     public void setLiveId(String liveId) {
@@ -894,6 +900,7 @@ public class LiveRemarkBll {
         private View root;
         private View vSig;
         private VideoPointEntity mEntity;
+        private int position;
 
         @Override
         public int getLayoutResId() {
@@ -915,6 +922,9 @@ public class LiveRemarkBll {
             root.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (onItemClick != null) {
+                        onItemClick.onItemClick(position);
+                    }
                     mPlayerService.seekTo((mEntity.getRelativeTime() < 0 ? 0 : mEntity.getRelativeTime()) * 1000);
                     umsAgentPlay(mEntity.getType(), mEntity.getRelativeTime());
                     if (LiveRemarkBll.this.mCallBack != null) {
@@ -945,7 +955,7 @@ public class LiveRemarkBll {
         @Override
         public void updateViews(VideoPointEntity entity, int i, Object o) {
             mEntity = entity;
-
+            this.position = i;
             ivPlay.setTag(entity.getPic());
             if (!entity.isPlaying()) {
                 ivPlay.setVisibility(View.VISIBLE);
