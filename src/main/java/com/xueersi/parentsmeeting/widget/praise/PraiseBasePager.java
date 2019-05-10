@@ -107,9 +107,9 @@ public class PraiseBasePager extends LiveBasePager {
             } else if (waht == PraiseConfig.PRAISE_TOTAL_SEND) {
                 praiseBasePager.sentPraiseLikes();
 
+            } else if (waht == PraiseConfig.PRAISE_CLICK_CLOSE) {
+                praiseBasePager.closePraisePagerMain();
             }
-
-
         }
     }
 
@@ -242,11 +242,19 @@ public class PraiseBasePager extends LiveBasePager {
     }
 
     /**
-     * 关闭表扬榜
+     * 关闭表扬榜 子线程
      *
      * @param onPagerClose
      */
     public void closePraisePager() {
+        mHandler.removeMessages(PraiseConfig.PRAISE_CLICK_CLOSE);
+    }
+    /**
+     * 关闭表扬榜
+     *
+     * @param onPagerClose
+     */
+    public void closePraisePagerMain(){
         if (onPagerClose != null) {
             if (rlMain != null) {
                 rlMain.removeAllViews();

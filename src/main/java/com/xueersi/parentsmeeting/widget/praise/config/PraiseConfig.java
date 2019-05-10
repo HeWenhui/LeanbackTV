@@ -32,6 +32,7 @@ public class PraiseConfig {
     public  final static int  PRAISE_TOTAL_SEND = 2;
     /** 鼓励总数 */
     public  final static int  PRAISE_CLICK_SEND = 3;
-
+    /** 关闭表杨榜 */
+    public  final static int  PRAISE_CLICK_CLOSE = 4;
     public  final static String  SP_PRAISE_TUTOR = "sp_praise_tutor_";
 }

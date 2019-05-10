@@ -1682,7 +1682,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
      */
     private void showScienceAnswerResult(final int isforce) {
         rlCourseControl.setVisibility(View.GONE);
-        if (LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage)) {
+        if ((LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage)) && !detailInfo.isTUtor) {
             //小学理科 走原生结果页
             englishH5CoursewareSecHttp.getStuTestResult(detailInfo, isPlayBack ? 1 : 0, new AbstractBusinessDataCallBack() {
                 @Override
