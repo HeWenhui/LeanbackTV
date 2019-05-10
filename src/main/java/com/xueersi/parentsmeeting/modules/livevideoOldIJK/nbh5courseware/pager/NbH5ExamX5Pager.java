@@ -57,7 +57,8 @@ import java.io.IOException;
 import java.util.List;
 
 import okhttp3.Call;
-import ren.yale.android.cachewebviewlib.utils.FileUtil;
+import ren.yale.android.cachewebviewlib.CacheWebView;
+import ren.yale.android.cachewebviewlib.WebViewCache;
 
 /**
  * Created by linyuqiang on 2017/3/25.
@@ -151,6 +152,11 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
      */
     private boolean onSubmit;
 
+    /**当前用户加载 nb 实验时 刷新按钮点击次数**/
+    private int refreshTimes;
+
+    /**加载本地资源尝试次数**/
+    private static final int LOCAL_RES_LOAD_TRY_TIMES = 3;
 
     public NbH5ExamX5Pager(Context context, NbCourseWareEntity entity, LivePagerBack livePagerBack, NbPresenter
             presenter) {
@@ -223,6 +229,17 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                     cancelDialog.setVerifyBtnListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            if(!TextUtils.isEmpty(nbExamUrl)){
+                                refreshTimes++;
+                                if(refreshTimes == LOCAL_RES_LOAD_TRY_TIMES){
+                                    if (wvSubjectWeb instanceof CacheWebView) {
+                                        CacheWebView cacheWebView = (CacheWebView) wvSubjectWeb;
+                                        cacheWebView.setCacheStrategy(WebViewCache.CacheStrategy.NORMAL);
+                                        cacheWebView.clearCache();
+                                        Log.e("NbH5ExamX5Pager","=====>onClick clear_cache");
+                                    }
+                                }
+                            }
                             reloadUrl();
                         }
                     });
@@ -800,14 +817,17 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                 }
             }
 
-
             //拦截资源请求，提供本地资源
-            WebResourceResponse webResourceResponse = newCourseCache.shouldInterceptRequest(webView, url);
-            if (webResourceResponse != null) {
-                Log.e("NbH5ExamPager","======>返回本地资源："+url);
-                logger.d("shouldInterceptRequest:url=" + url);
-                return webResourceResponse;
+            Log.e("NbH5ExamPager","======>shouldInterceptRequest：refreshTimes="+refreshTimes);
+            if(refreshTimes < LOCAL_RES_LOAD_TRY_TIMES){
+                WebResourceResponse webResourceResponse = newCourseCache.shouldInterceptRequest(webView, url);
+                if (webResourceResponse != null) {
+                    Log.e("NbH5ExamPager","======>返回本地资源："+url);
+                    logger.d("shouldInterceptRequest:url=" + url);
+                    return webResourceResponse;
+                }
             }
+
             return super.shouldInterceptRequest(webView, request);
         }
 

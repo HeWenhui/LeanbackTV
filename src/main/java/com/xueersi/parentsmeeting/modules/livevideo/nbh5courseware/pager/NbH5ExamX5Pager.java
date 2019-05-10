@@ -26,16 +26,14 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.NbCourseWareConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.NbCourseWareEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.NbCourseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.NbHttpResponseParser;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountTextView;
-import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NbH5PagerAction;
 import com.xueersi.parentsmeeting.modules.livevideo.nbh5courseware.business.NbPresenter;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseWebviewX5Pager;
@@ -44,6 +42,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.web.NbWebJsProvider
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.OnHttpCode;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.WebInstertJs;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.NbCourseLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountTextView;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -56,6 +56,8 @@ import java.io.IOException;
 import java.util.List;
 
 import okhttp3.Call;
+import ren.yale.android.cachewebviewlib.CacheWebView;
+import ren.yale.android.cachewebviewlib.WebViewCache;
 
 /**
 *
@@ -152,6 +154,12 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
      */
     private boolean onSubmit;
 
+    /**当前用户加载 nb 实验时 刷新按钮点击次数**/
+    private int refreshTimes;
+
+    /**加载本地资源尝试次数**/
+
+    private static final int LOCAL_RES_LOAD_TRY_TIMES = 3;
 
     public NbH5ExamX5Pager(Context context, NbCourseWareEntity entity, LivePagerBack livePagerBack, NbPresenter
             presenter) {
@@ -223,6 +231,17 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                     cancelDialog.setVerifyBtnListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            if(!TextUtils.isEmpty(nbExamUrl)){
+                                refreshTimes++;
+                                if(refreshTimes == LOCAL_RES_LOAD_TRY_TIMES){
+                                    if (wvSubjectWeb instanceof CacheWebView) {
+                                        CacheWebView cacheWebView = (CacheWebView) wvSubjectWeb;
+                                        cacheWebView.setCacheStrategy(WebViewCache.CacheStrategy.NORMAL);
+                                        cacheWebView.clearCache();
+                                        Log.e("NbH5ExamX5Pager","=====>onClick clear_cache");
+                                    }
+                                }
+                            }
                             reloadUrl();
                         }
                     });
@@ -798,14 +817,17 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                 }
             }
 
-
             //拦截资源请求，提供本地资源
-            WebResourceResponse webResourceResponse = newCourseCache.shouldInterceptRequest(webView, url);
-            if (webResourceResponse != null) {
-                Log.e("NbH5ExamPager","======>返回本地资源："+url);
-                logger.d("shouldInterceptRequest:url=" + url);
-                return webResourceResponse;
+            Log.e("NbH5ExamPager","======>shouldInterceptRequest：refreshTimes="+refreshTimes);
+            if(refreshTimes < LOCAL_RES_LOAD_TRY_TIMES){
+                WebResourceResponse webResourceResponse = newCourseCache.shouldInterceptRequest(webView, url);
+                if (webResourceResponse != null) {
+                    Log.e("NbH5ExamPager","======>返回本地资源："+url);
+                    logger.d("shouldInterceptRequest:url=" + url);
+                    return webResourceResponse;
+                }
             }
+
             return super.shouldInterceptRequest(webView, request);
         }
 
