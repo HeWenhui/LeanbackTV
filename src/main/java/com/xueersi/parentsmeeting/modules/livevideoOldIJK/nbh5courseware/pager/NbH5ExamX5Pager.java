@@ -64,13 +64,12 @@ import ren.yale.android.cachewebviewlib.utils.FileUtil;
  * h5 课件nb实验
  */
 public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerAction, BaseNbH5CoursewarePager {
-   // String url;
+
     private NbWebJsProvider mJsProvider;
 
     /**
      * 新课件缓存
      */
-    //private NewCourseCache newCourseCache;
     private NbCourseCache newCourseCache;
 
     /**
@@ -381,6 +380,9 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
 
         switch (event.getEventType()) {
             case NbCourseEvent.EVENT_TYPE_ONLOAD:
+
+                String url1 = currentMode == MODE_EXAM?nbExamUrl:nbTestModeUrl;
+                NbCourseLog.loadNbCourseWare(liveAndBackDebug,mCourseWareEntity.getExperimentId(),"1","load_success_url="+url1);
                 hideLoadingView();
                 onSubmit = false;
                 // 第一次成功加载 NB实验 从O开始即时
@@ -395,6 +397,8 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                 break;
             case NbCourseEvent.EVENT_TYPE_LOAD_ERROR:
                 showLoadError();
+                String url = currentMode == MODE_EXAM?nbExamUrl:nbTestModeUrl;
+                NbCourseLog.loadNbCourseWare(liveAndBackDebug,mCourseWareEntity.getExperimentId(),"0","load_failed_url="+url+"_errorMsg="+event.getResponseStr());
                 wvSubjectWeb.setVisibility(View.INVISIBLE);
                 long timeSpend2 = System.currentTimeMillis() - loadingStartTime;
                 NbCourseLog.sno4(liveAndBackDebug,mCourseWareEntity.getExperimentId(),wvSubjectWeb.getUrl(),isPreLaod(),timeSpend2+"",mCourseWareEntity.isPlayBack(),
@@ -404,10 +408,14 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
             case NbCourseEvent.EVENT_TYPE_SUBMIT_FAIL:
                 //NB 提交失败
                 onSubmit = false;
+                NbCourseLog.submitNbCourseWare(liveAndBackDebug,mCourseWareEntity.getExperimentId(),"0",!TextUtils.isEmpty(event.getResponseStr()) ? event.getResponseStr()
+                        : "NB方提交失败");
+
                 XESToastUtils.showToast(mContext, !TextUtils.isEmpty(event.getResponseStr()) ? event.getResponseStr()
                         : "实验提交失败");
                 break;
             case NbCourseEvent.EVENT_TYPE_SUBMIT_SUCCESS:
+                NbCourseLog.submitNbCourseWare(liveAndBackDebug,mCourseWareEntity.getExperimentId(),"1","Nb方提交成功");
                 upLoadSubmitResult(event.getResponseStr());
                 break;
             case NbCourseEvent.EVENT_TYPE_STEP_WRONG:
@@ -567,6 +575,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                             mPresenter.sendSubmitSuccessMsg(UserBll.getInstance().getMyUserInfoEntity().getStuId(),mCourseWareEntity.getExperimentId());
                         }
                         onSubmit = false;
+                        NbCourseLog.submitNbCourseWare(liveAndBackDebug,mCourseWareEntity.getExperimentId(),"1","网校提交成功");
                         showResult();
                     }
                     @Override
@@ -575,6 +584,8 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                         XESToastUtils.showToast(mContext, TextUtils.isEmpty(msg) ? "实验提交失败" : msg);
                         long spendTiem = System.currentTimeMillis() - upLoadStartTime;
                         NbCourseLog.sno6(liveAndBackDebug,mCourseWareEntity.getExperimentId(),mCourseWareEntity.isPlayBack(),"0",spendTiem+"");
+                        NbCourseLog.submitNbCourseWare(liveAndBackDebug,mCourseWareEntity.getExperimentId(),"0","网校提交失败");
+
                     }
 
                     @Override
@@ -584,6 +595,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                                 : responseEntity.getErrorMsg());
                         long spendTiem = System.currentTimeMillis() - upLoadStartTime;
                         NbCourseLog.sno6(liveAndBackDebug,mCourseWareEntity.getExperimentId(),mCourseWareEntity.isPlayBack(),"0",spendTiem+"");
+                        NbCourseLog.submitNbCourseWare(liveAndBackDebug,mCourseWareEntity.getExperimentId(),"0","网校提交失败");
                     }
 
                     @Override
@@ -593,6 +605,8 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                         XESToastUtils.showToast(mContext, "实验提交失败");
                         long spendTiem = System.currentTimeMillis() - upLoadStartTime;
                         NbCourseLog.sno6(liveAndBackDebug,mCourseWareEntity.getExperimentId(),mCourseWareEntity.isPlayBack(),"0",spendTiem+"");
+                        NbCourseLog.submitNbCourseWare(liveAndBackDebug,mCourseWareEntity.getExperimentId(),"0","网校提交失败");
+
                     }
 
                     @Override
@@ -602,6 +616,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                         XESToastUtils.showToast(mContext, "实验提交失败");
                         long spendTiem = System.currentTimeMillis() - upLoadStartTime;
                         NbCourseLog.sno6(liveAndBackDebug,mCourseWareEntity.getExperimentId(),mCourseWareEntity.isPlayBack(),"0",spendTiem+"");
+                        NbCourseLog.submitNbCourseWare(liveAndBackDebug,mCourseWareEntity.getExperimentId(),"0","网校提交失败");
                     }
                 });
         }
@@ -666,18 +681,21 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 NbCourseWareEntity testInfo = NbHttpResponseParser.parseNbTestInfo(responseEntity);
                 LoadNbCourseWare(testInfo);
+                NbCourseLog.getNbTestInfo(liveAndBackDebug,mCourseWareEntity.getExperimentId(),"1","");
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 super.onPmError(responseEntity);
                 showLoadError();
+                NbCourseLog.getNbTestInfo(liveAndBackDebug,mCourseWareEntity.getExperimentId(),"0","获取Nb试题信息失败");
             }
 
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
                 showLoadError();
+                NbCourseLog.getNbTestInfo(liveAndBackDebug,mCourseWareEntity.getExperimentId(),"0","获取Nb试题信息失败");
             }
         });
     }
@@ -708,6 +726,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
         } else {
             wvSubjectWeb.loadUrl(nbExamUrl);
             NbCourseLog.sno3(liveAndBackDebug,mCourseWareEntity.getExperimentId(),nbExamUrl,mCourseWareEntity.isPlayBack(),isPreLaod());
+            NbCourseLog.loadNbCourseWare(liveAndBackDebug,mCourseWareEntity.getExperimentId(),"1","load_start_url="+nbExamUrl);
         }
     }
 

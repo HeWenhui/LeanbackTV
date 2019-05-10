@@ -16,6 +16,9 @@ import java.util.Map;
 public class NbCourseLog {
 
     private static final String eventId = "live_h5experiment";
+
+
+    private static final String experimentFlow = "nb_experiment_flow";
     /**
      * 直播，NB实验 收到  收/发 实验指令
      * @param liveAndBackDebug
@@ -143,4 +146,87 @@ public class NbCourseLog {
        logHashMap.put("goldcount", goldcount);
        liveAndBackDebug.umsAgentDebugPv(eventId, logHashMap.getData());
    }
+
+    /**
+     * 收到发实验指令
+     * @param liveAndBackDebug
+     * @param experimentId
+     */
+   public static void reciveStartCmd (LiveAndBackDebug liveAndBackDebug,String experimentId){
+       StableLogHashMap logHashMap = new StableLogHashMap("reciveStartCmd");
+       logHashMap.put("experimentId", experimentId);
+       liveAndBackDebug.umsAgentDebugSys(experimentFlow, logHashMap.getData());
+   }
+
+    /**
+     * Nb 登录
+     * @param liveAndBackDebug
+     * @param status   1/0 登录接口成功或者失败
+     * @param msg      异常信息
+     */
+   public static void nbLogin(LiveAndBackDebug liveAndBackDebug,String status,String msg){
+       StableLogHashMap logHashMap = new StableLogHashMap("nbLogin");
+       logHashMap.put("status", status);
+       logHashMap.put("message", msg);
+       liveAndBackDebug.umsAgentDebugSys(experimentFlow, logHashMap.getData());
+   }
+
+    /**
+     * 获取Nb 实验课程信息
+     * @param liveAndBackDebug
+     * @param experimentId
+     * @param status    1/0   成功/失败
+     * @param msg       异常信息
+     */
+   public static void getNbTestInfo(LiveAndBackDebug liveAndBackDebug,String experimentId,String status,String msg){
+       StableLogHashMap logHashMap = new StableLogHashMap("getNbTestInfo");
+       logHashMap.put("status", status);
+       logHashMap.put("experimentId", experimentId);
+       logHashMap.put("message", msg);
+       liveAndBackDebug.umsAgentDebugSys(experimentFlow, logHashMap.getData());
+   }
+
+
+    /**
+     * 加载Nb 课件
+     * @param liveAndBackDebug
+     * @param experimentId
+     * @param status     1/0  成功/失败
+     * @param msg        异常信息
+     */
+   public static void loadNbCourseWare(LiveAndBackDebug liveAndBackDebug,String experimentId,String status,String msg){
+       StableLogHashMap logHashMap = new StableLogHashMap("loadNbCourseWare");
+       logHashMap.put("status", status);
+       logHashMap.put("experimentId", experimentId);
+       logHashMap.put("message", msg);
+       liveAndBackDebug.umsAgentDebugSys(experimentFlow, logHashMap.getData());
+   }
+
+
+    /**
+     * 提交Nb 实验
+     * @param liveAndBackDebug
+     * @param experimentId
+     * @param status  1/0 成功失败
+     * @param msg
+     */
+   public static void submitNbCourseWare(LiveAndBackDebug liveAndBackDebug,String experimentId,String status,String msg){
+       StableLogHashMap logHashMap = new StableLogHashMap("submitNbCourseWare");
+       logHashMap.put("status", status);
+       logHashMap.put("experimentId", experimentId);
+       logHashMap.put("message", msg);
+       liveAndBackDebug.umsAgentDebugSys(experimentFlow, logHashMap.getData());
+   }
+
+    /**
+     * 收到结束作答指令
+     * @param liveAndBackDebug
+     * @param experimentId
+     */
+   public static void reciveEndCmd(LiveAndBackDebug liveAndBackDebug,String experimentId){
+       StableLogHashMap logHashMap = new StableLogHashMap("submitNbCourseWare");
+       logHashMap.put("experimentId", experimentId);
+       liveAndBackDebug.umsAgentDebugSys(experimentFlow, logHashMap.getData());
+   }
+
 }

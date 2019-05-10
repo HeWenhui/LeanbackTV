@@ -120,6 +120,7 @@ public class H5CoursewareBll implements H5CoursewareAction, LivePagerBack, NbPre
                     mNbCourseInfo.setNbToken(nbToken);
                     getNBTestInfo(mNbCourseInfo,mTestInfoCallBack);
                 }
+                NbCourseLog.nbLogin(liveAndBackDebug,"1","");
             }
 
             @Override
@@ -128,6 +129,7 @@ public class H5CoursewareBll implements H5CoursewareAction, LivePagerBack, NbPre
                 if(mNbCourseInfo != null && mTestInfoCallBack != null){
                     mTestInfoCallBack.onPmFailure(error,msg);
                 }
+                NbCourseLog.nbLogin(liveAndBackDebug,"0",TextUtils.isEmpty(msg)?"Nb登录失败":msg);
             }
 
             @Override
@@ -136,6 +138,7 @@ public class H5CoursewareBll implements H5CoursewareAction, LivePagerBack, NbPre
                 if(mNbCourseInfo != null && mTestInfoCallBack != null){
                     mTestInfoCallBack.onPmError(responseEntity);
                 }
+                NbCourseLog.nbLogin(liveAndBackDebug,"0","Nb登录失败");
             }
         });
     }
@@ -181,6 +184,7 @@ public class H5CoursewareBll implements H5CoursewareAction, LivePagerBack, NbPre
                        h5CoursewarePager = new NbH5ExamX5Pager(context, entity,H5CoursewareBll.this,
                                H5CoursewareBll.this);
                        NbCourseLog.sno2(liveAndBackDebug,entity.getExperimentId(),"on");
+                       NbCourseLog.reciveStartCmd(liveAndBackDebug,entity.getExperimentId());
                    }else{
                        h5CoursewarePager = new NbH5CoursewareX5Pager(context, entity,H5CoursewareBll.this);
                    }
@@ -200,6 +204,7 @@ public class H5CoursewareBll implements H5CoursewareAction, LivePagerBack, NbPre
                         }
                         if (entity.isNbExperiment()) {
                             NbCourseLog.sno2(liveAndBackDebug,entity.getExperimentId(),"off");
+                            NbCourseLog.reciveEndCmd(liveAndBackDebug,entity.getExperimentId());
                             //提交答案
                             h5CoursewarePager.submitData();
                             showEndTip();
