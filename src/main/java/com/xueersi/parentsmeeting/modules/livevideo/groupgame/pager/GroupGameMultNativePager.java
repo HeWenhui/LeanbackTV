@@ -306,7 +306,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             }
             joinChannel(entities);
         }
-        newCourseCache = new GroupCourseCache(mContext, liveId);
+        newCourseCache = new GroupCourseCache(mContext, liveId, liveGetInfo.isNewCourse());
         addJavascriptInterface();
         wvSubjectWeb.setWebChromeClient(new BaseCoursewareNativePager.MyWebChromeClient() {
             @Override
@@ -944,7 +944,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 @Override
                 public void onAudioClick(boolean enable) {
                     if (!enable) {
-                        setTip("小伙伴听不到你的声音啦，但不影响答题哦");
+                        setTip("小伙伴听不到你的声音啦，\n但不影响答题哦");
                     }
                     try {
                         JSONObject jsonObject = new JSONObject();

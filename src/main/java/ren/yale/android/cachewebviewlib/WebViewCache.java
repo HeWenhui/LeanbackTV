@@ -62,11 +62,14 @@ public class WebViewCache {
     private Map<String, Boolean> dnsFailMap = new HashMap<String, Boolean>();
     private int dnsFail;
     private WebView webView;
+    HashMap header;
 
     public WebViewCache(WebView webView) {
         this.webView = webView;
         mCacheExtensionConfig = new CacheExtensionConfig();
         mEncodingDetect = new BytesEncodingDetect();
+        header = new HashMap();
+        header.put("Access-Control-Allow-Origin", "*");
     }
 
     public void setNeedHttpDns(boolean needHttpDns) {
@@ -619,6 +622,10 @@ public class WebViewCache {
                 WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, ""
                         , inputStream);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    Map<String, String> map = resourseInputStream.getHttpCache().getResponseHeader();
+                    if (map != null && header != null) {
+                        map.putAll(header);
+                    }
                     webResourceResponse.setResponseHeaders(resourseInputStream.getHttpCache().getResponseHeader());
                 }
                 return webResourceResponse;
@@ -632,6 +639,9 @@ public class WebViewCache {
                 CacheWebViewLog.d(encode + " " + url);
                 WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "", inputStream);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    if (header != null) {
+                        map.putAll(header);
+                    }
                     webResourceResponse.setResponseHeaders(map);
                 }
                 return webResourceResponse;

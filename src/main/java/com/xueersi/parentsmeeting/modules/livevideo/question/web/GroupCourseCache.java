@@ -16,9 +16,11 @@ import java.io.InputStream;
  */
 public class GroupCourseCache extends NewCourseCache {
     private File mMorecacheout;
+    private boolean newCourse;
 
-    public GroupCourseCache(Context mContext, String liveId) {
+    public GroupCourseCache(Context mContext, String liveId, boolean newCourse) {
         super(mContext, liveId);
+        this.newCourse = newCourse;
         mMorecacheout = new File(todayLiveCacheDir, liveId + "artschild");
     }
 
@@ -48,14 +50,16 @@ public class GroupCourseCache extends NewCourseCache {
     }
 
     protected File getCourseWarePagesFileName(String s, String contens, int index) {
-        String url2 = s.substring(index + contens.length());
-        int index2 = url2.indexOf("?");
-        if (index2 != -1) {
-            url2 = url2.substring(0, index2);
-        }
-        File file = new File(mMorecacheout, url2);
-        if (file.exists()) {
-            return file;
+        if (!newCourse) {
+            String url2 = s.substring(index + contens.length());
+            int index2 = url2.indexOf("?");
+            if (index2 != -1) {
+                url2 = url2.substring(0, index2);
+            }
+            File file = new File(mMorecacheout, url2);
+            if (file.exists()) {
+                return file;
+            }
         }
         return super.getCourseWarePagesFileName(s, contens, index);
     }
