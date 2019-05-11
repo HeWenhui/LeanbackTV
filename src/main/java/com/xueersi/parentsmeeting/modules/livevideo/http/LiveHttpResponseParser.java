@@ -2477,6 +2477,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 contentEntity.setPraiseStyle(style);
                 contentEntityList.add(contentEntity);
             }
+        } else {
+            PraiseContentEntity   contentEntity = new PraiseContentEntity();
+            contentEntity.setName(jsonObject.optString("msg"));
+            contentEntity.setItemSpan(4);
+            contentEntity.setPraiseStyle(style);
+            contentEntityList.add(contentEntity);
         }
     }
 }
