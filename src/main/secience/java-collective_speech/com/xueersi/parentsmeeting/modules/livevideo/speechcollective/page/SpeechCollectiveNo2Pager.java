@@ -115,7 +115,7 @@ public class SpeechCollectiveNo2Pager extends LiveBasePager implements SpeechCol
     private boolean showNoVolume = false;
 
     @Override
-    public void onNoVolume() {
+    public void onNoVolume(final OnTipHide onTipHide) {
         if (showNoVolume) {
             return;
         }
@@ -124,9 +124,15 @@ public class SpeechCollectiveNo2Pager extends LiveBasePager implements SpeechCol
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
+                onTipHide.hide();
                 ivSpeechcollectiveNoVolume.setVisibility(View.GONE);
             }
         }, 2000);
+    }
+
+    @Override
+    public void onHaveVolume() {
+        ivSpeechcollectiveNoVolume.setVisibility(View.GONE);
     }
 
     private Runnable microphoneShowRunnable = new Runnable() {

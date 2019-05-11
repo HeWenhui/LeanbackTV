@@ -112,6 +112,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
         super.onModeChange(oldMode, mode, isPresent);
         if (speechCollectiveBll != null) {
             speechCollectiveBll.stop();
+            speechCollectiveBll = null;
         }
     }
 
@@ -148,6 +149,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
         } else {
             if (speechCollectiveBll != null) {
                 speechCollectiveBll.stop();
+                speechCollectiveBll = null;
             }
         }
     }
@@ -159,6 +161,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                     speechCollectiveBll.start(voiceID);
                 } else {
                     speechCollectiveBll.stop();
+                    speechCollectiveBll = null;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -240,6 +243,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
         super.onDestory();
         if (speechCollectiveBll != null) {
             speechCollectiveBll.stop();
+            speechCollectiveBll = null;
         }
     }
 }

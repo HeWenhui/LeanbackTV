@@ -1,35 +1,21 @@
 package com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.business;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
-import android.graphics.Bitmap;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 
-import com.airbnb.lottie.ImageAssetDelegate;
-import com.airbnb.lottie.LottieAnimationView;
-import com.airbnb.lottie.LottieImageAsset;
-import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.event.TeachPraiseRusltulCloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.TeacherPraiseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
-import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportAction;
-import com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.page.SpeechEnergyPager;
+import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.page.SpeechEnergyPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.page.SpeechPraisePager;
-import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
@@ -111,6 +97,7 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction {
                 public void onClose(LiveBasePager basePager) {
                     mRootView.removeView(basePager.getRootView());
                     LiveEventBus.getDefault(activity).post(new TeacherPraiseEvent(false));
+                    EventBus.getDefault().post(new TeachPraiseRusltulCloseEvent(""));
                 }
             });
             return true;

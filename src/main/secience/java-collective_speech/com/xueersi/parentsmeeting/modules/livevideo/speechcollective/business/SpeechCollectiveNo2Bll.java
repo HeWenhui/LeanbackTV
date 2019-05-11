@@ -5,8 +5,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
-import android.view.View;
-import android.widget.Button;
 import android.widget.RelativeLayout;
 
 import com.tal.speech.speechrecognizer.EvaluatorListener;
@@ -21,17 +19,18 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.event.TeachPraiseRusltulCloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.TeacherPraiseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.widget.SoundWaveView;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.config.SpeechCollectiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.dialog.SpeechStartDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.page.SpeechCollectiveNo2Pager;
-import com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.page.SpeechEnergyPager;
-import com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.page.SpeechPraisePager;
+import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.page.SpeechEnergyPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
@@ -48,6 +47,13 @@ public class SpeechCollectiveNo2Bll {
     private RelativeLayout mRootView;
     private String TAG = "SpeechCollectiveNo2Bll";
     private Logger logger = LoggerFactory.getLogger(TAG);
+    private boolean addEnergy = false;
+    /** 语音提示正在显示 */
+    private boolean tipIsShow = false;
+    /** 第一次评测 */
+    private boolean isFirstSpeech = true;
+    /** 语音提示只显示一次 */
+    private boolean hasShowTip = false;
     private Context context;
     private LogToFile mLogtf;
     private SpeechEvaluatorUtils mSpeechEvaluatorUtils;
@@ -171,9 +177,6 @@ public class SpeechCollectiveNo2Bll {
         };
     }
 
-    ;
-
-
     private void addView() {
         final SpeechCollectiveNo2Pager speechCollectiveNo2Pager = new SpeechCollectiveNo2Pager(context, mRootView);
         speechCollectiveNo2Pager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
@@ -196,66 +199,97 @@ public class SpeechCollectiveNo2Bll {
         speechCollectiveView = speechCollectiveNo2Pager;
     }
 
+    private EvaluatorListener evaluatorListener = new NoVoice();
+
     private void startEvaluator() {
         isRecord.set(true);
         File saveFile = new File(dir, "speechbul" + System.currentTimeMillis() + ".mp3");
-        mSpeechEvaluatorUtils.startSpeechCollectRecognize(saveFile.getPath(), SpeechEvaluatorUtils.RECOGNIZE_CHINESE,
-                new EvaluatorListener() {
-                    @Override
-                    public void onBeginOfSpeech() {
-                        logger.i("onBeginOfSpeech");
-                        post = false;
-                    }
-
-                    @Override
-                    public void onResult(ResultEntity resultEntity) {
-                        logger.i("onResult:errorno=" + resultEntity.getErrorNo() + " curString:" + resultEntity.getCurString() + " status:" + resultEntity.getStatus());
-                        if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
-                            if (resultEntity.getErrorNo() > 0) {
-                                recognizeError(resultEntity.getErrorNo());
-                            } else {
-                                recognizeSuccess(resultEntity.getCurString(), true);
-                            }
-                        } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
-                            if (resultEntity.getErrorNo() == ResultCode.NO_AUTHORITY) {
-                                speechCollectiveView.onDeny();
-                            } else {
-                                handler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if (!isStop.get()) {
-                                            startEvaluator();
-                                        }
-                                    }
-                                }, 1000);
-                            }
-                        } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
-                            recognizeSuccess(resultEntity.getCurString(), false);
-                        }
-                    }
-
-                    @Override
-                    public void onVolumeUpdate(int volume) {
-                        logger.d("onVolumeUpdate:volume=" + volume + ",post=" + post);
-                        performVolume(volume, true);
-                        if (!post && volume < 2) {
-                            post = true;
-                            handler.removeCallbacks(timeOut);
-                            handler.postDelayed(timeOut, 8000);
-                        }
-                        if (volume > 1) {
-                            handler.removeCallbacks(timeOut);
-                            handler.postDelayed(timeOut, 8000);
-                        }
-                    }
-                });
+        mSpeechEvaluatorUtils.startSpeechCollectRecognize(saveFile.getPath(), SpeechEvaluatorUtils.RECOGNIZE_CHINESE, evaluatorListener);
     }
 
-    private boolean post = false;
+    private abstract class BaseNoVoice implements EvaluatorListener {
+        @Override
+        public void onBeginOfSpeech() {
+            logger.i("onBeginOfSpeech");
+        }
+
+        @Override
+        public void onResult(ResultEntity resultEntity) {
+            logger.i("onResult:errorno=" + resultEntity.getErrorNo() + " curString:" + resultEntity.getCurString() + " status:" + resultEntity.getStatus());
+            if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
+                if (resultEntity.getErrorNo() > 0) {
+                    recognizeError(resultEntity.getErrorNo());
+                } else {
+                    recognizeSuccess(resultEntity.getCurString(), true);
+                }
+            } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
+                if (resultEntity.getErrorNo() == ResultCode.NO_AUTHORITY) {
+                    speechCollectiveView.onDeny();
+                } else {
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!isStop.get()) {
+                                startEvaluator();
+                            }
+                        }
+                    }, 1000);
+                }
+            } else if (resultEntity.getStatus() == ResultEntity.EVALUATOR_ING) {
+                recognizeSuccess(resultEntity.getCurString(), false);
+            }
+        }
+    }
+
+    private class NoVoice extends BaseNoVoice {
+        @Override
+        public void onBeginOfSpeech() {
+            super.onBeginOfSpeech();
+            if (isFirstSpeech) {
+                isFirstSpeech = false;
+                handler.postDelayed(timeOut, 8000);
+            }
+        }
+
+        @Override
+        public void onVolumeUpdate(int volume) {
+            logger.d("NoVoice:onVolumeUpdate:volume=" + volume);
+            performVolume(volume, true);
+            if (volume > 1) {
+                if (!hasShowTip) {
+                    handler.removeCallbacks(timeOut);
+                    handler.postDelayed(timeOut, 8000);
+                }
+                if (tipIsShow) {
+                    tipIsShow = false;
+                    speechCollectiveView.onHaveVolume();
+                }
+            }
+        }
+    }
+
+    private class HaveTipVoice extends BaseNoVoice {
+
+        @Override
+        public void onVolumeUpdate(int volume) {
+            logger.d("HaveTipVoice:onVolumeUpdate:volume=" + volume);
+            performVolume(volume, true);
+        }
+    }
+
     private Runnable timeOut = new Runnable() {
         @Override
         public void run() {
-            speechCollectiveView.onNoVolume();
+            hasShowTip = true;
+            tipIsShow = true;
+            evaluatorListener = new HaveTipVoice();
+            speechCollectiveView.onNoVolume(new SpeechCollectiveView.OnTipHide() {
+                @Override
+                public void hide() {
+                    tipIsShow = false;
+                    logger.d("onNoVolume:hide");
+                }
+            });
             logger.d("onNoVolume");
         }
     };
@@ -321,6 +355,7 @@ public class SpeechCollectiveNo2Bll {
                     @Override
                     public void onDataSucess(Object... objData) {
                         logger.i("onDataSucess:data=" + objData[0]);
+                        addEnergy();
                     }
 
                     @Override
@@ -357,6 +392,25 @@ public class SpeechCollectiveNo2Bll {
             logger.i("recognizeSuccess" + e.getMessage());
             recognizeError(0);
         }
+    }
+
+    private boolean addEnergy() {
+        logger.d("addEnergy:pk=" + liveGetInfo.getIsAllowTeamPk());
+        if (!addEnergy && "1".equals(liveGetInfo.getIsAllowTeamPk())) {
+            addEnergy = true;
+            SpeechEnergyPager speechEnergyPager = new SpeechEnergyPager(context);
+            mRootView.addView(speechEnergyPager.getRootView());
+            speechEnergyPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
+                @Override
+                public void onClose(LiveBasePager basePager) {
+                    mRootView.removeView(basePager.getRootView());
+                    LiveEventBus.getDefault(context).post(new TeacherPraiseEvent(false));
+                    EventBus.getDefault().post(new TeachPraiseRusltulCloseEvent(voiceId));
+                }
+            });
+            return true;
+        }
+        return false;
     }
 
     private void recognizeError(int code) {

@@ -8,14 +8,16 @@ import android.widget.RelativeLayout;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.event.TeachPraiseRusltulCloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.TeacherPraiseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
-import com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.page.SpeechEnergyPager;
+import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.page.SpeechEnergyPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.page.SpeechPraisePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.NoticeAction;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -95,6 +97,7 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction {
                 public void onClose(LiveBasePager basePager) {
                     mRootView.removeView(basePager.getRootView());
                     LiveEventBus.getDefault(activity).post(new TeacherPraiseEvent(false));
+                    EventBus.getDefault().post(new TeachPraiseRusltulCloseEvent(""));
                 }
             });
             return true;

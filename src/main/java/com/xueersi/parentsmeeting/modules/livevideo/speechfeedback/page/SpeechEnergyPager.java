@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.page;
+package com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.page;
 
 import android.animation.Animator;
 import android.content.Context;
