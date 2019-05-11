@@ -66,10 +66,14 @@ public class GroupGameMVPMultPager extends LiveBasePager {
             public int compare(TeamMemberEntity o1, TeamMemberEntity o2) {
                 int com = o2.gold - o1.gold;
                 if (com == 0) {
-                    if (o2.isMy || o1.isMy) {
-                        return -1;
-                    }
                     com = o2.energy - o1.energy;
+                    if (com == 0) {
+                        if (o1.isMy) {
+                            return -1;
+                        } else {
+                            return 1;
+                        }
+                    }
                     return com;
                 }
                 return com;
@@ -81,6 +85,10 @@ public class GroupGameMVPMultPager extends LiveBasePager {
             LOTTIE_RES_ASSETS_ROOTDIR = "group_game_two/";
         } else if (entities.size() == 3) {
             LOTTIE_RES_ASSETS_ROOTDIR = "group_game_three/";
+        }
+        for (int i = 0; i < entities.size(); i++) {
+            TeamMemberEntity entity = entities.get(i);
+            logger.d("entity=" + entity.name + "," + entity.energy + "," + entity.gold);
         }
         initData();
         initListener();

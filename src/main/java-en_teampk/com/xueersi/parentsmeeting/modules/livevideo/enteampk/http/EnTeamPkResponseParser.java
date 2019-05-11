@@ -71,6 +71,7 @@ public class EnTeamPkResponseParser extends HttpResponseParser {
                 teamMemberEntity.headurl = teamObj.optString("stu_head");
                 if (("" + teamMemberEntity.id).equals(userId)) {
                     myTeamMemberEntity = teamMemberEntity;
+                    myTeamMemberEntity.isMy = true;
                 } else {
                     entities.add(teamMemberEntity);
                 }

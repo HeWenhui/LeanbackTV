@@ -1248,35 +1248,36 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 //                @Override
 //                public void onClick(View view) {
 //                    ArrayList<TeamMemberEntity> entities = new ArrayList<>();
-////                    int[][] engGolds = new int[][]{{3, 7}, {2, 2}, {2, 4}};
-//                    int[][] engGolds = new int[][]{{2, 2}, {2, 4}};
+//                    int[][] engGolds = new int[][]{{3, 50}, {2, 36}, {2, 36}};
+//                    String[] names = {"戏2", "izzl", "蒋真"};
+////                    int[][] engGolds = new int[][]{{2, 2}, {2, 4}};
 //                    if (interactiveTeam != null) {
-//                        entities = interactiveTeam.getEntities();
+//                        entities.addAll(interactiveTeam.getEntities());
 //                        for (int i = 0; i < entities.size(); i++) {
 //                            TeamMemberEntity teamMemberEntity = entities.get(i);
 //                            int[] engGold = engGolds[i];
-//                            teamMemberEntity.name = "测试测试测试测试" + i;
+//                            teamMemberEntity.name = names[i];
 //                            teamMemberEntity.gold = engGold[0];
 //                            teamMemberEntity.energy = engGold[1];
 //                        }
 //                    }
 //                    String[] heads = {"https://gss0.bdstatic.com/94o3dSag_xI4khGkpoWK1HF6hhy/baike/c0%3Dbaike80%2C5%2C5%2C80%2C26/sign=107d95c34134970a537e187df4a3baad/a8014c086e061d95b2d56ad47bf40ad163d9ca4f.jpg",
 //                            "https://gss0.bdstatic.com/-4o3dSag_xI4khGkpoWK1HF6hhy/baike/crop%3D24%2C0%2C851%2C562%3Bc0%3Dbaike92%2C5%2C5%2C92%2C30/sign=031be2a37f3e6709aa4f1fbf06f5ab11/fd039245d688d43f23098f767d1ed21b0ff43b95.jpg"};
-//                    int count = 2;
+//                    int count = 3;
 //                    int i = entities.size();
 //                    while (entities.size() < count) {
 ////                        TeamMemberEntity myTeamMemberEntity = entities.get(0);
 ////                        myTeamMemberEntity.gold = 11;
 ////                        myTeamMemberEntity.energy = 12;
 //                        int[] engGold = engGolds[i];
-//                        i++;
 //                        TeamMemberEntity teamMemberEntity = new TeamMemberEntity();
 //                        teamMemberEntity.id = i;
-//                        teamMemberEntity.name = "测试测试测试测试" + i;
+//                        teamMemberEntity.name = names[i];
 //                        teamMemberEntity.headurl = heads[i % heads.length];
 //                        teamMemberEntity.gold = engGold[0];
 //                        teamMemberEntity.energy = engGold[1];
 //                        entities.add(teamMemberEntity);
+//                        i++;
 //                    }
 //                    GroupGameMVPMultPager groupGameMVPMultPager = new GroupGameMVPMultPager(mContext, entities);
 //                    ((ViewGroup) mView).addView(groupGameMVPMultPager.getRootView());
