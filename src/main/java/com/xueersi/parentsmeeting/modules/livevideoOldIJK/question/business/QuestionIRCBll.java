@@ -44,6 +44,8 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.http.CourseWareHttpManager;
 import com.xueersi.parentsmeeting.widget.praise.PraiseDarkPager;
 import com.xueersi.parentsmeeting.widget.praise.PraiseLovelyPager;
+import com.xueersi.parentsmeeting.widget.praise.PraisePager;
+import com.xueersi.parentsmeeting.widget.praise.business.OnPraisePageListener;
 import com.xueersi.parentsmeeting.widget.praise.entity.PraiseEntity;
 
 import org.json.JSONArray;
@@ -104,6 +106,38 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         String[] ptTypeFilters = {"4", "0", "1", "2", "8", "5", "6", "18", "19"};
         questiongtype = Arrays.asList(ptTypeFilters);
     }
+
+//    private void testPraise(RelativeLayout bottomContent){
+//        String data = "{\"bizId\":1,\"rankTitle\":\"课清测试\",\"category\":1,\"grade\":1,\"rankType\":1,\"isInList\":1," +
+//                "\"word\":\"粤语,you're as good as gold!\",\"desc\":\"口述题测试, 口述题测试, 口述题测试, 口述题测试, 口述题测试, 口述题测试, 口述题测试, " +
+//                "口述题测试\",\"counselorName\":\"韩刚\",\"counselorAvatar\":\"https://xesfile.xesimg" +
+//                ".com/web/2017/11/22/15113381801151.png\",\"list\":[{\"group\":\"课清全对\",\"stus\":[{\"stuId\":10045," +
+//                "\"name\":\"测试账户1\",\"inList\":1},{\"stuId\":10046,\"name\":\"测试账户2\",\"inList\":0},{\"stuId\":10046," +
+//                "\"name\":\"测试账户2\",\"inList\":0},{\"stuId\":10046,\"name\":\"测试账户2\",\"inList\":0},{\"stuId\":10046," +
+//                "\"name\":\"测试账户2\",\"inList\":0},{\"stuId\":10047," +
+//                "\"name\":\"测试账户3\",\"inList\":0}]},{\"group\":\"订正全对\",\"stus\":[{\"stuId\":10048," +
+//                "\"name\":\"测试账户4\",\"inList\":0},{\"stuId\":10049,\"name\":\"测试账户5\",\"inList\":0}]}]}";
+//        PraiseEntity entity = null;
+//        if (com.xueersi.common.config.AppConfig.DEBUG) {
+//
+//            ResponseEntity responseEntity = new ResponseEntity();
+//            try {
+//                responseEntity.setJsonObject(new JSONObject(data));
+//                entity = getHttpResponseParser().parseTutorPraiseEntity(responseEntity);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            if (com.xueersi.common.config.AppConfig.DEBUG) {
+//                PraisePager praisePager = new PraisePager(mContext, entity, new OnPraisePageListener() {
+//                    @Override
+//                    public void onPraiseClick(int num) {
+//
+//                    }
+//                }, bottomContent);
+//                praisePager.showPraisePager(bottomContent);
+//            }
+//        }
+//    }
 
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean isLand) {
