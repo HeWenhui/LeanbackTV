@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -28,10 +29,12 @@ import com.xueersi.parentsmeeting.widget.praise.entity.PraiseContentEntity;
 import com.xueersi.parentsmeeting.widget.praise.entity.PraiseEntity;
 import com.xueersi.parentsmeeting.widget.praise.item.LivePraiseItem;
 import com.xueersi.parentsmeeting.widget.praise.item.LivePraiseTitleItem;
+import com.xueersi.parentsmeeting.widget.praise.item.RecyclerViewSpacesItemDecoration;
 import com.xueersi.ui.adapter.RCommonAdapter;
 
 import java.lang.ref.WeakReference;
 import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -174,7 +177,17 @@ public class PraiseBasePager extends LiveBasePager {
         tvTeacherTip = mView.findViewById(R.id.tv_page_livevideo_praise_list_teacher_tip);
         tvTeacherTalk = mView.findViewById(R.id.tv_page_livevideo_praise_list_teacher_talk);
         ivTeacherHeadImage = mView.findViewById(R.id.iv_page_livevideo_praise_list_teacher_head_image);
+        setRecyclerViewDecoration();
         return mView;
+    }
+
+    public void setRecyclerViewDecoration(){
+        HashMap<String, Integer> stringIntegerHashMap = new HashMap<>();
+        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.TOP_DECORATION,0);//top间距
+        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.BOTTOM_DECORATION,0);//底部间距
+        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.LEFT_DECORATION,0);//左间距
+        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.RIGHT_DECORATION, SizeUtils.Dp2Px(mContext,15));//右间距
+        recyclerView.addItemDecoration(new RecyclerViewSpacesItemDecoration(stringIntegerHashMap));
     }
 
     private void setContentData() {
@@ -257,9 +270,6 @@ public class PraiseBasePager extends LiveBasePager {
      */
     public void closePraisePagerMain(){
         if (onPagerClose != null) {
-            if (rlMain != null) {
-                rlMain.removeAllViews();
-            }
             onPagerClose.onClose(this);
             if (mHandler != null) {
                 mHandler.removeMessages(PraiseConfig.ENCOURAGING_HIDE);
