@@ -8,7 +8,6 @@ import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
-import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
@@ -2241,28 +2240,30 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 JSONArray liveCoursewareArray = data.getJSONArray("list");
                 for (int i = 0; i < liveCoursewareArray.length(); i++) {
                     CoursewareInfoEntity.LiveCourseware liveCourseware = new CoursewareInfoEntity.LiveCourseware();
-                    JSONObject liveJson = liveCoursewareArray.getJSONObject(i);
-                    liveCourseware.setLiveId(liveJson.optString("liveId"));
-                    liveCourseware.setStime(liveJson.optLong("stime", System.currentTimeMillis() / 1000));
-                    if (liveJson.has("infos")) {
-                        JSONArray coursewareArray = liveJson.getJSONArray("infos");
-                        List<CoursewareInfoEntity.ItemCoursewareInfo> coursewareInfos = new ArrayList<>();
-                        for (int j = 0; j < coursewareArray.length(); j++) {
-                            JSONObject coursewareJson = coursewareArray.getJSONObject(j);
-                            CoursewareInfoEntity.ItemCoursewareInfo coursewareInfo = new CoursewareInfoEntity.ItemCoursewareInfo();
-                            coursewareInfo.setSourceId(coursewareJson.optString("sourceId"));
-                            coursewareInfo.setPackageId(coursewareJson.optString("packageId"));
-                            coursewareInfo.setPackageSource(coursewareJson.optString("packageSource"));
-                            coursewareInfo.setTemplate(coursewareJson.optInt("isTemplate") == 1 ? true : false);
-                            coursewareInfo.setPageId(coursewareJson.optString("pageId"));
-                            coursewareInfo.setResourceUrl(coursewareJson.optString("resourceUrl"));
-                            coursewareInfo.setTemplateUrl(coursewareJson.optString("templateUrl"));
+                    JSONObject liveJson = liveCoursewareArray.optJSONObject(i);
+                    if (liveJson != null) {
+                        liveCourseware.setLiveId(liveJson.optString("liveId"));
+                        liveCourseware.setStime(liveJson.optLong("stime", System.currentTimeMillis() / 1000));
+                        if (liveJson.has("infos")) {
+                            JSONArray coursewareArray = liveJson.getJSONArray("infos");
+                            List<CoursewareInfoEntity.ItemCoursewareInfo> coursewareInfos = new ArrayList<>();
+                            for (int j = 0; j < coursewareArray.length(); j++) {
+                                JSONObject coursewareJson = coursewareArray.getJSONObject(j);
+                                CoursewareInfoEntity.ItemCoursewareInfo coursewareInfo = new CoursewareInfoEntity.ItemCoursewareInfo();
+                                coursewareInfo.setSourceId(coursewareJson.optString("sourceId"));
+                                coursewareInfo.setPackageId(coursewareJson.optString("packageId"));
+                                coursewareInfo.setPackageSource(coursewareJson.optString("packageSource"));
+                                coursewareInfo.setTemplate(coursewareJson.optInt("isTemplate") == 1 ? true : false);
+                                coursewareInfo.setPageId(coursewareJson.optString("pageId"));
+                                coursewareInfo.setResourceUrl(coursewareJson.optString("resourceUrl"));
+                                coursewareInfo.setTemplateUrl(coursewareJson.optString("templateUrl"));
 //                            coursewareInfo.setMd5(coursewareJson.optString("md5"));
-                            coursewareInfo.setResourceMd5(coursewareJson.optString("resourceMd5"));
-                            coursewareInfo.setTemplateMd5(coursewareJson.optString("templateMd5"));
-                            coursewareInfos.add(coursewareInfo);
+                                coursewareInfo.setResourceMd5(coursewareJson.optString("resourceMd5"));
+                                coursewareInfo.setTemplateMd5(coursewareJson.optString("templateMd5"));
+                                coursewareInfos.add(coursewareInfo);
+                            }
+                            liveCourseware.setCoursewareInfos(coursewareInfos);
                         }
-                        liveCourseware.setCoursewareInfos(coursewareInfos);
                     }
                     liveCoursewares.add(liveCourseware);
                 }

@@ -311,6 +311,17 @@ public class TcpDispatch {
                 @Override
                 public void onError(XesCloudResult result) {
                     logger.d("asyncUpload:onError=" + result.getErrorCode() + "," + result.getErrorMsg());
+                    try {
+                        StableLogHashMap stableLogHashMap = new StableLogHashMap("uploaderror");
+                        stableLogHashMap.put("liveid", live_id);
+                        stableLogHashMap.put("address", "" + inetSocketAddress);
+                        stableLogHashMap.put("savefile", "" + saveFile);
+                        stableLogHashMap.put("errorCode", "" + result.getErrorCode());
+                        stableLogHashMap.put("errorMsg", "" + result.getErrorMsg());
+                        UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_TCP_ERROR, stableLogHashMap.getData());
+                    } catch (Exception e) {
+                        CrashReport.postCatchedException(new LiveException(TAG, e));
+                    }
                 }
             });
         }

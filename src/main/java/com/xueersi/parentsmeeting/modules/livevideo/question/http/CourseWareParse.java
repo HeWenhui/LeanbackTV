@@ -4,8 +4,13 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ChineseAISubjectResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.GroupGameTestInfosEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
+import com.xueersi.common.logerhelper.MobAgent;
+import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultItemEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,6 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CourseWareParse {
+    String TAG = "CourseWareParse";
+    Logger logger = LiveLoggerFactory.getLogger(TAG);
+
     public NewCourseSec parseSec(ResponseEntity responseEntity) {
         try {
             NewCourseSec newCourseSec = new NewCourseSec();
@@ -35,7 +43,8 @@ public class CourseWareParse {
             }
             return newCourseSec;
         } catch (JSONException e) {
-            e.printStackTrace();
+            logger.e("parseSec", e);
+            MobAgent.httpResponseParserError(TAG, "parseSec", e.getMessage());
         }
         return null;
     }
@@ -79,7 +88,8 @@ public class CourseWareParse {
             resultEntity.setEnergy(energy);
             return resultEntity;
         } catch (JSONException e) {
-            e.printStackTrace();
+            logger.e("parseStuTestResult", e);
+            MobAgent.httpResponseParserError(TAG, "parseStuTestResult", e.getMessage());
         }
         return null;
     }
@@ -142,7 +152,8 @@ public class CourseWareParse {
             }
             return newCourseSec;
         } catch (JSONException e) {
-            e.printStackTrace();
+            logger.e("parseEn", e);
+            MobAgent.httpResponseParserError(TAG, "parseEn", e.getMessage());
         }
         return null;
     }
@@ -232,6 +243,34 @@ public class CourseWareParse {
             return groupGameTestInfos;
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+        return null;
+    }
+
+    public BigResultEntity parseBigResult(ResponseEntity responseEntity) {
+        try {
+            BigResultEntity bigResultEntity = new BigResultEntity();
+            JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+            bigResultEntity.setIsRight(jsonObject.getInt("is_right"));
+            bigResultEntity.setGold(jsonObject.getInt("gold"));
+            ArrayList<BigResultItemEntity> bigResultItemEntityArrayList = bigResultEntity.getBigResultItemEntityArrayList();
+            JSONArray each_question = jsonObject.getJSONArray("each_question");
+            for (int i = 0; i < each_question.length(); i++) {
+                JSONObject question = each_question.getJSONObject(i);
+                BigResultItemEntity bigResultItemEntity = new BigResultItemEntity();
+                bigResultItemEntity.standAnswer = question.optString("rightAnswer");
+                bigResultItemEntity.youAnswer = question.optString("userAnswer");
+                if (question.has("is_right")) {
+                    bigResultItemEntity.rightType = question.getInt("is_right");
+                } else {
+                    bigResultItemEntity.rightType = question.getInt("isRight");
+                }
+                bigResultItemEntityArrayList.add(bigResultItemEntity);
+            }
+            return bigResultEntity;
+        } catch (JSONException e) {
+            logger.e("parseBigResult", e);
+            MobAgent.httpResponseParserError(TAG, "parseBigResult", e.getMessage());
         }
         return null;
     }

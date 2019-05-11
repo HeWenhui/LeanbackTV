@@ -7,6 +7,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
+import com.xueersi.parentsmeeting.modules.livevideo.util.WebTrustVerifier;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -129,6 +130,7 @@ public class WebInstertJs {
         boolean isFail = false;
         Exception dnsException = new Exception();
         try {
+            WebTrustVerifier.trustVerifier();
             URL oldUrl = new URL(url);
             URL urlRequest = new URL(url);
             httpURLConnection = (HttpURLConnection) urlRequest.openConnection();

@@ -41,10 +41,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.KeyboardShowingReg;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.create.LiveBigQueCreate;
 import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.stablelog.NewCourseLog;
+import com.xueersi.parentsmeeting.modules.livevideo.question.irc.QueIrcParse;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -172,9 +174,16 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             liveExamQuestionCreat.setQuestionHttp(queArtHttp);
             mQuestionAction.setLiveBll(queArtHttp);
         } else {
-            QueIrcHttp queIrcHttp = new QueIrcHttp();
-            liveExamQuestionCreat.setQuestionHttp(queIrcHttp);
-            mQuestionAction.setLiveBll(queIrcHttp);
+            if (isArts == LiveVideoSAConfig.ART_SEC) {
+                QueSecIrcHttp queIrcHttp = new QueSecIrcHttp();
+                liveExamQuestionCreat.setQuestionHttp(queIrcHttp);
+                mQuestionAction.setLiveBll(queIrcHttp);
+                mQuestionAction.setBigQueCreate(new LiveBigQueCreate(activity, queIrcHttp));
+            } else {
+                QueIrcHttp queIrcHttp = new QueIrcHttp();
+                liveExamQuestionCreat.setQuestionHttp(queIrcHttp);
+                mQuestionAction.setLiveBll(queIrcHttp);
+            }
         }
         mQuestionAction.setBaseExamQuestionCreat(liveExamQuestionCreat);
         LiveSubjectResultCreat baseSubjectResultCreat = new LiveSubjectResultCreat();
@@ -239,7 +248,7 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             });
         }
 
-        if (mGetInfo.getIsArts() == 0) {
+        if (mGetInfo.getIsArts() == LiveVideoSAConfig.ART_SEC) {
             QuestionWebCache webCache = new QuestionWebCache(activity);
             webCache.startCache();
         }
@@ -468,6 +477,16 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 logger.e("======>QuestionIRCBlle:" + "正常的逻辑");
                 if (mQuestionAction != null) {
                     mQuestionAction.showQuestion(null);
+                }
+            }
+            JSONObject platformTestDot = jsonObject.optJSONObject("platformTestDot");
+            if (platformTestDot != null) {
+                try {
+                    VideoQuestionLiveEntity videoQuestionLiveEntity = QueIrcParse.parseBigQues(platformTestDot);
+                    boolean isOpen = platformTestDot.getBoolean("isOpen");
+                    mQuestionAction.showBigQuestion(videoQuestionLiveEntity, isOpen);
+                } catch (JSONException e) {
+                    logger.d("onNotice:QUES_BIG");
                 }
             }
         }
@@ -702,6 +721,16 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 rolePlayAction.teacherRead(mLiveId, mLiveBll.getStuCouId(), nonce);
                 break;
             }
+            case XESCODE.QUES_BIG: {
+                try {
+                    VideoQuestionLiveEntity videoQuestionLiveEntity = QueIrcParse.parseBigQues(object);
+                    boolean isOpen = object.getBoolean("isOpen");
+                    mQuestionAction.showBigQuestion(videoQuestionLiveEntity, isOpen);
+                } catch (JSONException e) {
+                    logger.d("onNotice:QUES_BIG");
+                }
+            }
+            break;
             default:
                 break;
         }
@@ -776,13 +805,27 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 XESCODE.EXAM_STOP,
                 XESCODE.XCR_ROOM_ROLE_READ,
                 XESCODE.ARTS_SEND_QUESTION,
-                XESCODE.ARTS_STOP_QUESTION
+                XESCODE.ARTS_STOP_QUESTION,
+                XESCODE.QUES_BIG
         };
     }
 
     @Override
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
         mQuestionAction.setVideoLayout(liveVideoPoint);
+    }
+
+    class QueSecIrcHttp extends QueIrcHttp implements QuestionSecHttp {
+
+        @Override
+        public void submitBigTestInteraction(VideoQuestionLiveEntity videoQuestionLiveEntity, JSONArray userAnswer, long startTime, int isForce, AbstractBusinessDataCallBack callBack) {
+            getCourseWareHttpManager().submitBigTestInteraction(mGetInfo.getStuId(), videoQuestionLiveEntity.id, videoQuestionLiveEntity.getDotId(), userAnswer, startTime, isForce, 0, videoQuestionLiveEntity.getSrcType(), callBack);
+        }
+
+        @Override
+        public void getStuInteractionResult(VideoQuestionLiveEntity videoQuestionLiveEntity, AbstractBusinessDataCallBack callBack) {
+            getCourseWareHttpManager().getStuInteractionResult(mGetInfo.getStuId(), videoQuestionLiveEntity.id, videoQuestionLiveEntity.getSrcType(), videoQuestionLiveEntity.getDotId(), 0, callBack);
+        }
     }
 
     class QueIrcHttp implements QuestionHttp {
