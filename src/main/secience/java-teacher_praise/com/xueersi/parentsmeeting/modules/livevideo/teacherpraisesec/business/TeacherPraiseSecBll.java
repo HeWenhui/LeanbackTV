@@ -19,10 +19,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.event.TeachPraiseRusltulCloseEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.TeacherPraiseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.studyreport.business.StudyReportAction;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.page.SpeechEnergyPager;
@@ -80,13 +82,17 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction {
             @Override
             public void run() {
                 if (!isAnimStart) {
+                    LiveEventBus.getDefault(activity).post(new TeacherPraiseEvent(true));
                     SpeechPraisePager speechPraisePager = new SpeechPraisePager(mContext, 1 == getInfo.getIsPrimarySchool());
                     mRootView.addView(speechPraisePager.getRootView());
                     speechPraisePager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
                         @Override
                         public void onClose(LiveBasePager basePager) {
                             mRootView.removeView(basePager.getRootView());
-                            addEnergy();
+                            boolean add = addEnergy();
+                            if (!add) {
+                                LiveEventBus.getDefault(activity).post(new TeacherPraiseEvent(false));
+                            }
                         }
                     });
                 }
@@ -94,7 +100,7 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction {
         });
     }
 
-    private void addEnergy() {
+    private boolean addEnergy() {
         logger.d("addEnergy:pk=" + getInfo.getIsAllowTeamPk());
         if (!addEnergy && "1".equals(getInfo.getIsAllowTeamPk())) {
 //                                        addEnergy = true;
@@ -104,10 +110,12 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction {
                 @Override
                 public void onClose(LiveBasePager basePager) {
                     mRootView.removeView(basePager.getRootView());
-                    EventBus.getDefault().post(new TeachPraiseRusltulCloseEvent(""));
+                    LiveEventBus.getDefault(activity).post(new TeacherPraiseEvent(false));
                 }
             });
+            return true;
         }
+        return false;
     }
 
     private int[] noticeCodes = {

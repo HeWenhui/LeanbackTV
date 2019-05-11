@@ -16,6 +16,8 @@ public interface SpeechCollectiveView {
 
     void start();
 
+    void setStart(boolean start);
+
     void onNoVolume();
 
     View getRootView();

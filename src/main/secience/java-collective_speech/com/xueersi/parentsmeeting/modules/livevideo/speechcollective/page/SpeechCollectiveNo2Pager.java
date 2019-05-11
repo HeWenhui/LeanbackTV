@@ -83,7 +83,15 @@ public class SpeechCollectiveNo2Pager extends LiveBasePager implements SpeechCol
             public void run() {
                 ivClose.setVisibility(View.VISIBLE);
             }
-        }, 2000);
+        }, 10000);
+    }
+
+    @Override
+    public void setStart(boolean start) {
+        swvView.setStart(start);
+        if (start) {
+            swvView.invalidate();
+        }
     }
 
     @Override

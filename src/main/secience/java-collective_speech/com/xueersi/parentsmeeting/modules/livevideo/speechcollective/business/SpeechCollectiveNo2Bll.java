@@ -19,7 +19,9 @@ import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.event.TeacherPraiseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.widget.SoundWaveView;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.config.SpeechCollectiveConfig;
@@ -30,6 +32,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.page.Speech
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -74,6 +78,7 @@ public class SpeechCollectiveNo2Bll {
     SpeechCollectiveHttp collectiveHttp;
     private SpeechStartDialog speechStartDialog;
     private LiveGetInfo liveGetInfo;
+    TeacherPraiseEventReg teacherPraiseEventReg;
 
     public SpeechCollectiveNo2Bll(Context context) {
         this.context = context;
@@ -93,11 +98,27 @@ public class SpeechCollectiveNo2Bll {
         this.liveGetInfo = liveGetInfo;
     }
 
+    public class TeacherPraiseEventReg {
+
+        @Subscribe(threadMode = ThreadMode.MAIN)
+        public void onRoomH5CloseEvent(final TeacherPraiseEvent event) {
+            logger.d("onRoomH5CloseEvent:start=" + event.start);
+//            if (speechCollectiveView != null) {
+//                speechCollectiveView.setStart(!event.start);
+//            }
+        }
+    }
+
     public void start(String voiceId) {
         this.voiceId = voiceId;
         if (start) {
             return;
         }
+        if (teacherPraiseEventReg != null) {
+            LiveEventBus.getDefault(context).unregister(teacherPraiseEventReg);
+        }
+        teacherPraiseEventReg = new TeacherPraiseEventReg();
+        LiveEventBus.getDefault(context).register(teacherPraiseEventReg);
         start = true;
         if (speechStartDialog != null) {
             speechStartDialog.cancelDialog();
@@ -255,6 +276,10 @@ public class SpeechCollectiveNo2Bll {
                 }
             }
         });
+        if (teacherPraiseEventReg != null) {
+            LiveEventBus.getDefault(context).unregister(teacherPraiseEventReg);
+            teacherPraiseEventReg = null;
+        }
     }
 
     public void onResume() {
