@@ -82,7 +82,11 @@ public class LiveLog implements LiveOnLineLogs {
         logger.d("setmGetInfo:msg=" + msg.size());
         while (!msg.isEmpty()) {
             PerGetInfoLog perGetInfoLog = msg.remove(0);
-            getOnloadLogs(perGetInfoLog.TAG, perGetInfoLog.stableLogHashMap, perGetInfoLog.str);
+            if (perGetInfoLog.e != null) {
+                getOnloadLogs(perGetInfoLog.TAG, perGetInfoLog.stableLogHashMap, perGetInfoLog.str, perGetInfoLog.e);
+            } else {
+                getOnloadLogs(perGetInfoLog.TAG, perGetInfoLog.stableLogHashMap, perGetInfoLog.str);
+            }
         }
     }
 
@@ -130,6 +134,7 @@ public class LiveLog implements LiveOnLineLogs {
             PerGetInfoLog perGetInfoLog = new PerGetInfoLog();
             perGetInfoLog.TAG = TAG;
             perGetInfoLog.str = str;
+            perGetInfoLog.e = e;
             perGetInfoLog.stableLogHashMap = stableLogHashMap;
             msg.add(perGetInfoLog);
             return;
@@ -180,6 +185,7 @@ public class LiveLog implements LiveOnLineLogs {
     class PerGetInfoLog {
         String TAG;
         String str;
+        Throwable e;
         StableLogHashMap stableLogHashMap;
     }
 

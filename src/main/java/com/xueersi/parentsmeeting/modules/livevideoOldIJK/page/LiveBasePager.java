@@ -85,6 +85,7 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
     protected void init(Context context) {
         super.init(context);
         mLogtf = new LogToFile(context, TAG);
+        mLogtf.addCommon("creattime", "" + System.currentTimeMillis());
         AllLiveBasePagerInter allLiveBasePagerInter = ProxUtil.getProxUtil().get(context, AllLiveBasePagerInter.class);
         if (allLiveBasePagerInter != null) {
             allLiveBasePagerInter.addLiveBasePager(this);
