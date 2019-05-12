@@ -674,17 +674,19 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                         }
                     }
                 } else {
-                    try {
-                        HashMap<String, String> hashMap = new HashMap();
-                        hashMap.put("logtype", "onNotice");
-                        hashMap.put("livetype", "" + mLiveType);
-                        hashMap.put("liveid", "" + mLiveId);
-                        hashMap.put("arts", "" + mGetInfo.getIsArts());
-                        hashMap.put("pattern", "" + mGetInfo.getPattern());
-                        hashMap.put("type", "" + mtype);
-                        UmsAgentManager.umsAgentDebug(mContext, LogConfig.LIVE_NOTICE_UNKNOW, hashMap);
-                    } catch (Exception e) {
-                        CrashReport.postCatchedException(new LiveException(TAG, e));
+                    if (mtype != XESCODE.MODECHANGE) {
+                        try {
+                            HashMap<String, String> hashMap = new HashMap();
+                            hashMap.put("logtype", "onNotice");
+                            hashMap.put("livetype", "" + mLiveType);
+                            hashMap.put("liveid", "" + mLiveId);
+                            hashMap.put("arts", "" + mGetInfo.getIsArts());
+                            hashMap.put("pattern", "" + mGetInfo.getPattern());
+                            hashMap.put("type", "" + mtype);
+                            UmsAgentManager.umsAgentDebug(mContext, LogConfig.LIVE_NOTICE_UNKNOW, hashMap);
+                        } catch (Exception e) {
+                            CrashReport.postCatchedException(new LiveException(TAG, e));
+                        }
                     }
                 }
             } catch (Exception e) {
