@@ -107,7 +107,7 @@ public class PraiseBasePager extends LiveBasePager {
                 praiseBasePager.showEncouragingView();
             } else if (waht == PraiseConfig.PRAISE_TOTAL_SEND) {
                 praiseBasePager.updatePraiseNum();
-            } else if (waht == PraiseConfig.PRAISE_TOTAL_SEND) {
+            } else if (waht == PraiseConfig.PRAISE_CLICK_SEND) {
                 praiseBasePager.sentPraiseLikes();
 
             } else if (waht == PraiseConfig.PRAISE_CLICK_CLOSE) {
