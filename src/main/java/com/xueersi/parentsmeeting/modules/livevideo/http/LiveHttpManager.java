@@ -7,22 +7,17 @@ import android.os.Looper;
 
 import com.alibaba.android.arouter.utils.TextUtils;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.CommonRequestCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
-import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.DeviceUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoChConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoHttpEnConfig;
@@ -617,14 +612,15 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
     /**
      * 提交语文AI主观题答案
+     *
      * @param params
      * @param requestCallBack
      */
-    public void submitChineseAISubjectiveAnswer(String url,String data,final HttpCallBack callBack){
+    public void submitChineseAISubjectiveAnswer(String url, String data, final HttpCallBack callBack) {
 
 //        url= "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/submitChineseAISubjectiveAnswer";
         HttpRequestParams httpRequestParams = new HttpRequestParams();
-        httpRequestParams.addBodyParam("testInfos",data);
+        httpRequestParams.addBodyParam("testInfos", data);
         sendPost(url, httpRequestParams, callBack);
     }
 
@@ -2250,7 +2246,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param isForce      是否是强制提交（1：是 2：否）
      * @param httpCallBack
      */
-    public void sendSuperSpeakersubmitSpeech(String liveId, String stuCouId, String stuId, String isPlayBack, String testId, String srcType, String isForce, HttpCallBack httpCallBack) {
+    public void sendSuperSpeakersubmitSpeech(String liveId, String stuCouId, String stuId, String isPlayBack, String testId, String srcType, String isForce, String videoDuration, HttpCallBack httpCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("stuCouId", stuCouId);
@@ -2259,6 +2255,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("testId", testId);
         params.addBodyParam("srcType", srcType);
         params.addBodyParam("isForce", isForce);
+        params.addBodyParam("videoDuration", videoDuration);
         sendPost(LiveVideoConfig.SUPER_SPEAKER_SUBMIT_SPEECH_SHOW, params, httpCallBack);
     }
 }

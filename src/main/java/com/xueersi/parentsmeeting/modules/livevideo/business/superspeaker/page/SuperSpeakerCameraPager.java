@@ -29,8 +29,7 @@ import static com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class SuperSpeakerCameraPager extends LiveBasePager implements
         ISuperSpeakerContract.ICameraView,
-        ISuperSpeakerContract.ICommonPresenter,
-        ISuperSpeakerContract.ICameraBackPresenter {
+        ISuperSpeakerContract.ICommonPresenter {
 
     private ISuperSpeakerContract.ISuperSpeakerBridge bridge;
 
@@ -213,8 +212,19 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
             @Override
             public void onClick(View v) {
                 if (cameraBackPager == null) {
-                    cameraBackPager = new SuperSpeakerCameraBackPager(mContext, SuperSpeakerCameraPager.this);
+                    cameraBackPager = new SuperSpeakerCameraBackPager(mContext);
                 }
+                cameraBackPager.setiClickListener(new SuperSpeakerCameraBackPager.IClickListener() {
+                    @Override
+                    public void onNoClick() {
+                        removeView(cameraBackPager.getRootView());
+                    }
+
+                    @Override
+                    public void onYesClick() {
+                        removeCameraView();
+                    }
+                });
                 if (isHasRecordView || isInRecord) {
                     cameraBackPager.setTextTip(mContext.getString(R.string.super_speaker_back_camera_content_tip));
                 } else {
@@ -231,7 +241,29 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
         ivRestart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                performRestart();
+
+                if (cameraBackPager == null) {
+                    cameraBackPager = new SuperSpeakerCameraBackPager(mContext);
+                }
+                cameraBackPager.setiClickListener(new SuperSpeakerCameraBackPager.IClickListener() {
+                    @Override
+                    public void onNoClick() {
+                        removeView(cameraBackPager.getRootView());
+                    }
+
+                    @Override
+                    public void onYesClick() {
+                        performRestart();
+                        removeView(cameraBackPager.getRootView());
+                    }
+                });
+                cameraBackPager.setTvTittle(mContext.getString(R.string.super_speaker_back_camera_rerecord_title_tip));
+                cameraBackPager.setTextTip(mContext.getString(R.string.super_speaker_back_camera_content_tip));
+                if (cameraBackPager.getRootView().getParent() != null) {
+                    ((ViewGroup) cameraBackPager.getRootView().getParent()).removeView(cameraBackPager.getRootView());
+                }
+                ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+                ((ViewGroup) mView).addView(cameraBackPager.getRootView(), layoutParams);
 
             }
         });
@@ -383,6 +415,7 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
             }
             localTimer++;
             if (localTimer >= recordTime) {
+                performStopRecord();
                 return;
             }
             tvStopRecordCurrentTime.setText(TimeUtils.stringForTime(localTimer));
@@ -417,8 +450,8 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
     /** 提交视频 */
     private void submitVideo(String isForce) {
         if (bridge != null) {
-            bridge.submitSpeechShow(isForce, String.valueOf(extraObservable.getVolume()));
-            bridge.removeView(mView);
+            bridge.submitSpeechShow(isForce, String.valueOf(camera1Utils.getVolum()));
+            removeCameraView();
         }
     }
 
@@ -436,7 +469,7 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
 //        }
 //    }
 
-    @Override
+    //    @Override
     public void removeView(View view) {
         if (view != null && view.getParent() == mView) {
             ((ViewGroup) mView).removeView(view);
@@ -448,6 +481,14 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
         isInRecord = false;
         mView.removeCallbacks(recordVideoTimer);
         mView.removeCallbacks(coursewareTimer);
+        if (customVideoController2 != null) {
+            customVideoController2.stop();
+            customVideoController2.release();
+        }
+        if (camera1Utils != null) {
+            camera1Utils.stopRecordVideo();
+        }
+
         if (bridge != null) {
             bridge.removeView(mView);
         }

@@ -51,7 +51,7 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
 //                        mGetInfo.setId(String.valueOf(454400));
                         courseWareId = String.valueOf(1);
                         srcType = String.valueOf(40);
-                        performShowRecordCamera(10, 60);
+                        performShowRecordCamera(10, 5);
                     }
                 }, 2000);
             }
@@ -260,6 +260,7 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                 courseWareId,
                 srcType,
                 isForce,
+                videoDuration,
                 new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {

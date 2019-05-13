@@ -51,6 +51,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LectureLivePlayBack
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
+import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.liveback.SuperSpeakerBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -530,6 +531,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 initLiveRemarkBll();
             } else {
                 if (liveBackBll.getIsArts() == 2) {
+                    liveBackBll.addBusinessBll(new SuperSpeakerBackBll(activity, liveBackBll));
                     liveBackBll.addBusinessBll(new SpeechBulletScreenPalyBackBll(activity, liveBackBll));
                 }
                 Log.e("LiveBackVideoFragment", "====> initAnswerResultBll");

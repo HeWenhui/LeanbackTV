@@ -2,6 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils
 
 import android.hardware.Camera;
 import android.media.MediaRecorder;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -11,6 +13,7 @@ import com.xueersi.lib.log.logger.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 //import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.widget.CustomLocalVideoPlayerBridge;
 
@@ -113,8 +116,11 @@ public class Camera1Utils implements IRecordVideoView {
         return sizes.get(0);
     }
 
+    public static final int MAX_LENGTH = 1000 * 60 * 10;// 最大录音时长1000*60*10;
+
     @Override
     public boolean startRecordVideo() {
+        volum = volumSum = volumNum = 0;
         mediarecorder = new MediaRecorder();// 创建mediarecorder对象
 
         // 设置录制视频源为Camera(相机)
@@ -155,6 +161,7 @@ public class Camera1Utils implements IRecordVideoView {
 //                logger.i("create " + path + " fail");
 //            }
 //        }
+        mediarecorder.setMaxDuration(MAX_LENGTH);
         // 设置视频文件输出的路径
         mediarecorder.setOutputFile(path);
         try {
@@ -162,6 +169,8 @@ public class Camera1Utils implements IRecordVideoView {
             mediarecorder.prepare();
             // 开始录制
             mediarecorder.start();
+            isStop.set(false);
+            updateMicStatus();
         } catch (IllegalStateException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
@@ -183,8 +192,10 @@ public class Camera1Utils implements IRecordVideoView {
 
         if (mediarecorder != null) {
             // 停止录制
+            isStop.set(true);
             try {
                 mediarecorder.stop();
+                volum = volumSum / volumNum;
             } catch (Exception e) {
                 logger.e(e.toString());
             }
@@ -197,34 +208,39 @@ public class Camera1Utils implements IRecordVideoView {
 
     }
 
-    //    private StringBuilder mFormatBuilder = new StringBuilder();
-//    private Formatter mFormatter = new Formatter();
+    private Handler mHandler = new Handler(Looper.getMainLooper());
+    private Runnable mUpdateMicStatusTimer = new Runnable() {
+        public void run() {
+            updateMicStatus();
+        }
+    };
+    private int BASE = 1;
+    private int SPACE = 100;// 间隔取样时间
 
-    /**
-     * 把毫秒转换成：1：20：30这样的形式
-     *
-     * @param size
-     * @return
-     */
-//    public String stringForTime(int size) {
-////        int totalSeconds = timeMs / 1000;
-////        int seconds = totalSeconds % 60;
-////        int minutes = (totalSeconds / 60) % 60;
-////        int hours = totalSeconds / 3600;
-//////        mFormatBuilder.setLength(0);
-////        if (hours > 0) {
-////            return mFormatter.format("%d:%02d:%02d", hours, minutes, seconds).toString();
-////        } else {
-////            return mFormatter.format("%02d:%02d", minutes, seconds).toString();
-////        }
-//        String time;
-//        if (size < 60) {
-//            time = String.format("00:%02d", size % 60);
-//        } else if (size < 3600) {
-//            time = String.format("%02d:%02d", size / 60, size % 60);
-//        } else {
-//            time = String.format("%02d:%02d:%02d", size / 3600, size % 3600 / 60, size % 60);
-//        }
-//        return time;
-//    }
+    private AtomicBoolean isStop = new AtomicBoolean();
+
+    private int volumSum = 0;
+
+    private int volumNum = 0;
+
+    private int volum;
+
+    public int getVolum() {
+        return volum;
+    }
+
+    private void updateMicStatus() {
+        if (mediarecorder != null && !isStop.get()) {
+            double ratio = (double) mediarecorder.getMaxAmplitude() / BASE;
+            double db = 0;// 分贝
+            if (ratio > 1) {
+                db = 20 * Math.log10(ratio);
+            }
+            volumNum++;
+            volumSum += db;
+            logger.d("分贝值：" + db);
+            mHandler.postDelayed(mUpdateMicStatusTimer, SPACE);
+        }
+    }
+
 }

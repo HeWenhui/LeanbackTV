@@ -196,9 +196,8 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         long videoDuration = mediaPlayer.getDuration();
-        logger.i("videoDuration =" + videoDuration);
+        logger.i("averVocieDecibel = " + averVocieDecibel + "videoDuration =" + videoDuration);
         if (iCameraPresenter != null) {
             iCameraPresenter.submitSpeechShow(isForce, String.valueOf(videoDuration));
         }

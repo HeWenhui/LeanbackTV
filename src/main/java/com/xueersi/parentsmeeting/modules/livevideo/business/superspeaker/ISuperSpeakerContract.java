@@ -116,9 +116,9 @@ public interface ISuperSpeakerContract {
         void removeView(View view);
     }
 
-    interface ICameraBackPresenter {
-        void removeView(View view);
-
-        void removeCameraView();
-    }
+//    interface ICameraBackPresenter {
+//        void removeView(View view);
+//
+//        void removeCameraView();
+//    }
 }

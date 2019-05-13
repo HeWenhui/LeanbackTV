@@ -35,6 +35,7 @@ public class MediaUtils {
     public static class ExtraObservable extends Observable {
         private boolean extractVideoSuccess;
         private boolean extractAudioSuccess;
+        /** 计算音量，目前计算有问题，暂时没有使用 */
         private int volume;
 
         public int getVolume() {
@@ -78,7 +79,7 @@ public class MediaUtils {
                     observable.setExtractAudioSuccess(audioExtraSuccess);
                     observable.setExtractVideoSuccess(videoExtraSuccess);
                     observable.setVolume(volume);
-                    logger.i(volume);
+                    logger.i("volume = " + volume);
                     observable.notifyObservers();
                 }
             }

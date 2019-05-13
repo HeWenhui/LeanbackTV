@@ -158,6 +158,10 @@ public class CustomVideoController2 extends ConstraintLayout implements ILocalVi
 //        }
     }
 
+    private long videoDuration;
+
+    private long currentPosition;
+
     @Override
     public void startPlayVideo(final String path, final int time) {
         if (iPlayer == null) {
@@ -172,11 +176,13 @@ public class CustomVideoController2 extends ConstraintLayout implements ILocalVi
                 if ((duration % 1000L) > 500) {
                     durationSize = duration / 1000l + 1;
                 }
+                videoDuration = durationSize;
                 tvTotalTime.setText(TimeUtils.stringForTime(durationSize));
                 long currentSize = currentPosition / 1000l;
                 if ((currentPosition % 1000l) > 500) {
                     currentSize = currentPosition / 1000l + 1;
                 }
+                CustomVideoController2.this.currentPosition = currentSize;
                 tvCurrentTime.setText(TimeUtils.stringForTime(currentSize));
 //                int width = ivProcessBarBkg.getWidth();
 //                Drawable drawable = getContext().getResources().getDrawable(R.drawable.bg_livevideo_super_speaker_video_controller_bottom_progress_bar);
@@ -185,7 +191,7 @@ public class CustomVideoController2 extends ConstraintLayout implements ILocalVi
                     layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 }
                 int bkgWidth = SizeUtils.getMeasuredWidth(ivProcessBarBkg);
-                layoutParams.width = (int) (bkgWidth * (currentSize*1.0 / durationSize));
+                layoutParams.width = (int) (bkgWidth * (currentSize * 1.0 / durationSize));
                 logger.i("width:" + layoutParams.width + " bkgWidth:" + bkgWidth);
                 ivProgressBar.setLayoutParams(layoutParams);
             }
@@ -193,6 +199,21 @@ public class CustomVideoController2 extends ConstraintLayout implements ILocalVi
             @Override
             public void onPlaybackComplete() {
                 super.onPlaybackComplete();
+                ViewGroup.LayoutParams layoutParams = ivProgressBar.getLayoutParams();
+                if (layoutParams == null) {
+                    layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                }
+                if (CustomVideoController2.this.currentPosition != videoDuration) {
+
+                    int bkgWidth = SizeUtils.getMeasuredWidth(ivProcessBarBkg);
+                    layoutParams.width = (int) (bkgWidth);
+                    ivProgressBar.setLayoutParams(layoutParams);
+                    tvCurrentTime.setText(TimeUtils.stringForTime(videoDuration));
+                } else {
+                    layoutParams.width = 0;
+                    ivProgressBar.setLayoutParams(layoutParams);
+                    tvCurrentTime.setText(TimeUtils.stringForTime(0));
+                }
                 iPlayer.stop();
                 iPlayer.release();
                 CustomVideoController2.this.startPlayVideo(path, 0);
