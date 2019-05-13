@@ -12,6 +12,42 @@
         android:layout_height="match_parent"
         >
 
+        <!--聊天区域UI-->
+      <!--  <RelativeLayout
+            android:id="@id/rl_livevideo_info"
+            android:layout_width="300dp"
+            android:layout_height="215dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="18dp"
+            >
+            &lt;!&ndash;链接状态栏&ndash;&gt;
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:visibility="gone"
+                >
+                <TextView
+                    android:id="@id/tv_livevideo_message_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="5dp"
+                    android:textColor="@color/white" />
+
+                <ImageView
+                    android:id="@id/iv_livevideo_message_online"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="5dp"
+                    android:src="@drawable/bg_livevideo_message_offline" />
+            </RelativeLayout>
+
+        </RelativeLayout>-->
+
         <com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMsgRecycelView
             android:layout_width="300dp"
             android:layout_height="215dp"

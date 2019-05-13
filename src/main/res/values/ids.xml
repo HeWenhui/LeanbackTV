@@ -917,6 +917,13 @@
     <item name="rl_livevideo_halfbody_msgcontent" type="id"/>
     <item name="lv_livevideo_halfbody_common_word" type="id" />
 
+    <item name="btn_livevideo_halbody_msg_state" type="id" />
+
+    <item name="rl_livevideo_halbody_hotword" type="id" />
+    <item name="iv_livevideo_halbody_hotword" type="id" />
+
+
+
     <!--半身直播旁听-->
     <item name="ll_livevideo_auditclass_online_state_container" type="id"/>
     <item name="rcl_livevideo_auditclass_anwser_state" type="id"/>
