@@ -90,6 +90,8 @@ public interface XESCODE {
     /** 老师进出直播室 */
     @Deprecated
     int TEACHER_JOIN_LEVEL = 176;
+    /** 排行榜刷新,没用 */
+    int RANK_FRESH = 180;
     /** 学生发送秒数指令 */
     int XCR_ROOM_DB_STUDENT = 190;
     /** 表扬学生 */

@@ -674,9 +674,9 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                         }
                     }
                 } else {
-                    if (mtype != XESCODE.MODECHANGE) {
+                    if (mtype != XESCODE.MODECHANGE && mtype != XESCODE.RANK_FRESH) {
                         try {
-                            HashMap<String, String> hashMap = new HashMap();
+                            HashMap<String, String> hashMap = new HashMap<>();
                             hashMap.put("logtype", "onNotice");
                             hashMap.put("livetype", "" + mLiveType);
                             hashMap.put("liveid", "" + mLiveId);
