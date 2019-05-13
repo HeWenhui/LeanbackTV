@@ -474,6 +474,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                     attachMediaController();
                 }
             });
+            liveRemarkBll.setOnItemClick(liveBackBll.getOnItemClick());
         }
     }
 

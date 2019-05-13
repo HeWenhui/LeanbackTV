@@ -40,6 +40,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
@@ -279,6 +280,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     @Override
     public void initData() {
         super.initData();
+        try {
+            mLogtf.addCommon("testid", "" + NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts));
+        } catch (Exception e) {
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
         Date date = new Date();
         today = dateFormat.format(date);
@@ -1689,7 +1695,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     PrimaryScienceAnswerResultEntity entity = (PrimaryScienceAnswerResultEntity) objData[0];
                     mGoldNum = entity.getGold();
                     if (allowTeamPk) {
-                        mEnergyNum = isforce ==0?entity.getEnergy():0;
+                        mEnergyNum = isforce == 0 ? entity.getEnergy() : 0;
                     }
 
                     // 对外暴露答题结果
@@ -1720,20 +1726,21 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     }
 
     /**
-     *  对外广播 答题结果
+     * 对外广播 答题结果
+     *
      * @param entity
      */
     private void broadCastAnswerRestult(PrimaryScienceAnswerResultEntity entity) {
         try {
-            if(detailInfo != null && detailInfo.englishH5Entity != null){
+            if (detailInfo != null && detailInfo.englishH5Entity != null) {
                 JSONObject answerReuslt = new JSONObject();
-                answerReuslt.put("isRight",entity.getType());
-                answerReuslt.put("goldNum",mGoldNum);
-                answerReuslt.put("energyNum",mEnergyNum);
-                answerReuslt.put("id",detailInfo.englishH5Entity.getReleasedPageInfos());
+                answerReuslt.put("isRight", entity.getType());
+                answerReuslt.put("goldNum", mGoldNum);
+                answerReuslt.put("energyNum", mEnergyNum);
+                answerReuslt.put("id", detailInfo.englishH5Entity.getReleasedPageInfos());
                 EventBus.getDefault().post(new AnswerResultEvent(answerReuslt.toString()));
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

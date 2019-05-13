@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.util.WebTrustVerifier;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveLoggerFactory;
@@ -129,6 +130,7 @@ public class WebInstertJs {
         boolean isFail = false;
         Exception dnsException = new Exception();
         try {
+            WebTrustVerifier.trustVerifier();
             URL oldUrl = new URL(url);
             URL urlRequest = new URL(url);
             httpURLConnection = (HttpURLConnection) urlRequest.openConnection();

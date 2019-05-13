@@ -52,6 +52,20 @@ import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ExPerienceLiveMessage;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyExpMediaCtrBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.RoundProgressBar;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IConnectService;
@@ -70,18 +84,9 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XesAtomicInteger;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.irc.jibble.pircbot.User;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ExPerienceLiveMessage;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.experience.bussiness.ExperienceQuitFeedbackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.LiveMessageBll;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.pager.HalfBodyExpLiveMsgPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.pager.HalfBodyLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.EnglishH5HalfBodyExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.HalfBodyExperienceLearnFeedbackBll;
@@ -90,10 +95,6 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.Ques
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.QuestionExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.redpackage.business.HalfBodyRedPackageExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.RoundProgressBar;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -220,7 +221,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
     private final String IRC_CHANNEL_PREFIX = "4L";
     /** 是否使用新IRC SDK*/
 //    private boolean isNewIRC = false;
-
 
     /**
      * 播放时长，5分钟统计
@@ -767,7 +767,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
 
         baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(this, mMediaController, this);
         mMediaController.setControllerTop(baseLiveMediaControllerTop);
-        LiveHalfBodyMediaControllerBottom mediaControllerBottom = new LiveHalfBodyMediaControllerBottom(this,
+        LiveHalfBodyExpMediaCtrBottom mediaControllerBottom = new LiveHalfBodyExpMediaCtrBottom(this,
                 mMediaController, this);
         mMediaController.setControllerBottom(mediaControllerBottom, false);
         ivTeacherNotpresent = (ImageView) findViewById(R.id.iv_course_video_teacher_notpresent);
@@ -801,7 +801,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
 
     private void initHalfBodyLiveMsgPager(RelativeLayout bottomContent) {
 
-        HalfBodyLiveMessagePager msgPager = new HalfBodyLiveMessagePager(this, questionBll, ums,
+        HalfBodyExpLiveMsgPager msgPager = new HalfBodyExpLiveMsgPager(this, questionBll, ums,
                 liveMediaControllerBottom,
                 liveMessageLandEntities, null);
         mLiveMessagePager = msgPager;

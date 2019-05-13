@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/livevideo_big_fillin_width"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_livevideo_big_fillin_edittext_port_bg">
+
+    <TextView
+        android:id="@id/tv_livevideo_question_fillin_input_index"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="12dp"
+        android:includeFontPadding="false"
+        android:textColor="#73ffffff" />
+
+    <ImageView
+        android:id="@id/iv_livevideo_question_fillin_input_div"
+        android:layout_width="1dp"
+        android:layout_height="16dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="12dp"
+        android:layout_toRightOf="@id/tv_livevideo_question_fillin_input_index"
+        android:background="@drawable/shape_livevideo_big_test_input_div" />
+
+    <EditText
+        android:id="@id/et_livevideo_question_fillin_input"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="12dp"
+        android:layout_toRightOf="@id/iv_livevideo_question_fillin_input_div"
+        android:background="@color/transparent"
+        android:imeOptions="flagNoExtractUi"
+        android:includeFontPadding="false"
+        android:maxLength="20"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:textColor="@color/white"
+        android:textColorHint="#73ffffff"
+        android:textSize="14sp" />
+
+</RelativeLayout>

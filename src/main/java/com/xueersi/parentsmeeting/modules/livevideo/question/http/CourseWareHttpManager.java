@@ -4,6 +4,7 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
@@ -12,9 +13,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.groupgame.entity.GroupGameTe
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueHttpConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.BigResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ChineseAISubjectResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
+
+import org.json.JSONArray;
 
 public class CourseWareHttpManager {
     private final Logger logger = LoggerFactory.getLogger("CourseWareHttpManager");
@@ -180,7 +184,7 @@ public class CourseWareHttpManager {
 
     //语文主观题
     public void getStuChiAITestResult(String liveId, String stuId, String srcTypes, String testIds, String classTestId, String packageId, String packageAttr, int isPlayBack,
-                                      String classId,final AbstractBusinessDataCallBack callBack) {
+                                      String classId, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         liveHttpManager.setDefaultParameter(httpRequestParams);
         httpRequestParams.addBodyParam("liveId", liveId);
@@ -198,7 +202,7 @@ public class CourseWareHttpManager {
                 logger.d("getStuTestResult:onPmSuccess:responseEntity=" + responseEntity.getJsonObject());
                 ChineseAISubjectResultEntity chineseAISubjectResultEntity = courseWareParse.paresChiAIStuTestResult(responseEntity);
                 if (chineseAISubjectResultEntity != null) {
-                    callBack.onDataSucess(chineseAISubjectResultEntity,responseEntity);
+                    callBack.onDataSucess(chineseAISubjectResultEntity, responseEntity);
                 } else {
                     callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_NULL, "null");
                 }
@@ -394,6 +398,68 @@ public class CourseWareHttpManager {
             @Override
             public void onPmFailure(Throwable error, String msg) {
                 logger.d("submitGroupGame:onPmFailure:responseEntity=" + msg, error);
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
+            }
+        });
+    }
+
+    public void submitBigTestInteraction(String stuId, String testId, String interactionId, JSONArray userAnswer, long startTime, int isForce, int isPlayBack, String srcType, final AbstractBusinessDataCallBack callBack) {
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+        liveHttpManager.setDefaultParameter(httpRequestParams);
+        httpRequestParams.addBodyParam("stuId", "" + stuId);
+        httpRequestParams.addBodyParam("testId", "" + testId);
+        httpRequestParams.addBodyParam("srcType", "" + srcType);
+        httpRequestParams.addBodyParam("interactionId", "" + interactionId);
+        httpRequestParams.addBodyParam("isForce", "" + isForce);
+        httpRequestParams.addBodyParam("userAnswer", "" + userAnswer);
+        httpRequestParams.addBodyParam("isPlayBack", "" + isPlayBack);
+        httpRequestParams.addBodyParam("startTime", "" + startTime);
+        liveHttpManager.sendPost(liveHttpManager.getLiveVideoSAConfigInner().URL_LIVE_SUBMIT_BIG_TEST, httpRequestParams, new HttpCallBack(false) {
+
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                callBack.onDataSucess(responseEntity.getJsonObject());
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR, responseEntity.getErrorMsg());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
+            }
+        });
+    }
+
+    public void getStuInteractionResult(String stuId, String testId, String srcType, String interactionId, int isPlayBack, final AbstractBusinessDataCallBack callBack) {
+        HttpRequestParams httpRequestParams = new HttpRequestParams();
+        liveHttpManager.setDefaultParameter(httpRequestParams);
+        httpRequestParams.addBodyParam("stuId", "" + stuId);
+        httpRequestParams.addBodyParam("testId", "" + testId);
+        httpRequestParams.addBodyParam("srcType", "" + srcType);
+        httpRequestParams.addBodyParam("interactionId", "" + interactionId);
+        httpRequestParams.addBodyParam("isPlayBack", "" + isPlayBack);
+        liveHttpManager.sendPost(liveHttpManager.getLiveVideoSAConfigInner().URL_LIVE_GET_BIG_TEST_RESULT, httpRequestParams, new HttpCallBack(false) {
+
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                BigResultEntity bigResultEntity = courseWareParse.parseBigResult(responseEntity);
+                if (bigResultEntity == null) {
+                    callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_NULL, "数据解析异常");
+                } else {
+                    callBack.onDataSucess(bigResultEntity, responseEntity.getJsonObject());
+                }
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR, responseEntity.getErrorMsg());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
                 callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
             }
         });

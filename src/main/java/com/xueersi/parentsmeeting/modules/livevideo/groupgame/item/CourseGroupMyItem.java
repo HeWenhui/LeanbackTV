@@ -177,7 +177,7 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
 //                        Bitmap bitmap1 = animationView.updateBitmap("image_7", bitmap7);
 //                        Bitmap bitmap2 = animationView.updateBitmap("image_9", bitmap9);
 //                        logger.d("enableAudio(false):bitmap1=null?" + (bitmap1 == null) + ",bitmap2=null?" + (bitmap2 == null));
-                        XESToastUtils.showToast(mContext, "小伙伴听不到你的声音啦，但不影响答题哦");
+//                        XESToastUtils.showToast(mContext, "小伙伴听不到你的声音啦，但不影响答题哦");
                     }
                     if (onVideoAudioClick != null) {
                         onVideoAudioClick.onAudioClick(enableAudio);

@@ -15,6 +15,7 @@ import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.log.FileLogger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.service.SpeechRecogGenBinder;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveCacheFile;
 
 import org.json.JSONArray;
@@ -51,6 +52,13 @@ public class LiveService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+        if ("START_SPEECH_GEN".equals(intent.getAction())) {
+//            if (speechEvaluatorUtils == null){
+//                speechEvaluatorUtils = new SpeechEvaluatorUtils(true);
+//                speechRecogBinder.setSpeechUtils(speechEvaluatorUtils);
+//            }
+            return new SpeechRecogGenBinder(this);
+        }
         return null;
     }
 

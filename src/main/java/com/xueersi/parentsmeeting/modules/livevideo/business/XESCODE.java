@@ -90,6 +90,8 @@ public interface XESCODE {
     /** 老师进出直播室 */
     @Deprecated
     int TEACHER_JOIN_LEVEL = 176;
+    /** 排行榜刷新,没用 */
+    int RANK_FRESH = 180;
     /** 学生发送秒数指令 */
     int XCR_ROOM_DB_STUDENT = 190;
     /** 表扬学生 */
@@ -142,6 +144,8 @@ public interface XESCODE {
 
     /** 老师点赞 */
     int TEACHER_PRAISE = 236;
+    /** 战队pk，未知类型237 */
+    int TEAMPK_237 = 237;
 
 
     /** 分队仪式 */
@@ -179,6 +183,8 @@ public interface XESCODE {
     /** 语文AI主观题*/
     int AI_SUBJECTIVE_H5_COURSEWARE = 252;
 
+    /** 大题互动 http://wiki.xesv5.com/pages/viewpage.action?pageId=17724551 */
+    int QUES_BIG = 252;
     /** 开启/关闭语音弹幕 */
     int XCR_ROOM_DANMU_OPEN = 260;
 

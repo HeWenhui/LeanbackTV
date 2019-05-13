@@ -15,6 +15,12 @@
             android:src="@drawable/livevideo_group_game_mvp_bg" />
 
         <com.airbnb.lottie.LottieAnimationView
+            android:id="@id/lav_livevideo_groupgame_mvp_cloud"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom" />
+
+        <com.airbnb.lottie.LottieAnimationView
             android:id="@id/lav_livevideo_groupgame_mvp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
