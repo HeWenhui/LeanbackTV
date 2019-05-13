@@ -27,6 +27,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.remark.business.OnItemClick;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.AllLiveBasePagerIml;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveLog;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
@@ -364,6 +365,9 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                 JSONObject liveInfo = new JSONObject(getInfoStr);
                 liveGetInfo.setSmallEnglish("1".equals(liveInfo.optString("useSkin")));
                 liveGetInfo.setPrimaryChinese("2".equals(liveInfo.optString("useSkin")));
+                if (liveGetInfo.getStudentLiveInfo() != null) {
+                    liveGetInfo.getStudentLiveInfo().setClassId(liveInfo.optString("class_id"));
+                }
                 //解析学科id
                 if (liveInfo.has("subject_ids")) {
                     String strSubjIds = liveInfo.getString("subject_ids");
@@ -414,6 +418,29 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         return liveVideoSAConfig;
     }
 
+    private OnItemClick onItemClick;
+
+    public OnItemClick getOnItemClick() {
+        if (onItemClick == null) {
+            onItemClick = new OnItemClick() {
+                @Override
+                public void onItemClick(int position) {
+                    List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
+                    if (position < lstVideoQuestion.size()) {
+                        VideoQuestionEntity videoQuestionEntity = lstVideoQuestion.get(position);
+                        boolean same = mQuestionEntity == videoQuestionEntity;
+                        logger.d("onItemClick:position=" + position + "" + videoQuestionEntity.getvQuestionID() + ",start=" + videoQuestionEntity.getvQuestionInsretTime()
+                                + ",isAnswered=" + videoQuestionEntity.isAnswered() + ",same=" + same);
+                        if (!same) {
+                            videoQuestionEntity.setAnswered(false);
+                        }
+                    }
+                }
+            };
+        }
+        return onItemClick;
+    }
+
     /**
      * 扫描是否有需要弹出的互动题
      */
@@ -446,7 +473,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
             logger.d("scanQuestion:showQuestion");
             Log.e("Duncan", "showQuestion:" + position);
             showQuestion(oldQuestionEntity, showQuestion);
-            if (LocalCourseConfig.CATEGORY_REDPACKET != mQuestionEntity.getvCategory()){
+            if (LocalCourseConfig.CATEGORY_REDPACKET != mQuestionEntity.getvCategory()) {
                 LiveVideoConfig.isAITrue = false;
             }
         }
@@ -640,6 +667,13 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                     hasQuestionShow = true;
                     index = i;
                     standexperienceRecommondCourseIsShow = true;
+                    break;
+                }
+            } else if (LocalCourseConfig.CATEGORY_BIG_TEST == videoQuestionEntity.getvCategory()) {//大题互动
+                if (startTime <= playPosition && playPosition < endTime) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
                     break;
                 }
             }

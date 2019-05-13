@@ -85,6 +85,7 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
     protected void init(Context context) {
         super.init(context);
         mLogtf = new LogToFile(context, TAG);
+        mLogtf.addCommon("creattime", "" + System.currentTimeMillis());
         AllLiveBasePagerInter allLiveBasePagerInter = ProxUtil.getProxUtil().get(context, AllLiveBasePagerInter.class);
         if (allLiveBasePagerInter != null) {
             allLiveBasePagerInter.addLiveBasePager(this);
@@ -110,6 +111,13 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
                 allLiveBasePagerInter.removeLiveBasePager(this);
             }
         }
+    }
+
+    public LiveAndBackDebug getLiveAndBackDebug() {
+        if (mLiveBll == null) {
+            mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
+        }
+        return mLiveBll;
     }
 
     @Override
@@ -192,6 +200,19 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
      */
     public interface OnPagerClose {
         void onClose(LiveBasePager basePager);
+    }
+
+    public static class WrapOnPagerClose implements LiveBasePager.OnPagerClose {
+        OnPagerClose onPagerClose;
+
+        public WrapOnPagerClose(LiveBasePager.OnPagerClose onPagerClose) {
+            this.onPagerClose = onPagerClose;
+        }
+
+        @Override
+        public void onClose(LiveBasePager basePager) {
+            onPagerClose.onClose(basePager);
+        }
     }
 
     /**

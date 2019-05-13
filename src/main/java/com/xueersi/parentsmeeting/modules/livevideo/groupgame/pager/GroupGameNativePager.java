@@ -369,7 +369,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     }
 
     private void initWebView() {
-        newCourseCache = new GroupCourseCache(mContext, liveId);
+        newCourseCache = new GroupCourseCache(mContext, liveId, liveGetInfo.isNewCourse());
         addJavascriptInterface();
         wvSubjectWeb.setWebChromeClient(new BaseCoursewareNativePager.MyWebChromeClient() {
             @Override
