@@ -33,6 +33,7 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.ContextLiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
@@ -278,6 +279,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     @Override
     public void initData() {
         super.initData();
+        try {
+            mLogtf.addCommon("testid", "" + NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts));
+        } catch (Exception e) {
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
         Date date = new Date();
         today = dateFormat.format(date);

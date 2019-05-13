@@ -239,6 +239,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 
     @Override
     public void initData() {
+        mLogtf.addCommon("testid", "" + detailInfo.id);
         groupGameUpload = new GroupGameUpload(mContext, liveId, detailInfo.id);
         BasePlayerFragment videoFragment = ProxUtil.getProxUtil().get(mContext, BasePlayerFragment.class);
         if (videoFragment != null) {

@@ -1,7 +1,9 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
@@ -17,6 +19,7 @@ import java.util.Iterator;
 
 public class NewCourseLog {
     static String eventId = LogConfig.LIVE_H5PLAT;
+    static String TAG = "NewCourseLog";
 
     public static String getNewCourseTestIdSec(VideoQuestionLiveEntity detailInfo, int arts) {
         if (arts == LiveVideoSAConfig.ART_EN) {
@@ -47,6 +50,7 @@ public class NewCourseLog {
         } catch (JSONException e) {
             Logger logger = LiveLoggerFactory.getLogger("NewCourseLog");
             logger.e("getCourseWareTests", e);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
         }
         if (newCourseTestIdSec.endsWith(",")) {
             newCourseTestIdSec = newCourseTestIdSec.substring(0, newCourseTestIdSec.length() - 1);
