@@ -64,6 +64,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 //import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
@@ -189,18 +190,20 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             }
         }
         //中学连对激励系统，教师广播发送学报消息
-        getHttpManager().getEvenLikeData(
+        if (getInfo.getIsOpenNewCourseWare() == 1) {
+            getHttpManager().getEvenLikeData(
 //                "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
-                mGetInfo.getGetEvenPairListUrl(),
-                mGetInfo.getStudentLiveInfo().getClassId(),
-                mGetInfo.getId(),
-                mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
-                        mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
-                    }
-                });
+                    mGetInfo.getGetEvenPairListUrl(),
+                    mGetInfo.getStudentLiveInfo().getClassId(),
+                    mGetInfo.getId(),
+                    mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                            EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
+                            mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
+                        }
+                    });
+        }
     }
 
     @Override
@@ -698,6 +701,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             }
             case XESCODE.SENDQUESTION: {
                 if (mGetInfo.getIsOpenNewCourseWare() == 1) {
+                    userLikeList.clear();
                     isMiddleScienceH5Open = true;
                 }
                 mRoomAction.onOpenVoiceNotic(true, "SENDQUESTION");
@@ -953,7 +957,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     }
 
     /** 列表，用户点赞列表 */
-    private List<String> userLikeList = new LinkedList<>();
+    private List<String> userLikeList = new CopyOnWriteArrayList<>();
 
     /**
      * 是否在点赞时间里面

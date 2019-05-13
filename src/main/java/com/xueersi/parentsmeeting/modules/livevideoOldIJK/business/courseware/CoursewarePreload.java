@@ -41,7 +41,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -91,7 +90,7 @@ public class CoursewarePreload {
     }
 
     List<CoursewareInfoEntity> courseWareInfos = new CopyOnWriteArrayList<>();
-
+    /** 是否紧急下载 */
     AtomicBoolean isPrecise = new AtomicBoolean(false);
 
     AtomicInteger ipPos, cdnPos, ipLength, cdnLength;
@@ -108,34 +107,49 @@ public class CoursewarePreload {
                 if (file == null || file.listFiles() == null) {
                     return;
                 }
-                for (File itemFile : file.listFiles()) {
-                    if (isCoursewareDir(itemFile.getName()) && !itemFile.getName().equals(today)) {
-                        if (!itemFile.isDirectory()) {
-                            itemFile.delete();
-                        } else {
-                            deleteFor(itemFile);
-                            itemFile.delete();
+                //buglys上面有报Attempt to get length of null array,加上try,catch
+                try {
+                    File[] files = file.listFiles();
+                    if (files == null)
+                        return;
+                    for (File itemFile : files) {
+                        //文件夹是日期格式并且不是今天才删除
+                        if (isCoursewareDir(itemFile.getName()) && !itemFile.getName().equals(today)) {
+                            if (!itemFile.isDirectory()) {
+                                itemFile.delete();
+                            } else {
+                                deleteFor(itemFile);
+                                itemFile.delete();
+                            }
                         }
                     }
+                    logger.i("delete file success");
+                    StableLogHashMap hashMap = new StableLogHashMap();
+                    hashMap.put("logtype", " deleteCourseware");
+                    hashMap.put("dir", file.getAbsolutePath());
+                    hashMap.put("sno", "5");
+                    hashMap.put("status", "true");
+                    hashMap.put("ip", IpAddressUtil.USER_IP);
+                    UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
+                } catch (Exception e) {
+                    logger.e(e);
                 }
-                logger.i("delete file success");
-                StableLogHashMap hashMap = new StableLogHashMap();
-                hashMap.put("logtype", " deleteCourseware");
-                hashMap.put("dir", file.getAbsolutePath());
-                hashMap.put("sno", "5");
-                hashMap.put("status", "true");
-                hashMap.put("ip", IpAddressUtil.USER_IP);
-                UmsAgentManager.umsAgentDebug(ContextManager.getContext(), UmsConstants.LIVE_APP_ID, LogConfig.PRE_LOAD_START, hashMap.getData());
-
             }
         });
     }
 
-    private void deleteFor(final File file) {
+    /**
+     * 循环删除子文件夹
+     *
+     * @param file
+     */
+    private synchronized static void deleteFor(final File file) {
         if (file == null || file.listFiles() == null) {
             return;
         }
-        for (File itemFile : file.listFiles()) {
+        File[] files = file.listFiles();
+        if (files == null) return;
+        for (File itemFile : files) {
             if (!itemFile.isDirectory()) {
                 itemFile.delete();
             } else {
@@ -143,10 +157,11 @@ public class CoursewarePreload {
                 itemFile.delete();
             }
         }
+
     }
 
     /**
-     * 是否是课件的文件夹
+     * 是否是课件的文件夹(课件文件夹由日期构成)
      *
      * @return
      */
@@ -164,6 +179,7 @@ public class CoursewarePreload {
      * 获取课件信息
      */
     public void getCoursewareInfo(String liveId) {
+        executos.allowCoreThreadTimeOut(true);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
         Date date = new Date();
         final String today = dateFormat.format(date);
@@ -616,20 +632,29 @@ public class CoursewarePreload {
 
 //    private ZipExtractorTask zipExtractorTask;
 
-    Executor executos = new ThreadPoolExecutor(1, 1,
-            0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue<Runnable>());
+    ThreadPoolExecutor executos = new ThreadPoolExecutor(1, 1,
+            10L, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
 
     class ZipDownloadListener implements DownloadListener {
-
+        //解压出来的代码
         public final File mMorecacheout;
+        //未解压的代码
         public final File mMorecachein;
+        //解压后的文件名
         private String mFileName;
+        //下载的url
         private String url;
+        //文件内容的md5值
         private String md5;
+        //
         AtomicInteger downTryCount;
+        //下载cdn节点
         List<String> cdns;
+        //下载的ip节点
         List<String> ips;
+        //直播id
         String itemLiveId;
+        //资源类型
         String resourcetype;
 
         private long startDownLoadTime;

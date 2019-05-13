@@ -73,14 +73,14 @@ public class ChsAnswerResultBll extends LiveBaseBll implements NoticeAction, Ans
             return;
         }
         mDsipalyer = new ChiAnswerResultPager(mContext, mAnswerReulst, ChsAnswerResultBll.this);
-        mRootView.post(new Runnable() {
+        mRootView.postDelayed(new Runnable() {
             @Override
             public void run() {
                 RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams
                         (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 rlAnswerResultLayout.addView(mDsipalyer.getRootLayout(), layoutParams);
             }
-        });
+        },100);
         VideoQuestionLiveEntity detailInfo = event.getDetailInfo();
         if (detailInfo != null) {
             NewCourseLog.sno8(mLiveBll, NewCourseLog.getNewCourseTestIdSec(detailInfo, LiveVideoSAConfig.ART_CH), event.isIspreload(), 0);

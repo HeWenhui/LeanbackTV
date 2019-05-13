@@ -9,6 +9,7 @@ import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveCacheFile;
@@ -65,7 +66,9 @@ public class LiveLog implements LiveOnLineLogs {
         type = "a" + mLiveType;
         enterTime = System.currentTimeMillis();
         times = LIVE_TIME++;
-        File logDir = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + mLiveId + "-" + getPrefix);
+        String s = dateFormat.format(new Date());
+        String[] ss = s.split(",");
+        File logDir = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + ss[0] + "/" + mLiveId + "-" + getPrefix);
         if (!logDir.exists()) {
             logDir.mkdirs();
         }

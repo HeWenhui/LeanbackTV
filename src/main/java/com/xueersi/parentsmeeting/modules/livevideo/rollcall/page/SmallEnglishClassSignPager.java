@@ -146,10 +146,17 @@ public class SmallEnglishClassSignPager extends BasePager {
 
 //            String errorMsg = TextUtils.isEmpty(responseEntity.getErrorMsg()) ? "网络异常" : responseEntity
 //                    .getErrorMsg();
-            if (responseEntity.getErrorMsg() != null) {
-                logToFile.d("primary english onPmError:msg=" + responseEntity.getErrorMsg());
-                XESToastUtils.showToast(mContext, responseEntity.getErrorMsg());
+            try {
+                if (responseEntity.getErrorMsg() != null) {
+                    logToFile.d("primary english onPmError:msg=" + responseEntity.getErrorMsg());
+                    XESToastUtils.showToast(mContext, responseEntity.getErrorMsg());
+                }
+
+                updateStatus(Config.SIGN_STATE_CODE_SIGNED);
+            } catch (Exception e) {
+                logger.e(e);
             }
+
         }
     };
 

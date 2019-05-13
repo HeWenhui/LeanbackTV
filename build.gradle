@@ -15,13 +15,13 @@ android {
             res.srcDirs += ['src/main/res-en_teampk']
             java.srcDirs += ['src/main/java-achievement']
             res.srcDirs += ['src/main/res-achievement']
+            java.srcDirs += ['src/main/english/java-en_tcp']
+            assets.srcDirs += ['src/main/english/assets']
+            java.srcDirs += ['src/main/java-core']
         }
     }
-    compileSdkVersion 27
-//    compileOptions {
-//        sourceCompatibility = '1.8'
-//        targetCompatibility = '1.8'
-//    }
+    compileSdkVersion 26
+    buildToolsVersion '27.0.3'
 }
 dependencies {
     api fileTree(include: ['*.jar'], dir: 'libs')

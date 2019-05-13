@@ -229,6 +229,8 @@ public class ChiAnswerResultPager extends BasePager implements IArtsAnswerRsultD
                 }
 
                 if (!"空".equals(temp)){
+                    temp =  temp.replaceAll(" ","");
+                    temp = temp.replaceAll("\n","");
                     Map<Integer,String> indexs = new TreeMap<>();
                     if (answer.getScoreKey() != null && !answer.getScoreKey().isEmpty()){
                         String [] keys = answer.getScoreKey().split(";");

@@ -241,6 +241,8 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
     private final int FORCE = 1;
     private ScrollView svSubjectWeb;
     private KeyboardUtil.OnKeyboardShowingListener mKeyboardListener;
+    private LiveHttpManager mLiveHttpManager;
+    private boolean isFirstAI = true;
 
     public ChineseAiSubjectiveCoursewarePager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity,
                                               boolean isPlayBack, String liveId, String id,
@@ -772,6 +774,16 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                     emptyJson.put("score", "");
                     emptyJson.put("scoreKey", "");
                     userAnswerContent.put(emptyJson);
+                }else {
+                    for (int i = 0; i < userAnswerContent.length(); i++) {
+                        JSONObject temp = userAnswerContent.getJSONObject(i);
+                        String text = temp.optString("text");
+                        if (text != null){
+                            text = text.replaceAll(" ", "");
+                            temp.remove("text");
+                            temp.put("text", text);
+                        }
+                    }
                 }
                 if (rightAnswerContent == null || rightAnswerContent.length() == 0) {
                     rightAnswerContent = new JSONArray();
@@ -804,67 +816,12 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
             }
         }
 //        }
-        LiveHttpManager mLiveHttpManager = new LiveHttpManager(mContext);
+        if (mLiveHttpManager == null){
+            mLiveHttpManager = new LiveHttpManager(mContext);
+        }
 
-        mLiveHttpManager.submitChineseAISubjectiveAnswer(aiUrl, data.toString(), new HttpCallBack(false) {
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                JSONObject response = (JSONObject) responseEntity.getJsonObject();
-                if (response.has(testId)) {
-                    JSONObject resultData = response.getJSONObject(testId);
-                    JSONArray userAnswerContent = resultData.getJSONArray("userAnswerContent");
-                    JSONArray rightAnswerContent = resultData.getJSONArray("rightAnswerContent");
-                    resultData.remove("rightAnswerContent");
-                    resultData.remove("userAnswerContent");
-                    resultData.remove("testid");
-                    resultData.put("id", testId);
-                    resultData.put("index", 0);
-                    resultData.put("userAnswerStatus", 0);
-                    resultData.put("endTime", System.currentTimeMillis() / 1000);
-                    resultData.put("srcType", LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE);
-                    JSONArray userAnswer = new JSONArray();
-                    JSONObject userContent = new JSONObject();
-                    userContent.put("userAnswerContent", userAnswerContent);
-                    JSONObject rightContent = new JSONObject();
-                    userContent.put("rightAnswerContent", rightAnswerContent);
-                    userAnswer.put(userContent);
-                    userAnswer.put(rightContent);
-                    resultData.put("userAnswerContent", userAnswer);
-                }
+        mLiveHttpManager.submitChineseAISubjectiveAnswer(aiUrl, data.toString(), new AiHttpCallBack(isforce,data));
 
-                englishH5CoursewareSecHttp.submitCourseWareTests(detailInfo, isforce, nonce, entranceTime,
-                        response.toString(), new AbstractBusinessDataCallBack() {
-                            @Override
-                            public void onDataSucess(Object... objData) {
-                                JSONObject jsonObject = (JSONObject) objData[0];
-                                showAnswerResult(isforce);
-                                onSubmitSuccess(isforce);
-                            }
-
-                            @Override
-                            public void onDataFail(int errStatus, String failMsg) {
-                                super.onDataFail(errStatus, failMsg);
-                                isSumit = false;
-                                onSubmitError(isforce, failMsg);
-                            }
-                        });
-                if (FORCE == isforce) {
-                    if (onClose != null) {
-                        loadResult = true;
-                        onClose.onH5ResultClose(ChineseAiSubjectiveCoursewarePager.this, getBaseVideoQuestionEntity());
-                    }
-                }
-
-
-            }
-
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                super.onPmFailure(error, msg);
-                isSumit = false;
-                onSubmitError(isforce, msg);
-            }
-        });
         /** 强制收题直接显示结果页*/
 //        if (FORCE == isforce) {
 //            ChineseAISubjectResultEntity resultEntity = new ChineseAISubjectResultEntity();
@@ -895,7 +852,91 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
 //        }
 
     }
+    class AiHttpCallBack extends HttpCallBack{
 
+        private int isforce;
+        private JSONObject data;
+        AiHttpCallBack(int isforce,JSONObject data){
+            super(false);
+            this.isforce = isforce;
+            this.data = data;
+        }
+        @Override
+        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+
+            JSONObject response = (JSONObject) responseEntity.getJsonObject();
+            if(response.has("totalScore")){
+                XESToastUtils.showToast(mContext,"答题结果提交失败，请刷新后重新作答！(10001)");
+                return;
+            }
+            if (response.has(testId)) {
+                JSONObject resultData = response.getJSONObject(testId);
+                JSONArray userAnswerContent = resultData.getJSONArray("userAnswerContent");
+                JSONArray rightAnswerContent = resultData.getJSONArray("rightAnswerContent");
+                resultData.remove("rightAnswerContent");
+                resultData.remove("userAnswerContent");
+                resultData.remove("testid");
+                resultData.put("id", testId);
+                resultData.put("index", 0);
+                resultData.put("userAnswerStatus", 0);
+                resultData.put("endTime", System.currentTimeMillis() / 1000);
+                resultData.put("srcType", LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE);
+                JSONArray userAnswer = new JSONArray();
+                JSONObject userContent = new JSONObject();
+                userContent.put("userAnswerContent", userAnswerContent);
+                JSONObject rightContent = new JSONObject();
+                userContent.put("rightAnswerContent", rightAnswerContent);
+                userAnswer.put(userContent);
+                userAnswer.put(rightContent);
+                resultData.put("userAnswerContent", userAnswer);
+            }
+
+            englishH5CoursewareSecHttp.submitCourseWareTests(detailInfo, isforce, nonce, entranceTime,
+                    response.toString(), new AbstractBusinessDataCallBack() {
+                        @Override
+                        public void onDataSucess(Object... objData) {
+                            JSONObject jsonObject = (JSONObject) objData[0];
+                            showAnswerResult(isforce);
+                            onSubmitSuccess(isforce);
+                        }
+
+                        @Override
+                        public void onDataFail(int errStatus, String failMsg) {
+                            super.onDataFail(errStatus, failMsg);
+                            XESToastUtils.showToast(mContext,"答题结果提交失败，请刷新后重新作答！(10002)"+errStatus);
+                            isSumit = false;
+                            onSubmitError(isforce, failMsg);
+                        }
+
+
+                    });
+            if (FORCE == isforce) {
+                if (onClose != null) {
+                    loadResult = true;
+                    onClose.onH5ResultClose(ChineseAiSubjectiveCoursewarePager.this, getBaseVideoQuestionEntity());
+                }
+            }
+        }
+
+        @Override
+        public void onPmFailure(Throwable error, String msg) {
+            super.onPmFailure(error, msg);
+            if(isFirstAI){
+                isFirstAI = false;
+                mLiveHttpManager.submitChineseAISubjectiveAnswer(aiUrl, data.toString(),this);
+            }else {
+                XESToastUtils.showToast(mContext,msg);
+            }
+            isSumit = false;
+            onSubmitError(isforce, msg);
+        }
+
+        @Override
+        public void onPmError(ResponseEntity responseEntity) {
+            super.onPmError(responseEntity);
+            XESToastUtils.showToast(mContext,"答题结果提交失败，请刷新后重新作答！（10001）");
+        }
+    };
     /**
      * 提交成功
      *
@@ -1245,6 +1286,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                         @Override
                         public void onDataFail(int errStatus, String failMsg) {
                             super.onDataFail(errStatus, failMsg);
+                            XESToastUtils.showToast(mContext,"答题结果提交失败，请刷新后重新作答！(10003)" + errStatus);
                         }
                     });
         }

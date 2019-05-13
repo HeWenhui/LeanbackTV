@@ -70,7 +70,7 @@ public class ChsAnswerResultBll extends LiveBaseBll implements NoticeAction, Ans
         if (mDsipalyer != null) {
             return;
         }
-        mDsipalyer = new ChiAnswerResultPager(mContext, mAnswerReulst, ChsAnswerResultBll.this);
+        mDsipalyer = new ChiAnswerResultPager(mContext, mAnswerReulst, this);
         mRootView.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -78,7 +78,7 @@ public class ChsAnswerResultBll extends LiveBaseBll implements NoticeAction, Ans
                         (ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
                 rlAnswerResultLayout.addView(mDsipalyer.getRootLayout(), layoutParams);
             }
-        },10);
+        },100);
         VideoQuestionLiveEntity detailInfo = event.getDetailInfo();
         if (detailInfo != null) {
             NewCourseLog.sno8(mLiveBll, NewCourseLog.getNewCourseTestIdSec(detailInfo, LiveVideoSAConfig.ART_CH), event.isIspreload(), 0);

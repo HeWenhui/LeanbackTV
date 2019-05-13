@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveOnLineLogs;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 

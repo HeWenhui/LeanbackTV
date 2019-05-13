@@ -48,6 +48,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ArtsAnswerResultEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.groupgame.pager.GroupGameMultNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.KeyBordAction;
 import com.xueersi.parentsmeeting.modules.livevideo.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.BaseVoiceAnswerPager;
@@ -2564,10 +2565,10 @@ public class QuestionBll implements QuestionAction, Handler.Callback, SpeechEval
                 @Override
                 public void run() {
                     logger.e("=======>forceClose 2222:" + curQuestionView);
-                    if (questionHttp != null) {
-                        questionHttp.getStuGoldCount("forceClose");
-                    }
                     if (questionWebPager != null) {
+                        if (questionHttp != null) {
+                            questionHttp.getStuGoldCount("forceClose:"+method);
+                        }
                         rlQuestionContent.removeView(questionWebPager.getRootView());
                         if (questionWebPager instanceof BaseQuestionWebInter) {
                             questionWebPager.onDestroy();

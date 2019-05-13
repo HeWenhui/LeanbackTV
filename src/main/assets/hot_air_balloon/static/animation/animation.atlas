@@ -1,0 +1,104 @@
+
+animation.png
+size: 1024,1024
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+images/kuang
+  rotate: false
+  xy: 2, 195
+  size: 194, 120
+  orig: 194, 120
+  offset: 0, 0
+  index: -1
+images/qiqiu
+  rotate: false
+  xy: 2, 317
+  size: 602, 599
+  orig: 602, 599
+  offset: 0, 0
+  index: -1
+images/s1
+  rotate: false
+  xy: 746, 826
+  size: 35, 90
+  orig: 35, 90
+  offset: 0, 0
+  index: -1
+images/s2
+  rotate: true
+  xy: 299, 305
+  size: 10, 90
+  orig: 10, 90
+  offset: 0, 0
+  index: -1
+images/s3
+  rotate: false
+  xy: 606, 721
+  size: 36, 90
+  orig: 36, 90
+  offset: 0, 0
+  index: -1
+images/s4
+  rotate: false
+  xy: 2, 2
+  size: 26, 90
+  orig: 26, 90
+  offset: 0, 0
+  index: -1
+images/s5
+  rotate: true
+  xy: 198, 210
+  size: 18, 90
+  orig: 18, 90
+  offset: 0, 0
+  index: -1
+images/s6
+  rotate: false
+  xy: 107, 103
+  size: 21, 90
+  orig: 21, 90
+  offset: 0, 0
+  index: -1
+images/xuduo01
+  rotate: false
+  xy: 606, 813
+  size: 138, 103
+  orig: 138, 103
+  offset: 0, 0
+  index: -1
+images/xuduo02
+  rotate: false
+  xy: 644, 787
+  size: 53, 24
+  orig: 53, 24
+  offset: 0, 0
+  index: -1
+images/xuduo02_1
+  rotate: false
+  xy: 783, 897
+  size: 52, 19
+  orig: 52, 19
+  offset: 0, 0
+  index: -1
+images/xuduo03
+  rotate: true
+  xy: 606, 662
+  size: 57, 27
+  orig: 57, 27
+  offset: 0, 0
+  index: -1
+images/xuduo04
+  rotate: false
+  xy: 2, 94
+  size: 103, 99
+  orig: 103, 99
+  offset: 0, 0
+  index: -1
+images/xuduo05
+  rotate: false
+  xy: 198, 230
+  size: 99, 85
+  orig: 99, 85
+  offset: 0, 0
+  index: -1

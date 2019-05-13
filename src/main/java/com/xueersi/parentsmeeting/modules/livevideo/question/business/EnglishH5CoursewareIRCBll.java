@@ -915,9 +915,19 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         }
 
         @Override
+        public void submitGroupGame(VideoQuestionLiveEntity detailInfo, int gameMode, int voiceTime, int pkTeamId, int gameGroupId, int starNum, int energy, int gold, int videoLengthTime, int micLengthTime, int acceptVideoLengthTime, int acceptMicLengthTime, String answerData, AbstractBusinessDataCallBack callBack) {
+            String classId = mGetInfo.getStudentLiveInfo().getClassId();
+            getCourseWareHttpManager().submitGroupGame(classId, detailInfo.id, detailInfo.type, gameMode, voiceTime, 1, pkTeamId, gameGroupId, starNum, energy, gold, videoLengthTime, micLengthTime, acceptVideoLengthTime, acceptMicLengthTime, answerData, callBack);
+        }
+
+        @Override
         public void getCourseWareTests(VideoQuestionLiveEntity detailInfo, AbstractBusinessDataCallBack callBack) {
             if (isArts == LiveVideoSAConfig.ART_EN) {
-                getCourseWareHttpManager().getTestInfos(detailInfo.id, callBack);
+                if (LiveQueConfig.isGroupGame(detailInfo.type)) {
+                    getCourseWareHttpManager().getGroupGameTestInfos(detailInfo.id, mGetInfo.getStuId(), detailInfo.type, callBack);
+                } else {
+                    getCourseWareHttpManager().getTestInfos(detailInfo.id, callBack);
+                }
             } else {
                 EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
                 String classId = mGetInfo.getStudentLiveInfo().getClassId();

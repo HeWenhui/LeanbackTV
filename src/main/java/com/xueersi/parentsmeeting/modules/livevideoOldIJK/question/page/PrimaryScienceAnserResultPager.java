@@ -14,7 +14,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.entity.PrimaryScienceAnswerResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FastScrollableRecyclerView;
 
 import java.util.List;

@@ -8,6 +8,7 @@ import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
@@ -224,6 +225,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @param getInfo
      */
     public void parseLiveGetInfoLibarts(JSONObject data, LiveTopic liveTopic, LiveGetInfo getInfo) {
+        getInfo.setAppid(data.optString("appId"));
         // 文科表扬榜
         if (data.has("liveRank")) {
             JSONObject jsonObject = data.optJSONObject("liveRank");
@@ -533,7 +535,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     parseLiveGetInfoScience(data, liveTopic, getInfo);
                 }
             }
-            getInfo.setSubjectiveItem2AIUrl(data.optString("subjectiveItem2AIUrl", "https://subjectcorrect.xesv5.com"));
+            getInfo.setSubjectiveItem2AIUrl(data.optString("subjectiveItem2AIUrl"));
             return getInfo;
         } catch (JSONException e) {
             logger.e("parseLiveGetInfo", e);
@@ -2011,6 +2013,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         ArtsExtLiveInfo info = new ArtsExtLiveInfo();
         JSONObject data = (JSONObject) responseEntity.getJsonObject();
         info.setNewCourseWarePlatform(data.optString("newCourseWarePlatform"));
+        info.setIsGroupGameCourseWare(data.optInt("isGroupGameCourseWare", -1));
         return info;
     }
 
