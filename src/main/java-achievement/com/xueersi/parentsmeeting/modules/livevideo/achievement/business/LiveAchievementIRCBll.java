@@ -41,7 +41,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.business.SendMessage
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
-import com.xueersi.parentsmeeting.speakerrecognition.SpeakerRecognitionerInterface;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.json.JSONArray;
@@ -174,79 +173,40 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
                     true,
                     ShareDataManager.SHAREDATA_USER);
             if (voiceRecognSwitchOn) {
-                SpeakerRecognitionerInterface.checkResoureDownload(mContext, new LoadSoCallBack() {
-                    @Override
-                    public void start() {
+                if (!isDestory) {
+                    speakerRecognitioner = new SpeakerRecognitioner(activity, audioRequest);
+                    if (englishSpeekAction != null) {
+                        englishSpeekAction.setSpeakerRecognitioner(speakerRecognitioner);
                     }
-
-                    @Override
-                    public void success() {
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run() {
-                                SpeakerRecognitionerInterface speakerRecognitionerInterface =
-                                        SpeakerRecognitionerInterface
-                                                .getInstance();
-                                boolean result = speakerRecognitionerInterface.init();
-                                if (result) {
-                                    String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
-                                    if (StringUtils.isEmpty(stuId)) {
-                                        mLogtf.d("onLiveInited:stuId=" + stuId);
-                                        startAchievement();
-                                    } else {
-                                        byte[] pcmdata = new byte[10];
-                                        int enrollIvector = speakerRecognitionerInterface.
-                                                enrollIvector(pcmdata, pcmdata.length, 0, stuId, false);
-                                        if (enrollIvector != 0) {
-                                            long interval = sTime * 1000 - System.currentTimeMillis();
-                                            boolean allow = true;
-                                            if (!LiveTopic.MODE_TRANING.equals(mGetInfo.getMode()) ||
-                                                    interval <= 60 * 1000) {
-                                                allow = false;
-                                            }
-
-                                            if (allow) {
-                                                handler.post(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        if (recognizeDialog != null && !recognizeDialog.isDialogShow()) {
-                                                            UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext
-                                                                    .getResources().getString(R.string.personal_1701001));
-                                                            recognizeDialog.showDialog();
-                                                        }
-                                                    }
-                                                });
-                                            } else {
-                                                startAchievement();
-                                            }
-                                        } else {
-                                            mLogtf.d("onLiveInited:isDestory=" + isDestory);
-                                            if (!isDestory) {
-                                                speakerRecognitioner = new SpeakerRecognitioner(activity, audioRequest);
-                                                if (englishSpeekAction != null) {
-                                                    englishSpeekAction.setSpeakerRecognitioner(speakerRecognitioner);
-                                                }
-                                                startAchievement();
+                    speakerRecognitioner.setSpeakerEnrollIvector(new SpeakerEnrollIvector() {
+                        @Override
+                        public void enrollIvector(int enrollIvector) {
+                            logger.d("enrollIvector:enrollIvector=" + enrollIvector);
+                            if (enrollIvector != 0 && !hasGotoRecogniz) {
+                                long interval = sTime * 1000 - System.currentTimeMillis();
+                                boolean allow = true;
+                                if (!LiveTopic.MODE_TRANING.equals(mGetInfo.getMode()) ||
+                                        interval <= 60 * 1000) {
+                                    allow = false;
+                                }
+                                if (allow) {
+                                    hasGotoRecogniz = true;
+                                    mHandler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (recognizeDialog != null && !recognizeDialog.isDialogShow()) {
+                                                UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext
+                                                        .getResources().getString(R.string.personal_1701001));
+                                                recognizeDialog.showDialog();
                                             }
                                         }
-                                    }
-                                } else {
-                                    startAchievement();
+                                    });
                                 }
                             }
-                        }).start();
-                    }
-
-                    @Override
-                    public void progress(float progress, int type) {
-
-                    }
-
-                    @Override
-                    public void fail(int errorCode, String errorMsg) {
-                        startAchievement();
-                    }
-                });
+                        }
+                    });
+                    startAchievement();
+                }
             } else {
                 startAchievement();
             }
@@ -260,43 +220,47 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
         super.onResume();
         if (isGotoRecogniz) {
             isGotoRecogniz = false;
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    SpeakerRecognitionerInterface speakerRecognitionerInterface = SpeakerRecognitionerInterface
-                            .getInstance();
-                    boolean result = speakerRecognitionerInterface.init();
-                    if (result) {
-                        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
-                        if (StringUtils.isEmpty(stuId)) {
-                            mLogtf.d("onResume:stuId=" + stuId);
-                            startAchievement();
-                        } else {
-                            byte[] pcmdata = new byte[10];
-                            int enrollIvector = speakerRecognitionerInterface.
-                                    enrollIvector(pcmdata, pcmdata.length, 0, stuId, false);
-                            if (enrollIvector != 0) {
-                                startAchievement();
-                            } else {
-                                mLogtf.d("onResume:isDestory=" + isDestory);
-                                if (!isDestory) {
-                                    speakerRecognitioner = new SpeakerRecognitioner(activity, audioRequest);
-                                    if (englishSpeekAction != null) {
-                                        englishSpeekAction.setSpeakerRecognitioner(speakerRecognitioner);
-                                    }
-                                    startAchievement();
-                                }
-                            }
-                        }
-                    } else {
-                        startAchievement();
-                    }
-                }
-            }).start();
+            if (speakerRecognitioner != null) {
+                speakerRecognitioner.check();
+            }
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    SpeakerRecognitionerInterface speakerRecognitionerInterface = SpeakerRecognitionerInterface
+//                            .getInstance();
+//                    boolean result = speakerRecognitionerInterface.init();
+//                    if (result) {
+//                        String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
+//                        if (StringUtils.isEmpty(stuId)) {
+//                            mLogtf.d("onResume:stuId=" + stuId);
+//                            startAchievement();
+//                        } else {
+//                            byte[] pcmdata = new byte[10];
+//                            int enrollIvector = speakerRecognitionerInterface.
+//                                    enrollIvector(pcmdata, pcmdata.length, 0, stuId, false);
+//                            if (enrollIvector != 0) {
+//                                startAchievement();
+//                            } else {
+//                                mLogtf.d("onResume:isDestory=" + isDestory);
+//                                if (!isDestory) {
+//                                    speakerRecognitioner = new SpeakerRecognitioner(activity, audioRequest);
+//                                    if (englishSpeekAction != null) {
+//                                        englishSpeekAction.setSpeakerRecognitioner(speakerRecognitioner);
+//                                    }
+//                                    startAchievement();
+//                                }
+//                            }
+//                        }
+//                    } else {
+//                        startAchievement();
+//                    }
+//                }
+//            }).start();
         }
     }
 
     boolean isGotoRecogniz = false;
+    boolean hasGotoRecogniz = false;
 
     private void initRecognizeDialog() {
         recognizeDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false,
@@ -313,7 +277,7 @@ public class LiveAchievementIRCBll extends LiveBaseBll implements NoticeAction, 
 //                speakerRecognitionerInterface.speakerRecognitionerFree();
                 Bundle bundle = new Bundle();
                 bundle.putString("from", "livevideo");
-                XueErSiRouter.startModule(mContext, "/pager_personals/voicerecognize", bundle);
+                XueErSiRouter.startModule(mContext, "/pager_personals/voicerecognize_land", bundle);
             }
         });
         recognizeDialog.setCancelBtnListener(new View.OnClickListener() {

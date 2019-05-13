@@ -297,7 +297,9 @@ public class CoursewarePreload {
         List<CoursewareInfoEntity.LiveCourseware> liveCoursewares = new LinkedList<>();
 
         for (CoursewareInfoEntity coursewareInfoEntity : courseWareInfos) {
-            liveCoursewares.addAll(coursewareInfoEntity.getCoursewaresList());
+            if (coursewareInfoEntity.getCoursewaresList() != null) {
+                liveCoursewares.addAll(coursewareInfoEntity.getCoursewaresList());
+            }
         }
         Collections.sort(liveCoursewares, new Comparator<CoursewareInfoEntity.LiveCourseware>() {
             @Override

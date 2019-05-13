@@ -124,9 +124,6 @@ public class LiveQueConfig {
     }
 
     public static boolean isGroupGame(String type) {
-        if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(type) || LiveQueConfig.EN_COURSE_TYPE_HOT_AIR_BALLON.equals(type)) {
-            return true;
-        }
-        return false;
+        return com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig.isGroupGame(type);
     }
 }

@@ -24,6 +24,7 @@ import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
+import com.xueersi.parentsmeeting.modules.livevideo.business.UselessNotice;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
@@ -694,17 +695,19 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                         }
                     }
                 } else {
-                    try {
-                        HashMap<String, String> hashMap = new HashMap();
-                        hashMap.put("logtype", "onNotice");
-                        hashMap.put("livetype", "" + mLiveType);
-                        hashMap.put("liveid", "" + mLiveId);
-                        hashMap.put("arts", "" + mGetInfo.getIsArts());
-                        hashMap.put("pattern", "" + mGetInfo.getPattern());
-                        hashMap.put("type", "" + mtype);
-                        UmsAgentManager.umsAgentDebug(mContext, LogConfig.LIVE_NOTICE_UNKNOW, hashMap);
-                    } catch (Exception e) {
-                        CrashReport.postCatchedException(new LiveException(TAG, e));
+                    if (UselessNotice.isUsed(mtype)) {
+                        try {
+                            HashMap<String, String> hashMap = new HashMap<>();
+                            hashMap.put("logtype", "onNotice");
+                            hashMap.put("livetype", "" + mLiveType);
+                            hashMap.put("liveid", "" + mLiveId);
+                            hashMap.put("arts", "" + mGetInfo.getIsArts());
+                            hashMap.put("pattern", "" + mGetInfo.getPattern());
+                            hashMap.put("type", "" + mtype);
+                            UmsAgentManager.umsAgentDebug(mContext, LogConfig.LIVE_NOTICE_UNKNOW, hashMap);
+                        } catch (Exception e) {
+                            CrashReport.postCatchedException(new LiveException(TAG, e));
+                        }
                     }
                 }
             } catch (Exception e) {
