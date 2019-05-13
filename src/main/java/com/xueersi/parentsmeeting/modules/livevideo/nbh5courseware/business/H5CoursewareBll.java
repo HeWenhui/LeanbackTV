@@ -169,17 +169,22 @@ public class H5CoursewareBll implements H5CoursewareAction, LivePagerBack, NbPre
 
                     if (h5CoursewarePager != null) {
                         if(entity.isNbExperiment()){
-                            if(entity.getExperimentId() != null){
-                                entity.getExperimentId().equals(mExperimentId);
+                            //NB 加试 实验 比较id 是否相同
+                            if(entity.getExperimentId() != null && entity.getExperimentId().equals(mExperimentId)){
                                 logToFile.i("onH5Courseware:mExperimentId.equals");
                                 return;
+                            }else{
+                                bottomContent.removeView(h5CoursewarePager.getRootView());
                             }
-                        }else if (h5CoursewarePager.getUrl().equals(entity.getUrl())) {
-                            logToFile.i("onH5Courseware:url.equals");
-                            return;
-                        } else {
-                            logToFile.i("onH5Courseware:url=" + h5CoursewarePager.getUrl());
-                            bottomContent.removeView(h5CoursewarePager.getRootView());
+                        }else{
+                            //普通实验比较 Url 是否相同
+                            if(h5CoursewarePager.getUrl().equals(entity.getUrl())){
+                                logToFile.i("onH5Courseware:url.equals");
+                                return;
+                            }else{
+                                logToFile.i("onH5Courseware:url=" + h5CoursewarePager.getUrl());
+                                bottomContent.removeView(h5CoursewarePager.getRootView());
+                            }
                         }
                     }
 
