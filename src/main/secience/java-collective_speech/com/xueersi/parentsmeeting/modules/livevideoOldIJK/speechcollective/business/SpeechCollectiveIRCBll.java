@@ -127,8 +127,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
         isFirstCreate = false;
         LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
         String status = mainRoomstatus.getOnGroupSpeech();
-        if ("on".equals(status)
-                && LiveTopic.MODE_CLASS.equals(liveTopic.getMode())) {
+        if ("on".equals(status)) {
             final String voiceId = mainRoomstatus.getGroupSpeechRoom();
             if (speechCollectiveBll != null) {
                 mHandler.post(new Runnable() {
@@ -159,7 +158,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
     private void onStaus(String status, String voiceID) {
         if (speechCollectiveBll != null) {
             try {
-                if ("on".equals(status) && LiveTopic.MODE_CLASS.equals(mLiveBll.getMode())) {
+                if ("on".equals(status)) {
                     speechCollectiveBll.start(voiceID);
                 } else {
                     speechCollectiveBll.stop();

@@ -107,6 +107,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             LiveVideoConfig.isSmallChinese = false;
         }
         getInfo.setIsPrimarySchool(isPrimarySchool);
+        getInfo.setIsYouJiao(data.optInt("isYouJiao"));
         LiveVideoConfig.isScience = true;
         getInfo.setAllowSnapshot(data.optInt("allowSnapshot"));
         LiveVideoConfig.educationstage = getInfo.getEducationStage();

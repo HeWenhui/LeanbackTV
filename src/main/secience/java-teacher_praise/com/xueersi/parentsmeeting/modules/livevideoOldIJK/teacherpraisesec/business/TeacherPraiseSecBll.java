@@ -76,7 +76,7 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
                 if (StringUtils.isEmpty(voiceId) || !show.containsKey(voiceId)) {
                     show.put(voiceId, true);
                     LiveEventBus.getDefault(activity).post(new TeacherPraiseEvent(true));
-                    SpeechPraisePager speechPraisePager = new SpeechPraisePager(mContext, 1 == getInfo.getIsPrimarySchool());
+                    SpeechPraisePager speechPraisePager = new SpeechPraisePager(mContext, 1 == getInfo.getIsYouJiao());
                     mRootView.addView(speechPraisePager.getRootView());
                     speechPraisePager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
                         @Override
@@ -135,7 +135,12 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
                 showTeacherPraise();
                 break;
             case XESCODE.SPEECH_COLLECTIVE:
-                voiceId = data.optString("voiceId");
+                String status = data.optString("status");
+                if ("on".equals(status)) {
+                    voiceId = data.optString("voiceId");
+                } else {
+                    voiceId = "";
+                }
                 break;
             default:
                 break;

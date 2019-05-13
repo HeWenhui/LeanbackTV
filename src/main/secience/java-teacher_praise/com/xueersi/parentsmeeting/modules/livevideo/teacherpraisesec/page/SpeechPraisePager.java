@@ -25,13 +25,13 @@ public class SpeechPraisePager extends LiveBasePager {
     private String[] datas = new String[]{"data.json", "data2.json", "data3.json"};
     private int[] rawsChild = new int[]{R.raw.speech_praise_001, R.raw.speech_praise_002, R.raw.speech_praise_003};
     private int[] rawsPrimary = new int[]{R.raw.speech_praise_004, R.raw.speech_praise_005, R.raw.speech_praise_006};
-    private boolean isPrimary;
+    private boolean isYouJiao;
     private LiveSoundPool.SoundPlayTask task;
     private LiveSoundPool liveSoundPool;
 
-    public SpeechPraisePager(Context context, boolean isPrimary) {
+    public SpeechPraisePager(Context context, boolean isYouJiao) {
         super(context);
-        this.isPrimary = isPrimary;
+        this.isYouJiao = isYouJiao;
         initData();
     }
 
@@ -89,10 +89,10 @@ public class SpeechPraisePager extends LiveBasePager {
             }
         });
         int raw;
-        if (isPrimary) {
-            raw = rawsPrimary[index];
-        } else {
+        if (isYouJiao) {
             raw = rawsChild[index];
+        } else {
+            raw = rawsPrimary[index];
         }
         logger.d("initData:index=" + index + ",raw=" + raw);
         liveSoundPool = LiveSoundPool.createSoundPool();

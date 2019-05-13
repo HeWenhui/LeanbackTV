@@ -278,6 +278,8 @@ public class LiveGetInfo {
     private int showArtsPraise;
     /** 是否是小学理科 */
     private int isPrimarySchool;
+    /** 是否是幼教 */
+    private int isYouJiao;
     /**
      * 是否开启集语音互动功能 1,开启，0 不开启
      */
@@ -504,6 +506,14 @@ public class LiveGetInfo {
 
     public void setIsPrimarySchool(int isPrimarySchool) {
         this.isPrimarySchool = isPrimarySchool;
+    }
+
+    public int getIsYouJiao() {
+        return isYouJiao;
+    }
+
+    public void setIsYouJiao(int isYouJiao) {
+        this.isYouJiao = isYouJiao;
     }
 
     public LiveGetInfo(LiveTopic liveTopic) {
