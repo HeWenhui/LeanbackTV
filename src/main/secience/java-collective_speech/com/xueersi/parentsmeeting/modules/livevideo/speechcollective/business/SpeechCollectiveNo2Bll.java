@@ -245,6 +245,7 @@ public class SpeechCollectiveNo2Bll {
         @Override
         public void onBeginOfSpeech() {
             super.onBeginOfSpeech();
+            logger.d("onBeginOfSpeech:isFirstSpeech=" + isFirstSpeech);
             if (isFirstSpeech) {
                 isFirstSpeech = false;
                 handler.postDelayed(timeOut, 8000);
@@ -364,6 +365,8 @@ public class SpeechCollectiveNo2Bll {
                         logger.i("onDataFail:errStatus=" + errStatus + ",failMsg=" + failMsg);
                     }
                 });
+                handler.removeCallbacks(timeOut);
+                isFirstSpeech = true;
                 startEvaluator();
             }
             // tvTitle.setText("说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什");
