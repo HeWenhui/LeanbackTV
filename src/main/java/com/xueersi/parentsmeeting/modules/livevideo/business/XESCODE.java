@@ -144,6 +144,8 @@ public interface XESCODE {
 
     /** 老师点赞 */
     int TEACHER_PRAISE = 236;
+    /** 战队pk，未知类型237 */
+    int TEAMPK_237 = 237;
 
 
     /** 分队仪式 */

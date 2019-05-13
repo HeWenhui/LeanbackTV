@@ -24,6 +24,7 @@ import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
+import com.xueersi.parentsmeeting.modules.livevideo.business.UselessNotice;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
@@ -694,7 +695,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                         }
                     }
                 } else {
-                    if (mtype != XESCODE.MODECHANGE && mtype != XESCODE.RANK_FRESH) {
+                    if (UselessNotice.isUsed(mtype)) {
                         try {
                             HashMap<String, String> hashMap = new HashMap<>();
                             hashMap.put("logtype", "onNotice");

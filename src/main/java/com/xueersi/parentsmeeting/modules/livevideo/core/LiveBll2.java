@@ -34,6 +34,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.NewIRCMessage;
+import com.xueersi.parentsmeeting.modules.livevideo.business.UselessNotice;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
@@ -674,7 +675,7 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
                         }
                     }
                 } else {
-                    if (mtype != XESCODE.MODECHANGE && mtype != XESCODE.RANK_FRESH) {
+                    if (UselessNotice.isUsed(mtype)) {
                         try {
                             HashMap<String, String> hashMap = new HashMap<>();
                             hashMap.put("logtype", "onNotice");
