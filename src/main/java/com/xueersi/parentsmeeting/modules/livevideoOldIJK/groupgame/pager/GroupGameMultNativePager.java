@@ -536,7 +536,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                             resultData.put("currentRight", integer);
                         }
                         resultData.put("isSingle", false);
-                        StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
+                        sendToCourseware(wvSubjectWeb, resultData, "*");
                     } catch (Exception e) {
                         mLogtf.e("coursewareOnloading", e);
                         CrashReport.postCatchedException(new LiveException(TAG, e));
@@ -565,7 +565,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                 resultData.put("currentRight", integer);
                             }
                             resultData.put("turnToPageNum", pageNum);
-                            StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
+                            sendToCourseware(wvSubjectWeb, resultData, "*");
                             reStartSpeechRecognize();
                         } catch (Exception e) {
                             mLogtf.e("coursewareDoingLoad", e);
@@ -728,7 +728,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 }
                 resultData.put("studentInfo", studentInfo);
                 mLogtf.d("coursewareOnloading:pageNum=" + entities.size() + ",playTime=" + playTime);
-                StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
+                sendToCourseware(wvSubjectWeb, resultData, "*");
             } catch (Exception e) {
                 mLogtf.e("onScene", e);
                 CrashReport.postCatchedException(new LiveException(TAG, e));
@@ -1318,7 +1318,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 //                        resultData.put("pageNum", random.nextInt(3));
 //                        resultData.put("currentRight", random.nextInt(10));
 //                        resultData.put("isSingle", false);
-//                        StaticWeb.sendToCourseware(wvSubjectWeb, resultData, "*");
+//                        sendToCourseware(wvSubjectWeb, resultData, "*");
 //                    } catch (Exception e) {
 //                        mLogtf.e("coursewareOnloading", e);
 //                        CrashReport.postCatchedException(new LiveException(TAG, e));
@@ -2158,6 +2158,22 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         } catch (Exception e) {
             CrashReport.postCatchedException(new LiveException(TAG, e));
         }
+    }
+
+    private void sendToCourseware(final WebView wvSubjectWeb, final JSONObject type, String data) {
+        try {
+            JSONObject liveinfo = new JSONObject();
+            liveinfo.put("liveid", liveId);
+            liveinfo.put("userid", stuid);
+            liveinfo.put("testid", "" + detailInfo.id);
+            liveinfo.put("creattime", "" + creattime);
+            liveinfo.put("time", "" + System.currentTimeMillis());
+            type.put("liveinfo", liveinfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
+        StaticWeb.sendToCourseware(wvSubjectWeb, type, data);
     }
 
     private class VoiceCannnon implements EvaluatorIng {

@@ -143,6 +143,8 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private boolean addJs = false;
     /** 是不是刷新，加载完成 */
     private int isRefresh = 0;
+    /** 收到加载完成 */
+    private boolean isLoadComplete = false;
     /** 刷新次数 */
     private int refreshTime = 0;
     private NewCourseSec newCourseSec;
@@ -257,8 +259,8 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     EventBus.getDefault().post(event);
                 } else {
                     if (allowTeamPk && newCourseSec != null) {
-                        int gold = newCourseSec.getIsAnswer() == 0?mGoldNum:-1;
-                        int energy = newCourseSec.getIsAnswer() == 0?mEnergyNum:-1;
+                        int gold = newCourseSec.getIsAnswer() == 0 ? mGoldNum : -1;
+                        int energy = newCourseSec.getIsAnswer() == 0 ? mEnergyNum : -1;
                         LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(gold, energy, LiveRoomH5CloseEvent
                                 .H5_TYPE_COURSE, id);
                         if (mEnglishH5CoursewareBll != null) {
@@ -293,7 +295,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         wvSubjectWeb.setWebChromeClient(new BaseCoursewareNativePager.MyWebChromeClient() {
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                if (("" + consoleMessage.message()).contains("sendToCourseware")) {
+                if (isLoadComplete && ("" + consoleMessage.message()).contains("sendToCourseware")) {
                     CrashReport.postCatchedException(new Exception());
                 }
                 return super.onConsoleMessage(consoleMessage);
@@ -856,20 +858,20 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         JSONObject userAnswerContent3 = userAnswerContent2.getJSONObject(k);
                         String id = userAnswerContent3.getString("id");
                         userAnswer.put("id", id);
-                        if(k < (userAnswerContent2.length()-1)){
+                        if (k < (userAnswerContent2.length() - 1)) {
                             useranswer += userAnswerContent3.optString("text") + ",";
-                        }else{
-                            useranswer +=userAnswerContent3.optString("text");
+                        } else {
+                            useranswer += userAnswerContent3.optString("text");
                         }
                     }
                     userAnswer.put("useranswer", useranswer);
                     String rightanswer = "";
                     for (int k = 0; k < rightAnswerContent2.length(); k++) {
                         JSONObject rightAnswerContent3 = rightAnswerContent2.getJSONObject(k);
-                        if(k < (userAnswerContent2.length()-1)){
+                        if (k < (userAnswerContent2.length() - 1)) {
                             rightanswer += rightAnswerContent3.optString("text") + ",";
-                        }else{
-                            rightanswer +=rightAnswerContent3.optString("text");
+                        } else {
+                            rightanswer += rightAnswerContent3.optString("text");
                         }
                     }
                     userAnswer.put("answer", rightanswer);
@@ -1181,6 +1183,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 if (showControl) {
                     rlCourseControl.setVisibility(View.VISIBLE);
                 }
+                isLoadComplete = true;
                 preLoad.onStop();
             }
         } else {
@@ -1693,7 +1696,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     PrimaryScienceAnswerResultEntity entity = (PrimaryScienceAnswerResultEntity) objData[0];
                     mGoldNum = entity.getGold();
                     if (allowTeamPk) {
-                        mEnergyNum = isforce ==0?entity.getEnergy():0;
+                        mEnergyNum = isforce == 0 ? entity.getEnergy() : 0;
                     }
 
                     // 对外暴露答题结果
@@ -1724,20 +1727,21 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     }
 
     /**
-     *  对外广播 答题结果
+     * 对外广播 答题结果
+     *
      * @param entity
      */
     private void broadCastAnswerRestult(PrimaryScienceAnswerResultEntity entity) {
         try {
-            if(detailInfo != null && detailInfo.englishH5Entity != null){
+            if (detailInfo != null && detailInfo.englishH5Entity != null) {
                 JSONObject answerReuslt = new JSONObject();
-                answerReuslt.put("isRight",entity.getType());
-                answerReuslt.put("goldNum",mGoldNum);
-                answerReuslt.put("energyNum",mEnergyNum);
-                answerReuslt.put("id",detailInfo.englishH5Entity.getReleasedPageInfos());
+                answerReuslt.put("isRight", entity.getType());
+                answerReuslt.put("goldNum", mGoldNum);
+                answerReuslt.put("energyNum", mEnergyNum);
+                answerReuslt.put("id", detailInfo.englishH5Entity.getReleasedPageInfos());
                 EventBus.getDefault().post(new AnswerResultEvent(answerReuslt.toString()));
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

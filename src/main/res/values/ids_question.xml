@@ -44,6 +44,7 @@
     <item name="iv_livevideo_bigque_result_close" type="id" />
     <item name="rl_livevideo_bigque_result_content" type="id" />
     <item name="rl_livevideo_bigque_result_tip" type="id" />
+    <item name="v_livevideo_bigque_result_line" type="id" />
     <item name="rv_livevideo_bigque_result_list" type="id" />
     <item name="rl_livevideo_bigque_result_item_title" type="id" />
     <!--大题互动结果页-item-->

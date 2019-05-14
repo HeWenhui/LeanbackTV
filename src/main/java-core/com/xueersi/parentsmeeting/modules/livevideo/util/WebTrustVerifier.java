@@ -11,11 +11,16 @@ import javax.net.ssl.SSLSessionContext;
 
 public class WebTrustVerifier {
     private static String TAG = "WebTrustVerifier";
+    private static boolean trustVerifier = false;
 
     /**
      * 网页证书认证
      */
     public static void trustVerifier() {
+        if (trustVerifier) {
+            return;
+        }
+        trustVerifier = true;
         try {
             //  直接通过主机认证
             HostnameVerifier hv = new HostnameVerifier() {
