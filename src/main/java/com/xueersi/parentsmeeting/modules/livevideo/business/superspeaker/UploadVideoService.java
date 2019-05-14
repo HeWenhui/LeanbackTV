@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker;
 
 import android.app.Service;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
@@ -22,6 +23,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
+//https://blog.csdn.net/imxiangzi/article/details/76039978
 public class UploadVideoService extends Service {
     private String videoUrl, audioUrl;
     Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
@@ -127,6 +129,7 @@ public class UploadVideoService extends Service {
 
     @Override
     public void onCreate() {
+        logger.i("调用onCreate");
         super.onCreate();
         latch = new CountDownLatch(2);
         uploadAliUtils = new UploadAliUtils(this);
@@ -134,16 +137,25 @@ public class UploadVideoService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        liveId = intent.getStringExtra("liveId");
-        courseWareId = intent.getStringExtra("courseWareId");
-        uploadVideo();
-        uploadAudio();
+        logger.i("调用onStartCommand");
         return super.onStartCommand(intent, flags, startId);
+    }
+
+    @Override
+    public boolean bindService(Intent service, ServiceConnection conn, int flags) {
+        logger.i("调用bindService");
+
+        return super.bindService(service, conn, flags);
     }
 
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
+        logger.i("调用onBind");
+        liveId = intent.getStringExtra("liveId");
+        courseWareId = intent.getStringExtra("courseWareId");
+        uploadVideo();
+        uploadAudio();
 
         return new UploadBinder();
     }

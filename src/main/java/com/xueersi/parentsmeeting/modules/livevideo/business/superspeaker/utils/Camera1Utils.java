@@ -88,6 +88,8 @@ public class Camera1Utils implements IRecordVideoView {
         //  Log.d(TAG,"size:"+parameters.toString());
     }
 
+    // FIXME: 2019/5/14
+    //https://bugly.qq.com/v2/crash-reporting/crashes/a0df5ed682/1120?pid=1  1120
     public void releaseCamera() {
         if (camera != null) {
             //停掉原来摄像头的预览

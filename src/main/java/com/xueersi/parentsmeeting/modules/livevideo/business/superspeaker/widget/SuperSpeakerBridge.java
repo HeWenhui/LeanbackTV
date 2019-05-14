@@ -26,7 +26,7 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.UploadVideoService;
-import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page.SuperSpeakerCameraPager;
+import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page.SuperSpeakerPermissionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page.SuperSpeakerRedPackagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.StorageUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.UploadAliUtils;
@@ -69,7 +69,7 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
     @UiThread
     public void performShowRecordCamera(int answerTime, int recordTime) {
         if (iView == null) {
-            iView = new SuperSpeakerCameraPager(mContext, this, liveId, courseWareId, answerTime, recordTime);
+            iView = new SuperSpeakerPermissionPager(mContext, this, liveId, courseWareId, answerTime, recordTime);
         }
         ViewGroup.LayoutParams layoutParams = iView.getView().getLayoutParams();
         if (layoutParams == null) {
@@ -196,9 +196,7 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
     public void submitSpeechShow(String isForce, String averVocieDecibel) {
         long videoDuration = getVideoDuration();
         logger.i("averVocieDecibel = " + averVocieDecibel + "videoDuration =" + videoDuration);
-        if (iCameraPresenter != null) {
-            iCameraPresenter.submitSpeechShow(isForce, String.valueOf(videoDuration));
-        }
+
         uploadAliUtils = new UploadAliUtils(mContext);
 
         ShareDataManager.getInstance().put(
@@ -214,6 +212,9 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
         intent.putExtra("courseWareId", courseWareId);
 //        mContext.startService(intent);
         mContext.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        if (iCameraPresenter != null) {
+            iCameraPresenter.submitSpeechShow(isForce, String.valueOf(videoDuration));
+        }
 
 //        uploadVideo();
 //        uploadAudio();
