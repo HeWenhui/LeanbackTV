@@ -2157,6 +2157,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                         star.setName(jsonObject.optString("name"));
                         star.setTeamName(jsonObject.optString("teamName"));
                         star.setStuId(jsonObject.optString("stuId"));
+                        star.setSuper(jsonObject.optInt("isSuper",0)==1);
                         resultList.add(star);
                     }
                 }
@@ -2192,6 +2193,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                         star.setName(jsonObject.optString("name"));
                         star.setTeamName(jsonObject.optString("teamName"));
                         star.setStuId(jsonObject.optString("stuId"));
+                        star.setSuper(jsonObject.optInt("isSuper",0) == 1);
                         resultList.add(star);
                     }
                 }

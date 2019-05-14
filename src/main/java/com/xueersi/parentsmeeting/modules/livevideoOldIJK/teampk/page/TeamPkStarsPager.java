@@ -201,7 +201,7 @@ public class TeamPkStarsPager extends TeamPkBasePager {
         }
 
         public void bindData(TeamPkStar data, int position) {
-            ivStarIcon.setVisibility(position <= 4 ? View.VISIBLE : View.INVISIBLE);
+            ivStarIcon.setVisibility(data.isSuper()? View.VISIBLE : View.INVISIBLE);
             tvName.setText(data.getName());
             tvEnergy.setText("+" + data.getEnergy());
             tvTeamName.setText(data.getTeamName());
