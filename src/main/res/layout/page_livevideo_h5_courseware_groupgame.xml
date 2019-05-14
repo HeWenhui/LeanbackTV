@@ -129,7 +129,7 @@
 
                 <com.xueersi.ui.widget.WaveView
                     android:id="@+id/wv_livevideo_groupgame_single_wave"
-                    android:layout_width="138dp"
+                    android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_gravity="center" />
 

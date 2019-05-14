@@ -555,11 +555,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             @Override
             public void onVolumeUpdate(int volume) {
                 float floatVolume;
-                if (volume > 10) {
-                    floatVolume = (float) (volume * 3) / 90.0f;
-                } else {
-                    floatVolume = 0.3f;
-                }
+                floatVolume = (float) (volume * 3) / 90.0f;
                 mWaveView.setWaveAmplitude(floatVolume);
             }
         });
@@ -901,7 +897,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     }
 
     /**
-     * 热气球交互
+     * 热气球,炮弹交互
      */
     class HotAirBallonAction implements SingleModeAction {
 
@@ -922,6 +918,12 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     }
                 }, 1000);
             } else {
+                content = new StringBuilder(mGroupGameTestInfosEntity.getTestInfoList().get(0).getAnswerList().get
+                        (pageNum).getText());
+                if (mIse != null) {
+                    mIse.cancel();
+                }
+                handler.postDelayed(startSpeechRecognizeRunnable, 1000);
                 int time = mAnswersList.get(pageNum).getSingleTime() + 1;
                 handler.postDelayed(turnPageRunnable, time * 1000);
             }
@@ -954,7 +956,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             int newSenIndex = resultEntity.getNewSenIdx();
             int score = resultEntity.getScore();
             double speechDuration = resultEntity.getSpeechDuration();
-            if (newSenIndex != pageNum) {
+            if (newSenIndex < 0) {
                 return;
             }
             logger.d("onHitSentence: newSenIndex = " + newSenIndex + ", score = " + score + ", speechDuration = " +
@@ -987,6 +989,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         @Override
         public void onDestory() {
             handler.removeCallbacks(turnPageRunnable);
+            handler.removeCallbacks(startSpeechRecognizeRunnable);
         }
 
         @Override
@@ -1024,6 +1027,13 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             public void run() {
                 uploadScore(-1, true);
                 singleModeAction.startTimer();
+            }
+        };
+
+        private Runnable startSpeechRecognizeRunnable = new Runnable() {
+            @Override
+            public void run() {
+                startSpeechRecognize();
             }
         };
 
