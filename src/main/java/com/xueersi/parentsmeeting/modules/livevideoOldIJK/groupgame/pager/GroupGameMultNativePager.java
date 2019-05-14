@@ -1706,12 +1706,12 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 mLogtf.e("submit2", e);
                 CrashReport.postCatchedException(new LiveException(TAG, e));
             }
+            energy += 5;
             ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
             for (int i = 0; i < entities.size(); i++) {
                 TeamMemberEntity teamMemberEntity = entities.get(i);
                 //有用户能量就加5
                 teamMemberEntity.energy += 5;
-                energy += 5;
             }
         } else {
             //遍历作答正确，取最大的金币为3
