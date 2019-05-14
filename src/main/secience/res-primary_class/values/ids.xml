@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--战队信息-->
+    <item name="iv_livevideo_primary_team_info_back" type="id" />
+    <item name="iv_livevideo_primary_team_info_gold" type="id" />
+    <item name="tv_livevideo_primary_team_my_lable" type="id" />
+    <item name="tv_livevideo_primary_team_my_text" type="id" />
+    <item name="tv_livevideo_primary_team_other_lable" type="id" />
+    <item name="tv_livevideo_primary_team_other_text" type="id" />
+    <item name="pg_livevideo_primary_team_info_prog" type="id" />
+</resources>
