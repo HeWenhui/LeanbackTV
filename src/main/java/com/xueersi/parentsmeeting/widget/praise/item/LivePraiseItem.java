@@ -4,6 +4,7 @@ import android.content.Context;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
 import com.xueersi.parentsmeeting.widget.praise.config.PraiseConfig;
 import com.xueersi.parentsmeeting.widget.praise.entity.PraiseContentEntity;
 import com.xueersi.ui.adapter.RItemViewInterface;
@@ -13,7 +14,7 @@ import com.xueersi.ui.adapter.ViewHolder;
  * 表扬榜内容
  */
 public class LivePraiseItem implements RItemViewInterface<PraiseContentEntity> {
-    TextView  tvName;
+    FangZhengCuYuanTextView tvName;
     Context mContext;
     public LivePraiseItem(Context context){
         mContext =context;
