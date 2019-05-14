@@ -8,6 +8,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xueersi.lib.framework.utils.SizeUtils;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -102,7 +103,11 @@ public abstract class BaseCourseGroupItem implements AdapterItemInterface<TeamMe
 
     @Override
     public void updateViews(TeamMemberEntity entity, int position, Object objTag) {
-        rlCourseItemName.setText(entity.name);
+        if (StringUtils.isEmpty(entity.name)) {
+            rlCourseItemName.setText("网校学员");
+        } else {
+            rlCourseItemName.setText(entity.name);
+        }
         tvCourseItemFire.setText("" + entity.energy);
     }
 

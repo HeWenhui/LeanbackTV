@@ -194,6 +194,9 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         logger.d("onArtsExtLiveInited:isGroupGmaeCourseWare=" + isGroupGmaeCourseWare);
         if (isGroupGmaeCourseWare == 1) {
             getEnTeamPkHttpManager().dispatch(mGetInfo.getStuId(), new AbstractBusinessDataCallBack() {
+                AbstractBusinessDataCallBack callBack;
+                int time = 1;
+
                 @Override
                 public void onDataSucess(Object... objData) {
                     ArrayList<InetSocketAddress> addresses = (ArrayList<InetSocketAddress>) objData[0];
@@ -201,6 +204,21 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     if (addresses.size() > 0) {
                         connect("onArtsExtLiveInited", addresses);
                     }
+                }
+
+                @Override
+                public void onDataFail(int errStatus, String failMsg) {
+                    super.onDataFail(errStatus, failMsg);
+                    mLogtf.d("dispatch:time=" + time + ",failMsg=" + failMsg);
+                    callBack = this;
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!destory) {
+                                getEnTeamPkHttpManager().dispatch(mGetInfo.getStuId(), callBack);
+                            }
+                        }
+                    }, ++time * 1000);
                 }
             });
             if (pkTeamEntity != null) {
@@ -348,7 +366,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     }
                     mLogtf.d("reportStuInfo:nick_name=" + nick_name + ",mode=" + mGetInfo.getMode());
                     LiveGetInfo.EnglishPk englishPk = mGetInfo.getEnglishPk();
-                    getHttpManager().reportStuInfo(mode, mGetInfo.getStuId(), mGetInfo.getStuName(), mGetInfo.getStuImg(), "" + englishPk.historyScore, "" + englishPk.isTwoLose, nick_name, unique_id, new HttpCallBack(false) {
+                    getHttpManager().reportStuInfo(mode, mGetInfo.getStuId(), mGetInfo.getStandLiveName(), mGetInfo.getStuImg(), "" + englishPk.historyScore, "" + englishPk.isTwoLose, nick_name, unique_id, new HttpCallBack(false) {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) {
                             logger.d("reportStuInfo:onPmSuccess" + responseEntity.getJsonObject());
@@ -582,6 +600,9 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 }
             } else if (mInteractiveTeam != null) {
                 getEnTeamPkHttpManager().dispatch(mGetInfo.getStuId(), new AbstractBusinessDataCallBack() {
+                    AbstractBusinessDataCallBack callBack;
+                    int time = 1;
+
                     @Override
                     public void onDataSucess(Object... objData) {
                         ArrayList<InetSocketAddress> addresses = (ArrayList<InetSocketAddress>) objData[0];
@@ -589,6 +610,21 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                         if (addresses.size() > 0) {
                             connect("parsegetSelfTeamInfo", addresses);
                         }
+                    }
+
+                    @Override
+                    public void onDataFail(int errStatus, String failMsg) {
+                        super.onDataFail(errStatus, failMsg);
+                        mLogtf.d("dispatch:time=" + time + ",failMsg=" + failMsg);
+                        callBack = this;
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!destory) {
+                                    getEnTeamPkHttpManager().dispatch(mGetInfo.getStuId(), callBack);
+                                }
+                            }
+                        }, ++time * 1000);
                     }
                 });
                 startTeam("parsegetSelfTeamInfo2");
@@ -745,7 +781,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 case TcpConstants.TEAM_TYPE: {
                     if (operation == TcpConstants.TEAM_OPERATION_SEND) {
                         try {
-                            InteractiveTeam interactiveTeam = getEnTeamPkHttpManager().parseInteractiveTeam(new JSONObject(msg));
+                            InteractiveTeam interactiveTeam = getEnTeamPkHttpManager().parseInteractiveTeam(mGetInfo.getStuId(), new JSONObject(msg));
                             if (interactiveTeam != null) {
                                 mInteractiveTeam = interactiveTeam;
                                 entities = interactiveTeam.getEntities();
@@ -777,7 +813,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             JSONObject jsonObject = new JSONObject(string);
             if (jsonObject.has(mGetInfo.getId())) {
                 JSONObject liveObj = jsonObject.getJSONObject(mGetInfo.getId());
-                InteractiveTeam interactiveTeam = getEnTeamPkHttpManager().parseInteractiveTeam(liveObj);
+                InteractiveTeam interactiveTeam = getEnTeamPkHttpManager().parseInteractiveTeam(mGetInfo.getStuId(), liveObj);
                 if (interactiveTeam != null) {
                     mInteractiveTeam = interactiveTeam;
                     entities = mInteractiveTeam.getEntities();

@@ -45,6 +45,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.remark.business.OnItemClick;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -106,6 +107,7 @@ public class LiveRemarkBll {
     private CommonAdapter mAdapter;
     private MediaController2 mController;
     private AbstractBusinessDataCallBack mCallBack;
+    private OnItemClick onItemClick;
     private String liveId;
     private int markNum = 0;
     private int questionNum = 0;
@@ -130,6 +132,7 @@ public class LiveRemarkBll {
     public static final int MARK_TYPE_TEACHER_INCLUDE = 112;
     public static final int MARK_TYPE_TEACHER_HIGH_MARK = 113;
     public static final int MARK_TYPE_TEACHER_PRACTICE = 114;
+    public static final int MARK_TYPE_BIG_TEST = 40;
     private HashMap<Integer, Integer> countMap = new HashMap<>();
     LogToFile logToFile;
 
@@ -427,6 +430,10 @@ public class LiveRemarkBll {
 
     public void setCallBack(AbstractBusinessDataCallBack callBack) {
         mCallBack = callBack;
+    }
+
+    public void setOnItemClick(OnItemClick onItemClick) {
+        this.onItemClick = onItemClick;
     }
 
     public void setLiveId(String liveId) {
@@ -894,6 +901,7 @@ public class LiveRemarkBll {
         private View root;
         private View vSig;
         private VideoPointEntity mEntity;
+        private int position;
 
         @Override
         public int getLayoutResId() {
@@ -915,6 +923,9 @@ public class LiveRemarkBll {
             root.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if (onItemClick != null) {
+                        onItemClick.onItemClick(position);
+                    }
                     mPlayerService.seekTo((mEntity.getRelativeTime() < 0 ? 0 : mEntity.getRelativeTime()) * 1000);
                     umsAgentPlay(mEntity.getType(), mEntity.getRelativeTime());
                     if (LiveRemarkBll.this.mCallBack != null) {
@@ -945,7 +956,7 @@ public class LiveRemarkBll {
         @Override
         public void updateViews(VideoPointEntity entity, int i, Object o) {
             mEntity = entity;
-
+            this.position = i;
             ivPlay.setTag(entity.getPic());
             if (!entity.isPlaying()) {
                 ivPlay.setVisibility(View.VISIBLE);
@@ -1061,6 +1072,13 @@ public class LiveRemarkBll {
                         vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f13232);
                         ImageLoader.with(mContext).load(entity.getPic()).placeHolder(R.drawable.bg_default_image).error(R.drawable.bg_default_image).into(ivShot);
                         sb.append("要多练(老师发布)");
+                        break;
+                    case MARK_TYPE_BIG_TEST:
+                        ivShot.setScaleType(ImageView.ScaleType.FIT_XY);
+                        vSig.setBackgroundResource(R.drawable.shape_corners_4dp_f0773c);
+//                        ImageLoader.with(mContext).load(entity.getPic()).placeHolder(R.drawable.bg_live_mark_question).error(R.drawable.bg_live_mark_question).into(ivShot);
+                        ivShot.setImageResource(R.drawable.bg_live_mark_question);
+                        sb.append("互动点");
                         break;
                     default:
                         ivShot.setScaleType(ImageView.ScaleType.FIT_XY);

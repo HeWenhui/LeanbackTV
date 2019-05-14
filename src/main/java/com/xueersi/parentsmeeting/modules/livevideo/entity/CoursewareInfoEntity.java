@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,17 +9,17 @@ import java.util.List;
 public class CoursewareInfoEntity {
 
     /** 课件信息列表 */
-    List<LiveCourseware> coursewareList;
+    List<LiveCourseware> coursewareList = new ArrayList<>();
     /** cdn列表 */
-    List<String> cdns;
+    List<String> cdns = new ArrayList<>();
     /** ip列表 */
-    List<String> ips;
+    List<String> ips = new ArrayList<>();
     /** 字体公式资源 */
-    List<String> resources;
+    List<String> resources = new ArrayList<>();
     /** 加载页资源 */
-    List<String> loadpages;
+    List<String> loadpages = new ArrayList<>();
     /** 静态资源 */
-    List<String> staticSources;
+    List<String> staticSources = new ArrayList<>();
 
     /**Nb 加试 实验预加载资源**/
     NbCoursewareInfo nbCoursewareInfo;

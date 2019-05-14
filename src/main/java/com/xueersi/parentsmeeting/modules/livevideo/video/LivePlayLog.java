@@ -1156,7 +1156,7 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
 
                     @Override
                     public void onFailure(Call call, IOException e) {
-                        logger.e("xescdnLog:onFailure", e);
+                        logger.e("xescdnLog:onFailure" + e);
                         if (retryInt.get() < 2) {
                             handler.postDelayed(new Runnable() {
                                 @Override
@@ -1503,25 +1503,25 @@ public class LivePlayLog extends VPlayerCallBack.SimpleVPlayerListener {
         if (!isNewIJK) {
             try {
                 if (vPlayer.isInitialized() && lastPlayserverEntity != null) {
-                if (vPlayer.getPlayer() instanceof IjkMediaPlayer) {
-                    IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
-                    Bundle bundle = ijkMediaPlayer.getMediaMeta();
-                    ArrayList arrayList = bundle.getParcelableArrayList("streams");
-                    Set<String> keys = bundle.keySet();
-                    for (int i = 0; i < arrayList.size(); i++) {
-                        Bundle bundle1 = (Bundle) arrayList.get(i);
-                        if ("video".equals(bundle1.getString("type"))) {
-                            logger.d("getFps:bundle1=" + bundle1);
-                            if (bundle1.containsKey("fps_num") && bundle1.containsKey("fps_den")) {
-                                int fps_num = Integer.parseInt(bundle1.getString("fps_num"));
-                                int fps_den = Integer.parseInt(bundle1.getString("fps_den"));
-                                videofps = (float) fps_num / (float) fps_den;
-                                logger.d("getFps:fps_num=" + fps_num + ",fps_den=" + fps_den + ",fps=" + videofps);
+                    if (vPlayer.getPlayer() instanceof IjkMediaPlayer) {
+                        IjkMediaPlayer ijkMediaPlayer = (IjkMediaPlayer) vPlayer.getPlayer();
+                        Bundle bundle = ijkMediaPlayer.getMediaMeta();
+                        ArrayList arrayList = bundle.getParcelableArrayList("streams");
+                        Set<String> keys = bundle.keySet();
+                        for (int i = 0; i < arrayList.size(); i++) {
+                            Bundle bundle1 = (Bundle) arrayList.get(i);
+                            if ("video".equals(bundle1.getString("type"))) {
+                                logger.d("getFps:bundle1=" + bundle1);
+                                if (bundle1.containsKey("fps_num") && bundle1.containsKey("fps_den")) {
+                                    int fps_num = Integer.parseInt(bundle1.getString("fps_num"));
+                                    int fps_den = Integer.parseInt(bundle1.getString("fps_den"));
+                                    videofps = (float) fps_num / (float) fps_den;
+                                    logger.d("getFps:fps_num=" + fps_num + ",fps_den=" + fps_den + ",fps=" + videofps);
+                                }
+                                break;
                             }
-                            break;
                         }
                     }
-                }
                 }
             } catch (Exception e) {
                 UmsAgentManager.umsAgentException(BaseApplication.getContext(), TAG + "getFps", e);

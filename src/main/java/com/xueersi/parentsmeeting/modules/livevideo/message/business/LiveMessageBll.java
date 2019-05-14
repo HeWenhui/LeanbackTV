@@ -231,12 +231,13 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
             text = mLiveMessagePager.getMessageContentText();
             isRegister = mLiveMessagePager.isRegister();
             isHaveFlowers = mLiveMessagePager.isHaveFlowers();
+            isCloseChat = mLiveMessagePager.isCloseChat();
             mLiveMessagePager.onDestroy();
         }
 
 
         long before = System.currentTimeMillis();
-        HalfBodyLiveMessagePager liveMessagePager = null;
+        BaseLiveMessagePager liveMessagePager = null;
 
         //根据不同的直播类型创建不同皮肤
         if (getInfo != null && getInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
@@ -256,7 +257,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         mLiveMessagePager.setMessageBll(LiveMessageBll.this);
         mLiveMessagePager.setIrcState(mLiveBll);
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
-
+        mLiveMessagePager.closeChat(isCloseChat);
         if (text != null) {
             mLiveMessagePager.setEtMessageContentText(text);
         } else {
