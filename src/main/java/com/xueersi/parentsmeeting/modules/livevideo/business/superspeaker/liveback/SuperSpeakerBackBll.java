@@ -66,8 +66,6 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
                 addPopWindowPager(superSpeakerPopWindowPager.getRootView());
             }
         }
-
-
     }
 
     private void addPopWindowPager(View view) {
@@ -103,14 +101,6 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
                     }
                 });
     }
-
-
-//    @Override
-//    public void removeView(View view) {
-//        if (view.getParent() == mRootView) {
-//            mRootView.removeView(view);
-//        }
-//    }
 
     @Override
     public void stopRecord() {

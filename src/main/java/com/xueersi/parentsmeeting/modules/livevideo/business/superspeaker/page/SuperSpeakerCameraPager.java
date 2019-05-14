@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.Camera1Utils;
@@ -77,6 +78,8 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
 
     private String courseWareId;
 
+    private LottieAnimationView lottieAnimationView;
+
     public SuperSpeakerCameraPager(Context context, ISuperSpeakerContract.ISuperSpeakerBridge bridge, String liveId, String courseWareId, int answerTime, int recordTime) {
         super(context);
         this.bridge = bridge;
@@ -108,6 +111,8 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
         tvStartRecordTotalTime = layoutStartViewTime.findViewById(R.id.tv_livevideo_super_speaker_record_video_record_time_total);
         tvStopRecordCurrentTime = layoutStopViewTime.findViewById(R.id.tv_livevideo_super_speaker_record_video_record_time_currenttime);
         tvStopRecordTotalTime = layoutStopViewTime.findViewById(R.id.tv_livevideo_super_speaker_record_video_record_time_total);
+
+        lottieAnimationView = view.findViewById(R.id.lottie_livevideo_super_speaker_record_video);
 
         groupStart = view.findViewById(R.id.group_livevideo_super_speaker_record_video_start);
         groupRestart = view.findViewById(R.id.group_livevideo_super_speaker_record_video_restart);
@@ -146,6 +151,10 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
         initListener();
 
         return view;
+    }
+
+    protected boolean isHasRecordPermission() {
+        return true;
     }
 
     private void initShowView() {
@@ -270,9 +279,16 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
         ivReversal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                performStartPreView(isFacingBack = !isFacingBack);
+                performReversal();
             }
         });
+    }
+
+    protected void performReversal() {
+        if (!isHasRecordPermission()) {
+            return;
+        }
+        performStartPreView(isFacingBack = !isFacingBack);
     }
 
     /** 删除旧的文件夹 */
@@ -302,6 +318,9 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
 //        if(camera1Utils==null){
 //            camera1Utils = new Camera1Utils()
 //        }
+        if (!isHasRecordPermission()) {
+            return;
+        }
         if (camera1Utils != null) {
             StorageUtils.videoUrl = LiveVideoConfig.SUPER_SPEAKER_VIDEO_PATH + liveId + "_" + courseWareId + ".mp4";
             logger.i(StorageUtils.videoUrl);
@@ -314,6 +333,9 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
      * 停止拍摄
      */
     private void performStopRecord() {
+        if (!isHasRecordPermission()) {
+            return;
+        }
         long nowTime = System.currentTimeMillis();
         mView.removeCallbacks(recordVideoTimer);
         if (isInTime()) {
@@ -322,6 +344,7 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
         }
         isHasRecordView = true;
         stopRecordVideoTime = nowTime;
+        ivBack.setVisibility(View.VISIBLE);
         groupStop.setVisibility(View.GONE);
         sfvVideo.setVisibility(View.GONE);
         isInRecord = false;
@@ -379,16 +402,20 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
     /**
      * 拍摄视频
      */
-    private void performStartRecordVideo() {
+    protected void performStartRecordVideo() {
         initVar();
         if (sfvVideo.getVisibility() != View.VISIBLE) {
             logger.i("set surfaceView visible");
             sfvVideo.setVisibility(View.VISIBLE);
         }
+        ivBack.setVisibility(View.GONE);
         tvStopRecordTotalTime.setText(TimeUtils.stringForTime(recordTime));
         groupStart.setVisibility(View.GONE);
         groupReversal.setVisibility(View.GONE);
         groupStop.setVisibility(View.VISIBLE);
+
+        lottieAnimationView.playAnimation();
+
         if (isSurfViewCreat) {
 //            performStartPreView(true);
             mView.postDelayed(recordVideoTimer, 1000);
@@ -455,20 +482,6 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
         }
     }
 
-//    @Override
-//    public void removeRedPackageView() {
-//        if (redPackageView != null && redPackageView.getView() == mView) {
-//            ((ViewGroup) mView).removeView(redPackageView.getView());
-//        }
-//    }
-
-//    @Override
-//    public void removeView(View view) {
-//        if (view != null && view.getParent() == mView) {
-//            ((ViewGroup) mView).removeView(view);
-//        }
-//    }
-
     //    @Override
     public void removeView(View view) {
         if (view != null && view.getParent() == mView) {
@@ -498,16 +511,6 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
     public void timeUp() {
         long nowtime = System.currentTimeMillis();
         iCommonTip.timeUp(nowtime - startRecordVideoTime < RECORD_VALID_TIME);
-    }
-
-    //    @Override
-    public void startPlayVideo() {
-
-//        ILocalVideoController controller = new CustomVideoController(mContext);
-//        ((CustomVideoController) controller).initData();
-//        if (mView != null) {
-//            controller.startPlayVideo(LiveVideoConfig.SUPER_SPEAKER_VIDEO_PATH, 0);
-//        }
     }
 
     @Override

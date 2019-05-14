@@ -19,6 +19,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -51,7 +52,7 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
 //                        mGetInfo.setId(String.valueOf(454400));
                         courseWareId = String.valueOf(1);
                         srcType = String.valueOf(40);
-                        performShowRecordCamera(10, 5);
+                        performShowRecordCamera(10, 65);
                     }
                 }, 2000);
             }
@@ -214,22 +215,6 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
             e.printStackTrace();
         }
 
-//        if (iView == null) {
-//            iView = new SuperSpeakerCameraPager(mContext, this);
-//        }
-//        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) iView.getView().getLayoutParams();
-//        if (layoutParams == null) {
-//            logger.i("layoutParams = null");
-//            layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-//        }
-//        //如果有录音权限
-//        if (isHasRecordPermission()) {
-//            logger.i("has record permission");
-//            mRootView.addView(iView.getView(), layoutParams);
-//        } else {
-//            logger.i("no record permission");
-//        }
-
     }
 
     @Override
@@ -252,6 +237,19 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
      */
     @Override
     public void submitSpeechShow(String isForce, String videoDuration) {
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("from", mGetInfo.getStuId());
+            jsonObject.put("stuName", mGetInfo.getStuName());
+            jsonObject.put("type", XESCODE.SUPER_SPEAKER_SEND_MESSAGE);
+            jsonObject.put("id", mGetInfo.getStuId());
+            jsonObject.put("time", videoDuration);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        mLiveBll.sendNotice(mLiveBll.getMainTeacherStr(), jsonObject);
+
         getHttpManager().sendSuperSpeakersubmitSpeech(
                 mGetInfo.getId(),
                 mGetInfo.getStuCouId(),
@@ -284,18 +282,8 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                 });
     }
 
-//    @Override
-//    public void removeView(View view) {
-//        if (view != null && view.getParent() == mRootView) {
-//            mRootView.removeView(view);
-//        }
-//    }
-
     @Override
     public void stopRecord() {
-//        if (iView != null) {
-//            iView.startPlayVideo();
-//        }
     }
 
     @Override

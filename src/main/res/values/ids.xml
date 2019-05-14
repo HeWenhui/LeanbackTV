@@ -920,7 +920,6 @@
     <item name="iv_livevideo_halbody_hotword" type="id" />
 
 
-
     <!--半身直播旁听-->
     <item name="ll_livevideo_auditclass_online_state_container" type="id" />
     <item name="rcl_livevideo_auditclass_anwser_state" type="id" />
@@ -1397,4 +1396,5 @@
     <item name="iv_livevideo_super_speaker_back_pop_window_cancel" type="id" />
     <item name="tv_livevideo_super_speaker_back_camera_tip" type="id" />
     <item name="tv_livevideo_super_speaker_back_camera_content_tip" type="id" />
+    <item name="lottie_livevideo_super_speaker_record_video" type="id" />
 </resources>

@@ -1,9 +1,13 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.widget;
 
 import android.annotation.SuppressLint;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
+import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.UiThread;
 import android.view.View;
@@ -21,6 +25,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract;
+import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.UploadVideoService;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page.SuperSpeakerCameraPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page.SuperSpeakerRedPackagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.StorageUtils;
@@ -189,14 +194,7 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
 
     @Override
     public void submitSpeechShow(String isForce, String averVocieDecibel) {
-        MediaPlayer mediaPlayer = new MediaPlayer();
-        try {
-            mediaPlayer.setDataSource(StorageUtils.videoUrl);
-            mediaPlayer.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        long videoDuration = mediaPlayer.getDuration();
+        long videoDuration = getVideoDuration();
         logger.i("averVocieDecibel = " + averVocieDecibel + "videoDuration =" + videoDuration);
         if (iCameraPresenter != null) {
             iCameraPresenter.submitSpeechShow(isForce, String.valueOf(videoDuration));
@@ -210,9 +208,51 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
                 false);
         latch = new CountDownLatch(2);
         this.voiceDecibel = averVocieDecibel;
-        uploadVideo();
-        uploadAudio();
 
+        Intent intent = new Intent(mContext, UploadVideoService.class);
+        intent.putExtra("liveId", liveId);
+        intent.putExtra("courseWareId", courseWareId);
+//        mContext.startService(intent);
+        mContext.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+
+//        uploadVideo();
+//        uploadAudio();
+
+    }
+
+    private ServiceConnection serviceConnection = new ServiceConnection() {
+        private UploadVideoService mService;
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            if (service instanceof UploadVideoService.UploadBinder) {
+                mService = ((UploadVideoService.UploadBinder) service).getService();
+                mService.setCallBack(new UploadVideoService.uploadCallback() {
+                    @Override
+                    public void uploadSuccess(String videoUrl, String audioUrl) {
+                        SuperSpeakerBridge.this.videoUrl = videoUrl;
+                        SuperSpeakerBridge.this.audioUrl = audioUrl;
+                        SuperSpeakerBridge.this.uploadSuccess();
+                    }
+                });
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            mService = null;
+        }
+    };
+
+    private long getVideoDuration() {
+        MediaPlayer mediaPlayer = new MediaPlayer();
+        try {
+            mediaPlayer.setDataSource(StorageUtils.videoUrl);
+            mediaPlayer.prepare();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return mediaPlayer.getDuration();
     }
 
     private void uploadVideo() {

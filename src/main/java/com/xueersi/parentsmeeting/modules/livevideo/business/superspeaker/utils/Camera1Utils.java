@@ -44,7 +44,7 @@ public class Camera1Utils implements IRecordVideoView {
 
     public void initCamera(boolean isFacingBack, int width, int height, String videoPath) {
         if (camera != null) {
-            camera.release();
+            releaseCamera();
         }
 
 //        camera.setPreviewCallbackWithBuffer(new Camera.PreviewCallback() {
