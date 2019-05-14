@@ -211,7 +211,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                         }
                     });
                     cancelDialog.setCancelShowText("取消").setVerifyShowText("确定").initInfo("提交后不能修改，确定提交吗？",
-                            VerifyCancelAlertDialog.CANCEL_SELECTED).showDialog();
+                            VerifyCancelAlertDialog.VERIFY_SELECTED).showDialog();
                 }else{
                     endTestMode();
                 }
@@ -282,7 +282,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
             }
         });
         cancelDialog.setCancelShowText("取消").setVerifyShowText("确定").initInfo("只有一次练习机会,确定结束吗？",
-                VerifyCancelAlertDialog.CANCEL_SELECTED).showDialog();
+                VerifyCancelAlertDialog.VERIFY_SELECTED).showDialog();
     }
 
     /**
