@@ -121,11 +121,11 @@ public class LiveVideoAction implements VideoAction {
         isExperience = activity.getIntent().getBooleanExtra("isExperience", false);
         isSmallEnglish = activity.getIntent().getBooleanExtra("isSmallEnglish", false);
         if (pattern == 1 && !isExperience) {
-            layoutSwitchFlow = mContentView.findViewById(R.id.layout_livevideot_triple_screen_fail_retry);
-            tvSwitchFlowRetry = mContentView.findViewById(R.id.fzcy_livevideo_switch_flow_retry_text);
-            setVideoLayout();
-            btnRetry = mContentView.findViewById(R.id.btn_livevideo_switch_flow_retry_btn);
-            switchFlowViewChangeBtn();
+//            layoutSwitchFlow = mContentView.findViewById(R.id.layout_livevideot_triple_screen_fail_retry);
+//            tvSwitchFlowRetry = mContentView.findViewById(R.id.fzcy_livevideo_switch_flow_retry_text);
+//            setVideoLayout();
+//            btnRetry = mContentView.findViewById(R.id.btn_livevideo_switch_flow_retry_btn);
+//            switchFlowViewChangeBtn();
         }
     }
 

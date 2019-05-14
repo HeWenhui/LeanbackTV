@@ -176,8 +176,7 @@
         android:id="@id/iv_live_primary_class_kuangjia_img_normal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:src="@drawable/bg_live_primary_class_kuangjia_img_normal" />
+        android:layout_centerInParent="true" />
 
     <!-- 直播 表扬榜显示的界面位置 -->
     <RelativeLayout

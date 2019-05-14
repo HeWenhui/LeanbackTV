@@ -54,7 +54,7 @@ public class PrimaryClassLiveMediaCtrlTop extends BaseLiveMediaControllerTop {
         View view = null;
         if (LiveTopic.MODE_CLASS.equals(mode)) {
             if (mainLiveView == null) {
-                mainLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_live_halfbody_mediacontroller_top,
+                mainLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_live_primary_class_mediacontroller_top,
                         this, false);
             }
             view = mainLiveView;

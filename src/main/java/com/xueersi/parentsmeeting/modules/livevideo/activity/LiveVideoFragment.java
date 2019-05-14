@@ -110,7 +110,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     /** 是不是文理 */
     public boolean IS_SCIENCE = true;
     /** 是不是文科 */
-    private int isArts;
+    protected int isArts;
 
     protected BaseLiveMediaControllerTop baseLiveMediaControllerTop;
     protected BaseLiveMediaControllerBottom liveMediaControllerBottom;

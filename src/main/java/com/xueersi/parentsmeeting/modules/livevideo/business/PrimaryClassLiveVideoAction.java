@@ -1,8 +1,10 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.view.View;
@@ -17,6 +19,7 @@ import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
@@ -25,6 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VideoLoadingImgView;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ImageScale;
 
 /**
  * 半身直播 UI 管理器
@@ -36,8 +40,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.VideoLoadingImgView;
 public class PrimaryClassLiveVideoAction extends LiveVideoAction {
 
     protected String mode = LiveTopic.MODE_TRANING;
-    private static final String TAG = "HalfBodyLiveVideoAction";
-
+    private static final String TAG = "PrimaryClassLiveVideoAction";
+    //新加
+    ImageView ivLivePrimaryClassKuangjiaImgNormal;
+    RelativeLayout rlContent;
+    int isArts;
+    //
     private RelativeLayout rlFirstBackgroundContent;
     private FrameLayout flFirstBackgroundContent;
 
@@ -64,17 +72,29 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
     private final ImageView ivTecherState;
 
 
-    public PrimaryClassLiveVideoAction(Activity activity, LiveBll2 mLiveBll, RelativeLayout mContentView, String mode) {
+    public PrimaryClassLiveVideoAction(Activity activity, LiveBll2 mLiveBll, RelativeLayout mContentView, RelativeLayout rlContent, int isArts, String mode) {
         super(activity, mLiveBll, mContentView);
         this.mode = mode;
+        this.isArts = isArts;
+        this.rlContent = rlContent;
         flFirstBackgroundContent = mContentView.findViewById(R.id.fl_course_video_first_content);
         rlFirstBackgroundContent = mContentView.findViewById(R.id.rl_course_video_first_content);
         ll_course_video_loading = mContentView.findViewById(R.id.ll_course_video_loading);
         iv_course_video_loading_bg = mContentView.findViewById(R.id.iv_course_video_loading_bg);
         ivVodeoLoading = mContentView.findViewById(R.id.rl_live_halfbody_video_loading);
         ivTecherState = mContentView.findViewById(R.id.iv_live_halfbody_teacher_state);
+        ivLivePrimaryClassKuangjiaImgNormal = mContentView.findViewById(R.id.iv_live_primary_class_kuangjia_img_normal);
+        setKuangjia();
     }
 
+    private void setKuangjia() {
+        if (isArts == LiveVideoSAConfig.ART_CH) {
+            ivLivePrimaryClassKuangjiaImgNormal.setImageResource(R.drawable.bg_live_primary_class_kuangjia_img_normal);
+        } else {
+            ivLivePrimaryClassKuangjiaImgNormal.setImageResource(R.drawable.bg_live_primary_class_kuangjia_img_normal_cn);
+        }
+        setMargin();
+    }
 
     @Override
     public void setFirstParam(LiveVideoPoint liveVideoPoint) {
@@ -172,8 +192,6 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
 
     /**
      * 展示 主讲老师UI页面
-     *
-     * @param screenWidth
      */
     private void showMainTeacherUI() {
         View contentView = activity.findViewById(android.R.id.content);
@@ -285,6 +303,7 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
         mHandler.post(new Runnable() {
             @Override
             public void run() {
+                setMargin();
                 if (LiveTopic.MODE_CLASS.equals(mode)) {
                     //主讲模式去掉外层的RelativeLayout换回FrameLayout
                     ViewGroup group = (ViewGroup) rlFirstBackgroundView.getParent();
@@ -320,8 +339,6 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
 
     /**
      * 设置老师不在直播间的相关UI
-     *
-     * @param rlFirstBackgroundView
      */
     private void setTeacherNotpresent(View view) {
 
@@ -369,12 +386,41 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
             } else if (LiveVideoConfig.isPrimary) {
                 dwTeacherNotpresen = ResourcesCompat.getDrawable(activity.getResources(), R.drawable
                         .livevideo_zw_dengdaida_bg_psnormal, null);
-            }  else {
+            } else {
                 dwTeacherNotpresen = ResourcesCompat.getDrawable(activity.getResources(), R.drawable
                         .livevideo_zw_dengdaida_bg_normal, null);
             }
             view.setBackground(dwTeacherNotpresen);
         }
+    }
+
+    private void setMargin() {
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlContent.getLayoutParams();
+        if (LiveTopic.MODE_CLASS.equals(mode)) {
+            final Bitmap bitmap = ((BitmapDrawable) ivLivePrimaryClassKuangjiaImgNormal.getDrawable()).getBitmap();
+            ImageScale.setImageViewWidth(ivLivePrimaryClassKuangjiaImgNormal);
+            float scale = (float) bitmap.getWidth() / 1328f;
+            lp.leftMargin = (int) (13 * scale);
+            lp.bottomMargin = (int) (13 * scale);
+            lp.rightMargin = (int) (219 * scale);
+            lp.topMargin = (int) (96 * scale);
+            lp.addRule(RelativeLayout.ALIGN_LEFT, ivLivePrimaryClassKuangjiaImgNormal.getId());
+            lp.addRule(RelativeLayout.ALIGN_TOP, ivLivePrimaryClassKuangjiaImgNormal.getId());
+            lp.addRule(RelativeLayout.ALIGN_RIGHT, ivLivePrimaryClassKuangjiaImgNormal.getId());
+            lp.addRule(RelativeLayout.ALIGN_BOTTOM, ivLivePrimaryClassKuangjiaImgNormal.getId());
+            ivLivePrimaryClassKuangjiaImgNormal.setVisibility(View.VISIBLE);
+        } else {
+            lp.leftMargin = 0;
+            lp.bottomMargin = 0;
+            lp.rightMargin = 0;
+            lp.topMargin = 0;
+            lp.addRule(RelativeLayout.ALIGN_LEFT, 0);
+            lp.addRule(RelativeLayout.ALIGN_TOP, 0);
+            lp.addRule(RelativeLayout.ALIGN_RIGHT, 0);
+            lp.addRule(RelativeLayout.ALIGN_BOTTOM, 0);
+            ivLivePrimaryClassKuangjiaImgNormal.setVisibility(View.GONE);
+        }
+        rlContent.setLayoutParams(lp);
     }
 
     private int getClassBeforStateImg() {
