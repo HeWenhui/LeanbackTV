@@ -38,6 +38,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.fragment.MediaControllerActi
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LivePlayBackHttpResponseParser;
+import com.xueersi.parentsmeeting.modules.livevideo.remark.business.OnItemClick;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
@@ -417,6 +418,29 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
         return liveVideoSAConfig;
     }
 
+    private OnItemClick onItemClick;
+
+    public OnItemClick getOnItemClick() {
+        if (onItemClick == null) {
+            onItemClick = new OnItemClick() {
+                @Override
+                public void onItemClick(int position) {
+                    List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
+                    if (position < lstVideoQuestion.size()) {
+                        VideoQuestionEntity videoQuestionEntity = lstVideoQuestion.get(position);
+                        boolean same = mQuestionEntity == videoQuestionEntity;
+                        logger.d("onItemClick:position=" + position + "" + videoQuestionEntity.getvQuestionID() + ",start=" + videoQuestionEntity.getvQuestionInsretTime()
+                                + ",isAnswered=" + videoQuestionEntity.isAnswered() + ",same=" + same);
+                        if (!same) {
+                            videoQuestionEntity.setAnswered(false);
+                        }
+                    }
+                }
+            };
+        }
+        return onItemClick;
+    }
+
     /**
      * 扫描是否有需要弹出的互动题
      */
@@ -576,6 +600,15 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                     index = i;
                     break;
                 }
+            }else if (LocalCourseConfig.CATEGORY_NB_ADDEXPERIMENT == videoQuestionEntity.getvCategory()) {
+                // 在开始时间和结束时间之间
+                if (startTime <= playPosition && playPosition < endTime) {
+//                if (startTime == playPosition) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
+                    break;
+                }
             } else if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == videoQuestionEntity.getvCategory()) {
                 // 在开始时间和结束时间之间
                 if (startTime <= playPosition && playPosition < endTime) {
@@ -643,6 +676,13 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                     hasQuestionShow = true;
                     index = i;
                     standexperienceRecommondCourseIsShow = true;
+                    break;
+                }
+            } else if (LocalCourseConfig.CATEGORY_BIG_TEST == videoQuestionEntity.getvCategory()) {//大题互动
+                if (startTime <= playPosition && playPosition < endTime) {
+                    mQuestionEntity = videoQuestionEntity;
+                    hasQuestionShow = true;
+                    index = i;
                     break;
                 }
             }
@@ -880,5 +920,13 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
 
     public String getPrefix() {
         return "LB";
+    }
+
+    /**
+     * 获取直播间初始换参数
+     * @return
+     */
+    public LiveGetInfo getRommInitData() {
+        return mGetInfo;
     }
 }

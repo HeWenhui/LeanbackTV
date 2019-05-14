@@ -39,6 +39,7 @@ public class NewCourseCache {
     protected Context mContext;
     private File cacheFile;
     private File mMorecacheout;
+    protected File todayLiveCacheDir;
     /**
      * 公共资源
      */
@@ -66,7 +67,7 @@ public class NewCourseCache {
         Date date = new Date();
         final String today = dateFormat.format(date);
         final File todayCacheDir = new File(cacheFile, today);
-        final File todayLiveCacheDir = new File(todayCacheDir, liveId);
+        todayLiveCacheDir = new File(todayCacheDir, liveId);
         mMorecacheout = new File(todayLiveCacheDir, liveId + "child");
         if (!mMorecacheout.exists()) {
             mMorecacheout.mkdirs();
@@ -262,7 +263,7 @@ public class NewCourseCache {
         return null;
     }
 
-    private File getCourseWarePagesFileName(String s, String contens, int index) {
+    protected File getCourseWarePagesFileName(String s, String contens, int index) {
         String url2 = s.substring(index + contens.length());
         int index2 = url2.indexOf("?");
         if (index2 != -1) {
