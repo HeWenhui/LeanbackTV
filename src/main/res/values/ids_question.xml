@@ -37,6 +37,19 @@
     <item name="lav_livevideo_groupgame_mvp_cloud" type="id" />
     <item name="lav_livevideo_groupgame_mvp" type="id" />
     <item name="iv_livevideo_groupgame_mvp_close" type="id" />
+
+    <!--nobook 实验 试题相关-->
+    <item name="rl_livevideo_nb_course_control" type="id" />
+    <item name="tv_livevideo_nb_course_title" type="id" />
+    <item name="tv_livevideo_nb_course_time" type="id" />
+    <item name="rl_livevideo_nb_step_result" type="id" />
+    <item name="tv_livevideo_nb_step_desc" type="id" />
+    <item name="tv_livevideo_nb_step_result" type="id" />
+    <item name="lav_livevideo_nb_step_result" type="id" />
+    <item name="csl_livevideo_nb_reportbtn_container" type="id"/>
+    <item name="btn_livevideo_nb_reportbtn" type="id"/>
+    <item name="gl_livevideo_nb_reportbtn" type="id"/>
+
     <!--大题互动结果页-->
     <item name="iv_livevideo_bigque_result_title" type="id" />
     <item name="iv_livevideo_bigque_result_title_light" type="id" />
