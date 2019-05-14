@@ -113,15 +113,14 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
     }
 
     private int[] noticeCodes = {
-            XESCODE.TEACHER_PRAISE, XESCODE.SPEECH_COLLECTIVE
+            XESCODE.TEACHER_VOICE_PRAISE, XESCODE.SPEECH_COLLECTIVE
     };
 
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
         LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
         String status = mainRoomstatus.getOnGroupSpeech();
-        if ("on".equals(status)
-                && LiveTopic.MODE_CLASS.equals(liveTopic.getMode())) {
+        if ("on".equals(status)) {
             voiceId = mainRoomstatus.getGroupSpeechRoom();
         } else {
             voiceId = "";
@@ -131,7 +130,7 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
         switch (type) {
-            case XESCODE.TEACHER_PRAISE:
+            case XESCODE.TEACHER_VOICE_PRAISE:
                 showTeacherPraise();
                 break;
             case XESCODE.SPEECH_COLLECTIVE:
