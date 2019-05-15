@@ -13,6 +13,8 @@ public class PraiseContentEntity {
     private int viewType;
     /** 列占位 */
     private int itemSpan = 1;
+    /** 是否口述题*/
+    private boolean oralQuestion;
     /** 表扬榜样式 */
     private int praiseStyle;
 
@@ -64,4 +66,11 @@ public class PraiseContentEntity {
         this.praiseStyle = praiseStyle;
     }
 
+    public boolean isOralQuestion() {
+        return oralQuestion;
+    }
+
+    public void setOralQuestion(boolean oralQuestion) {
+        this.oralQuestion = oralQuestion;
+    }
 }

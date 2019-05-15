@@ -2432,6 +2432,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             contentEntityList.add(titleEntity);
             contentEntity = new PraiseContentEntity();
             contentEntity.setPraiseStyle(entity.getPraiseStyle());
+            contentEntity.setOralQuestion(true);
             contentEntity.setItemSpan(4);
             contentEntity.setName(jsonObject.optString("desc"));
             contentEntityList.add(contentEntity);

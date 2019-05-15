@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.widget.praise.item;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -71,6 +72,11 @@ public class LivePraiseItem implements RItemViewInterface<PraiseContentEntity> {
             } else {
                 tvName.setTextColor(getColor(R.color.COLOR_985540));
             }
+        }
+        if(praiseContentEntity.isOralQuestion()) {
+            tvName.setSingleLine(false);
+        } else {
+           tvName.setSingleLine(true);
         }
     }
     private int getColor(int id){
