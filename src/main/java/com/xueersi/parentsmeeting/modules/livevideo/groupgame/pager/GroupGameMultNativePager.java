@@ -143,6 +143,8 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
     private int mMaxVolume;
     /** 当前音量 */
     private int mVolume = 0;
+    /** 是否恢复了音量 */
+    private boolean isVolumeResume = true;
     //    private NewCourseSec newCourseSec;
     private GroupGameTestInfosEntity mGroupGameTestInfosEntity;
     private List<GroupGameTestInfosEntity.TestInfoEntity> tests = new ArrayList<>();
@@ -330,6 +332,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         mVolume = liveAudioManager.getmVolume();
         int v = (int) (0.3f * mMaxVolume);
         liveAudioManager.setVolume(v);
+        isVolumeResume = false;
     }
 
     @Override
@@ -1836,6 +1839,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         logger.d("submitGroupGame->onDataSucess:objData=" + objData);
                         if (showResult) {
                             ArrayList<TeamMemberEntity> entities = interactiveTeam.getEntities();
+                            if (liveAudioManager != null && !isVolumeResume) {
+                                liveAudioManager.setVolume(mVolume);
+                                isVolumeResume = true;
+                            }
                             GroupGameMVPMultPager groupGameMVPMultPager = new GroupGameMVPMultPager(mContext, entities);
                             ((ViewGroup) mView).addView(groupGameMVPMultPager.getRootView());
                             groupGameMVPMultPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
@@ -1992,8 +1999,9 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             logger.d("onDestroy:key=" + key + ",videoTime=" + videoTime + ",audioTime=" + audioTime);
         }
         courseGroupItemHashMap.clear();
-        if (liveAudioManager != null) {
+        if (liveAudioManager != null && !isVolumeResume) {
             liveAudioManager.setVolume(mVolume);
+            isVolumeResume = true;
         }
         BasePlayerFragment videoFragment = ProxUtil.getProxUtil().get(mContext, BasePlayerFragment.class);
         if (videoFragment != null) {
