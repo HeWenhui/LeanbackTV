@@ -671,7 +671,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                 myAnswerText = "空";
             }
             stringBuffer.append("<font color=" +color+">");
-            stringBuffer.append(myAnswerText+"</font>");
+            stringBuffer.append(myAnswerText+" </font>");
 //            span = new SpannableString(myAnswerText);
 //            span.setSpan(new ForegroundColorSpan(color), 0, span.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
 //            stringBuilder.append(span);
@@ -679,7 +679,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
             tvUserAnswer.setText(Html.fromHtml(stringBuffer.toString()));
 
 
-            String titleFont = "<font color='#726665'>正确答案："+ standerAnswerText+"</font>";
+            String titleFont = "<font color='#726665'>正确答案："+ standerAnswerText+" </font>";
             tvRightAnswer.setText(Html.fromHtml(titleFont));
         }
 
