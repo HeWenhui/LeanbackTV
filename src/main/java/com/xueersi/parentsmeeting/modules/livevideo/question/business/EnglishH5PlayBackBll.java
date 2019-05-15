@@ -373,7 +373,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             String teamId = studentLiveInfo.getTeamId();
             String educationStage = liveGetInfo.getEducationStage();
             StringBuilder stringBuilder;
-            if (detailInfo.isTUtor) {
+            if (detailInfo.isTUtor()) {
                 stringBuilder = new StringBuilder(LiveQueHttpConfig.LIVE_SUBMIT_COURSEWARE_RESULT_TUTOR_FILE);
 
             } else {

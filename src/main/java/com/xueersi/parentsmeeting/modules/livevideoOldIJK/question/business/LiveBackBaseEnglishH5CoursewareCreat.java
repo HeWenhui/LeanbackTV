@@ -42,7 +42,7 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
         wrapOnH5ResultClose.setOnH5ResultClose(onH5ResultClose);
         wrapOnH5ResultClose.setVideoQuestionH5Entity(videoQuestionH5Entity);
         EnglishH5Entity englishH5Entity = videoQuestionH5Entity.englishH5Entity;
-        if (videoQuestionH5Entity.isTUtor) {
+        if (videoQuestionH5Entity.isTUtor()) {
             isArts = LiveVideoSAConfig.ART_SEC;
         }
         if (isArts == 0) {
@@ -70,7 +70,7 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
         } else if (isArts == 2) {
             englishH5Entity.setDynamicurl("https://live.chs.xueersi.com/LiveExam/getCourseWareTestHtml");
         }
-        if (videoQuestionH5Entity.isTUtor) {
+        if (videoQuestionH5Entity.isTUtor()) {
             englishH5Entity.setDynamicurl("https://scistatic.xueersi.com/outDoorTest/index.html");
         }
         EnglishH5CoursewareX5Pager h5CoursewarePager = new EnglishH5CoursewareX5Pager(context, videoQuestionH5Entity, true, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,

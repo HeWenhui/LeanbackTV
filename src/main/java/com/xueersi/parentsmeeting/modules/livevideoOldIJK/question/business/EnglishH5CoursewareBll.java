@@ -427,7 +427,9 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                         getAutoNotice(isForce);
                         hasQuestion = false;
                     }
-                    closePageByTeamPk();
+                    if (!videoQuestionLiveEntity.isTUtor()) {
+                        closePageByTeamPk();
+                    }
                 }
             }
         });

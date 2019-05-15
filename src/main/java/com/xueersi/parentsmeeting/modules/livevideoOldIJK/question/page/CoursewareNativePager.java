@@ -189,7 +189,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         this.isNewArtsCourseware = englishH5Entity.isArtsNewH5Courseware();
         LiveVideoConfig.englishH5Entity = englishH5Entity;
         this.detailInfo = (VideoQuestionLiveEntity) baseVideoQuestionEntity;
-        if (detailInfo.isTUtor) {
+        if (detailInfo.isTUtor()) {
             isArts = LiveVideoSAConfig.ART_SEC;
         }
         if (isArts != LiveVideoSAConfig.ART_EN) {
@@ -257,7 +257,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         mEnglishH5CoursewareBll.setWebViewCloseByTeacher(false);
                     }
                     EventBus.getDefault().post(event);
-                } else if (!detailInfo.isTUtor) {
+                } else if (!detailInfo.isTUtor()) {
 
                     if (allowTeamPk && newCourseSec != null) {
                         int gold = newCourseSec.getIsAnswer() == 0?mGoldNum:-1;
@@ -749,8 +749,10 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             //初中结果页是网页，需要调接口
             if (isArts != LiveVideoSAConfig.ART_EN && (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage))) {
                 wvSubjectWeb.loadUrl(jsClientSubmit);
+            } else if (detailInfo.isTUtor()){
+                wvSubjectWeb.loadUrl(jsClientSubmit);
             }
-        } else {
+        }  else {
             getAnswerType = LiveQueConfig.GET_ANSWERTYPE_FORCE_SUBMIT;
             if (courseTipDialog != null) {
                 courseTipDialog.cancelDialog();
@@ -1682,7 +1684,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
      */
     private void showScienceAnswerResult(final int isforce) {
         rlCourseControl.setVisibility(View.GONE);
-        if ((LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage)) && !detailInfo.isTUtor) {
+        if ((LiveVideoConfig.EDUCATION_STAGE_1.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_2.equals(educationstage)) && !detailInfo.isTUtor()) {
             //小学理科 走原生结果页
             englishH5CoursewareSecHttp.getStuTestResult(detailInfo, isPlayBack ? 1 : 0, new AbstractBusinessDataCallBack() {
                 @Override
