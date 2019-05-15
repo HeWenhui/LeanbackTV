@@ -1167,7 +1167,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
 //                groupSurfaceView.onVolumeUpdate(volume);
                 BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stuid);
                 if (courseGroupItem != null) {
-                    courseGroupItem.onVolumeUpdate(volume);
+                    courseGroupItem.onVolumeUpdate(volume * 2);
                 }
             }
 
@@ -2388,7 +2388,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         try {
                             JSONObject jsonObject = new JSONObject(msg);
                             String test_id = jsonObject.optString("test_id");
-                            if (!detailInfo.id.equals(test_id)) {
+                            if (submit || !detailInfo.id.equals(test_id)) {
                                 return;
                             }
                             getCurrent("STATISstart");
@@ -2547,7 +2547,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         try {
                             JSONObject jsonObject = new JSONObject(msg);
                             String test_id = jsonObject.optString("test_id");
-                            if (!detailInfo.id.equals(test_id)) {
+                            if (submit || !detailInfo.id.equals(test_id)) {
                                 return;
                             }
                             getCurrent("SCENEstart");
@@ -2717,7 +2717,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         try {
                             JSONObject jsonObject = new JSONObject(msg);
                             String test_id = jsonObject.optString("test_id");
-                            if (!detailInfo.id.equals(test_id)) {
+                            if (submit || !detailInfo.id.equals(test_id)) {
                                 return;
                             }
                             final int word_id = jsonObject.getInt("word_id");
@@ -2785,7 +2785,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         try {
                             JSONObject jsonObject = new JSONObject(msg);
                             String test_id = jsonObject.optString("test_id");
-                            if (!detailInfo.id.equals(test_id)) {
+                            if (submit || !detailInfo.id.equals(test_id)) {
                                 return;
                             }
                             JSONArray dataAray = jsonObject.getJSONArray("data");
