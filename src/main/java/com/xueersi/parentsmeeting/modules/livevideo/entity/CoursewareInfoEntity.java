@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -8,17 +9,21 @@ import java.util.List;
 public class CoursewareInfoEntity {
 
     /** 课件信息列表 */
-    List<LiveCourseware> coursewareList;
+    List<LiveCourseware> coursewareList = new ArrayList<>();
     /** cdn列表 */
-    List<String> cdns;
+    List<String> cdns = new ArrayList<>();
     /** ip列表 */
-    List<String> ips;
+    List<String> ips = new ArrayList<>();
     /** 字体公式资源 */
-    List<String> resources;
+    List<String> resources = new ArrayList<>();
     /** 加载页资源 */
-    List<String> loadpages;
+    List<String> loadpages = new ArrayList<>();
     /** 静态资源 */
-    List<String> staticSources;
+    List<String> staticSources = new ArrayList<>();
+
+    /**Nb 加试 实验预加载资源**/
+    NbCoursewareInfo nbCoursewareInfo;
+
 
     public List<LiveCourseware> getCoursewaresList() {
         return coursewareList;
@@ -204,4 +209,42 @@ public class CoursewareInfoEntity {
             this.templateMd5 = templateMd5;
         }
     }
+
+
+
+    public void setNbCoursewareInfo(NbCoursewareInfo nbCoursewareInfo) {
+        this.nbCoursewareInfo = nbCoursewareInfo;
+    }
+
+    public NbCoursewareInfo getNbCoursewareInfo() {
+        return nbCoursewareInfo;
+    }
+
+    /**
+     * 乐步物理实验资源
+     */
+    public static class NbCoursewareInfo{
+        /**下载地址**/
+        private String resourceUrl;
+        /**文件Md5值**/
+        private String resourceMd5;
+
+        public String getResourceUrl() {
+            return resourceUrl;
+        }
+
+        public void setResourceUrl(String resourceUrl) {
+            this.resourceUrl = resourceUrl;
+        }
+
+        public String getResourceMd5() {
+            return resourceMd5;
+        }
+        public void setResourceMd5(String resourceMd5) {
+            this.resourceMd5 = resourceMd5;
+        }
+    }
+
+
+
 }

@@ -5,10 +5,12 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -17,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -42,6 +45,7 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.NetWorkHelper;
+import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.TimeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
@@ -52,6 +56,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputErr
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
@@ -83,7 +88,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
 import com.xueersi.parentsmeeting.modules.livevideo.experience.bussiness.ExperienceQuitFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
-import com.xueersi.parentsmeeting.modules.livevideo.message.pager.HalfBodyLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.message.pager.HalfBodyExpLiveMsgPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5HalfBodyExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.HalfBodyExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.NBH5ExperienceBll;
@@ -94,7 +99,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.DoPSVideoHandle;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyExpMediaCtrBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.RoundProgressBar;
 
 import org.greenrobot.eventbus.EventBus;
@@ -122,7 +127,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
     private RelativeLayout rlLiveMessageContent;
     LiveMessageBll liveMessageBll;
     private LiveVideoSAConfig liveVideoSAConfig;
-
     /**
      * 横屏聊天信息
      */
@@ -133,7 +137,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
     private Long timer = 0L;
     private static final Object mIjkLock = new Object();
     private WeakHandler mHandler = new WeakHandler(null);
-
 
     /**
      * 视频宽度
@@ -768,7 +771,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
 
         baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(this, mMediaController, this);
         mMediaController.setControllerTop(baseLiveMediaControllerTop);
-        LiveHalfBodyMediaControllerBottom mediaControllerBottom = new LiveHalfBodyMediaControllerBottom(this,
+        LiveHalfBodyExpMediaCtrBottom mediaControllerBottom = new LiveHalfBodyExpMediaCtrBottom(this,
                 mMediaController, this);
         mMediaController.setControllerBottom(mediaControllerBottom, false);
         ivTeacherNotpresent = (ImageView) findViewById(R.id.iv_course_video_teacher_notpresent);
@@ -802,9 +805,10 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
 
     private void initHalfBodyLiveMsgPager(RelativeLayout bottomContent) {
 
-        HalfBodyLiveMessagePager msgPager = new HalfBodyLiveMessagePager(this, questionBll, ums,
+        HalfBodyExpLiveMsgPager msgPager = new HalfBodyExpLiveMsgPager(this, questionBll, ums,
                 liveMediaControllerBottom,
                 liveMessageLandEntities, null);
+
         mLiveMessagePager = msgPager;
         // 关联聊天人数
         msgPager.setPeopleCount(peopleCount);

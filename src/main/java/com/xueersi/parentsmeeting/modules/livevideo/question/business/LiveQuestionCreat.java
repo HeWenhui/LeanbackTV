@@ -10,6 +10,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseLiveQuestionPager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BigQuestionFillInBlankLivePager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.BigQuestionSelectLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionFillInBlankLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionFillInBlankPortLivePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.QuestionMulitSelectLivePager;

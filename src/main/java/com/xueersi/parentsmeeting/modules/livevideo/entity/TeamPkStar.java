@@ -12,6 +12,11 @@ public class TeamPkStar {
    private String teamName;
    private String energy;
 
+    /**
+     * 是否是超级明星
+     */
+   private boolean isSuper;
+
     public String getStuId() {
         return stuId;
     }
@@ -50,5 +55,13 @@ public class TeamPkStar {
 
     public void setEnergy(String energy) {
         this.energy = energy;
+    }
+
+    public void setSuper(boolean aSuper) {
+        isSuper = aSuper;
+    }
+
+    public boolean isSuper() {
+        return isSuper;
     }
 }

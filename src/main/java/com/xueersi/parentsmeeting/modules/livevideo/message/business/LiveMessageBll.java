@@ -37,6 +37,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBl
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +61,9 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 //    private BaseSmallEnglishLiveMessagePager mSmallEnglishLiveMessagePager;
 
     private BaseLiveMediaControllerBottom baseLiveMediaControllerBottom;
+
+    private BaseLiveMediaControllerTop baseLiveMediaControllerTop;
+
     private Activity activity;
     private Handler mHandler = new Handler();
     public QuestionBll questionBll;
@@ -123,6 +127,12 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     public void setLiveMediaControllerBottom(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
         this.baseLiveMediaControllerBottom = baseLiveMediaControllerBottom;
     }
+
+    public void setBaseLiveMediaControllerTop(BaseLiveMediaControllerTop controllerTop) {
+        this.baseLiveMediaControllerTop = controllerTop;
+    }
+
+
 
     public View getView() {
         return rlLiveMessageContent;
@@ -231,12 +241,13 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
             text = mLiveMessagePager.getMessageContentText();
             isRegister = mLiveMessagePager.isRegister();
             isHaveFlowers = mLiveMessagePager.isHaveFlowers();
+            isCloseChat = mLiveMessagePager.isCloseChat();
             mLiveMessagePager.onDestroy();
         }
 
 
         long before = System.currentTimeMillis();
-        HalfBodyLiveMessagePager liveMessagePager = null;
+        BaseLiveMessagePager liveMessagePager = null;
 
         //根据不同的直播类型创建不同皮肤
         if (getInfo != null && getInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
@@ -246,7 +257,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         } else {
             // 理科
             liveMessagePager = new HalfBodyLiveMessagePager(activity, this,
-                    null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+                    null, baseLiveMediaControllerBottom, baseLiveMediaControllerTop,liveMessageLandEntities, null);
         }
 
         mLiveMessagePager = liveMessagePager;
@@ -256,7 +267,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         mLiveMessagePager.setMessageBll(LiveMessageBll.this);
         mLiveMessagePager.setIrcState(mLiveBll);
         mLiveMessagePager.onModeChange(mLiveBll.getMode());
-
+        mLiveMessagePager.closeChat(isCloseChat);
         if (text != null) {
             mLiveMessagePager.setEtMessageContentText(text);
         } else {

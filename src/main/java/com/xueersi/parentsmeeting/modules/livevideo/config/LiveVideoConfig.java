@@ -482,5 +482,11 @@ public class LiveVideoConfig {
 
     public static final String URL_IS_GOLD_MICROPHONE = "https://app.chs.xueersi.com/LiveCourse/setGoldMicrophoneData";
 
+   /**NB加试实验**/
+    public static String URL_NB_LOGIN = " https://live.xueersi.com/science/LiveExam/stuLoginNB";
+    /**上传NB 实验答题结果 **/
+    public static String URL_NB_RESULT_UPLOAD = " https://live.xueersi.com/science/LiveExam/receiveNBResult";
+    /**获取 Nb 试题信息**/
+    public static String URL_NB_COURSE_INFO = "https://live.xueersi.com/science/LiveExam/getNBTestInfo";
 
 }

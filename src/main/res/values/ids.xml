@@ -135,11 +135,16 @@
     <item name="gv_livevideo_question_mulitSelect" type="id" />
     <item name="ll_livevideo_question_content_question" type="id" />
     <item name="rl_livevideo_question_content" type="id" />
+    <item name="ll_livevideo_question_content_bord" type="id" />
     <item name="v_livevideo_question_content_bord" type="id" />
+    <item name="v_livevideo_question_content_bord2" type="id" />
+    <item name="ll_livevideo_question_content_test" type="id" />
     <item name="rl_livevideo_question_fillin_down" type="id" />
     <item name="iv_livevideo_question_fillin_down" type="id" />
     <item name="rl_livevideo_question_fillin_bottom" type="id" />
     <item name="btn_livevideo_question_fillin_submit" type="id" />
+    <item name="tv_livevideo_question_fillin_input_index" type="id" />
+    <item name="iv_livevideo_question_fillin_input_div" type="id" />
     <item name="et_livevideo_question_fillin_input" type="id" />
     <item name="tv_livevideo_question_sele_lable" type="id" />
     <item name="tv_livevideo_question_sele_answer" type="id" />
@@ -911,6 +916,13 @@
 
     <item name="rl_livevideo_halfbody_msgcontent" type="id"/>
     <item name="lv_livevideo_halfbody_common_word" type="id" />
+
+    <item name="btn_livevideo_halbody_msg_state" type="id" />
+
+    <item name="rl_livevideo_halbody_hotword" type="id" />
+    <item name="iv_livevideo_halbody_hotword" type="id" />
+
+
 
     <!--半身直播旁听-->
     <item name="ll_livevideo_auditclass_online_state_container" type="id"/>
