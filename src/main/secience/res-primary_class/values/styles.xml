@@ -1,7 +1,3 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <style name="ProgressBar_live_primary_pk" parent="@android:style/Widget.ProgressBar.Horizontal">
-        <item name="android:progressDrawable">@drawable/layerlst_livevideo_primary_pk_lead_prog</item>
-    </style>
-
 </resources>

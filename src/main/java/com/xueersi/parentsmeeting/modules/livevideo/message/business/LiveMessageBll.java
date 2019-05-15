@@ -26,6 +26,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideo.message.KeyBordAction;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.HalfBodyArtsLiveMsgPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.HalfBodyLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideo.message.pager.HalfBodyPrimaryLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessageLandPager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePortPager;
@@ -246,7 +247,9 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                     null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
         } else {
             // 理科
-            liveMessagePager = new HalfBodyLiveMessagePager(activity, this,
+//            liveMessagePager = new HalfBodyLiveMessagePager(activity, this,
+//                    null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+            liveMessagePager = new HalfBodyPrimaryLiveMessagePager(activity, this,
                     null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
         }
 
