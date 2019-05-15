@@ -373,6 +373,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         mVolume = liveAudioManager.getmVolume();
         int v = (int) (0.3f * mMaxVolume);
         liveAudioManager.setVolume(v);
+        isVolumeResume = false;
     }
 
     private void initWebView() {
@@ -414,6 +415,12 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         teamMemberEntity.gold = goldNum;
         teamMemberEntity.energy = fireNum;
         entities.add(teamMemberEntity);
+
+        if (liveAudioManager != null && !isVolumeResume) {
+            liveAudioManager.setVolume(mVolume);
+            isVolumeResume = true;
+        }
+
         //显示结果页面
         GroupGameMVPMultPager groupGameMVPMultPager = new GroupGameMVPMultPager(mContext, entities);
         groupGameMVPMultPager.setOnPagerClose(new OnPagerClose() {
@@ -618,8 +625,9 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         mWaveView.destroy();
         singleModeAction.onDestory();
 
-        if (liveAudioManager != null) {
+        if (liveAudioManager != null && !isVolumeResume) {
             liveAudioManager.setVolume(mVolume);
+            isVolumeResume = true;
         }
 
         AudioRequest audioRequest = ProxUtil.getProxUtil().get(mContext, AudioRequest.class);
@@ -922,6 +930,9 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                         (pageNum).getText());
                 if (mIse != null) {
                     mIse.cancel();
+                }
+                if (saveVideoFile != null) {
+                    groupGameUpload.uploadWonderMoment(saveVideoFile, content.toString(), 0);
                 }
                 handler.postDelayed(startSpeechRecognizeRunnable, 1000);
                 int time = mAnswersList.get(pageNum).getSingleTime() + 1;
