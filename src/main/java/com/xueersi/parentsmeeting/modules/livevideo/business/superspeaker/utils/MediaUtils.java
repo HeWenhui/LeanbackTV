@@ -31,8 +31,11 @@ public class MediaUtils {
         int callbackVolume();
     }
 
-    /**  */
+    /**
+     *
+     */
     public static class ExtraObservable extends Observable {
+        //videoPath暂时没有使用
         private boolean extractVideoSuccess;
         private boolean extractAudioSuccess;
         /** 计算音量，目前计算有问题，暂时没有使用 */
@@ -73,11 +76,11 @@ public class MediaUtils {
 
             @Override
             public void run() {
-                boolean videoExtraSuccess = videoExtractor(srcVideoPath, outVideoPath);
+//                boolean videoExtraSuccess = videoExtractor(srcVideoPath, outVideoPath);
                 boolean audioExtraSuccess = audioExtractor(srcVideoPath, outAudioPath);
                 if (observable != null) {
                     observable.setExtractAudioSuccess(audioExtraSuccess);
-                    observable.setExtractVideoSuccess(videoExtraSuccess);
+//                    observable.setExtractVideoSuccess(videoExtraSuccess);
                     observable.setVolume(volume);
                     logger.i("volume = " + volume);
                     observable.notifyObservers();

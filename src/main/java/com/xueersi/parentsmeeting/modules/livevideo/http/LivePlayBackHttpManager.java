@@ -663,7 +663,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
      * @param isForce      是否是强制提交（1：是 2：否）
      * @param httpCallBack
      */
-    public void sendSuperSpeakersubmitSpeech(String liveId, String stuCouId, String stuId, String isPlayBack, String testId, String srcType, String isForce, HttpCallBack httpCallBack) {
+    public void sendSuperSpeakersubmitSpeech(String liveId, String stuCouId, String stuId, String isPlayBack, String testId, String srcType, String isForce, String videoDuration, HttpCallBack httpCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("stuCouId", stuCouId);
@@ -672,6 +672,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("testId", testId);
         params.addBodyParam("srcType", srcType);
         params.addBodyParam("isForce", isForce);
+        params.addBodyParam("videoDuration", videoDuration);
         sendPost(LiveVideoConfig.SUPER_SPEAKER_SUBMIT_SPEECH_SHOW, params, httpCallBack);
     }
 
@@ -704,6 +705,25 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
         params.addBodyParam("isUpload", isUpload);
         params.addBodyParam("averVocieDecibel", averVocieDecibel);
         sendPost(LiveVideoConfig.SUPER_SPEAKER_UPLOAD_SPEECH_SHOW, params, httpCallBack);
+    }
+
+
+    /**
+     * app摄像头开启状态
+     *
+     * @param liveId 场次id
+     * @param stuId  学生id
+     * @param testId 互动题所属题目Id
+     */
+    public void sendSuperSpeakerCameraStatus(String liveId, String stuId, String testId, HttpCallBack httpCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("testId", testId);
+//        params.addBodyParam("srcType", srcType);
+//        params.addBodyParam("cameraStatus", cameraStatus);
+        sendPost(LiveVideoConfig.SUPER_SPEAKER_SPEECH_SHOW_CAMERA_STATUS, params, httpCallBack);
+
     }
 
 }

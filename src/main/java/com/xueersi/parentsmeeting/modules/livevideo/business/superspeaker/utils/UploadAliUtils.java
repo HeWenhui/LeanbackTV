@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.xueersi.component.cloud.XesCloudUploadBusiness;
 import com.xueersi.component.cloud.config.CloudDir;
@@ -31,6 +32,9 @@ public class UploadAliUtils {
         business = new XesCloudUploadBusiness(mContext);
 //        final String path = LiveVideoConfig.SUPER_SPEAKER_VIDEO_PATH;
 
+        if (TextUtils.isEmpty(path)) {
+            return;
+        }
         CloudUploadEntity entity = new CloudUploadEntity();
 //        String id = UUID.randomUUID().toString();
 //        entity.setFileId(id);
@@ -38,6 +42,7 @@ public class UploadAliUtils {
         entity.setFilePath(path);
         entity.setType(type);
         file = new File(path);
+
         if (!file.exists()) {
             XESToastUtils.showToast(mContext, "录制失败");
             return;

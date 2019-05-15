@@ -6,6 +6,7 @@ import android.content.ServiceConnection;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -16,10 +17,10 @@ import com.xueersi.component.cloud.listener.XesStsUploadListener;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.StorageUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.UploadAliUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 
+import java.io.File;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -32,7 +33,15 @@ public class UploadVideoService extends Service {
     private CountDownLatch latch = new CountDownLatch(2);
     private UploadAliUtils uploadAliUtils;
     private AtomicInteger uploadVideoNum = new AtomicInteger(3);
-    private XesStsUploadListener videoUploadListener = new XesStsUploadListener() {
+    private XesStsUploadListener videoUploadListener;
+
+    private class VideoUploadListener implements XesStsUploadListener {
+        String videoLocalUrl;
+
+        public VideoUploadListener(String videoLocalUrl) {
+            this.videoLocalUrl = videoLocalUrl;
+        }
+
         @Override
         public void onProgress(XesCloudResult result, int percent) {
 
@@ -62,12 +71,18 @@ public class UploadVideoService extends Service {
             //重试uploadVideoNum次
             if (uploadVideoNum.get() > 0) {
                 uploadVideoNum.getAndDecrement();
-                uploadVideo();
+                uploadVideo(videoLocalUrl);
             }
         }
-    };
+    }
 
-    private XesStsUploadListener audioUploadListener = new XesStsUploadListener() {
+    private class AudioUploadListener implements XesStsUploadListener {
+        private String audioLocalUrl;
+
+        public AudioUploadListener(String audioLocalUrl) {
+            this.audioLocalUrl = audioLocalUrl;
+        }
+
         @Override
         public void onProgress(XesCloudResult result, int percent) {
             logger.i("audio upload percent:" + percent);
@@ -76,6 +91,7 @@ public class UploadVideoService extends Service {
         @Override
         public void onSuccess(XesCloudResult result) {
             audioUrl = result.getHttpPath();
+            deleteAudioFile(audioLocalUrl);
             logger.i("audio upload succes " + audioUrl);
             XESToastUtils.showToast(UploadVideoService.this, "上传音频成功");
             latch.countDown();
@@ -92,7 +108,18 @@ public class UploadVideoService extends Service {
             audioUrl = "";
             uploadSuccess();
         }
-    };
+
+        private void deleteAudioFile(String url) {
+            if (TextUtils.isEmpty(url)) {
+                File file = new File(url);
+                if (file != null && file.exists()) {
+                    file.delete();
+                }
+            }
+        }
+    }
+
+    private XesStsUploadListener audioUploadListener;
 
     public interface uploadCallback {
         void uploadSuccess(String videoUrl, String audioUrl);
@@ -115,14 +142,14 @@ public class UploadVideoService extends Service {
         }
     }
 
-    private void uploadVideo() {
-        uploadAliUtils.uploadFile(StorageUtils.imageUrl,
+    private void uploadVideo(String videoUrl) {
+        uploadAliUtils.uploadFile(videoUrl,
                 AppConfig.DEBUG ? CloudDir.CLOUD_TEST : CloudDir.LIVE_SUPER_SPEAKER,
                 XesCloudConfig.UPLOAD_OTHER, videoUploadListener);
     }
 
-    private void uploadAudio() {
-        uploadAliUtils.uploadFile(StorageUtils.audioUrl,
+    private void uploadAudio(String audioUrl) {
+        uploadAliUtils.uploadFile(audioUrl,
                 AppConfig.DEBUG ? CloudDir.CLOUD_TEST : CloudDir.LIVE_SUPER_SPEAKER,
                 XesCloudConfig.UPLOAD_OTHER, audioUploadListener);
     }
@@ -131,13 +158,13 @@ public class UploadVideoService extends Service {
     public void onCreate() {
         logger.i("调用onCreate");
         super.onCreate();
-        latch = new CountDownLatch(2);
         uploadAliUtils = new UploadAliUtils(this);
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         logger.i("调用onStartCommand");
+        performUploadUrl(intent);
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -152,38 +179,27 @@ public class UploadVideoService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
         logger.i("调用onBind");
-        liveId = intent.getStringExtra("liveId");
-        courseWareId = intent.getStringExtra("courseWareId");
-        uploadVideo();
-        uploadAudio();
-
+//        performUploadUrl(intent);
         return new UploadBinder();
     }
 
+    private void performUploadUrl(Intent intent) {
+        latch = new CountDownLatch(2);
+        liveId = intent.getStringExtra("liveId");
+        courseWareId = intent.getStringExtra("courseWareId");
+        String audioLocalUrl = intent.getStringExtra("audioRemoteUrl");
+        String videoLocalUrl = intent.getStringExtra("videoRemoteUrl");
+        audioUploadListener = new AudioUploadListener(audioLocalUrl);
+        videoUploadListener = new VideoUploadListener(videoLocalUrl);
+        uploadVideo(videoLocalUrl);
+        uploadAudio(audioLocalUrl);
+    }
+
     public class UploadBinder extends Binder {
-
-//        private String audioUrl;
-
-//        private String videoUrl;
 
         public UploadVideoService getService() {
             return UploadVideoService.this;
         }
 
-//        public String getVideoUrl() {
-//            return videoUrl;
-//        }
-//
-//        public void setVideoUrl(String videoUrl) {
-//            this.videoUrl = videoUrl;
-//        }
-//
-//        public String getAudioUrl() {
-//            return audioUrl;
-//        }
-//
-//        public void setAudioUrl(String audioUrl) {
-//            this.audioUrl = audioUrl;
-//        }
     }
 }

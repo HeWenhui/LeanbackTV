@@ -2193,13 +2193,13 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param srcType      互动题所属题目类型
      * @param cameraStatus 摄像头开启状态（1：已开启 2：未开启）
      */
-    public void sendSuperSpeakerCameraStatus(String liveId, String stuId, String testId, String srcType, String cameraStatus, HttpCallBack httpCallBack) {
+    public void sendSuperSpeakerCameraStatus(String liveId, String stuId, String testId, HttpCallBack httpCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("testId", testId);
-        params.addBodyParam("srcType", srcType);
-        params.addBodyParam("cameraStatus", cameraStatus);
+//        params.addBodyParam("srcType", srcType);
+//        params.addBodyParam("cameraStatus", cameraStatus);
         sendPost(LiveVideoConfig.SUPER_SPEAKER_SPEECH_SHOW_CAMERA_STATUS, params, httpCallBack);
 
     }

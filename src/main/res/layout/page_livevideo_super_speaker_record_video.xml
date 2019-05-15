@@ -83,21 +83,33 @@
         android:id="@id/tv_livevideo_super_speaker_record_video_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="开始录制"
+        android:text="@string/super_speaker_camera_record_start_tip"
         android:textColor="@color/COLOR_FFFFFF"
         android:textSize="15dp"
         app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_super_speaker_record_video_start"
         app:layout_constraintRight_toRightOf="@id/iv_livevideo_super_speaker_record_video_start"
         app:layout_constraintTop_toBottomOf="@id/iv_livevideo_super_speaker_record_video_start" />
 
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@id/tv_livevideo_super_speaker_record_video_landscape_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:text="@string/super_speaker_camera_record_open_landscape"
+        android:textColor="@color/COLOR_FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
     <android.support.constraint.Group
         android:id="@id/group_livevideo_super_speaker_record_video_start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+
         app:constraint_referenced_ids="iv_livevideo_super_speaker_record_video_start,
         tv_livevideo_super_speaker_record_video_start,
-        include_livevideo_super_speaker_record_video_record_time" />
+        include_livevideo_super_speaker_record_video_record_time,
+        tv_livevideo_super_speaker_record_video_landscape_tip" />
 
     <ImageView
         android:id="@id/iv_livevideo_super_speaker_record_video_submit"
@@ -125,7 +137,7 @@
         android:id="@id/group_livevideo_super_speaker_record_video_submit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-
+        android:visibility="gone"
         app:constraint_referenced_ids="iv_livevideo_super_speaker_record_video_submit,
         tv_livevideo_super_speaker_record_video_submit" />
 

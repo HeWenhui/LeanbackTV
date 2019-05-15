@@ -39,14 +39,16 @@ public interface ISuperSpeakerContract {
          */
         void submitSpeechShow(String isForce, String videoDuration);
 
-//        void removeView(View view);
+        //        void removeView(View view);
+        void sendSuperSpeakerCameraStatus();
 
         void stopRecord();
 
         void uploadSucess(String videoUrl, String audioUrl, String averVocieDecibel);
 //        void updateNum(String num);
 
-//        void timeUp();
+        //        void timeUp();
+        void showAnima();
     }
 
     interface ISuperSpeakerBridge {
@@ -70,6 +72,8 @@ public interface ISuperSpeakerContract {
         void resumeVideo();
 
         boolean containsView();
+
+        void sendSuperSpeakerCameraStatus();
 
     }
 

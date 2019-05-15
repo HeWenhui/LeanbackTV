@@ -22,6 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.widget
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 
+import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -293,7 +294,11 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
 
     /** 删除旧的文件夹 */
     private void deleteOldDir() {
-
+        File file = new File(StorageUtils.videoUrl);
+        if (!file.exists()) {
+            return;
+        }
+        file.delete();
     }
 
     @Override
@@ -361,15 +366,15 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
         customVideoController2.startPlayVideo(StorageUtils.videoUrl, 0);
         MediaUtils mediaUtils = new MediaUtils();
         String srcPath = StorageUtils.videoUrl;
-        StorageUtils.imageUrl = LiveVideoConfig.SUPER_SPEAKER_VIDEO_PATH + liveId + "_" + courseWareId + "video.mp4";
+//        StorageUtils.imageUrl = LiveVideoConfig.SUPER_SPEAKER_VIDEO_PATH + liveId + "_" + courseWareId + "video.mp4";
         StorageUtils.audioUrl = LiveVideoConfig.SUPER_SPEAKER_VIDEO_PATH + liveId + "_" + courseWareId + "audio.mp3";
-        logger.i(StorageUtils.imageUrl + " " + StorageUtils.audioUrl);
+        logger.i(" audio url:" + StorageUtils.audioUrl);
 
         extraObservable = new MediaUtils.ExtraObservable();
 
         extraObservable.addObserver(new ExtractObserber());
 
-        mediaUtils.process(srcPath, StorageUtils.imageUrl, StorageUtils.audioUrl, extraObservable);
+        mediaUtils.process(srcPath, StorageUtils.videoUrl, StorageUtils.audioUrl, extraObservable);
     }
 
     private MediaUtils.ExtraObservable extraObservable;
@@ -404,6 +409,9 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
      */
     protected void performStartRecordVideo() {
         initVar();
+        if (bridge != null) {
+            bridge.sendSuperSpeakerCameraStatus();
+        }
         if (sfvVideo.getVisibility() != View.VISIBLE) {
             logger.i("set surfaceView visible");
             sfvVideo.setVisibility(View.VISIBLE);

@@ -140,6 +140,18 @@ public class LiveVideoBll implements VPlayerListenerReg {
         mPlayStatistics.remove(vPlayerListener);
     }
 
+    @Override
+    public void release() {
+        stopPlay();
+    }
+
+    @Override
+    public void playVideo() {
+        if (MediaPlayer.getIsNewIJK()) {
+            psRePlay(false);
+        }
+    }
+
     public void setVideoAction(VideoAction mVideoAction) {
         this.mVideoAction = mVideoAction;
     }

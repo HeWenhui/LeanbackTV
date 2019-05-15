@@ -11,4 +11,8 @@
     <string name="super_speaker_back_camera_tip">确定退出超级演讲秀吗?</string>
     <string name="super_speaker_back_camera_content_tip">已录制的内容将无法保存</string>
     <string name="super_speaker_back_camera_rerecord_title_tip">确定要重录吗？</string>
+    <string name="super_speaker_camera_record_start_tip">开始录制</string>
+    <string name="super_speaker_camera_record_open_landscape">请保持横向拍摄哦</string>
+    <string name="super_speaker_back_has_send">你已提交过视频</string>
+    <string name="super_speaker_back_upload_in_background">视频后台上传中</string>
 </resources>

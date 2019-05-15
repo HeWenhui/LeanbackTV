@@ -5,23 +5,13 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.os.IBinder;
-import android.os.Looper;
 import android.support.annotation.UiThread;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.xueersi.common.config.AppConfig;
-import com.xueersi.common.permission.XesPermission;
-import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.component.cloud.config.CloudDir;
-import com.xueersi.component.cloud.config.XesCloudConfig;
-import com.xueersi.component.cloud.entity.XesCloudResult;
-import com.xueersi.component.cloud.listener.XesStsUploadListener;
-import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract;
@@ -29,13 +19,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.Upload
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page.SuperSpeakerPermissionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page.SuperSpeakerRedPackagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.StorageUtils;
-import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.UploadAliUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 
 import java.io.IOException;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBridge, ISuperSpeakerContract.IRedPackagePresenter {
     private Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
@@ -77,141 +63,136 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
             layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         }
         //如果有录音权限
-        if (isHasRecordPermission()) {
-            logger.i("has record permission");
-            parentView.addView(iView.getView(), layoutParams);
-        } else {
-            logger.i("no record permission");
-            final ViewGroup.LayoutParams finalLayoutParams = layoutParams;
-            boolean have = XesPermission.checkPermission(mContext, new LiveActivityPermissionCallback() {
-                        @Override
-                        public void onFinish() {
-
-                        }
-
-                        @Override
-                        public void onDeny(String permission, int position) {
-
-                        }
-
-                        @Override
-                        public void onGuarantee(String permission, int position) {
-                            parentView.addView(iView.getView(), finalLayoutParams);
-                        }
-                    },
-                    PermissionConfig.PERMISSION_CODE_CAMERA, PermissionConfig.PERMISSION_CODE_AUDIO);
-
-        }
+//        if (isHasRecordPermission()) {
+        logger.i("has record permission");
+        parentView.addView(iView.getView(), layoutParams);
+//        }
+//        else {
+//            logger.i("no record permission");
+//            final ViewGroup.LayoutParams finalLayoutParams = layoutParams;
+//            boolean have = XesPermission.checkPermission(mContext, new LiveActivityPermissionCallback() {
+//                        @Override
+//                        public void onFinish() {
+//
+//                        }
+//
+//                        @Override
+//                        public void onDeny(String permission, int position) {
+//
+//                        }
+//
+//                        @Override
+//                        public void onGuarantee(String permission, int position) {
+//                            parentView.addView(iView.getView(), finalLayoutParams);
+//                        }
+//                    },
+//                    PermissionConfig.PERMISSION_CODE_CAMERA, PermissionConfig.PERMISSION_CODE_AUDIO);
+//
+//        }
 
     }
 
-    private XesStsUploadListener videoUploadListener = new XesStsUploadListener() {
-        @Override
-        public void onProgress(XesCloudResult result, int percent) {
-
-            logger.i("video upload percent:" + percent);
-        }
-
-        @Override
-        public void onSuccess(XesCloudResult result) {
-            videoUrl = result.getHttpPath();
-            logger.i("video upload succes " + videoUrl);
-            XESToastUtils.showToast(mContext, "视频上传成功");
+    //    private XesStsUploadListener videoUploadListener = new XesStsUploadListener() {
+//        @Override
+//        public void onProgress(XesCloudResult result, int percent) {
+//
+//            logger.i("video upload percent:" + percent);
+//        }
+//
+//        @Override
+//        public void onSuccess(XesCloudResult result) {
+//            videoRemoteUrl = result.getHttpPath();
+//            logger.i("video upload succes " + videoRemoteUrl);
+//            XESToastUtils.showToast(mContext, "视频上传成功");
+////            uploadSuccess();
+//
+//            ShareDataManager.getInstance().put(
+//                    ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + liveId + "_" + courseWareId,
+//                    1,
+//                    ShareDataManager.SHAREDATA_NOT_CLEAR,
+//                    false);
+//            if (Looper.getMainLooper() == Looper.myLooper()) {
+//                uploadSuccess();
+//            } else {
+//                latch.countDown();
+//            }
+//        }
+//
+//        @Override
+//        public void onError(XesCloudResult result) {
+////            videoRemoteUrl = "";
+////            uploadSuccess();
+//            logger.i("video upload fail");
+//            //重试uploadVideoNum次
+//            if (uploadVideoNum.get() > 0) {
+//                uploadVideoNum.getAndDecrement();
+//                uploadVideo();
+//            }
+//        }
+//    };
+//    private AtomicInteger uploadVideoNum = new AtomicInteger(3);
+    private String audioRemoteUrl, videoRemoteUrl;
+//    private XesStsUploadListener audioUploadListener = new XesStsUploadListener() {
+//        @Override
+//        public void onProgress(XesCloudResult result, int percent) {
+//            logger.i("audio upload percent:" + percent);
+//
+//        }
+//
+//        @Override
+//        public void onSuccess(XesCloudResult result) {
+//            audioRemoteUrl = result.getHttpPath();
+//            logger.i("audio upload succes " + audioRemoteUrl);
+//            XESToastUtils.showToast(mContext, "上传音频成功");
+//            if (Looper.getMainLooper() == Looper.myLooper()) {
+//                uploadSuccess();
+//            } else {
+//                latch.countDown();
+//                try {
+//                    latch.await();
+//                    uploadSuccess();
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//
+//        @Override
+//        public void onError(XesCloudResult result) {
+//            audioRemoteUrl = "";
 //            uploadSuccess();
+//        }
+//    };
+//    private CountDownLatch latch;
 
-            ShareDataManager.getInstance().put(
-                    ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + liveId + "_" + courseWareId,
-                    1,
-                    ShareDataManager.SHAREDATA_NOT_CLEAR,
-                    false);
-            if (Looper.getMainLooper() == Looper.myLooper()) {
-                uploadSuccess();
-            } else {
-                latch.countDown();
-            }
-        }
-
-        @Override
-        public void onError(XesCloudResult result) {
-//            videoUrl = "";
-//            uploadSuccess();
-            logger.i("video upload fail");
-            //重试uploadVideoNum次
-            if (uploadVideoNum.get() > 0) {
-                uploadVideoNum.getAndDecrement();
-                uploadVideo();
-            }
-        }
-    };
-    private AtomicInteger uploadVideoNum = new AtomicInteger(3);
-    private String audioUrl, videoUrl;
-    private XesStsUploadListener audioUploadListener = new XesStsUploadListener() {
-        @Override
-        public void onProgress(XesCloudResult result, int percent) {
-            logger.i("audio upload percent:" + percent);
-
-        }
-
-        @Override
-        public void onSuccess(XesCloudResult result) {
-            audioUrl = result.getHttpPath();
-            logger.i("audio upload succes " + audioUrl);
-            XESToastUtils.showToast(mContext, "上传音频成功");
-            if (Looper.getMainLooper() == Looper.myLooper()) {
-                uploadSuccess();
-            } else {
-                latch.countDown();
-                try {
-                    latch.await();
-                    uploadSuccess();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        @Override
-        public void onError(XesCloudResult result) {
-            audioUrl = "";
-            uploadSuccess();
-        }
-    };
-    private CountDownLatch latch;
-
-    private synchronized void uploadSuccess() {
-        //允许audioUrl为""，""代表成功
-        if (audioUrl == null || videoUrl == null) {
-            return;
-        }
-        if (iCameraPresenter != null) {
-            iCameraPresenter.uploadSucess(videoUrl, audioUrl, voiceDecibel);
-        }
-    }
-
-    private UploadAliUtils uploadAliUtils;
+//    private UploadAliUtils uploadAliUtils;
 
     private String voiceDecibel;
+    private Intent serViceIntent;
 
     @Override
     public void submitSpeechShow(String isForce, String averVocieDecibel) {
-        long videoDuration = getVideoDuration();
+        long videoDuration = getVideoDuration() / 1000l + 1;
         logger.i("averVocieDecibel = " + averVocieDecibel + "videoDuration =" + videoDuration);
 
-        uploadAliUtils = new UploadAliUtils(mContext);
+//        uploadAliUtils = new UploadAliUtils(mContext);
 
         ShareDataManager.getInstance().put(
                 ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + liveId + "_" + courseWareId,
                 1,
                 ShareDataManager.SHAREDATA_NOT_CLEAR,
                 false);
-        latch = new CountDownLatch(2);
+//        latch = new CountDownLatch(2);
         this.voiceDecibel = averVocieDecibel;
 
-        Intent intent = new Intent(mContext, UploadVideoService.class);
-        intent.putExtra("liveId", liveId);
-        intent.putExtra("courseWareId", courseWareId);
+        serViceIntent = new Intent(mContext, UploadVideoService.class);
+        serViceIntent.putExtra("liveId", liveId);
+        serViceIntent.putExtra("courseWareId", courseWareId);
+        serViceIntent.putExtra("videoRemoteUrl", StorageUtils.videoUrl);
+        serViceIntent.putExtra("audioRemoteUrl", StorageUtils.audioUrl);
 //        mContext.startService(intent);
-        mContext.bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE);
+        mContext.startService(serViceIntent);
+        mContext.bindService(serViceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
         if (iCameraPresenter != null) {
             iCameraPresenter.submitSpeechShow(isForce, String.valueOf(videoDuration));
         }
@@ -219,6 +200,13 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
 //        uploadVideo();
 //        uploadAudio();
 
+    }
+
+    @Override
+    public void sendSuperSpeakerCameraStatus() {
+        if (iCameraPresenter != null) {
+            iCameraPresenter.sendSuperSpeakerCameraStatus();
+        }
     }
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
@@ -231,8 +219,8 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
                 mService.setCallBack(new UploadVideoService.uploadCallback() {
                     @Override
                     public void uploadSuccess(String videoUrl, String audioUrl) {
-                        SuperSpeakerBridge.this.videoUrl = videoUrl;
-                        SuperSpeakerBridge.this.audioUrl = audioUrl;
+                        SuperSpeakerBridge.this.videoRemoteUrl = videoUrl;
+                        SuperSpeakerBridge.this.audioRemoteUrl = audioUrl;
                         SuperSpeakerBridge.this.uploadSuccess();
                     }
                 });
@@ -243,7 +231,22 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
         public void onServiceDisconnected(ComponentName name) {
             mService = null;
         }
+
+
     };
+
+    private void uploadSuccess() {
+        //允许audioUrl为""，""代表成功
+        if (audioRemoteUrl == null || videoRemoteUrl == null) {
+            return;
+        }
+        if (iCameraPresenter != null) {
+            logger.i("videoRemoteUrl:" + videoRemoteUrl +
+                    " audioRemoteUrl:" + audioRemoteUrl +
+                    " voiceDecibel:" + voiceDecibel);
+            iCameraPresenter.uploadSucess(videoRemoteUrl, audioRemoteUrl, voiceDecibel);
+        }
+    }
 
     private long getVideoDuration() {
         MediaPlayer mediaPlayer = new MediaPlayer();
@@ -256,10 +259,10 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
         return mediaPlayer.getDuration();
     }
 
-    private void uploadVideo() {
-        uploadAliUtils.uploadFile(StorageUtils.imageUrl,
-                AppConfig.DEBUG ? CloudDir.CLOUD_TEST : CloudDir.LIVE_SUPER_SPEAKER,
-                XesCloudConfig.UPLOAD_OTHER, videoUploadListener);
+//    private void uploadVideo() {
+//        uploadAliUtils.uploadFile(StorageUtils.videoRemoteUrl,
+//                AppConfig.DEBUG ? CloudDir.CLOUD_TEST : CloudDir.LIVE_SUPER_SPEAKER,
+//                XesCloudConfig.UPLOAD_OTHER, videoUploadListener);
 
 //        Observable.create(new ObservableOnSubscribe<XesStsUploadListener>() {
 //            @Override
@@ -279,18 +282,23 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
 //
 //                    }
 //                });
-    }
+//    }
 
-    private void uploadAudio() {
-        uploadAliUtils.uploadFile(StorageUtils.audioUrl,
-                AppConfig.DEBUG ? CloudDir.CLOUD_TEST : CloudDir.LIVE_SUPER_SPEAKER,
-                XesCloudConfig.UPLOAD_OTHER, audioUploadListener);
-    }
+//    private void uploadAudio() {
+//        uploadAliUtils.uploadFile(StorageUtils.audioRemoteUrl,
+//                AppConfig.DEBUG ? CloudDir.CLOUD_TEST : CloudDir.LIVE_SUPER_SPEAKER,
+//                XesCloudConfig.UPLOAD_OTHER, audioUploadListener);
+//    }
 
     @Override
     public void removeView(View view) {
         if (view.getParent() == parentView) {
             parentView.removeView(view);
+//            mContext.unbindService(serviceConnection);
+            mContext.stopService(serViceIntent);
+        }
+        if (iCameraPresenter != null) {
+            iCameraPresenter.showAnima();
         }
     }
 
@@ -313,12 +321,12 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
      *
      * @return
      */
-    private boolean isHasRecordPermission() {
-        PackageManager pkm = mContext.getPackageManager();
-        return (PackageManager.PERMISSION_GRANTED == pkm.checkPermission("android.permission.MODIFY_AUDIO_SETTINGS", mContext.getPackageName())
-                && PackageManager.PERMISSION_GRANTED == pkm.checkPermission("android.permission.RECORD_AUDIO", mContext.getPackageName())
-                && PackageManager.PERMISSION_GRANTED == pkm.checkPermission("android.permission.CAMERA", mContext.getPackageName()));
-    }
+//    private boolean isHasRecordPermission() {
+//        PackageManager pkm = mContext.getPackageManager();
+//        return (PackageManager.PERMISSION_GRANTED == pkm.checkPermission("android.permission.MODIFY_AUDIO_SETTINGS", mContext.getPackageName())
+//                && PackageManager.PERMISSION_GRANTED == pkm.checkPermission("android.permission.RECORD_AUDIO", mContext.getPackageName())
+//                && PackageManager.PERMISSION_GRANTED == pkm.checkPermission("android.permission.CAMERA", mContext.getPackageName()));
+//    }
 
     private ISuperSpeakerContract.IRedPackageView redPackageView;
 
