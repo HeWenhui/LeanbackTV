@@ -1672,6 +1672,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 if (rightNum > maxRight) {
                     maxRight = rightNum;
                     maxCleanUpEntity = cleanUpEntity;
+                } else if (rightNum != 0 && rightNum == maxRight) {
+                    if (cleanUpEntity.teamMemberEntity.isMy) {
+                        maxCleanUpEntity = cleanUpEntity;
+                    }
                 }
             }
             if (maxCleanUpEntity != null) {
@@ -1741,6 +1745,10 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 if (rightNum > maxRight) {
                     maxRight = rightNum;
                     maxVidooCannonEntity = vidooCannonEntity;
+                } else if (rightNum != 0 && rightNum == maxRight) {
+                    if (vidooCannonEntity.teamMemberEntity.isMy) {
+                        maxVidooCannonEntity = vidooCannonEntity;
+                    }
                 }
             }
             if (maxVidooCannonEntity != null) {
