@@ -21,6 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5C
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.ChineseAiSubjectiveCoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.CoursewareNativePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.page.EnglishH5CoursewareX5Pager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.page.SpeakChineseCoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -113,8 +114,16 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
 //                        englishH5Entity.setDynamicurl(liveGetInfo.getGetCourseWareHtmlNew() + ScienceStaticConfig.THIS_VERSION_HTML + "/index.html");
 //                    }
                         englishH5Entity.setDynamicurl("https://live.xueersi.com/science/LiveExam/getCourseWareTestHtml");
+//                        if (englishH5Entity.getNewEnglishH5()) {
+//                            CoursewareNativePager h5CoursewarePager = new CoursewareNativePager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
+//                                    videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, mAnswerRankBll == null ? "0"
+//                                    : mAnswerRankBll.getIsShow(), isArts, allowTeamPk);
+//                            h5CoursewarePager.setLivePagerBack(livePagerBack);
+//                            return h5CoursewarePager;
+//                        }
+//                        englishH5Entity.setDynamicurl("https://live.chs.xueersi.com/LiveExam/getCourseWareTests");
                         if (englishH5Entity.getNewEnglishH5()) {
-                            CoursewareNativePager h5CoursewarePager = new CoursewareNativePager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
+                            SpeakChineseCoursewarePager h5CoursewarePager = new SpeakChineseCoursewarePager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
                                     videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, mAnswerRankBll == null ? "0"
                                     : mAnswerRankBll.getIsShow(), isArts, allowTeamPk);
                             h5CoursewarePager.setLivePagerBack(livePagerBack);
