@@ -15,4 +15,7 @@
     <string name="super_speaker_camera_record_open_landscape">请保持横向拍摄哦</string>
     <string name="super_speaker_back_has_send">你已提交过视频</string>
     <string name="super_speaker_back_upload_in_background">视频后台上传中</string>
+    <string name="super_speaker_time_up_not_record_finish_tip">时间到，视频没有完成哦</string>
+    <string name="super_speaker_time_up_record_finish_tip_title">时间到，是否提交已录视频？</string>
+    <string name="super_speaker_time_up_record_finish_tip_content">提交视频可获得金币哦</string>
 </resources>

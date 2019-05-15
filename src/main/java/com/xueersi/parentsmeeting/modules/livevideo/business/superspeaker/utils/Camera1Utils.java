@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils;
 
 import android.hardware.Camera;
+import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.os.Handler;
 import android.os.Looper;
@@ -23,12 +24,12 @@ public class Camera1Utils implements IRecordVideoView {
     Camera.Size cameraSize = null;
     private MediaRecorder mediarecorder;// 录制视频的类
 
-    private SurfaceView mSurfaceView;
+//    private SurfaceView mSurfaceView;
 
     private SurfaceHolder surfaceHolder;
 
     public Camera1Utils(SurfaceView mSurfaceView, SurfaceHolder.Callback2 callback2) {
-        this.mSurfaceView = mSurfaceView;
+//        this.mSurfaceView = mSurfaceView;
         surfaceHolder = mSurfaceView.getHolder();
         // setType必须设置，要不出错.
         surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
@@ -42,11 +43,13 @@ public class Camera1Utils implements IRecordVideoView {
     /** 视频播放地址路径 */
     private String videoPath;
 
+    private boolean isFacingBack;
+
     public void initCamera(boolean isFacingBack, int width, int height, String videoPath) {
         if (camera != null) {
             releaseCamera();
         }
-
+        this.isFacingBack = isFacingBack;
 //        camera.setPreviewCallbackWithBuffer(new Camera.PreviewCallback() {
 //            @Override
 //            public void onPreviewFrame(byte[] data, Camera camera) {
@@ -63,25 +66,30 @@ public class Camera1Utils implements IRecordVideoView {
         int num = Camera.getNumberOfCameras();
         this.videoPath = videoPath;
         logger.d("NUM:" + num);
+
+        Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
+        int numberOfCameras = Camera.getNumberOfCameras();
+        for (int i = 0; i < numberOfCameras; i++) {
+            Camera.getCameraInfo(i, cameraInfo);
+            if (cameraInfo.facing == (isFacingBack ? Camera.CameraInfo.CAMERA_FACING_BACK : Camera.CameraInfo.CAMERA_FACING_FRONT)) {
+                camera = Camera.open(cameraInfo.facing);
+            }
+        }
+
 //        Camera camera = Camera.open(MediaRecorder.VideoSource.CAMERA);
-        camera = Camera.open(isFacingBack ? Camera.CameraInfo.CAMERA_FACING_BACK : Camera.CameraInfo.CAMERA_FACING_FRONT);
+//        camera = Camera.open(isFacingBack ? Camera.CameraInfo.CAMERA_FACING_BACK : Camera.CameraInfo.CAMERA_FACING_FRONT);
 
         try {
             camera.setPreviewDisplay(surfaceHolder);
-            camera.setPreviewCallback(new Camera.PreviewCallback() {
-                @Override
-                public void onPreviewFrame(byte[] data, Camera camera) {
-
-                }
-            });
         } catch (IOException e) {
             e.printStackTrace();
         }
         Camera.Parameters parameters = camera.getParameters();
-        parameters.getSupportedVideoSizes();
+        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
         cameraSize = getFitSize(parameters.getSupportedVideoSizes(), width, height);
         logger.i("cameraSize.height = " + cameraSize.height + " cameraSize.weight =" + cameraSize.width);
         camera.startPreview();
+
         // Log.d(TAG,"size:height="+cameraSize.height+"   width="+cameraSize.width);
 
         // int num = Camera.getNumberOfCameras();
@@ -91,15 +99,25 @@ public class Camera1Utils implements IRecordVideoView {
     // FIXME: 2019/5/14
     //https://bugly.qq.com/v2/crash-reporting/crashes/a0df5ed682/1120?pid=1  1120
     public void releaseCamera() {
-        if (camera != null) {
-            //停掉原来摄像头的预览
-            camera.stopPreview();
-            //移除回调
-            camera.setPreviewCallback(null);
-            //释放资源
-            camera.release();
-            //取消原来摄像头
-            camera = null;
+        try {
+
+
+            if (camera != null) {
+                //停掉原来摄像头的预览
+                camera.stopPreview();
+                //移除回调
+                camera.setPreviewCallback(null);
+                //释放资源
+                camera.release();
+                //取消原来摄像头
+                camera = null;
+            }
+//            if (mediarecorder != null) {
+//                mediarecorder.stop();
+//                mediarecorder.release();
+//            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -120,34 +138,55 @@ public class Camera1Utils implements IRecordVideoView {
 
     public static final int MAX_LENGTH = 1000 * 60 * 10;// 最大录音时长1000*60*10;
 
+    /**
+     * 通过系统的CamcorderProfile设置MediaRecorder的录制参数
+     * 首先查看系统是否包含对应质量的封装参数，然后再设置，根据具体需要的视频质量进行判断和设置
+     */
+    private void setProfile() {
+        CamcorderProfile profile = null;
+        if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_1080P)) {
+            profile = CamcorderProfile.get(CamcorderProfile.QUALITY_1080P);
+        } else if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_720P)) {
+            profile = CamcorderProfile.get(CamcorderProfile.QUALITY_720P);
+        } else if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_480P)) {
+            profile = CamcorderProfile.get(CamcorderProfile.QUALITY_480P);
+        }
+        if (profile != null) {
+            mediarecorder.setProfile(profile);
+        }
+    }
+
     @Override
     public boolean startRecordVideo() {
+//        camera.release();
         volum = volumSum = volumNum = 0;
         mediarecorder = new MediaRecorder();// 创建mediarecorder对象
-
+//        mMediaRecorder.setCamera(mCamera);
+        camera.unlock();
+        if (!isFacingBack) {
+            mediarecorder.setCamera(camera);
+        }
         // 设置录制视频源为Camera(相机)
+//        mediarecorder.setOrientationHint(270);
         mediarecorder.setVideoSource(MediaRecorder.VideoSource.CAMERA);
-//                // 音频源率
+        // 音频源率
         mediarecorder.setAudioSource(MediaRecorder.AudioSource.DEFAULT);
         // 设置录制完成后视频的封装格式THREE_GPP为3gp.MPEG_4为mp4
-        mediarecorder
-                .setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
+        mediarecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
         // 音频格式
         mediarecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AAC);
-
         mediarecorder.setAudioSamplingRate(16000);
         // 设置录制的视频编码h263 h264
         mediarecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
-
-
         // 视频码率
-        mediarecorder.setVideoEncodingBitRate((int) (1080 * 1920 * 0.5f));
+        mediarecorder.setVideoEncodingBitRate((int) (1920 * 1080 * 0.5f));
 
         // 设置视频录制的分辨率。必须放在设置编码和格式的后面，否则报错
         mediarecorder.setVideoSize(cameraSize.width, cameraSize.height);
         // 设置录制的视频帧率。必须放在设置编码和格式的后面，否则报错
         // mediarecorder.setVideoFrameRate(20);
         mediarecorder.setPreviewDisplay(surfaceHolder.getSurface());
+
         String path = videoPath;
         File file = new File(path);
         if (file != null && !file.getParentFile().exists()) {
@@ -167,8 +206,11 @@ public class Camera1Utils implements IRecordVideoView {
         // 设置视频文件输出的路径
         mediarecorder.setOutputFile(path);
         try {
+//            camera.lock();
+//            camera.unlock();
             // 准备录制
             mediarecorder.prepare();
+
             // 开始录制
             mediarecorder.start();
             isStop.set(false);
@@ -189,6 +231,7 @@ public class Camera1Utils implements IRecordVideoView {
         return true;
     }
 
+    // FIXME: 2019/5/16 如何让mediaRecord和camera同时释放
     @Override
     public void stopRecordVideo() {
 
@@ -198,15 +241,18 @@ public class Camera1Utils implements IRecordVideoView {
             try {
                 mediarecorder.stop();
                 volum = volumSum / volumNum;
+                // 释放资源
+
+//                mediarecorder.release();
+//                releaseCamera();
+                mediarecorder = null;
             } catch (Exception e) {
                 logger.e(e.toString());
+                e.printStackTrace();
             }
-
-            // 释放资源
-            mediarecorder.release();
-            mediarecorder = null;
 //            EventBus.getDefault().post(new PlaybackVideoEvent.OnDemoRecordCommpleteEvent());
         }
+
 
     }
 
@@ -220,11 +266,11 @@ public class Camera1Utils implements IRecordVideoView {
     private int SPACE = 100;// 间隔取样时间
 
     private AtomicBoolean isStop = new AtomicBoolean();
-
+    /** 总的音量大小 */
     private int volumSum = 0;
-
+    /** 统计的音量数量 */
     private int volumNum = 0;
-
+    /** 总音量平均值 */
     private int volum;
 
     public int getVolum() {

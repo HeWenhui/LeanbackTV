@@ -192,6 +192,7 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
         serViceIntent.putExtra("audioRemoteUrl", StorageUtils.audioUrl);
 //        mContext.startService(intent);
         mContext.startService(serViceIntent);
+        serviceConnection = new UploadServiceConnction();
         mContext.bindService(serViceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
         if (iCameraPresenter != null) {
             iCameraPresenter.submitSpeechShow(isForce, String.valueOf(videoDuration));
@@ -209,7 +210,13 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
         }
     }
 
-    private ServiceConnection serviceConnection = new ServiceConnection() {
+    private ServiceConnection serviceConnection;
+//            = new ServiceConnection() {
+
+
+//    };
+
+    private class UploadServiceConnction implements ServiceConnection {
         private UploadVideoService mService;
 
         @Override
@@ -232,8 +239,7 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
             mService = null;
         }
 
-
-    };
+    }
 
     private void uploadSuccess() {
         //允许audioUrl为""，""代表成功
@@ -292,13 +298,17 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
 
     @Override
     public void removeView(View view) {
-        if (view.getParent() == parentView) {
-            parentView.removeView(view);
-//            mContext.unbindService(serviceConnection);
-            mContext.stopService(serViceIntent);
-        }
         if (iCameraPresenter != null) {
             iCameraPresenter.showAnima();
+        }
+        if (view.getParent() == parentView) {
+//            if(serviceConnection!=null) {
+            //            mContext.unbindService(serviceConnection);
+//            }
+            if (serViceIntent != null) {
+                mContext.stopService(serViceIntent);
+            }
+            parentView.removeView(view);
         }
     }
 
@@ -349,7 +359,7 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
 
     @Override
     public void timeUp() {
-        if (iView != null) {
+        if (containsView()) {
             iView.timeUp();
         }
     }

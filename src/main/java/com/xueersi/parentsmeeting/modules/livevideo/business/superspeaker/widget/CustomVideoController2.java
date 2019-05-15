@@ -268,6 +268,7 @@ public class CustomVideoController2 extends ConstraintLayout implements ILocalVi
             if (o instanceof VideoObservable) {
                 if (((VideoObservable) o).getIsCreate() == 1 && !TextUtils.isEmpty(((VideoObservable) o).getVideoPath())) {
                     logger.i("file path : " + ((VideoObservable) o).getVideoPath());
+                    iPlayer.setVideoView(mVideoView);
                     iPlayer.startPlayVideo(((VideoObservable) o).getVideoPath(), 0);
                 }
             }

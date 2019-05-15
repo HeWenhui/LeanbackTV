@@ -114,6 +114,8 @@ public interface ISuperSpeakerContract {
          * 时间到了，结束视频录制
          */
         void timeUp(boolean complete);
+
+        View getView();
     }
 
     interface IRedPackagePresenter {

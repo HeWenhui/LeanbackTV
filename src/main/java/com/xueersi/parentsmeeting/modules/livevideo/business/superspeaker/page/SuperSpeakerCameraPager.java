@@ -45,7 +45,7 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
 
     private Group groupSubmit, groupStop, groupStart, groupRestart, groupReversal;
     /** 开始录制视频的时间 */
-    private long startRecordVideoTime = 0;
+    private long startRecordVideoTime = -1;
     /** 结束录制时间 */
     private long stopRecordVideoTime;
     /** 试题发布时长 */
@@ -53,7 +53,7 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
 
     private boolean isSurfViewCreat = false;
     /** 是否使用前置摄像头或者后置摄像头,默认faceback,即自拍 */
-    private boolean isFacingBack = true;
+    private boolean isFacingBack = false;
 
     private CustomVideoController2 customVideoController2;
 
@@ -84,7 +84,7 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
     public SuperSpeakerCameraPager(Context context, ISuperSpeakerContract.ISuperSpeakerBridge bridge, String liveId, String courseWareId, int answerTime, int recordTime) {
         super(context);
         this.bridge = bridge;
-        iCommonTip = new SuperSpeakerCommonTipPager(mContext, this);
+
         this.liveId = liveId;
         this.courseWareId = courseWareId;
         this.answerTime = answerTime;
@@ -144,8 +144,13 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
                 logger.i("surfaceDestroyed");
-                holder.getSurface().release();
-                camera1Utils.releaseCamera();
+                try {
+                    holder.getSurface().release();
+                    camera1Utils.releaseCamera();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
             }
         });
         initShowView();
@@ -214,7 +219,6 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
         ivSubmitRecord.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 submitVideo("2");
             }
         });
@@ -364,17 +368,22 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
 //        ((Activity)mContext).findViewById(R.id.sfv_livevideo_super_speaker_record_video).setVisibility(View.GONE);
 
         customVideoController2.startPlayVideo(StorageUtils.videoUrl, 0);
-        MediaUtils mediaUtils = new MediaUtils();
-        String srcPath = StorageUtils.videoUrl;
+//        String srcPath = StorageUtils.videoUrl;
 //        StorageUtils.imageUrl = LiveVideoConfig.SUPER_SPEAKER_VIDEO_PATH + liveId + "_" + courseWareId + "video.mp4";
-        StorageUtils.audioUrl = LiveVideoConfig.SUPER_SPEAKER_VIDEO_PATH + liveId + "_" + courseWareId + "audio.mp3";
-        logger.i(" audio url:" + StorageUtils.audioUrl);
 
+
+        processVideo();
+    }
+
+    //处理音视频，分开音频
+    private void processVideo() {
+        MediaUtils mediaUtils = new MediaUtils();
         extraObservable = new MediaUtils.ExtraObservable();
 
         extraObservable.addObserver(new ExtractObserber());
-
-        mediaUtils.process(srcPath, StorageUtils.videoUrl, StorageUtils.audioUrl, extraObservable);
+        StorageUtils.audioUrl = LiveVideoConfig.SUPER_SPEAKER_VIDEO_PATH + liveId + "_" + courseWareId + "audio.mp3";
+        logger.i(" audio url:" + StorageUtils.audioUrl);
+        mediaUtils.process(StorageUtils.videoUrl, StorageUtils.videoUrl, StorageUtils.audioUrl, extraObservable);
     }
 
     private MediaUtils.ExtraObservable extraObservable;
@@ -517,8 +526,18 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
 
     @Override
     public void timeUp() {
+        stopRecordVideo();
+        processVideo();
         long nowtime = System.currentTimeMillis();
-        iCommonTip.timeUp(nowtime - startRecordVideoTime < RECORD_VALID_TIME);
+        if (iCommonTip == null) {
+            iCommonTip = new SuperSpeakerCommonTipPager(mContext, this);
+        }
+        ViewGroup.LayoutParams params = iCommonTip.getView().getLayoutParams();
+        if (params == null) {
+            params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        }
+        ((ViewGroup) mView).addView(iCommonTip.getView(), params);
+        iCommonTip.timeUp(startRecordVideoTime == -1 || (nowtime - startRecordVideoTime < RECORD_VALID_TIME));
     }
 
     @Override

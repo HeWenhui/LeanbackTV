@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.support.annotation.UiThread;
 import android.widget.RelativeLayout;
 
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -46,19 +47,19 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
         super.initView(bottomContent, mIsLand);
-//        if (AppConfig.DEBUG) {
-//            if (bottomContent != null) {
-//                bottomContent.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-////                        mGetInfo.setId(String.valueOf(454400));
-//                        courseWareId = String.valueOf(1);
-//                        srcType = String.valueOf(40);
-//                        performShowRecordCamera(10, 65);
-//                    }
-//                }, 2000);
-//            }
-//        }
+        if (AppConfig.DEBUG) {
+            if (bottomContent != null) {
+                bottomContent.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+//                        mGetInfo.setId(String.valueOf(454400));
+                        courseWareId = String.valueOf(1);
+                        srcType = String.valueOf(40);
+                        performShowRecordCamera(10, 65);
+                    }
+                }, 2000);
+            }
+        }
     }
 
     @Override
@@ -87,7 +88,6 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                         subscribe(new Consumer<Boolean>() {
                             @Override
                             public void accept(Boolean bol) throws Exception {
-//                                BasePlayerFragment basePlayerFragment = ProxUtil.getProxUtil().get(mContext, BasePlayerFragment.class);
                                 VPlayerListenerReg reg = ProxUtil.getProxUtil().get(mContext, VPlayerListenerReg.class);
                                 if (bol) {
 //                                    LiveEventBus.getDefault(mContext).post();
@@ -141,23 +141,25 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
      */
     @Override
     public void onTopic(LiveTopic liveTopic, final JSONObject jsonObject, boolean modeChange) {
-        final JSONObject dataJson = jsonObject.optJSONObject("speechShow");
-        if (dataJson != null) {
+        JSONObject room_1 = jsonObject.optJSONObject("room_1");
+        if (room_1 != null) {
+            final JSONObject dataJson = room_1.optJSONObject("speechShow");
+            if (dataJson != null) {
 //            final int open = dataJson.optInt("open");
-            courseWareId = dataJson.optString("testId");
-            srcType = dataJson.optString("srcType");
-            final int recordVideoTotalTime = dataJson.optInt("recordTime");
-            final int answerTime = dataJson.optInt("answerTime");
-            Observable.create(new ObservableOnSubscribe<Boolean>() {
-                @Override
-                public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
-                    e.onNext(dataJson.optBoolean("open"));
-                    e.onComplete();
-                }
-            }).map(new Function<Boolean, Boolean>() {
-                @Override
-                public Boolean apply(Boolean bol) throws Exception {
-                    //1打开试题并且点击提交按钮
+                courseWareId = dataJson.optString("testId");
+                srcType = dataJson.optString("srcType");
+                final int recordVideoTotalTime = dataJson.optInt("recordTime");
+                final int answerTime = dataJson.optInt("answerTime");
+                Observable.create(new ObservableOnSubscribe<Boolean>() {
+                    @Override
+                    public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
+                        e.onNext(dataJson.optBoolean("open"));
+                        e.onComplete();
+                    }
+                }).map(new Function<Boolean, Boolean>() {
+                    @Override
+                    public Boolean apply(Boolean bol) throws Exception {
+                        //1打开试题并且点击提交按钮
 //                    if (integer == 0) {
 //                        return false;
 //                    } else if (
@@ -169,26 +171,47 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
 //                    } else {
 //                        return true;
 //                    }
-                    return bol && ShareDataManager.getInstance().getInt(
-                            ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + mGetInfo.getId() + "_" + courseWareId,
-                            0,
-                            ShareDataManager.SHAREDATA_NOT_CLEAR) == 0;
+                        return bol && ShareDataManager.getInstance().getInt(
+                                ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + mGetInfo.getId() + "_" + courseWareId,
+                                0,
+                                ShareDataManager.SHAREDATA_NOT_CLEAR) == 0;
 
-                }
-            }).observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<Boolean>() {
-                        @Override
-                        public void accept(Boolean bool) throws Exception {
-                            if (bool) {
-                                performShowRecordCamera(answerTime, recordVideoTotalTime);
+                    }
+                }).delay(1, TimeUnit.SECONDS).
+                        observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Consumer<Boolean>() {
+                            @Override
+                            public void accept(Boolean bool) throws Exception {
+
+                                VPlayerListenerReg reg = ProxUtil.getProxUtil().get(mContext, VPlayerListenerReg.class);
+                                if (bool) {
+//                                    LiveEventBus.getDefault(mContext).post();
+                                    if (reg != null) {
+                                        reg.release();
+                                    }
+                                    logger.i("停止播放");
+//                                    basePlayerFragment.release();
+                                    performShowRecordCamera(answerTime, recordVideoTotalTime);
+                                }
+//                                else {
+//                                    if (superSpeakerBridge != null) {
+//                                        superSpeakerBridge.timeUp();
+//                                        logger.i("开始播放");
+//                                        if (reg != null) {
+//                                            reg.playVideo();
+//                                        }
+//                                    }
+//                                }
+                                if (bool) {
+                                    performShowRecordCamera(answerTime, recordVideoTotalTime);
+                                }
                             }
-                        }
-                    });
+                        });
 //            if (open) {
 //                performShowRecordCamera(answerTime, recordVideoTotalTime);
 //            }
+            }
         }
-
     }
 
     SuperSpeakerBridge superSpeakerBridge;
@@ -271,12 +294,26 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                 videoDuration,
                 new HttpCallBack() {
                     @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        SuperSpeakerRedPackageEntity entity = getHttpResponseParser().parseSuperSpeakerSubmitEntity(responseEntity);
+                    public void onPmSuccess(final ResponseEntity responseEntity) throws Exception {
                         logger.i("提交接口成功");
-                        if (superSpeakerBridge != null) {
-                            superSpeakerBridge.updateNum(entity.getMoney());
-                        }
+                        Observable.create(new ObservableOnSubscribe<SuperSpeakerRedPackageEntity>() {
+                            @Override
+                            public void subscribe(ObservableEmitter<SuperSpeakerRedPackageEntity> e) throws Exception {
+                                e.onNext(getHttpResponseParser().parseSuperSpeakerSubmitEntity(responseEntity));
+                                e.onComplete();
+                            }
+                        }).delay(2, TimeUnit.SECONDS).
+                                observeOn(AndroidSchedulers.mainThread()).
+                                subscribe(new Consumer<SuperSpeakerRedPackageEntity>() {
+                                    @Override
+                                    public void accept(SuperSpeakerRedPackageEntity superSpeakerRedPackageEntity) throws Exception {
+                                        if (superSpeakerBridge != null) {
+                                            superSpeakerBridge.updateNum(superSpeakerRedPackageEntity.getMoney());
+                                        }
+                                    }
+                                });
+//                        SuperSpeakerRedPackageEntity entity = ;
+
                     }
 
                     @Override
