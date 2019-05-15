@@ -307,6 +307,10 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         LiveVideoConfig.isNewEnglishH5 = false;
                         if (englishH5CoursewareBll != null) {
                             JSONObject object = jsonObject.optJSONObject("platformTest");
+                            // 辅导态不接收主讲消息
+                            if(LiveTopic.MODE_CLASS.equals(mGetInfo.getMode())){
+                                object = null;
+                            }
                             // 辅导老师发题
                             if (object == null || object.toString().equals("{}")) {
                               JSONObject objectRoom2 =   jsonObject.optJSONObject("room_2");
