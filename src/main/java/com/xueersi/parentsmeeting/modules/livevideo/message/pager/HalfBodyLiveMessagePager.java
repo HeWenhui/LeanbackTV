@@ -35,7 +35,6 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.activity.item.HalfBodyLiveCommonWordItem;
 import com.xueersi.parentsmeeting.modules.livevideo.adapter.HalfBodyHotWordAdapter;
 import com.xueersi.parentsmeeting.modules.livevideo.adapter.HalfBodyHotWordHolder;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
@@ -50,11 +49,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CenterAlignImageSpan;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMediaCtrlTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMsgRecycelView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTouchEventLayout;
-import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 
 import org.json.JSONException;
@@ -110,6 +110,8 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
      */
     private long lastSendMsg;
     private BaseLiveMediaControllerBottom liveMediaControllerBottom;
+    private BaseLiveMediaControllerTop liveMediaControllerTop;
+
     private KPSwitchFSPanelLinearLayout switchFSPanelLinearLayout;
 
     /**
@@ -205,12 +207,14 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
     public HalfBodyLiveMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                     LiveAndBackDebug ums, BaseLiveMediaControllerBottom
-                                            liveMediaControllerBottom, ArrayList<LiveMessageEntity>
+                                            liveMediaControllerBottom,BaseLiveMediaControllerTop controllerTop,
+                                    ArrayList<LiveMessageEntity>
                                             liveMessageEntities, ArrayList<LiveMessageEntity>
                                             otherLiveMessageEntities) {
         super(context);
         liveVideoActivity = (Activity) context;
         this.liveMediaControllerBottom = liveMediaControllerBottom;
+        this.liveMediaControllerTop = controllerTop;
         this.keyboardShowingListener = keyboardShowingListener;
         this.liveAndBackDebug = ums;
         this.liveMessageEntities = liveMessageEntities;
@@ -626,6 +630,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                 switch (ev.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                     case MotionEvent.ACTION_MOVE:
+                        isMediaCtrShowing = true;
                         interceptBtmMediaHide(true);
                         break;
                     case MotionEvent.ACTION_CANCEL:
@@ -714,12 +719,20 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
     }
 
 
+
+    private boolean isMediaCtrShowing = false;
+
     Runnable hideBtmMediaCtrTask = new Runnable() {
         @Override
         public void run() {
             interceptBtmMediaHide(false);
+            isMediaCtrShowing = false;
             if (liveMediaControllerBottom.getController() != null) {
                 liveMediaControllerBottom.onHide();
+            }
+
+            if(liveMediaControllerTop != null){
+                liveMediaControllerTop.onHide();
             }
         }
     };
@@ -742,11 +755,21 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                 liveMediaControllerBottom instanceof LiveHalfBodyMediaControllerBottom) {
             ((LiveHalfBodyMediaControllerBottom) liveMediaControllerBottom).interceptHideBtmMediaCtr(interCept);
         }
+
+        if(liveMediaControllerTop != null && liveMediaControllerTop instanceof HalfBodyLiveMediaCtrlTop){
+            ((HalfBodyLiveMediaCtrlTop) liveMediaControllerTop).interceptHideMediaCtr(interCept);
+        }
     }
 
 
     @Override
     public void onTitleShow(boolean show) {
+
+        if(mediaCtrShowing()){
+            hideBottomMediaCtr(0);
+        }
+
+
         btMessageExpress.setBackgroundResource(R.drawable.im_input_biaoqing_icon_normal);
         if (!keyboardShowing && switchFSPanelLinearLayout.getVisibility() != View.GONE) {
             switchFSPanelLinearLayout.postDelayed(new Runnable() {
@@ -764,6 +787,10 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
             rlMessageContent.setVisibility(View.GONE);
         }
 
+    }
+
+    private boolean mediaCtrShowing() {
+        return isMediaCtrShowing;
     }
 
     @Override

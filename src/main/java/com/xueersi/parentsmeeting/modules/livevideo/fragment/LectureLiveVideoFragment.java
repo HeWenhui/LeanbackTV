@@ -189,6 +189,7 @@ public class LectureLiveVideoFragment extends LiveFragmentBase implements Activi
     protected void addBusiness(Activity activity) {
         liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
         liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
+        liveIRCMessageBll.setLiveMediaControllerTop(baseLiveMediaControllerTop);
         mLiveBll.addBusinessBll(liveIRCMessageBll);
         mLiveBll.addBusinessBll(new QuestionIRCBll(activity, mLiveBll));
         mLiveBll.addBusinessBll(new NBH5CoursewareIRCBll(activity, mLiveBll));
