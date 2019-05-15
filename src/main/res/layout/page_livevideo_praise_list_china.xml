@@ -157,7 +157,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|bottom"
                 android:layout_marginBottom="16dp"
-                android:textColor="#F9BD43"
+                android:textColor="#F2A016"
                 android:textSize="11sp" />
 
         </com.xueersi.parentsmeeting.modules.livevideo.widget.PraiseBtnAnimLayout>
