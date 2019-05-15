@@ -18,6 +18,9 @@ android {
             java.srcDirs += ['src/main/english/java-en_tcp']
             assets.srcDirs += ['src/main/english/assets']
             java.srcDirs += ['src/main/java-core']
+            //小班体验
+            res.srcDirs += ['src/main/secience/res-primary_class']
+            res.srcDirs += ['src/main/chinese/res-primary_class']
         }
     }
     compileSdkVersion 26

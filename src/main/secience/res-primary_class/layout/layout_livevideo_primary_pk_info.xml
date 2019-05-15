@@ -1,0 +1,79 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@id/iv_livevideo_primary_team_info_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/bg_live_primary_class_pkbar2" />
+
+    <TextView
+        android:id="@id/iv_livevideo_primary_team_info_gold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="11dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="32dp"
+        android:layout_toRightOf="@+id/iv_livevideo_primary_team_info_back"
+        android:background="@drawable/bg_live_bszb_ke_energy_bg_img_normal"
+        android:text="2289"
+        android:textColor="#fffff6dc"
+        android:textSize="14sp" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/iv_livevideo_primary_team_info_back"
+        android:layout_alignRight="@id/iv_livevideo_primary_team_info_back"
+        android:layout_centerVertical="true">
+
+        <TextView
+            android:id="@id/tv_livevideo_primary_team_my_lable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="11dp"
+            android:text="本队"
+            android:textColor="#fffffffe"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@id/tv_livevideo_primary_team_my_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="4dp"
+            android:layout_toRightOf="@+id/tv_livevideo_primary_team_my_lable"
+            android:text="2666"
+            android:textColor="#ffffcd35"
+            android:textSize="12sp" />
+
+        <ProgressBar
+            android:id="@id/pg_livevideo_primary_team_info_prog"
+            style="@style/ProgressBar_live_primary_pk"
+            android:layout_width="78dp"
+            android:layout_height="8dp"
+            android:layout_centerInParent="true"
+            android:max="100"
+            android:progress="90" />
+
+        <TextView
+            android:id="@id/tv_livevideo_primary_team_other_lable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="11dp"
+            android:text="对手"
+            android:textColor="#fffffffe"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@id/tv_livevideo_primary_team_other_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="4dp"
+            android:layout_toLeftOf="@id/tv_livevideo_primary_team_other_lable"
+            android:text="3926"
+            android:textColor="#ff74c9ff"
+            android:textSize="12sp" />
+    </RelativeLayout>
+</RelativeLayout>
