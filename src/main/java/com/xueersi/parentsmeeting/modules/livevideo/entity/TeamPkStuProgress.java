@@ -10,6 +10,12 @@ public class TeamPkStuProgress {
    private String name;
    private String avatarPath;
    private String teamName;
+
+    /**
+     * 是否是超级黑马
+     */
+   private boolean isSuper;
+
    /**进步幅度*/
    private String progressScope;
 
@@ -51,5 +57,13 @@ public class TeamPkStuProgress {
 
     public String getProgressScope() {
         return progressScope;
+    }
+
+    public void setSuper(boolean aSuper) {
+        isSuper = aSuper;
+    }
+
+    public boolean isSuper() {
+        return isSuper;
     }
 }
