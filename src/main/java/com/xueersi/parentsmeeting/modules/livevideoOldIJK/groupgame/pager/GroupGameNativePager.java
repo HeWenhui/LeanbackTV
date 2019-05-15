@@ -562,7 +562,11 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             @Override
             public void onVolumeUpdate(int volume) {
                 float floatVolume;
-                floatVolume = (float) (volume * 3) / 90.0f;
+                if (volume > 10) {
+                    floatVolume = (float) (volume * 3) / 90.0f;
+                } else {
+                    floatVolume = 0.3f;
+                }
                 mWaveView.setWaveAmplitude(floatVolume);
             }
         });
