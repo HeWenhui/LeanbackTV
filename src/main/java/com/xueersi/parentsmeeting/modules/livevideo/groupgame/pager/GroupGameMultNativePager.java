@@ -1663,7 +1663,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             int maxRight = 0;
             for (String userId : canKeySet) {
                 CleanUpEntity cleanUpEntity = cleanUpEntities.get("" + userId);
-                int rightNum = cleanUpEntity.rightAnswerList.size();
+                int rightNum = cleanUpEntity.teamMemberEntity.energy;
                 if (rightNum > 0) {
                     cleanUpEntity.teamMemberEntity.gold = 2;
                 } else {
