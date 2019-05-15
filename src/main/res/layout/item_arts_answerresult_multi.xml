@@ -9,6 +9,8 @@
         android:id="@id/ll_middle_answer_result_item_muti_user_answer_info"
         android:layout_width="wrap_content"
         android:layout_height="23dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -37,7 +39,9 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@id/ll_middle_answer_result_item_muti_user_answer_info"
-        android:text="11"
+        android:text=""
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
         android:textColor="@color/COLOR_333333"
         android:textSize="17sp"
         android:visibility="visible" />
@@ -49,6 +53,8 @@
         android:layout_width="wrap_content"
         android:layout_marginLeft="5dp"
         android:layout_marginTop="3dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/ll_middle_answer_result_item_muti_user_answer_info"
         android:text=""

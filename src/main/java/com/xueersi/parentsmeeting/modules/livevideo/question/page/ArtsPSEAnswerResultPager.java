@@ -477,11 +477,11 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
             if (answer.getIsRight() == 0) {
 //                spannableStringBuilder.setSpan(new ForegroundColorSpan(0xFFE65453), 5, spannableStringBuilder.length
 //                        (), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                myAnswerBuffer.append("<font color='#FFE65453'>"+myAnswer+"</font>");
+                myAnswerBuffer.append("<font color='#FFE65453'>"+myAnswer+" </font>");
             } else {
 //                spannableStringBuilder.setSpan(new ForegroundColorSpan(0xFF77AF1F), 5, spannableStringBuilder.length
 //                        (), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                myAnswerBuffer.append("<font color='#FF77AF1F'>"+myAnswer+"</font>");
+                myAnswerBuffer.append("<font color='#FF77AF1F'>"+myAnswer+" </font>");
 
             }
             tv_arts_answer_result_voice_my.setText(Html.fromHtml(myAnswerBuffer.toString()));
@@ -496,7 +496,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
 //            spannableStringBuilder = new SpannableString("正确答案：" + rightAnswer);
 //            spannableStringBuilder.setSpan(new ForegroundColorSpan(0xFF77AF1F), 5, spannableStringBuilder.length(),
 //                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            userBuffer.append("<font color='#ff756565'>"+rightAnswer+"</font>");
+            userBuffer.append("<font color='#ff756565'>"+rightAnswer+" </font>");
             tv_arts_answer_result_voice_right.setText(Html.fromHtml(userBuffer.toString()));
         }
         if (mStateListener != null) {
