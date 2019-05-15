@@ -223,8 +223,11 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         }
     }
 
+    String currentMode;
+
     @Override
     public void onModeChange(final String oldMode, final String mode, boolean isPresent) {
+        this.currentMode = mode;
         mHandler.post(new Runnable() {
             @Override
             public void run() {
@@ -250,9 +253,14 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     }
                 } else if (mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY) {
                     //延迟 2.5 秒 走相关逻辑(适配转场动画 节奏)
+                    final String finalMode = mode;
                     mHandler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
+                            logger.d("onModeChange:currentMode=" + currentMode + ",finalMode=" + finalMode);
+                            if (!currentMode.equals(finalMode)) {
+                                return;
+                            }
                             View view = mRoomAction.getView();
                             if (view != null) {
                                 view.setVisibility(View.INVISIBLE);
