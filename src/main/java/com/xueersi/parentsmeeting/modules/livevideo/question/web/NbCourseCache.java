@@ -95,7 +95,7 @@ public class NbCourseCache {
                         }
                         response = new WebResourceResponse(mimeType, "", inputStream);
                         response.setResponseHeaders(header);
-                        Log.e("NbCourseCache", "====>return local resource:"+mimeType+":"+extension);
+                       // Log.e("NbCourseCache", "====>return local resource:"+mimeType+":"+extension);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -124,7 +124,7 @@ public class NbCourseCache {
                 }
             }
         }
-        return false;
+        return result;
     }
 
     private File getRootFile(String url) {
@@ -133,7 +133,7 @@ public class NbCourseCache {
             int index = url.lastIndexOf(File.separator);
             if (index != -1) {
                 String fileName = url.substring(index + 1, url.length());
-                 Log.e("NbCourseCache", "======>getRootFile: filePath=" + fileName);
+                 //Log.e("NbCourseCache", "======>getRootFile: filePath=" + fileName);
                 resultFile = new File(mNbCacheFileDir, fileName);
             }
         }
@@ -155,7 +155,7 @@ public class NbCourseCache {
         int index = url.lastIndexOf(BUILDFILE_PATH_KEY_WORD);
         if (index != -1) {
             String filePath = url.substring(index + 1, url.length());
-            Log.e("NbCourseCache", "======>getBulidFile: filePath=" + filePath);
+            //Log.e("NbCourseCache", "======>getBulidFile: filePath=" + filePath);
             resultFile = new File(mNbCacheFileDir, filePath);
         }
         return resultFile;
@@ -176,7 +176,7 @@ public class NbCourseCache {
         int index = url.lastIndexOf(ASSESTFILE_PATH_KEY_WORD);
         if (index != -1) {
             String filePath = url.substring(index + 1, url.length());
-             Log.e("NbCourseCache", "======>getAssetsFile: filePath=" + filePath);
+             //Log.e("NbCourseCache", "======>getAssetsFile: filePath=" + filePath);
             resultFile = new File(mNbCacheFileDir, filePath);
         }
         return resultFile;
