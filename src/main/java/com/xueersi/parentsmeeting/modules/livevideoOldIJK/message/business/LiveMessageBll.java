@@ -242,7 +242,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
             mLiveMessagePager.onDestroy();
         }
 
-
         long before = System.currentTimeMillis();
         BaseLiveMessagePager liveMessagePager = null;
 
