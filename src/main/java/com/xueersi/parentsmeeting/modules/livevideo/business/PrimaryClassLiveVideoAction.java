@@ -25,6 +25,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.PrimaryClassView;
+import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.PrimaryClassViewSec;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VideoLoadingImgView;
@@ -39,12 +41,14 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ImageScale;
 
 public class PrimaryClassLiveVideoAction extends LiveVideoAction {
 
-    protected String mode = LiveTopic.MODE_TRANING;
+    protected String mode;
     private static final String TAG = "PrimaryClassLiveVideoAction";
     //新加
     ImageView ivLivePrimaryClassKuangjiaImgNormal;
     RelativeLayout rlContent;
+    private RelativeLayout rl_course_video_contentview;
     int isArts;
+    PrimaryClassView primaryClassView;
     //
     private RelativeLayout rlFirstBackgroundContent;
     private FrameLayout flFirstBackgroundContent;
@@ -83,16 +87,14 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
         iv_course_video_loading_bg = mContentView.findViewById(R.id.iv_course_video_loading_bg);
         ivVodeoLoading = mContentView.findViewById(R.id.rl_live_halfbody_video_loading);
         ivTecherState = mContentView.findViewById(R.id.iv_live_halfbody_teacher_state);
+        rl_course_video_contentview = mContentView.findViewById(R.id.rl_course_video_contentview);
         ivLivePrimaryClassKuangjiaImgNormal = mContentView.findViewById(R.id.iv_live_primary_class_kuangjia_img_normal);
+        primaryClassView = new PrimaryClassViewSec();
         setKuangjia();
     }
 
     private void setKuangjia() {
-        if (isArts == LiveVideoSAConfig.ART_CH) {
-            ivLivePrimaryClassKuangjiaImgNormal.setImageResource(R.drawable.bg_live_primary_class_kuangjia_img_normal);
-        } else {
-            ivLivePrimaryClassKuangjiaImgNormal.setImageResource(R.drawable.bg_live_primary_class_kuangjia_img_normal_cn);
-        }
+        ivLivePrimaryClassKuangjiaImgNormal.setImageResource(primaryClassView.getKuangjia());
         setMargin();
     }
 
@@ -395,10 +397,10 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
     }
 
     private void setMargin() {
+        logger.d("setMargin:mode=" + mode);
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlContent.getLayoutParams();
         if (LiveTopic.MODE_CLASS.equals(mode)) {
             final Bitmap bitmap = ((BitmapDrawable) ivLivePrimaryClassKuangjiaImgNormal.getDrawable()).getBitmap();
-            ImageScale.setImageViewWidth(ivLivePrimaryClassKuangjiaImgNormal);
             float scale = (float) bitmap.getWidth() / 1328f;
             lp.leftMargin = (int) (13 * scale);
             lp.bottomMargin = (int) (13 * scale);
@@ -409,6 +411,8 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
             lp.addRule(RelativeLayout.ALIGN_RIGHT, ivLivePrimaryClassKuangjiaImgNormal.getId());
             lp.addRule(RelativeLayout.ALIGN_BOTTOM, ivLivePrimaryClassKuangjiaImgNormal.getId());
             ivLivePrimaryClassKuangjiaImgNormal.setVisibility(View.VISIBLE);
+            ImageScale.setImageViewWidth(ivLivePrimaryClassKuangjiaImgNormal);
+            rl_course_video_contentview.setBackgroundResource(primaryClassView.getBackImg());
         } else {
             lp.leftMargin = 0;
             lp.bottomMargin = 0;
@@ -419,6 +423,7 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
             lp.addRule(RelativeLayout.ALIGN_RIGHT, 0);
             lp.addRule(RelativeLayout.ALIGN_BOTTOM, 0);
             ivLivePrimaryClassKuangjiaImgNormal.setVisibility(View.GONE);
+            rl_course_video_contentview.setBackgroundColor(activity.getResources().getColor(R.color.white));
         }
         rlContent.setLayoutParams(lp);
     }

@@ -83,6 +83,7 @@ public class LivePrimaryClassMediaControllerBottom extends BaseLiveMediaControll
                     LayoutInflater.from(mContext).inflate(R.layout.layout_livehalfbody_mediacontroller_bottom,
                             this, false);
             view = mainLiveView;
+            view.setVisibility(GONE);
             addView(view);
         } else {
             if (tranLiveView == null) {
@@ -91,10 +92,10 @@ public class LivePrimaryClassMediaControllerBottom extends BaseLiveMediaControll
                     tranLiveView =
                             LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_chs_bottom,
                                     this, false);
-                }else if (LiveVideoConfig.isPrimary) {
+                } else if (LiveVideoConfig.isPrimary) {
                     tranLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_psbottom
                             , this, false);
-                } else{
+                } else {
                     tranLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_bottom,
                             this, false);
                 }
@@ -119,6 +120,7 @@ public class LivePrimaryClassMediaControllerBottom extends BaseLiveMediaControll
                                 this, false);
             }
             view = mainLiveView;
+            view.setVisibility(GONE);
             addView(view);
         } else {
             if (tranLiveView == null) {
@@ -142,7 +144,8 @@ public class LivePrimaryClassMediaControllerBottom extends BaseLiveMediaControll
 
     /**
      * 是否是语文半身直播
-      * @return
+     *
+     * @return
      */
     private boolean isChHalfBodyLive() {
         return mRoomInintData != null && mRoomInintData.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH;
@@ -206,6 +209,7 @@ public class LivePrimaryClassMediaControllerBottom extends BaseLiveMediaControll
 
     /**
      * 拦截 显示隐藏 动画
+     *
      * @param intercept
      */
     public void interceptHideBtmMediaCtr(boolean intercept) {

@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -9,9 +10,12 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
+import com.xueersi.parentsmeeting.modules.livevideo.business.HalfBodySceneTransAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PrimaryClassLiveVideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePrimaryClassMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.PrimaryClassLiveMediaCtrlTop;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ImageScale;
 
@@ -22,7 +26,9 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ImageScale;
 public class PrimaryClassVideoFragment extends LiveVideoFragment {
     private String TAG = "PrimaryClassVideoFragment";
     Logger logger = LoggerFactory.getLogger(TAG);
+    private HalfBodySceneTransAnim mTransAnim;
     PrimaryClassLiveMediaCtrlTop primaryClassLiveMediaCtrlTop;
+    private LivePrimaryClassMediaControllerBottom mHalfBodyMediaControllerBottom;
 
     public PrimaryClassVideoFragment() {
         mLayoutVideo = R.layout.activity_video_live_primary_class;
@@ -39,15 +45,41 @@ public class PrimaryClassVideoFragment extends LiveVideoFragment {
     }
 
     @Override
-    public void onLiveInit(LiveGetInfo getInfo) {
-        super.onLiveInit(getInfo);
-        primaryClassLiveMediaCtrlTop.onModeChange(mode, mGetInfo);
+    protected void createMediaControllerBottom() {
+        mHalfBodyMediaControllerBottom = new LivePrimaryClassMediaControllerBottom(activity, mMediaController,
+                videoFragment);
+        liveMediaControllerBottom = mHalfBodyMediaControllerBottom;
+        liveMediaControllerBottom.setVisibility(View.INVISIBLE);
     }
 
     @Override
-    public void onModeChange(String mode, boolean isPresent) {
-        super.onModeChange(mode, isPresent);
+    public void onLiveInit(LiveGetInfo getInfo) {
+        super.onLiveInit(getInfo);
         primaryClassLiveMediaCtrlTop.onModeChange(mode, mGetInfo);
+        mHalfBodyMediaControllerBottom.onModeChange(getInfo.getMode(), getInfo);
+    }
+
+    @Override
+    public void onModeChange(final String mode, boolean isPresent) {
+        super.onModeChange(mode, isPresent);
+        mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                mHalfBodyMediaControllerBottom.onModeChange(mode, mGetInfo);
+                primaryClassLiveMediaCtrlTop.onModeChange(mode, mGetInfo);
+            }
+        });
+        showSceneTransAnim(mode, isPresent);
+    }
+
+    /**
+     * 切流转场动画
+     */
+    private void showSceneTransAnim(String mode, boolean isPresent) {
+        if (mTransAnim == null) {
+            mTransAnim = new HalfBodySceneTransAnim(activity, mGetInfo);
+        }
+        mTransAnim.onModeChange(mode, isPresent);
     }
 
     @Override

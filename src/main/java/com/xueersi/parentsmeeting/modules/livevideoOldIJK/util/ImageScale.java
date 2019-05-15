@@ -29,8 +29,11 @@ public class ImageScale {
                     imageView.getViewTreeObserver().removeOnPreDrawListener(this);
                     RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
 //            lp.height = bitmap.getHeight();
-                    lp.width = (int) ((float) imageView.getHeight() / (float) bitmap.getHeight() * (float) bitmap.getWidth());
-                    imageView.setLayoutParams(lp);
+                    int width = (int) ((float) imageView.getHeight() / (float) bitmap.getHeight() * (float) bitmap.getWidth());
+                    if (width != lp.width) {
+                        lp.width = width;
+                        imageView.setLayoutParams(lp);
+                    }
                     return false;
                 }
             });
