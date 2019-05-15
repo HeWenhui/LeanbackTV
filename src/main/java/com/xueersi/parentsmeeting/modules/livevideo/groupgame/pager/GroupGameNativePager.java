@@ -931,6 +931,9 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 if (mIse != null) {
                     mIse.cancel();
                 }
+                if (saveVideoFile != null) {
+                    groupGameUpload.uploadWonderMoment(saveVideoFile, content.toString(), 0);
+                }
                 handler.postDelayed(startSpeechRecognizeRunnable, 1000);
                 int time = mAnswersList.get(pageNum).getSingleTime() + 1;
                 handler.postDelayed(turnPageRunnable, time * 1000);
