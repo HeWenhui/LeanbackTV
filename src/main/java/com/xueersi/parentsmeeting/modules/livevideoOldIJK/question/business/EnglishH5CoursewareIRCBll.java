@@ -471,6 +471,9 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 englishH5CoursewareBll.onH5Courseware(statusTutor, turtorEntity);
                 break;
             case XESCODE.MULTIPLE_H5_COURSEWARE:
+                if (LiveTopic.MODE_CLASS.equals(mGetInfo.getMode())){
+                    return;
+                }
                 // 08.07  课件之前的功能添加
                 VideoQuestionLiveEntity questionLiveEntity = questionInfo(object);
                 String status = LiveVideoConfig.isSend ? "on" : "off";
