@@ -113,6 +113,7 @@
         android:id="@id/btn_page_livevideo_praise_list_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:layout_alignParentRight="true"
         android:layout_marginTop="11dp"
         android:layout_marginRight="13dp"

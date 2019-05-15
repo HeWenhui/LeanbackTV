@@ -117,6 +117,7 @@
         android:layout_alignParentRight="true"
         android:layout_marginTop="11dp"
         android:layout_marginRight="13dp"
+        android:visibility="gone"
         android:background="@drawable/bg_page_livevideo_praise_list_china_close" />
 
     <RelativeLayout

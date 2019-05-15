@@ -112,6 +112,8 @@ public class PraiseBasePager extends LiveBasePager {
 
             } else if (waht == PraiseConfig.PRAISE_CLICK_CLOSE) {
                 praiseBasePager.closePraisePagerMain();
+            }else if (waht == PraiseConfig.PRAISE_CLOSE_VISIBLE) {
+                praiseBasePager.closeBtnVisible();
             }
         }
     }
@@ -210,6 +212,7 @@ public class PraiseBasePager extends LiveBasePager {
         practiceView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
+                mHandler.sendEmptyMessageDelayed(PraiseConfig.PRAISE_CLOSE_VISIBLE, 10000);
                 practiceView.playAnimation();
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                     practiceView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -263,6 +266,17 @@ public class PraiseBasePager extends LiveBasePager {
         mHandler.sendEmptyMessageDelayed(PraiseConfig.PRAISE_CLICK_CLOSE, 0);
 
     }
+
+    /**
+     * 关闭表扬榜
+     *
+     * @param onPagerClose
+     */
+    public void closeBtnVisible(){
+        if (imgBtnClose != null) {
+            imgBtnClose.setVisibility(View.VISIBLE);
+        }
+    }
     /**
      * 关闭表扬榜
      *
@@ -277,6 +291,7 @@ public class PraiseBasePager extends LiveBasePager {
                 mHandler.removeMessages(PraiseConfig.PRAISE_TOTAL_SEND);
                 mHandler.removeMessages(PraiseConfig.PRAISE_CLICK_SEND);
                 mHandler.removeMessages(PraiseConfig.PRAISE_CLICK_CLOSE);
+                mHandler.removeMessages(PraiseConfig.PRAISE_CLOSE_VISIBLE);
             }
         }
     }
