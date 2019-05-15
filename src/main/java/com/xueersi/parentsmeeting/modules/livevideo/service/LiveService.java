@@ -4,6 +4,7 @@ import android.app.ActivityManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -35,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * Created by linyuqiang on 2018/7/14.
@@ -45,6 +47,7 @@ public class LiveService extends Service {
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     private File alldir;
     int livepid;
+    Bundle liveIntent;
     Handler handler = new Handler(Looper.getMainLooper());
     SimpleDateFormat dateFormat;
 
@@ -113,6 +116,7 @@ public class LiveService extends Service {
         }
         File[] files = alldir.listFiles();
         if (files != null) {
+            LiveCrashUpload liveCrashUpload = new LiveCrashUpload(this);
             for (int i = 0; i < files.length; i++) {
                 File file = files[i];
                 File uploadfile = new File(file.getParentFile(), "upload" + file.getName());
@@ -152,7 +156,7 @@ public class LiveService extends Service {
                         Exception exception = new Exception(jsonObject.toString());
                         FileLogger.writeExceptionLog(exception);
                     }
-                    file.renameTo(uploadfile);
+                    liveCrashUpload.uploadCreashFile(file, start, uploadfile);
                 }
             }
         }
@@ -173,7 +177,30 @@ public class LiveService extends Service {
             return START_NOT_STICKY;
         }
         livepid = intent.getIntExtra("livepid", 0);
+        liveIntent = intent.getParcelableExtra("liveintent");
+        logger.d("onStartCommand:livepid=" + livepid);
+        try {
+            if (liveIntent != null) {
+                JSONObject jsonObject = getIntentJson();
+                logger.d("onStartCommand:jsonObject=" + jsonObject);
+            }
+        } catch (Exception e) {
+
+        }
         return START_NOT_STICKY;
+    }
+
+    public JSONObject getIntentJson() {
+        JSONObject jsonObject = new JSONObject();
+        Set<String> keys = liveIntent.keySet();
+        for (String key : keys) {
+            try {
+                jsonObject.put(key, liveIntent.get(key));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return jsonObject;
     }
 
     public void writeLogcat(String filename) throws IOException {
@@ -191,6 +218,16 @@ public class LiveService extends Service {
         }
 
         OutputStreamWriter output = new OutputStreamWriter(fileStream);
+        if (liveIntent != null) {
+            try {
+                output.write(("liveinfo----{"));
+                JSONObject jsonObject = getIntentJson();
+                output.write("" + jsonObject);
+                output.write("}----\n");
+            } catch (Exception e) {
+
+            }
+        }
         BufferedReader br = new BufferedReader(input);
         BufferedWriter bw = new BufferedWriter(output);
 

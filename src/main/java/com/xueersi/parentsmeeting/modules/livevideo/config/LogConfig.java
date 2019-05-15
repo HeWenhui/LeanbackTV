@@ -39,4 +39,6 @@ public class LogConfig {
     public static String LIVE_BACK_PLAT_DOT = "replay_platformDot";
     /** 直播小组互动声音 */
     public static String LIVE_GAME_VOICE = "live_game_voice";
+    /** 直播崩溃上传 */
+    public static String LIVE_CRASH_UPLOAD = "live_crash_upload";
 }
