@@ -134,15 +134,15 @@ public class LiveVideoActivityBase extends XesActivity {
 
     /** 加载界面 */
     protected void loadView(int id) {
-        setContentView(id);
+//        setContentView(id);
         getWindow().setBackgroundDrawable(null);
         liveVideoFragmentBase = (LiveVideoFragmentBase) getFragmentManager().findFragmentByTag("liveVideo");
         if (liveVideoFragmentBase == null) {
             liveVideoFragmentBase = getFragment();
             FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
             // TODO
-//            fragmentTransaction.add(android.R.id.content, liveVideoFragmentBase, "liveVideo");
-            fragmentTransaction.add(R.id.rl_course_video_contentview, liveVideoFragmentBase, "liveVideo");
+            fragmentTransaction.add(android.R.id.content, liveVideoFragmentBase, "liveVideo");
+//            fragmentTransaction.add(R.id.rl_course_video_contentview, liveVideoFragmentBase, "liveVideo");
             fragmentTransaction.commit();
         } else {
             restoreFragment(liveVideoFragmentBase);
