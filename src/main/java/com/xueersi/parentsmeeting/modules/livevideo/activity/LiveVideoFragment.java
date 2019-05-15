@@ -513,11 +513,6 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     }
 
     @Override
-    protected void showRefresyLayout(int arg1, int arg2) {
-        super.showRefresyLayout(arg1, arg2);
-    }
-
-    @Override
     public void showLongMediaController() {
         super.showLongMediaController();
     }
