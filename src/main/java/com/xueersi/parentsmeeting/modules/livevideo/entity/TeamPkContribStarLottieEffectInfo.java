@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.imageloader.ImageLoader;
@@ -180,11 +181,17 @@ public class TeamPkContribStarLottieEffectInfo extends LottieEffectInfo {
         ImageLoader.with(animationView.getContext()).load(url).asBitmap(new SingleConfig.BitmapListener() {
             @Override
             public void onSuccess(Drawable drawable) {
-                Bitmap resultBitmap = ((BitmapDrawable) drawable).getBitmap();
-                Bitmap tempBitmap = circleBitmap(resultBitmap, Math.min(width, height) / 2);
-                animationView.updateBitmap(bitmapId, tempBitmap);
+                Bitmap resultBitmap = null;
+                if (drawable instanceof BitmapDrawable) {
+                    resultBitmap = ((BitmapDrawable) drawable).getBitmap();
+                } else if (drawable instanceof GifDrawable) {
+                    resultBitmap = ((GifDrawable) drawable).getFirstFrame();
+                }
+                if(resultBitmap != null){
+                    Bitmap tempBitmap = circleBitmap(resultBitmap, Math.min(width, height) / 2);
+                    animationView.updateBitmap(bitmapId, tempBitmap);
+                }
             }
-
             @Override
             public void onFail() {
             }
