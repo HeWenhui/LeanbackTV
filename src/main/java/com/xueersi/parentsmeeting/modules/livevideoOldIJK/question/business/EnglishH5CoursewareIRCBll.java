@@ -308,7 +308,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                         if (englishH5CoursewareBll != null) {
                             JSONObject object = jsonObject.optJSONObject("platformTest");
                             // 辅导态不接收主讲消息
-                            if(LiveTopic.MODE_CLASS.equals(mGetInfo.getMode())){
+                            if(LiveTopic.MODE_TRANING.equals(mGetInfo.getMode())){
                                 object = null;
                             }
                             // 辅导老师发题
@@ -471,7 +471,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 englishH5CoursewareBll.onH5Courseware(statusTutor, turtorEntity);
                 break;
             case XESCODE.MULTIPLE_H5_COURSEWARE:
-                if (LiveTopic.MODE_CLASS.equals(mGetInfo.getMode())){
+                if (LiveTopic.MODE_TRANING.equals(mGetInfo.getMode())){
                     return;
                 }
                 // 08.07  课件之前的功能添加
