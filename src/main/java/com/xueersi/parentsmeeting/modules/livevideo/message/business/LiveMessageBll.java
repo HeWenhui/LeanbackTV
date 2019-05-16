@@ -39,6 +39,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionSh
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.PreSchoolLiveTrainMsgPager;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,6 +63,9 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 //    private BaseSmallEnglishLiveMessagePager mSmallEnglishLiveMessagePager;
 
     private BaseLiveMediaControllerBottom baseLiveMediaControllerBottom;
+
+    private BaseLiveMediaControllerTop baseLiveMediaControllerTop;
+
     private Activity activity;
     private Handler mHandler = new Handler();
     public QuestionBll questionBll;
@@ -125,6 +129,12 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     public void setLiveMediaControllerBottom(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
         this.baseLiveMediaControllerBottom = baseLiveMediaControllerBottom;
     }
+
+    public void setBaseLiveMediaControllerTop(BaseLiveMediaControllerTop controllerTop) {
+        this.baseLiveMediaControllerTop = controllerTop;
+    }
+
+
 
     public View getView() {
         return rlLiveMessageContent;
@@ -251,10 +261,10 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                 // 语文
                 liveMessagePager = new HalfBodyArtsLiveMsgPager(activity, this,
                         null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
-            } else {
+            }else {
                 // 理科
                 liveMessagePager = new HalfBodyLiveMessagePager(activity, this,
-                        null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+                        null, baseLiveMediaControllerBottom, baseLiveMediaControllerTop,liveMessageLandEntities, null);
             }
         }
 

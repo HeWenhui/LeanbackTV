@@ -1,9 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.enteampk.http;
 
-import android.os.Handler;
-import android.os.Looper;
-
-import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
@@ -11,14 +7,12 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoHttpEnConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.config.EnTeamPkHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.InteractiveTeam;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -86,41 +80,24 @@ public class EnTeamPkHttpManager {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 try {
-                    final String res = response.body().string();
-                    Handler handler = new Handler(Looper.getMainLooper());
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            ResponseEntity responseEntity = new ResponseEntity();
-                            try {
-                                responseEntity.setJsonObject(new JSONObject(res));
-                                ArrayList<InetSocketAddress> addresses = enTeamPkResponseParser.parseTcpDispatch(responseEntity);
-                                callBack.onDataSucess(addresses);
-                            } catch (JSONException e) {
-                                CrashReport.postCatchedException(new LiveException(TAG, e));
-                                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, e.getMessage());
-                            }
-                        }
-                    });
+                    String res = response.body().string();
+                    ResponseEntity responseEntity = new ResponseEntity();
+                    responseEntity.setJsonObject(new JSONObject(res));
+                    ArrayList<InetSocketAddress> addresses = enTeamPkResponseParser.parseTcpDispatch(responseEntity);
+                    callBack.onDataSucess(addresses);
                 } catch (Exception e) {
-                    CrashReport.postCatchedException(new LiveException(TAG, e));
                     callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, e.getMessage());
                 }
             }
         });
     }
 
-    public InteractiveTeam parseInteractiveTeam(JSONObject jsonObject) {
-        InteractiveTeam interactiveTeam = enTeamPkResponseParser.parseInteractiveTeam(jsonObject);
+    public InteractiveTeam parseInteractiveTeam(String userId, JSONObject jsonObject) {
+        InteractiveTeam interactiveTeam = enTeamPkResponseParser.parseInteractiveTeam(userId, jsonObject);
         return interactiveTeam;
     }
 
-    public ArrayList<TeamMemberEntity> parseGetStuActiveTeam(ResponseEntity responseEntity) {
-        ArrayList<TeamMemberEntity> entities = enTeamPkResponseParser.parseGetStuActiveTeam(responseEntity);
-        return entities;
-    }
-
-    public void getStuActiveTeam(String unique_id, String stu_id, final AbstractBusinessDataCallBack callBack) {
+    public void getStuActiveTeam(String unique_id, final String stu_id, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         httpRequestParams.addBodyParam("unique_id", unique_id);
         httpRequestParams.addBodyParam("stu_id", stu_id);
@@ -130,7 +107,7 @@ public class EnTeamPkHttpManager {
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 Object object = responseEntity.getJsonObject();
                 if (object instanceof JSONObject) {
-                    InteractiveTeam interactiveTeam = parseInteractiveTeam((JSONObject) responseEntity.getJsonObject());
+                    InteractiveTeam interactiveTeam = parseInteractiveTeam(stu_id, (JSONObject) responseEntity.getJsonObject());
                     callBack.onDataSucess(interactiveTeam, responseEntity.getJsonObject());
                 } else {
                     callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_NULL, "");

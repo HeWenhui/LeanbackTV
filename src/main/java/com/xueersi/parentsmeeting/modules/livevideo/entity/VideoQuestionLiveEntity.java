@@ -72,7 +72,10 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
      * 2 设计组
      */
     public int package_socurce;
-
+    /**互动点id**/
+    private String dotId;
+    /**互动点id**/
+    private int dotType;
     /**文科在线教研数据**/
     private H5OnlineTechEntity onlineTechEntity;
 
@@ -267,5 +270,29 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
 
     public void setNewCourseTestIdSec(String newCourseTestIdSec) {
         this.newCourseTestIdSec = newCourseTestIdSec;
+    }
+
+    public String getSrcType() {
+        return srcType;
+    }
+
+    public void setSrcType(String srcType) {
+        this.srcType = srcType;
+    }
+
+    public String getDotId() {
+        return dotId;
+    }
+
+    public void setDotId(String dotId) {
+        this.dotId = dotId;
+    }
+
+    public int getDotType() {
+        return dotType;
+    }
+
+    public void setDotType(int dotType) {
+        this.dotType = dotType;
     }
 }

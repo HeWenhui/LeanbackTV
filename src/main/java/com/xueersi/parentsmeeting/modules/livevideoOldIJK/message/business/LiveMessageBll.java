@@ -13,16 +13,18 @@ import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.BaseLiveMessagePager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.RoomAction;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XesAtomicInteger;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.BaseLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.RoomAction;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XesAtomicInteger;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.IRCState;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.KeyBordAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.pager.HalfBodyArtsLiveMsgPager;
@@ -39,7 +41,6 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LivePsMessagePage
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +64,8 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 //    private BaseSmallEnglishLiveMessagePager mSmallEnglishLiveMessagePager;
 
     private BaseLiveMediaControllerBottom baseLiveMediaControllerBottom;
+    private BaseLiveMediaControllerTop baseLiveMediaControllerTop;
+
     private Activity activity;
     private Handler mHandler = new Handler();
     public QuestionBll questionBll;
@@ -125,6 +128,10 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 
     public void setLiveMediaControllerBottom(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
         this.baseLiveMediaControllerBottom = baseLiveMediaControllerBottom;
+    }
+
+    public void setLiveMediaCtrTop(BaseLiveMediaControllerTop ctrTop) {
+        this.baseLiveMediaControllerTop = ctrTop;
     }
 
     public View getView() {
@@ -238,7 +245,6 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
             mLiveMessagePager.onDestroy();
         }
 
-
         long before = System.currentTimeMillis();
         BaseLiveMessagePager liveMessagePager = null;
 
@@ -255,7 +261,8 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
             } else {
                 // 理科
                 liveMessagePager = new HalfBodyLiveMessagePager(activity, this,
-                        null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+                        null, baseLiveMediaControllerBottom, baseLiveMediaControllerTop,
+                        liveMessageLandEntities, null);
             }
         }
 

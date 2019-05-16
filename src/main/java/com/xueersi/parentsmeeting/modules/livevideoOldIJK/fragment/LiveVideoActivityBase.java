@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.WindowManager;
 
 import com.tencent.bugly.crashreport.BuglyLog;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.XesActivity;
 import com.xueersi.common.event.AppEvent;
 import com.xueersi.common.logerhelper.MobEnumUtil;
@@ -15,6 +16,7 @@ import com.xueersi.lib.log.FileLogger;
 import com.xueersi.parentsmeeting.module.audio.AudioPlayer;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.service.LiveService;
 import com.xueersi.ui.dataload.DataLoadManager;
 
@@ -46,9 +48,14 @@ public class LiveVideoActivityBase extends XesActivity {
         // 注册事件
         EventBus.getDefault().register(this);
         loadView(R.layout.activity_video_live_frag);
-        Intent intent = new Intent(this, LiveService.class);
-        intent.putExtra("livepid", android.os.Process.myPid());
-        startService(intent);
+        try {
+            Intent intent = new Intent(this, LiveService.class);
+            intent.putExtra("livepid", android.os.Process.myPid());
+            intent.putExtra("liveintent", getIntent().getExtras());
+            startService(intent);
+        } catch (Exception e) {
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
         BuglyLog.i(TAG, "onCreate");
 //        FloatWindowManager.addView(this,new Button(this),2);
     }

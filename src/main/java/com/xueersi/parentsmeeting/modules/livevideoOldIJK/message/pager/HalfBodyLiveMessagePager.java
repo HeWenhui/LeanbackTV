@@ -13,7 +13,6 @@ import android.text.Editable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ImageSpan;
 import android.text.util.Linkify;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -42,7 +41,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CenterAlignImageSpan;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMediaCtrlTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMsgRecycelView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTouchEventLayout;
@@ -111,6 +112,8 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
      */
     private long lastSendMsg;
     private BaseLiveMediaControllerBottom liveMediaControllerBottom;
+    private BaseLiveMediaControllerTop  liveMediaControllerTop;
+
     private KPSwitchFSPanelLinearLayout switchFSPanelLinearLayout;
 
     /**
@@ -206,12 +209,13 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
     public HalfBodyLiveMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                        LiveAndBackDebug ums, BaseLiveMediaControllerBottom
-                                               liveMediaControllerBottom, ArrayList<LiveMessageEntity>
+                                               liveMediaControllerBottom,BaseLiveMediaControllerTop controllerTop, ArrayList<LiveMessageEntity>
                                                liveMessageEntities, ArrayList<LiveMessageEntity>
                                                otherLiveMessageEntities) {
         super(context);
         liveVideoActivity = (Activity) context;
         this.liveMediaControllerBottom = liveMediaControllerBottom;
+        this.liveMediaControllerTop = controllerTop;
         this.keyboardShowingListener = keyboardShowingListener;
         this.liveAndBackDebug = ums;
         this.liveMessageEntities = liveMessageEntities;
@@ -222,7 +226,6 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         }
 
         initBottomControllBtn();
-
 
         mainHandler.post(new Runnable() {
             @Override
@@ -240,6 +243,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         btMsgState = liveMediaControllerBottom.findViewById(R.id.btn_livevideo_halbody_msg_state);
         bottomCtrContainer = liveMediaControllerBottom.findViewById(R.id.ll_livevideo_bottom_controller);
         rclHotWord = liveMediaControllerBottom.findViewById(R.id.rl_livevideo_halbody_hotword);
+
         initCommonWord();
     }
 
@@ -627,6 +631,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
                 switch (ev.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                     case MotionEvent.ACTION_MOVE:
+                        isMediaCtrShowing = true;
                         interceptBtmMediaHide(true);
                         break;
                     case MotionEvent.ACTION_CANCEL:
@@ -719,9 +724,15 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         @Override
         public void run() {
             interceptBtmMediaHide(false);
+            isMediaCtrShowing = false;
             if (liveMediaControllerBottom.getController() != null) {
                 liveMediaControllerBottom.onHide();
             }
+
+            if(liveMediaControllerTop != null){
+                liveMediaControllerTop.onHide();
+            }
+
         }
     };
 
@@ -739,15 +750,31 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
      * @param interCept
      */
     private void interceptBtmMediaHide(boolean interCept) {
+
         if (liveMediaControllerBottom.getController() != null &&
                 liveMediaControllerBottom instanceof LiveHalfBodyMediaControllerBottom) {
             ((LiveHalfBodyMediaControllerBottom) liveMediaControllerBottom).interceptHideBtmMediaCtr(interCept);
         }
+        if(liveMediaControllerTop != null && liveMediaControllerTop instanceof HalfBodyLiveMediaCtrlTop){
+            ((HalfBodyLiveMediaCtrlTop) liveMediaControllerTop).interceptHideMediaCtr(interCept);
+        }
+
     }
 
 
+    private boolean isMediaCtrShowing = false;
+
+    private boolean mediaCtrShowing() {
+        return isMediaCtrShowing;
+    }
+
     @Override
     public void onTitleShow(boolean show) {
+
+        if(mediaCtrShowing()){
+            hideBottomMediaCtr(0);
+        }
+
         btMessageExpress.setBackgroundResource(R.drawable.im_input_biaoqing_icon_normal);
         if (!keyboardShowing && switchFSPanelLinearLayout.getVisibility() != View.GONE) {
             switchFSPanelLinearLayout.postDelayed(new Runnable() {
@@ -948,6 +975,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         });
 
     }
+
 
     /**
      * 关闭开启聊天

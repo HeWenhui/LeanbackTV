@@ -35,6 +35,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
@@ -64,6 +65,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 //import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
@@ -166,6 +168,12 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         mRoomAction.setLiveBll(new LiveIRCState());
         mRoomAction.setLiveMediaControllerBottom(baseLiveMediaControllerBottom);
     }
+
+    public void setLiveMediaCtrTop(BaseLiveMediaControllerTop mediaCtrTop){
+        mRoomAction.setLiveMediaCtrTop(mediaCtrTop);
+    }
+
+
 
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
@@ -700,6 +708,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             }
             case XESCODE.SENDQUESTION: {
                 if (mGetInfo.getIsOpenNewCourseWare() == 1) {
+                    userLikeList.clear();
                     isMiddleScienceH5Open = true;
                 }
                 mRoomAction.onOpenVoiceNotic(true, "SENDQUESTION");
@@ -955,7 +964,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     }
 
     /** 列表，用户点赞列表 */
-    private List<String> userLikeList = new LinkedList<>();
+    private List<String> userLikeList = new CopyOnWriteArrayList<>();
 
     /**
      * 是否在点赞时间里面

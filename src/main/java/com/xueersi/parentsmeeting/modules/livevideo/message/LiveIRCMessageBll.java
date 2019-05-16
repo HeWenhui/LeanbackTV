@@ -52,6 +52,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishSho
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatStatusChange;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.ui.dataload.PageDataLoadEntity;
 
 import org.greenrobot.eventbus.EventBus;
@@ -62,8 +63,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 //import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
@@ -184,6 +185,10 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         mRoomAction.setLiveBll(new LiveIRCState());
         mRoomAction.setLiveMediaControllerBottom(baseLiveMediaControllerBottom);
     }
+    public void setLiveMediaControllerTop(BaseLiveMediaControllerTop controllerTop) {
+        mRoomAction.setBaseLiveMediaControllerTop(controllerTop);
+    }
+
 
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
@@ -721,6 +726,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             case XESCODE.SENDQUESTION: {
                 mRoomAction.onOpenVoiceNotic(true, "SENDQUESTION");
                 if (mGetInfo.getIsOpenNewCourseWare() == 1) {
+                    userLikeList.clear();
                     isMiddleScienceEvenDriveH5Open = true;
                 }
                 break;
@@ -975,7 +981,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     }
 
     /** 列表，用户点赞列表 */
-    private List<String> userLikeList = new LinkedList<>();
+    private List<String> userLikeList = new CopyOnWriteArrayList<>();
 
     /**
      * 是否在点赞时间里面

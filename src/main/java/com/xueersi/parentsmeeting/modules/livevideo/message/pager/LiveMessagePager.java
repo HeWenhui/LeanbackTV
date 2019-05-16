@@ -67,6 +67,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
@@ -116,6 +117,8 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     private CommonAdapter<LiveMessageEntity> messageAdapter;
     private CommonAdapter<LiveMessageEntity> otherMessageAdapter;
     private boolean isTouch = false;
+    /** 大题互动过程中，不能收聊天消息 */
+    private boolean isBigQue = false;
     /** 聊天字体大小，最多13个汉字 */
     private int messageSize = 0;
     /** 献花 */
@@ -776,7 +779,9 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         mFlowerWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         logger.i("initFlower:time3=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-
+        if (goldNum != null) {
+            onGetMyGoldDataEvent(goldNum);
+        }
     }
 
     /**
@@ -1209,7 +1214,7 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     @Override
     public void onPrivateMessage(boolean isSelf, final String sender, String login, String hostname, String target,
                                  final String message) {
-        if (isCloseChat()) {
+        if (isCloseChat() || isBigQue) {
             return;
         }
         mainHandler.post(new Runnable() {
@@ -1872,12 +1877,30 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     @Override
     public void onGetMyGoldDataEvent(String goldNum) {
         this.goldNum = goldNum;
-        tvMessageGold.setText(goldNum);
-        tvMessageGold.setVisibility(View.VISIBLE);
-        tvMessageGoldLable.setVisibility(View.VISIBLE);
-        flowerContentView.findViewById(R.id.tv_livevideo_message_gold_word).setVisibility(View.VISIBLE);
+        if (tvMessageGold != null) {
+            tvMessageGold.setText(goldNum);
+            tvMessageGold.setVisibility(View.VISIBLE);
+            tvMessageGoldLable.setVisibility(View.VISIBLE);
+            flowerContentView.findViewById(R.id.tv_livevideo_message_gold_word).setVisibility(View.VISIBLE);
+        }
     }
 
+    @Override
+    public void onQuestionShow(VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isShow) {
+        if (isShow) {
+            if (videoQuestionLiveEntity != null && videoQuestionLiveEntity.getDotType() != 0) {
+                isBigQue = true;
+                btMesOpen.setVisibility(View.GONE);
+                btMsgCommon.setVisibility(View.GONE);
+            }
+        } else {
+            if (isBigQue) {
+                isBigQue = false;
+                btMesOpen.setVisibility(View.VISIBLE);
+                btMsgCommon.setVisibility(View.VISIBLE);
+            }
+        }
+    }
 
     // 03.16 模拟显示聊天人数
     public void showPeopleCount(int num) {

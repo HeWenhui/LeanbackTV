@@ -31,6 +31,8 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
     protected BaseVideoQuestionEntity baseVideoQuestionEntity;
     protected OnPagerClose onPagerClose;
     protected Handler handler = new Handler(Looper.getMainLooper());
+    /** pager创建时间 */
+    protected long creattime;
 
     public LiveBasePager(Context context) {
         super(context);
@@ -84,7 +86,9 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
     @Override
     protected void init(Context context) {
         super.init(context);
+        creattime = System.currentTimeMillis();
         mLogtf = new LogToFile(context, TAG);
+        mLogtf.addCommon("creattime", "" + creattime);
         AllLiveBasePagerInter allLiveBasePagerInter = ProxUtil.getProxUtil().get(context, AllLiveBasePagerInter.class);
         if (allLiveBasePagerInter != null) {
             allLiveBasePagerInter.addLiveBasePager(this);
@@ -110,6 +114,13 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
                 allLiveBasePagerInter.removeLiveBasePager(this);
             }
         }
+    }
+
+    public LiveAndBackDebug getLiveAndBackDebug() {
+        if (mLiveBll == null) {
+            mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
+        }
+        return mLiveBll;
     }
 
     @Override
@@ -192,6 +203,19 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
      */
     public interface OnPagerClose {
         void onClose(LiveBasePager basePager);
+    }
+
+    public static class WrapOnPagerClose implements OnPagerClose {
+        OnPagerClose onPagerClose;
+
+        public WrapOnPagerClose(OnPagerClose onPagerClose) {
+            this.onPagerClose = onPagerClose;
+        }
+
+        @Override
+        public void onClose(LiveBasePager basePager) {
+            onPagerClose.onClose(basePager);
+        }
     }
 
     /**
