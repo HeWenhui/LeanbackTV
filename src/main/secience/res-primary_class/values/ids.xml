@@ -8,4 +8,10 @@
     <item name="tv_livevideo_primary_team_other_lable" type="id" />
     <item name="tv_livevideo_primary_team_other_text" type="id" />
     <!--<item name="pg_livevideo_primary_team_info_prog" type="id" />-->
+    <item name="tv_livevideo_primary_team_name" type="id" />
+    <item name="iv_livevideo_primary_team_energy_add" type="id" />
+    <item name="iv_livevideo_primary_team_energy" type="id" />
+    <item name="tv_livevideo_primary_team_energy" type="id" />
+    <item name="iv_livevideo_primary_team_voice_open" type="id" />
+    <item name="iv_livevideo_primary_team_voice_voice" type="id" />
 </resources>
