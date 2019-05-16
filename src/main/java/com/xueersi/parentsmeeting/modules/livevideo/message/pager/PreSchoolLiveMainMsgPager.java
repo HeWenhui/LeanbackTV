@@ -54,6 +54,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.HotWordLog;
 import com.xueersi.ui.adapter.CommonAdapter;
 
 import org.json.JSONException;
@@ -190,7 +192,7 @@ public class PreSchoolLiveMainMsgPager extends BaseLiveMessagePager {
         this.liveMediaControllerBottom = liveMediaControllerBottom;
         this.liveMediaControllerTop = controllerTop;
         this.keyboardShowingListener = keyboardShowingListener;
-        this.liveAndBackDebug = ums;
+        this.liveAndBackDebug = new ContextLiveAndBackDebug(context);
         this.liveMessageEntities = liveMessageEntities;
         this.otherLiveMessageEntities = otherLiveMessageEntities;
 
@@ -620,6 +622,21 @@ public class PreSchoolLiveMainMsgPager extends BaseLiveMessagePager {
 
 
     /**
+     * 热词埋点日志
+     * @param hotwordCmd  热词指令
+     */
+    private void upLoadHotWordLog(String hotwordCmd) {
+        try {
+            if(getInfo != null){
+                HotWordLog.hotWordSend(this.liveAndBackDebug,hotwordCmd,HotWordLog.LIVETYPE_PRESCHOOL,
+                        getInfo.getStudentLiveInfo().getClassId(),getInfo.getStudentLiveInfo().getTeamId(),getInfo.getStudentLiveInfo().getCourseId());
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * 切换聊天状态
      */
     private void switchChatState() {
@@ -670,6 +687,7 @@ public class PreSchoolLiveMainMsgPager extends BaseLiveMessagePager {
 
     private void sendHotWord(String msg) {
         hideBottomMediaCtr(0);
+        upLoadHotWordLog(msg);
         if (ircState.openchat()) {
             if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {
                 boolean send = ircState.sendMessage(msg, "");

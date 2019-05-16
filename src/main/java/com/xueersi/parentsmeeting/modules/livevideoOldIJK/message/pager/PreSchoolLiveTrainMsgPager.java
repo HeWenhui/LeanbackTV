@@ -59,6 +59,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControll
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.item.CommonWordPsItem;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.item.PreSchoolHotwordItem;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.ContextLiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.irc.jibble.pircbot.User;
@@ -67,6 +68,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.LiveM
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.BasePrimaryScienceMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.QuestionStatic;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.HotWordLog;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 import com.xueersi.ui.adapter.AdapterItemInterface;
@@ -148,15 +150,13 @@ public class PreSchoolLiveTrainMsgPager extends BasePrimaryScienceMessagePager {
         liveVideoActivity = (Activity) context;
         this.liveMediaControllerBottom = liveMediaControllerBottom;
         this.keyboardShowingListener = keyboardShowingListener;
-        this.liveAndBackDebug = ums;
+        this.liveAndBackDebug = new ContextLiveAndBackDebug(context);
         this.liveMessageEntities = liveMessageEntities;
         this.otherLiveMessageEntities = otherLiveMessageEntities;
         Resources resources = context.getResources();
         nameColors[0] = resources.getColor(R.color.COLOR_FFFFFF);
         nameColors[1] = resources.getColor(R.color.COLOR_E74C3C);
         nameColors[2] = resources.getColor(R.color.COLOR_20ABFF);
-
-
         btMesOpen = liveMediaControllerBottom.getBtMesOpen();
         btMsgCommon = liveMediaControllerBottom.getBtMsgCommon();
         btMessageFlowers = liveMediaControllerBottom.getBtMessageFlowers();
@@ -853,6 +853,7 @@ public class PreSchoolLiveTrainMsgPager extends BasePrimaryScienceMessagePager {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String msg = mHotwordCmd[position];
+                upLoadHotWordLog(msg);
                 if (ircState.openchat()) {
                     if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {
                         boolean send = ircState.sendMessage(msg, "");
@@ -877,6 +878,22 @@ public class PreSchoolLiveTrainMsgPager extends BasePrimaryScienceMessagePager {
                 }
             }
         });
+    }
+
+    /**
+     * 热词埋点日志
+     * @param hotwordCmd  热词指令
+     */
+    private void upLoadHotWordLog(String hotwordCmd) {
+        try {
+            Log.e("PreSchoolTrac","==>upLoadHotWordLog:"+hotwordCmd +":"+getInfo);
+            if(getInfo != null){
+                HotWordLog.hotWordSend(this.liveAndBackDebug,hotwordCmd,HotWordLog.LIVETYPE_PRESCHOOL,
+                        getInfo.getStudentLiveInfo().getClassId(),getInfo.getStudentLiveInfo().getTeamId(),getInfo.getStudentLiveInfo().getCourseId());
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -1681,14 +1698,6 @@ public class PreSchoolLiveTrainMsgPager extends BasePrimaryScienceMessagePager {
                 });
             }
         });
-        // 03.22 体验课播放器统计用户的发送信息
-        if (liveAndBackDebug != null && type == LiveMessageEntity.MESSAGE_MINE) {
-            StableLogHashMap logHashMap = new StableLogHashMap("LiveFreePlayUserMsg");
-            logHashMap.put("LiveFreePlayUserMsg", text);
-            logHashMap.put("eventid", LiveVideoConfig.LIVE_EXPERIENCE_IMMSG);
-            liveAndBackDebug.umsAgentDebugInter(LiveVideoConfig.LIVE_EXPERIENCE_IMMSG, logHashMap.getData());
-        }
-        Loger.e("Duncan", "sender:" + sender);
     }
 
     @Override
@@ -1701,6 +1710,7 @@ public class PreSchoolLiveTrainMsgPager extends BasePrimaryScienceMessagePager {
         this.otherMessageAdapter = otherMessageAdapter;
     }
 
+    @Override
     public void onGetMyGoldDataEvent(String goldNum) {
         this.goldNum = goldNum;
         tvMessageGold.setText(goldNum);

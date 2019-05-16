@@ -28,6 +28,7 @@ import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.common.business.UserBll;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -50,11 +51,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTouchEventLayout;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.adapter.HalfBodyHotWordAdapter;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.adapter.HalfBodyHotWordHolder;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.BaseLiveMessagePager;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.ContextLiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.LiveMessageEmojiParser;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.HotWordLog;
 import com.xueersi.ui.adapter.CommonAdapter;
 
 import org.json.JSONException;
@@ -183,7 +186,7 @@ public class PreSchoolLiveMainMsgPager extends BaseLiveMessagePager {
 
     public PreSchoolLiveMainMsgPager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                      LiveAndBackDebug ums, BaseLiveMediaControllerBottom
-                                               liveMediaControllerBottom,BaseLiveMediaControllerTop controllerTop ,ArrayList<LiveMessageEntity>
+                                             liveMediaControllerBottom,BaseLiveMediaControllerTop controllerTop ,ArrayList<LiveMessageEntity>
                                                liveMessageEntities, ArrayList<LiveMessageEntity>
                                                otherLiveMessageEntities) {
         super(context);
@@ -191,7 +194,7 @@ public class PreSchoolLiveMainMsgPager extends BaseLiveMessagePager {
         this.liveMediaControllerBottom = liveMediaControllerBottom;
         this.liveMediaControllerTop = controllerTop;
         this.keyboardShowingListener = keyboardShowingListener;
-        this.liveAndBackDebug = ums;
+        this.liveAndBackDebug = new ContextLiveAndBackDebug(context);
         this.liveMessageEntities = liveMessageEntities;
         this.otherLiveMessageEntities = otherLiveMessageEntities;
 
@@ -619,6 +622,21 @@ public class PreSchoolLiveMainMsgPager extends BaseLiveMessagePager {
         });
     }
 
+    /**
+     * 热词埋点日志
+     * @param hotwordCmd  热词指令
+     */
+    private void upLoadHotWordLog(String hotwordCmd) {
+        try {
+            if(getInfo != null){
+                HotWordLog.hotWordSend(this.liveAndBackDebug,hotwordCmd,HotWordLog.LIVETYPE_PRESCHOOL,
+                        getInfo.getStudentLiveInfo().getClassId(),getInfo.getStudentLiveInfo().getTeamId(),getInfo.getStudentLiveInfo().getCourseId());
+            }
+        }catch (Exception e){
+             e.printStackTrace();
+        }
+    }
+
 
     /**
      * 切换聊天状态
@@ -671,6 +689,7 @@ public class PreSchoolLiveMainMsgPager extends BaseLiveMessagePager {
 
     private void sendHotWord(String msg) {
         hideBottomMediaCtr(0);
+        upLoadHotWordLog(msg);
         if (ircState.openchat()) {
             if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {
                 boolean send = ircState.sendMessage(msg, "");
