@@ -37,6 +37,5 @@ public class HotWordLog {
         logHashMap.put("teamid", teamid);
         logHashMap.put("courseid", courseid);
         liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap);
-
     }
 }
