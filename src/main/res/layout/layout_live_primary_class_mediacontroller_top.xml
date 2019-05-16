@@ -7,7 +7,7 @@
     <RelativeLayout
         android:id="@id/rl_video_mediacontroller_info_panel"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_alignParentTop="true">
         <!-- 退出按钮 （横屏的时候变成竖屏，竖屏的时候退出当前Activity） -->
         <ImageView
@@ -17,7 +17,6 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
-            android:layout_marginTop="14dp"
             android:contentDescription="@string/content_desc_lock"
             android:scaleType="centerCrop"
             android:src="@drawable/selector_live_navbar_icon_back_normal" />
@@ -28,12 +27,13 @@
             android:id="@id/tv_video_mediacontroller_filename"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_toRightOf="@id/iv_video_mediacontroller_back"
+            android:gravity="center_vertical"
             android:singleLine="true"
             android:textColor="@android:color/white"
             android:textSize="16sp"
             android:textStyle="bold" />
-
 
         <!-- 横竖屏切换 -->
         <ImageView
@@ -54,5 +54,6 @@
             android:layout_alignParentRight="true"
             android:src="@drawable/bg_bt_live_mark"
             android:visibility="gone" />
+
     </RelativeLayout>
 </RelativeLayout>

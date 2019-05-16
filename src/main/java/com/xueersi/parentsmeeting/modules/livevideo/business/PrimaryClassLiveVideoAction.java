@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.content.res.ResourcesCompat;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -400,18 +401,12 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
         logger.d("setMargin:mode=" + mode);
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlContent.getLayoutParams();
         if (LiveTopic.MODE_CLASS.equals(mode)) {
-            final Bitmap bitmap = ((BitmapDrawable) ivLivePrimaryClassKuangjiaImgNormal.getDrawable()).getBitmap();
-            float scale = (float) bitmap.getWidth() / 1328f;
-            lp.leftMargin = (int) (13 * scale);
-            lp.bottomMargin = (int) (13 * scale);
-            lp.rightMargin = (int) (219 * scale);
-            lp.topMargin = (int) (96 * scale);
+            ivLivePrimaryClassKuangjiaImgNormal.setVisibility(View.VISIBLE);
             lp.addRule(RelativeLayout.ALIGN_LEFT, ivLivePrimaryClassKuangjiaImgNormal.getId());
             lp.addRule(RelativeLayout.ALIGN_TOP, ivLivePrimaryClassKuangjiaImgNormal.getId());
             lp.addRule(RelativeLayout.ALIGN_RIGHT, ivLivePrimaryClassKuangjiaImgNormal.getId());
             lp.addRule(RelativeLayout.ALIGN_BOTTOM, ivLivePrimaryClassKuangjiaImgNormal.getId());
-            ivLivePrimaryClassKuangjiaImgNormal.setVisibility(View.VISIBLE);
-            ImageScale.setImageViewWidth(ivLivePrimaryClassKuangjiaImgNormal);
+            setImageViewWidth(ivLivePrimaryClassKuangjiaImgNormal);
             rl_course_video_contentview.setBackgroundResource(primaryClassView.getBackImg());
         } else {
             lp.leftMargin = 0;
@@ -424,8 +419,35 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
             lp.addRule(RelativeLayout.ALIGN_BOTTOM, 0);
             ivLivePrimaryClassKuangjiaImgNormal.setVisibility(View.GONE);
             rl_course_video_contentview.setBackgroundColor(activity.getResources().getColor(R.color.white));
+            rlContent.setLayoutParams(lp);
         }
-        rlContent.setLayoutParams(lp);
+    }
+
+    public void setImageViewWidth(final ImageView imageView) {
+        Drawable drawable = imageView.getDrawable();
+        final Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+        imageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                imageView.getViewTreeObserver().removeOnPreDrawListener(this);
+                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
+//            lp.height = bitmap.getHeight();
+                int width = (int) ((float) imageView.getHeight() / (float) bitmap.getHeight() * (float) bitmap.getWidth());
+                if (width != lp.width) {
+                    lp.width = width;
+                    imageView.setLayoutParams(lp);
+                    logger.d("setImageViewWidth:width=" + width);
+                }
+                lp = (RelativeLayout.LayoutParams) rlContent.getLayoutParams();
+                float scale = (float) width / 1328f;
+                lp.leftMargin = (int) (13 * scale);
+                lp.bottomMargin = (int) (13 * scale);
+                lp.rightMargin = (int) (219 * scale);
+                lp.topMargin = (int) (96 * scale);
+                rlContent.setLayoutParams(lp);
+                return false;
+            }
+        });
     }
 
     private int getClassBeforStateImg() {

@@ -101,7 +101,7 @@ public class HalfBodyPrimaryLiveMessagePager extends BaseLiveMessagePager {
      * @return
      */
     protected int getLayoutId() {
-        return R.layout.page_livevideo_message_halfbody;
+        return R.layout.page_livevideo_message_halfbody_primary;
     }
 
     @Override

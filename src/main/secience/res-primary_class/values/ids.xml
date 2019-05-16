@@ -7,5 +7,5 @@
     <item name="tv_livevideo_primary_team_my_text" type="id" />
     <item name="tv_livevideo_primary_team_other_lable" type="id" />
     <item name="tv_livevideo_primary_team_other_text" type="id" />
-    <item name="pg_livevideo_primary_team_info_prog" type="id" />
+    <!--<item name="pg_livevideo_primary_team_info_prog" type="id" />-->
 </resources>

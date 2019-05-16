@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.widget;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -168,6 +169,14 @@ public class LivePrimaryClassMediaControllerBottom extends BaseLiveMediaControll
         noticeUIChange();
     }
 
+    @Override
+    protected void findViewItems() {
+        super.findViewItems();
+        Button btMsgCommon = getBtMsgCommon();
+        if (btMsgCommon == null) {
+            logger.e("findViewItems", new Exception());
+        }
+    }
 
     /**
      * 通知UI 状态改变

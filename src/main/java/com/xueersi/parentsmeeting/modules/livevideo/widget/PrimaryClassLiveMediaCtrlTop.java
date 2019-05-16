@@ -11,16 +11,17 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 
 /**
-*半身直播 顶部控制栏
-*@author chekun
-*created  at 2018/12/4 16:28
-*/
+ * 半身直播 顶部控制栏
+ *
+ * @author linyuqiang
+ * created  at 2019/5/16 16:28
+ */
 public class PrimaryClassLiveMediaCtrlTop extends BaseLiveMediaControllerTop {
 
     String mode = LiveTopic.MODE_TRANING;
     private View mainLiveView;
     private View tranLiveView;
-    /**直播间初始化参数**/
+    /** 直播间初始化参数 **/
     private LiveGetInfo mRoomInitData;
     private String mVideoName;
 
@@ -31,19 +32,19 @@ public class PrimaryClassLiveMediaCtrlTop extends BaseLiveMediaControllerTop {
 
     @Override
     protected View inflateLayout() {
-         View view;
+        View view;
 
-         if(mRoomInitData == null){
-             return super.inflateLayout();
-         }
+        if (mRoomInitData == null) {
+            return super.inflateLayout();
+        }
 
-        if(isChHalfBodyLive()){
+        if (isChHalfBodyLive()) {
             view = initChMediaCtr();
-        }else{
+        } else {
             view = initScienceMediaCtr();
         }
 
-        return  view;
+        return view;
     }
 
 
@@ -60,13 +61,13 @@ public class PrimaryClassLiveMediaCtrlTop extends BaseLiveMediaControllerTop {
             view = mainLiveView;
             addView(view);
         } else {
-            if(tranLiveView == null){
-                tranLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_top,this, false);
+            if (tranLiveView == null) {
+                tranLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_top, this, false);
             }
             view = tranLiveView;
             addView(view);
         }
-        return  view;
+        return view;
     }
 
 
@@ -83,18 +84,19 @@ public class PrimaryClassLiveMediaCtrlTop extends BaseLiveMediaControllerTop {
             view = mainLiveView;
             addView(view);
         } else {
-            if(tranLiveView == null){
-                tranLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_top,this, false);
+            if (tranLiveView == null) {
+                tranLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_top, this, false);
             }
             view = tranLiveView;
             addView(view);
         }
-        return  view;
+        return view;
     }
 
 
     /**
      * 是否是语文半身直播
+     *
      * @return
      */
     private boolean isChHalfBodyLive() {
@@ -105,7 +107,7 @@ public class PrimaryClassLiveMediaCtrlTop extends BaseLiveMediaControllerTop {
 
     @Override
     public void setAutoOrientation(boolean autoOrientation) {
-        if(LiveTopic.MODE_TRANING.equals(mode)){
+        if (LiveTopic.MODE_TRANING.equals(mode)) {
             super.setAutoOrientation(autoOrientation);
         }
     }
@@ -118,17 +120,18 @@ public class PrimaryClassLiveMediaCtrlTop extends BaseLiveMediaControllerTop {
 
     @Override
     public void setMarkPointsOp(boolean isShow, OnClickListener listener) {
-        if(LiveTopic.MODE_TRANING.equals(mode)){
-            super.setMarkPointsOp(isShow,listener);
+        if (LiveTopic.MODE_TRANING.equals(mode)) {
+            super.setMarkPointsOp(isShow, listener);
         }
     }
 
     /**
      * 主辅导且切换
+     *
      * @param mode
      * @param getInfo
      */
-    public void onModeChange(String mode,LiveGetInfo getInfo){
+    public void onModeChange(String mode, LiveGetInfo getInfo) {
         mRoomInitData = getInfo;
         this.mode = mode;
         removeAllViewsInLayout();
@@ -137,12 +140,18 @@ public class PrimaryClassLiveMediaCtrlTop extends BaseLiveMediaControllerTop {
         showVideoName();
     }
 
+    @Override
+    protected void findViewItems() {
+        super.findViewItems();
+    }
+
     /**
      * 显示视频名称
      */
     private void showVideoName() {
-        if(LiveTopic.MODE_TRANING.equals(mode) || isChHalfBodyLive()){
-            super.setFileName(mVideoName);
-        }
+//        if(LiveTopic.MODE_TRANING.equals(mode) || isChHalfBodyLive()){
+//            super.setFileName(mVideoName);
+//        }
+        super.setFileName(mVideoName);
     }
 }
