@@ -438,7 +438,6 @@ public class SmallChineseLiveMessagePager extends BaseSmallChineseLiveMessagePag
         super.initListener();
         rlLivevideoCommonWord = (RelativeLayout) liveMediaControllerBottom.findViewById(R.id.rl_livevideo_common_word);
 
-        Log.e("SmallChinese", "=========>initListener:" + liveMediaControllerBottom.getClass().getSimpleName());
         //聊天，设置监听器
         btMesOpen.setOnClickListener(new View.OnClickListener() {
             @Override

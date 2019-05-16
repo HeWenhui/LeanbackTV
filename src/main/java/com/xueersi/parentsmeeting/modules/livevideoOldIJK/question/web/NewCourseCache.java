@@ -253,7 +253,6 @@ public class NewCourseCache {
                     WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "",
                             inputStream);
                     webResourceResponse.setResponseHeaders(header);
-                    Log.e("Duncan", "artsload");
                     return webResourceResponse;
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();

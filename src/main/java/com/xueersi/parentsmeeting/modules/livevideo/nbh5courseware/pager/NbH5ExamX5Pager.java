@@ -238,7 +238,6 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                                         CacheWebView cacheWebView = (CacheWebView) wvSubjectWeb;
                                         cacheWebView.setCacheStrategy(WebViewCache.CacheStrategy.NORMAL);
                                         cacheWebView.clearCache();
-                                        Log.e("NbH5ExamX5Pager","=====>onClick clear_cache");
                                     }
                                 }
                             }
@@ -323,7 +322,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
         }else{
             sb.append("&testMode=1");
         }
-        Log.e("NbH5ExamX5Pager", "=====>showResultPager:" + sb.toString());
+        //Log.e("NbH5ExamX5Pager", "=====>showResultPager:" + sb.toString());
         wvSubjectWeb.loadUrl(sb.toString());
     }
 
@@ -445,11 +444,9 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                 showStepResult(correctNum, event.getResponseStr());
                 break;
             case NbCourseEvent.EVENT_TYPE_TOGGLEPACKUP:
-                Log.e("NbH5ExamX5Pager","======>onNbCourseEvent goback:"+wvSubjectWeb.canGoBack());
                 hideResult();
                 break;
             case NbCourseEvent.EVENT_TYPE_INTOTESTMODE:
-                Log.e("NbH5ExamX5Pager","======>onNbCourseEvent intoTestMode:");
                 currentMode = MODE_TEST;
                 intoTestMode();
                 break;
@@ -459,7 +456,6 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                     JSONObject jsonObject = new JSONObject(data);
                     String highrightcount = jsonObject.optString("rightCount","0");
                     String goldcount =jsonObject.optString("highGold","0");
-                    Log.e("NbH5ExamX5Pager","======>onNbCourseEvent onPageResult:"+highrightcount+":"+goldcount);
                     NbCourseLog.sno7(liveAndBackDebug,mCourseWareEntity.getExperimentId(),mCourseWareEntity.isPlayBack(),"1",highrightcount,goldcount);
                 }catch (Exception e){
                     e.printStackTrace();

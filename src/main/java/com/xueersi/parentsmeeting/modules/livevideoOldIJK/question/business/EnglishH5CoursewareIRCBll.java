@@ -738,7 +738,6 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                                         onAnswerReslut.onAnswerReslut(videoQuestionLiveEntity, entity);
                                     }
                                     EventBus.getDefault().post(new ArtsAnswerResultEvent(responseEntity.getJsonObject().toString(), ArtsAnswerResultEvent.TYPE_VOICE_SELECT_BLANK));
-                                    Log.e("EnglisH5IRC", "====>send answerResultEvent called:" + responseEntity.getJsonObject());
                                 }
 
                                 @Override

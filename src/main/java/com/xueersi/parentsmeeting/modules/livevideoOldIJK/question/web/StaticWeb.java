@@ -31,7 +31,6 @@ public class StaticWeb {
      */
     @JavascriptInterface
     public void postMessage(String jsonStr) {
-        Log.e(TAG,"=====>postMessage:"+jsonStr);
         if (!("" + jsonStr).contains("errorInfo")) {
             logToFile.d("postMessage:jsonStr=" + jsonStr);
         }
@@ -68,12 +67,9 @@ public class StaticWeb {
     public void onReceive(String jsonStr) {
         CALL_TIMES++;
         logToFile.d("onReceive:jsonStr=" + jsonStr + ",times=" + CALL_TIMES);
-        Log.e(TAG,"=====>onReceive:"+jsonStr);
-
     }
 
     public static void sendToCourseware(final WebView wvSubjectWeb, final JSONObject type, String data) {
-        Log.e(TAG,"=====>sendToCourseware: "+data);
         final LogToFile logToFile = new LogToFile(wvSubjectWeb.getContext(), TAG);
         final int old = CALL_TIMES;
         wvSubjectWeb.loadUrl("javascript:sendToCourseware(" + type + ",'" + data + "')");
