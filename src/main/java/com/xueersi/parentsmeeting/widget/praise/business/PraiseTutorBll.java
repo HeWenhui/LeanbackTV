@@ -58,7 +58,7 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
         // 模式切换为主讲，关闭表扬榜
-        if (praisePager != null && mode.equals(LiveTopic.MODE_TRANING)) {
+        if (praisePager != null && oldMode.equals(LiveTopic.MODE_TRANING)) {
             praisePager.closePraisePager();
         }
     }
