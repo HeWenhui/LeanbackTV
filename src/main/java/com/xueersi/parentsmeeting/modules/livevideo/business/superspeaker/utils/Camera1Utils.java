@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils;
 
 import android.hardware.Camera;
-import android.media.CamcorderProfile;
 import android.media.MediaRecorder;
 import android.os.Handler;
 import android.os.Looper;
@@ -75,10 +74,8 @@ public class Camera1Utils implements IRecordVideoView {
                 camera = Camera.open(cameraInfo.facing);
             }
         }
-
 //        Camera camera = Camera.open(MediaRecorder.VideoSource.CAMERA);
 //        camera = Camera.open(isFacingBack ? Camera.CameraInfo.CAMERA_FACING_BACK : Camera.CameraInfo.CAMERA_FACING_FRONT);
-
         try {
             camera.setPreviewDisplay(surfaceHolder);
         } catch (IOException e) {
@@ -99,27 +96,39 @@ public class Camera1Utils implements IRecordVideoView {
     // FIXME: 2019/5/14
     //https://bugly.qq.com/v2/crash-reporting/crashes/a0df5ed682/1120?pid=1  1120
     public void releaseCamera() {
-        try {
-
-
-            if (camera != null) {
-                //停掉原来摄像头的预览
-                camera.stopPreview();
-                //移除回调
-                camera.setPreviewCallback(null);
-                //释放资源
-                camera.release();
-                //取消原来摄像头
-                camera = null;
-            }
-//            if (mediarecorder != null) {
-//                mediarecorder.stop();
-//                mediarecorder.release();
-//            mediarecorder = null;
-//            }
-        } catch (Exception e) {
-            e.printStackTrace();
+//        Observable.
+//                just(true).
+//                subscribeOn(Schedulers.io()).
+//                subscribe(new Consumer<Boolean>() {
+//                    @Override
+//                    public void accept(Boolean aBoolean) throws Exception {
+        if (camera != null) {
+            //停掉原来摄像头的预览
+            camera.stopPreview();
+            //移除回调
+            camera.setPreviewCallback(null);
+            //释放资源
+            camera.release();
+            //取消原来摄像头
+            camera = null;
         }
+        if (mediarecorder != null) {
+            mediarecorder.stop();
+            mediarecorder.release();
+            mediarecorder = null;
+        }
+//                    }
+//                }, new Consumer<Throwable>() {
+//                    @Override
+//                    public void accept(Throwable throwable) throws Exception {
+//                        logger.i(throwable);
+//                    }
+//                });
+//        try {
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     private Camera.Size getFitSize(List<Camera.Size> sizes, int realWidth, int realHeight) {
@@ -143,20 +152,19 @@ public class Camera1Utils implements IRecordVideoView {
      * 通过系统的CamcorderProfile设置MediaRecorder的录制参数
      * 首先查看系统是否包含对应质量的封装参数，然后再设置，根据具体需要的视频质量进行判断和设置
      */
-    private void setProfile() {
-        CamcorderProfile profile = null;
-        if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_1080P)) {
-            profile = CamcorderProfile.get(CamcorderProfile.QUALITY_1080P);
-        } else if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_720P)) {
-            profile = CamcorderProfile.get(CamcorderProfile.QUALITY_720P);
-        } else if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_480P)) {
-            profile = CamcorderProfile.get(CamcorderProfile.QUALITY_480P);
-        }
-        if (profile != null) {
-            mediarecorder.setProfile(profile);
-        }
-    }
-
+//    private void setProfile() {
+//        CamcorderProfile profile = null;
+//        if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_1080P)) {
+//            profile = CamcorderProfile.get(CamcorderProfile.QUALITY_1080P);
+//        } else if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_720P)) {
+//            profile = CamcorderProfile.get(CamcorderProfile.QUALITY_720P);
+//        } else if (CamcorderProfile.hasProfile(CamcorderProfile.QUALITY_480P)) {
+//            profile = CamcorderProfile.get(CamcorderProfile.QUALITY_480P);
+//        }
+//        if (profile != null) {
+//            mediarecorder.setProfile(profile);
+//        }
+//    }
     @Override
     public boolean startRecordVideo() {
 //        camera.release();
@@ -180,7 +188,7 @@ public class Camera1Utils implements IRecordVideoView {
         // 设置录制的视频编码h263 h264
         mediarecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
         // 视频码率
-        mediarecorder.setVideoEncodingBitRate((int) (1920 * 1080 * 0.5f));
+        mediarecorder.setVideoEncodingBitRate((int) (1280 * 720 * 0.6f));
 
         // 设置视频录制的分辨率。必须放在设置编码和格式的后面，否则报错
         mediarecorder.setVideoSize(cameraSize.width, cameraSize.height);
@@ -240,13 +248,13 @@ public class Camera1Utils implements IRecordVideoView {
             // 停止录制
             isStop.set(true);
             try {
-                mediarecorder.stop();
+//                mediarecorder.stop();
                 volum = volumSum / volumNum;
                 // 释放资源
-
 //                mediarecorder.release();
-//                releaseCamera();
-                mediarecorder = null;
+                //                mediarecorder = null;
+                releaseCamera();
+
             } catch (Exception e) {
                 logger.e(e.toString());
                 e.printStackTrace();

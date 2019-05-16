@@ -144,14 +144,20 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
     @Override
     public void release() {
-        activity.findViewById(R.id.vv_course_video_video).setVisibility(View.GONE);
+        View view = activity.findViewById(R.id.vv_course_video_video);
+        if (view != null) {
+            view.setVisibility(View.GONE);
+        }
         stopPlay();
     }
 
     @Override
     public void playVideo() {
         if (MediaPlayer.getIsNewIJK()) {
-            activity.findViewById(R.id.vv_course_video_video).setVisibility(View.VISIBLE);
+            View view = activity.findViewById(R.id.vv_course_video_video);
+            if (view != null) {
+                view.setVisibility(View.VISIBLE);
+            }
             psRePlay(false);
         }
     }

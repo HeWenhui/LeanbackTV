@@ -62,9 +62,9 @@ public class TimeUtils {
         if (h != 0) {
             stringBuilder.append(sh + "时");
         }
-        if (d != 0) {
-            stringBuilder.append(sd + "分");
-        }
+//        if (d != 0) {
+        stringBuilder.append(sd + "分");
+//        }
 //        if (s != 0) {
         stringBuilder.append(ss + "秒");
 //        }

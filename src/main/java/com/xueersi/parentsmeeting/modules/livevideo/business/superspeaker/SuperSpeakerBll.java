@@ -37,7 +37,6 @@ import io.reactivex.functions.Function;
 import okhttp3.Call;
 
 public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicAction, ISuperSpeakerContract.ICameraPresenter {
-//    ISuperSpeakerContract.ICameraView iView;
 
     public SuperSpeakerBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -47,8 +46,50 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
         super.initView(bottomContent, mIsLand);
-//        if (AppConfig.DEBUG) {
+        if (AppConfig.DEBUG) {
 //            if (bottomContent != null) {
+//                ObservableDelay.just(true).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Boolean>() {
+//                    @Override
+//                    public void accept(Boolean aBoolean) throws Exception {
+//
+//                    }
+//                });
+
+            Observable.just(true).
+                    delay(2, TimeUnit.SECONDS).
+                    observeOn(AndroidSchedulers.mainThread()).
+                    subscribe(new Consumer<Boolean>() {
+                        @Override
+                        public void accept(Boolean aBoolean) throws Exception {
+                            logger.i("accept");
+                            mGetInfo.setId(String.valueOf(454400));
+                            courseWareId = String.valueOf(1);
+                            srcType = String.valueOf(40);
+                            performShowRecordCamera(10, 65);
+
+                        }
+                    });
+//        subscribe(new Observer<Boolean>() {
+//    @Override
+//    public void onSubscribe(Disposable d) {
+//
+//    }
+//
+//    @Override
+//    public void onNext(Boolean aBoolean) {
+//        logger.i("onNext");
+//    }
+//
+//    @Override
+//    public void onError(Throwable e) {
+//        logger.i("onError");
+//    }
+//
+//    @Override
+//    public void onComplete() {
+//        logger.i("onComplete");
+//    }
+//});
 //                bottomContent.postDelayed(new Runnable() {
 //                    @Override
 //                    public void run() {
@@ -57,9 +98,9 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
 //                        srcType = String.valueOf(40);
 //                        performShowRecordCamera(10, 65);
 //                    }
-//                }, 10000);
+//                }, 3000);
 //            }
-//        }
+        }
     }
 
     @Override
@@ -76,18 +117,19 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                         " recordVideoTotalTime:" + recordVideoTotalTime +
                         " answerTime:" + answerTime);
 
-                Observable.create(new ObservableOnSubscribe<Boolean>() {
-
-                    @Override
-                    public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
-                        e.onNext(data.optBoolean("open"));
-                        e.onComplete();
-                    }
-                }).observeOn(AndroidSchedulers.mainThread()).
+                Observable.
+                        create(new ObservableOnSubscribe<Boolean>() {
+                            @Override
+                            public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
+                                e.onNext(data.optBoolean("open"));
+                                e.onComplete();
+                            }
+                        }).
+                        observeOn(AndroidSchedulers.mainThread()).
                         subscribe(new Consumer<Boolean>() {
                             @Override
                             public void accept(Boolean bol) throws Exception {
-                                VPlayerListenerReg reg = ProxUtil.getProxUtil().get(mContext, VPlayerListenerReg.class);
+//                                VPlayerListenerReg reg = ProxUtil.getProxUtil().get(mContext, VPlayerListenerReg.class);
                                 if (bol) {
 //                                    LiveEventBus.getDefault(mContext).post();
 //                                    if (reg != null) {
@@ -99,42 +141,15 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                                 } else {
                                     if (superSpeakerBridge != null) {
                                         superSpeakerBridge.timeUp();
-                                        logger.i("开始播放");
-                                        if (reg != null) {
-                                            reg.playVideo();
-                                        }
+//                                        logger.i("开始播放");
+//                                        if (reg != null) {
+//                                            reg.playVideo();
+//                                        }
                                     }
                                 }
                             }
                         });
-//                Observable observable = Observable.just(data.optBoolean("open"));
-//                final Observable finalObservable = observable;
-//                observable.
-//                        observeOn(AndroidSchedulers.mainThread()).
-//                        doOnNext(new Consumer<Boolean>() {
-//                            @Override
-//                            public void accept(Boolean o) throws Exception {
-//                                if (o) {
-//                                    showAnima();
-//                                    finalObservable.delay(2, TimeUnit.SECONDS);
-//                                }
-//                            }
-//                        }).subscribe(new Consumer() {
-//                    @Override
-//                    public void accept(Object o) throws Exception {
-//
-//                    }
-//                });
-//                if (data.optBoolean("open")) {
-//                    observable = observable.delay(2, TimeUnit.SECONDS);
-//                }
 
-
-//                if (open == 1) {
-//                    performShowRecordCamera();
-//                } else {
-//                    iView.timeUp();
-//                }
                 break;
             }
             default: {
@@ -189,52 +204,39 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                 srcType = dataJson.optString("srcType");
                 final int recordVideoTotalTime = dataJson.optInt("recordTime");
                 final int answerTime = dataJson.optInt("answerTime");
-                Observable.create(new ObservableOnSubscribe<Boolean>() {
-                    @Override
-                    public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
-                        e.onNext(dataJson.optBoolean("open"));
-                        e.onComplete();
-                    }
-                }).map(new Function<Boolean, Boolean>() {
-                    @Override
-                    public Boolean apply(Boolean bol) throws Exception {
-                        //1打开试题并且点击提交按钮
-                        return bol && ShareDataManager.getInstance().getInt(
-                                ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + mGetInfo.getId() + "_" + courseWareId,
-                                0,
-                                ShareDataManager.SHAREDATA_NOT_CLEAR) == 0;
-
-                    }
-                }).doOnNext(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean aBoolean) throws Exception {
-                        showAnima();
-                    }
-                }).delay(2, TimeUnit.SECONDS).
-                        observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Consumer<Boolean>() {
+//                Observable.
+//                        create(new ObservableOnSubscribe<Boolean>() {
+//                            @Override
+//                            public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
+//                                e.onNext(dataJson.optBoolean("open"));
+//                                e.onComplete();
+//                            }
+//                        }).
+//                        map(new Function<Boolean, Boolean>() {
+//                            @Override
+//                            public Boolean apply(Boolean bol) throws Exception {
+//                                //1打开试题并且点击提交按钮
+//                                return bol && ShareDataManager.getInstance().getInt(
+//                                        ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + mGetInfo.getId() + "_" + courseWareId,
+//                                        0,
+//                                        ShareDataManager.SHAREDATA_NOT_CLEAR) == 0;
+//
+//                            }
+//                        }).
+//                        doOnNext(new Consumer<Boolean>() {
+//                            @Override
+//                            public void accept(Boolean aBoolean) throws Exception {
+//                                if (aBoolean) {
+//                                    showAnima();
+//                                }
+//                            }
+//                        }).
+//                        delay(2, TimeUnit.SECONDS).
+                createObserValbeDelay(dataJson.optBoolean("open")).
+                        observeOn(AndroidSchedulers.mainThread()).
+                        subscribe(new Consumer<Boolean>() {
                             @Override
                             public void accept(Boolean bool) throws Exception {
-
-                                VPlayerListenerReg reg = ProxUtil.getProxUtil().get(mContext, VPlayerListenerReg.class);
-                                if (bool) {
-//                                    LiveEventBus.getDefault(mContext).post();
-//                                    if (reg != null) {
-//                                        reg.release();
-//                                    }
-//                                    logger.i("停止播放");
-//                                    basePlayerFragment.release();
-                                    performShowRecordCamera(answerTime, recordVideoTotalTime);
-                                }
-//                                else {
-//                                    if (superSpeakerBridge != null) {
-//                                        superSpeakerBridge.timeUp();
-//                                        logger.i("开始播放");
-//                                        if (reg != null) {
-//                                            reg.playVideo();
-//                                        }
-//                                    }
-//                                }
                                 if (bool) {
                                     performShowRecordCamera(answerTime, recordVideoTotalTime);
                                 }
@@ -246,6 +248,41 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
             }
         }
     }
+
+    private Observable createObserVable(boolean is) {
+        return Observable.
+                just(is).
+                map(new Function<Boolean, Boolean>() {
+                    @Override
+                    public Boolean apply(Boolean bol) throws Exception {
+                        //1打开试题并且点击提交按钮
+                        return bol && ShareDataManager.getInstance().getInt(
+                                ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + mGetInfo.getId() + "_" + courseWareId,
+                                0,
+                                ShareDataManager.SHAREDATA_NOT_CLEAR) == 0;
+
+                    }
+                }).
+                observeOn(AndroidSchedulers.mainThread()).
+                doOnNext(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) throws Exception {
+                        if (aBoolean) {
+                            showAnima();
+                        }
+                    }
+                });
+    }
+
+    private Observable createObserValbeDelay(boolean is) {
+        if (is) {
+            return createObserVable(is).delay(2, TimeUnit.SECONDS);
+        } else {
+            return createObserVable(is);
+        }
+
+    }
+
 
     SuperSpeakerBridge superSpeakerBridge;
 

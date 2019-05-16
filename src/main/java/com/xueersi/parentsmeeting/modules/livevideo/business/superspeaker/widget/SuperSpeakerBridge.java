@@ -22,6 +22,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
 
 public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBridge, ISuperSpeakerContract.IRedPackagePresenter {
     private Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
@@ -211,10 +216,6 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
     }
 
     private ServiceConnection serviceConnection;
-//            = new ServiceConnection() {
-
-
-//    };
 
     private class UploadServiceConnction implements ServiceConnection {
         private UploadVideoService mService;
@@ -297,22 +298,55 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
 //    }
 
     @Override
-    public void removeView(View view) {
-        if (iCameraPresenter != null) {
-            iCameraPresenter.showAnima();
-        }
-        if (view.getParent() == parentView) {
-//            if(serviceConnection!=null) {
-            //            mContext.unbindService(serviceConnection);
-//            }
-            if (serViceIntent != null) {
-                mContext.stopService(serViceIntent);
-            }
-            parentView.removeView(view);
-        }
-        if (iCameraPresenter != null) {
-            iCameraPresenter.startLiveVideo();
-        }
+    public void removeView(final View view) {
+        Observable.
+                just(true).
+                observeOn(AndroidSchedulers.mainThread()).
+                doOnNext(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) throws Exception {
+                        if (iCameraPresenter != null) {
+                            iCameraPresenter.showAnima();
+                        }
+                        logger.i("nowtime:" + System.currentTimeMillis());
+                    }
+                }).
+                delay(2, TimeUnit.SECONDS).//delay走的子线程
+                observeOn(AndroidSchedulers.mainThread()).
+                doOnNext(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) throws Exception {
+                        logger.i("进入doOnNxt " + System.currentTimeMillis());
+                        if (view.getParent() == parentView) {
+                            if (serviceConnection != null) {
+                                mContext.unbindService(serviceConnection);
+                            }
+                            if (serViceIntent != null) {
+                                mContext.stopService(serViceIntent);
+                            }
+                            logger.i("移除view");
+                            parentView.removeView(view);
+                        } else {
+                            logger.i("view 父布局不是parentView");
+                        }
+                    }
+                }).
+                subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) throws Exception {
+                        if (iCameraPresenter != null) {
+                            logger.i("开始播放直播");
+                            iCameraPresenter.startLiveVideo();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        logger.i(throwable);
+                    }
+                });
+
+
     }
 
     @Override
