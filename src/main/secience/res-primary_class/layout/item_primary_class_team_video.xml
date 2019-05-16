@@ -62,7 +62,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
-    <ImageView
+    <com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.VoiceImageView
         android:id="@id/iv_livevideo_primary_team_voice_voice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
