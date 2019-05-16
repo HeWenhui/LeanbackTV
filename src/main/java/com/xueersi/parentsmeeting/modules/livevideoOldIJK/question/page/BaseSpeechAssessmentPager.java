@@ -30,6 +30,7 @@ public abstract class BaseSpeechAssessmentPager extends LiveBasePager {
             logger.d(TAG + ":setVolume:0");
             StableLogHashMap stableLogHashMap = new StableLogHashMap("stop");
             stableLogHashMap.put("tag", TAG);
+            stableLogHashMap.put("creattime", "" + creattime);
             umsAgentDebugSys(LIVE_STOP_VOLUME, stableLogHashMap);
         } else {
             logger.d(TAG + ":setVolume:null");
@@ -45,11 +46,13 @@ public abstract class BaseSpeechAssessmentPager extends LiveBasePager {
             logger.d("onDestroy:setVolume:1");
             StableLogHashMap stableLogHashMap = new StableLogHashMap("start");
             stableLogHashMap.put("tag", TAG);
+            stableLogHashMap.put("creattime", "" + creattime);
             umsAgentDebugSys(LIVE_STOP_VOLUME, stableLogHashMap);
         } else {
             try {
                 StableLogHashMap stableLogHashMap = new StableLogHashMap("error");
                 stableLogHashMap.put("tag", TAG);
+                stableLogHashMap.put("creattime", "" + creattime);
                 umsAgentDebugSys(LIVE_STOP_VOLUME, stableLogHashMap);
             } catch (Exception e) {
                 CrashReport.postCatchedException(new LiveException(TAG, e));
