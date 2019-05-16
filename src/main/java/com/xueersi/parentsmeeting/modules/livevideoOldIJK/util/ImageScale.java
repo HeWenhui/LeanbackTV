@@ -27,25 +27,6 @@ public class ImageScale {
 //                    return false;
 //                }
 //            });
-    public static void setImageViewWidth(final ImageView imageView) {
-        Drawable drawable = imageView.getDrawable();
-        final Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-        imageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-            @Override
-            public boolean onPreDraw() {
-                imageView.getViewTreeObserver().removeOnPreDrawListener(this);
-                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
-//            lp.height = bitmap.getHeight();
-                int width = (int) ((float) imageView.getHeight() / (float) bitmap.getHeight() * (float) bitmap.getWidth());
-                if (width != lp.width) {
-                    lp.width = width;
-                    imageView.setLayoutParams(lp);
-                    logger.d("setImageViewWidth:width=" + width);
-                }
-                return false;
-            }
-        });
-    }
 
     public static void setTeamPkRight(final View tpkL_teampk_pkstate_root, final ImageView iv_live_primary_class_kuangjia_img_normal) {
         iv_live_primary_class_kuangjia_img_normal.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {

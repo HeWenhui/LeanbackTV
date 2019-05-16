@@ -10,6 +10,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.HalfBodySceneTransAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PrimaryClassLiveVideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.business.PrimaryClassIrcBll;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePrimaryClassMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.PrimaryClassLiveMediaCtrlTop;
@@ -86,5 +87,6 @@ public class PrimaryClassVideoFragment extends LiveVideoFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        LiveVideoPoint.getInstance().clear(activity);
     }
 }

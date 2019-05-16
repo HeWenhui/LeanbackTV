@@ -3,9 +3,11 @@ package com.xueersi.parentsmeeting.modules.livevideo.message.pager;
 import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +19,7 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -107,9 +110,34 @@ public class HalfBodyPrimaryLiveMessagePager extends BaseLiveMessagePager {
     @Override
     public void initData() {
         super.initData();
-        View tpkL_teampk_pkstate_root = mView.findViewById(R.id.tpkL_teampk_pkstate_root);
-        ImageView iv_live_primary_class_kuangjia_img_normal = liveVideoActivity.findViewById(R.id.iv_live_primary_class_kuangjia_img_normal);
-        ImageScale.setTeamPkRight(tpkL_teampk_pkstate_root, iv_live_primary_class_kuangjia_img_normal);
+        final View tpkL_teampk_pkstate_root = mView.findViewById(R.id.tpkL_teampk_pkstate_root);
+        final ImageView iv_live_primary_class_kuangjia_img_normal = liveVideoActivity.findViewById(R.id.iv_live_primary_class_kuangjia_img_normal);
+        setTeamPkRight(tpkL_teampk_pkstate_root, iv_live_primary_class_kuangjia_img_normal);
+        LiveVideoPoint.getInstance().addVideoSizeChange(mContext, new LiveVideoPoint.VideoSizeChange() {
+            @Override
+            public void videoSizeChange(LiveVideoPoint liveVideoPoint) {
+                setTeamPkRight(tpkL_teampk_pkstate_root, iv_live_primary_class_kuangjia_img_normal);
+            }
+        });
+    }
+
+    private void setTeamPkRight(final View tpkL_teampk_pkstate_root, final ImageView iv_live_primary_class_kuangjia_img_normal) {
+        iv_live_primary_class_kuangjia_img_normal.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            @Override
+            public boolean onPreDraw() {
+                iv_live_primary_class_kuangjia_img_normal.getViewTreeObserver().removeOnPreDrawListener(this);
+                int[] losFirst = new int[2];
+                iv_live_primary_class_kuangjia_img_normal.getLocationInWindow(losFirst);
+                final Bitmap bitmap = ((BitmapDrawable) iv_live_primary_class_kuangjia_img_normal.getDrawable()).getBitmap();
+                float scale = (float) bitmap.getWidth() / 1328f;
+                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tpkL_teampk_pkstate_root.getLayoutParams();
+                lp.rightMargin = (int) (237 * scale) + losFirst[0];
+                lp.topMargin = losFirst[1] + SizeUtils.Dp2Px(iv_live_primary_class_kuangjia_img_normal.getContext(), 11);
+                tpkL_teampk_pkstate_root.setLayoutParams(lp);
+                logger.d("setTeamPkRight:rightMargin=" + lp.rightMargin + ",top=" + lp.topMargin);
+                return false;
+            }
+        });
     }
 
     @Override

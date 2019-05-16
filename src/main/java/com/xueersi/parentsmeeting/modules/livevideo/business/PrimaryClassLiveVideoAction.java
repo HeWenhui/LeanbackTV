@@ -97,6 +97,12 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
     private void setKuangjia() {
         ivLivePrimaryClassKuangjiaImgNormal.setImageResource(primaryClassView.getKuangjia());
         setMargin();
+        LiveVideoPoint.getInstance().addVideoSizeChange(activity, new LiveVideoPoint.VideoSizeChange() {
+            @Override
+            public void videoSizeChange(LiveVideoPoint liveVideoPoint) {
+                setMargin();
+            }
+        });
     }
 
     @Override
@@ -432,14 +438,27 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
                 imageView.getViewTreeObserver().removeOnPreDrawListener(this);
                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
 //            lp.height = bitmap.getHeight();
-                int width = (int) ((float) imageView.getHeight() / (float) bitmap.getHeight() * (float) bitmap.getWidth());
-                if (width != lp.width) {
-                    lp.width = width;
-                    imageView.setLayoutParams(lp);
-                    logger.d("setImageViewWidth:width=" + width);
+                float radio = (float) bitmap.getWidth() / (float) bitmap.getHeight();
+                float viewRadio = (float) imageView.getWidth() / (float) imageView.getHeight();
+                int width;
+                if (viewRadio > radio) {
+                    width = (int) ((float) imageView.getHeight() / (float) bitmap.getHeight() * (float) bitmap.getWidth());
+                    if (width != lp.width) {
+                        lp.width = width;
+                        imageView.setLayoutParams(lp);
+                        logger.d("setImageViewWidth:width1=" + width);
+                    }
+                } else {
+                    width = imageView.getWidth();
+                    int height = (int) ((float) imageView.getWidth() / (float) bitmap.getWidth() * (float) bitmap.getHeight());
+                    if (height != lp.height) {
+                        lp.height = height;
+                        imageView.setLayoutParams(lp);
+                        logger.d("setImageViewWidth:width2=" + width);
+                    }
                 }
                 lp = (RelativeLayout.LayoutParams) rlContent.getLayoutParams();
-                float scale = (float) width / 1328f;
+                float scale = (float) width / 1334f;
                 lp.leftMargin = (int) (13 * scale);
                 lp.bottomMargin = (int) (13 * scale);
                 lp.rightMargin = (int) (219 * scale);
