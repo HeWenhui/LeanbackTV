@@ -255,7 +255,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         if(getInfo != null && getInfo.isPreschool()){
             // 幼教
             liveMessagePager = new PreSchoolLiveMainMsgPager(activity, this,
-                    null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+                    null, baseLiveMediaControllerBottom,baseLiveMediaControllerTop,liveMessageLandEntities, null);
         }else{
             if (getInfo != null && getInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
                 // 语文

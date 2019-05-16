@@ -41,7 +41,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CenterAlignImageSpan;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMediaCtrlTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMsgRecycelView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTouchEventLayout;
@@ -99,6 +101,8 @@ public class PreSchoolLiveMainMsgPager extends BaseLiveMessagePager {
      */
     private long lastSendMsg;
     private BaseLiveMediaControllerBottom liveMediaControllerBottom;
+    private BaseLiveMediaControllerTop liveMediaControllerTop;
+
     private KPSwitchFSPanelLinearLayout switchFSPanelLinearLayout;
 
     /**
@@ -179,12 +183,13 @@ public class PreSchoolLiveMainMsgPager extends BaseLiveMessagePager {
 
     public PreSchoolLiveMainMsgPager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                      LiveAndBackDebug ums, BaseLiveMediaControllerBottom
-                                               liveMediaControllerBottom, ArrayList<LiveMessageEntity>
+                                               liveMediaControllerBottom,BaseLiveMediaControllerTop controllerTop ,ArrayList<LiveMessageEntity>
                                                liveMessageEntities, ArrayList<LiveMessageEntity>
                                                otherLiveMessageEntities) {
         super(context);
         liveVideoActivity = (Activity) context;
         this.liveMediaControllerBottom = liveMediaControllerBottom;
+        this.liveMediaControllerTop = controllerTop;
         this.keyboardShowingListener = keyboardShowingListener;
         this.liveAndBackDebug = ums;
         this.liveMessageEntities = liveMessageEntities;
@@ -600,6 +605,7 @@ public class PreSchoolLiveMainMsgPager extends BaseLiveMessagePager {
                 switch (ev.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                     case MotionEvent.ACTION_MOVE:
+                        isMediaCtrShowing = true;
                         interceptBtmMediaHide(true);
                         break;
                     case MotionEvent.ACTION_CANCEL:
@@ -692,8 +698,13 @@ public class PreSchoolLiveMainMsgPager extends BaseLiveMessagePager {
         @Override
         public void run() {
             interceptBtmMediaHide(false);
+            isMediaCtrShowing = false;
             if (liveMediaControllerBottom.getController() != null) {
                 liveMediaControllerBottom.onHide();
+            }
+
+            if(liveMediaControllerTop != null){
+                liveMediaControllerTop.onHide();
             }
         }
     };
@@ -716,11 +727,24 @@ public class PreSchoolLiveMainMsgPager extends BaseLiveMessagePager {
                 liveMediaControllerBottom instanceof LiveHalfBodyMediaControllerBottom) {
             ((LiveHalfBodyMediaControllerBottom) liveMediaControllerBottom).interceptHideBtmMediaCtr(interCept);
         }
+
+        if(liveMediaControllerTop != null && liveMediaControllerTop instanceof HalfBodyLiveMediaCtrlTop){
+            ((HalfBodyLiveMediaCtrlTop) liveMediaControllerTop).interceptHideMediaCtr(interCept);
+        }
     }
 
+    private boolean isMediaCtrShowing = false;
 
+    private boolean mediaCtrShowing() {
+        return isMediaCtrShowing;
+    }
     @Override
     public void onTitleShow(boolean show) {
+
+        if(mediaCtrShowing()){
+            hideBottomMediaCtr(0);
+        }
+
         btMessageExpress.setBackgroundResource(R.drawable.im_input_biaoqing_icon_normal);
         if (!keyboardShowing && switchFSPanelLinearLayout.getVisibility() != View.GONE) {
             switchFSPanelLinearLayout.postDelayed(new Runnable() {
