@@ -7,7 +7,7 @@
     tools:ignore="MissingConstraints">
 
     <com.xueersi.parentsmeeting.module.videoplayer.media.VideoView
-        android:id="@id/vv_course_video_video"
+        android:id="@id/vv_super_speaker_course_video_video"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true"

@@ -155,4 +155,14 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
         }
         mTransAnim.onModeChange(LiveTopic.MODE_TRANING, true);
     }
+
+    @Override
+    public void stopLiveVideo() {
+
+    }
+
+    @Override
+    public void startLiveVideo() {
+
+    }
 }

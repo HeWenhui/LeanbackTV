@@ -1398,4 +1398,5 @@
     <item name="tv_livevideo_super_speaker_back_camera_content_tip" type="id" />
     <item name="lottie_livevideo_super_speaker_record_video" type="id" />
     <item name="tv_livevideo_super_speaker_record_video_landscape_tip" type="id" />
+    <item name="vv_super_speaker_course_video_video" type="id" />
 </resources>

@@ -65,7 +65,7 @@ public class CustomVideoController2 extends ConstraintLayout implements ILocalVi
         tvCurrentTime = findViewById(R.id.tv_livevideo_super_speaker_video_bottom_time);
         tvTotalTime = findViewById(R.id.tv_livevideo_super_speaker_video_bottom_total_time);
         ivProgressBar = findViewById(R.id.iv_livevideo_super_speaker_video_controller_bottom_progress_bar);
-        mVideoView = findViewById(R.id.vv_course_video_video);
+        mVideoView = findViewById(R.id.vv_super_speaker_course_video_video);
         ivProcessBarBkg = findViewById(R.id.iv_livevideo_super_speaker_video_controller_bottom_progress_bar_background);
         SurfaceHolder holder = mVideoView.getHolder();
         videoObservable = new VideoObservable();
@@ -96,6 +96,10 @@ public class CustomVideoController2 extends ConstraintLayout implements ILocalVi
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
                 logger.i("videoView销毁");
+                if (iPlayer != null) {
+                    iPlayer.stop();
+                    iPlayer.release();
+                }
             }
         });
     }

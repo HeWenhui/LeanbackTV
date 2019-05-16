@@ -47,19 +47,19 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
         super.initView(bottomContent, mIsLand);
-        if (AppConfig.DEBUG) {
-            if (bottomContent != null) {
-                bottomContent.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-//                        mGetInfo.setId(String.valueOf(454400));
-                        courseWareId = String.valueOf(1);
-                        srcType = String.valueOf(40);
-                        performShowRecordCamera(10, 65);
-                    }
-                }, 2000);
-            }
-        }
+//        if (AppConfig.DEBUG) {
+//            if (bottomContent != null) {
+//                bottomContent.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+////                        mGetInfo.setId(String.valueOf(454400));
+//                        courseWareId = String.valueOf(1);
+//                        srcType = String.valueOf(40);
+//                        performShowRecordCamera(10, 65);
+//                    }
+//                }, 10000);
+//            }
+//        }
     }
 
     @Override
@@ -83,18 +83,17 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                         e.onNext(data.optBoolean("open"));
                         e.onComplete();
                     }
-                }).delay(2, TimeUnit.SECONDS).
-                        observeOn(AndroidSchedulers.mainThread()).
+                }).observeOn(AndroidSchedulers.mainThread()).
                         subscribe(new Consumer<Boolean>() {
                             @Override
                             public void accept(Boolean bol) throws Exception {
                                 VPlayerListenerReg reg = ProxUtil.getProxUtil().get(mContext, VPlayerListenerReg.class);
                                 if (bol) {
 //                                    LiveEventBus.getDefault(mContext).post();
-                                    if (reg != null) {
-                                        reg.release();
-                                    }
-                                    logger.i("停止播放");
+//                                    if (reg != null) {
+//                                        reg.release();
+//                                        logger.i("停止播放");
+//                                    }
 //                                    basePlayerFragment.release();
                                     performShowRecordCamera(answerTime, recordVideoTotalTime);
                                 } else {
@@ -108,6 +107,28 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                                 }
                             }
                         });
+//                Observable observable = Observable.just(data.optBoolean("open"));
+//                final Observable finalObservable = observable;
+//                observable.
+//                        observeOn(AndroidSchedulers.mainThread()).
+//                        doOnNext(new Consumer<Boolean>() {
+//                            @Override
+//                            public void accept(Boolean o) throws Exception {
+//                                if (o) {
+//                                    showAnima();
+//                                    finalObservable.delay(2, TimeUnit.SECONDS);
+//                                }
+//                            }
+//                        }).subscribe(new Consumer() {
+//                    @Override
+//                    public void accept(Object o) throws Exception {
+//
+//                    }
+//                });
+//                if (data.optBoolean("open")) {
+//                    observable = observable.delay(2, TimeUnit.SECONDS);
+//                }
+
 
 //                if (open == 1) {
 //                    performShowRecordCamera();
@@ -130,6 +151,24 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
             mTransAnim = new HalfBodySceneTransAnim(activity, mGetInfo);
         }
         mTransAnim.onModeChange(mGetInfo.getMode(), true);
+    }
+
+    @Override
+    public void stopLiveVideo() {
+        VPlayerListenerReg reg = ProxUtil.getProxUtil().get(mContext, VPlayerListenerReg.class);
+        if (reg != null) {
+            logger.i("停止播放");
+            reg.release();
+        }
+    }
+
+    @Override
+    public void startLiveVideo() {
+        VPlayerListenerReg reg = ProxUtil.getProxUtil().get(mContext, VPlayerListenerReg.class);
+        if (reg != null) {
+            logger.i("开始播放");
+            reg.playVideo();
+        }
     }
 
     /**
@@ -160,24 +199,18 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                     @Override
                     public Boolean apply(Boolean bol) throws Exception {
                         //1打开试题并且点击提交按钮
-//                    if (integer == 0) {
-//                        return false;
-//                    } else if (
-//                            ShareDataManager.getInstance().getInt(
-//                                    ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + mGetInfo.getId() + "_" + courseWareId,
-//                                    0,
-//                                    ShareDataManager.SHAREDATA_NOT_CLEAR) > 0) {
-//                        return false;
-//                    } else {
-//                        return true;
-//                    }
                         return bol && ShareDataManager.getInstance().getInt(
                                 ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + mGetInfo.getId() + "_" + courseWareId,
                                 0,
                                 ShareDataManager.SHAREDATA_NOT_CLEAR) == 0;
 
                     }
-                }).delay(1, TimeUnit.SECONDS).
+                }).doOnNext(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) throws Exception {
+                        showAnima();
+                    }
+                }).delay(2, TimeUnit.SECONDS).
                         observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Consumer<Boolean>() {
                             @Override
@@ -186,10 +219,10 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                                 VPlayerListenerReg reg = ProxUtil.getProxUtil().get(mContext, VPlayerListenerReg.class);
                                 if (bool) {
 //                                    LiveEventBus.getDefault(mContext).post();
-                                    if (reg != null) {
-                                        reg.release();
-                                    }
-                                    logger.i("停止播放");
+//                                    if (reg != null) {
+//                                        reg.release();
+//                                    }
+//                                    logger.i("停止播放");
 //                                    basePlayerFragment.release();
                                     performShowRecordCamera(answerTime, recordVideoTotalTime);
                                 }
@@ -225,7 +258,7 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
             if (superSpeakerBridge != null && superSpeakerBridge.containsView()) {
                 return;
             }
-            showAnima();
+            stopLiveVideo();
             superSpeakerBridge = new SuperSpeakerBridge(mContext, this, mRootView, mLiveId, courseWareId);
             superSpeakerBridge.performShowRecordCamera(answerTime, recordTime);
         } catch (Exception e) {

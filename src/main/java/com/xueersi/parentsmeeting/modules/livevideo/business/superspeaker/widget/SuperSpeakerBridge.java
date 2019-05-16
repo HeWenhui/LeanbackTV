@@ -310,6 +310,9 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
             }
             parentView.removeView(view);
         }
+        if (iCameraPresenter != null) {
+            iCameraPresenter.startLiveVideo();
+        }
     }
 
     @Override

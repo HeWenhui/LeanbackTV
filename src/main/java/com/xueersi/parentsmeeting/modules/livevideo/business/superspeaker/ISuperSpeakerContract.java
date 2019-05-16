@@ -49,6 +49,10 @@ public interface ISuperSpeakerContract {
 
         //        void timeUp();
         void showAnima();
+
+        void stopLiveVideo();
+
+        void startLiveVideo();
     }
 
     interface ISuperSpeakerBridge {

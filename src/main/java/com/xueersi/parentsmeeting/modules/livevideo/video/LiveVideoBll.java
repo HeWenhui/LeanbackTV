@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.video;
 
 import android.app.Activity;
 import android.net.Uri;
+import android.view.View;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpRequestParams;
@@ -14,6 +15,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
@@ -142,12 +144,14 @@ public class LiveVideoBll implements VPlayerListenerReg {
 
     @Override
     public void release() {
+        activity.findViewById(R.id.vv_course_video_video).setVisibility(View.GONE);
         stopPlay();
     }
 
     @Override
     public void playVideo() {
         if (MediaPlayer.getIsNewIJK()) {
+            activity.findViewById(R.id.vv_course_video_video).setVisibility(View.VISIBLE);
             psRePlay(false);
         }
     }

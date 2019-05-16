@@ -115,6 +115,7 @@ public class Camera1Utils implements IRecordVideoView {
 //            if (mediarecorder != null) {
 //                mediarecorder.stop();
 //                mediarecorder.release();
+//            mediarecorder = null;
 //            }
         } catch (Exception e) {
             e.printStackTrace();
