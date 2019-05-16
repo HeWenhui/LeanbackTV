@@ -4,8 +4,10 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 import android.content.Context;
 
 import com.tal.speech.utils.SpeechUtils;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -45,6 +47,13 @@ public abstract class BaseSpeechAssessmentPager extends LiveBasePager {
             stableLogHashMap.put("tag", TAG);
             umsAgentDebugSys(LogConfig.LIVE_STOP_VOLUME, stableLogHashMap);
         } else {
+            try {
+                StableLogHashMap stableLogHashMap = new StableLogHashMap("error");
+                stableLogHashMap.put("tag", TAG);
+                umsAgentDebugSys(LogConfig.LIVE_STOP_VOLUME, stableLogHashMap);
+            } catch (Exception e) {
+                CrashReport.postCatchedException(new LiveException(TAG, e));
+            }
             logger.d("onDestroy:setVolume:null");
         }
     }
