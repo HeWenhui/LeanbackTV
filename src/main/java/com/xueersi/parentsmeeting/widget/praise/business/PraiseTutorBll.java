@@ -9,6 +9,7 @@ import com.xueersi.common.business.UserBll;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentTrayPreference;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -70,8 +71,7 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
-        Loger.d( "tutor_practice_notice", "type" + type + "/sourceNick" + sourceNick
-                + "target" + target + "data:" + data.toString());
+        UmsAgentManager.umsAgentDebug(mContext,"tutor_practice_notice","type:" + type  + "sourceNic:"+sourceNick + "target:" + target + "data:" + data.toString());
         switch (type) {
             // 开启和发布榜单
             case XESCODE.TUTOR_ROOM_PRAISE_OPEN:
