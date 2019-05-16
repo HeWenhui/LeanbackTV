@@ -226,7 +226,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
      *
      * @param activity
      */
-    private void addBusiness(Activity activity) {
+    protected void addBusiness(Activity activity) {
         //是文科
         BllConfigEntity[] bllConfigEntities;
         if (isArts == 1) {

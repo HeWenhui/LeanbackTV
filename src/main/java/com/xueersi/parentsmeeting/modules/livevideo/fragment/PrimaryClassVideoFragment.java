@@ -1,10 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
+import android.app.Activity;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
@@ -12,12 +9,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.business.HalfBodySceneTransAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PrimaryClassLiveVideoAction;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.business.PrimaryClassIrcBll;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePrimaryClassMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.PrimaryClassLiveMediaCtrlTop;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ImageScale;
 
 /**
  * Created by linyuqiang on 2018/7/13.
@@ -37,6 +32,12 @@ public class PrimaryClassVideoFragment extends LiveVideoFragment {
     @Override
     protected void createLiveVideoAction() {
         liveVideoAction = new PrimaryClassLiveVideoAction(activity, mLiveBll, mContentView, rlContent, isArts, mode);
+    }
+
+    @Override
+    protected void addBusiness(Activity activity) {
+        super.addBusiness(activity);
+        mLiveBll.addBusinessBll(new PrimaryClassIrcBll(activity, mLiveBll));
     }
 
     @Override

@@ -200,7 +200,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             if (getInfo.getPattern() == 2 && LiveTopic.MODE_CLASS.equals(getInfo.getMode())) {
                 mRoomAction.initViewLiveStand(mRootView);
             } else if (getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY
-                    && LiveTopic.MODE_CLASS.equals(getInfo.getMode())) {
+                    && LiveTopic.MODE_CLASS.equals(getInfo.getMode()) || getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
                 mRoomAction.initHalfBodyLive(mRootView);
             } else {
                 mRoomAction.initViewLive(mRootView);
@@ -251,7 +251,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                     if (view != null) {
                         view.setVisibility(View.VISIBLE);
                     }
-                } else if (mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY) {
+                } else if (mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY || mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
                     //延迟 2.5 秒 走相关逻辑(适配转场动画 节奏)
                     final String finalMode = mode;
                     mHandler.postDelayed(new Runnable() {

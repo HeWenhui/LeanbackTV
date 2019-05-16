@@ -19,6 +19,8 @@ android {
             assets.srcDirs += ['src/main/english/assets']
             java.srcDirs += ['src/main/java-core']
             //小班体验
+            java.srcDirs += ['src/main/chinese/java-primary_class']
+            java.srcDirs += ['src/main/secience/java-primary_class']
             res.srcDirs += ['src/main/secience/res-primary_class']
             res.srcDirs += ['src/main/chinese/res-primary_class']
         }

@@ -247,10 +247,13 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                     null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
         } else {
             // 理科
-//            liveMessagePager = new HalfBodyLiveMessagePager(activity, this,
-//                    null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
-            liveMessagePager = new HalfBodyPrimaryLiveMessagePager(activity, this,
-                    null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+            if (getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY) {
+                liveMessagePager = new HalfBodyLiveMessagePager(activity, this,
+                        null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+            } else {
+                liveMessagePager = new HalfBodyPrimaryLiveMessagePager(activity, this,
+                        null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+            }
         }
 
         mLiveMessagePager = liveMessagePager;
@@ -329,7 +332,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                 LivePsMessagePager liveMessagePager = new LivePsMessagePager(activity, this, null,
                         baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;
-            }   else {
+            } else {
                 LiveMessagePager liveMessagePager = new LiveMessagePager(activity, this, null,
                         baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;

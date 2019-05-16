@@ -66,6 +66,9 @@ public class LiveVideoActivity extends LiveVideoActivityBase implements Activity
             return new StandLiveVideoFragment();
         } else if (pattern == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY) {
             //半身直播
+            return new HalfBodyLiveVideoFragement();
+        } else if (pattern == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+            //半身直播
             return new PrimaryClassVideoFragment();
         } else {
             return new LiveVideoFragment();
