@@ -192,44 +192,44 @@ public class CoursewarePreload {
      * 获取课件信息
      */
     public void getCoursewareInfo(String liveId) {
-//        Log.e("NbTrac", "=======>coursePrealod  getCoursewareInfo new:" + liveId);
-//        executos.allowCoreThreadTimeOut(true);
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
-//        Date date = new Date();
-//        final String today = dateFormat.format(date);
-//        todayCacheDir = new File(cacheFile, today);
-//
-//        deleteOldDir(cacheFile, today);
-//
-//        //根据传liveid来判断 不为空或者不是""则为直播进入下载资源，否则为学习中心进入下载资源
-//        ipPos = new AtomicInteger(0);
-//        ipLength = new AtomicInteger();
-//        cdnLength = new AtomicInteger();
-//        cdnPos = new AtomicInteger(0);
-//        if (!TextUtils.isEmpty(liveId)) {
-//            isPrecise.set(true);
-//            if (0 == mSubject) {//理科
-//                logger.i("donwload science");
-//                subjectNum.getAndIncrement();
-//                mHttpManager.getScienceCourewareInfo(liveId, new CoursewareHttpCallBack(false, "science"));
-//            } else if (1 == mSubject) {//英语
-//                logger.i("download english");
-//                subjectNum.getAndIncrement();
-//                mHttpManager.getEnglishCourewareInfo(liveId, new CoursewareHttpCallBack(false, "english"));
-//            } else if (2 == mSubject) {//语文
-//                logger.i("download chs");
-//                subjectNum.getAndIncrement();
-//                mHttpManager.getArtsCourewareInfo(liveId, new CoursewareHttpCallBack(false, "chs"));
-//            }
-//        } else {//下载当天所有课件资源
-//            logger.i("donwload all subjects");
-//            subjectNum.getAndIncrement();
-//            mHttpManager.getScienceCourewareInfo("", new CoursewareHttpCallBack(false, "science"));
-//            subjectNum.getAndIncrement();
-//            mHttpManager.getEnglishCourewareInfo("", new CoursewareHttpCallBack(false, "english"));
-//            subjectNum.getAndIncrement();
-//            mHttpManager.getArtsCourewareInfo("", new CoursewareHttpCallBack(false, "chs"));
-//        }
+        Log.e("NbTrac", "=======>coursePrealod  getCoursewareInfo new:" + liveId);
+        executos.allowCoreThreadTimeOut(true);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
+        Date date = new Date();
+        final String today = dateFormat.format(date);
+        todayCacheDir = new File(cacheFile, today);
+
+        deleteOldDir(cacheFile, today);
+
+        //根据传liveid来判断 不为空或者不是""则为直播进入下载资源，否则为学习中心进入下载资源
+        ipPos = new AtomicInteger(0);
+        ipLength = new AtomicInteger();
+        cdnLength = new AtomicInteger();
+        cdnPos = new AtomicInteger(0);
+        if (!TextUtils.isEmpty(liveId)) {
+            isPrecise.set(true);
+            if (0 == mSubject) {//理科
+                logger.i("donwload science");
+                subjectNum.getAndIncrement();
+                mHttpManager.getScienceCourewareInfo(liveId, new CoursewareHttpCallBack(false, "science"));
+            } else if (1 == mSubject) {//英语
+                logger.i("download english");
+                subjectNum.getAndIncrement();
+                mHttpManager.getEnglishCourewareInfo(liveId, new CoursewareHttpCallBack(false, "english"));
+            } else if (2 == mSubject) {//语文
+                logger.i("download chs");
+                subjectNum.getAndIncrement();
+                mHttpManager.getArtsCourewareInfo(liveId, new CoursewareHttpCallBack(false, "chs"));
+            }
+        } else {//下载当天所有课件资源
+            logger.i("donwload all subjects");
+            subjectNum.getAndIncrement();
+            mHttpManager.getScienceCourewareInfo("", new CoursewareHttpCallBack(false, "science"));
+            subjectNum.getAndIncrement();
+            mHttpManager.getEnglishCourewareInfo("", new CoursewareHttpCallBack(false, "english"));
+            subjectNum.getAndIncrement();
+            mHttpManager.getArtsCourewareInfo("", new CoursewareHttpCallBack(false, "chs"));
+        }
     }
 
 
