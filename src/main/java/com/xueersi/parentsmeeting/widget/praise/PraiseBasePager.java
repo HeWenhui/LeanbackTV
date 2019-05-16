@@ -396,7 +396,7 @@ public class PraiseBasePager extends LiveBasePager {
             llTeacherContent.setVisibility(View.VISIBLE);
         }
         if (mHandler != null) {
-            mHandler.sendEmptyMessageDelayed(PraiseConfig.ENCOURAGING_HIDE, 2000);
+            mHandler.sendEmptyMessageDelayed(PraiseConfig.ENCOURAGING_HIDE, 5000);
         }
 
     }
