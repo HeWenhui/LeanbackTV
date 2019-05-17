@@ -25,7 +25,10 @@ import android.widget.TextView;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.xueersi.common.util.FontCache;
+import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -33,6 +36,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ViewUtil;
+import com.xueersi.ui.widget.CircleImageView;
+
+import java.util.List;
 
 public class EnStandAchievePager extends LiveBasePager {
     private RelativeLayout parent;
@@ -57,6 +63,8 @@ public class EnStandAchievePager extends LiveBasePager {
     private int otherTotal = 0;
     private boolean firstCheck = false;
 
+    /**用户头像*/
+    CircleImageView civUserImage;
     public EnStandAchievePager(Context context, RelativeLayout relativeLayout, LiveGetInfo mLiveGetInfo) {
         super(context, false);
         this.parent = relativeLayout;
@@ -81,6 +89,7 @@ public class EnStandAchievePager extends LiveBasePager {
         vsAchiveBottom2 = mView.findViewById(R.id.vs_livevideo_en_achive_bottom2);
         rlAchiveStandBg = mView.findViewById(R.id.rl_livevideo_en_achive_stand_bg);
         cbAchiveTitle = mView.findViewById(R.id.cb_livevideo_en_stand_achive_title);
+        civUserImage = mView.findViewById(R.id.iv_livevideo_en_stand_achive_user_head_imge);
         return mView;
     }
 
@@ -92,6 +101,7 @@ public class EnStandAchievePager extends LiveBasePager {
         tvAchiveNumGold.setText("" + goldCount);
         tvAchiveNumFire.setText("" + enpkEnergy.me);
         LiveGetInfo.EnglishPk englishPk = mLiveGetInfo.getEnglishPk();
+
         if (1 == englishPk.canUsePK) {
             myTotal = enpkEnergy.myTeam;
             otherTotal = enpkEnergy.opTeam;
@@ -99,6 +109,7 @@ public class EnStandAchievePager extends LiveBasePager {
         } else {
             vsAchiveBottom2.inflate();
         }
+        setUserHeadImage();
         cbAchiveTitle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -132,6 +143,12 @@ public class EnStandAchievePager extends LiveBasePager {
 //                }
             }
         });
+    }
+
+    /**设置头像*/
+    private void setUserHeadImage(){
+        String img = mLiveGetInfo.getStuImg();
+        ImageLoader.with(activity).load(img).into(civUserImage);
     }
 
     private void setEnpkView() {

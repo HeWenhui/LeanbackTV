@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -67,6 +68,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.PlayErrorCod
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.video.LiveBackVideoBll;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
+import com.xueersi.ui.widget.CircleImageView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -142,6 +144,10 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
      */
     protected int mVideoMode = VideoView.VIDEO_LAYOUT_SCALE;
 
+    /** 全身直播 头像*/
+    LinearLayout llUserHeadImage;
+    /** 全身直播 头像*/
+    CircleImageView civUserHeadImage;
     @Override
     protected void onVideoCreate(Bundle savedInstanceState) {
         activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams
@@ -336,6 +342,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         rlQuestionContent = (RelativeLayout) mContentView.findViewById(R.id.rl_course_video_live_question_content);
         // 加载竖屏时显示更多课程广告的布局
         rlAdvanceContent = (RelativeLayout) mContentView.findViewById(R.id.rl_livevideo_playback);
+        llUserHeadImage = mContentView.findViewById(R.id.ll_livevideo_en_stand_achive_user_head_imge);
+        civUserHeadImage = mContentView.findViewById(R.id.iv_livevideo_en_stand_achive_user_head_imge);
+
     }
 
     /** 竖屏时填充视频列表布局 */

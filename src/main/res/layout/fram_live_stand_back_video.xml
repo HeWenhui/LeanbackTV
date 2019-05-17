@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/white"
     android:orientation="vertical">
 
@@ -280,7 +281,24 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:visibility="gone" />
-
+    <LinearLayout
+        android:background="@drawable/bg_stand_livevideo_heads_right_normal"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:visibility="gone"
+        android:id="@id/ll_livevideo_en_stand_achive_user_head_imge"
+        android:gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp">
+        <com.xueersi.ui.widget.CircleImageView
+            android:id="@id/iv_livevideo_en_stand_achive_user_head_imge"
+            app:border_color="@android:color/transparent"
+            app:border_width="0dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_default_head_square" />
+    </LinearLayout>
     <RelativeLayout
         android:id="@id/live_play_back_bottom"
         android:layout_width="match_parent"

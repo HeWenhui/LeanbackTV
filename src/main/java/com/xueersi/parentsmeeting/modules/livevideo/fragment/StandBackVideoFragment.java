@@ -1,12 +1,16 @@
 package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 
+import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.business.UserBll;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackStandMediaController;
 
@@ -65,5 +69,17 @@ public class StandBackVideoFragment extends LiveBackVideoFragment {
             liveStandFrameAnim.onDestory();
         }
     }
+    @Override
+    protected void addBusiness(Activity activity) {
+        super.addBusiness(activity);
+        //直播
+        if (liveBackBll.getLiveType() == LiveVideoConfig.LIVE_TYPE_LIVE) {
+            // 英语
+            if (liveBackBll.getIsArts() == 1 && liveBackBll.getPattern() == 2) {
+                llUserHeadImage.setVisibility(View.VISIBLE);
+                ImageLoader.with(activity).load(UserBll.getInstance().getMyUserInfoEntity().getHeadImg()).into(civUserHeadImage);
 
+            }
+        }
+    }
 }
