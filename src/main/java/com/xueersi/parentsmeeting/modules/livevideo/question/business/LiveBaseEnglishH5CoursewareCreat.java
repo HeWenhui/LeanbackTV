@@ -5,6 +5,7 @@ import android.content.Context;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
@@ -114,20 +115,22 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
 //                        englishH5Entity.setDynamicurl(liveGetInfo.getGetCourseWareHtmlNew() + ScienceStaticConfig.THIS_VERSION_HTML + "/index.html");
 //                    }
                         englishH5Entity.setDynamicurl("https://live.xueersi.com/science/LiveExam/getCourseWareTestHtml");
-//                        if (englishH5Entity.getNewEnglishH5()) {
-//                            CoursewareNativePager h5CoursewarePager = new CoursewareNativePager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
-//                                    videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, mAnswerRankBll == null ? "0"
-//                                    : mAnswerRankBll.getIsShow(), isArts, allowTeamPk);
-//                            h5CoursewarePager.setLivePagerBack(livePagerBack);
-//                            return h5CoursewarePager;
-//                        }
-//                        englishH5Entity.setDynamicurl("https://live.chs.xueersi.com/LiveExam/getCourseWareTests");
                         if (englishH5Entity.getNewEnglishH5()) {
-                            SpeakChineseCoursewarePager h5CoursewarePager = new SpeakChineseCoursewarePager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
-                                    videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, mAnswerRankBll == null ? "0"
-                                    : mAnswerRankBll.getIsShow(), isArts, allowTeamPk);
-                            h5CoursewarePager.setLivePagerBack(livePagerBack);
-                            return h5CoursewarePager;
+                            if (LiveQueConfig.CHI_COURESWARE_TYPE_SPEAKING_CHINESE.equals(videoQuestionH5Entity.englishH5Entity.getPackageAttr())
+                                    && HalfBodyLiveConfig.LIVE_TYPE_HALFBODY == liveGetInfo.getPattern()){
+                                SpeakChineseCoursewarePager h5CoursewarePager = new SpeakChineseCoursewarePager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
+                                        videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, mAnswerRankBll == null ? "0"
+                                        : mAnswerRankBll.getIsShow(), isArts, allowTeamPk);
+                                h5CoursewarePager.setLivePagerBack(livePagerBack);
+                                return h5CoursewarePager;
+                            }else {
+                                CoursewareNativePager h5CoursewarePager = new CoursewareNativePager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
+                                        videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, mAnswerRankBll == null ? "0"
+                                        : mAnswerRankBll.getIsShow(), isArts, allowTeamPk);
+                                h5CoursewarePager.setLivePagerBack(livePagerBack);
+                                return h5CoursewarePager;
+                            }
+
                         }
                     }
                     //语文

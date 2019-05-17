@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 
+import android.Manifest;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -7,12 +8,15 @@ import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.alibaba.fastjson.support.spring.FastJsonJsonView;
 import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.Constants;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
@@ -20,6 +24,7 @@ import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.utils.SpeechEvaluatorUtils;
 import com.tal.speech.utils.SpeechUtils;
+import com.tal100.pushsdk.utils.JsonUtils;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
@@ -31,7 +36,10 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.common.toast.XesToast;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
@@ -42,12 +50,15 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.ChsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ChineseAISubjectResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
+import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
@@ -235,10 +246,12 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
     private final int NOTFORCE = 0;
 
     private final int FORCE = 1;
-    private ScrollView svSubjectWeb;
     private boolean isFirstAI = true;
     private LiveHttpManager mLiveHttpManager;
     private SpeechUtils speechUtils;
+    private boolean isAssessing;
+
+    private boolean resultGotByForceSubmit;
 
     public SpeakChineseCoursewarePager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity,
                                        boolean isPlayBack, String liveId, String id,
@@ -278,7 +291,6 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
         ivCourseRefresh = view.findViewById(R.id.iv_livevideo_course_refresh);
         ivWebViewRefresh = view.findViewById(R.id.iv_livevideo_subject_refresh);
         rlSubjectLoading = view.findViewById(R.id.rl_livevideo_subject_loading);
-        svSubjectWeb = view.findViewById(R.id.sv_livevideo_web);
 
         preLoad = new PrimaryPreLoad();
         view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
@@ -297,13 +309,17 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                             .currentTimeMillis() - before));
                 }
 
-                if (allowTeamPk && newCourseSec != null && newCourseSec.getIsAnswer() == 0) {
-                    LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(mGoldNum, mEnergyNum, LiveRoomH5CloseEvent
+                if (allowTeamPk && newCourseSec != null) {
+                    int gold = newCourseSec.getIsAnswer() == 0 ? mGoldNum : -1;
+                    int energy = newCourseSec.getIsAnswer() == 0 ? mEnergyNum : -1;
+                    LiveRoomH5CloseEvent event = new LiveRoomH5CloseEvent(gold, energy, LiveRoomH5CloseEvent
                             .H5_TYPE_COURSE, id);
                     if (mEnglishH5CoursewareBll != null) {
                         event.setCloseByTeahcer(mEnglishH5CoursewareBll.isWebViewCloseByTeacher());
                         mEnglishH5CoursewareBll.setWebViewCloseByTeacher(false);
                     }
+                    event.setScienceNewCourseWare(englishH5Entity.getNewEnglishH5());
+                    event.setForceSubmit(resultGotByForceSubmit);
                     EventBus.getDefault().post(event);
                 }
 
@@ -322,7 +338,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
     public void initData() {
         super.initData();
         speechUtils = SpeechUtils.getInstance(mContext);
-        speechUtils.setLanguage(SpeechEvaluatorUtils.RECOGNIZE_CHINESE);
+        speechUtils.setLanguage(Constants.ASSESS_PARAM_LANGUAGE_CH);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
         Date date = new Date();
         today = dateFormat.format(date);
@@ -367,9 +383,8 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                     } else if (CourseMessage.REC_SubmitAnswer.equals(type)) {
 //                        onLoadComplete(where, message);
                     } else if (CourseMessage.REC_QuestionStatus.equals(type)) {
-//                        onLoadComplete(where, message);
                         onQuestionStatus(message);
-                    } else if (CourseMessage.REC_AssessData.equals(type)){
+                    } else if (CourseMessage.REC_AssessData.equals(type)) {
                         onAssessStart(message);
                     }
                 } catch (JSONException e) {
@@ -392,6 +407,8 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 refreshTime++;
                 mLogtf.d("ivWebViewRefresh:refreshTime=" + refreshTime);
                 wvSubjectWeb.reload();
+                isAssessing = false;
+                stopAssess();
             }
         });
     }
@@ -469,30 +486,6 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
         return null;
     }
 
-    private void saveThisQues(int index, JSONArray userAnswerContent) {
-        try {
-            String string = mShareDataManager.getString(LiveQueConfig.LIVE_STUDY_REPORT_IMG, "{}",
-                    ShareDataManager.SHAREDATA_USER);
-            JSONObject jsonObject = getTodayLive(string);
-            if (jsonObject != null) {
-                JSONObject todayLiveObj = jsonObject.getJSONObject("todaylive").getJSONObject(liveId);
-                String queskey = getQuesKey();
-                JSONObject ques = todayLiveObj.optJSONObject("ques-" + queskey);
-                if (ques == null) {
-                    ques = new JSONObject();
-                }
-                ques.put("" + index, userAnswerContent);
-                todayLiveObj.put("ques-" + queskey, ques);
-                quesJson = ques;
-                mShareDataManager.put(LiveQueConfig.LIVE_STUDY_REPORT_IMG, "" + jsonObject,
-                        ShareDataManager.SHAREDATA_USER);
-            }
-        } catch (Exception e) {
-            CrashReport.postCatchedException(e);
-            mLogtf.e("saveThisQues", e);
-        }
-    }
-
     /**
      * 保存互动题开始时间
      *
@@ -517,6 +510,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
     }
 
     private void onAnswer(final JSONObject message) {
+        stopAssess();
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -529,93 +523,23 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                     if (message.has("data")) {
                         msg = message;
                     }
-//                    String d = message.getString("data");
-//                    JSONArray data = new JSONArray(d);
                     JSONArray data = msg.getJSONArray("data");
                     if (data != null && data.length() > 0) {
                         JSONArray userAnswerContent = data.getJSONObject(0).optJSONArray("userAnswerContent");
                         JSONArray rightAnswerContent = data.getJSONObject(0).optJSONArray("rightAnswerContent");
-                        String maxScore = data.getJSONObject(0).optString("maxScore", "0");
                         oldTest.setUserAnswerContent(userAnswerContent);
                         oldTest.setRightAnswerContent(rightAnswerContent);
-                        oldTest.setMaxScore(maxScore);
                     }
-                    saveThisQues(currentIndex, data);
+                    if (getAnswerType == LiveQueConfig.GET_ANSWERTYPE_FORCE_SUBMIT) {
+                        submit(1, nonce, data);
+                    } else {
+                        submit(0, nonce, data);
+                    }
                 } catch (Exception e) {
                     CrashReport.postCatchedException(e);
                 }
                 logger.d("onAnswer:answer:getAnswerType=" + getAnswerType + ",index=" + currentIndex);
-                if (getAnswerType == LiveQueConfig.GET_ANSWERTYPE_SUBMIT || getAnswerType == LiveQueConfig.GET_ANSWERTYPE_FORCE_SUBMIT) {
-                    if (getAnswerType == LiveQueConfig.GET_ANSWERTYPE_SUBMIT) {
-                        boolean needTip = false;
-                        a:
-                        for (int i = 0; i < tests.size(); i++) {
-                            NewCourseSec.Test test = tests.get(i);
-                            JSONArray userAnswerContent = test.getUserAnswerContent();
-                            if (userAnswerContent == null) {
-                                needTip = true;
-                                break;
-                            } else {
-                                for (int j = 0; j < userAnswerContent.length(); j++) {
-                                    try {
-                                        JSONArray answerContent = userAnswerContent.getJSONObject(j).getJSONArray(
-                                                "userAnswerContent");
-                                        if (answerContent.length() == 0) {
-                                            needTip = true;
-                                            break a;
-                                        } else {
-                                            for (int k = 0; k < answerContent.length(); k++) {
-                                                JSONObject object = answerContent.getJSONObject(k);
-                                                if (StringUtils.isEmpty(object.optString("text"))) {
-                                                    needTip = true;
-                                                    break a;
-                                                }
-                                            }
-                                        }
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                        }
-                        if (needTip) {
-                            if (courseTipDialog != null) {
-                                courseTipDialog.cancelDialog();
-                            }
-                            courseTipDialog = new CourseTipDialog(mContext,
-                                    (Application) mContext.getApplicationContext());
-                            courseTipDialog.setOnClick(new CourseTipDialog.OnClick() {
 
-                                @Override
-                                public void onCancle(CourseTipDialog dialog, View view) {
-                                    dialog.cancelDialog();
-                                    if (dialog == courseTipDialog) {
-                                        courseTipDialog = null;
-                                    }
-                                }
-
-                                @Override
-                                public void onCommit(CourseTipDialog dialog, View view) {
-                                    dialog.cancelDialog();
-                                    if (dialog == courseTipDialog) {
-                                        courseTipDialog = null;
-                                    }
-                                    submit(0, nonce);
-                                }
-                            });
-                            courseTipDialog.showDialog();
-                        } else {
-                            submit(0, nonce);
-                        }
-                    } else {
-                        submit(1, nonce);
-                    }
-                } else {
-                    if (tests.size() == 1) {
-                        submit(0, nonce);
-                    }
-
-                }
             }
         });
     }
@@ -667,40 +591,84 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
         }
     }
 
-    private void onAssessStart(JSONObject message){
+    private void onAssessStart(JSONObject message) {
         try {
             JSONArray data = message.getJSONArray("data");
-            if (data != null && data.length() > 0){
+            if (data != null && data.length() > 0) {
                 JSONObject content = data.getJSONObject(0);
                 JSONArray assessData = content.getJSONArray("assessDataContent");
                 JSONArray rightAnswer = content.getJSONArray("rightAnswerContent");
-                TreeMap<Integer,String> assessMap = new TreeMap<>();
-                TreeMap<Integer,String> answerMap = new TreeMap<>();
+                final TreeMap<Integer, String> assessMap = new TreeMap<>();
+                final TreeMap<Integer, String> answerMap = new TreeMap<>();
                 for (int i = 0; i < assessData.length(); i++) {
                     int id = assessData.getJSONObject(i).getInt("id");
                     String text = assessData.getJSONObject(i).getString("text");
-                    assessMap.put(id,text);
+                    assessMap.put(id, text);
                 }
                 for (int i = 0; i < rightAnswer.length(); i++) {
                     int id = rightAnswer.getJSONObject(i).getInt("id");
                     String text = rightAnswer.getJSONObject(i).getString("text");
-                    answerMap.put(id,text);
+                    answerMap.put(id, text);
                 }
-                startAssess(assessMap,answerMap);
+                boolean hasAudidoPermission = XesPermission.hasSelfPermission(mContext, Manifest.permission.RECORD_AUDIO);
+                // 检查用户麦克风权限
+                if (hasAudidoPermission) {
+                    startAssess(assessMap, answerMap);
+                    ;
+                } else {
+                    //如果没有麦克风权限，申请麦克风权限
+                    XesPermission.checkPermission(mContext, new LiveActivityPermissionCallback() {
+                        /**
+                         * 结束
+                         */
+                        @Override
+                        public void onFinish() {
+                            logger.i("onFinish()");
+                        }
+
+                        /**
+                         * 用户拒绝某个权限
+                         */
+                        @Override
+                        public void onDeny(String permission, int position) {
+                            logger.i("onDeny()");
+                        }
+
+                        /**
+                         * 用户允许某个权限
+                         */
+                        @Override
+                        public void onGuarantee(String permission, int position) {
+                            logger.i("onGuarantee()");
+                            startAssess(assessMap, answerMap);
+                            ;
+                        }
+                    }, PermissionConfig.PERMISSION_CODE_AUDIO);
+                }
 
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
-    private void startAssess(Map<Integer,String> assessMap,Map<Integer,String> answerMap){
+
+    /**
+     * 开始AI语音评测
+     * @param assessMap
+     * @param answerMap
+     */
+    private void startAssess(Map<Integer, String> assessMap, Map<Integer, String> answerMap) {
         String assessContent = "";
+        String answerContent = "";
         for (Integer key : assessMap.keySet()) {
-            assessContent += answerMap.get(key) + "|";
+            assessContent += assessMap.get(key) + "|";
         }
-        assessContent = assessContent.substring(0,assessContent.length()-1);
+        for (Integer key : answerMap.keySet()) {
+            answerContent += answerMap.get(key);
+        }
+        assessContent = assessContent.substring(0, assessContent.length() - 1);
         logger.d("assessContent :" + assessContent);
-        File dir = LiveCacheFile.geCacheFile(mContext, "groupgame");
+        File dir = LiveCacheFile.geCacheFile(mContext, "speakingChinese");
         FileUtils.deleteDir(dir);
         if (!dir.exists()) {
             dir.mkdirs();
@@ -708,7 +676,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
         /* 语音保存位置 */
         File saveVideoFile = new File(dir, "ise" + System.currentTimeMillis() + ".mp3");
         SpeechParamEntity mParam = new SpeechParamEntity();
-        mParam.setRecogType(SpeechConfig.SPEECH_GROUP_GAME_EVALUATOR_OFFLINE);
+        mParam.setRecogType(SpeechConfig.SPEECH_CHINESE_EVALUATOR_OFFLINE_ONLINE);
         mParam.setLang(Constants.ASSESS_PARAM_LANGUAGE_CH);
         mParam.setStrEvaluator(assessContent);
         mParam.setLocalSavePath(saveVideoFile.getPath());
@@ -716,36 +684,82 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
         mParam.setVad_max_sec("90");
         mParam.setVad_pause_sec("90");
         mParam.setMult("1");
-        speechUtils.startRecog(mParam, new EvaluatorListener() {
-            @Override
-            public void onBeginOfSpeech() {
-                logger.d("onBeginOfSpeech");
-            }
+        if (!isAssessing) {
+            final String finalAnswerContent = answerContent;
+            isAssessing = true;
+            speechUtils.startRecog(mParam, new EvaluatorListener() {
+                @Override
+                public void onBeginOfSpeech() {
+                    logger.d("onBeginOfSpeech curTime: " + System.currentTimeMillis());
+                }
 
-            @Override
-            public void onResult(ResultEntity result) {
-                logger.d("onResult: status:"+result.getStatus() +
-                " cirstatus:"+result.getCurStatus()+
-                        " curpos:"+result.getCurPos()+
-                        " curstring:"+result.getCurString()+
-                        " contscore:"+result.getContScore()+
-                        " level:"+result.getLevel()+
-                        " newsenids:"+result.getNewSenIdx()+
-                        " partscore:"+result.getPartScore()+
-                        " pid:"+result.getPid()+
-                        " result:"+result.getResult()+
-                        " score:"+result.getScore()+
-                        " sid:"+result.getSid()+
-                        " scores:"+result.getScores().toString());
-            }
+                @Override
+                public void onResult(ResultEntity result) {
+                    if (ResultEntity.EVALUATOR_ING == result.getStatus()) {
+                        if (!result.getLstPhonemeScore().isEmpty()) {
+                            for (int i = 0; i < result.getLstPhonemeScore().size(); i++) {
+                                String word = result.getLstPhonemeScore().get(i).getWord();
+                                int score = result.getLstPhonemeScore().get(i).getScore();
+                                JSONObject jsonData = new JSONObject();
+                                JSONObject data = new JSONObject();
+                                try {
+                                    jsonData.put("type", CourseMessage.SEND_getAnswer);
+                                    JSONObject resultData = new JSONObject();
+                                    if (score >= 60) {
+                                        resultData.put("isRight", 1);
+                                    } else {
+                                        resultData.put("isRight", 0);
+                                    }
+                                    JSONArray userAnswerArray = new JSONArray();
+                                    JSONObject userAnswer = new JSONObject();
+                                    userAnswer.put("id", result.getNewSenIdx());
+                                    userAnswer.put("text", word);
+                                    userAnswerArray.put(userAnswer);
+                                    resultData.put("userAnswerContent", userAnswerArray);
+                                    jsonData.put("data", resultData);
+                                    StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+                                } catch (JSONException e) {
+                                    CrashReport.postCatchedException(e);
+                                    mLogtf.e("submitData", e);
+                                }
 
-            @Override
-            public void onVolumeUpdate(int volume) {
+                                logger.d("onResult: status:" + result.getStatus() +
+                                        " word:" + word +
+                                        " word score:" + score +
+                                        " contscore:" + result.getContScore() +
+                                        " partscore:" + result.getPartScore() +
+                                        " pronscore:" + result.getPronScore() +
+                                        " score:" + result.getScore() +
+                                        " level:" + result.getLevel() +
+                                        " newsenids:" + result.getNewSenIdx()
+                                );
+                            }
 
-            }
-        });
+                        }
+                    } else if (ResultEntity.SUCCESS == result.getStatus()) {
+                        logger.e("SUCCESS curTime ");
+                    } else if (ResultEntity.ERROR == result.getStatus()) {
+                        logger.e("ERROR");
+                    }
 
+                }
 
+                @Override
+                public void onVolumeUpdate(int volume) {
+                    logger.d("volume:" + volume);
+                }
+            });
+        }
+    }
+
+    /**
+     * 停止语音评测
+     */
+    private void stopAssess() {
+        if (speechUtils != null) {
+            speechUtils.stop();
+        }
+        isAssessing = false;
     }
 
     @Override
@@ -765,6 +779,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
     public void destroy() {
         isFinish = true;
         wvSubjectWeb.destroy();
+        stopAssess();
     }
 
     @Override
@@ -789,13 +804,10 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
             return;
         }
         isFinish = true;
-
         getAnswerType = LiveQueConfig.GET_ANSWERTYPE_FORCE_SUBMIT;
-        if (courseTipDialog != null) {
-            courseTipDialog.cancelDialog();
-            courseTipDialog = null;
-        }
         if (!isSumit) {
+            stopAssess();
+            resultGotByForceSubmit = true;
             JSONObject jsonData = new JSONObject();
             try {
                 jsonData.put("type", CourseMessage.SEND_getAnswer);
@@ -810,11 +822,10 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
         }
     }
 
-    private void submit(int isforce, String nonce) {
+    private void submit(int isforce, String nonce, JSONArray data) {
         isSumit = true;
-        KeyboardUtil.hideKeyboard(wvSubjectWeb);
         subMitTime = System.currentTimeMillis();
-        submitAnswer(isforce, nonce);
+        submitAnswer(isforce, nonce, data);
         NewCourseLog.sno5(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), isforce == 1,
                 wvSubjectWeb.getUrl(), ispreload);
     }
@@ -825,162 +836,39 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
      * @param isforce
      * @param nonce
      */
-    private void submitAnswer(final int isforce, final String nonce) {
-        JSONObject data = new JSONObject();
-        JSONObject dataJson = new JSONObject();
-//        for (int i = 0; i < tests.size(); i++) {
-        if (!tests.isEmpty()) {
-            NewCourseSec.Test test = tests.get(0);
-            testId = test.getId();
-            dataJson = test.getJson();
-            JSONArray userAnswerContent = test.getUserAnswerContent();
-            JSONArray rightAnswerContent = test.getRightAnswerContent();
-            try {
-                int userAnswerStatus = 0;
-                //用户没有作答,字段不能缺
-                if (userAnswerContent == null || userAnswerContent.length() == 0) {
-                    userAnswerContent = new JSONArray();
-                    //需要填上id 和 text
-                    JSONObject emptyJson = new JSONObject();
-                    emptyJson.put("id", "");
-                    emptyJson.put("text", "");
-                    emptyJson.put("score", "");
-                    emptyJson.put("scoreKey", "");
-                    userAnswerContent.put(emptyJson);
-                } else {
-                    for (int i = 0; i < userAnswerContent.length(); i++) {
-                        JSONObject temp = userAnswerContent.getJSONObject(i);
-                        String text = temp.optString("text");
-                        if (text != null){
-                            text = text.replaceAll(" ", "");
-                            temp.remove("text");
-                            temp.put("text", text);
-                        }
-                    }
-                }
-                if (rightAnswerContent == null || rightAnswerContent.length() == 0) {
-                    rightAnswerContent = new JSONArray();
-                    //需要填上id 和 text
-                    JSONObject emptyJson = new JSONObject();
-                    emptyJson.put("text", "");
-                    emptyJson.put("score", "");
-                    emptyJson.put("scoreKey", "");
-                    rightAnswerContent.put(emptyJson);
-                }
-                dataJson.put("testid", test.getId());
-                dataJson.put("userid", UserBll.getInstance().getMyUserInfoEntity().getStuId());
-                dataJson.put("hasAnswer", isforce);
-                dataJson.put("liveId", liveId);
-                dataJson.put("gradeType", Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getGradeCode()));
-                dataJson.put("deviceid", 8);
-                dataJson.put("totalScore", 0);
-                if (test.getMaxScore() != null && !test.getMaxScore().isEmpty()) {
-                    dataJson.put("maxScore", Integer.parseInt(test.getMaxScore()));
-                } else {
-                    dataJson.put("maxScore", 0);
-                }
-                dataJson.put("lostReason", "");
-                dataJson.put("rightAnswerContent", rightAnswerContent);
-                dataJson.put("userAnswerContent", userAnswerContent);
-                data.put(test.getId(), dataJson);
-            } catch (JSONException e) {
-                CrashReport.postCatchedException(e);
-                mLogtf.e("submit", e);
-            }
+    private void submitAnswer(final int isforce, final String nonce, JSONArray data) {
+        final JSONObject testInfos = new JSONObject();
+        NewCourseSec.Test test = tests.get(0);
+        JSONObject json = test.getJson();
+        try {
+            json.put("userAnswerContent",data);
+            json.put("index", 0);
+            json.put("userAnswerStatus", 0);
+            testInfos.put(tests.get(0).getId(),json);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-//        }
 
+        englishH5CoursewareSecHttp.submitCourseWareTests(detailInfo, isforce, nonce, entranceTime,
+                testInfos.toString(), new AbstractBusinessDataCallBack() {
+                    @Override
+                    public void onDataSucess(Object... objData) {
+                        JSONObject jsonObject = (JSONObject) objData[0];
+                        showAnswerResult(isforce);
+                        onSubmitSuccess(isforce);
+                    }
+
+                    @Override
+                    public void onDataFail(int errStatus, String failMsg) {
+                        super.onDataFail(errStatus, failMsg);
+                        XESToastUtils.showToast(mContext, "答题结果提交失败，请刷新后重新作答！(10002)" + errStatus);
+                        isSumit = false;
+                        onSubmitError(isforce, failMsg);
+                    }
+
+
+                });
     }
-
-
-
-//    class AiHttpCallBack extends HttpCallBack {
-//
-//        private int isforce;
-//        private JSONObject data;
-//
-//        AiHttpCallBack(int isforce, JSONObject data) {
-//            super(false);
-//            this.isforce = isforce;
-//            this.data = data;
-//        }
-//
-//        @Override
-//        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-//
-//            JSONObject response = (JSONObject) responseEntity.getJsonObject();
-//            if (response.has("totalScore")) {
-//                XESToastUtils.showToast(mContext, "答题结果提交失败，请刷新后重新作答！(10001)");
-//                return;
-//            }
-//            if (response.has(testId)) {
-//                JSONObject resultData = response.getJSONObject(testId);
-//                JSONArray userAnswerContent = resultData.getJSONArray("userAnswerContent");
-//                JSONArray rightAnswerContent = resultData.getJSONArray("rightAnswerContent");
-//                resultData.remove("rightAnswerContent");
-//                resultData.remove("userAnswerContent");
-//                resultData.remove("testid");
-//                resultData.put("id", testId);
-//                resultData.put("index", 0);
-//                resultData.put("userAnswerStatus", 0);
-//                resultData.put("endTime", System.currentTimeMillis() / 1000);
-//                resultData.put("srcType", LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE);
-//                JSONArray userAnswer = new JSONArray();
-//                JSONObject userContent = new JSONObject();
-//                userContent.put("userAnswerContent", userAnswerContent);
-//                JSONObject rightContent = new JSONObject();
-//                userContent.put("rightAnswerContent", rightAnswerContent);
-//                userAnswer.put(userContent);
-//                userAnswer.put(rightContent);
-//                resultData.put("userAnswerContent", userAnswer);
-//            }
-//
-//            englishH5CoursewareSecHttp.submitCourseWareTests(detailInfo, isforce, nonce, entranceTime,
-//                    response.toString(), new AbstractBusinessDataCallBack() {
-//                        @Override
-//                        public void onDataSucess(Object... objData) {
-//                            JSONObject jsonObject = (JSONObject) objData[0];
-//                            showAnswerResult(isforce);
-//                            onSubmitSuccess(isforce);
-//                        }
-//
-//                        @Override
-//                        public void onDataFail(int errStatus, String failMsg) {
-//                            super.onDataFail(errStatus, failMsg);
-//                            XESToastUtils.showToast(mContext, "答题结果提交失败，请刷新后重新作答！(10002)" + errStatus);
-//                            isSumit = false;
-//                            onSubmitError(isforce, failMsg);
-//                        }
-//
-//
-//                    });
-//            if (FORCE == isforce) {
-//                if (onClose != null) {
-//                    loadResult = true;
-//                    onClose.onH5ResultClose(SpeakChineseCoursewarePager.this, getBaseVideoQuestionEntity());
-//                }
-//            }
-//        }
-//
-//        @Override
-//        public void onPmFailure(Throwable error, String msg) {
-//            super.onPmFailure(error, msg);
-//            if (isFirstAI) {
-//                isFirstAI = false;
-//                mLiveHttpManager.submitChineseAISubjectiveAnswer(aiUrl, data.toString(), this);
-//            } else {
-//                XESToastUtils.showToast(mContext, msg);
-//            }
-//            isSumit = false;
-//            onSubmitError(isforce, msg);
-//        }
-//
-//        @Override
-//        public void onPmError(ResponseEntity responseEntity) {
-//            super.onPmError(responseEntity);
-//            XESToastUtils.showToast(mContext, "答题结果提交失败，请刷新后重新作答！（10001）");
-//        }
-//    }
 
     /**
      * 提交成功
@@ -1059,7 +947,6 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 }
                 NewCourseSec.Test test = tests.get(0);
                 currentIndex = 0;
-                wvSubjectWeb.loadUrl(test.getPreviewPath());
                 int type = newCourseCache.loadCourseWareUrl(test.getPreviewPath());
                 if (type != 0) {
                     ispreload = type == 1;
@@ -1067,10 +954,15 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                     ispreload = true;
                 }
                 if (newCourseSec.getIsAnswer() == 1 && !isPlayBack) {
-//                    rlSubjectLoading.setVisibility(View.GONE);
-//                    preLoad.onStop();
-                    showAnswerResult(0);
+                    rlSubjectLoading.setVisibility(View.GONE);
+                    preLoad.onStop();
+                    //如果答完了 直接关闭
+                    if (onClose!=null){
+                        onClose.onH5ResultClose(SpeakChineseCoursewarePager.this, getBaseVideoQuestionEntity());
+                    }
+//                    showAnswerResult(0);
                 } else {
+                    wvSubjectWeb.loadUrl(test.getPreviewPath());
                     NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts),
                             getSubtestid(), test.getPreviewPath(), ispreload, test.getId());
                 }
@@ -1109,55 +1001,6 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
             return "0";
         }
         return "" + (currentIndex + 1);
-    }
-
-    /**
-     * 初中课件加载
-     */
-    private class MiddleSchool implements PreLoad {
-        private ImageView ivLoading;
-        private ProgressBar pgCourseProg;
-        private TextView tvDataLoadingTip;
-
-        @Override
-        public void onStart() {
-            ivLoading = mView.findViewById(R.id.iv_data_loading_show);
-            pgCourseProg = mView.findViewById(R.id.pg_livevideo_new_course_prog);
-            tvDataLoadingTip = mView.findViewById(R.id.tv_data_loading_tip);
-            logger.d("MiddleSchool:onStart");
-            try {
-                Drawable drawable = mContext.getResources().getDrawable(R.drawable.animlst_app_loading);
-                ivLoading.setBackground(drawable);
-                ((AnimationDrawable) drawable).start();
-            } catch (Exception e) {
-                if (mLogtf != null) {
-                    mLogtf.e("initData", e);
-                }
-            }
-        }
-
-        @Override
-        public void onProgressChanged(WebView view, int newProgress) {
-            pgCourseProg.setProgress(newProgress);
-            tvDataLoadingTip.setText("加载中 " + newProgress + "%");
-        }
-
-        @Override
-        public void onStop() {
-            logger.d("MiddleSchool:onStart:ivLoading=null?" + (ivLoading == null));
-            if (ivLoading != null) {
-                try {
-                    Drawable drawable = ivLoading.getBackground();
-                    if (drawable instanceof AnimationDrawable) {
-                        ((AnimationDrawable) drawable).stop();
-                    }
-                } catch (Exception e) {
-                    if (mLogtf != null) {
-                        mLogtf.e("onProgressChanged", e);
-                    }
-                }
-            }
-        }
     }
 
     /**
@@ -1307,74 +1150,69 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
     }
 
     /**
-     * 显示 AI语文主观题 结果页
+     * 显示 结果页
      *
      * @param isforce
      */
     private void showAnswerResult(final int isforce) {
 
         isSumit = true;
-        if (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage)) {
-            englishH5CoursewareSecHttp.getStuTestResult(detailInfo, isPlayBack ? 1 : 0,
-                    new AbstractBusinessDataCallBack() {
+        englishH5CoursewareSecHttp.getStuTestResult(detailInfo, isPlayBack ? 1 : 0,
+                new AbstractBusinessDataCallBack() {
 
-                        @Override
-                        public void onDataSucess(Object... objData) {
+                    @Override
+                    public void onDataSucess(Object... objData) {
 //                            addResultPager(isforce, (ChineseAISubjectResultEntity) objData[0]);
-                            logger.i("showAnswerResult");
-                            ChsAnswerResultEvent chsAnswerResultEvent = new ChsAnswerResultEvent(objData[1] + "", ChsAnswerResultEvent.TYPE_AI_CHINESE_ANSWERRESULT);
-                            chsAnswerResultEvent.setDetailInfo(detailInfo);
-                            chsAnswerResultEvent.setIspreload(ispreload);
-                            chsAnswerResultEvent.setResultEntity((ChineseAISubjectResultEntity) objData[0]);
-                            EventBus.getDefault().post(chsAnswerResultEvent);
+                        logger.i("showAnswerResult");
+                        loadResult = true;
+                        PrimaryScienceAnswerResultEntity entity = (PrimaryScienceAnswerResultEntity) objData[0];
+                        mGoldNum = entity.getGold();
+                        if (allowTeamPk) {
+                            mEnergyNum = isforce == 0 ? entity.getEnergy() : 0;
                         }
 
-                        @Override
-                        public void onDataFail(int errStatus, String failMsg) {
-                            super.onDataFail(errStatus, failMsg);
-                            XESToastUtils.showToast(mContext, "答题结果提交失败，请刷新后重新作答！(10003)" + errStatus);
-                        }
-                    });
+                        // 对外暴露答题结果
+                        broadCastAnswerRestult(entity);
+
+                        PrimaryScienceAnserResultPager primaryScienceAnserResultPager = new PrimaryScienceAnserResultPager(mContext, entity, 1, new PrimaryScienceAnserResultPager.OnNativeResultPagerClose() {
+                            @Override
+                            public void onClose() {
+                                onClose.onH5ResultClose(SpeakChineseCoursewarePager.this, getBaseVideoQuestionEntity());
+                            }
+                        });
+                        ((RelativeLayout) mView).addView(primaryScienceAnserResultPager.getRootView(), new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+                        NewCourseLog.sno8(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), ispreload, 0);
+                    }
+
+                    @Override
+                    public void onDataFail(int errStatus, String failMsg) {
+                        super.onDataFail(errStatus, failMsg);
+                    }
+                });
+
+    }/**
+     * 对外广播 答题结果
+     *
+     * @param entity
+     */
+    private void broadCastAnswerRestult(PrimaryScienceAnswerResultEntity entity) {
+        try {
+            if (detailInfo != null && detailInfo.englishH5Entity != null) {
+                JSONObject answerReuslt = new JSONObject();
+                answerReuslt.put("isRight", entity.getType());
+                answerReuslt.put("goldNum", mGoldNum);
+                answerReuslt.put("energyNum", mEnergyNum);
+                answerReuslt.put("id", detailInfo.englishH5Entity.getReleasedPageInfos());
+                EventBus.getDefault().post(new AnswerResultEvent(answerReuslt.toString()));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    /**
-     * 显示结果页
-     *
-     * @param isforce
-     * @param resultEntity
-     */
-//    private void addResultPager(final int isforce, ChineseAISubjectResultEntity resultEntity) {
-//        loadResult = true;
-//        if (isforce == 0) {
-//            mGoldNum = resultEntity.getGold();
-//            if (allowTeamPk) {
-//                mEnergyNum = resultEntity.getEnergy();
-//            }
-//        }
-//        answerResultPager = new ChiAnswerResultPager(mContext, resultEntity, new AnswerResultStateListener() {
-//            @Override
-//            public void onCompeletShow() {
-//
-//            }
-//
-//            @Override
-//            public void onAutoClose(BasePager basePager) {
-//            }
-//
-//            @Override
-//            public void onCloseByUser() {
-//                if (isforce == 0){
-//                    onClose.onH5ResultClose(ChineseAiSubjectiveCoursewarePager.this, getBaseVideoQuestionEntity());
-//                }
-//            }
-//        });
-//        ((RelativeLayout) mView.getParent()).addView(answerResultPager.getRootView(),
-//                new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-//                        ViewGroup.LayoutParams.MATCH_PARENT));
-//        NewCourseLog.sno8(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts),
-//                ispreload, 0);
-//    }
-
-
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopAssess();
+    }
 }
