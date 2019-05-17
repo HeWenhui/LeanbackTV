@@ -21,7 +21,6 @@ public class PrimaryClassHttp {
     public PrimaryClassHttp(LiveHttpManager liveHttpManager) {
         this.liveHttpManager = liveHttpManager;
         primaryClassResponseParser = new PrimaryClassResponseParser();
-
     }
 
     public void setLiveHttpManager(LiveHttpManager liveHttpManager) {

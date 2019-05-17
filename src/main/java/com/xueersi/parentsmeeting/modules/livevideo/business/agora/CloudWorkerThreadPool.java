@@ -1,19 +1,12 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business.agora;
 
 import android.content.Context;
-import android.os.Environment;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 import android.view.SurfaceView;
 
-import com.xueersi.common.config.AppConfig;
-import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
-import java.io.File;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;
@@ -23,10 +16,6 @@ import java.util.concurrent.TimeUnit;
 import io.agora.rtc.Constants;
 
 import com.xes.ps.rtcstream.RTCEngine;
-
-import io.agora.rtc.video.VideoCanvas;
-
-import static io.agora.rtc.Constants.RAW_AUDIO_FRAME_OP_MODE_READ_WRITE;
 
 /**
  * 云平台声网调用，放在线程池里
@@ -78,10 +67,6 @@ public class CloudWorkerThreadPool {
 
     }
 
-    public final void disablePreProcessor() {
-
-    }
-
     public interface OnJoinChannel {
         void onJoinChannel(int joinChannel);
     }
@@ -97,12 +82,9 @@ public class CloudWorkerThreadPool {
      * ERR_NOT_READY (-3)：没有成功初始化
      * ERR_REFUSED (-5)：SDK不能发起通话，可能是因为处于另一个通话中，或者创建频道失败。
      *
-     * @param channelKey
-     * @param channel
-     * @param uid
      * @param onJoinChannel
      */
-    public final void joinChannel(final String channelKey, final String channel, final int uid, final OnJoinChannel onJoinChannel) {
+    public final void joinChannel(final OnJoinChannel onJoinChannel) {
         poolExecutor.execute(new Runnable() {
             @Override
             public void run() {
@@ -115,29 +97,18 @@ public class CloudWorkerThreadPool {
                 }
                 int joinChannel = mRtcEngine.joinRoom();
                 onJoinChannel.onJoinChannel(joinChannel);
-                logger.d("joinChannel:channelKey=" + channelKey + ",channel=" + channel + ",uid=" + uid + ",joinChannel="
-                        + joinChannel);
-                mEngineConfig.mChannel = channel;
-
                 enablePreProcessor();
-                logger.d("joinChannel " + channel + " " + uid);
             }
         });
     }
 
-    public final void leaveChannel(final String channel, final OnLeaveChannel onLeaveChannel) {
+    public final void leaveChannel(final OnLeaveChannel onLeaveChannel) {
         poolExecutor.execute(new Runnable() {
             @Override
             public void run() {
                 if (mRtcEngine != null) {
                     mRtcEngine.leaveRoom();
                 }
-
-                disablePreProcessor();
-
-                int clientRole = mEngineConfig.mClientRole;
-                mEngineConfig.reset();
-                logger.d("leaveChannel " + channel + " " + clientRole);
             }
         });
     }
@@ -167,7 +138,7 @@ public class CloudWorkerThreadPool {
         });
     }
 
-    public final void preview(final boolean start, final SurfaceView view, final int uid) {
+    public final void preview(final boolean start, final SurfaceView view) {
         poolExecutor.execute(new Runnable() {
             @Override
             public void run() {
@@ -186,35 +157,19 @@ public class CloudWorkerThreadPool {
         });
     }
 
-    public static String getDeviceID(Context context) {
-        // XXX according to the API docs, this value may change after factory reset
-        // use Android id as device id
-        return Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-    }
-
     public void setAppid(String appid) {
         this.appid = appid;
     }
 
-
     private RTCEngine ensureRtcEngineReadyLock() throws Exception {
         if (mRtcEngine == null) {
-            String appId;
-            if (StringUtils.isEmpty(appid)) {
-                if (AppConfig.DEBUG) {
-                    appId = mContext.getString(R.string.agora_private_app_id_debug);
-                } else {
-                    appId = mContext.getString(R.string.agora_private_app_id_release);
-                }
-            } else {
-                appId = appid;
-            }
-            if (TextUtils.isEmpty(appId)) {
-                throw new RuntimeException("NEED TO use your App ID, get your own ID at https://dashboard.agora.io/");
-            }
-            logger.d("ensureRtcEngineReadyLock:appId=" + appId);
             mRtcEngine = new RTCEngine(mContext, mEngineEventHandler.rtcEngineEventListener);
-            mRtcEngine.initWithToken("");
+            int init = mRtcEngine.initWithToken(token);
+            if (init != 0) {
+                mRtcEngine = null;
+                onEngineCreate.onEngineCreate(null);
+                return null;
+            }
             mRtcEngine.enableVideo();
             mRtcEngine.enableLocalVideo(enableLocalVideo);
 //            mRtcEngine.disableVideo();
@@ -262,18 +217,19 @@ public class CloudWorkerThreadPool {
             public void run() {
                 logger.d("exit() > start");
                 mReady = false;
-                mRtcEngine.destory();
+                if (mRtcEngine != null) {
+                    mRtcEngine.destory();
+                }
                 logger.d("exit() > end");
             }
         });
         // TODO should remove all pending(read) messages
     }
 
-    public CloudWorkerThreadPool(Context context, int mUid, String token) {
+    public CloudWorkerThreadPool(Context context, String token) {
         this.mContext = context;
         this.token = token;
         this.mEngineConfig = new EngineConfig();
-        this.mEngineConfig.mUid = mUid;
         this.mEngineEventHandler = new CloudEngineEventHandler(mContext);
         if (poolExecutor == null) {
             poolExecutor = new ThreadPoolExecutor(1, 1,
@@ -304,6 +260,20 @@ public class CloudWorkerThreadPool {
 
     public void setEnableLocalVideo(boolean enableLocalVideo) {
         this.enableLocalVideo = enableLocalVideo;
+    }
+
+    public void start() {
+        poolExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    ensureRtcEngineReadyLock();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    onEngineCreate.onEngineCreate(null);
+                }
+            }
+        });
     }
 
     public void setOnEngineCreate(OnEngineCreate onEngineCreate) {

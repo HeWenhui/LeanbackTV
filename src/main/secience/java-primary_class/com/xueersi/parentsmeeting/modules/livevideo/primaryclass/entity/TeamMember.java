@@ -1,14 +1,14 @@
 package com.xueersi.parentsmeeting.modules.livevideo.primaryclass.entity;
 
 public class TeamMember {
-    private String stuId;
+    private int stuId;
     private String stuName;
 
-    public String getStuId() {
+    public int getStuId() {
         return stuId;
     }
 
-    public void setStuId(String stuId) {
+    public void setStuId(int stuId) {
         this.stuId = stuId;
     }
 

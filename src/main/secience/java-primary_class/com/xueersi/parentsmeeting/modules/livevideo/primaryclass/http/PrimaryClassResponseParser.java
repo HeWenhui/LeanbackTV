@@ -27,8 +27,8 @@ public class PrimaryClassResponseParser {
             for (int i = 0; i < teamMembersObj.length(); i++) {
                 JSONObject teamMemberObj = teamMembersObj.getJSONObject(i);
                 TeamMember teamMember = new TeamMember();
-                teamMember.setStuId(teamInfoObj.getString("stuId"));
-                teamMember.setStuName(teamInfoObj.getString("stuName"));
+                teamMember.setStuId(teamMemberObj.getInt("stuId"));
+                teamMember.setStuName(teamMemberObj.getString("stuName"));
                 teamMembers.add(teamMember);
             }
             primaryClassEntity.setTeamInfo(teamInfo);
