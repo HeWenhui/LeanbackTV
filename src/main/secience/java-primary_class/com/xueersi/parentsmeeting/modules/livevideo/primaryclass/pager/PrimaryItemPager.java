@@ -16,6 +16,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.BasePrimaryTeamItem;
+import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.PrimaryTeamEmptyItem;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.PrimaryTeamMyItem;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.PrimaryTeamOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.entity.PrimaryClassEntity;
@@ -145,13 +146,18 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         ArrayList<TeamMember> teamMembers = primaryClassEntity.getTeamInfo().getTeamMembers();
         LayoutInflater mInflater = LayoutInflater.from(mContext);
         int margin = (int) (11 * scale);
-        for (int i = 0; i < teamMembers.size(); i++) {
-            TeamMember teamMember = teamMembers.get(i);
+        for (int i = 0; i < 4; i++) {
+            TeamMember teamMember = null;
             BasePrimaryTeamItem basePrimaryTeamItem;
-            if (stuid == teamMember.getStuId()) {
-                basePrimaryTeamItem = new PrimaryTeamMyItem(mContext, teamMember, workerThread, teamMember.getStuId());
+            if (i < teamMembers.size()) {
+                teamMember = teamMembers.get(i);
+                if (stuid == teamMember.getStuId()) {
+                    basePrimaryTeamItem = new PrimaryTeamMyItem(mContext, teamMember, workerThread, teamMember.getStuId());
+                } else {
+                    basePrimaryTeamItem = new PrimaryTeamOtherItem(mContext, teamMember, workerThread, teamMember.getStuId());
+                }
             } else {
-                basePrimaryTeamItem = new PrimaryTeamOtherItem(mContext, teamMember, workerThread, teamMember.getStuId());
+                basePrimaryTeamItem = new PrimaryTeamEmptyItem(mContext, teamMember, workerThread, teamMember.getStuId());
             }
             View convertView = mInflater.inflate(basePrimaryTeamItem.getLayoutResId(), ll_livevideo_primary_team_content, false);
             basePrimaryTeamItem.initViews(convertView);

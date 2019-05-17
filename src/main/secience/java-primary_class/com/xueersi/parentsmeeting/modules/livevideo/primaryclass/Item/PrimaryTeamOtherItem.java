@@ -8,7 +8,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.entity.TeamMember;
 
-public class PrimaryTeamOtherItem extends BasePrimaryTeamItem {
+public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
     private boolean enableVideo = true;
     private boolean enableAudio = true;
 
