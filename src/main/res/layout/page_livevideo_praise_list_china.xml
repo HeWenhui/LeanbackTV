@@ -58,58 +58,6 @@
     </RelativeLayout>
 
 
-    <LinearLayout
-        android:id="@id/ll_page_livevideo_praise_list_teacher_content"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"
-        android:layout_centerInParent="true"
-        android:background="@color/transparent_70"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="64dp"
-            android:background="@drawable/bg_page_livevideo_praise_list_china_teacher_hint"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <com.xueersi.ui.widget.CircleImageView
-                android:id="@id/iv_page_livevideo_praise_list_teacher_head_image"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginLeft="12dp"
-                android:src="@drawable/ic_default_head_square"
-                app:border_color="#ffffff"
-                android:layout_marginBottom="2dp"
-                app:border_width="2dp" />
-
-            <TextView
-                android:id="@id/tv_page_livevideo_praise_list_teacher_tip"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text=""
-                android:paddingRight="20dp"
-                android:textColor="#A9743C"
-                android:textSize="15sp" />
-        </LinearLayout>
-
-        <TextView
-            android:id="@id/tv_page_livevideo_praise_list_teacher_talk"
-            android:layout_width="294dp"
-            android:layout_height="75dp"
-            android:background="@drawable/bg_page_livevideo_praise_list_china_teacher_talk"
-            android:paddingLeft="20dp"
-            android:paddingTop="30dp"
-            android:paddingRight="20dp"
-            android:text=""
-            android:textColor="#A9743C"
-            android:textSize="15dp" />
-
-    </LinearLayout>
-
     <ImageButton
         android:id="@id/btn_page_livevideo_praise_list_close"
         android:layout_width="wrap_content"
@@ -163,5 +111,57 @@
 
         </com.xueersi.parentsmeeting.modules.livevideo.widget.PraiseBtnAnimLayout>
     </RelativeLayout>
+
+    <LinearLayout
+        android:id="@id/ll_page_livevideo_praise_list_teacher_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        android:background="@color/transparent_70"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="64dp"
+            android:background="@drawable/bg_page_livevideo_praise_list_china_teacher_hint"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <com.xueersi.ui.widget.CircleImageView
+                android:id="@id/iv_page_livevideo_praise_list_teacher_head_image"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="12dp"
+                android:src="@drawable/ic_default_head_square"
+                app:border_color="#ffffff"
+                android:layout_marginBottom="2dp"
+                app:border_width="2dp" />
+
+            <TextView
+                android:id="@id/tv_page_livevideo_praise_list_teacher_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text=""
+                android:paddingRight="20dp"
+                android:textColor="#A9743C"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@id/tv_page_livevideo_praise_list_teacher_talk"
+            android:layout_width="294dp"
+            android:layout_height="75dp"
+            android:background="@drawable/bg_page_livevideo_praise_list_china_teacher_talk"
+            android:paddingLeft="20dp"
+            android:paddingTop="30dp"
+            android:paddingRight="20dp"
+            android:text=""
+            android:textColor="#A9743C"
+            android:textSize="15dp" />
+
+    </LinearLayout>
 
 </RelativeLayout>
