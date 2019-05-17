@@ -13,6 +13,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlayerFragment;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.SetVolumeListener;
 
 /**
  * Created by lyqai on 2017/11/21.
@@ -38,7 +39,7 @@ public abstract class BaseSpeechAssessmentPager extends LiveBasePager {
         }
     }
 
-    private BasePlayerFragment.SetVolumeListener setVolumeListener = new BasePlayerFragment.SetVolumeListener() {
+    private SetVolumeListener setVolumeListener = new SetVolumeListener() {
         @Override
         public void onSuccess(boolean succ) {
             try {

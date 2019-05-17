@@ -88,6 +88,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.GroupGameLog;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.SetVolumeListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -239,7 +240,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         return view;
     }
 
-    private BasePlayerFragment.SetVolumeListener setVolumeListener = new BasePlayerFragment.SetVolumeListener() {
+    private SetVolumeListener setVolumeListener = new SetVolumeListener() {
         @Override
         public void onSuccess(boolean succ) {
             try {

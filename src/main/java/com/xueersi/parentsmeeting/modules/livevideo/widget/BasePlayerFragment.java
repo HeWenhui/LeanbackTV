@@ -349,10 +349,6 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         return false;
     }
 
-    public interface SetVolumeListener {
-        void onSuccess(boolean succ);
-    }
-
     Handler.Callback callback = new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
