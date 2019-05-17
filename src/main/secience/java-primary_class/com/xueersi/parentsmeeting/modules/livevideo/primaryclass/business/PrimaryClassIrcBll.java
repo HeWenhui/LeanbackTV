@@ -25,6 +25,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, TopicAction {
     PrimaryClassHttp primaryClassHttp;
     PrimaryItemView primaryItemView;
+    PrimaryClassEntity primaryClassEntity;
 
     public PrimaryClassIrcBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -35,12 +36,17 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
         super.onLiveInited(getInfo);
         String classId = getInfo.getStudentLiveInfo().getClassId();
         getPrimaryClassHttp().reportUserAppStatus(classId, getInfo.getStuId(), "1");
-        getPrimaryClassHttp().getMyTeamInfo(classId, getInfo.getStuId(), UserBll.getInstance().getMyUserInfoEntity().getPsimId(), new AbstractBusinessDataCallBack() {
+        getMyTeamInfo();
+    }
+
+    private void getMyTeamInfo() {
+        String classId = mGetInfo.getStudentLiveInfo().getClassId();
+        getPrimaryClassHttp().getMyTeamInfo(classId, mGetInfo.getStuId(), UserBll.getInstance().getMyUserInfoEntity().getPsimId(), new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
-                PrimaryClassEntity primaryClassEntity = (PrimaryClassEntity) objData[0];
+                primaryClassEntity = (PrimaryClassEntity) objData[0];
                 if (primaryItemView != null) {
-                    primaryItemView.onTeam(getInfo.getStuId(), primaryClassEntity);
+                    primaryItemView.onTeam(mGetInfo.getStuId(), primaryClassEntity);
                 }
             }
         });
@@ -110,12 +116,23 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
                 }
             }
             break;
+            case XESCODE.TEAM_PK_TEAM: {
+                try {
+                    String status = data.getString("status");
+                    if (primaryClassEntity == null) {
+                        getMyTeamInfo();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            break;
         }
     }
 
     @Override
     public int[] getNoticeFilter() {
-        return new int[]{XESCODE.TEAM_PK_MESSAGE};
+        return new int[]{XESCODE.TEAM_PK_MESSAGE, XESCODE.TEAM_PK_TEAM};
     }
 
 }

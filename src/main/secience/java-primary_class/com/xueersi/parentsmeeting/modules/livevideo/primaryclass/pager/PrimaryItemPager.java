@@ -157,7 +157,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                     basePrimaryTeamItem = new PrimaryTeamOtherItem(mContext, teamMember, workerThread, teamMember.getStuId());
                 }
             } else {
-                basePrimaryTeamItem = new PrimaryTeamEmptyItem(mContext, teamMember, workerThread, teamMember.getStuId());
+                basePrimaryTeamItem = new PrimaryTeamEmptyItem(mContext, null, workerThread, -1);
             }
             View convertView = mInflater.inflate(basePrimaryTeamItem.getLayoutResId(), ll_livevideo_primary_team_content, false);
             basePrimaryTeamItem.initViews(convertView);
@@ -168,7 +168,11 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             lp.bottomMargin = margin;
             convertView.setBackgroundColor(0xa663a4aF);
             ll_livevideo_primary_team_content.addView(convertView, lp);
-            courseGroupItemHashMap.put("" + teamMember.getStuId(), basePrimaryTeamItem);
+            if (teamMember == null) {
+                courseGroupItemHashMap.put("empty" + i, basePrimaryTeamItem);
+            } else {
+                courseGroupItemHashMap.put("" + teamMember.getStuId(), basePrimaryTeamItem);
+            }
         }
     }
 
