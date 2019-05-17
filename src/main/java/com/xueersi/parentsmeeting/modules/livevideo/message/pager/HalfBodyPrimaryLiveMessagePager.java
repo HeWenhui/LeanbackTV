@@ -121,18 +121,42 @@ public class HalfBodyPrimaryLiveMessagePager extends BaseLiveMessagePager {
         });
     }
 
-    private void setTeamPkRight(final View tpkL_teampk_pkstate_root, final ImageView iv_live_primary_class_kuangjia_img_normal) {
-        iv_live_primary_class_kuangjia_img_normal.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+    private void setTeamPkRight(final View tpkL_teampk_pkstate_root, final ImageView imageView) {
+        imageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
             @Override
             public boolean onPreDraw() {
-                iv_live_primary_class_kuangjia_img_normal.getViewTreeObserver().removeOnPreDrawListener(this);
-                int[] losFirst = new int[2];
-                iv_live_primary_class_kuangjia_img_normal.getLocationInWindow(losFirst);
-                final Bitmap bitmap = ((BitmapDrawable) iv_live_primary_class_kuangjia_img_normal.getDrawable()).getBitmap();
-                float scale = (float) bitmap.getWidth() / 1328f;
+                imageView.getViewTreeObserver().removeOnPreDrawListener(this);
+                int width;
+                int height;
+                {
+                    RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
+                    Drawable drawable = imageView.getDrawable();
+                    final Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
+                    float radio = (float) bitmap.getWidth() / (float) bitmap.getHeight();
+                    float viewRadio = (float) imageView.getWidth() / (float) imageView.getHeight();
+                    if (viewRadio > radio) {
+                        height = imageView.getHeight();
+                        width = (int) ((float) height / (float) bitmap.getHeight() * (float) bitmap.getWidth());
+                        if (width != lp.width) {
+                            lp.width = width;
+                            imageView.setLayoutParams(lp);
+                            logger.d("setTeamPkRight:width1=" + width);
+                        }
+                    } else {
+                        width = imageView.getWidth();
+                        height = (int) ((float) imageView.getWidth() / (float) bitmap.getWidth() * (float) bitmap.getHeight());
+                        if (height != lp.height) {
+                            lp.height = height;
+                            imageView.setLayoutParams(lp);
+                            logger.d("setTeamPkRight:width2=" + width);
+                        }
+                    }
+                }
+
+                float scale = (float) width / 1334f;
                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tpkL_teampk_pkstate_root.getLayoutParams();
-                lp.rightMargin = (int) (237 * scale) + losFirst[0];
-                lp.topMargin = losFirst[1] + SizeUtils.Dp2Px(iv_live_primary_class_kuangjia_img_normal.getContext(), 11);
+                lp.rightMargin = (int) (237 * scale) + (ScreenUtils.getScreenWidth() - width) / 2;
+                lp.topMargin = (ScreenUtils.getScreenHeight() - height) / 2 + SizeUtils.Dp2Px(imageView.getContext(), 11);
                 tpkL_teampk_pkstate_root.setLayoutParams(lp);
                 logger.d("setTeamPkRight:rightMargin=" + lp.rightMargin + ",top=" + lp.topMargin);
                 return false;
