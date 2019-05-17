@@ -63,15 +63,16 @@ public class WordDictationBll implements WordDictationAction {
             // 已经有作答记录,直接查看结果
             RecognizeFlow savedData = DictationQuery.getLastRecord(activity);
             bundle.putParcelable("data", savedData);
+            bundle.put("what","Result");
 //            XueErSiRouter.startModule(activity, "/dictation/Result", bundle);
             Module m = AppBll.getInstance().getModuleByModuleName("endictation");
             if (m==null) {
                 m = new Module();
                 m.moduleName = "endictation";
                 m.version = "1.0.0";
-                m.fileUrl = "testurl";
-                m.mac = "testmac";
-                m.moduleId = "testId";
+                m.fileUrl = "https://test.com/endiction.apk";
+                m.mac = "4156465424185";
+                m.moduleId = "1054564";
                 m.title ="单词听写";
                 m.moduleType = 2;
             }
@@ -80,15 +81,16 @@ public class WordDictationBll implements WordDictationAction {
             // 没有作答记录，直接进入引导页
             RecognizeFlow recognizeFlow = new RecognizeFlow(wordStatisticInfo.testid, liveGetInfo.getId(), wordStatisticInfo.pagetype, liveGetInfo.getTeacherId(), wordStatisticInfo.answers);
             bundle.putParcelable("data", recognizeFlow);
+            bundle.put("what","Launch");
 //            XueErSiRouter.startModule(activity, "/dictation/Launch", bundle);
             Module m = AppBll.getInstance().getModuleByModuleName("endictation");
             if (m==null) {
                 m = new Module();
                 m.moduleName = "endictation";
                 m.version = "1.0.0";
-                m.fileUrl = "testurl";
-                m.mac = "testmac";
-                m.moduleId = "testId";
+                m.fileUrl = "https://test.com/endiction.apk";
+                m.mac = "4156465424185";
+                m.moduleId = "1054564";
                 m.title ="单词听写";
                 m.moduleType = 2;
             }
@@ -133,15 +135,16 @@ public class WordDictationBll implements WordDictationAction {
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();
                     bundle.putParcelable("data", recognizeFlow);
+                    bundle.put("what","Result");
 //                    XueErSiRouter.startModule(activity, "/dictation/Result", bundle);
                     Module m = AppBll.getInstance().getModuleByModuleName("endictation");
                     if (m==null) {
                         m = new Module();
                         m.moduleName = "endictation";
                         m.version = "1.0.0";
-                        m.fileUrl = "testurl";
-                        m.mac = "testmac";
-                        m.moduleId = "testId";
+                        m.fileUrl = "https://test.com/endiction.apk";
+                        m.mac = "4156465424185";
+                        m.moduleId = "1054564";
                         m.title ="单词听写";
                         m.moduleType = 2;
                     }
