@@ -14,13 +14,13 @@ import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.endictation.entity.DictationConfig;
-import com.xueersi.parentsmeeting.modules.endictation.entity.DictationQuery;
-import com.xueersi.parentsmeeting.modules.endictation.entity.RecognizeFlow;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.worddictation.entity.WordStatisticInfo;
+import com.xueersi.parentsmeeting.share.business.dctx.DictationConfig;
+import com.xueersi.parentsmeeting.share.business.dctx.DictationQuery;
+import com.xueersi.parentsmeeting.share.business.dctx.RecognizeFlow;
 
 /**
  * Created by linyuqiang on 2018/9/4.

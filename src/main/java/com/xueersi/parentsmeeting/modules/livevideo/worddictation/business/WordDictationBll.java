@@ -10,17 +10,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.xueersi.common.business.AppBll;
 import com.xueersi.common.route.XueErSiRouter;
+import com.xueersi.common.route.module.ModuleHandler;
+import com.xueersi.common.route.module.entity.Module;
+import com.xueersi.common.route.module.entity.ModuleData;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.endictation.entity.DictationConfig;
-import com.xueersi.parentsmeeting.modules.endictation.entity.DictationQuery;
-import com.xueersi.parentsmeeting.modules.endictation.entity.RecognizeFlow;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.worddictation.entity.WordStatisticInfo;
+import com.xueersi.parentsmeeting.share.business.dctx.DictationConfig;
+import com.xueersi.parentsmeeting.share.business.dctx.DictationQuery;
+import com.xueersi.parentsmeeting.share.business.dctx.RecognizeFlow;
 
 /**
  * Created by linyuqiang on 2018/9/4.
@@ -59,12 +63,36 @@ public class WordDictationBll implements WordDictationAction {
             // 已经有作答记录,直接查看结果
             RecognizeFlow savedData = DictationQuery.getLastRecord(activity);
             bundle.putParcelable("data", savedData);
-            XueErSiRouter.startModule(activity, "/dictation/Result", bundle);
+//            XueErSiRouter.startModule(activity, "/dictation/Result", bundle);
+            Module m = AppBll.getInstance().getModuleByModuleName("endictation");
+            if (m==null) {
+                m = new Module();
+                m.moduleName = "endictation";
+                m.version = "1.0.0";
+                m.fileUrl = "testurl";
+                m.mac = "testmac";
+                m.moduleId = "testId";
+                m.title ="单词听写";
+                m.moduleType = 2;
+            }
+            ModuleHandler.start(activity,new ModuleData(m,bundle));
         }else {
             // 没有作答记录，直接进入引导页
             RecognizeFlow recognizeFlow = new RecognizeFlow(wordStatisticInfo.testid, liveGetInfo.getId(), wordStatisticInfo.pagetype, liveGetInfo.getTeacherId(), wordStatisticInfo.answers);
             bundle.putParcelable("data", recognizeFlow);
-            XueErSiRouter.startModule(activity, "/dictation/Launch", bundle);
+//            XueErSiRouter.startModule(activity, "/dictation/Launch", bundle);
+            Module m = AppBll.getInstance().getModuleByModuleName("endictation");
+            if (m==null) {
+                m = new Module();
+                m.moduleName = "endictation";
+                m.version = "1.0.0";
+                m.fileUrl = "testurl";
+                m.mac = "testmac";
+                m.moduleId = "testId";
+                m.title ="单词听写";
+                m.moduleType = 2;
+            }
+            ModuleHandler.start(activity,new ModuleData(m,bundle));
         }
 
         if (wordReceiver == null) {
@@ -105,7 +133,19 @@ public class WordDictationBll implements WordDictationAction {
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();
                     bundle.putParcelable("data", recognizeFlow);
-                    XueErSiRouter.startModule(activity, "/dictation/Result", bundle);
+//                    XueErSiRouter.startModule(activity, "/dictation/Result", bundle);
+                    Module m = AppBll.getInstance().getModuleByModuleName("endictation");
+                    if (m==null) {
+                        m = new Module();
+                        m.moduleName = "endictation";
+                        m.version = "1.0.0";
+                        m.fileUrl = "testurl";
+                        m.mac = "testmac";
+                        m.moduleId = "testId";
+                        m.title ="单词听写";
+                        m.moduleType = 2;
+                    }
+                    ModuleHandler.start(activity,new ModuleData(m,bundle));
                 }
             });
             view.findViewById(R.id.bt_livevideo_worddictation_close).setOnClickListener(new View.OnClickListener() {
