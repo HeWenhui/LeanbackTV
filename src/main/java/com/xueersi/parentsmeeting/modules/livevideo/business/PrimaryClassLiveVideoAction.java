@@ -28,6 +28,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.PrimaryClassView;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.PrimaryClassViewSec;
+import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.PrimaryKuangjiaImageView;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VideoLoadingImgView;
@@ -45,7 +46,7 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
     protected String mode;
     private static final String TAG = "PrimaryClassLiveVideoAction";
     //新加
-    ImageView ivLivePrimaryClassKuangjiaImgNormal;
+    PrimaryKuangjiaImageView ivLivePrimaryClassKuangjiaImgNormal;
     RelativeLayout rlContent;
     private RelativeLayout rl_course_video_contentview;
     int isArts;
@@ -97,12 +98,6 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
     private void setKuangjia() {
         ivLivePrimaryClassKuangjiaImgNormal.setImageResource(primaryClassView.getKuangjia());
         setMargin();
-        LiveVideoPoint.getInstance().addVideoSizeChange(activity, new LiveVideoPoint.VideoSizeChange() {
-            @Override
-            public void videoSizeChange(LiveVideoPoint liveVideoPoint) {
-                setMargin();
-            }
-        });
     }
 
     @Override
@@ -430,41 +425,16 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
     }
 
     public void setImageViewWidth(final ImageView imageView) {
-        Drawable drawable = imageView.getDrawable();
-        final Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-        imageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+        ivLivePrimaryClassKuangjiaImgNormal.addSizeChange(new PrimaryKuangjiaImageView.OnSizeChange() {
             @Override
-            public boolean onPreDraw() {
-                imageView.getViewTreeObserver().removeOnPreDrawListener(this);
-                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
-//            lp.height = bitmap.getHeight();
-                float radio = (float) bitmap.getWidth() / (float) bitmap.getHeight();
-                float viewRadio = (float) imageView.getWidth() / (float) imageView.getHeight();
-                int width;
-                if (viewRadio > radio) {
-                    width = (int) ((float) imageView.getHeight() / (float) bitmap.getHeight() * (float) bitmap.getWidth());
-                    if (width != lp.width) {
-                        lp.width = width;
-                        imageView.setLayoutParams(lp);
-                        logger.d("setImageViewWidth:width1=" + width);
-                    }
-                } else {
-                    width = imageView.getWidth();
-                    int height = (int) ((float) imageView.getWidth() / (float) bitmap.getWidth() * (float) bitmap.getHeight());
-                    if (height != lp.height) {
-                        lp.height = height;
-                        imageView.setLayoutParams(lp);
-                        logger.d("setImageViewWidth:width2=" + width);
-                    }
-                }
-                lp = (RelativeLayout.LayoutParams) rlContent.getLayoutParams();
+            public void onSizeChange(int width, int height) {
+                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlContent.getLayoutParams();
                 float scale = (float) width / 1334f;
                 lp.leftMargin = (int) (13 * scale);
                 lp.bottomMargin = (int) (13 * scale);
                 lp.rightMargin = (int) (219 * scale);
                 lp.topMargin = (int) (96 * scale);
                 rlContent.setLayoutParams(lp);
-                return false;
             }
         });
     }

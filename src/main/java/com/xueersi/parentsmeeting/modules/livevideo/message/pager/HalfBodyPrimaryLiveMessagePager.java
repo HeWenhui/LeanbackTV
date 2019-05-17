@@ -51,6 +51,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageEmojiParser;
+import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.PrimaryKuangjiaImageView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.CenterAlignImageSpan;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMsgRecycelView;
@@ -111,55 +112,20 @@ public class HalfBodyPrimaryLiveMessagePager extends BaseLiveMessagePager {
     public void initData() {
         super.initData();
         final View tpkL_teampk_pkstate_root = mView.findViewById(R.id.tpkL_teampk_pkstate_root);
-        final ImageView iv_live_primary_class_kuangjia_img_normal = liveVideoActivity.findViewById(R.id.iv_live_primary_class_kuangjia_img_normal);
+        final PrimaryKuangjiaImageView iv_live_primary_class_kuangjia_img_normal = liveVideoActivity.findViewById(R.id.iv_live_primary_class_kuangjia_img_normal);
         setTeamPkRight(tpkL_teampk_pkstate_root, iv_live_primary_class_kuangjia_img_normal);
-        LiveVideoPoint.getInstance().addVideoSizeChange(mContext, new LiveVideoPoint.VideoSizeChange() {
-            @Override
-            public void videoSizeChange(LiveVideoPoint liveVideoPoint) {
-                setTeamPkRight(tpkL_teampk_pkstate_root, iv_live_primary_class_kuangjia_img_normal);
-            }
-        });
     }
 
-    private void setTeamPkRight(final View tpkL_teampk_pkstate_root, final ImageView imageView) {
-        imageView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+    private void setTeamPkRight(final View tpkL_teampk_pkstate_root, final PrimaryKuangjiaImageView imageView) {
+        imageView.addSizeChange(new PrimaryKuangjiaImageView.OnSizeChange() {
             @Override
-            public boolean onPreDraw() {
-                imageView.getViewTreeObserver().removeOnPreDrawListener(this);
-                int width;
-                int height;
-                {
-                    RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
-                    Drawable drawable = imageView.getDrawable();
-                    final Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-                    float radio = (float) bitmap.getWidth() / (float) bitmap.getHeight();
-                    float viewRadio = (float) imageView.getWidth() / (float) imageView.getHeight();
-                    if (viewRadio > radio) {
-                        height = imageView.getHeight();
-                        width = (int) ((float) height / (float) bitmap.getHeight() * (float) bitmap.getWidth());
-                        if (width != lp.width) {
-                            lp.width = width;
-                            imageView.setLayoutParams(lp);
-                            logger.d("setTeamPkRight:width1=" + width);
-                        }
-                    } else {
-                        width = imageView.getWidth();
-                        height = (int) ((float) imageView.getWidth() / (float) bitmap.getWidth() * (float) bitmap.getHeight());
-                        if (height != lp.height) {
-                            lp.height = height;
-                            imageView.setLayoutParams(lp);
-                            logger.d("setTeamPkRight:width2=" + width);
-                        }
-                    }
-                }
-
+            public void onSizeChange(int width, int height) {
                 float scale = (float) width / 1334f;
                 RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tpkL_teampk_pkstate_root.getLayoutParams();
                 lp.rightMargin = (int) (237 * scale) + (ScreenUtils.getScreenWidth() - width) / 2;
                 lp.topMargin = (ScreenUtils.getScreenHeight() - height) / 2 + SizeUtils.Dp2Px(imageView.getContext(), 11);
                 tpkL_teampk_pkstate_root.setLayoutParams(lp);
                 logger.d("setTeamPkRight:rightMargin=" + lp.rightMargin + ",top=" + lp.topMargin);
-                return false;
             }
         });
     }

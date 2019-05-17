@@ -31,6 +31,11 @@ public class LiveHalBodyPrimaryPkStateLayout extends LiveHalBodyPkStateLayout {
         super(context, attrs, defStyleAttr);
     }
 
+    @Override
+    public void setVisibility(int visibility) {
+        super.setVisibility(visibility);
+    }
+
     /**
      * 获取布局layout
      * @return

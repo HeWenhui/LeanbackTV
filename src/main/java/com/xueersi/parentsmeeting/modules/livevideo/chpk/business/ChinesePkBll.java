@@ -168,7 +168,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
      * @return
      */
     public boolean isHalfBodyLiveRoom() {
-        return roomInitInfo != null && roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY;
+        return roomInitInfo != null && (roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY || roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS);
     }
 
 
