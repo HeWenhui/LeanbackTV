@@ -62,8 +62,8 @@ public class WordDictationBll implements WordDictationAction {
         if (DictationQuery.hasSavedRecord(activity,wordStatisticInfo.testid, liveGetInfo.getId())){
             // 已经有作答记录,直接查看结果
             RecognizeFlow savedData = DictationQuery.getLastRecord(activity);
-            bundle.putParcelable("data", savedData);
-            bundle.put("what","Result");
+            bundle.putSerializable("data", savedData);
+            bundle.putString("what","Result");
 //            XueErSiRouter.startModule(activity, "/dictation/Result", bundle);
             Module m = AppBll.getInstance().getModuleByModuleName("endictation");
             if (m==null) {
@@ -80,8 +80,8 @@ public class WordDictationBll implements WordDictationAction {
         }else {
             // 没有作答记录，直接进入引导页
             RecognizeFlow recognizeFlow = new RecognizeFlow(wordStatisticInfo.testid, liveGetInfo.getId(), wordStatisticInfo.pagetype, liveGetInfo.getTeacherId(), wordStatisticInfo.answers);
-            bundle.putParcelable("data", recognizeFlow);
-            bundle.put("what","Launch");
+            bundle.putSerializable("data", recognizeFlow);
+            bundle.putString("what","Launch");
 //            XueErSiRouter.startModule(activity, "/dictation/Launch", bundle);
             Module m = AppBll.getInstance().getModuleByModuleName("endictation");
             if (m==null) {
@@ -134,8 +134,8 @@ public class WordDictationBll implements WordDictationAction {
                 @Override
                 public void onClick(View v) {
                     Bundle bundle = new Bundle();
-                    bundle.putParcelable("data", recognizeFlow);
-                    bundle.put("what","Result");
+                    bundle.putSerializable("data", recognizeFlow);
+                    bundle.putString("what","Result");
 //                    XueErSiRouter.startModule(activity, "/dictation/Result", bundle);
                     Module m = AppBll.getInstance().getModuleByModuleName("endictation");
                     if (m==null) {
