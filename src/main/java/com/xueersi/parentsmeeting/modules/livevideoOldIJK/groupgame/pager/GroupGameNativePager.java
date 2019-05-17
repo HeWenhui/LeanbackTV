@@ -314,7 +314,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             public void run() {
                 mWaveView.initialize();
             }
-        }, 300);
+        }, 50);
         singleModeAction.startTimer();
         boolean hasAudidoPermission = XesPermission.hasSelfPermission(mContext, Manifest.permission.RECORD_AUDIO);
         // 检查用户麦克风权限
@@ -561,9 +561,9 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
             @Override
             public void onVolumeUpdate(int volume) {
-                float floatVolume;
-                floatVolume = (float) (volume * 3) / 90.0f;
-                mWaveView.setWaveAmplitude(floatVolume);
+                float fVolume = (float) volume / 10.0f;
+                logger.i("onVolumeUpdate = " + volume + ":" + fVolume);
+                mWaveView.setWaveAmplitude(fVolume);
             }
         });
     }
@@ -1195,6 +1195,20 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                         goldNum = 2;
                     }
                     uploadScore(id);
+                    //提前答对所有题目，自动提交
+                    if (rightNum >= mAnswersList.size()) {
+                        gameOver = true;
+                        if (mIse != null) {
+                            mIse.cancel();
+                        }
+                        handler.removeCallbacks(stopTimerRunnable);
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                submitData(false);
+                            }
+                        }, 1000);
+                    }
                 } else {
                     onOops();
                 }

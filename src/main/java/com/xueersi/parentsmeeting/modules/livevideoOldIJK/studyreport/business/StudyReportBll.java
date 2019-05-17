@@ -106,7 +106,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                     }
                     final File saveFile = new File(agoradir, System.currentTimeMillis() + ".jpg");
                     mLogtf.d("onFirstRemoteVideoDecoded:saveFile=" + saveFile);
-                    mediaDataObserverPlugin.saveRenderVideoSnapshot(saveFile.getPath(), uid, new MediaDataObserverPlugin.OnRenderVideoShot() {
+                    mediaDataObserverPlugin.saveRenderVideoShot(saveFile.getPath(), uid, new MediaDataObserverPlugin.OnRenderVideoShot() {
                         @Override
                         public void onRenderVideoShot(String path) {
                             Bitmap bitmap = LiveCutImage.cutBitmap(path);
@@ -134,7 +134,7 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
             @Override
             public void run() {
                 createPlugin();
-                mediaDataObserverPlugin.addDecodeBuffer(uid);//720P
+                mediaDataObserverPlugin.addDecodeBuffer(uid, 1382400);//720P
             }
         });
     }
@@ -195,13 +195,13 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                 @Override
                 public boolean onPreDraw() {
                     view.getViewTreeObserver().removeOnPreDrawListener(this);
-                   // runnable.run();
+                    // runnable.run();
                     taskThread.start();
                     return false;
                 }
             });
         } else {
-           // runnable.run();
+            // runnable.run();
             taskThread.start();
         }
     }
@@ -365,11 +365,11 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
         if (mediaDataObserverPlugin == null) {
             mediaDataObserverPlugin = MediaDataObserverPlugin.the();
             MediaPreProcessing.setCallback(mediaDataObserverPlugin);
-            MediaPreProcessing.setVideoCaptureByteBuffer(mediaDataObserverPlugin.byteBufferCapture);
-            MediaPreProcessing.setAudioRecordByteBuffer(mediaDataObserverPlugin.byteBufferAudioRecord);
-            MediaPreProcessing.setAudioPlayByteBuffer(mediaDataObserverPlugin.byteBufferAudioPlay);
-            MediaPreProcessing.setBeforeAudioMixByteBuffer(mediaDataObserverPlugin.byteBufferBeforeAudioMix);
-            MediaPreProcessing.setAudioMixByteBuffer(mediaDataObserverPlugin.byteBufferAudioMix);
+            MediaPreProcessing.setVideoCaptureByteBUffer(mediaDataObserverPlugin.byteBufferCapture);
+            MediaPreProcessing.setAudioRecordByteBUffer(mediaDataObserverPlugin.byteBufferAudioRecord);
+            MediaPreProcessing.setAudioPlayByteBUffer(mediaDataObserverPlugin.byteBufferAudioPlay);
+            MediaPreProcessing.setBeforeAudioMixByteBUffer(mediaDataObserverPlugin.byteBufferBeforeAudioMix);
+            MediaPreProcessing.setAudioMixByteBUffer(mediaDataObserverPlugin.byteBufferAudioMix);
             mediaDataObserverPlugin.addVideoObserver(new MediaDataVideoObserver() {
                 @Override
                 public void onCaptureVideoFrame(byte[] data, int frameType, int width, int height, int bufferLength, int yStride, int uStride, int vStride, int rotation, long renderTimeMs) {
@@ -392,15 +392,11 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
 
                 }
 
-//                @Override
-//                public void onPlaybackAudioFrameBeforeMixing(byte[] data, int videoType, int samples, int bytesPerSample, int channels, int samplesPerSec, long renderTimeMs, int bufferLength) {
-//
-//                }
-
                 @Override
-                public void onPlaybackAudioFrameBeforeMixing(int uid, byte[] data, int audioFrameType, int samples, int bytesPerSample, int channels, int samplesPerSec, long renderTimeMs, int bufferLength){
+                public void onPlaybackAudioFrameBeforeMixing(byte[] data, int videoType, int samples, int bytesPerSample, int channels, int samplesPerSec, long renderTimeMs, int bufferLength) {
 
                 }
+
                 @Override
                 public void onMixedAudioFrame(byte[] data, int videoType, int samples, int bytesPerSample, int channels, int samplesPerSec, long renderTimeMs, int bufferLength) {
 

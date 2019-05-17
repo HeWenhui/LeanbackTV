@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.widget;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 
@@ -13,18 +12,26 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 
 /**
-*半身直播 顶部控制栏
-*@author chekun
-*created  at 2018/12/4 16:28
-*/
+ * 半身直播 顶部控制栏
+ *
+ * @author chekun
+ * created  at 2018/12/4 16:28
+ */
 public class HalfBodyLiveMediaCtrlTop extends BaseLiveMediaControllerTop {
 
     String mode = LiveTopic.MODE_TRANING;
     private View mainLiveView;
     private View tranLiveView;
-    /**直播间初始化参数**/
+    /**
+     * 直播间初始化参数
+     **/
     private LiveGetInfo mRoomInitData;
     private String mVideoName;
+
+    /**
+     * 是否拦截 顶部控制栏自动隐藏
+     */
+    boolean interceptMediaCtrHide;
 
     public HalfBodyLiveMediaCtrlTop(Context context, LiveMediaController controller, LiveMediaController
             .MediaPlayerControl mPlayer) {
@@ -33,19 +40,19 @@ public class HalfBodyLiveMediaCtrlTop extends BaseLiveMediaControllerTop {
 
     @Override
     protected View inflateLayout() {
-         View view;
+        View view;
 
-         if(mRoomInitData == null){
-             return super.inflateLayout();
-         }
+        if (mRoomInitData == null) {
+            return super.inflateLayout();
+        }
 
-        if(isChHalfBodyLive()){
+        if (isChHalfBodyLive()) {
             view = initChMediaCtr();
-        }else{
+        } else {
             view = initScienceMediaCtr();
         }
 
-        return  view;
+        return view;
     }
 
 
@@ -62,13 +69,14 @@ public class HalfBodyLiveMediaCtrlTop extends BaseLiveMediaControllerTop {
             view = mainLiveView;
             addView(view);
         } else {
-            if(tranLiveView == null){
-                tranLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_top,this, false);
+            if (tranLiveView == null) {
+                tranLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_top, this,
+                        false);
             }
             view = tranLiveView;
             addView(view);
         }
-        return  view;
+        return view;
     }
 
 
@@ -85,18 +93,20 @@ public class HalfBodyLiveMediaCtrlTop extends BaseLiveMediaControllerTop {
             view = mainLiveView;
             addView(view);
         } else {
-            if(tranLiveView == null){
-                tranLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_top,this, false);
+            if (tranLiveView == null) {
+                tranLiveView = LayoutInflater.from(mContext).inflate(R.layout.layout_livemediacontroller_top, this,
+                        false);
             }
             view = tranLiveView;
             addView(view);
         }
-        return  view;
+        return view;
     }
 
 
     /**
      * 是否是语文半身直播
+     *
      * @return
      */
     private boolean isChHalfBodyLive() {
@@ -106,8 +116,31 @@ public class HalfBodyLiveMediaCtrlTop extends BaseLiveMediaControllerTop {
 
 
     @Override
+    public void onShow() {
+        if (!interceptMediaCtrHide) {
+            super.onShow();
+        }
+    }
+
+    @Override
+    public void onHide() {
+        if (!interceptMediaCtrHide) {
+            super.onHide();
+        }
+
+    }
+
+    /**
+     * 拦截 显示隐藏 动画
+     * @param intercept
+     */
+    public void interceptHideMediaCtr(boolean intercept) {
+        interceptMediaCtrHide = intercept;
+    }
+
+    @Override
     public void setAutoOrientation(boolean autoOrientation) {
-        if(LiveTopic.MODE_TRANING.equals(mode)){
+        if (LiveTopic.MODE_TRANING.equals(mode)) {
             super.setAutoOrientation(autoOrientation);
         }
     }
@@ -120,17 +153,18 @@ public class HalfBodyLiveMediaCtrlTop extends BaseLiveMediaControllerTop {
 
     @Override
     public void setMarkPointsOp(boolean isShow, OnClickListener listener) {
-        if(LiveTopic.MODE_TRANING.equals(mode)){
-            super.setMarkPointsOp(isShow,listener);
+        if (LiveTopic.MODE_TRANING.equals(mode)) {
+            super.setMarkPointsOp(isShow, listener);
         }
     }
 
     /**
      * 主辅导且切换
+     *
      * @param mode
      * @param getInfo
      */
-    public void onModeChange(String mode,LiveGetInfo getInfo){
+    public void onModeChange(String mode, LiveGetInfo getInfo) {
         mRoomInitData = getInfo;
         this.mode = mode;
         removeAllViewsInLayout();
@@ -143,7 +177,7 @@ public class HalfBodyLiveMediaCtrlTop extends BaseLiveMediaControllerTop {
      * 显示视频名称
      */
     private void showVideoName() {
-        if(LiveTopic.MODE_TRANING.equals(mode) || isChHalfBodyLive()){
+        if (LiveTopic.MODE_TRANING.equals(mode) || isChHalfBodyLive()) {
             super.setFileName(mVideoName);
         }
     }

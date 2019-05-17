@@ -38,6 +38,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBl
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +62,9 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
 //    private BaseSmallEnglishLiveMessagePager mSmallEnglishLiveMessagePager;
 
     private BaseLiveMediaControllerBottom baseLiveMediaControllerBottom;
+
+    private BaseLiveMediaControllerTop baseLiveMediaControllerTop;
+
     private Activity activity;
     private Handler mHandler = new Handler();
     public QuestionBll questionBll;
@@ -124,6 +128,12 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
     public void setLiveMediaControllerBottom(BaseLiveMediaControllerBottom baseLiveMediaControllerBottom) {
         this.baseLiveMediaControllerBottom = baseLiveMediaControllerBottom;
     }
+
+    public void setBaseLiveMediaControllerTop(BaseLiveMediaControllerTop controllerTop) {
+        this.baseLiveMediaControllerTop = controllerTop;
+    }
+
+
 
     public View getView() {
         return rlLiveMessageContent;
@@ -249,7 +259,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
             // 理科
             if (getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY) {
                 liveMessagePager = new HalfBodyLiveMessagePager(activity, this,
-                        null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+                        null, baseLiveMediaControllerBottom, baseLiveMediaControllerTop,liveMessageLandEntities, null);
             } else {
                 liveMessagePager = new HalfBodyPrimaryLiveMessagePager(activity, this,
                         null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
@@ -332,7 +342,7 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                 LivePsMessagePager liveMessagePager = new LivePsMessagePager(activity, this, null,
                         baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;
-            } else {
+            }   else {
                 LiveMessagePager liveMessagePager = new LiveMessagePager(activity, this, null,
                         baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;
