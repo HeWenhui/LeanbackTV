@@ -38,6 +38,7 @@ import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.speechrecognizer.TalSpeech;
 import com.tal.speech.utils.SpeechUtils;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.http.ResponseEntity;
@@ -50,6 +51,7 @@ import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -757,6 +759,11 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             try {
                 final JSONObject answers = new JSONObject();
                 JSONObject answers1 = new JSONObject();
+                try {
+                    answers1.put("entranceTimeLog", entranceTime + "," + System.currentTimeMillis());
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                }
                 long entranceTime2 = System.currentTimeMillis() - entranceTime;
                 answers1.put("entranceTime", (int) (entranceTime2 / 1000));
                 answers1.put("score", score);
