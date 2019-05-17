@@ -36,6 +36,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.SetVolumeListener;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.AudioRequest;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.ContextLiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
@@ -239,17 +240,33 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         return view;
     }
 
+    private SetVolumeListener setVolumeListener = new SetVolumeListener() {
+        @Override
+        public void onSuccess(boolean succ) {
+            try {
+                StableLogHashMap stableLogHashMap = new StableLogHashMap("status");
+                stableLogHashMap.put("tag", TAG);
+                stableLogHashMap.put("setsucc", "" + succ);
+                stableLogHashMap.put("creattime", "" + creattime);
+                umsAgentDebugSys(LogConfig.LIVE_STOP_VOLUME, stableLogHashMap);
+            } catch (Exception e) {
+                CrashReport.postCatchedException(new LiveException(TAG, e));
+            }
+        }
+    };
+
     @Override
     public void initData() {
         mLogtf.addCommon("testid", "" + detailInfo.id);
         groupGameUpload = new GroupGameUpload(mContext, liveId, detailInfo.id);
         BasePlayerFragment videoFragment = ProxUtil.getProxUtil().get(mContext, BasePlayerFragment.class);
         if (videoFragment != null) {
-            videoFragment.setVolume(0, 0);
+            boolean succ = videoFragment.setVolume(0, 0, setVolumeListener);
             logger.d(TAG + ":setVolume:0");
             StableLogHashMap stableLogHashMap = new StableLogHashMap("stop");
             stableLogHashMap.put("tag", TAG);
             stableLogHashMap.put("creattime", "" + creattime);
+            stableLogHashMap.put("setsucc", "" + succ);
             umsAgentDebugSys(LogConfig.LIVE_STOP_VOLUME, stableLogHashMap);
         } else {
             logger.d(TAG + ":setVolume:null");
@@ -2014,10 +2031,11 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         }
         BasePlayerFragment videoFragment = ProxUtil.getProxUtil().get(mContext, BasePlayerFragment.class);
         if (videoFragment != null) {
-            videoFragment.setVolume(VP.DEFAULT_STEREO_VOLUME, VP.DEFAULT_STEREO_VOLUME);
+            boolean succ = videoFragment.setVolume(VP.DEFAULT_STEREO_VOLUME, VP.DEFAULT_STEREO_VOLUME, null);
             logger.d("onDestroy:setVolume:1");
             StableLogHashMap stableLogHashMap = new StableLogHashMap("start");
             stableLogHashMap.put("tag", TAG);
+            stableLogHashMap.put("setsucc", "" + succ);
             stableLogHashMap.put("creattime", "" + creattime);
             umsAgentDebugSys(LogConfig.LIVE_STOP_VOLUME, stableLogHashMap);
         } else {
