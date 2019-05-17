@@ -39,7 +39,7 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
                     @Override
                     public void run() {
                         enableAudio = !enableAudio;
-                        cloudWorkerThreadPool.getRtcEngine().enableLocalVideo(enableAudio);
+                        cloudWorkerThreadPool.getRtcEngine().muteLocalAudio(!enableAudio);
                     }
                 });
             }

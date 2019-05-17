@@ -7,6 +7,8 @@ import android.view.SurfaceView;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;
@@ -172,6 +174,15 @@ public class CloudWorkerThreadPool {
             }
             mRtcEngine.enableVideo();
             mRtcEngine.enableLocalVideo(enableLocalVideo);
+            try {
+                Field field = mRtcEngine.getClass().getDeclaredField("mRtcEngine");
+                field.setAccessible(true);
+                Object object = field.get(mRtcEngine);
+                Method method = object.getClass().getDeclaredMethod("enableAudioVolumeIndication", Integer.TYPE, Integer.TYPE);
+                method.invoke(object, 500, 3);
+            } catch (Exception e) {
+                logger.d("ensureRtcEngineReadyLock", e);
+            }
 //            mRtcEngine.disableVideo();
             if (onEngineCreate != null) {
                 onEngineCreate.onEngineCreate(mRtcEngine);

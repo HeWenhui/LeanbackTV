@@ -233,14 +233,14 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             if (stuid == uid) {
                 BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
                 if (basePrimaryTeamItem != null) {
-                    preview(uid, basePrimaryTeamItem);
+                    preview(basePrimaryTeamItem);
                 }
             }
         }
 
         @Override
         public void reportAudioVolumeOfSpeaker(int uid, int volume) {
-            if (stuid == uid) {
+            if (0 == uid) {
                 BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
                 if (basePrimaryTeamItem != null) {
                     basePrimaryTeamItem.reportAudioVolumeOfSpeaker(volume);
@@ -249,7 +249,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         }
     };
 
-    private void preview(final int uid, final BasePrimaryTeamItem courseGroupItem) {
+    private void preview(final BasePrimaryTeamItem courseGroupItem) {
         handler.post(new Runnable() {
             @Override
             public void run() {
