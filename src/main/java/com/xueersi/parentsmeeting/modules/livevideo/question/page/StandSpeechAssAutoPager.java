@@ -757,8 +757,8 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             try {
                 final JSONObject answers = new JSONObject();
                 JSONObject answers1 = new JSONObject();
-                entranceTime = System.currentTimeMillis() - entranceTime;
-                answers1.put("entranceTime", (int) (entranceTime / 1000));
+                long entranceTime2 = System.currentTimeMillis() - entranceTime;
+                answers1.put("entranceTime", (int) (entranceTime2 / 1000));
                 answers1.put("score", score);
                 JSONObject detail = new JSONObject();
                 detail.put("cont_score", score);
