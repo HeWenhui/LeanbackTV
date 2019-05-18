@@ -106,14 +106,11 @@
         app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_primary_team_voice_open"
         app:layout_constraintRight_toRightOf="@id/iv_livevideo_primary_team_voice_open" />
 
-    <ImageView
-        android:id="@id/iv_livevideo_primary_team_energy_add"
-        android:layout_width="54dp"
+    <RelativeLayout
+        android:id="@id/rl_livevideo_primary_team_tip"
+        android:layout_width="wrap_content"
         android:layout_height="22dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginBottom="4dp"
-        android:background="@drawable/shape_primary_item_eneygy_add_back"
-        android:src="@drawable/toast_energe1_icon_normal"
+        android:background="@drawable/shape_primary_item_eneygy_back"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

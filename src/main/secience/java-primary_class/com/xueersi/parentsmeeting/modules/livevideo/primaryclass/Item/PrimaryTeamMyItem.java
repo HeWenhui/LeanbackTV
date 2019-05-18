@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
 
@@ -47,7 +48,7 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
         tv_livevideo_primary_team_people_name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onNameClick.onNameClick(entity,tv_livevideo_primary_team_people_name);
+                onNameClick.onNameClick(entity, tv_livevideo_primary_team_people_name);
             }
         });
     }
@@ -65,5 +66,17 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
     @Override
     public void reportAudioVolumeOfSpeaker(int volume) {
         voiceImageView.setVoice(volume);
+    }
+
+    @Override
+    public void onReport() {
+        final View view = LayoutInflater.from(mContext).inflate(R.layout.item_primary_class_team_item_report, rl_livevideo_primary_team_tip, false);
+        rl_livevideo_primary_team_tip.addView(view);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                rl_livevideo_primary_team_tip.removeView(view);
+            }
+        }, 2000);
     }
 }

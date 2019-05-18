@@ -1,6 +1,8 @@
 package com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ImageView;
@@ -16,6 +18,8 @@ public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
     protected RelativeLayout rlCourseItemVideoHead;
     protected TextView tv_livevideo_primary_team_people_name;
     protected ImageView iv_livevideo_primary_team_voice_open;
+    protected RelativeLayout rl_livevideo_primary_team_tip;
+    protected Handler handler = new Handler(Looper.getMainLooper());
     protected OnNameClick onNameClick;
 
     public BasePrimaryTeamPeopleItem(Context context, TeamMember entity, CloudWorkerThreadPool workerThread, int uid) {
@@ -33,6 +37,7 @@ public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
         tv_livevideo_primary_team_people_name = root.findViewById(R.id.tv_livevideo_primary_team_people_name);
         rlCourseItemVideoHead = root.findViewById(R.id.rl_livevideo_course_item_video_head);
         iv_livevideo_primary_team_voice_open = root.findViewById(R.id.iv_livevideo_primary_team_voice_open);
+        rl_livevideo_primary_team_tip = root.findViewById(R.id.rl_livevideo_primary_team_tip);
     }
 
     @Override

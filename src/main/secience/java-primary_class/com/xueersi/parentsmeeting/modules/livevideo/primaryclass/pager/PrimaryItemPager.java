@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 import com.xes.ps.rtcstream.RTCEngine;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
@@ -34,10 +36,12 @@ import io.agora.rtc.RtcEngine;
 
 public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     private LinearLayout ll_livevideo_primary_team_content;
+    private RelativeLayout rl_livevideo_primary_team_content;
     private TextView tv_livevideo_primary_team_name;
+    private ImageView iv_livevideo_primary_team_icon;
     private RelativeLayout mContentView;
     private PrimaryKuangjiaImageView ivLivePrimaryClassKuangjiaImgNormal;
-    View cl_livevideo_primary_team_inter;
+    private View cl_livevideo_primary_team_inter;
     private CloudWorkerThreadPool workerThread;
     private PrimaryClassEntity primaryClassEntity;
     private HashMap<String, BasePrimaryTeamItem> courseGroupItemHashMap = new HashMap<>();
@@ -59,6 +63,8 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     public View initView() {
         View view = LayoutInflater.from(mContext).inflate(R.layout.pager_primary_class_team, null);
         ll_livevideo_primary_team_content = view.findViewById(R.id.ll_livevideo_primary_team_content);
+        rl_livevideo_primary_team_content = view.findViewById(R.id.rl_livevideo_primary_team_content);
+        iv_livevideo_primary_team_icon = view.findViewById(R.id.iv_livevideo_primary_team_icon);
         tv_livevideo_primary_team_name = view.findViewById(R.id.tv_livevideo_primary_team_name);
         cl_livevideo_primary_team_inter = view.findViewById(R.id.cl_livevideo_primary_team_inter);
         return view;
@@ -74,7 +80,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             public void onSizeChange(int width, int height) {
                 scale = (float) width / 1334f;
                 {
-                    RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tv_livevideo_primary_team_name.getLayoutParams();
+                    RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_livevideo_primary_team_content.getLayoutParams();
                     int lpwidth = (int) (191 * scale);
                     int lpheight = (int) (54 * scale);
                     int leftMargin = (ScreenUtils.getScreenWidth() - width) / 2 + (int) (1124 * scale);
@@ -84,7 +90,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                         lp.height = lpheight;
                         lp.leftMargin = leftMargin;
                         lp.topMargin = topMargin;
-                        tv_livevideo_primary_team_name.setLayoutParams(lp);
+                        rl_livevideo_primary_team_content.setLayoutParams(lp);
                     }
                 }
                 {
@@ -150,6 +156,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         workerThread.start();
         TeamInfo teamInfo = primaryClassEntity.getTeamInfo();
         tv_livevideo_primary_team_name.setText(teamInfo.getTeamName());
+        ImageLoader.with(mContext.getApplicationContext()).load(teamInfo.getTeamImg()).into(iv_livevideo_primary_team_icon);
     }
 
     private void addItem() {
@@ -218,12 +225,21 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                     tv_livevideo_primary_team_inter_right.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            cl_livevideo_primary_team_inter.setVisibility(View.GONE);
                             primaryClassInter.reportNaughtyBoy(finalEntity, new PrimaryClassInter.ReportNaughtyBoy() {
                                 @Override
                                 public void onReport(TeamMember entity) {
                                     entity.setReport(true);
                                     if (finalEntity == entity) {
                                         tv_livevideo_primary_team_inter_right.setText("已举报");
+                                    }
+                                }
+
+                                @Override
+                                public void onReportError(TeamMember entity) {
+                                    BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + entity.getStuId());
+                                    if (basePrimaryTeamItem != null) {
+                                        basePrimaryTeamItem.onReport();
                                     }
                                 }
                             });

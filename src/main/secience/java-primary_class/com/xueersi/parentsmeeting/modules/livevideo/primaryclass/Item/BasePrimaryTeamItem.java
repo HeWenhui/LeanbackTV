@@ -53,4 +53,8 @@ public class BasePrimaryTeamItem implements AdapterItemInterface<TeamMember> {
     public void reportAudioVolumeOfSpeaker(int volume) {
 
     }
+
+    public void onReport() {
+
+    }
 }

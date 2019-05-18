@@ -10,6 +10,7 @@
     <!--<item name="pg_livevideo_primary_team_info_prog" type="id" />-->
     <item name="tv_livevideo_primary_team_people_name" type="id" />
     <item name="iv_livevideo_primary_team_energy_add" type="id" />
+    <item name="rl_livevideo_primary_team_tip" type="id" />
     <item name="iv_livevideo_primary_team_energy" type="id" />
     <item name="tv_livevideo_primary_team_energy" type="id" />
     <item name="iv_livevideo_primary_team_voice_open" type="id" />
@@ -19,6 +20,8 @@
     <item name="v_livevideo_primary_team_inter_center" type="id" />
     <item name="tv_livevideo_primary_team_inter_right" type="id" />
     <!--小组成员-->
+    <item name="rl_livevideo_primary_team_content" type="id" />
+    <item name="iv_livevideo_primary_team_icon" type="id" />
     <item name="tv_livevideo_primary_team_name" type="id" />
     <item name="ll_livevideo_primary_team_content" type="id" />
 </resources>

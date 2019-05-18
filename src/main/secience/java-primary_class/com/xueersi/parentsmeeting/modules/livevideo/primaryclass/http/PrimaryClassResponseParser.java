@@ -22,6 +22,7 @@ public class PrimaryClassResponseParser {
             TeamInfo teamInfo = new TeamInfo();
             teamInfo.setTeamId(teamInfoObj.getString("teamId"));
             teamInfo.setTeamName(teamInfoObj.getString("teamName"));
+            teamInfo.setTeamImg(teamInfoObj.getString("teamImg"));
             JSONArray teamMembersObj = teamInfoObj.getJSONArray("teamMembers");
             ArrayList<TeamMember> teamMembers = teamInfo.getTeamMembers();
             for (int i = 0; i < teamMembersObj.length(); i++) {

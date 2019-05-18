@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class TeamInfo {
     private String teamId;
     private String teamName;
+    private String teamImg;
     private ArrayList<TeamMember> teamMembers = new ArrayList<>();
 
     public String getTeamId() {
@@ -21,6 +22,14 @@ public class TeamInfo {
 
     public void setTeamName(String teamName) {
         this.teamName = teamName;
+    }
+
+    public String getTeamImg() {
+        return teamImg;
+    }
+
+    public void setTeamImg(String teamImg) {
+        this.teamImg = teamImg;
     }
 
     public ArrayList<TeamMember> getTeamMembers() {

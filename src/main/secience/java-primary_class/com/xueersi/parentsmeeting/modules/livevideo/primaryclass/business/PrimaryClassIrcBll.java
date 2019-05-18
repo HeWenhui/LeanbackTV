@@ -101,6 +101,12 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
                 public void onDataSucess(Object... objData) {
                     reportNaughtyBoy.onReport(entity);
                 }
+
+                @Override
+                public void onDataFail(int errStatus, String failMsg) {
+                    super.onDataFail(errStatus, failMsg);
+                    reportNaughtyBoy.onReportError(entity);
+                }
             });
         }
     }

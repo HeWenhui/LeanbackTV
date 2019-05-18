@@ -7,5 +7,7 @@ public interface PrimaryClassInter {
 
     public interface ReportNaughtyBoy {
         void onReport(TeamMember entity);
+
+        void onReportError(TeamMember entity);
     }
 }
