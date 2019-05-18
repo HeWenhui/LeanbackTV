@@ -14,6 +14,7 @@
     <item name="tv_livevideo_primary_team_energy" type="id" />
     <item name="iv_livevideo_primary_team_voice_open" type="id" />
     <item name="iv_livevideo_primary_team_voice_voice" type="id" />
+    <item name="cl_livevideo_primary_team_inter" type="id" />
     <item name="tv_livevideo_primary_team_inter_left" type="id" />
     <item name="v_livevideo_primary_team_inter_center" type="id" />
     <item name="tv_livevideo_primary_team_inter_right" type="id" />

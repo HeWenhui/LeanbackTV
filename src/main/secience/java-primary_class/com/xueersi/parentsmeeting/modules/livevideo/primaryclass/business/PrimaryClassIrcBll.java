@@ -13,6 +13,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.entity.PrimaryClassEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.entity.TeamInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.entity.TeamMember;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.http.PrimaryClassHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.pager.PrimaryItemPager;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.pager.PrimaryItemView;
@@ -26,6 +28,7 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
     PrimaryClassHttp primaryClassHttp;
     PrimaryItemView primaryItemView;
     PrimaryClassEntity primaryClassEntity;
+    String classId;
 
     public PrimaryClassIrcBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -34,16 +37,18 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
     @Override
     public void onLiveInited(final LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
-        String classId = getInfo.getStudentLiveInfo().getClassId();
+        classId = getInfo.getStudentLiveInfo().getClassId();
         getPrimaryClassHttp().reportUserAppStatus(classId, getInfo.getStuId(), "1");
         getMyTeamInfo();
     }
 
     private void getMyTeamInfo() {
-        String classId = mGetInfo.getStudentLiveInfo().getClassId();
         getPrimaryClassHttp().getMyTeamInfo(classId, mGetInfo.getStuId(), UserBll.getInstance().getMyUserInfoEntity().getPsimId(), new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
+                if (primaryClassEntity != null) {
+                    return;
+                }
                 primaryClassEntity = (PrimaryClassEntity) objData[0];
                 if (primaryItemView != null) {
                     primaryItemView.onTeam(mGetInfo.getStuId(), primaryClassEntity);
@@ -79,9 +84,25 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
         super.initView(bottomContent, mIsLand);
+        PrimaryClassInterIml primaryClassInterIml = new PrimaryClassInterIml();
         PrimaryItemPager primaryItemPager = new PrimaryItemPager(activity, mContentView);
+        primaryItemPager.setPrimaryClassInter(primaryClassInterIml);
         rlMessageBottom.addView(primaryItemPager.getRootView());
         primaryItemView = primaryItemPager;
+    }
+
+    class PrimaryClassInterIml implements PrimaryClassInter {
+
+        @Override
+        public void reportNaughtyBoy(final TeamMember entity, final ReportNaughtyBoy reportNaughtyBoy) {
+            TeamInfo teamInfo = primaryClassEntity.getTeamInfo();
+            getPrimaryClassHttp().reportNaughtyBoy(classId, mGetInfo.getStuId(), mGetInfo.getStuName(), "" + entity.getStuId(), entity.getStuName(), "", primaryClassEntity.getRoomId(), teamInfo.getTeamName(), teamInfo.getTeamId(), new AbstractBusinessDataCallBack() {
+                @Override
+                public void onDataSucess(Object... objData) {
+                    reportNaughtyBoy.onReport(entity);
+                }
+            });
+        }
     }
 
     public PrimaryClassHttp getPrimaryClassHttp() {
@@ -116,7 +137,13 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
                 }
             }
             break;
-            case XESCODE.TEAM_PK_TEAM: {
+            case XESCODE.CLASSBEGIN: {
+                if (primaryClassEntity == null) {
+                    getMyTeamInfo();
+                }
+            }
+            break;
+            case XESCODE.TEAM_PK_GROUP: {
                 try {
                     String status = data.getString("status");
                     if (primaryClassEntity == null) {
@@ -132,7 +159,7 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
 
     @Override
     public int[] getNoticeFilter() {
-        return new int[]{XESCODE.TEAM_PK_MESSAGE, XESCODE.TEAM_PK_TEAM};
+        return new int[]{XESCODE.TEAM_PK_MESSAGE, XESCODE.TEAM_PK_GROUP, XESCODE.CLASSBEGIN};
     }
 
 }

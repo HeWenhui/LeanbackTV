@@ -2,6 +2,7 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@id/cl_livevideo_primary_team_inter"
     android:layout_width="124dp"
     android:layout_height="35dp"
     android:background="@drawable/bg_live_popup_bg_nornal"

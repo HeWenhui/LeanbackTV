@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.primaryclass.entity;
 public class TeamMember {
     private int stuId;
     private String stuName;
+    private boolean isReport;
 
     public int getStuId() {
         return stuId;
@@ -18,5 +19,13 @@ public class TeamMember {
 
     public void setStuName(String stuName) {
         this.stuName = stuName;
+    }
+
+    public boolean isReport() {
+        return isReport;
+    }
+
+    public void setReport(boolean report) {
+        isReport = report;
     }
 }

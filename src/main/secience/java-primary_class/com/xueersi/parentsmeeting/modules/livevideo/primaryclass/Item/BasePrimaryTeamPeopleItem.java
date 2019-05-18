@@ -16,6 +16,7 @@ public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
     protected RelativeLayout rlCourseItemVideoHead;
     protected TextView tv_livevideo_primary_team_people_name;
     protected ImageView iv_livevideo_primary_team_voice_open;
+    protected OnNameClick onNameClick;
 
     public BasePrimaryTeamPeopleItem(Context context, TeamMember entity, CloudWorkerThreadPool workerThread, int uid) {
         super(context, entity, workerThread, uid);
@@ -66,5 +67,13 @@ public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
 
     public void reportAudioVolumeOfSpeaker(int volume) {
 
+    }
+
+    public void setOnNameClick(OnNameClick onNameClick) {
+        this.onNameClick = onNameClick;
+    }
+
+    public interface OnNameClick {
+        void onNameClick(TeamMember entity, TextView tvName);
     }
 }

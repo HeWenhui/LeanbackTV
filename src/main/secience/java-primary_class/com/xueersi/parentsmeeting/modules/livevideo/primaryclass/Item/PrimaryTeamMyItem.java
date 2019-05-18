@@ -44,6 +44,12 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
                 });
             }
         });
+        tv_livevideo_primary_team_people_name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onNameClick.onNameClick(entity,tv_livevideo_primary_team_people_name);
+            }
+        });
     }
 
     public void doRenderRemoteUi(SurfaceView surfaceV) {

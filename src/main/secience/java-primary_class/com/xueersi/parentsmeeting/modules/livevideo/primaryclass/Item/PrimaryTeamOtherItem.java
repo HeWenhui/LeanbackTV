@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item;
 import android.content.Context;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
@@ -11,6 +12,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.entity.TeamMemb
 public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
     private boolean enableVideo = true;
     private boolean enableAudio = true;
+
 
     public PrimaryTeamOtherItem(Context context, TeamMember entity, CloudWorkerThreadPool workerThread, int uid) {
         super(context, entity, workerThread, uid);
@@ -40,6 +42,12 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                 });
             }
         });
+        tv_livevideo_primary_team_people_name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onNameClick.onNameClick(entity,tv_livevideo_primary_team_people_name);
+            }
+        });
     }
 
     @Override
@@ -47,4 +55,5 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
         super.updateViews(entity, position, objTag);
         tv_livevideo_primary_team_people_name.setText(entity.getStuName());
     }
+
 }

@@ -4,17 +4,16 @@ import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.config.PrimaryClassConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.entity.PrimaryClassEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
 public class PrimaryClassHttp {
     String TAG = "PrimaryClassHttp";
-    Logger logger = LoggerFactory.getLogger(TAG);
+    Logger logger = LiveLoggerFactory.getLogger(TAG);
     LiveHttpManager liveHttpManager;
     PrimaryClassResponseParser primaryClassResponseParser;
 
@@ -82,6 +81,45 @@ public class PrimaryClassHttp {
                 super.onPmFailure(error, msg);
                 callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
                 logger.d("getMyTeamInfo:onPmFailure:msg=" + msg);
+            }
+        });
+    }
+
+    public void reportNaughtyBoy(String classId, String reporterId, String reporterName, String naughtyBoyId, String naughtyBoyName, String content, String roomId, String teamName, String teamId, final AbstractBusinessDataCallBack callBack) {
+        final HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("classId", "" + classId);
+        params.addBodyParam("psuser", "" + reporterId);
+        params.addBodyParam("reporterName", "" + reporterName);
+        params.addBodyParam("naughtyBoyId", "" + naughtyBoyId);
+        params.addBodyParam("naughtyBoyName", "" + naughtyBoyName);
+        params.addBodyParam("content", "" + content);
+        params.addBodyParam("roomId", "" + roomId);
+        params.addBodyParam("teamName", "" + teamName);
+        params.addBodyParam("teamId", "" + teamId);
+        liveHttpManager.setDefaultParameter(params);
+        liveHttpManager.sendPost(PrimaryClassConfig.URL_LIVE_REPORT_NAUGHTY_BOY, params, new HttpCallBack() {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) {
+                logger.d("reportNaughtyBoy:onPmSuccess:json=" + responseEntity.getJsonObject());
+                PrimaryClassEntity primaryClassEntity = primaryClassResponseParser.parsePrimaryClassEntity(responseEntity);
+                if (primaryClassEntity != null) {
+                    callBack.onDataSucess(primaryClassEntity);
+                } else {
+                    callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_NULL, "null");
+                }
+            }
+
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                logger.d("reportNaughtyBoy:onPmError:msg=" + responseEntity.getErrorMsg());
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_ERROR, responseEntity.getErrorMsg());
+            }
+
+            @Override
+            public void onPmFailure(Throwable error, String msg) {
+                super.onPmFailure(error, msg);
+                callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
+                logger.d("reportNaughtyBoy:onPmFailure:msg=" + msg);
             }
         });
     }

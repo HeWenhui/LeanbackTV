@@ -178,7 +178,7 @@ public interface XESCODE {
     /** 战队pk老师聊天  http://wiki.xesv5.com/pages/viewpage.action?pageId=18556157**/
     int TEAM_PK_MESSAGE = 320;
     /** 战队pk老师分组  http://wiki.xesv5.com/pages/viewpage.action?pageId=18556157**/
-    int TEAM_PK_TEAM = 325;
+    int TEAM_PK_GROUP = 325;
 
     /** 一题多发 */
     /** 一题多发 收题发题都是251 TODO */
