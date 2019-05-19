@@ -44,6 +44,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.entity.RedPackageEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.http.TeamPkHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkAqResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkAwardPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkBasePager;
@@ -98,7 +99,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      * 展示飞星动画等顶层UI 父布局
      **/
     private RelativeLayout rlTopLayerContent;
-
+    private TeamPkHttp teamPkHttp;
     private LiveHttpManager mHttpManager;
     private LiveGetInfo roomInitInfo;
     private LiveHttpResponseParser mHttpResponseParser;
@@ -443,9 +444,11 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
 
     /**
      * 开启分队仪式
+     *
+     * @param primary 小班体验
      */
-    public void startTeamSelect() {
-        getTeamInfo();
+    public void startTeamSelect(boolean primary) {
+        getTeamInfo(primary);
     }
 
     public void stopTeamSelect() {
@@ -461,30 +464,44 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         });
     }
 
+    public TeamPkHttp getTeamPkHttp() {
+        if (teamPkHttp == null) {
+            teamPkHttp = new TeamPkHttp(mHttpManager);
+        }
+        return teamPkHttp;
+    }
+
     /**
      * 获取战队信息
+     *
+     * @param primary 小班体验
      */
-    private void getTeamInfo() {
+    private void getTeamInfo(final boolean primary) {
+        HttpCallBack callBack = new HttpCallBack() {
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                teamInfoEntity = mHttpResponseParser.parseTeamInfo(responseEntity);
+                showTeamSelectScene(primary);
+            }
 
-        mHttpManager.getTeamInfo(roomInitInfo.getId(), roomInitInfo.getStudentLiveInfo().getClassId(),
-                roomInitInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        teamInfoEntity = mHttpResponseParser.parseTeamInfo(responseEntity);
-                        showTeamSelectScene();
-                    }
-
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-                        super.onPmError(responseEntity);
-                    }
-                });
+            @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+            }
+        };
+        if (primary) {
+            getTeamPkHttp().getMyTeamInfo(roomInitInfo.getStudentLiveInfo().getClassId(),
+                    roomInitInfo.getStuId(), UserBll.getInstance().getMyUserInfoEntity().getPsimId(), callBack);
+        } else {
+            mHttpManager.getTeamInfo(roomInitInfo.getId(), roomInitInfo.getStudentLiveInfo().getClassId(),
+                    roomInitInfo.getStudentLiveInfo().getTeamId(), callBack);
+        }
     }
 
     /**
      * 显示分队仪式 场景
      */
-    private void showTeamSelectScene() {
+    private void showTeamSelectScene(boolean primary) {
         if (mFocusPager == null || !(mFocusPager instanceof TeamPkTeamSelectingPager)) {
             logger.e("====>showTeamSelectScene:" + mFocusPager);
             if (mFocusPager != null && mFocusPager instanceof TeamPkTeamSelectPager) {
@@ -1147,6 +1164,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
             XESCODE.EXAM_STOP,
             XESCODE.ENGLISH_H5_COURSEWARE,
             XESCODE.TEAM_PK_TEAM_SELECT,
+            XESCODE.TEAM_PK_GROUP,
             XESCODE.TEAM_PK_SELECT_PKADVERSARY,
             XESCODE.TEAM_PK_PUBLIC_PK_RESULT,
             XESCODE.TEAM_PK_PUBLIC_CONTRIBUTION_STAR,
@@ -1200,12 +1218,25 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     setNonce(data.optString("nonce", ""));
                     showCurrentPkResult();
                     break;
+                case XESCODE.TEAM_PK_GROUP: {
+                    open = data.optString("open");
+                    nonce = data.optString("nonce", "");
+                    teamSelectByNotice = true;
+                    if (OPEN_STATE_OPEN.equals(open)) {
+                        startTeamSelect(true);
+                        TeamPkLog.receiveCreateTeam(mLiveBll, nonce, true);
+                    } else if (OPEN_STATE_CLOSE.equals(open)) {
+                        stopTeamSelect();
+                        TeamPkLog.receiveCreateTeam(mLiveBll, nonce, false);
+                    }
+                    break;
+                }
                 case XESCODE.TEAM_PK_TEAM_SELECT:
                     open = data.optString("open");
                     nonce = data.optString("nonce", "");
                     teamSelectByNotice = true;
                     if (OPEN_STATE_OPEN.equals(open)) {
-                        startTeamSelect();
+                        startTeamSelect(false);
                         TeamPkLog.receiveCreateTeam(mLiveBll, nonce, true);
                     } else if (OPEN_STATE_CLOSE.equals(open)) {
                         stopTeamSelect();
