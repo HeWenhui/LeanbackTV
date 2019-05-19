@@ -11,7 +11,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.entity.TeamMemb
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.VoiceImageView;
 
 public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
-    VoiceImageView voiceImageView;
+
     private boolean enableVideo = true;
     private boolean enableAudio = true;
 
@@ -27,7 +27,6 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
     @Override
     public void initViews(View root) {
         super.initViews(root);
-        voiceImageView = root.findViewById(R.id.iv_livevideo_primary_team_voice_voice);
     }
 
     @Override
@@ -61,11 +60,6 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
     public void updateViews(TeamMember entity, int position, Object objTag) {
         super.updateViews(entity, position, objTag);
         tv_livevideo_primary_team_people_name.setText(entity.getStuName());
-    }
-
-    @Override
-    public void reportAudioVolumeOfSpeaker(int volume) {
-        voiceImageView.setVoice(volume);
     }
 
     @Override

@@ -37,6 +37,7 @@ import io.agora.rtc.RtcEngine;
 public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     private LinearLayout ll_livevideo_primary_team_content;
     private RelativeLayout rl_livevideo_primary_team_content;
+    private TextView tv_livevideo_primary_team_name_mid;
     private TextView tv_livevideo_primary_team_name;
     private ImageView iv_livevideo_primary_team_icon;
     private RelativeLayout mContentView;
@@ -65,6 +66,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         ll_livevideo_primary_team_content = view.findViewById(R.id.ll_livevideo_primary_team_content);
         rl_livevideo_primary_team_content = view.findViewById(R.id.rl_livevideo_primary_team_content);
         iv_livevideo_primary_team_icon = view.findViewById(R.id.iv_livevideo_primary_team_icon);
+        tv_livevideo_primary_team_name_mid = view.findViewById(R.id.tv_livevideo_primary_team_name_mid);
         tv_livevideo_primary_team_name = view.findViewById(R.id.tv_livevideo_primary_team_name);
         cl_livevideo_primary_team_inter = view.findViewById(R.id.cl_livevideo_primary_team_inter);
         return view;
@@ -105,6 +107,14 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                         lp.leftMargin = leftMargin;
                         lp.topMargin = topMargin;
                         ll_livevideo_primary_team_content.setLayoutParams(lp);
+                    }
+                }
+                {
+                    RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tv_livevideo_primary_team_name_mid.getLayoutParams();
+                    int topMargin = (ScreenUtils.getScreenHeight() - height) / 2 + (int) (18 * scale);
+                    if (lp.topMargin != topMargin) {
+                        lp.topMargin = topMargin;
+                        tv_livevideo_primary_team_name_mid.setLayoutParams(lp);
                     }
                 }
             }
@@ -156,6 +166,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         workerThread.start();
         TeamInfo teamInfo = primaryClassEntity.getTeamInfo();
         tv_livevideo_primary_team_name.setText(teamInfo.getTeamName());
+        tv_livevideo_primary_team_name_mid.setText("欢迎加入 “" + teamInfo.getTeamName() + "”");
         ImageLoader.with(mContext.getApplicationContext()).load(teamInfo.getTeamImg()).into(iv_livevideo_primary_team_icon);
     }
 
@@ -314,11 +325,14 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
 
         @Override
         public void reportAudioVolumeOfSpeaker(int uid, int volume) {
+            BasePrimaryTeamItem basePrimaryTeamItem;
             if (0 == uid) {
-                BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
-                if (basePrimaryTeamItem != null) {
-                    basePrimaryTeamItem.reportAudioVolumeOfSpeaker(volume);
-                }
+                basePrimaryTeamItem = courseGroupItemHashMap.get("" + stuid);
+            } else {
+                basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
+            }
+            if (basePrimaryTeamItem != null) {
+                basePrimaryTeamItem.reportAudioVolumeOfSpeaker(volume);
             }
         }
     };

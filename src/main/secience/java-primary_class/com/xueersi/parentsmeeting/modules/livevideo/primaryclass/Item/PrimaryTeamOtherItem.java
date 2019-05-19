@@ -13,7 +13,6 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
     private boolean enableVideo = true;
     private boolean enableAudio = true;
 
-
     public PrimaryTeamOtherItem(Context context, TeamMember entity, CloudWorkerThreadPool workerThread, int uid) {
         super(context, entity, workerThread, uid);
     }

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.entity.TeamMember;
+import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.VoiceImageView;
 
 public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
     protected RelativeLayout rlCourseItemVideo;
@@ -19,6 +20,7 @@ public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
     protected TextView tv_livevideo_primary_team_people_name;
     protected ImageView iv_livevideo_primary_team_voice_open;
     protected RelativeLayout rl_livevideo_primary_team_tip;
+    protected VoiceImageView voiceImageView;
     protected Handler handler = new Handler(Looper.getMainLooper());
     protected OnNameClick onNameClick;
 
@@ -38,6 +40,7 @@ public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
         rlCourseItemVideoHead = root.findViewById(R.id.rl_livevideo_course_item_video_head);
         iv_livevideo_primary_team_voice_open = root.findViewById(R.id.iv_livevideo_primary_team_voice_open);
         rl_livevideo_primary_team_tip = root.findViewById(R.id.rl_livevideo_primary_team_tip);
+        voiceImageView = root.findViewById(R.id.iv_livevideo_primary_team_voice_voice);
     }
 
     @Override
@@ -48,6 +51,11 @@ public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
     @Override
     public void updateViews(TeamMember entity, int position, Object objTag) {
 
+    }
+
+    @Override
+    public void reportAudioVolumeOfSpeaker(int volume) {
+        voiceImageView.setVoice(volume);
     }
 
     public void doRenderRemoteUi(SurfaceView surfaceV) {
@@ -68,10 +76,6 @@ public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
 //            surfaceV.setOutlineProvider(new TextureVideoViewOutlineProvider(headCornerSize));
 //            surfaceV.setClipToOutline(true);
 //        }
-    }
-
-    public void reportAudioVolumeOfSpeaker(int volume) {
-
     }
 
     public void setOnNameClick(OnNameClick onNameClick) {

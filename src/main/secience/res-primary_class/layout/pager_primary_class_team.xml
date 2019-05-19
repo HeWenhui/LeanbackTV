@@ -37,6 +37,17 @@
         android:background="#6663a4aF"
         android:orientation="vertical" />
 
+    <TextView
+        android:id="@id/tv_livevideo_primary_team_name_mid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/bg_live_tips_bg_normal"
+        android:gravity="center"
+        android:text="欢迎进入“冰原白狐队”"
+        android:textColor="#ffc33c00"
+        android:textSize="14sp" />
+
     <include
         layout="@layout/item_primary_class_team_inter"
         android:visibility="invisible" />
