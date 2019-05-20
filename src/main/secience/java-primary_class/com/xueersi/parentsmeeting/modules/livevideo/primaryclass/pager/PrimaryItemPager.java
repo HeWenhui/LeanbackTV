@@ -373,6 +373,8 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        workerThread.exit();
+        if (workerThread != null) {
+            workerThread.exit();
+        }
     }
 }

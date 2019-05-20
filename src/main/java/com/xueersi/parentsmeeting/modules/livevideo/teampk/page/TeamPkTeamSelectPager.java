@@ -58,7 +58,7 @@ import java.util.List;
  * Created by chenkun on 2018/4/12
  * 战队选择页面
  */
-public class TeamPkTeamSelectPager extends TeamPkBasePager implements View.OnClickListener {
+public class TeamPkTeamSelectPager extends TeamPkBasePager {
     private static final String TAG = "TeamPkTeamSelectPager";
     private TeamPkBll mPKBll;
     private ImageView ivBg;
@@ -163,14 +163,20 @@ public class TeamPkTeamSelectPager extends TeamPkBasePager implements View.OnCli
     LiveGetInfo liveGetInfo;
 
     public TeamPkTeamSelectPager(Context context, TeamPkBll pkBll, LiveGetInfo liveGetInfo) {
-        super(context);
+        super(context, false);
         mPKBll = pkBll;
         this.liveGetInfo = liveGetInfo;
+        mView = initView();
     }
 
     @Override
     public View initView() {
-        final View view = View.inflate(mContext, R.layout.page_livevideo_teampk_teamselect, null);
+        final View view;
+        if (liveGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+            view = View.inflate(mContext, R.layout.page_livevideo_teampk_teamselect_primary, null);
+        } else {
+            view = View.inflate(mContext, R.layout.page_livevideo_teampk_teamselect, null);
+        }
         ivBg = view.findViewById(R.id.iv_teampk_team_select_bg);
         ivBgMask = view.findViewById(R.id.iv_teampk_bgmask);
         lavTeamSelectAnimView = view.findViewById(R.id.lav_teampk_team_select);
@@ -250,13 +256,11 @@ public class TeamPkTeamSelectPager extends TeamPkBasePager implements View.OnCli
      */
     private void resumeMusic() {
         if (soundPoolHelper != null) {
-            if (soundPoolHelper != null) {
-                for (int i = 0; i < soundResArray.length; i++) {
-                    if (soundResArray[i] == R.raw.war_bg) {
-                        soundPoolHelper.setVolume(soundResArray[i], MUSIC_VOLUME_RATIO_BG);
-                    } else {
-                        soundPoolHelper.setVolume(soundResArray[i], MUSIC_VOLUME_RATIO_FRONT);
-                    }
+            for (int i = 0; i < soundResArray.length; i++) {
+                if (soundResArray[i] == R.raw.war_bg) {
+                    soundPoolHelper.setVolume(soundResArray[i], MUSIC_VOLUME_RATIO_BG);
+                } else {
+                    soundPoolHelper.setVolume(soundResArray[i], MUSIC_VOLUME_RATIO_FRONT);
                 }
             }
         }
@@ -604,7 +608,23 @@ public class TeamPkTeamSelectPager extends TeamPkBasePager implements View.OnCli
                 rlTeamIntroduceRoot.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        displayRulInfo();
+                        if (liveGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+                            RelativeLayout rlRul = rlTeamIntroduceRoot.findViewById(R.id.rl_teampk_rule);
+                            rlRul.setVisibility(View.VISIBLE);
+                            ImageView ivReadyBtn = rlRul.findViewById(R.id.iv_teampk_btn_ok);
+                            ivReadyBtn.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    closeTeamSelectPager();
+                                }
+                            });
+                            // 按钮缩放动画完成
+                            if (teamInfoAnimList != null && teamInfoAnimList.size() == 0) {
+                                startAutoEnterNextStep();
+                            }
+                        } else {
+                            displayRulInfo();
+                        }
                     }
                 }, 1500);
             }
@@ -636,7 +656,13 @@ public class TeamPkTeamSelectPager extends TeamPkBasePager implements View.OnCli
         ruleTitle.startAnimation(animation);
 
         ImageView ivReadyBtn = rlRul.findViewById(R.id.iv_teampk_btn_ok);
-        ivReadyBtn.setOnClickListener(this);
+        ivReadyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                upLoadStudentReady();
+                TeamPkLog.sendReady(mPKBll.getLiveBll());
+            }
+        });
     }
 
 
@@ -1022,19 +1048,6 @@ public class TeamPkTeamSelectPager extends TeamPkBasePager implements View.OnCli
             }
         });
         lavTeamSelectAnimView.playAnimation();
-    }
-
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.iv_teampk_btn_ok) {
-            if (liveGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
-                closeTeamSelectPager();
-            } else {
-                upLoadStudentReady();
-                TeamPkLog.sendReady(mPKBll.getLiveBll());
-            }
-        }
     }
 
     /**
