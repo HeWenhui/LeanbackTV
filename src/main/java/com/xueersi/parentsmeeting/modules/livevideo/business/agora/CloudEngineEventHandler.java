@@ -114,5 +114,14 @@ public class CloudEngineEventHandler {
                 handler.reportAudioVolumeOfSpeaker(uid, volume);
             }
         }
+
+        @Override
+        public void remotefirstAudioRecvWithUid(int uid) {
+            Iterator<RTCEngine.IRtcEngineEventListener> it = mEventHandlerList.keySet().iterator();
+            while (it.hasNext()) {
+                RTCEngine.IRtcEngineEventListener handler = it.next();
+                handler.remotefirstAudioRecvWithUid(uid);
+            }
+        }
     };
 }

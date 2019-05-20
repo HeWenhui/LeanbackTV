@@ -3,12 +3,10 @@ package com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item;
 import android.content.Context;
 import android.view.SurfaceView;
 import android.view.View;
-import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
-import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.entity.TeamMember;
 
 public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
     private boolean enableVideo = true;

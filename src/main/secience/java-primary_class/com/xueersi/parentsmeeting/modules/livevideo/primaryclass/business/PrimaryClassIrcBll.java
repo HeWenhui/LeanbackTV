@@ -9,19 +9,13 @@ import com.xueersi.common.business.UserBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
-import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.ScienceAnswerResult;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.entity.PrimaryClassEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.entity.TeamInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.entity.TeamMember;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.http.PrimaryClassHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.pager.PrimaryItemPager;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.pager.PrimaryItemView;
@@ -76,6 +70,14 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
     }
 
     @Override
+    public void onModeChange(String oldMode, String mode, boolean isPresent) {
+        super.onModeChange(oldMode, mode, isPresent);
+        if (primaryItemView != null) {
+            primaryItemView.onModeChange(mode);
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         if (primaryItemView != null) {
@@ -104,7 +106,7 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
     public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
         super.initView(bottomContent, mIsLand);
         PrimaryClassInterIml primaryClassInterIml = new PrimaryClassInterIml();
-        PrimaryItemPager primaryItemPager = new PrimaryItemPager(activity, mContentView);
+        PrimaryItemPager primaryItemPager = new PrimaryItemPager(activity, mContentView, mLiveBll.getMode());
         primaryItemPager.setPrimaryClassInter(primaryClassInterIml);
         rlMessageBottom.addView(primaryItemPager.getRootView());
         primaryItemView = primaryItemPager;

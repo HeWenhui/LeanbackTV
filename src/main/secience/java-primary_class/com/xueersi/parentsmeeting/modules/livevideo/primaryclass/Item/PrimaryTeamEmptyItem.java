@@ -6,13 +6,13 @@ import android.view.View;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
-import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.entity.TeamMember;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
 
 public class PrimaryTeamEmptyItem extends BasePrimaryTeamItem {
     private boolean enableVideo = true;
     private boolean enableAudio = true;
 
-    public PrimaryTeamEmptyItem(Context context, TeamMember entity, CloudWorkerThreadPool workerThread, int uid) {
+    public PrimaryTeamEmptyItem(Context context, TeamMate entity, CloudWorkerThreadPool workerThread, int uid) {
         super(context, entity, workerThread, uid);
     }
 

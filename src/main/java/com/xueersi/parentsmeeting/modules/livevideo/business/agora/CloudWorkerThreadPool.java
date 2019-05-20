@@ -104,7 +104,7 @@ public class CloudWorkerThreadPool {
         });
     }
 
-    public final void leaveChannel(final OnLeaveChannel onLeaveChannel) {
+    public final void leaveChannel() {
         poolExecutor.execute(new Runnable() {
             @Override
             public void run() {

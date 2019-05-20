@@ -1675,8 +1675,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 }
                 teamInfoEntity.setTeamMembers(teamMembers);
             }
-
-            if (data.has("teamInfo")) {
+            Object teamObj = data.opt("teamInfo");
+            if (teamObj instanceof JSONObject) {
                 JSONObject teamInfoObj = (JSONObject) data.get("teamInfo");
 
 

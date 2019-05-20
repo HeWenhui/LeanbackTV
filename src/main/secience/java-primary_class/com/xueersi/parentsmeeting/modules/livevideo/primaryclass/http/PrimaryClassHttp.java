@@ -12,7 +12,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.config.PrimaryClassConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.entity.PrimaryClassEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 
 public class PrimaryClassHttp {
@@ -107,12 +106,6 @@ public class PrimaryClassHttp {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("reportNaughtyBoy:onPmSuccess:json=" + responseEntity.getJsonObject());
-                PrimaryClassEntity primaryClassEntity = primaryClassResponseParser.parsePrimaryClassEntity(responseEntity);
-                if (primaryClassEntity != null) {
-                    callBack.onDataSucess(primaryClassEntity);
-                } else {
-                    callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_NULL, "null");
-                }
             }
 
             @Override

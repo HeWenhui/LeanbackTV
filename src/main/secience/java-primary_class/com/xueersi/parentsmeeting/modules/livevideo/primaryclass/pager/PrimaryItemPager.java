@@ -16,6 +16,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
@@ -25,9 +26,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.PrimaryTea
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.PrimaryTeamMyItem;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.PrimaryTeamOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.business.PrimaryClassInter;
-import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.entity.PrimaryClassEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.entity.TeamInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.entity.TeamMember;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.PrimaryKuangjiaImageView;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
 
@@ -49,13 +47,15 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     private CloudWorkerThreadPool workerThread;
     private TeamPkTeamInfoEntity.TeamInfoEntity teamInfoEntity;
     private HashMap<String, BasePrimaryTeamItem> courseGroupItemHashMap = new HashMap<>();
+    private String mode;
     private int stuid;
     float scale;
     PrimaryClassInter primaryClassInter;
 
-    public PrimaryItemPager(Context context, RelativeLayout mContentView) {
+    public PrimaryItemPager(Context context, RelativeLayout mContentView, String mode) {
         super(context);
         this.mContentView = mContentView;
+        this.mode = mode;
         initData();
     }
 
@@ -97,6 +97,14 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                         lp.topMargin = topMargin;
                         rl_livevideo_primary_team_content.setLayoutParams(lp);
                     }
+                    RelativeLayout.LayoutParams lpImg = (RelativeLayout.LayoutParams) iv_livevideo_primary_team_icon.getLayoutParams();
+                    int lpImgWidth = (int) (49 * scale);
+                    int lpImgHeight = (int) (46 * scale);
+                    if (lpImg.width != lpImgWidth || lpImg.height != lpImgHeight) {
+                        lpImg.width = lpImgWidth;
+                        lpImg.height = lpImgHeight;
+                        iv_livevideo_primary_team_icon.setLayoutParams(lpImg);
+                    }
                 }
                 {
                     RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ll_livevideo_primary_team_content.getLayoutParams();
@@ -114,7 +122,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                 }
                 {
                     RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tv_livevideo_primary_team_name_mid.getLayoutParams();
-                    int topMargin = (ScreenUtils.getScreenHeight() - height) / 2 + (int) (18 * scale);
+                    int topMargin = (ScreenUtils.getScreenHeight() - height) / 2 + (int) (114 * scale);
                     if (lp.topMargin != topMargin) {
                         lp.topMargin = topMargin;
                         tv_livevideo_primary_team_name_mid.setLayoutParams(lp);
@@ -129,12 +137,49 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         super.initData();
         ivLivePrimaryClassKuangjiaImgNormal = mContentView.findViewById(R.id.iv_live_primary_class_kuangjia_img_normal);
         setLayout();
+        addItem();
+        if (LiveTopic.MODE_TRANING.equals(mode)) {
+            mView.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void onModeChange(final String mode) {
+        this.mode = mode;
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (LiveTopic.MODE_CLASS.equals(mode)) {
+                    mView.setVisibility(View.VISIBLE);
+                    if (teamInfoEntity != null) {
+                        joinChannel();
+                    }
+                } else {
+                    mView.setVisibility(View.GONE);
+                    if (workerThread != null) {
+                        workerThread.leaveChannel();
+                        workerThread.exit();
+                    }
+                }
+            }
+        });
     }
 
     @Override
     public void onTeam(String uid, TeamPkTeamInfoEntity.TeamInfoEntity teamInfoEntity) {
         this.teamInfoEntity = teamInfoEntity;
         this.stuid = Integer.parseInt(uid);
+        if (LiveTopic.MODE_CLASS.equals(mode)) {
+            mView.setVisibility(View.VISIBLE);
+            if (teamInfoEntity != null) {
+                joinChannel();
+            } else {
+                addItem();
+            }
+        }
+    }
+
+    private void joinChannel() {
         workerThread = new CloudWorkerThreadPool(mContext, teamInfoEntity.getToken());
         workerThread.setOnEngineCreate(new CloudWorkerThreadPool.OnEngineCreate() {
             @Override
@@ -169,11 +214,25 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         workerThread.start();
         tv_livevideo_primary_team_name.setText(teamInfoEntity.getTeamName());
         tv_livevideo_primary_team_name_mid.setText("欢迎加入 “" + teamInfoEntity.getTeamName() + "”");
+        tv_livevideo_primary_team_name_mid.setVisibility(View.VISIBLE);
         ImageLoader.with(mContext.getApplicationContext()).load(teamInfoEntity.getImg()).into(iv_livevideo_primary_team_icon);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+//                tv_livevideo_primary_team_name_mid.setText("");
+            }
+        }, 2000);
     }
 
     private void addItem() {
-        List<TeamMate> result = teamInfoEntity.getResult();
+        courseGroupItemHashMap.clear();
+        ll_livevideo_primary_team_content.removeAllViews();
+        List<TeamMate> result;
+        if (teamInfoEntity != null) {
+            result = teamInfoEntity.getResult();
+        } else {
+            result = new ArrayList<>();
+        }
         LayoutInflater mInflater = LayoutInflater.from(mContext);
         int margin = (int) (11 * scale);
         for (int i = 0; i < 4; i++) {

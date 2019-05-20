@@ -37,6 +37,14 @@ public class PrimaryKuangjiaImageView extends ImageView {
     }
 
     @Override
+    public void setVisibility(int visibility) {
+        super.setVisibility(visibility);
+        if (visibility == VISIBLE) {
+            notifyChange();
+        }
+    }
+
+    @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         logger.d("onDetachedFromWindow:size=" + onSizeChanges.size());

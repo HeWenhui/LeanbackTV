@@ -8,7 +8,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
-import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.entity.TeamMember;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 
 public class BasePrimaryTeamItem implements AdapterItemInterface<TeamMate> {

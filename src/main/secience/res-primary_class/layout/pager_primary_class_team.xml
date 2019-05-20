@@ -46,7 +46,8 @@
         android:gravity="center"
         android:text="欢迎进入“冰原白狐队”"
         android:textColor="#ffc33c00"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        android:visibility="gone" />
 
     <include
         layout="@layout/item_primary_class_team_inter"

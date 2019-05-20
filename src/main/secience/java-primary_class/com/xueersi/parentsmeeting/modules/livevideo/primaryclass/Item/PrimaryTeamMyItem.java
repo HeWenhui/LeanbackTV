@@ -8,11 +8,8 @@ import android.view.View;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
-import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.entity.TeamMember;
-import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.VoiceImageView;
 
 public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
-
     private boolean enableVideo = true;
     private boolean enableAudio = true;
 
@@ -58,9 +55,9 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
     }
 
     @Override
-    public void updateViews(TeamMember entity, int position, Object objTag) {
+    public void updateViews(TeamMate entity, int position, Object objTag) {
         super.updateViews(entity, position, objTag);
-        tv_livevideo_primary_team_people_name.setText(entity.getStuName());
+        tv_livevideo_primary_team_people_name.setText(entity.getName());
     }
 
     @Override
