@@ -179,7 +179,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         if (mVideoEntity!=null) {
             savePosition(mCurrentPosition);
         }
-        if (videoPlayStatus == MediaPlayer.VIDEO_TEACHER_MAIN || videoPlayStatus == MediaPlayer.VIDEO_TEACHER_ONLY_MAIN) {
+        if (videoPlayStatus == MediaPlayer.VIDEO_TEACHER_TUTOR || videoPlayStatus == MediaPlayer.VIDEO_TEACHER_ONLY_TUTOR) {
             mVideoEntity = mVideoMainEntity;
         } else {
             mVideoEntity = mVideoTutorEntity;
