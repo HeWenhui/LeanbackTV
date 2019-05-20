@@ -11,11 +11,15 @@ import android.view.View;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.business.AppBll;
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.route.XueErSiRouter;
 import com.xueersi.common.route.module.ModuleHandler;
 import com.xueersi.common.route.module.entity.Module;
 import com.xueersi.common.route.module.entity.ModuleData;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -56,6 +60,13 @@ public class WordDictationBll implements WordDictationAction {
     @Override
     public void onStart(WordStatisticInfo wordStatisticInfo) {
         logger.d("onStart");
+
+
+        if(!XesPermission.checkPermissionNoAlert(ContextManager.getApplication(), PermissionConfig.PERMISSION_CODE_CAMERA,PermissionConfig.PERMISSION_CODE_STORAGE)){
+            XESToastUtils.showToast(activity,"请检查摄像头及存储权限");
+            return;
+        }
+
         Bundle bundle = new Bundle();
 
 
