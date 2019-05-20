@@ -7,6 +7,7 @@ import android.os.Build;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.text.SpannableString;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -181,41 +182,49 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
 
             }
             int iconResId = 0;
-            int color = getColor(R.color.COLOR_5DA741);
+          //  int color = getColor(R.color.COLOR_5DA741);
+            String color = "'#5DA741'";
             if (data.getIsRight() == RESULT_TYPE_ERRRO) {
-                color = getColor(R.color.COLOR_E34949);
+//                color = getColor(R.color.COLOR_E34949);
+                color = "'#E34949'";
                 ivAnswerIcon.setVisibility(View.VISIBLE);
 
                 iconResId = R.drawable.icon_live_wrong;
             } else if (data.getIsRight() == RESULT_TYPE_PART_CORRECT) {
                 iconResId = R.drawable.icon_live_prart_correct;
-                color = getColor(R.color.COLOR_333333);
+             //   color = getColor(R.color.COLOR_333333);
+                color = "'#333333'";
                 ivAnswerIcon.setVisibility(View.VISIBLE);
 
             } else if (data.getIsRight() == RESULT_TYPE_CORRECT) {
-                color = getColor(R.color.COLOR_5DA741);
+                //color = getColor(R.color.COLOR_5DA741);
+                color = "'#5DA741'";
                 ivAnswerIcon.setVisibility(View.VISIBLE);
                 iconResId = R.drawable.icon_live_correct;
             } else {
                 ivAnswerIcon.setVisibility(View.INVISIBLE);
-                color = getColor(R.color.COLOR_333333);
+               // color = getColor(R.color.COLOR_333333);
+                color = "'#333333'";
             }
             if (iconResId != 0) {
                 ivAnswerIcon.setBackgroundResource(iconResId);
             }
 
-            SpannableStringBuilder stringBuilder = new SpannableStringBuilder("你的答案：");
-            SpannableString span = null;
+            StringBuffer stringBuilder = new StringBuffer("<font color='#333333'>你的答案：</font>");
+         //   SpannableString span = null;
             if (TextUtils.isEmpty(myAnswerText) || "空".equals(myAnswerText)) {
                 myAnswerText = "空";
             }
-            span = new SpannableString(myAnswerText);
-            span.setSpan(new ForegroundColorSpan(color), 0, span.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
-            stringBuilder.append(span);
+//            span = new SpannableString(myAnswerText);
+//            span.setSpan(new ForegroundColorSpan(color), 0, span.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
+            stringBuilder.append("<font color="+color+">");
+            stringBuilder.append(myAnswerText+" </font>");
 
+            tvUserAnswer.setText(Html.fromHtml(stringBuilder.toString()));
 
-            tvUserAnswer.setText(stringBuilder);
-            tvRightAnswer.setText("正确答案：" + standerAnswerText);
+            String titleFont = "<font color='#333333'>正确答案："+ standerAnswerText+" </font>";
+
+            tvRightAnswer.setText(Html.fromHtml(titleFont));
 
 
         }

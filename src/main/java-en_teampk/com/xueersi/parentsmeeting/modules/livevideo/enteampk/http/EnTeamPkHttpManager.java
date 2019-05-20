@@ -92,17 +92,12 @@ public class EnTeamPkHttpManager {
         });
     }
 
-    public InteractiveTeam parseInteractiveTeam(JSONObject jsonObject) {
-        InteractiveTeam interactiveTeam = enTeamPkResponseParser.parseInteractiveTeam(jsonObject);
+    public InteractiveTeam parseInteractiveTeam(String userId, JSONObject jsonObject) {
+        InteractiveTeam interactiveTeam = enTeamPkResponseParser.parseInteractiveTeam(userId, jsonObject);
         return interactiveTeam;
     }
 
-    public ArrayList<TeamMemberEntity> parseGetStuActiveTeam(ResponseEntity responseEntity) {
-        ArrayList<TeamMemberEntity> entities = enTeamPkResponseParser.parseGetStuActiveTeam(responseEntity);
-        return entities;
-    }
-
-    public void getStuActiveTeam(String unique_id, String stu_id, final AbstractBusinessDataCallBack callBack) {
+    public void getStuActiveTeam(String unique_id, final String stu_id, final AbstractBusinessDataCallBack callBack) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         httpRequestParams.addBodyParam("unique_id", unique_id);
         httpRequestParams.addBodyParam("stu_id", stu_id);
@@ -112,7 +107,7 @@ public class EnTeamPkHttpManager {
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 Object object = responseEntity.getJsonObject();
                 if (object instanceof JSONObject) {
-                    InteractiveTeam interactiveTeam = parseInteractiveTeam((JSONObject) responseEntity.getJsonObject());
+                    InteractiveTeam interactiveTeam = parseInteractiveTeam(stu_id, (JSONObject) responseEntity.getJsonObject());
                     callBack.onDataSucess(interactiveTeam, responseEntity.getJsonObject());
                 } else {
                     callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_NULL, "");

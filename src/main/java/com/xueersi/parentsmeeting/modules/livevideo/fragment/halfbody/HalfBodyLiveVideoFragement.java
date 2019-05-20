@@ -10,6 +10,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.HalfBodyLiveVideoAc
 import com.xueersi.parentsmeeting.modules.livevideo.business.HalfBodySceneTransAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMediaCtrlTop;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
 
 /**
@@ -24,6 +25,8 @@ public class HalfBodyLiveVideoFragement extends LiveVideoFragment {
     private static final String TAG = "HalfBodyLiveVideoFragement";
     private LiveHalfBodyMediaControllerBottom mHalfBodyMediaControllerBottom;
     private HalfBodySceneTransAnim mTransAnim;
+
+    private HalfBodyLiveMediaCtrlTop mMediaTopCtr;
 
     public HalfBodyLiveVideoFragement() {
         mLayoutVideo = R.layout.activity_video_live_halfbody;
@@ -47,7 +50,8 @@ public class HalfBodyLiveVideoFragement extends LiveVideoFragment {
 
     @Override
     protected void createMediaControlerTop() {
-        baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(activity, mMediaController, videoFragment);
+        mMediaTopCtr = new HalfBodyLiveMediaCtrlTop(activity, mMediaController, videoFragment);
+        baseLiveMediaControllerTop = mMediaTopCtr;
     }
 
     @Override
@@ -59,6 +63,7 @@ public class HalfBodyLiveVideoFragement extends LiveVideoFragment {
     public void onLiveInit(LiveGetInfo getInfo) {
         super.onLiveInit(getInfo);
         mHalfBodyMediaControllerBottom.onModeChange(getInfo.getMode(), getInfo);
+        mMediaTopCtr.onModeChange(getInfo.getMode(), getInfo);
     }
 
 
@@ -71,6 +76,7 @@ public class HalfBodyLiveVideoFragement extends LiveVideoFragment {
             @Override
             public void run() {
                 mHalfBodyMediaControllerBottom.onModeChange(mode, mGetInfo);
+                mMediaTopCtr.onModeChange(mode,mGetInfo);
             }
         });
         showSceneTransAnim(mode, isPresent);

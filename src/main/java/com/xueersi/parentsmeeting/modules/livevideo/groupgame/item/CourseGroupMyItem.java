@@ -38,6 +38,8 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
     private RelativeLayout rlVideoTip;
     private boolean enableVideo = true;
     private boolean enableAudio = true;
+    /** 是不是暂停 */
+    private boolean pause = false;
     private int progress = 0;
     public static int voiceStartFrame = 14;
     public static int voiceMaxFrame = 0;
@@ -140,7 +142,7 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
                             @Override
                             public void run() {
 //                                rtcEngine.enableAudio();
-                                rtcEngine.muteLocalAudioStream(false);
+                                muteLocalAudioStream(rtcEngine, false);
                             }
                         });
 //                        ivCourseItemAudio.setImageResource(AUDIO_RES[2]);
@@ -155,7 +157,7 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
                             @Override
                             public void run() {
 //                                rtcEngine.disableAudio();
-                                rtcEngine.muteLocalAudioStream(true);
+                                muteLocalAudioStream(rtcEngine, true);
                             }
                         });
                         stopRun.animationView = animationView;
@@ -177,7 +179,7 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
 //                        Bitmap bitmap1 = animationView.updateBitmap("image_7", bitmap7);
 //                        Bitmap bitmap2 = animationView.updateBitmap("image_9", bitmap9);
 //                        logger.d("enableAudio(false):bitmap1=null?" + (bitmap1 == null) + ",bitmap2=null?" + (bitmap2 == null));
-                        XESToastUtils.showToast(mContext, "小伙伴听不到你的声音啦，但不影响答题哦");
+//                        XESToastUtils.showToast(mContext, "小伙伴听不到你的声音啦，但不影响答题哦");
                     }
                     if (onVideoAudioClick != null) {
                         onVideoAudioClick.onAudioClick(enableAudio);
@@ -356,6 +358,7 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
 
     @Override
     public void onResume() {
+        pause = false;
         mLogtf.d("onResume:enableVideo=" + enableVideo + ",enableAudio=" + enableAudio);
         final RtcEngine rtcEngine = workerThread.getRtcEngine();
         if (rtcEngine != null) {
@@ -371,7 +374,7 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
                 @Override
                 public void run() {
                     if (enableAudio) {
-                        rtcEngine.muteLocalAudioStream(false);
+                        muteLocalAudioStream(rtcEngine, false);
                     }
                 }
             });
@@ -380,6 +383,7 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
 
     @Override
     public void onPause() {
+        pause = true;
         final RtcEngine rtcEngine = workerThread.getRtcEngine();
         if (rtcEngine != null) {
             workerThread.execute(new Runnable() {
@@ -391,10 +395,15 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
             workerThread.execute(new Runnable() {
                 @Override
                 public void run() {
-                    rtcEngine.muteLocalAudioStream(true);
+                    muteLocalAudioStream(rtcEngine, true);
                 }
             });
         }
+    }
+
+    int muteLocalAudioStream(RtcEngine rtcEngine, boolean muted) {
+        mLogtf.d("muteLocalAudioStream:muted=" + muted);
+        return rtcEngine.muteLocalAudioStream(muted);
     }
 
     @Override
@@ -500,12 +509,12 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
     @Override
     public void onBeginOfSpeech() {
         final RtcEngine rtcEngine = workerThread.getRtcEngine();
-        if (rtcEngine != null) {
+        if (rtcEngine != null && !pause) {
             workerThread.execute(new Runnable() {
                 @Override
                 public void run() {
                     if (enableAudio) {
-                        rtcEngine.muteLocalAudioStream(false);
+                        muteLocalAudioStream(rtcEngine, false);
                     }
                 }
             });
@@ -519,7 +528,7 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
             workerThread.execute(new Runnable() {
                 @Override
                 public void run() {
-                    rtcEngine.muteLocalAudioStream(true);
+                    muteLocalAudioStream(rtcEngine, true);
                 }
             });
         }
