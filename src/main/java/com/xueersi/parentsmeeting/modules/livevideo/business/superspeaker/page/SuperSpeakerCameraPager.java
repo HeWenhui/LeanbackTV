@@ -515,10 +515,7 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
             customVideoController2.stop();
             customVideoController2.release();
         }
-        if (camera1Utils != null) {
-            camera1Utils.stopRecordVideo();
-        }
-
+        stopRecordVideo();
         if (bridge != null) {
             bridge.removeView(mView);
         }

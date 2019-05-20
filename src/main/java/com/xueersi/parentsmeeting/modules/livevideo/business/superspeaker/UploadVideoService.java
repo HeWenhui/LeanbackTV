@@ -52,7 +52,7 @@ public class UploadVideoService extends Service {
         public void onSuccess(XesCloudResult result) {
             videoUrl = result.getHttpPath();
             logger.i("video upload succes " + videoUrl);
-            XESToastUtils.showToast(UploadVideoService.this, "视频上传成功");
+//            XESToastUtils.showToast(UploadVideoService.this, "视频上传成功");
 //            uploadSuccess();
 
             ShareDataManager.getInstance().put(
@@ -93,7 +93,7 @@ public class UploadVideoService extends Service {
             audioUrl = result.getHttpPath();
             deleteAudioFile(audioLocalUrl);
             logger.i("audio upload succes " + audioUrl);
-            XESToastUtils.showToast(UploadVideoService.this, "上传音频成功");
+//            XESToastUtils.showToast(UploadVideoService.this, "上传音频成功");
             latch.countDown();
             try {
                 latch.await();

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.support.annotation.UiThread;
 import android.widget.RelativeLayout;
 
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -46,50 +45,23 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
         super.initView(bottomContent, mIsLand);
-        if (AppConfig.DEBUG) {
-//            if (bottomContent != null) {
-//                ObservableDelay.just(true).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Boolean>() {
-//                    @Override
-//                    public void accept(Boolean aBoolean) throws Exception {
+//        if (AppConfig.DEBUG) {
 //
-//                    }
-//                });
+//            Observable.just(true).
+//                    delay(2, TimeUnit.SECONDS).
+//                    observeOn(AndroidSchedulers.mainThread()).
+//                    subscribe(new Consumer<Boolean>() {
+//                        @Override
+//                        public void accept(Boolean aBoolean) throws Exception {
+//                            logger.i("accept");
+//                            mGetInfo.setId(String.valueOf(454400));
+//                            courseWareId = String.valueOf(1);
+//                            srcType = String.valueOf(40);
+//                            performShowRecordCamera(10, 65);
+//
+//                        }
+//                    });
 
-            Observable.just(true).
-                    delay(2, TimeUnit.SECONDS).
-                    observeOn(AndroidSchedulers.mainThread()).
-                    subscribe(new Consumer<Boolean>() {
-                        @Override
-                        public void accept(Boolean aBoolean) throws Exception {
-                            logger.i("accept");
-                            mGetInfo.setId(String.valueOf(454400));
-                            courseWareId = String.valueOf(1);
-                            srcType = String.valueOf(40);
-                            performShowRecordCamera(10, 65);
-
-                        }
-                    });
-//        subscribe(new Observer<Boolean>() {
-//    @Override
-//    public void onSubscribe(Disposable d) {
-//
-//    }
-//
-//    @Override
-//    public void onNext(Boolean aBoolean) {
-//        logger.i("onNext");
-//    }
-//
-//    @Override
-//    public void onError(Throwable e) {
-//        logger.i("onError");
-//    }
-//
-//    @Override
-//    public void onComplete() {
-//        logger.i("onComplete");
-//    }
-//});
 //                bottomContent.postDelayed(new Runnable() {
 //                    @Override
 //                    public void run() {
@@ -100,7 +72,7 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
 //                    }
 //                }, 3000);
 //            }
-        }
+//        }
     }
 
     @Override

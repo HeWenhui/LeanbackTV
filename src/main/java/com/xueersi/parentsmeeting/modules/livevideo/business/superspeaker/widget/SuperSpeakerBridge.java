@@ -199,6 +199,7 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
         mContext.startService(serViceIntent);
         serviceConnection = new UploadServiceConnction();
         mContext.bindService(serViceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+        logger.i("bindService success");
         if (iCameraPresenter != null) {
             iCameraPresenter.submitSpeechShow(isForce, String.valueOf(videoDuration));
         }
@@ -318,10 +319,12 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
                     public void accept(Boolean aBoolean) throws Exception {
                         logger.i("进入doOnNxt " + System.currentTimeMillis());
                         if (view.getParent() == parentView) {
-                            if (serviceConnection != null) {
-                                mContext.unbindService(serviceConnection);
-                            }
+//                            if (serviceConnection != null) {
+//                                logger.i("unbindService");
+//                                mContext.unbindService(serviceConnection);
+//                            }
                             if (serViceIntent != null) {
+                                logger.i("stopService");
                                 mContext.stopService(serViceIntent);
                             }
                             logger.i("移除view");
@@ -342,6 +345,7 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
                         logger.i(throwable);
                     }
                 });

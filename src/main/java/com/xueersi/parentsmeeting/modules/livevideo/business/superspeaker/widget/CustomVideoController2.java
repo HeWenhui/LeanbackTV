@@ -186,6 +186,9 @@ public class CustomVideoController2 extends ConstraintLayout implements ILocalVi
                 if ((currentPosition % 1000l) > 500) {
                     currentSize = currentPosition / 1000l + 1;
                 }
+                if (currentSize > durationSize) {
+                    currentSize = durationSize;
+                }
                 CustomVideoController2.this.currentPosition = currentSize;
                 tvCurrentTime.setText(TimeUtils.stringForTime(currentSize));
 //                int width = ivProcessBarBkg.getWidth();

@@ -259,10 +259,7 @@ public class Camera1Utils implements IRecordVideoView {
                 logger.e(e.toString());
                 e.printStackTrace();
             }
-//            EventBus.getDefault().post(new PlaybackVideoEvent.OnDemoRecordCommpleteEvent());
         }
-
-
     }
 
     private Handler mHandler = new Handler(Looper.getMainLooper());
