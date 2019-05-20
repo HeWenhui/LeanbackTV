@@ -52,6 +52,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishSho
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionShowReg;
 import com.xueersi.parentsmeeting.modules.livevideo.videochat.business.VideoChatStatusChange;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.ui.dataload.PageDataLoadEntity;
 
 import org.greenrobot.eventbus.EventBus;
@@ -184,6 +185,10 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         mRoomAction.setLiveBll(new LiveIRCState());
         mRoomAction.setLiveMediaControllerBottom(baseLiveMediaControllerBottom);
     }
+    public void setLiveMediaControllerTop(BaseLiveMediaControllerTop controllerTop) {
+        mRoomAction.setBaseLiveMediaControllerTop(controllerTop);
+    }
+
 
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {

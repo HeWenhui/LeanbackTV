@@ -35,6 +35,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
@@ -167,6 +168,12 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         mRoomAction.setLiveBll(new LiveIRCState());
         mRoomAction.setLiveMediaControllerBottom(baseLiveMediaControllerBottom);
     }
+
+    public void setLiveMediaCtrTop(BaseLiveMediaControllerTop mediaCtrTop){
+        mRoomAction.setLiveMediaCtrTop(mediaCtrTop);
+    }
+
+
 
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
