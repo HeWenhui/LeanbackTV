@@ -86,6 +86,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
@@ -249,9 +250,14 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
     private boolean isFirstAI = true;
     private LiveHttpManager mLiveHttpManager;
     private SpeechUtils speechUtils;
+    /** 是否正在语音识别中*/
     private boolean isAssessing;
 
     private boolean resultGotByForceSubmit;
+    /** 评测文本 */
+    private TreeMap<Integer, String> assessMap;
+    /** 是否语音方式答题 */
+    private Boolean isSpeakAnswer;
 
     public SpeakChineseCoursewarePager(Context context, BaseVideoQuestionEntity baseVideoQuestionEntity,
                                        boolean isPlayBack, String liveId, String id,
@@ -598,54 +604,62 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 JSONObject content = data.getJSONObject(0);
                 JSONArray assessData = content.getJSONArray("assessDataContent");
                 JSONArray rightAnswer = content.getJSONArray("rightAnswerContent");
-                final TreeMap<Integer, String> assessMap = new TreeMap<>();
+                assessMap = new TreeMap<>();
                 final TreeMap<Integer, String> answerMap = new TreeMap<>();
-                for (int i = 0; i < assessData.length(); i++) {
-                    int id = assessData.getJSONObject(i).getInt("id");
-                    String text = assessData.getJSONObject(i).getString("text");
-                    assessMap.put(id, text);
+
+                if (rightAnswer != null){
+                    for (int i = 0; i < rightAnswer.length(); i++) {
+                        int id = rightAnswer.getJSONObject(i).getInt("id");
+                        String text = rightAnswer.getJSONObject(i).getString("text");
+                        answerMap.put(id, text);
+                    }
                 }
-                for (int i = 0; i < rightAnswer.length(); i++) {
-                    int id = rightAnswer.getJSONObject(i).getInt("id");
-                    String text = rightAnswer.getJSONObject(i).getString("text");
-                    answerMap.put(id, text);
-                }
-                boolean hasAudidoPermission = XesPermission.hasSelfPermission(mContext, Manifest.permission.RECORD_AUDIO);
-                // 检查用户麦克风权限
-                if (hasAudidoPermission) {
-                    startAssess(assessMap, answerMap);
-                    ;
+                //字段未空为切到手动答题
+                if (assessData != null){
+                    isSpeakAnswer = true;
+                    for (int i = 0; i < assessData.length(); i++) {
+                        int id = assessData.getJSONObject(i).getInt("id");
+                        String text = assessData.getJSONObject(i).getString("text");
+                        assessMap.put(id, text);
+                    }
+                    boolean hasAudidoPermission = XesPermission.hasSelfPermission(mContext, Manifest.permission.RECORD_AUDIO);
+                    // 检查用户麦克风权限
+                    if (hasAudidoPermission) {
+                        startAssess(assessMap, answerMap);
+                    } else {
+                        //如果没有麦克风权限，申请麦克风权限
+                        XesPermission.checkPermission(mContext, new LiveActivityPermissionCallback() {
+                            /**
+                             * 结束
+                             */
+                            @Override
+                            public void onFinish() {
+                                logger.i("onFinish()");
+                            }
+
+                            /**
+                             * 用户拒绝某个权限
+                             */
+                            @Override
+                            public void onDeny(String permission, int position) {
+                                logger.i("onDeny()");
+                            }
+
+                            /**
+                             * 用户允许某个权限
+                             */
+                            @Override
+                            public void onGuarantee(String permission, int position) {
+                                logger.i("onGuarantee()");
+                                startAssess(assessMap, answerMap);
+                                ;
+                            }
+                        }, PermissionConfig.PERMISSION_CODE_AUDIO);
+                    }
                 } else {
-                    //如果没有麦克风权限，申请麦克风权限
-                    XesPermission.checkPermission(mContext, new LiveActivityPermissionCallback() {
-                        /**
-                         * 结束
-                         */
-                        @Override
-                        public void onFinish() {
-                            logger.i("onFinish()");
-                        }
-
-                        /**
-                         * 用户拒绝某个权限
-                         */
-                        @Override
-                        public void onDeny(String permission, int position) {
-                            logger.i("onDeny()");
-                        }
-
-                        /**
-                         * 用户允许某个权限
-                         */
-                        @Override
-                        public void onGuarantee(String permission, int position) {
-                            logger.i("onGuarantee()");
-                            startAssess(assessMap, answerMap);
-                            ;
-                        }
-                    }, PermissionConfig.PERMISSION_CODE_AUDIO);
+                    isSpeakAnswer = false;
+                    stopAssess();
                 }
-
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -688,6 +702,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
             final String finalAnswerContent = answerContent;
             isAssessing = true;
             speechUtils.startRecog(mParam, new EvaluatorListener() {
+
                 @Override
                 public void onBeginOfSpeech() {
                     logger.d("onBeginOfSpeech curTime: " + System.currentTimeMillis());
@@ -696,50 +711,56 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 @Override
                 public void onResult(ResultEntity result) {
                     if (ResultEntity.EVALUATOR_ING == result.getStatus()) {
+                        String word = "";
+                        int score = 0 ;
                         if (!result.getLstPhonemeScore().isEmpty()) {
                             for (int i = 0; i < result.getLstPhonemeScore().size(); i++) {
-                                String word = result.getLstPhonemeScore().get(i).getWord();
-                                int score = result.getLstPhonemeScore().get(i).getScore();
-                                JSONObject jsonData = new JSONObject();
-                                JSONObject data = new JSONObject();
-                                try {
-                                    jsonData.put("type", CourseMessage.SEND_getAnswer);
-                                    JSONObject resultData = new JSONObject();
-                                    if (score >= 60) {
-                                        resultData.put("isRight", 1);
-                                    } else {
-                                        resultData.put("isRight", 0);
-                                    }
-                                    JSONArray userAnswerArray = new JSONArray();
-                                    JSONObject userAnswer = new JSONObject();
-                                    userAnswer.put("id", result.getNewSenIdx());
-                                    userAnswer.put("text", word);
-                                    userAnswerArray.put(userAnswer);
-                                    resultData.put("userAnswerContent", userAnswerArray);
-                                    jsonData.put("data", resultData);
-                                    StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
-                                } catch (JSONException e) {
-                                    CrashReport.postCatchedException(e);
-                                    mLogtf.e("submitData", e);
-                                }
-
-                                logger.d("onResult: status:" + result.getStatus() +
-                                        " word:" + word +
-                                        " word score:" + score +
-                                        " contscore:" + result.getContScore() +
-                                        " partscore:" + result.getPartScore() +
-                                        " pronscore:" + result.getPronScore() +
-                                        " score:" + result.getScore() +
-                                        " level:" + result.getLevel() +
-                                        " newsenids:" + result.getNewSenIdx()
-                                );
+                                word += result.getLstPhonemeScore().get(i).getWord();
                             }
+                            score = result.getScore();
+                            JSONObject jsonData = new JSONObject();
+                            JSONObject data = new JSONObject();
+                            try {
+                                jsonData.put("type", CourseMessage.SEND_getAnswer);
+                                JSONObject resultData = new JSONObject();
+                                if (score >= 60) {
+                                    resultData.put("isRight", 1);
+                                } else {
+                                    resultData.put("isRight", 0);
+                                }
+                                JSONArray userAnswerArray = new JSONArray();
+                                JSONObject userAnswer = new JSONObject();
+                                userAnswer.put("id", result.getNewSenIdx());
+                                userAnswer.put("text", word);
+                                userAnswerArray.put(userAnswer);
+                                resultData.put("userAnswerContent", userAnswerArray);
+                                jsonData.put("data", resultData);
+                                StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
+                            } catch (JSONException e) {
+                                CrashReport.postCatchedException(e);
+                                mLogtf.e("submitData", e);
+                            }
+                            logger.d("onResult: status:" + result.getStatus() +
+                                    " word:" + word +
+                                    " word score:" + score +
+                                    " contscore:" + result.getContScore() +
+                                    " partscore:" + result.getPartScore() +
+                                    " pronscore:" + result.getPronScore() +
+                                    " score:" + result.getScore() +
+                                    " level:" + result.getLevel() +
+                                    " newsenids:" + result.getNewSenIdx()
+                            );
 
                         }
                     } else if (ResultEntity.SUCCESS == result.getStatus()) {
                         logger.e("SUCCESS curTime ");
+                        isAssessing = false;
                     } else if (ResultEntity.ERROR == result.getStatus()) {
                         logger.e("ERROR");
+                        isAssessing = false;
+                        Map<String,String> errorData = new HashMap<>();
+                        errorData.put("error_code",""+result.getErrorNo());
+                        liveAndBackDebug.umsAgentDebugSys(eventId,errorData);
                     }
 
                 }
