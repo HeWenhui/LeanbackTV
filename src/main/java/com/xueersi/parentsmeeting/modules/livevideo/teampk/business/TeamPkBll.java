@@ -9,6 +9,7 @@ import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.business.UserBll;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -480,7 +481,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         HttpCallBack callBack = new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                teamInfoEntity = mHttpResponseParser.parseTeamInfo(responseEntity);
+                teamInfoEntity = mHttpResponseParser.parseTeamInfoPrimary(responseEntity);
                 showTeamSelectScene(primary);
             }
 
@@ -507,7 +508,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
             if (mFocusPager != null && mFocusPager instanceof TeamPkTeamSelectPager) {
                 return;
             }
-            TeamPkTeamSelectPager teamSelectPager = new TeamPkTeamSelectPager(mActivity, this);
+            TeamPkTeamSelectPager teamSelectPager = new TeamPkTeamSelectPager(mActivity, this, roomInitInfo);
             addPager(teamSelectPager);
             teamSelectPager.setData(teamInfoEntity);
             teamSelectPager.startTeamSelect();
@@ -541,7 +542,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      */
     private void showTeamSelectedSence() {
         if (mFocusPager == null || !(mFocusPager instanceof TeamPkTeamSelectPager)) {
-            TeamPkTeamSelectPager teamSelectPager = new TeamPkTeamSelectPager(mActivity, this);
+            TeamPkTeamSelectPager teamSelectPager = new TeamPkTeamSelectPager(mActivity, this, roomInitInfo);
             addPager(teamSelectPager);
             teamSelectPager.setData(teamInfoEntity);
             teamSelectPager.showTeamSelectedScene(true);
@@ -965,6 +966,12 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
             isAvailable = true;
             this.mTeacherMode = mLiveBll.getMode();
             getTeamMates();
+//            if (AppConfig.DEBUG) {
+//                teamSelectByNotice = true;
+//                startTeamSelect(true);
+//            }
+        } else {
+            mLiveBll.removeBusinessBll(this);
         }
     }
 
@@ -972,25 +979,39 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      * 获取战队成员信息
      */
     private void getTeamMates() {
+        if (roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+            getTeamPkHttp().getMyTeamInfo(roomInitInfo.getStudentLiveInfo().getClassId(),
+                    roomInitInfo.getStuId(), UserBll.getInstance().getMyUserInfoEntity().getPsimId(), new HttpCallBack() {
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                            teamInfoEntity = mHttpResponseParser.parseTeamInfoPrimary(responseEntity);
+                            mTeamMates = teamInfoEntity.getTeamInfo().getResult();
+                            if (mTeamMates != null) {
+                                logger.d("getTeamMates:mTeamMates=" + mTeamMates.size());
+                            } else {
+                                logger.d("getTeamMates:mTeamMates=null");
+                            }
+                        }
+                    });
+        } else {
+            mHttpManager.getTeamMates(roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStudentLiveInfo()
+                    .getTeamId(), new HttpCallBack() {
+                @Override
+                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                    mTeamMates = mHttpResponseParser.parseTeamMates(responseEntity);
+                }
 
-        mHttpManager.getTeamMates(roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStudentLiveInfo()
-                .getTeamId(), new HttpCallBack() {
-            @Override
-            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                mTeamMates = mHttpResponseParser.parseTeamMates(responseEntity);
-            }
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    super.onPmError(responseEntity);
+                }
 
-            @Override
-            public void onPmError(ResponseEntity responseEntity) {
-                super.onPmError(responseEntity);
-            }
-
-            @Override
-            public void onPmFailure(Throwable error, String msg) {
-                super.onPmFailure(error, msg);
-            }
-        });
-
+                @Override
+                public void onPmFailure(Throwable error, String msg) {
+                    super.onPmFailure(error, msg);
+                }
+            });
+        }
     }
 
     /**
@@ -1193,7 +1214,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     //收到发题指令 清空上一次 答题结果记录
                     answerResult = null;
                     break;
-                case XESCODE.ENGLISH_H5_COURSEWARE:
+                case XESCODE.ENGLISH_H5_COURSEWARE: {
                     String status = data.optString("status");
                     if ("on".equals(status)) {
                         //收到发题指令 清空上一次 答题结果记录
@@ -1202,7 +1223,8 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                         setNonce(data.optString("nonce", ""));
                         showCurrentPkResult();
                     }
-                    break;
+                }
+                break;
                 case XESCODE.MULTIPLE_H5_COURSEWARE:
                     boolean isOpen = data.optBoolean("open");
                     if (isOpen) {
@@ -1219,13 +1241,13 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     showCurrentPkResult();
                     break;
                 case XESCODE.TEAM_PK_GROUP: {
-                    open = data.optString("open");
+                    String status = data.optString("status");
                     nonce = data.optString("nonce", "");
                     teamSelectByNotice = true;
-                    if (OPEN_STATE_OPEN.equals(open)) {
+                    if ("on".equals(status)) {
                         startTeamSelect(true);
                         TeamPkLog.receiveCreateTeam(mLiveBll, nonce, true);
-                    } else if (OPEN_STATE_CLOSE.equals(open)) {
+                    } else if ("off".equals(status)) {
                         stopTeamSelect();
                         TeamPkLog.receiveCreateTeam(mLiveBll, nonce, false);
                     }

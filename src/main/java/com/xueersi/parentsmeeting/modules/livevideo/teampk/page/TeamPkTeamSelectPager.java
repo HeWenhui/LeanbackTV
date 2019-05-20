@@ -36,6 +36,8 @@ import com.xueersi.common.base.BasePager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamSelectLottieEffectInfo;
@@ -126,7 +128,7 @@ public class TeamPkTeamSelectPager extends TeamPkBasePager implements View.OnCli
     private TeamPkTeamInfoEntity mTeamInfo;
     private String mTeamName;
     private List<AnimInfo> teamInfoAnimList;
-    /**半透明遮罩背景 进入时间点*/
+    /** 半透明遮罩背景 进入时间点 */
     private static final float FRACTION_BG_MASK_FADE_IN = 0.4f;
 
     private List<TeamItemAnimInfo> teamItemAnimInfoList;
@@ -158,11 +160,12 @@ public class TeamPkTeamSelectPager extends TeamPkBasePager implements View.OnCli
             R.raw.input_effect,
             R.raw.welcome_to_teampk
     };
+    LiveGetInfo liveGetInfo;
 
-
-    public TeamPkTeamSelectPager(Context context, TeamPkBll pkBll) {
+    public TeamPkTeamSelectPager(Context context, TeamPkBll pkBll, LiveGetInfo liveGetInfo) {
         super(context);
         mPKBll = pkBll;
+        this.liveGetInfo = liveGetInfo;
     }
 
     @Override
@@ -307,7 +310,7 @@ public class TeamPkTeamSelectPager extends TeamPkBasePager implements View.OnCli
 
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                logger.e( "====>onAnimationUpdate:" + animation.getAnimatedFraction());
+//                logger.e("====>onAnimationUpdate:" + animation.getAnimatedFraction());
                 if (!isInited && animation.getAnimatedFraction() > 0) {
                     isInited = true;
                     return;
@@ -336,7 +339,7 @@ public class TeamPkTeamSelectPager extends TeamPkBasePager implements View.OnCli
      * 展示 战队成员列表
      */
     private void showTeamMembers() {
-        logger.e( "=====>showTeamMembers called");
+        logger.e("=====>showTeamMembers called");
         rclTeamMember = mView.findViewById(R.id.rcl_teampk_teammember);
         rclTeamMember.setVisibility(View.VISIBLE);
 
@@ -345,7 +348,7 @@ public class TeamPkTeamSelectPager extends TeamPkBasePager implements View.OnCli
         ((Activity) mContext).getWindowManager().getDefaultDisplay().getSize(point);
         int realY = Math.min(point.x, point.y);
         layoutParams.topMargin = (int) (realY * 0.32);
-        logger.e( "=======>showTeamMembers:" + point.x + ":" + point.y);
+        logger.e("=======>showTeamMembers:" + point.x + ":" + point.y);
         rclTeamMember.setLayoutParams(layoutParams);
         final int spanCount = 5;
         rclTeamMember.setLayoutManager(new TeamMemberGridlayoutManager(mContext, 5,
@@ -363,7 +366,7 @@ public class TeamPkTeamSelectPager extends TeamPkBasePager implements View.OnCli
                 int top = 0;
                 int bottom = 0;
                 if (itemPosition >= spanCount) {
-                    top = SizeUtils.Dp2Px(mContext,10);
+                    top = SizeUtils.Dp2Px(mContext, 10);
                 }
                 outRect.set(left, top, right, bottom);
             }
@@ -454,13 +457,13 @@ public class TeamPkTeamSelectPager extends TeamPkBasePager implements View.OnCli
         int topMargin = (int) (realY * 0.456f);
         layoutParams.topMargin = topMargin;
         rlTeamIntroduceRoot.setLayoutParams(layoutParams);
-        logger.e( "=====>showTeamIntroduce:" + topMargin);
+        logger.e("=====>showTeamIntroduce:" + topMargin);
         displayTeamInfo();
     }
 
     private void bgMaskFadeIn() {
-        logger.e( "=====>bgMaskFadeIn called:");
-        if(ivBgMask.getVisibility() != View.VISIBLE){
+        logger.e("=====>bgMaskFadeIn called:");
+        if (ivBgMask.getVisibility() != View.VISIBLE) {
             ivBgMask.setVisibility(View.VISIBLE);
             AlphaAnimation alphaAnimation = (AlphaAnimation) AnimationUtils.
                     loadAnimation(mContext, R.anim.anim_livevido_teampk_bg_mask);
@@ -501,7 +504,8 @@ public class TeamPkTeamSelectPager extends TeamPkBasePager implements View.OnCli
     }
 
 
-    private  final int rule_anim_count = 5;
+    private final int rule_anim_count = 5;
+
     /**
      * 战队信息 动画监听
      */
@@ -561,14 +565,18 @@ public class TeamPkTeamSelectPager extends TeamPkBasePager implements View.OnCli
     }
 
     private void startAutoEnterNextStep() {
-        tvTimeCountDown.setTimeDuration(10);
-        tvTimeCountDown.startCountDow(5000);
-        tvTimeCountDown.setTimeCountDowListener(new TimeCountDowTextView.TimeCountDowListener() {
-            @Override
-            public void onFinish() {
-                upLoadStudentReady();
-            }
-        });
+        if (liveGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+
+        } else {
+            tvTimeCountDown.setTimeDuration(10);
+            tvTimeCountDown.startCountDow(5000);
+            tvTimeCountDown.setTimeCountDowListener(new TimeCountDowTextView.TimeCountDowListener() {
+                @Override
+                public void onFinish() {
+                    upLoadStudentReady();
+                }
+            });
+        }
     }
 
 
@@ -690,7 +698,7 @@ public class TeamPkTeamSelectPager extends TeamPkBasePager implements View.OnCli
         lavTeamSelectAnimView.addAnimatorUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-                if(animation.getAnimatedFraction() > FRACTION_BG_MASK_FADE_IN && !bgHasFadeIn){
+                if (animation.getAnimatedFraction() > FRACTION_BG_MASK_FADE_IN && !bgHasFadeIn) {
                     bgHasFadeIn = true;
                     ivBgMask.setVisibility(View.VISIBLE);
                 }
@@ -718,8 +726,8 @@ public class TeamPkTeamSelectPager extends TeamPkBasePager implements View.OnCli
                 case ANIMTYPE_TEAM_SELECTED:
                     playCheering();
                     break;
-                 default:
-                     break;
+                default:
+                    break;
             }
         }
 
@@ -727,7 +735,11 @@ public class TeamPkTeamSelectPager extends TeamPkBasePager implements View.OnCli
         public void onAnimationEnd(Animator animation) {
             switch (mAnimType) {
                 case ANIMTYPE_START:
-                    showTimeCutdown();
+                    if (liveGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+                        showMarquee();
+                    } else {
+                        showTimeCutdown();
+                    }
                     break;
                 case ANIMTYPE_TIME_COUTDOWN:
                     showMarquee();
@@ -830,7 +842,7 @@ public class TeamPkTeamSelectPager extends TeamPkBasePager implements View.OnCli
     }
 
     private void showMarquee() {
-        logger.e( "========> showMarquee");
+        logger.e("========> showMarquee");
         ((ViewGroup) mView).setClipChildren(false);
         final int spanCount = 3;
         lavTeamSelectAnimView.cancelAnimation();
@@ -855,10 +867,10 @@ public class TeamPkTeamSelectPager extends TeamPkBasePager implements View.OnCli
                 int top = 0;
                 int bottom = 0;
                 if (itemPosition >= spanCount) {
-                    top = getTopGap(teamsRecyclerView,spanCount);
-                    top = top <0?0:top;
+                    top = getTopGap(teamsRecyclerView, spanCount);
+                    top = top < 0 ? 0 : top;
                 }
-                logger.e( "top:"+top);
+                logger.e("top:" + top);
                 outRect.set(left, top, right, bottom);
             }
         });
@@ -934,7 +946,7 @@ public class TeamPkTeamSelectPager extends TeamPkBasePager implements View.OnCli
     }
 
     private void cancelMarquee() {
-        logger.e( "======>cancelMarquee");
+        logger.e("======>cancelMarquee");
         stopMusic(R.raw.marquee);
         if (teamItemAnimInfoList != null && teamItemAnimInfoList.size() > 0) {
             for (TeamItemAnimInfo itemAnimInfo : teamItemAnimInfoList) {
@@ -948,7 +960,7 @@ public class TeamPkTeamSelectPager extends TeamPkBasePager implements View.OnCli
         if (teamsRecyclerView != null && teamsRecyclerView.getParent() != null) {
             ((ViewGroup) teamsRecyclerView.getParent()).removeView(teamsRecyclerView);
         }
-        logger.e( "======>cancelMarquee done");
+        logger.e("======>cancelMarquee done");
     }
 
     /**
@@ -992,7 +1004,7 @@ public class TeamPkTeamSelectPager extends TeamPkBasePager implements View.OnCli
 
 
     private void showTimeCutdown() {
-        logger.e( "===>show time cut down");
+        logger.e("===>show time cut down");
         ivBgMask.setVisibility(View.GONE);
         String lottieResPath = LOTTIE_RES_ASSETS_ROOTDIR + "time_cutdown/images";
         String lottieJsonPath = LOTTIE_RES_ASSETS_ROOTDIR + "time_cutdown/data.json";
@@ -1016,8 +1028,12 @@ public class TeamPkTeamSelectPager extends TeamPkBasePager implements View.OnCli
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.iv_teampk_btn_ok) {
-            upLoadStudentReady();
-            TeamPkLog.sendReady(mPKBll.getLiveBll());
+            if (liveGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+                closeTeamSelectPager();
+            } else {
+                upLoadStudentReady();
+                TeamPkLog.sendReady(mPKBll.getLiveBll());
+            }
         }
     }
 

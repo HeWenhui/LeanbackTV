@@ -1655,6 +1655,81 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         return teamInfoEntity;
     }
 
+    public TeamPkTeamInfoEntity parseTeamInfoPrimary(ResponseEntity responseEntity) {
+        TeamPkTeamInfoEntity teamInfoEntity = new TeamPkTeamInfoEntity();
+        JSONObject data = (JSONObject) responseEntity.getJsonObject();
+        try {
+            if (data.has("students")) {
+                JSONArray jsonArray = data.getJSONArray("students");
+                TeamPkTeamInfoEntity.StudentEntity studentEntity;
+                JSONObject jsonObject;
+                List<TeamPkTeamInfoEntity.StudentEntity> teamMembers = new ArrayList<TeamPkTeamInfoEntity
+                        .StudentEntity>();
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    jsonObject = (JSONObject) jsonArray.get(i);
+                    studentEntity = new TeamPkTeamInfoEntity.StudentEntity();
+                    studentEntity.setUserId(jsonObject.getString("userId"));
+                    studentEntity.setUserName(jsonObject.getString("name"));
+                    studentEntity.setImg(jsonObject.getString("img"));
+                    teamMembers.add(studentEntity);
+                }
+                teamInfoEntity.setTeamMembers(teamMembers);
+            }
+
+            if (data.has("teamInfo")) {
+                JSONObject teamInfoObj = (JSONObject) data.get("teamInfo");
+
+
+                if (teamInfoObj.has("imgs")) {
+                    JSONObject jsonObject = (JSONObject) teamInfoObj.get("imgs");
+                    if (jsonObject.has("key")) {
+                        teamInfoEntity.setKey(jsonObject.getInt("key"));
+                    }
+                    if (jsonObject.has("imgs")) {
+                        JSONArray jsonArray = jsonObject.getJSONArray("imgs");
+                        List<String> imgList = new ArrayList<String>();
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            imgList.add(jsonArray.getString(i));
+                        }
+                        teamInfoEntity.setTeamLogoList(imgList);
+                    }
+                }
+
+                TeamPkTeamInfoEntity.TeamInfoEntity teamInfo = new TeamPkTeamInfoEntity.TeamInfoEntity();
+                teamInfo.setImg(teamInfoObj.getString("img"));
+                teamInfo.setTeamName(teamInfoObj.getString("teamName"));
+                teamInfo.setTeamMateName(teamInfoObj.getString("teamMateName"));
+                teamInfo.setSlogon(teamInfoObj.getString("slogon"));
+                teamInfo.setBackGroud(teamInfoObj.getString("backGroud"));
+                try {
+                    JSONArray teamMembersArray = teamInfoObj.optJSONArray("teamMembers");
+                    List<TeamPkTeamInfoEntity.StudentEntity> teamMembers = new ArrayList<>();
+                    if (teamMembersArray != null) {
+                        for (int i = 0; i < teamMembersArray.length(); i++) {
+                            teamInfoObj = (JSONObject) teamMembersArray.get(i);
+                            TeamMate teamMate = new TeamMate();
+                            teamMate.setId(teamInfoObj.optString("stuId"));
+                            teamMate.setName(teamInfoObj.optString("name"));
+                            teamInfo.getResult().add(teamMate);
+                            TeamPkTeamInfoEntity.StudentEntity studentEntity = new TeamPkTeamInfoEntity.StudentEntity();
+                            studentEntity.setUserId(teamInfoObj.getString("stuId"));
+                            studentEntity.setUserName(teamInfoObj.getString("name"));
+                            studentEntity.setImg(teamInfoObj.optString("img"));
+                            teamMembers.add(studentEntity);
+                        }
+                    }
+                    teamInfoEntity.setTeamMembers(teamMembers);
+                } catch (Exception e) {
+                    MobAgent.httpResponseParserError(TAG, "parseTeamInfo.teamMembers", e.getMessage());
+                }
+                teamInfoEntity.setTeamInfo(teamInfo);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            MobAgent.httpResponseParserError(TAG, "parseTeamInfo", e.getMessage());
+        }
+        return teamInfoEntity;
+    }
 
     /**
      * 解析pk 对手信息
@@ -2157,7 +2232,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                         star.setName(jsonObject.optString("name"));
                         star.setTeamName(jsonObject.optString("teamName"));
                         star.setStuId(jsonObject.optString("stuId"));
-                        star.setSuper(jsonObject.optInt("isSuper",0)==1);
+                        star.setSuper(jsonObject.optInt("isSuper", 0) == 1);
                         resultList.add(star);
                     }
                 }
@@ -2193,7 +2268,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                         star.setName(jsonObject.optString("name"));
                         star.setTeamName(jsonObject.optString("teamName"));
                         star.setStuId(jsonObject.optString("stuId"));
-                        star.setSuper(jsonObject.optInt("isSuper",0) == 1);
+                        star.setSuper(jsonObject.optInt("isSuper", 0) == 1);
                         resultList.add(star);
                     }
                 }
@@ -2313,7 +2388,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     if (nbResource != null) {
                         String resurseMd5 = nbResource.optString("resourceMd5");
                         String resurseUrl = nbResource.optString("resourceUrl");
-                        if(!TextUtils.isEmpty(resurseMd5) && !TextUtils.isEmpty(resurseUrl)){
+                        if (!TextUtils.isEmpty(resurseMd5) && !TextUtils.isEmpty(resurseUrl)) {
                             CoursewareInfoEntity.NbCoursewareInfo nbCoursewareInfo = new CoursewareInfoEntity.NbCoursewareInfo();
                             nbCoursewareInfo.setResourceMd5(resurseMd5);
                             nbCoursewareInfo.setResourceUrl(resurseUrl);

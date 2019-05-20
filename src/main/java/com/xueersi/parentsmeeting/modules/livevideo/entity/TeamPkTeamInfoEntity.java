@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -7,7 +8,7 @@ import java.util.List;
  */
 public class TeamPkTeamInfoEntity {
 
-    private List<StudentEntity>  teamMembers; //队员信息
+    private List<StudentEntity> teamMembers; //队员信息
     private List<String> teamLogoList;             //队徽列表
     private TeamInfoEntity teamInfo;
 
@@ -16,6 +17,7 @@ public class TeamPkTeamInfoEntity {
     public void setKey(int key) {
         this.key = key;
     }
+
     public int getKey() {
         return key;
     }
@@ -28,7 +30,7 @@ public class TeamPkTeamInfoEntity {
         return teamInfo;
     }
 
-    public void  setTeamMembers(List<StudentEntity>  members){
+    public void setTeamMembers(List<StudentEntity> members) {
         this.teamMembers = members;
     }
 
@@ -45,11 +47,10 @@ public class TeamPkTeamInfoEntity {
     }
 
 
-
-    public static class StudentEntity{
-        String  userId;
-        String  userName;
-        String  img;
+    public static class StudentEntity {
+        String userId;
+        String userName;
+        String img;
 
         public String getUserId() {
             return userId;
@@ -76,12 +77,13 @@ public class TeamPkTeamInfoEntity {
         }
     }
 
-    public static class TeamInfoEntity{
-        String  teamName;
-        String  teamMateName;
-        String  slogon;
-        String  backGroud;
-        String  img;
+    public static class TeamInfoEntity {
+        String teamName;
+        String teamMateName;
+        String slogon;
+        String backGroud;
+        String img;
+        List<TeamMate> result = new ArrayList<>();
 
         public String getTeamName() {
             return teamName;
@@ -121,6 +123,10 @@ public class TeamPkTeamInfoEntity {
 
         public void setImg(String img) {
             this.img = img;
+        }
+
+        public List<TeamMate> getResult() {
+            return result;
         }
     }
 
