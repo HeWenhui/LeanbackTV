@@ -151,7 +151,7 @@ public class CourseWareHttpManager {
      * 请求学生作答情况列表
      */
     public void getStuTestResult(String liveId, String stuId, String srcTypes, String testIds, String classTestId, String packageId, String packageAttr, int isPlayBack,
-                                 final AbstractBusinessDataCallBack callBack) {
+                                 final AbstractBusinessDataCallBack callBack,boolean isTutor) {
         HttpRequestParams httpRequestParams = new HttpRequestParams();
         liveHttpManager.setDefaultParameter(httpRequestParams);
         httpRequestParams.addBodyParam("liveId", liveId);
@@ -186,14 +186,15 @@ public class CourseWareHttpManager {
                 callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_FAIL, msg);
             }
         };
-        String url;
-        if (arts == LiveVideoSAConfig.ART_SEC) {
+        String url = "";
+        if (isTutor) {
+            url = LiveQueHttpConfig.LIVE_GET_COURSEWARE_TUTOR_RESULT;
+        } else if (arts == LiveVideoSAConfig.ART_SEC) {
             url = LiveQueHttpConfig.LIVE_GET_STU_TESTS_RESULT;
-            liveHttpManager.sendPost(url, httpRequestParams, httpCallBack);
         } else {
             url = LiveQueHttpConfig.LIVE_GET_STU_TESTS_RESULT_CN;
-            liveHttpManager.sendGet(url, httpRequestParams, httpCallBack);
         }
+        liveHttpManager.sendPost(url, httpRequestParams, httpCallBack);
     }
 
     public void getTestInfos(String testIds, final AbstractBusinessDataCallBack callBack) {

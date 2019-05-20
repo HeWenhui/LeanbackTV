@@ -154,6 +154,8 @@
             android:paddingTop="30dp"
             android:textColor="#E49E42"
             android:paddingLeft="20dp"
+            android:singleLine="true"
+            android:ellipsize="end"
             android:paddingRight="20dp"
             android:layout_width="305dp"
             android:layout_height="75dp" />

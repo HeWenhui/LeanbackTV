@@ -122,8 +122,8 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
 //        return new int[]{LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE, LocalCourseConfig
 //                .CATEGORY_ENGLISH_MULH5COURSE_WARE};
         return new int[]{LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE, LocalCourseConfig
-                .CATEGORY_ENGLISH_MULH5COURSE_WARE, LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE,
-                LocalCourseConfig.CATEGORY_TUTOR_EVENT_35};
+                .CATEGORY_ENGLISH_MULH5COURSE_WARE, LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE
+                , LocalCourseConfig.CATEGORY_TUTOR_EVENT_35};
     }
 
     @Override
@@ -407,7 +407,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
             String[] res = getSrcType(englishH5Entity);
             getCourseWareHttpManager().getStuTestResult(liveGetInfo.getId(), liveGetInfo.getStuId(), res[0], res[1], englishH5Entity.getClassTestId(), englishH5Entity.getPackageId(),
-                    englishH5Entity.getPackageAttr(), isPlayBack, callBack);
+                    englishH5Entity.getPackageAttr(), isPlayBack, callBack,detailInfo.isTUtor());
         }
 
         @Override

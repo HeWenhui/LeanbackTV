@@ -697,6 +697,11 @@ public class LiveBackVideoFragmentBase extends Fragment {
         liveBackPlayVideoFragment.playNewVideo();
     }
 
+    public void playNewVideo(Uri uri, String displayName) {
+        mUri = uri;
+        mDisplayName = displayName;
+        liveBackPlayVideoFragment.playNewVideo(uri, displayName);
+    }
 
     /** 播放下一个视频 */
     protected void startPlayNextVideo() {

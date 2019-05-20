@@ -157,6 +157,8 @@
             android:background="@drawable/bg_page_livevideo_praise_list_wood_teacher_talk"
             android:paddingLeft="20dp"
             android:paddingTop="30dp"
+            android:singleLine="true"
+            android:ellipsize="end"
             android:paddingRight="20dp"
             android:text=""
             android:textColor="#8E3D24"

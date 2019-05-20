@@ -67,6 +67,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.stablelog.PlayErrorCodeLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LiveBackVideoBll;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BasePlayerFragment;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
@@ -163,9 +164,10 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
         mVideoMainEntity = (VideoLivePlayBackEntity) intent.getExtras().getSerializable("videoliveplayback");
         mVideoTutorEntity = (VideoLivePlayBackEntity) intent.getExtras().getSerializable("videoTutorEntity");
-        if (mVideoMainEntity == null) {
-            videoPlayStatus = MediaPlayer.VIDEO_TEACHER_TUTOR;
+        if (mVideoTutorEntity!=null) {
+            mVideoTutorEntity.setIsAllowMarkpoint(0);
         }
+        videoPlayStatus = intent.getIntExtra("teacherVideoStatus",0);
 
         islocal = intent.getBooleanExtra("islocal", false);
         startNewVideo();
@@ -174,6 +176,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     }
 
     private void startNewVideo() {
+        if (mVideoEntity!=null) {
+            savePosition(mCurrentPosition);
+        }
         if (videoPlayStatus == MediaPlayer.VIDEO_TEACHER_MAIN || videoPlayStatus == MediaPlayer.VIDEO_TEACHER_ONLY_MAIN) {
             mVideoEntity = mVideoMainEntity;
         } else {
@@ -449,6 +454,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         // 播放视频
         mWebPath = mVideoEntity.getVideoPath();
         mDisplayName = mVideoEntity.getPlayVideoName();
+        liveBackBll = null;
         liveBackBll = new LiveBackBll(activity, mVideoEntity);
         liveBackBll.setStuCourId(stuCourId);
         liveBackBll.setvPlayer(vPlayer);
@@ -458,6 +464,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         ProxUtil.getProxUtil().put(activity, MediaControllerAction.class, this);
         ProxUtil.getProxUtil().put(activity, MediaPlayerControl.class, liveBackPlayVideoFragment);
         ProxUtil.getProxUtil().put(activity, ActivityChangeLand.class, this);
+        ProxUtil.getProxUtil().put(activity, BasePlayerFragment.class, liveBackPlayVideoFragment);
         initBusiness();
         if (islocal) {
             // 互动题播放地址
@@ -552,6 +559,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 liveBackBll.addBusinessBll(new SpeechBulletScreenPalyBackBll(activity, liveBackBll));
                 initLiveRemarkBll();
             } else {
+                if (liveBackBll.getIsArts() == 2) {
+                    liveBackBll.addBusinessBll(new SpeechBulletScreenPalyBackBll(activity, liveBackBll));
+                }
                 Log.e("LiveBackVideoFragment", "====> initAnswerResultBll");
                 liveBackBll.addBusinessBll(new ArtsAnswerResultPlayBackBll(activity, liveBackBll));
                 if (liveBackBll.getPattern() != 2) {
@@ -560,7 +570,8 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 }
             }
             if (!islocal) {
-                EvaluateTeacherPlayBackBll evaluateTeacherPlayBackBll = new EvaluateTeacherPlayBackBll(activity, liveBackBll);
+                EvaluateTeacherPlayBackBll evaluateTeacherPlayBackBll = new EvaluateTeacherPlayBackBll(activity,
+                        liveBackBll);
                 evaluateTeacherPlayBackBll.setLiveFragmentBase(liveBackPlayVideoFragment);
                 liveBackBll.addBusinessBll(evaluateTeacherPlayBackBll);
             }

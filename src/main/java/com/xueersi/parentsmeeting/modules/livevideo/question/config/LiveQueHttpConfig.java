@@ -45,11 +45,13 @@ public class LiveQueHttpConfig {
     /** 辅导老师结果页 */
     public static String LIVE_SUBMIT_COURSEWARE_RESULT_TUTOR_FILE = "file:///android_asset/newcourse_tutor/index.html";
 
-
     /** 辅导 获取试题 */
     public static String LIVE_GET_COURSEWARE_TUTOR_TESTS = LiveHttpConfig.LIVE_HOST + "/science/Tutorship/getCourseWareTest";
     /** 辅导 提交试题 */
     public static String LIVE_GET_COURSEWARE_SUBMIT_TESTS = LiveHttpConfig.LIVE_HOST + "/science/Tutorship/submitCourseWareTest";
+    /** 辅导 获取课件结果 */
+    public static String LIVE_GET_COURSEWARE_TUTOR_RESULT = LiveHttpConfig.LIVE_HOST + "/science/Tutorship/getStuTestResult";
+
 
 
 

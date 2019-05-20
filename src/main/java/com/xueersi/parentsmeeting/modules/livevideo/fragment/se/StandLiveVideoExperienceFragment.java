@@ -596,7 +596,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
                 mIsLand.get());
     }
 
-    private void playNewVideo(Uri uri, String mSectionName) {
+    public void playNewVideo(Uri uri, String mSectionName) {
         liveBackVideoBll.playNewVideo(uri, mSectionName);
     }
 
