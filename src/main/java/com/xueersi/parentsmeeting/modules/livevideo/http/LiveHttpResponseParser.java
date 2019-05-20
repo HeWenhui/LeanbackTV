@@ -2321,10 +2321,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             try {
                 JSONArray liveCoursewareArray = data.getJSONArray("list");
                 for (int i = 0; i < liveCoursewareArray.length(); i++) {
-                    CoursewareInfoEntity.LiveCourseware liveCourseware = new CoursewareInfoEntity.LiveCourseware();
-                    JSONObject liveJson = liveCoursewareArray.optJSONObject(i);
-                    if (liveJson != null) {
-                        liveCourseware.setLiveId(liveJson.optString("liveId"));
+                    try {
+                        CoursewareInfoEntity.LiveCourseware liveCourseware = new CoursewareInfoEntity.LiveCourseware();
+                        JSONObject liveJson = liveCoursewareArray.getJSONObject(i);
+                        liveCourseware.setLiveId(liveJson.getString("liveId"));
                         liveCourseware.setStime(liveJson.optLong("stime", System.currentTimeMillis() / 1000));
                         if (liveJson.has("infos")) {
                             JSONArray coursewareArray = liveJson.getJSONArray("infos");
@@ -2335,7 +2335,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                                 coursewareInfo.setSourceId(coursewareJson.optString("sourceId"));
                                 coursewareInfo.setPackageId(coursewareJson.optString("packageId"));
                                 coursewareInfo.setPackageSource(coursewareJson.optString("packageSource"));
-                                coursewareInfo.setTemplate(coursewareJson.optInt("isTemplate") == 1 ? true : false);
+                                coursewareInfo.setTemplate(coursewareJson.optInt("isTemplate") == 1);
                                 coursewareInfo.setPageId(coursewareJson.optString("pageId"));
                                 coursewareInfo.setResourceUrl(coursewareJson.optString("resourceUrl"));
                                 coursewareInfo.setTemplateUrl(coursewareJson.optString("templateUrl"));
@@ -2346,11 +2346,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                             }
                             liveCourseware.setCoursewareInfos(coursewareInfos);
                         }
+                        liveCoursewares.add(liveCourseware);
+                    } catch (Exception e) {
+                        MobAgent.httpResponseParserError(TAG, "parseCoursewareInfo", e.getMessage());
                     }
-                    liveCoursewares.add(liveCourseware);
                 }
                 coursewareInfoEntity.setCoursewaresList(liveCoursewares);
-
                 JSONObject hostJson = data.getJSONObject("host");
                 if (hostJson.has("cdns")) {
                     JSONArray cdnsArray = hostJson.getJSONArray("cdns");
