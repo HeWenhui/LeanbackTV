@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.BaseActivity;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
@@ -39,6 +40,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.ps.PSIJK;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -334,6 +336,19 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         }
     }
 
+    SetVolumeListener setVolumeListener;
+
+    public boolean setVolume(float left, float right, SetVolumeListener setVolumeListener) {
+        leftVolume = left;
+        rightVolume = right;
+        this.setVolumeListener = setVolumeListener;
+        if (isInitialized()) {
+            vPlayer.setVolume(left, right);
+            return true;
+        }
+        return false;
+    }
+
     Handler.Callback callback = new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
@@ -386,6 +401,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                         e.printStackTrace();
                                     } catch (Exception e) {
                                         e.printStackTrace();
+                                        CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                                     }
                                 }
                             }
@@ -723,6 +739,21 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             }
             if (isInitialized()) {
                 vPlayer.setVolume(leftVolume, rightVolume);
+                try {
+                    if (setVolumeListener != null) {
+                        setVolumeListener.onSuccess(true);
+                    }
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
+                }
+            } else {
+                try {
+                    if (setVolumeListener != null) {
+                        setVolumeListener.onSuccess(false);
+                    }
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
+                }
             }
         }
 

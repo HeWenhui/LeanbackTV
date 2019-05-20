@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.business;
 import android.app.Activity;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;

@@ -233,6 +233,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             bllConfigEntities = AllBllConfig.getLiveBusinessArts();
             liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
+            liveIRCMessageBll.setLiveMediaControllerTop(baseLiveMediaControllerTop);
             mLiveBll.addBusinessBll(liveIRCMessageBll);
             mLiveBll.addBusinessBll(new RollCallIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new RankBll(activity, mLiveBll));
@@ -255,6 +256,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             bllConfigEntities = AllBllConfig.live_business_cn;
             liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
+            liveIRCMessageBll.setLiveMediaControllerTop(baseLiveMediaControllerTop);
             mLiveBll.addBusinessBll(liveIRCMessageBll);
             mLiveBll.addBusinessBll(new ChinesePkBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new RollCallIRCBll(activity, mLiveBll));
@@ -285,6 +287,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             bllConfigEntities = AllBllConfig.getLiveBusinessScience(activity.getIntent());
             liveIRCMessageBll = new LiveIRCMessageBll(activity, mLiveBll);
             liveIRCMessageBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
+            liveIRCMessageBll.setLiveMediaControllerTop(baseLiveMediaControllerTop);
             mLiveBll.addBusinessBll(liveIRCMessageBll);
 
             // 语文半身直播 添加 语文pk 业务类

@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.http;
 
 import android.content.Context;
+import android.text.TextUtils;
 
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.business.sharebusiness.config.LiveVideoBusinessConfig;
@@ -8,6 +9,7 @@ import com.xueersi.common.http.HttpResponseParser;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.logerhelper.MobAgent;
 import com.xueersi.common.logerhelper.XesMobAgent;
+import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
@@ -15,6 +17,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDrive
 import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.NbCourseWareConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
@@ -2155,6 +2158,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                         star.setName(jsonObject.optString("name"));
                         star.setTeamName(jsonObject.optString("teamName"));
                         star.setStuId(jsonObject.optString("stuId"));
+                        star.setSuper(jsonObject.optInt("isSuper", 0) == 1);
                         resultList.add(star);
                     }
                 }
@@ -2190,6 +2194,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                         star.setName(jsonObject.optString("name"));
                         star.setTeamName(jsonObject.optString("teamName"));
                         star.setStuId(jsonObject.optString("stuId"));
+                        star.setSuper(jsonObject.optInt("isSuper", 0) == 1);
                         resultList.add(star);
                     }
                 }
@@ -2240,10 +2245,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             try {
                 JSONArray liveCoursewareArray = data.getJSONArray("list");
                 for (int i = 0; i < liveCoursewareArray.length(); i++) {
-                    CoursewareInfoEntity.LiveCourseware liveCourseware = new CoursewareInfoEntity.LiveCourseware();
-                    JSONObject liveJson = liveCoursewareArray.optJSONObject(i);
-                    if (liveJson != null) {
-                        liveCourseware.setLiveId(liveJson.optString("liveId"));
+                    try {
+                        CoursewareInfoEntity.LiveCourseware liveCourseware = new CoursewareInfoEntity.LiveCourseware();
+                        JSONObject liveJson = liveCoursewareArray.getJSONObject(i);
+                        liveCourseware.setLiveId(liveJson.getString("liveId"));
                         liveCourseware.setStime(liveJson.optLong("stime", System.currentTimeMillis() / 1000));
                         if (liveJson.has("infos")) {
                             JSONArray coursewareArray = liveJson.getJSONArray("infos");
@@ -2254,7 +2259,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                                 coursewareInfo.setSourceId(coursewareJson.optString("sourceId"));
                                 coursewareInfo.setPackageId(coursewareJson.optString("packageId"));
                                 coursewareInfo.setPackageSource(coursewareJson.optString("packageSource"));
-                                coursewareInfo.setTemplate(coursewareJson.optInt("isTemplate") == 1 ? true : false);
+                                coursewareInfo.setTemplate(coursewareJson.optInt("isTemplate") == 1);
                                 coursewareInfo.setPageId(coursewareJson.optString("pageId"));
                                 coursewareInfo.setResourceUrl(coursewareJson.optString("resourceUrl"));
                                 coursewareInfo.setTemplateUrl(coursewareJson.optString("templateUrl"));
@@ -2265,11 +2270,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                             }
                             liveCourseware.setCoursewareInfos(coursewareInfos);
                         }
+                        liveCoursewares.add(liveCourseware);
+                    } catch (Exception e) {
+                        MobAgent.httpResponseParserError(TAG, "parseCoursewareInfo", e.getMessage());
                     }
-                    liveCoursewares.add(liveCourseware);
                 }
                 coursewareInfoEntity.setCoursewaresList(liveCoursewares);
-
                 JSONObject hostJson = data.getJSONObject("host");
                 if (hostJson.has("cdns")) {
                     JSONArray cdnsArray = hostJson.getJSONArray("cdns");
@@ -2304,6 +2310,22 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                             resources.add(fontsArray.getString(k));
                         }
                     }
+
+                    JSONObject nbResource = resourceArray.optJSONObject("NBResource");
+                    if (nbResource != null) {
+                        String resurseMd5 = nbResource.optString("resourceMd5");
+                        String resurseUrl = nbResource.optString("resourceUrl");
+                        if (!TextUtils.isEmpty(resurseMd5) && !TextUtils.isEmpty(resurseUrl)) {
+                            CoursewareInfoEntity.NbCoursewareInfo nbCoursewareInfo = new CoursewareInfoEntity.NbCoursewareInfo();
+                            nbCoursewareInfo.setResourceMd5(resurseMd5);
+                            nbCoursewareInfo.setResourceUrl(resurseUrl);
+                            coursewareInfoEntity.setNbCoursewareInfo(nbCoursewareInfo);
+                            //缓存NB资源文件解压相对路径
+                            ShareDataManager.getInstance().put(NbCourseWareConfig.LOCAL_RES_DIR, resurseMd5,
+                                    ShareDataManager.SHAREDATA_NOT_CLEAR);
+                        }
+                    }
+
 //                    }
                     coursewareInfoEntity.setResources(resources);
                 }

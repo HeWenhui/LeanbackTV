@@ -143,6 +143,8 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private boolean addJs = false;
     /** 是不是刷新，加载完成 */
     private int isRefresh = 0;
+    /** 收到加载完成 */
+    private boolean isLoadComplete = false;
     /** 刷新次数 */
     private int refreshTime = 0;
     private NewCourseSec newCourseSec;
@@ -294,7 +296,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         wvSubjectWeb.setWebChromeClient(new BaseCoursewareNativePager.MyWebChromeClient() {
             @Override
             public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
-                if (("" + consoleMessage.message()).contains("sendToCourseware")) {
+                if (isLoadComplete && ("" + consoleMessage.message()).contains("sendToCourseware")) {
                     CrashReport.postCatchedException(new Exception());
                 }
                 return super.onConsoleMessage(consoleMessage);
@@ -1182,6 +1184,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 if (showControl) {
                     rlCourseControl.setVisibility(View.VISIBLE);
                 }
+                isLoadComplete = true;
                 preLoad.onStop();
             }
         } else {

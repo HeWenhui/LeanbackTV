@@ -27,6 +27,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.GlideDrawableUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
+import com.xueersi.parentsmeeting.modules.livevideo.util.StandLiveMethod;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountDowTextView;
 
 import java.io.IOException;
@@ -56,7 +58,7 @@ public class GroupGameMVPMultPager extends LiveBasePager {
     private ImageView ivClose;
     private static String LOTTIE_RES_ASSETS_ROOTDIR = "en_group_game/";
     ArrayList<TeamMemberEntity> entities;
-
+    LiveSoundPool liveSoundPool;
     public GroupGameMVPMultPager(Context context, ArrayList<TeamMemberEntity> entities) {
         super(context);
         this.entities = new ArrayList<>();
@@ -143,6 +145,8 @@ public class GroupGameMVPMultPager extends LiveBasePager {
                 }
             }
         }, 100);
+        liveSoundPool = LiveSoundPool.createSoundPool();
+        StandLiveMethod.leaderBoard(liveSoundPool);
     }
 
     @Override
@@ -159,6 +163,9 @@ public class GroupGameMVPMultPager extends LiveBasePager {
             public void onClick(View view) {
                 headBitHashMap.clear();
                 onPagerClose.onClose(GroupGameMVPMultPager.this);
+                if (liveSoundPool != null) {
+                    liveSoundPool.release();
+                }
             }
         });
     }
@@ -531,5 +538,13 @@ public class GroupGameMVPMultPager extends LiveBasePager {
             logger.e("creatNameBitmap", e);
         }
         return null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (liveSoundPool != null) {
+            liveSoundPool.release();
+        }
     }
 }

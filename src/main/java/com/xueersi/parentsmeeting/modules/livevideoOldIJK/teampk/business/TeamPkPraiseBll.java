@@ -397,9 +397,11 @@ public class TeamPkPraiseBll {
                 decorView.post(new Runnable() {
                     @Override
                     public void run() {
-                        decorView.removeView(praiseRootView);
-                        decorView = null;
-                        praiseRootView = null;
+                        if(decorView != null){
+                            decorView.removeView(praiseRootView);
+                            decorView = null;
+                            praiseRootView = null;
+                        }
                     }
                 });
 

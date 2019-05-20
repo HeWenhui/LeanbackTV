@@ -31,6 +31,8 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
     protected BaseVideoQuestionEntity baseVideoQuestionEntity;
     protected OnPagerClose onPagerClose;
     protected Handler handler = new Handler(Looper.getMainLooper());
+    /** pager创建时间 */
+    protected long creattime;
 
     public LiveBasePager(Context context) {
         super(context);
@@ -84,8 +86,9 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
     @Override
     protected void init(Context context) {
         super.init(context);
+        creattime = System.currentTimeMillis();
         mLogtf = new LogToFile(context, TAG);
-        mLogtf.addCommon("creattime", "" + System.currentTimeMillis());
+        mLogtf.addCommon("creattime", "" + creattime);
         AllLiveBasePagerInter allLiveBasePagerInter = ProxUtil.getProxUtil().get(context, AllLiveBasePagerInter.class);
         if (allLiveBasePagerInter != null) {
             allLiveBasePagerInter.addLiveBasePager(this);

@@ -66,7 +66,7 @@ public abstract class BaseWebviewX5Pager extends LiveBasePager {
                         mLogtf.e("btn_error_refresh", e);
                     }
                 }
-                wvSubjectWeb.reload();
+                reloadUrl();
             }
         });
     }
@@ -76,7 +76,16 @@ public abstract class BaseWebviewX5Pager extends LiveBasePager {
         addJavascriptInterface();
         wvSubjectWeb.setWebChromeClient(new MyWebChromeClient());
         wvSubjectWeb.setWebViewClient(new MyWebViewClient());
+        showLoadingView();
+    }
+
+    /**
+     * 显示loading  页面
+     */
+    protected void showLoadingView() {
+        View loadView = mView.findViewById(R.id.rl_livevideo_subject_loading);
         ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
+        loadView.setVisibility(View.VISIBLE);
         try {
             Drawable drawable = mContext.getResources().getDrawable(R.drawable.animlst_app_loading);
             ivLoading.setBackground(drawable);
@@ -87,6 +96,7 @@ public abstract class BaseWebviewX5Pager extends LiveBasePager {
             }
         }
     }
+
 
     @android.webkit.JavascriptInterface
     protected void addJavascriptInterface() {
@@ -126,25 +136,10 @@ public abstract class BaseWebviewX5Pager extends LiveBasePager {
         @Override
         public void onProgressChanged(WebView view, int newProgress) {
             super.onProgressChanged(view, newProgress);
+           BaseWebviewX5Pager.this.onProgressChanged(view,newProgress);
             if (newProgress == 100) {
                 logger.i("onProgressChanged");
-                View loadView = mView.findViewById(R.id.rl_livevideo_subject_loading);
-                if (loadView != null) {
-                    ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
-                    try {
-                        Drawable drawable = ivLoading.getBackground();
-                        if (drawable instanceof AnimationDrawable) {
-                            ((AnimationDrawable) drawable).stop();
-                        }
-                    } catch (Exception e) {
-                        if (mLogtf != null) {
-                            mLogtf.e("onProgressChanged", e);
-                        }
-                    }
-                    loadView.setVisibility(View.GONE);
-//                    ViewGroup group = (ViewGroup) loadView.getParent();
-//                    group.removeView(loadView);
-                }
+                hideLoadingView();
             }
         }
 
@@ -214,6 +209,29 @@ public abstract class BaseWebviewX5Pager extends LiveBasePager {
         }
     }
 
+
+    /**
+     * 隐藏loading 页面
+     */
+    protected void hideLoadingView() {
+        logger.i("onProgressChanged");
+        View loadView = mView.findViewById(R.id.rl_livevideo_subject_loading);
+        if (loadView != null) {
+            ImageView ivLoading = (ImageView) mView.findViewById(R.id.iv_data_loading_show);
+            try {
+                Drawable drawable = ivLoading.getBackground();
+                if (drawable instanceof AnimationDrawable) {
+                    ((AnimationDrawable) drawable).stop();
+                }
+            } catch (Exception e) {
+                if (mLogtf != null) {
+                    mLogtf.e("onProgressChanged", e);
+                }
+            }
+            loadView.setVisibility(View.GONE);
+        }
+    }
+
     public class MyWebViewClient extends ErrorWebViewClient {
 
         public MyWebViewClient() {
@@ -276,5 +294,9 @@ public abstract class BaseWebviewX5Pager extends LiveBasePager {
 
     protected boolean shouldOverrideUrlLoading(WebView view, String url) {
         return false;
+    }
+
+    protected void onProgressChanged(WebView view, int newProgress) {
+
     }
 }
