@@ -62,6 +62,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -130,6 +131,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      * 学生 每题的PK 结果
      */
     private static final int PK_RESULT_TYPE_PKRESULT = 3;
+    @Deprecated
     private boolean isTopicHandled = false;
 
     private boolean isWin;
@@ -423,11 +425,12 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         return eventId;
     }
 
-
+    @Deprecated
     public void setTopicHandled(boolean topicHandled) {
         isTopicHandled = topicHandled;
     }
 
+    @Deprecated
     public boolean isTopicHandled() {
         return isTopicHandled;
     }
@@ -1375,8 +1378,16 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                                 alloteamStateCode + ":" + allotpkmanStateCode + ":" + pkStepCode);
                     }
                 }
-
-                if (!isTopicHandled() && alloteamStateCode == 1) {
+                String status = "off";
+                if (roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+                    try {
+                        JSONObject split_team = jsonObject.getJSONObject("split_team");
+                        status = split_team.getString("status");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                if (!isTopicHandled() && alloteamStateCode == 1 || "on".equals(status)) {
                     setTopicHandled(true);
                     if (!teamSelectByNotice) {
                         showTeamSelecting();
