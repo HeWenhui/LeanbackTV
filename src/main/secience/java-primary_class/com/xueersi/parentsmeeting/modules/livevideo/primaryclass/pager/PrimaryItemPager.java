@@ -16,6 +16,8 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.BasePrimaryTeamItem;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.BasePrimaryTeamPeopleItem;
@@ -31,6 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import io.agora.rtc.RtcEngine;
 
@@ -44,7 +47,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     private PrimaryKuangjiaImageView ivLivePrimaryClassKuangjiaImgNormal;
     private View cl_livevideo_primary_team_inter;
     private CloudWorkerThreadPool workerThread;
-    private PrimaryClassEntity primaryClassEntity;
+    private TeamPkTeamInfoEntity.TeamInfoEntity teamInfoEntity;
     private HashMap<String, BasePrimaryTeamItem> courseGroupItemHashMap = new HashMap<>();
     private int stuid;
     float scale;
@@ -129,10 +132,10 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     }
 
     @Override
-    public void onTeam(String uid, PrimaryClassEntity primaryClassEntity) {
-        this.primaryClassEntity = primaryClassEntity;
+    public void onTeam(String uid, TeamPkTeamInfoEntity.TeamInfoEntity teamInfoEntity) {
+        this.teamInfoEntity = teamInfoEntity;
         this.stuid = Integer.parseInt(uid);
-        workerThread = new CloudWorkerThreadPool(mContext, primaryClassEntity.getToken());
+        workerThread = new CloudWorkerThreadPool(mContext, teamInfoEntity.getToken());
         workerThread.setOnEngineCreate(new CloudWorkerThreadPool.OnEngineCreate() {
             @Override
             public void onEngineCreate(RTCEngine mRtcEngine) {
@@ -164,27 +167,27 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         workerThread.setEnableLocalVideo(true);
         workerThread.eventHandler().addEventHandler(listener);
         workerThread.start();
-        TeamInfo teamInfo = primaryClassEntity.getTeamInfo();
-        tv_livevideo_primary_team_name.setText(teamInfo.getTeamName());
-        tv_livevideo_primary_team_name_mid.setText("欢迎加入 “" + teamInfo.getTeamName() + "”");
-        ImageLoader.with(mContext.getApplicationContext()).load(teamInfo.getTeamImg()).into(iv_livevideo_primary_team_icon);
+        tv_livevideo_primary_team_name.setText(teamInfoEntity.getTeamName());
+        tv_livevideo_primary_team_name_mid.setText("欢迎加入 “" + teamInfoEntity.getTeamName() + "”");
+        ImageLoader.with(mContext.getApplicationContext()).load(teamInfoEntity.getImg()).into(iv_livevideo_primary_team_icon);
     }
 
     private void addItem() {
-        ArrayList<TeamMember> teamMembers = primaryClassEntity.getTeamInfo().getTeamMembers();
+        List<TeamMate> result = teamInfoEntity.getResult();
         LayoutInflater mInflater = LayoutInflater.from(mContext);
         int margin = (int) (11 * scale);
         for (int i = 0; i < 4; i++) {
-            TeamMember teamMember = null;
+            TeamMate teamMember = null;
             BasePrimaryTeamItem basePrimaryTeamItem;
-            if (i < teamMembers.size()) {
-                teamMember = teamMembers.get(i);
-                if (stuid == teamMember.getStuId()) {
-                    PrimaryTeamMyItem myItem = new PrimaryTeamMyItem(mContext, teamMember, workerThread, teamMember.getStuId());
+            if (i < result.size()) {
+                teamMember = result.get(i);
+                int uid = Integer.parseInt(teamMember.getId());
+                if (stuid == Integer.parseInt(teamMember.getId())) {
+                    PrimaryTeamMyItem myItem = new PrimaryTeamMyItem(mContext, teamMember, workerThread, uid);
                     myItem.setOnNameClick(onNameClick);
                     basePrimaryTeamItem = myItem;
                 } else {
-                    PrimaryTeamOtherItem otherItem = new PrimaryTeamOtherItem(mContext, teamMember, workerThread, teamMember.getStuId());
+                    PrimaryTeamOtherItem otherItem = new PrimaryTeamOtherItem(mContext, teamMember, workerThread, uid);
                     otherItem.setOnNameClick(onNameClick);
                     basePrimaryTeamItem = otherItem;
                 }
@@ -203,14 +206,14 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             if (teamMember == null) {
                 courseGroupItemHashMap.put("empty" + i, basePrimaryTeamItem);
             } else {
-                courseGroupItemHashMap.put("" + teamMember.getStuId(), basePrimaryTeamItem);
+                courseGroupItemHashMap.put("" + teamMember.getId(), basePrimaryTeamItem);
             }
         }
     }
 
     BasePrimaryTeamPeopleItem.OnNameClick onNameClick = new BasePrimaryTeamPeopleItem.OnNameClick() {
         @Override
-        public void onNameClick(final TeamMember finalEntity, TextView tvName) {
+        public void onNameClick(final TeamMate finalEntity, TextView tvName) {
             if (cl_livevideo_primary_team_inter.getVisibility() == View.VISIBLE) {
                 cl_livevideo_primary_team_inter.setVisibility(View.GONE);
             } else {
@@ -228,35 +231,29 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                     }
                 });
                 final TextView tv_livevideo_primary_team_inter_right = cl_livevideo_primary_team_inter.findViewById(R.id.tv_livevideo_primary_team_inter_right);
-                if (finalEntity.isReport()) {
-                    tv_livevideo_primary_team_inter_right.setText("已举报");
-                    tv_livevideo_primary_team_inter_right.setOnClickListener(null);
-                } else {
-                    tv_livevideo_primary_team_inter_right.setText("举报");
-                    tv_livevideo_primary_team_inter_right.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            cl_livevideo_primary_team_inter.setVisibility(View.GONE);
-                            primaryClassInter.reportNaughtyBoy(finalEntity, new PrimaryClassInter.ReportNaughtyBoy() {
-                                @Override
-                                public void onReport(TeamMember entity) {
-                                    entity.setReport(true);
-                                    if (finalEntity == entity) {
-                                        tv_livevideo_primary_team_inter_right.setText("已举报");
-                                    }
+                tv_livevideo_primary_team_inter_right.setText("举报");
+                tv_livevideo_primary_team_inter_right.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        cl_livevideo_primary_team_inter.setVisibility(View.GONE);
+                        primaryClassInter.reportNaughtyBoy(finalEntity, new PrimaryClassInter.ReportNaughtyBoy() {
+                            @Override
+                            public void onReport(TeamMate entity) {
+                                if (finalEntity == entity) {
+                                    tv_livevideo_primary_team_inter_right.setText("已举报");
                                 }
+                            }
 
-                                @Override
-                                public void onReportError(TeamMember entity) {
-                                    BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + entity.getStuId());
-                                    if (basePrimaryTeamItem != null) {
-                                        basePrimaryTeamItem.onReport();
-                                    }
+                            @Override
+                            public void onReportError(TeamMate entity) {
+                                BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + entity.getId());
+                                if (basePrimaryTeamItem != null) {
+                                    basePrimaryTeamItem.onReport();
                                 }
-                            });
-                        }
-                    });
-                }
+                            }
+                        });
+                    }
+                });
             }
         }
     };
@@ -334,6 +331,11 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             if (basePrimaryTeamItem != null) {
                 basePrimaryTeamItem.reportAudioVolumeOfSpeaker(volume);
             }
+        }
+
+        @Override
+        public void remotefirstAudioRecvWithUid(int uid) {
+
         }
     };
 

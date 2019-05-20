@@ -1,12 +1,16 @@
 package com.xueersi.parentsmeeting.modules.livevideo.primaryclass.http;
 
+import android.content.Context;
+
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.config.PrimaryClassConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.entity.PrimaryClassEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
@@ -16,10 +20,12 @@ public class PrimaryClassHttp {
     Logger logger = LiveLoggerFactory.getLogger(TAG);
     LiveHttpManager liveHttpManager;
     PrimaryClassResponseParser primaryClassResponseParser;
+    LiveHttpResponseParser liveHttpResponseParser;
 
-    public PrimaryClassHttp(LiveHttpManager liveHttpManager) {
+    public PrimaryClassHttp(Context context, LiveHttpManager liveHttpManager) {
         this.liveHttpManager = liveHttpManager;
         primaryClassResponseParser = new PrimaryClassResponseParser();
+        liveHttpResponseParser = new LiveHttpResponseParser(context);
     }
 
     public void setLiveHttpManager(LiveHttpManager liveHttpManager) {
@@ -62,9 +68,9 @@ public class PrimaryClassHttp {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("getMyTeamInfo:onPmSuccess:json=" + responseEntity.getJsonObject());
-                PrimaryClassEntity primaryClassEntity = primaryClassResponseParser.parsePrimaryClassEntity(responseEntity);
-                if (primaryClassEntity != null) {
-                    callBack.onDataSucess(primaryClassEntity);
+                TeamPkTeamInfoEntity teamInfoEntity = liveHttpResponseParser.parseTeamInfoPrimary(responseEntity);
+                if (teamInfoEntity != null) {
+                    callBack.onDataSucess(teamInfoEntity);
                 } else {
                     callBack.onDataFail(LiveHttpConfig.HTTP_ERROR_NULL, "null");
                 }

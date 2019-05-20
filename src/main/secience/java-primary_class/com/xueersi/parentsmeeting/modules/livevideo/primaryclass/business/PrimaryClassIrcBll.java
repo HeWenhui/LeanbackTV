@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.primaryclass.business;
 
 import android.app.Activity;
+import android.text.TextUtils;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
@@ -8,17 +9,26 @@ import com.xueersi.common.business.UserBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ScienceAnswerResult;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.entity.PrimaryClassEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.entity.TeamInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.entity.TeamMember;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.http.PrimaryClassHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.pager.PrimaryItemPager;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.pager.PrimaryItemView;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.event.TeamPkTeamInfoEvent;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -27,7 +37,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, TopicAction {
     PrimaryClassHttp primaryClassHttp;
     PrimaryItemView primaryItemView;
-    PrimaryClassEntity primaryClassEntity;
+    TeamPkTeamInfoEntity teamPkTeamInfoEntity;
     String classId;
 
     public PrimaryClassIrcBll(Activity context, LiveBll2 liveBll) {
@@ -40,21 +50,29 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
         classId = getInfo.getStudentLiveInfo().getClassId();
         getPrimaryClassHttp().reportUserAppStatus(classId, getInfo.getStuId(), "1");
         getMyTeamInfo();
+        LiveEventBus.getDefault(mContext).register(this);
     }
 
     private void getMyTeamInfo() {
         getPrimaryClassHttp().getMyTeamInfo(classId, mGetInfo.getStuId(), UserBll.getInstance().getMyUserInfoEntity().getPsimId(), new AbstractBusinessDataCallBack() {
             @Override
             public void onDataSucess(Object... objData) {
-                if (primaryClassEntity != null) {
+                if (teamPkTeamInfoEntity != null) {
                     return;
                 }
-                primaryClassEntity = (PrimaryClassEntity) objData[0];
+                teamPkTeamInfoEntity = (TeamPkTeamInfoEntity) objData[0];
                 if (primaryItemView != null) {
-                    primaryItemView.onTeam(mGetInfo.getStuId(), primaryClassEntity);
+                    primaryItemView.onTeam(mGetInfo.getStuId(), teamPkTeamInfoEntity.getTeamInfo());
                 }
             }
         });
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onScineceAnswerResutlEvent(TeamPkTeamInfoEvent event) {
+        logger.e("========>onAnswerResult_LiveVideo:" + event.toString());
+        LiveEventBus.getDefault(mContext).unregister(this);
+        teamPkTeamInfoEntity = event.getTeamInfoEntity();
     }
 
     @Override
@@ -79,6 +97,7 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
         if (primaryItemView != null) {
             primaryItemView.onDestroy();
         }
+        LiveEventBus.getDefault(mContext).unregister(this);
     }
 
     @Override
@@ -94,9 +113,9 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
     class PrimaryClassInterIml implements PrimaryClassInter {
 
         @Override
-        public void reportNaughtyBoy(final TeamMember entity, final ReportNaughtyBoy reportNaughtyBoy) {
-            TeamInfo teamInfo = primaryClassEntity.getTeamInfo();
-            getPrimaryClassHttp().reportNaughtyBoy(classId, mGetInfo.getStuId(), mGetInfo.getStuName(), "" + entity.getStuId(), entity.getStuName(), "", primaryClassEntity.getRoomId(), teamInfo.getTeamName(), teamInfo.getTeamId(), new AbstractBusinessDataCallBack() {
+        public void reportNaughtyBoy(final TeamMate entity, final ReportNaughtyBoy reportNaughtyBoy) {
+            TeamPkTeamInfoEntity.TeamInfoEntity teamInfo = teamPkTeamInfoEntity.getTeamInfo();
+            getPrimaryClassHttp().reportNaughtyBoy(classId, mGetInfo.getStuId(), mGetInfo.getStuName(), "" + entity.getId(), entity.getName(), "", teamPkTeamInfoEntity.getTeamInfo().getRoomid(), teamInfo.getTeamName(), teamPkTeamInfoEntity.getTeamInfo().getTeamId(), new AbstractBusinessDataCallBack() {
                 @Override
                 public void onDataSucess(Object... objData) {
                     reportNaughtyBoy.onReport(entity);
@@ -113,7 +132,7 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
 
     public PrimaryClassHttp getPrimaryClassHttp() {
         if (primaryClassHttp == null) {
-            primaryClassHttp = new PrimaryClassHttp(getHttpManager());
+            primaryClassHttp = new PrimaryClassHttp(activity, getHttpManager());
         }
         return primaryClassHttp;
     }
@@ -144,22 +163,22 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
             }
             break;
             case XESCODE.CLASSBEGIN: {
-                if (primaryClassEntity == null) {
+                if (teamPkTeamInfoEntity == null) {
                     getMyTeamInfo();
                 }
             }
             break;
-            case XESCODE.TEAM_PK_GROUP: {
-                try {
-                    String status = data.getString("status");
-                    if (primaryClassEntity == null) {
-                        getMyTeamInfo();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-            break;
+//            case XESCODE.TEAM_PK_GROUP: {
+//                try {
+//                    String status = data.getString("status");
+//                    if (teamPkTeamInfoEntity == null) {
+//                        getMyTeamInfo();
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            break;
         }
     }
 

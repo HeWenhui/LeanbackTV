@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.entity.TeamMember;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.VoiceImageView;
 
@@ -24,7 +25,7 @@ public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
     protected Handler handler = new Handler(Looper.getMainLooper());
     protected OnNameClick onNameClick;
 
-    public BasePrimaryTeamPeopleItem(Context context, TeamMember entity, CloudWorkerThreadPool workerThread, int uid) {
+    public BasePrimaryTeamPeopleItem(Context context, TeamMate entity, CloudWorkerThreadPool workerThread, int uid) {
         super(context, entity, workerThread, uid);
     }
 
@@ -49,7 +50,7 @@ public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
     }
 
     @Override
-    public void updateViews(TeamMember entity, int position, Object objTag) {
+    public void updateViews(TeamMate entity, int position, Object objTag) {
 
     }
 
@@ -83,6 +84,6 @@ public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
     }
 
     public interface OnNameClick {
-        void onNameClick(TeamMember entity, TextView tvName);
+        void onNameClick(TeamMate entity, TextView tvName);
     }
 }

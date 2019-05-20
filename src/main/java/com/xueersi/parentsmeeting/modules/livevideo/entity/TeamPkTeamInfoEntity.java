@@ -83,6 +83,9 @@ public class TeamPkTeamInfoEntity {
         String slogon;
         String backGroud;
         String img;
+        String teamId;
+        String roomid;
+        String token;
         List<TeamMate> result = new ArrayList<>();
 
         public String getTeamName() {
@@ -128,7 +131,29 @@ public class TeamPkTeamInfoEntity {
         public List<TeamMate> getResult() {
             return result;
         }
+
+        public String getTeamId() {
+            return teamId;
+        }
+
+        public void setTeamId(String teamId) {
+            this.teamId = teamId;
+        }
+
+        public String getRoomid() {
+            return roomid;
+        }
+
+        public void setRoomid(String roomid) {
+            this.roomid = roomid;
+        }
+
+        public String getToken() {
+            return token;
+        }
+
+        public void setToken(String token) {
+            this.token = token;
+        }
     }
-
-
 }

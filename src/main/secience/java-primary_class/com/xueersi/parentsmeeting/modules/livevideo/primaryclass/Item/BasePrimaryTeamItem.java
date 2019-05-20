@@ -7,18 +7,19 @@ import android.view.View;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.entity.TeamMember;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 
-public class BasePrimaryTeamItem implements AdapterItemInterface<TeamMember> {
+public class BasePrimaryTeamItem implements AdapterItemInterface<TeamMate> {
     protected String TAG = getClass().getSimpleName();
     protected Context mContext;
-    protected TeamMember entity;
+    protected TeamMate entity;
     protected CloudWorkerThreadPool cloudWorkerThreadPool;
     protected LogToFile mLogtf;
     protected int uid;
 
-    public BasePrimaryTeamItem(Context context, TeamMember entity, CloudWorkerThreadPool workerThread, int uid) {
+    public BasePrimaryTeamItem(Context context, TeamMate entity, CloudWorkerThreadPool workerThread, int uid) {
         this.mContext = context;
         this.entity = entity;
         this.cloudWorkerThreadPool = workerThread;
@@ -42,7 +43,7 @@ public class BasePrimaryTeamItem implements AdapterItemInterface<TeamMember> {
     }
 
     @Override
-    public void updateViews(TeamMember entity, int position, Object objTag) {
+    public void updateViews(TeamMate entity, int position, Object objTag) {
 
     }
 

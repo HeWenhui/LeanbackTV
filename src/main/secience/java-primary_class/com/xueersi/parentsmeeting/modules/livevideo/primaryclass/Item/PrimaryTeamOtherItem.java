@@ -7,13 +7,14 @@ import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.entity.TeamMember;
 
 public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
     private boolean enableVideo = true;
     private boolean enableAudio = true;
 
-    public PrimaryTeamOtherItem(Context context, TeamMember entity, CloudWorkerThreadPool workerThread, int uid) {
+    public PrimaryTeamOtherItem(Context context, TeamMate entity, CloudWorkerThreadPool workerThread, int uid) {
         super(context, entity, workerThread, uid);
     }
 
@@ -36,7 +37,7 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                     @Override
                     public void run() {
                         enableAudio = !enableAudio;
-                        cloudWorkerThreadPool.getRtcEngine().enableRemoteAudio(entity.getStuId(), enableAudio);
+                        cloudWorkerThreadPool.getRtcEngine().enableRemoteAudio(entity.getIdInt(), enableAudio);
                     }
                 });
             }
@@ -44,15 +45,15 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
         tv_livevideo_primary_team_people_name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onNameClick.onNameClick(entity,tv_livevideo_primary_team_people_name);
+                onNameClick.onNameClick(entity, tv_livevideo_primary_team_people_name);
             }
         });
     }
 
     @Override
-    public void updateViews(TeamMember entity, int position, Object objTag) {
+    public void updateViews(TeamMate entity, int position, Object objTag) {
         super.updateViews(entity, position, objTag);
-        tv_livevideo_primary_team_people_name.setText(entity.getStuName());
+        tv_livevideo_primary_team_people_name.setText(entity.getName());
     }
 
 }

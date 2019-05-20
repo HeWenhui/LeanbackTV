@@ -1697,10 +1697,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
 
                 TeamPkTeamInfoEntity.TeamInfoEntity teamInfo = new TeamPkTeamInfoEntity.TeamInfoEntity();
                 teamInfo.setImg(teamInfoObj.getString("img"));
+                teamInfo.setTeamId(teamInfoObj.getString("teamId"));
                 teamInfo.setTeamName(teamInfoObj.getString("teamName"));
                 teamInfo.setTeamMateName(teamInfoObj.getString("teamMateName"));
                 teamInfo.setSlogon(teamInfoObj.getString("slogon"));
                 teamInfo.setBackGroud(teamInfoObj.getString("backGroud"));
+                teamInfo.setRoomid(teamInfoObj.getString("roomid"));
                 try {
                     JSONArray teamMembersArray = teamInfoObj.optJSONArray("teamMembers");
                     List<TeamPkTeamInfoEntity.StudentEntity> teamMembers = new ArrayList<>();
