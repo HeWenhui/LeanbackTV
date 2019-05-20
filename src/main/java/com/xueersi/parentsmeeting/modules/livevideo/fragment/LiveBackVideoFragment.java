@@ -464,7 +464,6 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         ProxUtil.getProxUtil().put(activity, MediaControllerAction.class, this);
         ProxUtil.getProxUtil().put(activity, MediaPlayerControl.class, liveBackPlayVideoFragment);
         ProxUtil.getProxUtil().put(activity, ActivityChangeLand.class, this);
-        ProxUtil.getProxUtil().put(activity, BasePlayerFragment.class, liveBackPlayVideoFragment);
         initBusiness();
         if (islocal) {
             // 互动题播放地址

@@ -258,7 +258,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     }
                     EventBus.getDefault().post(event);
 
-                } else {
+                }  else if (!detailInfo.isTUtor())  {
                     if (allowTeamPk && newCourseSec != null) {
                         int gold = newCourseSec.getIsAnswer() == 0 ? mGoldNum : -1;
                         int energy = newCourseSec.getIsAnswer() == 0 ? mEnergyNum : -1;
@@ -748,6 +748,8 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         if (loadResult) {
             //初中结果页是网页，需要调接口
             if (isArts != LiveVideoSAConfig.ART_EN && (LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage))) {
+                wvSubjectWeb.loadUrl(jsClientSubmit);
+            } else if (detailInfo.isTUtor()){
                 wvSubjectWeb.loadUrl(jsClientSubmit);
             }
         } else {
