@@ -615,7 +615,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                     }
                 }
                 //字段未空为切到手动答题
-                if (assessData != null){
+                if (assessData != null && assessData.length() != 0){
                     isSpeakAnswer = true;
                     for (int i = 0; i < assessData.length(); i++) {
                         int id = assessData.getJSONObject(i).getInt("id");
