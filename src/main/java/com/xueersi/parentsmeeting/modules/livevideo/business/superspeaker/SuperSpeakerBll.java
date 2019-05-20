@@ -89,34 +89,25 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                         " recordVideoTotalTime:" + recordVideoTotalTime +
                         " answerTime:" + answerTime);
 
-                Observable.
-                        create(new ObservableOnSubscribe<Boolean>() {
-                            @Override
-                            public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
-                                e.onNext(data.optBoolean("open"));
-                                e.onComplete();
-                            }
-                        }).
+//                        .observeOn()
+//                Observable.
+//                        create(new ObservableOnSubscribe<Boolean>() {
+//                            @Override
+//                            public void subscribe(ObservableEmitter<Boolean> e) throws Exception {
+//                                e.onNext(data.optBoolean("open"));
+//                                e.onComplete();
+//                            }
+//                        }).
+                createObserValbeDelay(data.optBoolean("open")).
                         observeOn(AndroidSchedulers.mainThread()).
                         subscribe(new Consumer<Boolean>() {
                             @Override
                             public void accept(Boolean bol) throws Exception {
-//                                VPlayerListenerReg reg = ProxUtil.getProxUtil().get(mContext, VPlayerListenerReg.class);
                                 if (bol) {
-//                                    LiveEventBus.getDefault(mContext).post();
-//                                    if (reg != null) {
-//                                        reg.release();
-//                                        logger.i("停止播放");
-//                                    }
-//                                    basePlayerFragment.release();
                                     performShowRecordCamera(answerTime, recordVideoTotalTime);
                                 } else {
                                     if (superSpeakerBridge != null) {
                                         superSpeakerBridge.timeUp();
-//                                        logger.i("开始播放");
-//                                        if (reg != null) {
-//                                            reg.playVideo();
-//                                        }
                                     }
                                 }
                             }
@@ -268,7 +259,7 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                 return;
             }
             stopLiveVideo();
-            superSpeakerBridge = new SuperSpeakerBridge(mContext, this, mRootView, mLiveId, courseWareId);
+            superSpeakerBridge = new SuperSpeakerBridge(mContext, this, mRootView, mGetInfo.getId(), courseWareId);
             superSpeakerBridge.performShowRecordCamera(answerTime, recordTime);
         } catch (Exception e) {
             e.printStackTrace();
@@ -307,6 +298,7 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
 
     /**
      * 提交视频
+     * wiki地址 https://wiki.xesv5.com/pages/viewpage.action?pageId=18552940
      *
      * @param isForce 1：是 2：否
      */

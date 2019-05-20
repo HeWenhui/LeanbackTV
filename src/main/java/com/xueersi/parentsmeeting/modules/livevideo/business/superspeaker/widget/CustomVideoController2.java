@@ -78,6 +78,12 @@ public class CustomVideoController2 extends ConstraintLayout implements ILocalVi
 //        };
 //        Observable observable = new Observable();
 //        observable.addObserver(observer);
+//        ivProgressBar.addOnLayoutChangeListener(new OnLayoutChangeListener() {
+//            @Override
+//            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
+//
+//            }
+//        });
         holder.addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
@@ -210,6 +216,7 @@ public class CustomVideoController2 extends ConstraintLayout implements ILocalVi
                 if (layoutParams == null) {
                     layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 }
+                logger.i("onPlaybackComplete() currentPosition = " + CustomVideoController2.this.currentPosition + " videoDuration=" + videoDuration);
                 if (CustomVideoController2.this.currentPosition != videoDuration) {
 
                     int bkgWidth = SizeUtils.getMeasuredWidth(ivProcessBarBkg);
@@ -217,7 +224,7 @@ public class CustomVideoController2 extends ConstraintLayout implements ILocalVi
                     ivProgressBar.setLayoutParams(layoutParams);
                     tvCurrentTime.setText(TimeUtils.stringForTime(videoDuration));
                 } else {
-                    layoutParams.width = 0;
+                    layoutParams.width = 1;//这里设置伟1是因为imageview使用fitXY时，设置为0会充满布局
                     ivProgressBar.setLayoutParams(layoutParams);
                     tvCurrentTime.setText(TimeUtils.stringForTime(0));
                 }

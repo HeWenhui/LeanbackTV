@@ -40,7 +40,7 @@
 
     <ImageView
         android:id="@id/iv_livevideo_super_speaker_video_controller_bottom_progress_bar"
-        android:layout_width="0dp"
+        android:layout_width="1dp"
         android:layout_height="wrap_content"
         android:scaleType="fitXY"
         android:src="@drawable/bg_livevideo_super_speaker_video_controller_bottom_progress_bar"

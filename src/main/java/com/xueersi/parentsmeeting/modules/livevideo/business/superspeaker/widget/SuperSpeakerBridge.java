@@ -22,7 +22,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -302,30 +301,32 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
     public void removeView(final View view) {
         Observable.
                 just(true).
-                observeOn(AndroidSchedulers.mainThread()).
-                doOnNext(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean aBoolean) throws Exception {
-                        if (iCameraPresenter != null) {
-                            iCameraPresenter.showAnima();
-                        }
-                        logger.i("nowtime:" + System.currentTimeMillis());
-                    }
-                }).
-                delay(2, TimeUnit.SECONDS).//delay走的子线程
-                observeOn(AndroidSchedulers.mainThread()).
+//                observeOn(AndroidSchedulers.mainThread()).
+//                doOnNext(new Consumer<Boolean>() {
+//                    @Override
+//                    public void accept(Boolean aBoolean) throws Exception {
+//                        if (iCameraPresenter != null) {
+//                            iCameraPresenter.showAnima();
+//                        }
+//                        logger.i("nowtime:" + System.currentTimeMillis());
+//                    }
+//                }).
+//                delay(2, TimeUnit.SECONDS).//delay走的子线程
+        observeOn(AndroidSchedulers.mainThread()).
                 doOnNext(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean aBoolean) throws Exception {
                         logger.i("进入doOnNxt " + System.currentTimeMillis());
                         if (view.getParent() == parentView) {
-//                            if (serviceConnection != null) {
-//                                logger.i("unbindService");
-//                                mContext.unbindService(serviceConnection);
-//                            }
+                            if (serviceConnection != null) {
+                                logger.i("unbindService");
+                                mContext.unbindService(serviceConnection);
+                                serviceConnection = null;
+                            }
                             if (serViceIntent != null) {
                                 logger.i("stopService");
                                 mContext.stopService(serViceIntent);
+                                serViceIntent = null;
                             }
                             logger.i("移除view");
                             parentView.removeView(view);
@@ -387,7 +388,7 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
         }
         if (redPackageView.getView().getParent() != parentView) {
             ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            (parentView).addView(redPackageView.getView(), layoutParams);
+            parentView.addView(redPackageView.getView(), layoutParams);
         }
         if (redPackageView.getView().getVisibility() != View.VISIBLE) {
             redPackageView.getView().setVisibility(View.VISIBLE);

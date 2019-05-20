@@ -29,16 +29,16 @@ import java.util.Observer;
 import static com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract.RECORD_VALID_TIME;
 
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-public class SuperSpeakerCameraPager extends LiveBasePager implements
+public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
         ISuperSpeakerContract.ICameraView,
         ISuperSpeakerContract.ICommonPresenter {
 
     private ISuperSpeakerContract.ISuperSpeakerBridge bridge;
 
     private ISuperSpeakerContract.ICommonTip iCommonTip;
-
+    /** 录制相机的view */
     private SurfaceView sfvVideo;
-
+    /** 相机工具类 */
     private Camera1Utils camera1Utils;
 
     private ImageView ivStartRecord, ivStopRecord, ivSubmitRecord, ivBack, ivRestart, ivReversal;
@@ -54,19 +54,22 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
     private boolean isSurfViewCreat = false;
     /** 是否使用前置摄像头或者后置摄像头,默认faceback,即自拍 */
     private boolean isFacingBack = false;
-
+    /** 视频播放控制器 */
     private CustomVideoController2 customVideoController2;
 
     private View layoutStartViewTime, layoutStopViewTime;
     //include_livevideo_super_speaker_record_video_record_time
-    private TextView tvStopRecordCurrentTime, tvStopRecordTotalTime;
+    /** 当前已经录制的时间 */
+    private TextView tvStopRecordCurrentTime;
+    /** 录制的总时间 */
+    private TextView tvStopRecordTotalTime;
     /** 本地计时器 */
     private int localTimer = 0;
 
     private String liveId;
     /** 试题所有回答时间 */
     private int answerTime = 0;
-    /** 试题记录时间 */
+    /** 相机录制最大时长 */
     private int recordTime = 0;
 
     private TextView tvStartRecordTotalTime;
@@ -76,7 +79,7 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
     private boolean isInRecord = false;
     /** 是否已经录制过视频并且录制时间时间大于1s */
     private boolean isHasRecordView = false;
-
+    /** 试题时长 */
     private String courseWareId;
 
     private LottieAnimationView lottieAnimationView;
@@ -159,9 +162,11 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
         return view;
     }
 
-    protected boolean isHasRecordPermission() {
-        return true;
-    }
+//    protected boolean isHasRecordPermission() {
+//        return true;
+//    }
+
+    protected abstract boolean isHasRecordPermission();
 
     private void initShowView() {
         if (groupStart != null && groupStart.getVisibility() != View.VISIBLE) {
@@ -185,6 +190,9 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
         if (sfvVideo.getVisibility() != View.VISIBLE) {
             sfvVideo.setVisibility(View.VISIBLE);
         }
+        tvStopRecordCurrentTime.setText(TimeUtils.stringForTime(0));
+        isHasRecordView = false;
+
     }
 
     /** 重新拍摄 */
@@ -240,9 +248,9 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
                     }
                 });
                 if (isHasRecordView || isInRecord) {
-                    cameraBackPager.setTextTip(mContext.getString(R.string.super_speaker_back_camera_content_tip));
+                    cameraBackPager.setTextContentTip(mContext.getString(R.string.super_speaker_back_camera_content_tip));
                 } else {
-                    cameraBackPager.setTextTip(mContext.getString(R.string.super_speaker_back_camera_tip));
+                    cameraBackPager.setTextContentTip(mContext.getString(R.string.super_speaker_back_exit));
                 }
 
                 if (cameraBackPager.getRootView().getParent() != null) {
@@ -272,7 +280,7 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
                     }
                 });
                 cameraBackPager.setTvTittle(mContext.getString(R.string.super_speaker_back_camera_rerecord_title_tip));
-                cameraBackPager.setTextTip(mContext.getString(R.string.super_speaker_back_camera_content_tip));
+                cameraBackPager.setTextContentTip(mContext.getString(R.string.super_speaker_back_camera_content_tip));
                 if (cameraBackPager.getRootView().getParent() != null) {
                     ((ViewGroup) cameraBackPager.getRootView().getParent()).removeView(cameraBackPager.getRootView());
                 }
@@ -345,12 +353,12 @@ public class SuperSpeakerCameraPager extends LiveBasePager implements
         if (!isHasRecordPermission()) {
             return;
         }
-        long nowTime = System.currentTimeMillis();
-        mView.removeCallbacks(recordVideoTimer);
         if (isInTime()) {
             isHasRecordView = false;
             return;
         }
+        long nowTime = System.currentTimeMillis();
+        mView.removeCallbacks(recordVideoTimer);
         isHasRecordView = true;
         stopRecordVideoTime = nowTime;
         ivBack.setVisibility(View.VISIBLE);

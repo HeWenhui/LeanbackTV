@@ -61,7 +61,7 @@ public class SuperSpeakerCameraBackPager extends BasePager {
         });
     }
 
-    public void setTextTip(String textTip) {
+    public void setTextContentTip(String textTip) {
         tvContentTip.setText(textTip);
     }
 

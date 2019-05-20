@@ -26,7 +26,8 @@ public class SuperSpeakerRedPackagePager extends BasePager implements ISuperSpea
     public View initView() {
         View view = View.inflate(mContext, R.layout.page_livevideo_super_speaker_red_package, null);
         tvMoney = view.findViewById(R.id.fzcy_livevideo_record_video_redpackage_money);
-        ivCloseBtn = view.findViewById(R.id.iv_livevideo_super_speaker_video_tip);
+        ivCloseBtn = view.findViewById(R.id.iv_livevideo_super_speaker_redpackage_close_btn);
+        initListener();
         return view;
     }
 
@@ -41,6 +42,7 @@ public class SuperSpeakerRedPackagePager extends BasePager implements ISuperSpea
         ivCloseBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                logger.i("关闭超级演讲家红包");
                 if (mView != null) {
                     mView.removeCallbacks(closeRunnable);
                 }
@@ -63,7 +65,7 @@ public class SuperSpeakerRedPackagePager extends BasePager implements ISuperSpea
     @Override
     public void updateNum(String num) {
         tvMoney.setText(String.valueOf(num));
-        mView.postDelayed(closeRunnable, 5000);
+//        mView.postDelayed(closeRunnable, 5000);
 //        Observable.timer(5, TimeUnit.SECONDS).subscribe(new Consumer<Long>() {
 //            @Override
 //            public void accept(Long aLong) throws Exception {
