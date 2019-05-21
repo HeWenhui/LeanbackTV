@@ -16,12 +16,15 @@ import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.TeachPraiseRusltulCloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.TeacherPraiseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.widget.SoundWaveView;
+import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.config.SpeechCollectiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.dialog.SpeechStartDialog;
@@ -29,6 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.page.Speech
 import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.page.SpeechEnergyPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -130,6 +134,7 @@ public class SpeechCollectiveNo2Bll {
         if (start) {
             return;
         }
+        addSysTip(true);
         if (teacherPraiseEventReg != null) {
             LiveEventBus.getDefault(context).unregister(teacherPraiseEventReg);
         }
@@ -153,6 +158,33 @@ public class SpeechCollectiveNo2Bll {
             //如果没有麦克风权限，申请麦克风权限
             devicestatus = "0";
             XesPermission.checkPermissionNoAlert(context, getCallBack(), PermissionConfig.PERMISSION_CODE_AUDIO);
+        }
+    }
+
+    private void addSysTip(boolean open) {
+        String teacherType = "主讲";
+        if ("f".equals(from)) {
+            teacherType = "辅导";
+        }
+        String status;
+        if (open) {
+            status = "开启";
+        } else {
+            status = "关闭";
+        }
+        String message = teacherType + "老师" + status + "了集体发言";
+
+        LiveMessageBll liveMessageBll = ProxUtil.getProxUtil().get(context, LiveMessageBll.class);
+        if (liveMessageBll != null) {
+            liveMessageBll.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
+                    message);
+        } else {
+            com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.LiveMessageBll liveMessageBllOld =
+                    ProxUtil.getProxUtil().get(context, com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.LiveMessageBll.class);
+            if (liveMessageBllOld != null) {
+                liveMessageBllOld.addMessage(BaseLiveMessagePager.SYSTEM_TIP_STATIC, LiveMessageEntity.MESSAGE_TIP,
+                        message);
+            }
         }
     }
 
@@ -313,6 +345,9 @@ public class SpeechCollectiveNo2Bll {
     };
 
     public void stop() {
+        if (start) {
+            addSysTip(false);
+        }
         start = false;
         mLogtf.d("start:stop");
         mSpeechEvaluatorUtils.cancel();
