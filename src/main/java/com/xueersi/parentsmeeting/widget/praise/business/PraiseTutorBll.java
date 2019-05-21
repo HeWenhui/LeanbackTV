@@ -63,7 +63,7 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
         // 模式切换为主讲，关闭表扬榜
         if (praisePager != null && LiveTopic.MODE_CLASS.equals(mode)) {
             praisePager.closePraisePager();
-        } else if (LiveTopic.MODE_CLASS.equals(oldMode) && LiveTopic.MODE_TRANING.equals(oldMode)){
+        } else if (LiveTopic.MODE_CLASS.equals(oldMode) && LiveTopic.MODE_TRANING.equals(mode)){
             if (!TextUtils.isEmpty(getLikeId()) && !isCloase){
                 getPraiseTutorData(getLikeId());
             }
