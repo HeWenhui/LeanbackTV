@@ -258,16 +258,6 @@ public class PraiseBasePager extends LiveBasePager {
     }
 
     /**
-     * 关闭表扬榜 子线程
-     *
-     * @param onPagerClose
-     */
-    public void closePraisePager() {
-        mHandler.sendEmptyMessageDelayed(PraiseConfig.PRAISE_CLICK_CLOSE, 0);
-
-    }
-
-    /**
      * 关闭表扬榜
      *
      * @param onPagerClose
@@ -277,6 +267,16 @@ public class PraiseBasePager extends LiveBasePager {
             imgBtnClose.setVisibility(View.VISIBLE);
         }
     }
+
+    /**
+     * 关闭表扬榜 子线程
+     *
+     * @param onPagerClose
+     */
+    public void closePraisePager() {
+        mHandler.sendEmptyMessageDelayed(PraiseConfig.PRAISE_CLICK_CLOSE, 0);
+
+    }
     /**
      * 关闭表扬榜
      *
@@ -285,6 +285,9 @@ public class PraiseBasePager extends LiveBasePager {
     public void closePraisePagerMain(){
         if (onPagerClose != null) {
             onPagerClose.onClose(this);
+            if (onPraisePageListener != null){
+                onPraisePageListener.onPracticeClose();
+            }
             if (mHandler != null) {
                 mHandler.removeMessages(PraiseConfig.ENCOURAGING_HIDE);
                 mHandler.removeMessages(PraiseConfig.ENCOURAGING_SHOW);
