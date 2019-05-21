@@ -60,8 +60,10 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
             mAnswerRankBll = mAnswerRankIRCBll.getAnswerRankBll();
         }
         EnglishH5Entity englishH5Entity = videoQuestionH5Entity.englishH5Entity;
+        if(videoQuestionH5Entity.isTUtor) {
+            setArts(0);
+        }
         //应该是没有为null的时候
-        setArts(0);
         if (liveGetInfo != null) {
             if (liveGetInfo.isNewCourse() ||  LiveTopic.MODE_TRANING.equals(liveGetInfo.getMode())) {
                 if (isArts == LiveVideoSAConfig.ART_SEC) {
