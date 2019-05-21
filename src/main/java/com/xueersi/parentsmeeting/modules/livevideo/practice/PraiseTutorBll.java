@@ -221,5 +221,10 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
         public void onPraiseClick(int num) {
             sendLikeNum(num);
         }
+
+        @Override
+        public void onPracticeClose() {
+
+        }
     };
 }
