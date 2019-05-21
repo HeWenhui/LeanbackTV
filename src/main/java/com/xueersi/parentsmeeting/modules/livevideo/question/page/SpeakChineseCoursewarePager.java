@@ -640,6 +640,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                         answerMap.put(id, text);
                     }
                 }
+                Log.e("chs_speak","===>onAssessStart:"+assessData+":"+assessData.length());
                 //字段未空为切到手动答题
                 if (assessData != null && assessData.length() != 0) {
                     isSpeakAnswer = true;
@@ -709,6 +710,11 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
             for (Integer key : answerMap.keySet()) {
                 answerContent += answerMap.get(key);
             }
+
+            if(TextUtils.isEmpty(assessContent) || TextUtils.isEmpty(answerContent)){
+                return;
+            }
+
             assessContent = assessContent.substring(0, assessContent.length() - 1);
             logger.d("assessContent :" + assessContent);
             File dir = LiveCacheFile.geCacheFile(mContext, "speakingChinese");
@@ -791,7 +797,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                             liveAndBackDebug.umsAgentDebugSys(eventId, errorData);
                             if (result.getErrorNo() == ResultCode.MUTE_AUDIO || result.getErrorNo() == ResultCode
                                     .MUTE) {
-                                if(!recognizeSuccess){
+                                if(!recognizeSuccess && isSpeakAnswer){
                                     XESToastUtils.showToast(mContext, "没听清，请大声点哦");
                                 }
                             }
@@ -816,7 +822,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (!recognizeSuccess&&!isDestory) {
+                    if (!recognizeSuccess&&!isDestory && isSpeakAnswer) {
                         startAssess(assessMap, answerMap);
                     }
                 }
