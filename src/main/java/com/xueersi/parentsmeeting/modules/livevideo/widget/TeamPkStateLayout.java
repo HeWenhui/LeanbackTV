@@ -342,7 +342,7 @@ public class TeamPkStateLayout extends FrameLayout {
         pkProgressBar.setProgress(currentProgress);
     }
 
-    protected static final float HALF_PROGRESS = 0.5f;
+    public static final float HALF_PROGRESS = 0.5f;
 
     protected void updatePkState(float ratio) {
         if (this.showPopWindow) {

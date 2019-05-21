@@ -30,6 +30,17 @@
 
     </RelativeLayout>
 
+    <ImageView
+        android:id="@id/iv_live_halfbody_pk_state"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignLeft="@id/rl_livevideo_primary_team_content"
+        android:layout_alignTop="@id/rl_livevideo_primary_team_content"
+        android:layout_alignRight="@id/rl_livevideo_primary_team_content"
+        android:layout_alignBottom="@id/rl_livevideo_primary_team_content"
+        android:src="@drawable/bg_live_ke_energy_zhunbei_icon_normal"
+        android:visibility="gone" />
+
     <LinearLayout
         android:id="@id/ll_livevideo_primary_team_content"
         android:layout_width="wrap_content"

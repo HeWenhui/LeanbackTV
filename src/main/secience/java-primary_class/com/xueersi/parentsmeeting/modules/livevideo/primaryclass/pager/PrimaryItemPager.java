@@ -31,6 +31,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.business.Primar
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.config.PrimaryClassConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.PrimaryKuangjiaImageView;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -226,7 +227,29 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-//                tv_livevideo_primary_team_name_mid.setText("");
+                tv_livevideo_primary_team_name_mid.setVisibility(View.GONE);
+            }
+        }, 2000);
+    }
+
+    @Override
+    public void updatePkState(float ratio) {
+        mLogtf.d("updatePkState:ratio=" + ratio);
+        final ImageView ivPkState = mView.findViewById(R.id.iv_live_halfbody_pk_state);
+        if (ratio > TeamPkStateLayout.HALF_PROGRESS) {
+            ivPkState.setImageResource(R.drawable.bg_live_ke_energy_zanshi_icon_normal);
+        } else if (ratio < TeamPkStateLayout.HALF_PROGRESS) {
+            ivPkState.setImageResource(R.drawable.bg_live_ke_energy_quanli_icon_normal);
+        } else {
+            return;
+        }
+        ivPkState.setVisibility(View.VISIBLE);
+        rl_livevideo_primary_team_content.setVisibility(View.INVISIBLE);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                ivPkState.setVisibility(View.GONE);
+                rl_livevideo_primary_team_content.setVisibility(View.VISIBLE);
             }
         }, 2000);
     }

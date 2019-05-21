@@ -1,7 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.primaryclass.business;
 
 import android.app.Activity;
-import android.text.TextUtils;
 import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
@@ -14,6 +13,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.PkUpdatePkState;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.http.PrimaryClassHttp;
@@ -63,15 +63,23 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onScineceAnswerResutlEvent(TeamPkTeamInfoEvent event) {
-        logger.e("onScineceAnswerResutlEvent" + event);
-        LiveEventBus.getDefault(mContext).unregister(this);
+    public void onTeamPkTeamInfoEvent(TeamPkTeamInfoEvent event) {
+        logger.e("onTeamPkTeamInfoEvent:event=" + event);
         if (teamPkTeamInfoEntity != null) {
             return;
         }
         teamPkTeamInfoEntity = event.getTeamInfoEntity();
         if (primaryItemView != null) {
             primaryItemView.onTeam(mGetInfo.getStuId(), teamPkTeamInfoEntity.getTeamInfo());
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void updatePkState(PkUpdatePkState event) {
+        float ratio = event.getRatio();
+        logger.e("updatePkState:enent=" + ratio);
+        if (primaryItemView != null) {
+            primaryItemView.updatePkState(ratio);
         }
     }
 

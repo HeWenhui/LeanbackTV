@@ -418,7 +418,7 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
             lp.addRule(RelativeLayout.ALIGN_TOP, 0);
             lp.addRule(RelativeLayout.ALIGN_RIGHT, 0);
             lp.addRule(RelativeLayout.ALIGN_BOTTOM, 0);
-            ivLivePrimaryClassKuangjiaImgNormal.setVisibility(View.GONE);
+            ivLivePrimaryClassKuangjiaImgNormal.setVisibility(View.INVISIBLE);
             rl_course_video_contentview.setBackgroundColor(activity.getResources().getColor(R.color.white));
             rlContent.setLayoutParams(lp);
         }
@@ -490,7 +490,7 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
         if (mGetInfo != null && mGetInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
             return R.drawable.live_halfbody_bg_arts;
         } else {
-            return R.drawable.live_halfbody_bg;
+            return R.drawable.bszb_kejian_bg_img_normal;
         }
     }
 
@@ -504,7 +504,7 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
         if (mGetInfo != null && mGetInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
             return R.drawable.live_halfbody_bg_arts;
         } else {
-            return R.drawable.live_halfbody_bg;
+            return R.drawable.bszb_kejian_bg_img_normal;
         }
     }
 

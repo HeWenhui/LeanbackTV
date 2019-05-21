@@ -6,9 +6,10 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.PkUpdatePkState;
 
 /**
  * 半身直播-小班体验 战队Pk 状态栏
@@ -17,7 +18,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
  * @version 1.0, 2019/5/16 下午4:15
  */
 
-public class LiveHalBodyPrimaryPkStateLayout extends LiveHalBodyPkStateLayout {
+public class LiveHalBodyPrimaryPkStateLayout extends TeamPkStateLayout {
+    protected View vContributionCotanier;
 
     public LiveHalBodyPrimaryPkStateLayout(@NonNull Context context) {
         super(context);
@@ -36,8 +38,36 @@ public class LiveHalBodyPrimaryPkStateLayout extends LiveHalBodyPkStateLayout {
         super.setVisibility(visibility);
     }
 
+    @Override
+    protected void initView() {
+        LayoutInflater.from(getContext()).inflate(getLayoutId(), this);
+        pkProgressBar = findViewById(R.id.tpb_teampk_pkstate_energy_bar);
+        tvMyTeamEnergy = findViewById(R.id.tv_teampk_pkstate_myteam_energy);
+        tvOtherTeamEnergy = findViewById(R.id.tv_teampk_pkstate_otherteam_energy);
+        tvCoin = findViewById(R.id.tv_teampk_pkstate_coin_num);
+        pkProgressBar.setMaxProgress(100);
+        pkProgressBar.setProgress(50);
+
+        vContributionCotanier = findViewById(R.id.rl_live_halfbody_energy_contribution);
+        tvEnergyMyContribution = findViewById(R.id.tv_live_halfbody_energy_contribution);
+    }
+
+    @Override
+    public void showEnergyMyContribute(int energy) {
+        vContributionCotanier.setVisibility(VISIBLE);
+        energy = energy < 0 ? 0 : energy;
+        tvEnergyMyContribution.setText("我贡献了" + energy + "个能量");
+        showViewWithFadeInOutEffect(vContributionCotanier, ENERGY_MY_CONTRIBUTION_DURATION);
+    }
+
+    @Override
+    protected void updatePkState(float ratio) {
+        LiveEventBus.getDefault(getContext()).post(new PkUpdatePkState(ratio));
+    }
+
     /**
      * 获取布局layout
+     *
      * @return
      */
     protected int getLayoutId() {
