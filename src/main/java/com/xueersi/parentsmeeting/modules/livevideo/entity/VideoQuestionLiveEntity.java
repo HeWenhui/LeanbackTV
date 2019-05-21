@@ -106,7 +106,7 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     }
 
     /** 辅导态 */
-    public boolean isTUtor = false;
+    private boolean isTUtor = false;
 
     @Override
     public String toString() {
