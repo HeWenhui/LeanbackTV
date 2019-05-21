@@ -56,6 +56,7 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
+        englishSpeechBulletView.setSmallEnglish(getInfo.getSmallEnglish());
     }
 
     @Override
@@ -72,9 +73,6 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
 
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
-        if (mGetInfo != null && !mGetInfo.getSmallEnglish()) {
-            return;
-        }
         logger.i("onTopic: jsonObject= " + jsonObject.toString());
         this.liveTopic = liveTopic;
         if (liveTopic.getMainRoomstatus().isOpenVoiceBarrage()) {
@@ -100,9 +98,6 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
-        if (mGetInfo != null && !mGetInfo.getSmallEnglish()) {
-            return;
-        }
         logger.i("onNotice: jsonObject= " + data.toString());
         switch (type) {
             case XESCODE.XCR_ROOM_OPEN_VOICEBARRAGE: {

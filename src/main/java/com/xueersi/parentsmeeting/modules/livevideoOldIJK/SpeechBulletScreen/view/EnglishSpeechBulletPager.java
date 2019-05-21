@@ -760,6 +760,11 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         tvSpeechbulSend.setLayoutParams(sendLayoutParams);
     }
 
+    @Override
+    public void setSmallEnglish(boolean isSmallEnglish) {
+        this.isSmallEnglish = isSmallEnglish;
+    }
+
     /**
      * 设置presenter
      *
