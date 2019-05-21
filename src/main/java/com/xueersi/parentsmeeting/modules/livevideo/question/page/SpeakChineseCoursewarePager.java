@@ -343,6 +343,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 } else {
                     LiveVideoConfig.isNewEnglishH5 = false;
                 }
+                stopAssess();
                 preLoad.onStop();
             }
         });
@@ -685,7 +686,6 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
      */
     private void startAssess(Map<Integer, String> assessMap, Map<Integer, String> answerMap) {
         if (assessMap != null && answerMap != null) {
-
             String assessContent = "";
             String answerContent = "";
             for (Integer key : assessMap.keySet()) {
@@ -776,7 +776,9 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                             liveAndBackDebug.umsAgentDebugSys(eventId, errorData);
                             if (result.getErrorNo() == ResultCode.MUTE_AUDIO || result.getErrorNo() == ResultCode
                                     .MUTE) {
-                                XESToastUtils.showToast(mContext, "没听清，请大声点哦");
+                                if(!recognizeSuccess){
+                                    XESToastUtils.showToast(mContext, "没听清，请大声点哦");
+                                }
                             }
                             onRecognizeStop();
                         }
@@ -969,7 +971,6 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 rlSubjectLoading.setVisibility(View.GONE);
                 preLoad.onStop();
             }
-        } else {
         }
     }
 
@@ -1010,7 +1011,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 }
                 if (newCourseSec.getIsAnswer() == 1 && !isPlayBack) {
                     rlSubjectLoading.setVisibility(View.GONE);
-                    preLoad.onStop();
+                     preLoad.onStop();
                     //如果答完了 直接关闭
                     if (onClose != null) {
                         onClose.onH5ResultClose(SpeakChineseCoursewarePager.this, getBaseVideoQuestionEntity());
