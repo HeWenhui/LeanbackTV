@@ -121,45 +121,78 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
         logger.d("data=" + jsonObject);
-        if (!isFirstCreate) {
-            return;
-        }
-        isFirstCreate = false;
-        LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
-        String status = mainRoomstatus.getOnGroupSpeech();
-        if ("on".equals(status)) {
-            final String voiceId = mainRoomstatus.getGroupSpeechRoom();
-            if (speechCollectiveBll != null) {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        speechCollectiveBll.start(voiceId);
-                    }
-                });
+//        if (!isFirstCreate) {
+//            return;
+//        }
+//        isFirstCreate = false;
+        if (LiveTopic.MODE_CLASS.equals(liveTopic.getMode())) {
+            LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
+            String status = mainRoomstatus.getOnGroupSpeech();
+            if ("on".equals(status)) {
+                final String voiceId = mainRoomstatus.getGroupSpeechRoom();
+                if (speechCollectiveBll != null) {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            speechCollectiveBll.start("t", voiceId);
+                        }
+                    });
+                } else {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            //如果是退出直播间再进来，不弹出倒计时和灰色收音球
+                            ShareDataManager.getInstance().put("isOnTopic", true, ShareDataManager.SHAREDATA_USER);
+                            createBll();
+                            speechCollectiveBll.start("t", voiceId);
+                        }
+                    });
+                }
             } else {
-                mHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        //如果是退出直播间再进来，不弹出倒计时和灰色收音球
-                        ShareDataManager.getInstance().put("isOnTopic", true, ShareDataManager.SHAREDATA_USER);
-                        createBll();
-                        speechCollectiveBll.start(voiceId);
-                    }
-                });
+                if (speechCollectiveBll != null) {
+                    speechCollectiveBll.stop();
+                    speechCollectiveBll = null;
+                }
             }
         } else {
-            if (speechCollectiveBll != null) {
-                speechCollectiveBll.stop();
-                speechCollectiveBll = null;
+            LiveTopic.RoomStatusEntity coachRoomstatus = liveTopic.getCoachRoomstatus();
+            String status = coachRoomstatus.getOnGroupSpeech();
+            if ("on".equals(status)) {
+                final String voiceId = coachRoomstatus.getGroupSpeechRoom();
+                if (speechCollectiveBll != null) {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (speechCollectiveBll != null) {
+                                speechCollectiveBll.start("f", voiceId);
+                            }
+                        }
+                    });
+                } else {
+                    mHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            //如果是退出直播间再进来，不弹出倒计时和灰色收音球
+                            ShareDataManager.getInstance().put("isOnTopic", true, ShareDataManager.SHAREDATA_USER);
+                            createBll();
+                            speechCollectiveBll.start("f", voiceId);
+                        }
+                    });
+                }
+            } else {
+                if (speechCollectiveBll != null) {
+                    speechCollectiveBll.stop();
+                    speechCollectiveBll = null;
+                }
             }
         }
     }
 
-    private void onStaus(String status, String voiceID) {
+    private void onStaus(String form, String status, String voiceID) {
         if (speechCollectiveBll != null) {
             try {
                 if ("on".equals(status)) {
-                    speechCollectiveBll.start(voiceID);
+                    speechCollectiveBll.start(form, voiceID);
                 } else {
                     speechCollectiveBll.stop();
                     speechCollectiveBll = null;
@@ -186,24 +219,48 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
         logger.d("data=" + object);
         switch (type) {
             case XESCODE.SPEECH_COLLECTIVE: {
-                ShareDataManager.getInstance().put("isOnTopic", false, ShareDataManager.SHAREDATA_USER);
-                final String voiceID = object.optString("voiceId");
-                final String status = object.optString("status");
-                if (speechCollectiveBll != null) {
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            onStaus(status, voiceID);
+                try {
+                    ShareDataManager.getInstance().put("isOnTopic", false, ShareDataManager.SHAREDATA_USER);
+                    final String voiceID = object.optString("voiceId");
+                    final String status = object.optString("status");
+                    final String form = object.getString("from");
+                    if (LiveTopic.MODE_CLASS.equals(mLiveBll.getMode()) && "t".equals(form)) {
+                        if (speechCollectiveBll != null) {
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    onStaus(form, status, voiceID);
+                                }
+                            });
+                        } else {
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    createBll();
+                                    onStaus(form, status, voiceID);
+                                }
+                            });
                         }
-                    });
-                } else {
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            createBll();
-                            onStaus(status, voiceID);
+                    } else if (LiveTopic.MODE_TRANING.equals(mLiveBll.getMode()) && "f".equals(form)) {
+                        if (speechCollectiveBll != null) {
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    onStaus(form, status, voiceID);
+                                }
+                            });
+                        } else {
+                            mHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    createBll();
+                                    onStaus(form, status, voiceID);
+                                }
+                            });
                         }
-                    });
+                    }
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
                 }
                 break;
             }

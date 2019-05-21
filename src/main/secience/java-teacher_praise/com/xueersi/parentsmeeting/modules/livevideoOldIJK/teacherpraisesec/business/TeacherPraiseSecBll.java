@@ -50,19 +50,19 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
         super.initView(bottomContent, mIsLand);
-        if (com.xueersi.common.config.AppConfig.DEBUG) {
-            Button button = new Button(mContext);
-            button.setText("测试");
-            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-            lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
-            mRootView.addView(button, lp);
-            button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    showTeacherPraise();
-                }
-            });
-        }
+//        if (com.xueersi.common.config.AppConfig.DEBUG) {
+//            Button button = new Button(mContext);
+//            button.setText("测试");
+//            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+//            lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
+//            mRootView.addView(button, lp);
+//            button.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    showTeacherPraise();
+//                }
+//            });
+//        }
     }
 
     /**

@@ -674,6 +674,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            if (status.has("groupSpeech")) {
+                JSONObject jsonObject = status.optJSONObject("groupSpeech");
+                coachStatusEntity.setGroupSpeechRoom(jsonObject.optString("voiceId"));
+                coachStatusEntity.setOnGroupSpeech(jsonObject.optString("onGroupSpeech"));
+            }
         }
         if (liveTopicJson.has("room_1")) {
             logger.i("主讲老师 parseLiveTopic liveTopicJson = " + liveTopicJson.toString());

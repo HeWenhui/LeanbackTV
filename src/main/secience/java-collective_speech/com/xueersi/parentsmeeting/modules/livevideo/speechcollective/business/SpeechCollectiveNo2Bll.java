@@ -74,6 +74,7 @@ public class SpeechCollectiveNo2Bll {
     private AtomicBoolean isStop = new AtomicBoolean(false);
     private boolean start = false;
     private String voiceId;
+    private String from;
     private long lastOneLevelTime = -1, lastTwoLevelTime = -1, lastThreeLevelTime = -1;
     /**
      * 日志数据
@@ -115,8 +116,17 @@ public class SpeechCollectiveNo2Bll {
         }
     }
 
-    public void start(String voiceId) {
+    public String getVoiceId() {
+        return voiceId;
+    }
+
+    public String getFrom() {
+        return from;
+    }
+
+    public void start(String from, String voiceId) {
         this.voiceId = voiceId;
+        this.from = from;
         if (start) {
             return;
         }
@@ -131,7 +141,7 @@ public class SpeechCollectiveNo2Bll {
         }
         speechStartDialog = new SpeechStartDialog(context);
         speechStartDialog.setStart();
-        mLogtf.d("start:voiceId=" + voiceId);
+        mLogtf.d("start:voiceId=" + voiceId + ",from=" + from);
         addView();
         boolean hasAudidoPermission = XesPermission.hasSelfPermission(context, Manifest.permission.RECORD_AUDIO); //
         // 检查用户麦克风权限
@@ -401,16 +411,18 @@ public class SpeechCollectiveNo2Bll {
         logger.d("addEnergy:pk=" + liveGetInfo.getIsAllowTeamPk());
         if (!addEnergy && "1".equals(liveGetInfo.getIsAllowTeamPk())) {
             addEnergy = true;
-            SpeechEnergyPager speechEnergyPager = new SpeechEnergyPager(context);
-            mRootView.addView(speechEnergyPager.getRootView());
-            speechEnergyPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
-                @Override
-                public void onClose(LiveBasePager basePager) {
-                    mRootView.removeView(basePager.getRootView());
-                    LiveEventBus.getDefault(context).post(new TeacherPraiseEvent(false));
-                    EventBus.getDefault().post(new TeachPraiseRusltulCloseEvent(voiceId));
-                }
-            });
+//            SpeechEnergyPager speechEnergyPager = new SpeechEnergyPager(context);
+//            mRootView.addView(speechEnergyPager.getRootView());
+//            speechEnergyPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
+//                @Override
+//                public void onClose(LiveBasePager basePager) {
+//                    mRootView.removeView(basePager.getRootView());
+//                    LiveEventBus.getDefault(context).post(new TeacherPraiseEvent(false));
+//                    EventBus.getDefault().post(new TeachPraiseRusltulCloseEvent(voiceId));
+//                }
+//            });
+            LiveEventBus.getDefault(context).post(new TeacherPraiseEvent(false));
+            EventBus.getDefault().post(new TeachPraiseRusltulCloseEvent(voiceId));
             return true;
         }
         return false;

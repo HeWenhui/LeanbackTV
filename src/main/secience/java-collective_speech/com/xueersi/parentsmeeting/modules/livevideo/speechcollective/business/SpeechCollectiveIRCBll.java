@@ -131,7 +131,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                 mHandler.post(new Runnable() {
                     @Override
                     public void run() {
-                        speechCollectiveBll.start(voiceId);
+                        speechCollectiveBll.start("", voiceId);
                     }
                 });
             } else {
@@ -141,7 +141,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                         //如果是退出直播间再进来，不弹出倒计时和灰色收音球
                         ShareDataManager.getInstance().put("isOnTopic", true, ShareDataManager.SHAREDATA_USER);
                         createBll();
-                        speechCollectiveBll.start(voiceId);
+                        speechCollectiveBll.start("", voiceId);
                     }
                 });
             }
@@ -157,7 +157,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
         if (speechCollectiveBll != null) {
             try {
                 if ("on".equals(status)) {
-                    speechCollectiveBll.start(voiceID);
+                    speechCollectiveBll.start("", voiceID);
                 } else {
                     speechCollectiveBll.stop();
                     speechCollectiveBll = null;
