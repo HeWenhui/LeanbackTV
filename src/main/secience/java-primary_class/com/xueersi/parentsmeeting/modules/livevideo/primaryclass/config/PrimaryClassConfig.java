@@ -17,4 +17,7 @@ public class PrimaryClassConfig {
      * 举报学员  http://wiki.xesv5.com/pages/viewpage.action?pageId=18557929
      */
     public final static String URL_LIVE_REPORT_NAUGHTY_BOY = LiveVideoConfig.HTTP_HOST + "/science/LiveCourse/reportNaughtyBoy";
+
+    public static int MMTYPE_VIDEO = 1;
+    public static int MMTYPE_AUDIO = 2;
 }

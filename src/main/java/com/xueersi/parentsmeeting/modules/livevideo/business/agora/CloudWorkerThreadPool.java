@@ -32,6 +32,7 @@ public class CloudWorkerThreadPool {
      * 是否有本地视频
      */
     boolean enableLocalVideo = false;
+    boolean enableLocalAudio = false;
     private static final int ACTION_WORKER_THREAD_QUIT = 0X1010; // quit this thread
 
     private static final int ACTION_WORKER_JOIN_CHANNEL = 0X2010;
@@ -174,6 +175,7 @@ public class CloudWorkerThreadPool {
             }
             mRtcEngine.enableVideo();
             mRtcEngine.enableLocalVideo(enableLocalVideo);
+            mRtcEngine.muteLocalAudio(!enableLocalAudio);
             try {
                 Field field = mRtcEngine.getClass().getDeclaredField("mRtcEngine");
                 field.setAccessible(true);
@@ -271,6 +273,10 @@ public class CloudWorkerThreadPool {
 
     public void setEnableLocalVideo(boolean enableLocalVideo) {
         this.enableLocalVideo = enableLocalVideo;
+    }
+
+    public void setEnableLocalAudio(boolean enableLocalAudio) {
+        this.enableLocalAudio = enableLocalAudio;
     }
 
     public void start() {

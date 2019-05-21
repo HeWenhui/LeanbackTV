@@ -33,6 +33,7 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
     protected Handler handler = new Handler(Looper.getMainLooper());
     /** pager创建时间 */
     protected long creattime;
+    protected int mState = LiveBasePagerState.INITIALIZING;
 
     public LiveBasePager(Context context) {
         super(context);
@@ -106,8 +107,33 @@ public class LiveBasePager<T> extends BasePager<T> implements LiveAndBackDebug {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        mState = LiveBasePagerState.STARTED;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mState = LiveBasePagerState.STOPPED;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mState = LiveBasePagerState.RESUMED;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mState = LiveBasePagerState.STARTED;
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
+        mState = LiveBasePagerState.INITIALIZING;
         if (mContext != null) {
             AllLiveBasePagerInter allLiveBasePagerInter = ProxUtil.getProxUtil().get(mContext, AllLiveBasePagerInter.class);
             if (allLiveBasePagerInter != null) {

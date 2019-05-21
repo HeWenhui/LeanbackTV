@@ -5,9 +5,11 @@ import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
 
+import com.xes.ps.rtcstream.RTCEngine;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
+import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.config.PrimaryClassConfig;
 
 public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
     private boolean enableVideo = true;
@@ -36,8 +38,10 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
                 cloudWorkerThreadPool.execute(new Runnable() {
                     @Override
                     public void run() {
-                        enableAudio = !enableAudio;
-                        cloudWorkerThreadPool.getRtcEngine().muteLocalAudio(!enableAudio);
+                        if (audioStatus) {
+                            enableAudio = !enableAudio;
+                            cloudWorkerThreadPool.getRtcEngine().muteLocalAudio(!enableAudio);
+                        }
                     }
                 });
             }
@@ -70,5 +74,31 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
                 rl_livevideo_primary_team_tip.removeView(view);
             }
         }, 2000);
+    }
+
+    @Override
+    public void onOtherDis(int type, final boolean enable) {
+        super.onOtherDis(type, enable);
+        if (type == PrimaryClassConfig.MMTYPE_VIDEO) {
+            cloudWorkerThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
+                    if (mRtcEngine != null) {
+                        mRtcEngine.enableLocalVideo(enable);
+                    }
+                }
+            });
+        } else {
+            cloudWorkerThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
+                    if (mRtcEngine != null) {
+                        mRtcEngine.muteLocalAudio(!enable);
+                    }
+                }
+            });
+        }
     }
 }

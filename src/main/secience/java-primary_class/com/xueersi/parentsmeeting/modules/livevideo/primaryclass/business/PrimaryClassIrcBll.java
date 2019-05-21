@@ -150,9 +150,9 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
         try {
             if (jsonObject.has("mmedia_status")) {
                 JSONObject mmedia_status = jsonObject.getJSONObject("mmedia_status");
-                boolean audio_status = mmedia_status.getBoolean("audio_status");
                 boolean video_status = mmedia_status.getBoolean("video_status");
-                primaryItemView.onMessage(audio_status, video_status);
+                boolean audio_status = mmedia_status.getBoolean("audio_status");
+                primaryItemView.onMessage(video_status, audio_status);
             }
         } catch (JSONException e) {
             e.printStackTrace();

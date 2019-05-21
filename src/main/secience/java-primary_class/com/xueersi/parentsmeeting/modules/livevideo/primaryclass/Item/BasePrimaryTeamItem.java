@@ -57,4 +57,14 @@ public class BasePrimaryTeamItem implements AdapterItemInterface<TeamMate> {
     public void onReport() {
 
     }
+
+    /**
+     * 收到音视频关闭指令
+     *
+     * @param type   类型
+     * @param enable 可操作
+     */
+    public void onOtherDis(int type, boolean enable) {
+
+    }
 }

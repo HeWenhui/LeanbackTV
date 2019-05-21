@@ -9,9 +9,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xes.ps.rtcstream.RTCEngine;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
+import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.config.PrimaryClassConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.VoiceImageView;
 
 public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
@@ -23,6 +25,8 @@ public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
     protected VoiceImageView voiceImageView;
     protected Handler handler = new Handler(Looper.getMainLooper());
     protected OnNameClick onNameClick;
+    protected boolean videoStatus = false;
+    protected boolean audioStatus = false;
 
     public BasePrimaryTeamPeopleItem(Context context, TeamMate entity, CloudWorkerThreadPool workerThread, int uid) {
         super(context, entity, workerThread, uid);
@@ -76,6 +80,15 @@ public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
 //            surfaceV.setOutlineProvider(new TextureVideoViewOutlineProvider(headCornerSize));
 //            surfaceV.setClipToOutline(true);
 //        }
+    }
+
+    @Override
+    public void onOtherDis(int type, boolean enable) {
+        if (type == PrimaryClassConfig.MMTYPE_VIDEO) {
+            videoStatus = enable;
+        } else {
+            audioStatus = enable;
+        }
     }
 
     public void setOnNameClick(OnNameClick onNameClick) {

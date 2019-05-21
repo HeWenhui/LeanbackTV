@@ -106,6 +106,7 @@ public class PrimaryClassHttp {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) {
                 logger.d("reportNaughtyBoy:onPmSuccess:json=" + responseEntity.getJsonObject());
+                callBack.onDataSucess();
             }
 
             @Override

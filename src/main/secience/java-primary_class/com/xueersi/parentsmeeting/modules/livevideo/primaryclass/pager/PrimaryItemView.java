@@ -9,7 +9,7 @@ public interface PrimaryItemView {
 
     void onMessage(int type, boolean open);
 
-    void onMessage(boolean audioopen, boolean videoopen);
+    void onMessage(boolean videoopen, boolean audioopen);
 
     void onResume();
 

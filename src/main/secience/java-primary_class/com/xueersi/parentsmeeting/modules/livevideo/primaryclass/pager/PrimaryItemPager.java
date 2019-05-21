@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.xes.ps.rtcstream.RTCEngine;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
@@ -20,18 +21,21 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePagerState;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.BasePrimaryTeamItem;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.BasePrimaryTeamPeopleItem;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.PrimaryTeamEmptyItem;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.PrimaryTeamMyItem;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.PrimaryTeamOtherItem;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.business.PrimaryClassInter;
+import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.config.PrimaryClassConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.PrimaryKuangjiaImageView;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 import io.agora.rtc.RtcEngine;
 
@@ -49,8 +53,10 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     private HashMap<String, BasePrimaryTeamItem> courseGroupItemHashMap = new HashMap<>();
     private String mode;
     private int stuid;
-    float scale;
-    PrimaryClassInter primaryClassInter;
+    private float scale;
+    private PrimaryClassInter primaryClassInter;
+    private boolean videoStatus = false;
+    private boolean audioStatus = false;
 
     public PrimaryItemPager(Context context, RelativeLayout mContentView, String mode) {
         super(context);
@@ -210,6 +216,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             }
         });
         workerThread.setEnableLocalVideo(true);
+        workerThread.setEnableLocalAudio(false);
         workerThread.eventHandler().addEventHandler(listener);
         workerThread.start();
         tv_livevideo_primary_team_name.setText(teamInfoEntity.getTeamName());
@@ -300,14 +307,21 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                             public void onReport(TeamMate entity) {
                                 if (finalEntity == entity) {
                                     tv_livevideo_primary_team_inter_right.setText("已举报");
+                                    BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + entity.getId());
+                                    if (basePrimaryTeamItem != null) {
+                                        basePrimaryTeamItem.onReport();
+                                    }
                                 }
                             }
 
                             @Override
                             public void onReportError(TeamMate entity) {
-                                BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + entity.getId());
-                                if (basePrimaryTeamItem != null) {
-                                    basePrimaryTeamItem.onReport();
+                                if (finalEntity == entity && AppConfig.DEBUG) {
+                                    tv_livevideo_primary_team_inter_right.setText("已举报");
+                                    BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + entity.getId());
+                                    if (basePrimaryTeamItem != null) {
+                                        basePrimaryTeamItem.onReport();
+                                    }
                                 }
                             }
                         });
@@ -414,21 +428,146 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     @Override
     public void onMessage(int type, boolean open) {
         logger.d("onMessage:type=" + type + ",open=" + open);
+        if (type == PrimaryClassConfig.MMTYPE_VIDEO) {
+            if (videoStatus != open) {
+                videoStatus = open;
+                if (open) {
+                    if (mState == LiveBasePagerState.RESUMED) {
+                        foreach(new ItemCall() {
+                            @Override
+                            public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
+                                basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_VIDEO, true);
+                            }
+                        });
+                    }
+                } else {
+                    foreach(new ItemCall() {
+                        @Override
+                        public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
+                            basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_VIDEO, false);
+                        }
+                    });
+                }
+            }
+        } else if (type == PrimaryClassConfig.MMTYPE_AUDIO) {
+            if (audioStatus != open) {
+                audioStatus = open;
+                if (open) {
+                    if (mState == LiveBasePagerState.RESUMED) {
+                        foreach(new ItemCall() {
+                            @Override
+                            public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
+                                basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, true);
+                            }
+                        });
+                    }
+                } else {
+                    foreach(new ItemCall() {
+                        @Override
+                        public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
+                            basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, false);
+                        }
+                    });
+                }
+            }
+        }
     }
 
     @Override
     public void onMessage(boolean videoopen, boolean audioopen) {
         logger.d("onMessage:videoopen=" + videoopen + ",audioopen=" + audioopen);
+        if (videoStatus != videoopen) {
+            videoStatus = videoopen;
+            if (videoopen) {
+                if (mState == LiveBasePagerState.RESUMED) {
+                    foreach(new ItemCall() {
+                        @Override
+                        public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
+                            basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_VIDEO, true);
+                        }
+                    });
+                }
+            } else {
+                foreach(new ItemCall() {
+                    @Override
+                    public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
+                        basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_VIDEO, false);
+                    }
+                });
+            }
+        }
+        if (audioStatus != audioopen) {
+            audioStatus = audioopen;
+            if (audioopen) {
+                if (mState == LiveBasePagerState.RESUMED) {
+                    foreach(new ItemCall() {
+                        @Override
+                        public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
+                            basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, true);
+                        }
+                    });
+                }
+            } else {
+                foreach(new ItemCall() {
+                    @Override
+                    public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
+                        basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, false);
+                    }
+                });
+            }
+        }
+    }
+
+    public void foreach(ItemCall itemCall) {
+        Set<String> keys = courseGroupItemHashMap.keySet();
+        for (String key : keys) {
+            if (!key.startsWith("empty")) {
+                BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get(key);
+                itemCall.onItem(basePrimaryTeamItem);
+            }
+        }
+    }
+
+    interface ItemCall {
+        void onItem(BasePrimaryTeamItem basePrimaryTeamItem);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        if (videoStatus) {
+            foreach(new ItemCall() {
+                @Override
+                public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
+                    basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_VIDEO, true);
+                }
+            });
+        }
+        if (audioStatus) {
+            foreach(new ItemCall() {
+                @Override
+                public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
+                    basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, true);
+                }
+            });
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        foreach(new ItemCall() {
+            @Override
+            public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
+                basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_VIDEO, false);
+            }
+        });
+        foreach(new ItemCall() {
+            @Override
+            public void onItem(BasePrimaryTeamItem basePrimaryTeamItem) {
+                basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, false);
+            }
+        });
     }
 
     @Override
@@ -438,4 +577,5 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             workerThread.exit();
         }
     }
+
 }

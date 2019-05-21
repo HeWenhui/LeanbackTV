@@ -4,9 +4,11 @@ import android.content.Context;
 import android.view.SurfaceView;
 import android.view.View;
 
+import com.xes.ps.rtcstream.RTCEngine;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
+import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.config.PrimaryClassConfig;
 
 public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
     private boolean enableVideo = true;
@@ -34,8 +36,10 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                 cloudWorkerThreadPool.execute(new Runnable() {
                     @Override
                     public void run() {
-                        enableAudio = !enableAudio;
-                        cloudWorkerThreadPool.getRtcEngine().enableRemoteAudio(entity.getIdInt(), enableAudio);
+                        if (audioStatus) {
+                            enableAudio = !enableAudio;
+                            cloudWorkerThreadPool.getRtcEngine().enableRemoteAudio(uid, enableAudio);
+                        }
                     }
                 });
             }
@@ -54,4 +58,29 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
         tv_livevideo_primary_team_people_name.setText(entity.getName());
     }
 
+    @Override
+    public void onOtherDis(int type, final boolean enable) {
+        super.onOtherDis(type, enable);
+        if (type == PrimaryClassConfig.MMTYPE_VIDEO) {
+            cloudWorkerThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
+                    if (mRtcEngine != null) {
+                        mRtcEngine.muteRemoteVideo(uid, !enable);
+                    }
+                }
+            });
+        } else {
+            cloudWorkerThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
+                    if (mRtcEngine != null) {
+                        mRtcEngine.enableRemoteAudio(uid, !enable);
+                    }
+                }
+            });
+        }
+    }
 }
