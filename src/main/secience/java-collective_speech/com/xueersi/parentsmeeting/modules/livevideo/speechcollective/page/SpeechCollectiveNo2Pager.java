@@ -113,6 +113,13 @@ public class SpeechCollectiveNo2Pager extends LiveBasePager implements SpeechCol
     }
 
     private boolean showNoVolume = false;
+    private boolean haveVolume = false;
+    private OnTipHide onTipHide;
+
+    @Override
+    public void onHaveVolume(final OnTipHide onTipHide) {
+        this.onTipHide = onTipHide;
+    }
 
     @Override
     public void onNoVolume(final OnTipHide onTipHide) {
@@ -121,6 +128,7 @@ public class SpeechCollectiveNo2Pager extends LiveBasePager implements SpeechCol
         }
         showNoVolume = true;
         ivSpeechcollectiveNoVolume.setVisibility(View.VISIBLE);
+        ivSpeechcollectiveNoVolume.setText("说错了没关系，勇敢尝试吧");
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -132,6 +140,7 @@ public class SpeechCollectiveNo2Pager extends LiveBasePager implements SpeechCol
 
     @Override
     public void onHaveVolume() {
+        haveVolume = true;
         ivSpeechcollectiveNoVolume.setVisibility(View.GONE);
     }
 
@@ -163,6 +172,19 @@ public class SpeechCollectiveNo2Pager extends LiveBasePager implements SpeechCol
                     swvView.setVisibility(View.VISIBLE);
                     swvView.setStart(true);
                     swvView.invalidate();
+                    if (!haveVolume) {
+                        ivSpeechcollectiveNoVolume.setVisibility(View.VISIBLE);
+                        ivSpeechcollectiveNoVolume.setText("大声说出你的答案吧");
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (onTipHide != null) {
+                                    onTipHide.hide();
+                                }
+                                ivSpeechcollectiveNoVolume.setVisibility(View.GONE);
+                            }
+                        }, 2000);
+                    }
                 }
 
                 @Override

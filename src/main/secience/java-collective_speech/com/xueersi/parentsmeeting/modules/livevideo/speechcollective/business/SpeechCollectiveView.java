@@ -18,6 +18,8 @@ public interface SpeechCollectiveView {
 
     void setStart(boolean start);
 
+    void onHaveVolume(OnTipHide onTipHide);
+
     void onNoVolume(OnTipHide onTipHide);
 
     void onHaveVolume();

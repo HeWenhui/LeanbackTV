@@ -207,6 +207,13 @@ public class SpeechCollectiveNo2Bll {
         });
         mRootView.addView(speechCollectiveNo2Pager.getRootView());
         speechCollectiveView = speechCollectiveNo2Pager;
+        tipIsShow = true;
+        speechCollectiveView.onHaveVolume(new SpeechCollectiveView.OnTipHide() {
+            @Override
+            public void hide() {
+                tipIsShow = false;
+            }
+        });
     }
 
     private EvaluatorListener evaluatorListener = new NoVoice();
