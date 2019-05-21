@@ -925,7 +925,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
 
         @Override
         public void submitCourseWareTests(VideoQuestionLiveEntity detailInfo, int isforce, String nonce, long entranceTime, String testInfos, AbstractBusinessDataCallBack callBack) {
-            if (isArts == LiveVideoSAConfig.ART_EN) {
+            if (isArts == LiveVideoSAConfig.ART_EN && !detailInfo.isTUtor()) {
 //                if (LiveQueConfig.EN_COURSE_TYPE_VOICE_BLANK.equals(detailInfo.voiceType) || LiveQueConfig.EN_COURSE_TYPE_VOICE_CHOICE.equals(detailInfo.voiceType)) {
 //                    getCourseWareHttpManager().submitH5("" + testInfos, detailInfo.num, detailInfo.id, detailInfo.voiceType, mGetInfo.getStuId(), 1, isforce, callBack);
 //                } else {
@@ -951,7 +951,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
 
         @Override
         public void getCourseWareTests(VideoQuestionLiveEntity detailInfo, AbstractBusinessDataCallBack callBack) {
-            if (isArts == LiveVideoSAConfig.ART_EN) {
+            if (isArts == LiveVideoSAConfig.ART_EN && !detailInfo.isTUtor()) {
                 getCourseWareHttpManager().getTestInfos(detailInfo.id, callBack);
             } else {
                 EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;

@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.practice;
 
 import android.app.Activity;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.RelativeLayout;
 
@@ -36,6 +37,8 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
     RelativeLayout bottomContent;
     PraisePager praisePager;
     boolean isTopic = false;
+    String likeId = "";
+    boolean isCloase = true;
     public PraiseTutorBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
     }
@@ -43,8 +46,12 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
     @Override
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
         // 模式切换为主讲，关闭表扬榜
-        if (praisePager != null && mode.equals(LiveTopic.MODE_CLASS)) {
+        if (praisePager != null && LiveTopic.MODE_CLASS.equals(mode)) {
             praisePager.closePraisePager();
+        } else if (LiveTopic.MODE_CLASS.equals(oldMode) && LiveTopic.MODE_TRANING.equals(mode)){
+            if (!TextUtils.isEmpty(getLikeId()) && !isCloase()){
+                getPraiseTutorData(getLikeId());
+            }
         }
     }
 
@@ -88,7 +95,11 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
         String listId = data.optString("listId");
         if (XESCODE.ON.equals(open)) {
             getPraiseTutorData(listId);
+            setCloase(false);
+            setLikeId(listId);
         } else if (XESCODE.OFF.equals(open)) {
+            setCloase(true);
+            setLikeId("");
             if (praisePager != null) {
                 praisePager.closePraisePager();
             }
@@ -143,6 +154,8 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
                 setTopic(true);
                 if (XESCODE.ON.equals(praiseListJson.optString("status"))) {
                     getPraiseTutorData(praiseListJson.optString("id"));
+                    setLikeId(praiseListJson.optString("id"));
+                    setCloase(false);
                 }
             }
         }
@@ -183,7 +196,7 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
             @Override
             public void onPmError(ResponseEntity responseEntity) {
                 mLogtf.d("getLikeList => onPmError: errorMsg = " + responseEntity.getErrorMsg());
-              //  showToast("" + responseEntity.getErrorMsg());
+                //  showToast("" + responseEntity.getErrorMsg());
                 VerifyCancelAlertDialog vcDialog = new VerifyCancelAlertDialog(mContext, mBaseApplication, false,
                         VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
                 vcDialog.initInfo("当前网络不佳，请刷新获取榜单！").showDialog();
@@ -224,7 +237,24 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
 
         @Override
         public void onPracticeClose() {
-
+            setCloase(true);
         }
+
     };
+
+    public String getLikeId() {
+        return likeId;
+    }
+
+    public void setLikeId(String likeId) {
+        this.likeId = likeId;
+    }
+
+    public boolean isCloase() {
+        return isCloase;
+    }
+
+    public void setCloase(boolean cloase) {
+        isCloase = cloase;
+    }
 }
