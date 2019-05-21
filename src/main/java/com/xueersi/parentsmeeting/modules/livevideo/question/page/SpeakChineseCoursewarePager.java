@@ -46,6 +46,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -78,6 +79,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.web.OnHttpCode;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.StaticWeb;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.WebInstertJs;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.NewCourseLog;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONArray;
@@ -345,9 +347,23 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 }
                 stopAssess();
                 preLoad.onStop();
+                // fixme 如果是回放当页面移除时 讲媒体控制栏再次显示
+                if(isPlayBack){
+                    resetMediaCtr();
+                }
             }
         });
         return view;
+    }
+
+    /**
+     * 回放 页面关闭时重新显示媒体控制栏
+     */
+    private void resetMediaCtr() {
+        LiveBackBll.ShowQuestion showQuestion = ProxUtil.getProxUtil().get(mContext, LiveBackBll.ShowQuestion.class);
+        if(showQuestion != null){
+            showQuestion.onHide(getBaseVideoQuestionEntity());
+        }
     }
 
     @Override
@@ -436,7 +452,6 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
 
     @Override
     public void close() {
-
     }
 
     @Override
@@ -818,6 +833,8 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
         }
         isAssessing = false;
     }
+
+
 
     @Override
     public void onBack() {

@@ -74,7 +74,7 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
                     if (LiveQueConfig.CHI_COURESWARE_TYPE_SPEAKING_CHINESE.equals(videoQuestionH5Entity.englishH5Entity.getPackageAttr())
                             && HalfBodyLiveConfig.LIVE_TYPE_HALFBODY == liveGetInfo.getPattern()) {
                         SpeakChineseCoursewarePager h5CoursewarePager = new SpeakChineseCoursewarePager(context, videoQuestionH5Entity, true, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
-                                videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, "0", isArts, false);
+                                videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, wrapOnH5ResultClose, "0", isArts, false);
                         h5CoursewarePager.setLivePagerBack(livePagerBack);
                         return h5CoursewarePager;
                     }
