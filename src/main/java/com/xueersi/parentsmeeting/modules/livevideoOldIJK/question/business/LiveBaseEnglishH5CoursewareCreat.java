@@ -6,6 +6,7 @@ import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -60,8 +61,9 @@ public class LiveBaseEnglishH5CoursewareCreat implements BaseEnglishH5Courseware
         }
         EnglishH5Entity englishH5Entity = videoQuestionH5Entity.englishH5Entity;
         //应该是没有为null的时候
+        setArts(0);
         if (liveGetInfo != null) {
-            if (liveGetInfo.isNewCourse()) {
+            if (liveGetInfo.isNewCourse() ||  LiveTopic.MODE_TRANING.equals(liveGetInfo.getMode())) {
                 if (isArts == LiveVideoSAConfig.ART_SEC) {
                     String educationstage = liveGetInfo.getEducationStage();
                     videoQuestionH5Entity.setEducationstage(liveGetInfo.getEducationStage());
