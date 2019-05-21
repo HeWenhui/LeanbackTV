@@ -103,7 +103,7 @@
     </RelativeLayout>
 
     <!--战队pk 状态栏-->
-    <com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalBodyPrimaryPkStateLayout
+    <com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.LiveHalBodyPrimaryPkStateLayout
         android:id="@id/tpkL_teampk_pkstate_root"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

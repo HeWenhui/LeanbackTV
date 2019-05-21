@@ -6,8 +6,7 @@
     <RelativeLayout
         android:id="@id/rl_livevideo_primary_team_content"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#6663C4FF">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@id/iv_livevideo_primary_team_icon"
@@ -45,7 +44,6 @@
         android:id="@id/ll_livevideo_primary_team_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="#6663a4aF"
         android:orientation="vertical" />
 
     <TextView

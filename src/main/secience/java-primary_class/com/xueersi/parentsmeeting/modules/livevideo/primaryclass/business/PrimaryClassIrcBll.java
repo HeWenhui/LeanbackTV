@@ -13,6 +13,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.PkAddEnergy;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PkUpdatePkState;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
@@ -80,6 +81,15 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
         logger.e("updatePkState:enent=" + ratio);
         if (primaryItemView != null) {
             primaryItemView.updatePkState(ratio);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPkAddEnergy(PkAddEnergy event) {
+        int energy = event.getEnergy();
+        logger.e("onPkAddEnergy:enent=" + energy);
+        if (primaryItemView != null) {
+            primaryItemView.onAddEnergy(energy);
         }
     }
 

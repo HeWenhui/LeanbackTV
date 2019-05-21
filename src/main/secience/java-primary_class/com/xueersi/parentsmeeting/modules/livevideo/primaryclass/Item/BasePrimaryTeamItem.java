@@ -58,6 +58,10 @@ public class BasePrimaryTeamItem implements AdapterItemInterface<TeamMate> {
 
     }
 
+    public void onVideo() {
+
+    }
+
     /**
      * 收到音视频关闭指令
      *

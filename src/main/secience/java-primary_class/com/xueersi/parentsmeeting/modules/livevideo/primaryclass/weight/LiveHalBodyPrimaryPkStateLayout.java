@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting.modules.livevideo.widget;
+package com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,7 +9,9 @@ import android.view.View;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.PkAddEnergy;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PkUpdatePkState;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 
 /**
  * 半身直播-小班体验 战队Pk 状态栏
@@ -58,6 +60,7 @@ public class LiveHalBodyPrimaryPkStateLayout extends TeamPkStateLayout {
         energy = energy < 0 ? 0 : energy;
         tvEnergyMyContribution.setText("我贡献了" + energy + "个能量");
         showViewWithFadeInOutEffect(vContributionCotanier, ENERGY_MY_CONTRIBUTION_DURATION);
+        LiveEventBus.getDefault(getContext()).post(new PkAddEnergy(energy));
     }
 
     @Override

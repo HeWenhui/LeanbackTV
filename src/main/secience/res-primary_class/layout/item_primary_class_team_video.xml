@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
-            android:src="@drawable/toast_energe2_icon_normal"
+            android:src="@drawable/toast_energe1_icon_normal"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -67,7 +67,7 @@
             android:includeFontPadding="false"
             android:text="10"
             android:textColor="@color/white"
-            android:textSize="9sp"
+            android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/iv_livevideo_primary_team_energy"
             app:layout_constraintTop_toTopOf="parent" />
@@ -78,7 +78,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="5dp"
-        android:layout_marginBottom="3dp"
+        android:layout_marginBottom="4dp"
         android:shadowColor="#1a000000"
         android:shadowDx="0"
         android:shadowDy="0"
@@ -86,7 +86,8 @@
         android:text="小铝孩"
         android:textColor="#ffffffff"
         android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
     <ImageView
         android:id="@id/iv_livevideo_primary_team_voice_open"
@@ -110,7 +111,7 @@
         android:id="@id/rl_livevideo_primary_team_tip"
         android:layout_width="wrap_content"
         android:layout_height="22dp"
-        android:background="@drawable/shape_primary_item_eneygy_back"
+        android:background="@drawable/shape_primary_item_eneygy_add_back"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.TextView;
 
 import com.xes.ps.rtcstream.RTCEngine;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -14,9 +15,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.config.PrimaryC
 public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
     private boolean enableVideo = true;
     private boolean enableAudio = true;
+    private int totalEnergy;
+    private TextView iv_livevideo_primary_team_energy;
 
     public PrimaryTeamMyItem(Context context, TeamMate entity, CloudWorkerThreadPool workerThread, int uid) {
         super(context, entity, workerThread, uid);
+        totalEnergy = entity.getEnergy();
     }
 
     @Override
@@ -27,6 +31,7 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
     @Override
     public void initViews(View root) {
         super.initViews(root);
+        iv_livevideo_primary_team_energy = root.findViewById(R.id.tv_livevideo_primary_team_energy);
     }
 
     @Override
@@ -62,6 +67,23 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
     public void updateViews(TeamMate entity, int position, Object objTag) {
         super.updateViews(entity, position, objTag);
         tv_livevideo_primary_team_people_name.setText(entity.getName());
+        iv_livevideo_primary_team_energy.setText("" + totalEnergy);
+    }
+
+    public void onAddEnergy(int energy) {
+        mLogtf.d("onAddEnergy:energy=" + energy);
+        totalEnergy += energy;
+        iv_livevideo_primary_team_energy.setText("" + totalEnergy);
+        final View view = LayoutInflater.from(mContext).inflate(R.layout.item_primary_class_team_item_energy, rl_livevideo_primary_team_tip, false);
+        TextView tv_livevideo_primary_team_energy = view.findViewById(R.id.tv_livevideo_primary_team_energy);
+        tv_livevideo_primary_team_energy.setText("" + energy);
+        rl_livevideo_primary_team_tip.addView(view);
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                rl_livevideo_primary_team_tip.removeView(view);
+            }
+        }, 2000);
     }
 
     @Override

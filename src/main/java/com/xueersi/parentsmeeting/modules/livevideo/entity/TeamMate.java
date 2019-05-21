@@ -14,6 +14,8 @@ public class TeamMate {
     private int idInt;
     /** 昵称 **/
     private String name;
+    private int energy;
+    private boolean look = true;
 
     public TeamMate() {
     }
@@ -46,5 +48,21 @@ public class TeamMate {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getEnergy() {
+        return energy;
+    }
+
+    public void setEnergy(int energy) {
+        this.energy = energy;
+    }
+
+    public boolean isLook() {
+        return look;
+    }
+
+    public void setLook(boolean look) {
+        this.look = look;
     }
 }

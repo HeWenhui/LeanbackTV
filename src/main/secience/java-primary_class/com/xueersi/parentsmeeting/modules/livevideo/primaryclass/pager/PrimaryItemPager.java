@@ -43,6 +43,7 @@ import io.agora.rtc.RtcEngine;
 public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     private LinearLayout ll_livevideo_primary_team_content;
     private RelativeLayout rl_livevideo_primary_team_content;
+    private ImageView ivPkState;
     private TextView tv_livevideo_primary_team_name_mid;
     private TextView tv_livevideo_primary_team_name;
     private ImageView iv_livevideo_primary_team_icon;
@@ -79,6 +80,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         tv_livevideo_primary_team_name_mid = view.findViewById(R.id.tv_livevideo_primary_team_name_mid);
         tv_livevideo_primary_team_name = view.findViewById(R.id.tv_livevideo_primary_team_name);
         cl_livevideo_primary_team_inter = view.findViewById(R.id.cl_livevideo_primary_team_inter);
+        ivPkState = view.findViewById(R.id.iv_live_halfbody_pk_state);
         return view;
     }
 
@@ -147,8 +149,21 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         addItem();
         if (LiveTopic.MODE_TRANING.equals(mode)) {
             mView.setVisibility(View.GONE);
+        } else {
+            rl_livevideo_primary_team_content.setVisibility(View.INVISIBLE);
+            ivPkState.setVisibility(View.VISIBLE);
+            handler.postDelayed(ivPkStateRun, 10000);
         }
     }
+
+    private Runnable ivPkStateRun = new Runnable() {
+
+        @Override
+        public void run() {
+            ivPkState.setVisibility(View.GONE);
+            rl_livevideo_primary_team_content.setVisibility(View.VISIBLE);
+        }
+    };
 
     @Override
     public void onModeChange(final String mode) {
@@ -158,6 +173,10 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             public void run() {
                 if (LiveTopic.MODE_CLASS.equals(mode)) {
                     mView.setVisibility(View.VISIBLE);
+                    rl_livevideo_primary_team_content.setVisibility(View.INVISIBLE);
+                    ivPkState.setVisibility(View.VISIBLE);
+                    handler.removeCallbacks(ivPkStateRun);
+                    handler.postDelayed(ivPkStateRun, 10000);
                     if (teamInfoEntity != null) {
                         joinChannel();
                     }
@@ -235,7 +254,6 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     @Override
     public void updatePkState(float ratio) {
         mLogtf.d("updatePkState:ratio=" + ratio);
-        final ImageView ivPkState = mView.findViewById(R.id.iv_live_halfbody_pk_state);
         if (ratio > TeamPkStateLayout.HALF_PROGRESS) {
             ivPkState.setImageResource(R.drawable.bg_live_ke_energy_zanshi_icon_normal);
         } else if (ratio < TeamPkStateLayout.HALF_PROGRESS) {
@@ -243,15 +261,18 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         } else {
             return;
         }
-        ivPkState.setVisibility(View.VISIBLE);
         rl_livevideo_primary_team_content.setVisibility(View.INVISIBLE);
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                ivPkState.setVisibility(View.GONE);
-                rl_livevideo_primary_team_content.setVisibility(View.VISIBLE);
-            }
-        }, 2000);
+        ivPkState.setVisibility(View.VISIBLE);
+        handler.removeCallbacks(ivPkStateRun);
+        handler.postDelayed(ivPkStateRun, 10000);
+    }
+
+    @Override
+    public void onAddEnergy(int energy) {
+        PrimaryTeamMyItem basePrimaryTeamItem = (PrimaryTeamMyItem) courseGroupItemHashMap.get("" + stuid);
+        if (basePrimaryTeamItem != null) {
+            basePrimaryTeamItem.onAddEnergy(energy);
+        }
     }
 
     private void addItem() {
@@ -290,7 +311,6 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) convertView.getLayoutParams();
             lp.height = (int) (149 * scale);
             lp.bottomMargin = margin;
-            convertView.setBackgroundColor(0xa663a4aF);
             ll_livevideo_primary_team_content.addView(convertView, lp);
             if (teamMember == null) {
                 courseGroupItemHashMap.put("empty" + i, basePrimaryTeamItem);
@@ -313,10 +333,15 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                 lp.topMargin = loc[1] - cl_livevideo_primary_team_inter.getHeight();
                 cl_livevideo_primary_team_inter.setLayoutParams(lp);
                 TextView tv_livevideo_primary_team_inter_left = cl_livevideo_primary_team_inter.findViewById(R.id.tv_livevideo_primary_team_inter_left);
+                tv_livevideo_primary_team_inter_left.setText(finalEntity.isLook() ? "不看ta" : "显示ta");
                 tv_livevideo_primary_team_inter_left.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
+                        cl_livevideo_primary_team_inter.setVisibility(View.GONE);
+                        BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + finalEntity.getId());
+                        if (basePrimaryTeamItem != null) {
+                            basePrimaryTeamItem.onVideo();
+                        }
                     }
                 });
                 final TextView tv_livevideo_primary_team_inter_right = cl_livevideo_primary_team_inter.findViewById(R.id.tv_livevideo_primary_team_inter_right);
