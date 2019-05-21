@@ -56,6 +56,12 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                englishSpeechBulletView.showSpeechBullet(mRootView);
+            }
+        },3000);
     }
 
     @Override
