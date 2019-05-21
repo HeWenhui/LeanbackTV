@@ -36,8 +36,8 @@ public class VoiceImageView extends ImageView {
     }
 
     public void setVoice(int volume) {
-        src.top = (int) ((float) volume * height / (float) 30);
+        src.top = (int) ((float) volume * height / 255.0f);
         logger.d("setVoice:volume=" + volume + ",top=" + src.top + ",height=" + height);
-        invalidate();
+        postInvalidate();
     }
 }

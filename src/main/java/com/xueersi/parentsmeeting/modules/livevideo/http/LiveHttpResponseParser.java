@@ -1702,7 +1702,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 teamInfo.setTeamMateName(teamInfoObj.getString("teamMateName"));
                 teamInfo.setSlogon(teamInfoObj.getString("slogon"));
                 teamInfo.setBackGroud(teamInfoObj.getString("backGroud"));
-                teamInfo.setRoomid(teamInfoObj.getString("roomid"));
+                teamInfo.setRoomid(data.getString("roomId"));
+                teamInfo.setToken(data.getString("token"));
                 try {
                     JSONArray teamMembersArray = teamInfoObj.optJSONArray("teamMembers");
                     List<TeamPkTeamInfoEntity.StudentEntity> teamMembers = new ArrayList<>();
@@ -1711,11 +1712,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                             teamInfoObj = (JSONObject) teamMembersArray.get(i);
                             TeamMate teamMate = new TeamMate();
                             teamMate.setId(teamInfoObj.optString("stuId"));
-                            teamMate.setName(teamInfoObj.optString("name"));
+                            teamMate.setName(teamInfoObj.optString("stuName"));
                             teamInfo.getResult().add(teamMate);
                             TeamPkTeamInfoEntity.StudentEntity studentEntity = new TeamPkTeamInfoEntity.StudentEntity();
                             studentEntity.setUserId(teamInfoObj.getString("stuId"));
-                            studentEntity.setUserName(teamInfoObj.getString("name"));
+                            studentEntity.setUserName(teamInfoObj.getString("stuName"));
                             studentEntity.setImg(teamInfoObj.optString("img"));
                             teamMembers.add(studentEntity);
                         }

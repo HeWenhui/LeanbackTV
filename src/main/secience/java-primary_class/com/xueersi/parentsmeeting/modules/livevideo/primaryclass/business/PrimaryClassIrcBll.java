@@ -43,7 +43,7 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
         super.onLiveInited(getInfo);
         classId = getInfo.getStudentLiveInfo().getClassId();
         getPrimaryClassHttp().reportUserAppStatus(classId, getInfo.getStuId(), "1");
-        getMyTeamInfo();
+//        getMyTeamInfo();
         LiveEventBus.getDefault(mContext).register(this);
     }
 
@@ -64,9 +64,15 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onScineceAnswerResutlEvent(TeamPkTeamInfoEvent event) {
-        logger.e("========>onAnswerResult_LiveVideo:" + event.toString());
+        logger.e("onScineceAnswerResutlEvent" + event);
         LiveEventBus.getDefault(mContext).unregister(this);
+        if (teamPkTeamInfoEntity != null) {
+            return;
+        }
         teamPkTeamInfoEntity = event.getTeamInfoEntity();
+        if (primaryItemView != null) {
+            primaryItemView.onTeam(mGetInfo.getStuId(), teamPkTeamInfoEntity.getTeamInfo());
+        }
     }
 
     @Override
@@ -142,10 +148,12 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
         try {
-            JSONObject mmedia_status = jsonObject.getJSONObject("mmedia_status");
-            boolean audio_status = mmedia_status.getBoolean("audio_status");
-            boolean video_status = mmedia_status.getBoolean("video_status");
-            primaryItemView.onMessage(audio_status, video_status);
+            if (jsonObject.has("mmedia_status")) {
+                JSONObject mmedia_status = jsonObject.getJSONObject("mmedia_status");
+                boolean audio_status = mmedia_status.getBoolean("audio_status");
+                boolean video_status = mmedia_status.getBoolean("video_status");
+                primaryItemView.onMessage(audio_status, video_status);
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
