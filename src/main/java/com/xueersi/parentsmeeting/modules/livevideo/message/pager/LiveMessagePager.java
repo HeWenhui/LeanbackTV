@@ -779,7 +779,9 @@ public class LiveMessagePager extends BaseLiveMessagePager {
         mFlowerWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         logger.i("initFlower:time3=" + (System.currentTimeMillis() - before));
         before = System.currentTimeMillis();
-
+        if (goldNum != null) {
+            onGetMyGoldDataEvent(goldNum);
+        }
     }
 
     /**
@@ -1875,10 +1877,12 @@ public class LiveMessagePager extends BaseLiveMessagePager {
     @Override
     public void onGetMyGoldDataEvent(String goldNum) {
         this.goldNum = goldNum;
-        tvMessageGold.setText(goldNum);
-        tvMessageGold.setVisibility(View.VISIBLE);
-        tvMessageGoldLable.setVisibility(View.VISIBLE);
-        flowerContentView.findViewById(R.id.tv_livevideo_message_gold_word).setVisibility(View.VISIBLE);
+        if (tvMessageGold != null) {
+            tvMessageGold.setText(goldNum);
+            tvMessageGold.setVisibility(View.VISIBLE);
+            tvMessageGoldLable.setVisibility(View.VISIBLE);
+            flowerContentView.findViewById(R.id.tv_livevideo_message_gold_word).setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

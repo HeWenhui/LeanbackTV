@@ -1,0 +1,50 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:layout_alignParentBottom="true"
+    android:background="#66000000">
+
+    <com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountTextView
+        android:id="@id/tv_livevideo_nb_course_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@id/tv_livevideo_new_course_time_lable"
+        android:drawableLeft="@drawable/livevideo_course_primarty_time"
+        android:drawablePadding="6dp"
+        android:gravity="center_vertical"
+        android:textColor="@color/white"
+        android:textSize="16dp" />
+
+    <Button
+        android:id="@id/bt_livevideo_new_course_submit"
+        android:layout_width="84dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/selector_live_nbcourse_submit"
+        android:text="提交"
+        android:textSize="14dp"
+        android:textColor="@color/white"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@id/tv_livevideo_nb_course_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/tv_livevideo_nb_course_time"
+        android:layout_toLeftOf="@id/bt_livevideo_new_course_submit"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:singleLine="true"
+        android:text="探究水沸腾时温度变化的特点"
+        android:gravity="center"
+        android:textColor="#ffffffff"
+        android:textSize="18dp"
+        android:ellipsize="end"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        />
+</RelativeLayout>

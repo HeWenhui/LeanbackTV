@@ -25,9 +25,11 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.GlideDrawableUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TimeCountDowTextView;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.StandLiveMethod;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -56,7 +58,7 @@ public class GroupGameMVPMultPager extends LiveBasePager {
     private ImageView ivClose;
     private static String LOTTIE_RES_ASSETS_ROOTDIR = "en_group_game/";
     ArrayList<TeamMemberEntity> entities;
-
+    LiveSoundPool liveSoundPool;
     public GroupGameMVPMultPager(Context context, ArrayList<TeamMemberEntity> entities) {
         super(context);
         this.entities = new ArrayList<>();
@@ -66,10 +68,14 @@ public class GroupGameMVPMultPager extends LiveBasePager {
             public int compare(TeamMemberEntity o1, TeamMemberEntity o2) {
                 int com = o2.gold - o1.gold;
                 if (com == 0) {
-                    if (o2.isMy || o1.isMy) {
-                        return -1;
-                    }
                     com = o2.energy - o1.energy;
+                    if (com == 0) {
+                        if (o1.isMy) {
+                            return -1;
+                        } else {
+                            return 1;
+                        }
+                    }
                     return com;
                 }
                 return com;
@@ -81,6 +87,10 @@ public class GroupGameMVPMultPager extends LiveBasePager {
             LOTTIE_RES_ASSETS_ROOTDIR = "group_game_two/";
         } else if (entities.size() == 3) {
             LOTTIE_RES_ASSETS_ROOTDIR = "group_game_three/";
+        }
+        for (int i = 0; i < entities.size(); i++) {
+            TeamMemberEntity entity = entities.get(i);
+            logger.d("entity=" + entity.name + "," + entity.energy + "," + entity.gold);
         }
         initData();
         initListener();
@@ -135,6 +145,8 @@ public class GroupGameMVPMultPager extends LiveBasePager {
                 }
             }
         }, 100);
+        liveSoundPool = LiveSoundPool.createSoundPool();
+        StandLiveMethod.leaderBoard(liveSoundPool);
     }
 
     @Override
@@ -151,6 +163,9 @@ public class GroupGameMVPMultPager extends LiveBasePager {
             public void onClick(View view) {
                 headBitHashMap.clear();
                 onPagerClose.onClose(GroupGameMVPMultPager.this);
+                if (liveSoundPool != null) {
+                    liveSoundPool.release();
+                }
             }
         });
     }
@@ -523,5 +538,13 @@ public class GroupGameMVPMultPager extends LiveBasePager {
             logger.e("creatNameBitmap", e);
         }
         return null;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (liveSoundPool != null) {
+            liveSoundPool.release();
+        }
     }
 }

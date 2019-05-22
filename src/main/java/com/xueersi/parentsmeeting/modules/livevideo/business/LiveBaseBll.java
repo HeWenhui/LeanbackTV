@@ -110,6 +110,27 @@ public class LiveBaseBll extends BaseBll {
         }
     }
 
+    /**
+     * 向主讲发送消息
+     * @param jsonObject   消息内容
+     */
+    public void sendNoticeToMain(JSONObject jsonObject){
+        if (mLiveBll != null) {
+            mLiveBll.sendNotice(mLiveBll.getMainTeacherStr(), jsonObject);
+        }
+    }
+
+    /**
+     * 向辅导发送消息
+     * @param jsonObject 消息内容
+     */
+    public void sendNoticeToCoun(JSONObject jsonObject){
+        if (mLiveBll != null) {
+            mLiveBll.sendNotice(mLiveBll.getCounTeacherStr(), jsonObject);
+        }
+    }
+
+
     public final void setVideoLayoutF(LiveVideoPoint liveVideoPoint) {
         this.liveVideoPoint = liveVideoPoint;
         setVideoLayout(liveVideoPoint);
