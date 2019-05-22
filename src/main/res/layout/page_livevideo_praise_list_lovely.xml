@@ -9,10 +9,10 @@
 
     <RelativeLayout
         android:id="@id/rl_page_livevideo_praise_list_content"
-        android:layout_width="383dp"
+        android:layout_width="400dp"
         android:layout_height="350dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="25dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="20dp"
         android:layout_centerHorizontal="true"
         android:background="@drawable/bg_page_livevideo_praise_list_lovely_content">
 
@@ -52,8 +52,10 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="60dp"
             android:layout_marginTop="130dp"
-            android:layout_marginRight="37dp"
+            android:layout_marginRight="34dp"
+            android:paddingRight="8dp"
             android:layout_marginBottom="50dp"
+            android:scrollbarStyle="outsideOverlay"
             app:VerticalThumbDrawable="@drawable/rcl_fast_scoller_line_ffa0a0a0_style"
             app:VerticalTrackDrawable="@drawable/rcl_fastscroller_transparent" />
 
@@ -108,6 +110,11 @@
                 android:layout_gravity="center_horizontal|bottom"
                 android:layout_marginBottom="16dp"
                 android:textColor="#FFEDA5"
+                android:shadowDx="0"
+                android:shadowDy="2"
+                android:text="0"
+                android:shadowRadius="3.0"
+                android:shadowColor="#7db8170b"
                 android:textSize="11sp" />
 
         </com.xueersi.parentsmeeting.modules.livevideo.widget.PraiseBtnAnimLayout>
