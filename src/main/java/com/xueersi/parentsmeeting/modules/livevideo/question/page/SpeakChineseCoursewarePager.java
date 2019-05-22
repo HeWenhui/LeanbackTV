@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -339,12 +338,6 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                     event.setForceSubmit(resultGotByForceSubmit);
                     EventBus.getDefault().post(event);
                 }
-
-                if (englishH5Entity.getNewEnglishH5()) {
-                    LiveVideoConfig.isNewEnglishH5 = true;
-                } else {
-                    LiveVideoConfig.isNewEnglishH5 = false;
-                }
                 stopAssess();
                 preLoad.onStop();
                 // fixme 如果是回放当页面移除时 讲媒体控制栏再次显示
@@ -640,7 +633,6 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                         answerMap.put(id, text);
                     }
                 }
-                Log.e("chs_speak","===>onAssessStart:"+assessData+":"+assessData.length());
                 //字段未空为切到手动答题
                 if (assessData != null && assessData.length() != 0) {
                     isSpeakAnswer = true;
@@ -710,8 +702,8 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
             for (Integer key : answerMap.keySet()) {
                 answerContent += answerMap.get(key);
             }
-
-            if(TextUtils.isEmpty(assessContent) || TextUtils.isEmpty(answerContent)){
+            // 如果测评文案为空 返回
+            if(TextUtils.isEmpty(assessContent)){
                 return;
             }
 
@@ -791,7 +783,6 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                         } else if (ResultEntity.ERROR == result.getStatus()) {
                             logger.e("ERROR");
                             isAssessing = false;
-                            Log.e("SpeakChinese", "===>onError:" + result.getErrorNo());
                             Map<String, String> errorData = new HashMap<>();
                             errorData.put("error_code", "" + result.getErrorNo());
                             liveAndBackDebug.umsAgentDebugSys(eventId, errorData);
