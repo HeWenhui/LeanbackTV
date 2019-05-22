@@ -820,7 +820,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                         startAssess(assessMap, answerMap);
                     }
                 }
-            }, 500);
+            }, 300);
         }
     }
 
