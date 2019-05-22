@@ -180,9 +180,10 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             savePosition(mCurrentPosition);
         }
         if (videoPlayStatus == MediaPlayer.VIDEO_TEACHER_TUTOR || videoPlayStatus == MediaPlayer.VIDEO_TEACHER_ONLY_TUTOR) {
-            mVideoEntity = mVideoMainEntity;
-        } else {
             mVideoEntity = mVideoTutorEntity;
+
+        } else {
+            mVideoEntity = mVideoMainEntity;
         }
 
         if (mVideoEntity == null) {
