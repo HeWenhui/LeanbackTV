@@ -461,6 +461,9 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 }
                 break;
             case XESCODE.QUESTION_TUTOR:
+                if(LiveTopic.MODE_CLASS.equals(mGetInfo.getMode())){
+                    return;
+                }
                 VideoQuestionLiveEntity turtorEntity = questionInfo(object);
                 String statusTutor = LiveVideoConfig.isSend ? "on" : "off";
                 if (!LiveVideoConfig.isSend) {
