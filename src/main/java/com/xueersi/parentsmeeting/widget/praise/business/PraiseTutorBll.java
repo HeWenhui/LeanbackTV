@@ -252,7 +252,7 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
 
         @Override
         public void onPracticeClose() {
-            setCloase(true);
+        //    setCloase(true);
         }
 
     };
