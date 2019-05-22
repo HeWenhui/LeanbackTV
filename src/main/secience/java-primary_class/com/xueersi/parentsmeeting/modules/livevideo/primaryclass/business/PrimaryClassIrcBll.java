@@ -86,10 +86,11 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPkAddEnergy(PkAddEnergy event) {
+        boolean first = event.isFirst();
         int energy = event.getEnergy();
         logger.e("onPkAddEnergy:enent=" + energy);
         if (primaryItemView != null) {
-            primaryItemView.onAddEnergy(energy);
+            primaryItemView.onAddEnergy(first, energy);
         }
     }
 

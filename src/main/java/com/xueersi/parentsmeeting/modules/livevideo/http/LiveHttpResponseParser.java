@@ -1892,6 +1892,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             energyEntity.setCompetitorEnergy(data.getLong("competitorEnergy"));
             energyEntity.setMyEnergy(data.getLong("myEnergy"));
             energyEntity.setStuLiveGold(data.getLong("stuLiveGold"));
+            energyEntity.setStuEnergy(data.optInt("stuEnergy"));
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -286,11 +286,15 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         handler.postDelayed(ivPkStateRun, 10000);
     }
 
+    private int totalEnergy;
+
     @Override
-    public void onAddEnergy(int energy) {
+    public void onAddEnergy(boolean first, int energy) {
+        totalEnergy += energy;
+        mLogtf.d("onAddEnergy:first=" + first + ",energy=" + energy);
         PrimaryTeamMyItem basePrimaryTeamItem = (PrimaryTeamMyItem) courseGroupItemHashMap.get("" + stuid);
         if (basePrimaryTeamItem != null) {
-            basePrimaryTeamItem.onAddEnergy(energy);
+            basePrimaryTeamItem.onAddEnergy(first, energy);
         }
     }
 
@@ -317,6 +321,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                 teamMember = result.get(i);
                 int uid = Integer.parseInt(teamMember.getId());
                 if (stuid == Integer.parseInt(teamMember.getId())) {
+                    teamMember.setEnergy(totalEnergy);
                     PrimaryTeamMyItem myItem = new PrimaryTeamMyItem(mContext, teamMember, workerThread, uid);
 //                    myItem.setOnNameClick(onNameClick);
                     basePrimaryTeamItem = myItem;

@@ -11,7 +11,6 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
@@ -44,7 +43,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.NativeVoteRusltulCloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
-import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.PrimaryKuangjiaImageView;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.entity.RedPackageEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.event.TeamPkTeamInfoEvent;
@@ -665,35 +663,39 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         }
     }
 
+    /**
+     * 小班体验右侧距离，暂时没用
+     * @param resultPager
+     */
     private void setRight(TeamPkResultPager resultPager) {
-        if (roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
-            final View view = resultPager.getRootView();
-            final PrimaryKuangjiaImageView ivLivePrimaryClassKuangjiaImgNormal = mContentView.findViewById(R.id.iv_live_primary_class_kuangjia_img_normal);
-            final PrimaryKuangjiaImageView.OnSizeChange onSizeChange = new PrimaryKuangjiaImageView.OnSizeChange() {
-                @Override
-                public void onSizeChange(int width, int height) {
-                    float scale = (float) width / 1334f;
-                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) view.getLayoutParams();
-                    int rightMargin = (ScreenUtils.getScreenWidth() - width) / 2 + (int) (216 * scale);
-                    if (rightMargin != params.rightMargin) {
-                        params.rightMargin = rightMargin;
-                        LayoutParamsUtil.setViewLayoutParams(view, params);
-                    }
-                }
-            };
-            ivLivePrimaryClassKuangjiaImgNormal.addSizeChange(onSizeChange);
-            view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
-                @Override
-                public void onViewAttachedToWindow(View view) {
-
-                }
-
-                @Override
-                public void onViewDetachedFromWindow(View view) {
-                    ivLivePrimaryClassKuangjiaImgNormal.removeSizeChange(onSizeChange);
-                }
-            });
-        }
+//        if (roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+//            final View view = resultPager.getRootView();
+//            final PrimaryKuangjiaImageView ivLivePrimaryClassKuangjiaImgNormal = mContentView.findViewById(R.id.iv_live_primary_class_kuangjia_img_normal);
+//            final PrimaryKuangjiaImageView.OnSizeChange onSizeChange = new PrimaryKuangjiaImageView.OnSizeChange() {
+//                @Override
+//                public void onSizeChange(int width, int height) {
+//                    float scale = (float) width / 1334f;
+//                    RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) view.getLayoutParams();
+//                    int rightMargin = (ScreenUtils.getScreenWidth() - width) / 2 + (int) (216 * scale);
+//                    if (rightMargin != params.rightMargin) {
+//                        params.rightMargin = rightMargin;
+//                        LayoutParamsUtil.setViewLayoutParams(view, params);
+//                    }
+//                }
+//            };
+//            ivLivePrimaryClassKuangjiaImgNormal.addSizeChange(onSizeChange);
+//            view.addOnAttachStateChangeListener(new View.OnAttachStateChangeListener() {
+//                @Override
+//                public void onViewAttachedToWindow(View view) {
+//
+//                }
+//
+//                @Override
+//                public void onViewDetachedFromWindow(View view) {
+//                    ivLivePrimaryClassKuangjiaImgNormal.removeSizeChange(onSizeChange);
+//                }
+//            });
+//        }
     }
 
     /**
@@ -726,8 +728,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
             // pkStateRootView.setTeamPkBll(this);
             // 设置当前pk 状态,兼容 半身直播 主辅导态来回切换
             if (mCurrentPkState != null) {
-                pkStateRootView.bindData(mCurrentPkState.getStuLiveGold(),
-                        mCurrentPkState.getMyEnergy(), mCurrentPkState.getCompetitorEnergy(), false);
+                pkStateRootView.bindData(mCurrentPkState, false);
             }
 
         }
@@ -765,9 +766,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                         mCurrentPkState = mHttpResponseParser.parseStuCoinAndTotalEnergy(responseEntity);
                         if (pkStateRootView != null && mCurrentPkState != null) {
-                            pkStateRootView.bindData(mCurrentPkState.getStuLiveGold(),
-                                    mCurrentPkState.getMyEnergy(), mCurrentPkState.getCompetitorEnergy(),
-                                    showPopWindow);
+                            pkStateRootView.bindData(mCurrentPkState, showPopWindow);
                         }
                     }
 

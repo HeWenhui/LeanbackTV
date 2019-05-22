@@ -17,7 +17,7 @@ public interface PrimaryItemView {
 
     void updatePkState(float ratio);
 
-    void onAddEnergy(int energy);
+    void onAddEnergy(boolean first, int energy);
 
     void onDestroy();
 }

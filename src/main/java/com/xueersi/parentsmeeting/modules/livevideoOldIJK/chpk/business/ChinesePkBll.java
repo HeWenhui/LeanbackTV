@@ -477,7 +477,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             pkStateRootView.setVisibility(View.VISIBLE);
 
             if (mCurrentPkState != null) {
-                pkStateRootView.bindData(mCurrentPkState.getStuLiveGold(), mCurrentPkState.getMyEnergy(), mCurrentPkState.getCompetitorEnergy(), false);
+                pkStateRootView.bindData(mCurrentPkState, false);
             }
         }
 
@@ -977,8 +977,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 mCurrentPkState = mHttpResponseParser.parseStuCoinAndTotalEnergy(responseEntity);
                 if (pkStateRootView != null && mCurrentPkState != null) {
-                    pkStateRootView.bindData(mCurrentPkState.getStuLiveGold(), mCurrentPkState.getMyEnergy(), mCurrentPkState
-                            .getCompetitorEnergy(), showPopWindow);
+                    pkStateRootView.bindData(mCurrentPkState, showPopWindow);
                 }
             }
 

@@ -1,11 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.chpk.business;
 
 import android.app.Activity;
-import android.graphics.Color;
 import android.graphics.Rect;
-import android.os.Build;
-import android.os.Looper;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +11,6 @@ import android.widget.RelativeLayout;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
@@ -482,7 +477,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             pkStateRootView.setVisibility(View.VISIBLE);
 
             if (mCurrentPkState != null) {
-                pkStateRootView.bindData(mCurrentPkState.getStuLiveGold(), mCurrentPkState.getMyEnergy(), mCurrentPkState.getCompetitorEnergy(), false);
+                pkStateRootView.bindData(mCurrentPkState, false);
             }
         }
 
@@ -982,8 +977,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 mCurrentPkState = mHttpResponseParser.parseStuCoinAndTotalEnergy(responseEntity);
                 if (pkStateRootView != null && mCurrentPkState != null) {
-                    pkStateRootView.bindData(mCurrentPkState.getStuLiveGold(), mCurrentPkState.getMyEnergy(), mCurrentPkState
-                            .getCompetitorEnergy(), showPopWindow);
+                    pkStateRootView.bindData(mCurrentPkState, showPopWindow);
                 }
             }
 

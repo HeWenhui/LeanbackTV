@@ -3,13 +3,11 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.business;
 import android.app.Activity;
 import android.os.Build;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
-import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -669,8 +667,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
            // pkStateRootView.setTeamPkBll(this);
             // 设置当前pk 状态,兼容 半身直播 主辅导态来回切换
             if (mCurrentPkState != null) {
-                pkStateRootView.bindData(mCurrentPkState.getStuLiveGold(),
-                        mCurrentPkState.getMyEnergy(), mCurrentPkState.getCompetitorEnergy(), false);
+                pkStateRootView.bindData(mCurrentPkState, false);
             }
 
         }
@@ -708,9 +705,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                         mCurrentPkState = mHttpResponseParser.parseStuCoinAndTotalEnergy(responseEntity);
                         if (pkStateRootView != null && mCurrentPkState != null) {
-                            pkStateRootView.bindData(mCurrentPkState.getStuLiveGold(),
-                                    mCurrentPkState.getMyEnergy(), mCurrentPkState.getCompetitorEnergy(),
-                                    showPopWindow);
+                            pkStateRootView.bindData(mCurrentPkState, showPopWindow);
                         }
                     }
 

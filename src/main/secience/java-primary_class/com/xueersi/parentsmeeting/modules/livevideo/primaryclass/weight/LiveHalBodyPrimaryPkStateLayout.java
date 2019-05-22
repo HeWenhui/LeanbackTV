@@ -11,6 +11,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PkAddEnergy;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PkUpdatePkState;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentCoinAndTotalEnergyEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 
 /**
@@ -60,7 +61,13 @@ public class LiveHalBodyPrimaryPkStateLayout extends TeamPkStateLayout {
         energy = energy < 0 ? 0 : energy;
         tvEnergyMyContribution.setText("我贡献了" + energy + "个能量");
         showViewWithFadeInOutEffect(vContributionCotanier, ENERGY_MY_CONTRIBUTION_DURATION);
-        LiveEventBus.getDefault(getContext()).post(new PkAddEnergy(energy));
+        LiveEventBus.getDefault(getContext()).post(new PkAddEnergy(false, energy));
+    }
+
+    @Override
+    public void bindData(StudentCoinAndTotalEnergyEntity mCurrentPkState, boolean showPopWindow) {
+        super.bindData(mCurrentPkState, showPopWindow);
+        LiveEventBus.getDefault(getContext()).post(new PkAddEnergy(true, mCurrentPkState.getStuEnergy()));
     }
 
     @Override

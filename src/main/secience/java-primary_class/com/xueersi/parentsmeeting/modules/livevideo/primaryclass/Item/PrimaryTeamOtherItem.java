@@ -198,8 +198,10 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                     voiceImageView.reset();
                     if (enable && enableAudio) {
                         iv_livevideo_primary_team_voice_open.setImageResource(R.drawable.xuesheng_icon_maikefeng_normal);
+                        voiceImageView.setVisibility(View.VISIBLE);
                     } else {
                         iv_livevideo_primary_team_voice_open.setImageResource(R.drawable.xuesheng_icon_maikefeng_zero_normal);
+                        voiceImageView.setVisibility(View.GONE);
                     }
                 }
             });
