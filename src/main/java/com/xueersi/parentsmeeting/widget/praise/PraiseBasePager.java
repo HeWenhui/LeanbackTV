@@ -291,7 +291,6 @@ public class PraiseBasePager extends LiveBasePager {
     public void closePraisePagerMain(){
         if (onPagerClose != null) {
             onPagerClose.onClose(this);
-
             if (mHandler != null) {
                 mHandler.removeMessages(PraiseConfig.ENCOURAGING_HIDE);
                 mHandler.removeMessages(PraiseConfig.ENCOURAGING_SHOW);
