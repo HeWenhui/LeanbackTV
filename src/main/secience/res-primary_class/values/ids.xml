@@ -25,4 +25,6 @@
     <item name="tv_livevideo_primary_team_name_mid" type="id" />
     <item name="tv_livevideo_primary_team_name" type="id" />
     <item name="ll_livevideo_primary_team_content" type="id" />
+    <item name="cl_livevideo_course_item_video" type="id" />
+    <item name="rl_livevideo_course_item_video_ufo" type="id" />
 </resources>

@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.constraint.ConstraintLayout;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,6 +23,8 @@ public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
     protected TextView tv_livevideo_primary_team_people_name;
     protected ImageView iv_livevideo_primary_team_voice_open;
     protected RelativeLayout rl_livevideo_primary_team_tip;
+    protected ConstraintLayout cl_livevideo_course_item_video;
+    protected RelativeLayout rl_livevideo_course_item_video_ufo;
     protected VoiceImageView voiceImageView;
     protected Handler handler = new Handler(Looper.getMainLooper());
     protected OnNameClick onNameClick;
@@ -45,6 +48,8 @@ public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
         iv_livevideo_primary_team_voice_open = root.findViewById(R.id.iv_livevideo_primary_team_voice_open);
         rl_livevideo_primary_team_tip = root.findViewById(R.id.rl_livevideo_primary_team_tip);
         voiceImageView = root.findViewById(R.id.iv_livevideo_primary_team_voice_voice);
+        cl_livevideo_course_item_video = root.findViewById(R.id.cl_livevideo_course_item_video);
+        rl_livevideo_course_item_video_ufo = root.findViewById(R.id.rl_livevideo_course_item_video_ufo);
     }
 
     @Override

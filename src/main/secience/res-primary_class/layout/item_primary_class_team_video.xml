@@ -6,37 +6,58 @@
     android:layout_height="72dp"
     tools:ignore="MissingConstraints,NotSibling">
 
-    <RelativeLayout
-        android:id="@id/rl_livevideo_course_item_video"
+    <android.support.constraint.ConstraintLayout
+        android:id="@id/cl_livevideo_course_item_video"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
-        android:layout_centerHorizontal="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent">
 
         <RelativeLayout
-            android:id="@id/rl_livevideo_course_item_video_head"
+            android:id="@id/rl_livevideo_course_item_video"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@drawable/shape_livevideo_course_item_video_head_bg"
-            android:visibility="gone">
+            android:layout_height="72dp"
+            android:layout_centerHorizontal="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <ImageView
-                android:id="@id/iv_livevideo_course_item_video_head"
+            <RelativeLayout
+                android:id="@id/rl_livevideo_course_item_video_head"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_centerInParent="true"
-                android:scaleType="fitXY" />
+                android:background="@drawable/shape_livevideo_course_item_video_head_bg"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@id/iv_livevideo_course_item_video_head"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:scaleType="fitXY" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@id/rl_livevideo_course_item_video_tip"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="4dp" />
+
         </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@id/rl_livevideo_course_item_video_tip"
+    </android.support.constraint.ConstraintLayout>
+
+    <RelativeLayout
+        android:id="@id/rl_livevideo_course_item_video_ufo"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#F69834"
+        android:visibility="gone">
+
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="4dp" />
-
+            android:layout_centerInParent="true"
+            android:src="@drawable/bg_live_xuesheng_shipin_mid_ufo_normal" />
     </RelativeLayout>
 
     <android.support.constraint.ConstraintLayout
@@ -73,22 +94,6 @@
             app:layout_constraintTop_toTopOf="parent" />
     </android.support.constraint.ConstraintLayout>
 
-    <TextView
-        android:id="@id/tv_livevideo_primary_team_people_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:layout_marginBottom="4dp"
-        android:shadowColor="#1a000000"
-        android:shadowDx="0"
-        android:shadowDy="0"
-        android:shadowRadius="3.0"
-        android:text="小铝孩"
-        android:textColor="#ffffffff"
-        android:textSize="12sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent" />
-
     <ImageView
         android:id="@id/iv_livevideo_primary_team_voice_open"
         android:layout_width="wrap_content"
@@ -106,6 +111,22 @@
         app:layout_constraintBottom_toTopOf="@id/iv_livevideo_primary_team_voice_open"
         app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_primary_team_voice_open"
         app:layout_constraintRight_toRightOf="@id/iv_livevideo_primary_team_voice_open" />
+
+    <TextView
+        android:id="@id/tv_livevideo_primary_team_people_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginBottom="4dp"
+        android:shadowColor="#1a000000"
+        android:shadowDx="0"
+        android:shadowDy="0"
+        android:shadowRadius="3.0"
+        android:text="小铝孩"
+        android:textColor="#ffffffff"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
     <RelativeLayout
         android:id="@id/rl_livevideo_primary_team_tip"

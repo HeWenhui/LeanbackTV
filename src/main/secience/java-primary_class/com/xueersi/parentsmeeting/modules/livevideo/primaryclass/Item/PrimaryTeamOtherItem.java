@@ -74,6 +74,7 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                     }
                 });
             } else {
+                entity.setLook(true);
                 cloudWorkerThreadPool.execute(new Runnable() {
                     @Override
                     public void run() {
@@ -85,29 +86,37 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                 });
             }
         }
-        if (audioStatus) {
-            if (entity.isLook()) {
-                entity.setLook(false);
-                cloudWorkerThreadPool.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
-                        if (mRtcEngine != null) {
-                            mRtcEngine.enableRemoteAudio(uid, false);
-                        }
-                    }
-                });
-            } else {
-                cloudWorkerThreadPool.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
-                        if (mRtcEngine != null) {
-                            mRtcEngine.enableRemoteAudio(uid, true);
-                        }
-                    }
-                });
-            }
+//        if (audioStatus) {
+//            if (entity.isLook()) {
+//                entity.setLook(false);
+//                cloudWorkerThreadPool.execute(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
+//                        if (mRtcEngine != null) {
+//                            mRtcEngine.enableRemoteAudio(uid, false);
+//                        }
+//                    }
+//                });
+//            } else {
+//                entity.setLook(true);
+//                cloudWorkerThreadPool.execute(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
+//                        if (mRtcEngine != null) {
+//                            mRtcEngine.enableRemoteAudio(uid, true);
+//                        }
+//                    }
+//                });
+//            }
+//        }
+        if (entity.isLook()) {
+            rl_livevideo_course_item_video_ufo.setVisibility(View.GONE);
+            cl_livevideo_course_item_video.setVisibility(View.VISIBLE);
+        } else {
+            rl_livevideo_course_item_video_ufo.setVisibility(View.VISIBLE);
+            cl_livevideo_course_item_video.setVisibility(View.GONE);
         }
     }
 
@@ -127,15 +136,29 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
     public void onOtherDis(int type, final boolean enable) {
         super.onOtherDis(type, enable);
         if (type == PrimaryClassConfig.MMTYPE_VIDEO) {
-            cloudWorkerThreadPool.execute(new Runnable() {
-                @Override
-                public void run() {
-                    RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
-                    if (mRtcEngine != null) {
-                        mRtcEngine.muteRemoteVideo(uid, !enable);
+            if (entity.isLook()) {
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (enable) {
+                            rl_livevideo_course_item_video_ufo.setVisibility(View.GONE);
+                            cl_livevideo_course_item_video.setVisibility(View.VISIBLE);
+                        } else {
+                            rl_livevideo_course_item_video_ufo.setVisibility(View.VISIBLE);
+                            cl_livevideo_course_item_video.setVisibility(View.GONE);
+                        }
                     }
-                }
-            });
+                });
+                cloudWorkerThreadPool.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
+                        if (mRtcEngine != null) {
+                            mRtcEngine.muteRemoteVideo(uid, !enable);
+                        }
+                    }
+                });
+            }
         } else {
             cloudWorkerThreadPool.execute(new Runnable() {
                 @Override

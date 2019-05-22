@@ -102,6 +102,18 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
     public void onOtherDis(int type, final boolean enable) {
         super.onOtherDis(type, enable);
         if (type == PrimaryClassConfig.MMTYPE_VIDEO) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    if (enable) {
+                        rl_livevideo_course_item_video_ufo.setVisibility(View.GONE);
+                        cl_livevideo_course_item_video.setVisibility(View.VISIBLE);
+                    } else {
+                        rl_livevideo_course_item_video_ufo.setVisibility(View.VISIBLE);
+                        cl_livevideo_course_item_video.setVisibility(View.GONE);
+                    }
+                }
+            });
             cloudWorkerThreadPool.execute(new Runnable() {
                 @Override
                 public void run() {
