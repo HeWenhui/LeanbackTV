@@ -722,8 +722,12 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
             if (ivPraise == null) {
                 ivPraise = new ImageView(mContext);
                 ivPraise.setImageResource(R.drawable.bg_livevideo_junior_praise);
-                rlSpeechBulContent.addView(ivPraise, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT));
+                rlSpeechBulContent.addView(ivPraise, new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
+                        .WRAP_CONTENT,
+                        RelativeLayout.LayoutParams.WRAP_CONTENT));
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) ivPraise.getLayoutParams();
+                layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+                ivPraise.setLayoutParams(layoutParams);
             }
             ivPraise.setVisibility(View.VISIBLE);
             rlSpeechBulContent.removeCallbacks(removeViewRunnable);
