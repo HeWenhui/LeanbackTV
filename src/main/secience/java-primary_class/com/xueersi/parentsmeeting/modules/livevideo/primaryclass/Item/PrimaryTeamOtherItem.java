@@ -61,9 +61,9 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
 
     @Override
     public void onVideo() {
+        entity.setLook(!entity.isLook());
         if (videoStatus) {
             if (entity.isLook()) {
-                entity.setLook(false);
                 cloudWorkerThreadPool.execute(new Runnable() {
                     @Override
                     public void run() {
@@ -74,7 +74,6 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                     }
                 });
             } else {
-                entity.setLook(true);
                 cloudWorkerThreadPool.execute(new Runnable() {
                     @Override
                     public void run() {
@@ -86,37 +85,42 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                 });
             }
         }
-//        if (audioStatus) {
-//            if (entity.isLook()) {
-//                entity.setLook(false);
-//                cloudWorkerThreadPool.execute(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
-//                        if (mRtcEngine != null) {
-//                            mRtcEngine.enableRemoteAudio(uid, false);
-//                        }
-//                    }
-//                });
-//            } else {
-//                entity.setLook(true);
-//                cloudWorkerThreadPool.execute(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
-//                        if (mRtcEngine != null) {
-//                            mRtcEngine.enableRemoteAudio(uid, true);
-//                        }
-//                    }
-//                });
-//            }
-//        }
+        if (audioStatus) {
+            if (entity.isLook()) {
+                cloudWorkerThreadPool.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
+                        if (mRtcEngine != null) {
+                            mRtcEngine.enableRemoteAudio(uid, false);
+                        }
+                    }
+                });
+            } else {
+                cloudWorkerThreadPool.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        RTCEngine mRtcEngine = cloudWorkerThreadPool.getRtcEngine();
+                        if (mRtcEngine != null) {
+                            mRtcEngine.enableRemoteAudio(uid, true);
+                        }
+                    }
+                });
+            }
+        }
+        mLogtf.d("onVideo:isLook=" + entity.isLook());
         if (entity.isLook()) {
-            rl_livevideo_course_item_video_ufo.setVisibility(View.GONE);
-            cl_livevideo_course_item_video.setVisibility(View.VISIBLE);
+            if (videoStatus) {
+                rl_livevideo_course_item_video_ufo.setVisibility(View.GONE);
+                cl_livevideo_course_item_video.setVisibility(View.VISIBLE);
+            }
+            iv_livevideo_primary_team_voice_open.setVisibility(View.VISIBLE);
+            voiceImageView.setVisibility(View.VISIBLE);
         } else {
             rl_livevideo_course_item_video_ufo.setVisibility(View.VISIBLE);
             cl_livevideo_course_item_video.setVisibility(View.GONE);
+            iv_livevideo_primary_team_voice_open.setVisibility(View.GONE);
+            voiceImageView.setVisibility(View.GONE);
         }
     }
 
@@ -136,6 +140,7 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
     public void onOtherDis(int type, final boolean enable) {
         super.onOtherDis(type, enable);
         if (type == PrimaryClassConfig.MMTYPE_VIDEO) {
+            mLogtf.d("onOtherDis:MMTYPE_VIDEO=" + entity.isLook());
             if (entity.isLook()) {
                 handler.post(new Runnable() {
                     @Override

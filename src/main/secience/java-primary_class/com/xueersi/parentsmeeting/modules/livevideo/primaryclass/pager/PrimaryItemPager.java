@@ -294,7 +294,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                 int uid = Integer.parseInt(teamMember.getId());
                 if (stuid == Integer.parseInt(teamMember.getId())) {
                     PrimaryTeamMyItem myItem = new PrimaryTeamMyItem(mContext, teamMember, workerThread, uid);
-                    myItem.setOnNameClick(onNameClick);
+//                    myItem.setOnNameClick(onNameClick);
                     basePrimaryTeamItem = myItem;
                 } else {
                     PrimaryTeamOtherItem otherItem = new PrimaryTeamOtherItem(mContext, teamMember, workerThread, uid);
