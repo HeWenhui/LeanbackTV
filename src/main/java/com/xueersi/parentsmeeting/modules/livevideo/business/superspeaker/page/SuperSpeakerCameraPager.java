@@ -83,6 +83,8 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
     private String courseWareId;
 
     private LottieAnimationView lottieAnimationView;
+    /** 是否开始预览 */
+    private boolean isPreView;
 
     public SuperSpeakerCameraPager(Context context, ISuperSpeakerContract.ISuperSpeakerBridge bridge, String liveId, String courseWareId, int answerTime, int recordTime) {
         super(context);

@@ -65,7 +65,7 @@ public class SuperSpeakerRedPackagePager extends BasePager implements ISuperSpea
     @Override
     public void updateNum(String num) {
         tvMoney.setText(String.valueOf(num));
-//        mView.postDelayed(closeRunnable, 5000);
+        mView.postDelayed(closeRunnable, 5000);
 //        Observable.timer(5, TimeUnit.SECONDS).subscribe(new Consumer<Long>() {
 //            @Override
 //            public void accept(Long aLong) throws Exception {
