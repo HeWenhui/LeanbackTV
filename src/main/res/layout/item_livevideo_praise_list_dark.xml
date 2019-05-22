@@ -7,14 +7,19 @@
 
     <TextView
         android:id="@id/tv_item_livevideo_praise_list_name"
-        android:textSize="12dp"
+        android:textSize="12sp"
         android:layout_width="wrap_content"
         android:lineSpacingExtra="4dp"
         android:ellipsize="end"
         android:text=""
         android:layout_height="wrap_content" />
+
+    <View
+        android:id="@id/v_item_livevideo_praise_list_name_line"
+        android:layout_width="match_parent"
+        android:layout_height="15dp"/>
     <View
         android:layout_width="match_parent"
-        android:layout_height="3dp"/>
+        android:layout_height="5dp"/>
 
 </LinearLayout>

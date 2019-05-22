@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@id/rl_page_livevideo_praise_list_main_content"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:id="@id/rl_page_livevideo_praise_list_main_content"
     android:background="@drawable/bg_page_livevideo_praise_list_lovely">
 
 
@@ -11,9 +11,9 @@
         android:id="@id/rl_page_livevideo_praise_list_content"
         android:layout_width="400dp"
         android:layout_height="350dp"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="20dp"
-        android:layout_centerHorizontal="true"
         android:background="@drawable/bg_page_livevideo_praise_list_lovely_content">
 
 
@@ -31,30 +31,38 @@
             android:layout_width="160dp"
             android:layout_height="25dp"
             android:layout_centerHorizontal="true"
-            android:visibility="gone"
             android:layout_marginTop="55dp"
-            android:textColor="#FFFBEB"
             android:gravity="center"
-            android:text="" />
+            android:text=""
+            android:textColor="#FFFBEB"
+            android:visibility="gone" />
+
+        <View
+            android:id="@id/v_livevideo_praise_list_content_line"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_marginTop="100dp" />
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@id/tv_page_livevideo_praise_list_sub_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/v_livevideo_praise_list_content_line"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="110dp"
             android:gravity="center"
-            android:text="" />
+            android:text=""
+            android:visibility="visible" />
 
         <com.xueersi.parentsmeeting.modules.livevideo.widget.FastScrollableRecyclerView
             android:id="@id/rv_livevideo_praise_list_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@id/tv_page_livevideo_praise_list_sub_title"
             android:layout_marginLeft="60dp"
-            android:layout_marginTop="130dp"
+            android:layout_marginTop="8dp"
             android:layout_marginRight="34dp"
-            android:paddingRight="8dp"
             android:layout_marginBottom="50dp"
+            android:paddingRight="8dp"
             android:scrollbarStyle="outsideOverlay"
             app:VerticalThumbDrawable="@drawable/rcl_fast_scoller_line_ffa0a0a0_style"
             app:VerticalTrackDrawable="@drawable/rcl_fastscroller_transparent" />
@@ -66,10 +74,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:visibility="gone"
         android:layout_marginTop="11dp"
         android:layout_marginRight="13dp"
-        android:background="@drawable/selector_page_livevideo_praise_list_lovely_close_style" />
+        android:background="@drawable/selector_page_livevideo_praise_list_lovely_close_style"
+        android:visibility="gone" />
 
     <RelativeLayout
         android:layout_width="75dp"
@@ -109,12 +117,12 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|bottom"
                 android:layout_marginBottom="16dp"
-                android:textColor="#FFEDA5"
+                android:shadowColor="#7db8170b"
                 android:shadowDx="0"
                 android:shadowDy="2"
-                android:text="0"
                 android:shadowRadius="3.0"
-                android:shadowColor="#7db8170b"
+                android:text="0"
+                android:textColor="#FFEDA5"
                 android:textSize="11sp" />
 
         </com.xueersi.parentsmeeting.modules.livevideo.widget.PraiseBtnAnimLayout>
@@ -125,11 +133,11 @@
         android:id="@id/ll_page_livevideo_praise_list_teacher_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
         android:layout_centerInParent="true"
         android:background="@color/FFFFFFFF_70"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="205dp"
@@ -143,9 +151,9 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_marginLeft="12dp"
+                android:layout_marginBottom="2dp"
                 android:src="@drawable/ic_default_head_square"
                 app:border_color="#ffffff"
-                android:layout_marginBottom="2dp"
                 app:border_width="2dp" />
 
             <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
@@ -153,8 +161,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
-                android:text=""
                 android:paddingRight="20dp"
+                android:text=""
                 android:textColor="#FFFBEB"
                 android:textSize="15sp" />
         </LinearLayout>
@@ -164,12 +172,12 @@
             android:layout_width="294dp"
             android:layout_height="75dp"
             android:background="@drawable/bg_page_livevideo_praise_list_lovely_teacher_talk"
+            android:ellipsize="end"
+            android:gravity="center_horizontal"
             android:paddingLeft="20dp"
             android:paddingTop="30dp"
-            android:gravity="center_horizontal"
-            android:singleLine="true"
-            android:ellipsize="end"
             android:paddingRight="20dp"
+            android:singleLine="true"
             android:text=""
             android:textColor="#FD6368"
             android:textSize="15dp" />

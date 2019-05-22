@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.widget.praise.item;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -19,6 +20,7 @@ public class LivePraiseItem implements RItemViewInterface<PraiseContentEntity> {
     TextView tvName;
     Context mContext;
     Typeface fontFace;
+    View viewLine;
     public LivePraiseItem(Context context,Typeface fontFace){
         mContext =context;
         this.fontFace = fontFace;
@@ -39,6 +41,7 @@ public class LivePraiseItem implements RItemViewInterface<PraiseContentEntity> {
     @Override
     public void initView(ViewHolder holder, int position) {
         tvName = holder.getView(R.id.tv_item_livevideo_praise_list_name);
+        viewLine = holder.getView(R.id.v_item_livevideo_praise_list_name_line);
     }
 
     @Override
@@ -83,6 +86,12 @@ public class LivePraiseItem implements RItemViewInterface<PraiseContentEntity> {
         }
         if(praiseContentEntity.getPraiseStyle() != PraiseConfig.PRAISE_DARK) {
             tvName.setTypeface(fontFace);
+        }
+        if(praiseContentEntity.getItemSpan() == 4){
+            viewLine.setVisibility(View.VISIBLE);
+        } else {
+            viewLine.setVisibility(View.GONE);
+
         }
     }
     private int getColor(int id){
