@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -358,6 +359,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         sendLayoutParams.leftMargin = SizeUtils.Dp2Px(mContext, 12);
         sendLayoutParams.rightMargin = SizeUtils.Dp2Px(mContext, 12);
         etSpeechbulWords.setLayoutParams(wordsLayoutParams);
+        etSpeechbulWords.setFilters(new InputFilter[]{new InputFilter.LengthFilter(80)});
     }
 
     /**
