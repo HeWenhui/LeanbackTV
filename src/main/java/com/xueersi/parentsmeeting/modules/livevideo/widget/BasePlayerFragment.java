@@ -380,6 +380,9 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                     vPlayer.setDisplay(videoView.getHolder());
                                 }
                                 vPlayer.psInit(MediaPlayer.VIDEO_PLAYER_NAME, getStartPosition(), vPlayerServiceListener, mIsHWCodec);
+                                if (videoConfigEntity != null) {
+                                    vPlayer.enableAutoSpeedPlay(videoConfigEntity.getWaterMark(), videoConfigEntity.getDuration());
+                                }
                                 if (isChangeLine) {
                                     try {
                                         vPlayer.changeLine(changeLinePos, protocol);
@@ -603,9 +606,11 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 ////            mediaPlayer.enableAutoSpeedPlay(waterMark, duration);
 ////        }
 //    }
+    private VideoConfigEntity videoConfigEntity;
 
     public void enableAutoSpeedPlay(VideoConfigEntity videoConfigEntity) {
         if (vPlayer != null && videoConfigEntity != null) {
+            this.videoConfigEntity = videoConfigEntity;
             vPlayer.enableAutoSpeedPlay(videoConfigEntity.getWaterMark(), videoConfigEntity.getDuration());
         }
 
