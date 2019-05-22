@@ -34,11 +34,19 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
         iv_livevideo_primary_team_voice_open.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (audioStatus) {
+                    enableAudio = !enableAudio;
+                    if (enableAudio) {
+                        iv_livevideo_primary_team_voice_open.setImageResource(R.drawable.xuesheng_icon_maikefeng_normal);
+                    } else {
+                        voiceImageView.reset();
+                        iv_livevideo_primary_team_voice_open.setImageResource(R.drawable.xuesheng_icon_maikefeng_zero_normal);
+                    }
+                }
                 cloudWorkerThreadPool.execute(new Runnable() {
                     @Override
                     public void run() {
                         if (audioStatus) {
-                            enableAudio = !enableAudio;
                             cloudWorkerThreadPool.getRtcEngine().enableRemoteAudio(uid, enableAudio);
                         }
                     }
@@ -125,6 +133,25 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
     }
 
     @Override
+    public void didOfflineOfUid(final boolean join) {
+        logger.d("didOfflineOfUid:join=" + join + ",thread=" + Thread.currentThread());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                rl_livevideo_course_item_video_off.setVisibility(join ? View.GONE : View.VISIBLE);
+                logger.d("didOfflineOfUid:join=" + join + ",visibility=" + rl_livevideo_course_item_video_off.getVisibility());
+            }
+        });
+//        if (join && entity.isLook()) {
+//            cl_livevideo_course_item_video.setVisibility(View.VISIBLE);
+//            iv_livevideo_primary_team_voice_open.setVisibility(View.VISIBLE);
+//        } else {
+//            cl_livevideo_course_item_video.setVisibility(View.GONE);
+//            iv_livevideo_primary_team_voice_open.setVisibility(View.GONE);
+//        }
+    }
+
+    @Override
     public void onReport() {
         final View view = LayoutInflater.from(mContext).inflate(R.layout.item_primary_class_team_item_report, rl_livevideo_primary_team_tip, false);
         rl_livevideo_primary_team_tip.addView(view);
@@ -165,6 +192,12 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
                 });
             }
         } else {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    voiceImageView.reset();
+                }
+            });
             cloudWorkerThreadPool.execute(new Runnable() {
                 @Override
                 public void run() {

@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.constraint.ConstraintLayout;
@@ -10,10 +11,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.xes.ps.rtcstream.RTCEngine;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
+import com.xueersi.parentsmeeting.modules.livevideo.groupgame.item.TextureVideoViewOutlineProvider;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.config.PrimaryClassConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.VoiceImageView;
 
@@ -25,14 +27,18 @@ public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
     protected RelativeLayout rl_livevideo_primary_team_tip;
     protected ConstraintLayout cl_livevideo_course_item_video;
     protected RelativeLayout rl_livevideo_course_item_video_ufo;
+    protected ImageView iv_livevideo_course_item_video_ufo;
+    protected RelativeLayout rl_livevideo_course_item_video_off;
     protected VoiceImageView voiceImageView;
     protected Handler handler = new Handler(Looper.getMainLooper());
     protected OnNameClick onNameClick;
     protected boolean videoStatus = false;
     protected boolean audioStatus = false;
+    protected int headCornerSize;
 
     public BasePrimaryTeamPeopleItem(Context context, TeamMate entity, CloudWorkerThreadPool workerThread, int uid) {
         super(context, entity, workerThread, uid);
+        headCornerSize = SizeUtils.Dp2Px(mContext, 10);
     }
 
     @Override
@@ -50,6 +56,8 @@ public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
         voiceImageView = root.findViewById(R.id.iv_livevideo_primary_team_voice_voice);
         cl_livevideo_course_item_video = root.findViewById(R.id.cl_livevideo_course_item_video);
         rl_livevideo_course_item_video_ufo = root.findViewById(R.id.rl_livevideo_course_item_video_ufo);
+        iv_livevideo_course_item_video_ufo = root.findViewById(R.id.iv_livevideo_course_item_video_ufo);
+        rl_livevideo_course_item_video_off = root.findViewById(R.id.rl_livevideo_course_item_video_off);
     }
 
     @Override
@@ -81,10 +89,10 @@ public class BasePrimaryTeamPeopleItem extends BasePrimaryTeamItem {
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.CENTER_IN_PARENT);
         rlCourseItemVideo.addView(surfaceV, 0, lp);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            surfaceV.setOutlineProvider(new TextureVideoViewOutlineProvider(headCornerSize));
-//            surfaceV.setClipToOutline(true);
-//        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            surfaceV.setOutlineProvider(new TextureVideoViewOutlineProvider(headCornerSize));
+            surfaceV.setClipToOutline(true);
+        }
     }
 
     @Override

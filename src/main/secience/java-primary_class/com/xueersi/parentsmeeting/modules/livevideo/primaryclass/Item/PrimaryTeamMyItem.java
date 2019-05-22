@@ -40,27 +40,31 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
         iv_livevideo_primary_team_voice_open.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (audioStatus) {
+                    enableAudio = !enableAudio;
+                    if (enableAudio) {
+                        iv_livevideo_primary_team_voice_open.setImageResource(R.drawable.xuesheng_icon_maikefeng_normal);
+                    } else {
+                        voiceImageView.reset();
+                        iv_livevideo_primary_team_voice_open.setImageResource(R.drawable.xuesheng_icon_maikefeng_zero_normal);
+                    }
+                }
                 cloudWorkerThreadPool.execute(new Runnable() {
                     @Override
                     public void run() {
                         if (audioStatus) {
-                            enableAudio = !enableAudio;
                             cloudWorkerThreadPool.getRtcEngine().muteLocalAudio(!enableAudio);
                         }
                     }
                 });
             }
         });
-        tv_livevideo_primary_team_people_name.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onNameClick.onNameClick(entity, tv_livevideo_primary_team_people_name);
-            }
-        });
-    }
-
-    public void doRenderRemoteUi(SurfaceView surfaceV) {
-        super.doRenderRemoteUi(surfaceV);
+//        tv_livevideo_primary_team_people_name.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                onNameClick.onNameClick(entity, tv_livevideo_primary_team_people_name);
+//            }
+//        });
     }
 
     @Override
@@ -84,6 +88,25 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
                 rl_livevideo_primary_team_tip.removeView(view);
             }
         }, 2000);
+    }
+
+    @Override
+    public void didOfflineOfUid(final boolean join) {
+        logger.d("didOfflineOfUid:join=" + join + ",thread=" + Thread.currentThread());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                rl_livevideo_course_item_video_off.setVisibility(join ? View.GONE : View.VISIBLE);
+                logger.d("didOfflineOfUid:join=" + join + ",visibility=" + rl_livevideo_course_item_video_off.getVisibility());
+            }
+        });
+//        if (join) {
+//            cl_livevideo_course_item_video.setVisibility(View.VISIBLE);
+//            iv_livevideo_primary_team_voice_open.setVisibility(View.VISIBLE);
+//        } else {
+//            cl_livevideo_course_item_video.setVisibility(View.GONE);
+//            iv_livevideo_primary_team_voice_open.setVisibility(View.GONE);
+//        }
     }
 
     @Override
@@ -124,6 +147,12 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
                 }
             });
         } else {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    voiceImageView.reset();
+                }
+            });
             cloudWorkerThreadPool.execute(new Runnable() {
                 @Override
                 public void run() {

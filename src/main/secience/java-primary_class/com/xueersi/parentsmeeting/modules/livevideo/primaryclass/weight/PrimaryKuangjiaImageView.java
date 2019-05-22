@@ -13,6 +13,7 @@ import android.widget.RelativeLayout;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 
 import java.util.ArrayList;
 
@@ -70,6 +71,10 @@ public class PrimaryKuangjiaImageView extends ImageView {
         addSizeChange(onSizeChange, true);
     }
 
+    public void removeSizeChange(final OnSizeChange onSizeChange) {
+        onSizeChanges.remove(onSizeChange);
+    }
+
     private void addSizeChange(final OnSizeChange onSizeChange, boolean add) {
         if (add) {
             onSizeChanges.add(onSizeChange);
@@ -94,7 +99,7 @@ public class PrimaryKuangjiaImageView extends ImageView {
                     width = (int) ((float) getHeight() / (float) bitmap.getHeight() * (float) bitmap.getWidth());
                     if (width != lp.width) {
                         lp.width = width;
-                        setLayoutParams(lp);
+                        LayoutParamsUtil.setViewLayoutParams(PrimaryKuangjiaImageView.this, lp);
                         logger.d("setImageViewWidth:width1=" + width);
                     }
                 } else {
@@ -102,7 +107,7 @@ public class PrimaryKuangjiaImageView extends ImageView {
                     height = (int) ((float) getWidth() / (float) bitmap.getWidth() * (float) bitmap.getHeight());
                     if (height != lp.height) {
                         lp.height = height;
-                        setLayoutParams(lp);
+                        LayoutParamsUtil.setViewLayoutParams(PrimaryKuangjiaImageView.this, lp);
                         logger.d("setImageViewWidth:width2=" + width);
                     }
                 }

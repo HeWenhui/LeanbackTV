@@ -4,14 +4,17 @@ import android.content.Context;
 import android.view.SurfaceView;
 import android.view.View;
 
+import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 
 public class BasePrimaryTeamItem implements AdapterItemInterface<TeamMate> {
     protected String TAG = getClass().getSimpleName();
+    protected Logger logger = LiveLoggerFactory.getLogger(TAG);
     protected Context mContext;
     protected TeamMate entity;
     protected CloudWorkerThreadPool cloudWorkerThreadPool;
@@ -51,6 +54,10 @@ public class BasePrimaryTeamItem implements AdapterItemInterface<TeamMate> {
     }
 
     public void reportAudioVolumeOfSpeaker(int volume) {
+
+    }
+
+    public void didOfflineOfUid(boolean join) {
 
     }
 

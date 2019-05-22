@@ -30,6 +30,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.PrimaryTea
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.business.PrimaryClassInter;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.config.PrimaryClassConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.PrimaryKuangjiaImageView;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 
@@ -104,7 +105,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                         lp.height = lpheight;
                         lp.leftMargin = leftMargin;
                         lp.topMargin = topMargin;
-                        rl_livevideo_primary_team_content.setLayoutParams(lp);
+                        LayoutParamsUtil.setViewLayoutParams(rl_livevideo_primary_team_content, lp);
                     }
                     RelativeLayout.LayoutParams lpImg = (RelativeLayout.LayoutParams) iv_livevideo_primary_team_icon.getLayoutParams();
                     int lpImgWidth = (int) (49 * scale);
@@ -112,21 +113,32 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                     if (lpImg.width != lpImgWidth || lpImg.height != lpImgHeight) {
                         lpImg.width = lpImgWidth;
                         lpImg.height = lpImgHeight;
-                        iv_livevideo_primary_team_icon.setLayoutParams(lpImg);
+                        LayoutParamsUtil.setViewLayoutParams(iv_livevideo_primary_team_icon, lpImg);
                     }
                 }
                 {
                     RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ll_livevideo_primary_team_content.getLayoutParams();
-                    int lpwidth = (int) (193 * scale);
+                    int lpwidth = (int) (195 * scale);
                     int lpheight = (int) (630 * scale);
                     int leftMargin = (ScreenUtils.getScreenWidth() - width) / 2 + (int) (1128 * scale);
-                    int topMargin = (ScreenUtils.getScreenHeight() - height) / 2 + (int) (102 * scale);
+                    int topMargin = (ScreenUtils.getScreenHeight() - height) / 2 + (int) (103 * scale);
                     if (lp.width != lpwidth || lp.height != lpheight || lp.leftMargin != leftMargin || lp.topMargin != topMargin) {
                         lp.width = lpwidth;
                         lp.height = lpheight;
                         lp.leftMargin = leftMargin;
                         lp.topMargin = topMargin;
-                        ll_livevideo_primary_team_content.setLayoutParams(lp);
+                        LayoutParamsUtil.setViewLayoutParams(ll_livevideo_primary_team_content, lp);
+                        for (int i = 0; i < ll_livevideo_primary_team_content.getChildCount(); i++) {
+                            View child = ll_livevideo_primary_team_content.getChildAt(i);
+                            ViewGroup.MarginLayoutParams childLp = (ViewGroup.MarginLayoutParams) child.getLayoutParams();
+                            int childHeight = (int) (149 * scale);
+                            int margin = (int) (10 * scale);
+                            if (childLp.height != childHeight || childLp.bottomMargin != margin) {
+                                childLp.height = childHeight;
+                                childLp.bottomMargin = margin;
+                                LayoutParamsUtil.setViewLayoutParams(child, childLp);
+                            }
+                        }
                     }
                 }
                 {
@@ -134,7 +146,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                     int topMargin = (ScreenUtils.getScreenHeight() - height) / 2 + (int) (114 * scale);
                     if (lp.topMargin != topMargin) {
                         lp.topMargin = topMargin;
-                        tv_livevideo_primary_team_name_mid.setLayoutParams(lp);
+                        LayoutParamsUtil.setViewLayoutParams(tv_livevideo_primary_team_name_mid, lp);
                     }
                 }
             }
@@ -145,8 +157,8 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     public void initData() {
         super.initData();
         ivLivePrimaryClassKuangjiaImgNormal = mContentView.findViewById(R.id.iv_live_primary_class_kuangjia_img_normal);
-        setLayout();
         addItem();
+        setLayout();
         if (LiveTopic.MODE_TRANING.equals(mode)) {
             mView.setVisibility(View.GONE);
         } else {
@@ -216,18 +228,19 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                         @Override
                         public void run() {
                             addItem();
-                        }
-                    });
-                    workerThread.execute(new Runnable() {
-                        @Override
-                        public void run() {
+                            workerThread.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    workerThread.getRtcEngine().setVideoEncoderConfiguration(200, 152, RTCEngine.RTCEngineVideoBitrate.VIDEO_BITRATE_100);
 //                            workerThread.getRtcEngine().enableAudioVolumeIndication(500, 3);
-                        }
-                    });
-                    workerThread.joinChannel(new CloudWorkerThreadPool.OnJoinChannel() {
-                        @Override
-                        public void onJoinChannel(int joinChannel) {
-                            logger.d("onJoinChannel:joinChannel=" + joinChannel);
+                                }
+                            });
+                            workerThread.joinChannel(new CloudWorkerThreadPool.OnJoinChannel() {
+                                @Override
+                                public void onJoinChannel(int joinChannel) {
+                                    logger.d("onJoinChannel:joinChannel=" + joinChannel);
+                                }
+                            });
                         }
                     });
                 } else {
@@ -276,6 +289,9 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     }
 
     private void addItem() {
+//        if (!courseGroupItemHashMap.isEmpty()) {
+//            return;
+//        }
         courseGroupItemHashMap.clear();
         ll_livevideo_primary_team_content.removeAllViews();
         List<TeamMate> result;
@@ -284,11 +300,13 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         } else {
             result = new ArrayList<>();
         }
+        logger.d("addItem:size=" + result.size());
         LayoutInflater mInflater = LayoutInflater.from(mContext);
-        int margin = (int) (11 * scale);
+        int margin = (int) (10 * scale);
         for (int i = 0; i < 4; i++) {
             TeamMate teamMember = null;
             BasePrimaryTeamItem basePrimaryTeamItem;
+            boolean isMe = false;
             if (i < result.size()) {
                 teamMember = result.get(i);
                 int uid = Integer.parseInt(teamMember.getId());
@@ -296,6 +314,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                     PrimaryTeamMyItem myItem = new PrimaryTeamMyItem(mContext, teamMember, workerThread, uid);
 //                    myItem.setOnNameClick(onNameClick);
                     basePrimaryTeamItem = myItem;
+                    isMe = true;
                 } else {
                     PrimaryTeamOtherItem otherItem = new PrimaryTeamOtherItem(mContext, teamMember, workerThread, uid);
                     otherItem.setOnNameClick(onNameClick);
@@ -311,11 +330,17 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) convertView.getLayoutParams();
             lp.height = (int) (149 * scale);
             lp.bottomMargin = margin;
-            ll_livevideo_primary_team_content.addView(convertView, lp);
+            if (isMe) {
+                ll_livevideo_primary_team_content.addView(convertView, 0, lp);
+            } else {
+                ll_livevideo_primary_team_content.addView(convertView, lp);
+            }
             if (teamMember == null) {
                 courseGroupItemHashMap.put("empty" + i, basePrimaryTeamItem);
             } else {
                 courseGroupItemHashMap.put("" + teamMember.getId(), basePrimaryTeamItem);
+                basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_VIDEO, videoStatus);
+                basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, audioStatus);
             }
         }
     }
@@ -403,12 +428,18 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
 
         @Override
         public void remoteUserJoinWitnUid(int uid) {
-
+            BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
+            if (basePrimaryTeamItem != null) {
+                basePrimaryTeamItem.didOfflineOfUid(true);
+            }
         }
 
         @Override
         public void didOfflineOfUid(int uid) {
-
+            BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
+            if (basePrimaryTeamItem != null) {
+                basePrimaryTeamItem.didOfflineOfUid(false);
+            }
         }
 
         @Override
@@ -437,6 +468,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                 BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
                 if (basePrimaryTeamItem != null) {
                     preview(basePrimaryTeamItem);
+                    basePrimaryTeamItem.didOfflineOfUid(true);
                 }
             }
         }

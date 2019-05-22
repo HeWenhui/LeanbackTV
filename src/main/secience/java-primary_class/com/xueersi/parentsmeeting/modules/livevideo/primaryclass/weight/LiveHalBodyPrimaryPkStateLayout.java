@@ -64,6 +64,11 @@ public class LiveHalBodyPrimaryPkStateLayout extends TeamPkStateLayout {
     }
 
     @Override
+    public void showPkReady() {
+
+    }
+
+    @Override
     protected void updatePkState(float ratio) {
         LiveEventBus.getDefault(getContext()).post(new PkUpdatePkState(ratio));
     }
