@@ -189,7 +189,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         Loger.e(Tag, "=======>onTopic:" + jsonObject);
         try {
             //文科新课件平台  topic
-            if (isNewArtsH5Courseware(jsonObject)) {
+            if (isNewArtsH5Courseware(jsonObject) &&  LiveTopic.MODE_CLASS.equals(mGetInfo.getMode())) {
                 boolean isCourseware = jsonObject.optBoolean("isCourseware");
                 JSONObject coursewareH5 = jsonObject.getJSONObject("coursewareH5");
                 VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
@@ -265,12 +265,16 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 }
             } else {
                 LiveVideoConfig.isNewArts = false;
-                if (englishH5CoursewareBll != null && jsonObject.has("H5_Courseware")) {
+                if ((englishH5CoursewareBll != null && jsonObject.has("H5_Courseware"))
+                        || LiveTopic.MODE_TRANING.equals(mGetInfo.getMode())){
                     VideoQuestionLiveEntity videoQuestionLiveEntity = new VideoQuestionLiveEntity();
                     EnglishH5Entity englishH5Entity = videoQuestionLiveEntity.englishH5Entity;
-                    JSONObject h5_Experiment = jsonObject.getJSONObject("H5_Courseware");
+                    JSONObject h5_Experiment = jsonObject.optJSONObject("H5_Courseware");
                     String play_url = "";
-                    String status = h5_Experiment.optString("status", "off");
+                    String status = "";
+                    if(h5_Experiment!=null) {
+                         status = h5_Experiment.optString("status", "off");
+                    }
                     String id = "";
                     String courseware_type = "";
                     if ("on".equals(status)) {
@@ -315,7 +319,7 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                             // 辅导老师发题
                             if (object == null || object.toString().equals("{}")) {
                               JSONObject objectRoom2 =   jsonObject.optJSONObject("room_2");
-                              if (objectRoom2 != null) {
+                              if (objectRoom2 != null && LiveTopic.MODE_TRANING.equals(mGetInfo.getMode())) {
                                   object =  objectRoom2.optJSONObject("platformTest");;
                                   videoQuestionLiveEntity.setTUtor(true);
                               }
