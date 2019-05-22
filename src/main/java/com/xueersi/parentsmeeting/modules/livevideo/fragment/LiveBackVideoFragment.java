@@ -39,7 +39,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.config.AvformatOpenInputErr
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
+import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
@@ -432,7 +432,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
     protected void initBll() {
         ProxUtil.getProxUtil().put(activity, MediaControllerAction.class, this);
-        ProxUtil.getProxUtil().put(activity, MediaPlayerControl.class, liveBackPlayVideoFragment);
+        ProxUtil.getProxUtil().put(activity, BackMediaPlayerControl.class, liveBackPlayVideoFragment);
         ProxUtil.getProxUtil().put(activity, ActivityChangeLand.class, this);
         ProxUtil.getProxUtil().put(activity, BasePlayerFragment.class, liveBackPlayVideoFragment);
         initBusiness();
@@ -529,9 +529,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
             if (liveBackBll.getIsArts() == 0) {
                 liveBackBll.addBusinessBll(new SpeechBulletScreenPalyBackBll(activity, liveBackBll));
                 initLiveRemarkBll();
+                liveBackBll.addBusinessBll(new SuperSpeakerBackBll(activity, liveBackBll));//语文半身直播回放走的理科
             } else {
                 if (liveBackBll.getIsArts() == 2) {
-                    liveBackBll.addBusinessBll(new SuperSpeakerBackBll(activity, liveBackBll));
                     liveBackBll.addBusinessBll(new SpeechBulletScreenPalyBackBll(activity, liveBackBll));
                 }
                 Log.e("LiveBackVideoFragment", "====> initAnswerResultBll");

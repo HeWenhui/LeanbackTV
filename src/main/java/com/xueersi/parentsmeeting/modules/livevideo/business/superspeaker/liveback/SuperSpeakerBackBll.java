@@ -8,6 +8,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.HalfBodySceneTransAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
@@ -42,7 +43,7 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
     public void showQuestion(VideoQuestionEntity oldQuestionEntity, VideoQuestionEntity questionEntity, LiveBackBll.ShowQuestion showQuestion) {
         super.showQuestion(oldQuestionEntity, questionEntity, showQuestion);
 //        SuperSpeakerCameraPager cameraPager = new SuperSpeakerCameraPager(mContext, this);
-        srcType = questionEntity.getSrcType();
+        srcType = questionEntity.getvQuestionType();
         courseWareId = questionEntity.getvQuestionID();
 
         int uploadStatus = questionEntity.getIsupload();
@@ -58,6 +59,7 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
                     ShareDataManager.SHAREDATA_NOT_CLEAR);
             if (uploadStatus == 0) {
                 superSpeakerBridge = new SuperSpeakerBridge(mContext, this, mRootView, liveGetInfo.getId(), courseWareId);
+                stopLiveVideo();
                 superSpeakerBridge.performShowRecordCamera(questionEntity.getAnswerTime(), questionEntity.getRecordTime());
             } else if (uploadStatus == 2) {
                 superSpeakerPopWindowPager = new SuperSpeakerPopWindowPager(mContext);
@@ -77,6 +79,10 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
             layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         }
         mRootView.addView(view, layoutParams);
+    }
+
+    private void performShowRecordCamera() {
+
     }
 
     @Override
@@ -140,7 +146,19 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
                 new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                        logger.i("upload success");
+                    }
 
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        super.onPmError(responseEntity);
+                        logger.i("upload pmError");
+                    }
+
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        super.onPmFailure(error, msg);
+                        logger.i("upload pmFailure");
                     }
                 }
         );
@@ -158,11 +176,28 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
 
     @Override
     public void stopLiveVideo() {
+        BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
+        if (mediaPlayerControl != null) {
+            mediaPlayerControl.release();
+        }
+//        mediaPlayerControl.stop();
+        View view = activity.findViewById(R.id.vv_course_video_video);
+        if (view != null) {
+            view.setVisibility(View.GONE);
+        }
+
 
     }
 
     @Override
     public void startLiveVideo() {
-
+        BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
+        if (mediaPlayerControl != null) {
+            mediaPlayerControl.startPlayVideo();
+        }
+        View view = activity.findViewById(R.id.vv_course_video_video);
+        if (view != null) {
+            view.setVisibility(View.VISIBLE);
+        }
     }
 }

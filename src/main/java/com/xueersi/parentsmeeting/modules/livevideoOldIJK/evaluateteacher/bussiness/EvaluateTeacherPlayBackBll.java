@@ -10,6 +10,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragmentBack;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.http.EvaluateResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.pager.BaseEvaluateTeacherPaper;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.pager.EvaluateTeacherPager;
@@ -21,7 +22,6 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBaseB
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +30,7 @@ import java.util.Map;
  * Created by：WangDe on 2018/12/2 22:06
  */
 public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShowEvaluateAction, IButtonOnClick {
-    LiveBackPlayerFragment liveBackPlayVideoFragment;
+    LiveBackPlayerFragmentBack liveBackPlayVideoFragment;
     RelativeLayout bottomContent;
     private BaseEvaluateTeacherPaper evaluateTeacherPager;
     private RelativeLayout rlLiveMessageContent;
@@ -81,7 +81,7 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
         }
     }
 
-    public void setLiveFragmentBase(LiveBackPlayerFragment liveBackPlayVideoFragment) {
+    public void setLiveFragmentBase(LiveBackPlayerFragmentBack liveBackPlayVideoFragment) {
         this.liveBackPlayVideoFragment = liveBackPlayVideoFragment;
     }
 

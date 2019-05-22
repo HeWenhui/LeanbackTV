@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.Camera1Utils;
@@ -458,7 +459,10 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
 
     private void startRecordVideo() {
         startRecordVideoTime = System.currentTimeMillis();
-        camera1Utils.startRecordVideo();
+        boolean start = camera1Utils.startRecordVideo();
+        if (!start) {
+            XESToastUtils.showToast(mContext, "视频录制失败");
+        }
     }
 
     private Runnable recordVideoTimer = new Runnable() {

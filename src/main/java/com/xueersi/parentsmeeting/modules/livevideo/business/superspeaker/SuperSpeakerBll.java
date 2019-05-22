@@ -384,20 +384,20 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                 new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        logger.i("通知接口成功");
+                        logger.i("upload success");
 //                        XESToastUtils.showToast(mContext, "通知接口成功");
                     }
 
                     @Override
                     public void onPmError(ResponseEntity responseEntity) {
                         super.onPmError(responseEntity);
-                        logger.i(responseEntity.getErrorMsg());
+                        logger.i("upload pmError " + responseEntity.getErrorMsg());
                     }
 
                     @Override
                     public void onPmFailure(Throwable error, String msg) {
                         super.onPmFailure(error, msg);
-                        logger.i(msg);
+                        logger.i("upload pmfail " + msg);
                     }
                 }
         );

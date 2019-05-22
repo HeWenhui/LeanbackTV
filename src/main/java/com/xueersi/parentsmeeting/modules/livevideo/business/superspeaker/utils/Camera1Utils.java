@@ -103,19 +103,30 @@ public class Camera1Utils implements IRecordVideoView {
 //                    @Override
 //                    public void accept(Boolean aBoolean) throws Exception {
         if (camera != null) {
-            //停掉原来摄像头的预览
-            camera.stopPreview();
-            //移除回调
-            camera.setPreviewCallback(null);
-            //释放资源
-            camera.release();
-            //取消原来摄像头
-            camera = null;
+            try {
+                //停掉原来摄像头的预览
+                camera.stopPreview();
+                //移除回调
+                camera.setPreviewCallback(null);
+                //释放资源
+                camera.release();
+                //取消原来摄像头
+                camera = null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.e(e);
+            }
         }
         if (mediarecorder != null) {
-            mediarecorder.stop();
-            mediarecorder.release();
-            mediarecorder = null;
+            try {
+                mediarecorder.stop();
+                mediarecorder.release();
+                mediarecorder = null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                logger.e(e);
+            }
+
         }
 //                    }
 //                }, new Consumer<Throwable>() {

@@ -53,7 +53,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.ps.MediaErrorInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragmentBack;
 import com.xueersi.ui.dataload.DataLoadManager;
 
 import org.greenrobot.eventbus.EventBus;
@@ -75,7 +75,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
     protected int mLayoutVideo = R.layout.liveback_video_fragment;
     /** 播放器可刷新布局 */
     protected int mLayoutBackgroundRefresh = R.layout.layout_video_resfresh;
-    protected LiveBackPlayerFragment liveBackPlayVideoFragment;
+    protected LiveBackPlayerFragmentBack liveBackPlayVideoFragment;
     /** 所在的Activity是否已经onCreated */
     protected boolean mCreated = false;
     /** 视频的名称，用于显示在播放器上面的信息栏 */
@@ -439,7 +439,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
         ivBack.setOnClickListener(ivRefreshBackListener); // 刷新页面的回退
 
         FragmentTransaction transaction = getChildFragmentManager().beginTransaction();
-        LiveBackPlayerFragment fragment = (LiveBackPlayerFragment) getChildFragmentManager().findFragmentByTag
+        LiveBackPlayerFragmentBack fragment = (LiveBackPlayerFragmentBack) getChildFragmentManager().findFragmentByTag
                 ("LivePlayerFragment");
         if (fragment == null) {
             fragment = getFragment();
@@ -463,18 +463,18 @@ public class LiveBackVideoFragmentBase extends Fragment {
     // region 播放管理业务
 
 
-    protected LiveBackPlayerFragment getFragment() {
+    protected LiveBackPlayerFragmentBack getFragment() {
         LiveVideoFragmentBase liveVideoPlayFragment = new LiveVideoFragmentBase();
         liveVideoPlayFragment.liveBackVideoFragment = this;
         return liveVideoPlayFragment;
     }
 
-    protected void restoreFragment(LiveBackPlayerFragment videoFragment) {
+    protected void restoreFragment(LiveBackPlayerFragmentBack videoFragment) {
         LiveVideoFragmentBase liveVideoPlayFragment = (LiveVideoFragmentBase) videoFragment;
         liveVideoPlayFragment.liveBackVideoFragment = this;
     }
 
-    public static class LiveVideoFragmentBase extends LiveBackPlayerFragment {
+    public static class LiveVideoFragmentBase extends LiveBackPlayerFragmentBack {
         LiveBackVideoFragmentBase liveBackVideoFragment;
 
         @Override
@@ -482,6 +482,11 @@ public class LiveBackVideoFragmentBase extends Fragment {
             super.pause();
             liveBackVideoFragment.pausePlay = true;
             liveBackVideoFragment.onPausePlayer();
+        }
+
+        @Override
+        public void release() {
+            super.release();
         }
 
         @Override
@@ -554,7 +559,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
 
     LiveOnVideoCreate videoCreate = new LiveOnVideoCreate();
 
-    class LiveOnVideoCreate implements LiveBackPlayerFragment.OnVideoCreate {
+    class LiveOnVideoCreate implements LiveBackPlayerFragmentBack.OnVideoCreate {
         Bundle savedInstanceState;
 
         @Override

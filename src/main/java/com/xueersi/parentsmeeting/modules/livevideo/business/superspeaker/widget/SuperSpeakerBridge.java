@@ -318,16 +318,16 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
                     public void accept(Boolean aBoolean) throws Exception {
                         logger.i("进入doOnNxt " + System.currentTimeMillis());
                         if (view.getParent() == parentView) {
-                            if (serviceConnection != null) {
-                                logger.i("unbindService");
-                                mContext.unbindService(serviceConnection);
-                                serviceConnection = null;
-                            }
-                            if (serViceIntent != null) {
-                                logger.i("stopService");
-                                mContext.stopService(serViceIntent);
-                                serViceIntent = null;
-                            }
+//                            if (serviceConnection != null) {
+//                                logger.i("unbindService");
+//                                mContext.unbindService(serviceConnection);
+//                                serviceConnection = null;
+//                            }
+//                            if (serViceIntent != null) {
+//                                logger.i("stopService");
+//                                mContext.stopService(serViceIntent);
+//                                serViceIntent = null;
+//                            }
                             logger.i("移除view");
                             parentView.removeView(view);
                         } else {
