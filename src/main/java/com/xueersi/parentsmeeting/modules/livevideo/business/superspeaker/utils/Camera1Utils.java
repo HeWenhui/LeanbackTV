@@ -261,6 +261,7 @@ public class Camera1Utils implements IRecordVideoView {
             try {
 //                mediarecorder.stop();
                 volum = volumSum / volumNum;
+                logger.i("camera volum = " + volum);
                 // 释放资源
 //                mediarecorder.release();
                 //                mediarecorder = null;

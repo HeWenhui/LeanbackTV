@@ -57,7 +57,7 @@ public class UploadVideoService extends Service {
 
             ShareDataManager.getInstance().put(
                     ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + liveId + "_" + courseWareId,
-                    1,
+                    2,
                     ShareDataManager.SHAREDATA_NOT_CLEAR,
                     false);
             latch.countDown();

@@ -20,6 +20,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.widget
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+
 import static com.xueersi.common.business.sharebusiness.config.LocalCourseConfig.CATEGORY_SUPER_SPEAKER;
 import static com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.StorageUtils.audioUrl;
 
@@ -58,7 +64,7 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
                     0,
                     ShareDataManager.SHAREDATA_NOT_CLEAR);
             if (uploadStatus == 0) {
-                superSpeakerBridge = new SuperSpeakerBridge(mContext, this, mRootView, liveGetInfo.getId(), courseWareId);
+                superSpeakerBridge = new SuperSpeakerBridge(mContext, this, mRootView, liveGetInfo.getId(), courseWareId, 2);
                 stopLiveVideo();
                 superSpeakerBridge.performShowRecordCamera(questionEntity.getAnswerTime(), questionEntity.getRecordTime());
             } else if (uploadStatus == 2) {
@@ -73,12 +79,30 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
         }
     }
 
-    private void addPopWindowPager(View view) {
+    private void addPopWindowPager(final View view) {
         ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
         if (layoutParams == null) {
             layoutParams = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         }
         mRootView.addView(view, layoutParams);
+        Observable.
+                just(true).
+                delay(3, TimeUnit.SECONDS).
+                observeOn(AndroidSchedulers.mainThread()).
+                subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean o) throws Exception {
+                        if (view.getParent() == mRootView) {
+                            mRootView.removeView(view);
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
+                        logger.e(throwable);
+                    }
+                });
     }
 
     private void performShowRecordCamera() {

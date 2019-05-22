@@ -259,7 +259,7 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                 return;
             }
             stopLiveVideo();
-            superSpeakerBridge = new SuperSpeakerBridge(mContext, this, mRootView, mGetInfo.getId(), courseWareId);
+            superSpeakerBridge = new SuperSpeakerBridge(mContext, this, mRootView, mGetInfo.getId(), courseWareId, 1);
             superSpeakerBridge.performShowRecordCamera(answerTime, recordTime);
         } catch (Exception e) {
             e.printStackTrace();

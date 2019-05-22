@@ -86,8 +86,16 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
     private LottieAnimationView lottieAnimationView;
     /** 是否开始预览 */
     private boolean isPreView;
+    /** 直播或者回放 1代表直播，2代表回放 */
+    private int back;
 
-    public SuperSpeakerCameraPager(Context context, ISuperSpeakerContract.ISuperSpeakerBridge bridge, String liveId, String courseWareId, int answerTime, int recordTime) {
+    public SuperSpeakerCameraPager(Context context,
+                                   ISuperSpeakerContract.ISuperSpeakerBridge bridge,
+                                   String liveId,
+                                   String courseWareId,
+                                   int answerTime,
+                                   int recordTime,
+                                   int back) {
         super(context);
         this.bridge = bridge;
 
@@ -253,7 +261,9 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                 if (isHasRecordView || isInRecord) {
                     cameraBackPager.setTextContentTip(mContext.getString(R.string.super_speaker_back_camera_content_tip));
                 } else {
-                    cameraBackPager.setTextContentTip(mContext.getString(R.string.super_speaker_back_exit));
+                    cameraBackPager.setTextContentTip(back == 1 ?
+                            mContext.getString(R.string.super_speaker_back_exit) :
+                            mContext.getString(R.string.super_speaker_back_exit_cannot_record));
                 }
 
                 if (cameraBackPager.getRootView().getParent() != null) {
@@ -344,7 +354,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
         if (camera1Utils != null) {
             StorageUtils.videoUrl = LiveVideoConfig.SUPER_SPEAKER_VIDEO_PATH + liveId + "_" + courseWareId + ".mp4";
             logger.i(StorageUtils.videoUrl);
-            camera1Utils.initCamera(isFacingBack, 1920, 1080, StorageUtils.videoUrl);
+            camera1Utils.initCamera(isFacingBack, 1280, 720, StorageUtils.videoUrl);
         }
     }
 

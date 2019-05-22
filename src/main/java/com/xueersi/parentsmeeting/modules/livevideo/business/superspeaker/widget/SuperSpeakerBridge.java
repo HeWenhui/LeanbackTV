@@ -39,17 +39,21 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
     private String liveId;
 
     private String courseWareId;
+    /** 直播或者回放 1代表直播，2代表回放 */
+    private int back;
 
     public SuperSpeakerBridge(Context context,
                               ISuperSpeakerContract.ICameraPresenter iCameraPresenter,
                               ViewGroup viewGroup,
                               String liveId,
-                              String courseWareId) {
+                              String courseWareId,
+                              int back) {
         this.mContext = context;
         this.iCameraPresenter = iCameraPresenter;
         this.parentView = viewGroup;
         this.liveId = liveId;
         this.courseWareId = courseWareId;
+        this.back = back;
     }
 
     /**
@@ -59,7 +63,7 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
     @UiThread
     public void performShowRecordCamera(int answerTime, int recordTime) {
         if (iView == null) {
-            iView = new SuperSpeakerPermissionPager(mContext, this, liveId, courseWareId, answerTime, recordTime);
+            iView = new SuperSpeakerPermissionPager(mContext, this, liveId, courseWareId, answerTime, recordTime, back);
         }
         ViewGroup.LayoutParams layoutParams = iView.getView().getLayoutParams();
         if (layoutParams == null) {

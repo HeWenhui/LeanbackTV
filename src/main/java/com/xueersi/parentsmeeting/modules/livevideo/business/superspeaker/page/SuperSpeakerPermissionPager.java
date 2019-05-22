@@ -13,8 +13,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionC
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
 public class SuperSpeakerPermissionPager extends SuperSpeakerCameraPager {
 
-    public SuperSpeakerPermissionPager(Context context, ISuperSpeakerContract.ISuperSpeakerBridge bridge, String liveId, String courseWareId, int answerTime, int recordTime) {
-        super(context, bridge, liveId, courseWareId, answerTime, recordTime);
+    public SuperSpeakerPermissionPager(Context context, ISuperSpeakerContract.ISuperSpeakerBridge bridge, String liveId, String courseWareId, int answerTime, int recordTime,int back) {
+        super(context, bridge, liveId, courseWareId, answerTime, recordTime,back);
     }
 
     @Override
