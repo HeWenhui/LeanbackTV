@@ -27,10 +27,12 @@ import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.BasePrimar
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.PrimaryTeamEmptyItem;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.PrimaryTeamMyItem;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.Item.PrimaryTeamOtherItem;
+import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.PrimaryClassView;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.business.PrimaryClassInter;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.config.PrimaryClassConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.PrimaryKuangjiaImageView;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
 
@@ -156,6 +158,8 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     @Override
     public void initData() {
         super.initData();
+        PrimaryClassView primaryClassView = ProxUtil.getProxUtil().get(mContext, PrimaryClassView.class);
+        logger.d("initData:primaryClassView=" + primaryClassView);
         ivLivePrimaryClassKuangjiaImgNormal = mContentView.findViewById(R.id.iv_live_primary_class_kuangjia_img_normal);
         addItem();
         setLayout();
@@ -194,6 +198,8 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                     }
                 } else {
                     mView.setVisibility(View.GONE);
+                    courseGroupItemHashMap.clear();
+                    ll_livevideo_primary_team_content.removeAllViews();
                     if (workerThread != null) {
                         workerThread.leaveChannel();
                         workerThread.exit();

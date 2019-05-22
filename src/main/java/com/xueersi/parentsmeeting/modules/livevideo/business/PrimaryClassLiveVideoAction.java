@@ -27,6 +27,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.PrimaryClassView;
+import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.PrimaryClassViewCn;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.PrimaryClassViewSec;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.PrimaryKuangjiaImageView;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
@@ -78,7 +79,7 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
     private final ImageView ivTecherState;
 
 
-    public PrimaryClassLiveVideoAction(Activity activity, LiveBll2 mLiveBll, RelativeLayout mContentView, RelativeLayout rlContent, int isArts, String mode) {
+    public PrimaryClassLiveVideoAction(Activity activity, LiveBll2 mLiveBll, RelativeLayout mContentView, RelativeLayout rlContent, int isArts, String mode, int useSkin) {
         super(activity, mLiveBll, mContentView);
         this.mode = mode;
         this.isArts = isArts;
@@ -91,7 +92,12 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
         ivTecherState = mContentView.findViewById(R.id.iv_live_halfbody_teacher_state);
         rl_course_video_contentview = mContentView.findViewById(R.id.rl_course_video_contentview);
         ivLivePrimaryClassKuangjiaImgNormal = mContentView.findViewById(R.id.iv_live_primary_class_kuangjia_img_normal);
-        primaryClassView = new PrimaryClassViewSec();
+        logger.d("PrimaryClassLiveVideoAction:useSkin=" + useSkin);
+        if (HalfBodyLiveConfig.SKIN_TYPE_CH == useSkin) {
+            primaryClassView = new PrimaryClassViewCn(activity);
+        } else {
+            primaryClassView = new PrimaryClassViewSec(activity);
+        }
         setKuangjia();
     }
 
@@ -202,7 +208,7 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
         View actionBarOverlayLayout = (View) contentView.getParent();
         Rect r = new Rect();
         actionBarOverlayLayout.getWindowVisibleDisplayFrame(r);
-        int screenWidth = (r.right - r.left);
+//        int screenWidth = (r.right - r.left);
         //ivTecherState.setVisibility(View.INVISIBLE);
         if (!mInited) {
             //主讲模式去掉外层的RelativeLayout换回FrameLayout
@@ -218,22 +224,23 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
         }
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) rlFirstBackgroundView.getLayoutParams();
         //主讲模式铺满屏幕，等比例缩放
-        int screenHeight = ScreenUtils.getScreenHeight();
-        float density = ScreenUtils.getScreenDensity();
-        int bitmapW = (int) (density * 1280);
-        int bitmapH = (int) (density * 720);
-        float screenRatio = (float) screenWidth / (float) screenHeight;
-        int newWidth = screenWidth;
-        int newHeight = screenHeight;
-        if (screenRatio > (float) 16 / (float) 9) {
-            newHeight = (int) ((float) screenWidth * (float) bitmapH / (float) bitmapW);
-        } else if (screenRatio < (float) 16 / (float) 9) {
-            newWidth = (int) ((float) screenHeight * (float) bitmapW / (float) bitmapH);
-        }
-        if (params.width != newWidth || params.height != newHeight) {
-            params.width = newWidth;
-            params.height = newHeight;
+//        int screenHeight = ScreenUtils.getScreenHeight();
+//        float density = ScreenUtils.getScreenDensity();
+//        int bitmapW = (int) (density * 1280);
+//        int bitmapH = (int) (density * 720);
+//        float screenRatio = (float) screenWidth / (float) screenHeight;
+//        int newWidth = screenWidth;
+//        int newHeight = screenHeight;
+//        if (screenRatio > (float) 16 / (float) 9) {
+//            newHeight = (int) ((float) screenWidth * (float) bitmapH / (float) bitmapW);
+//        } else if (screenRatio < (float) 16 / (float) 9) {
+//            newWidth = (int) ((float) screenHeight * (float) bitmapW / (float) bitmapH);
+//        }
+        if (params.width != ViewGroup.MarginLayoutParams.MATCH_PARENT || params.height != ViewGroup.MarginLayoutParams.MATCH_PARENT) {
+            params.width = ViewGroup.MarginLayoutParams.MATCH_PARENT;
+            params.height = ViewGroup.MarginLayoutParams.MATCH_PARENT;
             params.rightMargin = 0;
+            params.topMargin = params.bottomMargin = 0;
             LayoutParamsUtil.setViewLayoutParams(rlFirstBackgroundView, params);
             LayoutParamsUtil.setViewLayoutParams(ivTeacherNotpresent, params);
         }

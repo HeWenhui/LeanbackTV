@@ -31,28 +31,28 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
     @Override
     public void bindListener() {
         super.bindListener();
-        iv_livevideo_primary_team_voice_open.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (audioStatus) {
-                    enableAudio = !enableAudio;
-                    if (enableAudio) {
-                        iv_livevideo_primary_team_voice_open.setImageResource(R.drawable.xuesheng_icon_maikefeng_normal);
-                    } else {
-                        voiceImageView.reset();
-                        iv_livevideo_primary_team_voice_open.setImageResource(R.drawable.xuesheng_icon_maikefeng_zero_normal);
-                    }
-                }
-                cloudWorkerThreadPool.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (audioStatus) {
-                            cloudWorkerThreadPool.getRtcEngine().enableRemoteAudio(uid, !enableAudio);
-                        }
-                    }
-                });
-            }
-        });
+//        iv_livevideo_primary_team_voice_open.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                if (audioStatus) {
+//                    enableAudio = !enableAudio;
+//                    if (enableAudio) {
+//                        iv_livevideo_primary_team_voice_open.setImageResource(R.drawable.xuesheng_icon_maikefeng_normal);
+//                    } else {
+//                        voiceImageView.reset();
+//                        iv_livevideo_primary_team_voice_open.setImageResource(R.drawable.xuesheng_icon_maikefeng_zero_normal);
+//                    }
+//                }
+//                cloudWorkerThreadPool.execute(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (audioStatus) {
+//                            cloudWorkerThreadPool.getRtcEngine().enableRemoteAudio(uid, !enableAudio);
+//                        }
+//                    }
+//                });
+//            }
+//        });
         tv_livevideo_primary_team_people_name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
