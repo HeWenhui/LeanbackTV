@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -589,6 +590,25 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         }
 
         vPlayerHandler.sendEmptyMessage(OPEN_FILE);
+    }
+
+    /**
+     *
+     */
+//    public void enableAutoSpeedPlay(long waterMark, long duration) {
+//        if (vPlayer != null) {
+//            vPlayer.enableAutoSpeedPlay(waterMark, duration);
+//        }
+////        if (mediaPlayer != null) {
+////            mediaPlayer.enableAutoSpeedPlay(waterMark, duration);
+////        }
+//    }
+
+    public void enableAutoSpeedPlay(VideoConfigEntity videoConfigEntity) {
+        if (vPlayer != null && videoConfigEntity != null) {
+            vPlayer.enableAutoSpeedPlay(videoConfigEntity.getWaterMark(), videoConfigEntity.getDuration());
+        }
+
     }
 
     /**
