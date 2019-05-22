@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.widget.praise.item;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.text.TextUtils;
 import android.widget.TextView;
 
@@ -15,10 +16,12 @@ import com.xueersi.ui.adapter.ViewHolder;
  * 表扬榜内容
  */
 public class LivePraiseItem implements RItemViewInterface<PraiseContentEntity> {
-    FangZhengCuYuanTextView tvName;
+    TextView tvName;
     Context mContext;
-    public LivePraiseItem(Context context){
+    Typeface fontFace;
+    public LivePraiseItem(Context context,Typeface fontFace){
         mContext =context;
+        this.fontFace = fontFace;
     }
     @Override
     public int getItemLayoutId() {
@@ -77,6 +80,9 @@ public class LivePraiseItem implements RItemViewInterface<PraiseContentEntity> {
             tvName.setSingleLine(false);
         } else {
            tvName.setSingleLine(true);
+        }
+        if(praiseContentEntity.getPraiseStyle() != PraiseConfig.PRAISE_DARK) {
+            tvName.setTypeface(fontFace);
         }
     }
     private int getColor(int id){

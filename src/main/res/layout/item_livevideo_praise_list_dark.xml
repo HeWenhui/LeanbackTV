@@ -5,10 +5,11 @@
     android:orientation="vertical"
     android:layout_height="wrap_content">
 
-    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+    <TextView
         android:id="@id/tv_item_livevideo_praise_list_name"
         android:textSize="12dp"
         android:layout_width="wrap_content"
+        android:lineSpacingExtra="4dp"
         android:ellipsize="end"
         android:text=""
         android:layout_height="wrap_content" />

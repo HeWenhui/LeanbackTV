@@ -133,5 +133,6 @@
     <color name="COLOR_FFA421">#FFA421</color>
     <color name="COLOR_FD6368">#FD6368</color>
     <color name="COLOR_70A1DE">#70A1DE</color>
+    <color name="FFFFFFFF_70">#B2FFFFFF</color>
 
 </resources>

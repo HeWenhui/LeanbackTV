@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.widget.praise.item;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -15,10 +16,12 @@ import com.xueersi.ui.adapter.ViewHolder;
  */
 public class LivePraiseTitleItem implements RItemViewInterface<PraiseContentEntity> {
     /** 标题名*/
-    FangZhengCuYuanTextView tvName;
+    TextView tvName;
     Context mContext;
-    public LivePraiseTitleItem(Context context){
+    Typeface fontFace;
+    public LivePraiseTitleItem(Context context,Typeface fontFace){
         mContext =context;
+        this.fontFace = fontFace;
     }
     @Override
     public int getItemLayoutId() {
@@ -55,6 +58,9 @@ public class LivePraiseTitleItem implements RItemViewInterface<PraiseContentEnti
             tvName.setBackgroundResource(R.drawable.bg_page_livevideo_praise_list_china_title);
         } else {
             tvName.setBackgroundResource(R.drawable.bg_page_livevideo_praise_list_wood_title);
+        }
+        if(praiseContentEntity.getPraiseStyle() != PraiseConfig.PRAISE_DARK) {
+            tvName.setTypeface(fontFace);
         }
     }
 

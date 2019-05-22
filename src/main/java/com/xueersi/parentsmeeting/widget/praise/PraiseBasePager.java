@@ -1,6 +1,7 @@
 package com.xueersi.parentsmeeting.widget.praise;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
@@ -15,6 +16,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -85,7 +87,7 @@ public class PraiseBasePager extends LiveBasePager {
      * 是否第一次点赞
      */
     boolean isSendParise = true;
-
+    Typeface fontFace;
     private static class PraiseBasePagerHandler extends Handler {
         private WeakReference<PraiseBasePager> mc;
 
@@ -121,6 +123,8 @@ public class PraiseBasePager extends LiveBasePager {
     public PraiseBasePager(Context context, PraiseEntity praiseEntity, OnPraisePageListener listener, RelativeLayout
             bottomContent) {
         super(context, praiseEntity, true);
+        fontFace = FontCache.getTypeface(context, "fangzhengcuyuan.ttf");
+
         mHandler = new PraiseBasePagerHandler(this);
         listContent = praiseEntity.getContentEntityList();
         this.bottomContent = bottomContent;
@@ -195,8 +199,8 @@ public class PraiseBasePager extends LiveBasePager {
     private void setContentData() {
         if (contentAdapter == null) {
             contentAdapter = new RCommonAdapter(mContext, listContent);
-            contentAdapter.addItemViewDelegate(1, new LivePraiseItem(mContext));
-            contentAdapter.addItemViewDelegate(4, new LivePraiseTitleItem(mContext));
+            contentAdapter.addItemViewDelegate(1, new LivePraiseItem(mContext,fontFace));
+            contentAdapter.addItemViewDelegate(4, new LivePraiseTitleItem(mContext,fontFace));
             recyclerView.setAdapter(contentAdapter);
         } else {
             contentAdapter.updateData(listContent);
@@ -251,7 +255,8 @@ public class PraiseBasePager extends LiveBasePager {
         imgBtnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                closePraisePager();
+              ///  closePraisePager();
+                showEncouraging();
 
             }
         });
