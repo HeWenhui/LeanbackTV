@@ -1,32 +1,23 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.page;
 
 import android.Manifest;
-import android.app.Application;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.alibaba.fastjson.support.spring.FastJsonJsonView;
 import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.Constants;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
-import com.tal.speech.utils.SpeechEvaluatorUtils;
 import com.tal.speech.utils.SpeechUtils;
-import com.tal100.pushsdk.utils.JsonUtils;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
 import com.tencent.smtt.export.external.interfaces.WebResourceRequest;
@@ -35,16 +26,13 @@ import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BasePager;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.entity.BaseVideoQuestionEntity;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
-import com.xueersi.common.toast.XesToast;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
-import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
@@ -54,10 +42,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
-import com.xueersi.parentsmeeting.modules.livevideo.event.ChsAnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ChineseAISubjectResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
@@ -71,9 +57,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5C
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.CourseMessage;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.dialog.CourseTipDialog;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseCoursewareNativePager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseEnglishH5CoursewarePager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.page.BaseQuestionWebInter;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.NewCourseCache;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.OnHttpCode;
 import com.xueersi.parentsmeeting.modules.livevideo.question.web.StaticWeb;
@@ -95,7 +78,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
-import cn.dreamtobe.kpswitch.util.KeyboardUtil;
 import pl.droidsonroids.gif.GifDrawable;
 
 /**
@@ -339,7 +321,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                     event.setForceSubmit(resultGotByForceSubmit);
                     EventBus.getDefault().post(event);
                 }
-                stopAssess();
+                cancleAssess();
                 preLoad.onStop();
                 isDestory = true;
                 // fixme 如果是回放当页面移除时 讲媒体控制栏再次显示
@@ -364,8 +346,6 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
     @Override
     public void initData() {
         super.initData();
-        speechUtils = SpeechUtils.getInstance(mContext);
-        speechUtils.setLanguage(Constants.ASSESS_PARAM_LANGUAGE_CH);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
         Date date = new Date();
         today = dateFormat.format(date);
@@ -435,7 +415,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 mLogtf.d("ivWebViewRefresh:refreshTime=" + refreshTime);
                 wvSubjectWeb.reload();
                 isAssessing = false;
-                stopAssess();
+                cancleAssess();
             }
         });
     }
@@ -539,7 +519,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
     private void onAnswer(final JSONObject message) {
         Log.e("chs_speak","=====>onAnswer called");
         recognizeSuccess = true;
-        stopAssess();
+        cancleAssess();
         handler.post(new Runnable() {
             @Override
             public void run() {
@@ -681,7 +661,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                     }
                 } else {
                     isSpeakAnswer = false;
-                    stopAssess();
+                    cancleAssess();
                 }
             }
         } catch (JSONException e) {
@@ -696,6 +676,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
      * @param answerMap
      */
     private void startAssess(Map<Integer, String> assessMap, Map<Integer, String> answerMap) {
+        Log.e("chs_speak","=====>startAssess 000:"+assessMap+":"+answerMap);
         if (assessMap != null && answerMap != null) {
             String assessContent = "";
             String answerContent = "";
@@ -706,10 +687,10 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 answerContent += answerMap.get(key);
             }
             // 如果测评文案为空 返回
+            Log.e("chs_speak","=====>startAssess 1111:"+assessContent);
             if(TextUtils.isEmpty(assessContent)){
                 return;
             }
-
             assessContent = assessContent.substring(0, assessContent.length() - 1);
             logger.d("assessContent :" + assessContent);
             File dir = LiveCacheFile.geCacheFile(mContext, "speakingChinese");
@@ -717,6 +698,13 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
             if (!dir.exists()) {
                 dir.mkdirs();
             }
+
+            if(speechUtils == null){
+                speechUtils = SpeechUtils.getInstance(mContext.getApplicationContext());
+                speechUtils.setLanguage(Constants.ASSESS_PARAM_LANGUAGE_CH);
+                speechUtils.prepar();
+            }
+
             /* 语音保存位置 */
             File saveVideoFile = new File(dir, "ise" + System.currentTimeMillis() + ".mp3");
             SpeechParamEntity mParam = new SpeechParamEntity();
@@ -731,9 +719,11 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
             if (!isAssessing) {
                 final String finalAnswerContent = answerContent;
                 isAssessing = true;
+                Log.e("chs_speak","=====>startAssess 2222:"+assessContent);
                 speechUtils.startRecog(mParam, new EvaluatorListener() {
                     @Override
                     public void onBeginOfSpeech() {
+                        Log.e("chs_speak","=====>startAssess onBeginOfSpeech:");
                         logger.d("onBeginOfSpeech curTime: " + System.currentTimeMillis());
                     }
                     @Override
@@ -782,8 +772,10 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                             }
                         } else if (ResultEntity.SUCCESS == result.getStatus()) {
                             logger.e("SUCCESS curTime ");
+                            Log.e("chs_speak","=====>startAssess SUCCESS:");
                             isAssessing = false;
                         } else if (ResultEntity.ERROR == result.getStatus()) {
+                            Log.e("chs_speak","=====>startAssess ERROR:");
                             logger.e("ERROR");
                             isAssessing = false;
                             Map<String, String> errorData = new HashMap<>();
@@ -825,17 +817,28 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
     }
 
     /**
-     * 停止语音评测
+     *  不需要返回结果的 调用cancle
+     * 取消识别语音评测
      */
-    private void stopAssess() {
-        Log.e("chs_speak","=====>stopAssess");
+    private void cancleAssess() {
+        Log.e("chs_speak","=====>cancleAssess");
         if (speechUtils != null) {
-            speechUtils.stop();
+            speechUtils.cancel();
         }
         isAssessing = false;
     }
 
-
+    /**
+     * 需要识别结果的 调用stop
+     * 停止识别
+     */
+    private void stopAssess(){
+        Log.e("chs_speak","=====>cancleAssess");
+        if (speechUtils != null) {
+            speechUtils.cancel();
+        }
+        isAssessing = false;
+    }
 
     @Override
     public void onBack() {
@@ -854,7 +857,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
     public void destroy() {
         isFinish = true;
         wvSubjectWeb.destroy();
-        stopAssess();
+        cancleAssess();
     }
 
     @Override
@@ -1298,6 +1301,6 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
     public void onDestroy() {
         super.onDestroy();
         isDestory = true;
-        stopAssess();
+        cancleAssess();
     }
 }
