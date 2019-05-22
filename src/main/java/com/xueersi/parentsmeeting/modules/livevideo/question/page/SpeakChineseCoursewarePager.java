@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -340,6 +341,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 }
                 stopAssess();
                 preLoad.onStop();
+                isDestory = true;
                 // fixme 如果是回放当页面移除时 讲媒体控制栏再次显示
                 if(isPlayBack){
                     resetMediaCtr();
@@ -535,6 +537,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
     }
 
     private void onAnswer(final JSONObject message) {
+        Log.e("chs_speak","=====>onAnswer called");
         recognizeSuccess = true;
         stopAssess();
         handler.post(new Runnable() {
@@ -788,7 +791,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                             liveAndBackDebug.umsAgentDebugSys(eventId, errorData);
                             if (result.getErrorNo() == ResultCode.MUTE_AUDIO || result.getErrorNo() == ResultCode
                                     .MUTE) {
-                                if(!recognizeSuccess && isSpeakAnswer){
+                                if(!recognizeSuccess && isSpeakAnswer && !isDestory){
                                     XESToastUtils.showToast(mContext, "没听清，请大声点哦");
                                 }
                             }
@@ -825,6 +828,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
      * 停止语音评测
      */
     private void stopAssess() {
+        Log.e("chs_speak","=====>stopAssess");
         if (speechUtils != null) {
             speechUtils.stop();
         }
@@ -908,6 +912,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
      * @param nonce
      */
     private void submitAnswer(final int isforce, final String nonce, JSONArray data) {
+        Log.e("chs_speak","=====>submitAnswer called");
         final JSONObject testInfos = new JSONObject();
         NewCourseSec.Test test = tests.get(0);
         JSONObject json = test.getJson();
@@ -1226,7 +1231,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
      * @param isforce
      */
     private void showAnswerResult(final int isforce) {
-
+        Log.e("chs_speak","=====>showAnswerResult called");
         isSumit = true;
         englishH5CoursewareSecHttp.getStuTestResult(detailInfo, isPlayBack ? 1 : 0,
                 new AbstractBusinessDataCallBack() {
@@ -1253,6 +1258,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                                 onClose.onH5ResultClose(SpeakChineseCoursewarePager.this, getBaseVideoQuestionEntity());
                             }
                         });
+                        Log.e("chs_speak","=====>showAnswerResult onDataSucess");
                         ((RelativeLayout) mView).addView(primaryScienceAnserResultPager.getRootView(), new
                                 RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup
                                 .LayoutParams.MATCH_PARENT));
