@@ -255,9 +255,10 @@ public class PraiseBasePager extends LiveBasePager {
         imgBtnClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-              ///  closePraisePager();
-                showEncouraging();
-
+               closePraisePager();
+                if (onPraisePageListener != null){
+                    onPraisePageListener.onPracticeClose();
+                }
             }
         });
     }
@@ -290,9 +291,7 @@ public class PraiseBasePager extends LiveBasePager {
     public void closePraisePagerMain(){
         if (onPagerClose != null) {
             onPagerClose.onClose(this);
-            if (onPraisePageListener != null){
-                onPraisePageListener.onPracticeClose();
-            }
+
             if (mHandler != null) {
                 mHandler.removeMessages(PraiseConfig.ENCOURAGING_HIDE);
                 mHandler.removeMessages(PraiseConfig.ENCOURAGING_SHOW);
