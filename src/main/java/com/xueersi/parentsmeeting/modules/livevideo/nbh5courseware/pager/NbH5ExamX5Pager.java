@@ -496,7 +496,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
         jsInserted = false;
         nbLoaded = false;
         wvSubjectWeb.loadUrl(nbTestModeUrl);
-        Log.e("NbH5ExamX5Pager","====>intoTestMode:"+nbTestModeUrl);
+        //Log.e("NbH5ExamX5Pager","====>intoTestMode:"+nbTestModeUrl);
         btnSubmit.setText("结束练习");
         rlCtrContainer.setVisibility(View.VISIBLE);
     }
@@ -672,7 +672,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
 
     @Override
     public boolean onBack() {
-        Log.e("nbTrace","pager onBack:"+currentMode +":"+this);
+        //Log.e("nbTrace","pager onBack:"+currentMode +":"+this);
         if(currentMode == MODE_TEST){
             hideLoadingView();
             endTestMode();
@@ -729,14 +729,14 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
         StringBuilder sb = new StringBuilder();
         sb.append(testInfo.getUrl()).append("&token=").append(mCourseWareEntity.getNbToken()).append("&isexam=1");
         nbExamUrl =sb.toString();
-        Log.e("NbH5ExamX5Pager", "=====>LoadNbCourseWare url nbExamUrl:" + nbExamUrl);
+        //Log.e("NbH5ExamX5Pager", "=====>LoadNbCourseWare url nbExamUrl:" + nbExamUrl);
         sb.setLength(0);
         sb.append(testInfo.getUrl()).append("&token=").append(mCourseWareEntity.getNbToken()).append("&isexam=0");
         nbTestModeUrl = sb.toString();
-        Log.e("NbH5ExamX5Pager", "=====>LoadNbCourseWare nbTestModeUrl:" + nbTestModeUrl+":"+mCourseWareEntity.getExperimentType());
+        //Log.e("NbH5ExamX5Pager", "=====>LoadNbCourseWare nbTestModeUrl:" + nbTestModeUrl+":"+mCourseWareEntity.getExperimentType());
         btnSubmit.setText(currentMode == MODE_EXAM?"提交":"结束练习");
         tvTitle.setText(mCourseWareEntity.getExperimentName());
-        Log.e("NbH5ExamX5Pager","======>LoadNbCourseWare isAnswered:"+testInfo.isAnswer());
+        //Log.e("NbH5ExamX5Pager","======>LoadNbCourseWare isAnswered:"+testInfo.isAnswer());
         if (testInfo.isAnswer()) {
             hideLoadingView();
             showResult();
@@ -767,7 +767,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                     }
                 }
             }
-            Log.e("NbH5ExamX5Pager","=====>isPreLaod:"+resDir+":"+result);
+            //Log.e("NbH5ExamX5Pager","=====>isPreLaod:"+resDir+":"+result);
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -818,11 +818,11 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
             }
 
             //拦截资源请求，提供本地资源
-            Log.e("NbH5ExamPager","======>shouldInterceptRequest：refreshTimes="+refreshTimes);
+            //Log.e("NbH5ExamPager","======>shouldInterceptRequest：refreshTimes="+refreshTimes);
             if(refreshTimes < LOCAL_RES_LOAD_TRY_TIMES){
                 WebResourceResponse webResourceResponse = newCourseCache.shouldInterceptRequest(webView, url);
                 if (webResourceResponse != null) {
-                    Log.e("NbH5ExamPager","======>返回本地资源："+url);
+                    //Log.e("NbH5ExamPager","======>返回本地资源："+url);
                     logger.d("shouldInterceptRequest:url=" + url);
                     return webResourceResponse;
                 }
