@@ -220,6 +220,8 @@ public class LiveVideoSAConfig {
         public String URL_UPLOAD_VOICE_BARRAGE = HTTP_HOST + "/LiveCourse/uploadVoiceBarrage";
         /** 回放获取弹幕接口 */
         public String URL_GET_VOICE_BARRAGE_MSG = HTTP_HOST + "/LiveCourse/getVoiceBarrageMsg";
+        /** 回放获取弹幕接口(英语) */
+        public String URL_ENGLISH_GET_VOICE_BARRAGE_MSG = HTTP_HOST + "/LiveCourse/getVoiceBarrageForPlayBack";
 
         /** 贡献之星结果多题型 */
         public String URL_TEMPK_TEAMENERGYNUMANDCONTRIBUTIONSTARMUL = HTTP_HOST + "/LiveCourse/teamEnergyNumAndContributionStarNew";

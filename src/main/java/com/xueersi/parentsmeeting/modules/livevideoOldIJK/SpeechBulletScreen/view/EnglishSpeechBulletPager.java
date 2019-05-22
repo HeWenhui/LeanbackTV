@@ -846,7 +846,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
             audioRequest.request(new AudioRequest.OnAudioRequest() {
                 @Override
                 public void requestSuccess() {
-                    saveFile = new File(dir, "speechbul" + System.currentTimeMillis() + ".mp3");
+                    saveFile = new File(dir, "voicebullet" + System.currentTimeMillis() + ".mp3");
                     mParam.setRecogType(SpeechConfig.SPEECH_RECOGNITIYON_OFFINE);
                     mParam.setLocalSavePath(saveFile.getPath());
                     mParam.setVad_pause_sec("1.2");
