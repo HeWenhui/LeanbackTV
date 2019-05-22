@@ -62,9 +62,9 @@ public class Camera1Utils implements IRecordVideoView {
 //        });
 
 
-        int num = Camera.getNumberOfCameras();
+//        int num = Camera.getNumberOfCameras();
         this.videoPath = videoPath;
-        logger.d("NUM:" + num);
+//        logger.d("NUM:" + num);
 
         Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
         int numberOfCameras = Camera.getNumberOfCameras();
