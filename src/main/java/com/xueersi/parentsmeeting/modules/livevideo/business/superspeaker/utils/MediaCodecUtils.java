@@ -4,6 +4,8 @@
 //import android.media.AudioManager;
 //import android.media.AudioTrack;
 //import android.media.MediaCodec;
+//import android.media.MediaCodecInfo;
+//import android.media.MediaCodecList;
 //import android.media.MediaExtractor;
 //import android.media.MediaFormat;
 //import android.view.Surface;
@@ -23,8 +25,8 @@
 //        try {
 //            MediaCodec mediaCodec = MediaCodec.createDecoderByType(MediaFormat.MIMETYPE_VIDEO_AVC);
 //            //设置宽高，初始化时设置为最小宽高
-//            int width = 128;
-//            int height = 128;
+//            int width = 1920;
+//            int height = 1080;
 //
 //            //创建视频格式信息
 ////            MediaFormat mediaFormat = MediaFormat.createVideoFormat(mimeType, width, height);
@@ -32,6 +34,25 @@
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
+//    }
+//
+//    private MediaCodecInfo selectSupportCodec(String mimeType) {
+//        int numCodecs = MediaCodecList.getCodecCount();
+//        for (int i = 0; i < numCodecs; i++) {
+//            MediaCodecInfo codecInfo = MediaCodecList.getCodecInfoAt(i);
+//            // 判断是否为编码器，否则直接进入下一次循环
+//            if (!codecInfo.isEncoder()) {
+//                continue;
+//            }
+//            // 如果是编码器，判断是否支持Mime类型
+//            String[] types = codecInfo.getSupportedTypes();
+//            for (int j = 0; j < types.length; j++) {
+//                if (types[j].equalsIgnoreCase(mimeType)) {
+//                    return codecInfo;
+//                }
+//            }
+//        }
+//        return null;
 //    }
 //
 //    public interface IPlayerCallBack {

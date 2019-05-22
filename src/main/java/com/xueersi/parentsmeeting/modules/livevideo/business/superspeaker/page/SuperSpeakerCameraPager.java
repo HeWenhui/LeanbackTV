@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.lib.framework.utils.listener.OnUnDoubleClickListener;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.Camera1Utils;
@@ -54,7 +55,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
 
     private boolean isSurfViewCreat = false;
     /** 是否使用前置摄像头或者后置摄像头,默认faceback,即自拍 */
-    private boolean isFacingBack = false;
+    protected boolean isFacingBack = false;
     /** 视频播放控制器 */
     private CustomVideoController2 customVideoController2;
 
@@ -223,15 +224,29 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
     @Override
     public void initListener() {
         super.initListener();
-        ivStartRecord.setOnClickListener(new View.OnClickListener() {
+//        ivStartRecord.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//            }
+//        });
+        ivStartRecord.setOnClickListener(new OnUnDoubleClickListener(1000) {
             @Override
-            public void onClick(View v) {
+            public void onUnDoubleClick(View v) {
+                super.onUnDoubleClick(v);
                 performStartRecordVideo();
             }
         });
-        ivStopRecord.setOnClickListener(new View.OnClickListener() {
+//        ivStopRecord.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                performStopRecord();
+//            }
+//        });
+        ivStopRecord.setOnClickListener(new OnUnDoubleClickListener(1000) {
             @Override
-            public void onClick(View v) {
+            public void onUnDoubleClick(View v) {
+                super.onUnDoubleClick(v);
                 performStopRecord();
             }
         });
@@ -344,7 +359,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
      *
      * @param isFacingBack 使用前置摄像头还是后置摄像头
      */
-    private void performStartPreView(boolean isFacingBack) {
+    protected void performStartPreView(boolean isFacingBack) {
 //        if(camera1Utils==null){
 //            camera1Utils = new Camera1Utils()
 //        }
