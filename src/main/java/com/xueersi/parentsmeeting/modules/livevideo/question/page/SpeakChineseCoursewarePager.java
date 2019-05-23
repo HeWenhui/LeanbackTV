@@ -928,7 +928,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 CrashReport.postCatchedException(e);
                 mLogtf.e("submitData", e);
             }
-//            XESToastUtils.showToast(mContext, "时间到,停止作答!");
+            XESToastUtils.showToast(mContext, "时间到,停止作答!");
         }
     }
 
@@ -951,9 +951,6 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
         //回放已作答过了 直接toast 提示
         if (isPlayBack && newCourseSec != null && newCourseSec.getIsAnswer() == 1) {
                 XESToastUtils.showToast(mContext,"该题已作答");
-            /*if (onClose != null) {
-                onClose.onH5ResultClose(SpeakChineseCoursewarePager.this, getBaseVideoQuestionEntity());
-            }*/
         } else {
             final JSONObject testInfos = new JSONObject();
             NewCourseSec.Test test = tests.get(0);
