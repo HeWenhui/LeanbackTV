@@ -148,7 +148,12 @@ public class Camera1Utils implements IRecordVideoView {
             realHeight = realWidth;
             realWidth = t;
         }
-
+        for (Camera.Size size : sizes) {
+            if (size.width == realWidth && size.height == realHeight) {
+                logger.i("width = " + size.width + " ,height = " + size.height);
+                return size;
+            }
+        }
         for (Camera.Size size : sizes) {
             if (1.0f * size.width / size.height == 1.0f * realWidth / realHeight) {
                 return size;
@@ -199,10 +204,11 @@ public class Camera1Utils implements IRecordVideoView {
         // 设置录制的视频编码h263 h264
         mediarecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
         // 视频码率
-        mediarecorder.setVideoEncodingBitRate((int) (1280 * 720 * 0.6f));
+        mediarecorder.setVideoEncodingBitRate((int) (cameraSize.width * cameraSize.height));
 
         // 设置视频录制的分辨率。必须放在设置编码和格式的后面，否则报错
         mediarecorder.setVideoSize(cameraSize.width, cameraSize.height);
+        logger.i("start Record:camera.width = " + cameraSize.width + " height =" + cameraSize.height);
         // 设置录制的视频帧率。必须放在设置编码和格式的后面，否则报错
         // mediarecorder.setVideoFrameRate(20);
         mediarecorder.setPreviewDisplay(surfaceHolder.getSurface());

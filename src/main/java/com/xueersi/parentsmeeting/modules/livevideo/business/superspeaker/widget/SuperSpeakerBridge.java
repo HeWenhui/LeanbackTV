@@ -16,6 +16,7 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.UploadVideoService;
+import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.UploadVideoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page.SuperSpeakerPermissionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page.SuperSpeakerRedPackagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.StorageUtils;
@@ -42,18 +43,22 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
     /** 直播或者回放 1代表直播，2代表回放 */
     private int back;
 
+    private UploadVideoEntity uploadVideoEntity;
+
     public SuperSpeakerBridge(Context context,
                               ISuperSpeakerContract.ICameraPresenter iCameraPresenter,
                               ViewGroup viewGroup,
                               String liveId,
                               String courseWareId,
-                              int back) {
+                              int back,
+                              UploadVideoEntity uploadVideoEntity) {
         this.mContext = context;
         this.iCameraPresenter = iCameraPresenter;
         this.parentView = viewGroup;
         this.liveId = liveId;
         this.courseWareId = courseWareId;
         this.back = back;
+        this.uploadVideoEntity = uploadVideoEntity;
     }
 
     /**
@@ -99,81 +104,7 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
 //        }
 
     }
-
-    //    private XesStsUploadListener videoUploadListener = new XesStsUploadListener() {
-//        @Override
-//        public void onProgress(XesCloudResult result, int percent) {
-//
-//            logger.i("video upload percent:" + percent);
-//        }
-//
-//        @Override
-//        public void onSuccess(XesCloudResult result) {
-//            videoRemoteUrl = result.getHttpPath();
-//            logger.i("video upload succes " + videoRemoteUrl);
-//            XESToastUtils.showToast(mContext, "视频上传成功");
-////            uploadSuccess();
-//
-//            ShareDataManager.getInstance().put(
-//                    ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + liveId + "_" + courseWareId,
-//                    1,
-//                    ShareDataManager.SHAREDATA_NOT_CLEAR,
-//                    false);
-//            if (Looper.getMainLooper() == Looper.myLooper()) {
-//                uploadSuccess();
-//            } else {
-//                latch.countDown();
-//            }
-//        }
-//
-//        @Override
-//        public void onError(XesCloudResult result) {
-////            videoRemoteUrl = "";
-////            uploadSuccess();
-//            logger.i("video upload fail");
-//            //重试uploadVideoNum次
-//            if (uploadVideoNum.get() > 0) {
-//                uploadVideoNum.getAndDecrement();
-//                uploadVideo();
-//            }
-//        }
-//    };
-//    private AtomicInteger uploadVideoNum = new AtomicInteger(3);
     private String audioRemoteUrl, videoRemoteUrl;
-//    private XesStsUploadListener audioUploadListener = new XesStsUploadListener() {
-//        @Override
-//        public void onProgress(XesCloudResult result, int percent) {
-//            logger.i("audio upload percent:" + percent);
-//
-//        }
-//
-//        @Override
-//        public void onSuccess(XesCloudResult result) {
-//            audioRemoteUrl = result.getHttpPath();
-//            logger.i("audio upload succes " + audioRemoteUrl);
-//            XESToastUtils.showToast(mContext, "上传音频成功");
-//            if (Looper.getMainLooper() == Looper.myLooper()) {
-//                uploadSuccess();
-//            } else {
-//                latch.countDown();
-//                try {
-//                    latch.await();
-//                    uploadSuccess();
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//
-//        @Override
-//        public void onError(XesCloudResult result) {
-//            audioRemoteUrl = "";
-//            uploadSuccess();
-//        }
-//    };
-//    private CountDownLatch latch;
-
-//    private UploadAliUtils uploadAliUtils;
 
     private String voiceDecibel;
     private Intent serViceIntent;
@@ -182,8 +113,6 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
     public void submitSpeechShow(String isForce, String averVocieDecibel) {
         long videoDuration = getVideoDuration() / 1000l + 1;
         logger.i("averVocieDecibel = " + averVocieDecibel + "videoDuration =" + videoDuration);
-
-//        uploadAliUtils = new UploadAliUtils(mContext);
 
         ShareDataManager.getInstance().put(
                 ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + liveId + "_" + courseWareId,
@@ -194,10 +123,17 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
         this.voiceDecibel = averVocieDecibel;
 
         serViceIntent = new Intent(mContext, UploadVideoService.class);
-        serViceIntent.putExtra("liveId", liveId);
-        serViceIntent.putExtra("courseWareId", courseWareId);
-        serViceIntent.putExtra("videoRemoteUrl", StorageUtils.videoUrl);
-        serViceIntent.putExtra("audioRemoteUrl", StorageUtils.audioUrl);
+        uploadVideoEntity.setAudioLocalUrl(StorageUtils.audioUrl);
+        uploadVideoEntity.setVideoLocalUrl(StorageUtils.videoUrl);
+        uploadVideoEntity.setAverVocieDecibel(averVocieDecibel);
+//        uploadVideoEntity.setTestId(courseWareId);
+//        uploadVideoEntity.setLiveId(liveId);
+
+        serViceIntent.putExtra("UploadVideoEntity", uploadVideoEntity);
+//        serViceIntent.putExtra("liveId", liveId);
+//        serViceIntent.putExtra("courseWareId", courseWareId);
+//        serViceIntent.putExtra("videoRemoteUrl", StorageUtils.videoUrl);
+//        serViceIntent.putExtra("audioRemoteUrl", StorageUtils.audioUrl);
 //        mContext.startService(intent);
         mContext.startService(serViceIntent);
         serviceConnection = new UploadServiceConnction();
@@ -418,6 +354,7 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
     @Override
     public void resumeVideo() {
         if (iView != null) {
+            logger.i("resumeVideo");
             iView.resumeVideo();
         }
     }

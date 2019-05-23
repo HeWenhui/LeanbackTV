@@ -15,6 +15,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.SuperSpeakerRedPackageEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.UploadVideoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page.SuperSpeakerPopWindowPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.widget.SuperSpeakerBridge;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
@@ -63,8 +64,17 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
                     ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + liveGetInfo.getId() + "_" + courseWareId,
                     0,
                     ShareDataManager.SHAREDATA_NOT_CLEAR);
+
             if (uploadStatus == 0) {
-                superSpeakerBridge = new SuperSpeakerBridge(mContext, this, mRootView, liveGetInfo.getId(), courseWareId, 2);
+                UploadVideoEntity uploadVideoEntity = new UploadVideoEntity();
+                uploadVideoEntity.setLiveId(liveGetInfo.getId());
+                uploadVideoEntity.setTestId(courseWareId);
+                uploadVideoEntity.setSrcType(srcType);
+                uploadVideoEntity.setStuCouId(liveGetInfo.getStuCouId());
+                uploadVideoEntity.setStuId(liveGetInfo.getStuId());
+                uploadVideoEntity.setIsPlayBack("2");
+                uploadVideoEntity.setIsUpload("2");
+                superSpeakerBridge = new SuperSpeakerBridge(mContext, this, mRootView, liveGetInfo.getId(), courseWareId, 2, uploadVideoEntity);
                 stopLiveVideo();
                 superSpeakerBridge.performShowRecordCamera(questionEntity.getAnswerTime(), questionEntity.getRecordTime());
             } else if (uploadStatus == 2) {

@@ -11,6 +11,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.HalfBodySceneTransA
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.SuperSpeakerRedPackageEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.UploadVideoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.widget.SuperSpeakerBridge;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -46,21 +47,20 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
     public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
         super.initView(bottomContent, mIsLand);
 //        if (AppConfig.DEBUG) {
+//        Observable.just(true).
+//                delay(2, TimeUnit.SECONDS).
+//                observeOn(AndroidSchedulers.mainThread()).
+//                subscribe(new Consumer<Boolean>() {
+//                    @Override
+//                    public void accept(Boolean aBoolean) throws Exception {
+//                        logger.i("accept");
+//                        mGetInfo.setId(String.valueOf(454400));
+//                        courseWareId = String.valueOf(1);
+//                        srcType = String.valueOf(40);
+//                        performShowRecordCamera(10, 65);
 //
-//            Observable.just(true).
-//                    delay(2, TimeUnit.SECONDS).
-//                    observeOn(AndroidSchedulers.mainThread()).
-//                    subscribe(new Consumer<Boolean>() {
-//                        @Override
-//                        public void accept(Boolean aBoolean) throws Exception {
-//                            logger.i("accept");
-//                            mGetInfo.setId(String.valueOf(454400));
-//                            courseWareId = String.valueOf(1);
-//                            srcType = String.valueOf(40);
-//                            performShowRecordCamera(10, 65);
-//
-//                        }
-//                    });
+//                    }
+//                });
 
 //                bottomContent.postDelayed(new Runnable() {
 //                    @Override
@@ -259,7 +259,15 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                 return;
             }
             stopLiveVideo();
-            superSpeakerBridge = new SuperSpeakerBridge(mContext, this, mRootView, mGetInfo.getId(), courseWareId, 1);
+            UploadVideoEntity uploadVideoEntity = new UploadVideoEntity();
+            uploadVideoEntity.setLiveId(mGetInfo.getId());
+            uploadVideoEntity.setTestId(courseWareId);
+            uploadVideoEntity.setSrcType(srcType);
+            uploadVideoEntity.setStuCouId(mGetInfo.getStuCouId());
+            uploadVideoEntity.setStuId(mGetInfo.getStuId());
+            uploadVideoEntity.setIsPlayBack("1");
+            uploadVideoEntity.setIsUpload("1");
+            superSpeakerBridge = new SuperSpeakerBridge(mContext, this, mRootView, mGetInfo.getId(), courseWareId, 1, uploadVideoEntity);
             superSpeakerBridge.performShowRecordCamera(answerTime, recordTime);
         } catch (Exception e) {
             e.printStackTrace();

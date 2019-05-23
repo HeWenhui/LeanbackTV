@@ -178,6 +178,7 @@ public class MediaUtils {
 
                 int sampleNum = 0;
                 int sampleSum = 0;
+//                MediaMuxer mediaMuxer;
                 while (true) {
                     int sampleSize = mAudioExtractor.readSampleData(buffer, 0);
                     if (sampleSize < 0) {

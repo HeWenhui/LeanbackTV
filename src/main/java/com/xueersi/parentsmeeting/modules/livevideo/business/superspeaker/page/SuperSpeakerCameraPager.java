@@ -88,7 +88,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
     /** 是否开始预览 */
     private boolean isPreView;
     /** 直播或者回放 1代表直播，2代表回放 */
-    private int back;
+    private int livevideo;
 
     public SuperSpeakerCameraPager(Context context,
                                    ISuperSpeakerContract.ISuperSpeakerBridge bridge,
@@ -104,6 +104,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
         this.courseWareId = courseWareId;
         this.answerTime = answerTime;
         this.recordTime = recordTime;
+        this.livevideo = back;
         initData();
     }
 
@@ -247,6 +248,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
             @Override
             public void onUnDoubleClick(View v) {
                 super.onUnDoubleClick(v);
+                logger.i("onUnDoubleClick Stop");
                 performStopRecord();
             }
         });
@@ -276,9 +278,9 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                 if (isHasRecordView || isInRecord) {
                     cameraBackPager.setTextContentTip(mContext.getString(R.string.super_speaker_back_camera_content_tip));
                 } else {
-                    cameraBackPager.setTextContentTip(back == 1 ?
-                            mContext.getString(R.string.super_speaker_back_exit) :
-                            mContext.getString(R.string.super_speaker_back_exit_cannot_record));
+                    cameraBackPager.setTextContentTip(livevideo == 1 ?
+                            mContext.getString(R.string.super_speaker_back_exit_cannot_record) :
+                            mContext.getString(R.string.super_speaker_back_exit));
                 }
 
                 if (cameraBackPager.getRootView().getParent() != null) {
@@ -378,6 +380,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
      * 停止拍摄
      */
     private void performStopRecord() {
+        logger.i("performStopRecord()");
         if (!isHasRecordPermission()) {
             return;
         }
@@ -497,6 +500,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                 return;
             }
             localTimer++;
+            logger.i("localTimer = " + localTimer + ", recordTime = " + recordTime);
             if (localTimer >= recordTime) {
                 performStopRecord();
                 return;
@@ -579,6 +583,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
     @Override
     public void pauseVideo() {
         if (customVideoController2 != null) {
+            logger.i("pauseVideo");
             customVideoController2.pause();
         }
     }
@@ -586,6 +591,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
     @Override
     public void resumeVideo() {
         if (customVideoController2 != null) {
+            logger.i("resumeVideo");
             customVideoController2.start();
         }
     }

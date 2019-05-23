@@ -9,16 +9,19 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.xueersi.common.config.AppConfig;
+import com.xueersi.common.http.HttpCallBack;
+import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.component.cloud.config.CloudDir;
 import com.xueersi.component.cloud.config.XesCloudConfig;
 import com.xueersi.component.cloud.entity.XesCloudResult;
 import com.xueersi.component.cloud.listener.XesStsUploadListener;
-import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.UploadVideoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.UploadAliUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 
 import java.io.File;
 import java.util.concurrent.CountDownLatch;
@@ -26,7 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 //https://blog.csdn.net/imxiangzi/article/details/76039978
 public class UploadVideoService extends Service {
-    private String videoUrl, audioUrl;
+    private String videoUrl, audioUrl = "";
     Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
 
     private String liveId, courseWareId;
@@ -60,7 +63,8 @@ public class UploadVideoService extends Service {
                     2,
                     ShareDataManager.SHAREDATA_NOT_CLEAR,
                     false);
-            latch.countDown();
+            uploadSuccess();
+//            latch.countDown();
         }
 
         @Override
@@ -131,15 +135,54 @@ public class UploadVideoService extends Service {
 
     private uploadCallback callBack;
 
+    private UploadVideoEntity uploadVideoEntity;
+
     private synchronized void uploadSuccess() {
         //允许audioUrl为""，""代表成功
         if (videoUrl == null) {
             return;
         }
-        if (callBack != null) {
-            callBack.uploadSuccess(videoUrl, audioUrl);
-            stopSelf();
-        }
+//        if (callBack != null) {
+//            callBack.uploadSuccess(videoUrl, audioUrl);
+        LiveHttpManager liveHttpManager = new LiveHttpManager(this);
+        logger.i("send uploadSuccess()");
+        liveHttpManager.uploadSpeechShow(
+                uploadVideoEntity.getLiveId(),
+                uploadVideoEntity.getStuCouId(),
+                uploadVideoEntity.getStuId(),
+                uploadVideoEntity.getIsPlayBack(),
+                uploadVideoEntity.getTestId(),
+                uploadVideoEntity.getSrcType(),
+                videoUrl,
+                audioUrl,
+                uploadVideoEntity.getIsUpload(),
+                uploadVideoEntity.getAverVocieDecibel(),
+                new HttpCallBack() {
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                        logger.i("upload success");
+//                        XESToastUtils.showToast(mContext, "通知接口成功");
+                        stopSelf();
+                    }
+
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        super.onPmError(responseEntity);
+                        logger.i("upload pmError " + responseEntity.getErrorMsg());
+                        stopSelf();
+                    }
+
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        super.onPmFailure(error, msg);
+                        logger.i("upload pmfail " + msg);
+                        stopSelf();
+                    }
+
+                }
+        );
+
+//        }
     }
 
     private void uploadVideo(String videoUrl) {
@@ -185,14 +228,20 @@ public class UploadVideoService extends Service {
 
     private void performUploadUrl(Intent intent) {
         latch = new CountDownLatch(2);
-        liveId = intent.getStringExtra("liveId");
-        courseWareId = intent.getStringExtra("courseWareId");
-        String audioLocalUrl = intent.getStringExtra("audioRemoteUrl");
-        String videoLocalUrl = intent.getStringExtra("videoRemoteUrl");
+//        liveId = intent.getStringExtra("liveId");
+//        courseWareId = intent.getStringExtra("courseWareId");
+        uploadVideoEntity = intent.getParcelableExtra("UploadVideoEntity");
+        liveId = uploadVideoEntity.getLiveId();
+        courseWareId = uploadVideoEntity.getTestId();
+//        String audioLocalUrl = intent.getStringExtra("audioRemoteUrl");
+//        String videoLocalUrl = intent.getStringExtra("videoRemoteUrl");
+        String audioLocalUrl = uploadVideoEntity.getAudioLocalUrl();
+        String videoLocalUrl = uploadVideoEntity.getVideoLocalUrl();
+
         audioUploadListener = new AudioUploadListener(audioLocalUrl);
         videoUploadListener = new VideoUploadListener(videoLocalUrl);
         uploadVideo(videoLocalUrl);
-        uploadAudio(audioLocalUrl);
+//        uploadAudio(audioLocalUrl);
     }
 
     public class UploadBinder extends Binder {
