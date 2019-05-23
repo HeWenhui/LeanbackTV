@@ -107,6 +107,7 @@
                 android:layout_gravity="center_horizontal|bottom"
                 android:layout_marginBottom="16dp"
                 android:textColor="#FFEDA5"
+                android:text="0"
                 android:textSize="11sp" />
 
         </com.xueersi.parentsmeeting.modules.livevideo.widget.PraiseBtnAnimLayout>
@@ -139,7 +140,7 @@
                 android:layout_marginBottom="2dp"
                 app:border_width="2dp" />
 
-            <TextView
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                 android:id="@id/tv_page_livevideo_praise_list_teacher_tip"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -150,7 +151,7 @@
                 android:textSize="15sp" />
         </LinearLayout>
 
-        <TextView
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@id/tv_page_livevideo_praise_list_teacher_talk"
             android:layout_width="294dp"
             android:layout_height="75dp"
@@ -158,6 +159,7 @@
             android:paddingLeft="20dp"
             android:paddingTop="30dp"
             android:singleLine="true"
+            android:gravity="center_horizontal"
             android:ellipsize="end"
             android:paddingRight="20dp"
             android:text=""

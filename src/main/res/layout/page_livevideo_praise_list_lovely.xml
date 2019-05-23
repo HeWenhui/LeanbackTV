@@ -140,7 +140,7 @@
         android:visibility="gone">
 
         <LinearLayout
-            android:layout_width="205dp"
+            android:layout_width="194dp"
             android:layout_height="64dp"
             android:background="@drawable/bg_page_livevideo_praise_list_lovely_teacher_hint"
             android:gravity="center_vertical"
@@ -150,11 +150,11 @@
                 android:id="@id/iv_page_livevideo_praise_list_teacher_head_image"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:layout_marginLeft="12dp"
+                android:layout_marginLeft="9dp"
                 android:layout_marginBottom="2dp"
                 android:src="@drawable/ic_default_head_square"
                 app:border_color="#ffffff"
-                app:border_width="2dp" />
+                app:border_width="3dp" />
 
             <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                 android:id="@id/tv_page_livevideo_praise_list_teacher_tip"
@@ -169,7 +169,7 @@
 
         <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
             android:id="@id/tv_page_livevideo_praise_list_teacher_talk"
-            android:layout_width="294dp"
+            android:layout_width="304dp"
             android:layout_height="75dp"
             android:background="@drawable/bg_page_livevideo_praise_list_lovely_teacher_talk"
             android:ellipsize="end"
