@@ -345,7 +345,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 }
                 ChsSpeakEvent event = new ChsSpeakEvent();
                 event.setEventType(ChsSpeakEvent.EVENT_TYPE_PAGE_CLOSE);
-                EventBus.getDefault().post(event );
+                EventBus.getDefault().post(event);
             }
         });
         return view;
@@ -733,13 +733,14 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 if (!isAssessing) {
                     final String finalAnswerContent = answerContent;
                     isAssessing = true;
-                    Log.e("chs_speak","=====>startAssess 2222:"+assessContent);
+                    Log.e("chs_speak", "=====>startAssess 2222:" + assessContent);
                     speechUtils.startRecog(mParam, new EvaluatorListener() {
                         @Override
                         public void onBeginOfSpeech() {
-                            Log.e("chs_speak","=====>startAssess onBeginOfSpeech:");
+                            Log.e("chs_speak", "=====>startAssess onBeginOfSpeech:");
                             logger.d("onBeginOfSpeech curTime: " + System.currentTimeMillis());
                         }
+
                         @Override
                         public void onResult(ResultEntity result) {
                             if (ResultEntity.EVALUATOR_ING == result.getStatus()) {
@@ -786,10 +787,10 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                                 }
                             } else if (ResultEntity.SUCCESS == result.getStatus()) {
                                 logger.e("SUCCESS curTime ");
-                                Log.e("chs_speak","=====>startAssess SUCCESS:");
+                                Log.e("chs_speak", "=====>startAssess SUCCESS:");
                                 isAssessing = false;
                             } else if (ResultEntity.ERROR == result.getStatus()) {
-                                Log.e("chs_speak","=====>startAssess ERROR:");
+                                Log.e("chs_speak", "=====>startAssess ERROR:");
                                 logger.e("ERROR");
                                 isAssessing = false;
                                 Map<String, String> errorData = new HashMap<>();
@@ -804,6 +805,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                                 onRecognizeStop();
                             }
                         }
+
                         @Override
                         public void onVolumeUpdate(int volume) {
                             logger.d("volume:" + volume);
@@ -821,21 +823,26 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
      * @param answerMap
      */
     private void startAssess() {
-        Log.e("chs_speak","=====>startAssess 000:"+assessMap+":"+answerMap);
-        if(startAssesByRefresh){
+        Log.e("chs_speak", "=====>startAssess 000:" + assessMap + ":" + answerMap);
+        if (startAssesByRefresh) {
             startAssesByRefresh = false;
             handler.removeCallbacks(assessTask);
-            handler.postDelayed(assessTask,900);
-        }else{
+            handler.postDelayed(assessTask, 900);
+        } else {
             handler.removeCallbacks(assessTask);
             assessTask.run();
         }
     }
 
     private boolean isDestory = false;
-    /**识别成功**/
+    /**
+     * 识别成功
+     **/
     private boolean recognizeSuccess = false;
-    /**重启语音识别**/
+
+    /**
+     * 重启语音识别
+     **/
     private void onRecognizeStop() {
         if (isAttach()) {
             handler.postDelayed(new Runnable() {
@@ -937,7 +944,8 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
         isSumit = true;
         subMitTime = System.currentTimeMillis();
         submitAnswer(isforce, nonce, data);
-        ChsSpeakLog.anserMode(liveAndBackDebug,NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts),isSpeakAnswer?"0":"1",wvSubjectWeb.getUrl(),isPlayBack);
+        ChsSpeakLog.anserMode(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), isSpeakAnswer
+                ? "0" : "1", wvSubjectWeb.getUrl(), isPlayBack);
         NewCourseLog.sno5(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), isforce == 1,
                 wvSubjectWeb.getUrl(), ispreload);
     }
@@ -950,40 +958,36 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
      */
     private void submitAnswer(final int isforce, final String nonce, JSONArray data) {
         Log.e("chs_speak", "=====>submitAnswer called");
-        //回放已作答过了 直接toast 提示
-        if (isPlayBack && newCourseSec != null && newCourseSec.getIsAnswer() == 1) {
-                XESToastUtils.showToast(mContext,"该题已作答");
-        } else {
-            final JSONObject testInfos = new JSONObject();
-            NewCourseSec.Test test = tests.get(0);
-            JSONObject json = test.getJson();
-            try {
-                json.put("userAnswerContent", data);
-                json.put("index", 0);
-                json.put("userAnswerStatus", 0);
-                testInfos.put(tests.get(0).getId(), json);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-
-            englishH5CoursewareSecHttp.submitCourseWareTests(detailInfo, isforce, nonce, entranceTime,
-                    testInfos.toString(), new AbstractBusinessDataCallBack() {
-                        @Override
-                        public void onDataSucess(Object... objData) {
-                            JSONObject jsonObject = (JSONObject) objData[0];
-                            showAnswerResult(isforce);
-                            onSubmitSuccess(isforce);
-                        }
-
-                        @Override
-                        public void onDataFail(int errStatus, String failMsg) {
-                            super.onDataFail(errStatus, failMsg);
-                            XESToastUtils.showToast(mContext, "答题结果提交失败，请刷新后重新作答！(10002)" + errStatus);
-                            isSumit = false;
-                            onSubmitError(isforce, failMsg);
-                        }
-                    });
+        final JSONObject testInfos = new JSONObject();
+        NewCourseSec.Test test = tests.get(0);
+        JSONObject json = test.getJson();
+        try {
+            json.put("userAnswerContent", data);
+            json.put("index", 0);
+            json.put("userAnswerStatus", 0);
+            testInfos.put(tests.get(0).getId(), json);
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
+
+        englishH5CoursewareSecHttp.submitCourseWareTests(detailInfo, isforce, nonce, entranceTime,
+                testInfos.toString(), new AbstractBusinessDataCallBack() {
+                    @Override
+                    public void onDataSucess(Object... objData) {
+                        JSONObject jsonObject = (JSONObject) objData[0];
+                        showAnswerResult(isforce);
+                        onSubmitSuccess(isforce);
+                    }
+
+                    @Override
+                    public void onDataFail(int errStatus, String failMsg) {
+                        super.onDataFail(errStatus, failMsg);
+                        XESToastUtils.showToast(mContext, "答题结果提交失败，请刷新后重新作答！(10002)" + errStatus);
+                        isSumit = false;
+                        onSubmitError(isforce, failMsg);
+                    }
+                });
+
 
     }
 
@@ -1280,6 +1284,10 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                     @Override
                     public void onDataSucess(Object... objData) {
 //                            addResultPager(isforce, (ChineseAISubjectResultEntity) objData[0]);
+                        //回放已作答过了 直接toast 提示
+                        if (isPlayBack && newCourseSec != null && newCourseSec.getIsAnswer() == 1) {
+                            XESToastUtils.showToast(mContext, "该题已作答");
+                        }
                         logger.i("showAnswerResult");
                         loadResult = true;
                         PrimaryScienceAnswerResultEntity entity = (PrimaryScienceAnswerResultEntity) objData[0];
@@ -1311,6 +1319,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                     @Override
                     public void onDataFail(int errStatus, String failMsg) {
                         super.onDataFail(errStatus, failMsg);
+                        XESToastUtils.showToast(mContext, "获取作答结果失败");
                     }
                 });
 
