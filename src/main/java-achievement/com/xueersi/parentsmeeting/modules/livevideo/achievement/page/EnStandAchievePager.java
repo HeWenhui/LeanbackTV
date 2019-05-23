@@ -18,6 +18,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -26,15 +27,20 @@ import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.common.util.FontCache;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StarAndGoldEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
 import com.xueersi.ui.widget.CircleImageView;
+
+import java.util.Random;
 
 public class EnStandAchievePager extends LiveBasePager {
     private RelativeLayout parent;
@@ -60,6 +66,7 @@ public class EnStandAchievePager extends LiveBasePager {
     private boolean firstCheck = false;
     /**用户头像*/
     CircleImageView civUserImage;
+    LinearLayout llImageContent;
     public EnStandAchievePager(Context context, RelativeLayout relativeLayout, LiveGetInfo mLiveGetInfo) {
         super(context, false);
         this.parent = relativeLayout;
@@ -85,7 +92,7 @@ public class EnStandAchievePager extends LiveBasePager {
         rlAchiveStandBg = mView.findViewById(R.id.rl_livevideo_en_achive_stand_bg);
         cbAchiveTitle = mView.findViewById(R.id.cb_livevideo_en_stand_achive_title);
         civUserImage = mView.findViewById(R.id.iv_livevideo_en_stand_achive_user_head_imge);
-
+        llImageContent = mView.findViewById(R.id.ll_livevideo_en_stand_achive_user_head_imge);
         return mView;
     }
 
@@ -138,10 +145,16 @@ public class EnStandAchievePager extends LiveBasePager {
 //                }
             }
         });
+
+      
     }
     /**设置头像*/
     private void setUserHeadImage(){
         String img = mLiveGetInfo.getStuImg();
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)llImageContent.getLayoutParams();
+        layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth -  LiveVideoPoint.getInstance().x4+ SizeUtils.Dp2Px(activity,10);
+        layoutParams.topMargin = SizeUtils.Dp2Px(mContext,10);
+        llImageContent.setLayoutParams(layoutParams);
         ImageLoader.with(activity).load(img).into(civUserImage);
     }
 
@@ -316,8 +329,8 @@ public class EnStandAchievePager extends LiveBasePager {
         };
         lottieAnimationView.setImageAssetDelegate(imageAssetDelegate);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-        lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
         lp.topMargin = cbAchiveTitle.getHeight() * 144 / 189;
+        lp.leftMargin = SizeUtils.Dp2Px(mContext,22);
         final ViewGroup viewGroup = (ViewGroup) mView;
         viewGroup.addView(lottieAnimationView, lp);
         lottieAnimationView.playAnimation();

@@ -3,14 +3,17 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment;
 import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LivePlaybackStandMediaController;
 
@@ -69,13 +72,21 @@ public class StandBackVideoFragment extends LiveBackVideoFragment {
             liveStandFrameAnim.onDestory();
         }
     }
+
     @Override
-    protected void addBusiness(Activity activity) {
-        super.addBusiness(activity);
+    protected void onPlayOpenSuccess() {
+        super.onPlayOpenSuccess();
+        userHeadVisible();
+    }
+    protected void userHeadVisible() {
         //直播
         if (liveBackBll.getLiveType() == LiveVideoConfig.LIVE_TYPE_LIVE) {
             // 英语
-            if (liveBackBll.getIsArts() == 1 && liveBackBll.getPattern() == 2) {
+            if (liveBackBll.getIsArts() == 1 && liveBackBll.getPattern() == 2 && llUserHeadImage!=null) {
+                RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)llUserHeadImage.getLayoutParams();
+                layoutParams.rightMargin = LiveVideoPoint.getInstance().screenWidth -  LiveVideoPoint.getInstance().x4 + SizeUtils.Dp2Px(activity,10);
+                layoutParams.topMargin = SizeUtils.Dp2Px(activity,10);
+                llUserHeadImage.setLayoutParams(layoutParams);
                 llUserHeadImage.setVisibility(View.VISIBLE);
                 ImageLoader.with(activity).load(UserBll.getInstance().getMyUserInfoEntity().getHeadImg()).into(civUserHeadImage);
 
