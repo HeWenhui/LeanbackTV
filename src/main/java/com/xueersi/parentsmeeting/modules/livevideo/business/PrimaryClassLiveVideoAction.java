@@ -410,10 +410,6 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlContent.getLayoutParams();
         if (LiveTopic.MODE_CLASS.equals(mode)) {
             ivLivePrimaryClassKuangjiaImgNormal.setVisibility(View.VISIBLE);
-            lp.addRule(RelativeLayout.ALIGN_LEFT, ivLivePrimaryClassKuangjiaImgNormal.getId());
-            lp.addRule(RelativeLayout.ALIGN_TOP, ivLivePrimaryClassKuangjiaImgNormal.getId());
-            lp.addRule(RelativeLayout.ALIGN_RIGHT, ivLivePrimaryClassKuangjiaImgNormal.getId());
-            lp.addRule(RelativeLayout.ALIGN_BOTTOM, ivLivePrimaryClassKuangjiaImgNormal.getId());
             setImageViewWidth();
             rl_course_video_contentview.setBackgroundResource(primaryClassView.getBackImg());
         } else {
@@ -421,10 +417,6 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
             lp.bottomMargin = 0;
             lp.rightMargin = 0;
             lp.topMargin = 0;
-            lp.addRule(RelativeLayout.ALIGN_LEFT, 0);
-            lp.addRule(RelativeLayout.ALIGN_TOP, 0);
-            lp.addRule(RelativeLayout.ALIGN_RIGHT, 0);
-            lp.addRule(RelativeLayout.ALIGN_BOTTOM, 0);
             ivLivePrimaryClassKuangjiaImgNormal.setVisibility(View.INVISIBLE);
             rl_course_video_contentview.setBackgroundColor(activity.getResources().getColor(R.color.white));
             rlContent.setLayoutParams(lp);

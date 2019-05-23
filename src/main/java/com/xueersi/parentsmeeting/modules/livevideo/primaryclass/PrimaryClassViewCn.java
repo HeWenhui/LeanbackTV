@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -33,10 +34,13 @@ public class PrimaryClassViewCn implements PrimaryClassView {
     public void decorateRlContent(View rlContent, int width, int height) {
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlContent.getLayoutParams();
         float scale = (float) width / 1334f;
-        int leftMargin = (int) (13 * scale);
-        int bottomMargin = (int) (13 * scale);
-        int rightMargin = (int) (226 * scale);
-        int topMargin = (int) (90 * scale);
+        LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
+        int leftGap = (videoPoint.screenWidth - width) / 2;
+        int topGap = (videoPoint.screenHeight - height) / 2;
+        int leftMargin = (int) (13 * scale) + leftGap;
+        int bottomMargin = (int) (13 * scale) + topGap;
+        int rightMargin = (int) (226 * scale) + leftGap;
+        int topMargin = (int) (90 * scale) + topGap;
         if (lp.leftMargin != leftMargin || lp.bottomMargin != bottomMargin || lp.rightMargin != rightMargin || lp.topMargin != topMargin) {
             lp.leftMargin = leftMargin;
             lp.bottomMargin = bottomMargin;

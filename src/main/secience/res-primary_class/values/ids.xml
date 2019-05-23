@@ -21,6 +21,7 @@
     <item name="v_livevideo_primary_team_inter_center" type="id" />
     <item name="tv_livevideo_primary_team_inter_right" type="id" />
     <!--小组成员-->
+    <item name="rl_livevideo_primary_content" type="id" />
     <item name="rl_livevideo_primary_team_content" type="id" />
     <item name="iv_livevideo_primary_team_icon" type="id" />
     <item name="tv_livevideo_primary_team_name_mid" type="id" />

@@ -12,10 +12,6 @@
         android:id="@id/rl_course_video_content"
         android:layout_width="match_parent"
         android:layout_height="@dimen/video_default_height"
-        android:layout_alignLeft="@id/iv_live_primary_class_kuangjia_img_normal"
-        android:layout_alignTop="@id/iv_live_primary_class_kuangjia_img_normal"
-        android:layout_alignRight="@id/iv_live_primary_class_kuangjia_img_normal"
-        android:layout_alignBottom="@id/iv_live_primary_class_kuangjia_img_normal"
         android:background="@color/COLOR_000000">
 
         <!-- 存放播放器的布局 -->
@@ -181,11 +177,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"></RelativeLayout>
 
-    <com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.PrimaryKuangjiaImageView
-        android:id="@id/iv_live_primary_class_kuangjia_img_normal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
+    <include layout="@layout/pager_primary_class_team" />
 
     <!-- 聊天下层 -->
     <RelativeLayout

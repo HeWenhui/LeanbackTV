@@ -1,5 +1,6 @@
 package com.xueersi.parentsmeeting.modules.livevideo.primaryclass.pager;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
@@ -76,7 +77,8 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
 
     @Override
     public View initView() {
-        View view = LayoutInflater.from(mContext).inflate(R.layout.pager_primary_class_team, null);
+        Activity activity = (Activity) mContext;
+        View view = activity.findViewById(R.id.rl_livevideo_primary_content);
         ll_livevideo_primary_team_content = view.findViewById(R.id.ll_livevideo_primary_team_content);
         rl_livevideo_primary_team_content = view.findViewById(R.id.rl_livevideo_primary_team_content);
         iv_livevideo_primary_team_icon = view.findViewById(R.id.iv_livevideo_primary_team_icon);
@@ -122,8 +124,10 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
 
         @Override
         public void run() {
-            ivPkState.setVisibility(View.GONE);
-            rl_livevideo_primary_team_content.setVisibility(View.VISIBLE);
+            if (teamInfoEntity != null) {
+                ivPkState.setVisibility(View.GONE);
+                rl_livevideo_primary_team_content.setVisibility(View.VISIBLE);
+            }
         }
     };
 

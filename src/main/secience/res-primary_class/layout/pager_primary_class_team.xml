@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/rl_livevideo_primary_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@id/ll_livevideo_primary_team_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" />
+
+    <com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.PrimaryKuangjiaImageView
+        android:id="@id/iv_live_primary_class_kuangjia_img_normal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
 
     <RelativeLayout
         android:id="@id/rl_livevideo_primary_team_content"
@@ -25,7 +38,6 @@
             android:gravity="center"
             android:includeFontPadding="false"
             android:singleLine="true"
-            android:text="冰原白狐队"
             android:textColor="#ffee7d05"
             android:textSize="12sp" />
 
@@ -41,12 +53,6 @@
         android:layout_alignBottom="@id/rl_livevideo_primary_team_content"
         android:src="@drawable/bg_live_ke_energy_zhunbei_icon_normal"
         android:visibility="gone" />
-
-    <LinearLayout
-        android:id="@id/ll_livevideo_primary_team_content"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" />
 
     <TextView
         android:id="@id/tv_livevideo_primary_team_name_mid"

@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 
@@ -34,11 +35,26 @@ public class PrimaryClassViewSec implements PrimaryClassView {
     public void decorateRlContent(View rlContent, int width, int height) {
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlContent.getLayoutParams();
         float scale = (float) width / 1334f;
-        lp.leftMargin = (int) (13 * scale);
-        lp.bottomMargin = (int) (13 * scale);
-        lp.rightMargin = (int) (219 * scale);
-        lp.topMargin = (int) (96 * scale);
-        rlContent.setLayoutParams(lp);
+
+        LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
+        int leftGap = (videoPoint.screenWidth - width) / 2;
+        int topGap = (videoPoint.screenHeight - height) / 2;
+        int leftMargin = (int) (13 * scale) + leftGap;
+        int bottomMargin = (int) (13 * scale) + topGap;
+        int rightMargin = (int) (219 * scale) + leftGap;
+        int topMargin = (int) (96 * scale) + topGap;
+        if (lp.leftMargin != leftMargin || lp.bottomMargin != bottomMargin || lp.rightMargin != rightMargin || lp.topMargin != topMargin) {
+            lp.leftMargin = leftMargin;
+            lp.bottomMargin = bottomMargin;
+            lp.rightMargin = rightMargin;
+            lp.topMargin = topMargin;
+            LayoutParamsUtil.setViewLayoutParams(rlContent, lp);
+        }
+//        lp.leftMargin = (int) (13 * scale);
+//        lp.bottomMargin = (int) (13 * scale);
+//        lp.rightMargin = (int) (219 * scale);
+//        lp.topMargin = (int) (96 * scale);
+//        rlContent.setLayoutParams(lp);
     }
 
     @Override

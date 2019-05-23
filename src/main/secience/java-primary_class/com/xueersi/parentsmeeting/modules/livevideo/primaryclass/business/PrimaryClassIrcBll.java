@@ -132,10 +132,8 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
     public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
         super.initView(bottomContent, mIsLand);
         PrimaryClassInterIml primaryClassInterIml = new PrimaryClassInterIml();
-        RelativeLayout rl_course_video_live_praiselist_content = activity.findViewById(R.id.rl_course_video_live_praiselist_content);
         PrimaryItemPager primaryItemPager = new PrimaryItemPager(activity, mContentView, mLiveBll.getMode());
         primaryItemPager.setPrimaryClassInter(primaryClassInterIml);
-        rl_course_video_live_praiselist_content.addView(primaryItemPager.getRootView());
         primaryItemView = primaryItemPager;
     }
 
