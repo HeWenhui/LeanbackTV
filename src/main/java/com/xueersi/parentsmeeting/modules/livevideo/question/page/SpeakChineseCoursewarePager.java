@@ -974,6 +974,10 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 testInfos.toString(), new AbstractBusinessDataCallBack() {
                     @Override
                     public void onDataSucess(Object... objData) {
+                        //回放已作答过了 直接toast 提示
+                        if (isPlayBack && newCourseSec != null && newCourseSec.getIsAnswer() == 1) {
+                            XESToastUtils.showToast(mContext, "该题已作答");
+                        }
                         JSONObject jsonObject = (JSONObject) objData[0];
                         showAnswerResult(isforce);
                         onSubmitSuccess(isforce);
@@ -1284,10 +1288,6 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                     @Override
                     public void onDataSucess(Object... objData) {
 //                            addResultPager(isforce, (ChineseAISubjectResultEntity) objData[0]);
-                        //回放已作答过了 直接toast 提示
-                        if (isPlayBack && newCourseSec != null && newCourseSec.getIsAnswer() == 1) {
-                            XESToastUtils.showToast(mContext, "该题已作答");
-                        }
                         logger.i("showAnswerResult");
                         loadResult = true;
                         PrimaryScienceAnswerResultEntity entity = (PrimaryScienceAnswerResultEntity) objData[0];
