@@ -942,12 +942,18 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
 
     private void submit(int isforce, String nonce, JSONArray data) {
         isSumit = true;
-        subMitTime = System.currentTimeMillis();
-        submitAnswer(isforce, nonce, data);
-        ChsSpeakLog.anserMode(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), isSpeakAnswer
-                ? "0" : "1", wvSubjectWeb.getUrl(), isPlayBack);
-        NewCourseLog.sno5(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), isforce == 1,
-                wvSubjectWeb.getUrl(), ispreload);
+        //回放已作答过了 直接toast 提示
+        if (isPlayBack && newCourseSec != null && newCourseSec.getIsAnswer() == 1) {
+            XESToastUtils.showToast(mContext, "该题已作答");
+            showAnswerResult(isforce);
+        }else{
+            subMitTime = System.currentTimeMillis();
+            submitAnswer(isforce, nonce, data);
+            ChsSpeakLog.anserMode(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), isSpeakAnswer
+                    ? "0" : "1", wvSubjectWeb.getUrl(), isPlayBack);
+            NewCourseLog.sno5(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), isforce == 1,
+                    wvSubjectWeb.getUrl(), ispreload);
+        }
     }
 
     /**
@@ -974,10 +980,6 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 testInfos.toString(), new AbstractBusinessDataCallBack() {
                     @Override
                     public void onDataSucess(Object... objData) {
-                        //回放已作答过了 直接toast 提示
-                        if (isPlayBack && newCourseSec != null && newCourseSec.getIsAnswer() == 1) {
-                            XESToastUtils.showToast(mContext, "该题已作答");
-                        }
                         JSONObject jsonObject = (JSONObject) objData[0];
                         showAnswerResult(isforce);
                         onSubmitSuccess(isforce);
