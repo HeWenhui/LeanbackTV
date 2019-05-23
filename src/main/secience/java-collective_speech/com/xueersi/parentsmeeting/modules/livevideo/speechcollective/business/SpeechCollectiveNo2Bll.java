@@ -94,6 +94,7 @@ public class SpeechCollectiveNo2Bll {
     private SpeechStartDialog speechStartDialog;
     private LiveGetInfo liveGetInfo;
     TeacherPraiseEventReg teacherPraiseEventReg;
+    long startTime;
 
     public SpeechCollectiveNo2Bll(Context context) {
         this.context = context;
@@ -326,6 +327,7 @@ public class SpeechCollectiveNo2Bll {
             super.onBeginOfSpeech();
             logger.d("onBeginOfSpeech:isFirstSpeech=" + isFirstSpeech);
             if (isFirstSpeech) {
+                startTime = System.currentTimeMillis();
                 isFirstSpeech = false;
                 handler.postDelayed(timeOut, 8000);
             }
@@ -370,7 +372,7 @@ public class SpeechCollectiveNo2Bll {
                     logger.d("onNoVolume:hide");
                 }
             });
-            logger.d("onNoVolume");
+            logger.d("onNoVolume:time=" + (System.currentTimeMillis() - startTime));
         }
     };
 
