@@ -392,7 +392,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
             mSpeechUtils.setLanguage(Constants.ASSESS_PARAM_LANGUAGE_EN);
         }
         mParam = new SpeechParamEntity();
-        dir = LiveCacheFile.geCacheFile(mContext, "voicebullet");
+        dir = LiveCacheFile.geCacheFile(mContext, "livevoice");
         FileUtils.deleteDir(dir);
         if (!dir.exists()) {
             dir.mkdirs();
@@ -846,7 +846,7 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
             audioRequest.request(new AudioRequest.OnAudioRequest() {
                 @Override
                 public void requestSuccess() {
-                    saveFile = new File(dir, "voicebullet" + System.currentTimeMillis() + ".mp3");
+                    saveFile = new File(dir, "ise" + System.currentTimeMillis() + ".mp3");
                     mParam.setRecogType(SpeechConfig.SPEECH_RECOGNITIYON_OFFINE);
                     mParam.setLocalSavePath(saveFile.getPath());
                     mParam.setVad_pause_sec("1.2");
