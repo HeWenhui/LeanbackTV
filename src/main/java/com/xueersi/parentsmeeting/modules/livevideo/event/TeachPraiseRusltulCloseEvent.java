@@ -17,4 +17,5 @@ public class TeachPraiseRusltulCloseEvent {
     public String getVoiceId() {
         return voiceId;
     }
+
 }

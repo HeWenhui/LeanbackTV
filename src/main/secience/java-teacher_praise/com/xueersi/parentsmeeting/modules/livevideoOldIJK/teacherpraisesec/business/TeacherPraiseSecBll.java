@@ -5,9 +5,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 
+import com.tencent.bugly.crashreport.CrashReport;
+import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.event.TeachPraiseRusltulCloseEvent;
@@ -19,6 +22,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.TopicAction;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.teacherpraise.business.TeacherPraiseBll;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
@@ -36,9 +40,11 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
     private LiveGetInfo getInfo;
     private String voiceId = "";
     HashMap<String, Boolean> show = new HashMap<>();
+    TeacherPraiseBll teacherPraiseBll;
 
     public TeacherPraiseSecBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
+        teacherPraiseBll = new TeacherPraiseBll(context, liveBll);
     }
 
     @Override
@@ -86,7 +92,7 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
                                 public void onClose(LiveBasePager basePager) {
                                     mRootView.removeView(basePager.getRootView());
                                     LiveEventBus.getDefault(activity).post(new TeacherPraiseEvent(false));
-                                    EventBus.getDefault().post(new TeachPraiseRusltulCloseEvent(voiceId));
+                                    EventBus.getDefault().post(new TeachPraiseRusltulCloseEvent(voiceId + "_1"));
                                 }
                             });
                         }
@@ -107,17 +113,37 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
     }
 
     private int[] noticeCodes = {
-            XESCODE.TEACHER_VOICE_PRAISE, XESCODE.SPEECH_COLLECTIVE,XESCODE.TEACHER_PRAISE
+            XESCODE.TEACHER_VOICE_PRAISE, XESCODE.SPEECH_COLLECTIVE, XESCODE.TEACHER_PRAISE
     };
 
     @Override
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
-        LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
-        String status = mainRoomstatus.getOnGroupSpeech();
-        if ("on".equals(status)) {
-            voiceId = mainRoomstatus.getGroupSpeechRoom();
+//        LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
+//        String status = mainRoomstatus.getOnGroupSpeech();
+//        if ("on".equals(status)) {
+//            voiceId = mainRoomstatus.getGroupSpeechRoom();
+//        } else {
+//            addEnergy = false;
+//            voiceId = "";
+//        }
+        if (LiveTopic.MODE_CLASS.equals(liveTopic.getMode())) {
+            LiveTopic.RoomStatusEntity mainRoomstatus = liveTopic.getMainRoomstatus();
+            String status = mainRoomstatus.getOnGroupSpeech();
+            if ("on".equals(status)) {
+                voiceId = mainRoomstatus.getGroupSpeechRoom();
+            } else {
+                addEnergy = false;
+                voiceId = "";
+            }
         } else {
-            voiceId = "";
+            LiveTopic.RoomStatusEntity coachRoomstatus = liveTopic.getCoachRoomstatus();
+            String status = coachRoomstatus.getOnGroupSpeech();
+            if ("on".equals(status)) {
+                voiceId = coachRoomstatus.getGroupSpeechRoom();
+            } else {
+                addEnergy = false;
+                voiceId = "";
+            }
         }
     }
 
@@ -127,16 +153,37 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
             case XESCODE.TEACHER_VOICE_PRAISE:
                 showTeacherPraise();
                 break;
-            case XESCODE.TEACHER_PRAISE:{
-
-            }
-                break;
-            case XESCODE.SPEECH_COLLECTIVE:
-                String status = data.optString("status");
-                if ("on".equals(status)) {
-                    voiceId = data.optString("voiceId");
+            case XESCODE.TEACHER_PRAISE: {
+                if (StringUtils.isEmpty(voiceId)) {
+                    teacherPraiseBll.showTeacherPraise();
                 } else {
-                    voiceId = "";
+                    showTeacherPraise();
+                }
+            }
+            break;
+            case XESCODE.SPEECH_COLLECTIVE:
+                try {
+                    ShareDataManager.getInstance().put("isOnTopic", false, ShareDataManager.SHAREDATA_USER);
+                    final String voiceID = data.optString("voiceId");
+                    final String status = data.optString("status");
+                    final String form = data.getString("from");
+                    if (LiveTopic.MODE_CLASS.equals(mLiveBll.getMode()) && "t".equals(form)) {
+                        if ("on".equals(status)) {
+                            voiceId = voiceID;
+                        } else {
+                            addEnergy = false;
+                            voiceId = "";
+                        }
+                    } else if (LiveTopic.MODE_TRANING.equals(mLiveBll.getMode()) && "f".equals(form)) {
+                        if ("on".equals(status)) {
+                            voiceId = voiceID;
+                        } else {
+                            addEnergy = false;
+                            voiceId = "";
+                        }
+                    }
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
                 }
                 break;
             default:
@@ -147,6 +194,7 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
     @Override
     public void onDestory() {
         super.onDestory();
+        teacherPraiseBll.onDestory();
     }
 
     @Override

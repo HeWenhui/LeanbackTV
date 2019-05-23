@@ -15,6 +15,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.page.SpeechPraisePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 
+import java.util.Random;
+
 /**
  * Created by linyuqiang on 2019/5/4.
  */
@@ -22,7 +24,6 @@ public class SpeechEnergyPager extends LiveBasePager {
     private LottieAnimationView animationView;
     private LiveSoundPool.SoundPlayTask task;
     private LiveSoundPool liveSoundPool;
-    private static int times = 0;
 
     public SpeechEnergyPager(Context context) {
         super(context);
@@ -75,7 +76,8 @@ public class SpeechEnergyPager extends LiveBasePager {
 
             }
         });
-        int index = times % 3;
+        Random random = new Random();
+        int index = random.nextInt(300) % 3;
         int raw = SpeechPraisePager.rawsPrimary[index];
         logger.d("initData:index=" + index + ",raw=" + raw);
         liveSoundPool = LiveSoundPool.createSoundPool();

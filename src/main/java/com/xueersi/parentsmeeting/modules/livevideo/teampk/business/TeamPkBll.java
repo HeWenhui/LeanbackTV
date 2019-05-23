@@ -747,7 +747,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     public void onTeachPraiseUIColse(TeachPraiseRusltulCloseEvent event) {
         int addEnergy = VOTE_TEACHER_PRAISE_ENERGY;
         logger.d("onTeachPraiseUIColse:addEnergy=" + addEnergy);
-        showVoteEnergyAnim(addEnergy, event.getVoiceId());
+        showVoteEnergyAnimSuc(addEnergy, event.getVoiceId());
     }
 
     /**
@@ -770,6 +770,24 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         addTopLayerPager(aqAwardPager);
         aqAwardPager.setData(0, addEnergy);
         TeamPkLog.showAddPower(mLiveBll, voteId, addEnergy + "");
+    }
+
+    private void showVoteEnergyAnimSuc(final int addEnergy, final String voteId) {
+        logger.e("========> showVoteEnergyAnimSuc:" + voteId + ":" + addEnergy);
+        //上报服务器 增加加能量
+        mHttpManager.addPersonAndTeamEnergy(mLiveBll.getLiveId(), addEnergy,
+                roomInitInfo.getStudentLiveInfo().getTeamId(),
+                roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), voteId, new HttpCallBack() {
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                        TeamPkAqResultPager aqAwardPager = new TeamPkAqResultPager(mActivity, TeamPkAqResultPager.AWARD_TYPE_VOTE,
+                                TeamPkBll.this);
+                        //addPager(aqAwardPager);
+                        addTopLayerPager(aqAwardPager);
+                        aqAwardPager.setData(0, addEnergy);
+                        TeamPkLog.showAddPower(mLiveBll, voteId, addEnergy + "");
+                    }
+                });
     }
 
     /**

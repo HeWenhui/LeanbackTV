@@ -14,12 +14,13 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 
+import java.util.Random;
+
 /**
  * Created by linyuqiang on 2019/4/29.
  */
 public class SpeechPraisePager extends LiveBasePager {
     private LottieAnimationView animationView;
-    private static int times = 0;
     private String[] names = new String[]{"img_0.png", "img_9.png", "img_10.png"};
     /** 你太牛了,你太棒了,超级厉害 */
     private String[] datas = new String[]{"data.json", "data2.json", "data3.json"};
@@ -46,7 +47,8 @@ public class SpeechPraisePager extends LiveBasePager {
     public void initData() {
         animationView.useHardwareAcceleration(true);
         String lottieResPath = "speech_collec_praise/images";
-        int index = times % datas.length;
+        Random random = new Random();
+        int index = random.nextInt(300) % 3;
         String data = datas[index];
         String lottieJsonPath = "speech_collec_praise/" + data;
         final LottieEffectInfo effectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
@@ -64,7 +66,6 @@ public class SpeechPraisePager extends LiveBasePager {
                         mContext);
             }
         });
-        times++;
         animationView.playAnimation();
         animationView.addAnimatorListener(new Animator.AnimatorListener() {
             @Override
