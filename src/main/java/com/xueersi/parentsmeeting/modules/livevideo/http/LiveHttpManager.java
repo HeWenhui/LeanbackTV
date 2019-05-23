@@ -7,23 +7,17 @@ import android.os.Looper;
 
 import com.alibaba.android.arouter.utils.TextUtils;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseHttpBusiness;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.AppBll;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.CommonRequestCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
-import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.DeviceUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoChConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoHttpEnConfig;
@@ -1414,20 +1408,21 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
     /**
      * 投票 能量
-     *
-     * @param liveId
+     *  @param liveId
      * @param teamId
      * @param classId
      * @param stuId
+     * @param releaseId
      * @param requestCallBack
      */
     public void addPersonAndTeamEnergy(String liveId, int addEnergy, String teamId, String classId, String stuId,
-                                       HttpCallBack requestCallBack) {
+                                       String releaseId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("addEnergy", addEnergy + "");
+        params.addBodyParam("releaseId", releaseId + "");
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_TEMPK_ADDPERSONANDTEAMENERGY + "/" + liveId, params, requestCallBack);
     }

@@ -76,44 +76,38 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
                 if (StringUtils.isEmpty(voiceId) || !show.containsKey(voiceId)) {
                     show.put(voiceId, true);
                     LiveEventBus.getDefault(activity).post(new TeacherPraiseEvent(true));
-                    SpeechPraisePager speechPraisePager = new SpeechPraisePager(mContext, 1 == getInfo.getIsYouJiao());
-                    mRootView.addView(speechPraisePager.getRootView());
-                    speechPraisePager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
-                        @Override
-                        public void onClose(LiveBasePager basePager) {
-                            mRootView.removeView(basePager.getRootView());
-                            boolean add = addEnergy();
-                            if (!add) {
+                    if ("1".equals(getInfo.getIsAllowTeamPk())) {
+                        if (!addEnergy) {
+                            addEnergy = true;
+                            SpeechEnergyPager speechEnergyPager = new SpeechEnergyPager(mContext);
+                            mRootView.addView(speechEnergyPager.getRootView());
+                            speechEnergyPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
+                                @Override
+                                public void onClose(LiveBasePager basePager) {
+                                    mRootView.removeView(basePager.getRootView());
+                                    LiveEventBus.getDefault(activity).post(new TeacherPraiseEvent(false));
+                                    EventBus.getDefault().post(new TeachPraiseRusltulCloseEvent(voiceId));
+                                }
+                            });
+                        }
+                    } else {
+                        SpeechPraisePager speechPraisePager = new SpeechPraisePager(mContext, 1 == getInfo.getIsYouJiao());
+                        mRootView.addView(speechPraisePager.getRootView());
+                        speechPraisePager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
+                            @Override
+                            public void onClose(LiveBasePager basePager) {
+                                mRootView.removeView(basePager.getRootView());
                                 LiveEventBus.getDefault(activity).post(new TeacherPraiseEvent(false));
                             }
-                        }
-                    });
+                        });
+                    }
                 }
             }
         });
     }
 
-    private boolean addEnergy() {
-        logger.d("addEnergy:pk=" + getInfo.getIsAllowTeamPk());
-        if (!addEnergy && "1".equals(getInfo.getIsAllowTeamPk())) {
-            addEnergy = true;
-            SpeechEnergyPager speechEnergyPager = new SpeechEnergyPager(mContext);
-            mRootView.addView(speechEnergyPager.getRootView());
-            speechEnergyPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
-                @Override
-                public void onClose(LiveBasePager basePager) {
-                    mRootView.removeView(basePager.getRootView());
-                    LiveEventBus.getDefault(activity).post(new TeacherPraiseEvent(false));
-                    EventBus.getDefault().post(new TeachPraiseRusltulCloseEvent(voiceId));
-                }
-            });
-            return true;
-        }
-        return false;
-    }
-
     private int[] noticeCodes = {
-            XESCODE.TEACHER_VOICE_PRAISE, XESCODE.SPEECH_COLLECTIVE
+            XESCODE.TEACHER_VOICE_PRAISE, XESCODE.SPEECH_COLLECTIVE,XESCODE.TEACHER_PRAISE
     };
 
     @Override
@@ -132,6 +126,10 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
         switch (type) {
             case XESCODE.TEACHER_VOICE_PRAISE:
                 showTeacherPraise();
+                break;
+            case XESCODE.TEACHER_PRAISE:{
+
+            }
                 break;
             case XESCODE.SPEECH_COLLECTIVE:
                 String status = data.optString("status");

@@ -3,13 +3,11 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.business;
 import android.app.Activity;
 import android.os.Build;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
-import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
@@ -760,7 +758,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         //上报服务器 增加加能量
         mHttpManager.addPersonAndTeamEnergy(mLiveBll.getLiveId(), addEnergy,
                 roomInitInfo.getStudentLiveInfo().getTeamId(),
-                roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), new HttpCallBack() {
+                roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), voteId, new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
 

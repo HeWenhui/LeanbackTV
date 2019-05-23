@@ -23,8 +23,8 @@ public class SpeechPraisePager extends LiveBasePager {
     private String[] names = new String[]{"img_0.png", "img_9.png", "img_10.png"};
     /** 你太牛了,你太棒了,超级厉害 */
     private String[] datas = new String[]{"data.json", "data2.json", "data3.json"};
-    private int[] rawsChild = new int[]{R.raw.speech_praise_001, R.raw.speech_praise_002, R.raw.speech_praise_003};
-    private int[] rawsPrimary = new int[]{R.raw.speech_praise_004, R.raw.speech_praise_005, R.raw.speech_praise_006};
+    public static int[] rawsChild = new int[]{R.raw.speech_praise_001, R.raw.speech_praise_002, R.raw.speech_praise_003};
+    public static int[] rawsPrimary = new int[]{R.raw.speech_praise_004, R.raw.speech_praise_005, R.raw.speech_praise_006};
     private boolean isYouJiao;
     private LiveSoundPool.SoundPlayTask task;
     private LiveSoundPool liveSoundPool;

@@ -9,14 +9,20 @@ import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideo.teacherpraisesec.page.SpeechPraisePager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.LiveSoundPool;
 
 /**
  * Created by linyuqiang on 2019/5/4.
  */
 public class SpeechEnergyPager extends LiveBasePager {
     private LottieAnimationView animationView;
+    private LiveSoundPool.SoundPlayTask task;
+    private LiveSoundPool liveSoundPool;
+    private static int times = 0;
 
     public SpeechEnergyPager(Context context) {
         super(context);
@@ -69,6 +75,19 @@ public class SpeechEnergyPager extends LiveBasePager {
 
             }
         });
+        int index = times % 3;
+        int raw = SpeechPraisePager.rawsPrimary[index];
+        logger.d("initData:index=" + index + ",raw=" + raw);
+        liveSoundPool = LiveSoundPool.createSoundPool();
+        task = new LiveSoundPool.SoundPlayTask(raw, StandLiveConfig.MUSIC_VOLUME_RATIO_FRONT, false);
+        LiveSoundPool.play(mContext, liveSoundPool, task);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        liveSoundPool.stop(task);
+        liveSoundPool.release();
     }
 
 }

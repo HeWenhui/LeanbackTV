@@ -11,14 +11,18 @@ import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.utils.SpeechEvaluatorUtils;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
+import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.TeachPraiseRusltulCloseEvent;
@@ -29,7 +33,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.config.SpeechCollectiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.dialog.SpeechStartDialog;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.page.SpeechCollectiveNo2Pager;
-import com.xueersi.parentsmeeting.modules.livevideo.speechfeedback.page.SpeechEnergyPager;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
@@ -77,6 +80,7 @@ public class SpeechCollectiveNo2Bll {
     /** 录音是否结束，用来 */
     private AtomicBoolean isStop = new AtomicBoolean(false);
     private boolean start = false;
+    private boolean userClose = false;
     private String voiceId;
     private String from;
     private long lastOneLevelTime = -1, lastTwoLevelTime = -1, lastThreeLevelTime = -1;
@@ -134,13 +138,31 @@ public class SpeechCollectiveNo2Bll {
         if (start) {
             return;
         }
+        start = true;
+        logger.d("start:from=" + from + ",voiceId=" + voiceId);
+        try {
+            String string = ShareDataManager.getInstance().getString(ShareDataConfig.SP_SPEECH_COLLECTION, "{}", ShareDataManager.SHAREDATA_USER);
+            logger.d("start:string=" + string);
+            JSONObject jsonObject = new JSONObject(string);
+            if (jsonObject.has("liveid")) {
+                String liveid = jsonObject.getString("liveid");
+                if (liveGetInfo.getId().equals(liveid)) {
+                    if (voiceId.equals(jsonObject.getString("voiceId"))) {
+                        userClose = true;
+                        return;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            ShareDataManager.getInstance().put(ShareDataConfig.SP_SPEECH_COLLECTION, "{}", ShareDataManager.SHAREDATA_USER);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
         addSysTip(true);
         if (teacherPraiseEventReg != null) {
             LiveEventBus.getDefault(context).unregister(teacherPraiseEventReg);
         }
         teacherPraiseEventReg = new TeacherPraiseEventReg();
         LiveEventBus.getDefault(context).register(teacherPraiseEventReg);
-        start = true;
         if (speechStartDialog != null) {
             speechStartDialog.cancelDialog();
         }
@@ -228,6 +250,14 @@ public class SpeechCollectiveNo2Bll {
                 if (mSpeechEvaluatorUtils != null) {
                     mSpeechEvaluatorUtils.cancel();
                     isRecord.set(false);
+                }
+                try {
+                    JSONObject jsonObject = new JSONObject();
+                    jsonObject.put("liveid", liveGetInfo.getId());
+                    jsonObject.put("voiceId", voiceId);
+                    ShareDataManager.getInstance().put(ShareDataConfig.SP_SPEECH_COLLECTION, "" + jsonObject, ShareDataManager.SHAREDATA_USER);
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
                 }
             }
         });
@@ -353,16 +383,18 @@ public class SpeechCollectiveNo2Bll {
         mSpeechEvaluatorUtils.cancel();
         isStop.set(true);
         isRecord.set(false);
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                speechStartDialog = new SpeechStartDialog(context);
-                speechStartDialog.setSop();
-                if (speechCollectiveView != null) {
-                    mRootView.removeView(speechCollectiveView.getRootView());
+        if (!userClose) {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    speechStartDialog = new SpeechStartDialog(context);
+                    speechStartDialog.setSop();
+                    if (speechCollectiveView != null) {
+                        mRootView.removeView(speechCollectiveView.getRootView());
+                    }
                 }
-            }
-        });
+            });
+        }
         if (teacherPraiseEventReg != null) {
             LiveEventBus.getDefault(context).unregister(teacherPraiseEventReg);
             teacherPraiseEventReg = null;
@@ -399,15 +431,17 @@ public class SpeechCollectiveNo2Bll {
             }
             if (isFinish && isRecord.get()) {
                 ansStr.append(recognizeStr);
+                final String msg = ansStr.toString();
+                ansStr = new StringBuilder();
                 recognizeStr = "";
                 logger.i("recognizeSuccess");
                 mSpeechEvaluatorUtils.cancel();
                 isRecord.set(false);
-                collectiveHttp.sendSpeechMsg(voiceId, "" + ansStr);
-                collectiveHttp.uploadSpeechMsg(voiceId, "" + ansStr, new AbstractBusinessDataCallBack() {
+                collectiveHttp.uploadSpeechMsg(voiceId, "" + msg, new AbstractBusinessDataCallBack() {
                     @Override
                     public void onDataSucess(Object... objData) {
                         logger.i("onDataSucess:data=" + objData[0]);
+                        collectiveHttp.sendSpeechMsg(from, voiceId, "" + msg);
                         addEnergy();
                     }
 

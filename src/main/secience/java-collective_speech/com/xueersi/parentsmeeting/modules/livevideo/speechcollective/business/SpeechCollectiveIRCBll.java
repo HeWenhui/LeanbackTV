@@ -63,13 +63,14 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
         }
 
         @Override
-        public void sendSpeechMsg(String voiceId, String msg) {
+        public void sendSpeechMsg(String from, String voiceId, String msg) {
             try {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("type", "" + XESCODE.XCR_ROOM_SPEECH_COLL);
                 jsonObject.put("name", mGetInfo.getStuName());
                 jsonObject.put("headImg", mGetInfo.getHeadImgPath());
                 jsonObject.put("msg", msg);
+                jsonObject.put("speechfrom", from);
                 //不同组的学生互相不能看弹幕
                 if (haveTeam) {
                     LiveGetInfo.StudentLiveInfoEntity studentLiveInfo = mGetInfo.getStudentLiveInfo();
