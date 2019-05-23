@@ -35,8 +35,8 @@ public class PrimaryClassViewCn implements PrimaryClassView {
         float scale = (float) width / 1334f;
         int leftMargin = (int) (13 * scale);
         int bottomMargin = (int) (13 * scale);
-        int rightMargin = (int) (224 * scale);
-        int topMargin = (int) (91 * scale);
+        int rightMargin = (int) (226 * scale);
+        int topMargin = (int) (90 * scale);
         if (lp.leftMargin != leftMargin || lp.bottomMargin != bottomMargin || lp.rightMargin != rightMargin || lp.topMargin != topMargin) {
             lp.leftMargin = leftMargin;
             lp.bottomMargin = bottomMargin;
@@ -52,9 +52,9 @@ public class PrimaryClassViewCn implements PrimaryClassView {
         {
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_livevideo_primary_team_content.getLayoutParams();
             int lpwidth = (int) (184 * scale);
-            int lpheight = (int) (60 * scale);
+            int lpheight = (int) (74 * scale);
             int leftMargin = (ScreenUtils.getScreenWidth() - width) / 2 + (int) (1124 * scale);
-            int topMargin = (ScreenUtils.getScreenHeight() - height) / 2 + (int) (11 * scale);
+            int topMargin = (ScreenUtils.getScreenHeight() - height) / 2 + (int) (0 * scale);
             if (lp.width != lpwidth || lp.height != lpheight || lp.leftMargin != leftMargin || lp.topMargin != topMargin) {
                 lp.width = lpwidth;
                 lp.height = lpheight;
@@ -75,8 +75,8 @@ public class PrimaryClassViewCn implements PrimaryClassView {
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ll_livevideo_primary_team_content.getLayoutParams();
             int lpwidth = (int) (195 * scale);
             int lpheight = (int) (630 * scale);
-            int leftMargin = (ScreenUtils.getScreenWidth() - width) / 2 + (int) (1123 * scale);
-            int topMargin = (ScreenUtils.getScreenHeight() - height) / 2 + (int) (91 * scale);
+            int leftMargin = (ScreenUtils.getScreenWidth() - width) / 2 + (int) (1121 * scale);
+            int topMargin = (ScreenUtils.getScreenHeight() - height) / 2 + (int) (88 * scale);
             if (lp.width != lpwidth || lp.height != lpheight || lp.leftMargin != leftMargin || lp.topMargin != topMargin) {
                 lp.width = lpwidth;
                 lp.height = lpheight;
@@ -86,7 +86,7 @@ public class PrimaryClassViewCn implements PrimaryClassView {
                 for (int i = 0; i < ll_livevideo_primary_team_content.getChildCount(); i++) {
                     View child = ll_livevideo_primary_team_content.getChildAt(i);
                     ViewGroup.MarginLayoutParams childLp = (ViewGroup.MarginLayoutParams) child.getLayoutParams();
-                    int childHeight = (int) (149 * scale);
+                    int childHeight = (int) (148 * scale);
                     int margin = (int) (10 * scale);
                     if (childLp.height != childHeight || childLp.bottomMargin != margin) {
                         childLp.height = childHeight;

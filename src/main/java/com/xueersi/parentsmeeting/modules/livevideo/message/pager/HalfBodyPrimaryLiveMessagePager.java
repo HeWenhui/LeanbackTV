@@ -44,6 +44,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.BaseLiveMessagePage
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
@@ -80,14 +81,17 @@ import cn.dreamtobe.kpswitch.widget.KPSwitchFSPanelLinearLayout;
 public class HalfBodyPrimaryLiveMessagePager extends BaseLiveMessagePager {
     private static String TAG = "HalfBodyPrimaryLiveMessagePager";
     private Activity liveVideoActivity;
+    int useSkin;
 
     public HalfBodyPrimaryLiveMessagePager(Context context, KeyboardUtil.OnKeyboardShowingListener keyboardShowingListener,
                                            LiveAndBackDebug ums, BaseLiveMediaControllerBottom
                                                    liveMediaControllerBottom, ArrayList<LiveMessageEntity>
                                                    liveMessageEntities, ArrayList<LiveMessageEntity>
-                                                   otherLiveMessageEntities) {
-        super(context);
+                                                   otherLiveMessageEntities, int useSkin) {
+        super(context, false);
         liveVideoActivity = (Activity) context;
+        this.useSkin = useSkin;
+        mView = initView();
         initData();
     }
 
@@ -105,6 +109,9 @@ public class HalfBodyPrimaryLiveMessagePager extends BaseLiveMessagePager {
      * @return
      */
     protected int getLayoutId() {
+        if (useSkin == HalfBodyLiveConfig.SKIN_TYPE_CH) {
+            return R.layout.page_livevideo_message_halfbody_primary_cn;
+        }
         return R.layout.page_livevideo_message_halfbody_primary;
     }
 

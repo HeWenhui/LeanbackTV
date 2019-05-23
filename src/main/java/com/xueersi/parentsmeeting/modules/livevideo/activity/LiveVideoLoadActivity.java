@@ -200,10 +200,10 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     bundle.putBoolean("isPrimary", LiveVideoConfig.isPrimary);
                     bundle.putBoolean("isSmallChinese", LiveVideoConfig.isSmallChinese);
                     bundle.putBoolean("isSmallEnglish", mGetInfo.getSmallEnglish());
+//                    if (AppConfig.DEBUG) {
+//                        mGetInfo.setUseSkin(2);
+//                    }
                     bundle.putInt("useSkin", mGetInfo.getUseSkin());
-                    if(AppConfig.DEBUG){
-                        bundle.putInt("useSkin", 2);
-                    }
                     bundle.putInt("isGoldMicrophone", mGetInfo.isUseGoldMicroPhone());
                     if (mGetInfo.getIsArts() == 0) {
                         bundle.putInt("allowLinkMicNew", mGetInfo.getAllowLinkMicNew());
