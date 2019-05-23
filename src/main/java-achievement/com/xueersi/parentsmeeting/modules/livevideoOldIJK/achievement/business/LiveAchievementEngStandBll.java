@@ -6,8 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.achievement.page.EnStandAchievePager;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -35,6 +37,7 @@ public class LiveAchievementEngStandBll implements StarInteractAction, EnPkInter
 
     public void initView(RelativeLayout bottomContent, RelativeLayout mContentView) {
         this.bottomContent = bottomContent;
+
         RelativeLayout relativeLayout = bottomContent.findViewById(R.id.rl_livevideo_english_content);
         relativeLayout.setVisibility(View.VISIBLE);
         ViewGroup.LayoutParams layoutParams = relativeLayout.getLayoutParams();
@@ -43,10 +46,11 @@ public class LiveAchievementEngStandBll implements StarInteractAction, EnPkInter
         relativeLayout.setBackgroundColor(Color.TRANSPARENT);
         enAchievePager = new EnStandAchievePager(activity, relativeLayout, mLiveGetInfo);
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) enAchievePager.getRootView().getLayoutParams();
-//        LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
-//        lp.rightMargin += (videoPoint.screenWidth - videoPoint.x4);
-//        logger.d("initView:rightMargin=" + lp.rightMargin);
-////        lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        LiveVideoPoint videoPoint = LiveVideoPoint.getInstance();
+        lp.leftMargin = videoPoint.screenWidth - videoPoint.x4+SizeUtils.Dp2Px(activity,10);
+        lp.topMargin = SizeUtils.Dp2Px(activity,10);
+        logger.d("initView:rightMargin=" + lp.rightMargin);
+//        lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         relativeLayout.addView(enAchievePager.getRootView(), lp);
     }
 
