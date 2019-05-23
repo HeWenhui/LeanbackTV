@@ -51,6 +51,8 @@ public class PrimaryClassViewCn implements PrimaryClassView {
         TextView tv_livevideo_primary_team_name_mid = view.findViewById(R.id.tv_livevideo_primary_team_name_mid);
         tv_livevideo_primary_team_name_mid.setTextColor(0xff7B583E);
         tv_livevideo_primary_team_name_mid.setBackgroundResource(R.drawable.bg_live_tips_bg_normal_cn);
+        TextView tv_livevideo_primary_team_name = view.findViewById(R.id.tv_livevideo_primary_team_name);
+        tv_livevideo_primary_team_name.setTextColor(0xff408474);
     }
 
     @Override
@@ -58,8 +60,8 @@ public class PrimaryClassViewCn implements PrimaryClassView {
         float scale = (float) width / 1334f;
         {
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_livevideo_primary_team_content.getLayoutParams();
-            int lpwidth = (int) (184 * scale);
-            int lpheight = (int) (78 * scale);
+            int lpwidth = (int) (188 * scale);
+            int lpheight = (int) (72 * scale);
             int leftMargin = (ScreenUtils.getScreenWidth() - width) / 2 + (int) (1124 * scale);
             int topMargin = (ScreenUtils.getScreenHeight() - height) / 2 + (int) (0 * scale);
             if (lp.width != lpwidth || lp.height != lpheight || lp.leftMargin != leftMargin || lp.topMargin != topMargin) {
@@ -94,7 +96,7 @@ public class PrimaryClassViewCn implements PrimaryClassView {
                     View child = ll_livevideo_primary_team_content.getChildAt(i);
                     ViewGroup.MarginLayoutParams childLp = (ViewGroup.MarginLayoutParams) child.getLayoutParams();
                     int childHeight = (int) (148 * scale);
-                    int margin = (int) (10 * scale);
+                    int margin = (int) (11 * scale);
                     if (childLp.height != childHeight || childLp.bottomMargin != margin) {
                         childLp.height = childHeight;
                         childLp.bottomMargin = margin;

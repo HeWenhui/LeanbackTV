@@ -8,7 +8,8 @@
     <RelativeLayout
         android:id="@id/rl_teampk_pkstate_container_2"
         android:layout_width="219dp"
-        android:layout_height="25dp">
+        android:layout_height="25dp"
+        android:layout_toLeftOf="@id/fl_live_halfbody_coin_container">
 
         <ImageView
             android:layout_width="match_parent"
@@ -81,9 +82,8 @@
         android:id="@id/fl_live_halfbody_coin_container"
         android:layout_width="76dp"
         android:layout_height="25dp"
-        android:layout_alignTop="@id/rl_teampk_pkstate_container_2"
-        android:layout_marginLeft="9dp"
-        android:layout_toRightOf="@id/rl_teampk_pkstate_container_2">
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="9dp">
 
         <ImageView
             android:layout_width="match_parent"
@@ -125,10 +125,9 @@
 
     <RelativeLayout
         android:id="@id/rl_live_halfbody_energy_contribution"
-        android:layout_width="wrap_content"
+        android:layout_width="235dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/rl_teampk_pkstate_container_2"
-        android:layout_marginTop="10dp"
+        android:layout_toLeftOf="@id/rl_teampk_pkstate_container_2"
         android:background="@drawable/bg_live_halfbody_energy_contribution"
         android:visibility="gone">
 

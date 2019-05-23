@@ -6,24 +6,25 @@
     <RelativeLayout
         android:id="@id/rl_livevideo_primary_team_content"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#4fFFB400">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@id/iv_livevideo_primary_team_icon"
             android:layout_width="25dp"
             android:layout_height="23dp"
+            android:layout_alignParentLeft="true"
             android:layout_centerVertical="true" />
 
         <TextView
             android:id="@id/tv_livevideo_primary_team_name"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="2dp"
             android:layout_toRightOf="@id/iv_livevideo_primary_team_icon"
             android:gravity="center"
             android:includeFontPadding="false"
+            android:singleLine="true"
             android:text="冰原白狐队"
             android:textColor="#ffee7d05"
             android:textSize="12sp" />

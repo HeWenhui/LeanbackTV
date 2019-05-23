@@ -5,6 +5,7 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.UserBll;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
@@ -131,9 +132,10 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
     public void initView(RelativeLayout bottomContent, AtomicBoolean mIsLand) {
         super.initView(bottomContent, mIsLand);
         PrimaryClassInterIml primaryClassInterIml = new PrimaryClassInterIml();
+        RelativeLayout rl_course_video_live_praiselist_content = activity.findViewById(R.id.rl_course_video_live_praiselist_content);
         PrimaryItemPager primaryItemPager = new PrimaryItemPager(activity, mContentView, mLiveBll.getMode());
         primaryItemPager.setPrimaryClassInter(primaryClassInterIml);
-        rlMessageBottom.addView(primaryItemPager.getRootView());
+        rl_course_video_live_praiselist_content.addView(primaryItemPager.getRootView());
         primaryItemView = primaryItemPager;
     }
 
