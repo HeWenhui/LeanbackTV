@@ -48,6 +48,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.NewCourseSec;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.PrimaryScienceAnswerResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.ChsSpeakLog;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
@@ -936,6 +937,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
         isSumit = true;
         subMitTime = System.currentTimeMillis();
         submitAnswer(isforce, nonce, data);
+        ChsSpeakLog.anserMode(liveAndBackDebug,NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts),isSpeakAnswer?"0":"1",wvSubjectWeb.getUrl(),isPlayBack);
         NewCourseLog.sno5(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), isforce == 1,
                 wvSubjectWeb.getUrl(), ispreload);
     }
