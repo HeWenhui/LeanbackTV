@@ -98,61 +98,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             @Override
             public void onSizeChange(int width, int height) {
                 scale = (float) width / 1334f;
-                {
-                    RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_livevideo_primary_team_content.getLayoutParams();
-                    int lpwidth = (int) (191 * scale);
-                    int lpheight = (int) (54 * scale);
-                    int leftMargin = (ScreenUtils.getScreenWidth() - width) / 2 + (int) (1124 * scale);
-                    int topMargin = (ScreenUtils.getScreenHeight() - height) / 2 + (int) (26 * scale);
-                    if (lp.width != lpwidth || lp.height != lpheight || lp.leftMargin != leftMargin || lp.topMargin != topMargin) {
-                        lp.width = lpwidth;
-                        lp.height = lpheight;
-                        lp.leftMargin = leftMargin;
-                        lp.topMargin = topMargin;
-                        LayoutParamsUtil.setViewLayoutParams(rl_livevideo_primary_team_content, lp);
-                    }
-                    RelativeLayout.LayoutParams lpImg = (RelativeLayout.LayoutParams) iv_livevideo_primary_team_icon.getLayoutParams();
-                    int lpImgWidth = (int) (49 * scale);
-                    int lpImgHeight = (int) (46 * scale);
-                    if (lpImg.width != lpImgWidth || lpImg.height != lpImgHeight) {
-                        lpImg.width = lpImgWidth;
-                        lpImg.height = lpImgHeight;
-                        LayoutParamsUtil.setViewLayoutParams(iv_livevideo_primary_team_icon, lpImg);
-                    }
-                }
-                {
-                    RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) ll_livevideo_primary_team_content.getLayoutParams();
-                    int lpwidth = (int) (195 * scale);
-                    int lpheight = (int) (630 * scale);
-                    int leftMargin = (ScreenUtils.getScreenWidth() - width) / 2 + (int) (1128 * scale);
-                    int topMargin = (ScreenUtils.getScreenHeight() - height) / 2 + (int) (103 * scale);
-                    if (lp.width != lpwidth || lp.height != lpheight || lp.leftMargin != leftMargin || lp.topMargin != topMargin) {
-                        lp.width = lpwidth;
-                        lp.height = lpheight;
-                        lp.leftMargin = leftMargin;
-                        lp.topMargin = topMargin;
-                        LayoutParamsUtil.setViewLayoutParams(ll_livevideo_primary_team_content, lp);
-                        for (int i = 0; i < ll_livevideo_primary_team_content.getChildCount(); i++) {
-                            View child = ll_livevideo_primary_team_content.getChildAt(i);
-                            ViewGroup.MarginLayoutParams childLp = (ViewGroup.MarginLayoutParams) child.getLayoutParams();
-                            int childHeight = (int) (149 * scale);
-                            int margin = (int) (10 * scale);
-                            if (childLp.height != childHeight || childLp.bottomMargin != margin) {
-                                childLp.height = childHeight;
-                                childLp.bottomMargin = margin;
-                                LayoutParamsUtil.setViewLayoutParams(child, childLp);
-                            }
-                        }
-                    }
-                }
-                {
-                    RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) tv_livevideo_primary_team_name_mid.getLayoutParams();
-                    int topMargin = (ScreenUtils.getScreenHeight() - height) / 2 + (int) (114 * scale);
-                    if (lp.topMargin != topMargin) {
-                        lp.topMargin = topMargin;
-                        LayoutParamsUtil.setViewLayoutParams(tv_livevideo_primary_team_name_mid, lp);
-                    }
-                }
+                primaryClassView.decorateItemPager(rl_livevideo_primary_team_content, iv_livevideo_primary_team_icon, ll_livevideo_primary_team_content, tv_livevideo_primary_team_name_mid, width, height);
             }
         });
     }

@@ -1,11 +1,19 @@
 package com.xueersi.parentsmeeting.modules.livevideo.primaryclass;
 
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 public interface PrimaryClassView {
     int getKuangjia();
 
     int getBackImg();
+
+    void decorateRlContent(View view, int width, int height);
+
+    void decorateItemPager(RelativeLayout rl_livevideo_primary_team_content, ImageView iv_livevideo_primary_team_icon, LinearLayout ll_livevideo_primary_team_content, TextView tv_livevideo_primary_team_name_mid, int width, int height);
 
     void decorateItemMy(View view);
 

@@ -414,7 +414,7 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
             lp.addRule(RelativeLayout.ALIGN_TOP, ivLivePrimaryClassKuangjiaImgNormal.getId());
             lp.addRule(RelativeLayout.ALIGN_RIGHT, ivLivePrimaryClassKuangjiaImgNormal.getId());
             lp.addRule(RelativeLayout.ALIGN_BOTTOM, ivLivePrimaryClassKuangjiaImgNormal.getId());
-            setImageViewWidth(ivLivePrimaryClassKuangjiaImgNormal);
+            setImageViewWidth();
             rl_course_video_contentview.setBackgroundResource(primaryClassView.getBackImg());
         } else {
             lp.leftMargin = 0;
@@ -431,17 +431,11 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
         }
     }
 
-    public void setImageViewWidth(final ImageView imageView) {
+    public void setImageViewWidth() {
         ivLivePrimaryClassKuangjiaImgNormal.addSizeChange(new PrimaryKuangjiaImageView.OnSizeChange() {
             @Override
             public void onSizeChange(int width, int height) {
-                RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlContent.getLayoutParams();
-                float scale = (float) width / 1334f;
-                lp.leftMargin = (int) (13 * scale);
-                lp.bottomMargin = (int) (13 * scale);
-                lp.rightMargin = (int) (219 * scale);
-                lp.topMargin = (int) (96 * scale);
-                rlContent.setLayoutParams(lp);
+                primaryClassView.decorateRlContent(rlContent, width, height);
             }
         });
     }
