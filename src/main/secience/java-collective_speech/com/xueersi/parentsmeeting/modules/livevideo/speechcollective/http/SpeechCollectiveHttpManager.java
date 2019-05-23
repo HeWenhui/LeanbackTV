@@ -18,7 +18,7 @@ public class SpeechCollectiveHttpManager {
         httpRequestParams.addBodyParam("voiceId", "" + voiceId);
         httpRequestParams.addBodyParam("msg", "" + msg);
         liveHttpManager.setDefaultParameter(httpRequestParams);
-        liveHttpManager.sendPost(liveHttpManager.getLiveVideoSAConfig().inner.URL_UPLOAD_SPEECH_MSG, httpRequestParams, new HttpCallBack() {
+        liveHttpManager.sendPost(liveHttpManager.getLiveVideoSAConfig().inner.URL_UPLOAD_SPEECH_MSG, httpRequestParams, new HttpCallBack(false) {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 callBack.onDataSucess(responseEntity);

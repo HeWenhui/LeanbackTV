@@ -252,6 +252,7 @@ public class SpeechCollectiveNo2Bll {
                     mSpeechEvaluatorUtils.cancel();
                     isRecord.set(false);
                 }
+                userClose = true;
                 try {
                     JSONObject jsonObject = new JSONObject();
                     jsonObject.put("liveid", liveGetInfo.getId());
