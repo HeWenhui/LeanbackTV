@@ -65,6 +65,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.Minimarket
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListStudentEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.question.entity.ScienceStaticConfig;
+import com.xueersi.parentsmeeting.widget.praise.config.PraiseConfig;
+import com.xueersi.parentsmeeting.widget.praise.entity.PraiseContentEntity;
+import com.xueersi.parentsmeeting.widget.praise.entity.PraiseEntity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -2439,7 +2442,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @param responseEntity
      * @return
      */
-    public PraiseEntity     parseTutorPraiseEntity(ResponseEntity  responseEntity) throws Exception {
+    public PraiseEntity parseTutorPraiseEntity(ResponseEntity  responseEntity) throws Exception {
         JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
        // JSONObject jsonObject = new JSONObject(data);
         List<PraiseContentEntity> contentEntityList = new ArrayList<>();

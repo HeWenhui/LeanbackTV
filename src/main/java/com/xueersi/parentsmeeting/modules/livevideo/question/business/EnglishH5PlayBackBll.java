@@ -29,6 +29,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveBackQuestionEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.config.LiveQueHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
@@ -431,8 +432,8 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
 
         @Override
         public void getCourseWareTests(VideoQuestionLiveEntity detailInfo, AbstractBusinessDataCallBack callBack) {
-            if (liveBackBll.getIsArts() == LiveVideoSAConfig.ART_EN && !detailInfo.isTUtor()) {
-                if (LiveQueConfig.isGroupGame(detailInfo.type)) {
+            if (liveBackBll.getIsArts() == LiveVideoSAConfig.ART_EN ) {
+                if (LiveQueConfig.isGroupGame(detailInfo.type) && !detailInfo.isTUtor()) {
                     getCourseWareHttpManager().getGroupGameTestInfos(detailInfo.id, liveGetInfo.getStuId(), detailInfo.type, callBack);
                 } else {
                     EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
