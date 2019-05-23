@@ -193,7 +193,11 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.iv_livevideo_chpk_selectReady) {
-            upLoadStudentReady();
+            if (liveGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+                closeTeamSelectPager();
+            } else {
+                upLoadStudentReady();
+            }
         } else if (v.getId() == R.id.iv_livevideo_chpk_selectClose) {
             closeTeamSelectPager();
         }
@@ -329,7 +333,11 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                showTimeCutdown();
+                if (liveGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+                    showMarquee();
+                } else {
+                    showTimeCutdown();
+                }
             }
         });
 
@@ -530,7 +538,9 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
 //        }
 
         frTeamIntrocude.setVisibility(View.VISIBLE);
-//        rl_teampk_rule.setVisibility(View.GONE);
+        if (rl_teampk_rule != null) {
+            rl_teampk_rule.setVisibility(View.GONE);
+        }
         tvTeamName.setText(mTeamName);
 
         AlphaAnimation animation = (AlphaAnimation) AnimationUtils.loadAnimation(mContext, R.anim.anim_livevido_teampk_alpha_in);
@@ -549,7 +559,13 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
         final Runnable action = new Runnable() {
             @Override
             public void run() {
-//                displayRuleInfo();
+                if (liveGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+                    ImageView ivReadyBtn = mView.findViewById(R.id.iv_livevideo_chpk_selectReady);
+                    ivReadyBtn.setOnClickListener(PkTeamSelectPager.this);
+                    ivReadyBtn.setVisibility(View.VISIBLE);
+                } else {
+                    displayRuleInfo();
+                }
             }
         };
 
@@ -558,7 +574,6 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
             public void onEffectFinish() {
                 stopMusic(R.raw.input_effect);
                 effectTextView.postDelayed(action, 1500);
-
             }
         });
 
@@ -571,7 +586,6 @@ public class PkTeamSelectPager extends BasePager implements View.OnClickListener
     /**
      * 展示 获取能量 规则
      */
-    @Deprecated
     private void displayRuleInfo() {
 
         final TextView ruleTitle = rl_teampk_rule.findViewById(R.id.tv_teampk_rule_title);

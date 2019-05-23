@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.UserBll;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -668,7 +669,10 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             roomInitInfo = data;
             isAIPartner = roomInitInfo.getIsAIPartner() == 1;
             isAvailable = true;
-            showTeamSelecting();
+//            if(AppConfig.DEBUG){
+//                showTeamSelecting();
+//                startTeamSelect(true);
+//            }
         } else {
             //不显示战队pk时，原来的战队Pk的位置由图片占据。
             showImgReplacePk();
