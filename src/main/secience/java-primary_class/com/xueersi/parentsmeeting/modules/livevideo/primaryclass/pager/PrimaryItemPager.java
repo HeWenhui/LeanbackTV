@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.xes.ps.rtcstream.RTCEngine;
 import com.xueersi.common.config.AppConfig;
-import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -31,7 +30,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.PrimaryClassVie
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.business.PrimaryClassInter;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.config.PrimaryClassConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.weight.PrimaryKuangjiaImageView;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ViewUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
@@ -98,7 +96,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             @Override
             public void onSizeChange(int width, int height) {
                 scale = (float) width / 1334f;
-                primaryClassView.decorateItemPager(rl_livevideo_primary_team_content, iv_livevideo_primary_team_icon, ll_livevideo_primary_team_content, tv_livevideo_primary_team_name_mid, width, height);
+                primaryClassView.decorateItemPagerView(rl_livevideo_primary_team_content, iv_livevideo_primary_team_icon, ll_livevideo_primary_team_content, tv_livevideo_primary_team_name_mid, width, height);
             }
         });
     }
@@ -108,6 +106,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         super.initData();
         logger.d("initData:primaryClassView=" + primaryClassView);
         ivLivePrimaryClassKuangjiaImgNormal = mContentView.findViewById(R.id.iv_live_primary_class_kuangjia_img_normal);
+        primaryClassView.decorateItemPager(mView);
         addItem();
         setLayout();
         if (LiveTopic.MODE_TRANING.equals(mode)) {
@@ -142,6 +141,8 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                     handler.postDelayed(ivPkStateRun, 10000);
                     if (teamInfoEntity != null) {
                         joinChannel();
+                    } else {
+                        addItem();
                     }
                 } else {
                     mView.setVisibility(View.GONE);

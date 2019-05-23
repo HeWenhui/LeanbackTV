@@ -6,8 +6,8 @@
     <RelativeLayout
         android:id="@id/rl_livevideo_primary_team_content"
         android:layout_width="wrap_content"
-        android:background="#4fFFB400"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="#4fFFB400">
 
         <ImageView
             android:id="@id/iv_livevideo_primary_team_icon"
@@ -52,7 +52,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/bg_live_tips_bg_normal"
         android:gravity="center"
         android:text="欢迎进入“冰原白狐队”"
         android:textColor="#ffc33c00"

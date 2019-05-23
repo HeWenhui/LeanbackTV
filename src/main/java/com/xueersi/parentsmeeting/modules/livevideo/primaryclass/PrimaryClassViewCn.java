@@ -47,12 +47,19 @@ public class PrimaryClassViewCn implements PrimaryClassView {
     }
 
     @Override
-    public void decorateItemPager(RelativeLayout rl_livevideo_primary_team_content, ImageView iv_livevideo_primary_team_icon, LinearLayout ll_livevideo_primary_team_content, TextView tv_livevideo_primary_team_name_mid, int width, int height) {
+    public void decorateItemPager(View view) {
+        TextView tv_livevideo_primary_team_name_mid = view.findViewById(R.id.tv_livevideo_primary_team_name_mid);
+        tv_livevideo_primary_team_name_mid.setTextColor(0xff7B583E);
+        tv_livevideo_primary_team_name_mid.setBackgroundResource(R.drawable.bg_live_tips_bg_normal_cn);
+    }
+
+    @Override
+    public void decorateItemPagerView(RelativeLayout rl_livevideo_primary_team_content, ImageView iv_livevideo_primary_team_icon, LinearLayout ll_livevideo_primary_team_content, TextView tv_livevideo_primary_team_name_mid, int width, int height) {
         float scale = (float) width / 1334f;
         {
             RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rl_livevideo_primary_team_content.getLayoutParams();
             int lpwidth = (int) (184 * scale);
-            int lpheight = (int) (74 * scale);
+            int lpheight = (int) (78 * scale);
             int leftMargin = (ScreenUtils.getScreenWidth() - width) / 2 + (int) (1124 * scale);
             int topMargin = (ScreenUtils.getScreenHeight() - height) / 2 + (int) (0 * scale);
             if (lp.width != lpwidth || lp.height != lpheight || lp.leftMargin != leftMargin || lp.topMargin != topMargin) {
