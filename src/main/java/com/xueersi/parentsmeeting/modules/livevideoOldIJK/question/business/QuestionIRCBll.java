@@ -16,6 +16,8 @@ import com.xueersi.lib.framework.utils.string.Base64;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.question.irc.QueIrcParse;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveSpeechCreat;
@@ -41,14 +43,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.KeyboardShowingReg;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.notice.business.LiveAutoNoticeIRCBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.http.CourseWareHttpManager;
-import com.xueersi.parentsmeeting.widget.praise.PraiseDarkPager;
-import com.xueersi.parentsmeeting.widget.praise.PraiseLovelyPager;
-import com.xueersi.parentsmeeting.widget.praise.PraisePager;
-import com.xueersi.parentsmeeting.widget.praise.business.OnPraisePageListener;
-import com.xueersi.parentsmeeting.widget.praise.entity.PraiseEntity;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.create.LiveBigQueCreate;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -107,58 +105,9 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         questiongtype = Arrays.asList(ptTypeFilters);
     }
 
-//    private void testPraise(RelativeLayout bottomContent){
-//        String data = "{\"bizId\":1,\"rankTitle\":\"课清测试\",\"category\":1,\"grade\":1,\"rankType\":1,\"isInList\":1," +
-//                "\"word\":\"粤语,you're as good as gold!\",\"desc\":\"口述题测试, 口述题测试, 口述题测试, 口述题测试, 口述题测试, 口述题测试, 口述题测试, " +
-//                "口述题测试\",\"counselorName\":\"韩刚\",\"counselorAvatar\":\"https://xesfile.xesimg" +
-//                ".com/web/2017/11/22/15113381801151.png\",\"list\":[{\"group\":\"课清全对\",\"stus\":[{\"stuId\":10045," +
-//                "\"name\":\"测试账户1\",\"inList\":1},{\"stuId\":10046,\"name\":\"测试账户2\",\"inList\":0},{\"stuId\":10046," +
-//                "\"name\":\"测试账户2\",\"inList\":0},{\"stuId\":10046,\"name\":\"测试账户2\",\"inList\":0},{\"stuId\":10046," +
-//                "\"name\":\"测试账户2\",\"inList\":0},{\"stuId\":10047," +
-//                "\"name\":\"测试账户3\",\"inList\":0}]},{\"group\":\"订正全对\",\"stus\":[{\"stuId\":10048," +
-//                "\"name\":\"测试账户4\",\"inList\":0},{\"stuId\":10049,\"name\":\"测试账户5\",\"inList\":0}]}]}";
-//        PraiseEntity entity = null;
-//        if (com.xueersi.common.config.AppConfig.DEBUG) {
-//
-//            ResponseEntity responseEntity = new ResponseEntity();
-//            try {
-//                responseEntity.setJsonObject(new JSONObject(data));
-//                entity = getHttpResponseParser().parseTutorPraiseEntity(responseEntity);
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//            if (com.xueersi.common.config.AppConfig.DEBUG) {
-//                PraisePager praisePager = new PraisePager(mContext, entity, new OnPraisePageListener() {
-//                    @Override
-//                    public void onPraiseClick(int num) {
-//
-//                    }
-//                }, bottomContent);
-//                praisePager.showPraisePager(bottomContent);
-//            }
-//        }
-//    }
-
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean isLand) {
         mQuestionAction.initView(bottomContent, isLand.get());
-//        String data = "{\"bizId\":3,\"rankTitle\":\"课清测试\",\"category\":1,\"grade\":1,\"rankType\":1,\"isInList\":1," +
-//                "\"word\":\"粤语,you're as good as gold!\",\"desc\":\"口述题测试, 口述题测试, 口述题测试, 口述题测试, 口述题测试, 口述题测试, 口述题测试, " +
-//                "口述题测试\",\"counselorName\":\"韩刚\",\"counselorAvatar\":\"https://xesfile.xesimg" +
-//                ".com/web/2017/11/22/15113381801151.png\",\"list\":[{\"group\":\"课清全对\",\"stus\":[{\"stuId\":10045," +
-//                "\"name\":\"测试账户1\",\"inList\":1},{\"stuId\":10046,\"name\":\"测试账户2\",\"inList\":0},{\"stuId\":10047," +
-//                "\"name\":\"测试账户3\",\"inList\":0}]},{\"group\":\"订正全对\",\"stus\":[{\"stuId\":10048," +
-//                "\"name\":\"测试账户4\",\"inList\":0},{\"stuId\":10049,\"name\":\"测试账户5\",\"inList\":0}]}]}";
-//        PraiseEntity entity = null;
-//        try {
-//             entity  = getHttpResponseParser().parseTutorPraiseEntity(data);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        if (com.xueersi.common.config.AppConfig.DEBUG) {
-//            PraiseLovelyPager pager = new PraiseLovelyPager(mContext,entity);
-//            bottomContent.addView(pager.getRootView());
-//        }
 //        if (com.xueersi.common.config.AppConfig.DEBUG) {
 //            com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity answerResultEntity = new com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity();
 //            answerResultEntity.isVoice = 1;
@@ -225,9 +174,16 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             liveExamQuestionCreat.setQuestionHttp(queArtHttp);
             mQuestionAction.setLiveBll(queArtHttp);
         } else {
-            QueIrcHttp queIrcHttp = new QueIrcHttp();
-            liveExamQuestionCreat.setQuestionHttp(queIrcHttp);
-            mQuestionAction.setLiveBll(queIrcHttp);
+            if (isArts == LiveVideoSAConfig.ART_SEC) {
+                QueSecIrcHttp queIrcHttp = new QueSecIrcHttp();
+                liveExamQuestionCreat.setQuestionHttp(queIrcHttp);
+                mQuestionAction.setLiveBll(queIrcHttp);
+                mQuestionAction.setBigQueCreate(new LiveBigQueCreate(activity, queIrcHttp));
+            } else {
+                QueIrcHttp queIrcHttp = new QueIrcHttp();
+                liveExamQuestionCreat.setQuestionHttp(queIrcHttp);
+                mQuestionAction.setLiveBll(queIrcHttp);
+            }
         }
         mQuestionAction.setBaseExamQuestionCreat(liveExamQuestionCreat);
         LiveSubjectResultCreat baseSubjectResultCreat = new LiveSubjectResultCreat();
@@ -523,6 +479,16 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                     mQuestionAction.showQuestion(null);
                 }
             }
+            JSONObject platformTestDot = jsonObject.optJSONObject("platformTestDot");
+            if (platformTestDot != null) {
+                try {
+                    VideoQuestionLiveEntity videoQuestionLiveEntity = QueIrcParse.parseBigQues(platformTestDot);
+                    boolean isOpen = platformTestDot.getBoolean("isOpen");
+                    mQuestionAction.showBigQuestion(videoQuestionLiveEntity, isOpen);
+                } catch (JSONException e) {
+                    logger.d("onNotice:QUES_BIG");
+                }
+            }
         }
         Loger.e(Tag, "=======>onTopic:" + "isNewArts:" + LiveVideoConfig.isNewArts);
     }
@@ -755,6 +721,15 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 rolePlayAction.teacherRead(mLiveId, mLiveBll.getStuCouId(), nonce);
                 break;
             }
+            case XESCODE.QUES_BIG: {
+                try {
+                    VideoQuestionLiveEntity videoQuestionLiveEntity = QueIrcParse.parseBigQues(object);
+                    boolean isOpen = object.getBoolean("isOpen");
+                    mQuestionAction.showBigQuestion(videoQuestionLiveEntity, isOpen);
+                } catch (JSONException e) {
+                    logger.d("onNotice:QUES_BIG");
+                }
+            }
             default:
                 break;
         }
@@ -829,13 +804,27 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
                 XESCODE.EXAM_STOP,
                 XESCODE.XCR_ROOM_ROLE_READ,
                 XESCODE.ARTS_SEND_QUESTION,
-                XESCODE.ARTS_STOP_QUESTION
+                XESCODE.ARTS_STOP_QUESTION,
+                XESCODE.QUES_BIG
         };
     }
 
     @Override
     public void setVideoLayout(LiveVideoPoint liveVideoPoint) {
         mQuestionAction.setVideoLayout(liveVideoPoint);
+    }
+
+    class QueSecIrcHttp extends QueIrcHttp implements QuestionSecHttp {
+
+        @Override
+        public void submitBigTestInteraction(VideoQuestionLiveEntity videoQuestionLiveEntity, JSONArray userAnswer, long startTime, int isForce, AbstractBusinessDataCallBack callBack) {
+            getCourseWareHttpManager().submitBigTestInteraction(mGetInfo.getStuId(), videoQuestionLiveEntity.id, videoQuestionLiveEntity.getDotId(), userAnswer, startTime, isForce, 0, videoQuestionLiveEntity.getSrcType(), callBack);
+        }
+
+        @Override
+        public void getStuInteractionResult(VideoQuestionLiveEntity videoQuestionLiveEntity, AbstractBusinessDataCallBack callBack) {
+            getCourseWareHttpManager().getStuInteractionResult(mGetInfo.getStuId(), videoQuestionLiveEntity.id, videoQuestionLiveEntity.getSrcType(), videoQuestionLiveEntity.getDotId(), 0, callBack);
+        }
     }
 
     class QueIrcHttp implements QuestionHttp {
@@ -1343,6 +1332,11 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         @Override
         public void submitCourseWareTests(VideoQuestionLiveEntity detailInfo, int isforce, String nonce, long entranceTime, String testInfos, AbstractBusinessDataCallBack callBack) {
             getCourseWareHttpManager().submitMultiTest("" + testInfos, 1, isforce, callBack);
+        }
+
+        @Override
+        public void submitGroupGame(VideoQuestionLiveEntity detailInfo, int gameMode, int voiceTime, int pkTeamId, int gameGroupId, int starNum, int energy, int gold, int videoLengthTime, int micLengthTime, int acceptVideoLengthTime, int acceptMicLengthTime, String answerData, AbstractBusinessDataCallBack callBack) {
+
         }
 
         @Override

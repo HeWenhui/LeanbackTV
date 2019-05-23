@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.business;
 import android.app.Activity;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -1304,22 +1305,23 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                 int openBoxStateCode = 0;
                 int alloteamStateCode = 0;
                 int allotpkmanStateCode = 0;
-                int pkStateCode = 0;
+                int pkStepCode = 0;
 
                 if (LiveTopic.MODE_CLASS.equals(mLiveBll.getMode()) && teamPkEntity.getRoomInfo1() != null) {
                     openBoxStateCode = teamPkEntity.getRoomInfo1().getOpenbox();
                     alloteamStateCode = teamPkEntity.getRoomInfo1().getAlloteam();
                     allotpkmanStateCode = teamPkEntity.getRoomInfo1().getAllotpkman();
+                    pkStepCode = teamPkEntity.getRoomInfo1().getPKStep();
                     logger.e("====>onTopic teampk main_teacher_info:" + openBoxStateCode + ":" +
-                            alloteamStateCode + ":" + allotpkmanStateCode);
+                            alloteamStateCode + ":" + allotpkmanStateCode+":"+pkStepCode);
                 } else {
                     if (teamPkEntity.getRoomInfo2() != null) {
                         openBoxStateCode = teamPkEntity.getRoomInfo2().getOpenbox();
                         alloteamStateCode = teamPkEntity.getRoomInfo2().getAlloteam();
                         allotpkmanStateCode = teamPkEntity.getRoomInfo2().getAllotpkman();
-                        pkStateCode = teamPkEntity.getRoomInfo2().getPKStep();
+                        pkStepCode = teamPkEntity.getRoomInfo2().getPKStep();
                         logger.e("====>onTopic teampk assist_teacher_info:" + openBoxStateCode + ":" +
-                                alloteamStateCode + ":" + allotpkmanStateCode + ":" + pkStateCode);
+                                alloteamStateCode + ":" + allotpkmanStateCode + ":" + pkStepCode);
                     }
                 }
 
@@ -1338,17 +1340,17 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     return;
                 }
 
-                if (openBoxStateCode == 1 && !isTopicHandled()) {
+                if ((pkStepCode == 1 || openBoxStateCode == 1) && !isTopicHandled()) {
                     setTopicHandled(true);
                     showPkResult();
                     logger.e("====>onTopic showPkResult:");
                     return;
                 }
 
-                if (TeamPkConfig.TOPIC_PKSTEP_BLACK_RANK_LIST == pkStateCode && !isTopicHandled()) {
+                if (TeamPkConfig.TOPIC_PKSTEP_BLACK_RANK_LIST == pkStepCode && !isTopicHandled()) {
                     setTopicHandled(true);
                     getProgressStudent();
-                } else if (TeamPkConfig.TOPIC_PKSTEP_STAR_RANK_LIST == pkStateCode && !isTopicHandled()) {
+                } else if (TeamPkConfig.TOPIC_PKSTEP_STAR_RANK_LIST == pkStepCode && !isTopicHandled()) {
                     setTopicHandled(true);
                     getStusStars();
                 }

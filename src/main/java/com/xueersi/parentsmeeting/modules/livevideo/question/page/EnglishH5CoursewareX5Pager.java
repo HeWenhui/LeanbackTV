@@ -25,6 +25,7 @@ import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
@@ -354,6 +355,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         wvSubjectWeb.addJavascriptInterface(this, "wx_xesapp");
         wvSubjectWeb.setInitialScale(100);
         // 新课件平台
+        if (mLogtf != null) {
+            mLogtf.d("initData:newEnglishH5=" + englishH5Entity.getNewEnglishH5() + ",mul=" + LiveVideoConfig.isMulLiveBack + ",isNewArts=" + isNewArtsCourseware);
+        }
         if (englishH5Entity.getNewEnglishH5() || LiveVideoConfig.isMulLiveBack || isNewArtsCourseware) {
             wvSubjectWeb.setWebViewClient(new MyWebViewClient() {
                 @Override
@@ -471,6 +475,9 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                                 "&releasedPageInfos=" + releasedPageInfos + "&classTestId=" + classTestId +
                                 "&educationStage=" + LiveVideoConfig.LIVEPLAYBACKSTAGE + "&isPlayBack=1" + "&nonce="
                                 + "" + UUID.randomUUID();
+                        if(isArts == 2 && LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(packageAttr)){
+                            mLoadUrls += "&aiUrl="+detailInfo.getSubjectiveItem2AIUrl()+"&deviceId=8&gradeType="+Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getGradeCode());
+                        }
                     }
                 } else {
                     // 理科直播
@@ -499,7 +506,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                         classTestId = jsonObject.optString("classTestId");
                     } catch (JSONException e) {
                         e.printStackTrace();
-                        CrashReport.postCatchedException(e);
+                        CrashReport.postCatchedException(new LiveException(TAG, e));
                         mLogtf.e("initData:string=" + string, e);
                     }
                     if (StringUtils.isEmpty(packageId) || StringUtils.isEmpty(stuCouId)) {
@@ -519,11 +526,17 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     } else {
                         dynamicurl = TextUtils.isEmpty(LiveVideoConfig.LIVEMULH5URL) ? defaulturl : LiveVideoConfig.LIVEMULH5URL;
                     }
+                    if(isArts == 2 && LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(packageAttr)){
+                        dynamicurl = englishH5Entity.getDynamicurl();
+                    }
                     mLoadUrls = dynamicurl + "?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId +
                             "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId +
                             "&packageSource=" + packageSource + "&packageAttr=" + packageAttr + "&releasedPageInfos="
                             + releasedPageInfos + "&classTestId=" + classTestId + "&educationStage=" +
                             LiveVideoConfig.educationstage + "&isPlayBack=0" + "&nonce=" + "" + UUID.randomUUID();
+                    if(isArts == 2 && LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(packageAttr)){
+                        mLoadUrls += "&aiUrl="+detailInfo.getSubjectiveItem2AIUrl()+"&deviceId=8&gradeType="+Integer.parseInt(UserBll.getInstance().getMyUserInfoEntity().getGradeCode());
+                    }
                     // 上传接收到教师端指令的日志
                     StableLogHashMap logHashMap = new StableLogHashMap("receivePlatformtest");
                     logHashMap.put("os", "Android");
@@ -596,7 +609,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     logger.e("======> reloadUrlLiveds:" + mLoadUrls);
                 } else {
                     String url = reloadurl + "&time=" + System.currentTimeMillis();
-                    loadUrl(url);
+//                    loadUrl(url);
                     reloadUrl();
                     logger.e("======> reloadUrlLived:" + url);
                 }

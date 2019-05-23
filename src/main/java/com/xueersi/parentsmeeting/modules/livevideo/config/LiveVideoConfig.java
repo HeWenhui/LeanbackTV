@@ -478,5 +478,15 @@ public class LiveVideoConfig {
      */
     public static String URL_LIVE_GET_SCIENCE_COURSEWARE_URL =  LiveVideoConfig.HTTP_HOST+"/science/LiveCourses/preLoadNewCourseWare";
 
+    public static final String URL_GOLD_MICROPHONE_TO_AI = "https://app.chs.xueersi.com/LiveCourse/isGoldMicrophoneToAi";
+
+    public static final String URL_IS_GOLD_MICROPHONE = "https://app.chs.xueersi.com/LiveCourse/setGoldMicrophoneData";
+
+   /**NB加试实验**/
+    public static String URL_NB_LOGIN = " https://live.xueersi.com/science/LiveExam/stuLoginNB";
+    /**上传NB 实验答题结果 **/
+    public static String URL_NB_RESULT_UPLOAD = " https://live.xueersi.com/science/LiveExam/receiveNBResult";
+    /**获取 Nb 试题信息**/
+    public static String URL_NB_COURSE_INFO = "https://live.xueersi.com/science/LiveExam/getNBTestInfo";
 
 }

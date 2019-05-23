@@ -191,7 +191,7 @@ public class TeamPkImprovePager extends TeamPkBasePager {
         }
 
         public void bindData(TeamPkStuProgress data, int postion) {
-            ivStarIcon.setVisibility(postion <= 4 ? View.VISIBLE : View.INVISIBLE);
+            ivStarIcon.setVisibility(data.isSuper() ? View.VISIBLE : View.INVISIBLE);
             tvName.setText(data.getName());
             tvTeamName.setText(data.getTeamName());
             tvProgressScope.setText("排名+" + data.getProgressScope());

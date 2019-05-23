@@ -72,7 +72,10 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
      * 2 设计组
      */
     public int package_socurce;
-
+    /**互动点id**/
+    private String dotId;
+    /**互动点id**/
+    private int dotType;
     /**文科在线教研数据**/
     private H5OnlineTechEntity onlineTechEntity;
 
@@ -84,7 +87,17 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     /** 年级阶段的标识 */
     private String educationstage = "";
     private String newCourseTestIdSec = null;
+    /** 语文AI主观题AI接口*/
+    private String subjectiveItem2AIUrl;
+    /** 辅导态 */
+    private boolean isTUtor = false;
+    public String getSubjectiveItem2AIUrl() {
+        return subjectiveItem2AIUrl;
+    }
 
+    public void setSubjectiveItem2AIUrl(String subjectiveItem2AIUrl) {
+        this.subjectiveItem2AIUrl = subjectiveItem2AIUrl;
+    }
     public VideoQuestionLiveEntity() {
     }
 
@@ -104,9 +117,6 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     public void setVoiceType(String voiceType) {
         this.voiceType = voiceType;
     }
-
-    /** 辅导态 */
-    private boolean isTUtor = false;
 
     @Override
     public String toString() {
@@ -263,6 +273,29 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
         this.newCourseTestIdSec = newCourseTestIdSec;
     }
 
+    public String getSrcType() {
+        return srcType;
+    }
+
+    public void setSrcType(String srcType) {
+        this.srcType = srcType;
+    }
+
+    public String getDotId() {
+        return dotId;
+    }
+
+    public void setDotId(String dotId) {
+        this.dotId = dotId;
+    }
+
+    public int getDotType() {
+        return dotType;
+    }
+
+    public void setDotType(int dotType) {
+        this.dotType = dotType;
+    }
     public boolean isTUtor() {
         return isTUtor;
     }

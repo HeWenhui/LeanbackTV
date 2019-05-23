@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -67,8 +66,33 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
 //                    return h5CoursewarePager;
 //                }
             }
-        } else if (isArts == 2) {
+        } else if (isArts == LiveVideoSAConfig.ART_CH) {
             englishH5Entity.setDynamicurl("https://live.chs.xueersi.com/LiveExam/getCourseWareTestHtml");
+            if( LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(englishH5Entity.getPackageAttr())){
+                englishH5Entity.setDynamicurl(liveGetInfo.getGetCourseWareHtmlNew());
+                videoQuestionH5Entity.setSubjectiveItem2AIUrl(liveGetInfo.getSubjectiveItem2AIUrl());
+            }
+            String educationstage = liveGetInfo.getEducationStage();
+            videoQuestionH5Entity.setEducationstage(educationstage);
+            //语文
+//            if (englishH5Entity.getNewEnglishH5()) {
+//                //语文AI主观题走去壳
+//                if ((LiveVideoConfig.EDUCATION_STAGE_3.equals(educationstage) || LiveVideoConfig.EDUCATION_STAGE_4.equals(educationstage))
+//                        && LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(videoQuestionH5Entity.englishH5Entity.getPackageAttr())) {
+//                    ChineseAiSubjectiveCoursewarePager h5CoursewarePager = new ChineseAiSubjectiveCoursewarePager(context, videoQuestionH5Entity, false, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
+//                            videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, onH5ResultClose, "0"
+//                            , isArts, false,liveGetInfo.getSubjectiveItem2AIUrl());
+//                    h5CoursewarePager.setLivePagerBack(livePagerBack);
+//                    return h5CoursewarePager;
+//                }
+//            }
+        } else if (isArts == LiveVideoSAConfig.ART_EN){
+            String type = videoQuestionH5Entity.type;
+            if (LiveQueConfig.isGroupGame(type)) {
+                GroupGameNativePager groupGameMultNativePager = new GroupGameNativePager(context, true, liveGetInfo, videoQuestionH5Entity, englishH5Entity, onH5ResultClose);
+                groupGameMultNativePager.setLivePagerBack(livePagerBack);
+                return groupGameMultNativePager;
+            }
         }
         if (videoQuestionH5Entity.isTUtor()) {
             englishH5Entity.setDynamicurl("https://scistatic.xueersi.com/outDoorTest/index.html");

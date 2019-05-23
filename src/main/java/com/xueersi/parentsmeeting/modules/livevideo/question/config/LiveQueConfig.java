@@ -51,6 +51,64 @@ public class LiveQueConfig {
     public static final String EN_COURSE_TYPE_NEW_GAME = "17";
     public static final String EN_COURSE_TYPE_18 = "18";
     public static final String EN_COURSE_TYPE_19 = "19";
+    /** 语文AI主观题*/
+    public static final String CHI_COURESWARE_TYPE_AISUBJECTIVE = "17";
+    /** 直播- voice cannon */
+    public static final String EN_COURSE_TYPE_VOICE_CANNON = "22";
+    /** 直播- Cleaning up */
+    public static final String EN_COURSE_TYPE_CLEANING_UP = "23";
+    /** 直播- 热气球 */
+    public static final String EN_COURSE_TYPE_HOT_AIR_BALLON = "24";
+    /** 直播-小组互动语音炮弹 */
+    public static final int EN_COURSE_GAME_TYPE_1 = 1;
+    /** 直播-小组互动Cleaning up */
+    public static final int EN_COURSE_GAME_TYPE_2 = 2;
+
+    /** 游戏模式1 */
+    public static int GAME_MODEL_1 = 1;
+    /** 游戏模式2 */
+    public static int GAME_MODEL_2 = 2;
+    /**
+     * 大题互动类型-单选
+     * http://wiki.xesv5.com/pages/viewpage.action?pageId=17724551
+     */
+    public static final int DOTTYPE_SELE = 1;
+    /**
+     * 大题互动类型-多选
+     */
+    public static final int DOTTYPE_MUL_SELE = 2;
+    /**
+     * 大题互动选择题数量
+     */
+    public static final int DOTTYPE_SELE_NUM = 4;
+    /**
+     * 大题互动类型-填空
+     */
+    public static final int DOTTYPE_FILL = 3;
+    /**
+     * 大题互动错误
+     */
+    public static final int DOTTYPE_RESULT_WRONG = 0;
+    /**
+     * 大题互动正确
+     */
+    public static final int DOTTYPE_ITEM_RIGHT = 1;
+    /**
+     * 大题互动错误
+     */
+    public static final int DOTTYPE_ITEM_RESULT_WRONG = 0;
+    /**
+     * 大题互动正确
+     */
+    public static final int DOTTYPE_ITEM_RESULT_RIGHT = 1;
+    /**
+     * 大题互动部分正确
+     */
+    public static final int DOTTYPE_ITEM_PART_RIGHT = 2;
+    /**
+     * 大题互动自动关闭
+     */
+    public static final int BIG_TEST_CLOSE = 10000;
 
     public static ArrayList getSubmitMultiTestTypes() {
         if (SUBMIT_MULTI_TEST_TYPES == null) {
@@ -104,5 +162,12 @@ public class LiveQueConfig {
             SHOW_CONTROL_TYPES.add(LiveQueConfig.EN_COURSE_TYPE_19);
         }
         return SHOW_CONTROL_TYPES;
+    }
+
+    public static boolean isGroupGame(String type) {
+        if (LiveQueConfig.EN_COURSE_TYPE_VOICE_CANNON.equals(type) || LiveQueConfig.EN_COURSE_TYPE_CLEANING_UP.equals(type) || LiveQueConfig.EN_COURSE_TYPE_HOT_AIR_BALLON.equals(type)) {
+            return true;
+        }
+        return false;
     }
 }

@@ -353,6 +353,10 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
     }
 
     protected EnglishH5CoursewareHttp getHttp() {
+        int isArts = liveBackBll.getIsArts();
+        if (isArts == LiveVideoSAConfig.ART_EN) {
+            return new EnglishH5CoursewareSecImpl();
+        }
         return new EnglishH5CoursewareImpl();
     }
 
@@ -418,12 +422,24 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         }
 
         @Override
-        public void getCourseWareTests(VideoQuestionLiveEntity detailInfo, AbstractBusinessDataCallBack callBack) {
-            EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
+        public void submitGroupGame(VideoQuestionLiveEntity detailInfo, int gameMode, int voiceTime, int pkTeamId, int gameGroupId, int starNum, int energy, int gold, int videoLengthTime, int micLengthTime, int acceptVideoLengthTime, int acceptMicLengthTime, String answerData, AbstractBusinessDataCallBack callBack) {
             String classId = liveGetInfo.getStudentLiveInfo().getClassId();
-            String[] res = getSrcType(englishH5Entity);
-            getCourseWareHttpManager().getCourseWareTests(detailInfo,liveGetInfo.getStuId(), englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
-                    englishH5Entity.getReleasedPageInfos(), 0, classId, englishH5Entity.getClassTestId(), res[0], res[1], liveGetInfo.getEducationStage(), detailInfo.nonce,"0", callBack);
+            getCourseWareHttpManager().submitGroupGame(classId, detailInfo.id, detailInfo.type, gameMode, voiceTime, 2, pkTeamId, gameGroupId, starNum, energy, gold, videoLengthTime, micLengthTime, acceptVideoLengthTime, acceptMicLengthTime, answerData, callBack);
+        }
+
+        @Override
+        public void getCourseWareTests(VideoQuestionLiveEntity detailInfo, AbstractBusinessDataCallBack callBack) {
+            if (liveBackBll.getIsArts() == LiveVideoSAConfig.ART_EN && !detailInfo.isTUtor()) {
+                if (LiveQueConfig.isGroupGame(detailInfo.type)) {
+                    getCourseWareHttpManager().getGroupGameTestInfos(detailInfo.id, liveGetInfo.getStuId(), detailInfo.type, callBack);
+                } else {
+                    EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
+                    String classId = liveGetInfo.getStudentLiveInfo().getClassId();
+                    String[] res = getSrcType(englishH5Entity);
+                    getCourseWareHttpManager().getCourseWareTests(detailInfo,liveGetInfo.getStuId(), englishH5Entity.getPackageId(), englishH5Entity.getPackageSource(), englishH5Entity.getPackageAttr(),
+                            englishH5Entity.getReleasedPageInfos(), 0, classId, englishH5Entity.getClassTestId(), res[0], res[1], liveGetInfo.getEducationStage(), detailInfo.nonce, "0", callBack);
+                }
+            }
         }
 
         private String[] getSrcType(EnglishH5Entity englishH5Entity) {

@@ -50,4 +50,36 @@
     <string name="livevideo_switch_flow_1707013">{"levelone":\"17\","leveltwo":\"07\","levelthree":\"013\","businessinfo$json":{}}</string>
     <!--中学连对激励系统-->
     <string name="livevideo_1713001">{"levelone":\"17\","leveltwo":\"13\","levelthree":\"001\","businessinfo$json":{"plan_id":\"%1$s\","stu_id":\"%2$s\","click_time":\"%3$s\","click_relative_time":\"%4$s\"}}</string>
+
+    <!-->说明: 直播-金话筒-话筒升起</!-->
+    <string name="livevideo_1714001">{"levelone":\"17\","leveltwo":\"14\","levelthree":\"001\","businessinfo$json":{}}</string>
+
+    <!-->说明: 直播-金话筒-话筒降落</!-->
+    <string name="livevideo_1714002">{"levelone":\"17\","leveltwo":\"14\","levelthree":\"002\","businessinfo$json":{}}</string>
+
+    <!-->说明: 直播-金话筒-触发金话筒激励</!-->
+    <string name="livevideo_1714003">{"levelone":\"17\","leveltwo":\"14\","levelthree":\"003\","businessinfo$json":{}}</string>
+
+    <!-->说明: 直播-金话筒-金话筒出现叉号</!-->
+    <string name="livevideo_1714004">{"levelone":\"17\","leveltwo":\"14\","levelthree":\"004\","businessinfo$json":{}}</string>
+
+    <!-->说明: 直播-金话筒-学员点击叉号</!-->
+    <string name="livevideo_1714005">{"levelone":\"17\","leveltwo":\"14\","levelthree":\"005\","businessinfo$json":{}}</string>
+
+    <!-->说明: 直播-金话筒-关闭弹框取消</!-->
+    <string name="livevideo_1714006">{"levelone":\"17\","leveltwo":\"14\","levelthree":\"006\","businessinfo$json":{}}</string>
+    <!-->说明: 直播-金话筒-关闭弹框确认</!-->
+    <string name="livevideo_1714007">{"levelone":\"17\","leveltwo":\"14\","levelthree":\"007\","businessinfo$json":{}}</string>
+
+    <!-->说明: 直播-金话筒-金话筒时麦克风被禁用</!-->
+    <string name="livevideo_1714008">{"levelone":\"17\","leveltwo":\"14\","levelthree":\"008\","businessinfo$json":{}}</string>
+
+    <!-->说明: 直播-金话筒-学员点击去设置</!-->
+    <string name="livevideo_1714009">{"levelone":\"17\","leveltwo":\"14\","levelthree":\"009\","businessinfo$json":{}}</string>
+
+    <!-->说明: 直播-金话筒-弹出没听清请大点声</!-->
+    <string name="livevideo_1714010">{"levelone":\"17\","leveltwo":\"14\","levelthree":\"010\","businessinfo$json":{}}</string>
+
+    <!-->说明: 直播-金话筒-弹出麦克风故障请检查</!-->
+    <string name="livevideo_1714011">{"levelone":\"17\","leveltwo":\"14\","levelthree":\"011\","businessinfo$json":{}}</string>
 </resources>

@@ -76,7 +76,6 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XesAtomicInteger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
-import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ExPerienceLiveMessage;
@@ -84,31 +83,23 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ExperienceResult;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
 import com.xueersi.parentsmeeting.modules.livevideo.experience.bussiness.ExperienceQuitFeedbackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.learnfeedback.StandExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
-import com.xueersi.parentsmeeting.modules.livevideo.message.pager.HalfBodyLiveMessagePager;
-import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
-import com.xueersi.parentsmeeting.modules.livevideo.page.ExperienceLearnFeedbackPager;
-import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5ExperienceBll;
+import com.xueersi.parentsmeeting.modules.livevideo.message.pager.HalfBodyExpLiveMsgPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.EnglishH5HalfBodyExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.HalfBodyExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.NBH5ExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionExperienceBll;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.HalfBodyRedPackageExperienceBll;
-import com.xueersi.parentsmeeting.modules.livevideo.redpackage.business.RedPackageExperienceBll;
-import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.DoPSVideoHandle;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyExpMediaCtrBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.RoundProgressBar;
 
 import org.greenrobot.eventbus.EventBus;
@@ -136,7 +127,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
     private RelativeLayout rlLiveMessageContent;
     LiveMessageBll liveMessageBll;
     private LiveVideoSAConfig liveVideoSAConfig;
-
     /**
      * 横屏聊天信息
      */
@@ -147,7 +137,6 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
     private Long timer = 0L;
     private static final Object mIjkLock = new Object();
     private WeakHandler mHandler = new WeakHandler(null);
-
 
     /**
      * 视频宽度
@@ -782,7 +771,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
 
         baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(this, mMediaController, this);
         mMediaController.setControllerTop(baseLiveMediaControllerTop);
-        LiveHalfBodyMediaControllerBottom mediaControllerBottom = new LiveHalfBodyMediaControllerBottom(this,
+        LiveHalfBodyExpMediaCtrBottom mediaControllerBottom = new LiveHalfBodyExpMediaCtrBottom(this,
                 mMediaController, this);
         mMediaController.setControllerBottom(mediaControllerBottom, false);
         ivTeacherNotpresent = (ImageView) findViewById(R.id.iv_course_video_teacher_notpresent);
@@ -816,9 +805,10 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
 
     private void initHalfBodyLiveMsgPager(RelativeLayout bottomContent) {
 
-        HalfBodyLiveMessagePager msgPager = new HalfBodyLiveMessagePager(this, questionBll, ums,
+        HalfBodyExpLiveMsgPager msgPager = new HalfBodyExpLiveMsgPager(this, questionBll, ums,
                 liveMediaControllerBottom,
                 liveMessageLandEntities, null);
+
         mLiveMessagePager = msgPager;
         // 关联聊天人数
         msgPager.setPeopleCount(peopleCount);
@@ -876,6 +866,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
                 videoPath = url;
             }
             playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+            setmDisplayName(mSectionName);
         }
         chatCfgServerList = getIntent().getStringArrayListExtra("roomChatCfgServerList");
         expChatId = getIntent().getStringExtra("expChatId");
@@ -1254,6 +1245,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
                     videoPath = url;
                 }
                 playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+                setmDisplayName(mSectionName);
             }
         }
         AppBll.getInstance(mBaseApplication);
@@ -1310,6 +1302,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
                 videoPath = url;
             }
             playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+            setmDisplayName(mSectionName);
         }
 
     }
@@ -1378,6 +1371,7 @@ public class HalfBodyLiveExperienceActivity extends LiveVideoActivityBase implem
                     videoPath = url;
                 }
                 playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
+                setmDisplayName(mSectionName);
             }
         } else {
             super.resultFailed(arg1, arg2);

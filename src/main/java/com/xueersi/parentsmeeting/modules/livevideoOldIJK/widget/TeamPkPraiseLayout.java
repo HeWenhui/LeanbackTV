@@ -183,13 +183,15 @@ public class TeamPkPraiseLayout extends FrameLayout {
 
 
     private void generateMsg() {
-        wrodsIndex = new Random().nextInt(mWrodList.size());
-        String name = TextUtils.isEmpty(UserBll.getInstance().getMyUserInfoEntity().getRealName()) ?
-                UserBll.getInstance().getMyUserInfoEntity().getNickName() : UserBll.getInstance().getMyUserInfoEntity
-                ().getRealName();
-        String wrods = mWrodList.get(wrodsIndex);
-        Msg msg = new Msg(name, wrods, true);
-        mCacheMsgList.add(0, msg);
+        if(mWrodList != null && mWrodList.size() > 0){
+            wrodsIndex = new Random().nextInt(mWrodList.size());
+            String name = TextUtils.isEmpty(UserBll.getInstance().getMyUserInfoEntity().getRealName()) ?
+                    UserBll.getInstance().getMyUserInfoEntity().getNickName() : UserBll.getInstance().getMyUserInfoEntity
+                    ().getRealName();
+            String wrods = mWrodList.get(wrodsIndex);
+            Msg msg = new Msg(name, wrods, true);
+            mCacheMsgList.add(0, msg);
+        }
     }
 
     private void startMsgLoop() {
@@ -217,7 +219,7 @@ public class TeamPkPraiseLayout extends FrameLayout {
         if (mOnLineTeamMates != null) {
             mOnLineTeamMates.clear();
         }
-        mWrodList = null;
+
         if (soundPoolHelper != null) {
             soundPoolHelper.release();
         }
@@ -300,9 +302,11 @@ public class TeamPkPraiseLayout extends FrameLayout {
 
     private void playClickAnim() {
         playClickSound();
-        loopAnimationView.setVisibility(GONE);
+
+       /* loopAnimationView.setVisibility(GONE);
         loopAnimationView.cancelAnimation();
-        loopAnimationView.destroyDrawingCache();
+        loopAnimationView.destroyDrawingCache();*/
+
         if (clickAnimView.getComposition() == null) {
             String lottieResPath = ANIM_RES_DIR + "click/images";
             String lottieJsonPath = ANIM_RES_DIR + "click/data.json";

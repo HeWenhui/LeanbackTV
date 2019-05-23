@@ -95,6 +95,8 @@ public interface XESCODE {
     /** 老师进出直播室 */
     @Deprecated
     int TEACHER_JOIN_LEVEL = 176;
+    /** 排行榜刷新,没用 */
+    int RANK_FRESH = 180;
     /** 学生发送秒数指令 */
     int XCR_ROOM_DB_STUDENT = 190;
     /** 表扬学生 */
@@ -147,6 +149,8 @@ public interface XESCODE {
 
     /** 老师点赞 */
     int TEACHER_PRAISE = 236;
+    /** 战队pk，未知类型237 */
+    int TEAMPK_237 = 237;
 
 
     /** 分队仪式 */
@@ -181,10 +185,15 @@ public interface XESCODE {
     /** 一题多发 收题发题都是251 TODO */
     int MULTIPLE_H5_COURSEWARE = 251;
 
+    /** 语文AI主观题*/
+    int AI_SUBJECTIVE_H5_COURSEWARE = 252;
+
+    /** 大题互动 http://wiki.xesv5.com/pages/viewpage.action?pageId=17724551 */
+    int QUES_BIG = 252;
     /** 开启/关闭语音弹幕 */
     int XCR_ROOM_DANMU_OPEN = 260;
 
-    /** 发送语音弹幕  */
+    /** 发送语音弹幕 */
     int XCR_ROOM_DANMU_SEND = 261;
 
     /** 语文：开启/关闭语音弹幕 */
@@ -207,6 +216,12 @@ public interface XESCODE {
     int PRAISE_CLASS_NUM = 267;
     /** 集体语言互动消息 */
     int SPEECH_COLLECTIVE = 270;
+
+    /**Nb 加试 消息指令**/
+    int NB_EXAM = 310;
+    /**nb 加试实验 学生提交成功**/
+    int NB_ADDEXPERIMENT_SUBMIT_SUCCESS = 311;
+
 
     /** 辅导老师发题 */
     int QUESTION_TUTOR = 315;
@@ -285,4 +300,8 @@ public interface XESCODE {
         int XCR_ROOM_TEAMPK_STULIKE = 1021;//     ("1021")  //学生点赞上报
     }
 
+    /** 语文幼升小金话筒 */
+    int ARTS_GOLD_MICROPHONE = 3000;
+    /** 语文幼升小发送语音识别消息 */
+    int ARTS_GOLD_MICROPHONE_SEND_TEACHER = 3001;
 }

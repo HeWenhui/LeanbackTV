@@ -729,7 +729,6 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
                 }
             }
         }
-
         super.onPause();
     }
 
@@ -1050,6 +1049,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
             // 如果不为横屏，没有正在播放，或正在显示互动题都退出扫描
             return;
         }
+        logger.i("scanQuestion =" + position);
         liveBackBll.scanQuestion(position);
     }
 

@@ -1,13 +1,22 @@
 package com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.business;
 
 import android.app.Activity;
+import android.view.ViewTreeObserver;
+import android.widget.RelativeLayout;
 
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
+import com.xueersi.common.business.AppBll;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.business.GetStuActiveTeam;
+import com.xueersi.parentsmeeting.modules.livevideo.lib.SendCallBack;
+import com.xueersi.parentsmeeting.modules.livevideo.lib.TcpConstants;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.achievement.business.UpdateAchievement;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
@@ -21,10 +30,17 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.EnTeamPkRankEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.InteractiveTeam;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.PkTeamEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.event.ClassEndEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.http.EnTeamPkHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.pager.TeamPkLeadPager;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpDispatch;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageAction;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpMessageReg;
+import com.xueersi.parentsmeeting.modules.livevideo.enteampk.tcp.TcpRunnable;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.ArtsExtLiveInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
@@ -32,6 +48,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEnti
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.EnglishShowReg;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.QuestionShowAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.QuestionShowReg;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveActivityPermissionCallback;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -40,6 +57,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.InetSocketAddress;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Vector;
@@ -51,7 +69,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * created  at 2018/11/6
  * 英语战队PK 相关业务处理
  */
-public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction,TopicAction, MessageAction {
+public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAction, MessageAction {
     private EnTeamPkAction enTeamPkAction;
     private String unique_id;
     private boolean psOpen = false;
@@ -70,6 +88,11 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction,TopicAct
     private ClassEndReg classEndReg;
     private boolean isEnglishPkTotalRank = false;
     private int classInt = 0;
+    private EnTeamPkHttpManager enTeamPkHttpManager;
+    private TcpDispatch tcpDispatch;
+    private boolean destory = false;
+    private InteractiveTeam mInteractiveTeam;
+    private ArrayList<TeamMemberEntity> entities = new ArrayList<>();
 
     public EnTeamPkIRCBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
@@ -82,6 +105,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction,TopicAct
         logger.d("onLiveInited:use=" + englishPk.canUsePK + ",has=" + englishPk.hasGroup);
 //        if (com.xueersi.common.config.AppConfig.DEBUG) {
 //            englishPk.canUsePK = 1;
+//            englishPk.isTwoLose = 1;
 //            englishPk.hasGroup = 0;
 //        }
         if (englishPk.canUsePK == 0) {
@@ -104,6 +128,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction,TopicAct
         if (englishShowReg != null) {
             englishShowReg.registQuestionShow(enTeamPkQuestionShowAction);
         }
+        parseTeamInter();
         if (englishPk.hasGroup != EnglishPk.HAS_GROUP_NO) {
             try {
                 String string = mShareDataManager.getString(ShareDataConfig.LIVE_ENPK_MY_TEAM, "{}", ShareDataManager.SHAREDATA_USER);
@@ -160,6 +185,79 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction,TopicAct
             } catch (Exception e) {
                 CrashReport.postCatchedException(e);
             }
+        }
+    }
+
+    @Override
+    public void onArtsExtLiveInited(LiveGetInfo getInfo) {
+        ArtsExtLiveInfo artsExtLiveInfo = getInfo.getArtsExtLiveInfo();
+        int isGroupGmaeCourseWare = artsExtLiveInfo.getIsGroupGameCourseWare();
+        logger.d("onArtsExtLiveInited:isGroupGmaeCourseWare=" + isGroupGmaeCourseWare);
+        if (isGroupGmaeCourseWare == 1) {
+            getEnTeamPkHttpManager().dispatch(mGetInfo.getStuId(), new AbstractBusinessDataCallBack() {
+                AbstractBusinessDataCallBack callBack;
+                int time = 1;
+
+                @Override
+                public void onDataSucess(Object... objData) {
+                    ArrayList<InetSocketAddress> addresses = (ArrayList<InetSocketAddress>) objData[0];
+                    mLogtf.d("dispatch:size=" + addresses.size());
+                    if (addresses.size() > 0) {
+                        connect("onArtsExtLiveInited", addresses);
+                    }
+                }
+
+                @Override
+                public void onDataFail(int errStatus, String failMsg) {
+                    super.onDataFail(errStatus, failMsg);
+                    mLogtf.d("dispatch:time=" + time + ",failMsg=" + failMsg);
+                    callBack = this;
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!destory) {
+                                getEnTeamPkHttpManager().dispatch(mGetInfo.getStuId(), callBack);
+                            }
+                        }
+                    }, ++time * 1000);
+                }
+            });
+            if (pkTeamEntity != null) {
+                startTeam("onArtsExtLiveInited");
+            }
+        }
+    }
+
+    @Override
+    public void initView(final RelativeLayout bottomContent, AtomicBoolean mIsLand) {
+        super.initView(bottomContent, mIsLand);
+    }
+
+    private synchronized void connect(String method, ArrayList<InetSocketAddress> addresses) {
+        if (tcpDispatch == null) {
+            if (destory) {
+                mLogtf.d("connect:destory:method=" + method);
+                return;
+            }
+            int pid = -1;
+            if (pkTeamEntity != null) {
+                pid = pkTeamEntity.getPkTeamId();
+            }
+            int iid = -1;
+            if (mInteractiveTeam != null) {
+                iid = mInteractiveTeam.getInteractive_team_id();
+            }
+            tcpDispatch = new TcpDispatch(mContext, mGetInfo.getStuId(), AppBll.getInstance().getUserRfh(), mGetInfo.getId(), classInt + "", -1, pid, iid, "");
+            tcpDispatch.setOnTcpConnects(onTcpConnects);
+            tcpDispatch.setAddresses(addresses);
+            tcpDispatch.registTcpMessageAction(new TeamMessageAction());
+            while (!tcpRun.isEmpty()) {
+                TcpRunnable runnable = tcpRun.remove(0);
+                mLogtf.d("connect:run=" + runnable.getName());
+                runnable.run();
+            }
+        } else {
+            mLogtf.d("connect:method=" + method);
         }
     }
 
@@ -269,7 +367,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction,TopicAct
                     }
                     mLogtf.d("reportStuInfo:nick_name=" + nick_name + ",mode=" + mGetInfo.getMode());
                     LiveGetInfo.EnglishPk englishPk = mGetInfo.getEnglishPk();
-                    getHttpManager().reportStuInfo(mode, mGetInfo.getStuId(), mGetInfo.getStuName(), mGetInfo.getStuImg(), "" + englishPk.historyScore, "" + englishPk.isTwoLose, nick_name, unique_id, new HttpCallBack(false) {
+                    getHttpManager().reportStuInfo(mode, mGetInfo.getStuId(), mGetInfo.getStandLiveName(), mGetInfo.getStuImg(), "" + englishPk.historyScore, "" + englishPk.isTwoLose, nick_name, unique_id, new HttpCallBack(false) {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) {
                             logger.d("reportStuInfo:onPmSuccess" + responseEntity.getJsonObject());
@@ -469,6 +567,13 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction,TopicAct
         }
     }
 
+    public EnTeamPkHttpManager getEnTeamPkHttpManager() {
+        if (enTeamPkHttpManager == null) {
+            enTeamPkHttpManager = new EnTeamPkHttpManager(getHttpManager());
+        }
+        return enTeamPkHttpManager;
+    }
+
     private PkTeamEntity parsegetSelfTeamInfo(ResponseEntity responseEntity) {
         PkTeamEntity pkTeamEntity2 = getHttpResponseParser().parsegetSelfTeamInfo(responseEntity, mGetInfo.getStuId());
         if (pkTeamEntity == null && pkTeamEntity2 != null) {
@@ -485,8 +590,301 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction,TopicAct
                     haveTeamRun = true;
                 }
             }
+//            if (tcpDispatch != null) {
+//                tcpDispatch.setPid(pkTeamEntity2.getPkTeamId());
+//            }
+            ArtsExtLiveInfo artsExtLiveInfo = mGetInfo.getArtsExtLiveInfo();
+            if (artsExtLiveInfo != null) {
+                int isGroupGmaeCourseWare = artsExtLiveInfo.getIsGroupGameCourseWare();
+                if (isGroupGmaeCourseWare == 1) {
+                    startTeam("parsegetSelfTeamInfo1");
+                }
+            } else if (mInteractiveTeam != null) {
+                getEnTeamPkHttpManager().dispatch(mGetInfo.getStuId(), new AbstractBusinessDataCallBack() {
+                    AbstractBusinessDataCallBack callBack;
+                    int time = 1;
+
+                    @Override
+                    public void onDataSucess(Object... objData) {
+                        ArrayList<InetSocketAddress> addresses = (ArrayList<InetSocketAddress>) objData[0];
+                        mLogtf.d("dispatch:size=" + addresses.size());
+                        if (addresses.size() > 0) {
+                            connect("parsegetSelfTeamInfo", addresses);
+                        }
+                    }
+
+                    @Override
+                    public void onDataFail(int errStatus, String failMsg) {
+                        super.onDataFail(errStatus, failMsg);
+                        mLogtf.d("dispatch:time=" + time + ",failMsg=" + failMsg);
+                        callBack = this;
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!destory) {
+                                    getEnTeamPkHttpManager().dispatch(mGetInfo.getStuId(), callBack);
+                                }
+                            }
+                        }, ++time * 1000);
+                    }
+                });
+                startTeam("parsegetSelfTeamInfo2");
+            }
         }
         return pkTeamEntity2;
+    }
+
+    private ArrayList<TcpRunnable> tcpRun = new ArrayList<>();
+
+    private void startTeam(String method) {
+        mLogtf.d("startTeam:method=" + method + ",Team=null?" + (getStuActiveTeam == null));
+        if (getStuActiveTeam == null) {
+            getStuActiveTeam = new GetStuActiveTeam() {
+                @Override
+                public InteractiveTeam getStuActiveTeam(boolean forseGet, AbstractBusinessDataCallBack callBack) {
+                    EnTeamPkIRCBll.this.getStuActiveTeam(forseGet, callBack);
+                    return mInteractiveTeam;
+                }
+
+                @Override
+                public PkTeamEntity getPkTeamEntity() {
+                    return pkTeamEntity;
+                }
+            };
+            putInstance(GetStuActiveTeam.class, getStuActiveTeam);
+            if (mInteractiveTeam == null) {
+                getEnTeamPkHttpManager().reportInteractiveInfo(mGetInfo.getStuId(), unique_id, true, new HttpCallBack() {
+
+                    @Override
+                    public void onPmSuccess(ResponseEntity responseEntity) {
+                        logger.d("reportInteractiveInfo:onPmSuccess:json=" + responseEntity.getJsonObject());
+                    }
+
+                    @Override
+                    public void onPmFailure(Throwable error, String msg) {
+                        super.onPmFailure(error, msg);
+                        logger.d("reportInteractiveInfo:onPmFailure:msg=" + msg);
+                    }
+
+                    @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        super.onPmError(responseEntity);
+                        logger.d("reportInteractiveInfo:onPmError:msg=" + responseEntity.getErrorMsg());
+                    }
+                });
+            }
+            mRootView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+                @Override
+                public boolean onPreDraw() {
+                    boolean have = XesPermission.checkPermission(activity, new LiveActivityPermissionCallback() {
+
+                        @Override
+                        public void onFinish() {
+
+                        }
+
+                        @Override
+                        public void onDeny(String permission, int position) {
+
+                        }
+
+                        @Override
+                        public void onGuarantee(String permission, int position) {
+
+                        }
+                    }, PermissionConfig.PERMISSION_CODE_CAMERA);
+                    logger.d("initView:have=" + have);
+                    mRootView.getViewTreeObserver().removeOnPreDrawListener(this);
+                    return false;
+                }
+            });
+        }
+        if (tcpMessageReg == null) {
+            tcpMessageReg = new TcpMessageReg() {
+
+                @Override
+                public void onConnect(OnTcpConnect onTcpConnect) {
+                    if (tcpDispatch != null) {
+                        onTcpConnect.onTcpConnect();
+                    }
+                    onTcpConnects.add(onTcpConnect);
+                }
+
+                @Override
+                public void send(final short type, final int operation, final String bodyStr) {
+                    if (tcpDispatch != null) {
+                        tcpDispatch.send(type, operation, bodyStr);
+                    } else {
+                        tcpRun.add(new TcpRunnable("send1") {
+                            @Override
+                            public void run() {
+                                if (tcpDispatch != null) {
+                                    tcpDispatch.send(type, operation, bodyStr);
+                                }
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void send(final short type, final int operation, final String bodyStr, final SendCallBack sendCallBack) {
+                    if (tcpDispatch != null) {
+                        tcpDispatch.send(type, operation, bodyStr, sendCallBack);
+                    } else {
+                        tcpRun.add(new TcpRunnable("send2") {
+                            @Override
+                            public void run() {
+                                if (tcpDispatch != null) {
+                                    tcpDispatch.send(type, operation, bodyStr, sendCallBack);
+                                }
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void registTcpMessageAction(final TcpMessageAction tcpMessageAction) {
+                    if (tcpDispatch != null) {
+                        tcpDispatch.registTcpMessageAction(tcpMessageAction);
+                    } else {
+                        tcpRun.add(new TcpRunnable("registTcpMessageAction") {
+                            @Override
+                            public void run() {
+                                if (tcpDispatch != null) {
+                                    tcpDispatch.registTcpMessageAction(tcpMessageAction);
+                                }
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void unregistTcpMessageAction(TcpMessageAction tcpMessageAction) {
+                    if (tcpDispatch != null) {
+                        tcpDispatch.unregistTcpMessageAction(tcpMessageAction);
+                    }
+                }
+
+            };
+            ProxUtil.getProxUtil().put(mContext, TcpMessageReg.class, tcpMessageReg);
+        }
+    }
+
+    private GetStuActiveTeam getStuActiveTeam = null;
+    private TcpMessageReg tcpMessageReg;
+    private ArrayList<TcpMessageReg.OnTcpConnect> onTcpConnects = new ArrayList<>();
+
+    private class TeamMessageAction implements TcpMessageAction {
+        @Override
+        public void onMessage(short type, int operation, String msg) {
+            mLogtf.d("onMessage:type=" + type + ",operation=" + operation + ",msg=" + msg);
+            switch (type) {
+                case TcpConstants.TEAM_TYPE: {
+                    if (operation == TcpConstants.TEAM_OPERATION_SEND) {
+                        try {
+                            InteractiveTeam interactiveTeam = getEnTeamPkHttpManager().parseInteractiveTeam(mGetInfo.getStuId(), new JSONObject(msg));
+                            if (interactiveTeam != null) {
+                                mInteractiveTeam = interactiveTeam;
+                                entities = interactiveTeam.getEntities();
+                                mLogtf.d("onMessage(TEAM_TYPE):entities=" + entities.size());
+                            } else {
+                                mLogtf.d("onMessage:interactiveTeam=null");
+                            }
+                            saveTeamInter(msg);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            CrashReport.postCatchedException(new LiveException(TAG, e));
+                            mLogtf.e("onMessage(TEAM_TYPE)" + e.getMessage(), e);
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        @Override
+        public short[] getMessageFilter() {
+            return new short[]{TcpConstants.TEAM_TYPE};
+        }
+    }
+
+    private void parseTeamInter() {
+        try {
+            String string = mShareDataManager.getString(ShareDataConfig.LIVE_ENPK_MY_TEAM_INTER, "{}", ShareDataManager.SHAREDATA_USER);
+            JSONObject jsonObject = new JSONObject(string);
+            if (jsonObject.has(mGetInfo.getId())) {
+                JSONObject liveObj = jsonObject.getJSONObject(mGetInfo.getId());
+                InteractiveTeam interactiveTeam = getEnTeamPkHttpManager().parseInteractiveTeam(mGetInfo.getStuId(), liveObj);
+                if (interactiveTeam != null) {
+                    mInteractiveTeam = interactiveTeam;
+                    entities = mInteractiveTeam.getEntities();
+                }
+            }
+        } catch (Exception e) {
+            mShareDataManager.put(ShareDataConfig.LIVE_ENPK_MY_TEAM_INTER, "{}", ShareDataManager.SHAREDATA_USER);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
+    }
+
+    private void saveTeamInter(String msg) {
+        try {
+            String string = mShareDataManager.getString(ShareDataConfig.LIVE_ENPK_MY_TEAM_INTER, "{}", ShareDataManager.SHAREDATA_USER);
+            JSONObject jsonObject = new JSONObject(string);
+            JSONObject liveObj = new JSONObject(msg);
+            jsonObject.put(mGetInfo.getId(), liveObj);
+            mShareDataManager.put(ShareDataConfig.LIVE_ENPK_MY_TEAM_INTER, "" + jsonObject, ShareDataManager.SHAREDATA_USER);
+        } catch (Exception e) {
+            mShareDataManager.put(ShareDataConfig.LIVE_ENPK_MY_TEAM_INTER, "{}", ShareDataManager.SHAREDATA_USER);
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
+    }
+
+    /**
+     * 强制更新小组信息
+     *
+     * @param forseGet
+     * @param callBack
+     */
+    public void getStuActiveTeam(boolean forseGet, final AbstractBusinessDataCallBack callBack) {
+        if (mInteractiveTeam == null) {
+            mLogtf.d("getStuActiveTeam:forseGet=" + forseGet + ",mInteractiveTeam=null?true");
+        } else {
+            mLogtf.d("getStuActiveTeam:forseGet=" + forseGet + ",mInteractiveTeam.size=" + mInteractiveTeam.getEntities().size());
+        }
+        if (!forseGet && mInteractiveTeam != null) {
+            if (callBack != null) {
+                callBack.onDataSucess(mInteractiveTeam);
+            }
+            return;
+        }
+        if (mInteractiveTeam != null && mInteractiveTeam.getEntities().size() == 3) {
+            if (callBack != null) {
+                callBack.onDataSucess(mInteractiveTeam);
+            }
+            return;
+        }
+        getEnTeamPkHttpManager().getStuActiveTeam(unique_id, mGetInfo.getStuId(), new AbstractBusinessDataCallBack() {
+            @Override
+            public void onDataSucess(Object... objData) {
+                final Object object = objData[1];
+                if (object instanceof JSONObject) {
+                    mInteractiveTeam = (InteractiveTeam) objData[0];
+                    entities = mInteractiveTeam.getEntities();
+                    if (callBack != null) {
+                        callBack.onDataSucess(mInteractiveTeam);
+                    }
+                    String msg = "" + object;
+                    saveTeamInter(msg);
+                }
+            }
+
+            @Override
+            public void onDataFail(int errStatus, String failMsg) {
+                if (callBack != null) {
+                    callBack.onDataFail(errStatus, failMsg);
+                }
+            }
+        });
     }
 
     private void poseEvent() {
@@ -858,6 +1256,7 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction,TopicAct
     @Override
     public void onDestory() {
         super.onDestory();
+        destory = true;
         if (classEndReg != null) {
             classEndReg.destory();
             classEndReg = null;
@@ -867,6 +1266,11 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction,TopicAct
         }
         if (enTeamPkAction != null) {
             enTeamPkAction.destory();
+        }
+        onTcpConnects.clear();
+        if (tcpDispatch != null) {
+            tcpDispatch.stop();
+            tcpDispatch = null;
         }
     }
 

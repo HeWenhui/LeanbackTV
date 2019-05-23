@@ -464,10 +464,12 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 }
                 break;
             case XESCODE.QUESTION_TUTOR:
-                if(LiveTopic.MODE_CLASS.equals(mGetInfo.getMode())){
+                if (LiveTopic.MODE_CLASS.equals(mGetInfo.getMode())) {
                     return;
                 }
-                VideoQuestionLiveEntity turtorEntity = questionInfo(object);
+                LiveVideoConfig.isNewEnglishH5 = true;
+                if (englishH5CoursewareBll != null){
+                    VideoQuestionLiveEntity turtorEntity = questionInfo(object);
                 String statusTutor = LiveVideoConfig.isSend ? "on" : "off";
                 if (!LiveVideoConfig.isSend) {
                     if (englishH5CoursewareBll instanceof EnglishH5CoursewareBll) {
@@ -476,21 +478,25 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
                 }
                 turtorEntity.setTUtor(true);
                 englishH5CoursewareBll.onH5Courseware(statusTutor, turtorEntity);
+                }
                 break;
             case XESCODE.MULTIPLE_H5_COURSEWARE:
                 if (LiveTopic.MODE_TRANING.equals(mGetInfo.getMode())){
                     return;
                 }
-                // 08.07  课件之前的功能添加
-                VideoQuestionLiveEntity questionLiveEntity = questionInfo(object);
-                String status = LiveVideoConfig.isSend ? "on" : "off";
-                if (!LiveVideoConfig.isSend) {
-                    if (englishH5CoursewareBll instanceof EnglishH5CoursewareBll) {
-                        ((EnglishH5CoursewareBll) englishH5CoursewareBll).setWebViewCloseByTeacher(true);
+                LiveVideoConfig.isNewEnglishH5 = true;
+                if (englishH5CoursewareBll != null) {
+                    // 08.07  课件之前的功能添加
+                    VideoQuestionLiveEntity questionLiveEntity = questionInfo(object);
+                    String status = LiveVideoConfig.isSend ? "on" : "off";
+                    if (!LiveVideoConfig.isSend) {
+                        if (englishH5CoursewareBll instanceof EnglishH5CoursewareBll) {
+                            ((EnglishH5CoursewareBll) englishH5CoursewareBll).setWebViewCloseByTeacher(true);
+                        }
                     }
-                }
 
-                englishH5CoursewareBll.onH5Courseware(status, questionLiveEntity);
+                    englishH5CoursewareBll.onH5Courseware(status, questionLiveEntity);
+                }
                 break;
 
             case XESCODE.ARTS_STOP_QUESTION:
@@ -924,8 +930,20 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
         public void getStuTestResult(VideoQuestionLiveEntity detailInfo, int isPlayBack, AbstractBusinessDataCallBack callBack) {
             EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
             String[] res = getSrcType(englishH5Entity);
-            getCourseWareHttpManager().getStuTestResult(mGetInfo.getId(), mGetInfo.getStuId(), res[0], res[1], englishH5Entity.getClassTestId(), englishH5Entity.getPackageId(),
-                    englishH5Entity.getPackageAttr(), isPlayBack, callBack,detailInfo.isTUtor());
+            if ((LiveVideoConfig.EDUCATION_STAGE_3.equals(detailInfo.getEducationstage()) || LiveVideoConfig.EDUCATION_STAGE_4.equals(detailInfo.getEducationstage()))
+                    && LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(englishH5Entity.getPackageAttr())) {
+                getCourseWareHttpManager().getStuChiAITestResult(mGetInfo.getId(), mGetInfo.getStuId(), res[0], res[1], englishH5Entity.getClassTestId(), englishH5Entity.getPackageId(),
+                        englishH5Entity.getPackageAttr(), isPlayBack, mGetInfo.getStudentLiveInfo().getClassId(), callBack);
+            } else {
+                getCourseWareHttpManager().getStuTestResult(mGetInfo.getId(), mGetInfo.getStuId(), res[0], res[1], englishH5Entity.getClassTestId(), englishH5Entity.getPackageId(),
+                        englishH5Entity.getPackageAttr(), isPlayBack, callBack,detailInfo.isTUtor());
+            }
+        }
+
+        @Override
+        public void submitGroupGame(VideoQuestionLiveEntity detailInfo, int gameMode, int voiceTime, int pkTeamId, int gameGroupId, int starNum, int energy, int gold, int videoLengthTime, int micLengthTime, int acceptVideoLengthTime, int acceptMicLengthTime, String answerData, AbstractBusinessDataCallBack callBack) {
+            String classId = mGetInfo.getStudentLiveInfo().getClassId();
+            getCourseWareHttpManager().submitGroupGame(classId, detailInfo.id, detailInfo.type, gameMode, voiceTime, 1, pkTeamId, gameGroupId, starNum, energy, gold, videoLengthTime, micLengthTime, acceptVideoLengthTime, acceptMicLengthTime, answerData, callBack);
         }
 
         @Override
@@ -956,9 +974,12 @@ public class EnglishH5CoursewareIRCBll extends LiveBaseBll implements NoticeActi
 
         @Override
         public void getCourseWareTests(VideoQuestionLiveEntity detailInfo, AbstractBusinessDataCallBack callBack) {
-            if (isArts == LiveVideoSAConfig.ART_EN && !detailInfo.isTUtor()) {
-                getCourseWareHttpManager().getTestInfos(detailInfo.id, callBack);
-            } else {
+            if (isArts == LiveVideoSAConfig.ART_EN  && !detailInfo.isTUtor()) {
+                if (LiveQueConfig.isGroupGame(detailInfo.type)) {
+                    getCourseWareHttpManager().getGroupGameTestInfos(detailInfo.id, mGetInfo.getStuId(), detailInfo.type, callBack);
+                } else {
+                    getCourseWareHttpManager().getTestInfos(detailInfo.id, callBack);
+                }            } else {
                 EnglishH5Entity englishH5Entity = detailInfo.englishH5Entity;
                 String classId = mGetInfo.getStudentLiveInfo().getClassId();
                 String[] res = getSrcType(englishH5Entity);

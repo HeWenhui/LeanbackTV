@@ -246,6 +246,7 @@ public class LiveVideoSAConfig {
         public String URL_NEWARTS_CHINESEREADING_URL = "https://static.arts.xueersi.com/art_live/Chinese-speech-touch/";
         /**
          * 直播间 文科差异化参数配置接口 (注：直播间文科差异化配置参数 获取接口)
+         * http://wiki.xesv5.com/pages/viewpage.action?pageId=12963335
          */
         public String URL_ARTS_ROOM_INFO = "https://app.arts.xueersi.com/v2/Live/getInfoBaseData";
 
@@ -270,8 +271,11 @@ public class LiveVideoSAConfig {
         /** 小语学生对老师评价 */
         public String URL_LIVE_CHS_EVALUATE_TEACHER = "https://app.chs.xueersi.com/LiveCourse/submitEvaluate";
 
-
-
+        /** 学生端大题互动提交 http://wiki.xesv5.com/pages/viewpage.action?pageId=17724881 */
+        public String URL_LIVE_SUBMIT_BIG_TEST = HTTP_HOST + "/LiveExam/submitBigTestInteraction";
+        /** 学生端获取结果页  http://wiki.xesv5.com/pages/viewpage.action?pageId=17725779 */
+        public String URL_LIVE_GET_BIG_TEST_RESULT = HTTP_HOST + "/LiveExam/getStuInteractionResult";
+    }
 
     }
     /** 出门测表扬榜 */

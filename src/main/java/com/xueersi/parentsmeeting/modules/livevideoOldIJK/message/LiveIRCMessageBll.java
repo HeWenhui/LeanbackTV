@@ -35,6 +35,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.Teacher;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerTop;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
@@ -64,6 +65,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 //import com.xueersi.parentsmeeting.modules.livevideo.achievement.business.LiveAchievementIRCBll;
@@ -167,6 +169,12 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
         mRoomAction.setLiveMediaControllerBottom(baseLiveMediaControllerBottom);
     }
 
+    public void setLiveMediaCtrTop(BaseLiveMediaControllerTop mediaCtrTop){
+        mRoomAction.setLiveMediaCtrTop(mediaCtrTop);
+    }
+
+
+
     @Override
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
@@ -189,18 +197,20 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             }
         }
         //中学连对激励系统，教师广播发送学报消息
-        getHttpManager().getEvenLikeData(
+        if (getInfo.getIsOpenNewCourseWare() == 1) {
+            getHttpManager().getEvenLikeData(
 //                "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
-                mGetInfo.getGetEvenPairListUrl(),
-                mGetInfo.getStudentLiveInfo().getClassId(),
-                mGetInfo.getId(),
-                mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
-                        mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
-                    }
-                });
+                    mGetInfo.getGetEvenPairListUrl(),
+                    mGetInfo.getStudentLiveInfo().getClassId(),
+                    mGetInfo.getId(),
+                    mGetInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                            EvenDriveEntity evenDriveEntity = getHttpResponseParser().parseEvenEntity(responseEntity);
+                            mRoomAction.setEvenNum(String.valueOf(evenDriveEntity.getMyEntity().getEvenPairNum()), evenDriveEntity.getMyEntity().getHighestRightNum());
+                        }
+                    });
+        }
     }
 
     @Override
@@ -698,6 +708,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             }
             case XESCODE.SENDQUESTION: {
                 if (mGetInfo.getIsOpenNewCourseWare() == 1) {
+                    userLikeList.clear();
                     isMiddleScienceH5Open = true;
                 }
                 mRoomAction.onOpenVoiceNotic(true, "SENDQUESTION");
@@ -798,7 +809,6 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
             case XESCODE.MULTIPLE_H5_COURSEWARE: {
                 boolean isOff = object.optBoolean("open");
                 //
-                userLikeList.clear();
                 if (mGetInfo.getIsOpenNewCourseWare() == 1) {
                     if (!isOff) {
                         //老师收题之后，更新聊天区连对榜
@@ -841,6 +851,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
                         isMiddleScienceH5Open = false;
                     } else {
 //                    isHasReceiveLike = false;
+                        userLikeList.clear();
                         isMiddleScienceH5Open = true;
                     }
                 }
@@ -953,7 +964,7 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     }
 
     /** 列表，用户点赞列表 */
-    private List<String> userLikeList = new LinkedList<>();
+    private List<String> userLikeList = new CopyOnWriteArrayList<>();
 
     /**
      * 是否在点赞时间里面
@@ -1360,8 +1371,9 @@ public class LiveIRCMessageBll extends LiveBaseBll implements MessageAction, Not
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getEvenDrive(EvenDriveEvent evenDriveEvent) {
         if (evenDriveEvent.getStatus() == EvenDriveEvent.CLOSE_H5
-                && isMiddleScience()) {
+                && mGetInfo.getIsOpenNewCourseWare() == 1) {
             //老师收题之后，更新聊天区连对榜
+            logger.i("update livemessage evendrive data");
             getHttpManager().getEvenLikeData(
 //                        "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/science/Stimulation/evenPairList",
                     mGetInfo.getGetEvenPairListUrl(),

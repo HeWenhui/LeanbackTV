@@ -311,14 +311,17 @@ public class EnStandAchievePager extends LiveBasePager {
         viewGroup.addView(lottieAnimationView, lp);
         lottieAnimationView.playAnimation();
         lottieAnimationView.addAnimatorListener(new Animator.AnimatorListener() {
+            long before;
+
             @Override
             public void onAnimationStart(Animator animation) {
-
+                before = System.currentTimeMillis();
             }
 
             @Override
             public void onAnimationEnd(Animator animation) {
                 viewGroup.removeView(lottieAnimationView);
+                mLogtf.d("onGetStar:onAnimationEnd=" + (System.currentTimeMillis() - before));
             }
 
             @Override

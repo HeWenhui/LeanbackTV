@@ -235,6 +235,8 @@ public class LivePlaybackMediaController extends MediaController2 {
             textView.setText("试卷");
         } else if (LocalCourseConfig.CATEGORY_H5COURSE_WARE == videoQuestionEntity.getvCategory()) {
             textView.setText("互动实验");
+        } else if (LocalCourseConfig.CATEGORY_NB_ADDEXPERIMENT == videoQuestionEntity.getvCategory()) {
+            textView.setText("互动实验");
         } else if (LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE == videoQuestionEntity.getvCategory()) {
             String coursewareType = videoQuestionEntity.getvQuestionType();
             if ("1".equals(coursewareType)) {
@@ -263,6 +265,8 @@ public class LivePlaybackMediaController extends MediaController2 {
                 case "5":
                 case "10":
                     textView.setText("互动游戏");
+                case "17":
+                    textView.setText("互动题");
                     break;
             }
         } else if (LocalCourseConfig.CATEGORY_LEC_ADVERT == videoQuestionEntity.getvCategory()) {

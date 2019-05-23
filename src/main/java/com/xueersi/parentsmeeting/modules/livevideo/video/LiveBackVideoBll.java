@@ -153,6 +153,7 @@ public class LiveBackVideoBll {
             } else {
                 liveBackPlayVideoFragment.playPSFile(videoPath, (int) getStartPosition());
             }
+            liveBackPlayVideoFragment.setmDisplayName(mSectionName);
         }
     }
 

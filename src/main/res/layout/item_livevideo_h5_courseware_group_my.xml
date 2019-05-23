@@ -1,0 +1,116 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="140dp"
+    android:layout_height="125dp"
+    android:background="@drawable/app_zbhd_shipingkuang">
+
+    <RelativeLayout
+        android:id="@id/rl_livevideo_course_item_video"
+        android:layout_width="128dp"
+        android:layout_height="96dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="6dp">
+
+        <RelativeLayout
+            android:id="@id/rl_livevideo_course_item_video_head"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/shape_livevideo_course_item_video_head_bg">
+
+            <ImageView
+                android:id="@id/iv_livevideo_course_item_video_head"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:scaleType="fitXY" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@id/rl_livevideo_course_item_video_tip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="4dp" />
+
+    </RelativeLayout>
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@id/rl_livevideo_course_item_name"
+        android:layout_width="61dp"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rl_livevideo_course_item_video"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="7dp"
+        android:gravity="center_vertical"
+        android:includeFontPadding="false"
+        android:shadowColor="#cc004397"
+        android:shadowDx="0"
+        android:shadowDy="1"
+        android:shadowRadius="3.0"
+        android:singleLine="true"
+        android:textColor="#fffefefe"
+        android:textSize="12sp" />
+
+    <RelativeLayout
+        android:layout_width="33dp"
+        android:layout_height="16dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="9dp"
+        android:layout_marginRight="9dp"
+        android:background="@drawable/shape_item_livevideo_h5_courseware_group_people"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@id/iv_livevideo_course_item_fire"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@drawable/livevideo_course_groupgame_people_fire" />
+
+        <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+            android:id="@id/tv_livevideo_course_item_fire"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="1dp"
+            android:layout_toRightOf="@id/iv_livevideo_course_item_fire"
+            android:includeFontPadding="false"
+            android:text="68"
+            android:textColor="#ffffedbb"
+            android:textSize="12sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_below="@id/rl_livevideo_course_item_video"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="6dp">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@id/iv_livevideo_course_item_audio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/iv_livevideo_course_item_video"
+            android:src="@drawable/livevide_course_group_audio_no" />
+
+        <ImageView
+            android:id="@id/iv_livevideo_course_item_audio_dis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@id/iv_livevideo_course_item_video"
+            android:src="@drawable/livevide_course_group_audio_enable"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@id/iv_livevideo_course_item_video"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/livevide_course_group_video_no" />
+    </RelativeLayout>
+
+</RelativeLayout>

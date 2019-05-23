@@ -3,12 +3,15 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.core;
 import android.content.Context;
 import android.util.Log;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.logerhelper.LogerTag;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveOnLineLogs;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveCacheFile;
@@ -65,7 +68,9 @@ public class LiveLog implements LiveOnLineLogs {
         type = "a" + mLiveType;
         enterTime = System.currentTimeMillis();
         times = LIVE_TIME++;
-        File logDir = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + mLiveId + "-" + getPrefix);
+        String s = dateFormat.format(new Date());
+        String[] ss = s.split(",");
+        File logDir = LiveCacheFile.geCacheFile(BaseApplication.getContext(), "livelog/" + ss[0] + "/" + mLiveId + "-" + getPrefix);
         if (!logDir.exists()) {
             logDir.mkdirs();
         }
@@ -77,16 +82,21 @@ public class LiveLog implements LiveOnLineLogs {
         logger.d("setmGetInfo:msg=" + msg.size());
         while (!msg.isEmpty()) {
             PerGetInfoLog perGetInfoLog = msg.remove(0);
-            getOnloadLogs(perGetInfoLog.TAG, perGetInfoLog.str);
+            if (perGetInfoLog.e != null) {
+                getOnloadLogs(perGetInfoLog.TAG, perGetInfoLog.stableLogHashMap, perGetInfoLog.str, perGetInfoLog.e);
+            } else {
+                getOnloadLogs(perGetInfoLog.TAG, perGetInfoLog.stableLogHashMap, perGetInfoLog.str);
+            }
         }
     }
 
     @Override
-    public void getOnloadLogs(String TAG, String str) {
+    public void getOnloadLogs(String TAG, StableLogHashMap stableLogHashMap, String str) {
         if (mGetInfo == null) {
             PerGetInfoLog perGetInfoLog = new PerGetInfoLog();
             perGetInfoLog.TAG = TAG;
             perGetInfoLog.str = str;
+            perGetInfoLog.stableLogHashMap = stableLogHashMap;
             msg.add(perGetInfoLog);
             return;
         }
@@ -95,6 +105,13 @@ public class LiveLog implements LiveOnLineLogs {
 //                mGetInfo.getStuId(), mGetInfo.getTeacherId(), mFileName, str, bz, liveLogCallback);
 //        liveLogCallback.setParams(params);
         StableLogHashMap logHashMap = new StableLogHashMap();
+        try {
+            if (stableLogHashMap != null) {
+                logHashMap.getData().putAll(stableLogHashMap.getData());
+            }
+        } catch (Exception err) {
+            CrashReport.postCatchedException(new LiveException(TAG, err));
+        }
         logHashMap.put("tag", "" + TAG);
         logHashMap.put("enterTime", "" + enterTime);
         logHashMap.put("times", "" + times);
@@ -112,11 +129,13 @@ public class LiveLog implements LiveOnLineLogs {
     }
 
     @Override
-    public void getOnloadLogs(String TAG, String str, Throwable e) {
+    public void getOnloadLogs(String TAG, StableLogHashMap stableLogHashMap, String str, Throwable e) {
         if (mGetInfo == null) {
             PerGetInfoLog perGetInfoLog = new PerGetInfoLog();
             perGetInfoLog.TAG = TAG;
             perGetInfoLog.str = str;
+            perGetInfoLog.e = e;
+            perGetInfoLog.stableLogHashMap = stableLogHashMap;
             msg.add(perGetInfoLog);
             return;
         }
@@ -125,6 +144,13 @@ public class LiveLog implements LiveOnLineLogs {
 //                mGetInfo.getStuId(), mGetInfo.getTeacherId(), mFileName, str, bz, liveLogCallback);
 //        liveLogCallback.setParams(params);
         StableLogHashMap logHashMap = new StableLogHashMap();
+        try {
+            if (stableLogHashMap != null) {
+                logHashMap.getData().putAll(stableLogHashMap.getData());
+            }
+        } catch (Exception err) {
+            CrashReport.postCatchedException(new LiveException(TAG, err));
+        }
         logHashMap.put("tag", "" + TAG);
         logHashMap.put("enterTime", "" + enterTime);
         logHashMap.put("times", "" + times);
@@ -159,6 +185,8 @@ public class LiveLog implements LiveOnLineLogs {
     class PerGetInfoLog {
         String TAG;
         String str;
+        Throwable e;
+        StableLogHashMap stableLogHashMap;
     }
 
     class WriteThread implements Runnable {

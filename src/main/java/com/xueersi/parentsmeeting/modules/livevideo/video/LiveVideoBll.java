@@ -23,6 +23,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionStatic;
@@ -197,6 +198,10 @@ public class LiveVideoBll implements VPlayerListenerReg {
         if (nowProtol != MediaPlayer.VIDEO_PROTOCOL_RTMP && nowProtol != MediaPlayer.VIDEO_PROTOCOL_FLV) {
             nowProtol = MediaPlayer.VIDEO_PROTOCOL_RTMP;
             videoFragment.playPSVideo(mGetInfo.getChannelname(), MediaPlayer.VIDEO_PROTOCOL_RTMP);
+            VideoConfigEntity videoConfigEntity = mGetInfo.getVideoConfigEntity();
+            if (videoConfigEntity != null) {
+                videoFragment.enableAutoSpeedPlay(videoConfigEntity);
+            }
         } else {
             //这里不能进行协议切换，因为协议切换已经在自动切换线路的时候切换好了
 //            if (nowProtol == MediaPlayer.VIDEO_PROTOCOL_RTMP) {
@@ -208,6 +213,10 @@ public class LiveVideoBll implements VPlayerListenerReg {
                 @Override
                 public void run() {
                     videoFragment.playPSVideo(mGetInfo.getChannelname(), nowProtol);
+                    VideoConfigEntity videoConfigEntity = mGetInfo.getVideoConfigEntity();
+                    if (videoConfigEntity != null) {
+                        videoFragment.enableAutoSpeedPlay(videoConfigEntity);
+                    }
                     MediaPlayer.setNextDispatchTime();
                 }
             }, MediaPlayer.getDispatchTime());
@@ -769,8 +778,8 @@ public class LiveVideoBll implements VPlayerListenerReg {
     };
 
     public void stopPlay() {
-        livePlayLog.stopPlay();
         if (isInitialized()) {
+            livePlayLog.stopPlay();
             vPlayer.releaseSurface();
             vPlayer.stop();
         }
@@ -799,8 +808,11 @@ public class LiveVideoBll implements VPlayerListenerReg {
             Map<String, String> map = new HashMap<>();
             map.put("param", "openTimeOut");
             UmsAgentManager.umsAgentDebug(activity, LiveLogUtils.PLAY_VIDEO_FAIL, map);
-
-            liveGetPlayServer.liveGetPlayServer(false);
+            if (MediaPlayer.getIsNewIJK()) {
+                changeNextLine();
+            } else {
+                liveGetPlayServer.liveGetPlayServer(false);
+            }
         }
     };
 
@@ -998,6 +1010,9 @@ public class LiveVideoBll implements VPlayerListenerReg {
         } else {
             nowProtol = changeProtol(nowProtol);
             videoFragment.playPSVideo(mGetInfo.getChannelname(), nowProtol);
+            if (mGetInfo.getVideoConfigEntity() != null) {
+                videoFragment.enableAutoSpeedPlay(mGetInfo.getVideoConfigEntity());
+            }
         }
     }
 

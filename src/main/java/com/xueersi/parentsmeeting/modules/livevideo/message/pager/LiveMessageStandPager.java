@@ -377,6 +377,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     /** 聊天打开的动画 */
     private void initBtMesOpenAnimation(boolean isvoice) {
         if (rlMessageContent.getVisibility() == View.GONE) {
+            mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
             startOpenAnimation(isvoice);
             rlMessageContent.setVisibility(View.VISIBLE);
             lvMessage.setVisibility(View.VISIBLE);
@@ -895,7 +896,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         mAudioRequest = ProxUtil.getProxUtil().
 
                 get(liveVideoActivity, AudioRequest.class);
-
+        logger.i("AudioRequest" + mAudioRequest == null ? "null" : mAudioRequest.toString());
     }
 
     @Override
@@ -906,6 +907,10 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         }
         if (noSpeechTimer != null) {
             noSpeechTimer.cancel();
+        }
+        if (vwvVoiceChatWave != null){
+            vwvVoiceChatWave.stop();
+            vwvVoiceChatWave.setVisibility(View.GONE);
         }
         Map<String, String> mData = new HashMap<>();
         mData.put("userid", getInfo.getStuId());
@@ -1833,6 +1838,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
     }
 
     private void startVoiceInput() {
+        mVolume = mAM.getStreamVolume(AudioManager.STREAM_MUSIC);
         if (mSpeechUtils != null) {
             mSpeechUtils.cancel();
         }
@@ -1850,6 +1856,7 @@ public class LiveMessageStandPager extends BaseLiveMessagePager implements LiveA
         tvVoiceContent.setText(VOICE_RECOG_HINT);
         tvVoiceCount.setText("");
         tvVoiceCount.setVisibility(View.GONE);
+        logger.i("AudioRequest" + mAudioRequest == null ? "null" : mAudioRequest.toString());
         if (mAudioRequest != null) {
             mAudioRequest.request(new AudioRequest.OnAudioRequest() {
                 @Override

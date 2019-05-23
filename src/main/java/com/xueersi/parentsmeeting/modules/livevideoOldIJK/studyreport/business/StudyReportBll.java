@@ -195,13 +195,13 @@ public class StudyReportBll extends LiveBaseBll implements StudyReportAction {
                 @Override
                 public boolean onPreDraw() {
                     view.getViewTreeObserver().removeOnPreDrawListener(this);
-                   // runnable.run();
+                    // runnable.run();
                     taskThread.start();
                     return false;
                 }
             });
         } else {
-           // runnable.run();
+            // runnable.run();
             taskThread.start();
         }
     }

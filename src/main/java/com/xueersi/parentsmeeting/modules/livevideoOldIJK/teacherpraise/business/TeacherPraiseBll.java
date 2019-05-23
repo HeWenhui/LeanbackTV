@@ -12,6 +12,7 @@ import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -79,7 +80,9 @@ public class TeacherPraiseBll extends LiveBaseBll implements NoticeAction {
         String lottieResPath = "team_pk/pkresult/teacher_praise/images";
         String lottieJsonPath = "team_pk/pkresult/teacher_praise/data.json";
 
-        if (mGetInfo.getIsArts() == 2) {
+         // 兼容语文半身直播 老师点赞动画
+        if (mGetInfo.getIsArts() == 2 || (mGetInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY
+                && mGetInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH)) {
             lottieResPath = "chinesePk/praise/images";
             lottieJsonPath = "chinesePk/praise/data.json";
         } else {

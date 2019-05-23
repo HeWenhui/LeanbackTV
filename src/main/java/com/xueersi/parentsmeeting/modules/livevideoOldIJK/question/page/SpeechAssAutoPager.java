@@ -36,6 +36,7 @@ import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LivePagerBack;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
@@ -641,8 +642,13 @@ public class SpeechAssAutoPager extends BaseSpeechAssessmentPager {
             try {
                 final JSONObject answers = new JSONObject();
                 JSONObject answers1 = new JSONObject();
-                entranceTime = System.currentTimeMillis() - entranceTime;
-                answers1.put("entranceTime", (int) (entranceTime / 1000));
+                try {
+                    answers1.put("entranceTimeLog", entranceTime + "," + System.currentTimeMillis());
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                }
+                long entranceTime2 = System.currentTimeMillis() - entranceTime;
+                answers1.put("entranceTime", (int) (entranceTime2 / 1000));
                 answers1.put("score", score);
                 JSONObject detail = new JSONObject();
                 detail.put("cont_score", score);

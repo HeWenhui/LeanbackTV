@@ -18,6 +18,13 @@ public interface QuestionAction {
     void showQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity);
 
     /**
+     * 显示互动题-大题
+     *
+     * @param videoQuestionLiveEntity
+     */
+    void showBigQuestion(VideoQuestionLiveEntity videoQuestionLiveEntity, boolean isOpen);
+
+    /**
      * @param liveBasePager
      * @param videoQuestionLiveEntity
      * @param entity
@@ -33,8 +40,11 @@ public interface QuestionAction {
     /** 考试开始 */
     void onExamStart(String liveid, VideoQuestionLiveEntity videoQuestionLiveEntity);
 
-    /** 考试结束
-     * @param num*/
+    /**
+     * 考试结束
+     *
+     * @param num
+     */
     void onExamStop(String num);
 
     /** 语音评测刷新 */

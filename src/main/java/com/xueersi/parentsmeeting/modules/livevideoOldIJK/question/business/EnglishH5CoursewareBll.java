@@ -48,6 +48,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultCplShowEve
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.notice.business.LiveAutoNoticeBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.BaseVoiceAnswerPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LiveBasePager;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.config.LiveQueConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.entity.CreateAnswerReslutEntity;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.BaseEnglishH5CoursewarePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.page.VoiceAnswerPager;
@@ -340,6 +341,12 @@ public class EnglishH5CoursewareBll implements EnglishH5CoursewareAction, LiveAn
                                 logToFile.i("onH5Courseware:queskey=" + queskey);
                                 return;
                             }
+                        }
+                        //小学不显示语文AI主观题
+                        if((LiveVideoConfig.EDUCATION_STAGE_1.equals(videoQuestionLiveEntity.getEducationstage())
+                                || LiveVideoConfig.EDUCATION_STAGE_2.equals(videoQuestionLiveEntity.getEducationstage()))
+                                && LiveQueConfig.CHI_COURESWARE_TYPE_AISUBJECTIVE.equals(videoQuestionLiveEntity.englishH5Entity.getPackageAttr())){
+                            return;
                         }
                         showH5Paper(videoQuestionLiveEntity);
                         return;

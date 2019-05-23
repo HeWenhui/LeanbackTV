@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/COLOR_99000000"
+    android:clickable="true"
+    tools:ignore="MissingConstraints">
+
+    <ImageView
+        android:id="@id/iv_gold_microphone_close_microphone_background"
+        android:layout_width="520dp"
+        android:layout_height="280dp"
+        android:src="@drawable/bg_livevideo_kindergarten_primary_school_microphone_close_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@id/tv_gold_microphone_close_microphone_top_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="75dp"
+        android:text="确定要关闭金话筒吗？"
+        android:textColor="@color/COLOR_5A3A13"
+        android:textSize="19dp"
+        app:layout_constraintLeft_toLeftOf="@id/iv_gold_microphone_close_microphone_background"
+        app:layout_constraintRight_toRightOf="@id/iv_gold_microphone_close_microphone_background"
+        app:layout_constraintTop_toTopOf="@id/iv_gold_microphone_close_microphone_background" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@id/tv_gold_microphone_close_microphone_bottom_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:text="关闭后将无法进行语音互动哦"
+        android:textColor="@color/COLOR_5A3A13"
+        android:textSize="12dp"
+        app:layout_constraintLeft_toLeftOf="@id/tv_gold_microphone_close_microphone_top_tip"
+        app:layout_constraintRight_toRightOf="@id/tv_gold_microphone_close_microphone_top_tip"
+        app:layout_constraintTop_toBottomOf="@id/tv_gold_microphone_close_microphone_top_tip" />
+
+    <ImageView
+        android:id="@id/iv_livevideo_gold_microphone_close_btn_no"
+        android:layout_width="130dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="120dp"
+        android:layout_marginTop="15dp"
+        android:src="@drawable/selector_livevideo_primary_chinese_dialog_cancel"
+        app:layout_constraintLeft_toLeftOf="@id/iv_gold_microphone_close_microphone_background"
+        app:layout_constraintTop_toBottomOf="@id/tv_gold_microphone_close_microphone_bottom_tip" />
+
+    <ImageView
+        android:id="@id/iv_livevideo_gold_microphone_close_btn_yes"
+        android:layout_width="130dp"
+        android:layout_height="54dp"
+        android:layout_marginLeft="30dp"
+        android:src="@drawable/selector_livevideo_primary_chinese_dialog_confirm"
+        app:layout_constraintLeft_toRightOf="@id/iv_livevideo_gold_microphone_close_btn_no"
+        app:layout_constraintTop_toTopOf="@id/iv_livevideo_gold_microphone_close_btn_no" />
+</android.support.constraint.ConstraintLayout>

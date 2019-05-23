@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.BaseActivity;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
@@ -39,6 +40,8 @@ import com.xueersi.parentsmeeting.module.videoplayer.ps.PSIJK;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -334,6 +337,19 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         }
     }
 
+    SetVolumeListener setVolumeListener;
+
+    public boolean setVolume(float left, float right, SetVolumeListener setVolumeListener) {
+        leftVolume = left;
+        rightVolume = right;
+        this.setVolumeListener = setVolumeListener;
+        if (isInitialized()) {
+            vPlayer.setVolume(left, right);
+            return true;
+        }
+        return false;
+    }
+
     Handler.Callback callback = new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
@@ -364,6 +380,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                     vPlayer.setDisplay(videoView.getHolder());
                                 }
                                 vPlayer.psInit(MediaPlayer.VIDEO_PLAYER_NAME, getStartPosition(), vPlayerServiceListener, mIsHWCodec);
+                                setVideoConfig();
                                 if (isChangeLine) {
                                     try {
                                         vPlayer.changeLine(changeLinePos, protocol);
@@ -386,6 +403,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                         e.printStackTrace();
                                     } catch (Exception e) {
                                         e.printStackTrace();
+                                        CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
                                     }
                                 }
                             }
@@ -515,6 +533,12 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         return 0L;
     }
 
+    protected void setVideoConfig() {
+        if (videoConfigEntity != null) {
+            vPlayer.enableAutoSpeedPlay(videoConfigEntity.getWaterMark(), videoConfigEntity.getDuration());
+        }
+    }
+
     /** 切换线路使用位置 */
     protected int changeLinePos;
     /** 当前使用的协议 */
@@ -576,12 +600,33 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
     }
 
     /**
+     *
+     */
+//    public void enableAutoSpeedPlay(long waterMark, long duration) {
+//        if (vPlayer != null) {
+//            vPlayer.enableAutoSpeedPlay(waterMark, duration);
+//        }
+////        if (mediaPlayer != null) {
+////            mediaPlayer.enableAutoSpeedPlay(waterMark, duration);
+////        }
+//    }
+    protected VideoConfigEntity videoConfigEntity;
+
+    public void enableAutoSpeedPlay(VideoConfigEntity videoConfigEntity) {
+        if (vPlayer != null && videoConfigEntity != null) {
+            this.videoConfigEntity = videoConfigEntity;
+            vPlayer.enableAutoSpeedPlay(videoConfigEntity.getWaterMark(), videoConfigEntity.getDuration());
+        }
+
+    }
+
+    /**
      * PSIJK切换线路使用
      *
      * @param pos
      * @param protocol
      */
-    public  void changePlayLive(int pos, int protocol) {
+    public void changePlayLive(int pos, int protocol) {
         isChangeLine = true;
         this.changeLinePos = pos;
         this.protocol = protocol;
@@ -660,6 +705,11 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         vPlayerHandler.sendEmptyMessage(OPEN_FILE);
     }
 
+    /** 设置视频名称 */
+    public void setmDisplayName(String displayName) {
+        this.mDisplayName = displayName;
+    }
+
     protected VPlayerCallBack.VPlayerListener vPlayerServiceListener = new VPlayerCallBack.VPlayerListener() {
 
         @Override
@@ -718,6 +768,21 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             }
             if (isInitialized()) {
                 vPlayer.setVolume(leftVolume, rightVolume);
+                try {
+                    if (setVolumeListener != null) {
+                        setVolumeListener.onSuccess(true);
+                    }
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
+                }
+            } else {
+                try {
+                    if (setVolumeListener != null) {
+                        setVolumeListener.onSuccess(false);
+                    }
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(getClass().getSimpleName(), e));
+                }
             }
         }
 

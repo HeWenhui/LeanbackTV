@@ -27,6 +27,8 @@ public class LiveQueHttpConfig {
     /** 提交课件-英语 http://wiki.xesv5.com/pages/viewpage.action?pageId=12954171 */
     public static String LIVE_SUBMIT_COURSEWARE_EN = LiveHttpConfig.HTTP_APP_ENGLISH_HOST + "/v2/commonTest/submitMultiTest";
     public static String LIVE_SUBMIT_COURSEWARE_VOICE_EN = LiveHttpConfig.HTTP_APP_ENGLISH_HOST + "/v2/CourseH5Test/submitH5";
+    /** 提交课件—英语小组互动 */
+    public static String LIVE_SUBMIT_COURSEWARE_GROUPGAME_EN = LiveHttpConfig.HTTP_APP_ENGLISH_HOST + "/v2/CourseH5Test/submitGroupGame";
 
     /** 课件结果页-理科本地 */
     public static String LIVE_SUBMIT_COURSEWARE_RESULT_FILE = "file:///android_asset/newcourse_result/sec/middleSchoolCourseware/index.html";
