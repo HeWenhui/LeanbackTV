@@ -62,11 +62,13 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     private PrimaryClassInter primaryClassInter;
     private boolean videoStatus = false;
     private boolean audioStatus = false;
+    private PrimaryClassView primaryClassView;
 
     public PrimaryItemPager(Context context, RelativeLayout mContentView, String mode) {
         super(context);
         this.mContentView = mContentView;
         this.mode = mode;
+        primaryClassView = ProxUtil.getProxUtil().get(mContext, PrimaryClassView.class);
         initData();
     }
 
@@ -158,7 +160,6 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     @Override
     public void initData() {
         super.initData();
-        PrimaryClassView primaryClassView = ProxUtil.getProxUtil().get(mContext, PrimaryClassView.class);
         logger.d("initData:primaryClassView=" + primaryClassView);
         ivLivePrimaryClassKuangjiaImgNormal = mContentView.findViewById(R.id.iv_live_primary_class_kuangjia_img_normal);
         addItem();

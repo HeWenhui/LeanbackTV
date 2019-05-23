@@ -9,7 +9,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.CloudWorkerThreadPool;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
+import com.xueersi.parentsmeeting.modules.livevideo.primaryclass.PrimaryClassView;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 
 public class BasePrimaryTeamItem implements AdapterItemInterface<TeamMate> {
@@ -20,6 +22,7 @@ public class BasePrimaryTeamItem implements AdapterItemInterface<TeamMate> {
     protected CloudWorkerThreadPool cloudWorkerThreadPool;
     protected LogToFile mLogtf;
     protected int uid;
+    protected PrimaryClassView primaryClassView;
 
     public BasePrimaryTeamItem(Context context, TeamMate entity, CloudWorkerThreadPool workerThread, int uid) {
         this.mContext = context;
@@ -27,6 +30,7 @@ public class BasePrimaryTeamItem implements AdapterItemInterface<TeamMate> {
         this.cloudWorkerThreadPool = workerThread;
         this.uid = uid;
         mLogtf = new LogToFile(context, TAG);
+        primaryClassView = ProxUtil.getProxUtil().get(mContext, PrimaryClassView.class);
     }
 
     @Override

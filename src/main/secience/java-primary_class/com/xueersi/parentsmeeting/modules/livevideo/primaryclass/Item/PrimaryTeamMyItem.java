@@ -32,6 +32,7 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
     public void initViews(View root) {
         super.initViews(root);
         iv_livevideo_primary_team_energy = root.findViewById(R.id.tv_livevideo_primary_team_energy);
+        primaryClassView.decorateItemMy(root);
     }
 
     @Override
@@ -80,6 +81,7 @@ public class PrimaryTeamMyItem extends BasePrimaryTeamPeopleItem {
         iv_livevideo_primary_team_energy.setText("" + totalEnergy);
         if (!first) {
             final View view = LayoutInflater.from(mContext).inflate(R.layout.item_primary_class_team_item_energy, rl_livevideo_primary_team_tip, false);
+            primaryClassView.decorateItemMyAddEnergy(view);
             TextView tv_livevideo_primary_team_energy = view.findViewById(R.id.tv_livevideo_primary_team_energy);
             tv_livevideo_primary_team_energy.setText("" + energy);
             rl_livevideo_primary_team_tip.addView(view);

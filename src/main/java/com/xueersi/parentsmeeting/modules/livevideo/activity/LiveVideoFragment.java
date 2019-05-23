@@ -291,7 +291,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(liveIRCMessageBll);
 
             // 语文半身直播 添加 语文pk 业务类
-            if (pattern == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY && useSkin == HalfBodyLiveConfig.SKIN_TYPE_CH) {
+            if ((pattern == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY || pattern == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) && useSkin == HalfBodyLiveConfig.SKIN_TYPE_CH) {
                 mLiveBll.addBusinessBll(new ChinesePkBll(activity, mLiveBll));
             } else {
                 mLiveBll.addBusinessBll(new TeamPkBll(activity, mLiveBll));

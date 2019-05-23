@@ -21,6 +21,12 @@ public class PrimaryTeamEmptyItem extends BasePrimaryTeamItem {
         return R.layout.item_primary_class_team_empty_video;
     }
 
+    @Override
+    public void initViews(View root) {
+        super.initViews(root);
+        primaryClassView.decorateItemEmpty(root);
+    }
+
     public void doRenderRemoteUi(SurfaceView surfaceV) {
         super.doRenderRemoteUi(surfaceV);
     }

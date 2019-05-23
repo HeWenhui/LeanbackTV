@@ -24,8 +24,10 @@ public class PrimaryTeamOtherItem extends BasePrimaryTeamPeopleItem {
         return R.layout.item_primary_class_team_other_video;
     }
 
-    public void doRenderRemoteUi(SurfaceView surfaceV) {
-        super.doRenderRemoteUi(surfaceV);
+    @Override
+    public void initViews(View root) {
+        super.initViews(root);
+        primaryClassView.decorateItemOther(root);
     }
 
     @Override
