@@ -237,7 +237,9 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                             mHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    createBll();
+                                    if ("on".equals(status)) {
+                                        createBll();
+                                    }
                                     onStaus(form, status, voiceID);
                                 }
                             });
@@ -254,7 +256,9 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                             mHandler.post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    createBll();
+                                    if ("on".equals(status)) {
+                                        createBll();
+                                    }
                                     onStaus(form, status, voiceID);
                                 }
                             });
