@@ -182,10 +182,10 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         AppBll.getInstance(mContext).checkPartUpdate("语文半身直播暂不支持,请升级版本");
                         return;
                     }*/
-                    if (AppConfig.DEBUG) {
-                        mGetInfo.setUseSkin(2);
-                        mGetInfo.setPattern(9);
-                    }
+//                    if (AppConfig.DEBUG) {
+//                        mGetInfo.setUseSkin(2);
+//                        mGetInfo.setPattern(9);
+//                    }
                     String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
                     getInfos.put(stuId + "-" + vStuCourseID + "-" + vSectionID, mGetInfo);
 //                    mGetInfo.setPattern(1);

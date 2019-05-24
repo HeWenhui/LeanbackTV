@@ -60,13 +60,16 @@ public class PrimaryClassVideoFragment extends LiveVideoFragment {
             @Override
             public boolean setVideoLayout(int layout, float userRatio, int videoWidth, int videoHeight, float videoRatio) {
                 logger.d("setVideoLayout:mode=" + mode + ",layout=" + layout + ",videoWidth=" + videoWidth + ",videoHeight=" + videoHeight);
-                ViewGroup.LayoutParams lp = videoView.getLayoutParams();
-                if (lp.width != ViewGroup.LayoutParams.MATCH_PARENT || lp.height != ViewGroup.LayoutParams.MATCH_PARENT) {
-                    lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
-                    lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
-                    LayoutParamsUtil.setViewLayoutParams(videoView, lp);
+                boolean main = LiveTopic.MODE_CLASS.equals(mode);
+                if (main) {
+                    ViewGroup.LayoutParams lp = videoView.getLayoutParams();
+                    if (lp.width != ViewGroup.LayoutParams.MATCH_PARENT || lp.height != ViewGroup.LayoutParams.MATCH_PARENT) {
+                        lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+                        lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+                        LayoutParamsUtil.setViewLayoutParams(videoView, lp);
+                    }
                 }
-                return LiveTopic.MODE_CLASS.equals(mode);
+                return main;
             }
         });
     }

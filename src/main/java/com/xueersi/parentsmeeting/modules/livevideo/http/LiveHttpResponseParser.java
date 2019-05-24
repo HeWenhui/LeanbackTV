@@ -1646,13 +1646,15 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                 teamInfo.setSlogon(jsonObject.getString("slogon"));
                 teamInfo.setBackGroud(jsonObject.getString("backGroud"));
                 teamInfoEntity.setTeamInfo(teamInfo);
+                return teamInfoEntity;
             }
 
         } catch (Exception e) {
             e.printStackTrace();
+            MobAgent.httpResponseParserError(TAG, "parseTeamInfo", e.getMessage());
         }
 
-        return teamInfoEntity;
+        return null;
     }
 
     public TeamPkTeamInfoEntity parseTeamInfoPrimary(ResponseEntity responseEntity) {

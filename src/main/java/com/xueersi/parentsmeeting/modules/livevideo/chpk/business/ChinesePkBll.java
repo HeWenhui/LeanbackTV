@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.BasePager;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.HttpCallBack;
@@ -24,6 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
@@ -135,12 +137,6 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
         mActivity = context;
     }
 
-
-    public LiveHttpManager getmHttpManager() {
-        return mHttpManager;
-    }
-
-
     public LiveBll2 getLiveBll() {
         return mLiveBll;
     }
@@ -199,7 +195,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
         };
 
         mHttpManager.stuCHPKResult(isHalfBodyLiveRoom(), mLiveBll.getLiveId(),
-                getNewTeamId(),
+                getNewTeamId("stuCHPKResult"),
                 roomInitInfo.getStudentLiveInfo().getClassId(),
                 savedTestId,
                 savedTestPlan,
@@ -244,7 +240,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
 
         mHttpManager.getCHClassChestResult(isHalfBodyLiveRoom(), mLiveBll.getLiveId(),
                 roomInitInfo.getStuId(),
-                getNewTeamId(),
+                getNewTeamId("getCHClassChestResult"),
                 roomInitInfo.getStudentLiveInfo().getClassId()
                 , isAIPartner, roomInitInfo.getUseSkin(), callback);
 
@@ -285,7 +281,11 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                 if (primary) {
-                    teamInfoEntity = mHttpResponseParser.parseTeamInfoPrimary(responseEntity);
+                    TeamPkTeamInfoEntity teamInfoEntityres = mHttpResponseParser.parseTeamInfoPrimary(responseEntity);
+                    if (teamInfoEntityres == null) {
+                        return;
+                    }
+                    teamInfoEntity = teamInfoEntityres;
                 } else {
                     teamInfoEntity = mHttpResponseParser.parseTeamInfo(responseEntity);
                 }
@@ -695,7 +695,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     @Override
     public void onLiveInited(LiveGetInfo data) {
         if (data != null && "1".equals(data.getIsAllowTeamPk())) {
-            primaryClass = roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS;
+            primaryClass = data.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS;
             mHttpManager = getHttpManager();
             setRoomInitInfo(data);
             attachToRootView();
@@ -724,7 +724,11 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
                     roomInitInfo.getStuId(), UserBll.getInstance().getMyUserInfoEntity().getPsimId(), new HttpCallBack() {
                         @Override
                         public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                            teamInfoEntity = mHttpResponseParser.parseTeamInfoPrimary(responseEntity);
+                            TeamPkTeamInfoEntity teamInfoEntityres = mHttpResponseParser.parseTeamInfoPrimary(responseEntity);
+                            if (teamInfoEntityres == null) {
+                                return;
+                            }
+                            teamInfoEntity = teamInfoEntityres;
                             TeamPkTeamInfoEntity.TeamInfoEntity teamInfo = teamInfoEntity.getTeamInfo();
                             mTeamMates = teamInfo.getResult();
                             if (mTeamMates != null) {
@@ -1105,7 +1109,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
         };
 
         mHttpManager.liveCHStuGoldAndTotalEnergy(isHalfBodyLiveRoom(), mLiveBll.getLiveId(),
-                getNewTeamId(),
+                getNewTeamId("liveCHStuGoldAndTotalEnergy"),
                 roomInitInfo.getStudentLiveInfo().getClassId(),
                 roomInitInfo.getStuId(), roomInitInfo.getUseSkin(), callback);
     }
@@ -1141,7 +1145,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             }
         };
 
-        mHttpManager.getCHPkAdversary(isHalfBodyLiveRoom(), roomInitInfo.getStudentLiveInfo().getClassId(), getNewTeamId(), roomInitInfo.getUseSkin(), callback);
+        mHttpManager.getCHPkAdversary(isHalfBodyLiveRoom(), roomInitInfo.getStudentLiveInfo().getClassId(), getNewTeamId("startSelectAdversary"), roomInitInfo.getUseSkin(), callback);
 
     }
 
@@ -1159,7 +1163,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
 
         //上报服务器 增加加能量
         mHttpManager.addCHPersonAndTeamEnergy(isHalfBodyLiveRoom(), mLiveBll.getLiveId(), addEnergy,
-                getNewTeamId(),
+                getNewTeamId("addCHPersonAndTeamEnergy"),
                 roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), roomInitInfo.getUseSkin(), new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -1173,23 +1177,38 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
      */
     public void enterTeamSelectScene() {
 //        TeamPkLog.clickFastEnter(mLiveBll);
-        mHttpManager.getCHTeamInfo(isHalfBodyLiveRoom(), roomInitInfo.getId(), roomInitInfo.getStudentLiveInfo().getClassId(),
-                roomInitInfo.getStudentLiveInfo().getTeamId(), roomInitInfo.getUseSkin(), new HttpCallBack() {
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        teamInfoEntity = mHttpResponseParser.parseTeamInfo(responseEntity);
-                        showTeamSelectedSence();
-                    }
+        if (primaryClass) {
+            getTeamPkHttp().getMyTeamInfo(roomInitInfo.getStudentLiveInfo().getClassId(),
+                    roomInitInfo.getStuId(), UserBll.getInstance().getMyUserInfoEntity().getPsimId(), new HttpCallBack() {
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                            TeamPkTeamInfoEntity teamInfoEntityres = mHttpResponseParser.parseTeamInfoPrimary(responseEntity);
+                            if (teamInfoEntityres == null) {
+                                return;
+                            }
+                            teamInfoEntity = teamInfoEntityres;
+                            showTeamSelectedSence();
+                        }
+                    });
+        } else {
+            mHttpManager.getCHTeamInfo(isHalfBodyLiveRoom(), roomInitInfo.getId(), roomInitInfo.getStudentLiveInfo().getClassId(),
+                    roomInitInfo.getStudentLiveInfo().getTeamId(), roomInitInfo.getUseSkin(), new HttpCallBack() {
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                            teamInfoEntity = mHttpResponseParser.parseTeamInfo(responseEntity);
+                            showTeamSelectedSence();
+                        }
 
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-                        super.onPmError(responseEntity);
-                    }
-                });
+                        @Override
+                        public void onPmError(ResponseEntity responseEntity) {
+                            super.onPmError(responseEntity);
+                        }
+                    });
+        }
     }
 
     public void requestStuChest(int isWin, HttpCallBack callBack) {
-        mHttpManager.getCHStuChest(isHalfBodyLiveRoom(), isWin, roomInitInfo.getStudentLiveInfo().getClassId(), getNewTeamId(), roomInitInfo.getStuId(), mLiveBll.getLiveId(), isAIPartner(), roomInitInfo.getUseSkin(), callBack);
+        mHttpManager.getCHStuChest(isHalfBodyLiveRoom(), isWin, roomInitInfo.getStudentLiveInfo().getClassId(), getNewTeamId("requestStuChest"), roomInitInfo.getStuId(), mLiveBll.getLiveId(), isAIPartner(), roomInitInfo.getUseSkin(), callBack);
     }
 
 
@@ -1209,7 +1228,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             };
 
             mHttpManager.teamCHEnergyNumAndContributionmulStar(isHalfBodyLiveRoom(), mLiveBll.getLiveId(),
-                    getNewTeamId(),
+                    getNewTeamId("teamCHEnergyNumAndContributionmulStar"),
                     roomInitInfo.getStudentLiveInfo().getClassId(),
                     roomInitInfo.getStuId(),
                     LiveVideoConfig.tests,
@@ -1228,7 +1247,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             };
 
             mHttpManager.teamCHEnergyNumAndContributionStar(isHalfBodyLiveRoom(), mLiveBll.getLiveId(),
-                    getNewTeamId(),
+                    getNewTeamId("teamCHEnergyNumAndContributionStar"),
                     roomInitInfo.getStudentLiveInfo().getClassId(),
                     roomInitInfo.getStuId(),
                     savedTestId,
@@ -1238,10 +1257,15 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
         }
     }
 
-    private String getNewTeamId() {
+    public String getNewTeamId(String method) {
         String teamId;
         if (primaryClass) {
-            teamId = teamInfoEntity.getTeamInfo().getTeamId();
+            try {
+                teamId = teamInfoEntity.getTeamInfo().getTeamId();
+            } catch (Exception e) {
+                teamId = "-1";
+                CrashReport.postCatchedException(new LiveException(TAG + ":" + method, e));
+            }
         } else {
             teamId = roomInitInfo.getStudentLiveInfo().getTeamId();
         }

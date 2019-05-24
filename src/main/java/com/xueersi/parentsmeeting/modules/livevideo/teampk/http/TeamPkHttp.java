@@ -214,7 +214,6 @@ public class TeamPkHttp {
      * @param stuId
      * @param requestCallBack
      */
-    @Deprecated
     public void liveStuGoldAndTotalEnergy(String liveId, String teamId, String classId, String stuId, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
