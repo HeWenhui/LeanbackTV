@@ -606,9 +606,9 @@ public class TeamPkAwardPager extends TeamPkBasePager {
      * 获取学生宝箱信息
      */
     private void getStuChestInfo() {
-        teamPKBll.getmHttpManager().getStuChest(mIsWin ? 1 : 0, teamPKBll.getRoomInitInfo().getStudentLiveInfo()
+        teamPKBll.getTeamPkHttp().getStuChest(mIsWin ? 1 : 0, teamPKBll.getRoomInitInfo().getStudentLiveInfo()
                         .getClassId()
-                , teamPKBll.getRoomInitInfo().getStudentLiveInfo().getTeamId(),
+                , teamPKBll.getNewTeamId(),
                 teamPKBll.getRoomInitInfo().getStuId(), teamPKBll.getLiveBll().getLiveId(),
                 teamPKBll.isAIPartner(),
                 new HttpCallBack() {

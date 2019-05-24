@@ -1361,6 +1361,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param classId
      * @param teamId
      */
+    @Deprecated
     public void getPkAdversary(String classId, String teamId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
@@ -1442,6 +1443,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param stuId
      * @param requestCallBack
      */
+    @Deprecated
     public void liveStuGoldAndTotalEnergy(String liveId, String teamId, String classId, String stuId, HttpCallBack
             requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
@@ -1488,6 +1490,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param ctId            互动课件或者互动题时 testPlan= ''; 测试卷请求时testId= ' '
      * @param requestCallBack
      */
+    @Deprecated
     public void teamEnergyNumAndContributionmulStar(String liveId, String teamId, String classId, String stuId,
                                                     String tests,
                                                     String ctId, String pSrc, HttpCallBack requestCallBack) {
@@ -2086,6 +2089,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param classId
      * @param requestCallBack
      */
+    @Deprecated
     public void getTeamPkStarStudents(String liveId, String classId, String courseId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);

@@ -88,6 +88,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     private TeamPkHttp teamPkHttp;
     private LiveHttpManager mHttpManager;
     private LiveGetInfo roomInitInfo;
+    private boolean primaryClass = false;
     private LiveHttpResponseParser mHttpResponseParser;
     private TeamPkTeamInfoEntity teamInfoEntity;
     private BasePager mFocusPager;
@@ -174,7 +175,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
      * @return
      */
     public boolean isHalfBodyLiveRoom() {
-        return roomInitInfo != null && (roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY || roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS);
+        return roomInitInfo != null && (roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY || primaryClass);
     }
 
 
@@ -537,7 +538,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
      * @param showPopWindow 是否展示顶部  进度描述:领先，打平 .....
      */
     public void updatePkStateLayout(final boolean showPopWindow) {
-        if (roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+        if (primaryClass) {
             if (teamInfoEntity != null) {
                 getPkState(showPopWindow);
             } else {
@@ -694,6 +695,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     @Override
     public void onLiveInited(LiveGetInfo data) {
         if (data != null && "1".equals(data.getIsAllowTeamPk())) {
+            primaryClass = roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS;
             mHttpManager = getHttpManager();
             setRoomInitInfo(data);
             attachToRootView();
@@ -717,7 +719,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
      * 获取战队成员信息
      */
     private void getTeamMates() {
-        if (roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+        if (primaryClass) {
             getTeamPkHttp().getMyTeamInfo(roomInitInfo.getStudentLiveInfo().getClassId(),
                     roomInitInfo.getStuId(), UserBll.getInstance().getMyUserInfoEntity().getPsimId(), new HttpCallBack() {
                         @Override
@@ -1030,7 +1032,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
         }
 
         String status = "off";
-        if (roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+        if (primaryClass) {
             try {
                 JSONObject split_team = jsonObject.getJSONObject("split_team");
                 status = split_team.getString("status");
@@ -1238,7 +1240,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
 
     private String getNewTeamId() {
         String teamId;
-        if (roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+        if (primaryClass) {
             teamId = teamInfoEntity.getTeamInfo().getTeamId();
         } else {
             teamId = roomInitInfo.getStudentLiveInfo().getTeamId();

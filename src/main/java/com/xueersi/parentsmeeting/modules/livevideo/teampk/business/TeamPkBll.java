@@ -105,6 +105,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     private TeamPkHttp teamPkHttp;
     private LiveHttpManager mHttpManager;
     private LiveGetInfo roomInitInfo;
+    private boolean primaryClass = false;
     private LiveHttpResponseParser mHttpResponseParser;
     private TeamPkTeamInfoEntity teamInfoEntity;
     private TeamPkBasePager mFocusPager;
@@ -178,9 +179,9 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     }
 
 
-    public LiveHttpManager getmHttpManager() {
-        return mHttpManager;
-    }
+//    public LiveHttpManager getmHttpManager() {
+//        return mHttpManager;
+//    }
 
 
     public LiveBll2 getLiveBll() {
@@ -234,7 +235,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      */
     public boolean isHalfBodyLiveRoom() {
         //logger.e( "========>isHalfBodyLiveRoom:" + roomInitInfo + ":" + roomInitInfo.getPattern());
-        return roomInitInfo != null && (roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY || roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS);
+        return roomInitInfo != null && (roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY || primaryClass);
     }
 
     /**
@@ -246,7 +247,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     }
 
     private void getStuPkResult() {
-        mHttpManager.stuPKResult(mLiveBll.getLiveId(), getNewTeamId(),
+        getTeamPkHttp().stuPKResult(mLiveBll.getLiveId(), getNewTeamId(),
                 roomInitInfo.getStudentLiveInfo().getClassId(), new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -291,27 +292,27 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     /**
      * 从topic 中恢复 开宝箱场景
      */
-    public void resumeOpenBoxScene() {
-        // 请求接口 获取胜负关系
-        mHttpManager.liveStuGoldAndTotalEnergy(mLiveBll.getLiveId(),
-                roomInitInfo.getStudentLiveInfo().getTeamId(),
-                roomInitInfo.getStudentLiveInfo().getClassId(),
-                roomInitInfo.getStuId(), new HttpCallBack() {
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        StudentCoinAndTotalEnergyEntity energyEntity = mHttpResponseParser.parseStuCoinAndTotalEnergy
-                                (responseEntity);
-                        if (energyEntity != null) {
-                            showOpenBoxScene(energyEntity.getMyEnergy() >= energyEntity.getCompetitorEnergy());
-                        }
-                    }
-
-                    @Override
-                    public void onPmFailure(Throwable error, String msg) {
-                        super.onPmFailure(error, msg);
-                    }
-                });
-    }
+//    public void resumeOpenBoxScene() {
+//        // 请求接口 获取胜负关系
+//        mHttpManager.liveStuGoldAndTotalEnergy(mLiveBll.getLiveId(),
+//                roomInitInfo.getStudentLiveInfo().getTeamId(),
+//                roomInitInfo.getStudentLiveInfo().getClassId(),
+//                roomInitInfo.getStuId(), new HttpCallBack() {
+//                    @Override
+//                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+//                        StudentCoinAndTotalEnergyEntity energyEntity = mHttpResponseParser.parseStuCoinAndTotalEnergy
+//                                (responseEntity);
+//                        if (energyEntity != null) {
+//                            showOpenBoxScene(energyEntity.getMyEnergy() >= energyEntity.getCompetitorEnergy());
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onPmFailure(Throwable error, String msg) {
+//                        super.onPmFailure(error, msg);
+//                    }
+//                });
+//    }
 
     /**
      * 显示 战队宝箱领取情况
@@ -324,7 +325,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      * 获取战队开宝箱结果
      */
     private void getClassChestResult() {
-        mHttpManager.getClassChestResult(mLiveBll.getLiveId(), roomInitInfo.getStuId(),
+        getTeamPkHttp().getClassChestResult(mLiveBll.getLiveId(), roomInitInfo.getStuId(),
                 getNewTeamId(), roomInitInfo.getStudentLiveInfo().getClassId()
                 , isAIPartner, new HttpCallBack() {
                     @Override
@@ -364,7 +365,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         final String eventId = getLogEventId(event.getH5Type());
 
         if (event.isScienceNewCourseWare()) {
-            mHttpManager.teamEnergyNumAndContributionmulStar(mLiveBll.getLiveId(),
+            getTeamPkHttp().teamEnergyNumAndContributionmulStar(mLiveBll.getLiveId(),
                     getNewTeamId(),
                     roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), LiveVideoConfig.tests,
                     LiveVideoConfig.ctId, LiveVideoConfig.pSrc, new
@@ -383,7 +384,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                             });
 
         } else {
-            mHttpManager.teamEnergyNumAndContributionStar(mLiveBll.getLiveId(),
+            getTeamPkHttp().teamEnergyNumAndContributionStar(mLiveBll.getLiveId(),
                     getNewTeamId(),
                     roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), testId, testPlan, new
                             HttpCallBack() {
@@ -510,7 +511,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
             getTeamPkHttp().getMyTeamInfo(roomInitInfo.getStudentLiveInfo().getClassId(),
                     roomInitInfo.getStuId(), UserBll.getInstance().getMyUserInfoEntity().getPsimId(), callBack);
         } else {
-            mHttpManager.getTeamInfo(roomInitInfo.getId(), roomInitInfo.getStudentLiveInfo().getClassId(),
+            getTeamPkHttp().getTeamInfo(roomInitInfo.getId(), roomInitInfo.getStudentLiveInfo().getClassId(),
                     roomInitInfo.getStudentLiveInfo().getTeamId(), callBack);
         }
     }
@@ -537,19 +538,31 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      */
     public void enterTeamSelectScene() {
         TeamPkLog.clickFastEnter(mLiveBll);
-        mHttpManager.getTeamInfo(roomInitInfo.getId(), roomInitInfo.getStudentLiveInfo().getClassId(),
-                roomInitInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
-                    @Override
-                    public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        teamInfoEntity = mHttpResponseParser.parseTeamInfo(responseEntity);
-                        showTeamSelectedSence();
-                    }
+        if (primaryClass) {
+            getTeamPkHttp().getMyTeamInfo(roomInitInfo.getStudentLiveInfo().getClassId(),
+                    roomInitInfo.getStuId(), UserBll.getInstance().getMyUserInfoEntity().getPsimId(), new HttpCallBack() {
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                            teamInfoEntity = mHttpResponseParser.parseTeamInfoPrimary(responseEntity);
+                            showTeamSelectedSence();
+                        }
+                    });
+        } else {
+            getTeamPkHttp().getTeamInfo(roomInitInfo.getId(), roomInitInfo.getStudentLiveInfo().getClassId(),
+                    roomInitInfo.getStudentLiveInfo().getTeamId(), new HttpCallBack() {
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                            teamInfoEntity = mHttpResponseParser.parseTeamInfo(responseEntity);
+                            showTeamSelectedSence();
+                        }
 
-                    @Override
-                    public void onPmError(ResponseEntity responseEntity) {
-                        super.onPmError(responseEntity);
-                    }
-                });
+                        @Override
+                        public void onPmError(ResponseEntity responseEntity) {
+                            super.onPmError(responseEntity);
+                        }
+                    });
+        }
+
     }
 
 
@@ -764,7 +777,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      * @param showPopWindow 是否展示顶部  进度描述:领先，打平 .....
      */
     public void updatePkStateLayout(final boolean showPopWindow) {
-        if (roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+        if (primaryClass) {
             if (teamInfoEntity != null) {
                 getPkState(showPopWindow);
             } else {
@@ -782,7 +795,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
 
     private void getPkState(final boolean showPopWindow) {
         //logger.e("=====> getPkState:" + roomInitInfo.getStuId() + ":" + mHttpManager);
-        mHttpManager.liveStuGoldAndTotalEnergy(mLiveBll.getLiveId(),
+        getTeamPkHttp().liveStuGoldAndTotalEnergy(mLiveBll.getLiveId(),
                 getNewTeamId(),
                 roomInitInfo.getStudentLiveInfo().getClassId(),
                 roomInitInfo.getStuId(), new HttpCallBack() {
@@ -826,7 +839,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     private void showVoteEnergyAnim(int addEnergy, String voteId) {
         logger.e("========> showVoteEnergyAnim:" + voteId + ":" + addEnergy);
         //上报服务器 增加加能量
-        mHttpManager.addPersonAndTeamEnergy(mLiveBll.getLiveId(), addEnergy,
+        getTeamPkHttp().addPersonAndTeamEnergy(mLiveBll.getLiveId(), addEnergy,
                 getNewTeamId(),
                 roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), new HttpCallBack() {
                     @Override
@@ -1022,6 +1035,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     @Override
     public void onLiveInited(LiveGetInfo data) {
         if (data != null && "1".equals(data.getIsAllowTeamPk())) {
+            primaryClass = roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS;
             mHttpManager = getHttpManager();
             setRoomInitInfo(data);
             attachToRootView();
@@ -1039,7 +1053,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      * 获取战队成员信息
      */
     private void getTeamMates() {
-        if (roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+        if (primaryClass) {
             getTeamPkHttp().getMyTeamInfo(roomInitInfo.getStudentLiveInfo().getClassId(),
                     roomInitInfo.getStuId(), UserBll.getInstance().getMyUserInfoEntity().getPsimId(), new HttpCallBack() {
                         @Override
@@ -1060,7 +1074,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                         }
                     });
         } else {
-            mHttpManager.getTeamMates(roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStudentLiveInfo()
+            getTeamPkHttp().getTeamMates(roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStudentLiveInfo()
                     .getTeamId(), new HttpCallBack() {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -1160,7 +1174,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      * 获取PK 对手信息
      */
     private void getPkAdversary() {
-        mHttpManager.getPkAdversary(roomInitInfo.getStudentLiveInfo().getClassId(),
+        getTeamPkHttp().getPkAdversary(roomInitInfo.getStudentLiveInfo().getClassId(),
                 getNewTeamId(), new HttpCallBack() {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -1442,7 +1456,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     }
                 }
                 String status = "off";
-                if (roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+                if (primaryClass) {
                     try {
                         JSONObject split_team = jsonObject.getJSONObject("split_team");
                         status = split_team.getString("status");
@@ -1499,7 +1513,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      * 展示明星榜
      */
     private void getStusStars() {
-        mHttpManager.getTeamPkStarStudents(mLiveBll.getLiveId(),
+        getTeamPkHttp().getTeamPkStarStudents(mLiveBll.getLiveId(),
                 roomInitInfo.getStudentLiveInfo().getClassId(),
                 roomInitInfo.getStudentLiveInfo().getCourseId(),
                 new HttpCallBack() {
@@ -1549,7 +1563,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      * 获取进步榜
      */
     private void getProgressStudent() {
-        mHttpManager.getTeamPkProgressStudent(mLiveBll.getLiveId(),
+        getTeamPkHttp().getTeamPkProgressStudent(mLiveBll.getLiveId(),
                 roomInitInfo.getStudentLiveInfo().getClassId(),
                 roomInitInfo.getStudentLiveInfo().getCourseId(),
                 new HttpCallBack() {
@@ -1798,9 +1812,9 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     }
 
 
-    private String getNewTeamId() {
+    public String getNewTeamId() {
         String teamId;
-        if (roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+        if (primaryClass) {
             teamId = teamInfoEntity.getTeamInfo().getTeamId();
         } else {
             teamId = roomInitInfo.getStudentLiveInfo().getTeamId();
