@@ -444,6 +444,12 @@ public class SpeechCollectiveNo2Bll {
                     @Override
                     public void onDataSucess(Object... objData) {
                         logger.i("onDataSucess:data=" + objData[0]);
+//                        String sendmsg;
+//                        if (ansStr.length() > 15) {
+//                            sendmsg = ansStr.substring(0, 15) + "...";
+//                        } else {
+//                            sendmsg = msg;
+//                        }
                         collectiveHttp.sendSpeechMsg(from, voiceId, "" + msg);
                         addEnergy();
                     }
@@ -455,7 +461,8 @@ public class SpeechCollectiveNo2Bll {
                     }
                 });
                 handler.removeCallbacks(timeOut);
-                isFirstSpeech = true;
+                //第一次八秒提示
+//                isFirstSpeech = true;
                 startEvaluator();
             }
             // tvTitle.setText("说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什么课程说出你想找什");
