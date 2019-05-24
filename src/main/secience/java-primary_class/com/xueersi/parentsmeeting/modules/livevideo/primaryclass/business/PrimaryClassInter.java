@@ -5,6 +5,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
 public interface PrimaryClassInter {
     void reportNaughtyBoy(TeamMate entity, ReportNaughtyBoy reportNaughtyBoy);
 
+    void getMyTeamInfo();
+
     public interface ReportNaughtyBoy {
         void onReport(TeamMate entity);
 

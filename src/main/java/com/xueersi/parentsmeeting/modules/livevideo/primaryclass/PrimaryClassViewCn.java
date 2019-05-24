@@ -157,7 +157,7 @@ public class PrimaryClassViewCn implements PrimaryClassView {
     public void decorateItemEmpty(View view) {
         view.setBackgroundResource(R.drawable.shape_primary_item_empty_back_cn);
         ImageView iv_live_xuesheng_shipin_mid_daijiaru_normal = view.findViewById(R.id.iv_live_xuesheng_shipin_mid_daijiaru_normal);
-        iv_live_xuesheng_shipin_mid_daijiaru_normal.setImageResource(R.drawable.bg_lvie_xuesheng_shipin_mid_diaoxian_normal_cn);
+        iv_live_xuesheng_shipin_mid_daijiaru_normal.setImageResource(R.drawable.bg_live_xuesheng_shipin_mid_daijiaru_normal_cn);
     }
 
     @Override

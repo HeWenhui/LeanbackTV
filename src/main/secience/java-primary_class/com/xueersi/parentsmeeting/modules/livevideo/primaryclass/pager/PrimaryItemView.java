@@ -5,6 +5,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 public interface PrimaryItemView {
     void onTeam(String uid, TeamPkTeamInfoEntity.TeamInfoEntity teamInfoEntity);
 
+    void updateTeam(TeamPkTeamInfoEntity.TeamInfoEntity teamInfoEntity);
+
     void onModeChange(String mode);
 
     void onMessage(int type, boolean open);

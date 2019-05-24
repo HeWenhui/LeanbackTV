@@ -55,6 +55,8 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
     private CloudWorkerThreadPool workerThread;
     private TeamPkTeamInfoEntity.TeamInfoEntity teamInfoEntity;
     private HashMap<String, BasePrimaryTeamItem> courseGroupItemHashMap = new HashMap<>();
+    private HashMap<String, SurfaceView> surfaceViewHashMap = new HashMap<>();
+    private HashMap<String, Boolean> userStat = new HashMap<>();
     private String mode;
     private int stuid;
     private float scale;
@@ -168,9 +170,62 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         if (LiveTopic.MODE_CLASS.equals(mode)) {
             mView.setVisibility(View.VISIBLE);
             if (teamInfoEntity != null) {
+//                List<TeamMate> result = teamInfoEntity.getResult();
+//                for (int i = 0; i < result.size(); i++) {
+//                    TeamMate teamMate = result.get(i);
+//                    if (teamMate.getIdInt() == stuid) {
+//                        break;
+//                    } else {
+//                        result.remove(i);
+//                        i--;
+//                    }
+//                }
                 joinChannel();
             } else {
                 addItem();
+            }
+        }
+    }
+
+    @Override
+    public void updateTeam(TeamPkTeamInfoEntity.TeamInfoEntity teamInfoEntity) {
+        List<TeamMate> result = teamInfoEntity.getResult();
+        LayoutInflater mInflater = LayoutInflater.from(mContext);
+        int margin = (int) (10 * scale);
+        for (int mateIndex = 0; mateIndex < result.size(); mateIndex++) {
+            TeamMate teamMate = result.get(mateIndex);
+            BasePrimaryTeamItem teamMatePrimaryTeamItem = courseGroupItemHashMap.get(teamMate.getId());
+            if (teamMatePrimaryTeamItem == null) {
+                for (int childIndex = 0; childIndex < ll_livevideo_primary_team_content.getChildCount(); childIndex++) {
+                    View child = ll_livevideo_primary_team_content.getChildAt(childIndex);
+                    BasePrimaryTeamItem basePrimaryTeamItem = (BasePrimaryTeamItem) child.getTag();
+                    if (basePrimaryTeamItem instanceof PrimaryTeamEmptyItem) {
+                        int index = ll_livevideo_primary_team_content.indexOfChild(child);
+                        PrimaryTeamOtherItem otherItem = new PrimaryTeamOtherItem(mContext, teamMate, workerThread, teamMate.getIdInt());
+                        otherItem.setOnNameClick(onNameClick);
+                        basePrimaryTeamItem = otherItem;
+                        View convertView = mInflater.inflate(basePrimaryTeamItem.getLayoutResId(), ll_livevideo_primary_team_content, false);
+                        convertView.setTag(basePrimaryTeamItem);
+                        basePrimaryTeamItem.initViews(convertView);
+                        basePrimaryTeamItem.updateViews(teamMate, index, teamMate);
+                        basePrimaryTeamItem.bindListener();
+                        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) convertView.getLayoutParams();
+                        lp.height = (int) (149 * scale);
+                        lp.bottomMargin = margin;
+                        ll_livevideo_primary_team_content.removeView(child);
+                        ll_livevideo_primary_team_content.addView(convertView, index, lp);
+                        courseGroupItemHashMap.put("" + teamMate.getId(), basePrimaryTeamItem);
+                        basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_VIDEO, videoStatus);
+                        basePrimaryTeamItem.onOtherDis(PrimaryClassConfig.MMTYPE_AUDIO, audioStatus);
+                        SurfaceView surfaceView = surfaceViewHashMap.remove(teamMate.getId());
+                        if (surfaceView != null) {
+                            workerThread.getRtcEngine().setupRemoteVideo(surfaceView, teamMate.getIdInt());
+                            otherItem.doRenderRemoteUi(surfaceView);
+                        }
+                        otherItem.didOfflineOfUid(userStat.containsKey(teamMate.getId()));
+                        break;
+                    }
+                }
             }
         }
     }
@@ -287,6 +342,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                 basePrimaryTeamItem = new PrimaryTeamEmptyItem(mContext, null, workerThread, -1);
             }
             View convertView = mInflater.inflate(basePrimaryTeamItem.getLayoutResId(), ll_livevideo_primary_team_content, false);
+            convertView.setTag(basePrimaryTeamItem);
             basePrimaryTeamItem.initViews(convertView);
             basePrimaryTeamItem.updateViews(teamMember, i, teamMember);
             basePrimaryTeamItem.bindListener();
@@ -386,6 +442,12 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
             if (basePrimaryTeamItem != null) {
                 doRenderRemoteUi(uid, basePrimaryTeamItem);
+            } else {
+                logger.d("remotefirstVideoRecvWithUid:uid=" + uid);
+                SurfaceView surfaceV = RtcEngine.CreateRendererView(mContext);
+                surfaceV.setZOrderOnTop(true);
+                surfaceV.setZOrderMediaOverlay(true);
+                surfaceViewHashMap.put("" + uid, surfaceV);
             }
         }
 
@@ -394,14 +456,21 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
             BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
             if (basePrimaryTeamItem != null) {
                 basePrimaryTeamItem.didOfflineOfUid(true);
+            } else {
+                userStat.put("" + uid, true);
+                logger.d("remoteUserJoinWitnUid:uid=" + uid);
+                primaryClassInter.getMyTeamInfo();
             }
         }
 
         @Override
         public void didOfflineOfUid(int uid) {
+            surfaceViewHashMap.remove("" + uid);
             BasePrimaryTeamItem basePrimaryTeamItem = courseGroupItemHashMap.get("" + uid);
             if (basePrimaryTeamItem != null) {
                 basePrimaryTeamItem.didOfflineOfUid(false);
+            } else {
+                userStat.remove("" + uid);
             }
         }
 

@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.primaryclass.business;
 import android.app.Activity;
 import android.widget.RelativeLayout;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -10,6 +11,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -28,6 +30,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, TopicAction {
@@ -54,6 +58,18 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
             @Override
             public void onDataSucess(Object... objData) {
                 if (teamPkTeamInfoEntity != null) {
+                    TeamPkTeamInfoEntity teamPkTeamInfoEntity2 = (TeamPkTeamInfoEntity) objData[0];
+                    try {
+                        List<TeamMate> result1 = teamPkTeamInfoEntity.getTeamInfo().getResult();
+                        List<TeamMate> result2 = teamPkTeamInfoEntity2.getTeamInfo().getResult();
+                        if (result1.size() != result2.size()) {
+                            primaryItemView.updateTeam(teamPkTeamInfoEntity2.getTeamInfo());
+                        }
+                    } catch (Exception e) {
+                        logger.e("onTeamPkTeamInfoEvent:event=" + e);
+                        CrashReport.postCatchedException(new LiveException(TAG, e));
+                    }
+                    teamPkTeamInfoEntity = (TeamPkTeamInfoEntity) objData[0];
                     return;
                 }
                 teamPkTeamInfoEntity = (TeamPkTeamInfoEntity) objData[0];
@@ -66,8 +82,20 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTeamPkTeamInfoEvent(TeamPkTeamInfoEvent event) {
-        logger.e("onTeamPkTeamInfoEvent:event=" + event);
+        logger.d("onTeamPkTeamInfoEvent:event=" + event);
         if (teamPkTeamInfoEntity != null) {
+            TeamPkTeamInfoEntity teamPkTeamInfoEntity2 = event.getTeamInfoEntity();
+            try {
+                List<TeamMate> result1 = teamPkTeamInfoEntity.getTeamInfo().getResult();
+                List<TeamMate> result2 = teamPkTeamInfoEntity2.getTeamInfo().getResult();
+                if (result1.size() != result2.size()) {
+                    primaryItemView.updateTeam(teamPkTeamInfoEntity2.getTeamInfo());
+                }
+            } catch (Exception e) {
+                logger.e("onTeamPkTeamInfoEvent:event=" + e);
+                CrashReport.postCatchedException(new LiveException(TAG, e));
+            }
+            teamPkTeamInfoEntity = teamPkTeamInfoEntity2;
             return;
         }
         teamPkTeamInfoEntity = event.getTeamInfoEntity();
@@ -138,6 +166,10 @@ public class PrimaryClassIrcBll extends LiveBaseBll implements NoticeAction, Top
     }
 
     class PrimaryClassInterIml implements PrimaryClassInter {
+        @Override
+        public void getMyTeamInfo() {
+            PrimaryClassIrcBll.this.getMyTeamInfo();
+        }
 
         @Override
         public void reportNaughtyBoy(final TeamMate entity, final ReportNaughtyBoy reportNaughtyBoy) {

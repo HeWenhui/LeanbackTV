@@ -291,6 +291,9 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
                 }
                 showTeamSelectScene();
                 prepareSelcting = false;
+                if (primary) {
+                    LiveEventBus.getDefault(mContext).post(new TeamPkTeamInfoEvent(teamInfoEntity));
+                }
             }
 
             @Override
