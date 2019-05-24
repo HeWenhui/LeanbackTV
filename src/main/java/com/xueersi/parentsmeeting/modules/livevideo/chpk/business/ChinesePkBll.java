@@ -1103,6 +1103,11 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             }
 
             @Override
+            public void onPmError(ResponseEntity responseEntity) {
+                super.onPmError(responseEntity);
+            }
+
+            @Override
             public void onPmFailure(Throwable error, String msg) {
                 super.onPmFailure(error, msg);
             }

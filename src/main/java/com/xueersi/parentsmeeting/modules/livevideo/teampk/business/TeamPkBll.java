@@ -818,6 +818,11 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                     }
 
                     @Override
+                    public void onPmError(ResponseEntity responseEntity) {
+                        super.onPmError(responseEntity);
+                    }
+
+                    @Override
                     public void onPmFailure(Throwable error, String msg) {
                         super.onPmFailure(error, msg);
                     }
