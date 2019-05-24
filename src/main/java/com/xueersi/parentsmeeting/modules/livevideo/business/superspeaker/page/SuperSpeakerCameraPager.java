@@ -138,19 +138,18 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
         groupSubmit = view.findViewById(R.id.group_livevideo_super_speaker_record_video_submit);
 
         customVideoController2 = view.findViewById(R.id.custom_controller_livevideo_super_speaker_record_video_video_player);
-        camera1Utils = new Camera1Utils(sfvVideo, new SurfaceHolder.Callback2() {
-            @Override
-            public void surfaceRedrawNeeded(SurfaceHolder holder) {
-
-            }
+//        sfvVideo.getHolder().setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        SurfaceHolder holder = sfvVideo.getHolder();
+        holder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        holder.addCallback(new SurfaceHolder.Callback() {
 
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
                 logger.i("surfaceCreated");
                 isSurfViewCreat = true;
 //                startRecordVideo();
-                performStartPreView(isFacingBack);
-            }
+                                performStartPreView(isFacingBack);
+                            }
 
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
@@ -169,6 +168,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
 
             }
         });
+        camera1Utils = new Camera1Utils(sfvVideo);
         initShowView();
         initListener();
 
@@ -275,6 +275,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                         removeCameraView();
                     }
                 });
+                cameraBackPager.setTvTittle(mContext.getString(R.string.super_speaker_back_camera_tip));
                 if (isHasRecordView || isInRecord) {
                     cameraBackPager.setTextContentTip(mContext.getString(R.string.super_speaker_back_camera_content_tip));
                 } else {
@@ -371,7 +372,11 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
         if (camera1Utils != null) {
             StorageUtils.videoUrl = LiveVideoConfig.SUPER_SPEAKER_VIDEO_PATH + liveId + "_" + courseWareId + ".mp4";
             logger.i(StorageUtils.videoUrl);
-            camera1Utils.initCamera(isFacingBack, 1280, 720, StorageUtils.videoUrl);
+            if (camera1Utils.initCamera(isFacingBack, 1280, 720, StorageUtils.videoUrl)) {
+
+            } else {
+
+            }
         }
     }
 

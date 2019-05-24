@@ -27,12 +27,12 @@ public class Camera1Utils implements IRecordVideoView {
 
     private SurfaceHolder surfaceHolder;
 
-    public Camera1Utils(SurfaceView mSurfaceView, SurfaceHolder.Callback2 callback2) {
+    public Camera1Utils(SurfaceView mSurfaceView) {
 //        this.mSurfaceView = mSurfaceView;
+
         surfaceHolder = mSurfaceView.getHolder();
         // setType必须设置，要不出错.
-        surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-        surfaceHolder.addCallback(callback2);
+//        surfaceHolder.addCallback(callback2);
 //        mFormatBuilder = new StringBuilder();
 //        mFormatter = new Formatter();
 
@@ -44,7 +44,7 @@ public class Camera1Utils implements IRecordVideoView {
 
     private boolean isFacingBack;
 
-    public void initCamera(boolean isFacingBack, int width, int height, String videoPath) {
+    public boolean initCamera(boolean isFacingBack, int width, int height, String videoPath) {
         if (camera != null) {
             releaseCamera();
         }
@@ -78,15 +78,21 @@ public class Camera1Utils implements IRecordVideoView {
 //        camera = Camera.open(isFacingBack ? Camera.CameraInfo.CAMERA_FACING_BACK : Camera.CameraInfo.CAMERA_FACING_FRONT);
         try {
             camera.setPreviewDisplay(surfaceHolder);
+            Camera.Parameters parameters = camera.getParameters();
+            parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
+            cameraSize = getFitSize(parameters.getSupportedVideoSizes(), width, height);
+            logger.i("cameraSize.height = " + cameraSize.height + " cameraSize.weight =" + cameraSize.width);
+            camera.startPreview();
         } catch (IOException e) {
             e.printStackTrace();
+            logger.e(e);
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.e(e);
+            return false;
         }
-        Camera.Parameters parameters = camera.getParameters();
-        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO);
-        cameraSize = getFitSize(parameters.getSupportedVideoSizes(), width, height);
-        logger.i("cameraSize.height = " + cameraSize.height + " cameraSize.weight =" + cameraSize.width);
-        camera.startPreview();
-
+        return true;
         // Log.d(TAG,"size:height="+cameraSize.height+"   width="+cameraSize.width);
 
         // int num = Camera.getNumberOfCameras();

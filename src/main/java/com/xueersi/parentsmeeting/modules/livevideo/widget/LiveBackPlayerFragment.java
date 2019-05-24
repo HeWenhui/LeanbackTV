@@ -33,7 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
  * @author lyqai
  * @date 2018/6/22
  */
-public class LiveBackPlayerFragmentBack extends BasePlayerFragment implements VideoView.SurfaceCallback,
+public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoView.SurfaceCallback,
         BackMediaPlayerControl {
 
     /** 播放器的控制对象 */

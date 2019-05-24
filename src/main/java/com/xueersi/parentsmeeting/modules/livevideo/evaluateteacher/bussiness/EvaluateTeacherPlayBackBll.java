@@ -21,7 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragmentBack;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +30,7 @@ import java.util.Map;
  * Created by：WangDe on 2018/12/2 22:06
  */
 public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShowEvaluateAction, IButtonOnClick {
-    LiveBackPlayerFragmentBack liveBackPlayVideoFragment;
+    LiveBackPlayerFragment liveBackPlayVideoFragment;
     RelativeLayout bottomContent;
     private BaseEvaluateTeacherPaper evaluateTeacherPager;
     private RelativeLayout rlLiveMessageContent;
@@ -81,7 +81,7 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
         }
     }
 
-    public void setLiveFragmentBase(LiveBackPlayerFragmentBack liveBackPlayVideoFragment) {
+    public void setLiveFragmentBase(LiveBackPlayerFragment liveBackPlayVideoFragment) {
         this.liveBackPlayVideoFragment = liveBackPlayVideoFragment;
     }
 

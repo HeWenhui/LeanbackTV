@@ -12,7 +12,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragmentBack;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
 
 import org.json.JSONArray;
 
@@ -29,7 +29,7 @@ public class LiveBackVideoBll {
     Activity activity;
     /** 视频节对象 */
     VideoLivePlayBackEntity mVideoEntity;
-    LiveBackPlayerFragmentBack liveBackPlayVideoFragment;
+    LiveBackPlayerFragment liveBackPlayVideoFragment;
     /** 节名称 */
     private String mSectionName;
     static int index = 0;
@@ -112,7 +112,7 @@ public class LiveBackVideoBll {
         }
     }
 
-    public void setLiveBackPlayVideoFragment(LiveBackPlayerFragmentBack liveBackPlayVideoFragment) {
+    public void setLiveBackPlayVideoFragment(LiveBackPlayerFragment liveBackPlayVideoFragment) {
         this.liveBackPlayVideoFragment = liveBackPlayVideoFragment;
         liveBackPlayVideoFragment.setLivePlayLog(livePlayLog);
     }

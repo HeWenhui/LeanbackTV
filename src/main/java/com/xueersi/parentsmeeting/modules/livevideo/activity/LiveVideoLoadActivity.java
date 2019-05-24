@@ -335,6 +335,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
                     @Override
                     public void onDeny(String permission, int position) {
+                        logger.i("onDeny");
 //                        if (MediaPlayer.getIsNewIJK()) {
 //                            com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
 //                        } else {
@@ -345,20 +346,20 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
                     @Override
                     public void onGuarantee(String permission, int position) {
-
+                        logger.i("onGuarantee");
                     }
                 },
                 PermissionConfig.PERMISSION_CODE_CAMERA, PermissionConfig.PERMISSION_CODE_AUDIO);
+        //魅族手机无法弹出权限弹窗
+        if (have) {
+            if (MediaPlayer.getIsNewIJK()) {
+                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+            } else {
+                com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+            }
+            finish();
 
-//        if (have) {
-//            if (MediaPlayer.getIsNewIJK()) {
-//                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-//            } else {
-//                com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-//            }
-//            finish();
-//
-//        }
+        }
 
     }
 
