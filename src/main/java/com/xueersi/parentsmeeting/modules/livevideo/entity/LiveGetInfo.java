@@ -308,6 +308,11 @@ public class LiveGetInfo {
     /** 语文AI主观题AI接口 */
     private String subjectiveItem2AIUrl;
 
+    /**
+     * 是否是幼教
+     */
+    private boolean preschool;
+
     public String getSubjectiveItem2AIUrl() {
         return subjectiveItem2AIUrl;
     }
@@ -1091,6 +1096,14 @@ public class LiveGetInfo {
 
     public void setIsNewProject(int isNewProject) {
         this.isNewProject = isNewProject;
+    }
+
+    public void setPreschool(boolean preschool) {
+        this.preschool = preschool;
+    }
+
+    public boolean isPreschool() {
+        return preschool;
     }
 
     public static class MainTeacherInfo {

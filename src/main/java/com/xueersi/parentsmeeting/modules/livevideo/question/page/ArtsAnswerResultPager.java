@@ -218,11 +218,11 @@ public class ArtsAnswerResultPager extends BasePager implements IArtsAnswerRsult
 //            span = new SpannableString(myAnswerText);
 //            span.setSpan(new ForegroundColorSpan(color), 0, span.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
             stringBuilder.append("<font color="+color+">");
-            stringBuilder.append(myAnswerText+"</font>");
+            stringBuilder.append(myAnswerText+" </font>");
 
             tvUserAnswer.setText(Html.fromHtml(stringBuilder.toString()));
 
-            String titleFont = "<font color='#333333'>正确答案："+ standerAnswerText+"</font>";
+            String titleFont = "<font color='#333333'>正确答案："+ standerAnswerText+" </font>";
 
             tvRightAnswer.setText(Html.fromHtml(titleFont));
 

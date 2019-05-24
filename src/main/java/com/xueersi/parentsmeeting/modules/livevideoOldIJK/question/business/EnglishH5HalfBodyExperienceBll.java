@@ -108,7 +108,6 @@ public class EnglishH5HalfBodyExperienceBll extends LiveBackBaseBll {
     LiveBackBll.ShowQuestion showQuestion) {
         mRootView.setVisibility(View.VISIBLE);
         int vCategory = questionEntity.getvCategory();
-        Log.e("HalfBodyExp", "=========>HalfBodyExpBll showQuestion:" + vCategory);
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE: {
                 questionEntity.setAnswered(true);
@@ -118,7 +117,6 @@ public class EnglishH5HalfBodyExperienceBll extends LiveBackBaseBll {
             }
             break;
             case LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE: {
-                Log.e("HalfBodyExp", "=========>showQuestion: called 11111");
                 // 新课件平台
                 questionEntity.setAnswered(true);
                 // 获取拼装一题多发的字段
@@ -151,7 +149,6 @@ public class EnglishH5HalfBodyExperienceBll extends LiveBackBaseBll {
         // 目前体验课 理科都是新课件
         videoQuestionLiveEntity.englishH5Entity.setNewEnglishH5(true);
         String url = buildCourseUrl(videoQuestionLiveEntity, questionEntity);
-        Log.e("HalfBodyExp", "=========>showQuestion: called 22222:" + url);
         videoQuestionLiveEntity.englishH5Entity.setUrl(url);
         return videoQuestionLiveEntity;
     }
