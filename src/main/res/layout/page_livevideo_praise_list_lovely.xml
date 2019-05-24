@@ -98,8 +98,8 @@
 
         <com.xueersi.parentsmeeting.modules.livevideo.widget.PraiseBtnAnimLayout
             android:id="@id/fl_page_livevideo_praise_list_practice"
-            android:layout_width="65dp"
-            android:layout_height="65dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
             android:layout_gravity="bottom|center_horizontal"
@@ -109,7 +109,7 @@
                 android:id="@id/iv_page_livevideo_praise_list_practice"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/bg_page_livevideo_praise_list_lovely_practice" />
+                android:background="@drawable/selector_page_livevideo_praise_list_lovely_practice_style" />
 
             <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
                 android:id="@id/tv_page_livevideo_praise_list_practice_count"
@@ -137,21 +137,21 @@
         android:background="@color/FFFFFFFF_70"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
-            android:layout_width="194dp"
-            android:layout_height="64dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/bg_page_livevideo_praise_list_lovely_teacher_hint"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <com.xueersi.ui.widget.CircleImageView
                 android:id="@id/iv_page_livevideo_praise_list_teacher_head_image"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
                 android:layout_marginLeft="9dp"
-                android:layout_marginBottom="2dp"
+                android:layout_marginBottom="2.5dp"
                 android:src="@drawable/ic_default_head_square"
                 app:border_color="#ffffff"
                 app:border_width="3dp" />
@@ -161,6 +161,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
+                android:singleLine="true"
                 android:paddingRight="20dp"
                 android:text=""
                 android:textColor="#FFFBEB"
