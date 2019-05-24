@@ -51,6 +51,7 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
     public void onLiveInited(LiveGetInfo getInfo) {
         super.onLiveInited(getInfo);
         this.getInfo = getInfo;
+        teacherPraiseBll.onLiveInited(getInfo);
     }
 
     @Override

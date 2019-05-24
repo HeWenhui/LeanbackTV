@@ -131,6 +131,9 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
             String status = mainRoomstatus.getOnGroupSpeech();
             if ("on".equals(status)) {
                 final String voiceId = mainRoomstatus.getGroupSpeechRoom();
+                if (StringUtils.isEmpty(voiceId)) {
+                    return;
+                }
                 if (speechCollectiveBll != null) {
                     mHandler.post(new Runnable() {
                         @Override
@@ -160,6 +163,9 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
             String status = coachRoomstatus.getOnGroupSpeech();
             if ("on".equals(status)) {
                 final String voiceId = coachRoomstatus.getGroupSpeechRoom();
+                if (StringUtils.isEmpty(voiceId)) {
+                    return;
+                }
                 if (speechCollectiveBll != null) {
                     mHandler.post(new Runnable() {
                         @Override
