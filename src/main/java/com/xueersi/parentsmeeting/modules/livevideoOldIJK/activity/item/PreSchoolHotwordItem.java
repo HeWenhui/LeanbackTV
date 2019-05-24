@@ -24,6 +24,7 @@ public class PreSchoolHotwordItem implements AdapterItemInterface<Integer> {
     ImageView divider;
     CommonAdapter commonAdapter;
 
+
     public PreSchoolHotwordItem(Context context, CommonAdapter commonAdapter) {
         this.mContext = context;
         this.commonAdapter = commonAdapter;
