@@ -137,7 +137,7 @@
         android:background="@color/FFFFFFFF_70"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="wrap_content"
