@@ -54,6 +54,7 @@
         android:visibility="gone">
 
         <ImageView
+            android:id="@id/iv_livevideo_course_item_video_ufo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -96,6 +97,7 @@
         android:visibility="gone">
 
         <ImageView
+            android:id="@id/iv_live_xuesheng_shipin_mid_daijiaru_normal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"

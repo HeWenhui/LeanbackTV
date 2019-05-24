@@ -182,7 +182,10 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         AppBll.getInstance(mContext).checkPartUpdate("语文半身直播暂不支持,请升级版本");
                         return;
                     }*/
-
+                    if (AppConfig.DEBUG) {
+                        mGetInfo.setUseSkin(2);
+                        mGetInfo.setPattern(9);
+                    }
                     String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
                     getInfos.put(stuId + "-" + vStuCourseID + "-" + vSectionID, mGetInfo);
 //                    mGetInfo.setPattern(1);
@@ -200,9 +203,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     bundle.putBoolean("isPrimary", LiveVideoConfig.isPrimary);
                     bundle.putBoolean("isSmallChinese", LiveVideoConfig.isSmallChinese);
                     bundle.putBoolean("isSmallEnglish", mGetInfo.getSmallEnglish());
-//                    if (AppConfig.DEBUG) {
-//                        mGetInfo.setUseSkin(2);
-//                    }
+
                     bundle.putInt("useSkin", mGetInfo.getUseSkin());
                     bundle.putInt("isGoldMicrophone", mGetInfo.isUseGoldMicroPhone());
                     if (mGetInfo.getIsArts() == 0) {

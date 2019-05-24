@@ -409,7 +409,7 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
         logger.d("setMargin:mode=" + mode);
         RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) rlContent.getLayoutParams();
         if (LiveTopic.MODE_CLASS.equals(mode)) {
-            ivLivePrimaryClassKuangjiaImgNormal.setVisibility(View.VISIBLE);
+//            ivLivePrimaryClassKuangjiaImgNormal.setVisibility(View.VISIBLE);
             setImageViewWidth();
             rl_course_video_contentview.setBackgroundResource(primaryClassView.getBackImg());
         } else {
@@ -417,7 +417,7 @@ public class PrimaryClassLiveVideoAction extends LiveVideoAction {
             lp.bottomMargin = 0;
             lp.rightMargin = 0;
             lp.topMargin = 0;
-            ivLivePrimaryClassKuangjiaImgNormal.setVisibility(View.INVISIBLE);
+//            ivLivePrimaryClassKuangjiaImgNormal.setVisibility(View.INVISIBLE);
             rl_course_video_contentview.setBackgroundColor(activity.getResources().getColor(R.color.white));
             rlContent.setLayoutParams(lp);
         }

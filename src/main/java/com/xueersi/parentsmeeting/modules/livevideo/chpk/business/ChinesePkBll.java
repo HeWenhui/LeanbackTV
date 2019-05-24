@@ -24,6 +24,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.chpk.page.PkTeamSelectPager;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
@@ -33,6 +34,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentCoinAndTotalEnergyEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StudentPkResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamEnergyAndContributionStarEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamMate;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkAdversaryEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TeamPkTeamInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
@@ -41,6 +43,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.entity.RedPackageEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.event.TeamPkTeamInfoEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.http.TeamPkHttp;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.TeamPkStateLayout;
@@ -120,7 +123,10 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
      * 当前老师模式
      */
     private String mTeacherMode = LiveTopic.MODE_TRANING;
-
+    /**
+     * 战队成员信息
+     **/
+    private List<TeamMate> mTeamMates;
     private String savedTestId = "";
     private String savedTestPlan = "";
 
@@ -269,7 +275,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
     /**
      * 开启分队仪式
      */
-    public void startTeamSelect(boolean primary) {
+    public void startTeamSelect(final boolean primary) {
         logger.e("====>startTeamSelect:");
         Log.e("TeamPk", "========>getTeamInfo:" + mHttpManager + ":" + roomInitInfo);
 
@@ -278,7 +284,11 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
         HttpCallBack callBack = new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                teamInfoEntity = mHttpResponseParser.parseTeamInfo(responseEntity);
+                if (primary) {
+                    teamInfoEntity = mHttpResponseParser.parseTeamInfoPrimary(responseEntity);
+                }else {
+                    teamInfoEntity = mHttpResponseParser.parseTeamInfo(responseEntity);
+                }
                 showTeamSelectScene();
                 prepareSelcting = false;
             }
@@ -669,6 +679,7 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             roomInitInfo = data;
             isAIPartner = roomInitInfo.getIsAIPartner() == 1;
             isAvailable = true;
+            getTeamMates();
 //            if(AppConfig.DEBUG){
 //                showTeamSelecting();
 //                startTeamSelect(true);
@@ -678,6 +689,47 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
             showImgReplacePk();
         }
         this.mTeacherMode = mLiveBll.getMode();
+    }
+
+
+    /**
+     * 获取战队成员信息
+     */
+    private void getTeamMates() {
+        if (roomInitInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY_CLASS) {
+            getTeamPkHttp().getMyTeamInfo(roomInitInfo.getStudentLiveInfo().getClassId(),
+                    roomInitInfo.getStuId(), UserBll.getInstance().getMyUserInfoEntity().getPsimId(), new HttpCallBack() {
+                        @Override
+                        public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                            teamInfoEntity = mHttpResponseParser.parseTeamInfoPrimary(responseEntity);
+                            mTeamMates = teamInfoEntity.getTeamInfo().getResult();
+                            if (mTeamMates != null) {
+                                logger.d("getTeamMates:mTeamMates=" + mTeamMates.size());
+                            } else {
+                                logger.d("getTeamMates:mTeamMates=null");
+                            }
+                            LiveEventBus.getDefault(mContext).post(new TeamPkTeamInfoEvent(teamInfoEntity));
+                        }
+                    });
+        } else {
+            mHttpManager.getTeamMates(roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStudentLiveInfo()
+                    .getTeamId(), new HttpCallBack() {
+                @Override
+                public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                    mTeamMates = mHttpResponseParser.parseTeamMates(responseEntity);
+                }
+
+                @Override
+                public void onPmError(ResponseEntity responseEntity) {
+                    super.onPmError(responseEntity);
+                }
+
+                @Override
+                public void onPmFailure(Throwable error, String msg) {
+                    super.onPmFailure(error, msg);
+                }
+            });
+        }
     }
 
     /**

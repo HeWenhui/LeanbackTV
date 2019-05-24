@@ -5,6 +5,7 @@
     android:background="@drawable/shape_primary_item_empty_back">
 
     <ImageView
+        android:id="@id/iv_live_xuesheng_shipin_mid_daijiaru_normal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"

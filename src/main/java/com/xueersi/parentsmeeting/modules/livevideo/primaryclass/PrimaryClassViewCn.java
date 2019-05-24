@@ -119,6 +119,7 @@ public class PrimaryClassViewCn implements PrimaryClassView {
         }
     }
 
+    /** {@link R.layout#item_primary_class_team_video }*/
     @Override
     public void decorateItemMy(View view) {
         ImageView iv_livevideo_primary_team_energy = view.findViewById(R.id.iv_livevideo_primary_team_energy);
@@ -127,11 +128,23 @@ public class PrimaryClassViewCn implements PrimaryClassView {
         rl_livevideo_course_item_video_off.setBackgroundResource(R.drawable.shape_primary_item_empty_back_cn);
         RelativeLayout rl_livevideo_course_item_video_ufo = view.findViewById(R.id.rl_livevideo_course_item_video_ufo);
         rl_livevideo_course_item_video_ufo.setBackgroundResource(R.drawable.shape_primary_item_empty_back_cn);
+        ImageView iv_livevideo_course_item_video_ufo = view.findViewById(R.id.iv_livevideo_course_item_video_ufo);
+        iv_livevideo_course_item_video_ufo.setImageResource(R.drawable.bg_live_xuesheng_shipin_mid_ufo_normal_cn);
+        ImageView iv_live_xuesheng_shipin_mid_daijiaru_normal = view.findViewById(R.id.iv_live_xuesheng_shipin_mid_daijiaru_normal);
+        iv_live_xuesheng_shipin_mid_daijiaru_normal.setImageResource(R.drawable.bg_lvie_xuesheng_shipin_mid_diaoxian_normal_cn);
     }
 
+    /** {@link R.layout#item_primary_class_team_other_video }*/
     @Override
     public void decorateItemOther(View view) {
-
+        RelativeLayout rl_livevideo_course_item_video_off = view.findViewById(R.id.rl_livevideo_course_item_video_off);
+        rl_livevideo_course_item_video_off.setBackgroundResource(R.drawable.shape_primary_item_empty_back_cn);
+        RelativeLayout rl_livevideo_course_item_video_ufo = view.findViewById(R.id.rl_livevideo_course_item_video_ufo);
+        rl_livevideo_course_item_video_ufo.setBackgroundResource(R.drawable.shape_primary_item_empty_back_cn);
+        ImageView iv_livevideo_course_item_video_ufo = view.findViewById(R.id.iv_livevideo_course_item_video_ufo);
+        iv_livevideo_course_item_video_ufo.setImageResource(R.drawable.bg_live_xuesheng_shipin_mid_ufo_normal_cn);
+        ImageView iv_live_xuesheng_shipin_mid_daijiaru_normal = view.findViewById(R.id.iv_live_xuesheng_shipin_mid_daijiaru_normal);
+        iv_live_xuesheng_shipin_mid_daijiaru_normal.setImageResource(R.drawable.bg_lvie_xuesheng_shipin_mid_diaoxian_normal_cn);
     }
 
     @Override
@@ -139,9 +152,12 @@ public class PrimaryClassViewCn implements PrimaryClassView {
 
     }
 
+    /** {@link R.layout#item_primary_class_team_empty_video }*/
     @Override
     public void decorateItemEmpty(View view) {
         view.setBackgroundResource(R.drawable.shape_primary_item_empty_back_cn);
+        ImageView iv_live_xuesheng_shipin_mid_daijiaru_normal = view.findViewById(R.id.iv_live_xuesheng_shipin_mid_daijiaru_normal);
+        iv_live_xuesheng_shipin_mid_daijiaru_normal.setImageResource(R.drawable.bg_lvie_xuesheng_shipin_mid_diaoxian_normal_cn);
     }
 
     @Override

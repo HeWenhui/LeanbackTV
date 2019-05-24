@@ -485,7 +485,11 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         HttpCallBack callBack = new HttpCallBack() {
             @Override
             public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                teamInfoEntity = mHttpResponseParser.parseTeamInfoPrimary(responseEntity);
+                if (primary) {
+                    teamInfoEntity = mHttpResponseParser.parseTeamInfoPrimary(responseEntity);
+                }else {
+                    teamInfoEntity = mHttpResponseParser.parseTeamInfo(responseEntity);
+                }
                 showTeamSelectScene(primary);
                 if (primary) {
                     LiveEventBus.getDefault(mContext).post(new TeamPkTeamInfoEvent(teamInfoEntity));
@@ -665,6 +669,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
 
     /**
      * 小班体验右侧距离，暂时没用
+     *
      * @param resultPager
      */
     private void setRight(TeamPkResultPager resultPager) {

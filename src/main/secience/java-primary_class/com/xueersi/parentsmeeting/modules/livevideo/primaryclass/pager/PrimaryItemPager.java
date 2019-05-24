@@ -112,7 +112,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
         addItem();
         setLayout();
         if (LiveTopic.MODE_TRANING.equals(mode)) {
-            mView.setVisibility(View.GONE);
+            mView.setVisibility(View.INVISIBLE);
         } else {
             rl_livevideo_primary_team_content.setVisibility(View.INVISIBLE);
             ivPkState.setVisibility(View.VISIBLE);
@@ -149,7 +149,7 @@ public class PrimaryItemPager extends LiveBasePager implements PrimaryItemView {
                         addItem();
                     }
                 } else {
-                    mView.setVisibility(View.GONE);
+                    mView.setVisibility(View.INVISIBLE);
                     courseGroupItemHashMap.clear();
                     ll_livevideo_primary_team_content.removeAllViews();
                     if (workerThread != null) {
