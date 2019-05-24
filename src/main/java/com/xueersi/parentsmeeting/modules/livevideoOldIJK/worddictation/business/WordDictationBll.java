@@ -10,13 +10,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-import com.xueersi.common.business.AppBll;
+
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.route.XueErSiRouter;
-import com.xueersi.common.route.module.ModuleHandler;
-import com.xueersi.common.route.module.entity.Module;
-import com.xueersi.common.route.module.entity.ModuleData;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -74,37 +71,13 @@ public class WordDictationBll implements WordDictationAction {
             RecognizeFlow savedData = DictationQuery.getLastRecord(activity);
             bundle.putSerializable("data", savedData);
             bundle.putString("what","Result");
-//            XueErSiRouter.startModule(activity, "/dictation/Result", bundle);
-            Module m = AppBll.getInstance().getModuleByModuleName("endictation");
-            if (m==null) {
-                m = new Module();
-                m.moduleName = "endictation";
-                m.version = "1.0.0";
-                m.fileUrl = "https://test.com/endiction.apk";
-                m.mac = "4156465424185";
-                m.moduleId = "1054564";
-                m.title ="单词听写";
-                m.moduleType = 2;
-            }
-            ModuleHandler.start(activity,new ModuleData(m,bundle));
+            XueErSiRouter.startModule(activity, "/dictation/Result", bundle);
         }else {
             // 没有作答记录，直接进入引导页
             RecognizeFlow recognizeFlow = new RecognizeFlow(wordStatisticInfo.testid, liveGetInfo.getId(), wordStatisticInfo.pagetype, liveGetInfo.getTeacherId(), wordStatisticInfo.answers);
             bundle.putSerializable("data", recognizeFlow);
             bundle.putString("what","Launch");
-//            XueErSiRouter.startModule(activity, "/dictation/Launch", bundle);
-            Module m = AppBll.getInstance().getModuleByModuleName("endictation");
-            if (m==null) {
-                m = new Module();
-                m.moduleName = "endictation";
-                m.version = "1.0.0";
-                m.fileUrl = "https://test.com/endiction.apk";
-                m.mac = "4156465424185";
-                m.moduleId = "1054564";
-                m.title ="单词听写";
-                m.moduleType = 2;
-            }
-            ModuleHandler.start(activity,new ModuleData(m,bundle));
+            XueErSiRouter.startModule(activity, "/dictation/Launch", bundle);
         }
 
         if (wordReceiver == null) {
@@ -146,19 +119,7 @@ public class WordDictationBll implements WordDictationAction {
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("data", recognizeFlow);
                     bundle.putString("what","Result");
-//                    XueErSiRouter.startModule(activity, "/dictation/Result", bundle);
-                    Module m = AppBll.getInstance().getModuleByModuleName("endictation");
-                    if (m==null) {
-                        m = new Module();
-                        m.moduleName = "endictation";
-                        m.version = "1.0.0";
-                        m.fileUrl = "https://test.com/endiction.apk";
-                        m.mac = "4156465424185";
-                        m.moduleId = "1054564";
-                        m.title ="单词听写";
-                        m.moduleType = 2;
-                    }
-                    ModuleHandler.start(activity,new ModuleData(m,bundle));
+                    XueErSiRouter.startModule(activity, "/dictation/Result", bundle);
                 }
             });
             view.findViewById(R.id.bt_livevideo_worddictation_close).setOnClickListener(new View.OnClickListener() {
