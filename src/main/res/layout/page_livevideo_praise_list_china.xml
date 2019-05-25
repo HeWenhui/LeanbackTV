@@ -154,6 +154,8 @@
                 android:layout_marginLeft="10dp"
                 android:text=""
                 android:paddingRight="20dp"
+                android:singleLine="true"
+                android:ellipsize="end"
                 android:textColor="#A9743C"
                 android:textSize="15sp" />
         </LinearLayout>
