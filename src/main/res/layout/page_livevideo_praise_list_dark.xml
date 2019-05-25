@@ -4,7 +4,6 @@
     android:id="@id/rl_page_livevideo_praise_list_main_content"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-
     android:background="@drawable/bg_page_livevideo_praise_list_dark">
 
 
@@ -47,6 +46,7 @@
             android:layout_centerHorizontal="true"
             android:background="@drawable/bg_page_livevideo_praise_list_dark_sub_title_1"
             android:gravity="center"
+            android:visibility="gone"
             android:text="" />
 
         <com.xueersi.parentsmeeting.modules.livevideo.widget.FastScrollableRecyclerView
@@ -127,7 +127,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
-        android:background="@color/transparent_70"
+        android:background="@color/transparent_60"
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone">
@@ -143,7 +143,7 @@
                 android:id="@id/iv_page_livevideo_praise_list_teacher_head_image"
                 android:layout_width="55dp"
                 android:layout_height="55dp"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="5dp"
                 android:layout_marginBottom="2.5dp"
                 android:src="@drawable/ic_default_head_square"
                 app:border_color="#E49E42"
