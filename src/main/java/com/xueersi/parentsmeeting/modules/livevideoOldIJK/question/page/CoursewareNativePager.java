@@ -282,7 +282,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     @Override
     public void initData() {
         super.initData();
+        String testid = "";
         try {
+            testid = NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts);
             mLogtf.addCommon("testid", "" + NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts));
         } catch (Exception e) {
             CrashReport.postCatchedException(new LiveException(TAG, e));
@@ -291,7 +293,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         Date date = new Date();
         today = dateFormat.format(date);
         getTodayQues();
-        newCourseCache = new NewCourseCache(mContext, liveId);
+        newCourseCache = new NewCourseCache(mContext, liveId, testid);
         addJavascriptInterface();
         wvSubjectWeb.setWebChromeClient(new BaseCoursewareNativePager.MyWebChromeClient() {
             @Override
@@ -1198,7 +1200,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     public void run() {
                         StaticWeb.testCourseware(wvSubjectWeb);
                     }
-                },10);
+                }, 10);
             }
         } else {
 //            if (isFinish) {
