@@ -92,7 +92,7 @@ public class WebInstertJs {
                     } else {
                         line = line.substring(0, index + findStr.length()) + "\n" + indexJs + "\n" + line.substring(index + findStr.length());
                     }
-                    logToFile.d("httpRequest:insertJs=" + index);
+                    logToFile.d("httpRequest:insertJs=" + line);
                     addJs = true;
                 }
             }

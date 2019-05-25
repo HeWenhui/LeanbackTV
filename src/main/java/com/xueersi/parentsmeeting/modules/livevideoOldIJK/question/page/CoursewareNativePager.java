@@ -141,6 +141,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private boolean showControl = false;
     /** 在网页中嵌入js，只嵌入一次 */
     private boolean addJs = false;
+    private boolean loadJs = false;
     /** 是不是刷新，加载完成 */
     private int isRefresh = 0;
     /** 收到加载完成 */
@@ -395,6 +396,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             @Override
             public void onClick(View view) {
                 addJs = false;
+                loadJs = false;
                 isRefresh = 1;
                 refreshTime++;
                 mLogtf.d("ivWebViewRefresh:refreshTime=" + refreshTime);
@@ -614,6 +616,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                             setNum(currentIndex + 1);
                             NewCourseSec.Test test = tests.get(currentIndex);
                             addJs = false;
+                            loadJs = false;
                             NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), getSubtestid(), test.getPreviewPath(), ispreload, test.getId());
                             wvSubjectWeb.loadUrl(test.getPreviewPath());
                         }
@@ -1185,6 +1188,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 }
                 isLoadComplete = true;
                 preLoad.onStop();
+                try {
+                    mLogtf.d("onProgressChanged:loadJs=" + loadJs);
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                }
             }
         } else {
 //            if (isFinish) {
@@ -1623,7 +1631,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 if (!addJs) {
                     addJs = true;
                     WebResourceResponse webResourceResponse = newCourseCache.interceptIndexRequest(view, url);
-                    logger.d("shouldInterceptRequest:index:url=" + url + ",response=null?" + (webResourceResponse == null));
+                    try {
+                        mLogtf.d("shouldInterceptRequest:index:url=" + url + ",response=null?" + (webResourceResponse == null));
+                    } catch (Exception e) {
+                        CrashReport.postCatchedException(new LiveException(TAG, e));
+                    }
                     if (webResourceResponse != null) {
                         return webResourceResponse;
                     } else {
@@ -1637,8 +1649,13 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                     }
                 }
             } else if (WebInstertJs.indexStr().equals(url)) {
+                loadJs = true;
                 WebResourceResponse webResourceResponse = newCourseCache.interceptJsRequest(view, url);
-                logger.d("shouldInterceptRequest:js:url=" + url + ",response=null?" + (webResourceResponse == null));
+                try {
+                    mLogtf.d("shouldInterceptRequest:js:url=" + url + ",response=null?" + (webResourceResponse == null));
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                }
                 if (webResourceResponse != null) {
                     return webResourceResponse;
                 } else {
