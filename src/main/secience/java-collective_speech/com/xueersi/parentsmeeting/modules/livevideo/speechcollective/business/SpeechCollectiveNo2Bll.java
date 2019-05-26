@@ -80,6 +80,7 @@ public class SpeechCollectiveNo2Bll {
     /** 录音是否结束，用来 */
     private AtomicBoolean isStop = new AtomicBoolean(false);
     private boolean start = false;
+    /** 是不是用户手动关闭 */
     private boolean userClose = false;
     private String voiceId;
     private String from;
@@ -140,7 +141,7 @@ public class SpeechCollectiveNo2Bll {
             return;
         }
         start = true;
-        logger.d("start:from=" + from + ",voiceId=" + voiceId);
+        mLogtf.d("start:from=" + from + ",voiceId=" + voiceId);
         try {
             String string = ShareDataManager.getInstance().getString(ShareDataConfig.SP_SPEECH_COLLECTION, "{}", ShareDataManager.SHAREDATA_USER);
             logger.d("start:string=" + string);
@@ -379,10 +380,12 @@ public class SpeechCollectiveNo2Bll {
 
     public void stop() {
         if (start) {
-            addSysTip(false);
+            if (!userClose) {
+                addSysTip(false);
+            }
         }
         start = false;
-        mLogtf.d("start:stop");
+        mLogtf.d("stop:from=" + from + ",voiceId=" + voiceId + ",userClose=" + userClose);
         mSpeechEvaluatorUtils.cancel();
         isStop.set(true);
         isRecord.set(false);
@@ -444,13 +447,13 @@ public class SpeechCollectiveNo2Bll {
                     @Override
                     public void onDataSucess(Object... objData) {
                         logger.i("onDataSucess:data=" + objData[0]);
-//                        String sendmsg;
-//                        if (ansStr.length() > 15) {
-//                            sendmsg = ansStr.substring(0, 15) + "...";
-//                        } else {
-//                            sendmsg = msg;
-//                        }
-                        collectiveHttp.sendSpeechMsg(from, voiceId, "" + msg);
+                        String sendmsg;
+                        if (msg.length() > 15) {
+                            sendmsg = msg.substring(0, 15) + "...";
+                        } else {
+                            sendmsg = msg;
+                        }
+                        collectiveHttp.sendSpeechMsg(from, voiceId, "" + sendmsg);
                         addEnergy();
                     }
 
