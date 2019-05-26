@@ -1346,4 +1346,9 @@
     <item name="tv_chi_answer_result_item_muti_user_answer" type="id" />
     <item name="tv_chi_answer_result_item_muti_right_answer" type="id" />
     <item name="tv_chi_answer_result_score" type="id" />
+    <!-- 教师反馈-->
+    <item name="tv_item_live_teacher_feedback_text" type="id" />
+    <item name="rv_pager_live_teacher_feedback_content" type="id" />
+
+
 </resources>

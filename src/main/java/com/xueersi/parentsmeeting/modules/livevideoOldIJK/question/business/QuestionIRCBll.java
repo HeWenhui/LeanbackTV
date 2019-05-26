@@ -16,6 +16,7 @@ import com.xueersi.lib.framework.utils.string.Base64;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.page.LiveFeedBackPager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.irc.QueIrcParse;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.achievement.business.UpdateAchievement;
@@ -54,6 +55,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 
 import okhttp3.Call;
 
@@ -105,9 +108,30 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         questiongtype = Arrays.asList(ptTypeFilters);
     }
 
+    private void showFeedBack(final RelativeLayout bottomContent){
+        getHttpManager().getFeedBack(mLiveId,mGetInfo.getStudentLiveInfo().getCourseId(),"0",new  HttpCallBack(){
+            @Override
+            public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
+                mLogtf.d("showFeedBack => onPmSuccess: error = " + responseEntity.getJsonObject().toString());
+
+            }
+        });
+        LiveFeedBackPager pager = new LiveFeedBackPager(mContext,null,bottomContent);
+        bottomContent.addView(pager.getRootView());
+    }
+
+
+
     @Override
-    public void initView(RelativeLayout bottomContent, AtomicBoolean isLand) {
+    public void initView(final RelativeLayout bottomContent, AtomicBoolean isLand) {
         mQuestionAction.initView(bottomContent, isLand.get());
+      //  new android.os.Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                showFeedBack(bottomContent);
+//            }
+//        }, 10000);
+
 //        if (com.xueersi.common.config.AppConfig.DEBUG) {
 //            com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity answerResultEntity = new com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity();
 //            answerResultEntity.isVoice = 1;

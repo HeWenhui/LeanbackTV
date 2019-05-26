@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginTop="20dp"
+    android:layout_marginBottom="20dp"
+    android:background="@color/transparent_70"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/ic_live_video_feedback_title" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="43dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginRight="43dp"
+            android:background="@drawable/bg_corners_stroke_fff9f9ff_solid_fff9f9ff_radius_4">
+
+            <com.xueersi.ui.widget.CircleImageView
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="26dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="14dp"
+                android:src="@drawable/bg_live_video_feedback_main_head_image"
+                app:border_color="@color/transparent"
+                app:border_width="0dp" />
+
+            <TextView
+                android:layout_width="96dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="43dp"
+                android:text="郭德纲"
+                android:textColor="#5E5E7F"
+                android:textSize="14sp" />
+
+
+
+                <ImageView
+                    android:scaleType="fitStart"
+                    android:layout_width="108dp"
+                    android:layout_marginLeft="23dp"
+                    android:layout_height="38dp"
+                    android:layout_marginTop="35dp"
+                    android:background="@drawable/bg_live_video_feedback_type1_selected" />
+
+                <ImageView
+                    android:layout_width="108dp"
+                    android:layout_height="38dp"
+                    android:layout_marginLeft="23dp"
+                    android:layout_marginTop="35dp"
+                    android:background="@drawable/bg_live_video_feedback_type2_normal" />
+
+                <ImageView
+                    android:layout_width="108dp"
+                    android:layout_height="38dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginTop="35dp"
+                    android:background="@drawable/bg_live_video_feedback_type3_normal" />
+
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@id/rv_pager_live_teacher_feedback_content"
+            android:layout_width="390dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="215dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/bg_live_video_feedback_style1"
+            android:paddingLeft="11dp"
+            android:paddingTop="20dp"
+            android:paddingRight="11dp" />
+
+        <EditText
+            android:layout_width="390dp"
+            android:layout_height="80dp"
+            android:layout_marginLeft="215dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/bg_corners_stroke_ccededff_solid_ccededff_radius_4"
+            android:gravity="top|left"
+            android:paddingLeft="8dp"
+            android:paddingTop="8dp"
+            android:paddingRight="22dp"
+            android:paddingBottom="8dp"
+            android:text="1111"
+            android:textColor="@color/COLOR_5E5E7F"
+            android:textSize="12sp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="43dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="43dp"
+            android:background="@drawable/bg_corners_stroke_fff9f9ff_solid_fff9f9ff_radius_4">
+
+            <com.xueersi.ui.widget.CircleImageView
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="26dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="14dp"
+                android:src="@drawable/bg_live_video_feedback_main_head_image"
+                app:border_color="@color/transparent"
+                app:border_width="0dp" />
+
+            <TextView
+                android:layout_width="96dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="43dp"
+                android:text="郭德纲"
+                android:textColor="#5E5E7F"
+                android:textSize="14sp" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="35dp"
+                android:background="@drawable/bg_live_video_feedback_type1_selected" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="26dp"
+                android:layout_marginTop="35dp"
+                android:background="@drawable/bg_live_video_feedback_type2_normal" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="26dp"
+                android:layout_marginTop="35dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/bg_live_video_feedback_type3_normal" />
+
+
+        </LinearLayout>
+    </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

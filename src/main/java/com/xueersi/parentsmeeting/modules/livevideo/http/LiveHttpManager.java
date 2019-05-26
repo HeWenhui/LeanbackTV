@@ -2188,4 +2188,19 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("id", id);
         sendPost(LiveVideoConfig.URL_IS_GOLD_MICROPHONE, params, httpCallBack);
     }
+
+    /**
+     * 教师反馈
+     * @param liveId
+     * @param courseId
+     * @param isPlayBack
+     * @param httpCallBack
+     */
+    public void getFeedBack(String liveId,String courseId,String isPlayBack,HttpCallBack httpCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("courseId", courseId);
+        params.addBodyParam("isPlayBack", isPlayBack);
+        sendPost(LiveVideoConfig.URL_LIVE_COURSE_GETEVALUATE, params, httpCallBack);
+    }
 }

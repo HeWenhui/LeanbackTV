@@ -489,4 +489,8 @@ public class LiveVideoConfig {
     /**获取 Nb 试题信息**/
     public static String URL_NB_COURSE_INFO = "https://live.xueersi.com/science/LiveExam/getNBTestInfo";
 
+    /** 课后评价教师文案获取 */
+    public static String URL_LIVE_COURSE_GETEVALUATE =  AppConfig.HTTP_HOST + "/science/LiveCourse/getEvaluateContentNew";
+
+
 }
