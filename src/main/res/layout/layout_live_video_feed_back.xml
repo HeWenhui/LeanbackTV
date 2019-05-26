@@ -1,157 +1,226 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center_horizontal"
-    android:layout_marginTop="20dp"
-    android:layout_marginBottom="20dp"
-    android:background="@color/transparent_70"
     android:orientation="vertical">
-
-    <LinearLayout
+    <ImageView
+        android:id="@id/iv_pager_live_teacher_feedback_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="vertical">
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/ic_live_video_feedback_title" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/ic_live_video_feedback_title" />
+    <android.support.v4.widget.NestedScrollView
+        android:id="@id/nsv_pager_live_teacher_feedback_content"
+        android:layout_below="@id/iv_pager_live_teacher_feedback_title"
+        android:layout_above="@id/iv_pager_live_teacher_feedback_submit"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp">
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="43dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginRight="43dp"
-            android:background="@drawable/bg_corners_stroke_fff9f9ff_solid_fff9f9ff_radius_4">
+            android:layout_gravity="center_horizontal"
+            android:background="@color/white"
+            android:layout_marginBottom="20dp"
+            android:orientation="vertical">
 
-            <com.xueersi.ui.widget.CircleImageView
-                android:layout_width="55dp"
-                android:layout_height="55dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="26dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginBottom="14dp"
-                android:src="@drawable/bg_live_video_feedback_main_head_image"
-                app:border_color="@color/transparent"
-                app:border_width="0dp" />
 
-            <TextView
-                android:layout_width="96dp"
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="43dp"
-                android:text="郭德纲"
-                android:textColor="#5E5E7F"
-                android:textSize="14sp" />
+                android:layout_marginLeft="43dp"
+                android:layout_marginRight="43dp"
+                android:background="@drawable/bg_corners_stroke_fff9f9ff_solid_fff9f9ff_radius_4">
 
+                <com.xueersi.ui.widget.CircleImageView
+                    android:id="@id/iv_pager_live_teacher_feedback_main_head_image"
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="26dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="14dp"
+                    android:src="@drawable/bg_live_video_feedback_main_head_image"
+                    app:border_color="@color/transparent"
+                    app:border_width="0dp" />
+
+                <TextView
+                    android:id="@id/iv_pager_live_teacher_feedback_main_name"
+                    android:layout_width="96dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="44dp"
+                    android:layout_toRightOf="@id/iv_pager_live_teacher_feedback_main_head_image"
+                    android:text="郭德纲"
+                    android:textColor="#5E5E7F"
+                    android:textSize="14sp" />
 
 
                 <ImageView
-                    android:scaleType="fitStart"
-                    android:layout_width="108dp"
-                    android:layout_marginLeft="23dp"
-                    android:layout_height="38dp"
-                    android:layout_marginTop="35dp"
-                    android:background="@drawable/bg_live_video_feedback_type1_selected" />
+                    android:id="@id/iv_pager_live_teacher_feedback_main_status_1"
+                    android:layout_width="113dp"
+                    android:layout_height="39dp"
+                    android:layout_marginTop="26dp"
+                    android:layout_toRightOf="@id/iv_pager_live_teacher_feedback_main_name"
+                    android:background="@drawable/bg_live_video_feedback_type1_selected"
+                    android:scaleType="fitStart" />
 
                 <ImageView
-                    android:layout_width="108dp"
-                    android:layout_height="38dp"
-                    android:layout_marginLeft="23dp"
-                    android:layout_marginTop="35dp"
+                    android:id="@id/iv_pager_live_teacher_feedback_main_status_2"
+                    android:layout_width="113dp"
+                    android:layout_height="39dp"
+                    android:layout_marginLeft="27dp"
+                    android:layout_marginTop="26dp"
+                    android:layout_toRightOf="@id/iv_pager_live_teacher_feedback_main_status_1"
                     android:background="@drawable/bg_live_video_feedback_type2_normal" />
 
                 <ImageView
-                    android:layout_width="108dp"
-                    android:layout_height="38dp"
+                    android:id="@id/iv_pager_live_teacher_feedback_main_status_3"
+                    android:layout_width="113dp"
+                    android:layout_height="39dp"
+                    android:layout_marginLeft="27dp"
+                    android:layout_marginTop="26dp"
                     android:layout_marginRight="20dp"
-                    android:layout_marginTop="35dp"
+                    android:layout_toRightOf="@id/iv_pager_live_teacher_feedback_main_status_2"
                     android:background="@drawable/bg_live_video_feedback_type3_normal" />
 
+                <android.support.v7.widget.RecyclerView
+                    android:id="@id/rv_pager_live_teacher_feedback_content"
+                    android:layout_width="400dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/iv_pager_live_teacher_feedback_main_status_1"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_toRightOf="@id/iv_pager_live_teacher_feedback_main_name"
+                    android:background="@drawable/bg_live_video_feedback_style1"
+                    android:paddingTop="20dp"/>
+
+                <EditText
+                    android:id="@id/et_pager_live_teacher_feedback_main_input_text"
+                    android:layout_width="393dp"
+                    android:layout_height="80dp"
+                    android:layout_below="@id/rv_pager_live_teacher_feedback_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_toRightOf="@id/iv_pager_live_teacher_feedback_main_name"
+                    android:background="@drawable/bg_corners_stroke_ccededff_solid_ccededff_radius_4"
+                    android:gravity="top|left"
+                    android:paddingLeft="8dp"
+                    android:paddingTop="8dp"
+                    android:textColorHint="@color/COLOR_8C8CA7"
+                    android:paddingRight="22dp"
+                    android:paddingBottom="8dp"
+                    android:hint="说说老师有那里可以改进的呢？"
+                    android:text=""
+                    android:textColor="@color/COLOR_5E5E7F"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="43dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="43dp"
+                android:background="@drawable/bg_corners_stroke_fff9f9ff_solid_fff9f9ff_radius_4">
+
+                <com.xueersi.ui.widget.CircleImageView
+                    android:id="@id/iv_pager_live_teacher_feedback_tutor_head_image"
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="26dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="14dp"
+                    android:src="@drawable/bg_live_video_feedback_tutor_head_image"
+                    app:border_color="@color/transparent"
+                    app:border_width="0dp" />
+
+                <TextView
+                    android:id="@id/iv_pager_live_teacher_feedback_tutor_name"
+                    android:layout_width="96dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="43dp"
+                    android:layout_toRightOf="@id/iv_pager_live_teacher_feedback_tutor_head_image"
+                    android:text="郭德纲"
+                    android:textColor="#5E5E7F"
+                    android:textSize="14sp" />
+
+
+                <ImageView
+                    android:id="@id/iv_pager_live_teacher_feedback_tutor_status_1"
+                    android:layout_width="113dp"
+                    android:layout_height="39dp"
+                    android:layout_marginTop="26dp"
+                    android:layout_toRightOf="@id/iv_pager_live_teacher_feedback_tutor_name"
+                    android:background="@drawable/bg_live_video_feedback_type1_selected"
+                    android:scaleType="fitStart" />
+
+                <ImageView
+                    android:id="@id/iv_pager_live_teacher_feedback_tutor_status_2"
+                    android:layout_width="113dp"
+                    android:layout_height="39dp"
+                    android:layout_marginLeft="27dp"
+                    android:layout_marginTop="26dp"
+                    android:layout_toRightOf="@id/iv_pager_live_teacher_feedback_tutor_status_1"
+                    android:background="@drawable/bg_live_video_feedback_type2_normal" />
+
+                <ImageView
+                    android:id="@id/iv_pager_live_teacher_feedback_tutor_status_3"
+                    android:layout_width="113dp"
+                    android:layout_height="39dp"
+                    android:layout_marginLeft="27dp"
+                    android:layout_marginTop="26dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_toRightOf="@id/iv_pager_live_teacher_feedback_tutor_status_2"
+                    android:background="@drawable/bg_live_video_feedback_type3_normal" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@id/rv_pager_live_teacher_feedback_tutor_content"
+                    android:layout_width="400dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/iv_pager_live_teacher_feedback_tutor_status_1"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_toRightOf="@id/iv_pager_live_teacher_feedback_tutor_name"
+                    android:background="@drawable/bg_live_video_feedback_style1"
+                    android:paddingTop="20dp" />
+
+                <EditText
+                    android:id="@id/et_pager_live_teacher_feedback_tutor_input_text"
+                    android:layout_width="393dp"
+                    android:layout_height="80dp"
+                    android:layout_below="@id/rv_pager_live_teacher_feedback_tutor_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_toRightOf="@id/iv_pager_live_teacher_feedback_tutor_name"
+                    android:background="@drawable/bg_corners_stroke_ccededff_solid_ccededff_radius_4"
+                    android:gravity="top|left"
+                    android:paddingLeft="8dp"
+                    android:paddingTop="8dp"
+                    android:textColorHint="@color/COLOR_8C8CA7"
+                    android:paddingRight="22dp"
+                    android:paddingBottom="8dp"
+                    android:hint="说说老师有那里可以改进的呢？"
+                    android:text=""
+                    android:textColor="@color/COLOR_5E5E7F"
+                    android:textSize="12sp" />
+            </RelativeLayout>
+
+
         </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@id/rv_pager_live_teacher_feedback_content"
-            android:layout_width="390dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="215dp"
-            android:layout_marginTop="3dp"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/bg_live_video_feedback_style1"
-            android:paddingLeft="11dp"
-            android:paddingTop="20dp"
-            android:paddingRight="11dp" />
-
-        <EditText
-            android:layout_width="390dp"
-            android:layout_height="80dp"
-            android:layout_marginLeft="215dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginRight="20dp"
-            android:background="@drawable/bg_corners_stroke_ccededff_solid_ccededff_radius_4"
-            android:gravity="top|left"
-            android:paddingLeft="8dp"
-            android:paddingTop="8dp"
-            android:paddingRight="22dp"
-            android:paddingBottom="8dp"
-            android:text="1111"
-            android:textColor="@color/COLOR_5E5E7F"
-            android:textSize="12sp" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="43dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginRight="43dp"
-            android:background="@drawable/bg_corners_stroke_fff9f9ff_solid_fff9f9ff_radius_4">
-
-            <com.xueersi.ui.widget.CircleImageView
-                android:layout_width="55dp"
-                android:layout_height="55dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="26dp"
-                android:layout_marginRight="8dp"
-                android:layout_marginBottom="14dp"
-                android:src="@drawable/bg_live_video_feedback_main_head_image"
-                app:border_color="@color/transparent"
-                app:border_width="0dp" />
-
-            <TextView
-                android:layout_width="96dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="43dp"
-                android:text="郭德纲"
-                android:textColor="#5E5E7F"
-                android:textSize="14sp" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="35dp"
-                android:background="@drawable/bg_live_video_feedback_type1_selected" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="26dp"
-                android:layout_marginTop="35dp"
-                android:background="@drawable/bg_live_video_feedback_type2_normal" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="26dp"
-                android:layout_marginTop="35dp"
-                android:layout_marginRight="20dp"
-                android:background="@drawable/bg_live_video_feedback_type3_normal" />
-
-
-        </LinearLayout>
-    </LinearLayout>
-</android.support.v4.widget.NestedScrollView>
+    <ImageView
+        android:layout_alignParentBottom="true"
+        android:id="@id/iv_pager_live_teacher_feedback_submit"
+        android:layout_marginTop="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="19dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/bg_live_video_feedback_submit" />
+</RelativeLayout>

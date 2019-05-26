@@ -1347,8 +1347,30 @@
     <item name="tv_chi_answer_result_item_muti_right_answer" type="id" />
     <item name="tv_chi_answer_result_score" type="id" />
     <!-- 教师反馈-->
+
     <item name="tv_item_live_teacher_feedback_text" type="id" />
+    <item name="nsv_pager_live_teacher_feedback_content" type="id" />
+    <item name="iv_pager_live_teacher_feedback_title" type="id" />
+    <item name="iv_pager_live_teacher_feedback_submit" type="id" />
+
     <item name="rv_pager_live_teacher_feedback_content" type="id" />
+    <item name="iv_pager_live_teacher_feedback_main_head_image" type="id" />
+    <item name="iv_pager_live_teacher_feedback_main_name" type="id" />
+    <item name="iv_pager_live_teacher_feedback_main_status_1" type="id" />
+    <item name="iv_pager_live_teacher_feedback_main_status_2" type="id" />
+    <item name="iv_pager_live_teacher_feedback_main_status_3" type="id" />
+    <item name="et_pager_live_teacher_feedback_main_input_text" type="id" />
+
+
+
+    <item name="rv_pager_live_teacher_feedback_tutor_content" type="id" />
+    <item name="iv_pager_live_teacher_feedback_tutor_head_image" type="id" />
+    <item name="iv_pager_live_teacher_feedback_tutor_name" type="id" />
+    <item name="iv_pager_live_teacher_feedback_tutor_status_1" type="id" />
+    <item name="iv_pager_live_teacher_feedback_tutor_status_2" type="id" />
+    <item name="iv_pager_live_teacher_feedback_tutor_status_3" type="id" />
+    <item name="et_pager_live_teacher_feedback_tutor_input_text" type="id" />
+
 
 
 </resources>

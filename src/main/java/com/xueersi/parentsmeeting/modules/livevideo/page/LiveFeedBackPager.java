@@ -6,13 +6,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.RelativeLayout;
 
+import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FeedBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.page.item.LiveTeacherFeedbackItem;
+import com.xueersi.parentsmeeting.modules.livevideo.page.item.RecyclerViewSpacesItemDecoration;
 import com.xueersi.ui.adapter.RCommonAdapter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class LiveFeedBackPager extends LiveBasePager{
@@ -55,6 +58,7 @@ public class LiveFeedBackPager extends LiveBasePager{
         rvFeedbackContent = mView.findViewById(R.id.rv_pager_live_teacher_feedback_content);
         GridLayoutManager manager = new GridLayoutManager(mContext, 3);
         rvFeedbackContent.setLayoutManager(manager);
+        setRecyclerViewDecoration();
         mainFeedbackList = new ArrayList<String>();
         mainFeedbackList.add("讲得太快了");
         mainFeedbackList.add("讲得太慢了");
@@ -64,6 +68,17 @@ public class LiveFeedBackPager extends LiveBasePager{
         mainFeedbackList.add("课堂闷无聊");
         return mView;
     }
+
+    public void setRecyclerViewDecoration(){
+        HashMap<String, Integer> stringIntegerHashMap = new HashMap<>();
+        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.TOP_DECORATION,0);//top间距
+        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.BOTTOM_DECORATION,0);//底部间距
+        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.LEFT_DECORATION,SizeUtils.Dp2Px(mContext,20));//左间距
+        stringIntegerHashMap.put(RecyclerViewSpacesItemDecoration.RIGHT_DECORATION, 0);//右间距
+        rvFeedbackContent.addItemDecoration(new RecyclerViewSpacesItemDecoration(stringIntegerHashMap));
+    }
+
+
     private void setContentData() {
         if (contentAdapter == null) {
             contentAdapter = new RCommonAdapter(mContext, mainFeedbackList);
