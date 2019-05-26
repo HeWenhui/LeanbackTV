@@ -537,7 +537,6 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
     }
 
     private void onAnswer(final JSONObject message) {
-        Log.e("chs_speak", "=====>onAnswer called");
         recognizeSuccess = true;
         cancleAssess();
         handler.post(new Runnable() {
@@ -703,7 +702,6 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                     answerContent += answerMap.get(key);
                 }
                 // 如果测评文案为空 返回
-                Log.e("chs_speak", "=====>startAssess 1111:" + assessContent);
                 if (TextUtils.isEmpty(assessContent)) {
                     return;
                 }
@@ -733,7 +731,6 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 if (!isAssessing) {
                     final String finalAnswerContent = answerContent;
                     isAssessing = true;
-                    Log.e("chs_speak", "=====>startAssess 2222:" + assessContent);
                     speechUtils.startRecog(mParam, new EvaluatorListener() {
                         @Override
                         public void onBeginOfSpeech() {
@@ -873,7 +870,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
      * 停止识别
      */
     private void stopAssess() {
-        Log.e("chs_speak", "=====>cancleAssess");
+        Log.e("chs_speak", "=====>stopAssess");
         if (speechUtils != null) {
             speechUtils.cancel();
         }
@@ -963,7 +960,6 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
      * @param nonce
      */
     private void submitAnswer(final int isforce, final String nonce, JSONArray data) {
-        Log.e("chs_speak", "=====>submitAnswer called");
         final JSONObject testInfos = new JSONObject();
         NewCourseSec.Test test = tests.get(0);
         JSONObject json = test.getJson();
@@ -1282,7 +1278,6 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
      * @param isforce
      */
     private void showAnswerResult(final int isforce) {
-        Log.e("chs_speak", "=====>showAnswerResult called");
         isSumit = true;
         englishH5CoursewareSecHttp.getStuTestResult(detailInfo, isPlayBack ? 1 : 0,
                 new AbstractBusinessDataCallBack() {
@@ -1310,7 +1305,6 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                                                 getBaseVideoQuestionEntity());
                                     }
                                 });
-                        Log.e("chs_speak", "=====>showAnswerResult onDataSucess");
                         ((RelativeLayout) mView).addView(primaryScienceAnserResultPager.getRootView(), new
                                 RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup
                                 .LayoutParams.MATCH_PARENT));
