@@ -1479,6 +1479,9 @@ public class AuditClassLiveActivity extends LiveVideoActivityBase implements Aud
                 nowProtol = MediaPlayer.VIDEO_PROTOCOL_RTMP;
             }
             playPSVideo(mGetInfo.getChannelname(), nowProtol);
+            if (mGetInfo.getVideoConfigEntity() != null) {
+                enableAutoSpeedPlay(mGetInfo.getVideoConfigEntity());
+            }
             setmDisplayName(mGetInfo.getName());
         }
     }

@@ -246,7 +246,7 @@ public class LiveGetInfo {
     /** 全身直播语音答题和评测小组排名请求时间 */
     private String requestTime;
 
-    /**语文，英语是否使用皮肤**/
+    /** 语文，英语是否使用皮肤 **/
     private int useSkin;
 
     /**
@@ -305,8 +305,13 @@ public class LiveGetInfo {
 
     // add by William on 2018/12/5  专属老师用
     public EPlanInfoBean ePlanInfo;
-    /** 语文AI主观题AI接口*/
+    /** 语文AI主观题AI接口 */
     private String subjectiveItem2AIUrl;
+
+    /**
+     * 是否是幼教
+     */
+    private boolean preschool;
 
     public String getSubjectiveItem2AIUrl() {
         return subjectiveItem2AIUrl;
@@ -315,6 +320,7 @@ public class LiveGetInfo {
     public void setSubjectiveItem2AIUrl(String subjectiveItem2AIUrl) {
         this.subjectiveItem2AIUrl = subjectiveItem2AIUrl;
     }
+
     /** 是否支持连对激励 0：关闭 1：打开 */
     private int isOpenNewCourseWare;
     /** 连对榜接口地址 */
@@ -323,6 +329,16 @@ public class LiveGetInfo {
     private String getThumbsUpUrl;
 
     private String getJournalUrl;
+
+    private VideoConfigEntity videoConfigEntity;
+
+    public VideoConfigEntity getVideoConfigEntity() {
+        return videoConfigEntity;
+    }
+
+    public void setVideoConfigEntity(VideoConfigEntity videoConfigEntity) {
+        this.videoConfigEntity = videoConfigEntity;
+    }
 
     public String getGetJournalUrl() {
         return getJournalUrl;
@@ -1080,6 +1096,14 @@ public class LiveGetInfo {
 
     public void setIsNewProject(int isNewProject) {
         this.isNewProject = isNewProject;
+    }
+
+    public void setPreschool(boolean preschool) {
+        this.preschool = preschool;
+    }
+
+    public boolean isPreschool() {
+        return preschool;
     }
 
     public static class MainTeacherInfo {

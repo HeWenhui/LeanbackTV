@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.WeakHandler;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
 
 import java.io.IOException;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -379,6 +380,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
                                     vPlayer.setDisplay(videoView.getHolder());
                                 }
                                 vPlayer.psInit(MediaPlayer.VIDEO_PLAYER_NAME, getStartPosition(), vPlayerServiceListener, mIsHWCodec);
+                                setVideoConfig();
                                 if (isChangeLine) {
                                     try {
                                         vPlayer.changeLine(changeLinePos, protocol);
@@ -531,6 +533,12 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         return 0L;
     }
 
+    protected void setVideoConfig() {
+        if (videoConfigEntity != null) {
+            vPlayer.enableAutoSpeedPlay(videoConfigEntity.getWaterMark(), videoConfigEntity.getDuration());
+        }
+    }
+
     /** 切换线路使用位置 */
     protected int changeLinePos;
     /** 当前使用的协议 */
@@ -589,6 +597,27 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
         }
 
         vPlayerHandler.sendEmptyMessage(OPEN_FILE);
+    }
+
+    /**
+     *
+     */
+//    public void enableAutoSpeedPlay(long waterMark, long duration) {
+//        if (vPlayer != null) {
+//            vPlayer.enableAutoSpeedPlay(waterMark, duration);
+//        }
+////        if (mediaPlayer != null) {
+////            mediaPlayer.enableAutoSpeedPlay(waterMark, duration);
+////        }
+//    }
+    protected VideoConfigEntity videoConfigEntity;
+
+    public void enableAutoSpeedPlay(VideoConfigEntity videoConfigEntity) {
+        if (vPlayer != null && videoConfigEntity != null) {
+            this.videoConfigEntity = videoConfigEntity;
+            vPlayer.enableAutoSpeedPlay(videoConfigEntity.getWaterMark(), videoConfigEntity.getDuration());
+        }
+
     }
 
     /**

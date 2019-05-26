@@ -275,7 +275,6 @@ public class H5CoursewareBll implements H5CoursewareAction, LivePagerBack, NbPre
             h5CoursewarePager.destroy();
             bottomContent.removeView(h5CoursewarePager.getRootView());
             h5CoursewarePager = null;
-            Log.e("nbTrace","========>onNBEvent endTime: H5Bll sentEvent");
             EventBus.getDefault().post(new NbCourseEvent(NbCourseEvent.EVENT_TYPE_NBH5_CLOSE));
         }
     }
@@ -297,7 +296,6 @@ public class H5CoursewareBll implements H5CoursewareAction, LivePagerBack, NbPre
 
     @Override
     public void onBack(LiveBasePager liveBasePager) {
-        Log.e("nbTrace","H5Bll onBack:"+this);
         //页面本身不消费 系统返回键点击时间
         if (h5CoursewarePager != null && !h5CoursewarePager.onBack()) {
             VerifyCancelAlertDialog cancelDialog = new VerifyCancelAlertDialog(context, (BaseApplication)
