@@ -16,6 +16,7 @@ import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.listener.OnUnDoubleClickListener;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract;
+import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.UploadVideoService;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.Camera1Utils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.MediaUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.StorageUtils;
@@ -444,7 +445,9 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
         processVideo();
     }
 
-    //处理音视频，分开音频
+    /**
+     * 处理音频放在 {@link UploadVideoService#decodeAudio()}中
+     */
     private void processVideo() {
         MediaUtils mediaUtils = new MediaUtils();
         extraObservable = new MediaUtils.ExtraObservable();
@@ -470,7 +473,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
     /**
      * 停止拍摄
      */
-    private void stopRecordVideo() {
+    public void stopRecordVideo() {
         if (camera1Utils != null) {
             camera1Utils.stopRecordVideo();
         }
@@ -568,7 +571,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
     private void submitVideo(String isForce) {
         if (bridge != null) {
             logger.i("音量大小" + camera1Utils.getVolum() + "");
-            bridge.submitSpeechShow(isForce, String.valueOf(camera1Utils.getVolum()));
+            bridge.submitSpeechShow(isForce, String.valueOf(camera1Utils.getVolum() - 20));
             removeCameraView();
         }
     }

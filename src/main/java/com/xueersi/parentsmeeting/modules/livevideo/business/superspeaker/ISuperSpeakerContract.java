@@ -28,6 +28,8 @@ public interface ISuperSpeakerContract {
         void pauseVideo();
 
         void resumeVideo();
+
+        void stopRecordVideo();
     }
 
     interface ICameraPresenter {

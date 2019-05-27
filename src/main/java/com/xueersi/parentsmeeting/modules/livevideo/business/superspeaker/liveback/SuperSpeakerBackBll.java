@@ -49,16 +49,26 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
     @Override
     public void showQuestion(VideoQuestionEntity oldQuestionEntity, VideoQuestionEntity questionEntity, LiveBackBll.ShowQuestion showQuestion) {
         super.showQuestion(oldQuestionEntity, questionEntity, showQuestion);
+        this.questionEntity = questionEntity;
 //        SuperSpeakerCameraPager cameraPager = new SuperSpeakerCameraPager(mContext, this);
         srcType = questionEntity.getvQuestionType();
         courseWareId = questionEntity.getvQuestionID();
 
         int uploadStatus = questionEntity.getIsupload();
         SuperSpeakerPopWindowPager superSpeakerPopWindowPager;
+
+        BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
+//        if (mediaPlayerControl != null) {//暂停视频
+//            mediaPlayerControl.pause();
+//        }
+
         if (uploadStatus == 1) {
             superSpeakerPopWindowPager = new SuperSpeakerPopWindowPager(mContext);
             superSpeakerPopWindowPager.setTextTip(mContext.getString(R.string.super_speaker_back_has_send));
             addPopWindowPager(superSpeakerPopWindowPager.getRootView());
+            if (mediaPlayerControl != null) {
+                mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
+            }
         } else {
             uploadStatus = ShareDataManager.getInstance().getInt(
                     ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + liveGetInfo.getId() + "_" + courseWareId,
@@ -75,16 +85,26 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
                 uploadVideoEntity.setIsPlayBack("2");
                 uploadVideoEntity.setIsUpload("2");
                 superSpeakerBridge = new SuperSpeakerBridge(mContext, this, mRootView, liveGetInfo.getId(), courseWareId, 2, uploadVideoEntity);
+                if (mediaPlayerControl != null) {
+                    mediaPlayerControl.seekTo(questionEntity.getvQuestionInsretTime());
+                }
                 stopLiveVideo();
                 superSpeakerBridge.performShowRecordCamera(questionEntity.getAnswerTime(), questionEntity.getRecordTime());
             } else if (uploadStatus == 2) {
                 superSpeakerPopWindowPager = new SuperSpeakerPopWindowPager(mContext);
                 superSpeakerPopWindowPager.setTextTip(mContext.getString(R.string.super_speaker_back_has_send));
                 addPopWindowPager(superSpeakerPopWindowPager.getRootView());
+                if (mediaPlayerControl != null) {
+                    mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
+                }
             } else {
                 superSpeakerPopWindowPager = new SuperSpeakerPopWindowPager(mContext);
                 superSpeakerPopWindowPager.setTextTip(mContext.getString(R.string.super_speaker_back_upload_in_background));
                 addPopWindowPager(superSpeakerPopWindowPager.getRootView());
+                if (mediaPlayerControl != null) {
+
+                    mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
+                }
             }
         }
     }
@@ -219,15 +239,16 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
         if (view != null) {
             view.setVisibility(View.GONE);
         }
-
-
     }
+
+    private VideoQuestionEntity questionEntity;
 
     @Override
     public void startLiveVideo() {
         BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
         if (mediaPlayerControl != null) {
             mediaPlayerControl.startPlayVideo();
+            mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
         }
         View view = activity.findViewById(R.id.vv_course_video_video);
         if (view != null) {

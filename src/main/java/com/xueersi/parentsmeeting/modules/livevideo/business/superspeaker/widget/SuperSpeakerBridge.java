@@ -323,11 +323,11 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
     }
 
     //    @Override
-    public void stopRecord() {
-        if (iCameraPresenter != null) {
-            iCameraPresenter.stopRecord();
-        }
-    }
+//    public void stopRecord() {
+//        if (iCameraPresenter != null) {
+//            iCameraPresenter.stopRecord();
+//        }
+//    }
 
     /**
      * 是否有相机和语音权限
@@ -384,4 +384,23 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
     public boolean containsView() {
         return parentView != null && iView != null && iView.getView().getParent() == parentView;
     }
+
+    /**
+     * 停止录制视频
+     */
+    public void stopRecordVideo() {
+        if (iView != null) {
+            iView.stopRecordVideo();
+        }
+    }
+
+    /**
+     * 移除当前View
+     */
+    public void removeView() {
+        if (iView != null && iView.getView().getParent() == parentView) {
+            parentView.removeView(iView.getView());
+        }
+    }
+
 }

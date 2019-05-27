@@ -970,6 +970,7 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
 
             vPlayer.seekTo(pos);
         }
+        //即使视频没有播放，也会存储这个位置
         mShareDataManager.put(mUri + VP.SESSION_LAST_POSITION_SUFIX, (long) 0, ShareDataManager.SHAREDATA_USER);//重置播放进度
     }
 

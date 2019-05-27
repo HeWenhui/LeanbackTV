@@ -10,8 +10,6 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.HalfBodySceneTransAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.androidaudioconverter.AndroidAudioConverter;
-import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.androidaudioconverter.callback.ILoadCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.SuperSpeakerRedPackageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.UploadVideoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.widget.SuperSpeakerBridge;
@@ -133,6 +131,7 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
         mTransAnim.onModeChange(mGetInfo.getMode(), true);
     }
 
+    /** 拍照时需要停止播放视频 */
     @Override
     public void stopLiveVideo() {
         VPlayerListenerReg reg = ProxUtil.getProxUtil().get(mContext, VPlayerListenerReg.class);
@@ -142,6 +141,7 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
         }
     }
 
+    /** 成功时需要重新播放直播 */
     @Override
     public void startLiveVideo() {
         VPlayerListenerReg reg = ProxUtil.getProxUtil().get(mContext, VPlayerListenerReg.class);
@@ -221,10 +221,14 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
                     @Override
                     public Boolean apply(Boolean bol) throws Exception {
                         //1打开试题并且点击提交按钮
-                        return bol && ShareDataManager.getInstance().getInt(
+                        return bol
+                                && ShareDataManager.getInstance().getInt(
                                 ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + mGetInfo.getId() + "_" + courseWareId,
                                 0,
-                                ShareDataManager.SHAREDATA_NOT_CLEAR) == 0;
+                                ShareDataManager.SHAREDATA_NOT_CLEAR) == 0
+                                &&
+                                mGetInfo.getLiveTopic().getMode().equals(LiveTopic.MODE_CLASS);//主讲态
+
 
                     }
                 }).
@@ -256,18 +260,18 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
      */
     @UiThread
     private void performShowRecordCamera(int answerTime, int recordTime) {
-        AndroidAudioConverter.load(mContext, new ILoadCallback() {
-            @Override
-            public void onSuccess() {
-                // Great!
-            }
-
-            @Override
-            public void onFailure(Exception error) {
-                // FFmpeg is not supported by device
-                error.printStackTrace();
-            }
-        });
+//        AndroidAudioConverter.load(mContext, new ILoadCallback() {
+//            @Override
+//            public void onSuccess() {
+//                // Great!
+//            }
+//
+//            @Override
+//            public void onFailure(Exception error) {
+//                // FFmpeg is not supported by device
+//                error.printStackTrace();
+//            }
+//        });
         try {
             if (superSpeakerBridge != null && superSpeakerBridge.containsView()) {
                 return;
@@ -431,6 +435,39 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
         if (superSpeakerBridge != null) {
             superSpeakerBridge.resumeVideo();
         }
+    }
+
+    @Override
+    public void onModeChange(String oldMode, final String mode, boolean isPresent) {
+        super.onModeChange(oldMode, mode, isPresent);
+
+        Observable.
+                just(superSpeakerBridge != null && !LiveTopic.MODE_CLASS.equals(mode)).
+                doOnNext(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) throws Exception {
+                        if (aBoolean) {
+                            superSpeakerBridge.stopRecordVideo();
+                        }
+                    }
+                }).
+                observeOn(AndroidSchedulers.mainThread()).
+                subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) throws Exception {
+                        if (aBoolean) {
+                            superSpeakerBridge.removeView();
+                            startLiveVideo();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
+                        logger.e(throwable);
+                    }
+                });
+//    }
     }
 
     @Override

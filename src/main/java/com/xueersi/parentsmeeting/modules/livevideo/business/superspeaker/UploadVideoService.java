@@ -21,9 +21,6 @@ import com.xueersi.component.cloud.entity.XesCloudResult;
 import com.xueersi.component.cloud.listener.XesStsUploadListener;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.androidaudioconverter.AndroidAudioConverter;
-import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.androidaudioconverter.callback.IConvertCallback;
-import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.androidaudioconverter.model.AudioFormat;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.UploadVideoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.AudioMediaCodecUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.utils.UploadAliUtils;
@@ -119,32 +116,32 @@ public class UploadVideoService extends Service {
     private FileOutputStream mFileOutputStream;
     private byte[] sampleTotal;
 
-    private void convertMP3() {
-        File wavFile = new File(uploadVideoEntity.getVideoLocalUrl());
-        logger.i(uploadVideoEntity.getVideoLocalUrl());
-        IConvertCallback callback = new IConvertCallback() {
-            @Override
-            public void onSuccess(File convertedFile) {
-                logger.i("success:convert Audio " + convertedFile.getAbsolutePath());
-//                Toast.makeText(UploadVideoService.this, "SUCCESS: " + convertedFile.getPath(), Toast.LENGTH_LONG).show();
-                uploadAudio(convertedFile.getAbsolutePath());
-            }
-
-            @Override
-            public void onFailure(Exception error) {
-                logger.w("Error:convert Audio");
-                logger.e(error);
-                latch.countDown();
-            }
-        };
-        logger.i("Converting audio file...");
-//        Toast.makeText(this, "Converting audio file...", Toast.LENGTH_SHORT).show();
-        AndroidAudioConverter.with(this)
-                .setFile(wavFile)
-                .setFormat(AudioFormat.MP3)
-                .setCallback(callback)
-                .convert();
-    }
+//    private void convertMP3() {
+//        File wavFile = new File(uploadVideoEntity.getVideoLocalUrl());
+//        logger.i(uploadVideoEntity.getVideoLocalUrl());
+//        IConvertCallback callback = new IConvertCallback() {
+//            @Override
+//            public void onSuccess(File convertedFile) {
+//                logger.i("success:convert Audio " + convertedFile.getAbsolutePath());
+////                Toast.makeText(UploadVideoService.this, "SUCCESS: " + convertedFile.getPath(), Toast.LENGTH_LONG).show();
+//                uploadAudio(convertedFile.getAbsolutePath());
+//            }
+//
+//            @Override
+//            public void onFailure(Exception error) {
+//                logger.w("Error:convert Audio");
+//                logger.e(error);
+//                latch.countDown();
+//            }
+//        };
+//        logger.i("Converting audio file...");
+////        Toast.makeText(this, "Converting audio file...", Toast.LENGTH_SHORT).show();
+//        AndroidAudioConverter.with(this)
+//                .setFile(wavFile)
+//                .setFormat(AudioFormat.MP3)
+//                .setCallback(callback)
+//                .convert();
+//    }
 
     private int num = 0;
 
