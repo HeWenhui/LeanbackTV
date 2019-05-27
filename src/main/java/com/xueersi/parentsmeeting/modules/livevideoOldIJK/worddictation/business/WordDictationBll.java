@@ -104,6 +104,7 @@ public class WordDictationBll implements WordDictationAction {
         public void onReceive(Context context, Intent intent) {
             final RecognizeFlow recognizeFlow = intent.getParcelableExtra("data");
             logger.d("onReceive:recognizeFlow=" + recognizeFlow);
+
             final View view = LayoutInflater.from(activity).inflate(R.layout.layout_word_dictation_complete, null);
             LiveVideoPoint liveVideoPoint = LiveVideoPoint.getInstance();
             RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
