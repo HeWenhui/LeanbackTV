@@ -704,7 +704,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             CrashReport.postCatchedException(new LiveException(TAG, e));
         }
         isSubmit = true;
-        englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 0, (int) voiceTime, 0, 0, starNum, fireNum, goldNum,
+        englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 1, (int) voiceTime, 0, 0, starNum, fireNum, goldNum,
                 0, (int) voiceTime, 0, 0, answerData.toString(), new AbstractBusinessDataCallBack() {
                     @Override
                     public void onDataSucess(Object... objData) {
