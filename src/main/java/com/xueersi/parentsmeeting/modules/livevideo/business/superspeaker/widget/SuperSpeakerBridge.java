@@ -5,19 +5,19 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.media.AudioFormat;
 import android.media.MediaPlayer;
 import android.os.IBinder;
 import android.support.annotation.UiThread;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.czt.mp3recorder.util.LameUtil;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.UploadVideoService;
-import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.androidaudioconverter.AndroidAudioConverter;
-import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.androidaudioconverter.callback.ILoadCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.UploadVideoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page.SuperSpeakerPermissionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page.SuperSpeakerRedPackagePager;
@@ -69,20 +69,23 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
     @SuppressLint("NewApi")
     @UiThread
     public void performShowRecordCamera(int answerTime, int recordTime) {
-        AndroidAudioConverter.load(mContext, new ILoadCallback() {
-            @Override
-            public void onSuccess() {
-                // Great!
-                logger.i("load FFMpeg success");
-            }
-
-            @Override
-            public void onFailure(Exception error) {
-                logger.e(error);
-                // FFmpeg is not supported by device
-                error.printStackTrace();
-            }
-        });
+//        AndroidAudioConverter.load(mContext, new ILoadCallback() {
+//            @Override
+//            public void onSuccess() {
+//                // Great!
+//                logger.i("load FFMpeg success");
+//            }
+//
+//            @Override
+//            public void onFailure(Exception error) {
+//                logger.e(error);
+//                // FFmpeg is not supported by device
+//                error.printStackTrace();
+//            }
+//        });
+        //初始化lame
+        LameUtil.init(16000, AudioFormat.CHANNEL_IN_DEFAULT, 16000,
+                128, 2);
         if (iView == null) {
             iView = new SuperSpeakerPermissionPager(mContext, this, liveId, courseWareId, answerTime, recordTime, back);
         }
@@ -143,6 +146,7 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
         uploadVideoEntity.setAudioLocalUrl(StorageUtils.audioUrl);
         uploadVideoEntity.setVideoLocalUrl(StorageUtils.videoUrl);
         uploadVideoEntity.setAverVocieDecibel(averVocieDecibel);
+        uploadVideoEntity.setSampleRate(16000);
 //        uploadVideoEntity.setTestId(courseWareId);
 //        uploadVideoEntity.setLiveId(liveId);
 

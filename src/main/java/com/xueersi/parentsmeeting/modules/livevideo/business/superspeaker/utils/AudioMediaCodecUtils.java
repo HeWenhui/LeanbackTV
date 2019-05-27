@@ -6,6 +6,9 @@ import android.media.MediaFormat;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 
+import com.xueersi.lib.log.LoggerFactory;
+import com.xueersi.lib.log.logger.Logger;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -17,8 +20,9 @@ import java.nio.ByteBuffer;
  */
 @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
 public class AudioMediaCodecUtils {
+    Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     private String mFilePath;
-    private File mAudioFile;
+
     /** 是否正在播放 */
     private boolean mIsPalying;
 
@@ -31,7 +35,7 @@ public class AudioMediaCodecUtils {
     public boolean init(String path) {
 //        mFilePath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/parentsmeeting/livevideo/superSpeaker/485219_7.mp4";
         this.mFilePath = path;
-        mAudioFile = new File(mFilePath);
+        File mAudioFile = new File(mFilePath);
         if (mAudioFile == null || !mAudioFile.exists()) {
 //            textView.setText(textView.getText() + "\n文件为空，请先录音");
             return false;
@@ -117,7 +121,7 @@ public class AudioMediaCodecUtils {
                     outputBuffer.clear();
 //                    Byte[] bytes = new Byte[chunkPCM.length];
                     if (listener != null) {
-                        listener.pcmData(chunkPCM);
+                        listener.pcmData(chunkPCM, decodeBufferInfo.size);
                     }
 //                audioTrack.write(chunkPCM, 0, decodeBufferInfo.size);
                     mAudioDecoder.releaseOutputBuffer(outputIndex, false);
@@ -126,6 +130,7 @@ public class AudioMediaCodecUtils {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                logger.e(e);
                 if (listener != null) {
                     listener.pcmComplete(false);
                 }
@@ -160,7 +165,7 @@ public class AudioMediaCodecUtils {
     }
 
     public interface PCMDataListener {
-        void pcmData(byte[] bytes);
+        void pcmData(byte[] bytes, int size);
 
         void pcmComplete(boolean success);
     }

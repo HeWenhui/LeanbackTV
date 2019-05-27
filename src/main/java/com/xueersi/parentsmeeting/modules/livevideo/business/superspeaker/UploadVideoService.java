@@ -33,6 +33,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
@@ -116,14 +117,9 @@ public class UploadVideoService extends Service {
      * 录音文件输出
      */
     private FileOutputStream mFileOutputStream;
-    private short[] sampleTotal;
+    private byte[] sampleTotal;
 
     private void convertMP3() {
-//        File wavFile = new File(Environment.getExternalStorageDirectory(), "/superspeaker/485219_7.mp4");
-//        videoUrl = Environment.getExternalStorageDirectory().getAbsolutePath() + "/superspeaker/485219_7.mp4";
-//        audioUrl = Environment.getExternalStorageDirectory().getAbsolutePath() + "/superspeaker/485219_7.mp3";
-//        audioUrl = StorageUtils.audioUrl;
-//        videoUrl = StorageUtils.videoUrl;
         File wavFile = new File(uploadVideoEntity.getVideoLocalUrl());
         logger.i(uploadVideoEntity.getVideoLocalUrl());
         IConvertCallback callback = new IConvertCallback() {
@@ -138,9 +134,7 @@ public class UploadVideoService extends Service {
             public void onFailure(Exception error) {
                 logger.w("Error:convert Audio");
                 logger.e(error);
-
-//                uploadAudio("");
-//                Toast.makeText(UploadVideoService.this, "ERROR: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                latch.countDown();
             }
         };
         logger.i("Converting audio file...");
@@ -152,52 +146,61 @@ public class UploadVideoService extends Service {
                 .convert();
     }
 
+    private int num = 0;
+
     /** 解码音频 */
     private void decodeAudio() {
+        try {
+            mFileOutputStream = new FileOutputStream(new File(uploadVideoEntity.getAudioLocalUrl()));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         final AudioMediaCodecUtils codecUtils = new AudioMediaCodecUtils(new AudioMediaCodecUtils.PCMDataListener() {
             @Override
-            public void pcmData(byte[] bytes) {
+            public void pcmData(byte[] bytes, int size) {
 //                short[] shorts = convertShort(bytes);
                 short[] shorts;
-
-                ByteBuffer byteBuffer = ByteBuffer.wrap(bytes, 0, bytes.length);
+                ByteBuffer byteBuffer = ByteBuffer.wrap(bytes, 0, size);
                 ShortBuffer shortBuffer = byteBuffer.order(ByteOrder.LITTLE_ENDIAN).asShortBuffer();
-                shorts = new short[bytes.length / 2];
-                shortBuffer.get(shorts, 0, bytes.length / 2);
-                byte[] mp3Buffer = new byte[bytes.length + 5000];
-                int sampleSize = LameUtil.encode(shorts, shorts, bytes.length, mp3Buffer);
-//                System.arraycopy();
-                try {
-                    mFileOutputStream = new FileOutputStream(new File(uploadVideoEntity.getAudioLocalUrl()));
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
+                shorts = new short[size / 2];
+                shortBuffer.get(shorts, 0, size / 2);
+                byte[] mp3Buffer = new byte[16000 / 20 + 7200];
+                sampleTotal = new byte[16000 / 20 + 7200];
+                int sampleSize = LameUtil.encode(shorts, shorts, size / 2, mp3Buffer);
+                logger.i((num++) + " start decode audio to mp3 " + "buffer = " + sampleSize + " lenth = " + mp3Buffer.length);
+                if (sampleSize > 0) {
+                    System.arraycopy(mp3Buffer, 0, sampleTotal, 0, sampleSize);
+                    try {
+                        mFileOutputStream.write(sampleTotal, 0, sampleSize);
+                        logger.i("decode success");
+                    } catch (FileNotFoundException e) {
+                        logger.e(e);
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        logger.e(e);
+                        e.printStackTrace();
+                    }
                 }
             }
 
             @Override
             public void pcmComplete(boolean success) {
-
+                uploadAudio(uploadVideoEntity.getAudioLocalUrl());
             }
         });
         Observable.
-                just(codecUtils.init(uploadVideoEntity.getAudioLocalUrl())).
+                just(codecUtils.init(uploadVideoEntity.getVideoLocalUrl())).
                 subscribeOn(Schedulers.io()).
                 subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean aBoolean) throws Exception {
+                        logger.i("初始化 " + aBoolean);
                         if (aBoolean) {
+                            logger.i("aac to pcm");
                             codecUtils.aacToPCM();
                         }
                     }
                 });
-//                subscribe(new Consumer<Boolean>() {
-//                    @Override
-//                    public void accept(Boolean aBoolean) throws Exception {
-//                        if (aBoolean) {
-//
-//                        }
-//                    }
-//                });
     }
 
     private class AudioUploadListener implements XesStsUploadListener {
@@ -356,6 +359,10 @@ public class UploadVideoService extends Service {
 //        liveId = intent.getStringExtra("liveId");
 //        courseWareId = intent.getStringExtra("courseWareId");
         uploadVideoEntity = intent.getParcelableExtra("UploadVideoEntity");
+        if (uploadVideoEntity == null) {
+            return;
+        }
+        logger.i("sampleRate = " + uploadVideoEntity.getSampleRate());
         liveId = uploadVideoEntity.getLiveId();
         courseWareId = uploadVideoEntity.getTestId();
 //        String audioLocalUrl = intent.getStringExtra("audioRemoteUrl");
@@ -367,7 +374,8 @@ public class UploadVideoService extends Service {
         videoUploadListener = new VideoUploadListener(videoLocalUrl);
         uploadVideo(videoLocalUrl);
 
-        convertMP3();
+//        convertMP3();
+        decodeAudio();
 //        uploadAudio(audioLocalUrl);
     }
 

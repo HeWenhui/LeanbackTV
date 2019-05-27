@@ -210,7 +210,7 @@ public class Camera1Utils implements IRecordVideoView {
         // 设置录制的视频编码h263 h264
         mediarecorder.setVideoEncoder(MediaRecorder.VideoEncoder.H264);
         // 视频码率
-        mediarecorder.setVideoEncodingBitRate((int) (cameraSize.width * cameraSize.height));
+        mediarecorder.setVideoEncodingBitRate((int) (cameraSize.width * cameraSize.height * 2));
 
         // 设置视频录制的分辨率。必须放在设置编码和格式的后面，否则报错
         mediarecorder.setVideoSize(cameraSize.width, cameraSize.height);
@@ -266,7 +266,9 @@ public class Camera1Utils implements IRecordVideoView {
     // FIXME: 2019/5/16 如何让mediaRecord和camera同时释放
     @Override
     public void stopRecordVideo() {
-
+        if (mHandler != null) {
+            mHandler.removeCallbacks(mUpdateMicStatusTimer);
+        }
         if (mediarecorder != null) {
             // 停止录制
             isStop.set(true);
@@ -318,7 +320,7 @@ public class Camera1Utils implements IRecordVideoView {
             }
             volumNum++;
             volumSum += db;
-            logger.d("分贝值：" + db);
+            logger.i("分贝值：" + db);
             mHandler.postDelayed(mUpdateMicStatusTimer, SPACE);
         }
     }

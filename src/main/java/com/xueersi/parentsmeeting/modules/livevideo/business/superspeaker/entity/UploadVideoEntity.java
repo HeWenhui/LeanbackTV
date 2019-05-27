@@ -29,6 +29,8 @@ public class UploadVideoEntity implements Parcelable {
     private String audioLocalUrl;
 
     private String videoLocalUrl;
+    /** 采样率，创建short数组大小用 */
+    private int sampleRate;
 
     public UploadVideoEntity() {
     }
@@ -43,6 +45,14 @@ public class UploadVideoEntity implements Parcelable {
 
     public String getVideoLocalUrl() {
         return videoLocalUrl;
+    }
+
+    public int getSampleRate() {
+        return sampleRate;
+    }
+
+    public void setSampleRate(int sampleRate) {
+        this.sampleRate = sampleRate;
     }
 
     public void setVideoLocalUrl(String videoLocalUrl) {

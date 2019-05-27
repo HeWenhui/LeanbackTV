@@ -28,6 +28,7 @@ import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
@@ -165,8 +166,12 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
             public void surfaceDestroyed(SurfaceHolder holder) {
                 logger.i("surfaceDestroyed");
                 try {
-                    holder.getSurface().release();
-                    camera1Utils.releaseCamera();
+                    if (holder.getSurface() != null) {
+                        holder.getSurface().release();
+                    }
+                    if (camera1Utils != null) {
+                        camera1Utils.releaseCamera();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -404,20 +409,25 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
         stopRecordVideoTime = nowTime;
         ivBack.setVisibility(View.VISIBLE);
         groupStop.setVisibility(View.GONE);
-        sfvVideo.setVisibility(View.GONE);
         groupSubmit.setVisibility(View.VISIBLE);
         groupRestart.setVisibility(View.VISIBLE);
-        customVideoController2.setVisibility(View.VISIBLE);
+
         isInRecord = false;
         io.reactivex.Observable.
                 just(true).
                 subscribeOn(Schedulers.io()).
-                subscribe(new Consumer<Boolean>() {
+                doOnNext(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean aBoolean) throws Exception {
                         stopRecordVideo();
                     }
-                });
+                }).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Boolean>() {
+            @Override
+            public void accept(Boolean aBoolean) throws Exception {
+                sfvVideo.setVisibility(View.GONE);
+                customVideoController2.setVisibility(View.VISIBLE);
+            }
+        });
 
         //录制视频小于1s
 //            groupStart.setVisibility(View.VISIBLE);
@@ -557,6 +567,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
     /** 提交视频 */
     private void submitVideo(String isForce) {
         if (bridge != null) {
+            logger.i("音量大小" + camera1Utils.getVolum() + "");
             bridge.submitSpeechShow(isForce, String.valueOf(camera1Utils.getVolum()));
             removeCameraView();
         }
