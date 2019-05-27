@@ -329,7 +329,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
         Date date = new Date();
         today = dateFormat.format(date);
         getTodayQues();
-        newCourseCache = new NewCourseCache(mContext, liveId);
+        newCourseCache = new NewCourseCache(mContext, liveId, "99999");
         addJavascriptInterface();
         wvSubjectWeb.getSettings().setLoadWithOverviewMode(false);
 //        wvSubjectWeb.getSettings().setDisplayZoomControls(false);

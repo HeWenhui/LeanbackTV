@@ -3,8 +3,10 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.web;
 import android.content.Context;
 import android.util.Log;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.parentsmeeting.modules.livevideo.util.WebTrustVerifier;
@@ -40,8 +42,13 @@ public class WebInstertJs {
     private LogToFile logToFile;
     OnHttpCode onHttpCode;
 
-    public WebInstertJs(Context context) {
+    public WebInstertJs(Context context, String testid) {
         logToFile = new LogToFile(context, TAG);
+        try {
+            logToFile.addCommon("testid", testid);
+        } catch (Exception e) {
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
         this.context = context;
         logger = LiveLoggerFactory.getLogger(TAG);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
@@ -92,7 +99,7 @@ public class WebInstertJs {
                     } else {
                         line = line.substring(0, index + findStr.length()) + "\n" + indexJs + "\n" + line.substring(index + findStr.length());
                     }
-                    logToFile.d("httpRequest:insertJs=" + index);
+                    logToFile.d("httpRequest:insertJs=" + line);
                     addJs = true;
                 }
             }
