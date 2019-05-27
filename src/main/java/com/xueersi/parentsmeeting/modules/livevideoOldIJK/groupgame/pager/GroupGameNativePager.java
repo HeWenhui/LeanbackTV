@@ -926,14 +926,14 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     }
                 }, 1000);
             } else {
-                content = new StringBuilder(mGroupGameTestInfosEntity.getTestInfoList().get(0).getAnswerList().get
-                        (pageNum).getText());
                 if (mIse != null) {
                     mIse.cancel();
                 }
                 if (saveVideoFile != null) {
                     groupGameUpload.uploadWonderMoment(saveVideoFile, content.toString(), 0);
                 }
+                content = new StringBuilder(mGroupGameTestInfosEntity.getTestInfoList().get(0).getAnswerList().get
+                        (pageNum).getText());
                 handler.postDelayed(startSpeechRecognizeRunnable, 1000);
                 int time = mAnswersList.get(pageNum).getSingleTime() + 1;
                 handler.postDelayed(turnPageRunnable, time * 1000);
