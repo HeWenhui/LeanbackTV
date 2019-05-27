@@ -367,6 +367,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                 liveGetInfo.setPrimaryChinese("2".equals(liveInfo.optString("useSkin")));
                 if (liveGetInfo.getStudentLiveInfo() != null) {
                     liveGetInfo.getStudentLiveInfo().setClassId(liveInfo.optString("class_id"));
+                    liveGetInfo.getStudentLiveInfo().setGroupId(liveInfo.optString("team_id"));
                 }
                 //解析学科id
                 if (liveInfo.has("subject_ids")) {
