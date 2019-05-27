@@ -111,7 +111,7 @@ public class SpeechBulletScreenPalyBackBll extends LiveBackBaseBll {
             //英语回放弹幕
             String groupId = liveGetInfo.getId() + "-" + liveGetInfo.getStudentLiveInfo().getClassId() + "-" +
                     liveGetInfo.getStudentLiveInfo().getGroupId();
-            String startTime = System.currentTimeMillis() + "";
+            String startTime = mVideoEntity.getGotoClassTime()+"";
             getCourseHttpManager().getVoiceBarrageForPlayBack(groupId, startTime, new HttpCallBack(false) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
