@@ -587,8 +587,13 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 }
             }, 2000);
         }
+        //音频上传阿里云
         if (saveVideoFile != null) {
-            groupGameUpload.uploadWonderMoment(saveVideoFile, content.toString(), 0);
+            JSONArray scoreArray = new JSONArray();
+            for (int j = 0; j < scoreMatrix.get(pageNum).size(); j++) {
+                scoreArray.put(scoreMatrix.get(pageNum).get(j));
+            }
+            groupGameUpload.uploadWonderMoment(saveVideoFile, content.toString(), scoreArray.toString(), 0);
         }
     }
 
@@ -926,14 +931,11 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     }
                 }, 1000);
             } else {
+                content = new StringBuilder(mGroupGameTestInfosEntity.getTestInfoList().get(0).getAnswerList().get
+                        (pageNum).getText());
                 if (mIse != null) {
                     mIse.cancel();
                 }
-                if (saveVideoFile != null) {
-                    groupGameUpload.uploadWonderMoment(saveVideoFile, content.toString(), 0);
-                }
-                content = new StringBuilder(mGroupGameTestInfosEntity.getTestInfoList().get(0).getAnswerList().get
-                        (pageNum).getText());
                 handler.postDelayed(startSpeechRecognizeRunnable, 1000);
                 int time = mAnswersList.get(pageNum).getSingleTime() + 1;
                 handler.postDelayed(turnPageRunnable, time * 1000);
@@ -1040,6 +1042,14 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         private Runnable turnPageRunnable = new Runnable() {
             @Override
             public void run() {
+                //音频上传阿里云
+                if (saveVideoFile != null) {
+                    JSONArray scoreArray = new JSONArray();
+                    for (int j = 0; j < scoreMatrix.get(pageNum).size(); j++) {
+                        scoreArray.put(scoreMatrix.get(pageNum).get(j));
+                    }
+                    groupGameUpload.uploadWonderMoment(saveVideoFile, content.toString(), scoreArray.toString(), 0);
+                }
                 uploadScore(-1, true);
                 singleModeAction.startTimer();
             }
