@@ -150,8 +150,8 @@
                 android:id="@id/iv_page_livevideo_praise_list_teacher_head_image"
                 android:layout_width="55dp"
                 android:layout_height="55dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginBottom="2.5dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginBottom="0dp"
                 android:src="@drawable/ic_default_head_square"
                 app:border_color="#ffffff"
                 app:border_width="3dp" />

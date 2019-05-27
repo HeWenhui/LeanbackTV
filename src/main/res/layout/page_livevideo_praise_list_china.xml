@@ -124,11 +124,10 @@
         android:id="@id/ll_page_livevideo_praise_list_teacher_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        android:layout_centerInParent="true"
         android:background="@color/transparent_60"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -141,8 +140,8 @@
                 android:id="@id/iv_page_livevideo_praise_list_teacher_head_image"
                 android:layout_width="55dp"
                 android:layout_height="55dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginBottom="2.5dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginBottom="0dp"
                 android:src="@drawable/ic_default_head_square"
                 app:border_color="#ffffff"
                 app:border_width="3dp" />
@@ -152,10 +151,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:text=""
+                android:ellipsize="end"
                 android:paddingRight="20dp"
                 android:singleLine="true"
-                android:ellipsize="end"
+                android:text=""
                 android:textColor="#A9743C"
                 android:textSize="15sp" />
         </LinearLayout>
@@ -165,12 +164,12 @@
             android:layout_width="294dp"
             android:layout_height="75dp"
             android:background="@drawable/bg_page_livevideo_praise_list_china_teacher_talk"
+            android:ellipsize="end"
+            android:gravity="center_horizontal"
             android:paddingLeft="20dp"
             android:paddingTop="30dp"
             android:paddingRight="20dp"
-            android:gravity="center_horizontal"
             android:singleLine="true"
-            android:ellipsize="end"
             android:text=""
             android:textColor="#A9743C"
             android:textSize="15dp" />
