@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.speechcollective.dialog;
 import android.app.Application;
 import android.content.Context;
 import android.view.View;
+import android.view.Window;
 import android.widget.TextView;
 
 import com.xueersi.parentsmeeting.modules.livevideo.R;
@@ -24,6 +25,15 @@ public class SpeechStartDialog extends BaseAlertDialog {
         View view = mInflater.inflate(R.layout.dialog_livevideo_psraisehand, null);
         tip = view.findViewById(R.id.tv_tip_detail);
         return view;
+    }
+
+    @Override
+    protected void createDialog(View alertView, boolean isSystem) {
+        super.createDialog(alertView, isSystem);
+        Window window = mAlertDialog.getWindow();
+        if (window != null) {
+            window.setDimAmount(0.0f);
+        }
     }
 
     public void setStart() {
