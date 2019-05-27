@@ -1005,10 +1005,11 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
         @Override
         public void saveUserAnser() {
-            for (int i = 0; i < pageNum; i++) {
+            for (int i = 0; i < mAnswersList.size(); i++) {
                 JSONObject jsonObject = new JSONObject();
                 int isRight = 0;
                 int singleCount = 0;
+                int presentTime = 0;
                 List<Integer> scoreList = scoreMatrix.get(i);
                 try {
                     jsonObject.put("text", mAnswersList.get(i).getText());
@@ -1023,8 +1024,11 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                         isRight = 1;
                         successTimes++;
                     }
+                    if (i < presentTimeList.size()) {
+                        presentTime = (int) ((long) presentTimeList.get(i));
+                    }
                     jsonObject.put("scores", scoreArray.toString().substring(1, scoreArray.toString().length() - 1));
-                    jsonObject.put("voiceTime", (int) ((long) presentTimeList.get(i)));
+                    jsonObject.put("voiceTime", presentTime);
                     jsonObject.put("isRight", isRight);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -1223,7 +1227,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         @Override
         public void saveUserAnser() {
             presentTime = System.currentTimeMillis() - presentTime;
-            for (int i = 0; i < scoreMatrix.size(); i++) {
+            for (int i = 0; i < mAnswersList.size(); i++) {
                 JSONObject jsonObject = new JSONObject();
                 int isRight = 0;
                 List<Integer> scoreList = scoreMatrix.get(i);
