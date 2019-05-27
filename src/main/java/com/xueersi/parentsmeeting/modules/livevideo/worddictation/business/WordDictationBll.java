@@ -10,13 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-import com.xueersi.common.business.AppBll;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.route.XueErSiRouter;
-import com.xueersi.common.route.module.ModuleHandler;
-import com.xueersi.common.route.module.entity.Module;
-import com.xueersi.common.route.module.entity.ModuleData;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
