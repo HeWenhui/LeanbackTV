@@ -28,6 +28,9 @@ import java.io.File;
 import java.util.Observable;
 import java.util.Observer;
 
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+
 import static com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract.RECORD_VALID_TIME;
 
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -87,6 +90,8 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
     private LottieAnimationView lottieAnimationView;
     /** 是否开始预览 */
     private boolean isPreView;
+    /** 相机是否初始化成功 */
+    protected boolean initCamera = false;
     /** 直播或者回放 1代表直播，2代表回放 */
     private int livevideo;
 
@@ -148,8 +153,8 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                 logger.i("surfaceCreated");
                 isSurfViewCreat = true;
 //                startRecordVideo();
-                                performStartPreView(isFacingBack);
-                            }
+                performStartPreView(isFacingBack);
+            }
 
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
@@ -373,9 +378,9 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
             StorageUtils.videoUrl = LiveVideoConfig.SUPER_SPEAKER_VIDEO_PATH + liveId + "_" + courseWareId + ".mp4";
             logger.i(StorageUtils.videoUrl);
             if (camera1Utils.initCamera(isFacingBack, 1280, 720, StorageUtils.videoUrl)) {
-
+                initCamera = true;
             } else {
-
+                initCamera = false;
             }
         }
     }
@@ -400,14 +405,24 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
         ivBack.setVisibility(View.VISIBLE);
         groupStop.setVisibility(View.GONE);
         sfvVideo.setVisibility(View.GONE);
-        isInRecord = false;
-        stopRecordVideo();
-        //录制视频小于1s
-//            groupStart.setVisibility(View.VISIBLE);
-//            groupReversal.setVisibility(View.VISIBLE);
         groupSubmit.setVisibility(View.VISIBLE);
         groupRestart.setVisibility(View.VISIBLE);
         customVideoController2.setVisibility(View.VISIBLE);
+        isInRecord = false;
+        io.reactivex.Observable.
+                just(true).
+                subscribeOn(Schedulers.io()).
+                subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) throws Exception {
+                        stopRecordVideo();
+                    }
+                });
+
+        //录制视频小于1s
+//            groupStart.setVisibility(View.VISIBLE);
+//            groupReversal.setVisibility(View.VISIBLE);
+
 
 //        ((Activity)mContext).findViewById(R.id.sfv_livevideo_super_speaker_record_video).setVisibility(View.GONE);
 
@@ -427,7 +442,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
         extraObservable.addObserver(new ExtractObserber());
         StorageUtils.audioUrl = LiveVideoConfig.SUPER_SPEAKER_VIDEO_PATH + liveId + "_" + courseWareId + "audio.mp3";
         logger.i(" audio url:" + StorageUtils.audioUrl);
-        mediaUtils.process(StorageUtils.videoUrl, StorageUtils.videoUrl, StorageUtils.audioUrl, extraObservable);
+//        mediaUtils.process(StorageUtils.videoUrl, StorageUtils.videoUrl, StorageUtils.audioUrl, extraObservable);
     }
 
     private MediaUtils.ExtraObservable extraObservable;

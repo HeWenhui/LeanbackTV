@@ -277,7 +277,9 @@ public class Camera1Utils implements IRecordVideoView {
                 // 释放资源
 //                mediarecorder.release();
                 //                mediarecorder = null;
+                logger.i(System.currentTimeMillis());
                 releaseCamera();
+                logger.i(System.currentTimeMillis());
 
             } catch (Exception e) {
                 logger.e(e.toString());

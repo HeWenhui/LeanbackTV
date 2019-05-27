@@ -10,6 +10,8 @@ import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.HalfBodySceneTransAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.androidaudioconverter.AndroidAudioConverter;
+import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.androidaudioconverter.callback.ILoadCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.SuperSpeakerRedPackageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.UploadVideoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.widget.SuperSpeakerBridge;
@@ -254,6 +256,18 @@ public class SuperSpeakerBll extends LiveBaseBll implements NoticeAction, TopicA
      */
     @UiThread
     private void performShowRecordCamera(int answerTime, int recordTime) {
+        AndroidAudioConverter.load(mContext, new ILoadCallback() {
+            @Override
+            public void onSuccess() {
+                // Great!
+            }
+
+            @Override
+            public void onFailure(Exception error) {
+                // FFmpeg is not supported by device
+                error.printStackTrace();
+            }
+        });
         try {
             if (superSpeakerBridge != null && superSpeakerBridge.containsView()) {
                 return;
