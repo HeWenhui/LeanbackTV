@@ -6,11 +6,9 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Binder;
 import android.os.Build;
-import android.os.Environment;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.widget.Toast;
 
 import com.czt.mp3recorder.util.LameUtil;
 import com.xueersi.common.config.AppConfig;
@@ -82,8 +80,14 @@ public class UploadVideoService extends Service {
                     2,
                     ShareDataManager.SHAREDATA_NOT_CLEAR,
                     false);
-            uploadSuccess();
-//            latch.countDown();
+//            uploadSuccess();
+            latch.countDown();
+            try {
+                latch.await();
+                uploadSuccess();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
@@ -120,22 +124,27 @@ public class UploadVideoService extends Service {
 //        audioUrl = Environment.getExternalStorageDirectory().getAbsolutePath() + "/superspeaker/485219_7.mp3";
 //        audioUrl = StorageUtils.audioUrl;
 //        videoUrl = StorageUtils.videoUrl;
-        File wavFile = new File(videoUrl);
+        File wavFile = new File(uploadVideoEntity.getVideoLocalUrl());
+        logger.i(uploadVideoEntity.getVideoLocalUrl());
         IConvertCallback callback = new IConvertCallback() {
             @Override
             public void onSuccess(File convertedFile) {
-                logger.i("success:convert Video");
+                logger.i("success:convert Audio " + convertedFile.getAbsolutePath());
 //                Toast.makeText(UploadVideoService.this, "SUCCESS: " + convertedFile.getPath(), Toast.LENGTH_LONG).show();
-                uploadAudio(Environment.getExternalStorageDirectory().getAbsolutePath() + "/superspeaker/485219_7.mp3");
+                uploadAudio(convertedFile.getAbsolutePath());
             }
 
             @Override
             public void onFailure(Exception error) {
-                logger.i("Error:convert Audio");
+                logger.w("Error:convert Audio");
+                logger.e(error);
+
+//                uploadAudio("");
 //                Toast.makeText(UploadVideoService.this, "ERROR: " + error.getMessage(), Toast.LENGTH_LONG).show();
             }
         };
-        Toast.makeText(this, "Converting audio file...", Toast.LENGTH_SHORT).show();
+        logger.i("Converting audio file...");
+//        Toast.makeText(this, "Converting audio file...", Toast.LENGTH_SHORT).show();
         AndroidAudioConverter.with(this)
                 .setFile(wavFile)
                 .setFormat(AudioFormat.MP3)
@@ -210,18 +219,20 @@ public class UploadVideoService extends Service {
             logger.i("audio upload succes " + audioUrl);
 //            XESToastUtils.showToast(UploadVideoService.this, "上传音频成功");
             latch.countDown();
-            try {
-                latch.await();
-                uploadSuccess();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+//            try {
+//                latch.await();
+//                uploadSuccess();
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
         }
 
         @Override
         public void onError(XesCloudResult result) {
             audioUrl = "";
-            uploadSuccess();
+            logger.i("audio upload fail");
+//            uploadSuccess();
+            latch.countDown();
         }
 
         private void deleteAudioFile(String url) {
@@ -303,6 +314,7 @@ public class UploadVideoService extends Service {
     }
 
     private void uploadAudio(String audioLocalUrl) {
+        audioUploadListener = new AudioUploadListener(audioLocalUrl);
         uploadAliUtils.uploadFile(audioLocalUrl,
                 AppConfig.DEBUG ? CloudDir.CLOUD_TEST : CloudDir.LIVE_SUPER_SPEAKER,
                 XesCloudConfig.UPLOAD_OTHER, audioUploadListener);

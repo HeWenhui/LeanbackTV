@@ -16,6 +16,8 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.UploadVideoService;
+import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.androidaudioconverter.AndroidAudioConverter;
+import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.androidaudioconverter.callback.ILoadCallback;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.UploadVideoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page.SuperSpeakerPermissionPager;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page.SuperSpeakerRedPackagePager;
@@ -67,6 +69,20 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
     @SuppressLint("NewApi")
     @UiThread
     public void performShowRecordCamera(int answerTime, int recordTime) {
+        AndroidAudioConverter.load(mContext, new ILoadCallback() {
+            @Override
+            public void onSuccess() {
+                // Great!
+                logger.i("load FFMpeg success");
+            }
+
+            @Override
+            public void onFailure(Exception error) {
+                logger.e(error);
+                // FFmpeg is not supported by device
+                error.printStackTrace();
+            }
+        });
         if (iView == null) {
             iView = new SuperSpeakerPermissionPager(mContext, this, liveId, courseWareId, answerTime, recordTime, back);
         }
@@ -104,6 +120,7 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
 //        }
 
     }
+
     private String audioRemoteUrl, videoRemoteUrl;
 
     private String voiceDecibel;
