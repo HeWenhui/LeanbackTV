@@ -201,14 +201,13 @@ public class SpeechBulletScreenPalyBackBll extends LiveBackBaseBll {
         } else if (liveGetInfo.getIsArts() == 1) {
             for (int j = 0; j < barrageList.size(); j++) {
                 VoiceBarrageMsgEntity voiceBarrageMsgEntity = barrageList.get(j);
-                long startTime = Long.parseLong(voiceBarrageMsgEntity.getVoiceId());
+                long startTime = (Long.parseLong(voiceBarrageMsgEntity.getVoiceId()))/1000 - liveGetInfo.getsTime();
                 ArrayList<VoiceBarrageMsgEntity.VoiceBarrageItemEntity> voiceBarrageItemEntities =
                         voiceBarrageMsgEntity.getVoiceBarrageItemEntities();
                 for (int k = 0; k < voiceBarrageItemEntities.size(); k++) {
                     VoiceBarrageMsgEntity.VoiceBarrageItemEntity voiceBarrageItemEntity = voiceBarrageItemEntities
                             .get(k);
-                    int relativeTime = voiceBarrageItemEntity.getRelativeTime() + (int) startTime / 1000 - (int)
-                            liveGetInfo.getsTime();
+                    int relativeTime = voiceBarrageItemEntity.getRelativeTime() + (int)startTime;
                     voiceBarrageItemEntity.setRelativeTime(relativeTime);
                     allBarrages.add(voiceBarrageItemEntity);
                     logger.i("add barrage: time=" + (voiceBarrageItemEntity.getRelativeTime()) + " msg=" +
