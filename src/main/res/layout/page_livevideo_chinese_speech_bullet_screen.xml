@@ -48,7 +48,7 @@
                 style="@style/text_font14_ffffff_style"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="语音录入中（15字以内）" />
+                android:text="语音录入中（25字以内）" />
 
             <TextView
                 android:id="@id/tv_livevideo_speechbul_title_count"
@@ -115,7 +115,7 @@
                 android:gravity="center_vertical"
                 android:hint="请输入文字"
                 android:imeOptions="flagNoFullscreen|actionSend"
-                android:maxLength="15"
+                android:maxLength="25"
                 android:paddingLeft="21dp"
                 android:singleLine="true" />
 

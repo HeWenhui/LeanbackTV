@@ -53,6 +53,8 @@ public class LiveQueConfig {
     public static final String EN_COURSE_TYPE_19 = "19";
     /** 语文AI主观题*/
     public static final String CHI_COURESWARE_TYPE_AISUBJECTIVE = "17";
+    /** 开讲吧*/
+    public static final String CHI_COURESWARE_TYPE_SPEAKING_CHINESE = "19";
     /** 直播- voice cannon */
     public static final String EN_COURSE_TYPE_VOICE_CANNON = "22";
     /** 直播- Cleaning up */

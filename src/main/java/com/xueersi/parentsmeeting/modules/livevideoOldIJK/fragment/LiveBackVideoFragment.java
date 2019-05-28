@@ -495,7 +495,6 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
                 if (liveBackBll.getIsArts() == 2) {
                     liveBackBll.addBusinessBll(new SpeechBulletScreenPalyBackBll(activity, liveBackBll));
                 }
-                Log.e("LiveBackVideoFragment", "====> initAnswerResultBll");
                 liveBackBll.addBusinessBll(new ArtsAnswerResultPlayBackBll(activity, liveBackBll));
                 if (liveBackBll.getPattern() != 2) {
                     //回放聊天区加上MMD的皮肤

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -252,6 +253,7 @@ public class LivePlaybackMediaController extends MediaController2 {
             }
         } else if(LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == videoQuestionEntity.getvCategory()){
             String type = videoQuestionEntity.getvQuestionType();
+           // Log.e("PreSchoolTrace","=======>LivePlaybackMediaCtr:type="+type);
             switch (type){
                 case "1":
                 case "6":
@@ -261,11 +263,17 @@ public class LivePlaybackMediaController extends MediaController2 {
                 case "3":
                 case "4":
                     textView.setText("测试卷");
+                    break;
                 case "5":
                 case "10":
+                case "25":
                     textView.setText("互动游戏");
+                    break;
                 case "17":
                     textView.setText("互动题");
+                    break;
+                case "19":
+                    textView.setText("开讲吧");
                     break;
             }
         } else if (LocalCourseConfig.CATEGORY_LEC_ADVERT == videoQuestionEntity.getvCategory()) {

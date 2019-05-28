@@ -1857,7 +1857,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             GroupGameLog.sno5(liveAndBackDebug, detailInfo.id, isForce ? "endPublish" : "autoSubmit", voiceTime == 0 ?
                     "0" : "1", 1);
         }
-        englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 1, voiceTime, teamEntity.getPkTeamId(), gameGroupId, starNum, energy, gold,
+        englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 2, voiceTime, teamEntity.getPkTeamId(), gameGroupId, starNum, energy, gold,
                 videoLengthTime, micLengthTime
                 , acceptVideoLengthTime, acceptMicLengthTime, answerData.toString(), new AbstractBusinessDataCallBack() {
                     @Override
@@ -2065,7 +2065,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         XESToastUtils.showToast(mContext, "主文件加载失败，请刷新");
                     }
                 }
-            } else if (WebInstertJs.indexStr().equals(url)) {
+            } else if (url.contains(WebInstertJs.indexStr())) {
                 WebResourceResponse webResourceResponse = newCourseCache.interceptJsRequest(view, url);
                 logger.d("shouldInterceptRequest:js:url=" + url + ",response=null?" + (webResourceResponse == null));
                 if (webResourceResponse != null) {
