@@ -77,11 +77,6 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.media.LiveMediaController;
 import com.xueersi.parentsmeeting.modules.livevideo.OtherModulesEnter;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.item.CommonWordChsItem;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.AudioRequest;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
@@ -89,13 +84,18 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.item.CommonWordChsItem;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.AudioRequest;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.business.LiveMessageEmojiParser;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.QuestionStatic;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveCacheFile;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
 import com.xueersi.parentsmeeting.widget.VolumeWaveView;
 import com.xueersi.ui.adapter.AdapterItemInterface;
@@ -419,8 +419,8 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         Map<String, String> mData = new HashMap<>();
         mData.put("userid", getInfo.getStuId());
         mData.put("liveid", getInfo.getId());
-        mData.put("volume", mVolume+"");
-        mData.put("where","initData");
+        mData.put("volume", mVolume + "");
+        mData.put("where", "initData");
         umsAgentDebugSys(LiveVideoConfig.LIVE_VOICE_VOLUME, mData);
         speechUtils.prepar(new SpeechEvaluatorUtils.OnFileSuccess() {
             @Override
@@ -638,8 +638,8 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
                 Map<String, String> mData = new HashMap<>();
                 mData.put("userid", getInfo.getStuId());
                 mData.put("liveid", getInfo.getId());
-                mData.put("volume", mVolume+"");
-                mData.put("where","mesopen");
+                mData.put("volume", mVolume + "");
+                mData.put("where", "mesopen");
                 umsAgentDebugSys(LiveVideoConfig.LIVE_VOICE_VOLUME, mData);
                 if (isShowSpeechRecog) {
                     btnMessageSwitch.setVisibility(View.VISIBLE);
@@ -1973,7 +1973,7 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         if (speechUtils != null) {
             speechUtils.cancel();
         }
-        if (vwvVoiceChatWave != null){
+        if (vwvVoiceChatWave != null) {
             vwvVoiceChatWave.stop();
             vwvVoiceChatWave.setVisibility(View.GONE);
         }
@@ -1982,8 +1982,8 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             Map<String, String> mData = new HashMap<>();
             mData.put("userid", getInfo.getStuId());
             mData.put("liveid", getInfo.getId());
-            mData.put("volume", mVolume+"");
-            mData.put("where","onDestroy");
+            mData.put("volume", mVolume + "");
+            mData.put("where", "onDestroy");
             umsAgentDebugSys(LiveVideoConfig.LIVE_VOICE_VOLUME, mData);
         }
         Map<String, String> mData = new HashMap<>();
@@ -2109,8 +2109,8 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         Map<String, String> mData = new HashMap<>();
         mData.put("userid", getInfo.getStuId());
         mData.put("liveid", getInfo.getId());
-        mData.put("volume", v+"");
-        mData.put("where","startEvaluator");
+        mData.put("volume", v + "");
+        mData.put("where", "startEvaluator");
         umsAgentDebugSys(LiveVideoConfig.LIVE_VOICE_VOLUME, mData);
     }
 
@@ -2125,8 +2125,8 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
             Map<String, String> mData = new HashMap<>();
             mData.put("userid", getInfo.getStuId());
             mData.put("liveid", getInfo.getId());
-            mData.put("volume", mVolume+"");
-            mData.put("where","stopEvaluator");
+            mData.put("volume", mVolume + "");
+            mData.put("where", "stopEvaluator");
             umsAgentDebugSys(LiveVideoConfig.LIVE_VOICE_VOLUME, mData);
         }
         isSpeekDone = true;
@@ -2265,7 +2265,9 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         if (mLiveBll == null) {
             mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
         }
-        mLiveBll.umsAgentDebugSys(eventId, mData);
+        if (mLiveBll != null) {
+            mLiveBll.umsAgentDebugSys(eventId, mData);
+        }
     }
 
     @Override
@@ -2273,7 +2275,9 @@ public class SmallEnglishLiveMessagePager extends BaseSmallEnglishLiveMessagePag
         if (mLiveBll == null) {
             mLiveBll = ProxUtil.getProxUtil().get(mContext, LiveAndBackDebug.class);
         }
-        mLiveBll.umsAgentDebugInter(eventId, mData);
+        if (mLiveBll != null) {
+            mLiveBll.umsAgentDebugInter(eventId, mData);
+        }
     }
 
     @Override

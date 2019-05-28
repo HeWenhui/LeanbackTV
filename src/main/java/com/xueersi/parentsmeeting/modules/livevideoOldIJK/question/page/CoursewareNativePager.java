@@ -141,6 +141,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     private boolean showControl = false;
     /** 在网页中嵌入js，只嵌入一次 */
     private boolean addJs = false;
+    private boolean loadJs = false;
     /** 是不是刷新，加载完成 */
     private int isRefresh = 0;
     /** 收到加载完成 */
@@ -281,7 +282,9 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
     @Override
     public void initData() {
         super.initData();
+        String testid = "";
         try {
+            testid = NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts);
             mLogtf.addCommon("testid", "" + NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts));
         } catch (Exception e) {
             CrashReport.postCatchedException(new LiveException(TAG, e));
@@ -290,7 +293,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
         Date date = new Date();
         today = dateFormat.format(date);
         getTodayQues();
-        newCourseCache = new NewCourseCache(mContext, liveId);
+        newCourseCache = new NewCourseCache(mContext, liveId, testid);
         addJavascriptInterface();
         wvSubjectWeb.setWebChromeClient(new BaseCoursewareNativePager.MyWebChromeClient() {
             @Override
@@ -395,6 +398,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
             @Override
             public void onClick(View view) {
                 addJs = false;
+                loadJs = false;
                 isRefresh = 1;
                 refreshTime++;
                 mLogtf.d("ivWebViewRefresh:refreshTime=" + refreshTime);
@@ -614,6 +618,7 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                             setNum(currentIndex + 1);
                             NewCourseSec.Test test = tests.get(currentIndex);
                             addJs = false;
+                            loadJs = false;
                             NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), getSubtestid(), test.getPreviewPath(), ispreload, test.getId());
                             wvSubjectWeb.loadUrl(test.getPreviewPath());
                         }
@@ -1185,6 +1190,17 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 }
                 isLoadComplete = true;
                 preLoad.onStop();
+                try {
+                    mLogtf.d("onProgressChanged:loadJs=" + loadJs);
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                }
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        StaticWeb.testCourseware(wvSubjectWeb);
+                    }
+                }, 10);
             }
         } else {
 //            if (isFinish) {
@@ -1623,7 +1639,11 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                 if (!addJs) {
                     addJs = true;
                     WebResourceResponse webResourceResponse = newCourseCache.interceptIndexRequest(view, url);
-                    logger.d("shouldInterceptRequest:index:url=" + url + ",response=null?" + (webResourceResponse == null));
+                    try {
+                        mLogtf.d("shouldInterceptRequest:index:url=" + url + ",response=null?" + (webResourceResponse == null));
+                    } catch (Exception e) {
+                        CrashReport.postCatchedException(new LiveException(TAG, e));
+                    }
                     if (webResourceResponse != null) {
                         return webResourceResponse;
                     } else {
@@ -1636,9 +1656,14 @@ public class CoursewareNativePager extends BaseCoursewareNativePager implements 
                         XESToastUtils.showToast(mContext, "主文件加载失败，请刷新");
                     }
                 }
-            } else if (WebInstertJs.indexStr().equals(url)) {
+            } else if (url.contains(WebInstertJs.indexStr())) {
+                loadJs = true;
                 WebResourceResponse webResourceResponse = newCourseCache.interceptJsRequest(view, url);
-                logger.d("shouldInterceptRequest:js:url=" + url + ",response=null?" + (webResourceResponse == null));
+                try {
+                    mLogtf.d("shouldInterceptRequest:js:url=" + url + ",response=null?" + (webResourceResponse == null));
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                }
                 if (webResourceResponse != null) {
                     return webResourceResponse;
                 } else {

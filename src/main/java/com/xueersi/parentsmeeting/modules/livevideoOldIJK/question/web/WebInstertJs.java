@@ -3,7 +3,9 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.web;
 import android.content.Context;
 import android.util.Log;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.util.WebTrustVerifier;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveCacheFile;
@@ -40,8 +42,13 @@ public class WebInstertJs {
     private LogToFile logToFile;
     OnHttpCode onHttpCode;
 
-    public WebInstertJs(Context context) {
+    public WebInstertJs(Context context, String testid) {
         logToFile = new LogToFile(context, TAG);
+        try {
+            logToFile.addCommon("testid", testid);
+        } catch (Exception e) {
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
         this.context = context;
         logger = LiveLoggerFactory.getLogger(TAG);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
@@ -79,7 +86,7 @@ public class WebInstertJs {
         String line;
         boolean addJs = false;
 //                final String indexJs = "<script type=text/javascript crossorigin=anonymous src=" + "file://" + saveIndex().getPath() + "></script>";
-        final String indexJs = "<script type=text/javascript crossorigin=anonymous src=" + indexStr() + "></script>";
+        final String indexJs = "<script type=text/javascript src=." + indexStr() + "></script>";
         String findStr = "</script>";
         while ((line = br.readLine()) != null) {
 //                    outputStream.write(line.getBytes());
@@ -92,7 +99,7 @@ public class WebInstertJs {
                     } else {
                         line = line.substring(0, index + findStr.length()) + "\n" + indexJs + "\n" + line.substring(index + findStr.length());
                     }
-                    logToFile.d("httpRequest:insertJs=" + index);
+                    logToFile.d("httpRequest:insertJs=" + line);
                     addJs = true;
                 }
             }
@@ -184,6 +191,6 @@ public class WebInstertJs {
     }
 
     public static String indexStr() {
-        return "https://live.xueersi.com/android/courseware/index.js";
+        return "/android/courseware/index.js";
     }
 }

@@ -462,7 +462,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                         XESToastUtils.showToast(mContext, "主文件加载失败，请刷新");
                     }
                 }
-            } else if (WebInstertJs.indexStr().equals(url)) {
+            } else if (url.contains(WebInstertJs.indexStr())) {
                 WebResourceResponse webResourceResponse = newCourseCache.interceptJsRequest(view, url);
                 if (webResourceResponse != null) {
                     return webResourceResponse;

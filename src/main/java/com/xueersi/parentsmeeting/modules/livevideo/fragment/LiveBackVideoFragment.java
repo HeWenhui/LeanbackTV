@@ -603,7 +603,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
     @Override
     protected void seekTo(long pos) {
-        super.seekTo(pos);
+//        super.seekTo(pos);
         liveBackVideoBll.seekTo(pos);
     }
 

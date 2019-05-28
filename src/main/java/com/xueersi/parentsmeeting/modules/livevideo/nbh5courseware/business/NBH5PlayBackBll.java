@@ -76,7 +76,6 @@ public class NBH5PlayBackBll extends LiveBackBaseBll {
     public void showQuestion(VideoQuestionEntity oldQuestionEntity, final VideoQuestionEntity questionEntity, LiveBackBll.ShowQuestion showQuestion) {
         mRootView.setVisibility(View.VISIBLE);
         int vCategory = questionEntity.getvCategory();
-        Log.e("nbTrace", "========>NbH5BackBll showQuestion:" + vCategory);
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_H5COURSE_WARE: {
                 VerifyCancelAlertDialog verifyCancelAlertDialog = new VerifyCancelAlertDialog(activity, activity.getApplication(), false,
@@ -127,9 +126,7 @@ public class NBH5PlayBackBll extends LiveBackBaseBll {
                         h5CoursewareBll.onH5Courseware(entity, "on");
                         //nb 加试 实验 展示试题时 暂停视频播放
                         BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
-                        Log.e("nbTrace", "=======>9990000 onclik:" + mediaPlayerControl);
                         if (mediaPlayerControl != null) {
-                            Log.e("nbTrace", "=====>9990000 pause video");
                             mediaPlayerControl.pause();
                         }
                     }
@@ -155,10 +152,8 @@ public class NBH5PlayBackBll extends LiveBackBaseBll {
         if(event.getEventType() == NbCourseEvent.EVENT_TYPE_NBH5_CLOSE){
             BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
             // Nb 加试实验 关闭页面 调转到试题结束 时间点
-            Log.e("nbTrace","========>onNBEvent endTime:"+mediaPlayerControl.isPlaying());
             if(mediaPlayerControl != null && !mediaPlayerControl.isPlaying()){
                 if(currentQuestion != null){
-                    Log.e("nbTrace","========>onNBEvent endTime:"+currentQuestion.getvEndTime());
                     mediaPlayerControl.seekTo(currentQuestion.getvEndTime() * 1000);
                     mediaPlayerControl.start();
                 }

@@ -548,12 +548,8 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                 ViewGroup.LayoutParams.WRAP_CONTENT));
         createMediaControllerBottom();
 
-        // TODO: 2018/10/23  添加了LayoutParams 是否会有其他异常？
         bottomContent.addView(liveMediaControllerBottom, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
-        android.util.Log.e("HalfBody", "====>LiveVideoFragment initView:add mediaContriller:"
-                + liveMediaControllerBottom.getClass().getSimpleName());
-
         pattern = activity.getIntent().getIntExtra("pattern", 2);
         if ((pattern == 1)) {
             btnVideoFailRetry = mContentView.findViewById(R.id.btn_livevideo_switch_flow_retry_btn);

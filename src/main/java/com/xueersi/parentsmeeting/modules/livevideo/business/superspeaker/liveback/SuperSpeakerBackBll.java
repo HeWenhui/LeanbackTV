@@ -9,6 +9,7 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
+import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.HalfBodySceneTransAnim;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
@@ -20,6 +21,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page.S
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.widget.SuperSpeakerBridge;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.video.DoPSVideoHandle;
 
 import java.util.concurrent.TimeUnit;
 
@@ -69,6 +71,7 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
             if (mediaPlayerControl != null) {
                 mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
             }
+            putCurrentPos(questionEntity.getvEndTime() * 1000);
         } else {
             uploadStatus = ShareDataManager.getInstance().getInt(
                     ShareDataConfig.SUPER_SPEAKER_UPLOAD_SP_KEY + "_" + liveGetInfo.getId() + "_" + courseWareId,
@@ -85,9 +88,9 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
                 uploadVideoEntity.setIsPlayBack("2");
                 uploadVideoEntity.setIsUpload("2");
                 superSpeakerBridge = new SuperSpeakerBridge(mContext, this, mRootView, liveGetInfo.getId(), courseWareId, 2, uploadVideoEntity);
-                if (mediaPlayerControl != null) {
-                    mediaPlayerControl.seekTo(questionEntity.getvQuestionInsretTime());
-                }
+//                if (mediaPlayerControl != null) {
+//                    mediaPlayerControl.seekTo(questionEntity.getvQuestionInsretTime());
+//                }
                 stopLiveVideo();
                 superSpeakerBridge.performShowRecordCamera(questionEntity.getAnswerTime(), questionEntity.getRecordTime());
             } else if (uploadStatus == 2) {
@@ -97,14 +100,15 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
                 if (mediaPlayerControl != null) {
                     mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
                 }
+                putCurrentPos(questionEntity.getvEndTime() * 1000);
             } else {
                 superSpeakerPopWindowPager = new SuperSpeakerPopWindowPager(mContext);
                 superSpeakerPopWindowPager.setTextTip(mContext.getString(R.string.super_speaker_back_upload_in_background));
                 addPopWindowPager(superSpeakerPopWindowPager.getRootView());
                 if (mediaPlayerControl != null) {
-
                     mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
                 }
+                putCurrentPos(questionEntity.getvEndTime() * 1000);
             }
         }
     }
@@ -248,11 +252,29 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
         BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
         if (mediaPlayerControl != null) {
             mediaPlayerControl.startPlayVideo();
-            mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
+
+            putCurrentPos(questionEntity.getvEndTime() * 1000);
+
+//            mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
         }
         View view = activity.findViewById(R.id.vv_course_video_video);
         if (view != null) {
             view.setVisibility(View.VISIBLE);
         }
     }
+
+    private void putCurrentPos(long pos) {
+        String videoPath;
+        String url = mVideoEntity.getVideoPath();
+        if (url.contains("http") || url.contains("https")) {
+            videoPath = DoPSVideoHandle.getPSVideoPath(url);
+        } else {
+            videoPath = url;
+        }
+
+        mShareDataManager.put(videoPath + mShareKey + VP.SESSION_LAST_POSITION_SUFIX, pos, ShareDataManager.SHAREDATA_USER);//重置播放进度
+    }
+
+    /** 进度缓存的追加KEY值 */
+    private final String mShareKey = "LiveBack";
 }
