@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.LiveRoomH5CloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.NativeVoteRusltulCloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.TeachPraiseRusltulCloseEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.UpdatePkState;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.entity.RedPackageEvent;
@@ -749,6 +750,12 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         showVoteEnergyAnimSuc(addEnergy, event.getVoiceId());
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdatePkState(UpdatePkState event) {
+        logger.d("onUpdatePkState:event=" + event.getWhere());
+      updatePkStateLayout(true);
+    }
+
     /**
      * 展示 投票加能量 动画
      */
@@ -779,7 +786,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                 roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), voteId, new HttpCallBack(false) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        TeamPkAqResultPager aqAwardPager = new TeamPkAqResultPager(mActivity, TeamPkAqResultPager.AWARD_TYPE_VOTE,
+                        TeamPkAqResultPager aqAwardPager = new TeamPkAqResultPager(mActivity, TeamPkAqResultPager.AWARD_TYPE_SPEECH,
                                 TeamPkBll.this);
                         //addPager(aqAwardPager);
                         addTopLayerPager(aqAwardPager);

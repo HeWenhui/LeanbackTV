@@ -214,7 +214,9 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                     mHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            speechCollectiveBll.start("t", voiceId);
+                            if (speechCollectiveBll != null) {
+                                speechCollectiveBll.start("t", voiceId);
+                            }
                         }
                     });
                 } else {

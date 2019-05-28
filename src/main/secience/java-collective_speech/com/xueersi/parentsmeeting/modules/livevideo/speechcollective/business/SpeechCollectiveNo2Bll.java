@@ -27,6 +27,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.TeachPraiseRusltulCloseEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.event.TeacherPraiseEvent;
+import com.xueersi.parentsmeeting.modules.livevideo.event.UpdatePkState;
 import com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.widget.SoundWaveView;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
@@ -417,6 +418,7 @@ public class SpeechCollectiveNo2Bll {
             LiveEventBus.getDefault(context).unregister(teacherPraiseEventReg);
             teacherPraiseEventReg = null;
         }
+        EventBus.getDefault().post(new UpdatePkState(TAG + ":stop"));
     }
 
     public void onResume() {
