@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.business.UserBll;
-import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.logerhelper.MobEnumUtil;
 import com.xueersi.common.logerhelper.XesMobAgent;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
@@ -340,7 +339,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         if (isGoldMicrophone == 1) {
             mLiveBll.addBusinessBll(new GoldMicroPhoneBll(activity, mLiveBll));
         }
-        if (AppConfig.DEBUG || useSuperSpeakerShow == 1) {
+        if (useSuperSpeakerShow == 1) {
             mLiveBll.addBusinessBll(new SuperSpeakerBll(activity, mLiveBll));
         }
         if ((pattern == 1)) {
