@@ -656,7 +656,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                     }
                     NewCourseLog.sno4(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts),
                             getSubtestid(), wvSubjectWeb.getUrl(), ispreload, pageid,
-                            (System.currentTimeMillis() - pagerStart), isRefresh, refreshTime);
+                            (System.currentTimeMillis() - pagerStart), isRefresh, refreshTime,detailInfo.isTUtor());
                     isRefresh = 0;
                 }
             }
@@ -741,7 +741,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
         subMitTime = System.currentTimeMillis();
         submitAnswer(isforce, nonce);
         NewCourseLog.sno5(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), isforce == 1,
-                wvSubjectWeb.getUrl(), ispreload);
+                wvSubjectWeb.getUrl(), ispreload,detailInfo.isTUtor());
     }
 
     /**
@@ -919,7 +919,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
      */
     private void onSubmitSuccess(int isforce) {
         NewCourseLog.sno6(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), true,
-                isforce == 1, ispreload, (System.currentTimeMillis() - subMitTime), "");
+                isforce == 1, ispreload, (System.currentTimeMillis() - subMitTime), "",detailInfo.isTUtor());
     }
 
     /**
@@ -930,7 +930,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
      */
     private void onSubmitError(int isforce, String errorMsg) {
         NewCourseLog.sno6(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), false,
-                isforce == 1, ispreload, (System.currentTimeMillis() - subMitTime), errorMsg);
+                isforce == 1, ispreload, (System.currentTimeMillis() - subMitTime), errorMsg,detailInfo.isTUtor());
 
     }
 
@@ -1002,7 +1002,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                     showAnswerResult(0);
                 } else {
                     NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts),
-                            getSubtestid(), test.getPreviewPath(), ispreload, test.getId());
+                            getSubtestid(), test.getPreviewPath(), ispreload, test.getId(),detailInfo.isTUtor());
                 }
             }
 
