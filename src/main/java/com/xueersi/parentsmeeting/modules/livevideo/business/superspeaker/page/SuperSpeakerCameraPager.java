@@ -422,13 +422,22 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                     public void accept(Boolean aBoolean) throws Exception {
                         stopRecordVideo();
                     }
-                }).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<Boolean>() {
-            @Override
-            public void accept(Boolean aBoolean) throws Exception {
-                sfvVideo.setVisibility(View.GONE);
-                customVideoController2.setVisibility(View.VISIBLE);
-            }
-        });
+                }).
+                observeOn(AndroidSchedulers.mainThread()).
+                subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) throws Exception {
+                        sfvVideo.setVisibility(View.GONE);
+                        customVideoController2.setVisibility(View.VISIBLE);
+                        customVideoController2.startPlayVideo(StorageUtils.videoUrl, 0);
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
+                        logger.e(throwable);
+                    }
+                });
 
         //录制视频小于1s
 //            groupStart.setVisibility(View.VISIBLE);
@@ -437,7 +446,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
 
 //        ((Activity)mContext).findViewById(R.id.sfv_livevideo_super_speaker_record_video).setVisibility(View.GONE);
 
-        customVideoController2.startPlayVideo(StorageUtils.videoUrl, 0);
+
 //        String srcPath = StorageUtils.videoUrl;
 //        StorageUtils.imageUrl = LiveVideoConfig.SUPER_SPEAKER_VIDEO_PATH + liveId + "_" + courseWareId + "video.mp4";
 
@@ -562,7 +571,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
             } else {
                 answerTime--;
             }
-            logger.i("answerTime:" + answerTime);
+//            logger.i("answerTime:" + answerTime);
             mView.postDelayed(coursewareTimer, 1000);
         }
     }

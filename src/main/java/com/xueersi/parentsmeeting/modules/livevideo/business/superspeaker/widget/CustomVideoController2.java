@@ -105,6 +105,7 @@ public class CustomVideoController2 extends ConstraintLayout implements ILocalVi
                 if (iPlayer != null) {
                     iPlayer.stop();
                     iPlayer.release();
+                    videoObservable.setIsCreate(0);
                 }
             }
         });
@@ -235,10 +236,11 @@ public class CustomVideoController2 extends ConstraintLayout implements ILocalVi
                 iPlayer.startPlayVideo(path, 0);
             }
         });
+        logger.i("startPlayVideo 设置 VideoView");
         iPlayer.setVideoView(mVideoView);
 
         this.time = time;
-        logger.i("path:" + path + " time:" + time);
+        logger.i("startPlayVideo path:" + path + " time:" + time);
         videoObservable.setVideoPath(path);
 //        iPlayer.startPlayVideo(path, time);
 
@@ -282,6 +284,7 @@ public class CustomVideoController2 extends ConstraintLayout implements ILocalVi
             if (o instanceof VideoObservable) {
                 if (((VideoObservable) o).getIsCreate() == 1 && !TextUtils.isEmpty(((VideoObservable) o).getVideoPath())) {
                     logger.i("file path : " + ((VideoObservable) o).getVideoPath());
+                    logger.i("update 设置VideoView");
                     iPlayer.setVideoView(mVideoView);
                     iPlayer.startPlayVideo(((VideoObservable) o).getVideoPath(), 0);
                 }
