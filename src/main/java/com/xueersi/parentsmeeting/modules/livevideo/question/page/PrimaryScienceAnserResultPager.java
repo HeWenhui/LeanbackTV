@@ -202,11 +202,10 @@ public class PrimaryScienceAnserResultPager extends LiveBasePager {
     }
 
     private void startGameLottieAnimation() {
-        if (mEnytity.getType() < 0 || mEnytity.getType() >= jsonAssetsFolderGame.length) {
-            return;
-        }
-        lavActiveRight.setAnimation(jsonAssetsFolderGame[mEnytity.getType()]);
-        lavActiveRight.setImageAssetsFolder(imageAssetsFolderGame[mEnytity.getType()]);
+        String animScript = mEnytity.getType() == 1?jsonAssetsFolderGame[1]:jsonAssetsFolderGame[0];
+        String assetFolder = mEnytity.getType() == 1?imageAssetsFolderGame[1]:imageAssetsFolderGame[0];
+        lavActiveRight.setAnimation(animScript);
+        lavActiveRight.setImageAssetsFolder(assetFolder);
         lavActiveRight.setVisibility(View.VISIBLE);
         lavActiveRight.useHardwareAcceleration();
         lavActiveRight.loop(true);

@@ -32,6 +32,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveVoteBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoIml;
 import com.xueersi.parentsmeeting.modules.livevideo.business.RankBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.VideoAction;
+import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.SuperSpeakerBll;
 import com.xueersi.parentsmeeting.modules.livevideo.chpk.business.ChinesePkBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.AllBllConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
@@ -137,6 +138,8 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
     private int totalSwitchRouteNum = 0;
     private int isGoldMicrophone;
 
+    private int useSuperSpeakerShow;
+
     /** {@link #onActivityCreated(Bundle)} */
     @Override
     protected boolean onVideoCreate(Bundle savedInstanceState) {
@@ -146,6 +149,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             isSmallEnglish = activity.getIntent().getBooleanExtra("isSmallEnglish", false);
             useSkin = activity.getIntent().getIntExtra("useSkin", 0);
             isGoldMicrophone = activity.getIntent().getIntExtra("isGoldMicrophone", 0);
+            useSuperSpeakerShow = activity.getIntent().getIntExtra("useSuperSpeakerShow", 0);
             //logger.e("========>:onVideoCreate 22222229999000:");
             pattern = activity.getIntent().getIntExtra("pattern", 2);
             String mode2 = activity.getIntent().getStringExtra("mode");
@@ -334,6 +338,9 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         mLiveBll.addBusinessBll(evaluateTeacherBll);
         if (isGoldMicrophone == 1) {
             mLiveBll.addBusinessBll(new GoldMicroPhoneBll(activity, mLiveBll));
+        }
+        if (useSuperSpeakerShow == 1) {
+            mLiveBll.addBusinessBll(new SuperSpeakerBll(activity, mLiveBll));
         }
         if ((pattern == 1)) {
             addSwitchFlowBll();
@@ -540,12 +547,8 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
                 ViewGroup.LayoutParams.WRAP_CONTENT));
         createMediaControllerBottom();
 
-        // TODO: 2018/10/23  添加了LayoutParams 是否会有其他异常？
         bottomContent.addView(liveMediaControllerBottom, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT));
-        android.util.Log.e("HalfBody", "====>LiveVideoFragment initView:add mediaContriller:"
-                + liveMediaControllerBottom.getClass().getSimpleName());
-
         pattern = activity.getIntent().getIntExtra("pattern", 2);
         if ((pattern == 1)) {
             btnVideoFailRetry = mContentView.findViewById(R.id.btn_livevideo_switch_flow_retry_btn);

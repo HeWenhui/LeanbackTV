@@ -40,6 +40,9 @@ public class LiveMessageEmojiParser {
         map.put("[e]em_15[e]", R.drawable.emoji_1f44d);
         map.put("[e]em_16[e]", R.drawable.emoji_1f44c);
         map.put("[e]em_17[e]", R.drawable.emoji_270c);
+
+        map.put("[e]em_18[e]", R.drawable.emoji_heart);
+        map.put("[e]em_19[e]", R.drawable.emoji_sml);
     }
 
     /**

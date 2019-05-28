@@ -235,7 +235,7 @@ public class QuestionWebX5Pager extends LiveBasePager implements BaseQuestionWeb
 
     @Override
     public void initData() {
-        newCourseCache = new NewCourseCache(mContext, liveid);
+        newCourseCache = new NewCourseCache(mContext, liveid, "99999");
         btSubjectClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

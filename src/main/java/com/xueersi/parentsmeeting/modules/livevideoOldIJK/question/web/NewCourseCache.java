@@ -9,6 +9,7 @@ import com.tencent.smtt.sdk.MimeTypeMap;
 import com.tencent.smtt.sdk.WebView;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.courseware.CoursewarePreload;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveCacheFile;
@@ -57,10 +58,15 @@ public class NewCourseCache {
     OnHttpCode onHttpCode;
     private ArrayList<InterceptRequest> interceptRequests = new ArrayList<>();
 
-    public NewCourseCache(Context mContext, String liveId) {
+    public NewCourseCache(Context mContext, String liveId, String testid) {
         this.mContext = mContext;
         logToFile = new LogToFile(mContext, TAG);
-        webInstertJs = new WebInstertJs(mContext);
+        try {
+            logToFile.addCommon("testid", testid);
+        } catch (Exception e) {
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
+        webInstertJs = new WebInstertJs(mContext, testid);
         cacheFile = LiveCacheFile.geCacheFile(mContext, "webviewCache");
         mPublicCacheout = new File(cacheFile, CoursewarePreload.mPublicCacheoutName);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
@@ -253,7 +259,6 @@ public class NewCourseCache {
                     WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "",
                             inputStream);
                     webResourceResponse.setResponseHeaders(header);
-                    Log.e("Duncan", "artsload");
                     return webResourceResponse;
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();

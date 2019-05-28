@@ -329,7 +329,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
         Date date = new Date();
         today = dateFormat.format(date);
         getTodayQues();
-        newCourseCache = new NewCourseCache(mContext, liveId);
+        newCourseCache = new NewCourseCache(mContext, liveId, "99999");
         addJavascriptInterface();
         wvSubjectWeb.getSettings().setLoadWithOverviewMode(false);
 //        wvSubjectWeb.getSettings().setDisplayZoomControls(false);
@@ -1217,7 +1217,7 @@ public class ChineseAiSubjectiveCoursewarePager extends BaseCoursewareNativePage
                         XESToastUtils.showToast(mContext, "主文件加载失败，请刷新");
                     }
                 }
-            } else if (WebInstertJs.indexStr().equals(url)) {
+            } else if (url.contains(WebInstertJs.indexStr())) {
                 WebResourceResponse webResourceResponse = newCourseCache.interceptJsRequest(view, url);
                 logger.d("shouldInterceptRequest:js:url=" + url + ",response=null?" + (webResourceResponse == null));
                 if (webResourceResponse != null) {

@@ -165,15 +165,15 @@ public interface XESCODE {
 
     /** 退出每题pk 结果 */
     int TEAM_PK_EXIT_PK_RESULT = 235;
-    /** 公布明星榜**/
+    /** 公布明星榜 **/
     int TEAM_PK_STAR_RANK_LIST = 301;
     /** 公布黑马榜 **/
     int TEAM_PK_BLACK_RANK_LIST = 302;
-    /** 教师端结束pk 统计**/
+    /** 教师端结束pk 统计 **/
     int TEAM_PK_PK_END = 303;
     /** 战队PK答对超难题 **/
     int TEAM_PK_PARISE_ANWSER_RIGHT = 304;
-    /** 战队pk老师徽章表扬**/
+    /** 战队pk老师徽章表扬 **/
     int TEAM_PK_TEACHER_PRAISE = 305;
 
     /** 一题多发 */
@@ -287,4 +287,8 @@ public interface XESCODE {
     int ARTS_GOLD_MICROPHONE = 3000;
     /** 语文幼升小发送语音识别消息 */
     int ARTS_GOLD_MICROPHONE_SEND_TEACHER = 3001;
+    /** 发布结束演讲秀notice */
+    int SUPER_SPEAKER_TAKE_CAMERA = 3003;
+    /** 演讲秀发给老师消息 */
+    int SUPER_SPEAKER_SEND_MESSAGE = 3004;
 }

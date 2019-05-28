@@ -80,7 +80,6 @@ public class NBH5CoursewareIRCBll extends LiveBaseBll implements NoticeAction, T
 
     @Override
     public void onNotice(String sourceNick, String target, final JSONObject object, int type) {
-        Log.e("NbIRCBll","========>onNotice:"+object.toString());
         switch (type) {
             case XESCODE.H5_START: {
                 mHandler.post(new Runnable() {

@@ -462,7 +462,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                         XESToastUtils.showToast(mContext, "主文件加载失败，请刷新");
                     }
                 }
-            } else if (WebInstertJs.indexStr().equals(url)) {
+            } else if (url.contains(WebInstertJs.indexStr())) {
                 WebResourceResponse webResourceResponse = newCourseCache.interceptJsRequest(view, url);
                 if (webResourceResponse != null) {
                     return webResourceResponse;
@@ -587,9 +587,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 }
             }, 2000);
         }
-        if (saveVideoFile != null) {
-            groupGameUpload.uploadWonderMoment(saveVideoFile, content.toString(), 0);
-        }
     }
 
     /**
@@ -704,7 +701,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             CrashReport.postCatchedException(new LiveException(TAG, e));
         }
         isSubmit = true;
-        englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 0, (int) voiceTime, 0, 0, starNum, fireNum, goldNum,
+        englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 1, (int) voiceTime, 0, 0, starNum, fireNum, goldNum,
                 0, (int) voiceTime, 0, 0, answerData.toString(), new AbstractBusinessDataCallBack() {
                     @Override
                     public void onDataSucess(Object... objData) {
@@ -916,9 +913,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             singleCount = 0;
             if (pageNum >= mAnswersList.size()) {
                 gameOver = true;
-                if (mIse != null) {
-                    mIse.cancel();
-                }
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -928,12 +922,6 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             } else {
                 content = new StringBuilder(mGroupGameTestInfosEntity.getTestInfoList().get(0).getAnswerList().get
                         (pageNum).getText());
-                if (mIse != null) {
-                    mIse.cancel();
-                }
-                if (saveVideoFile != null) {
-                    groupGameUpload.uploadWonderMoment(saveVideoFile, content.toString(), 0);
-                }
                 handler.postDelayed(startSpeechRecognizeRunnable, 1000);
                 int time = mAnswersList.get(pageNum).getSingleTime() + 1;
                 handler.postDelayed(turnPageRunnable, time * 1000);
@@ -1005,10 +993,11 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
         @Override
         public void saveUserAnser() {
-            for (int i = 0; i < pageNum; i++) {
+            for (int i = 0; i < mAnswersList.size(); i++) {
                 JSONObject jsonObject = new JSONObject();
                 int isRight = 0;
                 int singleCount = 0;
+                int presentTime = 0;
                 List<Integer> scoreList = scoreMatrix.get(i);
                 try {
                     jsonObject.put("text", mAnswersList.get(i).getText());
@@ -1023,8 +1012,11 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                         isRight = 1;
                         successTimes++;
                     }
+                    if (i < presentTimeList.size()) {
+                        presentTime = (int) ((long) presentTimeList.get(i));
+                    }
                     jsonObject.put("scores", scoreArray.toString().substring(1, scoreArray.toString().length() - 1));
-                    jsonObject.put("voiceTime", (int) ((long) presentTimeList.get(i)));
+                    jsonObject.put("voiceTime", presentTime);
                     jsonObject.put("isRight", isRight);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -1037,7 +1029,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             @Override
             public void run() {
                 uploadScore(-1, true);
-                singleModeAction.startTimer();
+                startTimer();
             }
         };
 
@@ -1053,6 +1045,10 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             try {
                 int turnToPageNum = -1;
                 if (isTurnPage) {
+                    if (mIse != null) {
+                        mIse.cancel();
+                    }
+                    uploadAliCloud();
                     pageNum++;
                     presentTime = System.currentTimeMillis() - presentTime;
                     presentTimeList.add(presentTime);
@@ -1066,7 +1062,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 jsonData.put("isTurnPage", isTurnPage);
                 jsonData.put("turnToPageNum", turnToPageNum);
                 logger.d("uploadScore : jsonData = " + jsonData.toString());
-                wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
+                postMessage(wvSubjectWeb, jsonData);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -1108,6 +1104,17 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                     tvOops.setVisibility(View.GONE);
                 }
             }, 2000);
+        }
+
+        private void uploadAliCloud() {
+            //音频上传阿里云
+            if (saveVideoFile != null && pageNum >= 0 && pageNum < scoreMatrix.size()) {
+                JSONArray scoreArray = new JSONArray();
+                for (int j = 0; j < scoreMatrix.get(pageNum).size(); j++) {
+                    scoreArray.put(scoreMatrix.get(pageNum).get(j));
+                }
+                groupGameUpload.uploadWonderMoment(saveVideoFile, content.toString(), scoreArray.toString(), 0);
+            }
         }
     }
 
@@ -1201,6 +1208,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                         if (mIse != null) {
                             mIse.cancel();
                         }
+                        uploadAliCloud();
                         handler.removeCallbacks(stopTimerRunnable);
                         handler.postDelayed(new Runnable() {
                             @Override
@@ -1223,7 +1231,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         @Override
         public void saveUserAnser() {
             presentTime = System.currentTimeMillis() - presentTime;
-            for (int i = 0; i < scoreMatrix.size(); i++) {
+            for (int i = 0; i < mAnswersList.size(); i++) {
                 JSONObject jsonObject = new JSONObject();
                 int isRight = 0;
                 List<Integer> scoreList = scoreMatrix.get(i);
@@ -1254,6 +1262,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 if (mIse != null) {
                     mIse.cancel();
                 }
+                uploadAliCloud();
                 submitData(false);
             }
         };
@@ -1273,7 +1282,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 }
                 jsonData.put("rightItem", rightItem);
                 jsonData.put("combo", 0);
-                wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
+                postMessage(wvSubjectWeb, jsonData);
             } catch (Exception e) {
                 CrashReport.postCatchedException(new LiveException(TAG, e));
                 logger.d("uploadScore", e);
@@ -1312,6 +1321,12 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 }
             }, 2000);
         }
+
+        private void uploadAliCloud() {
+            if (saveVideoFile != null) {
+                groupGameUpload.uploadWonderMoment(saveVideoFile, content.toString(), 0);
+            }
+        }
     }
 
     private void sendToCourseware(final WebView wvSubjectWeb, final JSONObject type, String data) {
@@ -1328,5 +1343,21 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             CrashReport.postCatchedException(new LiveException(TAG, e));
         }
         StaticWeb.sendToCourseware(wvSubjectWeb, type, data);
+    }
+
+    private void postMessage(final WebView wvSubjectWeb, JSONObject jsonData) {
+        try {
+            JSONObject liveinfo = new JSONObject();
+            liveinfo.put("liveid", liveId);
+            liveinfo.put("userid", stuId);
+            liveinfo.put("testid", "" + detailInfo.id);
+            liveinfo.put("creattime", "" + creattime);
+            liveinfo.put("time", "" + System.currentTimeMillis());
+            jsonData.put("liveinfo", liveinfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
+        wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
     }
 }
