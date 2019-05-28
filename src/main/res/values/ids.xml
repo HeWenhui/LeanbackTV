@@ -1369,5 +1369,6 @@
     <item name="tv_page_livevideo_praise_list_teacher_tip" type="id" />
     <item name="tv_page_livevideo_praise_list_teacher_talk" type="id" />
 
+    <item name="iv_page_livevideo_praise_list_teacher_wood_left" type="id" />
 
 </resources>
