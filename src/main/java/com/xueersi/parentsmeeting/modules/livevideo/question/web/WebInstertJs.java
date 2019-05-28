@@ -86,7 +86,7 @@ public class WebInstertJs {
         String line;
         boolean addJs = false;
 //                final String indexJs = "<script type=text/javascript crossorigin=anonymous src=" + "file://" + saveIndex().getPath() + "></script>";
-        final String indexJs = "<script type=text/javascript crossorigin=anonymous src=" + indexStr() + "></script>";
+        final String indexJs = "<script type=text/javascript src=." + indexStr() + "></script>";
         String findStr = "</script>";
         while ((line = br.readLine()) != null) {
 //                    outputStream.write(line.getBytes());
@@ -191,6 +191,6 @@ public class WebInstertJs {
     }
 
     public static String indexStr() {
-        return "https://live.xueersi.com/android/courseware/index.js";
+        return "/android/courseware/index.js";
     }
 }
