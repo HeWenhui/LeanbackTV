@@ -378,6 +378,18 @@ public class SpeechCollectiveNo2Bll {
         }
     };
 
+    public void onTeacherLevel() {
+        try {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("liveid", liveGetInfo.getId());
+            jsonObject.put("voiceId", voiceId);
+            ShareDataManager.getInstance().put(ShareDataConfig.SP_SPEECH_COLLECTION, "" + jsonObject, ShareDataManager.SHAREDATA_USER);
+        } catch (Exception e) {
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
+        stop();
+    }
+
     public void stop() {
         if (start) {
             if (!userClose) {

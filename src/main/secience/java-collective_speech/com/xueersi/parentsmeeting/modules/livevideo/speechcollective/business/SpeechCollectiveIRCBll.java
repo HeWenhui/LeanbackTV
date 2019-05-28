@@ -8,14 +8,18 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.business.IRCConnection;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
+import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveBll2;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideo.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.message.LiveIRCMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.http.SpeechCollectiveHttpManager;
 
 import org.json.JSONObject;
@@ -23,7 +27,7 @@ import org.json.JSONObject;
 /**
  * 语音互动
  */
-public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.parentsmeeting.modules.livevideo.speechcollective.business.SpeechFeedBackHttp, NoticeAction, TopicAction {
+public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.parentsmeeting.modules.livevideo.speechcollective.business.SpeechFeedBackHttp, NoticeAction, TopicAction, MessageAction {
     private SpeechCollectiveNo2Bll speechCollectiveBll;
     private boolean isFirstCreate = true;
     private SpeechCollectiveHttpManager speechCollectiveHttpManager;
@@ -53,6 +57,80 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
         }
 //        createBll();
 //        speechCollectiveBll.start("");
+    }
+
+    @Override
+    public void onStartConnect() {
+
+    }
+
+    @Override
+    public void onConnect(IRCConnection connection) {
+
+    }
+
+    @Override
+    public void onRegister() {
+
+    }
+
+    @Override
+    public void onDisconnect(IRCConnection connection, boolean isQuitting) {
+
+    }
+
+    @Override
+    public void onMessage(String target, String sender, String login, String hostname, String text) {
+
+    }
+
+    @Override
+    public void onPrivateMessage(boolean isSelf, String sender, String login, String hostname, String target, String message) {
+
+    }
+
+    @Override
+    public void onChannelInfo(String channel, int userCount, String topic) {
+
+    }
+
+    @Override
+    public void onUserList(String channel, User[] users) {
+
+    }
+
+    @Override
+    public void onJoin(String target, String sender, String login, String hostname) {
+
+    }
+
+    @Override
+    public void onQuit(String sourceNick, String sourceLogin, String sourceHostname, String reason) {
+        if (sourceNick.startsWith(LiveIRCMessageBll.TEACHER_PREFIX)) {
+            if (LiveTopic.MODE_CLASS.equals(mLiveBll.getMode())) {
+                if (speechCollectiveBll != null) {
+                    speechCollectiveBll.onTeacherLevel();
+                    speechCollectiveBll = null;
+                }
+            }
+        } else if (sourceNick.startsWith(LiveIRCMessageBll.COUNTTEACHER_PREFIX)) {
+            if (LiveTopic.MODE_TRANING.equals(mLiveBll.getMode())) {
+                if (speechCollectiveBll != null) {
+                    speechCollectiveBll.onTeacherLevel();
+                    speechCollectiveBll = null;
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onKick(String target, String kickerNick, String kickerLogin, String kickerHostname, String recipientNick, String reason) {
+
+    }
+
+    @Override
+    public void onUnknown(String line) {
+
     }
 
     class SpeechCollectiveHttpImpl implements SpeechCollectiveHttp {
