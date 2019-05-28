@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:ignore="MissingConstraints">
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@id/tv_livevideo_super_speaker_record_video_record_time_currenttime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="00:00"
+        android:textColor="@color/COLOR_FFFFFF"
+        android:textSize="14dp"
+        app:layout_constraintBottom_toTopOf="@id/iv_livevideo_super_speaker_record_video_start"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_super_speaker_record_video_start"
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_super_speaker_record_video_start"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="UnknownId" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@id/tv_livevideo_super_speaker_record_video_record_time_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="/"
+        android:textColor="@color/COLOR_FFFFFF"
+        android:textSize="14dp"
+        app:layout_constraintLeft_toRightOf="@id/tv_livevideo_super_speaker_record_video_record_time_currenttime"
+        app:layout_constraintTop_toTopOf="@id/tv_livevideo_super_speaker_record_video_record_time_currenttime" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@id/tv_livevideo_super_speaker_record_video_record_time_total"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="01:00"
+        android:textColor="@color/COLOR_FFFFFF"
+        android:textSize="14dp"
+        app:layout_constraintLeft_toRightOf="@id/tv_livevideo_super_speaker_record_video_record_time_tip"
+        app:layout_constraintTop_toTopOf="@id/tv_livevideo_super_speaker_record_video_record_time_currenttime" />
+</android.support.constraint.ConstraintLayout>

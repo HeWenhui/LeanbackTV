@@ -14,6 +14,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.business.evendrive.EvenDriveEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.entity.SuperSpeakerRedPackageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
@@ -533,6 +534,8 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
             //金话筒
             getInfo.setUseGoldMicroPhone(data.optInt("isGoldMicrophone"));
+            //超级演讲秀
+            getInfo.setUseSuperSpeakerShow(data.optInt("isSuperSpeechShow"));
             getInfo.setSubject_digits(data.optString("subject_digits"));
             if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                 getInfo.setIsNewProject(data.optInt("isNewProject", 0));
@@ -2434,5 +2437,12 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
         }
         return evenDriveEntity;
+    }
+
+    public SuperSpeakerRedPackageEntity parseSuperSpeakerSubmitEntity(ResponseEntity responseEntity) {
+        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+        SuperSpeakerRedPackageEntity entity = new SuperSpeakerRedPackageEntity();
+        entity.setMoney(jsonObject.optString("gold"));
+        return entity;
     }
 }
