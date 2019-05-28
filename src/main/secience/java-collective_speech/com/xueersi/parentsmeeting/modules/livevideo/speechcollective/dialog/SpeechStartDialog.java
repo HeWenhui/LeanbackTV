@@ -39,12 +39,14 @@ public class SpeechStartDialog extends BaseAlertDialog {
     public void setStart() {
         tip.setText("老师开启了集体发言\n" +
                 "踊跃参与吧！");
-        showDialog(false, true);
+        SpeechQueueDialog.getInstance().showDialog(this);
+//        showDialog(false, true);
     }
 
     public void setSop() {
         tip.setText("老师结束了集体发言");
-        showDialog(false, true);
+//        showDialog(false, true);
+        SpeechQueueDialog.getInstance().showDialog(this);
     }
 
 }
