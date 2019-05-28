@@ -2451,6 +2451,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
         PraiseEntity entity = new PraiseEntity();
         entity.setContentEntityList(contentEntityList);
        int gradle = jsonObject.optInt("grade");
+       int position = 0;
 //        int gradle = 2;
         if (gradle ==PraiseConfig.GRADLE_SMALL) {
           entity.setPraiseStyle(jsonObject.optInt("bizId"));
@@ -2467,6 +2468,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             titleEntity.setItemSpan(4);
             titleEntity.setName("题目描述");
             contentEntityList.add(titleEntity);
+            position = 1;
             contentEntity = new PraiseContentEntity();
             contentEntity.setPraiseStyle(entity.getPraiseStyle());
             contentEntity.setOralQuestion(true);
@@ -2491,8 +2493,9 @@ public class LiveHttpResponseParser extends HttpResponseParser {
                     titleEntity.setName(title);
                     titleEntity.setPraiseStyle(entity.getPraiseStyle());
                     contentEntityList.add(titleEntity);
+                    position++;
                 }
-                parsePraiseContentEntity(userListObject,contentEntityList,entity.getPraiseStyle());
+                parsePraiseContentEntity(entity,userListObject,contentEntityList,entity.getPraiseStyle(), position);
             }
         }
         return entity;
@@ -2502,7 +2505,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
      * @param jsonObject
      * @param contentEntityList
      */
-    private void parsePraiseContentEntity(JSONObject jsonObject,List<PraiseContentEntity> contentEntityList,int style) {
+    private void parsePraiseContentEntity(  PraiseEntity entity,JSONObject jsonObject,List<PraiseContentEntity> contentEntityList,int style,int position) {
         JSONArray array = jsonObject.optJSONArray("stus");
         if (array != null && array.length() > 0) {
             JSONObject userListObject = null;
@@ -2510,7 +2513,11 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             for (int i = 0; i < array.length(); i++) {
                 userListObject = array.optJSONObject(i);
                 contentEntity = new PraiseContentEntity();
+                position++;
                 contentEntity.setName(userListObject.optString("name"));
+                if (userListObject.optInt("inList") == 1){
+                    entity.setPosition(position);
+                }
                 contentEntity.setStatus(userListObject.optInt("inList"));
                 contentEntity.setPraiseStyle(style);
                 contentEntityList.add(contentEntity);

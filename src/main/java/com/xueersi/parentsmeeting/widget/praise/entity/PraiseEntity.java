@@ -27,6 +27,8 @@ public class PraiseEntity {
     private String teacherHeadImage;
     /** 鼓励语*/
     private String encouraging ;
+    /** 我再表扬榜中位置 */
+    private  int position;
     /** 内容类型 */
     private List<PraiseContentEntity> contentEntityList;
 
@@ -132,5 +134,13 @@ public class PraiseEntity {
 
     public void setEncouraging(String encouraging) {
         this.encouraging = encouraging;
+    }
+
+    public int getPosition() {
+        return position;
+    }
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 }

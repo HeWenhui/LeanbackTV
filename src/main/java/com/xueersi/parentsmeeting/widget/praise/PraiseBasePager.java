@@ -225,6 +225,9 @@ public class PraiseBasePager extends LiveBasePager {
                 }
             }
         });
+        if (mPraiseEntity.getPosition()>0) {
+            recyclerView.smoothScrollToPosition(mPraiseEntity.getPosition());
+        }
     }
 
     /**

@@ -77,7 +77,7 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
-        UmsAgentManager.umsAgentDebug(mContext,"tutor_practice_notice","type:" + type  + "sourceNic:"+sourceNick + "target:" + target + "data:" + data.toString());
+      //  UmsAgentManager.umsAgentDebug(mContext,"tutor_practice_notice","type:" + type  + "sourceNic:"+sourceNick + "target:" + target + "data:" + data.toString());
         switch (type) {
             // 开启和发布榜单
             case XESCODE.TUTOR_ROOM_PRAISE_OPEN:
