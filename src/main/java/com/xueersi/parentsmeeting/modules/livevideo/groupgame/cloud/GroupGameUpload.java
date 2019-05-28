@@ -36,8 +36,6 @@ public class GroupGameUpload {
 
     /**
      * 把语音文件上传阿里云
-     *
-     * @param saveFile
      */
     public void uploadWonderMoment(final File saveFile, final String speech, final int errorcode) {
         logger.d("uploadWonderMoment:saveFile=" + saveFile + ",length=" + saveFile.length());
@@ -64,6 +62,64 @@ public class GroupGameUpload {
                     stableLogHashMap.put("liveid", live_id);
                     stableLogHashMap.put("testId", testId);
                     stableLogHashMap.put("speech", speech);
+                    stableLogHashMap.put("errorcode", "" + errorcode);
+                    stableLogHashMap.put("savefile", "" + saveFile);
+                    stableLogHashMap.put("httppath", httpPath);
+                    UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_GAME_VOICE, stableLogHashMap.getData());
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                }
+            }
+
+            @Override
+            public void onError(XesCloudResult result) {
+                logger.d("asyncUpload:onError=" + result.getErrorCode() + "," + result.getErrorMsg());
+                try {
+                    StableLogHashMap stableLogHashMap = new StableLogHashMap("uploaderror");
+                    stableLogHashMap.put("liveid", live_id);
+                    stableLogHashMap.put("testId", testId);
+                    stableLogHashMap.put("speech", speech);
+                    stableLogHashMap.put("errorcode", "" + errorcode);
+                    stableLogHashMap.put("savefile", "" + saveFile);
+                    stableLogHashMap.put("errorCode", "" + result.getErrorCode());
+                    stableLogHashMap.put("errorMsg", "" + result.getErrorMsg());
+                    UmsAgentManager.umsAgentDebug(context, LogConfig.LIVE_GAME_VOICE, stableLogHashMap.getData());
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                }
+            }
+        });
+    }
+
+    /**
+     * 把语音文件上传阿里云
+     */
+    public void uploadWonderMoment(final File saveFile, final String speech, final String scores, final int errorcode) {
+        logger.d("uploadWonderMoment:saveFile=" + saveFile + ",length=" + saveFile.length());
+        if (saveFile.length() == 0) {
+            return;
+        }
+        XesCloudUploadBusiness xesCloudUploadBusiness = new XesCloudUploadBusiness(BaseApplication.getContext());
+        CloudUploadEntity uploadEntity = new CloudUploadEntity();
+        uploadEntity.setFilePath(saveFile.getPath());
+        uploadEntity.setType(XesCloudConfig.UPLOAD_OTHER);
+        uploadEntity.setCloudPath(CloudDir.GROUP_INTERACTIVE);
+        xesCloudUploadBusiness.asyncUpload(uploadEntity, new XesStsUploadListener() {
+            @Override
+            public void onProgress(XesCloudResult result, int percent) {
+
+            }
+
+            @Override
+            public void onSuccess(XesCloudResult result) {
+                try {
+                    String httpPath = result.getHttpPath();
+                    logger.d("asyncUpload:onSuccess=" + httpPath);
+                    StableLogHashMap stableLogHashMap = new StableLogHashMap("uploadsuc");
+                    stableLogHashMap.put("liveid", live_id);
+                    stableLogHashMap.put("testId", testId);
+                    stableLogHashMap.put("speech", speech);
+                    stableLogHashMap.put("scores", scores);
                     stableLogHashMap.put("errorcode", "" + errorcode);
                     stableLogHashMap.put("savefile", "" + saveFile);
                     stableLogHashMap.put("httppath", httpPath);

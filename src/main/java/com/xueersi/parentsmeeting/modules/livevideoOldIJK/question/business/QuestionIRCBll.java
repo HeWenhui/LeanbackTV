@@ -207,7 +207,8 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA,
                     RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
         } else {
-            if (data.getIsArts() == 1) {
+            // 语文三分屏 或者 语文半身直播
+            if (data.getIsArts() == 2 || (data.getPattern() == 6 && data.getUseSkin() == 2)) {
                 String[] subjectIds = data.getSubjectIds();
                 if (subjectIds != null) {
                     for (int i = 0; i < subjectIds.length; i++) {

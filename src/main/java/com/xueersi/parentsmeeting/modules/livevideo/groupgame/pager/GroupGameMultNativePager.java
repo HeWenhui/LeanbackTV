@@ -1857,7 +1857,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             GroupGameLog.sno5(liveAndBackDebug, detailInfo.id, isForce ? "endPublish" : "autoSubmit", voiceTime == 0 ?
                     "0" : "1", 1);
         }
-        englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 1, voiceTime, teamEntity.getPkTeamId(), gameGroupId, starNum, energy, gold,
+        englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 2, voiceTime, teamEntity.getPkTeamId(), gameGroupId, starNum, energy, gold,
                 videoLengthTime, micLengthTime
                 , acceptVideoLengthTime, acceptMicLengthTime, answerData.toString(), new AbstractBusinessDataCallBack() {
                     @Override

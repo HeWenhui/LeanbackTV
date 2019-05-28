@@ -272,6 +272,9 @@ public class LivePlaybackMediaController extends MediaController2 {
                 case "17":
                     textView.setText("互动题");
                     break;
+                case "19":
+                    textView.setText("开讲吧");
+                    break;
             }
         } else if (LocalCourseConfig.CATEGORY_LEC_ADVERT == videoQuestionEntity.getvCategory()) {
             textView.setText("购课");
