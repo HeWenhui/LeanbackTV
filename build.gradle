@@ -58,8 +58,6 @@ dependencies {
     implementation rootProject.ext.thirdlibraries.arouterapi
     implementation rootProject.ext.thirdlibraries.bugly
     annotationProcessor rootProject.ext.thirdlibraries.aroutercompiler
-    //    implementation project(':business:endictation')
-    rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.endictation)
     implementation rootProject.ext.thirdlibraries.ticker
 
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.agora)
@@ -70,4 +68,5 @@ dependencies {
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.gifDrawable)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.transition)
     //    implementation project(':library:agora')
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.businessinterface)
 }
