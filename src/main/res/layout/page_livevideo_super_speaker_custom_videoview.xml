@@ -40,18 +40,38 @@
 
     <ImageView
         android:id="@id/iv_livevideo_super_speaker_video_controller_bottom_progress_bar"
-        android:layout_width="1dp"
+        android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:scaleType="fitXY"
         android:src="@drawable/bg_livevideo_super_speaker_video_controller_bottom_progress_bar"
         app:layout_constraintBottom_toBottomOf="@id/iv_livevideo_super_speaker_video_controller_bottom_background"
         app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_super_speaker_video_controller_bottom_progress_bar_background" />
 
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="5dp"
+        android:orientation="vertical"
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_super_speaker_video_controller_bottom_progress_bar" />
+
+    <ImageView
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/bg_livevideo_super_speaker_custom_controller_light"
+
+        app:layout_constraintBottom_toBottomOf="@id/iv_livevideo_super_speaker_video_controller_bottom_progress_bar"
+        app:layout_constraintLeft_toRightOf="@id/iv_livevideo_super_speaker_video_controller_bottom_progress_bar"
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_super_speaker_video_controller_bottom_progress_bar"
+        app:layout_constraintTop_toTopOf="@id/iv_livevideo_super_speaker_video_controller_bottom_progress_bar" />
+
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@id/tv_livevideo_super_speaker_video_bottom_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="2dp"
+        android:layout_marginBottom="4dp"
         android:textColor="@color/COLOR_01757F"
         android:textSize="10dp"
         app:layout_constraintBottom_toBottomOf="@id/iv_livevideo_super_speaker_video_controller_bottom_progress_bar_background"
@@ -65,6 +85,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="/"
+        android:textColor="@color/COLOR_01757F"
         app:layout_constraintBottom_toBottomOf="@id/tv_livevideo_super_speaker_video_bottom_time"
         app:layout_constraintLeft_toRightOf="@id/tv_livevideo_super_speaker_video_bottom_time"
         app:layout_constraintTop_toTopOf="@id/tv_livevideo_super_speaker_video_bottom_time" />
@@ -73,6 +94,7 @@
         android:id="@id/tv_livevideo_super_speaker_video_bottom_total_time"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/COLOR_01757F"
         android:textSize="10dp"
         app:layout_constraintBottom_toBottomOf="@id/tv_livevideo_super_speaker_video_bottom_tt"
         app:layout_constraintLeft_toRightOf="@id/tv_livevideo_super_speaker_video_bottom_tt"

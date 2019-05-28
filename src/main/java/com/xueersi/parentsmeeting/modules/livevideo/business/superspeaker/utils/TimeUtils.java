@@ -23,7 +23,7 @@ public class TimeUtils {
             time = String.format("00:%02d", size % 60);
         } else if (size < 3600) {
             time = String.format("%02d:%02d", size / 60, size % 60);
-        } else {
+                } else {
             time = String.format("%02d:%02d:%02d", size / 3600, size % 3600 / 60, size % 60);
         }
         return time;
