@@ -68,12 +68,18 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private LiveAutoNoticeIRCBll mLiveAutoNoticeBll;
     //    private SpeechEvaluatorUtils mIse;
     private SpeechUtils mIse;
-    /** 置空roleplay，防止QuestionBll里为空，外面不为空 */
+    /**
+     * 置空roleplay，防止QuestionBll里为空，外面不为空
+     */
     private RolePlayEnd rolePlayActionEnd = new RolePlayEnd();
-    /** RolePlayer功能接口 */
+    /**
+     * RolePlayer功能接口
+     */
     private RolePlayAction rolePlayAction;
 
-    /** RolePlayer 人机功能接口 */
+    /**
+     * RolePlayer 人机功能接口
+     */
     private RolePlayMachineAction rolePlayMachineAction;
 
     private String Tag = "QuestionIRCBll";
@@ -207,22 +213,23 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA,
                     RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
         } else {
-            if (data.getIsArts() == 1) {
-                String[] subjectIds = data.getSubjectIds();
-                if (subjectIds != null) {
-                    for (int i = 0; i < subjectIds.length; i++) {
-                        String subjectId = subjectIds[i];
-                        if (LiveVideoConfig.SubjectIds.SUBJECT_ID_CH.equals(subjectId)) {
-                            mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
-                            mIse.setLanguage(Constants.ASSESS_PARAM_LANGUAGE_CH);
+            // 语文三分屏 或者 语文半身直播
+            if (data.getIsArts() == 2 || (data.getPattern() == 6 && data.getUseSkin() == 2)) {
+//                String[] subjectIds = data.getSubjectIds();
+//                if (subjectIds != null) {
+//                    for (int i = 0; i < subjectIds.length; i++) {
+//                        String subjectId = subjectIds[i];
+//                        if (LiveVideoConfig.SubjectIds.SUBJECT_ID_CH.equals(subjectId)) {
+                mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
+                mIse.setLanguage(Constants.ASSESS_PARAM_LANGUAGE_CH);
 //                            mIse = new SpeechEvaluatorUtils(true, Constants.ASSESS_PARAM_LANGUAGE_CH);
-                            //记录当前正在走的模型，留给界面更新使用
-                            ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA,
-                                    RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
-                            break;
-                        }
-                    }
-                }
+                //记录当前正在走的模型，留给界面更新使用
+                ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA,
+                        RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
+//                            break;
+//                        }
+//                    }
+//                }
             }
         }
         mQuestionAction.setIse(mIse);
