@@ -1078,6 +1078,8 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
     private String DANMU_TEXT_COLOR = "#72DAFB";
     private Drawable DANMU_BACKGROUND = mContext.getResources().getDrawable(R.drawable
             .bg_livevideo_send_flower_screen_bullet_background);
+    private long latestDanmakuAddtime = -300;
+    private int danmakuAddCount = 0;
 
     /**
      * 初始化弹幕
@@ -1258,6 +1260,15 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         danmaku.time = mDanmakuView.getCurrentTime() + ADD_DANMU_TIME;
         danmaku.textSize = DANMU_TEXT_SIZE;
         danmaku.textShadowColor = 0; // 如果有图文混排，最好不要设置描边(设textShadowColor=0)，否则会进行两次复杂的绘制导致运行效率降低
+        if (danmaku.time - latestDanmakuAddtime < 300 + msg.length() * 15) {
+            //如果两条弹幕时间间隔太短
+            danmaku.time = latestDanmakuAddtime + 300 + msg.length() * 15;
+            latestDanmakuAddtime = danmaku.time;
+            danmakuAddCount++;
+        } else {
+            danmakuAddCount = 0;
+            latestDanmakuAddtime = danmaku.time;
+        }
         ImageLoader.with(mContext).load(headImgUrl).asCircle().asBitmap(new SingleConfig.BitmapListener() {
             @Override
             public void onSuccess(Drawable drawable) {
