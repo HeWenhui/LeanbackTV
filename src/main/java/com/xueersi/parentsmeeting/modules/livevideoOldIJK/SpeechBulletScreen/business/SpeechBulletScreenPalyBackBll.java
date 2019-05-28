@@ -111,7 +111,7 @@ public class SpeechBulletScreenPalyBackBll extends LiveBackBaseBll {
             //英语回放弹幕
             String groupId = liveGetInfo.getId() + "-" + liveGetInfo.getStudentLiveInfo().getClassId() + "-" +
                     liveGetInfo.getStudentLiveInfo().getGroupId();
-            String startTime = mVideoEntity.getGotoClassTime()+"";
+            String startTime = liveGetInfo.getsTime() * 1000 + "";
             getCourseHttpManager().getVoiceBarrageForPlayBack(groupId, startTime, new HttpCallBack(false) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
@@ -162,31 +162,55 @@ public class SpeechBulletScreenPalyBackBll extends LiveBackBaseBll {
      */
     private void calculateBarrageTime() {
         logger.i("calculateBarrageTime()");
-        List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
-        if (lstVideoQuestion == null || lstVideoQuestion.size() == 0) {
-            return;
-        }
-        if (barrageList == null || barrageList.size() == 0) {
-            return;
-        }
-        String eventId;
-        int startTime = 0;
-        for (int i = 0; i < lstVideoQuestion.size(); i++) {
-            VideoQuestionEntity videoQuestionEntity = lstVideoQuestion.get(i);
-            if (LocalCourseConfig.CATEGORY_BULLETSCREEN == videoQuestionEntity.getvCategory()) {
-                eventId = videoQuestionEntity.getvQuestionID();
-                startTime = videoQuestionEntity.getvQuestionInsretTime();
-                for (int j = 0; j < barrageList.size(); j++) {
-                    VoiceBarrageMsgEntity voiceBarrageMsgEntity = barrageList.get(j);
-                    if (eventId.equals(voiceBarrageMsgEntity.getVoiceId())) {
-                        ArrayList<VoiceBarrageMsgEntity.VoiceBarrageItemEntity> voiceBarrageItemEntities = voiceBarrageMsgEntity.getVoiceBarrageItemEntities();
-                        for (int k = 0; k < voiceBarrageItemEntities.size(); k++) {
-                            VoiceBarrageMsgEntity.VoiceBarrageItemEntity voiceBarrageItemEntity = voiceBarrageItemEntities.get(k);
-                            voiceBarrageItemEntity.setRelativeTime(voiceBarrageItemEntity.getRelativeTime() + startTime);
-                            allBarrages.add(voiceBarrageItemEntity);
-                            logger.i("add barrage: time=" + (voiceBarrageItemEntity.getRelativeTime()) + " msg=" + voiceBarrageItemEntity.getMsg());
+        if (liveGetInfo.getIsArts() == 0 || liveGetInfo.getIsArts() == 2) {
+            //理科、语文回放弹幕
+            List<VideoQuestionEntity> lstVideoQuestion = mVideoEntity.getLstVideoQuestion();
+            if (lstVideoQuestion == null || lstVideoQuestion.size() == 0) {
+                return;
+            }
+            if (barrageList == null || barrageList.size() == 0) {
+                return;
+            }
+            String eventId;
+            int startTime = 0;
+            for (int i = 0; i < lstVideoQuestion.size(); i++) {
+                VideoQuestionEntity videoQuestionEntity = lstVideoQuestion.get(i);
+                if (LocalCourseConfig.CATEGORY_BULLETSCREEN == videoQuestionEntity.getvCategory()) {
+                    eventId = videoQuestionEntity.getvQuestionID();
+                    startTime = videoQuestionEntity.getvQuestionInsretTime();
+                    for (int j = 0; j < barrageList.size(); j++) {
+                        VoiceBarrageMsgEntity voiceBarrageMsgEntity = barrageList.get(j);
+                        if (eventId.equals(voiceBarrageMsgEntity.getVoiceId())) {
+                            ArrayList<VoiceBarrageMsgEntity.VoiceBarrageItemEntity> voiceBarrageItemEntities =
+                                    voiceBarrageMsgEntity.getVoiceBarrageItemEntities();
+                            for (int k = 0; k < voiceBarrageItemEntities.size(); k++) {
+                                VoiceBarrageMsgEntity.VoiceBarrageItemEntity voiceBarrageItemEntity =
+                                        voiceBarrageItemEntities.get(k);
+                                voiceBarrageItemEntity.setRelativeTime(voiceBarrageItemEntity.getRelativeTime() +
+                                        startTime);
+                                allBarrages.add(voiceBarrageItemEntity);
+                                logger.i("add barrage: time=" + (voiceBarrageItemEntity.getRelativeTime()) + " msg="
+                                        + voiceBarrageItemEntity.getMsg());
+                            }
                         }
                     }
+                }
+            }
+        } else if (liveGetInfo.getIsArts() == 1) {
+            for (int j = 0; j < barrageList.size(); j++) {
+                VoiceBarrageMsgEntity voiceBarrageMsgEntity = barrageList.get(j);
+                long startTime = Long.parseLong(voiceBarrageMsgEntity.getVoiceId());
+                ArrayList<VoiceBarrageMsgEntity.VoiceBarrageItemEntity> voiceBarrageItemEntities =
+                        voiceBarrageMsgEntity.getVoiceBarrageItemEntities();
+                for (int k = 0; k < voiceBarrageItemEntities.size(); k++) {
+                    VoiceBarrageMsgEntity.VoiceBarrageItemEntity voiceBarrageItemEntity = voiceBarrageItemEntities
+                            .get(k);
+                    int relativeTime = voiceBarrageItemEntity.getRelativeTime() + (int) startTime / 1000 - (int)
+                            liveGetInfo.getsTime();
+                    voiceBarrageItemEntity.setRelativeTime(relativeTime);
+                    allBarrages.add(voiceBarrageItemEntity);
+                    logger.i("add barrage: time=" + (voiceBarrageItemEntity.getRelativeTime()) + " msg=" +
+                            voiceBarrageItemEntity.getMsg());
                 }
             }
         }
