@@ -1274,6 +1274,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
         }
     }
 
+
     /**
      * 显示 结果页
      *
