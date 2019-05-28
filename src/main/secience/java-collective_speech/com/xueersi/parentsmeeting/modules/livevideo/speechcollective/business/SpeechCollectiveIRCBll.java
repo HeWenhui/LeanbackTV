@@ -190,7 +190,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
     public void onModeChange(String oldMode, String mode, boolean isPresent) {
         super.onModeChange(oldMode, mode, isPresent);
         if (speechCollectiveBll != null) {
-            speechCollectiveBll.stop();
+            speechCollectiveBll.stop("onModeChange");
             speechCollectiveBll = null;
         }
     }
@@ -232,7 +232,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                 }
             } else {
                 if (speechCollectiveBll != null) {
-                    speechCollectiveBll.stop();
+                    speechCollectiveBll.stop("onTopic1");
                     speechCollectiveBll = null;
                 }
             }
@@ -266,7 +266,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                 }
             } else {
                 if (speechCollectiveBll != null) {
-                    speechCollectiveBll.stop();
+                    speechCollectiveBll.stop("onTopic2");
                     speechCollectiveBll = null;
                 }
             }
@@ -279,7 +279,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                 if ("on".equals(status)) {
                     speechCollectiveBll.start(form, voiceID);
                 } else {
-                    speechCollectiveBll.stop();
+                    speechCollectiveBll.stop("onStaus");
                     speechCollectiveBll = null;
                 }
             } catch (Exception e) {
@@ -389,7 +389,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
     public void onDestory() {
         super.onDestory();
         if (speechCollectiveBll != null) {
-            speechCollectiveBll.stop();
+            speechCollectiveBll.stop("onDestory");
             speechCollectiveBll = null;
         }
     }

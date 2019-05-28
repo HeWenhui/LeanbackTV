@@ -388,17 +388,18 @@ public class SpeechCollectiveNo2Bll {
         } catch (Exception e) {
             CrashReport.postCatchedException(new LiveException(TAG, e));
         }
-        stop();
+        stop("onTeacherLevel");
     }
 
-    public void stop() {
-        if (start) {
-            if (!userClose) {
-                addSysTip(false);
-            }
+    public void stop(String method) {
+        mLogtf.d("stop:from=" + from + ",method=" + method + ",voiceId=" + voiceId + ",userClose=" + userClose);
+        if (!start) {
+            return;
+        }
+        if (!userClose) {
+            addSysTip(false);
         }
         start = false;
-        mLogtf.d("stop:from=" + from + ",voiceId=" + voiceId + ",userClose=" + userClose);
         mSpeechEvaluatorUtils.cancel();
         isStop.set(true);
         isRecord.set(false);
