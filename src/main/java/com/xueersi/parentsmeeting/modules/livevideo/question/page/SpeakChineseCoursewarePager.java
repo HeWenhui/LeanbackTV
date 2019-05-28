@@ -39,6 +39,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LogConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoQuestionLiveEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.AnswerResultEvent;
@@ -364,11 +365,18 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
     @Override
     public void initData() {
         super.initData();
+        String testid = "";
+        try {
+            testid = NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts);
+            mLogtf.addCommon("testid", "" + testid);
+        } catch (Exception e) {
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
         Date date = new Date();
         today = dateFormat.format(date);
         getTodayQues();
-        newCourseCache = new NewCourseCache(mContext, liveId);
+        newCourseCache = new NewCourseCache(mContext, liveId,testid);
         addJavascriptInterface();
         wvSubjectWeb.getSettings().setLoadWithOverviewMode(false);
         wvSubjectWeb.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
@@ -734,7 +742,6 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                     speechUtils.startRecog(mParam, new EvaluatorListener() {
                         @Override
                         public void onBeginOfSpeech() {
-                            Log.e("chs_speak", "=====>startAssess onBeginOfSpeech:");
                             logger.d("onBeginOfSpeech curTime: " + System.currentTimeMillis());
                         }
 
@@ -784,10 +791,8 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                                 }
                             } else if (ResultEntity.SUCCESS == result.getStatus()) {
                                 logger.e("SUCCESS curTime ");
-                                Log.e("chs_speak", "=====>startAssess SUCCESS:");
                                 isAssessing = false;
                             } else if (ResultEntity.ERROR == result.getStatus()) {
-                                Log.e("chs_speak", "=====>startAssess ERROR:");
                                 logger.e("ERROR");
                                 isAssessing = false;
                                 Map<String, String> errorData = new HashMap<>();
@@ -820,7 +825,6 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
      * @param answerMap
      */
     private void startAssess() {
-        Log.e("chs_speak", "=====>startAssess 000:" + assessMap + ":" + answerMap);
         if (startAssesByRefresh) {
             startAssesByRefresh = false;
             handler.removeCallbacks(assessTask);
@@ -858,7 +862,6 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
      * 取消识别语音评测
      */
     private void cancleAssess() {
-        Log.e("chs_speak", "=====>cancleAssess");
         if (speechUtils != null) {
             speechUtils.cancel();
         }
@@ -870,7 +873,6 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
      * 停止识别
      */
     private void stopAssess() {
-        Log.e("chs_speak", "=====>stopAssess");
         if (speechUtils != null) {
             speechUtils.cancel();
         }
@@ -1228,7 +1230,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                         XESToastUtils.showToast(mContext, "主文件加载失败，请刷新");
                     }
                 }
-            } else if (WebInstertJs.indexStr().equals(url)) {
+            } else if (url.contains(WebInstertJs.indexStr())) {
                 WebResourceResponse webResourceResponse = newCourseCache.interceptJsRequest(view, url);
                 logger.d("shouldInterceptRequest:js:url=" + url + ",response=null?" + (webResourceResponse == null));
                 if (webResourceResponse != null) {
