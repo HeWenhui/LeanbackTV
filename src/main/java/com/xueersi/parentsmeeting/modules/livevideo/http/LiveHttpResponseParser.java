@@ -535,7 +535,7 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             //金话筒
             getInfo.setUseGoldMicroPhone(data.optInt("isGoldMicrophone"));
             //超级演讲秀
-            getInfo.setUseSuperSpeakerShow(data.optInt("isSuperSpeechShow "));
+            getInfo.setUseSuperSpeakerShow(data.optInt("isSuperSpeechShow"));
             getInfo.setSubject_digits(data.optString("subject_digits"));
             if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                 getInfo.setIsNewProject(data.optInt("isNewProject", 0));
