@@ -470,11 +470,11 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
             if (answer.getIsRight() == 0) {
 //                spannableStringBuilder.setSpan(new ForegroundColorSpan(0xFFE65453), 5, spannableStringBuilder.length
 //                        (), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                myAnswerBuffer.append("<font color='#FFE65453'>"+myAnswer+"</font>");
+                myAnswerBuffer.append("<font color='#FFE65453'>"+myAnswer+" </font>");
             } else {
 //                spannableStringBuilder.setSpan(new ForegroundColorSpan(0xFF77AF1F), 5, spannableStringBuilder.length
 //                        (), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                myAnswerBuffer.append("<font color='#FF77AF1F'>"+myAnswer+"</font>");
+                myAnswerBuffer.append("<font color='#FF77AF1F'>"+myAnswer+" </font>");
 
             }
             tv_arts_answer_result_voice_my.setText(Html.fromHtml(myAnswerBuffer.toString()));
@@ -489,7 +489,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
 //            spannableStringBuilder = new SpannableString("正确答案：" + rightAnswer);
 //            spannableStringBuilder.setSpan(new ForegroundColorSpan(0xFF77AF1F), 5, spannableStringBuilder.length(),
 //                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            userBuffer.append("<font color='#ff756565'>"+rightAnswer+"</font>");
+            userBuffer.append("<font color='#ff756565'>"+rightAnswer+" </font>");
             tv_arts_answer_result_voice_right.setText(Html.fromHtml(userBuffer.toString()));
         }
         if (mStateListener != null) {
@@ -664,7 +664,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
                 myAnswerText = "空";
             }
             stringBuffer.append("<font color=" +color+">");
-            stringBuffer.append(myAnswerText+"</font>");
+            stringBuffer.append(myAnswerText+" </font>");
 //            span = new SpannableString(myAnswerText);
 //            span.setSpan(new ForegroundColorSpan(color), 0, span.length(), Spanned.SPAN_INCLUSIVE_EXCLUSIVE);
 //            stringBuilder.append(span);
@@ -672,7 +672,7 @@ public class ArtsPSEAnswerResultPager extends BasePager implements IArtsAnswerRs
             tvUserAnswer.setText(Html.fromHtml(stringBuffer.toString()));
 
 
-            String titleFont = "<font color='#726665'>正确答案："+ standerAnswerText+"</font>";
+            String titleFont = "<font color='#726665'>正确答案："+ standerAnswerText+" </font>";
             tvRightAnswer.setText(Html.fromHtml(titleFont));
         }
 

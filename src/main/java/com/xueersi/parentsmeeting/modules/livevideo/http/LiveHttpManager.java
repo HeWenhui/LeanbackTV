@@ -7,23 +7,17 @@ import android.os.Looper;
 
 import com.alibaba.android.arouter.utils.TextUtils;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
-import com.xueersi.common.base.AbstractBusinessDataCallBack;
 import com.xueersi.common.base.BaseHttpBusiness;
-import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.http.CommonRequestCallBack;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.HttpRequestParams;
-import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.DeviceUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.Loger;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveHttpConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoChConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoHttpEnConfig;
@@ -618,14 +612,15 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
     /**
      * 提交语文AI主观题答案
+     *
      * @param params
      * @param requestCallBack
      */
-    public void submitChineseAISubjectiveAnswer(String url,String data,final HttpCallBack callBack){
+    public void submitChineseAISubjectiveAnswer(String url, String data, final HttpCallBack callBack) {
 
 //        url= "https://www.easy-mock.com/mock/5b56d172008bc8159f336281/example/submitChineseAISubjectiveAnswer";
         HttpRequestParams httpRequestParams = new HttpRequestParams();
-        httpRequestParams.addBodyParam("testInfos",data);
+        httpRequestParams.addBodyParam("testInfos", data);
         sendPost(url, httpRequestParams, callBack);
     }
 
@@ -1550,7 +1545,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
-        params.addBodyParam("useSkin", useSkin+"");
+        params.addBodyParam("useSkin", useSkin + "");
         setDefaultParameter(params);
         sendPost(LiveVideoChConfig.URL_CHPK_PKTEAMINFO(isHalfBody), params, requestCallBack);
     }
@@ -1565,7 +1560,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
-        params.addBodyParam("useSkin", useSkin+"");
+        params.addBodyParam("useSkin", useSkin + "");
         setDefaultParameter(params);
         sendPost(LiveVideoChConfig.URL_CHPK_MATCHTEAM(isHalfBody), params, requestCallBack);
     }
@@ -1579,14 +1574,14 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param stuId
      * @param isAIPartner 是否是 Ai伴侣直播间
      */
-    public void getCHStuChest(boolean isHalfBody, int isWin, String classId, String teamId, String stuId, String liveId, boolean isAIPartner,int useSkin, HttpCallBack requestCallBack) {
+    public void getCHStuChest(boolean isHalfBody, int isWin, String classId, String teamId, String stuId, String liveId, boolean isAIPartner, int useSkin, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("isWin", isWin + "");
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("isAIPartner", isAIPartner ? "1" : "0");
-        params.addBodyParam("useSkin", useSkin+"");
+        params.addBodyParam("useSkin", useSkin + "");
         setDefaultParameter(params);
         sendPost(LiveVideoChConfig.URL_CHPK_GETSTUCHESTURL(isHalfBody) + "/" + liveId, params, requestCallBack);
 
@@ -1601,14 +1596,14 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param classId
      * @param isAIPartner
      */
-    public void getCHClassChestResult(boolean isHalfBody, String liveId, String stuId, String teamId, String classId, boolean isAIPartner,int useSkin,
+    public void getCHClassChestResult(boolean isHalfBody, String liveId, String stuId, String teamId, String classId, boolean isAIPartner, int useSkin,
                                       HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("isAIPartner", isAIPartner ? "1" : "0");
-        params.addBodyParam("useSkin", useSkin+"");
+        params.addBodyParam("useSkin", useSkin + "");
         setDefaultParameter(params);
         sendPost(LiveVideoChConfig.URL_CHPK_GETCLASSCHESTRESULT(isHalfBody) + "/" + liveId, params, requestCallBack);
     }
@@ -1622,14 +1617,14 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param stuId
      * @param requestCallBack
      */
-    public void addCHPersonAndTeamEnergy(boolean isHalfBody, String liveId, int addEnergy, String teamId, String classId, String stuId,int useSkin,
+    public void addCHPersonAndTeamEnergy(boolean isHalfBody, String liveId, int addEnergy, String teamId, String classId, String stuId, int useSkin,
                                          HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("addEnergy", addEnergy + "");
-        params.addBodyParam("useSkin", useSkin+"");
+        params.addBodyParam("useSkin", useSkin + "");
         setDefaultParameter(params);
         sendPost(LiveVideoChConfig.URL_CHPK_ADDPERSONANDTEAMENERGY(isHalfBody) + "/" + liveId, params, requestCallBack);
     }
@@ -1649,7 +1644,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
-        params.addBodyParam("useSkin", useSkin+"");
+        params.addBodyParam("useSkin", useSkin + "");
         setDefaultParameter(params);
         sendPost(LiveVideoChConfig.URL_CHPK_LIVESTUGOLDANDTOTALENERGY(isHalfBody) + "/" + liveId, params, requestCallBack);
     }
@@ -1665,14 +1660,14 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param testPlan        互动课件或者互动题时 testPlan= ''; 测试卷请求时testId= ' '
      * @param requestCallBack
      */
-    public void teamCHEnergyNumAndContributionStar(boolean isHalfBody, String liveId, String teamId, String classId, String stuId, String testId, String testPlan,int useSkin, HttpCallBack requestCallBack) {
+    public void teamCHEnergyNumAndContributionStar(boolean isHalfBody, String liveId, String teamId, String classId, String stuId, String testId, String testPlan, int useSkin, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("testId", testId);
         params.addBodyParam("testPlan", testPlan);
-        params.addBodyParam("useSkin", useSkin+"");
+        params.addBodyParam("useSkin", useSkin + "");
         setDefaultParameter(params);
         sendPost(LiveVideoChConfig.URL_CHPK_TEAMENERGYNUMANDCONTRIBUTIONSTAR(isHalfBody) + "/" + liveId, params, requestCallBack);
     }
@@ -1685,14 +1680,14 @@ public class LiveHttpManager extends BaseHttpBusiness {
      * @param classId
      * @param requestCallBack
      */
-    public void stuCHPKResult(boolean isHalfBody, String liveId, String teamId, String classId, String testId,String testPlan, int useSkin,HttpCallBack requestCallBack) {
+    public void stuCHPKResult(boolean isHalfBody, String liveId, String teamId, String classId, String testId, String testPlan, int useSkin, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("liveId", liveId);
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("testId", testId);
         params.addBodyParam("testPlan", testPlan);
-        params.addBodyParam("useSkin", useSkin+"");
+        params.addBodyParam("useSkin", useSkin + "");
         setDefaultParameter(params);
         sendPost(LiveVideoChConfig.URL_CHPK_STUPKRESULT(isHalfBody) + "/" + liveId, params, requestCallBack);
     }
@@ -1719,7 +1714,7 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("tests", tests);
         params.addBodyParam("ctId", ctId);
         params.addBodyParam("pSrc", pSrc);
-        params.addBodyParam("useSkin", useSkin+"");
+        params.addBodyParam("useSkin", useSkin + "");
         setDefaultParameter(params);
         sendPost(LiveVideoChConfig.URL_CHPK_TEAMENERGYNUMANDCONTRIBUTIONSTARMUL(isHalfBody) + "/" + liveId, params, requestCallBack);
     }
@@ -2206,5 +2201,80 @@ public class LiveHttpManager extends BaseHttpBusiness {
         params.addBodyParam("isGoldMicrophone", isGoldMicrophone);
         params.addBodyParam("id", id);
         sendPost(LiveVideoConfig.URL_IS_GOLD_MICROPHONE, params, httpCallBack);
+    }
+
+    /**
+     * app摄像头开启状态
+     *
+     * @param liveId       场次id
+     * @param stuId        学生id
+     * @param testId       互动题所属题目Id
+     * @param srcType      互动题所属题目类型
+     * @param cameraStatus 摄像头开启状态（1：已开启 2：未开启）
+     */
+    public void sendSuperSpeakerCameraStatus(String liveId, String stuId, String testId, HttpCallBack httpCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("testId", testId);
+//        params.addBodyParam("srcType", srcType);
+//        params.addBodyParam("cameraStatus", cameraStatus);
+        sendPost(LiveVideoConfig.SUPER_SPEAKER_SPEECH_SHOW_CAMERA_STATUS, params, httpCallBack);
+
+    }
+
+    /**
+     * app端上传演讲秀视频
+     *
+     * @param liveId           场次id
+     * @param stuCouId         学生课程id
+     * @param stuId            学生id
+     * @param isPlayBack       是否回放(1:直播,2:回放)
+     * @param testId           互动题所属题目Id
+     * @param srcType          互动题所属题目类型
+     * @param video_url        提交的视频地址
+     * @param voice_url        提交的音频地址
+     * @param isUpload         是否上传成功(1:上传成功 2：上传失败)
+     * @param averVocieDecibel 平均声音分贝数
+     */
+    public void uploadSpeechShow(String liveId, String stuCouId, String stuId, String isPlayBack, String testId, String srcType, String video_url, String voice_url, String isUpload, String averVocieDecibel
+            , HttpCallBack httpCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("stuCouId", stuCouId);
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("isPlayBack", isPlayBack);
+        params.addBodyParam("testId", testId);
+        params.addBodyParam("srcType", srcType);
+        params.addBodyParam("video_url", video_url);
+        params.addBodyParam("voice_url", voice_url);
+        params.addBodyParam("isUpload", isUpload);
+        params.addBodyParam("averVocieDecibel", averVocieDecibel);
+        sendPost(LiveVideoConfig.SUPER_SPEAKER_UPLOAD_SPEECH_SHOW, params, httpCallBack);
+    }
+
+    /**
+     * app端提交演讲秀
+     *
+     * @param liveId       场次id
+     * @param stuCouId     学生课程id
+     * @param stuId        学生id
+     * @param isPlayBack   是否回放(1:直播,2:回放)
+     * @param testId       互动题所属题目Id
+     * @param srcType      互动题所属题目类型
+     * @param isForce      是否是强制提交（1：是 2：否）
+     * @param httpCallBack
+     */
+    public void sendSuperSpeakersubmitSpeech(String liveId, String stuCouId, String stuId, String isPlayBack, String testId, String srcType, String isForce, String videoDuration, HttpCallBack httpCallBack) {
+        HttpRequestParams params = new HttpRequestParams();
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("stuCouId", stuCouId);
+        params.addBodyParam("stuId", stuId);
+        params.addBodyParam("isPlayBack", isPlayBack);
+        params.addBodyParam("testId", testId);
+        params.addBodyParam("srcType", srcType);
+        params.addBodyParam("isForce", isForce);
+        params.addBodyParam("videoDuration", videoDuration);
+        sendPost(LiveVideoConfig.SUPER_SPEAKER_SUBMIT_SPEECH_SHOW, params, httpCallBack);
     }
 }

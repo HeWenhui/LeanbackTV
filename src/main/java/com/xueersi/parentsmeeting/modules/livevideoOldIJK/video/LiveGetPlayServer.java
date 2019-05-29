@@ -11,6 +11,11 @@ import com.xueersi.lib.framework.utils.NetWorkHelper;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideo.video.PlayFailCode;
@@ -19,11 +24,6 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.ActivityStati
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.VideoAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveBll2;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.PlayServerEntity;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveThreadPoolExecutor;
 
 import org.json.JSONException;
@@ -143,11 +143,11 @@ public class LiveGetPlayServer {
             }
             mGetInfo.setChannelname(channelname);
         } else {
-            if (mGetInfo.ePlanInfo == null){
+            if (mGetInfo.ePlanInfo == null) {
                 mGetInfo.setChannelname(CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" + mGetInfo.getId() + "_"
                         + mGetInfo.getTeacherId());
-            }else {
-                mGetInfo.setChannelname(CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" +  mGetInfo.ePlanInfo.ePlanId + "_"
+            } else {
+                mGetInfo.setChannelname(CNANNEL_PREFIX + mGetInfo.getLiveType() + "_" + mGetInfo.ePlanInfo.ePlanId + "_"
                         + mGetInfo.ePlanInfo.eTeacherId);
             }
         }
@@ -219,7 +219,7 @@ public class LiveGetPlayServer {
                 try {
                     JSONObject object = new JSONObject(result);
                     PlayServerEntity server = mHttpResponseParser.parsePlayerServer(object);
-                    if (server != null && server.getPlayserver()!=null && server.getPlayserver().size()>0) {
+                    if (server != null && server.getPlayserver() != null && server.getPlayserver().size() > 0) {
                         s += ",code=" + server.getCode();
                         if (server.getCode() == 200) {
                             liveGetPlayTime = 0;

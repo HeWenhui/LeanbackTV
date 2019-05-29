@@ -293,7 +293,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 for (int i = 0; i < entities.size(); i++) {
                     TeamMemberEntity teamMemberEntity = entities.get(i);
                     //老师发新题后，视频窗右上角的火焰应该从0开始计数
-                    teamMemberEntity.energy = 0;
+                    teamMemberEntity.setEnergy(0);
                     CleanUpEntity cleanUpEntity = new CleanUpEntity();
                     cleanUpEntity.teamMemberEntity = teamMemberEntity;
                     cleanUpEntities.put("" + teamMemberEntity.id, cleanUpEntity);
@@ -302,7 +302,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 for (int i = 0; i < entities.size(); i++) {
                     TeamMemberEntity teamMemberEntity = entities.get(i);
                     //老师发新题后，视频窗右上角的火焰应该从0开始计数
-                    teamMemberEntity.energy = 0;
+                    teamMemberEntity.setEnergy(0);
                     VidooCannonEntity vidooCannonEntity = new VidooCannonEntity();
                     vidooCannonEntity.teamMemberEntity = teamMemberEntity;
                     vidooCannonEntities.put("" + teamMemberEntity.id, vidooCannonEntity);
@@ -327,7 +327,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             }
             joinChannel(entities);
         }
-        newCourseCache = new GroupCourseCache(mContext, liveId, liveGetInfo.isNewCourse());
+        newCourseCache = new GroupCourseCache(mContext, liveId, detailInfo.id, liveGetInfo.isNewCourse());
         addJavascriptInterface();
         wvSubjectWeb.setWebChromeClient(new BaseCoursewareNativePager.MyWebChromeClient() {
             @Override
@@ -340,7 +340,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         });
         wvSubjectWeb.setWebViewClient(new CourseWebViewClient());
 
-        wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, multModeAction), "xesApp");
+        wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, "99999", creattime, multModeAction), "xesApp");
 //        wvSubjectWeb.loadUrl(TEST_URL);
     }
 
@@ -406,7 +406,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         jsonData.put("score", -1);
 //                jsonData.put("studentNum", -1);
                         jsonData.put("turnToPageNum", currentAnswerIndex);
-                        wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
+                        postMessage(jsonData);
                         GroupGameLog.sno4(liveAndBackDebug, detailInfo.id, currentAnswerIndex + "", 1);
                         reStartSpeechRecognize();
                     }
@@ -1857,7 +1857,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             GroupGameLog.sno5(liveAndBackDebug, detailInfo.id, isForce ? "endPublish" : "autoSubmit", voiceTime == 0 ?
                     "0" : "1", 1);
         }
-        englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 1, voiceTime, teamEntity.getPkTeamId(), gameGroupId, starNum, energy, gold,
+        englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 2, voiceTime, teamEntity.getPkTeamId(), gameGroupId, starNum, energy, gold,
                 videoLengthTime, micLengthTime
                 , acceptVideoLengthTime, acceptMicLengthTime, answerData.toString(), new AbstractBusinessDataCallBack() {
                     @Override
@@ -2065,7 +2065,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         XESToastUtils.showToast(mContext, "主文件加载失败，请刷新");
                     }
                 }
-            } else if (WebInstertJs.indexStr().equals(url)) {
+            } else if (url.contains(WebInstertJs.indexStr())) {
                 WebResourceResponse webResourceResponse = newCourseCache.interceptJsRequest(view, url);
                 logger.d("shouldInterceptRequest:js:url=" + url + ",response=null?" + (webResourceResponse == null));
                 if (webResourceResponse != null) {
@@ -2210,6 +2210,22 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             CrashReport.postCatchedException(new LiveException(TAG, e));
         }
         StaticWeb.sendToCourseware(wvSubjectWeb, type, data);
+    }
+
+    private void postMessage(JSONObject jsonData) {
+        try {
+            JSONObject liveinfo = new JSONObject();
+            liveinfo.put("liveid", liveId);
+            liveinfo.put("userid", stuid);
+            liveinfo.put("testid", "" + detailInfo.id);
+            liveinfo.put("creattime", "" + creattime);
+            liveinfo.put("time", "" + System.currentTimeMillis());
+            jsonData.put("liveinfo", liveinfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
+        wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
     }
 
     private class VoiceCannnon implements EvaluatorIng {
@@ -2547,7 +2563,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                                     } else {
                                                         jsonData.put("turnToPageNum", -1);
                                                     }
-                                                    wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
+                                                    postMessage(jsonData);
                                                 } catch (JSONException e) {
                                                     e.printStackTrace();
                                                 }
@@ -2793,7 +2809,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                             jsonData.put("rightItem", rightItem);
                                         }
                                         jsonData.put("combo", continue_rob);
-                                        wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
+                                        postMessage(jsonData);
                                     } catch (Exception e) {
                                         logger.d("onMessage:CLEAN_UP_REC:postMessage", e);
                                     }
@@ -2824,7 +2840,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                 CleanUpEntity cleanUpEntity = cleanUpEntities.get(stu_id);
                                 int total_energy = stuObj.getInt("total_energy");
                                 if (cleanUpEntity != null) {
-                                    cleanUpEntity.teamMemberEntity.energy = total_energy;
+                                    cleanUpEntity.teamMemberEntity.setEnergy(total_energy);
                                 }
                                 JSONArray rob_wordsArray = stuObj.getJSONArray("rob_words");
                                 for (int j = 0; j < rob_wordsArray.length(); j++) {
@@ -2875,7 +2891,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                 }
                                 final BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stu_id);
                                 if (courseGroupItem != null) {
-                                    courseGroupItem.getEntity().energy = totalEnergy;
+                                    courseGroupItem.getEntity().setEnergy(totalEnergy);
                                     handler.post(new Runnable() {
                                         @Override
                                         public void run() {

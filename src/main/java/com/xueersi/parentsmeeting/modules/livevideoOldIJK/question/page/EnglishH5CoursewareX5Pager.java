@@ -435,12 +435,8 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                 // 理科回放
                 if (isPlayBack) {
                     // 半身直播体验课 试题url 拼接
-                    Log.e("HalfBodyExp", "=========>EnglishH5X5pager: called 22222:" + englishH5Entity.getLiveType()
-                            + ":" + mLoadUrls);
                     if (englishH5Entity.getLiveType() == LiveVideoConfig.ExperiencLiveType.HALF_BODY) {
                         mLoadUrls = englishH5Entity.getUrl();
-                        Log.e("HalfBodyExp", "=========>EnglishH5X5pager: called 5555:" + englishH5Entity.getLiveType()
-                                + ":" + mLoadUrls);
                     } else {
                         String stuId = UserBll.getInstance().getMyUserInfoEntity().getStuId();
                         // 一题多发的课件预加载(直播回放)

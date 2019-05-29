@@ -42,3 +42,6 @@ function sendToCourseware(message, origin) {
      window.xesApp && xesApp.onReceive(JSON.stringify(message));
 }
 
+function testCourseware(message, origin) {
+     window.xesApp && xesApp.onReceive(JSON.stringify(message));
+}

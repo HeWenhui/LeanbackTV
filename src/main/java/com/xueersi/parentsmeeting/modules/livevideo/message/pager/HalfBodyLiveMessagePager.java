@@ -55,6 +55,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMediaCtrl
 import com.xueersi.parentsmeeting.modules.livevideo.widget.HalfBodyLiveMsgRecycelView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveHalfBodyMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveTouchEventLayout;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.HotWordLog;
 import com.xueersi.ui.adapter.CommonAdapter;
 
 import org.json.JSONException;
@@ -216,7 +218,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
         this.liveMediaControllerBottom = liveMediaControllerBottom;
         this.liveMediaControllerTop = controllerTop;
         this.keyboardShowingListener = keyboardShowingListener;
-        this.liveAndBackDebug = ums;
+        this.liveAndBackDebug =  new ContextLiveAndBackDebug(context);
         this.liveMessageEntities = liveMessageEntities;
         this.otherLiveMessageEntities = otherLiveMessageEntities;
 
@@ -688,6 +690,24 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
 
     }
 
+
+    /**
+     * 热词埋点日志
+     * @param hotwordCmd  热词指令
+     */
+    private void upLoadHotWordLog(String hotwordCmd) {
+        try {
+            if(getInfo != null){
+                HotWordLog.hotWordSend(this.liveAndBackDebug,hotwordCmd,HotWordLog.LIVETYPE_NOT_PRESHCOOL,
+                        getInfo.getStudentLiveInfo().getClassId(),getInfo.getStudentLiveInfo().getTeamId(),getInfo.getStudentLiveInfo().getCourseId());
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+
+
     /**
      * 发送热词消息
      *
@@ -695,6 +715,7 @@ public class HalfBodyLiveMessagePager extends BaseLiveMessagePager {
      */
 
     private void sendHotWord(String msg) {
+        upLoadHotWordLog(msg);
         hideBottomMediaCtr(0);
         if (ircState.openchat()) {
             if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {

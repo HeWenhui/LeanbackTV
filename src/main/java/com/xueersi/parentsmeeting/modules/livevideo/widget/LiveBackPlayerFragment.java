@@ -21,8 +21,8 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.ActivityUtils;
 import com.xueersi.lib.framework.utils.file.FileUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
+import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
@@ -34,7 +34,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
  * @date 2018/6/22
  */
 public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoView.SurfaceCallback,
-        MediaPlayerControl {
+        BackMediaPlayerControl {
 
     /** 播放器的控制对象 */
     protected MediaController2 mMediaController;
@@ -437,6 +437,11 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
     @Override
     public void onShare() {
 
+    }
+
+    @Override
+    public void startPlayVideo() {
+        playPSVideo(streamId, protocol);
     }
 
     @Override
