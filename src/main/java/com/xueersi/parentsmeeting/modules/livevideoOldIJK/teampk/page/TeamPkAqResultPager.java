@@ -70,6 +70,11 @@ public class TeamPkAqResultPager extends TeamPkBasePager {
      * 答题奖励
      */
     public static final int AWARD_TYPE_QUESTION = 2;
+    /**
+     * 集体发言奖励
+     */
+    public static final int AWARD_TYPE_SPEECH = 3;
+
 
     /**
      * 奖励类型
@@ -129,6 +134,8 @@ public class TeamPkAqResultPager extends TeamPkBasePager {
                                     showQuestionAwardAnim();
                                 } else if (awardType == AWARD_TYPE_VOTE) {
                                     showVoteAwardAnim();
+                                } else if (awardType == AWARD_TYPE_SPEECH) {
+                                    showVoteAwardAnim();
                                 }
                             }
                         }, 200);
@@ -183,7 +190,7 @@ public class TeamPkAqResultPager extends TeamPkBasePager {
         rlQuestionRootView.setVisibility(View.VISIBLE);
         rlQuestionRootView.startAnimation(scaleAnimation);
 
-         //能量不在飞
+        //能量不在飞
         scaleAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
@@ -381,7 +388,7 @@ public class TeamPkAqResultPager extends TeamPkBasePager {
                 teamPKStateLayout.updateData(mEnergy, 0, mGoldNum);
                 teamPKStateLayout.showEnergyMyContribute(mEnergy);
                 //投票题 动画结束刷新右侧总能量
-                if(awardType == AWARD_TYPE_VOTE){
+                if (awardType == AWARD_TYPE_VOTE) {
                     mTeamPkBll.updatePkStateLayout(true);
                 }
 
