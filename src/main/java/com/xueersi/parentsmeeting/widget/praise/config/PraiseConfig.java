@@ -37,4 +37,7 @@ public class PraiseConfig {
     /** 关闭表杨榜按钮显示 */
     public  final static int  PRAISE_CLOSE_VISIBLE = 5;
     public  final static String  SP_PRAISE_TUTOR = "sp_praise_tutor_";
+
+    public  final static String  UMS_PRACTICE_TUTOR = "praise_list";
+
 }

@@ -993,7 +993,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
         @Override
         public void saveUserAnser() {
-            for (int i = 0; i < mAnswersList.size(); i++) {
+            for (int i = 0; i < scoreMatrix.size(); i++) {
                 JSONObject jsonObject = new JSONObject();
                 int isRight = 0;
                 int singleCount = 0;
@@ -1231,7 +1231,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
         @Override
         public void saveUserAnser() {
             presentTime = System.currentTimeMillis() - presentTime;
-            for (int i = 0; i < mAnswersList.size(); i++) {
+            for (int i = 0; i < scoreMatrix.size(); i++) {
                 JSONObject jsonObject = new JSONObject();
                 int isRight = 0;
                 List<Integer> scoreList = scoreMatrix.get(i);

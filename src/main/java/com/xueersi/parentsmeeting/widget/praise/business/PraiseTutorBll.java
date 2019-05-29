@@ -12,16 +12,20 @@ import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsAgentTrayPreference;
 import com.xueersi.lib.log.Loger;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveTopic;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.ExcellentListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.LikeProbabilityEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.MinimarketListEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.praiselist.entity.PraiseListDanmakuEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.praiselist.page.PraiseListPager;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveBll2;
@@ -29,7 +33,6 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.TopicAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.contract.PraiseListPresenter;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.contract.PraiseListView;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.page.PraiseListPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.praiselist.view.PraiseListBll;
 import com.xueersi.parentsmeeting.widget.praise.PraisePager;
 import com.xueersi.parentsmeeting.widget.praise.config.PraiseConfig;
@@ -41,6 +44,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -54,6 +58,8 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
     boolean isTopic = false;
     String likeId = "";
     boolean isCloase = true;
+    private LiveAndBackDebug liveAndBackDebug;
+
     public PraiseTutorBll(Activity context, LiveBll2 liveBll) {
         super(context, liveBll);
     }
@@ -142,6 +148,7 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
         if (praisePager != null) {
             praisePager.showEncouraging();
         }
+
     }
 
     @Override
@@ -192,6 +199,12 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
                 PraiseEntity entity = getHttpResponseParser().parseTutorPraiseEntity(responseEntity);
                 praisePager = new PraisePager(mContext, entity, listener,bottomContent);
                 praisePager.showPraisePager(bottomContent);
+
+                StableLogHashMap logHashMap = new StableLogHashMap("list_receive");
+                logHashMap.put("list_number", entity.getPraiseType() + "");
+                umsAgentDebugPv(PraiseConfig.UMS_PRACTICE_TUTOR, logHashMap.getData());
+
+
             }
 
             @Override
@@ -234,6 +247,7 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
             jsonObject.put("stuId", mGetInfo.getStuId());
             jsonObject.put("stuName", mGetInfo.getStuName());
             sendNotice(jsonObject, mLiveBll.getCounTeacherStr());
+
         } catch (Exception e) {
             mLogtf.e("sendLikeNum", e);
         }
