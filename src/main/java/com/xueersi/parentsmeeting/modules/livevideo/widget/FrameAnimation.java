@@ -12,6 +12,7 @@ import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.airbnb.lottie.AssertUtil;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.ScreenUtils;
@@ -368,7 +369,7 @@ public class FrameAnimation {
                                     }
                                 }
                                 if (bitmap == null) {
-//                                    inputStream = mView.getContext().getAssets().open(file);
+//                                    inputStream = mView.getContext().AssertUtil.open(file);
                                     inputStream = getInputStream(mView.getContext(), file);
                                     bitmap = BitmapFactory.decodeStream(inputStream);
                                     if (bitmap != null) {
@@ -676,7 +677,7 @@ public class FrameAnimation {
             FileInputStream fileInputStream = new FileInputStream(file);
             return fileInputStream;
         }
-        InputStream inputStream = context.getAssets().open(file);
+        InputStream inputStream = AssertUtil.open(file);
         return inputStream;
     }
 

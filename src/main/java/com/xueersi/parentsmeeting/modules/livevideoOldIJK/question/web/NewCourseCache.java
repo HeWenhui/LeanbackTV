@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.web;
 import android.content.Context;
 import android.util.Log;
 
+import com.airbnb.lottie.AssertUtil;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.MimeTypeMap;
@@ -331,14 +332,14 @@ public class NewCourseCache {
                 String fileSub = url.substring(index2 + zhongXueKeJian.length());
                 try {
                     String fileName = "newcourse_result/sec/middleSchoolCourseware" + fileSub;
-                    InputStream inputStream = mContext.getAssets().open(fileName);
+                    InputStream inputStream = AssertUtil.open(fileName);
                     String extension = MimeTypeMap.getFileExtensionFromUrl(url.toLowerCase());
                     String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
                     WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "", new WrapInputStream(mContext, inputStream));
                     webResourceResponse.setResponseHeaders(header);
                     logger.d("interceptZhongXueKeJian:fileName=" + fileName);
                     return webResourceResponse;
-                } catch (IOException e) {
+                } catch (Exception e) {
                     logger.d("interceptZhongXueKeJian:fileSub=" + fileSub);
                 }
             }

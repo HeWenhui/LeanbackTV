@@ -2,6 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.util;
 
 import android.content.Context;
 
+import com.airbnb.lottie.AssertUtil;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,7 +21,7 @@ public class AssetsUtils {
         String jsonStr = null;
         BufferedReader reader = null;
         try {
-            InputStream in = context.getAssets().open(jsonFilePath);
+            InputStream in = AssertUtil.open(jsonFilePath);
             reader = new BufferedReader(new InputStreamReader(in));
             String line = null;
             StringBuilder sb = new StringBuilder();
