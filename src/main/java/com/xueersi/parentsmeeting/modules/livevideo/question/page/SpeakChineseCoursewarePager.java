@@ -230,7 +230,6 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
     private String testId = "";
 
     private CourseWareHttpManager courseWareHttpManager;
-
     /**
      * 强制收题
      */
