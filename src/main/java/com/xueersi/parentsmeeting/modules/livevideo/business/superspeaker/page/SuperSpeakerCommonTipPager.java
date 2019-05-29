@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract;
 import com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView;
@@ -75,6 +76,7 @@ public class SuperSpeakerCommonTipPager extends BasePager implements ISuperSpeak
             @Override
             public void onClick(View v) {
                 if (iCommonPresenter != null) {
+                    UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715015));
                     iCommonPresenter.submitSpeechShow("1");
                     mView.removeCallbacks(timeDownRunnable);
                 }
@@ -84,6 +86,7 @@ public class SuperSpeakerCommonTipPager extends BasePager implements ISuperSpeak
             @Override
             public void onClick(View v) {
                 if (iCommonPresenter != null) {
+                    UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715014));
                     mView.removeCallbacks(timeDownRunnable);
                     iCommonPresenter.removeCameraView();
                 }
@@ -100,6 +103,7 @@ public class SuperSpeakerCommonTipPager extends BasePager implements ISuperSpeak
         //如果录制时间小于1s
         this.notFinish = notFinish;
         if (notFinish) {
+            UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715017));
             groupSubmitVideo.setVisibility(View.GONE);
             groupCancelVideo.setVisibility(View.VISIBLE);
             tvTimeUpNotFinishTitle.setText(mContext.getString(R.string.super_speaker_time_up_not_record_finish_tip));
@@ -129,6 +133,7 @@ public class SuperSpeakerCommonTipPager extends BasePager implements ISuperSpeak
             if (tvTimeCountDown != null) {
                 if (timeDown == 0 && iCommonPresenter != null) {
                     if (!notFinish) {
+                        UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715016));
                         iCommonPresenter.submitSpeechShow("1");
                     }
                     iCommonPresenter.removeCameraView();

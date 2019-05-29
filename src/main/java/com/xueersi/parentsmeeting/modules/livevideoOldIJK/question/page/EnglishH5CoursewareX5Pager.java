@@ -355,9 +355,6 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
         wvSubjectWeb.addJavascriptInterface(this, "wx_xesapp");
         wvSubjectWeb.setInitialScale(100);
         // 新课件平台
-        if (mLogtf != null) {
-            mLogtf.d("initData:newEnglishH5=" + englishH5Entity.getNewEnglishH5() + ",mul=" + LiveVideoConfig.isMulLiveBack + ",isNewArts=" + isNewArtsCourseware);
-        }
         if (englishH5Entity.getNewEnglishH5() || LiveVideoConfig.isMulLiveBack || isNewArtsCourseware) {
             wvSubjectWeb.setWebViewClient(new MyWebViewClient() {
                 @Override
@@ -460,8 +457,12 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+                        String tutorId = liveId;
+                        if (!TextUtils.isEmpty(tutorId)) {
+                            tutorId=  tutorId.replace("_t","");
+                        }
                         String realurl = englishH5Entity.getDynamicurl();
-                        mLoadUrls = realurl + "?stuId=" + stuId + "&liveId=" + liveId + "&stuCouId=" + stuCouId +
+                        mLoadUrls = realurl + "?stuId=" + stuId + "&liveId=" + tutorId + "&stuCouId=" + stuCouId +
                                 "&classId=" + classId + "&teamId=" + teamId + "&packageId=" + packageId +
                                 "&packageSource=" + packageSource + "&packageAttr=" + packageAttr +
                                 "&releasedPageInfos=" + releasedPageInfos + "&classTestId=" + classTestId +
@@ -601,7 +602,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     logger.e("======> reloadUrlLiveds:" + mLoadUrls);
                 } else {
                     String url = reloadurl + "&time=" + System.currentTimeMillis();
-//                    loadUrl(url);
+          //          loadUrl(url);
                     reloadUrl();
                     logger.e("======> reloadUrlLived:" + url);
                 }

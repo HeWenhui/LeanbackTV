@@ -6,8 +6,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.xueersi.common.base.BasePager;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract;
 
 public class SuperSpeakerCameraBackPager extends BasePager {
 
@@ -16,10 +16,13 @@ public class SuperSpeakerCameraBackPager extends BasePager {
     private TextView tvContentTip;
 
     private TextView tvTittle;
+    //1直播,2回放
+    private int livevideo;
 //    private ISuperSpeakerContract.ICameraBackPresenter presenter;
 
-    public SuperSpeakerCameraBackPager(Context context) {
+    public SuperSpeakerCameraBackPager(Context context, int livevieo) {
         super(context);
+        this.livevideo = livevieo;
 //        this.presenter = presenter;
     }
 
@@ -43,6 +46,21 @@ public class SuperSpeakerCameraBackPager extends BasePager {
 //                if (presenter != null) {
 //                    presenter.removeCameraView();
 //                }
+                //预览页面退出
+                if (mContext.getString(R.string.super_speaker_back_camera_content_tip).equals(tvContentTip)) {
+                    if (livevideo == 1) {
+                        UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715011));
+                    } else {
+                        UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1716011));
+                    }
+                } else {//录制前
+                    if (livevideo == 1) {
+                        UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715009));
+                    } else {
+                        UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1716009));
+                        ;
+                    }
+                }
                 if (iClickListener != null) {
                     iClickListener.onYesClick();
                 }
@@ -54,6 +72,20 @@ public class SuperSpeakerCameraBackPager extends BasePager {
 //                if (presenter != null) {
 //                    presenter.removeView(mView);
 //                }
+                //预览页面退出
+                if (mContext.getString(R.string.super_speaker_back_camera_content_tip).equals(tvContentTip)) {
+                    if (livevideo == 1) {
+                        UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715010));
+                    } else {
+                        UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1716010));
+                    }
+                } else {
+                    if (livevideo == 1) {
+                        UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715008));
+                    } else {
+                        UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1716008));
+                    }
+                }
                 if (iClickListener != null) {
                     iClickListener.onNoClick();
                 }

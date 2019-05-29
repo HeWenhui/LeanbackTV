@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@id/rl_page_livevideo_praise_list_main_content"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_page_livevideo_praise_list_dark">
+
+
+    <RelativeLayout
+        android:id="@id/rl_page_livevideo_praise_list_content"
+        android:layout_width="370dp"
+        android:layout_height="344dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/bg_page_livevideo_praise_list_dark_content">
+
+        <ImageView
+            android:id="@id/iv_page_livevideo_praise_list_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="60dp"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@id/tv_page_livevideo_praise_list_title"
+            android:layout_width="160dp"
+            android:layout_height="25dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="59dp"
+            android:gravity="center"
+            android:text=""
+            android:visibility="gone" />
+        <View
+            android:id="@id/v_livevideo_praise_list_content_line"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_marginTop="90dp" />
+        <TextView
+            android:id="@id/tv_page_livevideo_praise_list_sub_title"
+            style="@style/text_font12_ffffff_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/v_livevideo_praise_list_content_line"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/bg_page_livevideo_praise_list_dark_sub_title_1"
+            android:gravity="center"
+            android:visibility="gone"
+            android:text="" />
+
+        <com.xueersi.parentsmeeting.modules.livevideo.widget.FastScrollableRecyclerView
+            android:id="@id/rv_livevideo_praise_list_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/tv_page_livevideo_praise_list_sub_title"
+            android:layout_marginLeft="35dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="6.5dp"
+            android:layout_marginBottom="50dp"
+            android:paddingRight="7dp"
+            app:VerticalThumbDrawable="@drawable/rcl_fast_scoller_line_ffc8d6ed_style"
+            app:VerticalTrackDrawable="@drawable/rcl_fastscroller_transparent" />
+
+    </RelativeLayout>
+
+
+    <ImageButton
+        android:id="@id/btn_page_livevideo_praise_list_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="11dp"
+        android:layout_marginRight="13dp"
+        android:background="@drawable/selector_page_livevideo_praise_list_dark_close_style"
+        android:visibility="gone" />
+
+    <RelativeLayout
+        android:layout_width="63dp"
+        android:layout_height="220dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="5dp">
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@id/lav_livevideo_praise_list_practice"
+            android:layout_width="55dp"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="10dp"
+            app:lottie_fileName="practicecourse/dark/practice_course_dark.json"
+            app:lottie_imageAssetsFolder="practicecourse/dark/images"
+            app:lottie_loop="true" />
+
+
+        <com.xueersi.parentsmeeting.modules.livevideo.widget.PraiseBtnAnimLayout
+            android:id="@id/fl_page_livevideo_praise_list_practice"
+            android:layout_width="63dp"
+            android:layout_height="63dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="bottom|center_horizontal"
+            app:auto_star="true">
+
+            <ImageView
+                android:id="@id/iv_page_livevideo_praise_list_practice"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_page_livevideo_praise_list_dark_practice" />
+
+            <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+                android:id="@id/tv_page_livevideo_praise_list_practice_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                android:layout_marginBottom="16dp"
+                android:scrollbarStyle="outsideOverlay"
+                android:text="0"
+                android:textColor="#F9BD43"
+                android:textSize="11sp" />
+
+        </com.xueersi.parentsmeeting.modules.livevideo.widget.PraiseBtnAnimLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@id/ll_page_livevideo_praise_list_teacher_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:background="@color/transparent_60"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_page_livevideo_praise_list_dark_teacher_hint"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <com.xueersi.ui.widget.CircleImageView
+                android:id="@id/iv_page_livevideo_praise_list_teacher_head_image"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginBottom="0dp"
+                android:src="@drawable/ic_default_head_square"
+                app:border_color="#E49E42"
+                app:border_width="1dp" />
+
+            <TextView
+                android:id="@id/tv_page_livevideo_praise_list_teacher_tip"
+                style="@style/text_font15_ffffff_style"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:ellipsize="end"
+                android:paddingRight="20dp"
+                android:singleLine="true"
+                android:text="" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@id/tv_page_livevideo_praise_list_teacher_talk"
+            android:layout_width="305dp"
+            android:layout_height="75dp"
+            android:background="@drawable/bg_page_livevideo_praise_list_dark_teacher_talk"
+            android:ellipsize="end"
+            android:gravity="center_horizontal"
+            android:paddingLeft="20dp"
+            android:paddingTop="30dp"
+            android:paddingRight="20dp"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="#E49E42"
+            android:textSize="15dp" />
+
+    </LinearLayout>
+</RelativeLayout>
