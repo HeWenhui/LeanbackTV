@@ -142,7 +142,13 @@ public class SpeechCollectiveNo2Bll {
             return;
         }
         start = true;
-        mLogtf.d("start:from=" + from + ",voiceId=" + voiceId);
+        try {
+            mLogtf.addCommon("voiceId", voiceId);
+            mLogtf.addCommon("from", from);
+            mLogtf.d("start:voiceId=" + voiceId + ",from=" + from);
+        } catch (Exception e) {
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
         try {
             String string = ShareDataManager.getInstance().getString(ShareDataConfig.SP_SPEECH_COLLECTION, "{}", ShareDataManager.SHAREDATA_USER);
             logger.d("start:string=" + string);
@@ -171,7 +177,6 @@ public class SpeechCollectiveNo2Bll {
         }
         speechStartDialog = new SpeechStartDialog(context);
         speechStartDialog.setStart();
-        mLogtf.d("start:voiceId=" + voiceId + ",from=" + from);
         addView();
         boolean hasAudidoPermission = XesPermission.hasSelfPermission(context, Manifest.permission.RECORD_AUDIO); //
         // 检查用户麦克风权限
@@ -245,7 +250,7 @@ public class SpeechCollectiveNo2Bll {
     }
 
     private void addView() {
-        final SpeechCollectiveNo2Pager speechCollectiveNo2Pager = new SpeechCollectiveNo2Pager(context, mRootView);
+        final SpeechCollectiveNo2Pager speechCollectiveNo2Pager = new SpeechCollectiveNo2Pager(context, voiceId, mRootView);
         speechCollectiveNo2Pager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
             @Override
             public void onClose(LiveBasePager basePager) {
@@ -380,7 +385,7 @@ public class SpeechCollectiveNo2Bll {
                     logger.d("onNoVolume:hide");
                 }
             });
-            logger.d("onNoVolume:time=" + (System.currentTimeMillis() - startTime));
+            mLogtf.d("onNoVolume:time=" + (System.currentTimeMillis() - startTime));
         }
     };
 
@@ -587,7 +592,7 @@ public class SpeechCollectiveNo2Bll {
                     gear = 1;
                     lastOneLevelTime = nowTime;
                     speechCollectiveView.addRipple(gear);
-                    logger.i("add Ripple level = " + gear);
+                    logger.i("performVolume:volume=" + volume + ",gear=" + gear);
                 }
 //                else if (isOnline) {
 //                    gear = 1;
@@ -603,7 +608,7 @@ public class SpeechCollectiveNo2Bll {
                     lastTwoLevelTime = nowTime;
                     lastVolumeTime = nowTime;
                     speechCollectiveView.addRipple(gear);
-                    logger.i("add Ripple level = " + gear);
+                    logger.i("performVolume:volume=" + volume + ",gear=" + gear);
                 }
 //                else if (isOnline) {
 //                    gear = 2;
@@ -619,7 +624,7 @@ public class SpeechCollectiveNo2Bll {
                     lastThreeLevelTime = nowTime;
                     lastVolumeTime = nowTime;
                     speechCollectiveView.addRipple(gear);
-                    logger.i("add Ripple level = " + gear);
+                    logger.i("performVolume:volume=" + volume + ",gear=" + gear);
                 }
 //                else if (isOnline) {
 //                    gear = 3;

@@ -18,7 +18,9 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.goldmicrophone.widget.SoundWaveView;
 import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.speechcollective.business.SpeechCollecPresenter;
@@ -40,10 +42,12 @@ public class SpeechCollectiveNo2Pager extends LiveBasePager implements SpeechCol
     private RelativeLayout rlSpeechcollectiveNoperm;
     private TextView tvSpeechcollectiveNopermClick;
     private SpeechCollecPresenter speechCollecPresenter;
+    private String voiceId;
 
-    public SpeechCollectiveNo2Pager(Context context, ViewGroup mRootView) {
+    public SpeechCollectiveNo2Pager(Context context, String voiceId, ViewGroup mRootView) {
         super(context, false);
         this.mRootView = mRootView;
+        this.voiceId = voiceId;
         mView = initView();
         initData();
         initListener();
@@ -68,7 +72,11 @@ public class SpeechCollectiveNo2Pager extends LiveBasePager implements SpeechCol
 
     @Override
     public void initData() {
-
+        try {
+            mLogtf.addCommon("voiceId", voiceId);
+        } catch (Exception e) {
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
     }
 
     @Override
