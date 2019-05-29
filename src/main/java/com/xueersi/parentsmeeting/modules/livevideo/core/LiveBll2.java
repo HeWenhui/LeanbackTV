@@ -327,7 +327,6 @@ public class LiveBll2 extends BaseBll implements LiveAndBackDebug {
         //activity创建
         for (LiveBaseBll businessBll : businessBlls) {
             businessBll.onCreate(businessShareParamMap);
-            Log.e("LiveBll2", "=======>onGetInfoSuccess 22222222");
         }
     }
 

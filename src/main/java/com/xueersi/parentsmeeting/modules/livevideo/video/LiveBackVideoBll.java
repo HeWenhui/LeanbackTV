@@ -172,7 +172,15 @@ public class LiveBackVideoBll {
     public long getStartPosition() {
         // if (mStartPos <= 0.0f || mStartPos >= 1.0f)
         try {
-            return ShareDataManager.getInstance().getLong(mUri + mShareKey + VP.SESSION_LAST_POSITION_SUFIX, 0,
+
+            String videoPath;
+            String url = mVideoEntity.getVideoPath();
+            if (url.contains("http") || url.contains("https")) {
+                videoPath = DoPSVideoHandle.getPSVideoPath(url);
+            } else {
+                videoPath = url;
+            }
+            return ShareDataManager.getInstance().getLong(videoPath + mShareKey + VP.SESSION_LAST_POSITION_SUFIX, 0,
                     ShareDataManager.SHAREDATA_USER);
         } catch (Exception e) {
             // 有一定不知明原因造成取出的播放点位int转long型失败,故加上这个值确保可以正常观看

@@ -1,5 +1,7 @@
 package com.xueersi.parentsmeeting.modules.livevideo.config;
 
+import android.os.Environment;
+
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.EnglishH5Entity;
 
@@ -483,10 +485,18 @@ public class LiveVideoConfig {
     public static final String URL_IS_GOLD_MICROPHONE = "https://app.chs.xueersi.com/LiveCourse/setGoldMicrophoneData";
 
    /**NB加试实验**/
-    public static String URL_NB_LOGIN = " https://live.xueersi.com/science/LiveExam/stuLoginNB";
+    public static String URL_NB_LOGIN = "https://live.xueersi.com/science/LiveExam/stuLoginNB";
     /**上传NB 实验答题结果 **/
-    public static String URL_NB_RESULT_UPLOAD = " https://live.xueersi.com/science/LiveExam/receiveNBResult";
+    public static String URL_NB_RESULT_UPLOAD = "https://live.xueersi.com/science/LiveExam/receiveNBResult";
     /**获取 Nb 试题信息**/
     public static String URL_NB_COURSE_INFO = "https://live.xueersi.com/science/LiveExam/getNBTestInfo";
+    /** app端上传演讲秀视频 */
+    public static final String SUPER_SPEAKER_UPLOAD_SPEECH_SHOW = "https://app.chs.xueersi.com/LiveCourse/uploadSpeechShow";
+    /** app端摄像头开启状态 */
+    public static final String SUPER_SPEAKER_SPEECH_SHOW_CAMERA_STATUS = "https://app.chs.xueersi.com/LiveCourse/speechShowCameraStatus";
+    /** app端提交演讲秀 */
+    public static final String SUPER_SPEAKER_SUBMIT_SPEECH_SHOW = "https://app.chs.xueersi.com/LiveCourse/submitSpeechShow";
+    /** 超级演讲秀存储视频的地方 */
+    public static final String SUPER_SPEAKER_VIDEO_PATH = Environment.getExternalStorageDirectory() + "/parentsmeeting/livevideo/superSpeaker/";
 
 }

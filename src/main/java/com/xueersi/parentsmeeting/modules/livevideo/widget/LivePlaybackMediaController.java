@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -20,9 +21,9 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.player.R;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaControllerBottom2;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 
 import java.util.List;
 
@@ -44,7 +45,7 @@ public class LivePlaybackMediaController extends MediaController2 {
     protected View portView;
     protected OnPointClick onPointClick;
 
-    public LivePlaybackMediaController(Context context, MediaPlayerControl player, boolean mIsLand) {
+    public LivePlaybackMediaController(Context context, BackMediaPlayerControl player, boolean mIsLand) {
         super(context, player);
         this.mIsLand = mIsLand;
         activity = (Activity) context;
@@ -250,8 +251,10 @@ public class LivePlaybackMediaController extends MediaController2 {
             } else {
                 textView.setText("互动课件");
             }
-        } else if(LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == videoQuestionEntity.getvCategory()){
+        } else if(LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == videoQuestionEntity.getvCategory()
+        || LocalCourseConfig.CATEGORY_TUTOR_EVENT_35 == videoQuestionEntity.getvCategory()){
             String type = videoQuestionEntity.getvQuestionType();
+           // Log.e("PreSchoolTrace","=======>LivePlaybackMediaCtr:type="+type);
             switch (type){
                 case "1":
                 case "6":
@@ -261,11 +264,17 @@ public class LivePlaybackMediaController extends MediaController2 {
                 case "3":
                 case "4":
                     textView.setText("测试卷");
+                    break;
                 case "5":
                 case "10":
+                case "25":
                     textView.setText("互动游戏");
+                    break;
                 case "17":
                     textView.setText("互动题");
+                    break;
+                case "19":
+                    textView.setText("开讲吧");
                     break;
             }
         } else if (LocalCourseConfig.CATEGORY_LEC_ADVERT == videoQuestionEntity.getvCategory()) {
@@ -300,6 +309,15 @@ public class LivePlaybackMediaController extends MediaController2 {
                     break;
             }
 
+        } else if (LocalCourseConfig.CATEGORY_SUPER_SPEAKER == videoQuestionEntity.getvCategory()) {
+            String type = videoQuestionEntity.getvQuestionType();
+            switch (type) {
+                case "40": {
+                    textView.setText("超级演讲秀");
+                    break;
+                }
+
+            }
         }
         final ImageView ivPlay = (ImageView) contentView.findViewById(R.id.iv_liveplayback_point_play);
         final int insretTime = videoQuestionEntity.getvQuestionInsretTime();

@@ -136,7 +136,6 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      * 直播间内答题 H5 答题结果页面关闭事件队列
      */
     private List<LiveRoomH5CloseEvent> h5CloseEvents;
-
     /**
      * 是否是带碎片的直播间
      */

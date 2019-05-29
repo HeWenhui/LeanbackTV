@@ -213,7 +213,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                 try {
                     VideoQuestionLiveEntity detailInfo = event.getDetailInfo();
                     if (detailInfo != null) {
-                        NewCourseLog.sno8(mLiveBll, NewCourseLog.getNewCourseTestIdSec(detailInfo, LiveVideoSAConfig.ART_EN), event.isIspreload(), 0);
+                        NewCourseLog.sno8(mLiveBll, NewCourseLog.getNewCourseTestIdSec(detailInfo, LiveVideoSAConfig.ART_EN), event.isIspreload(), 0,detailInfo.isTUtor());
                     }
                 } catch (Exception e) {
                     CrashReport.postCatchedException(e);
@@ -375,7 +375,6 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
      * @param resultFromVoice 是否是 本地语音答题（填空、选择）
      */
     private void onAnswerResult(ArtsAnswerResultEvent event, String result, boolean resultFromVoice) {
-        Log.e("AnswerResultBll", "======>onAnswerResult:" + result + ":" + resultFromVoice);
         //boolean showAnswerResult = false;
         try {
             JSONObject jsonObject = new JSONObject(result);
@@ -409,7 +408,7 @@ public class ArtsAnswerResultBll extends LiveBaseBll implements NoticeAction, An
                             idList.add(testIds.getString(i));
                         }
                         mAnswerReulst.setIdArray(idList);
-                        Log.e("AnswerResultBll", "=======>parseAnswerResult:" + idList.size());
+                        //Log.e("AnswerResultBll", "=======>parseAnswerResult:" + idList.size());
                     }
 
                     int type = totalObject.optInt("type");

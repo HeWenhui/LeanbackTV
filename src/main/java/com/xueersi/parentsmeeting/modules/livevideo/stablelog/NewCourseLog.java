@@ -20,7 +20,10 @@ import java.util.Iterator;
 public class NewCourseLog {
     static String eventId = LogConfig.LIVE_H5PLAT;
     static String TAG = "NewCourseLog";
-
+    /** 主讲 */
+    public static String QUESTION_TYPE_TUTOR = "1";
+    /** 辅导 */
+    public static String QUESTION_TYPE_MAIN = "0";
     public static String getNewCourseTestIdSec(VideoQuestionLiveEntity detailInfo, int arts) {
         if (arts == LiveVideoSAConfig.ART_EN) {
             detailInfo.setNewCourseTestIdSec(detailInfo.id);
@@ -65,12 +68,18 @@ public class NewCourseLog {
      * <p>
      * 英语： [testid+testd]
      */
-    public static void sno2(LiveAndBackDebug liveAndBackDebug, String testid, int noticecode) {
+    public static void sno2(LiveAndBackDebug liveAndBackDebug, String testid, int noticecode,boolean isTutor) {
         StableLogHashMap logHashMap = new StableLogHashMap("receiveH5Plat");
         logHashMap.put("testid", testid);
         logHashMap.put("noticecode", "" + noticecode);
         logHashMap.put("sno", "2");
         logHashMap.put("status", "true");
+        String questionType = QUESTION_TYPE_MAIN;
+        if(isTutor){
+            questionType = QUESTION_TYPE_TUTOR;
+        }
+        logHashMap.put("questiontype", questionType+"");
+
         liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 
@@ -78,7 +87,7 @@ public class NewCourseLog {
      * sno3学生加载页面loading
      * pageid 页面id(英语无pageid)
      */
-    public static void sno3(LiveAndBackDebug liveAndBackDebug, String testid, String subtestid, String loadurl, boolean ispreload, String pageid) {
+    public static void sno3(LiveAndBackDebug liveAndBackDebug, String testid, String subtestid, String loadurl, boolean ispreload, String pageid,boolean isTutor) {
         StableLogHashMap logHashMap = new StableLogHashMap("showLoading");
         logHashMap.put("testid", testid);
         logHashMap.put("subtestid", subtestid);
@@ -87,11 +96,16 @@ public class NewCourseLog {
         logHashMap.put("pageid", "" + pageid);
         logHashMap.put("sno", "3");
         logHashMap.put("status", "true");
+        String questionType = QUESTION_TYPE_MAIN;
+        if(isTutor){
+            questionType = QUESTION_TYPE_TUTOR;
+        }
+        logHashMap.put("questiontype", questionType+"");
         liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 
     /** sno4课件加载完成/打开页面 */
-    public static void sno4(LiveAndBackDebug liveAndBackDebug, String testid, String subtestid, String loadurl, boolean ispreload, String pageid, long loadtime, int isfresh, int refreshTime) {
+    public static void sno4(LiveAndBackDebug liveAndBackDebug, String testid, String subtestid, String loadurl, boolean ispreload, String pageid, long loadtime, int isfresh, int refreshTime,boolean isTutor) {
         StableLogHashMap logHashMap = new StableLogHashMap("showH5Plat");
         logHashMap.put("testid", testid);
         logHashMap.put("subtestid", subtestid);
@@ -103,11 +117,15 @@ public class NewCourseLog {
         logHashMap.put("refreshTime", "" + refreshTime);
         logHashMap.put("status", "true");
         logHashMap.put("sno", "4");
+        String questionType = QUESTION_TYPE_MAIN;
+        if(isTutor){
+            questionType = QUESTION_TYPE_TUTOR;
+        }
         liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 
     /** sno5学生提交(包括强制提交) */
-    public static void sno5(LiveAndBackDebug liveAndBackDebug, String testid, boolean isforce, String loadurl, boolean ispreload) {
+    public static void sno5(LiveAndBackDebug liveAndBackDebug, String testid, boolean isforce, String loadurl, boolean ispreload,boolean isTutor) {
         StableLogHashMap logHashMap = new StableLogHashMap("startSubmit");
         logHashMap.put("testid", testid);
         logHashMap.put("isforce", "" + isforce);
@@ -115,11 +133,15 @@ public class NewCourseLog {
         logHashMap.put("loadurl", "" + loadurl);
         logHashMap.put("status", "true");
         logHashMap.put("sno", "5");
+        String questionType = QUESTION_TYPE_MAIN;
+        if(isTutor){
+            questionType = QUESTION_TYPE_TUTOR;
+        }
         liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 
     /** sno6提交成功(包括强制提交) */
-    public static void sno6(LiveAndBackDebug liveAndBackDebug, String testid, boolean status, boolean isforce, boolean ispreload, long submittime, String errmsg) {
+    public static void sno6(LiveAndBackDebug liveAndBackDebug, String testid, boolean status, boolean isforce, boolean ispreload, long submittime, String errmsg,boolean isTutor) {
         StableLogHashMap logHashMap = new StableLogHashMap("submitResult");
         logHashMap.put("testid", testid);
         logHashMap.put("status", "" + status);
@@ -128,27 +150,39 @@ public class NewCourseLog {
         logHashMap.put("ispreload", "" + ispreload);
         logHashMap.put("errmsg", "" + errmsg);
         logHashMap.put("sno", "6");
+        String questionType = QUESTION_TYPE_MAIN;
+        if(isTutor){
+            questionType = QUESTION_TYPE_TUTOR;
+        }
         liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 
     /** sno7加载结果页 */
-    public static void sno7(LiveAndBackDebug liveAndBackDebug, String testid, boolean ispreload) {
+    public static void sno7(LiveAndBackDebug liveAndBackDebug, String testid, boolean ispreload,boolean isTutor) {
         StableLogHashMap logHashMap = new StableLogHashMap("showResultLoading");
         logHashMap.put("testid", testid);
         logHashMap.put("ispreload", "" + ispreload);
         logHashMap.put("sno", "7");
         logHashMap.put("status", "true");
+        String questionType = QUESTION_TYPE_MAIN;
+        if(isTutor){
+            questionType = QUESTION_TYPE_TUTOR;
+        }
         liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 
     /** sno8显示结果页 */
-    public static void sno8(LiveAndBackDebug liveAndBackDebug, String testid, boolean ispreload, long showtime) {
+    public static void sno8(LiveAndBackDebug liveAndBackDebug, String testid, boolean ispreload, long showtime,boolean isTutor) {
         StableLogHashMap logHashMap = new StableLogHashMap("showResult");
         logHashMap.put("testid", testid);
         logHashMap.put("ispreload", "" + ispreload);
         logHashMap.put("showtime", "" + showtime);
         logHashMap.put("sno", "8");
         logHashMap.put("status", "true");
+        String questionType = QUESTION_TYPE_MAIN;
+        if(isTutor){
+            questionType = QUESTION_TYPE_TUTOR;
+        }
         liveAndBackDebug.umsAgentDebugInter(eventId, logHashMap.getData());
     }
 

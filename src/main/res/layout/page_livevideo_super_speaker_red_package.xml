@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/COLOR_99000000"
+    tools:ignore="MissingConstraints">
+
+    <ImageView
+        android:id="@id/iv_livevideo_super_speaker_redpackage"
+        android:layout_width="378dp"
+        android:layout_height="337dp"
+        android:src="@drawable/bg_livevideo_small_chinese_redpackage_open_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@id/iv_livevideo_super_speaker_redpackage_close_btn"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_marginLeft="340dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/selector_small_chinese_sign_close"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_super_speaker_redpackage"
+        app:layout_constraintTop_toTopOf="@id/iv_livevideo_super_speaker_redpackage" />
+
+    <ImageView
+        android:id="@id/iv_livevideo_super_speaker_video_tip"
+        android:layout_width="129dp"
+        android:layout_height="24dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginBottom="115dp"
+        android:src="@drawable/bg_livevideo_super_speaker_submit_video_red_package_tip"
+        app:layout_constraintBottom_toBottomOf="@id/iv_livevideo_super_speaker_redpackage"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_super_speaker_redpackage"
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_super_speaker_redpackage" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="4dp"
+        android:layout_marginBottom="15dp"
+        android:text="+"
+        android:textColor="@color/COLOR_EA4D43"
+        android:textSize="50dp"
+        app:layout_constraintBottom_toBottomOf="@id/fzcy_livevideo_record_video_redpackage_money"
+        app:layout_constraintRight_toLeftOf="@id/fzcy_livevideo_record_video_redpackage_money" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:id="@id/fzcy_livevideo_record_video_redpackage_money"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:includeFontPadding="false"
+        android:textColor="@color/COLOR_EA4D43"
+        android:textSize="85dp"
+        app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_super_speaker_redpackage"
+        app:layout_constraintRight_toRightOf="@id/iv_livevideo_super_speaker_redpackage"
+        app:layout_constraintTop_toBottomOf="@id/iv_livevideo_super_speaker_video_tip"
+        tools:text="20" />
+
+    <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_marginBottom="17dp"
+        android:text="金币"
+        android:textColor="@color/COLOR_EA4D43"
+        android:textSize="16dp"
+        app:layout_constraintBottom_toBottomOf="@id/fzcy_livevideo_record_video_redpackage_money"
+        app:layout_constraintLeft_toRightOf="@id/fzcy_livevideo_record_video_redpackage_money" />
+</android.support.constraint.ConstraintLayout>

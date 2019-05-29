@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -32,6 +33,8 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.pager.LiveMess
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.pager.LiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.pager.LiveMessagePortPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.pager.LiveMessageStandPager;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.pager.PreSchoolLiveMainMsgPager;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.pager.PreSchoolLiveTrainMsgPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.pager.SmallChineseLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.message.pager.SmallEnglishLiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.page.LivePsMessagePager;
@@ -246,15 +249,22 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
         BaseLiveMessagePager liveMessagePager = null;
 
         //根据不同的直播类型创建不同皮肤
-        if (getInfo != null && getInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
-            // 语文
-            liveMessagePager = new HalfBodyArtsLiveMsgPager(activity, this,
-                    null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
-        } else {
-            // 理科
-            liveMessagePager = new HalfBodyLiveMessagePager(activity, this,
-                    null, baseLiveMediaControllerBottom, baseLiveMediaControllerTop,
+        if(getInfo != null && getInfo.isPreschool()){
+            // 幼教
+            liveMessagePager = new PreSchoolLiveMainMsgPager(activity, this,
+                    null, baseLiveMediaControllerBottom,baseLiveMediaControllerTop,
                     liveMessageLandEntities, null);
+        }else{
+            if (getInfo != null && getInfo.getUseSkin() == HalfBodyLiveConfig.SKIN_TYPE_CH) {
+                // 语文
+                liveMessagePager = new HalfBodyArtsLiveMsgPager(activity, this,
+                        null, baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+            } else {
+                // 理科
+                liveMessagePager = new HalfBodyLiveMessagePager(activity, this,
+                        null, baseLiveMediaControllerBottom, baseLiveMediaControllerTop,
+                        liveMessageLandEntities, null);
+            }
         }
 
         mLiveMessagePager = liveMessagePager;
@@ -329,12 +339,15 @@ public class LiveMessageBll implements RoomAction, QuestionShowAction, KeyBordAc
                 SmallChineseLiveMessagePager chineseLiveMessagePager = new SmallChineseLiveMessagePager(activity, this, null, baseLiveMediaControllerBottom
                         , liveMessageLandEntities, liveMessagePortEntities);
                 mLiveMessagePager = chineseLiveMessagePager;
-
+            }else if(getInfo != null && getInfo.isPreschool()){
+                PreSchoolLiveTrainMsgPager liveMessagePager = new PreSchoolLiveTrainMsgPager(activity, this, null,
+                        baseLiveMediaControllerBottom, liveMessageLandEntities, null);
+                mLiveMessagePager = liveMessagePager;
             } else if (LiveVideoConfig.isPrimary) {
                 LivePsMessagePager liveMessagePager = new LivePsMessagePager(activity, this, null,
                         baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;
-            }   else {
+            }else {
                 LiveMessagePager liveMessagePager = new LiveMessagePager(activity, this, null,
                         baseLiveMediaControllerBottom, liveMessageLandEntities, null);
                 mLiveMessagePager = liveMessagePager;

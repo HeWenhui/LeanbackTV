@@ -58,8 +58,6 @@ dependencies {
     implementation rootProject.ext.thirdlibraries.arouterapi
     implementation rootProject.ext.thirdlibraries.bugly
     annotationProcessor rootProject.ext.thirdlibraries.aroutercompiler
-    //    implementation project(':business:endictation')
-    rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.endictation)
     implementation rootProject.ext.thirdlibraries.ticker
 
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.agora)
@@ -69,5 +67,10 @@ dependencies {
     //implementation project(':library:waveform')
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.gifDrawable)
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.transition)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.rxjava)
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.thirdlibraries.rxandroid)
+//    implementation 'com.github.adrielcafe:ffmpeg-android-java:2a627f6ecd@aar'
+//    implementation "androidx.work:work-runtime:2.01"
     //    implementation project(':library:agora')
+    rootProject.xrsImplementation(this.getProject(), rootProject.ext.businesslibraries.businessinterface)
 }

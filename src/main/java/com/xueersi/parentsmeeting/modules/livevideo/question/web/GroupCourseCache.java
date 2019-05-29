@@ -18,8 +18,8 @@ public class GroupCourseCache extends NewCourseCache {
     private File mMorecacheout;
     private boolean newCourse;
 
-    public GroupCourseCache(Context mContext, String liveId, boolean newCourse) {
-        super(mContext, liveId);
+    public GroupCourseCache(Context mContext, String liveId, String testid, boolean newCourse) {
+        super(mContext, liveId, testid);
         this.newCourse = newCourse;
         mMorecacheout = new File(todayLiveCacheDir, liveId + "artschild");
     }

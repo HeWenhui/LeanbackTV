@@ -39,7 +39,9 @@ import com.xueersi.ui.dataload.DataLoadEntity;
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by linyuqiang on 2018/7/14.
@@ -202,6 +204,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     bundle.putBoolean("isSmallEnglish", mGetInfo.getSmallEnglish());
                     bundle.putInt("useSkin", mGetInfo.getUseSkin());
                     bundle.putInt("isGoldMicrophone", mGetInfo.isUseGoldMicroPhone());
+                    bundle.putInt("useSuperSpeakerShow", mGetInfo.getUseSuperSpeakerShow());
                     if (mGetInfo.getIsArts() == 0) {
                         bundle.putInt("allowLinkMicNew", mGetInfo.getAllowLinkMicNew());
                     } else {
@@ -214,8 +217,12 @@ public class LiveVideoLoadActivity extends BaseActivity {
 //                }
                     if (1 == mGetInfo.getIsEnglish()) {
                         gotoEnglish(bundle);
-                    } else if (mGetInfo.isUseGoldMicroPhone() == 1) {
-                        gotoHalfBodyChinese(bundle);
+                    } else if (mGetInfo.isUseGoldMicroPhone() == 1 || mGetInfo.getUseSuperSpeakerShow() == 1) {
+                        List<Integer> list = new ArrayList<>();
+                        list.add(PermissionConfig.PERMISSION_CODE_AUDIO);
+                        list.add(PermissionConfig.PERMISSION_CODE_CAMERA);
+                        gotoHalfBodyChinese(bundle, list);
+//                        gotoHalfBodyChinese(bundle);
                     } else {
                         if (!MediaPlayer.getIsNewIJK()) {
                             com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
@@ -306,51 +313,56 @@ public class LiveVideoLoadActivity extends BaseActivity {
         }
     }
 
-    /**  */
-    void gotoHalfBodyChinese(final Bundle bundle) {
-        boolean have = XesPermission.checkPermission(this, new LiveActivityPermissionCallback() {
+    /**
+     *
+     */
+    void gotoHalfBodyChinese(final Bundle bundle, List<Integer> list) {
+        boolean have = XesPermission.checkPermission(this, new com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback() {
 
                     @Override
                     public void onFinish() {
-
-                    }
-
-                    @Override
-                    public void onDeny(String permission, int position) {
-                        if (MediaPlayer.getIsNewIJK()) {
-                            com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-                        } else {
-                            com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-                        }
-                        finish();
-                    }
-
-                    @Override
-                    public void onGuarantee(String permission, int position) {
-
                         Handler handler = new Handler(Looper.getMainLooper());
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
                                 if (MediaPlayer.getIsNewIJK()) {
-                                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoLoadActivity.this, bundle);
                                 } else {
-                                    com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                                    com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoLoadActivity.this, bundle);
                                 }
                                 finish();
                             }
                         });
                     }
+
+                    @Override
+                    public void onDeny(String permission, int position) {
+                        logger.i("onDeny");
+//                        if (MediaPlayer.getIsNewIJK()) {
+//                            com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+//                        } else {
+//                            com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+//                        }
+//                        finish();
+                    }
+
+                    @Override
+                    public void onGuarantee(String permission, int position) {
+                        logger.i("onGuarantee");
+                    }
                 },
-                PermissionConfig.PERMISSION_CODE_AUDIO);
+                PermissionConfig.PERMISSION_CODE_CAMERA, PermissionConfig.PERMISSION_CODE_AUDIO);
+        //魅族手机无法弹出权限弹窗
         if (have) {
             if (MediaPlayer.getIsNewIJK()) {
-                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoLoadActivity.this, bundle);
             } else {
-                com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoLoadActivity.this, bundle);
             }
             finish();
+
         }
+
     }
 
     /**
