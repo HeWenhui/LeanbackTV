@@ -67,6 +67,8 @@ dependencies {
     annotationProcessor rootProject.ext.thirdlibraries.aroutercompiler
     implementation rootProject.ext.thirdlibraries.ticker
 
+
+
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.agora)
 //    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.rtcengine)
     //    implementation project(':library:agora')
