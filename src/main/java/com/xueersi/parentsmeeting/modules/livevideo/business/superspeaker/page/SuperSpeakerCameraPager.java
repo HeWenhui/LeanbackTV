@@ -516,7 +516,8 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
 
         if (isSurfViewCreat) {
 //            performStartPreView(true);
-            mView.postDelayed(recordVideoTimer, 1000);
+            //因为刚开始录制视频，视频初始化有一段时间，所以多延迟0.5s
+            mView.postDelayed(recordVideoTimer, 1500);
             isInRecord = true;
             startRecordVideo();
         }
@@ -621,6 +622,9 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
         }
         ((ViewGroup) mView).addView(iCommonTip.getView(), params);
         iCommonTip.timeUp(startRecordVideoTime == -1 || (nowtime - startRecordVideoTime < RECORD_VALID_TIME));
+        if (isInRecord) {
+            performStopRecord();
+        }
     }
 
     @Override
