@@ -688,5 +688,11 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
         submitVideo(isForce);
     }
 
+    @Override
+    public boolean onUserBackPressed() {
+        ivBack.performClick();
+        super.onUserBackPressed();
+        return true;
+    }
 }
 
