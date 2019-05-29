@@ -605,7 +605,7 @@ public class EnglishH5CoursewareX5Pager extends BaseWebviewX5Pager implements Ba
                     logger.e("======> reloadUrlLiveds:" + mLoadUrls);
                 } else {
                     String url = reloadurl + "&time=" + System.currentTimeMillis();
-                    loadUrl(url);
+//                    loadUrl(url);
                     reloadUrl();
                     logger.e("======> reloadUrlLived:" + url);
                 }
