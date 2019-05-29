@@ -1428,20 +1428,21 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
     /**
      * 投票 能量
-     *
-     * @param liveId
+     *  @param liveId
      * @param teamId
      * @param classId
      * @param stuId
+     * @param releaseId
      * @param requestCallBack
      */
     public void addPersonAndTeamEnergy(String liveId, int addEnergy, String teamId, String classId, String stuId,
-                                       HttpCallBack requestCallBack) {
+                                       String releaseId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("addEnergy", addEnergy + "");
+        params.addBodyParam("releaseId", releaseId + "");
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_TEMPK_ADDPERSONANDTEAMENERGY + "/" + liveId, params, requestCallBack);
     }

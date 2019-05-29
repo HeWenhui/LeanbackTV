@@ -14,4 +14,6 @@ public class ShareDataConfig {
     public static final String SUPER_SPEAKER_UPLOAD_SP_KEY = "livevideo_super_speaker_upload_status";
 
 //    public static final String SUPER_SPEAKER_SUBMIT_SP_KEY = "livevideo_super_speaker_submit_status";
+    /** 集体发言 */
+    public final static String SP_SPEECH_COLLECTION = "sp_livevideo_collection";
 }

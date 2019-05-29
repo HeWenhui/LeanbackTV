@@ -149,6 +149,8 @@ public interface XESCODE {
 
     /** 老师点赞 */
     int TEACHER_PRAISE = 236;
+    /** 老师点赞-集体发言 */
+    int TEACHER_VOICE_PRAISE = 274;
     /** 战队pk，未知类型237 */
     int TEAMPK_237 = 237;
 
@@ -195,7 +197,8 @@ public interface XESCODE {
 
     /** 发送语音弹幕 */
     int XCR_ROOM_DANMU_SEND = 261;
-
+    /** 发送集体发言 */
+    int XCR_ROOM_SPEECH_COLL = 273;
     /** 语文：开启/关闭语音弹幕 */
     int XCR_ROOM_CHINESE_DANMU_OPEN = 290;
 
