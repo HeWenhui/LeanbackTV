@@ -1405,9 +1405,14 @@
     <item name="vv_super_speaker_course_video_video" type="id" />
 
     <!--- 辅导老师表扬榜-->
+    <item name="rl_page_livevideo_praise_list_main_content" type="id" />
     <item name="tv_page_livevideo_praise_list_title" type="id" />
     <item name="tv_item_livevideo_praise_list_name" type="id" />
+    <item name="v_item_livevideo_praise_list_name_line" type="id" />
+
     <item name="rv_livevideo_praise_list_content" type="id" />
+    <item name="v_livevideo_praise_list_content_line" type="id" />
+
     <item name="lav_livevideo_praise_list_practice" type="id" />
     <item name="btn_page_livevideo_praise_list_practice" type="id" />
     <item name="tv_page_livevideo_praise_list_sub_title" type="id" />
@@ -1421,6 +1426,6 @@
     <item name="iv_page_livevideo_praise_list_teacher_head_image" type="id" />
     <item name="tv_page_livevideo_praise_list_teacher_tip" type="id" />
     <item name="tv_page_livevideo_praise_list_teacher_talk" type="id" />
-    <item name="rl_page_livevideo_praise_list_main_content" type="id" />
-    <item name="v_item_livevideo_praise_list_name_line" type="id" />
+    <item name="iv_livevideo_super_speaker_video_controller_bottom_guide" type="id" />
+    <item name="iv_page_livevideo_praise_list_teacher_wood_left" type="id" />
 </resources>
