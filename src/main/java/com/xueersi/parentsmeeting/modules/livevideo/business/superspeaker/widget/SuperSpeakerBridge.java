@@ -43,7 +43,7 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
 
     private String courseWareId;
     /** 直播或者回放 1代表直播，2代表回放 */
-    private int back;
+    private int livevideo;
 
     private UploadVideoEntity uploadVideoEntity;
 
@@ -59,7 +59,7 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
         this.parentView = viewGroup;
         this.liveId = liveId;
         this.courseWareId = courseWareId;
-        this.back = back;
+        this.livevideo = back;
         this.uploadVideoEntity = uploadVideoEntity;
     }
 
@@ -87,7 +87,7 @@ public class SuperSpeakerBridge implements ISuperSpeakerContract.ISuperSpeakerBr
         LameUtil.init(16000, AudioFormat.CHANNEL_IN_DEFAULT, 16000,
                 128, 2);
         if (iView == null) {
-            iView = new SuperSpeakerPermissionPager(mContext, this, liveId, courseWareId, answerTime, recordTime, back);
+            iView = new SuperSpeakerPermissionPager(mContext, this, liveId, courseWareId, answerTime, recordTime, livevideo);
         }
         ViewGroup.LayoutParams layoutParams = iView.getView().getLayoutParams();
         if (layoutParams == null) {

@@ -534,8 +534,10 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
             //金话筒
             getInfo.setUseGoldMicroPhone(data.optInt("isGoldMicrophone"));
-            //超级演讲秀
-            getInfo.setUseSuperSpeakerShow(data.optInt("isSuperSpeechShow"));
+            //超级演讲秀  注意空格
+            int isSuperSpeechShow = data.optInt("isSuperSpeechShow");
+            int _isSuperSpeechShow = data.optInt("isSuperSpeechShow ");
+            getInfo.setUseSuperSpeakerShow(isSuperSpeechShow == 0 ? _isSuperSpeechShow : isSuperSpeechShow);
             getInfo.setSubject_digits(data.optString("subject_digits"));
             if (liveType == LiveVideoConfig.LIVE_TYPE_LIVE) {
                 getInfo.setIsNewProject(data.optInt("isNewProject", 0));
