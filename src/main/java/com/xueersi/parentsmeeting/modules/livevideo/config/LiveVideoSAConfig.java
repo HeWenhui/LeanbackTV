@@ -277,5 +277,7 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_GET_BIG_TEST_RESULT = HTTP_HOST + "/LiveExam/getStuInteractionResult";
     }
 
+    /** 出门测表扬榜 */
+    public static final String URL_LIVE_PRAISE_TUTOR_LIST = LiveVideoConfig.APP_ARTS_HTTP_HOST +"/LivePraise/getPraiseData";
 
 }

@@ -635,7 +635,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                     }
                     NewCourseLog.sno4(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts),
                             getSubtestid(), wvSubjectWeb.getUrl(), ispreload, pageid,
-                            (System.currentTimeMillis() - pagerStart), isRefresh, refreshTime);
+                            (System.currentTimeMillis() - pagerStart), isRefresh, refreshTime,detailInfo.isTUtor());
                     isRefresh = 0;
                 }
             }
@@ -972,7 +972,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                     isSpeakAnswer
                     ? "0" : "1", wvSubjectWeb.getUrl(), isPlayBack);
             NewCourseLog.sno5(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), isforce == 1,
-                    wvSubjectWeb.getUrl(), ispreload);
+                    wvSubjectWeb.getUrl(), ispreload,detailInfo.isTUtor());
         }
     }
 
@@ -1023,7 +1023,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
      */
     private void onSubmitSuccess(int isforce) {
         NewCourseLog.sno6(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), true,
-                isforce == 1, ispreload, (System.currentTimeMillis() - subMitTime), "");
+                isforce == 1, ispreload, (System.currentTimeMillis() - subMitTime), "",detailInfo.isTUtor());
     }
 
     /**
@@ -1034,7 +1034,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
      */
     private void onSubmitError(int isforce, String errorMsg) {
         NewCourseLog.sno6(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), false,
-                isforce == 1, ispreload, (System.currentTimeMillis() - subMitTime), errorMsg);
+                isforce == 1, ispreload, (System.currentTimeMillis() - subMitTime), errorMsg,detailInfo.isTUtor());
 
     }
 
@@ -1109,7 +1109,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 } else {
                     wvSubjectWeb.loadUrl(test.getPreviewPath());
                     NewCourseLog.sno3(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts),
-                            getSubtestid(), test.getPreviewPath(), ispreload, test.getId());
+                            getSubtestid(), test.getPreviewPath(), ispreload, test.getId(),detailInfo.isTUtor());
                 }
             }
 
@@ -1332,7 +1332,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                                 RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup
                                 .LayoutParams.MATCH_PARENT));
                         NewCourseLog.sno8(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts),
-                                ispreload, 0);
+                                ispreload, 0,detailInfo.isTUtor());
                     }
 
                     @Override
