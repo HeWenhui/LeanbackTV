@@ -645,6 +645,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
         stopRecordVideo();
         if (bridge != null) {
             bridge.removeView(mView);
+
         }
     }
 
@@ -679,7 +680,9 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
     public void resumeVideo() {
         if (customVideoController2 != null) {
             logger.i("resumeVideo");
-            customVideoController2.start();
+            if (customVideoController2.getVisibility() == View.VISIBLE) {
+                customVideoController2.startPlayVideo(StorageUtils.videoUrl, 0);
+            }
         }
     }
 

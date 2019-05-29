@@ -135,7 +135,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     private RelativeLayout bottom;
     private View mFloatView;
     private PopupWindow mPopupWindows;
-   // private Handler mHandler;
+    // private Handler mHandler;
     private int progress = 0;
     protected LiveBackBll liveBackBll;
     protected LiveBackVideoBll liveBackVideoBll;
@@ -165,10 +165,10 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
 
         mVideoMainEntity = (VideoLivePlayBackEntity) intent.getExtras().getSerializable("videoliveplayback");
         mVideoTutorEntity = (VideoLivePlayBackEntity) intent.getExtras().getSerializable("videoTutorEntity");
-        if (mVideoTutorEntity!=null) {
+        if (mVideoTutorEntity != null) {
             mVideoTutorEntity.setIsAllowMarkpoint(0);
         }
-        videoPlayStatus = intent.getIntExtra("teacherVideoStatus",0);
+        videoPlayStatus = intent.getIntExtra("teacherVideoStatus", 0);
 
         islocal = intent.getBooleanExtra("islocal", false);
         startNewVideo();
@@ -177,7 +177,7 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
     }
 
     private void startNewVideo() {
-        if (mVideoEntity!=null) {
+        if (mVideoEntity != null) {
             savePosition(mCurrentPosition);
         }
         if (videoPlayStatus == MediaPlayer.VIDEO_TEACHER_TUTOR || videoPlayStatus == MediaPlayer.VIDEO_TEACHER_ONLY_TUTOR) {
@@ -591,7 +591,9 @@ public class LiveBackVideoFragment extends LiveBackVideoFragmentBase implements 
         if (liveBackVideoBll != null) {
             liveBackVideoBll.onResume();
         }
-
+        if (liveBackBll != null) {
+            liveBackBll.onReusme();
+        }
     }
 
     @Override
