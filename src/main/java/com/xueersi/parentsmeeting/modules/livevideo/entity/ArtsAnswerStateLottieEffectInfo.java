@@ -67,7 +67,7 @@
 //        Bitmap resultBitMap = null;
 //        InputStream in = null;
 //        try {
-//            in = context.getAssets().open(path);
+//            in = AssertUtil.open.open(path);
 //            resultBitMap = BitmapFactory.decodeStream(in);
 //            in.close();
 //        } catch (Exception e) {

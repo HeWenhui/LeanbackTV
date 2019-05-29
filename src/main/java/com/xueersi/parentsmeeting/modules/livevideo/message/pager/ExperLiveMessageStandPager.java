@@ -38,6 +38,7 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.airbnb.lottie.AssertUtil;
 import com.tal.speech.config.SpeechConfig;
 import com.tal.speech.speechrecognizer.Constants;
 import com.tal.speech.speechrecognizer.EvaluatorListener;
@@ -346,7 +347,7 @@ public class ExperLiveMessageStandPager extends BaseLiveMessagePager implements 
                 }
             }
 
-            inputStream = mContext.getAssets().open(fileName);
+            inputStream = AssertUtil.open(fileName);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
 //            bitmap.setDensity((int) (DisplayMetrics.DENSITY_MEDIUM * (FrameAnimation.IMAGE_HEIGHT / (float) com
 // .xueersi.parentsmeeting.util.ScreenUtils.getScreenHeight(mView.getContext()))));

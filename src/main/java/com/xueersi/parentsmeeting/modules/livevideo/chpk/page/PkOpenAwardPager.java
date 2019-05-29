@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.airbnb.lottie.AssertUtil;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
@@ -264,7 +265,7 @@ public class PkOpenAwardPager extends BasePager {
             public Bitmap fetchBitmap(LottieImageAsset asset) {
                 Bitmap result = null;
                 try {
-                    InputStream in = mContext.getAssets().open(lottieResPath + asset.getFileName());
+                    InputStream in = AssertUtil.open(lottieResPath + asset.getFileName());
                     result = BitmapFactory.decodeStream(in);
                     in.close();
                 } catch (Exception e) {
