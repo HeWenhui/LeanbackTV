@@ -556,6 +556,8 @@ public class SpeechCollectiveNo2Bll {
         }
     }
 
+    int lastvolume;
+
     /**
      * 解决音量大小
      *
@@ -564,6 +566,11 @@ public class SpeechCollectiveNo2Bll {
     private synchronized void performVolume(int volume, boolean isOnline) {
         if (mRootView == null || isStop.get()) {
             return;
+        }
+        int flastvolume = lastvolume;
+        lastvolume = volume;
+        if (volume < 2) {
+            volume = flastvolume / 2;
         }
         long nowTime = System.currentTimeMillis();
         if (nowTime - lottieLastPlayTime > SpeechCollectiveConfig.LOTTIE_VIEW_INTERVAL && volume > SpeechCollectiveConfig.GOLD_MICROPHONE_VOLUME) {
@@ -592,7 +599,6 @@ public class SpeechCollectiveNo2Bll {
                     gear = 1;
                     lastOneLevelTime = nowTime;
                     speechCollectiveView.addRipple(gear);
-                    logger.i("performVolume:volume=" + volume + ",gear=" + gear);
                 }
 //                else if (isOnline) {
 //                    gear = 1;
@@ -608,7 +614,6 @@ public class SpeechCollectiveNo2Bll {
                     lastTwoLevelTime = nowTime;
                     lastVolumeTime = nowTime;
                     speechCollectiveView.addRipple(gear);
-                    logger.i("performVolume:volume=" + volume + ",gear=" + gear);
                 }
 //                else if (isOnline) {
 //                    gear = 2;
@@ -624,7 +629,6 @@ public class SpeechCollectiveNo2Bll {
                     lastThreeLevelTime = nowTime;
                     lastVolumeTime = nowTime;
                     speechCollectiveView.addRipple(gear);
-                    logger.i("performVolume:volume=" + volume + ",gear=" + gear);
                 }
 //                else if (isOnline) {
 //                    gear = 3;
@@ -634,6 +638,7 @@ public class SpeechCollectiveNo2Bll {
 //                    logger.i("add Ripple level = " + gear);
 //                }
             }
+            logger.i("performVolume:volume=" + volume + ",flastvolume=" + flastvolume + ",gear=" + gear);
         }
     }
 
