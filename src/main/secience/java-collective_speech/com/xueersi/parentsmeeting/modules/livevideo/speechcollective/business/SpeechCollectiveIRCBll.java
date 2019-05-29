@@ -215,7 +215,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                         @Override
                         public void run() {
                             if (speechCollectiveBll != null) {
-                                speechCollectiveBll.start("t", voiceId);
+                                speechCollectiveBll.start("t", voiceId, "onTopic1");
                             }
                         }
                     });
@@ -226,7 +226,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                             //如果是退出直播间再进来，不弹出倒计时和灰色收音球
                             ShareDataManager.getInstance().put("isOnTopic", true, ShareDataManager.SHAREDATA_USER);
                             createBll();
-                            speechCollectiveBll.start("t", voiceId);
+                            speechCollectiveBll.start("t", voiceId, "onTopic2");
                         }
                     });
                 }
@@ -249,7 +249,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                         @Override
                         public void run() {
                             if (speechCollectiveBll != null) {
-                                speechCollectiveBll.start("f", voiceId);
+                                speechCollectiveBll.start("f", voiceId, "onTopic3");
                             }
                         }
                     });
@@ -260,7 +260,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
                             //如果是退出直播间再进来，不弹出倒计时和灰色收音球
                             ShareDataManager.getInstance().put("isOnTopic", true, ShareDataManager.SHAREDATA_USER);
                             createBll();
-                            speechCollectiveBll.start("f", voiceId);
+                            speechCollectiveBll.start("f", voiceId, "onTopic4");
                         }
                     });
                 }
@@ -277,7 +277,7 @@ public class SpeechCollectiveIRCBll extends LiveBaseBll implements com.xueersi.p
         if (speechCollectiveBll != null) {
             try {
                 if ("on".equals(status)) {
-                    speechCollectiveBll.start(form, voiceID);
+                    speechCollectiveBll.start(form, voiceID, "onStaus");
                 } else {
                     speechCollectiveBll.stop("onStaus");
                     speechCollectiveBll = null;

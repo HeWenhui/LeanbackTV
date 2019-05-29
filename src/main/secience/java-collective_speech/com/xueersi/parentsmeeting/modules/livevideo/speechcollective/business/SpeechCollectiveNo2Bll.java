@@ -135,7 +135,7 @@ public class SpeechCollectiveNo2Bll {
         return from;
     }
 
-    public void start(String from, String voiceId) {
+    public void start(String from, String voiceId, String method) {
         this.voiceId = voiceId;
         this.from = from;
         if (start) {
@@ -145,7 +145,7 @@ public class SpeechCollectiveNo2Bll {
         try {
             mLogtf.addCommon("voiceId", voiceId);
             mLogtf.addCommon("from", from);
-            mLogtf.d("start:voiceId=" + voiceId + ",from=" + from);
+            mLogtf.d("start:voiceId=" + voiceId + ",from=" + from + ",method=" + method);
         } catch (Exception e) {
             CrashReport.postCatchedException(new LiveException(TAG, e));
         }
