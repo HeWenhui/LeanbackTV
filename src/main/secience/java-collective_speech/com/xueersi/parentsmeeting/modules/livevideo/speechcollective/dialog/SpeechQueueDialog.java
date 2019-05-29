@@ -8,7 +8,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LiveLoggerFactory;
 import com.xueersi.ui.dialog.BaseAlertDialog;
 
 import java.util.ArrayList;
-
+@Deprecated
 public class SpeechQueueDialog {
     private static SpeechQueueDialog instance;
     private Logger logger = LiveLoggerFactory.getLogger("SpeechQueueDialog");

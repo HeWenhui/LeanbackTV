@@ -347,7 +347,12 @@ public class SpeechCollectiveNo2Bll {
                 }
                 if (tipIsShow) {
                     tipIsShow = false;
-                    speechCollectiveView.onHaveVolume();
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            speechCollectiveView.onHaveVolume();
+                        }
+                    });
                 }
             }
         }
