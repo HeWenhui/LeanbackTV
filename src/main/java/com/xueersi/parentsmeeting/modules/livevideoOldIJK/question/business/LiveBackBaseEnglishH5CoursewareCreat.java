@@ -44,8 +44,13 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
         wrapOnH5ResultClose.setOnH5ResultClose(onH5ResultClose);
         wrapOnH5ResultClose.setVideoQuestionH5Entity(videoQuestionH5Entity);
         EnglishH5Entity englishH5Entity = videoQuestionH5Entity.englishH5Entity;
+        // 辅导太
         if (videoQuestionH5Entity.isTUtor()) {
-            isArts = LiveVideoSAConfig.ART_SEC;
+            englishH5Entity.setDynamicurl("https://live.xueersi.com/scistatic/outDoorTest/index.html");
+            EnglishH5CoursewareX5Pager  h5CoursewarePager = new EnglishH5CoursewareX5Pager(context, videoQuestionH5Entity, true, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
+                    videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, wrapOnH5ResultClose, "0", LiveVideoSAConfig.ART_SEC, false);
+            h5CoursewarePager.setLivePagerBack(livePagerBack);
+            return h5CoursewarePager;
         }
         if (isArts == 0) {
             String educationstage = liveGetInfo.getEducationStage();
@@ -97,11 +102,11 @@ public class LiveBackBaseEnglishH5CoursewareCreat implements BaseEnglishH5Course
                 return groupGameMultNativePager;
             }
         }
-        if (videoQuestionH5Entity.isTUtor()) {
-            englishH5Entity.setDynamicurl("https://live.xueersi.com/scistatic/outDoorTest/index.html");
-        }
-        EnglishH5CoursewareX5Pager h5CoursewarePager = new EnglishH5CoursewareX5Pager(context, videoQuestionH5Entity, true, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
-                videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, wrapOnH5ResultClose, "0", isArts, false);
+        EnglishH5CoursewareX5Pager
+             h5CoursewarePager = new EnglishH5CoursewareX5Pager(context, videoQuestionH5Entity, true, mVSectionID, videoQuestionH5Entity.id, englishH5Entity,
+                    videoQuestionH5Entity.courseware_type, videoQuestionH5Entity.nonce, wrapOnH5ResultClose, "0", isArts, false);
+
+
         h5CoursewarePager.setLivePagerBack(livePagerBack);
         return h5CoursewarePager;
     }
