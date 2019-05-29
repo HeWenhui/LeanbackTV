@@ -275,6 +275,21 @@ public class SuperSpeakerBackBll extends LiveBackBaseBll implements ISuperSpeake
         mShareDataManager.put(videoPath + mShareKey + VP.SESSION_LAST_POSITION_SUFIX, pos, ShareDataManager.SHAREDATA_USER);//重置播放进度
     }
 
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (superSpeakerBridge != null) {
+            superSpeakerBridge.pauseVideo();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (superSpeakerBridge == null) return;
+        superSpeakerBridge.resumeVideo();
+    }
+
     /** 进度缓存的追加KEY值 */
     private final String mShareKey = "LiveBack";
 }

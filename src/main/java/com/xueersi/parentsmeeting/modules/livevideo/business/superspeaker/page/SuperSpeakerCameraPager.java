@@ -456,6 +456,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                             UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1716003));
                         }
                         stopRecordVideo();
+
                     }
                 }).
                 observeOn(AndroidSchedulers.mainThread()).
@@ -645,6 +646,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
         stopRecordVideo();
         if (bridge != null) {
             bridge.removeView(mView);
+
         }
     }
 
@@ -679,7 +681,13 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
     public void resumeVideo() {
         if (customVideoController2 != null) {
             logger.i("resumeVideo");
-            customVideoController2.start();
+            if (customVideoController2.getVisibility() == View.VISIBLE) {
+                customVideoController2.startPlayVideo(StorageUtils.videoUrl, 0);
+            } else {
+                if (isInRecord && !isInTime()) {
+                    performStopRecord();
+                }
+            }
         }
     }
 
@@ -688,5 +696,14 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
         submitVideo(isForce);
     }
 
+    @Override
+    public boolean onUserBackPressed() {
+        if (mView != null && mView.getVisibility() == View.VISIBLE && mView.getParent() != null && bridge != null && bridge.containsView()) {
+            ivBack.performClick();
+            super.onUserBackPressed();
+            return true;
+        }
+        return false;
+    }
 }
 

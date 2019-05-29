@@ -253,7 +253,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new WordDictationIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new TeacherPraiseBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new ArtsAnswerResultBll(activity, mLiveBll));
-            mLiveBll.addBusinessBll(new PraiseTutorBll(activity,mLiveBll));
+            mLiveBll.addBusinessBll(new PraiseTutorBll(activity, mLiveBll));
             VideoChatIRCBll videoChatIRCBll = new VideoChatIRCBll(activity, mLiveBll);
             videoChatIRCBll.setLiveMediaControllerBottom(liveMediaControllerBottom);
             videoChatIRCBll.setLiveFragmentBase(this);
@@ -282,7 +282,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new ChineseSpeechBulletScreenIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new PraiseListIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new PraiseInteractionBll(activity, mLiveBll));
-            mLiveBll.addBusinessBll(new PraiseTutorBll(activity,mLiveBll));
+            mLiveBll.addBusinessBll(new PraiseTutorBll(activity, mLiveBll));
 
 //            mLiveBll.addBusinessBll(new StudyReportBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new ChsAnswerResultBll(activity, mLiveBll));
@@ -323,7 +323,7 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
             mLiveBll.addBusinessBll(new PraiseListIRCBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new PraiseInteractionBll(activity, mLiveBll));
             mLiveBll.addBusinessBll(new StudyReportBll(activity, mLiveBll));
-            mLiveBll.addBusinessBll(new PraiseTutorBll(activity,mLiveBll));
+            mLiveBll.addBusinessBll(new PraiseTutorBll(activity, mLiveBll));
 
             int allowLinkMicNew = activity.getIntent().getIntExtra("allowLinkMicNew", 0);
             if (allowLinkMicNew == 1) {
@@ -341,12 +341,12 @@ public class LiveVideoFragment extends LiveFragmentBase implements VideoAction, 
         EvaluateTeacherBll evaluateTeacherBll = new com.xueersi.parentsmeeting.modules.livevideo.evaluateteacher.bussiness.EvaluateTeacherBll(activity, mLiveBll);
         evaluateTeacherBll.setLiveFragment(this);
         mLiveBll.addBusinessBll(evaluateTeacherBll);
-        if (isGoldMicrophone == 1) {
-            mLiveBll.addBusinessBll(new GoldMicroPhoneBll(activity, mLiveBll));
-        }
-        if (useSuperSpeakerShow == 1) {
-            mLiveBll.addBusinessBll(new SuperSpeakerBll(activity, mLiveBll));
-        }
+//        if (isGoldMicrophone == 1) {
+        mLiveBll.addBusinessBll(new GoldMicroPhoneBll(activity, mLiveBll));
+//        }
+//        if (useSuperSpeakerShow == 1) {
+        mLiveBll.addBusinessBll(new SuperSpeakerBll(activity, mLiveBll));
+//        }
         if ((pattern == 1)) {
             addSwitchFlowBll();
             initSwitchFlowListener();

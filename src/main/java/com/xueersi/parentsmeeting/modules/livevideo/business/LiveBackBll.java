@@ -620,7 +620,7 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
                     break;
                 }
             } else if (LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE == videoQuestionEntity.getvCategory() ||
-                    LocalCourseConfig. CATEGORY_TUTOR_EVENT_35 ==  videoQuestionEntity.getvCategory()) {
+                    LocalCourseConfig.CATEGORY_TUTOR_EVENT_35 == videoQuestionEntity.getvCategory()) {
                 // 在开始时间和结束时间之间
                 if (startTime <= playPosition && playPosition < endTime) {
                     LiveVideoConfig.isMulLiveBack = true;
@@ -892,8 +892,8 @@ public class LiveBackBll extends BaseBll implements LiveAndBackDebug, LivePlayba
     }
 
     public void onReusme() {
-        for(LiveBackBaseBll liveBackBaseBll: liveBackBaseBlls){
-
+        for (LiveBackBaseBll liveBackBaseBll : liveBackBaseBlls) {
+            liveBackBaseBll.onResume();
         }
     }
 
