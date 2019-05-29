@@ -536,7 +536,7 @@ public class SpeechCollectiveNo2Bll {
 //                }
 //            });
             LiveEventBus.getDefault(context).post(new TeacherPraiseEvent(false));
-            EventBus.getDefault().post(new TeachPraiseRusltulCloseEvent(voiceId));
+            EventBus.getDefault().post(new TeachPraiseRusltulCloseEvent(voiceId, true));
             return true;
         }
         return false;

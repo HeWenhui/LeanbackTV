@@ -46,6 +46,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.redpackage.entity.RedPackageEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.stablelog.TeamPkLog;
+import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkAqResultFlayPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkAqResultPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkAwardPager;
 import com.xueersi.parentsmeeting.modules.livevideo.teampk.page.TeamPkBasePager;
@@ -142,6 +143,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
      * 直播间内答题 H5 答题结果页面关闭事件队列
      */
     private List<LiveRoomH5CloseEvent> h5CloseEvents;
+
     /**
      * 是否是带碎片的直播间
      */
@@ -747,13 +749,13 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     public void onTeachPraiseUIColse(TeachPraiseRusltulCloseEvent event) {
         int addEnergy = VOTE_TEACHER_PRAISE_ENERGY;
         logger.d("onTeachPraiseUIColse:addEnergy=" + addEnergy);
-        showVoteEnergyAnimSuc(addEnergy, event.getVoiceId());
+        showSpeechAnimSuc(addEnergy, event);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdatePkState(UpdatePkState event) {
         logger.d("onUpdatePkState:event=" + event.getWhere());
-      updatePkStateLayout(true);
+        updatePkStateLayout(true);
     }
 
     /**
@@ -778,19 +780,30 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         TeamPkLog.showAddPower(mLiveBll, voteId, addEnergy + "");
     }
 
-    private void showVoteEnergyAnimSuc(final int addEnergy, final String voteId) {
-        logger.e("========> showVoteEnergyAnimSuc:" + voteId + ":" + addEnergy);
+    private void showSpeechAnimSuc(final int addEnergy, final TeachPraiseRusltulCloseEvent event) {
+        final String voteId = event.getVoiceId();
+        logger.e("========> showSpeechAnimSuc:" + voteId + ":" + addEnergy);
         //上报服务器 增加加能量
         mHttpManager.addPersonAndTeamEnergy(mLiveBll.getLiveId(), addEnergy,
                 roomInitInfo.getStudentLiveInfo().getTeamId(),
                 roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), voteId, new HttpCallBack(false) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        TeamPkAqResultPager aqAwardPager = new TeamPkAqResultPager(mActivity, TeamPkAqResultPager.AWARD_TYPE_SPEECH,
-                                TeamPkBll.this);
-                        //addPager(aqAwardPager);
-                        addTopLayerPager(aqAwardPager);
-                        aqAwardPager.setData(0, addEnergy);
+                        boolean addBack = event.isAddBack();
+                        if (addBack) {
+                            TeamPkAqResultPager aqAwardPager = new TeamPkAqResultPager(mActivity, TeamPkAqResultPager.AWARD_TYPE_SPEECH,
+                                    TeamPkBll.this);
+                            //addPager(aqAwardPager);
+                            addTopLayerPager(aqAwardPager);
+                            aqAwardPager.setData(0, addEnergy);
+                        } else {
+                            int[] startPosition = event.getStartPosition();
+                            TeamPkAqResultFlayPager aqAwardPager = new TeamPkAqResultFlayPager(mActivity, TeamPkAqResultPager.AWARD_TYPE_SPEECH,
+                                    TeamPkBll.this, startPosition);
+                            //addPager(aqAwardPager);
+                            addTopLayerFullPager(aqAwardPager);
+                            aqAwardPager.setData(0, addEnergy);
+                        }
                         TeamPkLog.showAddPower(mLiveBll, voteId, addEnergy + "");
                     }
                 });
@@ -834,6 +847,19 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         mTopLayerPager = pager;
     }
 
+    /**
+     * 添加顶层 UI 全屏
+     */
+    private void addTopLayerFullPager(TeamPkBasePager pager) {
+        if (mTopLayerPager != null) {
+            mTopLayerPager.onDestroy();
+        }
+        rlTopLayerContent.removeAllViews();
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        rlTopLayerContent.addView(pager.getRootView(), params);
+        mTopLayerPager = pager;
+    }
 
     private void addPager(TeamPkBasePager aqAwardPager) {
         if (mFocusPager != null) {

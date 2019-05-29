@@ -9,7 +9,7 @@
         android:layout_height="60dp"
         android:layout_centerInParent="true"
         android:background="@drawable/shape_livevideo_teampk_aq_result_bg"
-        android:visibility="visible">
+        android:visibility="invisible">
 
         <ImageView
             android:id="@id/iv_answer_question_energy"

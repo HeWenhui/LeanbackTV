@@ -9,7 +9,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.event;
 public class TeachPraiseRusltulCloseEvent {
     /** 语音id */
     private String voiceId;
-    private boolean addBack;
+    private boolean addBack = true;
     int[] startPosition = new int[2];
 
     public TeachPraiseRusltulCloseEvent(String voiceId) {
