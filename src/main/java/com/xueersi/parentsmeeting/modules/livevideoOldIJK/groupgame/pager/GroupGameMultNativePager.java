@@ -293,7 +293,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 for (int i = 0; i < entities.size(); i++) {
                     TeamMemberEntity teamMemberEntity = entities.get(i);
                     //老师发新题后，视频窗右上角的火焰应该从0开始计数
-                    teamMemberEntity.energy = 0;
+                    teamMemberEntity.setEnergy(0);
                     CleanUpEntity cleanUpEntity = new CleanUpEntity();
                     cleanUpEntity.teamMemberEntity = teamMemberEntity;
                     cleanUpEntities.put("" + teamMemberEntity.id, cleanUpEntity);
@@ -302,7 +302,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 for (int i = 0; i < entities.size(); i++) {
                     TeamMemberEntity teamMemberEntity = entities.get(i);
                     //老师发新题后，视频窗右上角的火焰应该从0开始计数
-                    teamMemberEntity.energy = 0;
+                    teamMemberEntity.setEnergy(0);
                     VidooCannonEntity vidooCannonEntity = new VidooCannonEntity();
                     vidooCannonEntity.teamMemberEntity = teamMemberEntity;
                     vidooCannonEntities.put("" + teamMemberEntity.id, vidooCannonEntity);

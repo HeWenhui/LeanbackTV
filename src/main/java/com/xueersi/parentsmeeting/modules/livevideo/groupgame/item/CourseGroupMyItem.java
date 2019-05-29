@@ -59,7 +59,7 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
 
     public CourseGroupMyItem(Context context, TeamMemberEntity entity, WorkerThreadPool workerThread, int uid) {
         super(context, entity, workerThread, uid);
-        oldEnergy = entity.energy;
+        oldEnergy = entity.getEnergy();
         videoStartTime = System.currentTimeMillis();
         audioStartTime = System.currentTimeMillis();
     }
@@ -216,7 +216,7 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
     @Override
     public void updateViews(TeamMemberEntity entity, int position, Object objTag) {
         rlCourseItemName.setText(entity.name);
-        tvCourseItemFire.setText("" + entity.energy);
+        tvCourseItemFire.setText("" + entity.getEnergy());
         ImageLoader.with(ContextManager.getContext()).load(entity.headurl).into(ivCourseItemVideoHead);
         createBitmap6();
         createBitmap7Small();

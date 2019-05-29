@@ -23,7 +23,7 @@ public class TeamMemberEntity {
         headurl = other.headurl;
         resId = other.resId;
         gold = other.gold;
-        energy = other.energy;
+        energy = other.getEnergy();
         praiseCount = other.praiseCount;
         thisPraiseCount = other.thisPraiseCount;
         nickName = other.nickName;

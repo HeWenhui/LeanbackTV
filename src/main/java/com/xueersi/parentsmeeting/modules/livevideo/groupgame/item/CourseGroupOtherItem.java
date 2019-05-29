@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
@@ -15,6 +16,7 @@ import com.xueersi.lib.imageloader.SingleConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThread;
 import com.xueersi.parentsmeeting.modules.livevideo.business.agora.WorkerThreadPool;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.enteampk.entity.TeamMemberEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.groupgame.config.GroupGameConfig;
 
@@ -31,9 +33,11 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
     private long audioStartTime;
     private boolean onLine = false;
     private int state = 0;
+    private int oldEnergy;
 
     public CourseGroupOtherItem(Context context, TeamMemberEntity entity, WorkerThreadPool workerThread, int uid) {
         super(context, entity, workerThread, uid);
+        oldEnergy = entity.getEnergy();
     }
 
     @Override
@@ -246,7 +250,13 @@ public class CourseGroupOtherItem extends BaseCourseGroupItem {
     }
 
     public void onScene(String method) {
-        tvCourseItemFire.setText("" + entity.energy);
+        tvCourseItemFire.setText("" + entity.getEnergy());
+        try {
+            mLogtf.d("onScene:method=" + method + ",energy=" + oldEnergy + "," + entity.getEnergy());
+        } catch (Exception e) {
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
+        oldEnergy = entity.getEnergy();
     }
 
     @Override
