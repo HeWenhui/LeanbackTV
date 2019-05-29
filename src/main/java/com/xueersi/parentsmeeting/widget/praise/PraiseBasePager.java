@@ -20,7 +20,10 @@ import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.framework.utils.SizeUtils;
 import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.FastScrollableRecyclerView;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.PraiseBtnAnimLayout;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.dialog.CloseConfirmDialog;
@@ -38,6 +41,7 @@ import java.lang.ref.WeakReference;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 表扬榜-辅导老师
@@ -228,6 +232,9 @@ public class PraiseBasePager extends LiveBasePager {
         if (mPraiseEntity.getPosition()>0) {
             recyclerView.smoothScrollToPosition(mPraiseEntity.getPosition());
         }
+        StableLogHashMap logHashMap1 = new StableLogHashMap("list_succeed");
+        logHashMap1.put("list_number", mPraiseEntity.getPraiseType() + "");
+        umsAgentDebugPv(PraiseConfig.UMS_PRACTICE_TUTOR, logHashMap1.getData());
     }
 
     /**
@@ -262,6 +269,9 @@ public class PraiseBasePager extends LiveBasePager {
                 if (onPraisePageListener != null){
                     onPraisePageListener.onPracticeClose();
                 }
+                StableLogHashMap logHashMap1 = new StableLogHashMap("list_stuend");
+                logHashMap1.put("list_number", mPraiseEntity.getPraiseType() + "");
+                umsAgentDebugInter(PraiseConfig.UMS_PRACTICE_TUTOR, logHashMap1.getData());
             }
         });
     }
@@ -312,6 +322,9 @@ public class PraiseBasePager extends LiveBasePager {
         if (onPraisePageListener != null && mCurrentNum > 0) {
             onPraisePageListener.onPraiseClick(mCurrentNum);
             mCurrentNum = 0;
+            StableLogHashMap logHashMap1 = new StableLogHashMap("list_like");
+            logHashMap1.put("list_number", mPraiseEntity.getPraiseType() + "");
+            umsAgentDebugInter(PraiseConfig.UMS_PRACTICE_TUTOR, logHashMap1.getData());
         }
         if (mHandler != null) {
             mHandler.sendEmptyMessageDelayed(PraiseConfig.PRAISE_CLICK_SEND, 3000);
@@ -403,11 +416,15 @@ public class PraiseBasePager extends LiveBasePager {
     private void showEncouragingView() {
         if (llTeacherContent != null) {
             llTeacherContent.setVisibility(View.VISIBLE);
+            StableLogHashMap logHashMap1 = new StableLogHashMap("list_praise");
+            logHashMap1.put("list_number", mPraiseEntity.getPraiseType() + "");
+            umsAgentDebugPv(PraiseConfig.UMS_PRACTICE_TUTOR, logHashMap1.getData());
         }
         if (mHandler != null) {
             mHandler.sendEmptyMessageDelayed(PraiseConfig.ENCOURAGING_HIDE, 5000);
         }
 
     }
+
 
 }

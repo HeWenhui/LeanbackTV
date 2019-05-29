@@ -18,8 +18,10 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveVideoPoint;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 
+import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.widget.praise.PraisePager;
 import com.xueersi.parentsmeeting.widget.praise.business.OnPraisePageListener;
+import com.xueersi.parentsmeeting.widget.praise.config.PraiseConfig;
 import com.xueersi.parentsmeeting.widget.praise.entity.PraiseEntity;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
@@ -177,6 +179,9 @@ public class PraiseTutorBll extends LiveBaseBll implements NoticeAction, TopicAc
                 PraiseEntity entity = getHttpResponseParser().parseTutorPraiseEntity(responseEntity);
                 praisePager = new PraisePager(mContext, entity, listener,bottomContent);
                 praisePager.showPraisePager(bottomContent);
+                StableLogHashMap logHashMap = new StableLogHashMap("list_receive");
+                logHashMap.put("list_number", entity.getPraiseType() + "");
+                umsAgentDebugPv(PraiseConfig.UMS_PRACTICE_TUTOR, logHashMap.getData());
             }
 
             @Override
