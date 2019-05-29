@@ -2840,7 +2840,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                 CleanUpEntity cleanUpEntity = cleanUpEntities.get(stu_id);
                                 int total_energy = stuObj.getInt("total_energy");
                                 if (cleanUpEntity != null) {
-                                    cleanUpEntity.teamMemberEntity.energy = total_energy;
+                                    cleanUpEntity.teamMemberEntity.setEnergy(total_energy);
                                 }
                                 JSONArray rob_wordsArray = stuObj.getJSONArray("rob_words");
                                 for (int j = 0; j < rob_wordsArray.length(); j++) {
@@ -2891,7 +2891,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                 }
                                 final BaseCourseGroupItem courseGroupItem = courseGroupItemHashMap.get("" + stu_id);
                                 if (courseGroupItem != null) {
-                                    courseGroupItem.getEntity().energy = totalEnergy;
+                                    courseGroupItem.getEntity().setEnergy(totalEnergy);
                                     handler.post(new Runnable() {
                                         @Override
                                         public void run() {
