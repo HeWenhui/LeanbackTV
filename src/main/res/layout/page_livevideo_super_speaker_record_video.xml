@@ -39,6 +39,7 @@
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@id/tv_livevideo_super_speaker_record_video_reversal"
+        style="@style/style_livevideo_super_speaker_shadow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="翻转"
@@ -79,6 +80,7 @@
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@id/tv_livevideo_super_speaker_record_video_start"
+        style="@style/style_livevideo_super_speaker_shadow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/super_speaker_camera_record_start_tip"
@@ -90,6 +92,7 @@
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@id/tv_livevideo_super_speaker_record_video_landscape_tip"
+        style="@style/style_livevideo_super_speaker_shadow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/super_speaker_camera_record_open_landscape"
@@ -123,6 +126,7 @@
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@id/tv_livevideo_super_speaker_record_video_submit"
+        style="@style/style_livevideo_super_speaker_shadow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="提交"
@@ -171,9 +175,9 @@
         app:layout_constraintBottom_toTopOf="@id/iv_livevideo_super_speaker_record_video_stop"
         app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_super_speaker_record_video_stop"
         app:layout_constraintRight_toRightOf="@id/iv_livevideo_super_speaker_record_video_stop" />
-
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@id/tv_livevideo_super_speaker_record_video_stop"
+        style="@style/style_livevideo_super_speaker_shadow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="结束录制"
@@ -196,6 +200,7 @@
 
 
     <ImageView
+
         android:id="@id/iv_livevideo_super_speaker_record_video_restart"
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -207,10 +212,12 @@
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@id/tv_livevideo_super_speaker_record_video_restart"
+        style="@style/style_livevideo_super_speaker_shadow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="重录"
         android:textColor="@color/COLOR_FFFFFF"
+
         android:textSize="15dp"
         app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_super_speaker_record_video_restart"
         app:layout_constraintRight_toRightOf="@id/iv_livevideo_super_speaker_record_video_restart"
@@ -250,6 +257,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="4dp"
+
         android:textColor="@color/COLOR_A05431"
         app:layout_constraintLeft_toRightOf="@id/iv_livevideo_super_speaker_record_video_time_frame_clock"
         app:layout_constraintTop_toTopOf="@id/iv_livevideo_super_speaker_record_video_time_frame_clock"

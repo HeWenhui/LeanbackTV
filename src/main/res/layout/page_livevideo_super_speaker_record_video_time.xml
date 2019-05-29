@@ -8,6 +8,7 @@
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@id/tv_livevideo_super_speaker_record_video_record_time_currenttime"
+        style="@style/style_livevideo_super_speaker_shadow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="00:00"
@@ -21,6 +22,7 @@
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@id/tv_livevideo_super_speaker_record_video_record_time_tip"
+        style="@style/style_livevideo_super_speaker_shadow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="/"
@@ -31,6 +33,7 @@
 
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@id/tv_livevideo_super_speaker_record_video_record_time_total"
+        style="@style/style_livevideo_super_speaker_shadow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="01:00"
