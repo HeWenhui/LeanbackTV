@@ -127,6 +127,7 @@ public class SpeechCollectiveNo2Pager extends LiveBasePager implements SpeechCol
             return;
         }
         showNoVolume = true;
+        mLogtf.d("onNoVolume");
         ivSpeechcollectiveNoVolume.setVisibility(View.VISIBLE);
         ivSpeechcollectiveNoVolume.setText("说错了没关系，勇敢尝试吧");
         handler.postDelayed(new Runnable() {
