@@ -340,7 +340,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         });
         wvSubjectWeb.setWebViewClient(new CourseWebViewClient());
 
-        wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, multModeAction), "xesApp");
+        wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, "99999", creattime, multModeAction), "xesApp");
 //        wvSubjectWeb.loadUrl(TEST_URL);
     }
 
@@ -406,7 +406,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                         jsonData.put("score", -1);
 //                jsonData.put("studentNum", -1);
                         jsonData.put("turnToPageNum", currentAnswerIndex);
-                        wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
+                        postMessage(jsonData);
                         GroupGameLog.sno4(liveAndBackDebug, detailInfo.id, currentAnswerIndex + "", 1);
                         reStartSpeechRecognize();
                     }
@@ -1857,7 +1857,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             GroupGameLog.sno5(liveAndBackDebug, detailInfo.id, isForce ? "endPublish" : "autoSubmit", voiceTime == 0 ?
                     "0" : "1", 1);
         }
-        englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 1, voiceTime, teamEntity.getPkTeamId(), gameGroupId, starNum, energy, gold,
+        englishH5CoursewareSecHttp.submitGroupGame(detailInfo, 2, voiceTime, teamEntity.getPkTeamId(), gameGroupId, starNum, energy, gold,
                 videoLengthTime, micLengthTime
                 , acceptVideoLengthTime, acceptMicLengthTime, answerData.toString(), new AbstractBusinessDataCallBack() {
                     @Override
@@ -2212,6 +2212,22 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         StaticWeb.sendToCourseware(wvSubjectWeb, type, data);
     }
 
+    private void postMessage(JSONObject jsonData) {
+        try {
+            JSONObject liveinfo = new JSONObject();
+            liveinfo.put("liveid", liveId);
+            liveinfo.put("userid", stuid);
+            liveinfo.put("testid", "" + detailInfo.id);
+            liveinfo.put("creattime", "" + creattime);
+            liveinfo.put("time", "" + System.currentTimeMillis());
+            jsonData.put("liveinfo", liveinfo);
+        } catch (Exception e) {
+            e.printStackTrace();
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
+        wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
+    }
+
     private class VoiceCannnon implements EvaluatorIng {
 
         @Override
@@ -2547,7 +2563,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                                     } else {
                                                         jsonData.put("turnToPageNum", -1);
                                                     }
-                                                    wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
+                                                    postMessage(jsonData);
                                                 } catch (JSONException e) {
                                                     e.printStackTrace();
                                                 }
@@ -2793,7 +2809,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                                             jsonData.put("rightItem", rightItem);
                                         }
                                         jsonData.put("combo", continue_rob);
-                                        wvSubjectWeb.loadUrl("javascript:postMessage(" + jsonData + ",'" + "*" + "')");
+                                        postMessage(jsonData);
                                     } catch (Exception e) {
                                         logger.d("onMessage:CLEAN_UP_REC:postMessage", e);
                                     }

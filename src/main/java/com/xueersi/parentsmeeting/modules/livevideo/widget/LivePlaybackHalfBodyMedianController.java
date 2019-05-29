@@ -3,7 +3,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.widget;
 import android.content.Context;
 import android.view.View;
 
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
+import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
+
 /**
 *半身直播 直播回放 播放控制器
 *@author chekun
@@ -11,7 +12,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 */
 public class LivePlaybackHalfBodyMedianController extends LivePlaybackMediaController {
     
-    public LivePlaybackHalfBodyMedianController(Context context, MediaPlayerControl player, boolean mIsLand) {
+    public LivePlaybackHalfBodyMedianController(Context context, BackMediaPlayerControl player, boolean mIsLand) {
         super(context, player, mIsLand);
     }
 

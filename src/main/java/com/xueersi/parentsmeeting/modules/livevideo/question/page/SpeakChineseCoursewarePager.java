@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -394,7 +393,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
         CourseWebViewClient courseWebViewClient = new CourseWebViewClient();
         newCourseCache.setOnHttpCode(courseWebViewClient);
         wvSubjectWeb.setWebViewClient(courseWebViewClient);
-        wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, new StaticWeb.OnMessage() {
+        wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, "99999", creattime, new StaticWeb.OnMessage() {
 
             @Override
             public void postMessage(String where, final JSONObject message, String origin) {

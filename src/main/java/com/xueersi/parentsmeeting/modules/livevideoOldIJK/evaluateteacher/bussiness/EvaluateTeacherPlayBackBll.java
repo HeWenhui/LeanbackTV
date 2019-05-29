@@ -10,18 +10,18 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBaseBll;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.http.EvaluateResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.pager.BaseEvaluateTeacherPaper;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.pager.EvaluateTeacherPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.pager.PrimaryChineseEvaluateTeacherPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.pager.PrimaryScienceEvaluateTeacherPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.evaluateteacher.pager.SmallEnglishEvaluateTeacherPager;
-import com.xueersi.parentsmeeting.modules.livevideo.R;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBaseBll;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBll;
-import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
-import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
-import com.xueersi.parentsmeeting.modules.livevideo.widget.LiveBackPlayerFragment;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveBackPlayerFragment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -67,9 +67,9 @@ public class EvaluateTeacherPlayBackBll extends LiveBackBaseBll implements IShow
                 getSciecneEvaluateOption();
             } else if (liveGetInfo.getIsArts() == 2) {
                 logger.i("IsArts:" + liveGetInfo.getIsArts());
-                if (liveGetInfo.isPrimaryChinese()){
+                if (liveGetInfo.isPrimaryChinese()) {
                     evaluateTeacherPager = new PrimaryChineseEvaluateTeacherPager(mContext, liveGetInfo);
-                }else {
+                } else {
                     evaluateTeacherPager = new EvaluateTeacherPager(mContext, liveGetInfo);
                 }
                 getChsEvaluateOption();

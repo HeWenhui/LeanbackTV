@@ -38,7 +38,7 @@
 //import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
 //import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 //import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
-//import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
+//import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 //import com.xueersi.parentsmeeting.module.videoplayer.media.VideoViewActivity;
 //import com.xueersi.parentsmeeting.modules.livevideo.R;
 //import com.xueersi.parentsmeeting.modules.livevideo.business.ActivityChangeLand;
@@ -416,7 +416,7 @@
 //                }
 //            });
 //        }
-//        ProxUtil.getProxUtil().put(this, MediaPlayerControl.class, this);
+//        ProxUtil.getProxUtil().put(this, BackMediaPlayerControl.class, this);
 //        ProxUtil.getProxUtil().put(this, ActivityChangeLand.class, this);
 //        liveBackBll.addBusinessShareParam("videoView", videoView);
 //        pauseNotStopVideoIml = new PauseNotStopVideoIml(this, onPauseNotStopVideo);

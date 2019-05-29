@@ -10,4 +10,8 @@ public interface VPlayerListenerReg {
     void addVPlayerListener(VPlayerCallBack.VPlayerListener vPlayerListener);
 
     void removeVPlayerListener(VPlayerCallBack.VPlayerListener vPlayerListener);
+
+    void release();
+
+    void playVideo();
 }

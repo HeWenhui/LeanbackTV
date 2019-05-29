@@ -20,8 +20,14 @@ public class StaticWeb {
     private OnMessage onMessage;
     private LogToFile logToFile;
 
-    public StaticWeb(Context activity, WebView wvSubjectWeb, OnMessage onMessage) {
+    public StaticWeb(Context activity, WebView wvSubjectWeb, String testId, long creattime, OnMessage onMessage) {
         logToFile = new LogToFile(activity, TAG);
+        try {
+            logToFile.addCommon("testId", testId);
+            logToFile.addCommon("creattime", "" + creattime);
+        } catch (Exception e) {
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
         this.onMessage = onMessage;
     }
 
@@ -104,7 +110,7 @@ public class StaticWeb {
                         } else {
                             logToFile.d("testCourseware:type=" + type + ",old=" + old + ",times=" + CALL_TIMES);
                         }
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         CrashReport.postCatchedException(new LiveException(TAG, e));
                     }
                 }
