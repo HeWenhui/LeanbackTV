@@ -108,7 +108,7 @@ public abstract class BaseCourseGroupItem implements AdapterItemInterface<TeamMe
         } else {
             rlCourseItemName.setText(entity.name);
         }
-        tvCourseItemFire.setText("" + entity.energy);
+        tvCourseItemFire.setText("" + entity.getEnergy());
     }
 
     public void onVolumeUpdate(int volume) {
@@ -138,7 +138,7 @@ public abstract class BaseCourseGroupItem implements AdapterItemInterface<TeamMe
     }
 
     public void onScene(String method) {
-        tvCourseItemFire.setText("" + entity.energy);
+        tvCourseItemFire.setText("" + entity.getEnergy());
     }
 
     public void onDestory() {

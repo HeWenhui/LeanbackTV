@@ -5,7 +5,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -17,6 +16,7 @@ import com.tal.speech.speechrecognizer.EvaluatorListener;
 import com.tal.speech.speechrecognizer.ResultCode;
 import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
+import com.tal.speech.utils.SpeechEvaluatorUtils;
 import com.tal.speech.utils.SpeechUtils;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.smtt.export.external.interfaces.ConsoleMessage;
@@ -230,7 +230,6 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
     private String testId = "";
 
     private CourseWareHttpManager courseWareHttpManager;
-
     /**
      * 强制收题
      */
@@ -365,6 +364,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
     @Override
     public void initData() {
         super.initData();
+        initSpeachAssess();
         String testid = "";
         try {
             testid = NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts);
@@ -376,7 +376,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
         Date date = new Date();
         today = dateFormat.format(date);
         getTodayQues();
-        newCourseCache = new NewCourseCache(mContext, liveId,testid);
+        newCourseCache = new NewCourseCache(mContext, liveId, testid);
         addJavascriptInterface();
         wvSubjectWeb.getSettings().setLoadWithOverviewMode(false);
         wvSubjectWeb.getSettings().setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
@@ -394,7 +394,8 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
         CourseWebViewClient courseWebViewClient = new CourseWebViewClient();
         newCourseCache.setOnHttpCode(courseWebViewClient);
         wvSubjectWeb.setWebViewClient(courseWebViewClient);
-        wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, new StaticWeb.OnMessage() {
+        wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, "99999", creattime, new StaticWeb
+                .OnMessage() {
 
             @Override
             public void postMessage(String where, final JSONObject message, String origin) {
@@ -446,6 +447,29 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
             }
         });
 
+    }
+
+    /**
+     * 初始化识别库
+     */
+    private void initSpeachAssess() {
+        speechUtils = SpeechUtils.getInstance(mContext.getApplicationContext());
+        speechUtils.prepar(Constants.ASSESS_PARAM_LANGUAGE_CH, new SpeechEvaluatorUtils.OnFileSuccess() {
+            @Override
+            public void onFileInit(int code) {
+                logger.d("onFileInit ");
+            }
+
+            @Override
+            public void onFileSuccess() {
+                logger.d("onFileSuccess ");
+            }
+
+            @Override
+            public void onFileFail() {
+                logger.d("onFileFail ");
+            }
+        });
     }
 
     @Override
@@ -720,11 +744,6 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                 if (!dir.exists()) {
                     dir.mkdirs();
                 }
-                if (speechUtils == null) {
-                    speechUtils = SpeechUtils.getInstance(mContext.getApplicationContext());
-                    speechUtils.setLanguage(Constants.ASSESS_PARAM_LANGUAGE_CH);
-                    speechUtils.prepar();
-                }
                 /* 语音保存位置 */
                 File saveVideoFile = new File(dir, "ise" + System.currentTimeMillis() + ".mp3");
                 SpeechParamEntity mParam = new SpeechParamEntity();
@@ -772,6 +791,7 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
                                         userAnswerArray.put(userAnswer);
                                         resultData.put("userAnswerContent", userAnswerArray);
                                         jsonData.put("data", resultData);
+                                        logger.e("onResult: " + jsonData.toString());
                                         StaticWeb.sendToCourseware(wvSubjectWeb, jsonData, "*");
                                     } catch (JSONException e) {
                                         CrashReport.postCatchedException(e);
@@ -945,10 +965,11 @@ public class SpeakChineseCoursewarePager extends BaseCoursewareNativePager imple
         if (isPlayBack && newCourseSec != null && newCourseSec.getIsAnswer() == 1) {
             XESToastUtils.showToast(mContext, "该题已作答");
             showAnswerResult(isforce);
-        }else{
+        } else {
             subMitTime = System.currentTimeMillis();
             submitAnswer(isforce, nonce, data);
-            ChsSpeakLog.anserMode(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), isSpeakAnswer
+            ChsSpeakLog.anserMode(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), 
+                    isSpeakAnswer
                     ? "0" : "1", wvSubjectWeb.getUrl(), isPlayBack);
             NewCourseLog.sno5(liveAndBackDebug, NewCourseLog.getNewCourseTestIdSec(detailInfo, isArts), isforce == 1,
                     wvSubjectWeb.getUrl(), ispreload);

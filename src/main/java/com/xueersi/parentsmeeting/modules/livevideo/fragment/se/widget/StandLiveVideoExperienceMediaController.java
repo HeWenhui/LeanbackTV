@@ -2,16 +2,16 @@ package com.xueersi.parentsmeeting.modules.livevideo.fragment.se.widget;
 
 import android.content.Context;
 
+import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.CommonGestures;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 
 /**
  * 张月毅：站立直播体验课的控制器，要求没有底部控制栏，不可调节进度。
  */
 public class StandLiveVideoExperienceMediaController extends MediaController2 {
 
-    public StandLiveVideoExperienceMediaController(Context context, MediaPlayerControl player, boolean isDrawHeight) {
+    public StandLiveVideoExperienceMediaController(Context context, BackMediaPlayerControl player, boolean isDrawHeight) {
         super(context, player, isDrawHeight);
         if (mPlayer.isLandSpace()) {
             try {

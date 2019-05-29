@@ -20,7 +20,7 @@ import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaControllerBottom2;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
+import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 import java.util.List;
@@ -38,7 +38,7 @@ public class LiveStandPlaybackMediaController extends MediaController2 {
     private RelativeLayout rlKeytip;
     Activity activity;
 
-    public LiveStandPlaybackMediaController(Context context, MediaPlayerControl player) {
+    public LiveStandPlaybackMediaController(Context context, BackMediaPlayerControl player) {
         super(context, player);
         activity = (Activity) context;
         controllerBottom = new LiveBackStandMediaControllerBottom(getContext(), this, mPlayer);

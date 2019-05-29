@@ -21,9 +21,9 @@ import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.module.player.R;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
+import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaControllerBottom2;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 
 import java.util.List;
 
@@ -45,7 +45,7 @@ public class LivePlaybackMediaController extends MediaController2 {
     protected View portView;
     protected OnPointClick onPointClick;
 
-    public LivePlaybackMediaController(Context context, MediaPlayerControl player, boolean mIsLand) {
+    public LivePlaybackMediaController(Context context, BackMediaPlayerControl player, boolean mIsLand) {
         super(context, player);
         this.mIsLand = mIsLand;
         activity = (Activity) context;
@@ -308,6 +308,15 @@ public class LivePlaybackMediaController extends MediaController2 {
                     break;
             }
 
+        } else if (LocalCourseConfig.CATEGORY_SUPER_SPEAKER == videoQuestionEntity.getvCategory()) {
+            String type = videoQuestionEntity.getvQuestionType();
+            switch (type) {
+                case "40": {
+                    textView.setText("超级演讲秀");
+                    break;
+                }
+
+            }
         }
         final ImageView ivPlay = (ImageView) contentView.findViewById(R.id.iv_liveplayback_point_play);
         final int insretTime = videoQuestionEntity.getvQuestionInsretTime();

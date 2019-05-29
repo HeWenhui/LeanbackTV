@@ -376,6 +376,16 @@ public class LiveGetInfo {
 
     private int useGoldMicroPhone;
 
+    private int useSuperSpeakerShow;
+
+    public int getUseSuperSpeakerShow() {
+        return useSuperSpeakerShow;
+    }
+
+    public void setUseSuperSpeakerShow(int useSuperSpeakerShow) {
+        this.useSuperSpeakerShow = useSuperSpeakerShow;
+    }
+
     public int isUseGoldMicroPhone() {
         return useGoldMicroPhone;
     }

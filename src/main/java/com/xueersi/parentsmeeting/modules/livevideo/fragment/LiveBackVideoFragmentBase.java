@@ -67,7 +67,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @author 林玉强
  */
-public class LiveBackVideoFragmentBase extends Fragment {
+public abstract class LiveBackVideoFragmentBase extends Fragment {
     private String TAG = "LiveBackVideoFragmentBase";
     protected Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
     protected BaseActivity activity;
@@ -485,6 +485,11 @@ public class LiveBackVideoFragmentBase extends Fragment {
         }
 
         @Override
+        public void release() {
+            super.release();
+        }
+
+        @Override
         public void start() {
             super.start();
             liveBackVideoFragment.onStartPlayer();
@@ -753,9 +758,7 @@ public class LiveBackVideoFragmentBase extends Fragment {
         mySpeed = speed;
     }
 
-    protected void seekTo(long pos) {
-
-    }
+    protected abstract void seekTo(long pos);
 
     protected void onPlayOpenStart() {
 
@@ -795,21 +798,23 @@ public class LiveBackVideoFragmentBase extends Fragment {
     }
 
     /** 取出当前播放视频上次播放的点位 */
-    protected long getStartPosition() {
-        if (mFromStart) {
-            return 0;
-        }
-        // if (mStartPos <= 0.0f || mStartPos >= 1.0f)
-        try {
-            return ShareDataManager.getInstance().getLong(mUri + mShareKey + VP.SESSION_LAST_POSITION_SUFIX, 0,
-                    ShareDataManager.SHAREDATA_USER);
-        } catch (Exception e) {
-            // 有一定不知明原因造成取出的播放点位int转long型失败,故加上这个值确保可以正常观看
-            e.printStackTrace();
-            return 0L;
-        }
-        // return mStartPos;
-    }
+    protected abstract long getStartPosition();
+//    {
+//        if (mFromStart) {
+//            return 0;
+//        }
+//        // if (mStartPos <= 0.0f || mStartPos >= 1.0f)
+//        try {
+//
+//            return ShareDataManager.getInstance().getLong(mUri + mShareKey + VP.SESSION_LAST_POSITION_SUFIX, 0,
+//                    ShareDataManager.SHAREDATA_USER);
+//        } catch (Exception e) {
+//            // 有一定不知明原因造成取出的播放点位int转long型失败,故加上这个值确保可以正常观看
+//            e.printStackTrace();
+//            return 0L;
+//        }
+//        // return mStartPos;
+//    }
 
     /** 初始化控制器界面 */
     protected void attachMediaController() {

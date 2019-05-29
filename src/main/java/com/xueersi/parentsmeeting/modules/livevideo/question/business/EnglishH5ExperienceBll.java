@@ -12,7 +12,7 @@ import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
+import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBll;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -92,7 +92,7 @@ public class EnglishH5ExperienceBll extends LiveBackBaseBll {
             }
             break;
             case LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE: {
-                MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                 questionEntity.setAnswered(true);
                 // 获取拼装一题多发的字段
                 LiveVideoConfig.LIVEPLAYBACKINFOS = questionEntity.getUrl();

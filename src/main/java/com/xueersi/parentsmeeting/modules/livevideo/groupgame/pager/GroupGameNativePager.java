@@ -377,7 +377,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
     }
 
     private void initWebView() {
-        newCourseCache = new GroupCourseCache(mContext, liveId, liveGetInfo.isNewCourse());
+        newCourseCache = new GroupCourseCache(mContext, liveId, detailInfo.id, liveGetInfo.isNewCourse());
         addJavascriptInterface();
         wvSubjectWeb.setWebChromeClient(new BaseCoursewareNativePager.MyWebChromeClient() {
             @Override
@@ -389,7 +389,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
             }
         });
         wvSubjectWeb.setWebViewClient(new CourseWebViewClient());
-        wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, new StaticWeb.OnMessage() {
+        wvSubjectWeb.addJavascriptInterface(new StaticWeb(mContext, wvSubjectWeb, "99999", creattime, new StaticWeb.OnMessage() {
             @Override
             public void postMessage(String where, final JSONObject message, String origin) {
                 try {

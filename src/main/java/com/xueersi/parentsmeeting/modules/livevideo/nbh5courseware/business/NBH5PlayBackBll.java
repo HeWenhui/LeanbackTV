@@ -7,7 +7,7 @@ import android.view.View;
 import com.xueersi.common.business.sharebusiness.config.LocalCourseConfig;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
+import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.NbCourseWareEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.event.NbCourseEvent;
@@ -96,7 +96,7 @@ public class NBH5PlayBackBll extends LiveBackBaseBll {
                 verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                        BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                         mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
                         mediaPlayerControl.start();
                     }
@@ -125,7 +125,7 @@ public class NBH5PlayBackBll extends LiveBackBaseBll {
                         entity.setExperimentId(questionEntity.getvQuestionID());
                         h5CoursewareBll.onH5Courseware(entity, "on");
                         //nb 加试 实验 展示试题时 暂停视频播放
-                        MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                        BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                         if (mediaPlayerControl != null) {
                             mediaPlayerControl.pause();
                         }
@@ -135,7 +135,7 @@ public class NBH5PlayBackBll extends LiveBackBaseBll {
                 verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                        BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                         mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
                         mediaPlayerControl.start();
                     }
@@ -150,7 +150,7 @@ public class NBH5PlayBackBll extends LiveBackBaseBll {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNbH5PageClose(NbCourseEvent event){
         if(event.getEventType() == NbCourseEvent.EVENT_TYPE_NBH5_CLOSE){
-            MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+            BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
             // Nb 加试实验 关闭页面 调转到试题结束 时间点
             if(mediaPlayerControl != null && !mediaPlayerControl.isPlaying()){
                 if(currentQuestion != null){

@@ -19,7 +19,7 @@ import com.xueersi.lib.log.Loger;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoResultEntity;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
+import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.business.EnglishH5Cache;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LiveBackBaseBll;
@@ -174,7 +174,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
         switch (vCategory) {
             case LocalCourseConfig.CATEGORY_ENGLISH_H5COURSE_WARE: {
                 LiveVideoConfig.isNewArts = false;
-                MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                 if (!liveBackBll.getExperience() && mediaPlayerControl != null) {//体验课不能暂停
                     mediaPlayerControl.pause();
                 }
@@ -186,7 +186,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                 verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                        BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                         if (mediaPlayerControl != null) {
                             mediaPlayerControl.start();
                         }
@@ -200,7 +200,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                 verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                        BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                         mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
                         mediaPlayerControl.start();
                         showQuestion.onHide(questionEntity);
@@ -211,7 +211,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             break;
             case LocalCourseConfig.CATEGORY_ENGLISH_MULH5COURSE_WARE: {
                 LiveVideoConfig.isNewArts = false;
-                MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                 if (!liveBackBll.getExperience() && mediaPlayerControl != null) {
                     mediaPlayerControl.pause();
                 }
@@ -252,7 +252,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                         }
                         //语文开讲吧 出现试题不在恢复视频播放
                         if(!isChsSpeaking(englishH5Entity)){
-                            MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                            BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                             if (mediaPlayerControl != null) {
                                 mediaPlayerControl.start();
                             }
@@ -264,7 +264,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                 verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                        BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                         mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
                         mediaPlayerControl.start();
                         showQuestion.onHide(questionEntity);
@@ -276,7 +276,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
             case LocalCourseConfig.CATEGORY_H5COURSE_NEWARTSWARE: {
                 LiveVideoConfig.isNewArts = true;
                 Log.e("Duncan", "mqtt+文科新课件平台");
-                MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                 if (!liveBackBll.getExperience() && mediaPlayerControl != null) {//体验课不能暂停
                     mediaPlayerControl.pause();
                 }
@@ -288,7 +288,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                 verifyCancelAlertDialog.setVerifyBtnListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                        BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                         if (mediaPlayerControl != null) {
                             mediaPlayerControl.start();
                         }
@@ -308,7 +308,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
                 verifyCancelAlertDialog.setCancelBtnListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+                        BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
                         mediaPlayerControl.seekTo(questionEntity.getvEndTime() * 1000);
                         mediaPlayerControl.start();
                         showQuestion.onHide(questionEntity);
@@ -669,7 +669,7 @@ public class EnglishH5PlayBackBll extends LiveBackBaseBll {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onChsSpeakPageClose(ChsSpeakEvent event){
         if(event.getEventType() == ChsSpeakEvent.EVENT_TYPE_PAGE_CLOSE){
-            MediaPlayerControl mediaPlayerControl = getInstance(MediaPlayerControl.class);
+            BackMediaPlayerControl mediaPlayerControl = getInstance(BackMediaPlayerControl.class);
             // 语文开讲吧 关闭页面 调转到试题结束 时间点
             //Log.e("nbTrace","========>onChsSpeakPageClose endTime:"+mediaPlayerControl.isPlaying());
             if(mediaPlayerControl != null && !mediaPlayerControl.isPlaying()){

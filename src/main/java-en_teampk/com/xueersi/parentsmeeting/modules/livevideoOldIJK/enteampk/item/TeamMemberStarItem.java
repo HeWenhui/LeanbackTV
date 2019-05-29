@@ -146,7 +146,7 @@ public class TeamMemberStarItem implements AdapterItemInterface<TeamMemberEntity
             tvTeampkFire.setText("+" + entity.gold);
         } else {
             ivTeampkFire.setImageResource(R.drawable.livevideo_enteampk_benchangchengjiu_fire_img_nor1);
-            tvTeampkFire.setText("+" + entity.energy);
+            tvTeampkFire.setText("+" + entity.getEnergy());
         }
         lav_livevideo_en_teampk_zan.setOnClickListener(new PraiseClick(lav_livevideo_en_teampk_zan));
         ImageLoader.with(context.getApplicationContext()).load(entity.headurl).error(R.drawable.app_livevideo_enteampk_boy_bg_img_nor).into(civTeampkMember);
