@@ -230,7 +230,7 @@ public class PraiseBasePager extends LiveBasePager {
             }
         });
         if (mPraiseEntity.getPosition()>0) {
-            recyclerView.smoothScrollToPosition(mPraiseEntity.getPosition());
+            recyclerView.scrollToPosition(mPraiseEntity.getPosition());
         }
         StableLogHashMap logHashMap1 = new StableLogHashMap("list_succeed");
         logHashMap1.put("list_number", mPraiseEntity.getPraiseType() + "");
