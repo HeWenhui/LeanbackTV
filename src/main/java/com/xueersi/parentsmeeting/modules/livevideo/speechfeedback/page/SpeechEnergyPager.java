@@ -8,6 +8,8 @@ import android.view.View;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
+import com.xueersi.lib.framework.utils.ScreenUtils;
+import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.config.StandLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LottieEffectInfo;
@@ -24,6 +26,7 @@ public class SpeechEnergyPager extends LiveBasePager {
     private LottieAnimationView animationView;
     private LiveSoundPool.SoundPlayTask task;
     private LiveSoundPool liveSoundPool;
+    int[] startPosition = new int[2];
 
     public SpeechEnergyPager(Context context) {
         super(context);
@@ -41,7 +44,7 @@ public class SpeechEnergyPager extends LiveBasePager {
     public void initData() {
         animationView.useHardwareAcceleration(true);
         String lottieResPath = "speech_collec_praise/images";
-        String lottieJsonPath = "speech_collec_praise/data5.json";
+        final String lottieJsonPath = "speech_collec_praise/data5.json";
         final LottieEffectInfo effectInfo = new LottieEffectInfo(lottieResPath, lottieJsonPath);
         animationView.setAnimationFromJson(effectInfo.getJsonStrFromAssets(mContext), "teacher_praise");
         animationView.setImageAssetDelegate(new ImageAssetDelegate() {
@@ -63,6 +66,12 @@ public class SpeechEnergyPager extends LiveBasePager {
 
             @Override
             public void onAnimationEnd(Animator animator) {
+//                animationView.getLocationOnScreen(startPosition);
+//                float scrcle = animationView.getHeight() / 1440f;
+//                startPosition[0] = (int) (startPosition[1] + scrcle * 899.5f);
+//                startPosition[1] = (int) (startPosition[1] + scrcle * 890);
+                startPosition[0] = ScreenUtils.getScreenWidth() / 2;
+                startPosition[1] = ScreenUtils.getScreenHeight() / 2;
                 onPagerClose.onClose(SpeechEnergyPager.this);
             }
 
@@ -92,4 +101,7 @@ public class SpeechEnergyPager extends LiveBasePager {
         liveSoundPool.release();
     }
 
+    public int[] getEnergyPosition() {
+        return startPosition;
+    }
 }

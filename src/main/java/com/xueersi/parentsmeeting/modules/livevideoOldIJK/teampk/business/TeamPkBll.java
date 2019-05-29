@@ -46,6 +46,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.redpackage.entity.RedPackageEvent;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.TeamPkLog;
+import com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.page.TeamPkAqResultFlayPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.page.TeamPkAqResultPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.page.TeamPkAwardPager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.teampk.page.TeamPkBasePager;
@@ -748,7 +749,7 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
     public void onTeachPraiseUIColse(TeachPraiseRusltulCloseEvent event) {
         int addEnergy = VOTE_TEACHER_PRAISE_ENERGY;
         logger.d("onTeachPraiseUIColse:addEnergy=" + addEnergy);
-        showVoteEnergyAnimSuc(addEnergy, event.getVoiceId());
+        showSpeechAnimSuc(addEnergy, event);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -779,19 +780,30 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         TeamPkLog.showAddPower(mLiveBll, voteId, addEnergy + "");
     }
 
-    private void showVoteEnergyAnimSuc(final int addEnergy, final String voteId) {
-        logger.e("========> showVoteEnergyAnimSuc:" + voteId + ":" + addEnergy);
+    private void showSpeechAnimSuc(final int addEnergy, final TeachPraiseRusltulCloseEvent event) {
+        final String voteId = event.getVoiceId();
+        logger.e("========> showSpeechAnimSuc:" + voteId + ":" + addEnergy);
         //上报服务器 增加加能量
         mHttpManager.addPersonAndTeamEnergy(mLiveBll.getLiveId(), addEnergy,
                 roomInitInfo.getStudentLiveInfo().getTeamId(),
                 roomInitInfo.getStudentLiveInfo().getClassId(), roomInitInfo.getStuId(), voteId, new HttpCallBack(false) {
                     @Override
                     public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
-                        TeamPkAqResultPager aqAwardPager = new TeamPkAqResultPager(mActivity, TeamPkAqResultPager.AWARD_TYPE_SPEECH,
-                                TeamPkBll.this);
-                        //addPager(aqAwardPager);
-                        addTopLayerPager(aqAwardPager);
-                        aqAwardPager.setData(0, addEnergy);
+                        boolean addBack = event.isAddBack();
+                        if (addBack) {
+                            TeamPkAqResultPager aqAwardPager = new TeamPkAqResultPager(mActivity, TeamPkAqResultPager.AWARD_TYPE_SPEECH,
+                                    TeamPkBll.this);
+                            //addPager(aqAwardPager);
+                            addTopLayerPager(aqAwardPager);
+                            aqAwardPager.setData(0, addEnergy);
+                        } else {
+                            int[] startPosition = event.getStartPosition();
+                            TeamPkAqResultFlayPager aqAwardPager = new TeamPkAqResultFlayPager(mActivity, TeamPkAqResultPager.AWARD_TYPE_SPEECH,
+                                    TeamPkBll.this, startPosition);
+                            //addPager(aqAwardPager);
+                            addTopLayerFullPager(aqAwardPager);
+                            aqAwardPager.setData(0, addEnergy);
+                        }
                         TeamPkLog.showAddPower(mLiveBll, voteId, addEnergy + "");
                     }
                 });
@@ -835,6 +847,19 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
         mTopLayerPager = pager;
     }
 
+    /**
+     * 添加顶层 UI 全屏
+     */
+    private void addTopLayerFullPager(TeamPkBasePager pager) {
+        if (mTopLayerPager != null) {
+            mTopLayerPager.onDestroy();
+        }
+        rlTopLayerContent.removeAllViews();
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        rlTopLayerContent.addView(pager.getRootView(), params);
+        mTopLayerPager = pager;
+    }
 
     private void addPager(TeamPkBasePager aqAwardPager) {
         if (mFocusPager != null) {

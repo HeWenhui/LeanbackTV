@@ -66,9 +66,16 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
 //            button.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View view) {
+//                    voiceId = "" + UUID.randomUUID();
 //                    showTeacherPraise();
 //                }
 //            });
+//            button.postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    addEnergy = false;
+//                }
+//            }, 222);
 //        }
     }
 
@@ -86,14 +93,16 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
                     if ("1".equals(getInfo.getIsAllowTeamPk())) {
                         if (!addEnergy) {
                             addEnergy = true;
-                            SpeechEnergyPager speechEnergyPager = new SpeechEnergyPager(mContext);
+                            final SpeechEnergyPager speechEnergyPager = new SpeechEnergyPager(mContext);
                             mRootView.addView(speechEnergyPager.getRootView());
                             speechEnergyPager.setOnPagerClose(new LiveBasePager.OnPagerClose() {
                                 @Override
                                 public void onClose(LiveBasePager basePager) {
                                     mRootView.removeView(basePager.getRootView());
                                     LiveEventBus.getDefault(activity).post(new TeacherPraiseEvent(false));
-                                    EventBus.getDefault().post(new TeachPraiseRusltulCloseEvent(voiceId + "_1"));
+                                    TeachPraiseRusltulCloseEvent teachPraiseRusltulCloseEvent = new TeachPraiseRusltulCloseEvent(voiceId + "_1", false);
+                                    teachPraiseRusltulCloseEvent.setStartPosition(speechEnergyPager.getEnergyPosition());
+                                    EventBus.getDefault().post(teachPraiseRusltulCloseEvent);
                                 }
                             });
                         }

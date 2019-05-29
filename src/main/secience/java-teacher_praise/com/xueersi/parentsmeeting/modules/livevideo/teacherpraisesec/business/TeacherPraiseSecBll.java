@@ -93,7 +93,7 @@ public class TeacherPraiseSecBll extends LiveBaseBll implements NoticeAction, To
                                 public void onClose(LiveBasePager basePager) {
                                     mRootView.removeView(basePager.getRootView());
                                     LiveEventBus.getDefault(activity).post(new TeacherPraiseEvent(false));
-                                    EventBus.getDefault().post(new TeachPraiseRusltulCloseEvent(voiceId + "_1"));
+                                    EventBus.getDefault().post(new TeachPraiseRusltulCloseEvent(voiceId + "_1", false));
                                 }
                             });
                         }
