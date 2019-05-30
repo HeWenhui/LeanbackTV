@@ -15,12 +15,14 @@ import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.business.sharebusiness.http.downloadAppfile.entity.DownLoadFileInfo;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.common.util.LoadCallback;
+import com.xueersi.common.util.LoadFileCallBack;
 import com.xueersi.common.util.LoadFileUtils;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
@@ -110,7 +112,6 @@ public class LiveVideoLoadActivity extends BaseActivity {
         DownLoadFileInfo info = null;
         if (downLoadInfo != null) {
             info = downLoadInfo;
-            info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
         }
         if (info == null) {
             info=new DownLoadFileInfo();
@@ -120,11 +121,14 @@ public class LiveVideoLoadActivity extends BaseActivity {
             info.fileUrl = "https://xeswxapp.oss-cn-beijing.aliyuncs.com/Android/asserts/livevideo/assets.zip";
             info.needManualDownload = true;
             info.id = 0;
-            info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
         }
 
+       // if (AppConfig.DEBUG) {
+            info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+       // }
 
-        LoadFileUtils.loadFileFromServer(this, info, new LoadCallback() {
+
+        LoadFileUtils.loadFileFromServer(this, info, new LoadFileCallBack() {
             @Override
             public void start() {
                 //XESToastUtils.showToast(LiveVideoLoadActivity.this, "开始加载");
