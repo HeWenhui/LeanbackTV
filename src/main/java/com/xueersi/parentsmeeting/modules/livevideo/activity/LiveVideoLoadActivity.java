@@ -105,14 +105,24 @@ public class LiveVideoLoadActivity extends BaseActivity {
     private void loadAssertsResource() {
 
 
-        DownLoadFileInfo info = new DownLoadFileInfo();
-        info.fileName = "assets.zip";
-        info.fileMD5 = "f94553e8a25d47d107f81fccade5cbcb";
-        info.fileType = 0;
-        info.fileUrl = "https://xeswxapp.oss-cn-beijing.aliyuncs.com/Android/asserts/livevideo/assets.zip";
-        info.needManualDownload = true;
-        info.id = 0;
-        info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        //服务端获取
+        DownLoadFileInfo downLoadInfo = AppBll.getInstance().getDownLoadFileByFileName("assets.zip");
+        DownLoadFileInfo info = null;
+        if (downLoadInfo != null) {
+            info = downLoadInfo;
+            info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        }
+        if (info == null) {
+            info=new DownLoadFileInfo();
+            info.fileName = "assets.zip";
+            info.fileMD5 = "f94553e8a25d47d107f81fccade5cbcb";
+            info.fileType = 0;
+            info.fileUrl = "https://xeswxapp.oss-cn-beijing.aliyuncs.com/Android/asserts/livevideo/assets.zip";
+            info.needManualDownload = true;
+            info.id = 0;
+            info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        }
+
 
         LoadFileUtils.loadFileFromServer(this, info, new LoadCallback() {
             @Override
