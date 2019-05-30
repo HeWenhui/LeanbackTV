@@ -376,7 +376,7 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
         if (isInitialized())
         // vPlayer.seekTo((float) ((double) pos / vPlayer.getDuration()));
         {
-            vPlayer.getSpeed();
+            return vPlayer.getSpeed();
         }
         return 1.0f;
     }
