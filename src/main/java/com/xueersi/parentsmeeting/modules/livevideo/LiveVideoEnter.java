@@ -15,6 +15,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.activity.AIExperienceLiveVid
 import com.xueersi.parentsmeeting.modules.livevideo.activity.AuditClassLiveActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.DeviceDetectionActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceLiveVideoActivity;
+import com.xueersi.parentsmeeting.modules.livevideo.activity.ExperienceThreeScreenActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.HalfBodyLiveExperienceActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LectureLivePlayBackVideoActivity;
 import com.xueersi.parentsmeeting.modules.livevideo.activity.LiveVideoLoadActivity;
@@ -426,11 +427,7 @@ public class LiveVideoEnter {
      * @param bundle
      */
     public static boolean intentToExperience(Activity context, Bundle bundle, String where) {
-        if (MediaPlayer.getIsNewIJK()) {
-            ExperienceLiveVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
-        } else {
-            com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.ExperienceLiveVideoActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
-        }
+        ExperienceThreeScreenActivity.intentTo(context, bundle, where, VIDEO_REQUEST);
         return true;
     }
 
