@@ -11,8 +11,8 @@ import com.xueersi.common.util.LoadCallback;
 import com.xueersi.common.util.LoadFileCallBack;
 import com.xueersi.common.util.LoadFileUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.parentsmeeting.widget.DataLoadManager;
 import com.xueersi.ui.dataload.DataLoadEntity;
-import com.xueersi.ui.dataload.DataLoadManager;
 
 public class LiveAssetsLoadUtil {
 
@@ -73,8 +73,6 @@ public class LiveAssetsLoadUtil {
                 } else {
                     mDataLoadEntity.setProgressTip("解压中...");
                 }
-
-
                 mDataLoadEntity.beginLoading();
                 mDataLoadEntity.setCurrentLoadingStatus(DataLoadEntity.DATA_PROGRESS);
                 DataLoadManager.newInstance().loadDataStyle(context, mDataLoadEntity);
