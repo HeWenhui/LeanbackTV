@@ -100,11 +100,13 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     }
 
     private class VideoPlayState {
+
         private boolean isPlaying;
 
         private String videoPath;
 
         private int protocol;
+
     }
 
     /**
@@ -289,10 +291,12 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                 if (user.getNick().startsWith(COUNTTEACHER_PREFIX)) {
                     // 辅导老师已在直播间
                     isTeacherIn = true;
-                    onStateChange();
+                    Log.i("tessPrint", "isTeacherIn="+isTeacherIn);
+                    onModeChanged();
                     break;
                 }
             }
+            Log.i("tessPrint", "isTeacherIn="+isTeacherIn);
         }
 
         @Override
@@ -308,7 +312,8 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             if (sender.startsWith(COUNTTEACHER_PREFIX)) {
                 // 辅导老师进来了
                 isTeacherIn = true;
-                onStateChange();
+                Log.i("tessPrint", "isTeacherIn="+isTeacherIn);
+                onModeChanged();
             }
         }
 
@@ -324,7 +329,8 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             if (sourceNick.startsWith(COUNTTEACHER_PREFIX)) {
                 // 辅导老师离开了
                 isTeacherIn = false;
-                onStateChange();
+                Log.i("tessPrint", "isTeacherIn="+isTeacherIn);
+                onModeChanged();
             }
         }
 
@@ -405,6 +411,8 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     private int savedWidth;
     private int savedHeight;
 
+    private int testMode = 0;
+
     /**
      * 播放器当前状态值
      */
@@ -443,7 +451,8 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         initlizeTalk();
 
-        onStateChange();
+        expLiveInfo.setMode(testMode);
+        onModeChanged();
 
         getHandler.postDelayed(getLiveMode, getRefreshTime());
 
@@ -519,14 +528,20 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         RelativeLayout.LayoutParams params = null;
 
+        int rightMargin = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * lp.width / VIDEO_WIDTH + (savedWidth - lp.width) / 2);
+        int leftMargin = (savedWidth - lp.width) / 2;
+        int topAndBottom = (savedHeight - lp.height) / 2;
+
         params = (RelativeLayout.LayoutParams) rlFirstBackgroundView.getLayoutParams();
-        params.rightMargin = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * lp.width / VIDEO_WIDTH + (savedWidth - lp.width) / 2);
-        params.topMargin = (savedHeight - lp.height) / 2;
+        params.topMargin = topAndBottom;
+        params.leftMargin = leftMargin;
+        params.rightMargin = rightMargin;
         rlFirstBackgroundView.setLayoutParams(params);
 
         params = (RelativeLayout.LayoutParams) ivTeacherNotpresent.getLayoutParams();
-        params.rightMargin = (int) (LiveVideoConfig.VIDEO_HEAD_WIDTH * lp.width / VIDEO_WIDTH + (savedWidth - lp.width) / 2);
-        params.topMargin = (savedHeight - lp.height) / 2;
+        params.topMargin = topAndBottom;
+        params.leftMargin = leftMargin;
+        params.rightMargin = rightMargin;
         ivTeacherNotpresent.setLayoutParams(params);
     }
 
@@ -778,12 +793,11 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         }
     }
 
-    private int testMode = 1;
-
     /**
      * 获取课程模式（未开始，课前，课中，课后，已结束)
      */
     protected void getCourseMode() {
+        Log.i("tessPrint", "getCourseMode is call");
         String url = expLiveInfo.getLiveStatus();
         int expLiveId = expLiveInfo.getExpLiveId();
 
@@ -804,11 +818,11 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                 JSONObject json = (JSONObject) responseEntity.getJsonObject();
                 int mode = json.getInt("mode");
                 mode = testMode;
-                Log.i("tess", "mode=" + mode);
+                Log.i("tessPrint", "mode=" + mode);
 
                 if (expLiveInfo.getMode() != mode) {
                     expLiveInfo.setMode(mode);
-                    onStateChange();
+                    onModeChanged();
                 }
 
                 if (mode != COURSE_STATE_4) {
@@ -857,7 +871,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     /**
      * 课程模式切换（未开始，课前，课中，课后，已结束)
      */
-    protected void onStateChange() {
+    protected void onModeChanged() {
 
         int mode = expLiveInfo.getMode();
 
