@@ -32,9 +32,11 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.PlayerService;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VP;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
+import com.xueersi.parentsmeeting.modules.livevideo.business.PauseNotStopVideoInter;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
+import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.SetVolumeListener;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.WeakHandler;
 
@@ -844,8 +846,12 @@ public class BasePlayerFragment extends Fragment implements VideoView.SurfaceCal
             }
             vPlayer.releaseSurface();
             //TODO 这个会影响暂停视频，返回后台继续播放。但是悬浮窗还需要
-            if (mIsPlayerEnable && vPlayer.needResume()) {
-                vPlayer.start();
+            PauseNotStopVideoInter onPauseNotStopVideo = ProxUtil.getProxUtil().get(activity, PauseNotStopVideoInter.class);
+            //onPauseNotStopVideo 应该不会空
+            if (onPauseNotStopVideo == null || onPauseNotStopVideo.getPause()) {
+                if (mIsPlayerEnable && vPlayer.needResume()) {
+                    vPlayer.start();
+                }
             }
         }
     }
