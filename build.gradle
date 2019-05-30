@@ -67,6 +67,8 @@ dependencies {
     implementation rootProject.ext.thirdlibraries.bugly
     annotationProcessor rootProject.ext.thirdlibraries.aroutercompiler
     implementation rootProject.ext.thirdlibraries.ticker
+    implementation rootProject.ext.thirdlibraries.tray
+
 
     rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.agora)
 //    rootProject.xrsImplementation(this.getProject(), rootProject.ext.xeslibraries.rtcengine)
