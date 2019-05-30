@@ -125,7 +125,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
             @Override
             public void success() {
                 initData();
-                XESToastUtils.showToast(LiveVideoLoadActivity.this, "加载成功");
+                //XESToastUtils.showToast(LiveVideoLoadActivity.this, "加载成功");
             }
 
             @Override
@@ -143,7 +143,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
             @Override
             public void fail(int errorCode, String errorMsg) {
-                XESToastUtils.showToast(LiveVideoLoadActivity.this, "失败");
+                XESToastUtils.showToast(LiveVideoLoadActivity.this, "加载失败，请重试");
             }
         });
 

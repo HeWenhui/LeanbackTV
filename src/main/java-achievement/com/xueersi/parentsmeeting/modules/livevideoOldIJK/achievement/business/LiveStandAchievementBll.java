@@ -266,8 +266,8 @@ public class LiveStandAchievementBll implements StarInteractAction {
 //        AssetManager manager = activity.getAssets();
 //        Bitmap img_7Bitmap;
 //        try {
-//            img_7Bitmap = BitmapFactory.decodeStream(manager.open("Images/jindu/img_9.png"));
-//            Bitmap img_3Bitmap = BitmapFactory.decodeStream(manager.open("Images/jindu/img_3.png"));
+//            img_7Bitmap = BitmapFactory.decodeStream(AssertUtil.open("Images/jindu/img_9.png"));
+//            Bitmap img_3Bitmap = BitmapFactory.decodeStream(AssertUtil.open("Images/jindu/img_3.png"));
 //            Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
 //            Canvas canvas = new Canvas(creatBitmap);
 //            canvas.drawBitmap(img_7Bitmap, 0, 0, null);

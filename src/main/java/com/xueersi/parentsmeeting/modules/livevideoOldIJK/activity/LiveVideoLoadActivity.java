@@ -122,7 +122,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
             @Override
             public void start() {
-                XESToastUtils.showToast(LiveVideoLoadActivity.this, "开始加载");
+                //XESToastUtils.showToast(LiveVideoLoadActivity.this, "开始加载");
                 //BaseBll.postDataLoadEvent(mDataLoadEntity.beginLoading());
                 mDataLoadEntity.beginLoading();
                 DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this, mDataLoadEntity);
@@ -131,7 +131,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
             @Override
             public void success() {
                 initData();
-                XESToastUtils.showToast(LiveVideoLoadActivity.this, "加载成功");
+                //XESToastUtils.showToast(LiveVideoLoadActivity.this, "加载成功");
             }
 
             @Override
