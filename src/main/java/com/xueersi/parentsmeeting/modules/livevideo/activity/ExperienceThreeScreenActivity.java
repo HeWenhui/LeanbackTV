@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -63,6 +64,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.StableLogHashMap;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.TalkConfHost;
 import com.xueersi.parentsmeeting.modules.livevideo.http.ExperienceBusiness;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.lib.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.message.business.LiveMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideo.message.pager.LiveMessagePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.business.QuestionBll;
@@ -95,6 +97,14 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         intent.putExtras(bundle);
         intent.putExtra("where", where);
         context.startActivityForResult(intent, requestCode);
+    }
+
+    private class VideoPlayState {
+        private boolean isPlaying;
+
+        private String videoPath;
+
+        private int protocol;
     }
 
     /**
@@ -395,6 +405,11 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     private int savedWidth;
     private int savedHeight;
 
+    /**
+     * 播放器当前状态值
+     */
+    private VideoPlayState videoPlayState;
+
 
     /**
      * 用户是否属于某个分队
@@ -430,7 +445,7 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
         onStateChange();
 
-        getHandler.postDelayed(getLiveMode, expLiveInfo.getExpLiveQueryInterval());
+        getHandler.postDelayed(getLiveMode, getRefreshTime());
 
         AppBll.getInstance().registerAppEvent(this);
         return true;
@@ -531,9 +546,21 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     }
 
     @Override
+    protected void resultFailed(int arg1, int arg2) {
+        XESToastUtils.showToast(this, "resultFailed");
+
+        if (videoPlayState.isPlaying) {
+            playPSVideo(videoPlayState.videoPath, videoPlayState.protocol);
+        }
+    }
+
+    @Override
     protected void onPlayError() {
-        super.onPlayError();
         XESToastUtils.showToast(this, "onPlayError");
+
+        if (videoPlayState.isPlaying) {
+            playPSVideo(videoPlayState.videoPath, videoPlayState.protocol);
+        }
     }
 
     /**
@@ -552,6 +579,8 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             sex = extras.getString("sex");
             pattern = extras.getInt("pattern");
         }
+
+        videoPlayState = new VideoPlayState();
     }
 
     /**
@@ -613,7 +642,9 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         bottomContent = findViewById(R.id.rl_course_video_live_question_content);
         rlFirstBackgroundView = findViewById(R.id.rl_course_video_first_backgroud);
         ivTeacherNotpresent = findViewById(R.id.iv_course_video_teacher_notpresent);
+        rlFirstBackgroundView.setVisibility(View.GONE);
         bottomContent.setVisibility(View.VISIBLE);
+        ivTeacherNotpresent.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         BaseLiveMediaControllerTop baseLiveMediaControllerTop = new BaseLiveMediaControllerTop(this, mMediaController, this);
         mMediaController.setControllerTop(baseLiveMediaControllerTop);
@@ -736,38 +767,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
     }
 
-    /**
-     * 课程模式切换（未开始，课前，课中，课后，已结束)
-     */
-    protected void onStateChange() {
-
-        expLiveInfo.setMode(0);
-
-        int mode = expLiveInfo.getMode();
-
-        if (mode == COURSE_STATE_1) {
-            // 课前状态
-            ivTeacherNotpresent.setVisibility(View.GONE);
-            playLiveVideo();
-        } else if (mode == COURSE_STATE_2) {
-            // 课中状态
-            ivTeacherNotpresent.setVisibility(View.GONE);
-            playBackVideo();
-        } else if (mode == COURSE_STATE_3) {
-            // 课后状态
-            ivTeacherNotpresent.setVisibility(View.GONE);
-            playLiveVideo();
-        } else if (mode == COURSE_STATE_4) {
-            // 结束状态
-            ivTeacherNotpresent.setVisibility(View.VISIBLE);
-            ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
-        } else {
-            // 等待状态
-            ivTeacherNotpresent.setVisibility(View.VISIBLE);
-            ivTeacherNotpresent.setImageResource(R.drawable.live_course_open_late);
-        }
-    }
-
     protected void updateLoading() {
         FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false, ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);
 
@@ -779,6 +778,8 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         }
     }
 
+    private int testMode = 1;
+
     /**
      * 获取课程模式（未开始，课前，课中，课后，已结束)
      */
@@ -789,12 +790,12 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         expBusiness.getExpLiveStatus(url, expLiveId, new HttpCallBack() {
             @Override
             public void onPmFailure(Throwable error, String msg) {
-                getHandler.postDelayed(getLiveMode, expLiveInfo.getExpLiveQueryInterval());
+                getHandler.postDelayed(getLiveMode, getRefreshTime());
             }
 
             @Override
             public void onPmError(ResponseEntity responseEntity) {
-                getHandler.postDelayed(getLiveMode, expLiveInfo.getExpLiveQueryInterval());
+                getHandler.postDelayed(getLiveMode, getRefreshTime());
             }
 
             @Override
@@ -802,6 +803,8 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
 
                 JSONObject json = (JSONObject) responseEntity.getJsonObject();
                 int mode = json.getInt("mode");
+                mode = testMode;
+                Log.i("tess", "mode=" + mode);
 
                 if (expLiveInfo.getMode() != mode) {
                     expLiveInfo.setMode(mode);
@@ -809,10 +812,11 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
                 }
 
                 if (mode != COURSE_STATE_4) {
-                    getHandler.postDelayed(getLiveMode, expLiveInfo.getExpLiveQueryInterval());
+                    getHandler.postDelayed(getLiveMode, getRefreshTime());
                 }
             }
         });
+
     }
 
     /**
@@ -851,13 +855,68 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     }
 
     /**
-     * 播放回放视频
+     * 课程模式切换（未开始，课前，课中，课后，已结束)
      */
-    protected void playBackVideo() {
+    protected void onStateChange() {
 
-        String mSectionName = playBackEntity.getPlayVideoName();
-        ProxUtil.getProxUtil().put(this, LiveVideoActivityBase.class, this);
+        int mode = expLiveInfo.getMode();
 
+        boolean playVideo = false;
+
+        if (mode == COURSE_STATE_1) {
+            // 课前状态,辅导老师在直播间就播放直播
+            ivTeacherNotpresent.setVisibility(isTeacherIn ? View.GONE : View.VISIBLE);
+            ivTeacherNotpresent.setImageResource(R.drawable.live_course_open_late);
+            playVideo = isTeacherIn;
+        } else if (mode == COURSE_STATE_2) {
+            // 课中状态,播放回放视频
+            ivTeacherNotpresent.setVisibility(View.GONE);
+            playVideo = true;
+        } else if (mode == COURSE_STATE_3) {
+            // 课后状态,辅导老师在直播间就播放直播
+            ivTeacherNotpresent.setVisibility(isTeacherIn ? View.GONE : View.VISIBLE);
+            ivTeacherNotpresent.setImageResource(R.drawable.live_course_wait_teacher);
+            playVideo = isTeacherIn;
+        } else if (mode == COURSE_STATE_4) {
+            // 结束状态
+            ivTeacherNotpresent.setVisibility(View.VISIBLE);
+            ivTeacherNotpresent.setImageResource(R.drawable.live_free_play_end);
+        } else {
+            // 等待状态
+            ivTeacherNotpresent.setVisibility(View.VISIBLE);
+            ivTeacherNotpresent.setImageResource(R.drawable.live_course_open_late);
+        }
+
+
+        if (playVideo) {
+            String videoPath = mode == COURSE_STATE_2 ? getBackVideo() : getLiveVideo();
+            int protocol = mode == COURSE_STATE_2 ? MediaPlayer.VIDEO_PROTOCOL_MP4 : MediaPlayer.VIDEO_PROTOCOL_RTMP;
+
+            if (!videoPlayState.isPlaying || !videoPath.equals(videoPlayState.videoPath) || protocol != videoPlayState.protocol) {
+                videoPlayState.isPlaying = playVideo;
+                videoPlayState.videoPath = videoPath;
+                videoPlayState.protocol = protocol;
+
+                setmDisplayName(playBackEntity.getPlayVideoName());
+                playPSVideo(videoPath, protocol);
+            }
+        } else {
+            if (videoPlayState.isPlaying) {
+                videoPlayState.isPlaying = playVideo;
+                videoPlayState.videoPath = "";
+                videoPlayState.protocol = 0;
+
+                stopPlayer();
+            }
+        }
+    }
+
+    /**
+     * 回放视屏地址
+     *
+     * @return
+     */
+    protected String getBackVideo() {
         String videoPath;
         String url = playBackEntity.getVideoPath();
         if (url.contains("http") || url.contains("https")) {
@@ -866,19 +925,26 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
             videoPath = url;
         }
 
-        playPSVideo(videoPath, MediaPlayer.VIDEO_PROTOCOL_MP4);
-        setmDisplayName(mSectionName);
+        return videoPath;
     }
 
     /**
-     * 播放直播视频
+     * 直播视频地址
+     *
+     * @return
      */
-    protected void playLiveVideo() {
-        // x_3_239_576   3->livetype  239->expLiveId 576->coachTeacherId
-        String streamid = "x_" + expLiveInfo.getLiveType() + "_" + expLiveInfo.getExpLiveId() + "_" + expLiveInfo.getCoachTeacherId();
-        String mSectionName = playBackEntity.getPlayVideoName();
-        setmDisplayName(mSectionName);
-        playPSVideo(streamid, MediaPlayer.VIDEO_PROTOCOL_RTMP);
+    protected String getLiveVideo() {
+        return "x_" + expLiveInfo.getLiveType() + "_" + expLiveInfo.getExpLiveId() + "_" + expLiveInfo.getCoachTeacherId();
+    }
+
+    /**
+     * mode刷新时间
+     *
+     * @return
+     */
+    protected long getRefreshTime() {
+//        return expLiveInfo.getExpLiveQueryInterval() * 1000;
+        return 8 * 1000;
     }
 
 }
