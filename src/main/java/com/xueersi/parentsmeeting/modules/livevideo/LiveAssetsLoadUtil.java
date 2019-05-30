@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Environment;
 
+import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.sharebusiness.http.downloadAppfile.entity.DownLoadFileInfo;
 import com.xueersi.common.util.LoadCallback;
 import com.xueersi.common.util.LoadFileCallBack;
@@ -23,16 +24,24 @@ public class LiveAssetsLoadUtil {
     public static void loadAssertsResource(final Activity context, final LoadCallback callback) {
 
 
+        //服务端获取
+        DownLoadFileInfo downLoadInfo = AppBll.getInstance().getDownLoadFileByFileName("assets.zip");
+        DownLoadFileInfo info = null;
+        if (downLoadInfo != null) {
+            info = downLoadInfo;
+            info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        }
         mDataLoadEntity = new DataLoadEntity(context);
-        DownLoadFileInfo info = new DownLoadFileInfo();
-        info.fileName = "assets.zip";
-        info.fileMD5 = "f94553e8a25d47d107f81fccade5cbcb";
-        info.fileType = 0;
-        info.fileUrl = "https://xeswxapp.oss-cn-beijing.aliyuncs.com/Android/asserts/livevideo/assets.zip";
-        info.needManualDownload = true;
-        info.id = 0;
-        info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-
+        if (info == null) {
+            info = new DownLoadFileInfo();
+            info.fileName = "assets.zip";
+            info.fileMD5 = "f94553e8a25d47d107f81fccade5cbcb";
+            info.fileType = 0;
+            info.fileUrl = "https://xeswxapp.oss-cn-beijing.aliyuncs.com/Android/asserts/livevideo/assets.zip";
+            info.needManualDownload = true;
+            info.id = 0;
+            info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        }
 
         LoadFileUtils.loadFileFromServer(context, info, new LoadFileCallBack() {
 
@@ -46,7 +55,7 @@ public class LiveAssetsLoadUtil {
 
             @Override
             public void success() {
-                XESToastUtils.showToast(context, "加载成功");
+                //XESToastUtils.showToast(context, "加载成功");
                 mDataLoadEntity.webDataSuccess();
                 DataLoadManager.newInstance().loadDataStyle(context, mDataLoadEntity);
 
@@ -56,9 +65,9 @@ public class LiveAssetsLoadUtil {
             @Override
             public void progress(float progress, int type) {
 
-                if(type==0){
+                if (type == 0) {
                     mDataLoadEntity.setProgressTip("加载中" + (int) (progress) + "%");
-                }else{
+                } else {
                     mDataLoadEntity.setProgressTip("解压中...");
                 }
 
