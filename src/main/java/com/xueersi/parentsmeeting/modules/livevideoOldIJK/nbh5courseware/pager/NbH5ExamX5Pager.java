@@ -805,7 +805,9 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
                         XESToastUtils.showToast(mContext, "主文件加载失败，请刷新");
                     }
                 }
-            } else if (url.contains(WebInstertJs.indexStr())) {
+            }
+
+            if (url.contains(WebInstertJs.indexStr())) {
                 WebResourceResponse webResourceResponse = newCourseCache.interceptJsRequest(webView, url);
                 logger.d("shouldInterceptRequest:js:url=" + url + ",response=null?" + (webResourceResponse == null));
                 if (webResourceResponse != null) {
