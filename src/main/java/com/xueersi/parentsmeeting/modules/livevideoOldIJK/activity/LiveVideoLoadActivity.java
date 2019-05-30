@@ -41,6 +41,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.courseware.Co
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.courseware.PreloadStaticStorage;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.LiveActivityPermissionCallback;
 import com.xueersi.ui.dataload.DataLoadEntity;
+import com.xueersi.ui.dataload.DataLoadManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
@@ -48,6 +49,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by linyuqiang on 2018/7/14.
@@ -94,9 +97,9 @@ public class LiveVideoLoadActivity extends BaseActivity {
         }
         CREATE_TIMES++;
         mDataLoadEntity = new DataLoadEntity(this);
-        BaseBll.postDataLoadEvent(mDataLoadEntity.beginLoading());
         loadAssertsResource();
         //initData();
+
     }
 
 
@@ -104,7 +107,6 @@ public class LiveVideoLoadActivity extends BaseActivity {
      * 加载assert 文件
      */
     private void loadAssertsResource() {
-
 
         DownLoadFileInfo info = new DownLoadFileInfo();
         info.fileName = "assets.zip";
@@ -115,12 +117,15 @@ public class LiveVideoLoadActivity extends BaseActivity {
         info.id = 0;
         info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
 
-        LoadFileUtils.loadFileFromServer(this, info, new LoadFileCallBack() {
 
+        LoadFileUtils.loadFileFromServer(this, info, new LoadFileCallBack() {
 
             @Override
             public void start() {
                 XESToastUtils.showToast(LiveVideoLoadActivity.this, "开始加载");
+                //BaseBll.postDataLoadEvent(mDataLoadEntity.beginLoading());
+                mDataLoadEntity.beginLoading();
+                DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this, mDataLoadEntity);
             }
 
             @Override
@@ -131,8 +136,16 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
             @Override
             public void progress(float progress, int type) {
+
                 //BaseBll.postDataLoadEvent(mDataLoadEntity.setProgressTip("加载中" + (int)(progress)+"%"));
-                Log.e("LoadFileUtils", "type:" + type + ",progress:" + progress);
+                if(type==0){
+                    mDataLoadEntity.setProgressTip("加载中" + (int) (progress) + "%");
+                }else{
+                    mDataLoadEntity.setProgressTip("解压中...");
+                }
+                mDataLoadEntity.beginLoading();
+                mDataLoadEntity.setCurrentLoadingStatus(DataLoadEntity.DATA_PROGRESS);
+                DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this, mDataLoadEntity);
             }
 
             @Override
