@@ -6,6 +6,7 @@ import android.os.Environment;
 
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.sharebusiness.http.downloadAppfile.entity.DownLoadFileInfo;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.util.LoadCallback;
 import com.xueersi.common.util.LoadFileCallBack;
 import com.xueersi.common.util.LoadFileUtils;
@@ -21,7 +22,7 @@ public class LiveAssetsLoadUtil {
     /**
      * 加载assert 文件
      */
-    public static void loadAssertsResource(final Activity context, final LoadCallback callback) {
+    public static void loadAssertsResource(final Activity context, final LoadFileCallBack callback) {
 
 
         //服务端获取
@@ -29,7 +30,6 @@ public class LiveAssetsLoadUtil {
         DownLoadFileInfo info = null;
         if (downLoadInfo != null) {
             info = downLoadInfo;
-            info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
         }
         mDataLoadEntity = new DataLoadEntity(context);
         if (info == null) {
@@ -40,8 +40,11 @@ public class LiveAssetsLoadUtil {
             info.fileUrl = "https://xeswxapp.oss-cn-beijing.aliyuncs.com/Android/asserts/livevideo/assets.zip";
             info.needManualDownload = true;
             info.id = 0;
-            info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
         }
+
+       // if (AppConfig.DEBUG) {
+            info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        //}
 
         LoadFileUtils.loadFileFromServer(context, info, new LoadFileCallBack() {
 
