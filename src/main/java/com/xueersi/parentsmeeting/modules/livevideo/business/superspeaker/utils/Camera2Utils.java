@@ -236,7 +236,7 @@
 //            }
 //            configureTransform(width, height);
 //            mMediaRecorder = new MediaRecorder();
-//            manager.openCamera(cameraId, mStateCallback, null);
+//            AssertUtil.openCamera(cameraId, mStateCallback, null);
 //        } catch (CameraAccessException e) {
 //            Toast.makeText(activity, "Cannot access the camera.", Toast.LENGTH_SHORT).show();
 //            activity.finish();

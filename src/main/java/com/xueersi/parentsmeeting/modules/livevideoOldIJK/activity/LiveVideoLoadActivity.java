@@ -108,21 +108,29 @@ public class LiveVideoLoadActivity extends BaseActivity {
      */
     private void loadAssertsResource() {
 
-        DownLoadFileInfo info = new DownLoadFileInfo();
-        info.fileName = "assets.zip";
-        info.fileMD5 = "f94553e8a25d47d107f81fccade5cbcb";
-        info.fileType = 0;
-        info.fileUrl = "https://xeswxapp.oss-cn-beijing.aliyuncs.com/Android/asserts/livevideo/assets.zip";
-        info.needManualDownload = true;
-        info.id = 0;
-        info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-
+        //服务端获取
+        DownLoadFileInfo downLoadInfo = AppBll.getInstance().getDownLoadFileByFileName("assets.zip");
+        DownLoadFileInfo info = null;
+        if (downLoadInfo != null) {
+            info = downLoadInfo;
+            info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        }
+        if (info == null) {
+            info=new DownLoadFileInfo();
+            info.fileName = "assets.zip";
+            info.fileMD5 = "f94553e8a25d47d107f81fccade5cbcb";
+            info.fileType = 0;
+            info.fileUrl = "https://xeswxapp.oss-cn-beijing.aliyuncs.com/Android/asserts/livevideo/assets.zip";
+            info.needManualDownload = true;
+            info.id = 0;
+            info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        }
 
         LoadFileUtils.loadFileFromServer(this, info, new LoadFileCallBack() {
 
             @Override
             public void start() {
-                XESToastUtils.showToast(LiveVideoLoadActivity.this, "开始加载");
+                //XESToastUtils.showToast(LiveVideoLoadActivity.this, "开始加载");
                 //BaseBll.postDataLoadEvent(mDataLoadEntity.beginLoading());
                 mDataLoadEntity.beginLoading();
                 DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this, mDataLoadEntity);
@@ -131,16 +139,16 @@ public class LiveVideoLoadActivity extends BaseActivity {
             @Override
             public void success() {
                 initData();
-                XESToastUtils.showToast(LiveVideoLoadActivity.this, "加载成功");
+                //XESToastUtils.showToast(LiveVideoLoadActivity.this, "加载成功");
             }
 
             @Override
             public void progress(float progress, int type) {
 
                 //BaseBll.postDataLoadEvent(mDataLoadEntity.setProgressTip("加载中" + (int)(progress)+"%"));
-                if(type==0){
+                if (type == 0) {
                     mDataLoadEntity.setProgressTip("加载中" + (int) (progress) + "%");
-                }else{
+                } else {
                     mDataLoadEntity.setProgressTip("解压中...");
                 }
                 mDataLoadEntity.beginLoading();
