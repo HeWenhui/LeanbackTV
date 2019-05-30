@@ -1094,7 +1094,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
             mIse.cancel();
         }
         if (saveVideoFile != null) {
-            groupGameUpload.uploadWonderMoment(saveVideoFile, speechContent, 0);
+            groupGameUpload.uploadWonderMoment(saveVideoFile, speechContent, getCurrentScore(speechContent), 0);
         }
         final String finalSpeechContent = speechContent;
         handler.postDelayed(new Runnable() {
@@ -1153,11 +1153,11 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 if (resultEntity.getStatus() == ResultEntity.SUCCESS) {
                     mLogtf.d("onEvaluatorSuccess(): score = " + resultEntity.getScore());
                     onRecognizeStop(false);
-                    groupGameUpload.uploadWonderMoment(file, speech, 0);
+                    groupGameUpload.uploadWonderMoment(file, speech, getCurrentScore(speechContent), 0);
                 } else if (resultEntity.getStatus() == ResultEntity.ERROR) {
                     mLogtf.d("onEvaluatorError: ErrorNo = " + resultEntity.getErrorNo() + ", isOfflineFail =" + mIse.isOfflineFail());
                     onRecognizeStop(true);
-                    groupGameUpload.uploadWonderMoment(file, speech, resultEntity.getErrorNo());
+                    groupGameUpload.uploadWonderMoment(file, speech, getCurrentScore(speechContent), resultEntity.getErrorNo());
                     if (resultEntity.getErrorNo() == ResultCode.MUTE_AUDIO || resultEntity.getErrorNo() == ResultCode.MUTE) {
                         setTip("没听清，请大声点哦");
                     }
@@ -2174,6 +2174,35 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
         void onResult(ResultEntity resultEntity);
     }
 
+    /**
+     * 获得当前单词分数
+     *
+     * @param speechContent
+     * @return
+     */
+    private String getCurrentScore(String speechContent) {
+        String currentScore = "";
+        try {
+            JSONArray scoreArray = new JSONArray();
+            Set<Integer> keySet = scoreHashmap.keySet();
+            for (Integer key : keySet) {
+                List<SpeechResult> speechResults = scoreHashmap.get(key);
+                if (speechResults != null) {
+                    for (int sindex = 0; sindex < speechResults.size(); sindex++) {
+                        SpeechResult speechResult = speechResults.get(sindex);
+                        if (("" + speechContent).equals(speechResult.speechContent)) {
+                            scoreArray.put(speechResult.score);
+                        }
+                    }
+                }
+            }
+            currentScore = scoreArray.toString();
+        } catch (Exception e) {
+            CrashReport.postCatchedException(new LiveException(TAG, e));
+        }
+        return currentScore;
+    }
+
     private void addScore(ResultEntity resultEntity) {
         int newSenIndex = resultEntity.getNewSenIdx();
         int score = resultEntity.getScore();
@@ -2189,6 +2218,7 @@ public class GroupGameMultNativePager extends BaseCoursewareNativePager implemen
                 SpeechResult speechResult = new SpeechResult();
                 speechResult.score = score;
                 speechResult.speechDuration = resultEntity.getSpeechDuration();
+                speechResult.speechContent = speechContent;
                 speechResults.add(speechResult);
             }
         } catch (Exception e) {
