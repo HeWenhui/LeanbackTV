@@ -508,6 +508,13 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
         }
 
         @Override
+        public int onVideoStatusChange(int code, int status) {
+            liveBackVideoFragment.onVideoStatusChange(code,status);
+            return super.onVideoStatusChange(code, status);
+
+        }
+
+        @Override
         public void seekTo(long pos) {
             super.seekTo(pos);
             liveBackVideoFragment.seekTo(pos);
@@ -695,6 +702,11 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
         liveBackPlayVideoFragment.playNewVideo();
     }
 
+    public void playNewVideo(Uri uri, String displayName) {
+        mUri = uri;
+        mDisplayName = displayName;
+        liveBackPlayVideoFragment.playNewVideo(uri, displayName);
+    }
 
     /** 播放下一个视频 */
     protected void startPlayNextVideo() {
@@ -767,6 +779,11 @@ public abstract class LiveBackVideoFragmentBase extends Fragment {
     protected void onPlayOpenSuccess() {
 
     }
+    protected int onVideoStatusChange(int code,int status){
+        return code;
+
+    }
+
 
     /** 视频正常播放完毕退出时调用，非加载失败 */
     protected void resultComplete() {

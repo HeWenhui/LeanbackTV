@@ -3,20 +3,26 @@ package com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.xueersi.common.base.BaseActivity;
 import com.xueersi.common.base.BaseBll;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
+import com.xueersi.common.business.sharebusiness.http.downloadAppfile.entity.DownLoadFileInfo;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.sharedata.ShareDataManager;
+import com.xueersi.common.util.LoadCallback;
+import com.xueersi.common.util.LoadFileCallBack;
+import com.xueersi.common.util.LoadFileUtils;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.XESToastUtils;
@@ -39,7 +45,9 @@ import com.xueersi.ui.dataload.DataLoadEntity;
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by linyuqiang on 2018/7/14.
@@ -47,8 +55,11 @@ import java.util.HashMap;
  */
 public class LiveVideoLoadActivity extends BaseActivity {
     public static HashMap<String, LiveGetInfo> getInfos = new HashMap();
-    /** Activity创建次数 */
+    /**
+     * Activity创建次数
+     */
     public static int CREATE_TIMES = 0;
+    DataLoadEntity mDataLoadEntity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +93,54 @@ public class LiveVideoLoadActivity extends BaseActivity {
             return;
         }
         CREATE_TIMES++;
-        initData();
+        mDataLoadEntity = new DataLoadEntity(this);
+        BaseBll.postDataLoadEvent(mDataLoadEntity.beginLoading());
+        loadAssertsResource();
+        //initData();
+    }
+
+
+    /**
+     * 加载assert 文件
+     */
+    private void loadAssertsResource() {
+
+
+        DownLoadFileInfo info = new DownLoadFileInfo();
+        info.fileName = "assets.zip";
+        info.fileMD5 = "f94553e8a25d47d107f81fccade5cbcb";
+        info.fileType = 0;
+        info.fileUrl = "https://xeswxapp.oss-cn-beijing.aliyuncs.com/Android/asserts/livevideo/assets.zip";
+        info.needManualDownload = true;
+        info.id = 0;
+        info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+
+        LoadFileUtils.loadFileFromServer(this, info, new LoadFileCallBack() {
+
+
+            @Override
+            public void start() {
+                XESToastUtils.showToast(LiveVideoLoadActivity.this, "开始加载");
+            }
+
+            @Override
+            public void success() {
+                initData();
+                XESToastUtils.showToast(LiveVideoLoadActivity.this, "加载成功");
+            }
+
+            @Override
+            public void progress(float progress, int type) {
+                //BaseBll.postDataLoadEvent(mDataLoadEntity.setProgressTip("加载中" + (int)(progress)+"%"));
+                Log.e("LoadFileUtils", "type:" + type + ",progress:" + progress);
+            }
+
+            @Override
+            public void fail(int errorCode, String errorMsg) {
+                XESToastUtils.showToast(LiveVideoLoadActivity.this, "加载失败,  请重试");
+            }
+        });
+
     }
 
     @Override
@@ -119,12 +177,10 @@ public class LiveVideoLoadActivity extends BaseActivity {
         final String vSectionID = intent.getStringExtra("vSectionID");
         final int liveType = bundle.getInt("type", 0);
         final int from = intent.getIntExtra("", 0);
-        DataLoadEntity dataLoadEntity = new DataLoadEntity(this);
-        BaseBll.postDataLoadEvent(dataLoadEntity.beginLoading());
         final LiveHttpManager httpManager = new LiveHttpManager(this);
 
         if (liveType == LiveVideoConfig.LIVE_TYPE_LECTURE) {
-            httpManager.liveLectureGetInfo("", vSectionID, new HttpCallBack(dataLoadEntity) {
+            httpManager.liveLectureGetInfo("", vSectionID, new HttpCallBack(mDataLoadEntity) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) {
                     LiveHttpResponseParser mHttpResponseParser = new LiveHttpResponseParser(LiveVideoLoadActivity.this);
@@ -164,7 +220,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
             httpManager.addBodyParam("stuCouId", vStuCourseID);
             httpManager.addBodyParam("liveId", vSectionID);
             httpManager.addBodyParam("from", "" + from);
-            httpManager.liveGetInfo("", courseId, vSectionID, 0, new HttpCallBack(dataLoadEntity) {
+            httpManager.liveGetInfo("", courseId, vSectionID, 0, new HttpCallBack(mDataLoadEntity) {
                 @Override
                 public void onPmSuccess(ResponseEntity responseEntity) throws Exception {
                     LiveHttpResponseParser mHttpResponseParser = new LiveHttpResponseParser(LiveVideoLoadActivity.this);
@@ -202,6 +258,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                     bundle.putBoolean("isSmallEnglish", mGetInfo.getSmallEnglish());
                     bundle.putInt("useSkin", mGetInfo.getUseSkin());
                     bundle.putInt("isGoldMicrophone", mGetInfo.isUseGoldMicroPhone());
+                    bundle.putInt("useSuperSpeakerShow", mGetInfo.getUseSuperSpeakerShow());
                     if (mGetInfo.getIsArts() == 0) {
                         bundle.putInt("allowLinkMicNew", mGetInfo.getAllowLinkMicNew());
                     } else {
@@ -214,8 +271,12 @@ public class LiveVideoLoadActivity extends BaseActivity {
 //                }
                     if (1 == mGetInfo.getIsEnglish()) {
                         gotoEnglish(bundle);
-                    } else if (mGetInfo.isUseGoldMicroPhone() == 1) {
-                        gotoHalfBodyChinese(bundle);
+                    } else if (mGetInfo.isUseGoldMicroPhone() == 1 || mGetInfo.getUseSuperSpeakerShow() == 1) {
+                        List<Integer> list = new ArrayList<>();
+                        list.add(PermissionConfig.PERMISSION_CODE_AUDIO);
+                        list.add(PermissionConfig.PERMISSION_CODE_CAMERA);
+                        gotoHalfBodyChinese(bundle, list);
+//                        gotoHalfBodyChinese(bundle);
                     } else {
                         if (!MediaPlayer.getIsNewIJK()) {
                             com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
@@ -306,51 +367,56 @@ public class LiveVideoLoadActivity extends BaseActivity {
         }
     }
 
-    /**  */
-    void gotoHalfBodyChinese(final Bundle bundle) {
-        boolean have = XesPermission.checkPermission(this, new LiveActivityPermissionCallback() {
+    /**
+     *
+     */
+    void gotoHalfBodyChinese(final Bundle bundle, List<Integer> list) {
+        boolean have = XesPermission.checkPermission(this, new com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback() {
 
                     @Override
                     public void onFinish() {
-
-                    }
-
-                    @Override
-                    public void onDeny(String permission, int position) {
-                        if (MediaPlayer.getIsNewIJK()) {
-                            com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-                        } else {
-                            com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
-                        }
-                        finish();
-                    }
-
-                    @Override
-                    public void onGuarantee(String permission, int position) {
-
                         Handler handler = new Handler(Looper.getMainLooper());
                         handler.post(new Runnable() {
                             @Override
                             public void run() {
                                 if (MediaPlayer.getIsNewIJK()) {
-                                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                                    com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoLoadActivity.this, bundle);
                                 } else {
-                                    com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                                    com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoLoadActivity.this, bundle);
                                 }
                                 finish();
                             }
                         });
                     }
+
+                    @Override
+                    public void onDeny(String permission, int position) {
+                        logger.i("onDeny");
+//                        if (MediaPlayer.getIsNewIJK()) {
+//                            com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+//                        } else {
+//                            com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+//                        }
+//                        finish();
+                    }
+
+                    @Override
+                    public void onGuarantee(String permission, int position) {
+                        logger.i("onGuarantee");
+                    }
                 },
-                PermissionConfig.PERMISSION_CODE_AUDIO);
+                PermissionConfig.PERMISSION_CODE_CAMERA, PermissionConfig.PERMISSION_CODE_AUDIO);
+        //魅族手机无法弹出权限弹窗
         if (have) {
             if (MediaPlayer.getIsNewIJK()) {
-                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoLoadActivity.this, bundle);
             } else {
-                com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
+                com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveVideoActivity.intentTo(com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoLoadActivity.this, bundle);
             }
             finish();
+
         }
+
     }
 
     /**

@@ -114,7 +114,7 @@ public class LiveVideoSAConfig {
                 + "/LiveCourse/receiveGoldForPlayBack";
         /*获取体验直播课的红包*/
         public String URL_STUDY_RECEIVE_LIVE_PLAY_RED_PACKET_GOLDS = HTTP_HOST
-                + "/science/AutoLive/receiveGold" ;
+                + "/science/AutoLive/receiveGold";
         /** 用户试听 */
         @Deprecated
         public String URL_LIVE_USER_MODETIME = HTTP_HOST + "/LiveCourse/userModeTime";
@@ -206,11 +206,11 @@ public class LiveVideoSAConfig {
         public String URL_TEMPK_STUPKRESULT = HTTP_HOST + "/LiveCourse/stuPKResult";
         /** 贡献之星结果 */
         public String URL_TEMPK_TEAMENERGYNUMANDCONTRIBUTIONSTAR = HTTP_HOST + "/LiveCourse/teamEnergyNumAndContributionStar";
-        /**战队PK 明星榜**/
+        /** 战队PK 明星榜 **/
         public String URL_TEMPK_GETSTARSTUDENTS = HTTP_HOST + "/LiveCourse/getStarStudents";
-        /**获取战队pk  进步榜*/
+        /** 获取战队pk  进步榜 */
         public String URL_TEMPK_GETPROGRESSSTU = HTTP_HOST + "/LiveCourse/getProgressStudents";
-        /**获取战队成员信息**/
+        /** 获取战队成员信息 **/
         public String URL_TEAMPK_GETTEAMMATES = HTTP_HOST + "/LiveCourse/getStudentInfoInTeam";
 
         /** 文科表扬榜 */
@@ -259,6 +259,8 @@ public class LiveVideoSAConfig {
         /** 储存学生直播在线时长(App端) https://wiki.xesv5.com/pages/viewpage.action?pageId=13838543 */
         public String URL_LIVE_STU_ONLINE_TIME = HTTP_HOST + "/LiveCourse/saveStuPlanOnlineTime";
 
+        /** 集体发言二期，上传语音文本 http://wiki.xesv5.com/pages/viewpage.action?pageId=18553425 */
+        public String URL_UPLOAD_SPEECH_MSG = HTTP_HOST + "/LiveCourses/uploadSpeechMsg";
 
         /** 文科学生对老师评价 */
         public String URL_LIVE_ARTS_EVALUATE_TEACHER = "https://app.arts.xueersi.com/LiveCourse/submitStuEvaluateTeacher";
@@ -279,5 +281,7 @@ public class LiveVideoSAConfig {
         public String URL_LIVE_GET_BIG_TEST_RESULT = HTTP_HOST + "/LiveExam/getStuInteractionResult";
     }
 
+    /** 出门测表扬榜 */
+    public static final String URL_LIVE_PRAISE_TUTOR_LIST = LiveVideoConfig.APP_ARTS_HTTP_HOST +"/LivePraise/getPraiseData";
 
 }

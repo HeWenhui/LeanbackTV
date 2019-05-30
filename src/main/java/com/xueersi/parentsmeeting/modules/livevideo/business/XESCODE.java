@@ -1,6 +1,11 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business;
 
 public interface XESCODE {
+    /** 开启 */
+    String ON = "on";
+    /** 关闭 */
+    String OFF = "off";
+
     /** 发红包 */
     int READPACAGE = 101;
     /** 禁言 */
@@ -144,6 +149,8 @@ public interface XESCODE {
 
     /** 老师点赞 */
     int TEACHER_PRAISE = 236;
+    /** 老师点赞-集体发言 */
+    int TEACHER_VOICE_PRAISE = 274;
     /** 战队pk，未知类型237 */
     int TEAMPK_237 = 237;
 
@@ -190,7 +197,8 @@ public interface XESCODE {
 
     /** 发送语音弹幕 */
     int XCR_ROOM_DANMU_SEND = 261;
-
+    /** 发送集体发言 */
+    int XCR_ROOM_SPEECH_COLL = 273;
     /** 语文：开启/关闭语音弹幕 */
     int XCR_ROOM_CHINESE_DANMU_OPEN = 290;
 
@@ -217,6 +225,18 @@ public interface XESCODE {
     /**nb 加试实验 学生提交成功**/
     int NB_ADDEXPERIMENT_SUBMIT_SUCCESS = 311;
 
+
+    /** 辅导老师发题 */
+    int QUESTION_TUTOR = 315;
+
+    /** 辅导老师 表扬榜on */
+    int TUTOR_ROOM_PRAISE_OPEN = 400;
+    /** 辅导老师 表扬榜 发送点赞数 */
+    int TUTOR_ROOM_PRAISE_SENT_LIKE = 401;
+    /** 辅导老师 表扬-点赞 */
+    int TUTOR_ROOM_PRAISE_LIKE = 402;
+    /** 辅导老师 表扬- 点赞总数*/
+    int TUTOR_ROOM_PRAISE_LIKE_TOTAL = 403;
 
     /** 2018接麦 */
     interface AgoraChat {

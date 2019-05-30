@@ -413,6 +413,17 @@ public class LiveBackPlayerFragment extends BasePlayerFragment implements VideoV
         playNewVideo();
     }
 
+    @Override
+    public void setVideoStatus(int code, int status, String values) {
+
+    }
+
+    @Override
+    public int onVideoStatusChange(int code, int status) {
+        return 0;
+    }
+
+
     protected void updateRefreshImage() {
         FooterIconEntity footerIconEntity = mShareDataManager.getCacheEntity(FooterIconEntity.class, false,
                 ShareBusinessConfig.SP_EFFICIENT_FOOTER_ICON, ShareDataManager.SHAREDATA_NOT_CLEAR);

@@ -89,7 +89,8 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
     private String newCourseTestIdSec = null;
     /** 语文AI主观题AI接口*/
     private String subjectiveItem2AIUrl;
-
+    /** 辅导态 */
+    private boolean isTUtor = false;
     public String getSubjectiveItem2AIUrl() {
         return subjectiveItem2AIUrl;
     }
@@ -294,5 +295,12 @@ public class VideoQuestionLiveEntity extends BaseVideoQuestionEntity {
 
     public void setDotType(int dotType) {
         this.dotType = dotType;
+    }
+    public boolean isTUtor() {
+        return isTUtor;
+    }
+
+    public void setTUtor(boolean TUtor) {
+        isTUtor = TUtor;
     }
 }

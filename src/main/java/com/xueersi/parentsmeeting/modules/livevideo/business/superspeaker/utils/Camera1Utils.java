@@ -74,6 +74,10 @@ public class Camera1Utils implements IRecordVideoView {
                 camera = Camera.open(cameraInfo.facing);
             }
         }
+        //魅族手机如果禁止权限，不会再次申请权限。
+        if (camera == null) {
+            return false;
+        }
 //        Camera camera = Camera.open(MediaRecorder.VideoSource.CAMERA);
 //        camera = Camera.open(isFacingBack ? Camera.CameraInfo.CAMERA_FACING_BACK : Camera.CameraInfo.CAMERA_FACING_FRONT);
         try {
@@ -189,6 +193,9 @@ public class Camera1Utils implements IRecordVideoView {
 //    }
     @Override
     public boolean startRecordVideo() {
+        if (camera == null) {
+            return false;
+        }
 //        camera.release();
         volum = volumSum = volumNum = 0;
         mediarecorder = new MediaRecorder();// 创建mediarecorder对象

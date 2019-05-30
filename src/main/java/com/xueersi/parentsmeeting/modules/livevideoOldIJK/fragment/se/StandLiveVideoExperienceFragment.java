@@ -58,10 +58,12 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.learnfeedb
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.livemessage.StandExperienceMessageBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.recommodcourse.StandExperienceRecommondBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.understand.StandExperienceUnderstandBll;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.StandExperienceEnglishH5PlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.question.business.StandExperienceQuestionPlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.stablelog.PlayErrorCodeLog;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;
+import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 
 import org.greenrobot.eventbus.EventBus;
@@ -462,6 +464,18 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
             public void startPlayVideo() {
 
             }
+
+            @Override
+            public void setVideoStatus(int code, int status, String values) {
+
+            }
+
+            @Override
+            public int onVideoStatusChange(int code, int status) {
+                return 0;
+            }
+
+
         });
         ProxUtil.getProxUtil().put(activity, ActivityChangeLand.class, this);
         initBusiness();

@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.web;
 
 import android.content.Context;
 
+import com.airbnb.lottie.AssertUtil;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.MimeTypeMap;
 import com.tencent.smtt.sdk.WebView;
@@ -18,8 +19,8 @@ public class GroupCourseCache extends NewCourseCache {
     private File mMorecacheout;
     private boolean newCourse;
 
-    public GroupCourseCache(Context mContext, String liveId, boolean newCourse) {
-        super(mContext, liveId, "99999");
+    public GroupCourseCache(Context mContext, String liveId, String testid, boolean newCourse) {
+        super(mContext, liveId, testid);
         this.newCourse = newCourse;
         mMorecacheout = new File(todayLiveCacheDir, liveId + "artschild");
     }
@@ -35,13 +36,13 @@ public class GroupCourseCache extends NewCourseCache {
             try {
                 String extension = MimeTypeMap.getFileExtensionFromUrl(s.toLowerCase());
                 String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
-                inputStream = mContext.getAssets().open("fangzhengcuyuan.ttf");
+                inputStream = AssertUtil.open("fangzhengcuyuan.ttf");
                 WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "", new WrapInputStream(mContext, inputStream));
                 webResourceResponse.setResponseHeaders(header);
                 logger.d("shouldInterceptRequest:Bold.ttf");
                 return webResourceResponse;
 //            return inputStream;
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 logger.d("shouldInterceptRequest", e);
             }

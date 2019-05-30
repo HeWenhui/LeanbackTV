@@ -22,6 +22,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.airbnb.lottie.AssertUtil;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
 import com.airbnb.lottie.OnCompositionLoadedListener;
@@ -1131,9 +1132,9 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
             InputStream inputStream = null;
             try {
                 if (isMe) {
-                    inputStream = mContext.getAssets().open("live_stand/lottie/voice_answer/team_right/img_11.png");
+                    inputStream = AssertUtil.open("live_stand/lottie/voice_answer/team_right/img_11.png");
                 } else {
-                    inputStream = mContext.getAssets().open("live_stand/lottie/voice_answer/team_right/img_1.png");
+                    inputStream = AssertUtil.open("live_stand/lottie/voice_answer/team_right/img_1.png");
                 }
                 Bitmap headBack = BitmapFactory.decodeStream(inputStream);
                 Bitmap creatBitmap = Bitmap.createBitmap(headBack.getWidth(), headBack.getHeight(), Bitmap.Config.ARGB_8888);
@@ -1151,7 +1152,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                 canvas.drawText(name, headBack.getWidth() / 2 - width / 2, headBack.getHeight() / 2 + paint.measureText("a") / 2, paint);
                 lottieAnimationView.updateBitmap("image_1", creatBitmap);
                 headBack.recycle();
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             } finally {
                 if (inputStream != null) {
@@ -1173,7 +1174,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                         Bitmap headBitmap = GlideDrawableUtil.getBitmap(drawable, mLogtf, "updateHead", student.getAvatar_path());
                         InputStream inputStream = null;
                         try {
-                            inputStream = mContext.getAssets().open("live_stand/lottie/voice_answer/team_right/img_2.png");
+                            inputStream = AssertUtil.open("live_stand/lottie/voice_answer/team_right/img_2.png");
                             Bitmap headBack = BitmapFactory.decodeStream(inputStream);
                             Bitmap creatBitmap = Bitmap.createBitmap(headBack.getWidth(), headBack.getHeight(), Bitmap.Config.ARGB_8888);
                             Canvas canvas = new Canvas(creatBitmap);
@@ -1190,7 +1191,7 @@ public class VoiceAnswerStandPager extends BaseVoiceAnswerPager {
                             scalHeadBitmap.recycle();
                             lottieAnimationView.updateBitmap("image_2", creatBitmap);
                             headBack.recycle();
-                        } catch (IOException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         } finally {
                             if (inputStream != null) {

@@ -3,6 +3,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.question.web;
 import android.content.Context;
 import android.util.Log;
 
+import com.airbnb.lottie.AssertUtil;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.business.LogToFile;
@@ -181,10 +182,10 @@ public class WebInstertJs {
     public InputStream indexStream() {
         InputStream inputStream = null;
         try {
-            inputStream = context.getAssets().open("webview_postmessage/index.js");
+            inputStream = AssertUtil.open("webview_postmessage/index.js");
             return new WrapInputStream(context, inputStream);
 //            return inputStream;
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;

@@ -464,6 +464,18 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
             public void startPlayVideo() {
 
             }
+
+            @Override
+            public void setVideoStatus(int code, int status, String values) {
+
+            }
+
+            @Override
+            public int onVideoStatusChange(int code, int status) {
+                return 0;
+            }
+
+
         });
         ProxUtil.getProxUtil().put(activity, ActivityChangeLand.class, this);
         initBusiness();
@@ -594,7 +606,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
                 mIsLand.get());
     }
 
-    private void playNewVideo(Uri uri, String mSectionName) {
+    public void playNewVideo(Uri uri, String mSectionName) {
         liveBackVideoBll.playNewVideo(uri, mSectionName);
     }
 

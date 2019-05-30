@@ -1122,6 +1122,25 @@ public class LiveHttpManager extends BaseHttpBusiness {
         sendPost(liveVideoSAConfigInner.URL_LIVE_GET_HONOR_LIST, params, requestCallBack);
     }
 
+
+    public void getPraoseTutorList(String rankId, String liveId, String courseId, String counselorId, HttpCallBack
+            requestCallBack) {
+
+        HttpRequestParams params = new HttpRequestParams();
+        setDefaultParameter(params);
+//        liveId = "373963";
+//        courseId = "49568";
+//        counselorId = "2632";
+//        rankId = "1";
+        params.addBodyParam("rankId", rankId);
+        params.addBodyParam("liveId", liveId);
+        params.addBodyParam("courseId", courseId);
+        params.addBodyParam("counselorId", counselorId);
+
+
+        sendPost(LiveVideoSAConfig.URL_LIVE_PRAISE_TUTOR_LIST, params, requestCallBack);
+    }
+
     /**
      * 获取计算小超市榜
      *
@@ -1409,20 +1428,21 @@ public class LiveHttpManager extends BaseHttpBusiness {
 
     /**
      * 投票 能量
-     *
-     * @param liveId
+     *  @param liveId
      * @param teamId
      * @param classId
      * @param stuId
+     * @param releaseId
      * @param requestCallBack
      */
     public void addPersonAndTeamEnergy(String liveId, int addEnergy, String teamId, String classId, String stuId,
-                                       HttpCallBack requestCallBack) {
+                                       String releaseId, HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("addEnergy", addEnergy + "");
+        params.addBodyParam("releaseId", releaseId + "");
         setDefaultParameter(params);
         sendPost(liveVideoSAConfigInner.URL_TEMPK_ADDPERSONANDTEAMENERGY + "/" + liveId, params, requestCallBack);
     }

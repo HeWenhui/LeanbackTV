@@ -7,6 +7,8 @@ import android.support.annotation.RequiresApi;
 
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
+import com.xueersi.parentsmeeting.modules.livevideo.R;
 import com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.ISuperSpeakerContract;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 
@@ -30,11 +32,20 @@ public class SuperSpeakerPermissionPager extends SuperSpeakerCameraPager {
 
                         @Override
                         public void onDeny(String permission, int position) {
-
+                            if (position == 0) {
+                                UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715018));
+                            } else {
+                                UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715020));
+                            }
                         }
 
                         @Override
                         public void onGuarantee(String permission, int position) {
+                            if (position == 0) {
+                                UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715019));
+                            } else if (position == 1) {
+                                UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1715021));
+                            }
                             logger.i("permission = " + permission + " position = " + position);
                             performStartPreView(isFacingBack);
                         }
