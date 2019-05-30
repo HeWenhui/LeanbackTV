@@ -111,6 +111,7 @@ public class TeamPkStateLayout extends FrameLayout {
         tvOtherTeamEnergy = findViewById(R.id.tv_teampk_pkstate_otherteam_energy);
         tvCoin = findViewById(R.id.tv_teampk_pkstate_coin_num);
         pkProgressBar.setMaxProgress(100);
+        pkProgressBar.setMaxProgress(50);
         this.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
