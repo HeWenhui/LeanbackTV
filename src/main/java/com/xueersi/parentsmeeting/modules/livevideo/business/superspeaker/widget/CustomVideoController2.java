@@ -1,10 +1,13 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.widget;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Point;
 import android.support.constraint.ConstraintLayout;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -234,6 +237,50 @@ public class CustomVideoController2 extends ConstraintLayout implements ILocalVi
                 CustomVideoController2.this.startPlayVideo(path, 0);
                 iPlayer.setVideoView(mVideoView);
                 iPlayer.startPlayVideo(path, 0);
+            }
+
+            @Override
+            public void onVideoSizeChanged(int width, int height) {
+//                super.onVideoSizeChanged(width, height);
+                if (width > 0 && height > 0) {
+                    ViewGroup.LayoutParams layoutParams = mVideoView.getLayoutParams();
+                    if (layoutParams != null) {
+
+                        try {
+                            Display defaultDisplay = ((Activity) getContext()).getWindowManager().getDefaultDisplay();
+
+                            Point point = new Point();
+                            defaultDisplay.getSize(point);
+                            int screenWidth = point.y;
+                            int screenHeight = point.x;
+                            logger.i("screenWidth = " + screenWidth + " screenHeight = " + screenHeight);
+                            if (screenWidth < screenHeight) {
+                                int a = screenHeight;
+                                screenHeight = screenWidth;
+                                screenWidth = a;
+                            }
+                            double dw = screenHeight * 1.0 / height;
+                            double dh = screenWidth * 1.0 / width;
+                            double dd = dw > dh ? dh : dw;
+                            logger.i("dd = " + dd);
+                            layoutParams.width = (int) (width * dd);
+                            layoutParams.height = (int) (height * dd);
+                            mVideoView.setLayoutParams(layoutParams);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            logger.e(e);
+                        }
+
+                    }
+                }
+
+
+                //窗口的宽度
+//                int screenWidth = dm.widthPixels;
+
+                //窗口高度
+//                int screenHeight = dm.heightPixels;
+//                int screenWidth =
             }
         });
         logger.i("startPlayVideo 设置 VideoView");

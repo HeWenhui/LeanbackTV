@@ -2,6 +2,7 @@ package com.xueersi.parentsmeeting.modules.livevideo.speechcollective.dialog;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Handler;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
@@ -40,13 +41,27 @@ public class SpeechStartDialog extends BaseAlertDialog {
         tip.setText("老师开启了集体发言\n" +
                 "踊跃参与吧！");
 //        SpeechQueueDialog.getInstance().showDialog(this);
-        showDialog(false, true);
+        showDialog(false, false);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                getAlertDialog().cancel();
+            }
+        }, 3000);
     }
 
     public void setSop() {
         tip.setText("老师结束了集体发言");
-        showDialog(false, true);
+        showDialog(false, false);
 //        SpeechQueueDialog.getInstance().showDialog(this);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                getAlertDialog().cancel();
+            }
+        }, 3000);
     }
 
 }

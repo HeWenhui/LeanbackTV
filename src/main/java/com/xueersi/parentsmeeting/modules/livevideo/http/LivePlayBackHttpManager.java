@@ -136,7 +136,7 @@ public class LivePlayBackHttpManager extends BaseHttpBusiness {
                 params.addBodyParam("liveId", classId);
                 params.addBodyParam("type", type);
                 params.addBodyParam("isRight", isRight ? "1" : "0");
-                params.addBodyParam("isPlayBack", "1");
+                params.addBodyParam("isPlayBack", "2");
                 params.addBodyParam("isSubmit", isSubmit);
                 params.addBodyParam("voiceUrl", "");
                 params.addBodyParam("voiceTime", "" + voiceTime);
