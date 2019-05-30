@@ -1,4 +1,4 @@
-package com.xueersi.parentsmeeting;
+package com.xueersi.parentsmeeting.modules.livevideo;
 
 import android.app.Activity;
 import android.content.Context;
@@ -9,7 +9,6 @@ import com.xueersi.common.util.LoadCallback;
 import com.xueersi.common.util.LoadFileCallBack;
 import com.xueersi.common.util.LoadFileUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.activity.LiveVideoLoadActivity;
 import com.xueersi.ui.dataload.DataLoadEntity;
 import com.xueersi.ui.dataload.DataLoadManager;
 
