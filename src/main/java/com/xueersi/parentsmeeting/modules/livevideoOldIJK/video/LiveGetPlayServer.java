@@ -219,7 +219,7 @@ public class LiveGetPlayServer {
                 try {
                     JSONObject object = new JSONObject(result);
                     PlayServerEntity server = mHttpResponseParser.parsePlayerServer(object);
-                    if (server != null && server.getPlayserver() != null && server.getPlayserver().size() > 0) {
+                    if (server != null) {
                         s += ",code=" + server.getCode();
                         if (server.getCode() == 200) {
                             liveGetPlayTime = 0;
