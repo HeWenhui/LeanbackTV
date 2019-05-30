@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/COLOR_01B2FC"
+    android:background="@color/COLOR_000000"
     tools:ignore="MissingConstraints,NotSibling">
 
     <SurfaceView
@@ -175,6 +175,7 @@
         app:layout_constraintBottom_toTopOf="@id/iv_livevideo_super_speaker_record_video_stop"
         app:layout_constraintLeft_toLeftOf="@id/iv_livevideo_super_speaker_record_video_stop"
         app:layout_constraintRight_toRightOf="@id/iv_livevideo_super_speaker_record_video_stop" />
+
     <com.xueersi.parentsmeeting.widget.FangZhengCuYuanTextView
         android:id="@id/tv_livevideo_super_speaker_record_video_stop"
         style="@style/style_livevideo_super_speaker_shadow"
