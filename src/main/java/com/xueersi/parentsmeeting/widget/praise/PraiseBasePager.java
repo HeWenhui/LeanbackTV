@@ -249,6 +249,9 @@ public class PraiseBasePager extends LiveBasePager {
     protected void setReslutType() {
         if (mPraiseEntity.getPraiseType() == PraiseConfig.PRAISE_TYPE_TALK) {
             tvSubTitle.setVisibility(View.GONE);
+        } else {
+            tvSubTitle.setVisibility(View.VISIBLE);
+
         }
     }
 
