@@ -71,7 +71,7 @@ public class LiveAssetsLoadUtil {
                 //XESToastUtils.showToast(context, "加载成功");
                 mDataLoadEntity.webDataSuccess();
                 DataLoadManager.newInstance().loadDataStyle(context, mDataLoadEntity);
-                UmsAgentManager.umsAgentDebug(context, ModuleHandler.TAG, "直播加载assets 成功");
+                UmsAgentManager.umsAgentDebug(context, TAG, "直播加载assets 成功");
                 callback.success();
             }
 
@@ -95,7 +95,7 @@ public class LiveAssetsLoadUtil {
                 if (!planB("livevdieo", context)) {
                     XESToastUtils.showToast(context, "加载失败,  请重试");
                 }
-                UmsAgentManager.umsAgentDebug(context, ModuleHandler.TAG, "直播加载assets 失败！");
+                UmsAgentManager.umsAgentDebug(context,TAG, "直播加载assets 失败！");
                 mDataLoadEntity.webDataSuccess();
                 DataLoadManager.newInstance().loadDataStyle(context, mDataLoadEntity);
 
