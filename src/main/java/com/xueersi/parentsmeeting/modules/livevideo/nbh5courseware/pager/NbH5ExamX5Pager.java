@@ -825,7 +825,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
             if(refreshTimes < LOCAL_RES_LOAD_TRY_TIMES){
                 WebResourceResponse webResourceResponse = newCourseCache.shouldInterceptRequest(webView, url);
                 if (webResourceResponse != null) {
-                    Log.e("nbTrac","======>X5Pager_InterceptRequest_new called:"+"======>返回本地资源："+url);
+                    //Log.e("nbTrac","======>X5Pager_InterceptRequest_new called:"+"======>返回本地资源："+url);
                     logger.d("shouldInterceptRequest:url=" + url);
                     return webResourceResponse;
                 }
