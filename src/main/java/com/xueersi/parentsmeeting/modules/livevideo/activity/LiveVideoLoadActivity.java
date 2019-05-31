@@ -241,6 +241,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         finish();
                         return;
                     }
+                    MediaPlayer.setIsNewIJK(true);
                     // 语文半身直播 暂不支持观看
                   /*  if (isChineseHalfBodyLive(mGetInfo)) {
                         XESToastUtils.showToast(LiveVideoLoadActivity.this, "语文半身直播暂不支持,请升级版本");
@@ -286,6 +287,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         list.add(PermissionConfig.PERMISSION_CODE_CAMERA);
                         gotoHalfBodyChinese(bundle, list);
                     } else {
+
                         if (MediaPlayer.getIsNewIJK()) {
                             com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                         } else {
