@@ -20,6 +20,7 @@ import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
+import com.xueersi.common.route.module.ModuleHandler;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.common.util.LoadCallback;
 import com.xueersi.common.util.LoadFileCallBack;
@@ -29,6 +30,7 @@ import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
+import com.xueersi.parentsmeeting.modules.livevideo.LiveAssetsLoadUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.PreloadStaticStorage;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
@@ -126,9 +128,9 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
             @Override
             public void progress(float progress, int type) {
-                if(type==0){
+                if (type == 0) {
                     mDataLoadEntity.setProgressTip("加载中" + (int) (progress) + "%");
-                }else{
+                } else {
                     mDataLoadEntity.setProgressTip("解压中...");
                 }
                 mDataLoadEntity.beginLoading();
@@ -139,7 +141,10 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
             @Override
             public void fail(int errorCode, String errorMsg) {
-                XESToastUtils.showToast(LiveVideoLoadActivity.this, "加载失败，请重试");
+                if (!LiveAssetsLoadUtil.planB("livevdieo", LiveVideoLoadActivity.this)) {
+                    XESToastUtils.showToast(LiveVideoLoadActivity.this, "加载失败,  请重试");
+                }
+                UmsAgentManager.umsAgentDebug(LiveVideoLoadActivity.this, ModuleHandler.TAG, "直播加载assets 失败,内部0 ！");
             }
         });
 
