@@ -75,6 +75,9 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
     public void onTopic(LiveTopic liveTopic, JSONObject jsonObject, boolean modeChange) {
         logger.i("onTopic: jsonObject= " + jsonObject.toString());
         this.liveTopic = liveTopic;
+        if (LiveTopic.MODE_TRANING.equals(liveTopic.getMode())) {
+            return;
+        }
         if (liveTopic.getMainRoomstatus().isOpenVoiceBarrage()) {
             if (liveTopic.getMainRoomstatus().getVoiceBarrageCount() == voiceBarrageCount) {
                 return;
@@ -99,6 +102,9 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
         logger.i("onNotice: jsonObject= " + data.toString());
+        if (liveTopic != null && LiveTopic.MODE_TRANING.equals(liveTopic.getMode())) {
+            return;
+        }
         switch (type) {
             case XESCODE.XCR_ROOM_OPEN_VOICEBARRAGE: {
                 //开启/关闭弹幕
