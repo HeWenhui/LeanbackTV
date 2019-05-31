@@ -11,6 +11,7 @@ import com.xueersi.common.util.LoadCallback;
 import com.xueersi.common.util.LoadFileCallBack;
 import com.xueersi.common.util.LoadFileUtils;
 import com.xueersi.lib.framework.utils.XESToastUtils;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.widget.DataLoadManager;
 import com.xueersi.ui.dataload.DataLoadEntity;
 
@@ -26,26 +27,8 @@ public class LiveAssetsLoadUtil {
 
 
         //服务端获取
-        DownLoadFileInfo downLoadInfo = AppBll.getInstance().getDownLoadFileByFileName("assets.zip");
-        DownLoadFileInfo info = null;
-        if (downLoadInfo != null) {
-            info = downLoadInfo;
-        }
+        DownLoadFileInfo info = LiveVideoConfig.getDownLoadFileInfo();
         mDataLoadEntity = new DataLoadEntity(context);
-        if (info == null) {
-            info = new DownLoadFileInfo();
-            info.fileName = "assets.zip";
-            info.fileMD5 = "f94553e8a25d47d107f81fccade5cbcb";
-            info.fileType = 0;
-            info.fileUrl = "https://xeswxapp.oss-cn-beijing.aliyuncs.com/Android/asserts/livevideo/assets.zip";
-            info.needManualDownload = true;
-            info.id = 0;
-        }
-
-       // if (AppConfig.DEBUG) {
-            info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
-        //}
-
         LoadFileUtils.loadFileFromServer(context, info, new LoadFileCallBack() {
 
             @Override
