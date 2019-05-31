@@ -8,11 +8,12 @@ import android.view.View;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.business.sharebusiness.http.downloadAppfile.entity.DownLoadFileInfo;
-import com.xueersi.common.config.AppConfig;
+import com.xueersi.common.permission.XesPermission;
+import com.xueersi.common.permission.config.PermissionConfig;
 import com.xueersi.common.route.module.ModuleManager;
-import com.xueersi.common.util.LoadCallback;
 import com.xueersi.common.util.LoadFileCallBack;
 import com.xueersi.common.util.LoadFileUtils;
+import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.widget.DataLoadManager;
@@ -22,6 +23,12 @@ import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
 import java.util.HashMap;
 import java.util.Map;
 
+
+/**
+ * 直播 加载 工具类
+ *
+ * @author shixiaoqiang
+ */
 public class LiveAssetsLoadUtil {
 
 
@@ -36,6 +43,11 @@ public class LiveAssetsLoadUtil {
      */
     public static void loadAssertsResource(final Activity context, final LoadFileCallBack callback) {
 
+
+        if(!XesPermission.checkPermissionNoAlert(ContextManager.getApplication(), PermissionConfig.PERMISSION_CODE_STORAGE)){
+            XESToastUtils.showToast(context,"请检查存储权限");
+            return;
+        }
 
         //服务端获取
         DownLoadFileInfo info = LiveVideoConfig.getDownLoadFileInfo();
