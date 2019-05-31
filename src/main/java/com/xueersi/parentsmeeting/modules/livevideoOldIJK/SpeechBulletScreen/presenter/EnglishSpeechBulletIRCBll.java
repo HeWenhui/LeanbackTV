@@ -79,9 +79,6 @@ public class EnglishSpeechBulletIRCBll extends LiveBaseBll implements TopicActio
             return;
         }
         if (liveTopic.getMainRoomstatus().isOpenVoiceBarrage()) {
-            if (liveTopic.getMainRoomstatus().getVoiceBarrageCount() == voiceBarrageCount) {
-                return;
-            }
             voiceBarrageCount = liveTopic.getMainRoomstatus().getVoiceBarrageCount();
             if (englishSpeechBulletView != null) {
                 mHandler.post(new Runnable() {
