@@ -32,7 +32,6 @@ import com.tal.speech.speechrecognizer.ResultEntity;
 import com.tal.speech.speechrecognizer.SpeechEvaluatorInter;
 import com.tal.speech.speechrecognizer.SpeechParamEntity;
 import com.tal.speech.utils.SpeechUtils;
-import com.tal.speech.utils.SpeechEvaluatorUtils;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.sharedata.ShareDataManager;
@@ -1228,21 +1227,21 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
         switch (curSubModEva) {
             case RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA:
                 //走英语离线测评
-                logger.i(TAG+"走英语离线测评");
+                mLogtf.i(TAG+"走英语离线测评");
                 mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
                 mIse.setLanguage(com.tal.speech.speechrecognizer.Constants.ASSESS_PARAM_LANGUAGE_EN);
 
                 break;
             case RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA:
                 //走语文离线测评
-                logger.i(TAG+"走语文离线测评");
+                mLogtf.i(TAG+"走语文离线测评");
                 mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
                 mIse.setLanguage(com.tal.speech.speechrecognizer.Constants
                         .ASSESS_PARAM_LANGUAGE_CH);
                 break;
             default:
                 //默认走英语离线测评
-                logger.i(TAG+"走英语离线测评");
+                mLogtf.i(TAG+"走英语离线测评");
                 mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
                 mIse.setLanguage(com.tal.speech.speechrecognizer.Constants.ASSESS_PARAM_LANGUAGE_EN);
                 break;
@@ -1257,10 +1256,13 @@ public class RolePlayerPager extends LiveBasePager<RolePlayerEntity> {
         param.setMultRef(false);
         param.setPcm(true);
         param.setRecogType(SpeechConfig.SPEECH_ENGLISH_EVALUATOR_OFFLINE);
+
+        mLogtf.i("multi_roleplay_new_sdk_onBeginOfSpeech:"+spechMsg);
         mIse.startRecog(param,new RoleEvaluatorListener() {
             @Override
             public void onBeginOfSpeech() {
                 logger.i( "开始测评");
+                mLogtf.i("multi_roleplay_new_sdk_onBeginOfSpeech");
                 vwvSpeechVolume.start();
             }
 
