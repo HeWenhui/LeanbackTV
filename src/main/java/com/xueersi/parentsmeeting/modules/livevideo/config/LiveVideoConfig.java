@@ -2,10 +2,13 @@ package com.xueersi.parentsmeeting.modules.livevideo.config;
 
 import android.os.Environment;
 
+import com.xueersi.common.base.XueErSiRunningEnvironment;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.sharebusiness.http.downloadAppfile.entity.DownLoadFileInfo;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.EnglishH5Entity;
+import com.xueersi.common.util.LoadFileUtils;
+import com.xueersi.lib.framework.are.RunningEnvironment;
 
 import java.util.HashMap;
 
@@ -502,11 +505,7 @@ public class LiveVideoConfig {
     public static final String SUPER_SPEAKER_VIDEO_PATH = Environment.getExternalStorageDirectory() + "/parentsmeeting/livevideo/superSpeaker/";
 
     public static DownLoadFileInfo getDownLoadFileInfo(){
-        DownLoadFileInfo downLoadInfo = AppBll.getInstance().getDownLoadFileByFileName("assets.zip");
-        DownLoadFileInfo info = null;
-        if (downLoadInfo != null) {
-            info = downLoadInfo;
-        }
+        DownLoadFileInfo info = AppBll.getInstance().getDownLoadFileByFileName("assets.zip");
         if (info == null) {
             info = new DownLoadFileInfo();
             info.fileName = "assets.zip";
@@ -517,6 +516,12 @@ public class LiveVideoConfig {
             info.id = 0;
         }
         info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+
+        /*if (XueErSiRunningEnvironment.debug) {
+            info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        } else {
+            info.dirPath  = LoadFileUtils.geCacheFile(RunningEnvironment.sAppContext, "downloadAssets").getAbsolutePath();
+        }*/
         return info;
     }
 
