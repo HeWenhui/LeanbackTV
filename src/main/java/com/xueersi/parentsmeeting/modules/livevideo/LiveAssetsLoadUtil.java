@@ -98,12 +98,12 @@ public class LiveAssetsLoadUtil {
     public static boolean planB(String name, final Context context) {
 
         int count = 0;
-        if (ModuleManager.failModule.get(name) == null) {
+        if (failModule.get(name) == null) {
 
-            ModuleManager.failModule.put(name, 1);
+            failModule.put(name, 1);
         } else {
             count = (int) ModuleManager.failModule.get(name);
-            ModuleManager.failModule.put(name, count + 1);
+            failModule.put(name, count + 1);
         }
 
         if (count + 1 > 6) {
