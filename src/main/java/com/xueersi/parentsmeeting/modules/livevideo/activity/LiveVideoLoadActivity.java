@@ -140,7 +140,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
 
             @Override
             public void fail(int errorCode, String errorMsg) {
-                if (!LiveAssetsLoadUtil.planB("livevedio", LiveVideoLoadActivity.this)) {
+                if (!LiveAssetsLoadUtil.planB("livevdieo", LiveVideoLoadActivity.this)) {
                     XESToastUtils.showToast(LiveVideoLoadActivity.this, "加载失败,  请重试");
                 }
             }

@@ -88,7 +88,7 @@ public class LiveAssetsLoadUtil {
             @Override
             public void fail(int errorCode, String errorMsg) {
 
-                if (!planB("livevedio", context)) {
+                if (!planB("livevdieo", context)) {
                     XESToastUtils.showToast(context, "加载失败,  请重试");
                 }
                 mDataLoadEntity.webDataSuccess();
