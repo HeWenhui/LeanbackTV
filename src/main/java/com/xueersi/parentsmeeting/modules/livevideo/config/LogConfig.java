@@ -41,4 +41,6 @@ public class LogConfig {
     public static String LIVE_GAME_VOICE = "live_game_voice";
     /** 直播崩溃上传 */
     public static String LIVE_CRASH_UPLOAD = "live_crash_upload";
+    /** 直播IRC的onMessage */
+    public static String LIVE_IRC_ONMESSAGE= "live_irc_message";
 }
