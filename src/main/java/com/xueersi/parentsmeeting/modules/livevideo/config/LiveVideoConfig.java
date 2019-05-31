@@ -8,7 +8,9 @@ import com.xueersi.common.business.sharebusiness.http.downloadAppfile.entity.Dow
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.EnglishH5Entity;
 import com.xueersi.common.util.LoadFileUtils;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.RunningEnvironment;
+import com.xueersi.parentsmeeting.modules.livevideo.LiveAssetsLoadUtil;
 
 import java.util.HashMap;
 
@@ -489,7 +491,7 @@ public class LiveVideoConfig {
 
     public static final String URL_IS_GOLD_MICROPHONE = "https://app.chs.xueersi.com/LiveCourse/setGoldMicrophoneData";
 
-   /**NB加试实验**/
+    /**NB加试实验**/
     public static String URL_NB_LOGIN = "https://live.xueersi.com/science/LiveExam/stuLoginNB";
     /**上传NB 实验答题结果 **/
     public static String URL_NB_RESULT_UPLOAD = "https://live.xueersi.com/science/LiveExam/receiveNBResult";
@@ -516,6 +518,8 @@ public class LiveVideoConfig {
             info.id = 0;
         }
         info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+
+        UmsAgentManager.umsAgentDebug(RunningEnvironment.sAppContext, LiveAssetsLoadUtil.TAG, "assets message:" + info.toString());
 
         /*if (XueErSiRunningEnvironment.debug) {
             info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();

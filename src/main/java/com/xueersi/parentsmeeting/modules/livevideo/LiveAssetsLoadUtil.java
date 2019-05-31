@@ -10,9 +10,11 @@ import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.business.sharebusiness.http.downloadAppfile.entity.DownLoadFileInfo;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
+import com.xueersi.common.route.module.ModuleHandler;
 import com.xueersi.common.route.module.ModuleManager;
 import com.xueersi.common.util.LoadFileCallBack;
 import com.xueersi.common.util.LoadFileUtils;
+import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
@@ -38,14 +40,16 @@ public class LiveAssetsLoadUtil {
      */
     public static Map failModule = new HashMap<String, Integer>();
 
+    public static String TAG = "LiveAssetsLoadUtil";
+
     /**
      * 加载assert 文件
      */
     public static void loadAssertsResource(final Activity context, final LoadFileCallBack callback) {
 
 
-        if(!XesPermission.checkPermissionNoAlert(ContextManager.getApplication(), PermissionConfig.PERMISSION_CODE_STORAGE)){
-            XESToastUtils.showToast(context,"请检查存储权限");
+        if (!XesPermission.checkPermissionNoAlert(ContextManager.getApplication(), PermissionConfig.PERMISSION_CODE_STORAGE)) {
+            XESToastUtils.showToast(context, "请检查存储权限");
             return;
         }
 
@@ -67,7 +71,7 @@ public class LiveAssetsLoadUtil {
                 //XESToastUtils.showToast(context, "加载成功");
                 mDataLoadEntity.webDataSuccess();
                 DataLoadManager.newInstance().loadDataStyle(context, mDataLoadEntity);
-
+                UmsAgentManager.umsAgentDebug(context, TAG, "直播加载assets 成功");
                 callback.success();
             }
 
@@ -91,6 +95,7 @@ public class LiveAssetsLoadUtil {
                 if (!planB("livevdieo", context)) {
                     XESToastUtils.showToast(context, "加载失败,  请重试");
                 }
+                UmsAgentManager.umsAgentDebug(context,TAG, "直播加载assets 失败！");
                 mDataLoadEntity.webDataSuccess();
                 DataLoadManager.newInstance().loadDataStyle(context, mDataLoadEntity);
 
@@ -131,13 +136,14 @@ public class LiveAssetsLoadUtil {
                     String channel = "allapk";
                     AppBll.getInstance().startUpdateApp(ShareBusinessConfig.URL_UPDATE_GET_NEW_APP + "?channel='" + channel + "'", 1,
                             null);
+                    UmsAgentManager.umsAgentDebug(context, TAG, "直播降级方案启动");
                 }
             });
 
             dialog.setCancelBtnListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    UmsAgentManager.umsAgentDebug(context, TAG, "直播降级方案取消");
                 }
             });
 
