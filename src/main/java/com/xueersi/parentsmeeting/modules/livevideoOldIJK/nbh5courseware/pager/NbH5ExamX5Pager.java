@@ -787,6 +787,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
         @Override
         public WebResourceResponse shouldInterceptRequest(WebView webView, WebResourceRequest request) {
             String url = request.getUrl() + "";
+            Log.e("nbTrac","======>X5Pager_InterceptRequest_old:"+url);
             if (url.contains(NB_COURSE_WARE_URL_KEY_WORD) || url.contains(".html")) {
                 if (!jsInserted) {
                     jsInserted = true;
@@ -808,6 +809,7 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
             }
 
             if (url.contains(WebInstertJs.indexStr())) {
+                Log.e("nbTrac","======>X5Pager_InterceptRequest_old_insertJs called:");
                 WebResourceResponse webResourceResponse = newCourseCache.interceptJsRequest(webView, url);
                 logger.d("shouldInterceptRequest:js:url=" + url + ",response=null?" + (webResourceResponse == null));
                 if (webResourceResponse != null) {
@@ -824,11 +826,10 @@ public class NbH5ExamX5Pager extends BaseWebviewX5Pager implements NbH5PagerActi
             }
 
             //拦截资源请求，提供本地资源
-            Log.e("NbH5ExamPager","======>shouldInterceptRequest：refreshTimes="+refreshTimes);
             if(refreshTimes < LOCAL_RES_LOAD_TRY_TIMES){
                 WebResourceResponse webResourceResponse = newCourseCache.shouldInterceptRequest(webView, url);
                 if (webResourceResponse != null) {
-                    Log.e("NbH5ExamPager","======>返回本地资源："+url);
+                    Log.e("nbTrac","======>返回本地资源："+url);
                     logger.d("shouldInterceptRequest:url=" + url);
                     return webResourceResponse;
                 }

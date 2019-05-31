@@ -1208,12 +1208,12 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                         if (mIse != null) {
                             mIse.cancel();
                         }
-                        uploadAliCloud();
                         handler.removeCallbacks(stopTimerRunnable);
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 submitData(false);
+                                uploadAliCloud();
                             }
                         }, 1000);
                     }
@@ -1262,8 +1262,8 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
                 if (mIse != null) {
                     mIse.cancel();
                 }
-                uploadAliCloud();
                 submitData(false);
+                uploadAliCloud();
             }
         };
 
@@ -1324,7 +1324,7 @@ public class GroupGameNativePager extends BaseCoursewareNativePager implements B
 
         private void uploadAliCloud() {
             if (saveVideoFile != null) {
-                groupGameUpload.uploadWonderMoment(saveVideoFile, content.toString(), 0);
+                groupGameUpload.uploadWonderMoment(saveVideoFile, content.toString(), userAnswer.toString(), 0);
             }
         }
     }
