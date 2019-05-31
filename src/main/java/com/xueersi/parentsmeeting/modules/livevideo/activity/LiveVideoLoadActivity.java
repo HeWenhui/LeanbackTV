@@ -286,6 +286,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         list.add(PermissionConfig.PERMISSION_CODE_CAMERA);
                         gotoHalfBodyChinese(bundle, list);
                     } else {
+
                         if (MediaPlayer.getIsNewIJK()) {
                             com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                         } else {

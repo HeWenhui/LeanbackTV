@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -167,9 +168,17 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
             public void onCompletion(Object o, AudioPlayerManager audioPlayerManager) {
                 logger.i( "完成播放");
                 mIsPlaying = false;
-                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3_lan);
-                vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
-                tvMessageContent.setTextColor(Color.parseColor("#4E5BC1"));
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        //如果是子线程的回调，会报出异常Only the original thread that created a view hierarchy can touch its views.
+                        ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3_lan);
+                        vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
+                        tvMessageContent.setTextColor(Color.parseColor("#4E5BC1"));
+                        //speechPhoneScore();
+                    }
+                });
+
                 //speechPhoneScore();
             }
 
@@ -178,7 +187,7 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
                 super.onStop(dataSource, manager);
                 logger.i( "停止播放");
                 mIsPlaying = false;
-                new Handler().post(new Runnable() {
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
                     public void run() {
                         //如果是子线程的回调，会报出异常Only the original thread that created a view hierarchy can touch its views.
@@ -194,16 +203,28 @@ public class RolePlayerStandMachineSelfItem extends RolePlayerItem {
             public void onPreparing(Object dataSource, AudioPlayerManager manager) {
                 logger.i( "准备播放");
                 mIsPlaying = true;
-                tvMessageContent.setTextColor(Color.WHITE);
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        tvMessageContent.setTextColor(Color.WHITE);
+                    }
+                });
+
             }
 
             @Override
             public void onError(String msg, Object dataSource, AudioPlayerManager manager) {
                 super.onError(msg, dataSource, manager);
                 mIsPlaying = false;
-                ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3_lan);
-                vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
-                tvMessageContent.setTextColor(Color.parseColor("#4E5BC1"));
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        ivVoiceAnimtor.setBackgroundResource(R.drawable.yuyin_zuo_huifang_3_lan);
+                        vVoiceMain.setBackgroundResource(R.drawable.selector_live_roleplayer_self_item_bubble);
+                        tvMessageContent.setTextColor(Color.parseColor("#4E5BC1"));
+                    }
+                });
+
                 //speechPhoneScore();
             }
 
