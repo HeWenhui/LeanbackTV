@@ -2,6 +2,8 @@ package com.xueersi.parentsmeeting.modules.livevideo.config;
 
 import android.os.Environment;
 
+import com.xueersi.common.business.AppBll;
+import com.xueersi.common.business.sharebusiness.http.downloadAppfile.entity.DownLoadFileInfo;
 import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.entity.EnglishH5Entity;
 
@@ -498,5 +500,24 @@ public class LiveVideoConfig {
     public static final String SUPER_SPEAKER_SUBMIT_SPEECH_SHOW = "https://app.chs.xueersi.com/LiveCourse/submitSpeechShow";
     /** 超级演讲秀存储视频的地方 */
     public static final String SUPER_SPEAKER_VIDEO_PATH = Environment.getExternalStorageDirectory() + "/parentsmeeting/livevideo/superSpeaker/";
+
+    public static DownLoadFileInfo getDownLoadFileInfo(){
+        DownLoadFileInfo downLoadInfo = AppBll.getInstance().getDownLoadFileByFileName("assets.zip");
+        DownLoadFileInfo info = null;
+        if (downLoadInfo != null) {
+            info = downLoadInfo;
+        }
+        if (info == null) {
+            info = new DownLoadFileInfo();
+            info.fileName = "assets.zip";
+            info.fileMD5 = "0026c20e191b4adab347af523fc1e62c";
+            info.fileType = 0;
+            info.fileUrl = "https://xeswxapp.oss-cn-beijing.aliyuncs.com/Android/asserts/livevideo/1.0.1/assets.zip";
+            info.needManualDownload = true;
+            info.id = 0;
+        }
+        info.dirPath = Environment.getExternalStorageDirectory().getAbsolutePath();
+        return info;
+    }
 
 }
