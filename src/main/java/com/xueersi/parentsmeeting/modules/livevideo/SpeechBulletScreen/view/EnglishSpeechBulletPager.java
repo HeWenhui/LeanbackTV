@@ -288,8 +288,6 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         tvSpeechbulSend = mView.findViewById(R.id.tv_livevideo_speechbul_send);
         rlSpeechbulInputContent = mView.findViewById(R.id.rl_livevideo_speechbul_input);
         rlSpeechbulTips = mView.findViewById(R.id.rl_livevideo_speechbul_tips);
-
-        rlSpeechBulRoot.setClickable(true);
         int colors[] = {0x19FFA63C, 0x32FFA63C, 0x64FFC12C, 0x96FFC12C, 0xFFFFA200};
         vwvSpeechbulWave.setColors(colors);
         vwvSpeechbulWave.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
@@ -372,7 +370,8 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
         } else {
             loadJuniorSkin();
         }
-        showSpeechRecog = ShareDataManager.getInstance().getBoolean(SpeechEvaluatorUtils.RECOG_RESULT, false,
+        ShareDataManager sdm = ShareDataManager.getInstance();
+        showSpeechRecog = sdm.getBoolean(SpeechEvaluatorUtils.RECOG_RESULT, false,
                 ShareDataManager.SHAREDATA_USER);
         if (!showSpeechRecog) {
             XESToastUtils.showToast(mContext, "设备状态暂不支持语音录入，请打字发言");
@@ -556,6 +555,12 @@ public class EnglishSpeechBulletPager extends LiveBasePager implements EnglishSp
             }
         });
 
+        rlSpeechBulRoot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                KeyboardUtil.hideKeyboard(rlSpeechBulRoot);
+            }
+        });
     }
 
     private Runnable setTipsGoneRunnable = new Runnable() {
