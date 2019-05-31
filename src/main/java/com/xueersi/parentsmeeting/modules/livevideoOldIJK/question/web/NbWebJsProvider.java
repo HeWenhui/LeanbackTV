@@ -24,6 +24,7 @@ public class NbWebJsProvider {
 
     @JavascriptInterface
     public final void postMessage(String data) {
+        Log.e("nbTrac","======>postMessage_old:"+data);
         try {
             JSONObject jsonObject = new JSONObject(data);
             JSONObject msgObj = jsonObject.optJSONObject("message");
