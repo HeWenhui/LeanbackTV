@@ -37,6 +37,10 @@ public class LiveAssetsLoadUtil {
     public static DataLoadEntity mDataLoadEntity;
 
     public static String TAG = "LiveAssetsLoadUtil";
+    /**
+     * 失败次数
+     */
+    public static Map failModule = new HashMap<String, Integer>();
 
     /**
      * 加载assert 文件
@@ -91,7 +95,7 @@ public class LiveAssetsLoadUtil {
                 if (!planB("livevdieo", context)) {
                     XESToastUtils.showToast(context, "加载失败,  请重试");
                 }
-                UmsAgentManager.umsAgentDebug(context,TAG, "直播加载assets 失败！");
+                UmsAgentManager.umsAgentDebug(context, TAG, "直播加载assets 失败！");
                 mDataLoadEntity.webDataSuccess();
                 DataLoadManager.newInstance().loadDataStyle(context, mDataLoadEntity);
 
@@ -111,12 +115,12 @@ public class LiveAssetsLoadUtil {
     public static boolean planB(String name, final Context context) {
 
         int count = 0;
-        if (ModuleManager.failModule.get(name) == null) {
+        if (failModule.get(name) == null) {
 
-            ModuleManager.failModule.put(name, 1);
+            failModule.put(name, 1);
         } else {
-            count = (int) ModuleManager.failModule.get(name);
-            ModuleManager.failModule.put(name, count + 1);
+            count = (int) failModule.get(name);
+            failModule.put(name, count + 1);
         }
 
         if (count + 1 > 6) {
