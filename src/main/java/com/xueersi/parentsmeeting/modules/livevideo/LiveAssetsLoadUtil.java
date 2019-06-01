@@ -110,8 +110,8 @@ public class LiveAssetsLoadUtil {
                     HashMap<String, String> map = new HashMap<>();
                     map.put("logtype", "fail");
                     map.put("downtime", "" + (System.currentTimeMillis() - starttime));
-                    map.put("errorCode", "errorCode");
-                    map.put("errorMsg", "errorMsg");
+                    map.put("errorCode", "" + errorCode);
+                    map.put("errorMsg", "" + errorMsg);
                     String times = "0";
                     if (failModule.get("livevdieo") != null) {
                         times = "" + failModule.get("livevdieo");
