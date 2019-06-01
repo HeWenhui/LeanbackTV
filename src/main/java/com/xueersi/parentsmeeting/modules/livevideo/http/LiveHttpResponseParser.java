@@ -28,6 +28,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassChestEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.ClassmateEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.CoursewareInfoEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.DeviceDetectionEntity;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.EvaluateContent;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.FeedBackEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.GoldTeamStatus;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.HalfBodyLiveStudyInfo;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LearnReportEntity;
@@ -2424,5 +2426,57 @@ public class LiveHttpResponseParser extends HttpResponseParser {
             }
         }
         return evenDriveEntity;
+    }
+
+    public FeedBackEntity parseFeedBackContent(ResponseEntity responseEntity) {
+        FeedBackEntity feedBackEntity = null;
+        JSONObject jsonObject = (JSONObject) responseEntity.getJsonObject();
+        if(jsonObject !=null) {
+           JSONObject mainJson =  jsonObject.optJSONObject("evluateConf");
+           if (mainJson ==null || mainJson.optInt("evaluateIsOpen") !=1) {
+               return null ;
+           }
+            feedBackEntity = new FeedBackEntity();
+            feedBackEntity.setHaveTutor(mainJson.optInt("isHavecounselor")==1);
+            feedBackEntity.setHaveInput(mainJson.optInt("isHaveInput")==1);
+            JSONObject contentjson = mainJson.optJSONObject("evaluateContent");
+            if(contentjson ==null) {
+                return null;
+            }
+            JSONObject teacherJson = contentjson.optJSONObject("teacherEvaluOption");
+            if (teacherJson == null) {
+                return null;
+            }
+            parseFeedbackContent(teacherJson.optJSONArray("choose1"),true,feedBackEntity.getMainContentList());
+            parseFeedbackContent(teacherJson.optJSONArray("choose2"),false,feedBackEntity.getMainContentList());
+            parseFeedbackContent(teacherJson.optJSONArray("choose3"),false,feedBackEntity.getMainContentList());
+            JSONObject tutorJson = contentjson.optJSONObject("tutorEvaluOption");
+            if (teacherJson != null) {
+                parseFeedbackContent(tutorJson.optJSONArray("choose1"),true,feedBackEntity.getTutorContentList());
+                parseFeedbackContent(tutorJson.optJSONArray("choose2"),false,feedBackEntity.getTutorContentList());
+                parseFeedbackContent(tutorJson.optJSONArray("choose3"),false,feedBackEntity.getTutorContentList());
+            }
+
+        }
+
+        return feedBackEntity;
+    }
+    private void  parseFeedbackContent(JSONArray jsonArray, boolean isFirst,
+                                                        List<List<EvaluateContent>> contentList){
+
+        if(jsonArray ==null || jsonArray.length()==0) {
+            return ;
+        }
+        List<EvaluateContent> list = new ArrayList<>();
+        EvaluateContent content = null;
+        for (int i = 0; i < jsonArray.length(); i++) {
+            content = new EvaluateContent();
+            content.setText(jsonArray.optString(i));
+            if(isFirst && i==0) {
+                content.setSelectFlag(true);
+            }
+            list.add(content);
+        }
+         contentList.add(list);
     }
 }

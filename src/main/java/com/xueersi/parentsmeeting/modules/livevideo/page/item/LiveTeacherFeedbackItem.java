@@ -13,6 +13,7 @@ import com.airbnb.lottie.OnCompositionLoadedListener;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.EvaluateContent;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveMessageEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.StandLiveHeadView;
 import com.xueersi.ui.adapter.AdapterItemInterface;
@@ -25,7 +26,7 @@ import com.xueersi.ui.adapter.ViewHolder;
  * @author linyuqiang
  * @date 2018/5/10
  */
-public class LiveTeacherFeedbackItem implements RItemViewInterface<String> {
+public class LiveTeacherFeedbackItem implements RItemViewInterface<EvaluateContent> {
 
     TextView tvFeedBack;
 
@@ -39,7 +40,7 @@ public class LiveTeacherFeedbackItem implements RItemViewInterface<String> {
     }
 
     @Override
-    public boolean isShowView(String item, int position) {
+    public boolean isShowView(EvaluateContent item, int position) {
         return true;
     }
 
@@ -49,7 +50,7 @@ public class LiveTeacherFeedbackItem implements RItemViewInterface<String> {
     }
 
     @Override
-    public void convert(ViewHolder holder, String s, int position) {
-        tvFeedBack.setText(s);
+    public void convert(ViewHolder holder, EvaluateContent evaluateContent, int position) {
+        tvFeedBack.setText(evaluateContent.getText());
     }
 }

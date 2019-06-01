@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <ImageView
         android:id="@id/iv_pager_live_teacher_feedback_title"
         android:layout_width="wrap_content"
@@ -13,10 +14,10 @@
 
     <android.support.v4.widget.NestedScrollView
         android:id="@id/nsv_pager_live_teacher_feedback_content"
-        android:layout_below="@id/iv_pager_live_teacher_feedback_title"
-        android:layout_above="@id/iv_pager_live_teacher_feedback_submit"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_above="@id/ll_pager_live_teacher_feedback_bottom"
+        android:layout_below="@id/iv_pager_live_teacher_feedback_title"
         android:layout_marginTop="10dp">
 
         <LinearLayout
@@ -24,9 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:background="@color/white"
-            android:layout_marginBottom="20dp"
             android:orientation="vertical">
-
 
 
             <RelativeLayout
@@ -49,7 +48,7 @@
                     app:border_width="0dp" />
 
                 <TextView
-                    android:id="@id/iv_pager_live_teacher_feedback_main_name"
+                    android:id="@id/tv_pager_live_teacher_feedback_main_name"
                     android:layout_width="96dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="44dp"
@@ -64,7 +63,7 @@
                     android:layout_width="113dp"
                     android:layout_height="39dp"
                     android:layout_marginTop="26dp"
-                    android:layout_toRightOf="@id/iv_pager_live_teacher_feedback_main_name"
+                    android:layout_toRightOf="@id/tv_pager_live_teacher_feedback_main_name"
                     android:background="@drawable/bg_live_video_feedback_type1_selected"
                     android:scaleType="fitStart" />
 
@@ -94,9 +93,10 @@
                     android:layout_below="@id/iv_pager_live_teacher_feedback_main_status_1"
                     android:layout_marginTop="4dp"
                     android:layout_marginRight="20dp"
-                    android:layout_toRightOf="@id/iv_pager_live_teacher_feedback_main_name"
+                    android:layout_toRightOf="@id/tv_pager_live_teacher_feedback_main_name"
                     android:background="@drawable/bg_live_video_feedback_style1"
-                    android:paddingTop="20dp"/>
+                    android:paddingTop="20dp"
+                    android:visibility="gone" />
 
                 <EditText
                     android:id="@id/et_pager_live_teacher_feedback_main_input_text"
@@ -105,18 +105,20 @@
                     android:layout_below="@id/rv_pager_live_teacher_feedback_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginRight="20dp"
-                    android:layout_toRightOf="@id/iv_pager_live_teacher_feedback_main_name"
+                    android:layout_marginBottom="20dp"
+                    android:layout_toRightOf="@id/tv_pager_live_teacher_feedback_main_name"
                     android:background="@drawable/bg_corners_stroke_ccededff_solid_ccededff_radius_4"
                     android:gravity="top|left"
+                    android:hint="说说老师有那里可以改进的呢？"
                     android:paddingLeft="8dp"
                     android:paddingTop="8dp"
-                    android:textColorHint="@color/COLOR_8C8CA7"
                     android:paddingRight="22dp"
                     android:paddingBottom="8dp"
-                    android:hint="说说老师有那里可以改进的呢？"
                     android:text=""
                     android:textColor="@color/COLOR_5E5E7F"
-                    android:textSize="12sp" />
+                    android:textColorHint="@color/COLOR_8C8CA7"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -125,7 +127,8 @@
                 android:layout_marginLeft="43dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginRight="43dp"
-                android:background="@drawable/bg_corners_stroke_fff9f9ff_solid_fff9f9ff_radius_4">
+                android:background="@drawable/bg_corners_stroke_fff9f9ff_solid_fff9f9ff_radius_4"
+                android:visibility="gone">
 
                 <com.xueersi.ui.widget.CircleImageView
                     android:id="@id/iv_pager_live_teacher_feedback_tutor_head_image"
@@ -140,7 +143,7 @@
                     app:border_width="0dp" />
 
                 <TextView
-                    android:id="@id/iv_pager_live_teacher_feedback_tutor_name"
+                    android:id="@id/tv_pager_live_teacher_feedback_tutor_name"
                     android:layout_width="96dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="43dp"
@@ -155,7 +158,7 @@
                     android:layout_width="113dp"
                     android:layout_height="39dp"
                     android:layout_marginTop="26dp"
-                    android:layout_toRightOf="@id/iv_pager_live_teacher_feedback_tutor_name"
+                    android:layout_toRightOf="@id/tv_pager_live_teacher_feedback_tutor_name"
                     android:background="@drawable/bg_live_video_feedback_type1_selected"
                     android:scaleType="fitStart" />
 
@@ -185,9 +188,10 @@
                     android:layout_below="@id/iv_pager_live_teacher_feedback_tutor_status_1"
                     android:layout_marginTop="4dp"
                     android:layout_marginRight="20dp"
-                    android:layout_toRightOf="@id/iv_pager_live_teacher_feedback_tutor_name"
+                    android:layout_toRightOf="@id/tv_pager_live_teacher_feedback_tutor_name"
                     android:background="@drawable/bg_live_video_feedback_style1"
-                    android:paddingTop="20dp" />
+                    android:paddingTop="20dp"
+                    android:visibility="gone" />
 
                 <EditText
                     android:id="@id/et_pager_live_teacher_feedback_tutor_input_text"
@@ -196,31 +200,62 @@
                     android:layout_below="@id/rv_pager_live_teacher_feedback_tutor_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginRight="20dp"
-                    android:layout_toRightOf="@id/iv_pager_live_teacher_feedback_tutor_name"
+                    android:layout_marginBottom="20dp"
+                    android:layout_toRightOf="@id/tv_pager_live_teacher_feedback_tutor_name"
                     android:background="@drawable/bg_corners_stroke_ccededff_solid_ccededff_radius_4"
                     android:gravity="top|left"
+                    android:hint="说说老师有那里可以改进的呢？"
                     android:paddingLeft="8dp"
                     android:paddingTop="8dp"
-                    android:textColorHint="@color/COLOR_8C8CA7"
                     android:paddingRight="22dp"
                     android:paddingBottom="8dp"
-                    android:hint="说说老师有那里可以改进的呢？"
                     android:text=""
                     android:textColor="@color/COLOR_5E5E7F"
-                    android:textSize="12sp" />
+                    android:textColorHint="@color/COLOR_8C8CA7"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
             </RelativeLayout>
 
 
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
-    <ImageView
-        android:layout_alignParentBottom="true"
-        android:id="@id/iv_pager_live_teacher_feedback_submit"
-        android:layout_marginTop="20dp"
+    <LinearLayout
+        android:id="@id/ll_pager_live_teacher_feedback_bottom"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="19dp"
+        android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:background="@drawable/bg_live_video_feedback_submit" />
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@id/iv_pager_live_teacher_feedback_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_live_video_feedback_submit" />
+
+        <TextView
+            android:id="@id/tv_pager_live_teacher_feedback_bottom_submit_hint"
+            android:visibility="invisible"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            android:text="请输入文字建议或至少选择一个标签"
+            android:layout_width="wrap_content"
+            android:drawablePadding="2dp"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_live_video_feedback_submit_hint"
+            android:textColor="@color/COLOR_FB5E50"
+            android:textSize="10sp" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@id/iv_pager_live_teacher_feedback_close"
+        android:background="@drawable/ic_live_video_feedback_close"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_alignParentRight="true"
+        android:layout_width="24dp"
+        android:layout_height="24dp" />
 </RelativeLayout>
