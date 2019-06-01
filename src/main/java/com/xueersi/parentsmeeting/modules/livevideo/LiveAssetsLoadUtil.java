@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.view.View;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.business.sharebusiness.http.downloadAppfile.entity.DownLoadFileInfo;
@@ -18,6 +19,7 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.are.ContextManager;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.widget.DataLoadManager;
 import com.xueersi.ui.dataload.DataLoadEntity;
 import com.xueersi.ui.dialog.VerifyCancelAlertDialog;
@@ -57,9 +59,11 @@ public class LiveAssetsLoadUtil {
         DownLoadFileInfo info = LiveVideoConfig.getDownLoadFileInfo();
         mDataLoadEntity = new DataLoadEntity(context);
         LoadFileUtils.loadFileFromServer(context, info, new LoadFileCallBack() {
+            long starttime;
 
             @Override
             public void start() {
+                starttime = System.currentTimeMillis();
                 //XESToastUtils.showToast(context, "开始加载");
                 mDataLoadEntity.beginLoading();
                 DataLoadManager.newInstance().loadDataStyle(context, mDataLoadEntity);
@@ -71,7 +75,14 @@ public class LiveAssetsLoadUtil {
                 //XESToastUtils.showToast(context, "加载成功");
                 mDataLoadEntity.webDataSuccess();
                 DataLoadManager.newInstance().loadDataStyle(context, mDataLoadEntity);
-                UmsAgentManager.umsAgentDebug(context, TAG, "直播加载assets 成功");
+                try {
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put("logtype", "success");
+                    map.put("downtime", "" + (System.currentTimeMillis() - starttime));
+                    UmsAgentManager.umsAgentDebug(context, TAG, map);
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                }
                 callback.success();
             }
 
@@ -95,7 +106,21 @@ public class LiveAssetsLoadUtil {
                 if (!planB("livevdieo", context)) {
                     XESToastUtils.showToast(context, "加载失败,  请重试");
                 }
-                UmsAgentManager.umsAgentDebug(context, TAG, "直播加载assets 失败！");
+                try {
+                    HashMap<String, String> map = new HashMap<>();
+                    map.put("logtype", "fail");
+                    map.put("downtime", "" + (System.currentTimeMillis() - starttime));
+                    map.put("errorCode", "errorCode");
+                    map.put("errorMsg", "errorMsg");
+                    String times = "0";
+                    if (failModule.get("livevdieo") != null) {
+                        times = "" + failModule.get("livevdieo");
+                    }
+                    map.put("times", "" + times);
+                    UmsAgentManager.umsAgentDebug(context, TAG, map);
+                } catch (Exception e) {
+                    CrashReport.postCatchedException(new LiveException(TAG, e));
+                }
                 mDataLoadEntity.webDataSuccess();
                 DataLoadManager.newInstance().loadDataStyle(context, mDataLoadEntity);
 
