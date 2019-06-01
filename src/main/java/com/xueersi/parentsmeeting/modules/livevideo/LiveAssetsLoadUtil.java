@@ -50,7 +50,8 @@ public class LiveAssetsLoadUtil {
     public static void loadAssertsResource(final Activity context, final LoadFileCallBack callback) {
 
 
-        if (!XesPermission.checkPermissionNoAlert(ContextManager.getApplication(), PermissionConfig.PERMISSION_CODE_STORAGE)) {
+        if (!XesPermission.checkPermissionNoAlert(ContextManager.getApplication(), PermissionConfig
+                .PERMISSION_CODE_STORAGE)) {
             XESToastUtils.showToast(context, "请检查存储权限");
             return;
         }
@@ -151,7 +152,8 @@ public class LiveAssetsLoadUtil {
         if (count + 1 > 6) {
 
 
-            VerifyCancelAlertDialog dialog = new VerifyCancelAlertDialog(context, ((Activity) context).getApplication(), false,
+            VerifyCancelAlertDialog dialog = new VerifyCancelAlertDialog(context, ((Activity) context).getApplication
+                    (), false,
                     VerifyCancelAlertDialog.MESSAGE_VERIFY_CANCEL_TYPE);
 
             //dialog.initInfo("抱歉资源加载失败，是否更新APP ？");
@@ -159,7 +161,8 @@ public class LiveAssetsLoadUtil {
                 @Override
                 public void onClick(View v) {
                     String channel = "allapk";
-                    AppBll.getInstance().startUpdateApp(ShareBusinessConfig.URL_UPDATE_GET_NEW_APP + "?channel='" + channel + "'", 1,
+                    AppBll.getInstance().startUpdateApp(ShareBusinessConfig.URL_UPDATE_GET_NEW_APP + "?channel=" +
+                                    channel, 1,
                             null);
                     try {
                         HashMap<String, String> map = new HashMap<>();
@@ -188,7 +191,6 @@ public class LiveAssetsLoadUtil {
 
             dialog.initInfo("抱歉资源加载失败，是否更新APP ？", VerifyCancelAlertDialog.CANCEL_SELECTED).showDialog();
             return true;
-
         }
         return false;
     }
