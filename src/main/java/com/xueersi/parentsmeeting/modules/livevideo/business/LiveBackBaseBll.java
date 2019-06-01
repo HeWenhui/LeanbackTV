@@ -116,6 +116,10 @@ public class LiveBackBaseBll extends BaseBll {
 
     }
 
+    protected void onResume() {
+
+    }
+
     /**
      * activity onDestory
      */

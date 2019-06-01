@@ -23,7 +23,7 @@ import static android.view.View.GONE;
 
 /**
  * Created by ZhangYuansun on 2019/3/6
- *
+ * <p>
  * 小学理科 互动题结果页
  */
 public class PrimaryScienceAnserResultPager extends LiveBasePager {
@@ -61,7 +61,8 @@ public class PrimaryScienceAnserResultPager extends LiveBasePager {
 
     OnNativeResultPagerClose onNativeResultPagerClose;
 
-    public PrimaryScienceAnserResultPager(Context context, PrimaryScienceAnswerResultEntity enytity, int isGame, OnNativeResultPagerClose onNativeResultPagerClose) {
+    public PrimaryScienceAnserResultPager(Context context, PrimaryScienceAnswerResultEntity enytity, int isGame,
+                                          OnNativeResultPagerClose onNativeResultPagerClose) {
         super(context);
         this.mEnytity = enytity;
         this.isGame = isGame;
@@ -101,7 +102,8 @@ public class PrimaryScienceAnserResultPager extends LiveBasePager {
                 public void run() {
                     onNativeResultPagerClose.onClose();
                 }
-            },3000);
+            }, 3000);
+
         } else {
             mAdapter = new AnswerResultAdapter(mEnytity.getAnswerList());
             mRecycleView.setLayoutManager(new GridLayoutManager(mContext, 1, LinearLayoutManager.VERTICAL, false));
@@ -130,7 +132,8 @@ public class PrimaryScienceAnserResultPager extends LiveBasePager {
 
         @Override
         public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new AnswerViewHolder(View.inflate(parent.getContext(), R.layout.item_livevideo_primaryscience_answerresult_answerlist, null));
+            return new AnswerViewHolder(View.inflate(parent.getContext(), R.layout
+                    .item_livevideo_primaryscience_answerresult_answerlist, null));
         }
 
         @Override
@@ -165,7 +168,8 @@ public class PrimaryScienceAnserResultPager extends LiveBasePager {
             if (position == 0) {
                 vDashLine.setVisibility(GONE);
             } else {
-                RelativeLayout.LayoutParams dashLineLayoutParams = (RelativeLayout.LayoutParams) vDashLine.getLayoutParams();
+                RelativeLayout.LayoutParams dashLineLayoutParams = (RelativeLayout.LayoutParams) vDashLine
+                        .getLayoutParams();
                 if (data.getAmswerNumber() == 0) {
 
                     dashLineLayoutParams.width = SizeUtils.Dp2Px(mContext, 264);
@@ -202,11 +206,10 @@ public class PrimaryScienceAnserResultPager extends LiveBasePager {
     }
 
     private void startGameLottieAnimation() {
-        if (mEnytity.getType() < 0 || mEnytity.getType() >= jsonAssetsFolderGame.length) {
-            return;
-        }
-        lavActiveRight.setAnimation(jsonAssetsFolderGame[mEnytity.getType()]);
-        lavActiveRight.setImageAssetsFolder(imageAssetsFolderGame[mEnytity.getType()]);
+        String animScript = mEnytity.getType() == 1 ? jsonAssetsFolderGame[1] : jsonAssetsFolderGame[0];
+        String assetFolder = mEnytity.getType() == 1 ? imageAssetsFolderGame[1] : imageAssetsFolderGame[0];
+        lavActiveRight.setAnimation(animScript);
+        lavActiveRight.setImageAssetsFolder(assetFolder);
         lavActiveRight.setVisibility(View.VISIBLE);
         lavActiveRight.useHardwareAcceleration();
         lavActiveRight.loop(true);

@@ -10,6 +10,7 @@ import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.text.TextUtils;
 
+import com.airbnb.lottie.AssertUtil;
 import com.airbnb.lottie.LottieAnimationView;
 import com.xueersi.common.base.BaseApplication;
 import com.xueersi.common.util.FontCache;
@@ -63,7 +64,7 @@ public class ArtsAnswerErrorEnergyStateLottieEffectInfo extends LottieEffectInfo
         Bitmap resultBitMap = null;
         InputStream in = null;
         try {
-            in = context.getAssets().open(path);
+            in = AssertUtil.open(path);
             resultBitMap = BitmapFactory.decodeStream(in);
             in.close();
         } catch (Exception e) {

@@ -5,7 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LogToFile;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveEventBus;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.enteampk.event.ClassEndEvent;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.util.ProxUtil;

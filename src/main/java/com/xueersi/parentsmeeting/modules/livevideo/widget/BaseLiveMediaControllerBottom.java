@@ -188,6 +188,14 @@ public class BaseLiveMediaControllerBottom extends FrameLayout implements Contro
 
     }
 
+    @Override
+    public void setVideoStatus(int code, int status, String values) {
+
+    }
+
+
+
+
     /** 切换播放和暂停的样式 */
     @Override
     public void updatePausePlay(boolean isPlaying) {

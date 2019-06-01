@@ -11,6 +11,7 @@ import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 
+import com.airbnb.lottie.AssertUtil;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
@@ -103,7 +104,7 @@ public class PkDispatchTeamPager extends BasePager implements View.OnClickListen
         String result = null;
 
         try {
-            InputStream in = mContext.getAssets().open(assetPath);
+            InputStream in = AssertUtil.open(assetPath);
             reader = new BufferedReader(new InputStreamReader(in));
             String line = null;
             StringBuilder sb = new StringBuilder();
@@ -125,7 +126,7 @@ public class PkDispatchTeamPager extends BasePager implements View.OnClickListen
         Bitmap result = null;
 
         try {
-            InputStream in = mContext.getAssets().open(assetDir + File.separator + asssetName);
+            InputStream in = AssertUtil.open(assetDir + File.separator + asssetName);
             result = BitmapFactory.decodeStream(in);
             in.close();
         } catch (Exception e) {

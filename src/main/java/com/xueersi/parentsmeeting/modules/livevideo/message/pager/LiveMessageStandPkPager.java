@@ -27,6 +27,7 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.airbnb.lottie.AssertUtil;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.lib.framework.utils.ScreenUtils;
@@ -206,7 +207,7 @@ public class LiveMessageStandPkPager extends BaseLiveMessagePager {
             } else {
                 fileName = "live_stand/frame_anim/openmsg/message_open_00074.png";
             }
-            inputStream = mContext.getAssets().open(fileName);
+            inputStream = AssertUtil.open(fileName);
             Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
 //            bitmap.setDensity((int) (DisplayMetrics.DENSITY_MEDIUM * (FrameAnimation.IMAGE_HEIGHT / (float) com
 // .xueersi.parentsmeeting.util.ScreenUtils.getScreenHeight(mView.getContext()))));

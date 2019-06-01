@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.airbnb.lottie.AssertUtil;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieImageAsset;
@@ -59,7 +60,7 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
 
     public CourseGroupMyItem(Context context, TeamMemberEntity entity, WorkerThreadPool workerThread, int uid) {
         super(context, entity, workerThread, uid);
-        oldEnergy = entity.energy;
+        oldEnergy = entity.getEnergy();
         videoStartTime = System.currentTimeMillis();
         audioStartTime = System.currentTimeMillis();
     }
@@ -216,7 +217,7 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
     @Override
     public void updateViews(TeamMemberEntity entity, int position, Object objTag) {
         rlCourseItemName.setText(entity.name);
-        tvCourseItemFire.setText("" + entity.energy);
+        tvCourseItemFire.setText("" + entity.getEnergy());
         ImageLoader.with(ContextManager.getContext()).load(entity.headurl).into(ivCourseItemVideoHead);
         createBitmap6();
         createBitmap7Small();
@@ -239,8 +240,8 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
             if (bitmap6 != null && !bitmap6.isRecycled()) {
                 return;
             }
-            Bitmap bitmap7 = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_7.png"));
-            Bitmap bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_6.png"));
+            Bitmap bitmap7 = BitmapFactory.decodeStream(AssertUtil.open(lottieResPath + "/img_7.png"));
+            Bitmap bitmap = BitmapFactory.decodeStream(AssertUtil.open(lottieResPath + "/img_6.png"));
             Bitmap creatBitmap = Bitmap.createBitmap(bitmap7.getWidth(), bitmap7.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);
             canvas.drawBitmap(bitmap, (bitmap7.getWidth() - bitmap.getWidth()) / 2, (bitmap7.getHeight() - bitmap.getHeight()) / 2, null);
@@ -257,15 +258,15 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
             if (bitmap7Small != null && !bitmap7Small.isRecycled()) {
                 return;
             }
-            Bitmap bitmap6 = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_6.png"));
-            Bitmap bitmap = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_7.png"));
+            Bitmap bitmap6 = BitmapFactory.decodeStream(AssertUtil.open(lottieResPath + "/img_6.png"));
+            Bitmap bitmap = BitmapFactory.decodeStream(AssertUtil.open(lottieResPath + "/img_7.png"));
             Bitmap creatBitmap = Bitmap.createBitmap(bitmap6.getWidth(), bitmap6.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);
             canvas.drawBitmap(bitmap, (bitmap6.getWidth() - bitmap.getWidth()) / 2, (bitmap6.getHeight() - bitmap.getHeight()) / 2, null);
             bitmap.recycle();
             bitmap6.recycle();
             bitmap7Small = creatBitmap;
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -275,8 +276,8 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
             return;
         }
         try {
-            bitmap8 = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_8.png"));
-        } catch (IOException e) {
+            bitmap8 = BitmapFactory.decodeStream(AssertUtil.open(lottieResPath + "/img_8.png"));
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -286,8 +287,8 @@ public class CourseGroupMyItem extends BaseCourseGroupItem {
             return;
         }
         try {
-            bitmap9 = BitmapFactory.decodeStream(mContext.getAssets().open(lottieResPath + "/img_9.png"));
-        } catch (IOException e) {
+            bitmap9 = BitmapFactory.decodeStream(AssertUtil.open(lottieResPath + "/img_9.png"));
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -32,6 +32,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.airbnb.lottie.AssertUtil;
 import com.airbnb.lottie.ImageAssetDelegate;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieComposition;
@@ -557,7 +558,7 @@ public class TeamPkAwardPager extends TeamPkBasePager {
                 Bitmap reusltBitmap = null;
                 InputStream in = null;
                 try {
-                    in = mContext.getAssets().open(lottieResPath + lottieImageAsset.getFileName());
+                    in = AssertUtil.open(lottieResPath + lottieImageAsset.getFileName());
                     reusltBitmap = BitmapFactory.decodeStream(in);
                     in.close();
                 } catch (Exception e) {

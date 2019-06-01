@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.LruCache;
 
+import com.tencent.bugly.crashreport.CrashReport;
 import com.tencent.smtt.export.external.interfaces.WebResourceResponse;
 import com.tencent.smtt.sdk.MimeTypeMap;
 import com.tencent.smtt.sdk.WebView;
@@ -14,6 +15,7 @@ import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.lib.log.LoggerFactory;
 import com.xueersi.lib.log.logger.Logger;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveException;
 import com.xueersi.parentsmeeting.modules.livevideo.util.WebTrustVerifier;
 
 import java.io.File;
@@ -639,8 +641,12 @@ public class WebViewCache {
                 CacheWebViewLog.d(encode + " " + url);
                 WebResourceResponse webResourceResponse = new WebResourceResponse(mimeType, "", inputStream);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    if (header != null) {
-                        map.putAll(header);
+                    try {
+                        if (map != null && header != null) {
+                            map.putAll(header);
+                        }
+                    }catch (Exception e){
+                        CrashReport.postCatchedException(new LiveException(TAG,e));
                     }
                     webResourceResponse.setResponseHeaders(map);
                 }

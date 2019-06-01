@@ -149,8 +149,6 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
 
 
     private void attachToRootView() {
-        Log.e("TeamPkBll", "========> attachToRootView: " + Thread.currentThread().getId() + ":" +
-                mRootView);
         initData();
         rlTeamPkContent = new RelativeLayout(mActivity);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams
@@ -269,7 +267,6 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
      */
     public void startTeamSelect() {
         logger.e("====>startTeamSelect:");
-        Log.e("TeamPk", "========>getTeamInfo:" + mHttpManager + ":" + roomInitInfo);
 
         prepareSelcting = true;
 
@@ -294,7 +291,6 @@ public class ChinesePkBll extends LiveBaseBll implements NoticeAction, TopicActi
 
     public void stopTeamSelect() {
         if (mFocusPager != null && mFocusPager instanceof PkTeamSelectPager) {
-            Log.e("SoundPoolHelper", "=======> team");
             ((PkTeamSelectPager) mFocusPager).closeTeamSelectPager();
         } else if (mFocusPager != null && mFocusPager instanceof PkDispatchTeamPager) {
             ((PkDispatchTeamPager) mFocusPager).closeTeamSelectPager();

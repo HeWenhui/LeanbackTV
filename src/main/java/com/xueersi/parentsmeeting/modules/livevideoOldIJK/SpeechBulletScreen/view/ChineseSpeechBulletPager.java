@@ -400,7 +400,7 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
                     tvSpeechbulSend.setAlpha(1.0f);
                     tvSpeechbulCount.setAlpha(1.0f);
                 }
-                tvSpeechbulCount.setText(charSequence.toString().length() + "/15");
+                tvSpeechbulCount.setText(charSequence.toString().length() + "/25");
             }
 
             @Override
@@ -698,7 +698,7 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
     /**
      * ************************************************** 语音识别 **************************************************
      */
-    private final static String VOICE_RECOG_HINT = "语音录入中（15字以内）";
+    private final static String VOICE_RECOG_HINT = "语音录入中（25字以内）";
     private final static String VOICE_RECOG_NOVOICE_HINT = "没听清，请重说或切换";
 
     private int START = 1;
@@ -800,9 +800,9 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
                 }
             }
             content = content.replaceAll("。", "");
-            //语音录入，限制15字以内
-            if (content.length() > 15) {
-                content = content.substring(0, 15);
+            //语音录入，限制25字以内
+            if (content.length() > 25) {
+                content = content.substring(0, 25);
             }
             logger.i("=====speech evaluating" + content);
             if (isSpeechFinished) {
@@ -814,13 +814,13 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
             } else {
                 if (!TextUtils.isEmpty(content)) {
                     tvSpeechbulTitle.setText(content);
-                    tvSpeechbulTitleCount.setText("（" + content.length() + "/15）");
+                    tvSpeechbulTitleCount.setText("（" + content.length() + "/25）");
                     tvSpeechbulSwitch.setVisibility(View.GONE);
                     recoginzeStatus = RECOGNIZING;
                     mWeakHandler.removeCallbacks(pleaseSayAgainRunnable);
 
-                    //15字截停
-                    if (content.length() == 15) {
+                    //25字截停
+                    if (content.length() == 25) {
                         final String finalContent = content;
                         mWeakHandler.postDelayed(new Runnable() {
                             @Override
@@ -898,7 +898,7 @@ public class ChineseSpeechBulletPager extends LiveBasePager implements ScienceSp
         rlSpeechbulInputContent.setVisibility(View.VISIBLE);
         tvSpeechbulRepeat.setVisibility(View.VISIBLE);
         etSpeechbulWords.setText(evaluateResult);
-        tvSpeechbulCount.setText(evaluateResult.length() + "/15");
+        tvSpeechbulCount.setText(evaluateResult.length() + "/25");
         etSpeechbulWords.requestFocus();
         etSpeechbulWords.setSelection(etSpeechbulWords.getText().toString().length());
         tvSpeechbulSwitch.setVisibility(View.GONE);
