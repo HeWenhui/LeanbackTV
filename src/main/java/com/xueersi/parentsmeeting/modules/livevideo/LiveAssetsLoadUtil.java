@@ -35,10 +35,6 @@ public class LiveAssetsLoadUtil {
 
 
     public static DataLoadEntity mDataLoadEntity;
-    /**
-     * 失败次数
-     */
-    public static Map failModule = new HashMap<String, Integer>();
 
     public static String TAG = "LiveAssetsLoadUtil";
 
@@ -115,12 +111,12 @@ public class LiveAssetsLoadUtil {
     public static boolean planB(String name, final Context context) {
 
         int count = 0;
-        if (failModule.get(name) == null) {
+        if (ModuleManager.failModule.get(name) == null) {
 
-            failModule.put(name, 1);
+            ModuleManager.failModule.put(name, 1);
         } else {
             count = (int) ModuleManager.failModule.get(name);
-            failModule.put(name, count + 1);
+            ModuleManager.failModule.put(name, count + 1);
         }
 
         if (count + 1 > 6) {
