@@ -161,14 +161,28 @@ public class LiveAssetsLoadUtil {
                     String channel = "allapk";
                     AppBll.getInstance().startUpdateApp(ShareBusinessConfig.URL_UPDATE_GET_NEW_APP + "?channel='" + channel + "'", 1,
                             null);
-                    UmsAgentManager.umsAgentDebug(context, TAG, "直播降级方案启动");
+                    try {
+                        HashMap<String, String> map = new HashMap<>();
+                        map.put("logtype", "planBok");
+                        map.put("times", "" + failModule.get("livevdieo"));
+                        UmsAgentManager.umsAgentDebug(context, TAG, map);
+                    } catch (Exception e) {
+                        CrashReport.postCatchedException(new LiveException(TAG, e));
+                    }
                 }
             });
 
             dialog.setCancelBtnListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    UmsAgentManager.umsAgentDebug(context, TAG, "直播降级方案取消");
+                    try {
+                        HashMap<String, String> map = new HashMap<>();
+                        map.put("logtype", "planBcancle");
+                        map.put("times", "" + failModule.get("livevdieo"));
+                        UmsAgentManager.umsAgentDebug(context, TAG, map);
+                    } catch (Exception e) {
+                        CrashReport.postCatchedException(new LiveException(TAG, e));
+                    }
                 }
             });
 
