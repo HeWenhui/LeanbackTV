@@ -111,12 +111,13 @@ public class TeamPkHttp {
      * @param requestCallBack
      */
     public void addPersonAndTeamEnergy(String liveId, int addEnergy, String teamId, String classId, String stuId,
-                                       HttpCallBack requestCallBack) {
+                                       String releaseId,HttpCallBack requestCallBack) {
         HttpRequestParams params = new HttpRequestParams();
         params.addBodyParam("classId", classId);
         params.addBodyParam("teamId", teamId);
         params.addBodyParam("stuId", stuId);
         params.addBodyParam("addEnergy", addEnergy + "");
+        params.addBodyParam("releaseId", releaseId + "");
         liveHttpManager.setDefaultParameter(params);
         liveHttpManager.sendPost(liveHttpManager.getLiveVideoSAConfigInner().URL_TEMPK_ADDPERSONANDTEAMENERGY + "/" + liveId, params, requestCallBack);
     }
