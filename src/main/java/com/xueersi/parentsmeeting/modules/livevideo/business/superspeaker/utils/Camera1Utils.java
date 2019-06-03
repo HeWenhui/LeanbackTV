@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Camera1Utils implements IRecordVideoView {
 
     private Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
-    Camera.Size cameraSize = null;
+    private Camera.Size cameraSize = null;
     private MediaRecorder mediarecorder;// 录制视频的类
 
 //    private SurfaceView mSurfaceView;
@@ -330,6 +330,10 @@ public class Camera1Utils implements IRecordVideoView {
             logger.i("分贝值：" + db);
             mHandler.postDelayed(mUpdateMicStatusTimer, SPACE);
         }
+    }
+
+    public Camera.Size getCameraSize() {
+        return cameraSize;
     }
 
 }

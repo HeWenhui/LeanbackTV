@@ -1,9 +1,13 @@
 package com.xueersi.parentsmeeting.modules.livevideo.business.superspeaker.page;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Point;
+import android.hardware.Camera;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.constraint.Group;
+import android.view.Display;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -210,7 +214,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
             groupStop.setVisibility(View.GONE);
         }
         if (customVideoController2.getVisibility() != View.GONE) {
-            customVideoController2.setVisibility(View.GONE);
+            customVideoController2.setVisibility(View.INVISIBLE);
         }
         if (sfvVideo.getVisibility() != View.VISIBLE) {
             sfvVideo.setVisibility(View.VISIBLE);
@@ -415,12 +419,55 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
             logger.i(StorageUtils.videoUrl);
             if (camera1Utils.initCamera(isFacingBack, 1280, 720, StorageUtils.videoUrl)) {
                 initCamera = true;
+                //把视频按比例拉长
+                handleSize(camera1Utils.getCameraSize(), sfvVideo);
             } else {
                 initCamera = false;
             }
         }
     }
 
+    /**
+     * 按照相机的比例缩小放大这个View
+     *
+     * @param size
+     * @param view
+     */
+    private void handleSize(Camera.Size size, View view) {
+        if (size == null || view == null) return;
+        int width = size.width;
+        int height = size.height;
+        if (width > 0 && height > 0) {
+            ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+            if (layoutParams != null) {
+                try {
+                    Display defaultDisplay = ((Activity) mContext).getWindowManager().getDefaultDisplay();
+                    Point point = new Point();
+                    defaultDisplay.getSize(point);
+                    int screenWidth = point.y;
+                    int screenHeight = point.x;
+                    logger.i("screenWidth = " + screenWidth + " screenHeight = " + screenHeight);
+                    if (screenWidth < screenHeight) {
+                        int a = screenHeight;
+                        screenHeight = screenWidth;
+                        screenWidth = a;
+                    }
+                    double dw = screenHeight * 1.0 / height;
+                    double dh = screenWidth * 1.0 / width;
+                    double dd = dw > dh ? dh : dw;
+                    logger.i("dd = " + dd);
+                    layoutParams.width = (int) (width * dd);
+                    layoutParams.height = (int) (height * dd);
+                    view.setLayoutParams(layoutParams);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    logger.e(e);
+                }
+
+            }
+        }
+
+    }
 
     /***
      * 停止拍摄
@@ -466,7 +513,7 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                 subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean aBoolean) throws Exception {
-                        sfvVideo.setVisibility(View.GONE);
+                        sfvVideo.setVisibility(View.INVISIBLE);
                         customVideoController2.setVisibility(View.VISIBLE);
                         customVideoController2.startPlayVideo(StorageUtils.videoUrl, 0);
                     }
