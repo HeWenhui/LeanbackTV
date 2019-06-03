@@ -10,6 +10,7 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
 
+import com.airbnb.lottie.AssertUtil;
 import com.airbnb.lottie.LottieAnimationView;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.lib.log.LoggerFactory;
@@ -53,7 +54,7 @@ public class StandLiveLottieAnimationView extends LottieAnimationView {
         AssetManager manager = getContext().getAssets();
         Bitmap img_7Bitmap;
         try {
-            img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/lottie/jindu/img_9.png"));
+            img_7Bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/lottie/jindu/img_9.png"));
             Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);
             canvas.drawBitmap(img_7Bitmap, 0, 0, null);
@@ -83,8 +84,8 @@ public class StandLiveLottieAnimationView extends LottieAnimationView {
         AssetManager manager = getContext().getAssets();
         Bitmap img_7Bitmap;
         try {
-            img_7Bitmap = BitmapFactory.decodeStream(manager.open("live_stand/lottie/jindu/img_3.png"));
-//            Bitmap img_3Bitmap = BitmapFactory.decodeStream(manager.open("Images/jindu/img_3.png"));
+            img_7Bitmap = BitmapFactory.decodeStream(AssertUtil.open("live_stand/lottie/jindu/img_3.png"));
+//            Bitmap img_3Bitmap = BitmapFactory.decodeStream(AssertUtil.open("Images/jindu/img_3.png"));
             Bitmap creatBitmap = Bitmap.createBitmap(img_7Bitmap.getWidth(), img_7Bitmap.getHeight(), Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(creatBitmap);
             canvas.drawBitmap(img_7Bitmap, 0, 0, null);

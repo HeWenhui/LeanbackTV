@@ -25,7 +25,7 @@ import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.irc.jibble.pi
 import com.xueersi.parentsmeeting.modules.livevideo.config.EnglishPk;
 import com.xueersi.parentsmeeting.modules.livevideo.config.ShareDataConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveBll2;
-import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.LiveEventBus;
+import com.xueersi.parentsmeeting.modules.livevideo.core.LiveEventBus;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.MessageAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.NoticeAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.core.TopicAction;
@@ -998,6 +998,9 @@ public class EnTeamPkIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             @Override
             public void run() {
                 final VideoQuestionLiveEntity old = videoQuestionLiveEntity;
+                if (old.isTUtor()) {
+                    return;
+                }
                 if (old != null) {
                     videoQuestionLiveEntity = null;
                     if (pkTeamEntity != null) {

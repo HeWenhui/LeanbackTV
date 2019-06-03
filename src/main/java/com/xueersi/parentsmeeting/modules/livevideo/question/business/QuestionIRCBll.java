@@ -44,6 +44,9 @@ import com.xueersi.parentsmeeting.modules.livevideo.page.LiveBasePager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.create.LiveBigQueCreate;
 import com.xueersi.parentsmeeting.modules.livevideo.question.http.CourseWareHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.question.irc.QueIrcParse;
+import com.xueersi.parentsmeeting.widget.praise.PraisePager;
+import com.xueersi.parentsmeeting.widget.praise.business.OnPraisePageListener;
+import com.xueersi.parentsmeeting.widget.praise.entity.PraiseEntity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -68,12 +71,18 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
     private LiveAutoNoticeIRCBll mLiveAutoNoticeBll;
     //    private SpeechEvaluatorUtils mIse;
     private SpeechUtils mIse;
-    /** 置空roleplay，防止QuestionBll里为空，外面不为空 */
+    /**
+     * 置空roleplay，防止QuestionBll里为空，外面不为空
+     */
     private RolePlayEnd rolePlayActionEnd = new RolePlayEnd();
-    /** RolePlayer功能接口 */
+    /**
+     * RolePlayer功能接口
+     */
     private RolePlayAction rolePlayAction;
 
-    /** RolePlayer 人机功能接口 */
+    /**
+     * RolePlayer 人机功能接口
+     */
     private RolePlayMachineAction rolePlayMachineAction;
 
     private String Tag = "QuestionIRCBll";
@@ -105,9 +114,54 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
         questiongtype = Arrays.asList(ptTypeFilters);
     }
 
+    private void testPraise(RelativeLayout bottomContent){
+        String data = "{\"bizId\":2,\"rankTitle\":\"课清测试\",\"category\":1,\"grade\":1,\"rankType\":1,\"isInList\":1," +
+                "\"word\":\"粤语,you're as good as gold!\",\"desc\":\"口述题测试, 口述题测试口述题测试口述题测试" +
+                ", 口述题测试, 口述题测试, 口述题测试, 口述题测试, 口述题测试, " +
+                "口述题测试\",\"counselorName\":\"韩刚\",\"counselorAvatar\":\"https://xesfile.xesimg" +
+                ".com/web/2017/11/22/15113381801151.png\",\"list\":[{\"group\":\"课清全对\",\"stus\":[{\"stuId\":10045," +
+                "\"name\":\"测试账户1\",\"inList\":1},{\"stuId\":10046,\"name\":\"测试账户2\",\"inList\":0},{\"stuId\":10046," +
+                "\"name\":\"测试账户2\",\"inList\":0},{\"stuId\":10046,\"name\":\"测试账户2\",\"inList\":0},{\"stuId\":10046," +
+                "\"name\":\"测试账户2\",\"inList\":0},{\"stuId\":10046,\"name\":\"测试账户2\",\"inList\":0},{\"stuId\":10046," +
+                "\"name\":\"测试账户2\",\"inList\":0},{\"stuId\":10046,\"name\":\"测试账户2\",\"inList\":0},{\"stuId\":10046," +
+                "\"name\":\"测试账户2\",\"inList\":0},{\"stuId\":10046," +
+                "\"name\":\"测试账户2\",\"inList\":0},{\"stuId\":10047," +
+                "\"name\":\"测试账户3\",\"inList\":0}]},{\"group\":\"订正全对\",\"stus\":[{\"stuId\":10048," +
+                "\"name\":\"测试账户4\",\"inList\":0},{\"stuId\":10049,\"name\":\"测试账户5\",\"inList\":0},{\"stuId\":10049," +
+                "\"name\":\"测试账户5\",\"inList\":0},{\"stuId\":10049,\"name\":\"测试账户5\",\"inList\":0},{\"stuId\":10049," +
+                "\"name\":\"测试账户5\",\"inList\":0},{\"stuId\":10049,\"name\":\"测试账户5\",\"inList\":0},{\"stuId\":10049," +
+                "\"name\":\"测试账户5\",\"inList\":0},{\"stuId\":10049,\"name\":\"测试账户5\",\"inList\":0},{\"stuId\":10049," +
+                "\"name\":\"测试账户5\",\"inList\":0}]}]}";
+        PraiseEntity entity = null;
+        if (com.xueersi.common.config.AppConfig.DEBUG) {
+
+            ResponseEntity responseEntity = new ResponseEntity();
+            try {
+                responseEntity.setJsonObject(new JSONObject(data));
+                entity = getHttpResponseParser().parseTutorPraiseEntity(responseEntity);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (com.xueersi.common.config.AppConfig.DEBUG) {
+                PraisePager praisePager = new PraisePager(mContext, entity, new OnPraisePageListener() {
+                    @Override
+                    public void onPraiseClick(int num) {
+
+                    }
+
+                    @Override
+                    public void onPracticeClose() {
+
+                    }
+                }, bottomContent);
+                praisePager.showPraisePager(bottomContent);
+            }
+        }
+    }
     @Override
     public void initView(RelativeLayout bottomContent, AtomicBoolean isLand) {
         mQuestionAction.initView(bottomContent, isLand.get());
+  //     testPraise(bottomContent);
 //        if (com.xueersi.common.config.AppConfig.DEBUG) {
 //            com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity answerResultEntity = new com.xueersi.parentsmeeting.modules.livevideo.entity.AnswerResultEntity();
 //            answerResultEntity.isVoice = 1;
@@ -207,22 +261,23 @@ public class QuestionIRCBll extends LiveBaseBll implements NoticeAction, TopicAc
             ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA,
                     RolePlayConfig.VALUE_FOR_ENGLISH_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
         } else {
-            if (data.getIsArts() == 1) {
-                String[] subjectIds = data.getSubjectIds();
-                if (subjectIds != null) {
-                    for (int i = 0; i < subjectIds.length; i++) {
-                        String subjectId = subjectIds[i];
-                        if (LiveVideoConfig.SubjectIds.SUBJECT_ID_CH.equals(subjectId)) {
-                            mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
-                            mIse.setLanguage(Constants.ASSESS_PARAM_LANGUAGE_CH);
+            // 语文三分屏 或者 语文半身直播
+            if (data.getIsArts() == 2 || (data.getPattern() == 6 && data.getUseSkin() == 2)) {
+//                String[] subjectIds = data.getSubjectIds();
+//                if (subjectIds != null) {
+//                    for (int i = 0; i < subjectIds.length; i++) {
+//                        String subjectId = subjectIds[i];
+//                        if (LiveVideoConfig.SubjectIds.SUBJECT_ID_CH.equals(subjectId)) {
+                mIse = SpeechUtils.getInstance(mContext.getApplicationContext());
+                mIse.setLanguage(Constants.ASSESS_PARAM_LANGUAGE_CH);
 //                            mIse = new SpeechEvaluatorUtils(true, Constants.ASSESS_PARAM_LANGUAGE_CH);
-                            //记录当前正在走的模型，留给界面更新使用
-                            ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA,
-                                    RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
-                            break;
-                        }
-                    }
-                }
+                //记录当前正在走的模型，留给界面更新使用
+                ShareDataManager.getInstance().put(RolePlayConfig.KEY_FOR_WHICH_SUBJECT_MODEL_EVA,
+                        RolePlayConfig.VALUE_FOR_CHINESE_MODEL_EVA, ShareDataManager.SHAREDATA_NOT_CLEAR);
+//                            break;
+//                        }
+//                    }
+//                }
             }
         }
         mQuestionAction.setIse(mIse);

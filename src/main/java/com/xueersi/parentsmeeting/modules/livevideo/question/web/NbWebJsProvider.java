@@ -1,6 +1,5 @@
 package com.xueersi.parentsmeeting.modules.livevideo.question.web;
 
-import android.util.Log;
 import android.webkit.JavascriptInterface;
 
 import com.tencent.smtt.sdk.WebView;
@@ -24,7 +23,6 @@ public class NbWebJsProvider {
 
     @JavascriptInterface
     public final void postMessage(String data) {
-        Log.e("NbWebJsProvider","=====>postMessage:"+data);
         try {
             JSONObject jsonObject = new JSONObject(data);
             JSONObject msgObj = jsonObject.optJSONObject("message");
@@ -106,7 +104,6 @@ public class NbWebJsProvider {
 
     @JavascriptInterface
     public final void experimentResult(String data){
-        Log.e("NbWebJsProvider","=====>experimentResult:"+data);
         //本地结果页加载成功，回传 最高连对，金币数
         NbCourseEvent event = new NbCourseEvent(NbCourseEvent.EVENT_TYPE_RESULTPAGE_ONLOAD);
         event.setResponseStr(data);
@@ -132,7 +129,6 @@ public class NbWebJsProvider {
      */
     public void onTeachTakeUp(WebView webView){
         if(webView != null){
-            Log.e("NbWebJsProvider","=========>onTeachTakeUp 999999999");
             webView.loadUrl("javascript: onTeachTakeUp()");
         }
     }
@@ -145,6 +141,5 @@ public class NbWebJsProvider {
      */
     @JavascriptInterface
     public void onReceive(String jsonStr) {
-        Log.e("NbWebJsProvider","=========>sendMsgToNb:"+jsonStr);
     }
 }

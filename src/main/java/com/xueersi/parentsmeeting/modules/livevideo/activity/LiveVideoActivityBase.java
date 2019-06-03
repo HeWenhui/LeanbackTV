@@ -54,6 +54,7 @@ import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack.VPlay
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.module.videoplayer.ps.PSIJK;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.entity.VideoConfigEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.video.LivePlayLog;
 import com.xueersi.ui.dataload.DataLoadManager;
@@ -543,6 +544,7 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
 
         vPlayerHandler.sendEmptyMessage(OPEN_FILE);
     }
+
     /** 赋值视频名称 */
     public void setmDisplayName(String displayName) {
         this.mDisplayName = displayName;
@@ -705,6 +707,13 @@ public class LiveVideoActivityBase extends XesActivity implements LiveMediaContr
     }
 
     protected void onVideoCreateEnd() {
+
+    }
+
+    public void enableAutoSpeedPlay(VideoConfigEntity videoConfigEntity) {
+        if (vPlayer != null && videoConfigEntity != null) {
+            vPlayer.enableAutoSpeedPlay(videoConfigEntity.getWaterMark(), videoConfigEntity.getDuration());
+        }
 
     }
 

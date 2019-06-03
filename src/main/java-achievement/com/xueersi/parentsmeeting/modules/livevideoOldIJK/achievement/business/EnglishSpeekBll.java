@@ -16,6 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.airbnb.lottie.AssertUtil;
 import com.tal.speech.language.LanguageEncodeThread;
 import com.tal.speech.language.LanguageListener;
 import com.tal.speech.language.TalLanguage;
@@ -763,7 +764,7 @@ public class EnglishSpeekBll extends BaseEnglishStandSpeekBll implements English
         }
         s_language = new File(dir, "s_language");
         try {
-            InputStream inputStream = activity.getAssets().open("s_language");
+            InputStream inputStream = AssertUtil.open("s_language");
             FileOutputStream outputStream = new FileOutputStream(s_language);
             byte b[] = new byte[10240];
             int length = -1;

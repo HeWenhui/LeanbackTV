@@ -4,9 +4,9 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 
+import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaController2;
 import com.xueersi.parentsmeeting.module.videoplayer.media.MediaControllerBottom2;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
 /**
@@ -15,7 +15,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.R;
  */
 
 public class LiveBackStandMediaControllerBottom extends MediaControllerBottom2 {
-    public LiveBackStandMediaControllerBottom(Context context, MediaController2 controller, MediaPlayerControl player) {
+    public LiveBackStandMediaControllerBottom(Context context, MediaController2 controller, BackMediaPlayerControl player) {
         super(context, controller, player);
     }
 

@@ -36,24 +36,26 @@ import com.xueersi.lib.imageloader.ImageLoader;
 import com.xueersi.parentsmeeting.module.videoplayer.business.VideoBll;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoLivePlayBackEntity;
 import com.xueersi.parentsmeeting.module.videoplayer.entity.VideoQuestionEntity;
-import com.xueersi.parentsmeeting.module.videoplayer.media.MediaPlayerControl;
+import com.xueersi.parentsmeeting.module.videoplayer.media.BackMediaPlayerControl;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VPlayerCallBack;
 import com.xueersi.parentsmeeting.module.videoplayer.media.VideoView;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
+import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.widget.StandLiveVideoExperienceMediaController;
+import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
+import com.xueersi.parentsmeeting.modules.livevideo.video.PlayErrorCode;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.ActivityChangeLand;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LectureLivePlayBackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveBackBaseBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.LiveStandFrameAnim;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.business.PauseNotStopVideoIml;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
-import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoSAConfig;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.experience.bussiness.ExperienceQuitFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.LiveBackVideoFragmentBase;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.MediaControllerAction;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.examination.StandExperienceEvaluationBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.learnfeedback.StandExperienceLearnFeedbackBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.livemessage.StandExperienceMessageBll;
-import com.xueersi.parentsmeeting.modules.livevideo.fragment.se.widget.StandLiveVideoExperienceMediaController;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.recommodcourse.StandExperienceRecommondBll;
 import com.xueersi.parentsmeeting.modules.livevideoOldIJK.fragment.se.understand.StandExperienceUnderstandBll;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
@@ -354,7 +356,7 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
     protected void initBll() {
         ProxUtil.getProxUtil().put(activity, MediaControllerAction.class, this);
         //发布题目的时候，如果点击取消题目，不会跳过这段做题目的时间
-        ProxUtil.getProxUtil().put(activity, MediaPlayerControl.class, new MediaPlayerControl() {//zyy:
+        ProxUtil.getProxUtil().put(activity, BackMediaPlayerControl.class, new BackMediaPlayerControl() {//zyy:
             @Override
             public void start() {
                 logger.d("initBll:start:isFinishing=" + isFinishing);
@@ -452,6 +454,28 @@ public class StandLiveVideoExperienceFragment extends LiveBackVideoFragmentBase 
             public void onShare() {
                 liveBackPlayVideoFragment.onShare();
             }
+
+            @Override
+            public void release() {
+
+            }
+
+            @Override
+            public void startPlayVideo() {
+
+            }
+
+            @Override
+            public void setVideoStatus(int code, int status, String values) {
+
+            }
+
+            @Override
+            public int onVideoStatusChange(int code, int status) {
+                return 0;
+            }
+
+
         });
         ProxUtil.getProxUtil().put(activity, ActivityChangeLand.class, this);
         initBusiness();

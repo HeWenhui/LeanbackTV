@@ -3,6 +3,8 @@ package ren.yale.android.cachewebviewlib;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.airbnb.lottie.AssertUtil;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -99,8 +101,8 @@ class ResourceLoader {
         }
         try {
             CacheWebViewLog.d(urlPath);
-            return  mContext.getAssets().open(mAssetDir+File.separator+assetFile);
-        } catch (IOException e) {
+            return  AssertUtil.open(mAssetDir+File.separator+assetFile);
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return null;

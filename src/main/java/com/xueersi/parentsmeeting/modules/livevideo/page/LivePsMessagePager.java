@@ -17,6 +17,7 @@ import android.text.style.CharacterStyle;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.ImageSpan;
 import android.text.util.Linkify;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -54,6 +55,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.business.LiveAndBackDebug;
 
 import com.xueersi.parentsmeeting.modules.livevideo.business.XESCODE;
 import com.xueersi.parentsmeeting.modules.livevideo.business.irc.jibble.pircbot.User;
+import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.config.LiveVideoConfig;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.FlowerEntity;
 import com.xueersi.parentsmeeting.modules.livevideo.entity.LiveGetInfo;
@@ -69,6 +71,8 @@ import com.xueersi.parentsmeeting.modules.livevideo.util.LayoutParamsUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.util.ProxUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.BaseLiveMediaControllerBottom;
 import com.xueersi.parentsmeeting.modules.livevideo.widget.VerticalImageSpan;
+import com.xueersi.parentsmeeting.modules.livevideo.business.ContextLiveAndBackDebug;
+import com.xueersi.parentsmeeting.modules.livevideo.stablelog.HotWordLog;
 import com.xueersi.ui.adapter.AdapterItemInterface;
 import com.xueersi.ui.adapter.CommonAdapter;
 
@@ -148,7 +152,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
         liveVideoActivity = (Activity) context;
         this.liveMediaControllerBottom = liveMediaControllerBottom;
         this.keyboardShowingListener = keyboardShowingListener;
-        this.liveAndBackDebug = ums;
+        this.liveAndBackDebug = new ContextLiveAndBackDebug(context);
         this.liveMessageEntities = liveMessageEntities;
         this.otherLiveMessageEntities = otherLiveMessageEntities;
         Resources resources = context.getResources();
@@ -876,6 +880,7 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String msg = words.get(position);
+                upLoadHotWordLog(msg);
                 if (ircState.openchat()) {
                     if (System.currentTimeMillis() - lastSendMsg > SEND_MSG_INTERVAL) {
                         boolean send = ircState.sendMessage(msg, "");
@@ -900,6 +905,23 @@ public class LivePsMessagePager extends BasePrimaryScienceMessagePager {
                 }
             }
         });
+    }
+
+    /**
+     * 热词埋点日志
+     * @param hotwordCmd  热词指令
+     */
+    private void upLoadHotWordLog(String hotwordCmd) {
+        try {
+            //非语文半身直播  上传热词埋点数据
+            if(getInfo != null && getInfo.getPattern() == HalfBodyLiveConfig.LIVE_TYPE_HALFBODY && getInfo.getUseSkin()
+                    != HalfBodyLiveConfig.SKIN_TYPE_CH){
+                HotWordLog.hotWordSend(this.liveAndBackDebug,hotwordCmd,HotWordLog.LIVETYPE_PRESCHOOL,
+                        getInfo.getStudentLiveInfo().getClassId(),getInfo.getStudentLiveInfo().getTeamId(),getInfo.getStudentLiveInfo().getCourseId());
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     @Override

@@ -88,7 +88,6 @@ public class TeamPkContributionPager extends TeamPkBasePager {
                 }
             }
         });
-        Log.e("teampkContributionPager", "====>initViewcalled");
         animationView = view.findViewById(R.id.lav_teampk_contribution);
         ivClose = view.findViewById(R.id.iv_teampk_contribution_close);
         ivClose.setOnClickListener(new View.OnClickListener() {

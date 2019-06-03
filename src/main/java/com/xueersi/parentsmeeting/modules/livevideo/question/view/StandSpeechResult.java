@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.airbnb.lottie.AssertUtil;
 import com.xueersi.common.util.FontCache;
 import com.xueersi.parentsmeeting.modules.livevideo.R;
 
@@ -100,7 +101,7 @@ public class StandSpeechResult {
                 group, false);
         InputStream inputStream = null;
         try {
-            inputStream = mContext.getAssets().open
+            inputStream = AssertUtil.open
                     ("live_stand/frame_anim/redpackage/9_teams_bg/package_team_bg_00035.png");
             final Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
             resultMine.setBackgroundDrawable(new BitmapDrawable(bitmap));
@@ -115,7 +116,7 @@ public class StandSpeechResult {
                     bitmap.recycle();
                 }
             });
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if (inputStream != null) {
@@ -171,7 +172,7 @@ public class StandSpeechResult {
         tv_livevideo_speecteval_result_energy.setText("+" + energy);
         InputStream inputStream = null;
         try {
-            inputStream = mContext.getAssets().open
+            inputStream = AssertUtil.open
                     ("live_stand/frame_anim/redpackage/9_teams_bg/package_team_bg_00035.png");
             final Bitmap bitmap = BitmapFactory.decodeStream(inputStream);
             resultMine.setBackgroundDrawable(new BitmapDrawable(bitmap));
@@ -186,7 +187,7 @@ public class StandSpeechResult {
                     bitmap.recycle();
                 }
             });
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             if (inputStream != null) {
