@@ -70,7 +70,7 @@ public class ExpRollCallBll extends LiveBackBaseBll implements NoticeAction, Rol
 
     @Override
     public void onNotice(String sourceNick, String target, JSONObject data, int type) {
-        logger.e( "=======>onNotice:" + type);
+        logger.e("=======>onNotice:" + type);
         try {
             switch (type) {
                 case XESCODE.CLASSBEGIN:
@@ -137,4 +137,28 @@ public class ExpRollCallBll extends LiveBackBaseBll implements NoticeAction, Rol
     public int[] getNoticeFilter() {
         return new int[]{XESCODE.CLASSBEGIN, XESCODE.ROLLCALL, XESCODE.STOPROLLCALL, XESCODE.CLASS_MATEROLLCALL};
     }
+
+    private int[] filters;
+
+    public void dispatcNotice(String sourceNick, String target, JSONObject data, int type) {
+
+        if (filters == null) {
+            filters = getNoticeFilter();
+        }
+
+        boolean regist = false;
+
+        for (int value : filters) {
+            if (value == type) {
+                regist = true;
+                break;
+            }
+        }
+
+        if (regist) {
+            onNotice(sourceNick, target, data, type);
+        }
+
+    }
+
 }

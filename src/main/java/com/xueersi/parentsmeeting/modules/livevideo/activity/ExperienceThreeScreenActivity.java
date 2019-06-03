@@ -11,13 +11,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -100,7 +98,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 主要功能： 课前直播；课中回放；课后直播；互动题；学习报告;(打点数据;禁言；签到；踢人；聊天；学习反馈;数据埋点; 根据时间在看是否开发)
+ * 主要功能： 课前直播；课中回放；课后直播；互动题；学习报告;(打点数据;禁言；签到；踢人；聊天；学习反馈;数据埋点;)
  * <p>
  * Created by yuanwei2 on 2019/5/23.
  */
@@ -293,9 +291,37 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         }
 
         @Override
-        public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String
-                notice, String channelId) {
+        public void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice, String channelId) {
             logger.i("=====>onNotice");
+
+            int type = -1;
+            JSONObject data = null;
+
+            try {
+                data = new JSONObject(notice);
+                type = data.getInt("type");
+                expRollCallBll.dispatcNotice(sourceNick, target, data, type);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if (data == null) {
+                return;
+            }
+
+            if (type == XESCODE.GAG) {
+                // 禁言
+                try {
+                    String id = data.getString("id");
+                    boolean disable = data.getBoolean("disable");
+                    String nickName = "" + mIRCMessage.getNickname();
+                    if (nickName.equals(id)) {
+                        mLiveMessagePager.onDisable(disable, true);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
         }
 
         @Override
@@ -407,6 +433,11 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
     private LiveBackBll liveBackBll;
 
     private LiveBll mLiveBll;
+
+    /**
+     * 签到业务
+     */
+    private ExpRollCallBll expRollCallBll;
 
     /**
      * 我的课程业务层
@@ -664,7 +695,6 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         }
     }
 
-
     /**
      * 初始化数据
      */
@@ -752,7 +782,8 @@ public class ExperienceThreeScreenActivity extends LiveVideoActivityBase impleme
         liveBackBll.addBusinessBll(new RedPackageExperienceBll(this, liveBackBll, playBackEntity.getChapterId()));
         liveBackBll.addBusinessBll(new EnglishH5ExperienceBll(this, liveBackBll));
         liveBackBll.addBusinessBll(new NBH5ExperienceBll(this, liveBackBll));
-        liveBackBll.addBusinessBll(new ExpRollCallBll(this, liveBackBll, mIRCMessage));
+        expRollCallBll = new ExpRollCallBll(this, liveBackBll, mIRCMessage);
+        liveBackBll.addBusinessBll(expRollCallBll);
         liveBackBll.onCreate();
     }
 
