@@ -1138,12 +1138,16 @@ public class TeamPkBll extends LiveBaseBll implements NoticeAction, TopicAction,
                                 parsePkAdversary(responseEntity);
                            if(pkAdversaryEntity != null && pkAdversaryEntity.getSelf() != null && pkAdversaryEntity.getOpponent() != null){
                                if (mLiveBll != null) {
-                                   long teamId = Long.parseLong(pkAdversaryEntity.getOpponent().getTeamId());
-                                   long classId = Long.parseLong(pkAdversaryEntity.getOpponent().getClassId());
-                                   boolean isComputer = (teamId < 0 && classId < 0);
-                                   TeamPkLog.showOpponent(mLiveBll, isComputer, pkAdversaryEntity.getSelf().getTeamName(),
-                                           pkAdversaryEntity.getOpponent().getTeamName(), pkAdversaryEntity.getOpponent()
-                                                   .getTeamId(), pkAdversaryEntity.getOpponent().getClassId());
+                                   try {
+                                       long teamId = Long.parseLong(pkAdversaryEntity.getOpponent().getTeamId());
+                                       long classId = Long.parseLong(pkAdversaryEntity.getOpponent().getClassId());
+                                       boolean isComputer = (teamId < 0 && classId < 0);
+                                       TeamPkLog.showOpponent(mLiveBll, isComputer, pkAdversaryEntity.getSelf().getTeamName(),
+                                               pkAdversaryEntity.getOpponent().getTeamName(), pkAdversaryEntity.getOpponent()
+                                                       .getTeamId(), pkAdversaryEntity.getOpponent().getClassId());
+                                   }catch (Exception e){
+                                       e.printStackTrace();
+                                   }
                                }
                                showPkResultScene(pkAdversaryEntity, PK_RESULT_TYPE_ADVERSARY);
                            }else{
