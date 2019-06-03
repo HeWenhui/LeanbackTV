@@ -15,18 +15,22 @@ import com.xueersi.common.business.AppBll;
 import com.xueersi.common.business.UserBll;
 import com.xueersi.common.business.sharebusiness.config.ShareBusinessConfig;
 import com.xueersi.common.business.sharebusiness.http.downloadAppfile.entity.DownLoadFileInfo;
+import com.xueersi.common.config.AppConfig;
 import com.xueersi.common.http.HttpCallBack;
 import com.xueersi.common.http.ResponseEntity;
 import com.xueersi.common.permission.XesPermission;
 import com.xueersi.common.permission.config.PermissionConfig;
+import com.xueersi.common.route.module.ModuleHandler;
 import com.xueersi.common.sharedata.ShareDataManager;
 import com.xueersi.common.util.LoadCallback;
+import com.xueersi.common.util.LoadFileCallBack;
 import com.xueersi.common.util.LoadFileUtils;
 import com.xueersi.lib.analytics.umsagent.UmsAgentManager;
 import com.xueersi.lib.analytics.umsagent.UmsConstants;
 import com.xueersi.lib.framework.utils.XESToastUtils;
 import com.xueersi.lib.framework.utils.string.StringUtils;
 import com.xueersi.parentsmeeting.module.videoplayer.config.MediaPlayer;
+import com.xueersi.parentsmeeting.modules.livevideo.LiveAssetsLoadUtil;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.CoursewarePreload;
 import com.xueersi.parentsmeeting.modules.livevideo.business.courseware.PreloadStaticStorage;
 import com.xueersi.parentsmeeting.modules.livevideo.config.HalfBodyLiveConfig;
@@ -40,6 +44,7 @@ import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpManager;
 import com.xueersi.parentsmeeting.modules.livevideo.http.LiveHttpResponseParser;
 import com.xueersi.parentsmeeting.modules.livevideo.util.LiveActivityPermissionCallback;
 import com.xueersi.ui.dataload.DataLoadEntity;
+import com.xueersi.ui.dataload.DataLoadManager;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONObject;
@@ -54,7 +59,9 @@ import java.util.List;
  */
 public class LiveVideoLoadActivity extends BaseActivity {
     public static HashMap<String, LiveGetInfo> getInfos = new HashMap();
-    /** Activity创建次数 */
+    /**
+     * Activity创建次数
+     */
     public static int CREATE_TIMES = 0;
     DataLoadEntity mDataLoadEntity;
 
@@ -92,51 +99,56 @@ public class LiveVideoLoadActivity extends BaseActivity {
         CREATE_TIMES++;
 
         mDataLoadEntity = new DataLoadEntity(this);
-        BaseBll.postDataLoadEvent(mDataLoadEntity.beginLoading());
         loadAssertsResource();
         //initData();
     }
 
     /**
-     *  加载assert 文件
+     * 加载assert 文件
      */
-    private void loadAssertsResource(){
+    private void loadAssertsResource() {
 
 
+        //服务端获取
+        DownLoadFileInfo info = LiveVideoConfig.getDownLoadFileInfo();
 
-        DownLoadFileInfo info=new DownLoadFileInfo();
-        info.fileName="assets.zip";
-        info.fileMD5="f94553e8a25d47d107f81fccade5cbcb";
-        info.fileType=0;
-        info.fileUrl="https://xeswxapp.oss-cn-beijing.aliyuncs.com/Android/asserts/livevideo/assets.zip";
-        info.needManualDownload=true;
-        info.id=0;
-        info.dirPath= Environment.getExternalStorageDirectory().getAbsolutePath();
+        LoadFileUtils.loadFileFromServer(this, info, new LoadFileCallBack() {
+            @Override
+            public void start() {
+                //XESToastUtils.showToast(LiveVideoLoadActivity.this, "开始加载");
+                mDataLoadEntity.beginLoading();
+                DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this, mDataLoadEntity);
+            }
 
-          LoadFileUtils.loadFileFromServer(this,info, new LoadCallback() {
-              @Override
-              public void start() {
-                  XESToastUtils.showToast(LiveVideoLoadActivity.this, "开始加载");
-              }
+            @Override
+            public void success() {
+                initData();
+                //XESToastUtils.showToast(LiveVideoLoadActivity.this, "加载成功");
+            }
 
-              @Override
-              public void success() {
-                  initData();
-                  XESToastUtils.showToast(LiveVideoLoadActivity.this, "加载成功");
-              }
+            @Override
+            public void progress(float progress, int type) {
+                if (type == 0) {
+                    mDataLoadEntity.setProgressTip("加载中" + (int) (progress) + "%");
+                } else {
+                    mDataLoadEntity.setProgressTip("解压中...");
+                }
+                mDataLoadEntity.beginLoading();
+                mDataLoadEntity.setCurrentLoadingStatus(DataLoadEntity.DATA_PROGRESS);
+                DataLoadManager.newInstance().loadDataStyle(LiveVideoLoadActivity.this, mDataLoadEntity);
 
-              @Override
-              public void progress(float progress, int type) {
-                  Log.e("LoadFileUtils","type:"+type+",progress:"+progress);
-              }
+            }
 
-              @Override
-              public void fail(int errorCode, String errorMsg) {
-                  XESToastUtils.showToast(LiveVideoLoadActivity.this, "失败");
-              }
-          });
+            @Override
+            public void fail(int errorCode, String errorMsg) {
+                if (!LiveAssetsLoadUtil.planB("livevdieo", LiveVideoLoadActivity.this)) {
+                    XESToastUtils.showToast(LiveVideoLoadActivity.this, "加载失败,  请重试");
+                }
+                UmsAgentManager.umsAgentDebug(LiveVideoLoadActivity.this, ModuleHandler.TAG, "直播加载assets 失败,内部0 ！");
+            }
+        });
 
-      }
+    }
 
     @Override
     protected void onDestroy() {
@@ -274,6 +286,7 @@ public class LiveVideoLoadActivity extends BaseActivity {
                         list.add(PermissionConfig.PERMISSION_CODE_CAMERA);
                         gotoHalfBodyChinese(bundle, list);
                     } else {
+
                         if (MediaPlayer.getIsNewIJK()) {
                             com.xueersi.parentsmeeting.modules.livevideo.fragment.LiveVideoActivity.intentTo(LiveVideoLoadActivity.this, bundle);
                         } else {

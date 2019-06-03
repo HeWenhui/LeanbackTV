@@ -1557,7 +1557,7 @@ public class StandSpeechAssAutoPager extends BaseSpeechAssessmentPager {
             AssetManager manager = context.getAssets();
             Bitmap img7Bitmap;
             try {
-                img7Bitmap = BitmapFactory.decodeStream(manager.open
+                img7Bitmap = BitmapFactory.decodeStream(AssertUtil.open
                         ("live_stand/lottie/voice_answer/team_right/img_0.png"));
                 Bitmap creatBitmap = Bitmap.createBitmap(img7Bitmap.getWidth(), img7Bitmap.getHeight(), Bitmap.Config
                         .ARGB_8888);

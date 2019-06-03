@@ -456,7 +456,10 @@ public abstract class SuperSpeakerCameraPager extends LiveBasePager implements
                             UmsAgentManager.umsAgentCustomerBusiness(mContext, mContext.getResources().getString(R.string.livevideo_1716003));
                         }
                         stopRecordVideo();
-
+                        camera1Utils.releaseCamera();
+                        if (sfvVideo.getHolder() != null && sfvVideo.getHolder().getSurface() != null) {
+                            sfvVideo.getHolder().getSurface().release();
+                        }
                     }
                 }).
                 observeOn(AndroidSchedulers.mainThread()).
